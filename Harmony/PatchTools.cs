@@ -263,7 +263,7 @@ namespace Harmony
 			var patchName = original.Name + suffix;
 
 			var parameters = original.GetParameters();
-			var result = parameters.Select(pi => pi.ParameterType).ToList();
+			var result = parameters.Types().ToList();
 			if (original.IsStatic == false)
 				result.Insert(0, typeof(object));
 			var paramTypes = result.ToArray();

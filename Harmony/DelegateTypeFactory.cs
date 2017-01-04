@@ -33,7 +33,7 @@ namespace Harmony
 
 			var invokeMethod = typeBuilder.DefineMethod(
 				 "Invoke", MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Public,
-				 method.ReturnType, parameters.Select(p => p.ParameterType).ToArray());
+				 method.ReturnType, parameters.Types());
 			invokeMethod.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
 			for (int i = 0; i < parameters.Length; i++)
