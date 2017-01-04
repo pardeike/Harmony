@@ -43,6 +43,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessCache.cs" />
     <Compile Include="AccessTools.cs" />
     <Compile Include="Attributes.cs" />
     <Compile Include="DelegateTypeFactory.cs" />
