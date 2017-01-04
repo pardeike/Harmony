@@ -57,6 +57,7 @@ namespace Harmony
 				return ((FieldInfo)_info).GetValue(_root);
 			if (_info is PropertyInfo)
 				return ((PropertyInfo)_info).GetValue(_root, AccessTools.all, null, _index, CultureInfo.CurrentCulture);
+			if (_root == null && _type != null) return _type;
 			return _root;
 		}
 
@@ -68,7 +69,9 @@ namespace Harmony
 
 		public T GetValue<T>()
 		{
-			return (T)GetValue();
+			var value = GetValue();
+			if (value == null) return default(T);
+			return (T)value;
 		}
 
 		public Traverse SetValue(object value)
@@ -104,20 +107,32 @@ namespace Harmony
 			return new Traverse(resolved._root, info, index);
 		}
 
-		public Traverse Method(string name, object[] arguments = null, string innerType = null)
+		public Traverse Method(string name, params object[] arguments)
 		{
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
-			var argTypes = AccessTools.GetTypes(arguments);
-			var info = Cache.GetMethodInfo(resolved._type, name, argTypes);
-			if (info == null) throw new MissingMethodException(name);
+			var types = AccessTools.GetTypes(arguments);
+			var info = Cache.GetMethodInfo(resolved._type, name, types);
+			if (info == null) throw new MissingMethodException(name + types.Description());
 			var val = info.Invoke(resolved._root, arguments);
+			return new Traverse(val);
+		}
+
+		public Traverse Method(string name, Type[] paramTypes, object[] parameter)
+		{
+			var resolved = Resolve();
+			if (resolved._type == null) return new Traverse();
+			var info = Cache.GetMethodInfo(resolved._type, name, paramTypes);
+			if (info == null) throw new MissingMethodException(name + paramTypes.Description());
+			var val = info.Invoke(resolved._root, parameter);
 			return new Traverse(val);
 		}
 
 		public override string ToString()
 		{
-			return GetValue().ToString();
+			var value = GetValue();
+			if (value == null) return null;
+			return value.ToString();
 		}
 	}
 }
