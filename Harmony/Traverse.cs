@@ -6,7 +6,7 @@ namespace Harmony
 {
 	public class Traverse
 	{
-		private AccessCache Cache = new AccessCache();
+		private static AccessCache Cache = new AccessCache();
 
 		private Type _type;
 		private object _root;
