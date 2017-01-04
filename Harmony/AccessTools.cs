@@ -22,7 +22,7 @@ namespace Harmony
 			return type.GetField(name, all);
 		}
 
-		internal static PropertyInfo Property(Type type, string name)
+		public static PropertyInfo Property(Type type, string name)
 		{
 			if (type == null || name == null) return null;
 			return type.GetProperty(name, all);
@@ -45,11 +45,13 @@ namespace Harmony
 		public static Type[] GetTypes(object[] arguments)
 		{
 			if (arguments == null) return new Type[0];
-			return arguments.Select(a => a.GetType()).ToArray();
+			return arguments.Select(a => a == null ? typeof(object) : a.GetType()).ToArray();
 		}
 
 		public static object GetDefaultValue(Type type)
 		{
+			if (type == null) return null;
+			if (type == typeof(void)) return null;
 			if (type.IsValueType)
 				return Activator.CreateInstance(type);
 			return null;
@@ -60,7 +62,7 @@ namespace Harmony
 	{
 		public static string Description(this Type[] parameters)
 		{
-			var types = parameters.Select(p => p.FullName);
+			var types = parameters.Select(p => p == null ? "null" : p.FullName);
 			return "(" + types.Aggregate("", (s, x) => s.Length == 0 ? x : s + ", " + x) + ")";
 		}
 
