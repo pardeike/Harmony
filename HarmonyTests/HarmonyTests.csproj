@@ -55,7 +55,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Tools\Assets\AccessToolsClasses.cs" />
+    <Compile Include="Tools\Assets\AccessToolsClass.cs" />
+    <Compile Include="Tools\TestAccessCache.cs" />
     <Compile Include="Tools\TestAccessTools.cs" />
     <Compile Include="Traverse\Assets\TraverseFields_AccessModifiers.cs" />
     <Compile Include="Traverse\Assets\TraverseMethods.cs" />
