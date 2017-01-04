@@ -10,7 +10,7 @@ namespace Harmony
 		internal Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
 		internal Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodInfo>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodInfo>>>();
 
-		internal FieldInfo GetFieldInfo(Type type, string name)
+		public FieldInfo GetFieldInfo(Type type, string name)
 		{
 			Dictionary<string, FieldInfo> fieldsByType = null;
 			fields.TryGetValue(type, out fieldsByType);
@@ -30,7 +30,7 @@ namespace Harmony
 			return field;
 		}
 
-		internal PropertyInfo GetPropertyInfo(Type type, string name)
+		public PropertyInfo GetPropertyInfo(Type type, string name)
 		{
 			Dictionary<string, PropertyInfo> propertiesByType = null;
 			properties.TryGetValue(type, out propertiesByType);
@@ -50,7 +50,7 @@ namespace Harmony
 			return property;
 		}
 
-		internal MethodInfo GetMethodInfo(Type type, string name, Type[] arguments)
+		public MethodInfo GetMethodInfo(Type type, string name, Type[] arguments)
 		{
 			Dictionary<string, Dictionary<Type[], MethodInfo>> methodsByName = null;
 			methods.TryGetValue(type, out methodsByName);
