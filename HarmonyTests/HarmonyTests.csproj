@@ -55,16 +55,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Assets\TraverseFields_AccessModifiers.cs" />
-    <Compile Include="Assets\TraverseMethods.cs" />
-    <Compile Include="Assets\TraverseProperties_AccessModifiers.cs" />
-    <Compile Include="Assets\TraverseTypes.cs" />
+    <Compile Include="Traverse\Assets\TraverseFields_AccessModifiers.cs" />
+    <Compile Include="Traverse\Assets\TraverseMethods.cs" />
+    <Compile Include="Traverse\Assets\TraverseProperties_AccessModifiers.cs" />
+    <Compile Include="Traverse\Assets\TraverseTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestTraverse_Basics.cs" />
-    <Compile Include="TestTraverse_Fields.cs" />
-    <Compile Include="TestTraverse_Methods.cs" />
-    <Compile Include="TestTraverse_Properties.cs" />
-    <Compile Include="TestTraverse_Types.cs" />
+    <Compile Include="Traverse\TestTraverse_Basics.cs" />
+    <Compile Include="Traverse\TestTraverse_Fields.cs" />
+    <Compile Include="Traverse\TestTraverse_Methods.cs" />
+    <Compile Include="Traverse\TestTraverse_Properties.cs" />
+    <Compile Include="Traverse\TestTraverse_Types.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Harmony\Harmony.csproj">
