@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Harmony
 {
-	static class AccessTools
+	public static class AccessTools
 	{
 		public static BindingFlags all = BindingFlags.Public
 			| BindingFlags.NonPublic
@@ -44,7 +44,7 @@ namespace Harmony
 
 		public static Type[] GetTypes(object[] arguments)
 		{
-			if (arguments == null) return null;
+			if (arguments == null) return new Type[0];
 			return arguments.Select(a => a.GetType()).ToArray();
 		}
 
@@ -53,6 +53,20 @@ namespace Harmony
 			if (type.IsValueType)
 				return Activator.CreateInstance(type);
 			return null;
+		}
+	}
+
+	public static class TypeExtensions
+	{
+		public static string Description(this Type[] parameters)
+		{
+			var types = parameters.Select(p => p.FullName);
+			return "(" + types.Aggregate("", (s, x) => s.Length == 0 ? x : s + ", " + x) + ")";
+		}
+
+		public static Type[] Types(this ParameterInfo[] pinfo)
+		{
+			return pinfo.Select(pi => pi.ParameterType).ToArray();
 		}
 	}
 
