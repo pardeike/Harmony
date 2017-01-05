@@ -249,7 +249,6 @@ namespace Harmony
 
 		public static MethodInfo PrepareDynamicMethod(MethodInfo original, DynamicMethod dynamicMethod)
 		{
-			var n = dynamicMethod.GetParameters().Count();
 			var delegateFactory = new DelegateTypeFactory();
 			var type = delegateFactory.CreateDelegateType(original);
 			return dynamicMethod.CreateDelegate(type).Method;
