@@ -9,11 +9,11 @@ namespace Harmony
 		int index;
 		public string owner;
 		public MethodInfo patch;
-		public Priority.Value priority;
+		public int priority;
 		public HashSet<string> before;
 		public HashSet<string> after;
 
-		public Patch(int index, string owner, MethodInfo patch, Priority.Value priority, HashSet<string> before, HashSet<string> after)
+		public Patch(int index, string owner, MethodInfo patch, int priority, HashSet<string> before, HashSet<string> after)
 		{
 			this.index = index;
 			this.owner = owner;

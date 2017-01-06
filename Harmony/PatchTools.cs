@@ -107,11 +107,13 @@ namespace Harmony
 		// void Postfix([TYPE instance,] [ref TYPE result,], ref p1, ref p2, ref p3 ...)
 		// - "instance" only for non-static original methods
 		// - "result" only for original methods that do not return void
-		// - prefix will receive all parameters EXCEPT "out" parameters
+		// - prefix will receive all parameters EXCEPT "out" parameters !!
 		//
-		//	static RTYPE Patch(TYPE instance, TYPE p1, TYPE p2, TYPE p3 ...)
+		// The wrapper will create roughly like this:
+		//
+		//	static RTYPE ORIGINAL_wrapper(TYPE instance, TYPE p1, TYPE p2, TYPE p3 ...)
 		//	{
-		//		object result = default(RTYPE);
+		//		RTYPE result = default(RTYPE);
 		//
 		//		bool run = true;
 		//
@@ -138,32 +140,48 @@ namespace Harmony
 
 			var isInstance = original.IsStatic == false;
 			var returnType = original.ReturnType;
-			var hasReturnValue = returnType != typeof(void);
+			var returnsSomething = AccessTools.isVoid(returnType) == false;
+			var returnsClassType = AccessTools.isClass(returnType);
+			var returnsStructType = AccessTools.isStruct(returnType);
+			var returnsValueType = AccessTools.isValue(returnType);
+
 			var parameters = original.GetParameters();
 
-			var resultType = hasReturnValue ? returnType : typeof(object);
-			g.DeclareLocal(resultType); // v0 - result
-			g.DeclareLocal(typeof(bool)); // v1 - run
+			g.DeclareLocal(typeof(bool)); // v0 - run
+			if (returnsSomething)
+				g.DeclareLocal(returnType); // v1 - result (if not void)
 
+			// for debugging
 			g.Emit(OpCodes.Nop);
 
-			// ResultType result = [default value for ResultType];
-			if (returnType.IsValueType && hasReturnValue)
-				g.Emit(OpCodes.Ldc_I4, 0);
-			else
+			// ResultType result = [default value for ResultType]
+			//
+			if (returnsClassType)
+			{
 				g.Emit(OpCodes.Ldnull);
-			g.Emit(OpCodes.Stloc_0); // to v0
+				g.Emit(OpCodes.Stloc_1); // to v1
+			}
+			if (returnsStructType)
+			{
+				g.Emit(OpCodes.Ldloca_S, 1); // v1 ref
+				g.Emit(OpCodes.Initobj, returnType); // init
+			}
+			if (returnsValueType)
+			{
+				g.Emit(OpCodes.Ldc_I4, 0); // 0
+				g.Emit(OpCodes.Stloc_1); // to v1
+			}
 
 			// bool run = true;
 			g.Emit(OpCodes.Ldc_I4, 1); // true
-			g.Emit(OpCodes.Stloc_1); // to v1
+			g.Emit(OpCodes.Stloc_0); // to v0
 
 			prefixPatches.ForEach(prefix =>
 			{
 				var ifRunPrepatch = g.DefineLabel();
 
 				// if (run)
-				g.Emit(OpCodes.Ldloc_1); // v1
+				g.Emit(OpCodes.Ldloc_0); // v0
 				g.Emit(OpCodes.Ldc_I4, 0); // false
 				g.Emit(OpCodes.Ceq); // compare
 				g.Emit(OpCodes.Brtrue, ifRunPrepatch); // jump to (A)
@@ -171,8 +189,8 @@ namespace Harmony
 				// run = Prefix[n](instance, ref result, ref p1, ref p2, ref p3 ...);
 				if (isInstance)
 					g.Emit(OpCodes.Ldarg_0); // instance
-				if (hasReturnValue)
-					g.Emit(OpCodes.Ldloca_S, 0); // ref result
+				if (returnsSomething)
+					g.Emit(OpCodes.Ldloca_S, 1); // ref v1
 				for (int j = 0; j < parameters.Count(); j++)
 				{
 					if (parameters[j].IsOut) continue; // out parameter make no sense for prefix methods 
@@ -180,13 +198,13 @@ namespace Harmony
 					g.Emit(OpCodes.Ldarga_S, j2); // ref p[1..n]
 				}
 				g.Emit(OpCodes.Call, prefix); // call prefix patch
-				g.Emit(OpCodes.Stloc_1); // to v1
+				g.Emit(OpCodes.Stloc_0); // to v0
 
 				g.MarkLabel(ifRunPrepatch); // (A)
 			});
 
 			// if (run)
-			g.Emit(OpCodes.Ldloc_1); // v1
+			g.Emit(OpCodes.Ldloc_0); // v0
 			g.Emit(OpCodes.Ldc_I4, 0); // false
 			g.Emit(OpCodes.Ceq); // compare
 			var ifRunOriginal = g.DefineLabel();
@@ -206,8 +224,8 @@ namespace Harmony
 				if (j2 > 3) g.Emit(OpCodes.Ldarg_S, j2);
 			}
 			g.Emit(OpCodes.Call, originalCopy); // call copy of original
-			if (hasReturnValue)
-				g.Emit(OpCodes.Stloc_0); // to v0
+			if (returnsSomething)
+				g.Emit(OpCodes.Stloc_1); // to v1
 
 			g.MarkLabel(ifRunOriginal); // (B)
 
@@ -216,8 +234,8 @@ namespace Harmony
 				// Postfix[n](instance, ref result, ref p1, ref p2, ref p3 ...);
 				if (isInstance)
 					g.Emit(OpCodes.Ldarg_0); // instance
-				if (hasReturnValue)
-					g.Emit(OpCodes.Ldloca_S, 0); // ref result
+				if (returnsSomething)
+					g.Emit(OpCodes.Ldloca_S, 1); // ref v1
 				for (int j = 0; j < parameters.Count(); j++)
 				{
 					var j2 = isInstance ? j + 1 : j;
@@ -226,9 +244,9 @@ namespace Harmony
 				g.Emit(OpCodes.Call, postfix); // call prefix patch
 			});
 
-			if (hasReturnValue)
-				g.Emit(OpCodes.Ldloc_0); // v0
-			g.Emit(OpCodes.Ret); // v0
+			if (returnsSomething)
+				g.Emit(OpCodes.Ldloc_1); // v1
+			g.Emit(OpCodes.Ret);
 
 			return method;
 		}
