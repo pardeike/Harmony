@@ -1,45 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Harmony
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-	public class HarmonyPatch : Attribute
+	public class HarmonyAttribute : Attribute
 	{
-		public Type type;
-		public string methodName;
-		public Type[] parameter;
+		public HarmonyMethod info = new HarmonyMethod();
+	}
 
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+	public class HarmonyPatch : HarmonyAttribute
+	{
 		public HarmonyPatch()
 		{
 		}
 
 		public HarmonyPatch(Type type)
 		{
-			this.type = type;
+			info.originalType = type;
 		}
 
 		public HarmonyPatch(string methodName)
 		{
-			this.methodName = methodName;
+			info.methodName = methodName;
 		}
 
 		public HarmonyPatch(Type[] parameter)
 		{
-			this.parameter = parameter;
+			info.parameter = parameter;
 		}
+	}
 
-		public static HarmonyPatch Merge(List<HarmonyPatch> attributes)
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	public class HarmonyPriority : HarmonyAttribute
+	{
+		public HarmonyPriority(int prioritiy)
 		{
-			var result = new HarmonyPatch();
-			attributes.ForEach(attr =>
-			{
-				if (attr.type != null) result.type = attr.type;
-				if (attr.methodName != null) result.methodName = attr.methodName;
-				if (attr.parameter != null) result.parameter = attr.parameter;
-			});
-			return result;
+			info.prioritiy = prioritiy;
 		}
+	}
+
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	public class HarmonyBefore : HarmonyAttribute
+	{
+		public HarmonyBefore(params string[] before)
+		{
+			info.before = before;
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	public class HarmonyAfter : HarmonyAttribute
+	{
+		public HarmonyAfter(params string[] after)
+		{
+			info.after = after;
+		}
+	}
+
+	// If you don't want to use the special method names you can annotate
+	// using the following attributes:
+
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyPrepare : Attribute
+	{
+	}
+
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyTargetMethod : Attribute
+	{
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
@@ -49,11 +77,6 @@ namespace Harmony
 
 	[AttributeUsage(AttributeTargets.Method)]
 	public class HarmonyPostfix : Attribute
-	{
-	}
-
-	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyPrepare : Attribute
 	{
 	}
 }

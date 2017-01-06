@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
-	public delegate void RegisterPatch(string owner, MethodInfo original, MethodInfo prefixPatch, MethodInfo postfixPatch);
+	public delegate void RegisterPatch(string owner, MethodInfo original, HarmonyMethod prefixPatch, HarmonyMethod postfixPatch);
 
 	public class PatchInfo
 	{
@@ -57,15 +57,25 @@ namespace Harmony
 				postfixes = new List<Patch>();
 			}
 
-			public void AddPrefix(string owner, MethodInfo method)
+			public void AddPrefix(string owner, HarmonyMethod info)
 			{
-				var patch = new Patch(prefixes.Count, owner, method, Priority.Normal, null, null);
+				if (info == null || info.method == null) return;
+
+				var priority = info.prioritiy == -1 ? Priority.Normal : info.prioritiy;
+				var before = info.before != null ? new HashSet<string>(info.before) : null;
+				var after = info.after != null ? new HashSet<string>(info.after) : null;
+				var patch = new Patch(prefixes.Count, owner, info.method, priority, before, after);
 				prefixes.Add(patch);
 			}
 
-			public void AddPostfix(string owner, MethodInfo method)
+			public void AddPostfix(string owner, HarmonyMethod info)
 			{
-				var patch = new Patch(postfixes.Count, owner, method, Priority.Normal, null, null);
+				if (info == null || info.method == null) return;
+
+				var priority = info.prioritiy == -1 ? Priority.Normal : info.prioritiy;
+				var before = info.before != null ? new HashSet<string>(info.before) : null;
+				var after = info.after != null ? new HashSet<string>(info.after) : null;
+				var patch = new Patch(postfixes.Count, owner, info.method, priority, before, after);
 				postfixes.Add(patch);
 			}
 
@@ -94,10 +104,14 @@ namespace Harmony
 			instances = new Dictionary<string, HarmonyInstance>();
 			allPatches = new Dictionary<MethodInfo, Patches>();
 
-			registerCallback = delegate (string owner, MethodInfo original, MethodInfo prefix, MethodInfo postfix)
-			{
-				AddPatch(owner, original, prefix, postfix);
-			};
+			registerCallback = delegate (
+				string owner,
+				MethodInfo original,
+				HarmonyMethod prefix,
+				HarmonyMethod postfix)
+				{
+					AddPatch(owner, original, prefix, postfix);
+				};
 		}
 
 		public RegisterPatch GetRegisterPatch()
@@ -105,8 +119,10 @@ namespace Harmony
 			return registerCallback;
 		}
 
-		void AddPatch(string owner, MethodInfo original, MethodInfo prefix, MethodInfo postfix)
+		void AddPatch(string owner, MethodInfo original, HarmonyMethod prefix, HarmonyMethod postfix)
 		{
+			if (original == null) throw new ArgumentNullException("original");
+
 			Patches patches;
 			allPatches.TryGetValue(original, out patches);
 			if (patches == null)
@@ -128,7 +144,7 @@ namespace Harmony
 			if (instances.ContainsKey(id))
 			{
 				var info = instance.Contact;
-				throw new ArgumentException("ID must be unique and is already registered by " + info);
+				throw new ArgumentException("ID " + id + " must be unique and is already registered by " + info);
 			}
 
 			instances.Add(id, instance);
@@ -136,6 +152,7 @@ namespace Harmony
 
 		public PatchInfo IsPatched(MethodInfo method)
 		{
+			if (method == null) throw new ArgumentNullException("method");
 			if (allPatches.ContainsKey(method) == false) return null;
 			return allPatches[method].GetInfo();
 		}

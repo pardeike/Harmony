@@ -18,10 +18,16 @@ namespace HarmonyTests.Assets
 		[HarmonyPrepare]
 		public void Method1() { }
 
-		[HarmonyPrefix]
+		[HarmonyTargetMethod]
 		public void Method2() { }
 
-		[HarmonyPostfix]
+		[HarmonyPrefix]
+		[HarmonyPriority(Priority.High)]
 		public void Method3() { }
+
+		[HarmonyPostfix]
+		[HarmonyBefore("foo", "bar")]
+		[HarmonyAfter("test")]
+		public void Method4() { }
 	}
 }

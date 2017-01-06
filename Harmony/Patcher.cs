@@ -17,49 +17,82 @@ namespace Harmony
 
 		public void PatchAll(Module module)
 		{
-			module.GetTypes().ToList()
-				.ForEach(type =>
+			module.GetTypes().ToList().ForEach(ownerType =>
+			{
+				var baseMethodInfos = ownerType.GetHarmonyMethods();
+				if (baseMethodInfos != null && baseMethodInfos.Count() > 0)
 				{
-					var attrList = type.GetCustomAttributes(true)
-						.Where(attr => attr is HarmonyPatch)
-						.Cast<HarmonyPatch>().ToList();
-					if (attrList != null && attrList.Count() > 0)
+					var baseInfo = HarmonyMethod.Merge(baseMethodInfos);
+
+					RunMethod<HarmonyPrepare, bool>(ownerType);
+
+					MethodInfo original = RunMethod<HarmonyTargetMethod, MethodInfo>(ownerType);
+					if (original == null)
+						original = GetOriginalMethod(ownerType, baseInfo);
+					if (original != null)
 					{
+						HarmonyMethod prefixInfo = baseInfo.Clone();
+						HarmonyMethod postfixInfo = baseInfo.Clone();
+						PatchTools.GetPatches(ownerType, original, out prefixInfo.method, out postfixInfo.method);
 
-						var prepare = PatchTools.GetPatchMethod<HarmonyPrepare>(type, "Prepare", new Type[] { typeof(HarmonyInstance) });
-						if (prepare != null)
-							prepare.Invoke(null, new object[] { instance });
-
-						prepare = PatchTools.GetPatchMethod<HarmonyPrepare>(type, "Prepare", Type.EmptyTypes);
-						if (prepare != null)
-							prepare.Invoke(null, Type.EmptyTypes);
-
-						var info = HarmonyPatch.Merge(attrList);
-						if (info.type != null || info.methodName != null || info.parameter != null)
+						if (prefixInfo.method != null)
 						{
-							if (info.type == null) throw new ArgumentException("HarmonyPatch(type) not specified for class " + type.FullName);
-							if (info.methodName == null) throw new ArgumentException("HarmonyPatch(string) not specified for class " + type.FullName);
-							if (info.parameter == null) throw new ArgumentException("HarmonyPatch(Type[]) not specified for class " + type.FullName);
-
-							var methodName = info.methodName;
-							var paramTypes = info.parameter;
-							var original = type.GetMethod(methodName, AccessTools.all, null, paramTypes, null);
-							if (original == null)
-							{
-								var paramList = "(" + string.Join(",", paramTypes.Select(t => t.FullName).ToArray()) + ")";
-								throw new ArgumentException("No method found for " + type.FullName + "." + methodName + paramList);
-							}
-
-							MethodInfo prefix;
-							MethodInfo postfix;
-							PatchTools.GetPatches(type, original, out prefix, out postfix);
-							Patch(original, prefix, postfix);
+							var prefixAttributes = prefixInfo.method.GetHarmonyMethods();
+							baseInfo.Merge(HarmonyMethod.Merge(prefixAttributes)).CopyTo(prefixInfo);
 						}
+
+						if (postfixInfo.method != null)
+						{
+							var postfixAttributes = postfixInfo.method.GetHarmonyMethods();
+							baseInfo.Merge(HarmonyMethod.Merge(postfixAttributes)).CopyTo(postfixInfo);
+						}
+
+						Patch(original, prefixInfo, postfixInfo);
 					}
-				});
+				}
+			});
 		}
 
-		public void Patch(MethodInfo original, MethodInfo prefix, MethodInfo postfix)
+		public T RunMethod<S, T>(Type type)
+		{
+			var name = typeof(S).Name.Replace("Harmony", "");
+
+			var method = PatchTools.GetPatchMethod<S>(type, name, new Type[] { typeof(HarmonyInstance) });
+			if (method != null && typeof(T).IsAssignableFrom(method.ReturnType))
+				return (T)method.Invoke(null, new object[] { instance });
+
+			method = PatchTools.GetPatchMethod<S>(type, name, Type.EmptyTypes);
+			if (method != null && typeof(T).IsAssignableFrom(method.ReturnType))
+				return (T)method.Invoke(null, Type.EmptyTypes);
+
+			return default(T);
+		}
+
+		private static MethodInfo GetOriginalMethod(Type ownerType, HarmonyMethod baseInfo)
+		{
+			if (baseInfo.originalType == null) throw new ArgumentException("HarmonyPatch(type) not specified for class " + ownerType.FullName);
+			if (baseInfo.methodName == null) throw new ArgumentException("HarmonyPatch(string) not specified for class " + ownerType.FullName);
+
+			if (baseInfo.parameter == null)
+			{
+				var original = baseInfo.originalType.GetMethod(baseInfo.methodName, AccessTools.all);
+				if (original == null)
+					throw new ArgumentException("No method found for " + baseInfo.originalType.FullName + "." + baseInfo.methodName);
+				return original;
+			}
+			else
+			{
+				var original = baseInfo.originalType.GetMethod(baseInfo.methodName, AccessTools.all, null, baseInfo.parameter, null);
+				if (original == null)
+				{
+					var paramList = "(" + string.Join(",", baseInfo.parameter.Select(t => t.FullName).ToArray()) + ")";
+					throw new ArgumentException("No method found for " + baseInfo.originalType.FullName + "." + baseInfo.methodName + paramList);
+				}
+				return original;
+			}
+		}
+
+		public void Patch(MethodInfo original, HarmonyMethod prefix, HarmonyMethod postfix)
 		{
 			patchCallback(original, prefix, postfix);
 		}

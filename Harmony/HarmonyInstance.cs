@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Harmony
 {
-	public delegate void PatchCallback(MethodInfo original, MethodInfo prefixPatch, MethodInfo postfixPatch);
+	public delegate void PatchCallback(MethodInfo original, HarmonyMethod prefixPatch, HarmonyMethod postfixPatch);
 
 	public class HarmonyInstance
 	{
@@ -28,7 +28,7 @@ namespace Harmony
 		{
 			this.id = id;
 			this.contact = contact;
-			patcher = new Patcher(this, delegate (MethodInfo original, MethodInfo prefixPatch, MethodInfo postfixPatch)
+			patcher = new Patcher(this, delegate (MethodInfo original, HarmonyMethod prefixPatch, HarmonyMethod postfixPatch)
 			{
 				var register = registry.GetRegisterPatch();
 				register(id, original, prefixPatch, postfixPatch);
@@ -77,7 +77,7 @@ namespace Harmony
 			patcher.PatchAll(module);
 		}
 
-		public void Patch(MethodInfo original, MethodInfo prefix, MethodInfo postfix)
+		public void Patch(MethodInfo original, HarmonyMethod prefix, HarmonyMethod postfix)
 		{
 			patcher.Patch(original, prefix, postfix);
 		}
@@ -100,5 +100,15 @@ namespace Harmony
 		public string steamURL;
 
 		public string website;
+
+		public override string ToString()
+		{
+			var trv = Traverse.Create(this);
+			var parts = AccessTools.GetFieldNames(this)
+				.Select(f => trv.Field(f).GetValue().ToString())
+				.Where(s => s != null && s != "")
+				.ToArray();
+			return "[" + string.Join(",", parts) + "]";
+		}
 	}
 }

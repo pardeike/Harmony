@@ -45,6 +45,7 @@
     <Compile Include="FastAccess.cs" />
     <Compile Include="FileLogger.cs" />
     <Compile Include="HarmonyInstance.cs" />
+    <Compile Include="HarmonyMethod.cs" />
     <Compile Include="HarmonyRegistry.cs" />
     <Compile Include="MethodInvoker.cs" />
     <Compile Include="MonoReflectionExtension.cs" />
