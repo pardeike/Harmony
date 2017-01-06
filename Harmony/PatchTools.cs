@@ -54,14 +54,10 @@ namespace Harmony
 			return method;
 		}
 
-		public static void Patch(Type patchType, Type type, string methodName, Type[] paramTypes)
+		public static void GetPatches(Type patchType, MethodInfo original, out MethodInfo prefix, out MethodInfo postfix)
 		{
-			var original = type.GetMethod(methodName, AccessTools.all, null, paramTypes, null);
-			if (original == null)
-			{
-				var paramList = "(" + string.Join(",", paramTypes.Select(t => t.FullName).ToArray()) + ")";
-				throw new ArgumentException("No method found for " + type.FullName + "." + methodName + paramList);
-			}
+			var type = original.DeclaringType;
+			var methodName = original.Name;
 
 			var parameters = original.GetParameters();
 			var prefixParams = new List<Type>();
@@ -85,21 +81,19 @@ namespace Harmony
 				postfixParams.Add(paramRef);
 			});
 
-			var prepatch = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix", prefixParams.ToArray());
-			var postpatch = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix", postfixParams.ToArray());
-			if (prepatch == null && postpatch == null)
+			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix", prefixParams.ToArray());
+			postfix = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix", postfixParams.ToArray());
+			if (prefix == null && postfix == null)
 			{
-				var prepatchStr = "Prefix(" + String.Join(", ", prefixParams.Select(p => p.FullName).ToArray()) + ")";
-				var postpatchStr = "Postfix(" + String.Join(", ", postfixParams.Select(p => p.FullName).ToArray()) + ")";
-				throw new MissingMethodException("No prefix/postfix patch for " + type.FullName + "." + methodName + "() found that matches " + prepatchStr + " or " + postpatchStr);
+				var prefixMethod = "Prefix(" + String.Join(", ", prefixParams.Select(p => p.FullName).ToArray()) + ")";
+				var postfixMethod = "Postfix(" + String.Join(", ", postfixParams.Select(p => p.FullName).ToArray()) + ")";
+				throw new MissingMethodException("No prefix/postfix patch for " + type.FullName + "." + methodName + "() found that matches " + prefixMethod + " or " + postfixMethod);
 			}
 
-			if (prepatch != null && prepatch.ReturnType != typeof(bool))
+			if (prefix != null && prefix.ReturnType != typeof(bool))
 				throw new MissingMethodException("Prefix() must return bool (return true to execute original method)");
-			if (postpatch != null && postpatch.ReturnType != typeof(void))
+			if (postfix != null && postfix.ReturnType != typeof(void))
 				throw new MissingMethodException("Postfix() must not return anything");
-
-			PatchedMethod.Patch(original, prepatch, postpatch);
 		}
 
 		// Here we generate a wrapper method that has the same signature as the original or
@@ -137,7 +131,7 @@ namespace Harmony
 		//		return result;
 		//	}
 		//
-		public static DynamicMethod CreatePatchWrapper(MethodInfo original, PatchedMethod patch)
+		public static DynamicMethod CreatePatchWrapper(MethodInfo original, MethodInfo originalCopy, List<MethodInfo> prefixPatches, List<MethodInfo> postfixPatches)
 		{
 			var method = CreateDynamicMethod(original, "_wrapper");
 			var g = method.GetILGenerator();
@@ -164,7 +158,7 @@ namespace Harmony
 			g.Emit(OpCodes.Ldc_I4, 1); // true
 			g.Emit(OpCodes.Stloc_1); // to v1
 
-			patch.GetPrefixPatches().ForEach(prepatch =>
+			prefixPatches.ForEach(prefix =>
 			{
 				var ifRunPrepatch = g.DefineLabel();
 
@@ -185,7 +179,7 @@ namespace Harmony
 					var j2 = isInstance ? j + 1 : j;
 					g.Emit(OpCodes.Ldarga_S, j2); // ref p[1..n]
 				}
-				g.Emit(OpCodes.Call, prepatch); // call prefix patch
+				g.Emit(OpCodes.Call, prefix); // call prefix patch
 				g.Emit(OpCodes.Stloc_1); // to v1
 
 				g.MarkLabel(ifRunPrepatch); // (A)
@@ -211,13 +205,13 @@ namespace Harmony
 				if (j2 == 3) g.Emit(OpCodes.Ldarg_3);
 				if (j2 > 3) g.Emit(OpCodes.Ldarg_S, j2);
 			}
-			g.Emit(OpCodes.Call, patch.GetOriginalCopy()); // call copy of original
+			g.Emit(OpCodes.Call, originalCopy); // call copy of original
 			if (hasReturnValue)
 				g.Emit(OpCodes.Stloc_0); // to v0
 
 			g.MarkLabel(ifRunOriginal); // (B)
 
-			patch.GetPostfixPatches().ForEach(postpatch =>
+			postfixPatches.ForEach(postfix =>
 			{
 				// Postfix[n](instance, ref result, ref p1, ref p2, ref p3 ...);
 				if (isInstance)
@@ -229,7 +223,7 @@ namespace Harmony
 					var j2 = isInstance ? j + 1 : j;
 					g.Emit(OpCodes.Ldarga_S, j2); // ref p[1..n]
 				}
-				g.Emit(OpCodes.Call, postpatch); // call prefix patch
+				g.Emit(OpCodes.Call, postfix); // call prefix patch
 			});
 
 			if (hasReturnValue)

@@ -6,12 +6,17 @@ namespace Harmony
 {
 	public class Traverse
 	{
-		private static AccessCache Cache = new AccessCache();
+		static readonly AccessCache Cache;
 
 		private Type _type;
 		private object _root;
 		private MemberInfo _info;
 		private object[] _index;
+
+		static Traverse()
+		{
+			Cache = new AccessCache();
+		}
 
 		public static Traverse Create(Type type)
 		{
@@ -85,30 +90,37 @@ namespace Harmony
 
 		public Traverse Type(string name)
 		{
+			if (name == null) throw new ArgumentNullException("name");
 			if (_type == null) return new Traverse();
 			var type = AccessTools.Inner(_type, name);
+			if (type == null) return new Traverse();
 			return new Traverse(type);
 		}
 
 		public Traverse Field(string name)
 		{
+			if (name == null) throw new ArgumentNullException("name");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetFieldInfo(resolved._type, name);
+			if (info == null) return new Traverse();
 			if (info.IsStatic == false && resolved._root == null) return new Traverse();
 			return new Traverse(resolved._root, info, null);
 		}
 
 		public Traverse Property(string name, object[] index = null)
 		{
+			if (name == null) throw new ArgumentNullException("name");
 			var resolved = Resolve();
 			if (resolved._root == null || resolved._type == null) return new Traverse();
 			var info = Cache.GetPropertyInfo(_type, name);
+			if (info == null) return new Traverse();
 			return new Traverse(resolved._root, info, index);
 		}
 
 		public Traverse Method(string name, params object[] arguments)
 		{
+			if (name == null) throw new ArgumentNullException("name");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
@@ -120,6 +132,7 @@ namespace Harmony
 
 		public Traverse Method(string name, Type[] paramTypes, object[] parameter)
 		{
+			if (name == null) throw new ArgumentNullException("name");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetMethodInfo(resolved._type, name, paramTypes);
