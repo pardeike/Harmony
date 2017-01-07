@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace Harmony
 {
@@ -139,6 +140,32 @@ namespace Harmony
 			if (info == null) throw new MissingMethodException(name + paramTypes.Description());
 			var val = info.Invoke(resolved._root, parameter);
 			return new Traverse(val);
+		}
+
+		public static void IterateFields(object source, Action<Traverse> action)
+		{
+			var sourceTrv = Create(source);
+			AccessTools.GetFieldNames(source).ForEach(f => action(sourceTrv.Field(f)));
+		}
+
+		public static void IterateFields(object source, object target, Action<Traverse, Traverse> action)
+		{
+			var sourceTrv = Create(source);
+			var targetTrv = Create(target);
+			AccessTools.GetFieldNames(source).ForEach(f => action(sourceTrv.Field(f), targetTrv.Field(f)));
+		}
+
+		public static void IterateProperties(object source, Action<Traverse> action)
+		{
+			var sourceTrv = Create(source);
+			AccessTools.GetPropertyNames(source).ForEach(f => action(sourceTrv.Property(f)));
+		}
+
+		public static void IterateProperties(object source, object target, Action<Traverse, Traverse> action)
+		{
+			var sourceTrv = Create(source);
+			var targetTrv = Create(target);
+			AccessTools.GetPropertyNames(source).ForEach(f => action(sourceTrv.Property(f), targetTrv.Property(f)));
 		}
 
 		public override string ToString()
