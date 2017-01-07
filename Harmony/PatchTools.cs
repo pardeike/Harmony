@@ -73,7 +73,7 @@ namespace Harmony
 				prefixParams.Add(retRef);
 				postfixParams.Add(retRef);
 			}
-			parameters.ToList().ForEach(pi =>
+			parameters.Do(pi =>
 			{
 				var paramRef = pi.ParameterType.MakeByRefType();
 				if (pi.IsOut == false) // prefix patches should not get out-parameters

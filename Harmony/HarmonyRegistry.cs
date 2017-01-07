@@ -14,14 +14,14 @@ namespace Harmony
 		public readonly ReadOnlyCollection<Patch> Prefixes;
 		public readonly ReadOnlyCollection<Patch> Postfixes;
 
-		public List<string> Owners
+		public ReadOnlyCollection<string> Owners
 		{
 			get
 			{
 				var result = new HashSet<string>();
 				result.UnionWith(Prefixes.Select(p => p.owner));
 				result.UnionWith(Postfixes.Select(p => p.owner));
-				return result.ToList();
+				return result.ToList().AsReadOnly();
 			}
 		}
 
