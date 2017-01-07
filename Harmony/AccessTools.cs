@@ -16,6 +16,19 @@ namespace Harmony
 			| BindingFlags.GetProperty
 			| BindingFlags.SetProperty;
 
+		public static IEnumerable<T> Do<T>(this IEnumerable<T> sequence, Action<T> action)
+		{
+			if (sequence == null) return null;
+			IEnumerator<T> enumerator = sequence.GetEnumerator();
+			while (enumerator.MoveNext()) action(enumerator.Current);
+			return sequence;
+		}
+
+		public static IEnumerable<T> DoIf<T>(this IEnumerable<T> sequence, Func<T, bool> condition, Action<T> action)
+		{
+			return sequence.Where(condition).Do(action);
+		}
+
 		public static FieldInfo Field(Type type, string name)
 		{
 			if (type == null || name == null) return null;
