@@ -27,6 +27,11 @@ namespace Harmony
 			_value = address;
 		}
 
+		public void Offset(int delta)
+		{
+			_value += delta;
+		}
+
 		public unsafe byte[] PeekStackAlloc()
 		{
 			var p = (byte*)_value;
@@ -53,6 +58,21 @@ namespace Harmony
 			Marshal.Copy(new IntPtr(_value), bytes, 0, i + 1);
 
 			return bytes;
+		}
+
+		public unsafe bool PeekSequence(byte[] seq)
+		{
+			var p = (byte*)_value;
+
+			var i = 0;
+			var end = seq.Length;
+			while (i < end)
+			{
+				if (p[i] != seq[i])
+					return false;
+				i++;
+			}
+			return true;
 		}
 
 		public unsafe long PeekJmp()
@@ -179,10 +199,24 @@ namespace Harmony
 			_value += 1;
 		}
 
+		public IntPtr ReadIntPtr()
+		{
+			if (Is64) return new IntPtr(ReadLong());
+			else return new IntPtr(ReadInt());
+		}
+
 		public void WriteIntPtr(IntPtr value)
 		{
 			if (Is64) WriteLong(value.ToInt64());
 			else WriteInt(value.ToInt32());
+		}
+
+		public unsafe int ReadInt()
+		{
+			int* p = (int*)_value;
+			var n = *p;
+			_value += 4;
+			return n;
 		}
 
 		public unsafe void WriteInt(int n)
@@ -190,6 +224,14 @@ namespace Harmony
 			int* p = (int*)_value;
 			*p = n;
 			_value += 4;
+		}
+
+		public unsafe long ReadLong()
+		{
+			long* p = (long*)_value;
+			var n = *p;
+			_value += 8;
+			return n;
 		}
 
 		public unsafe void WriteLong(long n)

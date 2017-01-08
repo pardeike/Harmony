@@ -8,12 +8,10 @@ namespace Harmony
 	public class Patcher
 	{
 		readonly HarmonyInstance instance;
-		readonly PatchCallback patchCallback;
 
-		public Patcher(HarmonyInstance instance, PatchCallback patchCallback)
+		public Patcher(HarmonyInstance instance)
 		{
 			this.instance = instance;
-			this.patchCallback = patchCallback;
 		}
 
 		public void PatchAll(Module module)
@@ -25,7 +23,7 @@ namespace Harmony
 				{
 					var info = HarmonyMethod.Merge(baseMethodInfos);
 					var processor = new PatchProcessor(instance, type, info);
-					processor.Patch(patchCallback);
+					processor.Patch();
 				}
 			});
 		}
@@ -33,7 +31,12 @@ namespace Harmony
 		public void Patch(MethodInfo original, HarmonyMethod prefix, HarmonyMethod postfix)
 		{
 			var processor = new PatchProcessor(instance, original, prefix, postfix);
-			processor.Patch(patchCallback);
+			processor.Patch();
+		}
+
+		public Patches IsPatched(MethodInfo method)
+		{
+			return PatchProcessor.IsPatched(method);
 		}
 	}
 
@@ -66,9 +69,27 @@ namespace Harmony
 			this.postfix = postfix;
 		}
 
-		public void Patch(PatchCallback patchCallback)
+		public static Patches IsPatched(MethodInfo original)
 		{
-			patchCallback(targetMethod, prefix, postfix);
+			var info = PatchFunctions.GetPatchInfo(original);
+			if (info == null) return null;
+			return new Patches(info.prefixes, info.postfixes);
+		}
+
+		public void Patch()
+		{
+			var isNew = false;
+			var info = PatchFunctions.GetPatchInfo(targetMethod);
+			if (info == null)
+			{
+				info = PatchFunctions.CreateNewPatchInfo(targetMethod);
+				isNew = true;
+			}
+
+			info = PatchFunctions.AddPrefix(info, instance.Id, prefix);
+			info = PatchFunctions.AddPostfix(info, instance.Id, postfix);
+
+			PatchFunctions.UpdateWrapper(targetMethod, info, isNew);
 		}
 
 		bool CallPrepare()

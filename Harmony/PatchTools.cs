@@ -3,46 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
 	public class PatchTools
 	{
-		public static unsafe void Detour(MethodInfo source, MethodInfo destination)
+		public static byte[] GetILCodesFromDynamicMethod(DynamicMethod method)
 		{
-			RuntimeHelpers.PrepareMethod(source.MethodHandle);
-			RuntimeHelpers.PrepareMethod(destination.MethodHandle);
-
-			if (IntPtr.Size == sizeof(Int64))
-			{
-				long Source_Base = source.MethodHandle.GetFunctionPointer().ToInt64();
-				long Destination_Base = destination.MethodHandle.GetFunctionPointer().ToInt64();
-
-				byte* Pointer_Raw_Source = (byte*)Source_Base;
-
-				long* Pointer_Raw_Address = (long*)(Pointer_Raw_Source + 0x02);
-
-				*(Pointer_Raw_Source + 0x00) = 0x48;
-				*(Pointer_Raw_Source + 0x01) = 0xB8;
-				*Pointer_Raw_Address = Destination_Base;
-				*(Pointer_Raw_Source + 0x0A) = 0xFF;
-				*(Pointer_Raw_Source + 0x0B) = 0xE0;
-			}
-			else
-			{
-				int Source_Base = source.MethodHandle.GetFunctionPointer().ToInt32();
-				int Destination_Base = destination.MethodHandle.GetFunctionPointer().ToInt32();
-
-				byte* Pointer_Raw_Source = (byte*)Source_Base;
-
-				int* Pointer_Raw_Address = (int*)(Pointer_Raw_Source + 1);
-
-				int offset = (Destination_Base - Source_Base) - 5;
-
-				*Pointer_Raw_Source = 0xE9;
-				*Pointer_Raw_Address = offset;
-			}
+			if (method == null) return null;
+			var ilgen = (method as DynamicMethod).GetILGenerator();
+			if (ilgen == null) return null;
+			return Traverse.Create(ilgen).Field("code").GetValue<byte[]>();
 		}
 
 		public static MethodInfo GetPatchMethod<T>(Type patchType, string name, Type[] parameter)
@@ -150,9 +121,6 @@ namespace Harmony
 			g.DeclareLocal(typeof(bool)); // v0 - run
 			if (returnsSomething)
 				g.DeclareLocal(returnType); // v1 - result (if not void)
-
-			// for debugging
-			g.Emit(OpCodes.Nop);
 
 			// ResultType result = [default value for ResultType]
 			//
@@ -264,6 +232,14 @@ namespace Harmony
 			var delegateFactory = new DelegateTypeFactory();
 			var type = delegateFactory.CreateDelegateType(original);
 			return dynamicMethod.CreateDelegate(type).Method;
+
+			// CreateDelegate() resets ilgen in dynamicMethod so here is a way to keep it
+			//
+			// var ilgenField = Traverse.Create(dynamicMethod).Field("ilgen");
+			// var ilgen = ilgenField.GetValue();
+			// var result = dynamicMethod.CreateDelegate(type).Method;
+			// ilgenField.SetValue(ilgen);
+			// return result;
 		}
 
 		private static DynamicMethod CreateDynamicMethod(MethodInfo original, string suffix)
@@ -290,6 +266,12 @@ namespace Harmony
 			);
 
 			return method;
+		}
+
+		public static MethodBase GetMethodFromIntPtr(IntPtr methodPtr, IntPtr typePtr)
+		{
+			var trv = Traverse.Create<MethodBase>().Method("GetMethodFromIntPtr", new object[] { methodPtr, typePtr });
+			return trv.GetValue<MethodBase>();
 		}
 	}
 }

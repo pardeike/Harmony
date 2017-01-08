@@ -8,10 +8,12 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Harmony</RootNamespace>
-    <AssemblyName>Harmony</AssemblyName>
+    <AssemblyName>0Harmony</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -40,18 +43,22 @@
   <ItemGroup>
     <Compile Include="AccessCache.cs" />
     <Compile Include="AccessTools.cs" />
+    <Compile Include="AsmHelper.cs" />
     <Compile Include="Attributes.cs" />
+    <Compile Include="CollectionTools.cs" />
     <Compile Include="DelegateTypeFactory.cs" />
     <Compile Include="FastAccess.cs" />
     <Compile Include="FileLogger.cs" />
     <Compile Include="HarmonyInstance.cs" />
     <Compile Include="HarmonyMethod.cs" />
-    <Compile Include="HarmonyRegistry.cs" />
+    <Compile Include="HookInjector.cs" />
     <Compile Include="MethodInvoker.cs" />
     <Compile Include="MonoReflectionExtension.cs" />
     <Compile Include="Patch.cs" />
     <Compile Include="Patcher.cs" />
+    <Compile Include="PatchFunctions.cs" />
     <Compile Include="PatchTools.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="Priority.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Traverse.cs" />
@@ -69,6 +76,9 @@
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(TargetDir)$(TargetName).pdb" "C:\Program Files (x86)\Mono\bin\mono.exe" "C:\Program Files (x86)\Mono\lib\mono\4.5\pdb2mdb.exe" "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

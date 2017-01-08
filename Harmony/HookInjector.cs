@@ -9,113 +9,106 @@ namespace Harmony
 
 	public class HookInjector
 	{
-		public struct PatchInfo
-		{
-			public MethodBase SourceMethod;
-			public MethodBase TargetMethod;
-
-			public IntPtr SourcePtr;
-			public IntPtr TargetPtr;
-		}
-		PatchInfo pi;
-
 		IntPtr _memPtr;
 		long _offset;
+
+		IntPtr sourcePtr;
+		IntPtr targetPtr;
+
+		byte[] magicSignature => new byte[] { 0xFF, 0xFF, 0xDE, 0xAD, 0xBE, 0xEF, 0xFF, 0xFF };
 
 		HookInjector()
 		{
 			_memPtr = Platform.AllocRWE();
+			_offset = 0;
 
 			if (_memPtr == IntPtr.Zero)
 				throw new OutOfMemoryException("No memory allocated, injector disabled");
 		}
 
-		public static HookInjector Create(MethodBase sourceMethod, MethodBase targetMethod)
+		public static HookInjector Create(MethodBase sourceMethod, MethodBase targetMethod = null)
 		{
 			var injector = new HookInjector();
-			injector.pi = new PatchInfo();
-			injector.pi.SourceMethod = sourceMethod;
-			injector.pi.TargetMethod = targetMethod;
+			injector.sourcePtr = sourceMethod.MethodHandle.GetFunctionPointer();
+			injector.targetPtr = targetMethod == null ? IntPtr.Zero : targetMethod.MethodHandle.GetFunctionPointer();
 			return injector;
 		}
 
-		public bool Patch()
+		public byte[] GetPayload()
 		{
-			var hookPtr = new IntPtr(_memPtr.ToInt64() + _offset);
-
-			pi.SourcePtr = pi.SourceMethod.MethodHandle.GetFunctionPointer();
-			pi.TargetPtr = pi.TargetMethod.MethodHandle.GetFunctionPointer();
-
-			var s = new AsmHelper(hookPtr);
-
-			// Main proc
-			s.WriteJmp(pi.TargetPtr);
-			var mainPtr = s.ToIntPtr();
-
-			var src = new AsmHelper(pi.SourcePtr);
-
-			// Check if already patched
-			var isAlreadyPatched = false;
-			var jmpLoc = src.PeekJmp();
+			var sourceAsm = new AsmHelper(sourcePtr);
+			var jmpLoc = sourceAsm.PeekJmp();
 			if (jmpLoc != 0)
 			{
-				// Method already patched, rerouting
-				pi.SourcePtr = new IntPtr(jmpLoc);
-				isAlreadyPatched = true;
+				// test if jump location has correct payload prefix
+				//
+				//           [ signature ]
+				//           [ intptr]
+				//           [ length (int) ]
+				// jmpLoc -> [ jump ]
+
+				var siglen = magicSignature.Length;
+				jmpLoc -= 4; // length (int)
+				jmpLoc -= sourceAsm.Is64 ? 8 : 4; // intptr
+				jmpLoc -= siglen; // signature
+				var memoryAsm = new AsmHelper(jmpLoc);
+				if (memoryAsm.PeekSequence(magicSignature))
+				{
+					memoryAsm.Offset(magicSignature.Length);
+					var payLoadPtr = memoryAsm.ReadIntPtr();
+					var payLoadLength = memoryAsm.ReadInt();
+					var payload = new byte[payLoadLength];
+					Marshal.Copy(payLoadPtr, payload, 0, payLoadLength);
+					return payload;
+				}
 			}
+			return null;
+		}
 
-			// Jump to detour if called from outside of detour
-			var startAddress = pi.TargetPtr.ToInt64();
-			var endAddress = startAddress + Platform.GetJitMethodSize(pi.TargetPtr);
+		public void Detour(byte[] payload, bool isNew)
+		{
+			if (targetPtr == IntPtr.Zero)
+				throw new ArgumentNullException("targetMethod");
 
-			s.WriteMovImmRax(startAddress);
-			s.WriteCmpRaxRsp();
-			s.WriteJl8(hookPtr);
-
-			s.WriteMovImmRax(endAddress);
-			s.WriteCmpRaxRsp();
-			s.WriteJg8(hookPtr);
-
-			if (isAlreadyPatched)
+			AsmHelper asm;
+			if (isNew)
 			{
-				src.WriteJmp(mainPtr);
-				s.WriteJmp(pi.SourcePtr);
+				var memoryStart = new IntPtr(_memPtr.ToInt64() + _offset);
+				asm = new AsmHelper(memoryStart);
 			}
 			else
 			{
-				// Copy source proc stack alloc instructions
-				var stackAlloc = src.PeekStackAlloc();
+				AsmHelper sourceAsm = new AsmHelper(sourcePtr);
+				long jmpLoc = sourceAsm.PeekJmp();
+				if (jmpLoc == 0)
+					throw new FieldAccessException("Method is not patched");
 
-				if (stackAlloc.Length < 5)
-				{
-					// Stack alloc too small to be patched, attempting full copy
+				// TODO: release the old pointer here?
 
-					var size = (Platform.GetJitMethodSize(pi.SourcePtr));
-					var bytes = new byte[size];
-					Marshal.Copy(pi.SourcePtr, bytes, 0, size);
-					s.Write(bytes);
+				var siglen = magicSignature.Length;
+				jmpLoc -= 4; // length (int)
+				jmpLoc -= sourceAsm.Is64 ? 8 : 4; // intptr
+				jmpLoc -= siglen; // signature
+				asm = new AsmHelper(jmpLoc);
 
-					// Write jump to main proc in source proc
-					src.WriteJmp(mainPtr);
-				}
-				else
-				{
-					s.Write(stackAlloc);
-					s.WriteJmp(new IntPtr(pi.SourcePtr.ToInt64() + stackAlloc.Length));
-
-					// Write jump to main proc in source proc
-					if (stackAlloc.Length < 12) src.WriteJmpRel32(mainPtr);
-					else src.WriteJmp(mainPtr);
-
-					var srcOffset = (int)(src.ToInt64() - pi.SourcePtr.ToInt64());
-					src.WriteNop(stackAlloc.Length - srcOffset);
-				}
+				if (asm.PeekSequence(magicSignature) == false)
+					throw new FormatException("Expected magic signature but did not find it");
 			}
 
-			s.WriteLong(0);
+			var payloadPtr = Marshal.AllocHGlobal(payload.Length);
+			Marshal.Copy(payload, 0, payloadPtr, payload.Length);
 
-			_offset = s.ToInt64() - _memPtr.ToInt64();
-			return true;
+			asm.Write(magicSignature);
+			asm.WriteIntPtr(payloadPtr);
+			asm.WriteInt(payload.Length);
+			var jumpLocation = asm.ToIntPtr();
+			asm.WriteJmp(targetPtr);
+			asm.WriteLong(0);
+
+			(new AsmHelper(sourcePtr)).WriteJmp(jumpLocation);
+
+			if (isNew)
+				_offset = asm.ToInt64() - _memPtr.ToInt64();
 		}
 	}
 }

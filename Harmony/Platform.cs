@@ -60,6 +60,37 @@ namespace Harmony
 			return ptr;
 		}
 
+		public static IntPtr AllocateBytes(uint size)
+		{
+			IntPtr ptr;
+
+			if (IsUnix)
+			{
+				long addr;
+				_pageSize = (uint)getpagesize();
+
+				posix_memalign(out addr, _pageSize, size);
+				var result = mprotect(addr, size, 0x7);
+
+				if (result != 0)
+					throw new OutOfMemoryException(string.Format("mprotect() failed at {0:X16} (error {1}))", addr, Marshal.GetLastWin32Error()));
+
+				ptr = new IntPtr(addr);
+			}
+			else
+			{
+				SYSTEM_INFO si;
+				GetSystemInfo(out si);
+
+				ptr = VirtualAllocEx(Process.GetCurrentProcess().Handle, IntPtr.Zero, size, AllocationType.Commit, MemoryProtection.ExecuteReadWrite);
+
+				if (ptr == IntPtr.Zero)
+					throw new OutOfMemoryException(string.Format("VirtualAllocEx() failed (error {0}))", Marshal.GetLastWin32Error()));
+			}
+
+			return ptr;
+		}
+
 		public static int GetJitMethodSize(IntPtr ptr)
 		{
 			var infoPtr = mono_jit_info_table_find(mono_domain_get(), ptr);

@@ -311,21 +311,28 @@ namespace Harmony
 		{
 			this.method = method;
 			this.generator = generator;
+			byte[] bytes;
 
 			if (method is DynamicMethod)
-				throw new ArgumentException("DynamicMethod not supported");
+			{
+				bytes = PatchTools.GetILCodesFromDynamicMethod(method as DynamicMethod);
+				if (bytes == null)
+					throw new ArgumentException("Can not get the bytes of the method");
+			}
+			else
+			{
+				body = method.GetMethodBody();
+				if (body == null)
+					throw new ArgumentException("Method has no body");
 
-			body = method.GetMethodBody();
-			if (body == null)
-				throw new ArgumentException("Method has no body");
+				if (generator != null)
+					variables = body.LocalVariables
+						.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 
-			if (generator != null)
-				variables = body.LocalVariables
-					.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
-
-			var bytes = body.GetILAsByteArray();
-			if (bytes == null)
-				throw new ArgumentException("Can not get the body of the method");
+				bytes = body.GetILAsByteArray();
+				if (bytes == null)
+					throw new ArgumentException("Can not get the bytes of the method");
+			}
 
 			if (!(method is ConstructorInfo))
 				method_arguments = method.GetGenericArguments();
@@ -540,9 +547,16 @@ namespace Harmony
 						var idx = il.ReadByte();
 						if (TargetsLocalVariable(instruction.OpCode))
 						{
-							instruction.Operand = GetLocalVariable(idx);
-							var lvi = (LocalVariableInfo)instruction.Operand;
-							if (generator != null) generator.Emit(instruction.OpCode, variables[lvi.LocalIndex]);
+							var lvi = GetLocalVariable(idx);
+							if (lvi == null)
+							{
+								if (generator != null) generator.Emit(instruction.OpCode, idx);
+							}
+							else
+							{
+								instruction.Operand = lvi;
+								if (generator != null) generator.Emit(instruction.OpCode, variables[lvi.LocalIndex]);
+							}
 						}
 						else
 						{
@@ -557,9 +571,16 @@ namespace Harmony
 						var idx = il.ReadInt16();
 						if (TargetsLocalVariable(instruction.OpCode))
 						{
-							instruction.Operand = GetLocalVariable(idx);
-							var lvi = (LocalVariableInfo)instruction.Operand;
-							if (generator != null) generator.Emit(instruction.OpCode, variables[lvi.LocalIndex]);
+							var lvi = GetLocalVariable(idx);
+							if (lvi == null)
+							{
+								if (generator != null) generator.Emit(instruction.OpCode, idx);
+							}
+							else
+							{
+								instruction.Operand = lvi;
+								if (generator != null) generator.Emit(instruction.OpCode, variables[lvi.LocalIndex]);
+							}
 						}
 						else
 						{
@@ -659,7 +680,7 @@ namespace Harmony
 
 		LocalVariableInfo GetLocalVariable(int index)
 		{
-			return locals[index];
+			return locals == null ? null : locals[index];
 		}
 
 		ParameterInfo GetParameter(int index)
