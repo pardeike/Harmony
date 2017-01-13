@@ -1,4 +1,4 @@
 # Harmony
-A general non-destructive patch library for .NET
+A library for patching .NET assemblies during runtime.
 
-[Wiki](../../wiki)
+For documentation, see the [Wiki](../../wiki)
