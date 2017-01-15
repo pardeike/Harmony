@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Harmony
 {
-	// Based on the brilliant work of Michael Turutanov
-	// https://github.com/micktu/RimWorld-BuildProductive
-
 	public class HookInjector
 	{
-		IntPtr _memPtr;
-		long _offset;
-
 		IntPtr sourcePtr;
 		IntPtr targetPtr;
 
-		byte[] magicSignature => new byte[] { 0xFF, 0xFF, 0xDE, 0xAD, 0xBE, 0xEF, 0xFF, 0xFF };
+		byte[] magicSignature => Encoding.ASCII.GetBytes("Harmony");
 
-		HookInjector()
+		int prefixBytes
 		{
-			_memPtr = Platform.AllocRWE();
-			_offset = 0;
-
-			if (_memPtr == IntPtr.Zero)
-				throw new OutOfMemoryException("No memory allocated, injector disabled");
+			get
+			{
+				return 0
+					+ magicSignature.Length // signature
+					+ IntPtr.Size           // pointer to data
+					+ sizeof(int);          // length of data
+			}
 		}
 
 		public static HookInjector Create(MethodBase sourceMethod, MethodBase targetMethod = null)
@@ -36,79 +33,98 @@ namespace Harmony
 
 		public byte[] GetPayload()
 		{
-			var sourceAsm = new AsmHelper(sourcePtr);
-			var jmpLoc = sourceAsm.PeekJmp();
-			if (jmpLoc != 0)
+			long memory = Platform.PeekJmp(sourcePtr.ToInt64());
+			if (memory != 0)
 			{
-				// test if jump location has correct payload prefix
-				//
-				//           [ signature ]
-				//           [ intptr]
-				//           [ length (int) ]
-				// jmpLoc -> [ jump ]
-
-				var siglen = magicSignature.Length;
-				jmpLoc -= 4; // length (int)
-				jmpLoc -= sourceAsm.Is64 ? 8 : 4; // intptr
-				jmpLoc -= siglen; // signature
-				var memoryAsm = new AsmHelper(jmpLoc);
-				if (memoryAsm.PeekSequence(magicSignature))
+				if (Platform.PeekSequence(memory - prefixBytes, magicSignature))
 				{
-					memoryAsm.Offset(magicSignature.Length);
-					var payLoadPtr = memoryAsm.ReadIntPtr();
-					var payLoadLength = memoryAsm.ReadInt();
+					memory += magicSignature.Length;
+
+					IntPtr payloadPtr;
+					if (IntPtr.Size == sizeof(long))
+					{
+						long location;
+						memory = Platform.ReadLong(memory, out location);
+						payloadPtr = new IntPtr(location);
+					}
+					else
+					{
+						int location;
+						memory = Platform.ReadInt(memory, out location);
+						payloadPtr = new IntPtr(location);
+					}
+
+					int payLoadLength;
+					Platform.ReadInt(memory, out payLoadLength);
+
 					var payload = new byte[payLoadLength];
-					Marshal.Copy(payLoadPtr, payload, 0, payLoadLength);
+					Marshal.Copy(payloadPtr, payload, 0, payLoadLength);
 					return payload;
 				}
 			}
 			return null;
 		}
 
+		private long WriteInfoBlock(long memory, byte[] payload)
+		{
+			var payloadPtr = Marshal.AllocHGlobal(payload.Length);
+			Marshal.Copy(payload, 0, payloadPtr, payload.Length);
+
+			// keep the following in-sync with prefixBytes
+			memory = Platform.WriteBytes(memory, magicSignature);
+			if (IntPtr.Size == sizeof(long))
+				memory = Platform.WriteLong(memory, payloadPtr.ToInt64());
+			else
+				memory = Platform.WriteInt(memory, payloadPtr.ToInt32());
+			memory = Platform.WriteInt(memory, payload.Length);
+			// keep in sync
+
+			return memory;
+		}
+
+		// TODO: when overriding the old pointer with a new one, we should release
+		//       the old pointer. it's only a few bytes, so for now it is ok
+		//
 		public void Detour(byte[] payload, bool isNew)
 		{
 			if (targetPtr == IntPtr.Zero)
 				throw new ArgumentNullException("targetMethod");
 
-			AsmHelper asm;
+			var source = sourcePtr.ToInt64();
+			var target = targetPtr.ToInt64();
+
+			long memory;
 			if (isNew)
 			{
-				var memoryStart = new IntPtr(_memPtr.ToInt64() + _offset);
-				asm = new AsmHelper(memoryStart);
+				// our total allocation is based on the following maximum bytes case:
+				//
+				// prefix (signature + ptr + length)
+				// x64 extension prefix (1 byte if 64bit)
+				// 0xB8 (1 byte)
+				// ptr (long if 64bit)
+				// jmpq *%rax (2 bytes)
+				// 0 (long)
+				//
+				var size = prefixBytes + (1 + 1 + IntPtr.Size + 2) + sizeof(long);
+				memory = Platform.AllocateMemory(size);
 			}
 			else
 			{
-				AsmHelper sourceAsm = new AsmHelper(sourcePtr);
-				long jmpLoc = sourceAsm.PeekJmp();
+				long jmpLoc = Platform.PeekJmp(source);
 				if (jmpLoc == 0)
 					throw new FieldAccessException("Method is not patched");
 
-				// TODO: release the old pointer here?
+				memory = jmpLoc - prefixBytes; // back up to prefix our extra information
 
-				var siglen = magicSignature.Length;
-				jmpLoc -= 4; // length (int)
-				jmpLoc -= sourceAsm.Is64 ? 8 : 4; // intptr
-				jmpLoc -= siglen; // signature
-				asm = new AsmHelper(jmpLoc);
-
-				if (asm.PeekSequence(magicSignature) == false)
-					throw new FormatException("Expected magic signature but did not find it");
+				if (Platform.PeekSequence(memory, magicSignature) == false)
+					throw new FormatException("Expected magic signature '" + Encoding.ASCII.GetString(magicSignature) + "' but did not find it");
 			}
 
-			var payloadPtr = Marshal.AllocHGlobal(payload.Length);
-			Marshal.Copy(payload, 0, payloadPtr, payload.Length);
+			var jumpLocation = WriteInfoBlock(memory, payload);
+			memory = Platform.WriteJump(jumpLocation, target);
+			Platform.WriteLong(memory, 0);
 
-			asm.Write(magicSignature);
-			asm.WriteIntPtr(payloadPtr);
-			asm.WriteInt(payload.Length);
-			var jumpLocation = asm.ToIntPtr();
-			asm.WriteJmp(targetPtr);
-			asm.WriteLong(0);
-
-			(new AsmHelper(sourcePtr)).WriteJmp(jumpLocation);
-
-			if (isNew)
-				_offset = asm.ToInt64() - _memPtr.ToInt64();
+			Platform.WriteJump(source, jumpLocation);
 		}
 	}
 }

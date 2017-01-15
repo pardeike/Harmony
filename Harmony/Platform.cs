@@ -1,239 +1,150 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Harmony
 {
-	// Based on the brilliant work of Michael Turutanov
-	// https://github.com/micktu/RimWorld-BuildProductive
-
-	// A16 does not like 
-	// [DllImport("__Internal", EntryPoint = "...")]
-	// replaced with
-	// [DllImport("mono.dll", CallingConvention = CallingConvention.FastCall, EntryPoint = "...")]
-	//
-	// see http://ybeernet.blogspot.se/2011/03/techniques-of-calling-unmanaged-code.html
-
 	public static class Platform
 	{
-		private static uint _pageSize;
-		public static uint PageSize => _pageSize;
-
-		public static bool IsUnix
+		public static bool IsAnyUnix()
 		{
-			get
-			{
-				int p = (int)Environment.OSVersion.Platform;
-				return p == 4 || p == 6 || p == 128;
-			}
+			int p = (int)Environment.OSVersion.Platform;
+			return p == 4 || p == 6 || p == 128;
 		}
 
-		public static IntPtr AllocRWE()
+		public static unsafe long AllocateMemory(int size)
 		{
-			IntPtr ptr;
-
-			if (IsUnix)
-			{
-				long addr;
-				_pageSize = (uint)getpagesize();
-
-				posix_memalign(out addr, _pageSize, _pageSize);
-				var result = mprotect(addr, _pageSize, 0x7);
-
-				if (result != 0)
-					throw new OutOfMemoryException(string.Format("mprotect() failed at {0:X16} (error {1}))", addr, Marshal.GetLastWin32Error()));
-
-				ptr = new IntPtr(addr);
-			}
-			else
-			{
-				SYSTEM_INFO si;
-				GetSystemInfo(out si);
-				_pageSize = si.PageSize;
-
-				ptr = VirtualAllocEx(Process.GetCurrentProcess().Handle, IntPtr.Zero, _pageSize, AllocationType.Commit, MemoryProtection.ExecuteReadWrite);
-
-				if (ptr == IntPtr.Zero)
-					throw new OutOfMemoryException(string.Format("VirtualAllocEx() failed (error {0}))", Marshal.GetLastWin32Error()));
-			}
-
-			return ptr;
+			var monoCodeManager = mono_code_manager_new_dynamic();
+			return (long)mono_code_manager_reserve(monoCodeManager, size);
 		}
 
-		public static IntPtr AllocateBytes(uint size)
+		internal static unsafe long PeekJmp(long memory)
 		{
-			IntPtr ptr;
+			byte* p = (byte*)memory;
 
-			if (IsUnix)
+			if (p[0] == 0xE9)
 			{
-				long addr;
-				_pageSize = (uint)getpagesize();
+				var dp = (int*)(memory + 1);
+				return (*dp + memory + 5);
+			}
+			else if (p[0] == 0x48 && p[1] == 0xB8 && p[10] == 0xFF && p[11] == 0xE0)
+			{
+				var lp = (long*)(memory + 2);
+				return *lp;
+			}
 
-				posix_memalign(out addr, _pageSize, size);
-				var result = mprotect(addr, size, 0x7);
+			return 0;
+		}
 
-				if (result != 0)
-					throw new OutOfMemoryException(string.Format("mprotect() failed at {0:X16} (error {1}))", addr, Marshal.GetLastWin32Error()));
+		public static unsafe bool PeekSequence(long memory, byte[] seq)
+		{
+			var p = (byte*)memory;
 
-				ptr = new IntPtr(addr);
+			var i = 0;
+			var end = seq.Length;
+			while (i < end)
+			{
+				if (p[i] != seq[i])
+					return false;
+				i++;
+			}
+			return true;
+		}
+
+		public static long WriteJump(long memory, long destination)
+		{
+			if (IntPtr.Size == sizeof(long))
+			{
+				memory = WriteBytes(memory, new byte[] { 0x48, 0xB8 });
+				memory = WriteLong(memory, destination);
+				memory = WriteBytes(memory, new byte[] { 0xFF, 0xE0 });
 			}
 			else
 			{
-				SYSTEM_INFO si;
-				GetSystemInfo(out si);
-
-				ptr = VirtualAllocEx(Process.GetCurrentProcess().Handle, IntPtr.Zero, size, AllocationType.Commit, MemoryProtection.ExecuteReadWrite);
-
-				if (ptr == IntPtr.Zero)
-					throw new OutOfMemoryException(string.Format("VirtualAllocEx() failed (error {0}))", Marshal.GetLastWin32Error()));
+				var offset = Convert.ToInt32(destination - memory - 5);
+				memory = WriteByte(memory, 0xE9);
+				memory = WriteInt(memory, offset);
 			}
-
-			return ptr;
+			return memory;
 		}
 
-		public static int GetJitMethodSize(IntPtr ptr)
+		public static unsafe long WriteByte(long memory, byte value)
 		{
-			var infoPtr = mono_jit_info_table_find(mono_domain_get(), ptr);
-			if (infoPtr == IntPtr.Zero)
-				throw new ApplicationException("Failed to obtain MonoJitInfo");
-
-			var info = (MonoJitInfo)Marshal.PtrToStructure(infoPtr, typeof(MonoJitInfo));
-			if (info.code_start != ptr)
-				throw new ApplicationException("Invalid MonoJitInfo");
-
-			return info.code_size;
+			byte* p = (byte*)memory;
+			*p = value;
+			return memory + sizeof(byte);
 		}
 
-		public static IntPtr mono_domain_get()
+		public static unsafe long WriteBytes(long memory, byte[] values)
 		{
-			if (IsUnix /*Application.platform == RuntimePlatform.LinuxPlayer*/)
+			foreach (var value in values)
+				memory = WriteByte(memory, value);
+			return memory;
+		}
+
+		public static unsafe long ReadInt(long memory, out int value)
+		{
+			int* p = (int*)memory;
+			value = *p;
+			return memory + sizeof(int);
+		}
+
+		public static unsafe long WriteInt(long memory, int value)
+		{
+			int* p = (int*)memory;
+			*p = value;
+			return memory + sizeof(int);
+		}
+
+		public static unsafe long ReadLong(long memory, out long value)
+		{
+			long* p = (long*)memory;
+			value = *p;
+			return memory + sizeof(long);
+		}
+
+		public static unsafe long WriteLong(long memory, long value)
+		{
+			long* p = (long*)memory;
+			*p = value;
+			return memory + sizeof(long);
+		}
+
+		[DllImport("mono.dll", EntryPoint = "mono_code_manager_new_dynamic")]
+		static extern private unsafe void* win_mono_code_manager_new_dynamic();
+
+		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_code_manager_new_dynamic")]
+		static extern private unsafe void* linux_64_mono_code_manager_new_dynamic();
+
+		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_code_manager_new_dynamic")]
+		static extern private unsafe void* linux_86_mono_code_manager_new_dynamic();
+
+		public static unsafe void* mono_code_manager_new_dynamic()
+		{
+			if (IsAnyUnix())
 			{
-				if (IntPtr.Size == 8) return linux_64_mono_domain_get();
-				else return linux_86_mono_domain_get();
+				if (IntPtr.Size == sizeof(long)) return linux_64_mono_code_manager_new_dynamic();
+				else return linux_86_mono_code_manager_new_dynamic();
 			}
-
-			return real_mono_domain_get();
+			return win_mono_code_manager_new_dynamic();
 		}
 
-		public static IntPtr mono_jit_info_table_find(IntPtr domain, IntPtr addr)
+		[DllImport("mono.dll", EntryPoint = "mono_code_manager_reserve")]
+		static extern private unsafe void* win_mono_code_manager_reserve(void* MonoCodeManager, int size);
+
+		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_code_manager_reserve")]
+		static extern private unsafe void* linux_64_mono_code_manager_reserve(void* MonoCodeManager, int size);
+
+		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_code_manager_reserve")]
+		static extern private unsafe void* linux_86_mono_code_manager_reserve(void* MonoCodeManager, int size);
+
+		public static unsafe void* mono_code_manager_reserve(void* MonoCodeManager, int size)
 		{
-			if (IsUnix /*Application.platform == RuntimePlatform.LinuxPlayer*/)
+			if (IsAnyUnix())
 			{
-				if (IntPtr.Size == 8) return linux_64_mono_jit_info_table_find(domain, addr);
-				else return linux_86_mono_jit_info_table_find(domain, addr);
+				if (IntPtr.Size == sizeof(long)) return linux_64_mono_code_manager_reserve(MonoCodeManager, size);
+				else return linux_86_mono_code_manager_reserve(MonoCodeManager, size);
 			}
-
-			return real_mono_jit_info_table_find(domain, addr);
-		}
-
-		// Because everything is great with Linux, Mono, and Unity
-		[DllImport("mono.dll", CallingConvention = CallingConvention.FastCall, EntryPoint = "mono_jit_info_table_find")]
-		public static extern IntPtr real_mono_jit_info_table_find(IntPtr domain, IntPtr addr);
-
-		[DllImport("mono.dll", CallingConvention = CallingConvention.FastCall, EntryPoint = "mono_domain_get")]
-		public static extern IntPtr real_mono_domain_get();
-
-		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_jit_info_table_find")]
-		public static extern IntPtr linux_64_mono_jit_info_table_find(IntPtr domain, IntPtr addr);
-
-		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_domain_get")]
-		public static extern IntPtr linux_64_mono_domain_get();
-
-		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_jit_info_table_find")]
-		public static extern IntPtr linux_86_mono_jit_info_table_find(IntPtr domain, IntPtr addr);
-
-		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_domain_get")]
-		public static extern IntPtr linux_86_mono_domain_get();
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct MonoJitInfo
-		{
-			public IntPtr d;
-			public IntPtr n;
-			public IntPtr code_start;
-			public uint unwind_info;
-			public int code_size;
-			// The rest is omitted
-		}
-
-		[DllImport("libc")]
-		public static extern int getpagesize();
-
-		[DllImport("libc")]
-		public static extern IntPtr posix_memalign(out long memptr, uint alignment, uint size);
-
-		[DllImport("libc", SetLastError = true)]
-		public static extern int mprotect(long addr, uint len, int prot);
-
-		[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-		public static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
-
-		[Flags]
-		public enum AllocationType
-		{
-			Commit = 0x1000,
-			Reserve = 0x2000,
-			Decommit = 0x4000,
-			Release = 0x8000,
-			Reset = 0x80000,
-			Physical = 0x400000,
-			TopDown = 0x100000,
-			WriteWatch = 0x200000,
-			LargePages = 0x20000000
-		}
-
-		[Flags]
-		public enum MemoryProtection
-		{
-			Execute = 0x10,
-			ExecuteRead = 0x20,
-			ExecuteReadWrite = 0x40,
-			ExecuteWriteCopy = 0x80,
-			NoAccess = 0x01,
-			ReadOnly = 0x02,
-			ReadWrite = 0x04,
-			WriteCopy = 0x08,
-			GuardModifierflag = 0x100,
-			NoCacheModifierflag = 0x200,
-			WriteCombineModifierflag = 0x400
-		}
-
-		[DllImport("kernel32.dll", SetLastError = false)]
-		public static extern void GetSystemInfo(out SYSTEM_INFO Info);
-
-		public enum ProcessorArchitecture
-		{
-			X86 = 0,
-			X64 = 9,
-			@Arm = -1,
-			Itanium = 6,
-			Unknown = 0xFFFF,
-		}
-
-		[StructLayout(LayoutKind.Explicit)]
-		public struct SYSTEM_INFO_UNION
-		{
-			[FieldOffset(0)]
-			public ushort OemId;
-			[FieldOffset(0)]
-			public ushort ProcessorArchitecture;
-			[FieldOffset(2)]
-			public ushort Reserved;
-		}
-
-		[StructLayout(LayoutKind.Sequential, Pack = 1)]
-		public struct SYSTEM_INFO
-		{
-			public SYSTEM_INFO_UNION CpuInfo;
-			public uint PageSize;
-			public uint MinimumApplicationAddress;
-			public uint MaximumApplicationAddress;
-			public uint ActiveProcessorMask;
-			public uint NumberOfProcessors;
-			public uint ProcessorType;
-			public uint AllocationGranularity;
-			public uint ProcessorLevel;
-			public uint ProcessorRevision;
+			return win_mono_code_manager_reserve(MonoCodeManager, size);
 		}
 	}
 }

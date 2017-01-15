@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Harmony</RootNamespace>
     <AssemblyName>0Harmony</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="AccessCache.cs" />
     <Compile Include="AccessTools.cs" />
-    <Compile Include="AsmHelper.cs" />
     <Compile Include="Attributes.cs" />
     <Compile Include="CollectionTools.cs" />
     <Compile Include="DelegateTypeFactory.cs" />
@@ -66,12 +65,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\System.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
-      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\System.Xml.Linq.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
