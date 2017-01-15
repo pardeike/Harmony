@@ -13,7 +13,7 @@ namespace Harmony
 
 		public static unsafe long AllocateMemory(int size)
 		{
-			var monoCodeManager = mono_code_manager_new_dynamic();
+			var monoCodeManager = mono_code_manager_new();
 			return (long)mono_code_manager_reserve(monoCodeManager, size);
 		}
 
@@ -109,23 +109,23 @@ namespace Harmony
 			return memory + sizeof(long);
 		}
 
-		[DllImport("mono.dll", EntryPoint = "mono_code_manager_new_dynamic")]
-		static extern private unsafe void* win_mono_code_manager_new_dynamic();
+		[DllImport("mono.dll", EntryPoint = "mono_code_manager_new")]
+		static extern private unsafe void* win_mono_code_manager_new();
 
-		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_code_manager_new_dynamic")]
-		static extern private unsafe void* linux_64_mono_code_manager_new_dynamic();
+		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_code_manager_new")]
+		static extern private unsafe void* linux_64_mono_code_manager_new();
 
-		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_code_manager_new_dynamic")]
-		static extern private unsafe void* linux_86_mono_code_manager_new_dynamic();
+		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_code_manager_new")]
+		static extern private unsafe void* linux_86_mono_code_manager_new();
 
-		public static unsafe void* mono_code_manager_new_dynamic()
+		public static unsafe void* mono_code_manager_new()
 		{
 			if (IsAnyUnix())
 			{
-				if (IntPtr.Size == sizeof(long)) return linux_64_mono_code_manager_new_dynamic();
-				else return linux_86_mono_code_manager_new_dynamic();
+				if (IntPtr.Size == sizeof(long)) return linux_64_mono_code_manager_new();
+				else return linux_86_mono_code_manager_new();
 			}
-			return win_mono_code_manager_new_dynamic();
+			return win_mono_code_manager_new();
 		}
 
 		[DllImport("mono.dll", EntryPoint = "mono_code_manager_reserve")]
