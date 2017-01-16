@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
-	public class PatchTools
+	public static class PatchTools
 	{
 		public static byte[] GetILCodesFromDynamicMethod(DynamicMethod method)
 		{
@@ -56,8 +56,8 @@ namespace Harmony
 			postfix = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix", postfixParams.ToArray());
 			if (prefix == null && postfix == null)
 			{
-				var prefixMethod = "Prefix(" + String.Join(", ", prefixParams.Select(p => p.FullName).ToArray()) + ")";
-				var postfixMethod = "Postfix(" + String.Join(", ", postfixParams.Select(p => p.FullName).ToArray()) + ")";
+				var prefixMethod = "Prefix(" + string.Join(", ", prefixParams.Select(p => p.FullName).ToArray()) + ")";
+				var postfixMethod = "Postfix(" + string.Join(", ", postfixParams.Select(p => p.FullName).ToArray()) + ")";
 				throw new MissingMethodException("No prefix/postfix patch for " + type.FullName + "." + methodName + "() found that matches " + prefixMethod + " or " + postfixMethod);
 			}
 
@@ -222,7 +222,6 @@ namespace Harmony
 		public static DynamicMethod CreateMethodCopy(MethodInfo original)
 		{
 			var method = CreateDynamicMethod(original, "_original");
-			var generator = method.GetILGenerator();
 			original.CopyOpCodes(method.GetILGenerator());
 			return method;
 		}
@@ -242,11 +241,10 @@ namespace Harmony
 			// return result;
 		}
 
-		private static DynamicMethod CreateDynamicMethod(MethodInfo original, string suffix)
+		static DynamicMethod CreateDynamicMethod(MethodInfo original, string suffix)
 		{
-			if (original == null) throw new ArgumentNullException("original");
+			if (original == null) throw new Exception("original cannot be null");
 
-			var hasThisAsFirstParameter = (original.IsStatic == false);
 			var patchName = original.Name + suffix;
 
 			var parameters = original.GetParameters();

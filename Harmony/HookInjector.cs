@@ -33,7 +33,7 @@ namespace Harmony
 
 		public byte[] GetPayload()
 		{
-			long memory = Platform.PeekJmp(sourcePtr.ToInt64());
+			var memory = Platform.PeekJmp(sourcePtr.ToInt64());
 			if (memory != 0)
 			{
 				if (Platform.PeekSequence(memory - prefixBytes, magicSignature))
@@ -65,7 +65,7 @@ namespace Harmony
 			return null;
 		}
 
-		private long WriteInfoBlock(long memory, byte[] payload)
+		long WriteInfoBlock(long memory, byte[] payload)
 		{
 			var payloadPtr = Marshal.AllocHGlobal(payload.Length);
 			Marshal.Copy(payload, 0, payloadPtr, payload.Length);
@@ -88,7 +88,7 @@ namespace Harmony
 		public void Detour(byte[] payload, bool isNew)
 		{
 			if (targetPtr == IntPtr.Zero)
-				throw new ArgumentNullException("targetMethod");
+				throw new Exception("targetMethod cannot be null");
 
 			var source = sourcePtr.ToInt64();
 			var target = targetPtr.ToInt64();
@@ -110,7 +110,7 @@ namespace Harmony
 			}
 			else
 			{
-				long jmpLoc = Platform.PeekJmp(source);
+				var jmpLoc = Platform.PeekJmp(source);
 				if (jmpLoc == 0)
 					throw new FieldAccessException("Method is not patched");
 

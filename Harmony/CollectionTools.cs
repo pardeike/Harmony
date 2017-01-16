@@ -9,7 +9,7 @@ namespace Harmony
 		public static IEnumerable<T> Do<T>(this IEnumerable<T> sequence, Action<T> action)
 		{
 			if (sequence == null) return null;
-			IEnumerator<T> enumerator = sequence.GetEnumerator();
+			var enumerator = sequence.GetEnumerator();
 			while (enumerator.MoveNext()) action(enumerator.Current);
 			return sequence;
 		}

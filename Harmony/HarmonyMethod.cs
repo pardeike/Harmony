@@ -20,9 +20,9 @@ namespace Harmony
 		{
 		}
 
-		void ImportMethod(MethodInfo method)
+		void ImportMethod(MethodInfo theMethod)
 		{
-			this.method = method;
+			method = theMethod;
 			if (method != null)
 			{
 				var infos = method.GetHarmonyMethods();
@@ -100,7 +100,7 @@ namespace Harmony
 			{
 				var baseValue = masterTrv.Field(f).GetValue();
 				var detailValue = detailTrv.Field(f).GetValue();
-				resultTrv.Field(f).SetValue(detailValue != null ? detailValue : baseValue);
+				resultTrv.Field(f).SetValue(detailValue ?? baseValue);
 			});
 			return result;
 		}

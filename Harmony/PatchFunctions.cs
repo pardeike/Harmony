@@ -14,7 +14,7 @@ namespace Harmony
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
 
-		public static PatchInfo CreateNewPatchInfo(MethodInfo method)
+		public static PatchInfo CreateNewPatchInfo()
 		{
 			var patchInfo = new PatchInfo();
 			patchInfo.prefixes = new Patch[0];
@@ -27,8 +27,8 @@ namespace Harmony
 			if (info == null || info.method == null) return patchInfo;
 
 			var priority = info.prioritiy == -1 ? Priority.Normal : info.prioritiy;
-			var before = info.before != null ? info.before : new string[0];
-			var after = info.after != null ? info.after : new string[0];
+			var before = info.before ?? new string[0];
+			var after = info.after ?? new string[0];
 
 			var patch = new Patch(patchInfo.prefixes.Length, owner, info.method, priority, before, after);
 			patchInfo.prefixes = patchInfo.prefixes.AddToArray(patch);
@@ -40,8 +40,8 @@ namespace Harmony
 			if (info == null || info.method == null) return patchInfo;
 
 			var priority = info.prioritiy == -1 ? Priority.Normal : info.prioritiy;
-			var before = info.before != null ? info.before : new string[0];
-			var after = info.after != null ? info.after : new string[0];
+			var before = info.before ?? new string[0];
+			var after = info.after ?? new string[0];
 
 			var patch = new Patch(patchInfo.postfixes.Length, owner, info.method, priority, before, after);
 			patchInfo.postfixes = patchInfo.postfixes.AddToArray(patch);

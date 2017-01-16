@@ -18,8 +18,8 @@ namespace Harmony
 
 		public Type CreateDelegateType(MethodInfo method)
 		{
-			string nameBase = string.Format("{0}{1}", method.DeclaringType.Name, method.Name);
-			string name = GetUniqueName(nameBase);
+			var nameBase = string.Format("{0}{1}", method.DeclaringType.Name, method.Name);
+			var name = GetUniqueName(nameBase);
 
 			var attr = TypeAttributes.Sealed | TypeAttributes.Public;
 			var typeBuilder = module.DefineType(name, attr, typeof(MulticastDelegate));

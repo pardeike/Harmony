@@ -1,26 +1,22 @@
 ﻿using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Harmony
 {
 	public static class Platform
 	{
-		public static bool IsAnyUnix()
-		{
-			int p = (int)Environment.OSVersion.Platform;
-			return p == 4 || p == 6 || p == 128;
-		}
-
 		internal static unsafe long PeekJmp(long memory)
 		{
-			byte* p = (byte*)memory;
+			var p = (byte*)memory;
 
 			if (p[0] == 0xE9)
 			{
 				var dp = (int*)(memory + 1);
 				return (*dp + memory + 5);
 			}
-			else if (p[0] == 0x48 && p[1] == 0xB8 && p[10] == 0xFF && p[11] == 0xE0)
+
+			if (p[0] == 0x48 && p[1] == 0xB8 && p[10] == 0xFF && p[11] == 0xE0)
 			{
 				var lp = (long*)(memory + 2);
 				return *lp;
@@ -63,7 +59,7 @@ namespace Harmony
 
 		public static unsafe long WriteByte(long memory, byte value)
 		{
-			byte* p = (byte*)memory;
+			var p = (byte*)memory;
 			*p = value;
 			return memory + sizeof(byte);
 		}
@@ -77,40 +73,47 @@ namespace Harmony
 
 		public static unsafe long ReadInt(long memory, out int value)
 		{
-			int* p = (int*)memory;
+			var p = (int*)memory;
 			value = *p;
 			return memory + sizeof(int);
 		}
 
 		public static unsafe long WriteInt(long memory, int value)
 		{
-			int* p = (int*)memory;
+			var p = (int*)memory;
 			*p = value;
 			return memory + sizeof(int);
 		}
 
 		public static unsafe long ReadLong(long memory, out long value)
 		{
-			long* p = (long*)memory;
+			var p = (long*)memory;
 			value = *p;
 			return memory + sizeof(long);
 		}
 
 		public static unsafe long WriteLong(long memory, long value)
 		{
-			long* p = (long*)memory;
+			var p = (long*)memory;
 			*p = value;
 			return memory + sizeof(long);
 		}
 
-		delegate void Dummy();
-		public static long GetMemory(int size) // TODO: size ignored for now
+		static int counter;
+		public static long GetMemory(int size)
 		{
-			var dm = new DynamicMethod("", typeof(void), new Type[] { });
-			var il = dm.GetILGenerator();
+			counter++;
+			var assemblyName = new AssemblyName("HarmonyMemoryAssembly" + counter);
+			var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+			var moduleBuilder = assemblyBuilder.DefineDynamicModule("HarmonyMemoryModule" + counter);
+			var typeBuilder = moduleBuilder.DefineType("HarmonyMemoryType" + counter);
+			var methodName = "HarmonyMemoryMethod" + counter;
+			var methodBuilder = typeBuilder.DefineMethod(methodName, MethodAttributes.Public | MethodAttributes.Static, typeof(int), new Type[0]);
+			var il = methodBuilder.GetILGenerator();
+			// lets try to be clever enough that no optimization reduces our JIT code size
 			il.DeclareLocal(typeof(int));
 			il.Emit(OpCodes.Ldc_I4, 0);
-			for (int i = 1; i <= 16; i++)
+			for (int i = 1; i <= size / 2; i++) // size/2 is a rough estimate
 			{
 				il.Emit(OpCodes.Stloc_0);
 				il.Emit(OpCodes.Ldloc_0);
@@ -119,8 +122,10 @@ namespace Harmony
 			}
 			il.Emit(OpCodes.Stloc_0);
 			il.Emit(OpCodes.Ret);
-			var m = dm.CreateDelegate(typeof(Dummy));
-			return m.Method.MethodHandle.GetFunctionPointer().ToInt64();
+			var type = typeBuilder.CreateType();
+			var m = type.GetMethod(methodName);
+			m.Invoke(null, new object[] { });
+			return m.MethodHandle.GetFunctionPointer().ToInt64();
 		}
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Reflection;
-using System.Collections.Generic;
 
 namespace Harmony
 {
@@ -9,10 +8,10 @@ namespace Harmony
 	{
 		static readonly AccessCache Cache;
 
-		private Type _type;
-		private object _root;
-		private MemberInfo _info;
-		private object[] _index;
+		Type _type;
+		object _root;
+		MemberInfo _info;
+		object[] _index;
 
 		static Traverse()
 		{
@@ -34,7 +33,7 @@ namespace Harmony
 			return new Traverse(root);
 		}
 
-		private Traverse()
+		Traverse()
 		{
 		}
 
@@ -49,7 +48,7 @@ namespace Harmony
 			_type = root == null ? null : root.GetType();
 		}
 
-		private Traverse(object root, MemberInfo info, object[] index)
+		Traverse(object root, MemberInfo info, object[] index)
 		{
 			_root = root;
 			_type = root == null ? null : root.GetType();
@@ -67,7 +66,7 @@ namespace Harmony
 			return _root;
 		}
 
-		private Traverse Resolve()
+		Traverse Resolve()
 		{
 			if (_root == null && _type != null) return this;
 			return new Traverse(GetValue());
@@ -91,7 +90,7 @@ namespace Harmony
 
 		public Traverse Type(string name)
 		{
-			if (name == null) throw new ArgumentNullException("name");
+			if (name == null) throw new Exception("name cannot be null");
 			if (_type == null) return new Traverse();
 			var type = AccessTools.Inner(_type, name);
 			if (type == null) return new Traverse();
@@ -100,7 +99,7 @@ namespace Harmony
 
 		public Traverse Field(string name)
 		{
-			if (name == null) throw new ArgumentNullException("name");
+			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetFieldInfo(resolved._type, name);
@@ -111,7 +110,7 @@ namespace Harmony
 
 		public Traverse Property(string name, object[] index = null)
 		{
-			if (name == null) throw new ArgumentNullException("name");
+			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._root == null || resolved._type == null) return new Traverse();
 			var info = Cache.GetPropertyInfo(_type, name);
@@ -121,7 +120,7 @@ namespace Harmony
 
 		public Traverse Method(string name, params object[] arguments)
 		{
-			if (name == null) throw new ArgumentNullException("name");
+			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
@@ -133,7 +132,7 @@ namespace Harmony
 
 		public Traverse Method(string name, Type[] paramTypes, object[] parameter)
 		{
-			if (name == null) throw new ArgumentNullException("name");
+			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetMethodInfo(resolved._type, name, paramTypes);

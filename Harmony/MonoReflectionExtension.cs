@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 
 namespace Harmony
 {
@@ -15,7 +14,7 @@ namespace Harmony
 		public static IList<Instruction> GetInstructions(this MethodBase self)
 		{
 			if (self == null)
-				throw new ArgumentNullException("self");
+				throw new Exception("self cannot be null");
 
 			return MethodBodyReader.GetInstructions(self).AsReadOnly();
 		}
@@ -23,7 +22,7 @@ namespace Harmony
 		public static void CopyOpCodes(this MethodBase self, ILGenerator generator)
 		{
 			if (self == null)
-				throw new ArgumentNullException("self");
+				throw new Exception("self cannot be null");
 
 			MethodBodyReader.GetInstructions(self, generator);
 		}
@@ -31,7 +30,7 @@ namespace Harmony
 
 	public sealed class Instruction
 	{
-		int offset;
+		readonly int offset;
 		OpCode opcode;
 		object operand;
 
@@ -114,23 +113,21 @@ namespace Harmony
 
 		public override string ToString()
 		{
-			var instruction = new StringBuilder();
+			var instruction = "";
 
-			AppendLabel(instruction, this);
-			instruction.Append(':');
-			instruction.Append(' ');
-			instruction.Append(opcode.Name);
+			AppendLabel(ref instruction, this);
+			instruction = instruction + ": " + opcode.Name;
 
 			if (operand == null)
-				return instruction.ToString();
+				return instruction;
 
-			instruction.Append(' ');
+			instruction = instruction + " ";
 
 			switch (opcode.OperandType)
 			{
 				case OperandType.ShortInlineBrTarget:
 				case OperandType.InlineBrTarget:
-					AppendLabel(instruction, (Instruction)operand);
+					AppendLabel(ref instruction, (Instruction)operand);
 					break;
 
 				case OperandType.InlineSwitch:
@@ -138,30 +135,27 @@ namespace Harmony
 					for (int i = 0; i < labels.Length; i++)
 					{
 						if (i > 0)
-							instruction.Append(',');
+							instruction = instruction + ",";
 
-						AppendLabel(instruction, labels[i]);
+						AppendLabel(ref instruction, labels[i]);
 					}
 					break;
 
 				case OperandType.InlineString:
-					instruction.Append('\"');
-					instruction.Append(operand);
-					instruction.Append('\"');
+					instruction = instruction + "\"" + operand + "\"";
 					break;
 
 				default:
-					instruction.Append(operand);
+					instruction = instruction + operand;
 					break;
 			}
 
-			return instruction.ToString();
+			return instruction;
 		}
 
-		static void AppendLabel(StringBuilder builder, Instruction instruction)
+		static void AppendLabel(ref string str, Instruction instruction)
 		{
-			builder.Append("IL_");
-			builder.Append(instruction.offset.ToString("x4"));
+			str = str + "IL_" + instruction.offset.ToString("x4");
 		}
 	}
 
@@ -193,7 +187,7 @@ namespace Harmony
 		public short ReadInt16()
 		{
 			CheckCanRead(2);
-			short value = (short)(buffer[position]
+			var value = (short)(buffer[position]
 				| (buffer[position + 1] << 8));
 			position += 2;
 			return value;
@@ -213,12 +207,12 @@ namespace Harmony
 		public long ReadInt64()
 		{
 			CheckCanRead(8);
-			uint low = (uint)(buffer[position]
+			var low = (uint)(buffer[position]
 				| (buffer[position + 1] << 8)
 				| (buffer[position + 2] << 16)
 				| (buffer[position + 3] << 24));
 
-			uint high = (uint)(buffer[position + 4]
+			var high = (uint)(buffer[position + 4]
 				| (buffer[position + 5] << 8)
 				| (buffer[position + 6] << 16)
 				| (buffer[position + 7] << 24));
@@ -238,7 +232,7 @@ namespace Harmony
 			}
 
 			CheckCanRead(4);
-			float value = BitConverter.ToSingle(buffer, position);
+			var value = BitConverter.ToSingle(buffer, position);
 			position += 4;
 			return value;
 		}
@@ -253,7 +247,7 @@ namespace Harmony
 			}
 
 			CheckCanRead(8);
-			double value = BitConverter.ToDouble(buffer, position);
+			var value = BitConverter.ToDouble(buffer, position);
 			position += 8;
 			return value;
 		}
@@ -294,7 +288,6 @@ namespace Harmony
 		readonly ILGenerator generator;
 		readonly LocalBuilder[] variables;
 
-		readonly MethodBase method;
 		readonly MethodBody body;
 		readonly Module module;
 		readonly Type[] type_arguments;
@@ -309,7 +302,6 @@ namespace Harmony
 
 		MethodBodyReader(MethodBase method, ILGenerator generator)
 		{
-			this.method = method;
 			this.generator = generator;
 			byte[] bytes;
 
@@ -407,8 +399,8 @@ namespace Harmony
 
 				case OperandType.InlineSwitch:
 					{
-						int length = il.ReadInt32();
-						int base_offset = il.position + (4 * length);
+						var length = il.ReadInt32();
+						var base_offset = il.position + (4 * length);
 						var branches = new int[length];
 						var labels = new Label[length];
 						switchLabels = new Dictionary<int, Label>();
@@ -449,7 +441,7 @@ namespace Harmony
 						}
 						else
 						{
-							var b = (byte)il.ReadByte();
+							var b = il.ReadByte();
 							instruction.Operand = b;
 							if (generator != null) generator.Emit(instruction.OpCode, (byte)instruction.Operand);
 						}
@@ -612,9 +604,9 @@ namespace Harmony
 						break;
 					case ExceptionHandlingClauseOptions.Finally:
 						break;
-					default:
+					//default:
 						//Log.Error("Type of exception: " + ehc.CatchType);
-						break;
+						//break;
 				}
 
 				//Log.Error("   Handler Length: " + ehc.HandlerLength);
@@ -693,7 +685,7 @@ namespace Harmony
 
 		OpCode ReadOpCode()
 		{
-			byte op = il.ReadByte();
+			var op = il.ReadByte();
 			return op != 0xfe
 				? one_byte_opcodes[op]
 				: two_bytes_opcodes[il.ReadByte()];

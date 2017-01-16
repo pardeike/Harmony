@@ -82,7 +82,7 @@ namespace Harmony
 			var info = PatchFunctions.GetPatchInfo(targetMethod);
 			if (info == null)
 			{
-				info = PatchFunctions.CreateNewPatchInfo(targetMethod);
+				info = PatchFunctions.CreateNewPatchInfo();
 				isNew = true;
 			}
 
@@ -140,7 +140,7 @@ namespace Harmony
 		{
 			var name = typeof(S).Name.Replace("Harmony", "");
 
-			var paramList = new List<object>() { instance };
+			var paramList = new List<object> { instance };
 			paramList.AddRange(parameters);
 			var paramTypes = AccessTools.GetTypes(paramList.ToArray());
 			var method = PatchTools.GetPatchMethod<S>(container, name, paramTypes);

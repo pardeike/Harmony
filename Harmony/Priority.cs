@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Harmony
+﻿namespace Harmony
 {
 	public static class Priority
 	{

@@ -14,14 +14,14 @@ namespace Harmony
 	{
 		public static InstantiationHandler CreateInstantiationHandler(Type type)
 		{
-			ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
+			var constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
 			if (constructorInfo == null)
 			{
 				throw new ApplicationException(string.Format("The type {0} must declare an empty constructor (the constructor may be private, internal, protected, protected internal, or public).", type));
 			}
 
-			DynamicMethod dynamicMethod = new DynamicMethod("InstantiateObject_" + type.Name, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(object), null, type, true);
-			ILGenerator generator = dynamicMethod.GetILGenerator();
+			var dynamicMethod = new DynamicMethod("InstantiateObject_" + type.Name, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(object), null, type, true);
+			var generator = dynamicMethod.GetILGenerator();
 			generator.Emit(OpCodes.Newobj, constructorInfo);
 			generator.Emit(OpCodes.Ret);
 			return (InstantiationHandler)dynamicMethod.CreateDelegate(typeof(InstantiationHandler));
@@ -29,9 +29,9 @@ namespace Harmony
 
 		public static GetterHandler CreateGetterHandler(PropertyInfo propertyInfo)
 		{
-			MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
-			DynamicMethod dynamicGet = CreateGetDynamicMethod(propertyInfo.DeclaringType);
-			ILGenerator getGenerator = dynamicGet.GetILGenerator();
+			var getMethodInfo = propertyInfo.GetGetMethod(true);
+			var dynamicGet = CreateGetDynamicMethod(propertyInfo.DeclaringType);
+			var getGenerator = dynamicGet.GetILGenerator();
 
 			getGenerator.Emit(OpCodes.Ldarg_0);
 			getGenerator.Emit(OpCodes.Call, getMethodInfo);
@@ -43,8 +43,8 @@ namespace Harmony
 
 		public static GetterHandler CreateGetterHandler(FieldInfo fieldInfo)
 		{
-			DynamicMethod dynamicGet = CreateGetDynamicMethod(fieldInfo.DeclaringType);
-			ILGenerator getGenerator = dynamicGet.GetILGenerator();
+			var dynamicGet = CreateGetDynamicMethod(fieldInfo.DeclaringType);
+			var getGenerator = dynamicGet.GetILGenerator();
 
 			getGenerator.Emit(OpCodes.Ldarg_0);
 			getGenerator.Emit(OpCodes.Ldfld, fieldInfo);
@@ -56,9 +56,9 @@ namespace Harmony
 
 		public static SetterHandler CreateSetterHandler(PropertyInfo propertyInfo)
 		{
-			MethodInfo setMethodInfo = propertyInfo.GetSetMethod(true);
-			DynamicMethod dynamicSet = CreateSetDynamicMethod(propertyInfo.DeclaringType);
-			ILGenerator setGenerator = dynamicSet.GetILGenerator();
+			var setMethodInfo = propertyInfo.GetSetMethod(true);
+			var dynamicSet = CreateSetDynamicMethod(propertyInfo.DeclaringType);
+			var setGenerator = dynamicSet.GetILGenerator();
 
 			setGenerator.Emit(OpCodes.Ldarg_0);
 			setGenerator.Emit(OpCodes.Ldarg_1);
@@ -71,8 +71,8 @@ namespace Harmony
 
 		public static SetterHandler CreateSetterHandler(FieldInfo fieldInfo)
 		{
-			DynamicMethod dynamicSet = CreateSetDynamicMethod(fieldInfo.DeclaringType);
-			ILGenerator setGenerator = dynamicSet.GetILGenerator();
+			var dynamicSet = CreateSetDynamicMethod(fieldInfo.DeclaringType);
+			var setGenerator = dynamicSet.GetILGenerator();
 
 			setGenerator.Emit(OpCodes.Ldarg_0);
 			setGenerator.Emit(OpCodes.Ldarg_1);
@@ -85,23 +85,23 @@ namespace Harmony
 
 		//
 
-		private static DynamicMethod CreateGetDynamicMethod(Type type)
+		static DynamicMethod CreateGetDynamicMethod(Type type)
 		{
 			return new DynamicMethod("DynamicGet_" + type.Name, typeof(object), new Type[] { typeof(object) }, type, true);
 		}
 
-		private static DynamicMethod CreateSetDynamicMethod(Type type)
+		static DynamicMethod CreateSetDynamicMethod(Type type)
 		{
 			return new DynamicMethod("DynamicSet_" + type.Name, typeof(void), new Type[] { typeof(object), typeof(object) }, type, true);
 		}
 
-		private static void BoxIfNeeded(Type type, ILGenerator generator)
+		static void BoxIfNeeded(Type type, ILGenerator generator)
 		{
 			if (type.IsValueType)
 				generator.Emit(OpCodes.Box, type);
 		}
 
-		private static void UnboxIfNeeded(Type type, ILGenerator generator)
+		static void UnboxIfNeeded(Type type, ILGenerator generator)
 		{
 			if (type.IsValueType)
 				generator.Emit(OpCodes.Unbox_Any, type);

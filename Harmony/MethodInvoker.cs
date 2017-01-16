@@ -20,13 +20,13 @@ namespace Harmony
 			return Handler(methodInfo, methodInfo.DeclaringType.Module);
 		}
 
-		private static FastInvokeHandler Handler(MethodInfo methodInfo, Module module)
+		static FastInvokeHandler Handler(MethodInfo methodInfo, Module module)
 		{
-			DynamicMethod dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name, typeof(object), new Type[] { typeof(object), typeof(object[]) }, module);
-			ILGenerator il = dynamicMethod.GetILGenerator();
+			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name, typeof(object), new Type[] { typeof(object), typeof(object[]) }, module);
+			var il = dynamicMethod.GetILGenerator();
 
-			ParameterInfo[] ps = methodInfo.GetParameters();
-			Type[] paramTypes = new Type[ps.Length];
+			var ps = methodInfo.GetParameters();
+			var paramTypes = new Type[ps.Length];
 			for (int i = 0; i < paramTypes.Length; i++)
 			{
 				if (ps[i].ParameterType.IsByRef)
@@ -35,7 +35,7 @@ namespace Harmony
 					paramTypes[i] = ps[i].ParameterType;
 			}
 
-			LocalBuilder[] locals = new LocalBuilder[paramTypes.Length];
+			var locals = new LocalBuilder[paramTypes.Length];
 			for (int i = 0; i < paramTypes.Length; i++)
 				locals[i] = il.DeclareLocal(paramTypes[i], true);
 
@@ -59,10 +59,12 @@ namespace Harmony
 					il.Emit(OpCodes.Ldloc, locals[i]);
 			}
 
+#pragma warning disable XS0001 // suppress warning about varargs not supported
 			if (methodInfo.IsStatic)
 				il.EmitCall(OpCodes.Call, methodInfo, null);
 			else
 				il.EmitCall(OpCodes.Callvirt, methodInfo, null);
+#pragma warning restore XS0001
 
 			if (methodInfo.ReturnType == typeof(void))
 				il.Emit(OpCodes.Ldnull);
@@ -84,11 +86,11 @@ namespace Harmony
 
 			il.Emit(OpCodes.Ret);
 
-			FastInvokeHandler invoder = (FastInvokeHandler)dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
+			var invoder = (FastInvokeHandler)dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
 			return invoder;
 		}
 
-		private static void EmitCastToReference(ILGenerator il, System.Type type)
+		static void EmitCastToReference(ILGenerator il, Type type)
 		{
 			if (type.IsValueType)
 				il.Emit(OpCodes.Unbox_Any, type);
@@ -96,13 +98,13 @@ namespace Harmony
 				il.Emit(OpCodes.Castclass, type);
 		}
 
-		private static void EmitBoxIfNeeded(ILGenerator il, System.Type type)
+		static void EmitBoxIfNeeded(ILGenerator il, Type type)
 		{
 			if (type.IsValueType)
 				il.Emit(OpCodes.Box, type);
 		}
 
-		private static void EmitFastInt(ILGenerator il, int value)
+		static void EmitFastInt(ILGenerator il, int value)
 		{
 			switch (value)
 			{
@@ -139,7 +141,7 @@ namespace Harmony
 			}
 
 			if (value > -129 && value < 128)
-				il.Emit(OpCodes.Ldc_I4_S, (SByte)value);
+				il.Emit(OpCodes.Ldc_I4_S, (sbyte)value);
 			else
 				il.Emit(OpCodes.Ldc_I4, value);
 		}

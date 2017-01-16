@@ -5,7 +5,7 @@ namespace Harmony
 {
 	class FileLogger
 	{
-		private static string logPath;
+		static string logPath;
 
 		public static void SetLogPath(string path)
 		{
@@ -34,7 +34,7 @@ namespace Harmony
 			WriteToFile(s);
 		}
 
-		private static void WriteToFile(string s)
+		static void WriteToFile(string s)
 		{
 			if (logPath == null) return;
 			using (StreamWriter w = File.AppendText(logPath))

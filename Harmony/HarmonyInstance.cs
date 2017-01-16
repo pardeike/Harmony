@@ -47,7 +47,7 @@ namespace Harmony
 
 		public static HarmonyInstance Create(string id)
 		{
-			if (id == null) throw new ArgumentNullException("id");
+			if (id == null) throw new Exception("id cannot be null");
 			return new HarmonyInstance(id);
 		}
 

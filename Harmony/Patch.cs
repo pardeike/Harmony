@@ -16,24 +16,30 @@ namespace Harmony
 					return typeof(PatchInfo);
 				if (typeName == typeof(Patch).FullName)
 					return typeof(Patch);
-				var typeToDeserialize = Type.GetType(String.Format("{0}, {1}", typeName, assemblyName));
+				var typeToDeserialize = Type.GetType(string.Format("{0}, {1}", typeName, assemblyName));
 				return typeToDeserialize;
 			}
 		}
 
 		public static byte[] Serialize(this PatchInfo patchInfo)
 		{
-			var streamMemory = new MemoryStream();
-			var formatter = new BinaryFormatter();
-			formatter.Serialize(streamMemory, patchInfo);
-			return streamMemory.GetBuffer();
+#pragma warning disable XS0001
+			using (var streamMemory = new MemoryStream())
+			{
+				var formatter = new BinaryFormatter();
+				formatter.Serialize(streamMemory, patchInfo);
+				return streamMemory.GetBuffer();
+			}
+#pragma warning restore XS0001
 		}
 
 		public static PatchInfo Deserialize(byte[] bytes)
 		{
 			var formatter = new BinaryFormatter();
 			formatter.Binder = new Binder();
+#pragma warning disable XS0001
 			var streamMemory = new MemoryStream(bytes);
+#pragma warning restore XS0001
 			return (PatchInfo)formatter.Deserialize(streamMemory);
 		}
 	}
@@ -48,12 +54,12 @@ namespace Harmony
 	[Serializable]
 	public class Patch : IComparable
 	{
-		public int index;
-		public string owner;
-		public MethodInfo patch;
-		public int priority;
-		public string[] before;
-		public string[] after;
+		readonly public int index;
+		readonly public string owner;
+		readonly public MethodInfo patch;
+		readonly public int priority;
+		readonly public string[] before;
+		readonly public string[] after;
 
 		public Patch(int index, string owner, MethodInfo patch, int priority, string[] before, string[] after)
 		{
