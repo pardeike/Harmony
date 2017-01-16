@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.Reflection.Emit;
 
 namespace Harmony
 {
@@ -9,12 +9,6 @@ namespace Harmony
 		{
 			int p = (int)Environment.OSVersion.Platform;
 			return p == 4 || p == 6 || p == 128;
-		}
-
-		public static unsafe long AllocateMemory(int size)
-		{
-			var monoCodeManager = mono_code_manager_new();
-			return (long)mono_code_manager_reserve(monoCodeManager, size);
 		}
 
 		internal static unsafe long PeekJmp(long memory)
@@ -109,42 +103,24 @@ namespace Harmony
 			return memory + sizeof(long);
 		}
 
-		[DllImport("mono.dll", EntryPoint = "mono_code_manager_new")]
-		static extern private unsafe void* win_mono_code_manager_new();
-
-		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_code_manager_new")]
-		static extern private unsafe void* linux_64_mono_code_manager_new();
-
-		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_code_manager_new")]
-		static extern private unsafe void* linux_86_mono_code_manager_new();
-
-		public static unsafe void* mono_code_manager_new()
+		delegate void Dummy();
+		public static long GetMemory(int size) // TODO: size ignored for now
 		{
-			if (IsAnyUnix())
+			var dm = new DynamicMethod("", typeof(void), new Type[] { });
+			var il = dm.GetILGenerator();
+			il.DeclareLocal(typeof(int));
+			il.Emit(OpCodes.Ldc_I4, 0);
+			for (int i = 1; i <= 16; i++)
 			{
-				if (IntPtr.Size == sizeof(long)) return linux_64_mono_code_manager_new();
-				else return linux_86_mono_code_manager_new();
+				il.Emit(OpCodes.Stloc_0);
+				il.Emit(OpCodes.Ldloc_0);
+				il.Emit(OpCodes.Ldc_I4, i);
+				il.Emit(OpCodes.Add);
 			}
-			return win_mono_code_manager_new();
-		}
-
-		[DllImport("mono.dll", EntryPoint = "mono_code_manager_reserve")]
-		static extern private unsafe void* win_mono_code_manager_reserve(void* MonoCodeManager, int size);
-
-		[DllImport("RimWorldLinux_Data/Mono/x86_64/libmono.so", EntryPoint = "mono_code_manager_reserve")]
-		static extern private unsafe void* linux_64_mono_code_manager_reserve(void* MonoCodeManager, int size);
-
-		[DllImport("RimWorldLinux_Data/Mono/x86/libmono.so", EntryPoint = "mono_code_manager_reserve")]
-		static extern private unsafe void* linux_86_mono_code_manager_reserve(void* MonoCodeManager, int size);
-
-		public static unsafe void* mono_code_manager_reserve(void* MonoCodeManager, int size)
-		{
-			if (IsAnyUnix())
-			{
-				if (IntPtr.Size == sizeof(long)) return linux_64_mono_code_manager_reserve(MonoCodeManager, size);
-				else return linux_86_mono_code_manager_reserve(MonoCodeManager, size);
-			}
-			return win_mono_code_manager_reserve(MonoCodeManager, size);
+			il.Emit(OpCodes.Stloc_0);
+			il.Emit(OpCodes.Ret);
+			var m = dm.CreateDelegate(typeof(Dummy));
+			return m.Method.MethodHandle.GetFunctionPointer().ToInt64();
 		}
 	}
 }

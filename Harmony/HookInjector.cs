@@ -106,7 +106,7 @@ namespace Harmony
 				// 0 (long)
 				//
 				var size = prefixBytes + (1 + 1 + IntPtr.Size + 2) + sizeof(long);
-				memory = Platform.AllocateMemory(size);
+				memory = Platform.GetMemory(size);
 			}
 			else
 			{
