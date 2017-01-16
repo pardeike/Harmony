@@ -108,7 +108,7 @@ namespace Harmony
 			var moduleBuilder = assemblyBuilder.DefineDynamicModule("HarmonyMemoryModule" + counter);
 			var typeBuilder = moduleBuilder.DefineType("HarmonyMemoryType" + counter);
 			var methodName = "HarmonyMemoryMethod" + counter;
-			var methodBuilder = typeBuilder.DefineMethod(methodName, MethodAttributes.Public | MethodAttributes.Static, typeof(int), new Type[0]);
+			var methodBuilder = typeBuilder.DefineMethod(methodName, MethodAttributes.Public | MethodAttributes.Static, typeof(void), new Type[0]);
 			var il = methodBuilder.GetILGenerator();
 			// lets try to be clever enough that no optimization reduces our JIT code size
 			il.DeclareLocal(typeof(int));
