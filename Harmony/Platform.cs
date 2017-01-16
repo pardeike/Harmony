@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace Harmony
 {
@@ -99,6 +100,18 @@ namespace Harmony
 			return memory + sizeof(long);
 		}
 
+		// purpose of this method is to "do some work" so the JIT compiler
+		// does not optimize our code away. since it is never called with 0
+		// it actually does nothing
+		public static void LongConsumer(long val)
+		{
+			if (val == 0) Console.WriteLine(val);
+		}
+
+		// the way we create rwx memory is by building a new method and making
+		// sure the JIT compiler does not optimize our code away. We force this
+		// by calling a second method. the loop runs an estimated times to make
+		// sure we have enough assembler code to cover our memory size
 		static int counter;
 		public static long GetMemory(int size)
 		{
@@ -110,21 +123,15 @@ namespace Harmony
 			var methodName = "HarmonyMemoryMethod" + counter;
 			var methodBuilder = typeBuilder.DefineMethod(methodName, MethodAttributes.Public | MethodAttributes.Static, typeof(void), new Type[0]);
 			var il = methodBuilder.GetILGenerator();
-			// lets try to be clever enough that no optimization reduces our JIT code size
-			il.DeclareLocal(typeof(int));
-			il.Emit(OpCodes.Ldc_I4, 0);
-			for (int i = 1; i <= size / 2; i++) // size/2 is a rough estimate
+			for (var i = 1; i <= 1 + (size / 8); i++)
 			{
-				il.Emit(OpCodes.Stloc_0);
-				il.Emit(OpCodes.Ldloc_0);
-				il.Emit(OpCodes.Ldc_I4, i);
-				il.Emit(OpCodes.Add);
+				il.Emit(OpCodes.Ldc_I8, 0x1000000000000000 + i);
+				il.Emit(OpCodes.Call, typeof(Platform).GetMethod("LongConsumer"));
 			}
-			il.Emit(OpCodes.Stloc_0);
 			il.Emit(OpCodes.Ret);
 			var type = typeBuilder.CreateType();
 			var m = type.GetMethod(methodName);
-			m.Invoke(null, new object[] { });
+			m.Invoke(null, new object[] { }); // make sure it is JIT-compiled
 			return m.MethodHandle.GetFunctionPointer().ToInt64();
 		}
 	}
