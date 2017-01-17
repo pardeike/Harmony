@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
@@ -100,6 +100,9 @@ namespace Harmony
 			return memory + sizeof(long);
 		}
 
+		// this holds all our methods alive so they don't get garbage-collected
+		static MethodInfo[] allMethodReferences = new MethodInfo[0];
+
 		// purpose of this method is to "do some work" so the JIT compiler
 		// does not optimize our code away. since it is never called with 0
 		// it actually does nothing
@@ -130,9 +133,14 @@ namespace Harmony
 			}
 			il.Emit(OpCodes.Ret);
 			var type = typeBuilder.CreateType();
-			var m = type.GetMethod(methodName);
-			m.Invoke(null, new object[] { }); // make sure it is JIT-compiled
-			return m.MethodHandle.GetFunctionPointer().ToInt64();
+			var method = type.GetMethod(methodName);
+			allMethodReferences.Add(method);
+
+			// make sure it is JIT-compiled
+			RuntimeHelpers.PrepareMethod(method.MethodHandle);
+			method.Invoke(null, new object[] { });
+
+			return method.MethodHandle.GetFunctionPointer().ToInt64();
 		}
 	}
 }

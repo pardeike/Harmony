@@ -2,11 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Harmony
 {
 	public static class PatchFunctions
 	{
+		// this holds all our methods alive so they don't get garbage-collected
+		static PatchStorage[] allPatchReferences = new PatchStorage[0];
+		class PatchStorage
+		{
+			public DynamicMethod copy;
+			public MethodInfo copyDelegate;
+			public DynamicMethod wrapper;
+			public MethodInfo wrapperDelegate;
+		}
+
 		public static PatchInfo GetPatchInfo(MethodInfo original)
 		{
 			var bytes = HookInjector.Create(original).GetPayload();
@@ -63,14 +74,18 @@ namespace Harmony
 			var sortedPrefixes = GetSortedPatchMethods(patchInfo.prefixes);
 			var sortedPostfixes = GetSortedPatchMethods(patchInfo.postfixes);
 
-			var copy = PatchTools.CreateMethodCopy(original);
-			if (copy == null) throw new MissingMethodException("Cannot create copy of " + original);
-			var copyDelegate = PatchTools.PrepareDynamicMethod(original, copy);
+			var patch = new PatchStorage();
 
-			var wrapper = PatchTools.CreatePatchWrapper(original, copyDelegate, sortedPrefixes, sortedPostfixes);
-			var wrapperDelegate = PatchTools.PrepareDynamicMethod(original, wrapper);
+			patch.copy = PatchTools.CreateMethodCopy(original);
+			if (patch.copy == null) throw new MissingMethodException("Cannot create copy of " + original);
+			patch.copyDelegate = PatchTools.PrepareDynamicMethod(original, patch.copy);
 
-			var injector = HookInjector.Create(original, wrapperDelegate);
+			patch.wrapper = PatchTools.CreatePatchWrapper(original, patch.copyDelegate, sortedPrefixes, sortedPostfixes);
+			patch.wrapperDelegate = PatchTools.PrepareDynamicMethod(original, patch.wrapper);
+
+			allPatchReferences.Add(patch); // keep things alive and referenced
+
+			var injector = HookInjector.Create(original, patch.wrapperDelegate);
 			injector.Detour(patchInfo.Serialize(), isNew);
 		}
 	}

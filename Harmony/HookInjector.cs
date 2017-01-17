@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -25,6 +26,10 @@ namespace Harmony
 
 		public static HookInjector Create(MethodBase sourceMethod, MethodBase targetMethod = null)
 		{
+			RuntimeHelpers.PrepareMethod(sourceMethod.MethodHandle);
+			if (targetMethod != null)
+				RuntimeHelpers.PrepareMethod(targetMethod.MethodHandle);
+
 			var injector = new HookInjector();
 			injector.sourcePtr = sourceMethod.MethodHandle.GetFunctionPointer();
 			injector.targetPtr = targetMethod == null ? IntPtr.Zero : targetMethod.MethodHandle.GetFunctionPointer();
