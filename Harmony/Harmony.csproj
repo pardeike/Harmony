@@ -47,7 +47,6 @@
     <Compile Include="CollectionTools.cs" />
     <Compile Include="DelegateTypeFactory.cs" />
     <Compile Include="FastAccess.cs" />
-    <Compile Include="FileLogger.cs" />
     <Compile Include="HarmonyInstance.cs" />
     <Compile Include="HarmonyMethod.cs" />
     <Compile Include="HookInjector.cs" />

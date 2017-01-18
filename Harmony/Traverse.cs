@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
 	public class Traverse
 	{
-		static readonly AccessCache Cache;
+		static AccessCache Cache;
 
 		Type _type;
 		object _root;
 		MemberInfo _info;
 		object[] _index;
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		static Traverse()
 		{
-			Cache = new AccessCache();
+			if (Cache == null)
+				Cache = new AccessCache();
 		}
 
 		public static Traverse Create(Type type)

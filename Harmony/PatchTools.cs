@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
 	public static class PatchTools
 	{
+		// this holds all the objects we want to keep alive so they don't get garbage-collected
+		static object[] objectReferences;
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		internal static void KeepAliveForever(object obj)
+		{
+			if (objectReferences == null) objectReferences = new object[0];
+			objectReferences.Add(obj);
+		}
+
 		public static byte[] GetILCodesFromDynamicMethod(DynamicMethod method)
 		{
 			if (method == null) return null;

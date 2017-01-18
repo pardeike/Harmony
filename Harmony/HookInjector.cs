@@ -11,7 +11,7 @@ namespace Harmony
 		IntPtr sourcePtr;
 		IntPtr targetPtr;
 
-		byte[] magicSignature => Encoding.ASCII.GetBytes("Harmony");
+		static byte[] magicSignature => Encoding.ASCII.GetBytes("Harmony");
 
 		int prefixBytes
 		{
@@ -58,6 +58,8 @@ namespace Harmony
 						memory = Platform.ReadInt(memory, out location);
 						payloadPtr = new IntPtr(location);
 					}
+					if (payloadPtr == null)
+						throw new Exception("Unexpected null pointer after harmony signature");
 
 					int payLoadLength;
 					Platform.ReadInt(memory, out payLoadLength);

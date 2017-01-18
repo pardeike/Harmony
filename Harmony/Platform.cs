@@ -134,7 +134,7 @@ namespace Harmony
 			il.Emit(OpCodes.Ret);
 			var type = typeBuilder.CreateType();
 			var method = type.GetMethod(methodName);
-			allMethodReferences.Add(method);
+			PatchTools.KeepAliveForever(method);
 
 			// make sure it is JIT-compiled
 			RuntimeHelpers.PrepareMethod(method.MethodHandle);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
@@ -264,6 +265,7 @@ namespace Harmony
 		static readonly OpCode[] one_byte_opcodes;
 		static readonly OpCode[] two_bytes_opcodes;
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		static MethodBodyReader()
 		{
 			one_byte_opcodes = new OpCode[0xe1];
@@ -604,7 +606,7 @@ namespace Harmony
 						break;
 					case ExceptionHandlingClauseOptions.Finally:
 						break;
-					//default:
+						//default:
 						//Log.Error("Type of exception: " + ehc.CatchType);
 						//break;
 				}
