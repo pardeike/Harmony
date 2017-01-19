@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
@@ -11,6 +12,7 @@ namespace Harmony
 		public static PatchInfo GetPatchInfo(MethodInfo original)
 		{
 			var bytes = HookInjector.Create(original).GetPayload();
+			Debug.Log("Checking payload for " + original + " => " + (bytes == null ? "null" : bytes.ToString()));
 			if (bytes == null) return null;
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
@@ -67,6 +69,12 @@ namespace Harmony
 			var copy = PatchTools.CreateMethodCopy(original);
 			if (copy == null) throw new MissingMethodException("Cannot create copy of " + original);
 			var copyDelegate = PatchTools.PrepareDynamicMethod(original, copy);
+			RuntimeHelpers.PrepareMethod(copyDelegate.MethodHandle);
+
+#if DEBUG
+			Debug.Log("Target");
+			Debug.LogBytes(copyDelegate.MethodHandle.GetFunctionPointer().ToInt64(), 32);
+#endif
 
 			var wrapper = PatchTools.CreatePatchWrapper(original, copyDelegate, sortedPrefixes, sortedPostfixes);
 			var wrapperDelegate = PatchTools.PrepareDynamicMethod(original, wrapper);

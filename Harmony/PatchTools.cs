@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -9,12 +10,28 @@ namespace Harmony
 {
 	public static class PatchTools
 	{
+		public static string AssemblyDirectory
+		{
+			get
+			{
+				var codeBase = typeof(PatchTools).Assembly.CodeBase;
+				var uri = new UriBuilder(codeBase);
+				var path = Uri.UnescapeDataString(uri.Path);
+				return Path.GetDirectoryName(path);
+			}
+		}
+
 		// this holds all the objects we want to keep alive so they don't get garbage-collected
 		static object[] objectReferences;
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		internal static void KeepAliveForever(object obj)
 		{
-			if (objectReferences == null) objectReferences = new object[0];
+			if (objectReferences == null)
+			{
+				Debug.Log("KeepAlive - static reference array initialized");
+				objectReferences = new object[0];
+			}
+			Debug.Log("KeepAlive - " + obj);
 			objectReferences.Add(obj);
 		}
 
@@ -131,6 +148,11 @@ namespace Harmony
 			g.DeclareLocal(typeof(bool)); // v0 - run
 			if (returnsSomething)
 				g.DeclareLocal(returnType); // v1 - result (if not void)
+
+#if DEBUG
+			g.Emit(OpCodes.Ldstr, "Wrapper - " + original.Name);
+			g.Emit(OpCodes.Call, typeof(Debug).GetMethod("Log"));
+#endif
 
 			// ResultType result = [default value for ResultType]
 			//

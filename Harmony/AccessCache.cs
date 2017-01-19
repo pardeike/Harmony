@@ -17,6 +17,7 @@ namespace Harmony
 			if (fieldsByType == null)
 			{
 				fieldsByType = new Dictionary<string, FieldInfo>();
+				Debug.Log("Cache - adding field type " + type.FullName);
 				fields.Add(type, fieldsByType);
 			}
 
@@ -25,6 +26,7 @@ namespace Harmony
 			if (field == null)
 			{
 				field = AccessTools.Field(type, name);
+				Debug.Log("Cache - adding fieldinfo " + field);
 				fieldsByType.Add(name, field);
 			}
 			return field;
@@ -37,6 +39,7 @@ namespace Harmony
 			if (propertiesByType == null)
 			{
 				propertiesByType = new Dictionary<string, PropertyInfo>();
+				Debug.Log("Cache - adding property type " + type.FullName);
 				properties.Add(type, propertiesByType);
 			}
 
@@ -45,6 +48,7 @@ namespace Harmony
 			if (property == null)
 			{
 				property = AccessTools.Property(type, name);
+				Debug.Log("Cache - adding propertyinfo " + property);
 				propertiesByType.Add(name, property);
 			}
 			return property;
@@ -57,6 +61,7 @@ namespace Harmony
 			if (methodsByName == null)
 			{
 				methodsByName = new Dictionary<string, Dictionary<Type[], MethodInfo>>();
+				Debug.Log("Cache - adding method type " + type.FullName);
 				methods.Add(type, methodsByName);
 			}
 
@@ -65,6 +70,7 @@ namespace Harmony
 			if (methodsByArguments == null)
 			{
 				methodsByArguments = new Dictionary<Type[], MethodInfo>();
+				Debug.Log("Cache - adding method arguments " + name);
 				methodsByName.Add(name, methodsByArguments);
 			}
 
@@ -73,6 +79,7 @@ namespace Harmony
 			if (method == null)
 			{
 				method = AccessTools.Method(type, name, arguments);
+				Debug.Log("Cache - adding methodinfo " + method);
 				methodsByArguments.Add(arguments, method);
 			}
 

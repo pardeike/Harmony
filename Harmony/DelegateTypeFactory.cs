@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -9,20 +8,19 @@ namespace Harmony
 	{
 		readonly ModuleBuilder module;
 
+		static int counter;
 		public DelegateTypeFactory()
 		{
-			var name = new AssemblyName("DelegateTypeFactory");
+			counter++;
+			var name = new AssemblyName("HarmonyDTFAssembly" + counter);
 			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
-			module = assembly.DefineDynamicModule("DelegateTypeFactory");
+			module = assembly.DefineDynamicModule("HarmonyDTFModule" + counter);
 		}
 
 		public Type CreateDelegateType(MethodInfo method)
 		{
-			var nameBase = string.Format("{0}{1}", method.DeclaringType.Name, method.Name);
-			var name = GetUniqueName(nameBase);
-
 			var attr = TypeAttributes.Sealed | TypeAttributes.Public;
-			var typeBuilder = module.DefineType(name, attr, typeof(MulticastDelegate));
+			var typeBuilder = module.DefineType("HarmonyDTFType" + counter, attr, typeof(MulticastDelegate));
 
 			var constructor = typeBuilder.DefineConstructor(
 				 MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public,
@@ -37,21 +35,9 @@ namespace Harmony
 			invokeMethod.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
 			for (int i = 0; i < parameters.Length; i++)
-			{
-				var parameter = parameters[i];
-				invokeMethod.DefineParameter(i + 1, ParameterAttributes.None, parameter.Name);
-			}
+				invokeMethod.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
 
 			return typeBuilder.CreateType();
-		}
-
-		string GetUniqueName(string nameBase)
-		{
-			int number = 2;
-			string name = nameBase;
-			while (module.GetType(name) != null)
-				name = nameBase + number++;
-			return name;
 		}
 	}
 }

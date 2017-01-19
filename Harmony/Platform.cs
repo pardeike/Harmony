@@ -14,15 +14,20 @@ namespace Harmony
 			if (p[0] == 0xE9)
 			{
 				var dp = (int*)(memory + 1);
-				return (*dp + memory + 5);
+				var result = (*dp + memory + 5);
+				Debug.Log("PeekJump at 0x" + memory.ToString("x16") + " => 0x" + result.ToString("x16") + " (32bit)");
+				return result;
 			}
 
 			if (p[0] == 0x48 && p[1] == 0xB8 && p[10] == 0xFF && p[11] == 0xE0)
 			{
 				var lp = (long*)(memory + 2);
-				return *lp;
+				var result = *lp;
+				Debug.Log("PeekJump at 0x" + memory.ToString("x16") + " => 0x" + result.ToString("x16") + " (64bit)");
+				return result;
 			}
 
+			Debug.Log("PeekJump at 0x" + memory.ToString("x16") + " => zero");
 			return 0;
 		}
 
@@ -43,17 +48,25 @@ namespace Harmony
 
 		public static long WriteJump(long memory, long destination)
 		{
+#if DEBUG
+			var originalMemory = memory;
+#endif
+
 			if (IntPtr.Size == sizeof(long))
 			{
 				memory = WriteBytes(memory, new byte[] { 0x48, 0xB8 });
 				memory = WriteLong(memory, destination);
 				memory = WriteBytes(memory, new byte[] { 0xFF, 0xE0 });
+
+				Debug.Log("Jump written to 0x" + originalMemory.ToString("x16") + " => 0x" + destination.ToString("x16") + " (64bit)");
 			}
 			else
 			{
 				var offset = Convert.ToInt32(destination - memory - 5);
 				memory = WriteByte(memory, 0xE9);
 				memory = WriteInt(memory, offset);
+
+				Debug.Log("Jump written to 0x" + originalMemory.ToString("x16") + " with offset 0x" + offset.ToString("x8") + " => 0x" + destination.ToString("x16") + " (32bit)");
 			}
 			return memory;
 		}
