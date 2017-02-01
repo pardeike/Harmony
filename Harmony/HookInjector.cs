@@ -95,7 +95,7 @@ namespace Harmony
 			else
 				memory = Platform.WriteInt(memory, payloadPtr.ToInt32());
 			memory = Platform.WriteInt(memory, payload.Length);
-			// keep in sync
+			// end keep in sync
 
 			return memory;
 		}
@@ -111,23 +111,10 @@ namespace Harmony
 			var source = sourcePtr.ToInt64();
 			var target = targetPtr.ToInt64();
 
-			Debug.Log("");
-			Debug.Log("Detouring source 0x" + source.ToString("x16") + " to target 0x" + target.ToString("x16") + (isNew ? " (new)" : ""));
-
-			Debug.Log("# Source");
-			Debug.LogBytes(source, 32);
-
-			Debug.Log("# Target");
-			Debug.LogBytes(target, 32);
-
 			long memory;
 			if (isNew)
 			{
 				memory = Platform.GetMemory(totalMemorySize);
-
-				Debug.Log("Memory - created at 0x" + memory.ToString("x16") + " (len " + totalMemorySize + ")");
-				Debug.Log("# Contents");
-				Debug.LogBytes(memory, totalMemorySize);
 			}
 			else
 			{
@@ -137,27 +124,13 @@ namespace Harmony
 
 				memory = jmpLoc - prefixBytes; // back up to prefix our extra information
 
-				Debug.Log("Memory - existing memory found at 0x" + memory.ToString("x16"));
-				Debug.Log("# Contents");
-				Debug.LogBytes(memory, totalMemorySize);
-
 				if (Platform.PeekSequence(memory, magicSignature) == false)
 					throw new FormatException("Expected magic signature '" + Encoding.ASCII.GetString(magicSignature) + "' but did not find it");
 			}
 
-#if DEBUG
-			var memoryStart = memory;
-#endif
-
 			var jumpLocation = WriteInfoBlock(memory, payload);
-			Debug.Log("Writing intermediate jump to target at 0x" + jumpLocation.ToString("x16"));
 			memory = Platform.WriteJump(jumpLocation, target);
 			Platform.WriteLong(memory, 0);
-
-#if DEBUG
-			Debug.Log("# Contents after detour");
-			Debug.LogBytes(memoryStart, totalMemorySize);
-#endif
 
 			Platform.WriteJump(source, jumpLocation);
 		}
