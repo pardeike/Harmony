@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Harmony
 {
@@ -12,7 +13,6 @@ namespace Harmony
 		public static PatchInfo GetPatchInfo(MethodInfo original)
 		{
 			var bytes = HookInjector.Create(original).GetPayload();
-			Debug.Log("Checking payload for " + original + " => " + (bytes == null ? "null" : bytes.ToString()));
 			if (bytes == null) return null;
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
@@ -68,24 +68,29 @@ namespace Harmony
 
 			var copy = PatchTools.CreateMethodCopy(original);
 			if (copy == null) throw new MissingMethodException("Cannot create copy of " + original);
-			var copyDelegate = PatchTools.PrepareDynamicMethod(original, copy);
-			RuntimeHelpers.PrepareMethod(copyDelegate.MethodHandle);
+			//PatchTools.KeepAliveForever(copy);
+			//PatchTools.InvokeWithDefaults(copy);
+			var delegateFactory = new DelegateTypeFactory();
+			var copyDelegateType = delegateFactory.CreateDelegateType(original);
+			var copyDelegate = copy.CreateDelegate(copyDelegateType).Method;
+			PatchTools.KeepAliveForever(copyDelegate);
 
-#if DEBUG
-			Debug.Log("Target");
-			Debug.LogBytes(copyDelegate.MethodHandle.GetFunctionPointer().ToInt64(), 32);
-#endif
+			// Copy via memory-copy and creating a delegate to the pointer (BROKEN)
+			// var delegateFactory = new DelegateTypeFactory();
+			// var type = delegateFactory.CreateDelegateType(original);
+			// var memory = HookInjector.CopyMethod(original);
+			// var copy = Marshal.GetDelegateForFunctionPointer(new IntPtr(memory), type).Method;
 
 			var wrapper = PatchTools.CreatePatchWrapper(original, copyDelegate, sortedPrefixes, sortedPostfixes);
-			var wrapperDelegate = PatchTools.PrepareDynamicMethod(original, wrapper);
-
-			// keep things alive and kicking
-			PatchTools.KeepAliveForever(copy);
-			PatchTools.KeepAliveForever(copyDelegate);
+			if (wrapper == null) throw new MissingMethodException("Cannot create wrapper of " + original);
 			PatchTools.KeepAliveForever(wrapper);
-			PatchTools.KeepAliveForever(wrapperDelegate);
+			PatchTools.InvokeWithDefaults(wrapper);
+			//var wrapperFactory = new DelegateTypeFactory();
+			//var wrapperDelegateType = wrapperFactory.CreateDelegateType(original);
+			//var wrapperDelegate = wrapper.CreateDelegate(wrapperDelegateType).Method;
+			//PatchTools.KeepAliveForever(wrapperDelegate);
 
-			var injector = HookInjector.Create(original, wrapperDelegate);
+			var injector = HookInjector.Create(original, wrapper);
 			injector.Detour(patchInfo.Serialize(), isNew);
 		}
 	}

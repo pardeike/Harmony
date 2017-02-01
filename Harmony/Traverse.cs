@@ -18,10 +18,7 @@ namespace Harmony
 		static Traverse()
 		{
 			if (Cache == null)
-			{
-				Debug.Log("Initializing Cache");
 				Cache = new AccessCache();
-			}
 		}
 
 		public static Traverse Create(Type type)
