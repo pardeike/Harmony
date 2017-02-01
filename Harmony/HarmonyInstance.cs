@@ -56,12 +56,12 @@ namespace Harmony
 			patcher.PatchAll(module);
 		}
 
-		public void Patch(MethodInfo original, HarmonyMethod prefix, HarmonyMethod postfix)
+		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix)
 		{
 			patcher.Patch(original, prefix, postfix);
 		}
 
-		public Patches IsPatched(MethodInfo method)
+		public Patches IsPatched(MethodBase method)
 		{
 			return patcher.IsPatched(method);
 		}

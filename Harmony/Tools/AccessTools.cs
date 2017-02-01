@@ -16,6 +16,20 @@ namespace Harmony
 			| BindingFlags.GetProperty
 			| BindingFlags.SetProperty;
 
+		public static Type TypeByName(string name)
+		{
+			var type = System.Type.GetType(name, false);
+			if (type == null)
+				type = AppDomain.CurrentDomain.GetAssemblies()
+					.SelectMany(x => x.GetTypes())
+					.FirstOrDefault(x => x.FullName == name);
+			if (type == null)
+				type = AppDomain.CurrentDomain.GetAssemblies()
+					.SelectMany(x => x.GetTypes())
+					.FirstOrDefault(x => x.Name == name);
+			return type;
+		}
+
 		public static FieldInfo Field(Type type, string name)
 		{
 			if (type == null || name == null) return null;
@@ -28,13 +42,22 @@ namespace Harmony
 			return type.GetProperty(name, all);
 		}
 
-		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
+		public static MethodBase Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
 			if (parameters == null) return type.GetMethod(name, all);
 			var result = type.GetMethod(name, all, null, parameters, null);
+			if (result == null) return null;
 			if (generics != null) result = result.MakeGenericMethod(generics);
 			return result;
+		}
+
+		public static Type GetReturnedType(MethodBase method)
+		{
+			var constructor = method as ConstructorInfo;
+			if (constructor != null)
+				return constructor.DeclaringType;
+			return ((MethodInfo)method).ReturnType;
 		}
 
 		public static Type Inner(Type type, string name)
@@ -98,28 +121,6 @@ namespace Harmony
 		public static bool isVoid(Type type)
 		{
 			return type == typeof(void);
-		}
-	}
-
-	public static class TypeExtensions
-	{
-		public static string Description(this Type[] parameters)
-		{
-			var types = parameters.Select(p => p == null ? "null" : p.FullName);
-			return "(" + types.Aggregate("", (s, x) => s.Length == 0 ? x : s + ", " + x) + ")";
-		}
-
-		public static Type[] Types(this ParameterInfo[] pinfo)
-		{
-			return pinfo.Select(pi => pi.ParameterType).ToArray();
-		}
-
-		public static T GetValueSafe<S, T>(this Dictionary<S, T> dictionary, S key)
-		{
-			T result;
-			if (dictionary.TryGetValue(key, out result))
-				return result;
-			return default(T);
 		}
 	}
 }

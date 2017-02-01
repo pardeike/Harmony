@@ -41,25 +41,30 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AccessCache.cs" />
-    <Compile Include="AccessTools.cs" />
+    <Compile Include="HarmonyModifier.cs" />
+    <Compile Include="HarmonySharedState.cs" />
+    <Compile Include="Tools\AccessCache.cs" />
+    <Compile Include="Tools\AccessTools.cs" />
     <Compile Include="Attributes.cs" />
-    <Compile Include="CollectionTools.cs" />
-    <Compile Include="Debug.cs" />
-    <Compile Include="DelegateTypeFactory.cs" />
-    <Compile Include="FastAccess.cs" />
+    <Compile Include="Tools\Extensions.cs" />
+    <Compile Include="Extras\DelegateTypeFactory.cs" />
+    <Compile Include="Extras\FastAccess.cs" />
     <Compile Include="HarmonyInstance.cs" />
     <Compile Include="HarmonyMethod.cs" />
-    <Compile Include="HookInjector.cs" />
-    <Compile Include="MethodInvoker.cs" />
-    <Compile Include="MonoReflectionExtension.cs" />
+    <Compile Include="ILCopying\ByteBuffer.cs" />
+    <Compile Include="ILCopying\ILInstruction.cs" />
+    <Compile Include="ILCopying\Memory.cs" />
+    <Compile Include="ILCopying\MethodCopier.cs" />
+    <Compile Include="ILCopying\MonoInternals.cs" />
+    <Compile Include="Extras\MethodInvoker.cs" />
+    <Compile Include="MethodPatcher.cs" />
     <Compile Include="Patch.cs" />
     <Compile Include="Patcher.cs" />
     <Compile Include="PatchFunctions.cs" />
-    <Compile Include="PatchTools.cs" />
-    <Compile Include="Platform.cs" />
+    <Compile Include="Tools\PatchTools.cs" />
     <Compile Include="Priority.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\DynamicTools.cs" />
     <Compile Include="Traverse.cs" />
   </ItemGroup>
   <ItemGroup>

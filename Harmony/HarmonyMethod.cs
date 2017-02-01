@@ -38,7 +38,8 @@ namespace Harmony
 
 		public HarmonyMethod(Type type, string name, Type[] parameters = null)
 		{
-			ImportMethod(AccessTools.Method(type, name, parameters));
+			var method = AccessTools.Method(type, name, parameters);
+			ImportMethod(method as MethodInfo);
 		}
 
 		public static List<string> HarmonyFields()
@@ -114,7 +115,7 @@ namespace Harmony
 						.ToList();
 		}
 
-		public static List<HarmonyMethod> GetHarmonyMethods(this MethodInfo method)
+		public static List<HarmonyMethod> GetHarmonyMethods(this MethodBase method)
 		{
 			return method.GetCustomAttributes(true)
 						.Where(attr => attr is HarmonyAttribute)

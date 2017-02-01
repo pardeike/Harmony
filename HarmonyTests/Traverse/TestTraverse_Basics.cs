@@ -29,9 +29,9 @@ namespace HarmonyTests
 
 		class FooBar
 		{
-#pragma warning disable 0169
+#pragma warning disable CS0169
 			string field;
-#pragma warning restore 0169
+#pragma warning restore CS0169
 		}
 
 		// Traverse should default to an empty instance to avoid errors

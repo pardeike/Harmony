@@ -36,6 +36,11 @@ namespace Harmony
 			return new Traverse(root);
 		}
 
+		public static Traverse CreateWithType(string name)
+		{
+			return new Traverse(AccessTools.TypeByName(name));
+		}
+
 		Traverse()
 		{
 		}

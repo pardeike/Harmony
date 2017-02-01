@@ -7,13 +7,13 @@ namespace HarmonyTests.Assets
 {
 	public class TraverseTypes<T> where T : new()
 	{
-#pragma warning disable 0414
+#pragma warning disable CS0414
 		int IntField;
 		string StringField;
+#pragma warning restore CS0414
 		Type TypeField;
 		IEnumerable<bool> ListOfBoolField;
 		Dictionary<T, List<string>> MixedField;
-#pragma warning restore 0414
 
 		public T key;
 
@@ -35,14 +35,13 @@ namespace HarmonyTests.Assets
 
 	public class TraverseNestedTypes
 	{
-#pragma warning disable 0414
-#pragma warning disable 0169
-
 		private class InnerClass1
 		{
 			private class InnerClass2
 			{
+#pragma warning disable CS0414
 				private string field;
+#pragma warning restore CS0414
 
 				public InnerClass2()
 				{
@@ -62,7 +61,9 @@ namespace HarmonyTests.Assets
 		{
 			private class InnerStaticFieldClass2
 			{
+#pragma warning disable CS0414
 				private static string field = "helloStatic";
+#pragma warning restore CS0414
 			}
 
 			private static InnerStaticFieldClass2 inner2;
@@ -90,8 +91,6 @@ namespace HarmonyTests.Assets
 			innerStatic = new InnerStaticFieldClass1();
 			InnerStaticClass1.InnerStaticClass2.field = staticValue;
 		}
-#pragma warning restore 0414
-#pragma warning restore 0169
 	}
 
 }

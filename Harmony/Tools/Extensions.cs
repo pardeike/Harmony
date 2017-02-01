@@ -1,10 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Harmony
 {
-	public static class CollectionTools
+	public static class GeneralExtensions
+	{
+		public static string Description(this Type[] parameters)
+		{
+			var types = parameters.Select(p => p == null ? "null" : p.FullName);
+			return "(" + types.Aggregate("", (s, x) => s.Length == 0 ? x : s + ", " + x) + ")";
+		}
+
+		public static Type[] Types(this ParameterInfo[] pinfo)
+		{
+			return pinfo.Select(pi => pi.ParameterType).ToArray();
+		}
+
+		public static T GetValueSafe<S, T>(this Dictionary<S, T> dictionary, S key)
+		{
+			T result;
+			if (dictionary.TryGetValue(key, out result))
+				return result;
+			return default(T);
+		}
+	}
+
+	public static class CollectionExtensions
 	{
 		public static IEnumerable<T> Do<T>(this IEnumerable<T> sequence, Action<T> action)
 		{

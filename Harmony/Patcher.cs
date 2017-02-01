@@ -18,23 +18,23 @@ namespace Harmony
 		{
 			module.GetTypes().Do(type =>
 			{
-				var baseMethodInfos = type.GetHarmonyMethods();
-				if (baseMethodInfos != null && baseMethodInfos.Count() > 0)
+				var parentMethodInfos = type.GetHarmonyMethods();
+				if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
 				{
-					var info = HarmonyMethod.Merge(baseMethodInfos);
+					var info = HarmonyMethod.Merge(parentMethodInfos);
 					var processor = new PatchProcessor(instance, type, info);
 					processor.Patch();
 				}
 			});
 		}
 
-		public void Patch(MethodInfo original, HarmonyMethod prefix, HarmonyMethod postfix)
+		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyModifier[] modifier = null)
 		{
-			var processor = new PatchProcessor(instance, original, prefix, postfix);
+			var processor = new PatchProcessor(instance, original, prefix, postfix, modifier);
 			processor.Patch();
 		}
 
-		public Patches IsPatched(MethodInfo method)
+		public Patches IsPatched(MethodBase method)
 		{
 			return PatchProcessor.IsPatched(method);
 		}
@@ -47,9 +47,10 @@ namespace Harmony
 		readonly Type container;
 		readonly HarmonyMethod containerAttributes;
 
-		MethodInfo targetMethod;
+		MethodBase original;
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
+		HarmonyModifier[] modifiers;
 
 		public PatchProcessor(HarmonyInstance instance, Type type, HarmonyMethod attributes)
 		{
@@ -61,57 +62,56 @@ namespace Harmony
 			ProcessType();
 		}
 
-		public PatchProcessor(HarmonyInstance instance, MethodInfo targetMethod, HarmonyMethod prefix, HarmonyMethod postfix)
+		public PatchProcessor(HarmonyInstance instance, MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyModifier[] modifiers)
 		{
 			this.instance = instance;
-			this.targetMethod = targetMethod;
+			this.original = original;
 			this.prefix = prefix;
 			this.postfix = postfix;
+			this.modifiers = modifiers;
 		}
 
-		public static Patches IsPatched(MethodInfo original)
+		public static Patches IsPatched(MethodBase method)
 		{
-			var info = PatchFunctions.GetPatchInfo(original);
+			var info = HarmonySharedState.GetPatchInfo(method);
 			if (info == null) return null;
 			return new Patches(info.prefixes, info.postfixes);
 		}
 
 		public void Patch()
 		{
-			var isNew = false;
-			var info = PatchFunctions.GetPatchInfo(targetMethod);
+			var info = HarmonySharedState.GetPatchInfo(original);
 			if (info == null)
-			{
 				info = PatchFunctions.CreateNewPatchInfo();
-				isNew = true;
-			}
+			PatchFunctions.AddPrefix(info, instance.Id, prefix);
+			PatchFunctions.AddPostfix(info, instance.Id, postfix);
+			foreach (var modifier in modifiers)
+				PatchFunctions.AddModifier(info, instance.Id, modifier);
 
-			info = PatchFunctions.AddPrefix(info, instance.Id, prefix);
-			info = PatchFunctions.AddPostfix(info, instance.Id, postfix);
-
-			PatchFunctions.UpdateWrapper(targetMethod, info, isNew);
+			PatchFunctions.UpdateWrapper(original, info);
+			HarmonySharedState.SetPatchInfo(original, info);
 		}
 
 		bool CallPrepare()
 		{
-			if (targetMethod != null)
-				return RunMethod<HarmonyPrepare, bool>(true, targetMethod);
+			if (original != null)
+				return RunMethod<HarmonyPrepare, bool>(true, original);
 			return RunMethod<HarmonyPrepare, bool>(true);
 		}
 
 		void ProcessType()
 		{
-			targetMethod = GetOriginalMethod();
+			original = GetOriginalMethod();
 
 			var patchable = CallPrepare();
 			if (patchable)
 			{
-				if (targetMethod == null)
-					targetMethod = RunMethod<HarmonyTargetMethod, MethodInfo>(null);
-				if (targetMethod == null)
+				if (original == null)
+					original = RunMethod<HarmonyTargetMethod, MethodBase>(null);
+				if (original == null)
 					throw new ArgumentException("No target method specified for class " + container.FullName);
 
-				PatchTools.GetPatches(container, targetMethod, out prefix.method, out postfix.method);
+				PatchTools.GetPatches(container, original, out prefix.method, out postfix.method);
 
 				if (prefix.method != null)
 				{
@@ -127,7 +127,7 @@ namespace Harmony
 			}
 		}
 
-		MethodInfo GetOriginalMethod()
+		MethodBase GetOriginalMethod()
 		{
 			var attr = containerAttributes;
 			if (attr.originalType == null || attr.methodName == null) return null;

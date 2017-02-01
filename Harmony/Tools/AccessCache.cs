@@ -6,9 +6,9 @@ namespace Harmony
 {
 	public class AccessCache
 	{
-		internal Dictionary<Type, Dictionary<string, FieldInfo>> fields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
-		internal Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
-		internal Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodInfo>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodInfo>>>();
+		Dictionary<Type, Dictionary<string, FieldInfo>> fields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
+		Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
+		Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodBase>>>();
 
 		public FieldInfo GetFieldInfo(Type type, string name)
 		{
@@ -50,25 +50,25 @@ namespace Harmony
 			return property;
 		}
 
-		public MethodInfo GetMethodInfo(Type type, string name, Type[] arguments)
+		public MethodBase GetMethodInfo(Type type, string name, Type[] arguments)
 		{
-			Dictionary<string, Dictionary<Type[], MethodInfo>> methodsByName = null;
+			Dictionary<string, Dictionary<Type[], MethodBase>> methodsByName = null;
 			methods.TryGetValue(type, out methodsByName);
 			if (methodsByName == null)
 			{
-				methodsByName = new Dictionary<string, Dictionary<Type[], MethodInfo>>();
+				methodsByName = new Dictionary<string, Dictionary<Type[], MethodBase>>();
 				methods.Add(type, methodsByName);
 			}
 
-			Dictionary<Type[], MethodInfo> methodsByArguments = null;
+			Dictionary<Type[], MethodBase> methodsByArguments = null;
 			methodsByName.TryGetValue(name, out methodsByArguments);
 			if (methodsByArguments == null)
 			{
-				methodsByArguments = new Dictionary<Type[], MethodInfo>();
+				methodsByArguments = new Dictionary<Type[], MethodBase>();
 				methodsByName.Add(name, methodsByArguments);
 			}
 
-			MethodInfo method = null;
+			MethodBase method = null;
 			methodsByArguments.TryGetValue(arguments, out method);
 			if (method == null)
 			{
