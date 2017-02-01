@@ -28,11 +28,12 @@ namespace Harmony
 			return type.GetProperty(name, all);
 		}
 
-		public static MethodInfo Method(Type type, string name, Type[] parameters = null)
+		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
 			if (parameters == null) return type.GetMethod(name, all);
 			var result = type.GetMethod(name, all, null, parameters, null);
+			if (generics != null) result = result.MakeGenericMethod(generics);
 			return result;
 		}
 
@@ -111,6 +112,14 @@ namespace Harmony
 		public static Type[] Types(this ParameterInfo[] pinfo)
 		{
 			return pinfo.Select(pi => pi.ParameterType).ToArray();
+		}
+
+		public static T GetValueSafe<S, T>(this Dictionary<S, T> dictionary, S key)
+		{
+			T result;
+			if (dictionary.TryGetValue(key, out result))
+				return result;
+			return default(T);
 		}
 	}
 }
