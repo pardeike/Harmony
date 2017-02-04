@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="">
+  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.0.6">
     <img src="https://img.shields.io/badge/release-1.0.6-4BC51D.svg?style=flat" alt="v1.0.6" />
   </a>
   <a href="../../wiki">
@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  A library for patching, replacing and decorating .NET methods during runtime.
+  A library for patching, replacing and decorating .NET and Mono methods during runtime.
 </p>
 
 <hr>
