@@ -40,9 +40,14 @@
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
+  <PropertyGroup>
+    <Win32Resource>
+    </Win32Resource>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="HarmonyModifier.cs" />
+    <Compile Include="HarmonyProcessor.cs" />
     <Compile Include="HarmonySharedState.cs" />
+    <Compile Include="ILCopying\ILProcessor.cs" />
     <Compile Include="Tools\AccessCache.cs" />
     <Compile Include="Tools\AccessTools.cs" />
     <Compile Include="Attributes.cs" />
@@ -59,13 +64,14 @@
     <Compile Include="Extras\MethodInvoker.cs" />
     <Compile Include="MethodPatcher.cs" />
     <Compile Include="Patch.cs" />
-    <Compile Include="Patcher.cs" />
+    <Compile Include="PatchProcessor.cs" />
     <Compile Include="PatchFunctions.cs" />
+    <Compile Include="Tools\FileLog.cs" />
     <Compile Include="Tools\PatchTools.cs" />
     <Compile Include="Priority.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\DynamicTools.cs" />
-    <Compile Include="Traverse.cs" />
+    <Compile Include="Tools\Traverse.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

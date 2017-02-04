@@ -12,7 +12,7 @@ namespace Harmony.ILCopying
 	public class MethodCopier
 	{
 		MethodBodyReader reader;
-		Dictionary<ILCode, ILCode> replacements;
+		List<IILProcessor> processors = new List<IILProcessor>();
 
 		public MethodCopier(MethodBase fromMethod, DynamicMethod toDynamicMethod, LocalBuilder[] existingVariables = null)
 		{
@@ -21,18 +21,16 @@ namespace Harmony.ILCopying
 			reader = new MethodBodyReader(fromMethod, generator);
 			reader.DeclareVariables(existingVariables);
 			reader.ReadInstructions();
-			replacements = new Dictionary<ILCode, ILCode>();
 		}
 
-		public void AddReplacement(ILCode original, ILCode replacement)
+		public void AddReplacement(IILProcessor processor)
 		{
-			replacements[original] = replacement;
+			processors.Add(processor);
 		}
 
 		public void Emit()
 		{
-			reader.ModifyInstructions(replacements);
-			reader.FinalizeILCodes();
+			reader.FinalizeILCodes(processors);
 		}
 	}
 
@@ -40,6 +38,7 @@ namespace Harmony.ILCopying
 	{
 		readonly ILGenerator generator;
 
+		readonly MethodBase method;
 		readonly Module module;
 		readonly Type[] type_arguments;
 		readonly Type[] method_arguments;
@@ -48,7 +47,7 @@ namespace Harmony.ILCopying
 		readonly ParameterInfo[] parameters;
 		readonly IList<LocalVariableInfo> locals;
 		readonly IList<ExceptionHandlingClause> exceptions;
-		readonly List<ILInstruction> instructions;
+		List<ILInstruction> instructions;
 
 		LocalBuilder[] variables;
 
@@ -65,6 +64,7 @@ namespace Harmony.ILCopying
 		public MethodBodyReader(MethodBase method, ILGenerator generator)
 		{
 			this.generator = generator;
+			this.method = method;
 			module = method.Module;
 
 			var body = method.GetMethodBody();
@@ -95,23 +95,13 @@ namespace Harmony.ILCopying
 
 		public void ReadInstructions()
 		{
-			ILInstruction previous = null;
-
 			while (ilBytes.position < ilBytes.buffer.Length)
 			{
 				var loc = ilBytes.position; // get location first (ReadOpCode will advance it)
 				var instruction = new ILInstruction(ReadOpCode());
-				instruction.Offset = loc;
+				instruction.offset = loc;
 				ReadOperand(instruction);
-
-				if (previous != null)
-				{
-					instruction.Previous = previous;
-					previous.Next = instruction;
-				}
-
 				instructions.Add(instruction);
-				previous = instruction;
 			}
 
 			ResolveBranches();
@@ -121,36 +111,22 @@ namespace Harmony.ILCopying
 		{
 			foreach (var instruction in instructions)
 			{
-				switch (instruction.OpCode.OperandType)
+				switch (instruction.opcode.OperandType)
 				{
 					case OperandType.ShortInlineBrTarget:
 					case OperandType.InlineBrTarget:
-						instruction.Operand = GetInstruction((int)instruction.Operand);
+						instruction.operand = GetInstruction((int)instruction.operand);
 						break;
 
 					case OperandType.InlineSwitch:
-						var offsets = (int[])instruction.Operand;
+						var offsets = (int[])instruction.operand;
 						var branches = new ILInstruction[offsets.Length];
 						for (int j = 0; j < offsets.Length; j++)
 							branches[j] = GetInstruction(offsets[j]);
 
-						instruction.Operand = branches;
+						instruction.operand = branches;
 						break;
 				}
-			}
-		}
-
-		// 
-		public void ModifyInstructions(Dictionary<ILCode, ILCode> replacements)
-		{
-			if (replacements != null)
-			{
-				instructions.ForEach((instr) =>
-				{
-					var original = new ILCode(instr);
-					foreach (KeyValuePair<ILCode, ILCode> entry in replacements)
-						if (original.Equals(entry.Key)) entry.Value.Apply(instr);
-				});
 			}
 		}
 
@@ -168,29 +144,39 @@ namespace Harmony.ILCopying
 
 		// use parsed IL codes and emit them to a generator
 
-		public void FinalizeILCodes()
+		public void FinalizeILCodes(List<IILProcessor> processors)
 		{
 			if (generator == null) return;
 
-			// pass1 - define labels and add them to instructions that are target of a jump
-			instructions.ForEach(instruction =>
+			var finalInstructions = instructions.ToArray().ToList();
+			processors.ForEach(processor =>
 			{
-				var code = instruction.OpCode;
+				var processedInstructions = new List<ILInstruction>();
+				processedInstructions.AddRange(processor.Start(generator, method));
+				finalInstructions.ForEach(instruction => processedInstructions.AddRange(processor.Process(instruction.Copy())));
+				processedInstructions.AddRange(processor.End(generator, method));
+				finalInstructions = processedInstructions.ToArray().ToList();
+			});
+
+			// pass1 - define labels and add them to instructions that are target of a jump
+			finalInstructions.ForEach(instruction =>
+			{
+				var code = instruction.opcode;
 				switch (code.OperandType)
 				{
 					case OperandType.InlineSwitch:
 						{
-							var targets = instruction.Operand as ILInstruction[];
+							var targets = instruction.operand as ILInstruction[];
 							if (targets != null)
 							{
 								var labels = new List<Label>();
 								foreach (var target in targets)
 								{
 									var label = generator.DefineLabel();
-									target.AddLabel(label);
+									target.labels.Add(label);
 									labels.Add(label);
 								}
-								instruction.Argument = labels.ToArray();
+								instruction.argument = labels.ToArray();
 							}
 							break;
 						}
@@ -198,12 +184,12 @@ namespace Harmony.ILCopying
 					case OperandType.ShortInlineBrTarget:
 					case OperandType.InlineBrTarget:
 						{
-							var target = instruction.Operand as ILInstruction;
+							var target = instruction.operand as ILInstruction;
 							if (target != null)
 							{
 								var label = generator.DefineLabel();
-								target.AddLabel(label);
-								instruction.Argument = label;
+								target.labels.Add(label);
+								instruction.argument = label;
 							}
 							break;
 						}
@@ -211,13 +197,13 @@ namespace Harmony.ILCopying
 			});
 
 			// pass2 - mark labels and emit codes
-			instructions.ForEach(instruction =>
+			finalInstructions.ForEach(instruction =>
 			{
-				foreach (var label in instruction.Labels)
+				foreach (var label in instruction.labels)
 					generator.MarkLabel(label);
 
-				var code = instruction.OpCode;
-				var arg = instruction.Argument;
+				var code = instruction.opcode;
+				var arg = instruction.argument;
 				if (code.OperandType == OperandType.InlineNone)
 					generator.Emit(code);
 				else
@@ -234,11 +220,11 @@ namespace Harmony.ILCopying
 
 		void ReadOperand(ILInstruction instruction)
 		{
-			switch (instruction.OpCode.OperandType)
+			switch (instruction.opcode.OperandType)
 			{
 				case OperandType.InlineNone:
 					{
-						instruction.Argument = null;
+						instruction.argument = null;
 						break;
 					}
 
@@ -249,37 +235,37 @@ namespace Harmony.ILCopying
 						var branches = new int[length];
 						for (int i = 0; i < length; i++)
 							branches[i] = ilBytes.ReadInt32() + base_offset;
-						instruction.Operand = branches;
+						instruction.operand = branches;
 						break;
 					}
 
 				case OperandType.ShortInlineBrTarget:
 					{
 						var val = (sbyte)ilBytes.ReadByte();
-						instruction.Operand = val + ilBytes.position;
+						instruction.operand = val + ilBytes.position;
 						break;
 					}
 
 				case OperandType.InlineBrTarget:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = val + ilBytes.position;
+						instruction.operand = val + ilBytes.position;
 						break;
 					}
 
 				case OperandType.ShortInlineI:
 					{
-						if (instruction.OpCode == OpCodes.Ldc_I4_S)
+						if (instruction.opcode == OpCodes.Ldc_I4_S)
 						{
 							var sb = (sbyte)ilBytes.ReadByte();
-							instruction.Operand = sb;
-							instruction.Argument = (sbyte)instruction.Operand;
+							instruction.operand = sb;
+							instruction.argument = (sbyte)instruction.operand;
 						}
 						else
 						{
 							var b = ilBytes.ReadByte();
-							instruction.Operand = b;
-							instruction.Argument = (byte)instruction.Operand;
+							instruction.operand = b;
+							instruction.argument = (byte)instruction.operand;
 						}
 						break;
 					}
@@ -287,104 +273,104 @@ namespace Harmony.ILCopying
 				case OperandType.InlineI:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = val;
-						instruction.Argument = (int)instruction.Operand;
+						instruction.operand = val;
+						instruction.argument = (int)instruction.operand;
 						break;
 					}
 
 				case OperandType.ShortInlineR:
 					{
 						var val = ilBytes.ReadSingle();
-						instruction.Operand = val;
-						instruction.Argument = (float)instruction.Operand;
+						instruction.operand = val;
+						instruction.argument = (float)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineR:
 					{
 						var val = ilBytes.ReadDouble();
-						instruction.Operand = val;
-						instruction.Argument = (double)instruction.Operand;
+						instruction.operand = val;
+						instruction.argument = (double)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineI8:
 					{
 						var val = ilBytes.ReadInt64();
-						instruction.Operand = val;
-						instruction.Argument = (long)instruction.Operand;
+						instruction.operand = val;
+						instruction.argument = (long)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineSig:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = module.ResolveSignature(val);
-						instruction.Argument = (SignatureHelper)instruction.Operand;
+						instruction.operand = module.ResolveSignature(val);
+						instruction.argument = (SignatureHelper)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineString:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = module.ResolveString(val);
-						instruction.Argument = (string)instruction.Operand;
+						instruction.operand = module.ResolveString(val);
+						instruction.argument = (string)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineTok:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = module.ResolveMember(val, type_arguments, method_arguments);
-						instruction.Argument = (Type)instruction.Operand;
+						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
+						instruction.argument = (Type)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineType:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = module.ResolveMember(val, type_arguments, method_arguments);
-						instruction.Argument = (Type)instruction.Operand;
+						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
+						instruction.argument = (Type)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineMethod:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = module.ResolveMember(val, type_arguments, method_arguments);
-						if (instruction.Operand is ConstructorInfo)
-							instruction.Argument = (ConstructorInfo)instruction.Operand;
+						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
+						if (instruction.operand is ConstructorInfo)
+							instruction.argument = (ConstructorInfo)instruction.operand;
 						else
-							instruction.Argument = (MethodInfo)instruction.Operand;
+							instruction.argument = (MethodInfo)instruction.operand;
 						break;
 					}
 
 				case OperandType.InlineField:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.Operand = module.ResolveMember(val, type_arguments, method_arguments);
-						instruction.Argument = (FieldInfo)instruction.Operand;
+						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
+						instruction.argument = (FieldInfo)instruction.operand;
 						break;
 					}
 
 				case OperandType.ShortInlineVar:
 					{
 						var idx = ilBytes.ReadByte();
-						if (TargetsLocalVariable(instruction.OpCode))
+						if (TargetsLocalVariable(instruction.opcode))
 						{
 							var lvi = GetLocalVariable(idx);
 							if (lvi == null)
-								instruction.Argument = idx;
+								instruction.argument = idx;
 							else
 							{
-								instruction.Operand = lvi;
-								instruction.Argument = variables[lvi.LocalIndex];
+								instruction.operand = lvi;
+								instruction.argument = variables[lvi.LocalIndex];
 							}
 						}
 						else
 						{
-							instruction.Operand = GetParameter(idx);
-							instruction.Argument = idx;
+							instruction.operand = GetParameter(idx);
+							instruction.argument = idx;
 						}
 						break;
 					}
@@ -392,21 +378,21 @@ namespace Harmony.ILCopying
 				case OperandType.InlineVar:
 					{
 						var idx = ilBytes.ReadInt16();
-						if (TargetsLocalVariable(instruction.OpCode))
+						if (TargetsLocalVariable(instruction.opcode))
 						{
 							var lvi = GetLocalVariable(idx);
 							if (lvi == null)
-								instruction.Argument = idx;
+								instruction.argument = idx;
 							else
 							{
-								instruction.Operand = lvi;
-								instruction.Argument = variables[lvi.LocalIndex];
+								instruction.operand = lvi;
+								instruction.argument = variables[lvi.LocalIndex];
 							}
 						}
 						else
 						{
-							instruction.Operand = GetParameter(idx);
-							instruction.Argument = idx;
+							instruction.operand = GetParameter(idx);
+							instruction.argument = idx;
 						}
 						break;
 					}
@@ -448,8 +434,8 @@ namespace Harmony.ILCopying
 		ILInstruction GetInstruction(int offset)
 		{
 			var lastInstructionIndex = instructions.Count - 1;
-			if (offset < 0 || offset > instructions[lastInstructionIndex].Offset)
-				throw new Exception("Instruction offset " + offset + " is outside valid range 0 - " + instructions[lastInstructionIndex].Offset);
+			if (offset < 0 || offset > instructions[lastInstructionIndex].offset)
+				throw new Exception("Instruction offset " + offset + " is outside valid range 0 - " + instructions[lastInstructionIndex].offset);
 
 			int min = 0;
 			int max = lastInstructionIndex;
@@ -457,7 +443,7 @@ namespace Harmony.ILCopying
 			{
 				int mid = min + ((max - min) / 2);
 				var instruction = instructions[mid];
-				var instruction_offset = instruction.Offset;
+				var instruction_offset = instruction.offset;
 
 				if (offset == instruction_offset)
 					return instruction;

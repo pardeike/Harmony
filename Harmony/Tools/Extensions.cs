@@ -25,6 +25,15 @@ namespace Harmony
 				return result;
 			return default(T);
 		}
+
+		public static T GetTypedValue<T>(this Dictionary<string, object> dictionary, string key)
+		{
+			object result;
+			if (dictionary.TryGetValue(key, out result))
+				if (result is T)
+					return (T)result;
+			return default(T);
+		}
 	}
 
 	public static class CollectionExtensions

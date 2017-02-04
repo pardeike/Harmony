@@ -22,13 +22,13 @@ namespace Harmony
 			}
 		}
 
-		public Patches(Patch[] prefixes, Patch[] postfixes)
+		public Patches(List<Patch> prefixes, List<Patch> postfixes)
 		{
-			if (prefixes == null) prefixes = new Patch[0];
-			if (postfixes == null) postfixes = new Patch[0];
+			if (prefixes == null) prefixes = new List<Patch>();
+			if (postfixes == null) postfixes = new List<Patch>();
 
-			Prefixes = prefixes.ToList().AsReadOnly();
-			Postfixes = postfixes.ToList().AsReadOnly();
+			Prefixes = prefixes.AsReadOnly();
+			Postfixes = postfixes.AsReadOnly();
 		}
 	}
 
@@ -37,12 +37,9 @@ namespace Harmony
 		readonly string id;
 		public string Id => id;
 
-		readonly Patcher patcher;
-
 		HarmonyInstance(string id)
 		{
 			this.id = id;
-			patcher = new Patcher(this);
 		}
 
 		public static HarmonyInstance Create(string id)
@@ -51,19 +48,29 @@ namespace Harmony
 			return new HarmonyInstance(id);
 		}
 
-		public void PatchAll(Module module)
+		public void PatchAll(Assembly assembly)
 		{
-			patcher.PatchAll(module);
+			assembly.GetTypes().Do(type =>
+			{
+				var parentMethodInfos = type.GetHarmonyMethods();
+				if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
+				{
+					var info = HarmonyMethod.Merge(parentMethodInfos);
+					var processor = new PatchProcessor(this, type, info);
+					processor.Patch();
+				}
+			});
 		}
 
-		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix)
+		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyProcessor infix = null)
 		{
-			patcher.Patch(original, prefix, postfix);
+			var processor = new PatchProcessor(this, original, prefix, postfix, infix);
+			processor.Patch();
 		}
 
 		public Patches IsPatched(MethodBase method)
 		{
-			return patcher.IsPatched(method);
+			return PatchProcessor.IsPatched(method);
 		}
 	}
 }

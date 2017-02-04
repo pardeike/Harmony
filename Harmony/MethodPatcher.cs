@@ -13,9 +13,42 @@ namespace Harmony
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
 
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<ILCode[]> modifiers)
+		public class RetToBrAfterProcessor : IILProcessor
 		{
-			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch");
+			Label label;
+
+			public RetToBrAfterProcessor(Label label)
+			{
+				this.label = label;
+			}
+
+			public List<ILInstruction> Start(ILGenerator generator, MethodBase original)
+			{
+				return new List<ILInstruction>();
+			}
+
+			public List<ILInstruction> Process(ILInstruction instruction)
+			{
+				if (instruction == null) return new List<ILInstruction>();
+				if (instruction.opcode == OpCodes.Ret)
+				{
+					instruction.opcode = OpCodes.Br;
+					instruction.argument = label;
+					instruction.operand = label;
+				}
+				return new List<ILInstruction> { instruction };
+			}
+
+			public List<ILInstruction> End(ILGenerator generator, MethodBase original)
+			{
+				return new List<ILInstruction>();
+			}
+		}
+
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<IILProcessor> processors)
+		{
+			var idx = prefixes.Count() + postfixes.Count();
+			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
 			var il = patch.GetILGenerator();
 			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
 			var resultVariable = DynamicTools.DeclareReturnVar(il, original);
@@ -29,8 +62,9 @@ namespace Harmony
 			AddPrefixes(il, original, prefixes, privateVars, afterOriginal);
 
 			var copier = new MethodCopier(original, patch, originalVariables);
-			copier.AddReplacement(new ILCode(OpCodes.Ret), new ILCode(OpCodes.Br, afterOriginal));
-			modifiers.ForEach(mod => copier.AddReplacement(mod[0], mod[1]));
+			foreach (var processor in processors)
+				copier.AddReplacement(processor);
+			copier.AddReplacement(new RetToBrAfterProcessor(afterOriginal));
 			copier.Emit();
 			il.MarkLabel(afterOriginal);
 			if (resultVariable != null)

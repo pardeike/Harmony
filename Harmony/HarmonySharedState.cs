@@ -9,8 +9,10 @@ namespace Harmony
 	public static class HarmonySharedState
 	{
 		static readonly string name = "HarmonySharedState";
+		public static readonly int internalVersion = 100;
+		public static int actualVersion = -1;
 
-		static Dictionary<object, byte[]> GetState()
+		static Dictionary<MethodBase, byte[]> GetState()
 		{
 			lock (name)
 			{
@@ -23,7 +25,8 @@ namespace Harmony
 					var moduleBuilder = assemblyBuilder.DefineDynamicModule(name);
 					var typeAttributes = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Sealed | TypeAttributes.Abstract;
 					var typeBuilder = moduleBuilder.DefineType(name, typeAttributes);
-					typeBuilder.DefineField(name, typeof(Dictionary<object, byte[]>), FieldAttributes.Static | FieldAttributes.Public);
+					typeBuilder.DefineField("state", typeof(Dictionary<MethodBase, byte[]>), FieldAttributes.Static | FieldAttributes.Public);
+					typeBuilder.DefineField("version", typeof(int), FieldAttributes.Static | FieldAttributes.Public).SetConstant(internalVersion);
 					typeBuilder.CreateType();
 
 					assembly = AppDomain.CurrentDomain.GetAssemblies()
@@ -31,10 +34,15 @@ namespace Harmony
 						.FirstOrDefault();
 					if (assembly == null) throw new Exception("Cannot find or create harmony shared state");
 				}
-				var field = assembly.GetType(name).GetField(name);
-				if (field == null) throw new Exception("Cannot find harmony shared state field");
-				if (field.GetValue(null) == null) field.SetValue(null, new Dictionary<object, byte[]>());
-				return (Dictionary<object, byte[]>)field.GetValue(null);
+
+				var versionField = assembly.GetType(name).GetField("version");
+				if (versionField == null) throw new Exception("Cannot find harmony state version field");
+				actualVersion = (int)versionField.GetValue(null);
+
+				var stateField = assembly.GetType(name).GetField("state");
+				if (versionField == null) throw new Exception("Cannot find harmony state field");
+				if (stateField.GetValue(null) == null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
+				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 			}
 		}
 
@@ -45,9 +53,9 @@ namespace Harmony
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
 
-		internal static void SetPatchInfo(MethodBase method, PatchInfo info)
+		public static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
 		{
-			GetState()[method] = PatchInfoSerialization.Serialize(info);
+			GetState()[method] = PatchInfoSerialization.Serialize(patchInfo);
 		}
 	}
 }

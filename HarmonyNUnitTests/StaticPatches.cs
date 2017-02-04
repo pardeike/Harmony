@@ -34,10 +34,7 @@ namespace HarmonyNUnitTests
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new Patcher(instance);
-			Assert.IsNotNull(patcher);
-
-			patcher.Patch(originalMethod, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod));
+			instance.Patch(originalMethod, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod));
 			Class1.Method1();
 
 			Assert.IsTrue(Class1Patch.prefixed);

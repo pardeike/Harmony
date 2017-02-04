@@ -3,129 +3,28 @@ using System.Reflection.Emit;
 
 namespace Harmony.ILCopying
 {
-	public class ILCode
-	{
-		readonly OpCode opcode;
-		readonly bool hasOpcode;
-		readonly object operand;
-		readonly bool hasOperand;
-
-		public ILCode(OpCode opcode)
-		{
-			this.opcode = opcode;
-			hasOpcode = true;
-		}
-
-		public ILCode(object operand)
-		{
-			this.operand = operand;
-			hasOperand = true;
-		}
-
-		public ILCode(OpCode opcode, object operand)
-		{
-			this.opcode = opcode;
-			hasOpcode = true;
-			this.operand = operand;
-			hasOperand = true;
-		}
-
-		public ILCode(ILInstruction instruction)
-		{
-			opcode = instruction.OpCode;
-			hasOpcode = true;
-			operand = instruction.Operand;
-			hasOperand = true;
-		}
-
-		public void Apply(ILInstruction instruction)
-		{
-			if (hasOpcode) instruction.OpCode = opcode;
-			if (hasOperand)
-			{
-				instruction.Operand = operand;
-				instruction.Argument = operand;
-			}
-		}
-
-		public bool Equals(ILCode other)
-		{
-			var result = (!hasOpcode || !other.hasOpcode || opcode == other.opcode) && (!hasOperand || !other.hasOperand || operand == other.operand);
-			//if (result) FileLog.Log("# " + this.ToString() + " == " + other.ToString() + "  is " + result);
-			return result;
-		}
-
-		public override string ToString()
-		{
-			return "" + (hasOpcode ? opcode.Name : "*") + "_" + (hasOperand ? (operand == null ? "NULL" : operand.GetType().Name) : "*");
-		}
-	}
-
 	public class ILInstruction
 	{
-		int offset;
-		OpCode opcode;
-		object operand;
-		object argument;
+		public int offset;
+		public OpCode opcode;
+		public object operand;
+		public object argument;
 
-		ILInstruction previous;
-		ILInstruction next;
-
-		List<Label> labels;
-
-		public int Offset
-		{
-			get { return offset; }
-			set { offset = value; }
-		}
-
-		public OpCode OpCode
-		{
-			get { return opcode; }
-			set { opcode = value; }
-		}
-
-		public object Operand
-		{
-			get { return operand; }
-			set { operand = value; }
-		}
-
-		public object Argument
-		{
-			get { return argument; }
-			set { argument = value; }
-		}
-
-		public List<Label> Labels
-		{
-			get { return labels; }
-		}
-
-		public ILInstruction Previous
-		{
-			get { return previous; }
-			set { previous = value; }
-		}
-
-		public ILInstruction Next
-		{
-			get { return next; }
-			set { next = value; }
-		}
-
-		//
+		public List<Label> labels = new List<Label>();
 
 		public ILInstruction(OpCode opcode, object operand = null)
 		{
 			this.opcode = opcode;
 			this.operand = operand;
-			labels = new List<Label>();
 		}
 
-		public void AddLabel(Label label)
+		public ILInstruction Copy()
 		{
-			labels.Add(label);
+			var instr = new ILInstruction(opcode, operand);
+			instr.offset = offset;
+			instr.argument = argument;
+			instr.labels = labels;
+			return instr;
 		}
 
 		public int GetSize()

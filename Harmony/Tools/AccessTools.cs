@@ -42,7 +42,7 @@ namespace Harmony
 			return type.GetProperty(name, all);
 		}
 
-		public static MethodBase Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
+		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
 			if (parameters == null) return type.GetMethod(name, all);

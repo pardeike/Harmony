@@ -1,47 +1,15 @@
-﻿using System;
+﻿using Harmony.ILCopying;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace Harmony
 {
-	public class Patcher
-	{
-		readonly HarmonyInstance instance;
-
-		public Patcher(HarmonyInstance instance)
-		{
-			this.instance = instance;
-		}
-
-		public void PatchAll(Module module)
-		{
-			module.GetTypes().Do(type =>
-			{
-				var parentMethodInfos = type.GetHarmonyMethods();
-				if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
-				{
-					var info = HarmonyMethod.Merge(parentMethodInfos);
-					var processor = new PatchProcessor(instance, type, info);
-					processor.Patch();
-				}
-			});
-		}
-
-		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyModifier[] modifier = null)
-		{
-			var processor = new PatchProcessor(instance, original, prefix, postfix, modifier);
-			processor.Patch();
-		}
-
-		public Patches IsPatched(MethodBase method)
-		{
-			return PatchProcessor.IsPatched(method);
-		}
-	}
-
 	public class PatchProcessor
 	{
+		static object locker = new object();
+
 		readonly HarmonyInstance instance;
 
 		readonly Type container;
@@ -50,7 +18,7 @@ namespace Harmony
 		MethodBase original;
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
-		HarmonyModifier[] modifiers;
+		HarmonyProcessor infix;
 
 		public PatchProcessor(HarmonyInstance instance, Type type, HarmonyMethod attributes)
 		{
@@ -59,37 +27,38 @@ namespace Harmony
 			containerAttributes = attributes;
 			prefix = containerAttributes.Clone();
 			postfix = containerAttributes.Clone();
+			infix = null;
 			ProcessType();
 		}
 
-		public PatchProcessor(HarmonyInstance instance, MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyModifier[] modifiers)
+		public PatchProcessor(HarmonyInstance instance, MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyProcessor infix)
 		{
 			this.instance = instance;
 			this.original = original;
 			this.prefix = prefix;
 			this.postfix = postfix;
-			this.modifiers = modifiers;
+			this.infix = infix;
 		}
 
 		public static Patches IsPatched(MethodBase method)
 		{
-			var info = HarmonySharedState.GetPatchInfo(method);
-			if (info == null) return null;
-			return new Patches(info.prefixes, info.postfixes);
+			var patchInfo = HarmonySharedState.GetPatchInfo(method);
+			if (patchInfo == null) return null;
+			return new Patches(patchInfo.prefixes, patchInfo.prefixes);
 		}
 
 		public void Patch()
 		{
-			var info = HarmonySharedState.GetPatchInfo(original);
-			if (info == null)
-				info = PatchFunctions.CreateNewPatchInfo();
-			PatchFunctions.AddPrefix(info, instance.Id, prefix);
-			PatchFunctions.AddPostfix(info, instance.Id, postfix);
-			foreach (var modifier in modifiers)
-				PatchFunctions.AddModifier(info, instance.Id, modifier);
-
-			PatchFunctions.UpdateWrapper(original, info);
-			HarmonySharedState.SetPatchInfo(original, info);
+			lock (locker)
+			{
+				var patchInfo = HarmonySharedState.GetPatchInfo(original);
+				if (patchInfo == null) patchInfo = new PatchInfo();
+				PatchFunctions.AddPrefix(patchInfo, instance.Id, prefix);
+				PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
+				PatchFunctions.AddInfix(patchInfo, instance.Id, infix);
+				PatchFunctions.UpdateWrapper(original, patchInfo);
+				HarmonySharedState.UpdatePatchInfo(original, patchInfo);
+			}
 		}
 
 		bool CallPrepare()
