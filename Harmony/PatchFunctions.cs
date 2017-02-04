@@ -67,13 +67,14 @@ namespace Harmony
 			var sortedPostfixes = GetSortedPatchMethods(patchInfo.postfixes);
 			var sortedProcessors = GetSortedProcessors(patchInfo.processors);
 
-			var replacement = MethodPatcher.CreatePatchedMethod(original, sortedPostfixes, sortedPostfixes, sortedProcessors);
+			var replacement = MethodPatcher.CreatePatchedMethod(original, sortedPrefixes, sortedPostfixes, sortedProcessors);
 			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original);
-			PatchTools.KeepAliveForever(replacement);
 
 			var originalCodeStart = Memory.GetMethodStart(original);
 			var patchCodeStart = Memory.GetMethodStart(replacement);
 			Memory.WriteJump(originalCodeStart, patchCodeStart);
+
+			PatchTools.RememberObject(original, replacement); // no gc for new value + release old value to gc
 		}
 	}
 }
