@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
 // Based on the idea of https://github.com/jbevain/mono.reflection
+// TODO: find out if this answer is correct: http://stackoverflow.com/questions/4148297/resolving-the-tokens-found-in-the-il-from-a-dynamic-method/35711376#35711376
 
 namespace Harmony.ILCopying
 {
@@ -40,8 +41,8 @@ namespace Harmony.ILCopying
 
 		readonly MethodBase method;
 		readonly Module module;
-		readonly Type[] type_arguments;
-		readonly Type[] method_arguments;
+		readonly Type[] typeArguments;
+		readonly Type[] methodArguments;
 		readonly ByteBuffer ilBytes;
 		readonly ParameterInfo this_parameter;
 		readonly ParameterInfo[] parameters;
@@ -77,11 +78,14 @@ namespace Harmony.ILCopying
 			ilBytes = new ByteBuffer(bytes);
 			instructions = new List<ILInstruction>((bytes.Length + 1) / 2);
 
-			if (!(method is ConstructorInfo))
-				method_arguments = method.GetGenericArguments();
-
-			if (method.DeclaringType != null)
-				type_arguments = method.DeclaringType.GetGenericArguments();
+			Type type = method.DeclaringType;
+			if (type != null)
+			{
+				if (type.IsGenericType || type.IsGenericTypeDefinition)
+					typeArguments = type.GetGenericArguments();
+			}
+			if (method.IsGenericMethod || method.IsGenericMethodDefinition)
+				methodArguments = method.GetGenericArguments();
 
 			if (!method.IsStatic)
 				this_parameter = new ThisParameter(method);
@@ -216,6 +220,38 @@ namespace Harmony.ILCopying
 			});
 		}
 
+		static void GetMemberInfoValue(MemberInfo info, out object result)
+		{
+			result = null;
+			switch (info.MemberType)
+			{
+				case MemberTypes.Constructor:
+					result = (ConstructorInfo)info;
+					break;
+
+				case MemberTypes.Event:
+					result = (EventInfo)info;
+					break;
+
+				case MemberTypes.Field:
+					result = (FieldInfo)info;
+					break;
+
+				case MemberTypes.Method:
+					result = (MethodInfo)info;
+					break;
+
+				case MemberTypes.TypeInfo:
+				case MemberTypes.NestedType:
+					result = (Type)info;
+					break;
+
+				case MemberTypes.Property:
+					result = (PropertyInfo)info;
+					break;
+			}
+		}
+
 		// interpret instruction operand
 
 		void ReadOperand(ILInstruction instruction)
@@ -321,15 +357,15 @@ namespace Harmony.ILCopying
 				case OperandType.InlineTok:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
-						instruction.argument = (Type)instruction.operand;
+						instruction.operand = module.ResolveMember(val, typeArguments, methodArguments);
+						GetMemberInfoValue((MemberInfo)instruction.operand, out instruction.argument);
 						break;
 					}
 
 				case OperandType.InlineType:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
+						instruction.operand = module.ResolveType(val, typeArguments, methodArguments);
 						instruction.argument = (Type)instruction.operand;
 						break;
 					}
@@ -337,7 +373,7 @@ namespace Harmony.ILCopying
 				case OperandType.InlineMethod:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
+						instruction.operand = module.ResolveMethod(val, typeArguments, methodArguments);
 						if (instruction.operand is ConstructorInfo)
 							instruction.argument = (ConstructorInfo)instruction.operand;
 						else
@@ -348,7 +384,7 @@ namespace Harmony.ILCopying
 				case OperandType.InlineField:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveMember(val, type_arguments, method_arguments);
+						instruction.operand = module.ResolveField(val, typeArguments, methodArguments);
 						instruction.argument = (FieldInfo)instruction.operand;
 						break;
 					}
