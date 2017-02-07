@@ -29,19 +29,23 @@ namespace Harmony
 
 		public static byte[] Serialize(this PatchInfo patchInfo)
 		{
+#pragma warning disable XS0001
 			using (var streamMemory = new MemoryStream())
 			{
 				var formatter = new BinaryFormatter();
 				formatter.Serialize(streamMemory, patchInfo);
 				return streamMemory.GetBuffer();
 			}
+#pragma warning restore XS0001
 		}
 
 		public static PatchInfo Deserialize(byte[] bytes)
 		{
 			var formatter = new BinaryFormatter();
 			formatter.Binder = new Binder();
+#pragma warning disable XS0001
 			var streamMemory = new MemoryStream(bytes);
+#pragma warning restore XS0001
 			return (PatchInfo)formatter.Deserialize(streamMemory);
 		}
 

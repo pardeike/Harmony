@@ -18,7 +18,7 @@ namespace Harmony
 
 		public static Type TypeByName(string name)
 		{
-			var type = System.Type.GetType(name, false);
+			var type = Type.GetType(name, false);
 			if (type == null)
 				type = AppDomain.CurrentDomain.GetAssemblies()
 					.SelectMany(x => x.GetTypes())

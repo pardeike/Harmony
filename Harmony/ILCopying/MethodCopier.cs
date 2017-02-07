@@ -12,8 +12,8 @@ namespace Harmony.ILCopying
 {
 	public class MethodCopier
 	{
-		MethodBodyReader reader;
-		List<IILProcessor> processors = new List<IILProcessor>();
+		readonly MethodBodyReader reader;
+		readonly List<IILProcessor> processors = new List<IILProcessor>();
 
 		public MethodCopier(MethodBase fromMethod, DynamicMethod toDynamicMethod, LocalBuilder[] existingVariables = null)
 		{
@@ -519,7 +519,7 @@ namespace Harmony.ILCopying
 				: two_bytes_opcodes[ilBytes.ReadByte()];
 		}
 
-		private MethodInfo EmitMethodForType(Type type)
+		MethodInfo EmitMethodForType(Type type)
 		{
 			foreach (KeyValuePair<Type, MethodInfo> entry in emitMethods)
 				if (entry.Key == type) return entry.Value;

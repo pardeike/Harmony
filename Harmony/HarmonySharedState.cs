@@ -16,9 +16,7 @@ namespace Harmony
 		{
 			lock (name)
 			{
-				var assembly = AppDomain.CurrentDomain.GetAssemblies()
-					.Where(a => a.GetName().Name.Contains(name))
-					.FirstOrDefault();
+				var assembly = SharedStateAssembly();
 				if (assembly == null)
 				{
 					var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(name), AssemblyBuilderAccess.Run);
@@ -29,9 +27,7 @@ namespace Harmony
 					typeBuilder.DefineField("version", typeof(int), FieldAttributes.Static | FieldAttributes.Public).SetConstant(internalVersion);
 					typeBuilder.CreateType();
 
-					assembly = AppDomain.CurrentDomain.GetAssemblies()
-						.Where(a => a.GetName().Name == name)
-						.FirstOrDefault();
+					assembly = SharedStateAssembly();
 					if (assembly == null) throw new Exception("Cannot find or create harmony shared state");
 				}
 
@@ -46,6 +42,12 @@ namespace Harmony
 			}
 		}
 
+		static Assembly SharedStateAssembly()
+		{
+			return AppDomain.CurrentDomain.GetAssemblies()
+				.FirstOrDefault(a => a.GetName().Name.Contains(name));
+		}
+
 		public static PatchInfo GetPatchInfo(MethodBase method)
 		{
 			var bytes = GetState().GetValueSafe(method);
@@ -55,7 +57,7 @@ namespace Harmony
 
 		public static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
 		{
-			GetState()[method] = PatchInfoSerialization.Serialize(patchInfo);
+			GetState()[method] = patchInfo.Serialize();
 		}
 	}
 }

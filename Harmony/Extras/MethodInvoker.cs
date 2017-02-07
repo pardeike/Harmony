@@ -59,10 +59,12 @@ namespace Harmony
 					il.Emit(OpCodes.Ldloc, locals[i]);
 			}
 
+#pragma warning disable XS0001
 			if (methodInfo.IsStatic)
 				il.EmitCall(OpCodes.Call, methodInfo, null);
 			else
 				il.EmitCall(OpCodes.Callvirt, methodInfo, null);
+#pragma warning restore XS0001
 
 			if (methodInfo.ReturnType == typeof(void))
 				il.Emit(OpCodes.Ldnull);

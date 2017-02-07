@@ -52,7 +52,10 @@ namespace Harmony
 			var il = patch.GetILGenerator();
 			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
 			var resultVariable = DynamicTools.DeclareReturnVar(il, original);
-			var privateStateVariable = DeclarePrivateStateVar(il, original);
+
+			// TODO: this is broken because it has only one var for all patches together.
+			//       to make this useful, we need one var for each patch pair
+			var privateStateVariable = DeclarePrivateStateVar(il);
 
 			var privateVars = new Dictionary<string, LocalBuilder>();
 			privateVars[RESULT_VAR] = resultVariable;
@@ -80,7 +83,7 @@ namespace Harmony
 			return patch;
 		}
 
-		static LocalBuilder DeclarePrivateStateVar(ILGenerator il, MethodBase original)
+		static LocalBuilder DeclarePrivateStateVar(ILGenerator il)
 		{
 			var v = il.DeclareLocal(typeof(object));
 			il.Emit(OpCodes.Ldnull);
@@ -122,7 +125,7 @@ namespace Harmony
 				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original);
 				var ldargCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldarga : OpCodes.Ldarg;
 				il.Emit(ldargCode, idx + (isInstance ? 1 : 0));
-			};
+			}
 		}
 
 		static void AddPrefixes(ILGenerator il, MethodBase original, List<MethodInfo> prefixes, Dictionary<string, LocalBuilder> variables, Label label)

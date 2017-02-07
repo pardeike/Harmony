@@ -87,13 +87,13 @@ namespace Harmony.ILCopying
 					break;
 
 				case OperandType.InlineSwitch:
-					var labels = (ILInstruction[])operand;
-					for (int i = 0; i < labels.Length; i++)
+					var switchLabels = (ILInstruction[])operand;
+					for (int i = 0; i < switchLabels.Length; i++)
 					{
 						if (i > 0)
 							instruction = instruction + ",";
 
-						AppendLabel(ref instruction, labels[i]);
+						AppendLabel(ref instruction, switchLabels[i]);
 					}
 					break;
 

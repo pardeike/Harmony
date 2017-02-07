@@ -8,7 +8,7 @@ namespace Harmony
 	{
 		Dictionary<Type, Dictionary<string, FieldInfo>> fields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
 		Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
-		Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodBase>>>();
+		readonly Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodBase>>>();
 
 		public FieldInfo GetFieldInfo(Type type, string name)
 		{

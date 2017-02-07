@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Harmony
 {
-	public class FileLog
+	public static class FileLog
 	{
 		public static void Log(string str)
 		{
@@ -48,10 +48,12 @@ namespace Harmony
 			Marshal.Copy((IntPtr)ptr, arr, 0, len);
 			var md5Hash = MD5.Create();
 			var hash = md5Hash.ComputeHash(arr);
+#pragma warning disable XS0001
 			var sBuilder = new StringBuilder();
+#pragma warning restore XS0001
 			for (int i = 0; i < hash.Length; i++)
 				sBuilder.Append(hash[i].ToString("X2"));
-			Log("HASH: " + sBuilder.ToString());
+			Log("HASH: " + sBuilder);
 		}
 	}
 }
