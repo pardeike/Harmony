@@ -91,11 +91,31 @@ namespace Harmony
 			return v;
 		}
 
-		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool noOut)
+		static OpCode LoadIndOpCodeFor(Type type)
+		{
+			if (type.IsEnum) return OpCodes.Ldind_I4;
+
+			if (type == typeof(float)) return OpCodes.Ldind_R4;
+			if (type == typeof(double)) return OpCodes.Ldind_R8;
+
+			if (type == typeof(byte)) return OpCodes.Ldind_U1;
+			if (type == typeof(ushort)) return OpCodes.Ldind_U2;
+			if (type == typeof(uint)) return OpCodes.Ldind_U4;
+			if (type == typeof(ulong)) return OpCodes.Ldind_I8;
+
+			if (type == typeof(sbyte)) return OpCodes.Ldind_I1;
+			if (type == typeof(short)) return OpCodes.Ldind_I2;
+			if (type == typeof(int)) return OpCodes.Ldind_I4;
+			if (type == typeof(long)) return OpCodes.Ldind_I8;
+
+			return OpCodes.Ldind_Ref;
+		}
+
+		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables)
 		{
 			var isInstance = original.IsStatic == false;
-			var originalParameterNames = original.GetParameters()
-				.Where(p => p.IsOut == false || noOut == false).Select(p => p.Name).ToArray();
+			var originalParameters = original.GetParameters();
+			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
 			foreach (var patchParam in patch.GetParameters())
 			{
 				if (patchParam.Name == INSTANCE_PARAM)
@@ -123,8 +143,35 @@ namespace Harmony
 
 				var idx = Array.IndexOf(originalParameterNames, patchParam.Name);
 				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original);
-				var ldargCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldarga : OpCodes.Ldarg;
-				il.Emit(ldargCode, idx + (isInstance ? 1 : 0));
+
+				//   original -> patch     opcode
+				// --------------------------------------
+				// 1 normal   -> normal  : LDARG
+				// 2 normal   -> ref/out : LDARGA
+				// 3 ref/out  -> normal  : LDARG, LDIND_x
+				// 4 ref/out  -> ref/out : LDARG
+				//
+				var originalIsNormal = originalParameters[idx].IsOut == false && originalParameters[idx].ParameterType.IsByRef == false;
+				var patchIsNormal = patchParam.IsOut == false && patchParam.ParameterType.IsByRef == false;
+				var patchArgIndex = idx + (isInstance ? 1 : 0);
+
+				// Case 1 + 4
+				if (originalIsNormal == patchIsNormal)
+				{
+					il.Emit(OpCodes.Ldarg, patchArgIndex);
+					return;
+				}
+
+				// Case 2
+				if (originalIsNormal && patchIsNormal == false)
+				{
+					il.Emit(OpCodes.Ldarga, patchArgIndex);
+					return;
+				}
+
+				// Case 3
+				il.Emit(OpCodes.Ldarg, patchArgIndex);
+				il.Emit(LoadIndOpCodeFor(originalParameters[idx].ParameterType));
 			}
 		}
 
@@ -132,7 +179,7 @@ namespace Harmony
 		{
 			prefixes.ForEach(fix =>
 			{
-				EmitCallParameter(il, original, fix, variables, true);
+				EmitCallParameter(il, original, fix, variables);
 				il.Emit(OpCodes.Call, fix);
 				if (fix.ReturnType != typeof(void))
 				{
@@ -147,7 +194,7 @@ namespace Harmony
 		{
 			postfixes.ForEach(fix =>
 			{
-				EmitCallParameter(il, original, fix, variables, false);
+				EmitCallParameter(il, original, fix, variables);
 				il.Emit(OpCodes.Call, fix);
 				if (fix.ReturnType != typeof(void))
 					throw new Exception("Postfix patch " + fix + " has not \"void\" return type: " + fix.ReturnType);
