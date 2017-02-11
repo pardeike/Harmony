@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -17,7 +18,8 @@ namespace Harmony
 			{
 				var types = new Type[] {
 					typeof(PatchInfo),
-					typeof(Patch)
+					typeof(Patch),
+					typeof(Processor)
 				};
 				foreach (var type in types)
 					if (typeName == type.FullName)
@@ -74,13 +76,13 @@ namespace Harmony
 	{
 		public List<Patch> prefixes;
 		public List<Patch> postfixes;
-		public List<Processor> processors;
+		public List<Patch> processors;
 
 		public PatchInfo()
 		{
 			prefixes = new List<Patch>();
 			postfixes = new List<Patch>();
-			processors = new List<Processor>();
+			processors = new List<Patch>();
 		}
 
 		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after)
@@ -93,9 +95,9 @@ namespace Harmony
 			postfixes.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after));
 		}
 
-		public void AddProcessor(IILProcessor processor, string owner, int priority, string[] before, string[] after)
+		public void AddProcessor(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
-			processors.Add(new Processor(processor, postfixes.Count() + 1, owner, priority, before, after));
+			processors.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after));
 		}
 	}
 
@@ -112,12 +114,37 @@ namespace Harmony
 
 		public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after)
 		{
+			if (patch is DynamicMethod) throw new Exception("Cannot directly reference dynamic method \"" + patch + "\" in Harmony. Use a factory method instead that will return the dynamic method.");
+
 			this.index = index;
 			this.owner = owner;
 			this.priority = priority;
 			this.before = before;
 			this.after = after;
 			this.patch = patch;
+		}
+
+		public HarmonyProcessor GetProcessor(MethodBase original)
+		{
+			if (patch.ReturnType != typeof(HarmonyProcessor)) return null;
+			if (patch.IsStatic == false) return null;
+			var parameters = patch.GetParameters();
+			if (parameters.Count() != 1) return null;
+			if (parameters[0].ParameterType != typeof(MethodBase)) return null;
+
+			return patch.Invoke(null, new object[] { original }) as HarmonyProcessor;
+		}
+
+		public MethodInfo GetMethod(MethodBase original)
+		{
+			if (patch.ReturnType != typeof(DynamicMethod)) return patch;
+			if (patch.IsStatic == false) return patch;
+			var parameters = patch.GetParameters();
+			if (parameters.Count() != 1) return patch;
+			if (parameters[0].ParameterType != typeof(MethodBase)) return patch;
+
+			// we have a DynamicMethod factory, let's use it
+			return patch.Invoke(null, new object[] { original }) as DynamicMethod;
 		}
 
 		public override bool Equals(object obj)

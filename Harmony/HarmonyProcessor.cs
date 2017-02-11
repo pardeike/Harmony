@@ -7,15 +7,8 @@ namespace Harmony
 	{
 		public List<IILProcessor> processors;
 
-		public readonly int priority;
-		public readonly string[] before;
-		public readonly string[] after;
-
-		public HarmonyProcessor(int priority, string[] before, string[] after)
+		public HarmonyProcessor()
 		{
-			this.priority = priority;
-			this.before = before;
-			this.after = after;
 			processors = new List<IILProcessor>();
 		}
 

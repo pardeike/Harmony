@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Harmony
 {
@@ -117,6 +118,7 @@ namespace Harmony
 
 		public static List<HarmonyMethod> GetHarmonyMethods(this MethodBase method)
 		{
+			if (method is DynamicMethod) return new List<HarmonyMethod>();
 			return method.GetCustomAttributes(true)
 						.Where(attr => attr is HarmonyAttribute)
 						.Cast<HarmonyAttribute>()

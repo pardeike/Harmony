@@ -79,4 +79,9 @@ namespace Harmony
 	public class HarmonyPostfix : Attribute
 	{
 	}
+
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyProcessors : Attribute
+	{
+	}
 }

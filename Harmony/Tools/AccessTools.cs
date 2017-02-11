@@ -45,8 +45,11 @@ namespace Harmony
 		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
-			if (parameters == null) return type.GetMethod(name, all);
-			var result = type.GetMethod(name, all, null, parameters, null);
+			MethodInfo result;
+			if (parameters == null)
+				result = type.GetMethod(name, all);
+			else
+				result = type.GetMethod(name, all, null, parameters, new ParameterModifier[] { });
 			if (result == null) return null;
 			if (generics != null) result = result.MakeGenericMethod(generics);
 			return result;
@@ -64,6 +67,12 @@ namespace Harmony
 		{
 			if (type == null || name == null) return null;
 			return type.GetNestedType(name, all);
+		}
+
+		public static Type FirstInner(Type type, Func<Type, bool> predicate)
+		{
+			if (type == null || predicate == null) return null;
+			return type.GetNestedTypes(all).First(predicate);
 		}
 
 		public static Type[] GetTypes(object[] parameters)

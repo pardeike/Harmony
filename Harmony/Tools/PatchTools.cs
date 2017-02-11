@@ -23,15 +23,14 @@ namespace Harmony
 			return method;
 		}
 
-		public static void GetPatches(Type patchType, MethodBase original, out MethodInfo prefix, out MethodInfo postfix)
+		public static void GetPatches(Type patchType, MethodBase original, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo processors)
 		{
 			var type = original.DeclaringType;
 			var methodName = original.Name;
 
 			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix");
 			postfix = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix");
-			if (prefix == null && postfix == null)
-				throw new MissingMethodException("No prefix/postfix patch for " + type.FullName + "." + methodName + "() found");
+			processors = GetPatchMethod<HarmonyProcessors>(patchType, "Processors");
 		}
 	}
 }

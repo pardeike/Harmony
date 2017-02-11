@@ -16,7 +16,7 @@ namespace Harmony
 		MethodBase original;
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
-		HarmonyProcessor infix;
+		HarmonyMethod infix;
 
 		public PatchProcessor(HarmonyInstance instance, Type type, HarmonyMethod attributes)
 		{
@@ -29,7 +29,7 @@ namespace Harmony
 			ProcessType();
 		}
 
-		public PatchProcessor(HarmonyInstance instance, MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyProcessor infix)
+		public PatchProcessor(HarmonyInstance instance, MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod infix)
 		{
 			this.instance = instance;
 			this.original = original;
@@ -78,7 +78,7 @@ namespace Harmony
 				if (original == null)
 					throw new ArgumentException("No target method specified for class " + container.FullName);
 
-				PatchTools.GetPatches(container, original, out prefix.method, out postfix.method);
+				PatchTools.GetPatches(container, original, out prefix.method, out postfix.method, out infix.method);
 
 				if (prefix.method != null)
 				{

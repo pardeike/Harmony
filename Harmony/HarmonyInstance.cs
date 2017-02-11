@@ -62,7 +62,7 @@ namespace Harmony
 			});
 		}
 
-		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyProcessor infix = null)
+		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod infix = null)
 		{
 			var processor = new PatchProcessor(this, original, prefix, postfix, infix);
 			processor.Patch();
