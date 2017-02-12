@@ -51,7 +51,7 @@ namespace Harmony
 			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
 			var il = patch.GetILGenerator();
 			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
-			var resultVariable = DynamicTools.DeclareReturnVar(il, original);
+			var resultVariable = DynamicTools.DeclareReturnVar(original, il);
 
 			// TODO: this is broken because it has only one var for all patches together.
 			//       to make this useful, we need one var for each patch pair
@@ -61,17 +61,19 @@ namespace Harmony
 			privateVars[RESULT_VAR] = resultVariable;
 			privateVars[STATE_VAR] = privateStateVariable;
 
-			var afterOriginal = il.DefineLabel();
-			AddPrefixes(il, original, prefixes, privateVars, afterOriginal);
+			var afterOriginal1 = il.DefineLabel();
+			var afterOriginal2 = il.DefineLabel();
+			AddPrefixes(il, original, prefixes, privateVars, afterOriginal2);
 
 			var copier = new MethodCopier(original, patch, originalVariables);
 			foreach (var processor in processors)
 				copier.AddReplacement(processor);
-			copier.AddReplacement(new RetToBrAfterProcessor(afterOriginal));
+			copier.AddReplacement(new RetToBrAfterProcessor(afterOriginal1));
 			copier.Emit();
-			il.MarkLabel(afterOriginal);
+			il.MarkLabel(afterOriginal1);
 			if (resultVariable != null)
 				il.Emit(OpCodes.Stloc, resultVariable);
+			il.MarkLabel(afterOriginal2);
 
 			AddPostfixes(il, original, postfixes, privateVars);
 
@@ -128,7 +130,7 @@ namespace Harmony
 				if (patchParam.Name == STATE_VAR)
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					il.Emit(ldlocCode, variables.GetValueSafe(STATE_VAR));
+					il.Emit(ldlocCode, variables[STATE_VAR]);
 					continue;
 				}
 
@@ -137,7 +139,7 @@ namespace Harmony
 					if (AccessTools.GetReturnedType(original) == typeof(void))
 						throw new Exception("Cannot get result from void method " + original);
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					il.Emit(ldlocCode, variables.GetValueSafe(RESULT_VAR));
+					il.Emit(ldlocCode, variables[RESULT_VAR]);
 					continue;
 				}
 
@@ -159,14 +161,14 @@ namespace Harmony
 				if (originalIsNormal == patchIsNormal)
 				{
 					il.Emit(OpCodes.Ldarg, patchArgIndex);
-					return;
+					continue;
 				}
 
 				// Case 2
 				if (originalIsNormal && patchIsNormal == false)
 				{
 					il.Emit(OpCodes.Ldarga, patchArgIndex);
-					return;
+					continue;
 				}
 
 				// Case 3

@@ -42,7 +42,7 @@ namespace Harmony
 			).ToArray();
 		}
 
-		public static LocalBuilder DeclareReturnVar(ILGenerator il, MethodBase original)
+		public static LocalBuilder DeclareReturnVar(MethodBase original, ILGenerator il)
 		{
 			var type = AccessTools.GetReturnedType(original);
 			if (AccessTools.isClass(type))

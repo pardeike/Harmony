@@ -71,14 +71,8 @@ namespace Harmony
 			var replacement = MethodPatcher.CreatePatchedMethod(original, sortedPrefixes, sortedPostfixes, sortedProcessors);
 			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original);
 
-			FileLog.Log("Getting code start for " + original);
 			var originalCodeStart = Memory.GetMethodStart(original);
-			FileLog.Log("=> " + originalCodeStart);
-
-			FileLog.Log("Getting code start for " + original);
 			var patchCodeStart = Memory.GetMethodStart(replacement);
-			FileLog.Log("=> " + patchCodeStart);
-
 			Memory.WriteJump(originalCodeStart, patchCodeStart);
 
 			PatchTools.RememberObject(original, replacement); // no gc for new value + release old value to gc
