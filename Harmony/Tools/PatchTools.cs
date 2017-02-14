@@ -23,14 +23,14 @@ namespace Harmony
 			return method;
 		}
 
-		public static void GetPatches(Type patchType, MethodBase original, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo processors)
+		public static void GetPatches(Type patchType, MethodBase original, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo infix)
 		{
 			var type = original.DeclaringType;
 			var methodName = original.Name;
 
 			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix");
 			postfix = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix");
-			processors = GetPatchMethod<HarmonyProcessors>(patchType, "Processors");
+			infix = GetPatchMethod<HarmonyProcessors>(patchType, "Processors");
 		}
 	}
 }

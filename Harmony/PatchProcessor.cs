@@ -22,10 +22,10 @@ namespace Harmony
 		{
 			this.instance = instance;
 			container = type;
-			containerAttributes = attributes;
+			containerAttributes = attributes ?? new HarmonyMethod(null);
 			prefix = containerAttributes.Clone();
 			postfix = containerAttributes.Clone();
-			infix = null;
+			infix = containerAttributes.Clone();
 			ProcessType();
 		}
 
@@ -33,9 +33,9 @@ namespace Harmony
 		{
 			this.instance = instance;
 			this.original = original;
-			this.prefix = prefix;
-			this.postfix = postfix;
-			this.infix = infix;
+			this.prefix = prefix ?? new HarmonyMethod(null);
+			this.postfix = postfix ?? new HarmonyMethod(null);
+			this.infix = infix ?? new HarmonyMethod(null);
 		}
 
 		public static Patches IsPatched(MethodBase method)
@@ -90,6 +90,12 @@ namespace Harmony
 				{
 					var postfixAttributes = postfix.method.GetHarmonyMethods();
 					containerAttributes.Merge(HarmonyMethod.Merge(postfixAttributes)).CopyTo(postfix);
+				}
+
+				if (infix.method != null)
+				{
+					var infixAttributes = infix.method.GetHarmonyMethods();
+					containerAttributes.Merge(HarmonyMethod.Merge(infixAttributes)).CopyTo(infix);
 				}
 			}
 		}

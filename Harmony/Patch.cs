@@ -126,11 +126,11 @@ namespace Harmony
 
 		public HarmonyProcessor GetProcessor(MethodBase original)
 		{
-			if (patch.ReturnType != typeof(HarmonyProcessor)) return null;
-			if (patch.IsStatic == false) return null;
+			if (patch.ReturnType != typeof(HarmonyProcessor)) throw new Exception("Processor factory " + original + " must have a return type 'HarmonyProcessor'");
+			if (patch.IsStatic == false) throw new Exception("Processor factory " + original + " must be static");
 			var parameters = patch.GetParameters();
-			if (parameters.Count() != 1) return null;
-			if (parameters[0].ParameterType != typeof(MethodBase)) return null;
+			if (parameters.Count() != 1) throw new Exception("Processor factory " + original + " must have exactly one parameter");
+			if (parameters[0].ParameterType != typeof(MethodBase)) throw new Exception("Processor factory " + original + " must have a parameter of type 'MethodBase'");
 
 			return patch.Invoke(null, new object[] { original }) as HarmonyProcessor;
 		}
