@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.0.6">
-    <img src="https://img.shields.io/badge/release-1.0.6-4BC51D.svg?style=flat" alt="v1.0.6" />
+  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.0.7">
+    <img src="https://img.shields.io/badge/release-1.0.7-4BC51D.svg?style=flat" alt="v1.0.7" />
   </a>
   <a href="../../wiki">
     <img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
