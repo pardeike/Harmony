@@ -1,5 +1,4 @@
-﻿using Harmony.ILCopying;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,8 +17,8 @@ namespace Harmony
 			{
 				var types = new Type[] {
 					typeof(PatchInfo),
-					typeof(Patch),
-					typeof(Processor)
+					typeof(Patch[]),
+					typeof(Patch)
 				};
 				foreach (var type in types)
 					if (typeName == type.FullName)
@@ -74,30 +73,36 @@ namespace Harmony
 	[Serializable]
 	public class PatchInfo
 	{
-		public List<Patch> prefixes;
-		public List<Patch> postfixes;
-		public List<Patch> processors;
+		public Patch[] prefixes;
+		public Patch[] postfixes;
+		public Patch[] processors;
 
 		public PatchInfo()
 		{
-			prefixes = new List<Patch>();
-			postfixes = new List<Patch>();
-			processors = new List<Patch>();
+			prefixes = new Patch[0];
+			postfixes = new Patch[0];
+			processors = new Patch[0];
 		}
 
 		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
-			prefixes.Add(new Patch(patch, prefixes.Count() + 1, owner, priority, before, after));
+			var l = prefixes.ToList();
+			l.Add(new Patch(patch, prefixes.Count() + 1, owner, priority, before, after));
+			prefixes = l.ToArray();
 		}
 
 		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
-			postfixes.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after));
+			var l = postfixes.ToList();
+			l.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after));
+			postfixes = l.ToArray();
 		}
 
 		public void AddProcessor(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
-			processors.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after));
+			var l = processors.ToList();
+			l.Add(new Patch(patch, processors.Count() + 1, owner, priority, before, after));
+			processors = l.ToArray();
 		}
 	}
 
@@ -160,43 +165,6 @@ namespace Harmony
 		public override int GetHashCode()
 		{
 			return patch.GetHashCode();
-		}
-	}
-
-	[Serializable]
-	public class Processor : IComparable
-	{
-		readonly public int index;
-		readonly public string owner;
-		readonly public int priority;
-		readonly public string[] before;
-		readonly public string[] after;
-
-		readonly public IILProcessor processor;
-
-		public Processor(IILProcessor processor, int index, string owner, int priority, string[] before, string[] after)
-		{
-			this.index = index;
-			this.owner = owner;
-			this.priority = priority;
-			this.before = before;
-			this.after = after;
-			this.processor = processor;
-		}
-
-		public override bool Equals(object obj)
-		{
-			return ((obj != null) && (obj is Processor) && (processor == ((Processor)obj).processor));
-		}
-
-		public int CompareTo(object obj)
-		{
-			return PatchInfoSerialization.PriorityComparer(obj, index, priority, before, after);
-		}
-
-		public override int GetHashCode()
-		{
-			return processor.GetHashCode();
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace Harmony
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
 
-		public class RetToBrAfterProcessor : IILProcessor
+		public class RetToBrAfterProcessor : CodeProcessor
 		{
 			Label label;
 
@@ -22,30 +22,19 @@ namespace Harmony
 				this.label = label;
 			}
 
-			public List<ILInstruction> Start(ILGenerator generator, MethodBase original)
+			public override List<CodeInstruction> Process(CodeInstruction instruction)
 			{
-				return new List<ILInstruction>();
-			}
-
-			public List<ILInstruction> Process(ILInstruction instruction)
-			{
-				if (instruction == null) return new List<ILInstruction>();
+				if (instruction == null) return null;
 				if (instruction.opcode == OpCodes.Ret)
 				{
 					instruction.opcode = OpCodes.Br;
-					instruction.argument = label;
 					instruction.operand = label;
 				}
-				return new List<ILInstruction> { instruction };
-			}
-
-			public List<ILInstruction> End(ILGenerator generator, MethodBase original)
-			{
-				return new List<ILInstruction>();
+				return new List<CodeInstruction> { instruction };
 			}
 		}
 
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<IILProcessor> processors)
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<ICodeProcessor> processors)
 		{
 			var idx = prefixes.Count() + postfixes.Count();
 			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
@@ -53,13 +42,18 @@ namespace Harmony
 			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
 			var resultVariable = DynamicTools.DeclareReturnVar(original, il);
 
-			// TODO: this is broken because it has only one var for all patches together.
-			//       to make this useful, we need one var for each patch pair
-			var privateStateVariable = DeclarePrivateStateVar(il);
-
 			var privateVars = new Dictionary<string, LocalBuilder>();
 			privateVars[RESULT_VAR] = resultVariable;
-			privateVars[STATE_VAR] = privateStateVariable;
+			prefixes.ForEach(prefix =>
+			{
+				prefix.GetParameters()
+					.Where(patchParam => patchParam.Name == STATE_VAR)
+					.Do(patchParam =>
+					{
+						var privateStateVariable = DeclarePrivateStateVar(il);
+						privateVars[prefix.DeclaringType.FullName] = privateStateVariable;
+					});
+			});
 
 			var afterOriginal1 = il.DefineLabel();
 			var afterOriginal2 = il.DefineLabel();
@@ -130,7 +124,7 @@ namespace Harmony
 				if (patchParam.Name == STATE_VAR)
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					il.Emit(ldlocCode, variables[STATE_VAR]);
+					il.Emit(ldlocCode, variables[patch.DeclaringType.FullName]);
 					continue;
 				}
 

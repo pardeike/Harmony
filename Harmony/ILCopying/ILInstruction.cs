@@ -16,13 +16,14 @@ namespace Harmony.ILCopying
 		{
 			this.opcode = opcode;
 			this.operand = operand;
+			this.argument = operand;
 		}
 
-		public ILInstruction Copy()
+		public CodeInstruction GetCodeInstruction()
 		{
-			var instr = new ILInstruction(opcode, operand);
-			instr.offset = offset;
-			instr.argument = argument;
+			var instr = new CodeInstruction(opcode, argument);
+			if (opcode.OperandType == OperandType.InlineNone)
+				instr.operand = null;
 			instr.labels = labels;
 			return instr;
 		}

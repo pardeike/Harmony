@@ -5,14 +5,14 @@ namespace Harmony
 {
 	public class HarmonyProcessor
 	{
-		public List<IILProcessor> processors;
+		public List<ICodeProcessor> processors;
 
 		public HarmonyProcessor()
 		{
-			processors = new List<IILProcessor>();
+			processors = new List<ICodeProcessor>();
 		}
 
-		public void AddILProcessor(IILProcessor processor)
+		public void Add(ICodeProcessor processor)
 		{
 			processors.Add(processor);
 		}

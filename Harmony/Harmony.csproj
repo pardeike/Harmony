@@ -45,9 +45,10 @@
     </Win32Resource>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeInstruction.cs" />
     <Compile Include="HarmonyProcessor.cs" />
     <Compile Include="HarmonySharedState.cs" />
-    <Compile Include="ILCopying\ILProcessor.cs" />
+    <Compile Include="CodeProcessor.cs" />
     <Compile Include="Tools\AccessCache.cs" />
     <Compile Include="Tools\AccessTools.cs" />
     <Compile Include="Attributes.cs" />

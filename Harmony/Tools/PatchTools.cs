@@ -30,7 +30,7 @@ namespace Harmony
 
 			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix");
 			postfix = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix");
-			infix = GetPatchMethod<HarmonyProcessors>(patchType, "Processors");
+			infix = GetPatchMethod<HarmonyProcessorFactory>(patchType, "ProcessorFactory");
 		}
 	}
 }

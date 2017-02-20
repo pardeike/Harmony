@@ -16,8 +16,7 @@ namespace Harmony
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
 
-			var patch = new Patch(info.method, patchInfo.prefixes.Count() + 1, owner, priority, before, after);
-			patchInfo.prefixes.Add(patch);
+			patchInfo.AddPrefix(info.method, owner, priority, before, after);
 		}
 
 		public static void AddPostfix(PatchInfo patchInfo, string owner, HarmonyMethod info)
@@ -28,8 +27,7 @@ namespace Harmony
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
 
-			var patch = new Patch(info.method, patchInfo.postfixes.Count() + 1, owner, priority, before, after);
-			patchInfo.postfixes.Add(patch);
+			patchInfo.AddPostfix(info.method, owner, priority, before, after);
 		}
 
 		public static void AddInfix(PatchInfo patchInfo, string owner, HarmonyMethod info)
@@ -40,11 +38,10 @@ namespace Harmony
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
 
-			var patch = new Patch(info.method, patchInfo.processors.Count() + 1, owner, priority, before, after);
-			patchInfo.processors.Add(patch);
+			patchInfo.AddProcessor(info.method, owner, priority, before, after);
 		}
 
-		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, List<Patch> patches)
+		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
 		{
 			return patches
 				.Where(p => p.patch != null)
@@ -53,7 +50,7 @@ namespace Harmony
 				.ToList();
 		}
 
-		public static List<IILProcessor> GetSortedProcessors(MethodBase original, List<Patch> processors)
+		public static List<ICodeProcessor> GetSortedProcessors(MethodBase original, Patch[] processors)
 		{
 			return processors
 				.Where(p => p.patch != null)

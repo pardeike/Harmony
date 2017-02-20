@@ -22,13 +22,13 @@ namespace Harmony
 			}
 		}
 
-		public Patches(List<Patch> prefixes, List<Patch> postfixes)
+		public Patches(Patch[] prefixes, Patch[] postfixes)
 		{
-			if (prefixes == null) prefixes = new List<Patch>();
-			if (postfixes == null) postfixes = new List<Patch>();
+			if (prefixes == null) prefixes = new Patch[0];
+			if (postfixes == null) postfixes = new Patch[0];
 
-			Prefixes = prefixes.AsReadOnly();
-			Postfixes = postfixes.AsReadOnly();
+			Prefixes = prefixes.ToList().AsReadOnly();
+			Postfixes = postfixes.ToList().AsReadOnly();
 		}
 	}
 

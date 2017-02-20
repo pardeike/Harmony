@@ -42,7 +42,7 @@ namespace Harmony
 		{
 			var patchInfo = HarmonySharedState.GetPatchInfo(method);
 			if (patchInfo == null) return null;
-			return new Patches(patchInfo.prefixes, patchInfo.prefixes);
+			return new Patches(patchInfo.prefixes, patchInfo.postfixes);
 		}
 
 		public void Patch()

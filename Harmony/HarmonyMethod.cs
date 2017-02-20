@@ -39,8 +39,8 @@ namespace Harmony
 
 		public HarmonyMethod(Type type, string name, Type[] parameters = null)
 		{
-			var m = AccessTools.Method(type, name, parameters);
-			ImportMethod(m as MethodInfo);
+			var method = AccessTools.Method(type, name, parameters);
+			ImportMethod(method);
 		}
 
 		public static List<string> HarmonyFields()

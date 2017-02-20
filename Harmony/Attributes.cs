@@ -28,6 +28,13 @@ namespace Harmony
 		{
 			info.parameter = parameter;
 		}
+
+		public HarmonyPatch(Type type, string methodName, Type[] parameter = null)
+		{
+			info.originalType = type;
+			info.methodName = methodName;
+			info.parameter = parameter;
+		}
 	}
 
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
@@ -81,7 +88,7 @@ namespace Harmony
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyProcessors : Attribute
+	public class HarmonyProcessorFactory : Attribute
 	{
 	}
 }
