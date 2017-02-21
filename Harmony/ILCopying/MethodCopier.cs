@@ -11,7 +11,7 @@ namespace Harmony.ILCopying
 	{
 		readonly MethodBodyReader reader;
 		readonly List<ICodeProcessor> processors = new List<ICodeProcessor>();
-		public static bool DEBUG_OPCODES = true;
+		public static bool DEBUG_OPCODES = false;
 
 		public MethodCopier(MethodBase fromMethod, DynamicMethod toDynamicMethod, LocalBuilder[] existingVariables = null)
 		{
