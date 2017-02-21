@@ -11,6 +11,7 @@ namespace Harmony.ILCopying
 	{
 		readonly MethodBodyReader reader;
 		readonly List<ICodeProcessor> processors = new List<ICodeProcessor>();
+		public static bool DEBUG_OPCODES = true;
 
 		public MethodCopier(MethodBase fromMethod, DynamicMethod toDynamicMethod, LocalBuilder[] existingVariables = null)
 		{
@@ -34,8 +35,6 @@ namespace Harmony.ILCopying
 
 	public class MethodBodyReader
 	{
-		static bool DEBUG_OPCODES = false;
-
 		readonly ILGenerator generator;
 
 		readonly MethodBase method;
@@ -207,7 +206,7 @@ namespace Harmony.ILCopying
 
 
 			// pass3 - mark labels and emit codes
-			if (DEBUG_OPCODES) FileLog.Log("### " + method);
+			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("### " + method);
 			codeInstructions.ForEach(codeInstruction =>
 			{
 				foreach (var label in codeInstruction.labels)
@@ -215,7 +214,7 @@ namespace Harmony.ILCopying
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
-				if (DEBUG_OPCODES) FileLog.Log("# " + code + " " + operand);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + code + " " + operand);
 
 				if (code.OperandType == OperandType.InlineNone)
 					generator.Emit(code);

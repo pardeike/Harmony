@@ -66,14 +66,21 @@ namespace Harmony
 			copier.Emit();
 			il.MarkLabel(afterOriginal1);
 			if (resultVariable != null)
+			{
 				il.Emit(OpCodes.Stloc, resultVariable);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Stloc + " " + resultVariable);
+			}
 			il.MarkLabel(afterOriginal2);
 
 			AddPostfixes(il, original, postfixes, privateVars);
 
 			if (resultVariable != null)
+			{
 				il.Emit(OpCodes.Ldloc, resultVariable);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldloc + " " + resultVariable);
+			}
 			il.Emit(OpCodes.Ret);
+			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ret);
 
 			DynamicTools.PrepareDynamicMethod(patch);
 			return patch;
@@ -83,7 +90,9 @@ namespace Harmony
 		{
 			var v = il.DeclareLocal(typeof(object));
 			il.Emit(OpCodes.Ldnull);
+			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldnull);
 			il.Emit(OpCodes.Stloc, v);
+			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Stloc + " " + v);
 			return v;
 		}
 
@@ -118,6 +127,7 @@ namespace Harmony
 				{
 					if (!isInstance) throw new Exception("Cannot get instance from static method " + original);
 					il.Emit(OpCodes.Ldarg_0);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarg_0);
 					continue;
 				}
 
@@ -125,6 +135,7 @@ namespace Harmony
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					il.Emit(ldlocCode, variables[patch.DeclaringType.FullName]);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + ldlocCode + " " + variables[patch.DeclaringType.FullName]);
 					continue;
 				}
 
@@ -134,6 +145,7 @@ namespace Harmony
 						throw new Exception("Cannot get result from void method " + original);
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					il.Emit(ldlocCode, variables[RESULT_VAR]);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + ldlocCode + " " + variables[RESULT_VAR]);
 					continue;
 				}
 
@@ -155,6 +167,7 @@ namespace Harmony
 				if (originalIsNormal == patchIsNormal)
 				{
 					il.Emit(OpCodes.Ldarg, patchArgIndex);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarg + " " + patchArgIndex);
 					continue;
 				}
 
@@ -162,12 +175,15 @@ namespace Harmony
 				if (originalIsNormal && patchIsNormal == false)
 				{
 					il.Emit(OpCodes.Ldarga, patchArgIndex);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarga + " " + patchArgIndex);
 					continue;
 				}
 
 				// Case 3
 				il.Emit(OpCodes.Ldarg, patchArgIndex);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarg + " " + patchArgIndex);
 				il.Emit(LoadIndOpCodeFor(originalParameters[idx].ParameterType));
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + LoadIndOpCodeFor(originalParameters[idx].ParameterType));
 			}
 		}
 
@@ -177,11 +193,13 @@ namespace Harmony
 			{
 				EmitCallParameter(il, original, fix, variables);
 				il.Emit(OpCodes.Call, fix);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Call + " " + fix);
 				if (fix.ReturnType != typeof(void))
 				{
 					if (fix.ReturnType != typeof(bool))
 						throw new Exception("Prefix patch " + fix + " has not \"bool\" or \"void\" return type: " + fix.ReturnType);
 					il.Emit(OpCodes.Brfalse, label);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Brfalse + " " + label);
 				}
 			});
 		}
@@ -192,6 +210,7 @@ namespace Harmony
 			{
 				EmitCallParameter(il, original, fix, variables);
 				il.Emit(OpCodes.Call, fix);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Call + " " + fix);
 				if (fix.ReturnType != typeof(void))
 					throw new Exception("Postfix patch " + fix + " has not \"void\" return type: " + fix.ReturnType);
 			});

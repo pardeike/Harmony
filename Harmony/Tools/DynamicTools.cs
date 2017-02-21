@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Harmony.ILCopying;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -49,24 +50,45 @@ namespace Harmony
 			{
 				var v = il.DeclareLocal(type);
 				il.Emit(OpCodes.Ldnull);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldnull);
 				il.Emit(OpCodes.Stloc, v);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Stloc + " " + v);
 				return v;
 			}
 			if (AccessTools.isStruct(type))
 			{
 				var v = il.DeclareLocal(type);
 				il.Emit(OpCodes.Ldloca, v);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldloca + " " + v);
 				il.Emit(OpCodes.Initobj, type);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Initobj + " " + type);
 				return v;
 			}
 			if (AccessTools.isValue(type))
 			{
 				var v = il.DeclareLocal(type);
 				if (type == typeof(float))
-					il.Emit(OpCodes.Ldc_R4, 0);
+				{
+					il.Emit(OpCodes.Ldc_R4, (float)0);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldc_R4 + " " + (float)0);
+				}
+				else if (type == typeof(double))
+				{
+					il.Emit(OpCodes.Ldc_R8, (double)0);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldc_R8 + " " + (double)0);
+				}
+				else if (type == typeof(long))
+				{
+					il.Emit(OpCodes.Ldc_I8, (long)0);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldc_I8 + " " + (long)0);
+				}
 				else
+				{
 					il.Emit(OpCodes.Ldc_I4, 0);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldc_I4 + " " + 0);
+				}
 				il.Emit(OpCodes.Stloc, v);
+				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Stloc + " " + v);
 				return v;
 			}
 			return null;
