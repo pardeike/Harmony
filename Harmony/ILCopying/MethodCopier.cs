@@ -34,6 +34,8 @@ namespace Harmony.ILCopying
 
 	public class MethodBodyReader
 	{
+		static bool DEBUG_OPCODES = false;
+
 		readonly ILGenerator generator;
 
 		readonly MethodBase method;
@@ -203,7 +205,9 @@ namespace Harmony.ILCopying
 				codeInstructions = instrList.ToArray().ToList();
 			});
 
+
 			// pass3 - mark labels and emit codes
+			if (DEBUG_OPCODES) FileLog.Log("### " + method);
 			codeInstructions.ForEach(codeInstruction =>
 			{
 				foreach (var label in codeInstruction.labels)
@@ -211,7 +215,7 @@ namespace Harmony.ILCopying
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
-				// FileLog.Log("# " + code + " " + operand);
+				if (DEBUG_OPCODES) FileLog.Log("# " + code + " " + operand);
 
 				if (code.OperandType == OperandType.InlineNone)
 					generator.Emit(code);

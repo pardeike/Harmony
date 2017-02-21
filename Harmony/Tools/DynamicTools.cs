@@ -62,7 +62,10 @@ namespace Harmony
 			if (AccessTools.isValue(type))
 			{
 				var v = il.DeclareLocal(type);
-				il.Emit(OpCodes.Ldc_I4, 0);
+				if (type == typeof(float))
+					il.Emit(OpCodes.Ldc_R4, 0);
+				else
+					il.Emit(OpCodes.Ldc_I4, 0);
 				il.Emit(OpCodes.Stloc, v);
 				return v;
 			}
