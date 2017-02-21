@@ -206,23 +206,25 @@ namespace Harmony.ILCopying
 
 
 			// pass3 - mark labels and emit codes
-			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("### " + method);
 			codeInstructions.ForEach(codeInstruction =>
 			{
 				foreach (var label in codeInstruction.labels)
-					generator.MarkLabel(label);
+				{
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log(Emitter.CodePos(generator) + Emitter.FormatArgument(label));
+					Emitter.MarkLabel(generator, label);
+				}
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
-				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + code + " " + operand);
 
 				if (code.OperandType == OperandType.InlineNone)
-					generator.Emit(code);
+					Emitter.Emit(generator, code);
 				else
 				{
 					if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
 					var emitMethod = EmitMethodForType(operand.GetType());
 					if (emitMethod == null) throw new Exception("Unknown Emit argument type " + operand.GetType() + " in " + codeInstruction);
+					if (MethodCopier.DEBUG_OPCODES) FileLog.Log(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
 					emitMethod.Invoke(generator, new object[] { code, operand });
 				}
 			});

@@ -55,11 +55,18 @@ namespace Harmony
 			return result;
 		}
 
+		public static ConstructorInfo Constructor(Type type, Type[] parameters = null)
+		{
+			if (type == null) return null;
+			if (parameters == null) parameters = new Type[0];
+			var result = type.GetConstructor(all, null, parameters, new ParameterModifier[] { });
+			return result;
+		}
+
 		public static Type GetReturnedType(MethodBase method)
 		{
 			var constructor = method as ConstructorInfo;
-			if (constructor != null)
-				return constructor.DeclaringType;
+			if (constructor != null) return typeof(void);
 			return ((MethodInfo)method).ReturnType;
 		}
 

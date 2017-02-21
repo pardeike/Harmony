@@ -35,6 +35,12 @@ namespace Harmony
 			info.methodName = methodName;
 			info.parameter = parameter;
 		}
+
+		public HarmonyPatch(Type type, Type[] parameter = null)
+		{
+			info.originalType = type;
+			info.parameter = parameter;
+		}
 	}
 
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]

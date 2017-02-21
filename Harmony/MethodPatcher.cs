@@ -36,11 +36,13 @@ namespace Harmony
 
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<ICodeProcessor> processors)
 		{
+			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("PATCHING " + original.DeclaringType + " " + original);
+
 			var idx = prefixes.Count() + postfixes.Count();
 			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
 			var il = patch.GetILGenerator();
 			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
-			var resultVariable = DynamicTools.DeclareReturnVar(original, il);
+			var resultVariable = DynamicTools.DeclareLocalVariable(il, AccessTools.GetReturnedType(original));
 
 			var privateVars = new Dictionary<string, LocalBuilder>();
 			privateVars[RESULT_VAR] = resultVariable;
@@ -50,50 +52,40 @@ namespace Harmony
 					.Where(patchParam => patchParam.Name == STATE_VAR)
 					.Do(patchParam =>
 					{
-						var privateStateVariable = DeclarePrivateStateVar(il);
+						var privateStateVariable = DynamicTools.DeclareLocalVariable(il, patchParam.ParameterType);
 						privateVars[prefix.DeclaringType.FullName] = privateStateVariable;
 					});
 			});
 
 			var afterOriginal1 = il.DefineLabel();
 			var afterOriginal2 = il.DefineLabel();
-			AddPrefixes(il, original, prefixes, privateVars, afterOriginal2);
+			var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, afterOriginal2);
 
 			var copier = new MethodCopier(original, patch, originalVariables);
 			foreach (var processor in processors)
 				copier.AddReplacement(processor);
 			copier.AddReplacement(new RetToBrAfterProcessor(afterOriginal1));
 			copier.Emit();
-			il.MarkLabel(afterOriginal1);
+			Emitter.MarkLabel(il, afterOriginal1);
 			if (resultVariable != null)
-			{
-				il.Emit(OpCodes.Stloc, resultVariable);
-				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Stloc + " " + resultVariable);
-			}
-			il.MarkLabel(afterOriginal2);
+				Emitter.Emit(il, OpCodes.Stloc, resultVariable);
+			if (canHaveJump)
+				Emitter.MarkLabel(il, afterOriginal2);
 
 			AddPostfixes(il, original, postfixes, privateVars);
 
 			if (resultVariable != null)
+				Emitter.Emit(il, OpCodes.Ldloc, resultVariable);
+			Emitter.Emit(il, OpCodes.Ret);
+
+			if (MethodCopier.DEBUG_OPCODES)
 			{
-				il.Emit(OpCodes.Ldloc, resultVariable);
-				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldloc + " " + resultVariable);
+				FileLog.Log("DONE");
+				FileLog.Log("");
 			}
-			il.Emit(OpCodes.Ret);
-			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ret);
 
 			DynamicTools.PrepareDynamicMethod(patch);
 			return patch;
-		}
-
-		static LocalBuilder DeclarePrivateStateVar(ILGenerator il)
-		{
-			var v = il.DeclareLocal(typeof(object));
-			il.Emit(OpCodes.Ldnull);
-			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldnull);
-			il.Emit(OpCodes.Stloc, v);
-			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Stloc + " " + v);
-			return v;
 		}
 
 		static OpCode LoadIndOpCodeFor(Type type)
@@ -126,16 +118,17 @@ namespace Harmony
 				if (patchParam.Name == INSTANCE_PARAM)
 				{
 					if (!isInstance) throw new Exception("Cannot get instance from static method " + original);
-					il.Emit(OpCodes.Ldarg_0);
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarg_0);
+					if (patchParam.ParameterType.IsByRef)
+						Emitter.Emit(il, OpCodes.Ldarga, 0); // probably won't work or will be useless
+					else
+						Emitter.Emit(il, OpCodes.Ldarg_0);
 					continue;
 				}
 
 				if (patchParam.Name == STATE_VAR)
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					il.Emit(ldlocCode, variables[patch.DeclaringType.FullName]);
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + ldlocCode + " " + variables[patch.DeclaringType.FullName]);
+					Emitter.Emit(il, ldlocCode, variables[patch.DeclaringType.FullName]);
 					continue;
 				}
 
@@ -144,8 +137,7 @@ namespace Harmony
 					if (AccessTools.GetReturnedType(original) == typeof(void))
 						throw new Exception("Cannot get result from void method " + original);
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					il.Emit(ldlocCode, variables[RESULT_VAR]);
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + ldlocCode + " " + variables[RESULT_VAR]);
+					Emitter.Emit(il, ldlocCode, variables[RESULT_VAR]);
 					continue;
 				}
 
@@ -166,42 +158,39 @@ namespace Harmony
 				// Case 1 + 4
 				if (originalIsNormal == patchIsNormal)
 				{
-					il.Emit(OpCodes.Ldarg, patchArgIndex);
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarg + " " + patchArgIndex);
+					Emitter.Emit(il, OpCodes.Ldarg, patchArgIndex);
 					continue;
 				}
 
 				// Case 2
 				if (originalIsNormal && patchIsNormal == false)
 				{
-					il.Emit(OpCodes.Ldarga, patchArgIndex);
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarga + " " + patchArgIndex);
+					Emitter.Emit(il, OpCodes.Ldarga, patchArgIndex);
 					continue;
 				}
 
 				// Case 3
-				il.Emit(OpCodes.Ldarg, patchArgIndex);
-				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Ldarg + " " + patchArgIndex);
-				il.Emit(LoadIndOpCodeFor(originalParameters[idx].ParameterType));
-				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + LoadIndOpCodeFor(originalParameters[idx].ParameterType));
+				Emitter.Emit(il, OpCodes.Ldarg, patchArgIndex);
+				Emitter.Emit(il, LoadIndOpCodeFor(originalParameters[idx].ParameterType));
 			}
 		}
 
-		static void AddPrefixes(ILGenerator il, MethodBase original, List<MethodInfo> prefixes, Dictionary<string, LocalBuilder> variables, Label label)
+		static bool AddPrefixes(ILGenerator il, MethodBase original, List<MethodInfo> prefixes, Dictionary<string, LocalBuilder> variables, Label label)
 		{
+			var canHaveJump = false;
 			prefixes.ForEach(fix =>
 			{
 				EmitCallParameter(il, original, fix, variables);
-				il.Emit(OpCodes.Call, fix);
-				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Call + " " + fix);
+				Emitter.Emit(il, OpCodes.Call, fix);
 				if (fix.ReturnType != typeof(void))
 				{
 					if (fix.ReturnType != typeof(bool))
 						throw new Exception("Prefix patch " + fix + " has not \"bool\" or \"void\" return type: " + fix.ReturnType);
-					il.Emit(OpCodes.Brfalse, label);
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Brfalse + " " + label);
+					Emitter.Emit(il, OpCodes.Brfalse, label);
+					canHaveJump = true;
 				}
 			});
+			return canHaveJump;
 		}
 
 		static void AddPostfixes(ILGenerator il, MethodBase original, List<MethodInfo> postfixes, Dictionary<string, LocalBuilder> variables)
@@ -209,8 +198,7 @@ namespace Harmony
 			postfixes.ForEach(fix =>
 			{
 				EmitCallParameter(il, original, fix, variables);
-				il.Emit(OpCodes.Call, fix);
-				if (MethodCopier.DEBUG_OPCODES) FileLog.Log("# " + OpCodes.Call + " " + fix);
+				Emitter.Emit(il, OpCodes.Call, fix);
 				if (fix.ReturnType != typeof(void))
 					throw new Exception("Postfix patch " + fix + " has not \"void\" return type: " + fix.ReturnType);
 			});

@@ -103,10 +103,10 @@ namespace Harmony
 		MethodBase GetOriginalMethod()
 		{
 			var attr = containerAttributes;
-			if (attr.originalType == null || attr.methodName == null) return null;
-			if (attr.parameter == null)
-				return attr.originalType.GetMethod(attr.methodName, AccessTools.all);
-			return attr.originalType.GetMethod(attr.methodName, AccessTools.all, null, attr.parameter, null);
+			if (attr.originalType == null) return null;
+			if (attr.methodName == null)
+				return AccessTools.Constructor(attr.originalType, attr.parameter);
+			return AccessTools.Method(attr.originalType, attr.methodName, attr.parameter);
 		}
 
 		T RunMethod<S, T>(T defaultIfNotExisting, params object[] parameters)
