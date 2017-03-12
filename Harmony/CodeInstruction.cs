@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 
 namespace Harmony
@@ -19,7 +20,12 @@ namespace Harmony
 		{
 			opcode = instruction.opcode;
 			operand = instruction.operand;
-			labels = instruction.labels;
+			labels = instruction.labels.ToArray().ToList();
+		}
+
+		public override string ToString()
+		{
+			return string.Format(opcode + " " + operand);
 		}
 	}
 }

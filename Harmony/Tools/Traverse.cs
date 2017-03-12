@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -12,7 +13,8 @@ namespace Harmony
 		Type _type;
 		object _root;
 		MemberInfo _info;
-		object[] _index;
+		MethodBase _method;
+		object[] _params;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		static Traverse()
@@ -61,7 +63,15 @@ namespace Harmony
 			_root = root;
 			_type = root == null ? null : root.GetType();
 			_info = info;
-			_index = index;
+			_params = index;
+		}
+
+		Traverse(object root, MethodInfo method, object[] parameter)
+		{
+			_root = root;
+			_type = method.ReturnType;
+			_method = method;
+			_params = parameter;
 		}
 
 		public object GetValue()
@@ -69,9 +79,25 @@ namespace Harmony
 			if (_info is FieldInfo)
 				return ((FieldInfo)_info).GetValue(_root);
 			if (_info is PropertyInfo)
-				return ((PropertyInfo)_info).GetValue(_root, AccessTools.all, null, _index, CultureInfo.CurrentCulture);
+				return ((PropertyInfo)_info).GetValue(_root, AccessTools.all, null, _params, CultureInfo.CurrentCulture);
+			if (_method != null)
+				return _method.Invoke(_root, _params);
 			if (_root == null && _type != null) return _type;
 			return _root;
+		}
+
+		public object GetValue(params object[] arguments)
+		{
+			if (_method == null)
+				throw new Exception("cannot get method value without method");
+			return _method.Invoke(_root, arguments);
+		}
+
+		public object GetValue<T>(params object[] arguments)
+		{
+			if (_method == null)
+				throw new Exception("cannot get method value without method");
+			return (T)_method.Invoke(_root, arguments);
 		}
 
 		Traverse Resolve()
@@ -92,7 +118,9 @@ namespace Harmony
 			if (_info is FieldInfo)
 				((FieldInfo)_info).SetValue(_root, value, AccessTools.all, null, CultureInfo.CurrentCulture);
 			if (_info is PropertyInfo)
-				((PropertyInfo)_info).SetValue(_root, value, AccessTools.all, null, _index, CultureInfo.CurrentCulture);
+				((PropertyInfo)_info).SetValue(_root, value, AccessTools.all, null, _params, CultureInfo.CurrentCulture);
+			if (_method != null)
+				throw new Exception("cannot set value of a method");
 			return this;
 		}
 
@@ -132,21 +160,23 @@ namespace Harmony
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
-			var info = Cache.GetMethodInfo(resolved._type, name, types);
-			if (info == null) throw new MissingMethodException(name + types.Description());
-			var val = info.Invoke(resolved._root, arguments);
-			return new Traverse(val);
+			_method = Cache.GetMethodInfo(resolved._type, name, types);
+			if (_method == null)
+			{
+				var availableMethods = string.Join(" ", resolved._type.GetMethods(AccessTools.all).Select(m => m.Name).ToArray());
+				throw new MissingMethodException(name + types.Description() + ", valid methods: " + availableMethods);
+			}
+			return new Traverse(resolved._root, _method, arguments);
 		}
 
-		public Traverse Method(string name, Type[] paramTypes, object[] parameter)
+		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
 		{
 			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetMethodInfo(resolved._type, name, paramTypes);
 			if (info == null) throw new MissingMethodException(name + paramTypes.Description());
-			var val = info.Invoke(resolved._root, parameter);
-			return new Traverse(val);
+			return new Traverse(resolved._root, _method, arguments);
 		}
 
 		public static void IterateFields(object source, Action<Traverse> action)

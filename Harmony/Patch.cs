@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -75,13 +74,13 @@ namespace Harmony
 	{
 		public Patch[] prefixes;
 		public Patch[] postfixes;
-		public Patch[] processors;
+		public Patch[] transpilers;
 
 		public PatchInfo()
 		{
 			prefixes = new Patch[0];
 			postfixes = new Patch[0];
-			processors = new Patch[0];
+			transpilers = new Patch[0];
 		}
 
 		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after)
@@ -98,11 +97,11 @@ namespace Harmony
 			postfixes = l.ToArray();
 		}
 
-		public void AddProcessor(MethodInfo patch, string owner, int priority, string[] before, string[] after)
+		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
-			var l = processors.ToList();
-			l.Add(new Patch(patch, processors.Count() + 1, owner, priority, before, after));
-			processors = l.ToArray();
+			var l = transpilers.ToList();
+			l.Add(new Patch(patch, transpilers.Count() + 1, owner, priority, before, after));
+			transpilers = l.ToArray();
 		}
 	}
 
@@ -127,17 +126,6 @@ namespace Harmony
 			this.before = before;
 			this.after = after;
 			this.patch = patch;
-		}
-
-		public HarmonyProcessor GetProcessor(MethodBase original)
-		{
-			if (patch.ReturnType != typeof(HarmonyProcessor)) throw new Exception("Processor factory " + original + " must have a return type 'HarmonyProcessor'");
-			if (patch.IsStatic == false) throw new Exception("Processor factory " + original + " must be static");
-			var parameters = patch.GetParameters();
-			if (parameters.Count() != 1) throw new Exception("Processor factory " + original + " must have exactly one parameter");
-			if (parameters[0].ParameterType != typeof(MethodBase)) throw new Exception("Processor factory " + original + " must have a parameter of type 'MethodBase'");
-
-			return patch.Invoke(null, new object[] { original }) as HarmonyProcessor;
 		}
 
 		public MethodInfo GetMethod(MethodBase original)

@@ -94,7 +94,7 @@ namespace Harmony
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyProcessorFactory : Attribute
+	public class HarmonyTranspiler : Attribute
 	{
 	}
 }

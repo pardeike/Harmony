@@ -26,8 +26,8 @@ namespace HarmonyNUnitTests
 
 			MethodInfo prefixMethod;
 			MethodInfo postfixMethod;
-			MethodInfo infixMethod;
-			PatchTools.GetPatches(typeof(Class1Patch), originalMethod, out prefixMethod, out postfixMethod, out infixMethod);
+			MethodInfo transpilerMethod;
+			PatchTools.GetPatches(typeof(Class1Patch), originalMethod, out prefixMethod, out postfixMethod, out transpilerMethod);
 
 			Assert.AreSame(realPrefix, prefixMethod);
 			Assert.AreSame(realPostfix, postfixMethod);

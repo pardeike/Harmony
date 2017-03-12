@@ -16,7 +16,7 @@ namespace Harmony
 		MethodBase original;
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
-		HarmonyMethod infix;
+		HarmonyMethod transpiler;
 
 		public PatchProcessor(HarmonyInstance instance, Type type, HarmonyMethod attributes)
 		{
@@ -25,17 +25,17 @@ namespace Harmony
 			containerAttributes = attributes ?? new HarmonyMethod(null);
 			prefix = containerAttributes.Clone();
 			postfix = containerAttributes.Clone();
-			infix = containerAttributes.Clone();
+			transpiler = containerAttributes.Clone();
 			ProcessType();
 		}
 
-		public PatchProcessor(HarmonyInstance instance, MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod infix)
+		public PatchProcessor(HarmonyInstance instance, MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler)
 		{
 			this.instance = instance;
 			this.original = original;
 			this.prefix = prefix ?? new HarmonyMethod(null);
 			this.postfix = postfix ?? new HarmonyMethod(null);
-			this.infix = infix ?? new HarmonyMethod(null);
+			this.transpiler = transpiler ?? new HarmonyMethod(null);
 		}
 
 		public static Patches IsPatched(MethodBase method)
@@ -51,10 +51,12 @@ namespace Harmony
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
 				if (patchInfo == null) patchInfo = new PatchInfo();
+
 				PatchFunctions.AddPrefix(patchInfo, instance.Id, prefix);
 				PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
-				PatchFunctions.AddInfix(patchInfo, instance.Id, infix);
+				PatchFunctions.AddTranspiler(patchInfo, instance.Id, transpiler);
 				PatchFunctions.UpdateWrapper(original, patchInfo);
+
 				HarmonySharedState.UpdatePatchInfo(original, patchInfo);
 			}
 		}
@@ -78,24 +80,33 @@ namespace Harmony
 				if (original == null)
 					throw new ArgumentException("No target method specified for class " + container.FullName);
 
-				PatchTools.GetPatches(container, original, out prefix.method, out postfix.method, out infix.method);
+				PatchTools.GetPatches(container, original, out prefix.method, out postfix.method, out transpiler.method);
 
 				if (prefix.method != null)
 				{
+					if (prefix.method.IsStatic == false)
+						throw new ArgumentException("Patch method " + prefix.method.Name + " in " + prefix.method.DeclaringType + " must be static");
+
 					var prefixAttributes = prefix.method.GetHarmonyMethods();
 					containerAttributes.Merge(HarmonyMethod.Merge(prefixAttributes)).CopyTo(prefix);
 				}
 
 				if (postfix.method != null)
 				{
+					if (postfix.method.IsStatic == false)
+						throw new ArgumentException("Patch method " + postfix.method.Name + " in " + postfix.method.DeclaringType + " must be static");
+
 					var postfixAttributes = postfix.method.GetHarmonyMethods();
 					containerAttributes.Merge(HarmonyMethod.Merge(postfixAttributes)).CopyTo(postfix);
 				}
 
-				if (infix.method != null)
+				if (transpiler.method != null)
 				{
-					var infixAttributes = infix.method.GetHarmonyMethods();
-					containerAttributes.Merge(HarmonyMethod.Merge(infixAttributes)).CopyTo(infix);
+					if (transpiler.method.IsStatic == false)
+						throw new ArgumentException("Patch method " + transpiler.method.Name + " in " + transpiler.method.DeclaringType + " must be static");
+
+					var infixAttributes = transpiler.method.GetHarmonyMethods();
+					containerAttributes.Merge(HarmonyMethod.Merge(infixAttributes)).CopyTo(transpiler);
 				}
 			}
 		}
@@ -111,20 +122,20 @@ namespace Harmony
 
 		T RunMethod<S, T>(T defaultIfNotExisting, params object[] parameters)
 		{
-			var name = typeof(S).Name.Replace("Harmony", "");
+			var methodName = typeof(S).Name.Replace("Harmony", "");
 
 			var paramList = new List<object> { instance };
 			paramList.AddRange(parameters);
 			var paramTypes = AccessTools.GetTypes(paramList.ToArray());
-			var method = PatchTools.GetPatchMethod<S>(container, name, paramTypes);
+			var method = PatchTools.GetPatchMethod<S>(container, methodName, paramTypes);
 			if (method != null && typeof(T).IsAssignableFrom(method.ReturnType))
 				return (T)method.Invoke(null, paramList.ToArray());
 
-			method = PatchTools.GetPatchMethod<S>(container, name, new Type[] { typeof(HarmonyInstance) });
+			method = PatchTools.GetPatchMethod<S>(container, methodName, new Type[] { typeof(HarmonyInstance) });
 			if (method != null && typeof(T).IsAssignableFrom(method.ReturnType))
 				return (T)method.Invoke(null, new object[] { instance });
 
-			method = PatchTools.GetPatchMethod<S>(container, name, Type.EmptyTypes);
+			method = PatchTools.GetPatchMethod<S>(container, methodName, Type.EmptyTypes);
 			if (method != null)
 			{
 				if (typeof(T).IsAssignableFrom(method.ReturnType))

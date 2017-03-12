@@ -9,43 +9,30 @@ namespace Harmony
 {
 	public static class MethodPatcher
 	{
+		// special parameter names that can be used in prefix and postfix methods
+		//
 		public static string INSTANCE_PARAM = "__instance";
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
 
-		public class RetToBrAfterProcessor : CodeProcessor
-		{
-			Label label;
-
-			public RetToBrAfterProcessor(Label label)
-			{
-				this.label = label;
-			}
-
-			public override List<CodeInstruction> Process(CodeInstruction instruction)
-			{
-				if (instruction == null) return null;
-				if (instruction.opcode == OpCodes.Ret)
-				{
-					instruction.opcode = OpCodes.Br;
-					instruction.operand = label;
-				}
-				return new List<CodeInstruction> { instruction };
-			}
-		}
-
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<ICodeProcessor> processors)
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("PATCHING " + original.DeclaringType + " " + original);
 
 			var idx = prefixes.Count() + postfixes.Count();
 			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
 			var il = patch.GetILGenerator();
-			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
-			var resultVariable = DynamicTools.DeclareLocalVariable(il, AccessTools.GetReturnedType(original));
 
+			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
 			var privateVars = new Dictionary<string, LocalBuilder>();
-			privateVars[RESULT_VAR] = resultVariable;
+
+			LocalBuilder resultVariable = null;
+			if (idx > 0)
+			{
+				resultVariable = DynamicTools.DeclareLocalVariable(il, AccessTools.GetReturnedType(original));
+				privateVars[RESULT_VAR] = resultVariable;
+			}
+
 			prefixes.ForEach(prefix =>
 			{
 				prefix.GetParameters()
@@ -62,10 +49,9 @@ namespace Harmony
 			var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, afterOriginal2);
 
 			var copier = new MethodCopier(original, patch, originalVariables);
-			foreach (var processor in processors)
-				copier.AddReplacement(processor);
-			copier.AddReplacement(new RetToBrAfterProcessor(afterOriginal1));
-			copier.Emit();
+			foreach (var transpiler in transpilers)
+				copier.AddTranspiler(transpiler);
+			copier.Emit(afterOriginal1);
 			Emitter.MarkLabel(il, afterOriginal1);
 			if (resultVariable != null)
 				Emitter.Emit(il, OpCodes.Stloc, resultVariable);

@@ -10,7 +10,7 @@ namespace Harmony.ILCopying
 	public class MethodCopier
 	{
 		readonly MethodBodyReader reader;
-		readonly List<ICodeProcessor> processors = new List<ICodeProcessor>();
+		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
 		public static bool DEBUG_OPCODES = false;
 
 		public MethodCopier(MethodBase fromMethod, DynamicMethod toDynamicMethod, LocalBuilder[] existingVariables = null)
@@ -22,14 +22,14 @@ namespace Harmony.ILCopying
 			reader.ReadInstructions();
 		}
 
-		public void AddReplacement(ICodeProcessor processor)
+		public void AddTranspiler(MethodInfo transpiler)
 		{
-			processors.Add(processor);
+			transpilers.Add(transpiler);
 		}
 
-		public void Emit()
+		public void Emit(Label endLabel)
 		{
-			reader.FinalizeILCodes(processors);
+			reader.FinalizeILCodes(transpilers, endLabel);
 		}
 	}
 
@@ -146,7 +146,7 @@ namespace Harmony.ILCopying
 
 		// use parsed IL codes and emit them to a generator
 
-		public void FinalizeILCodes(List<ICodeProcessor> processors)
+		public void FinalizeILCodes(List<MethodInfo> transpilers, Label endLabel)
 		{
 			if (generator == null) return;
 
@@ -188,31 +188,23 @@ namespace Harmony.ILCopying
 			});
 
 			// pass2 - filter through all processors
-			var codeInstructions = ilInstructions.Select(ilInstruction => ilInstruction.GetCodeInstruction()).ToList();
-			processors.ForEach(processor =>
-			{
-				var instrList = new List<CodeInstruction>();
-				var startInstructions = processor.Start(generator, method);
-				if (startInstructions != null) instrList.AddRange(startInstructions);
-				codeInstructions.ForEach(codeInstruction =>
+			var codeTranspiler = new CodeTranspiler(ilInstructions);
+			transpilers.ForEach(transpiler => codeTranspiler.Add(transpiler));
+			var codeInstructions = codeTranspiler.GetResult(generator, method)
+				.Select(instruction =>
 				{
-					var mainInstructions = processor.Process(new CodeInstruction(codeInstruction));
-					if (mainInstructions != null) instrList.AddRange(mainInstructions);
+					if (instruction.opcode == OpCodes.Ret)
+					{
+						instruction.opcode = OpCodes.Br;
+						instruction.operand = endLabel;
+					}
+					return instruction;
 				});
-				var endInstructions = processor.End(generator, method);
-				if (endInstructions != null) instrList.AddRange(endInstructions);
-				codeInstructions = instrList.ToArray().ToList();
-			});
-
 
 			// pass3 - mark labels and emit codes
-			codeInstructions.ForEach(codeInstruction =>
+			codeInstructions.Do(codeInstruction =>
 			{
-				foreach (var label in codeInstruction.labels)
-				{
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log(Emitter.CodePos(generator) + Emitter.FormatArgument(label));
-					Emitter.MarkLabel(generator, label);
-				}
+				codeInstruction.labels.ForEach(label => Emitter.MarkLabel(generator, label));
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
