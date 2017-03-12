@@ -17,7 +17,7 @@ namespace Harmony
 
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
-			if (MethodCopier.DEBUG_OPCODES) FileLog.Log("PATCHING " + original.DeclaringType + " " + original);
+			if (HarmonyInstance.DEBUG) FileLog.Log("PATCHING " + original.DeclaringType + " " + original);
 
 			var idx = prefixes.Count() + postfixes.Count();
 			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
@@ -64,7 +64,7 @@ namespace Harmony
 				Emitter.Emit(il, OpCodes.Ldloc, resultVariable);
 			Emitter.Emit(il, OpCodes.Ret);
 
-			if (MethodCopier.DEBUG_OPCODES)
+			if (HarmonyInstance.DEBUG)
 			{
 				FileLog.Log("DONE");
 				FileLog.Log("");

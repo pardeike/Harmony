@@ -36,6 +36,7 @@ namespace Harmony
 	{
 		readonly string id;
 		public string Id => id;
+		public static bool DEBUG = false;
 
 		HarmonyInstance(string id)
 		{

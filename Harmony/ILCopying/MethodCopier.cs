@@ -11,7 +11,6 @@ namespace Harmony.ILCopying
 	{
 		readonly MethodBodyReader reader;
 		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
-		public static bool DEBUG_OPCODES = false;
 
 		public MethodCopier(MethodBase fromMethod, DynamicMethod toDynamicMethod, LocalBuilder[] existingVariables = null)
 		{
@@ -216,7 +215,7 @@ namespace Harmony.ILCopying
 					if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
 					var emitMethod = EmitMethodForType(operand.GetType());
 					if (emitMethod == null) throw new Exception("Unknown Emit argument type " + operand.GetType() + " in " + codeInstruction);
-					if (MethodCopier.DEBUG_OPCODES) FileLog.Log(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
+					if (HarmonyInstance.DEBUG) FileLog.Log(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
 					emitMethod.Invoke(generator, new object[] { code, operand });
 				}
 			});
