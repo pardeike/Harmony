@@ -53,10 +53,10 @@ namespace Harmony
 
 		public IEnumerable<CodeInstruction> GetResult(ILGenerator generator, MethodBase method)
 		{
-			IEnumerable instructions = null;
+			IEnumerable instructions = codeInstructions;
 			transpilers.ForEach(transpiler =>
 			{
-				instructions = ConvertInstructions(transpiler, instructions == null ? codeInstructions : instructions);
+				instructions = ConvertInstructions(transpiler, instructions);
 				var parameter = new List<object>();
 				transpiler.GetParameters().Select(param => param.ParameterType).Do(type =>
 				{
