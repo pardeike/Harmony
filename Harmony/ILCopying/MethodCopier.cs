@@ -192,6 +192,30 @@ namespace Harmony.ILCopying
 			var codeInstructions = codeTranspiler.GetResult(generator, method)
 				.Select(instruction =>
 				{
+					// TODO - improve the logic here. for now, we replace all short jumps
+					//        with long jumps regardless of how far the jump is
+					//
+					new Dictionary<OpCode, OpCode>
+					{
+						{ OpCodes.Beq_S, OpCodes.Beq },
+						{ OpCodes.Bge_S, OpCodes.Bge },
+						{ OpCodes.Bge_Un_S, OpCodes.Bge_Un },
+						{ OpCodes.Bgt_S, OpCodes.Bgt },
+						{ OpCodes.Bgt_Un_S, OpCodes.Bgt_Un },
+						{ OpCodes.Ble_S, OpCodes.Ble },
+						{ OpCodes.Ble_Un_S, OpCodes.Ble_Un },
+						{ OpCodes.Blt_S, OpCodes.Blt },
+						{ OpCodes.Blt_Un_S, OpCodes.Blt_Un },
+						{ OpCodes.Bne_Un_S, OpCodes.Bne_Un },
+						{ OpCodes.Brfalse_S, OpCodes.Brfalse },
+						{ OpCodes.Brtrue_S, OpCodes.Brtrue },
+						{ OpCodes.Br_S, OpCodes.Br }
+					}.Do(pair =>
+					{
+						if (instruction.opcode == pair.Key)
+							instruction.opcode = pair.Value;
+					});
+
 					if (instruction.opcode == OpCodes.Ret)
 					{
 						instruction.opcode = OpCodes.Br;
