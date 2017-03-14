@@ -30,16 +30,27 @@ namespace Harmony
 			return type;
 		}
 
+		public static T FindRecursive<T>(Type type, Func<Type, T> action)
+		{
+			while (true)
+			{
+				var result = action(type);
+				if (result != null) return result;
+				if (type == typeof(object)) return default(T);
+				type = type.BaseType;
+			}
+		}
+
 		public static FieldInfo Field(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return type.GetField(name, all);
+			return FindRecursive(type, t => t.GetField(name, all));
 		}
 
 		public static PropertyInfo Property(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return type.GetProperty(name, all);
+			return FindRecursive(type, t => t.GetProperty(name, all));
 		}
 
 		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
@@ -47,9 +58,12 @@ namespace Harmony
 			if (type == null || name == null) return null;
 			MethodInfo result;
 			if (parameters == null)
-				result = type.GetMethod(name, all);
+				result = FindRecursive(type, t => t.GetMethod(name, all));
 			else
-				result = type.GetMethod(name, all, null, parameters, new ParameterModifier[] { });
+			{
+				var modifiers = new ParameterModifier[] { };
+				result = FindRecursive(type, t => t.GetMethod(name, all, null, parameters, modifiers));
+			}
 			if (result == null) return null;
 			if (generics != null) result = result.MakeGenericMethod(generics);
 			return result;
@@ -59,8 +73,7 @@ namespace Harmony
 		{
 			if (type == null) return null;
 			if (parameters == null) parameters = new Type[0];
-			var result = type.GetConstructor(all, null, parameters, new ParameterModifier[] { });
-			return result;
+			return FindRecursive(type, t => t.GetConstructor(all, null, parameters, new ParameterModifier[] { }));
 		}
 
 		public static Type GetReturnedType(MethodBase method)
@@ -73,13 +86,13 @@ namespace Harmony
 		public static Type Inner(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return type.GetNestedType(name, all);
+			return FindRecursive(type, t => t.GetNestedType(name, all));
 		}
 
 		public static Type FirstInner(Type type, Func<Type, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
-			return type.GetNestedTypes(all).First(predicate);
+			return FindRecursive(type, t => t.GetNestedTypes(all).First(predicate));
 		}
 
 		public static Type[] GetTypes(object[] parameters)
