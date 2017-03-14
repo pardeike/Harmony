@@ -149,7 +149,7 @@ namespace Harmony
 			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._root == null || resolved._type == null) return new Traverse();
-			var info = Cache.GetPropertyInfo(_type, name);
+			var info = Cache.GetPropertyInfo(resolved._type, name);
 			if (info == null) return new Traverse();
 			return new Traverse(resolved._root, info, index);
 		}
@@ -161,12 +161,8 @@ namespace Harmony
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
 			_method = Cache.GetMethodInfo(resolved._type, name, types);
-			if (_method == null)
-			{
-				var availableMethods = string.Join(" ", resolved._type.GetMethods(AccessTools.all).Select(m => m.Name).ToArray());
-				throw new MissingMethodException(name + types.Description() + ", valid methods: " + availableMethods);
-			}
-			return new Traverse(resolved._root, _method, arguments);
+			if (_method == null) return new Traverse();
+			return new Traverse(resolved._root, (MethodInfo)_method, arguments);
 		}
 
 		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
@@ -174,9 +170,9 @@ namespace Harmony
 			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
-			var info = Cache.GetMethodInfo(resolved._type, name, paramTypes);
-			if (info == null) throw new MissingMethodException(name + paramTypes.Description());
-			return new Traverse(resolved._root, _method, arguments);
+			_method = Cache.GetMethodInfo(resolved._type, name, paramTypes);
+			if (_method == null) return new Traverse();
+			return new Traverse(resolved._root, (MethodInfo)_method, arguments);
 		}
 
 		public static void IterateFields(object source, Action<Traverse> action)
@@ -207,7 +203,7 @@ namespace Harmony
 
 		public override string ToString()
 		{
-			var value = GetValue();
+			var value = _method != null ? _method : GetValue();
 			if (value == null) return null;
 			return value.ToString();
 		}
