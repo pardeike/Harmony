@@ -36,7 +36,7 @@ namespace Harmony
 				actualVersion = (int)versionField.GetValue(null);
 
 				var stateField = assembly.GetType(name).GetField("state");
-				if (versionField == null) throw new Exception("Cannot find harmony state field");
+				if (stateField == null) throw new Exception("Cannot find harmony state field");
 				if (stateField.GetValue(null) == null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
 				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 			}
