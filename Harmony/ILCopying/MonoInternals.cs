@@ -38,7 +38,7 @@ namespace Harmony.ILCopying
 		extern static private void* mono_domain_get__EXT();
 		[DllImport("mono.dll", EntryPoint = "mono_domain_get")]
 		extern static private void* mono_domain_get__W32();
-		[DllImport("libmono.so", EntryPoint = "mono_domain_get")]
+		[DllImport("__Internal", EntryPoint = "mono_domain_get")]
 		extern static private void* mono_domain_get__M64();
 		[DllImport("libmono.so", EntryPoint = "mono_domain_get")]
 		extern static private void* mono_domain_get__L64();
@@ -47,7 +47,7 @@ namespace Harmony.ILCopying
 		extern static private _MonoJitInfo* mono_jit_info_table_find__EXT(void* domain, void* function);
 		[DllImport("mono.dll", EntryPoint = "mono_jit_info_table_find")]
 		extern static private _MonoJitInfo* mono_jit_info_table_find__W32(void* domain, void* function);
-		[DllImport("libmono.so", EntryPoint = "mono_jit_info_table_find")]
+		[DllImport("__Internal", EntryPoint = "mono_jit_info_table_find")]
 		extern static private _MonoJitInfo* mono_jit_info_table_find__M64(void* domain, void* function);
 		[DllImport("libmono.so", EntryPoint = "mono_jit_info_table_find")]
 		extern static private _MonoJitInfo* mono_jit_info_table_find__L64(void* domain, void* function);
