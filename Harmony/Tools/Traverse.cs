@@ -85,6 +85,13 @@ namespace Harmony
 			return _root;
 		}
 
+		public T GetValue<T>()
+		{
+			var value = GetValue();
+			if (value == null) return default(T);
+			return (T)value;
+		}
+
 		public object GetValue(params object[] arguments)
 		{
 			if (_method == null)
@@ -92,24 +99,11 @@ namespace Harmony
 			return _method.Invoke(_root, arguments);
 		}
 
-		public object GetValue<T>(params object[] arguments)
+		public T GetValue<T>(params object[] arguments)
 		{
 			if (_method == null)
 				throw new Exception("cannot get method value without method");
 			return (T)_method.Invoke(_root, arguments);
-		}
-
-		Traverse Resolve()
-		{
-			if (_root == null && _type != null) return this;
-			return new Traverse(GetValue());
-		}
-
-		public T GetValue<T>()
-		{
-			var value = GetValue();
-			if (value == null) return default(T);
-			return (T)value;
 		}
 
 		public Traverse SetValue(object value)
@@ -121,6 +115,12 @@ namespace Harmony
 			if (_method != null)
 				throw new Exception("cannot set value of a method");
 			return this;
+		}
+
+		Traverse Resolve()
+		{
+			if (_root == null && _type != null) return this;
+			return new Traverse(GetValue());
 		}
 
 		public Traverse Type(string name)

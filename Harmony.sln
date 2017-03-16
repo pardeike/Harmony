@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harmony", "Harmony\Harmony.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarmonyTests", "HarmonyTests\HarmonyTests.csproj", "{518BE511-DF94-411D-9577-D3D8959907D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarmonyNUnitTests", "HarmonyNUnitTests\HarmonyNUnitTests.csproj", "{3EEC5AB4-E61A-45AB-8889-EE247174EC64}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{518BE511-DF94-411D-9577-D3D8959907D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{518BE511-DF94-411D-9577-D3D8959907D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{518BE511-DF94-411D-9577-D3D8959907D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3EEC5AB4-E61A-45AB-8889-EE247174EC64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3EEC5AB4-E61A-45AB-8889-EE247174EC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3EEC5AB4-E61A-45AB-8889-EE247174EC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3EEC5AB4-E61A-45AB-8889-EE247174EC64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

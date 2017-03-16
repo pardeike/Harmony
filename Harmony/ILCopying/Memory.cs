@@ -24,10 +24,7 @@ namespace Harmony.ILCopying
 
 		public static long GetMethodStart(MethodBase method)
 		{
-			long originalCodeStart = 0;
-			if (MonoInternals.GetCodeInfo(method, out originalCodeStart) == false)
-				throw new Exception("Cannot get info for original: " + method);
-			return originalCodeStart;
+			return method.MethodHandle.GetFunctionPointer().ToInt64();
 		}
 
 		public static unsafe long WriteByte(long memory, byte value)

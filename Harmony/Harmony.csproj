@@ -60,7 +60,6 @@
     <Compile Include="ILCopying\ILInstruction.cs" />
     <Compile Include="ILCopying\Memory.cs" />
     <Compile Include="ILCopying\MethodCopier.cs" />
-    <Compile Include="ILCopying\MonoInternals.cs" />
     <Compile Include="Extras\MethodInvoker.cs" />
     <Compile Include="MethodPatcher.cs" />
     <Compile Include="Patch.cs" />
