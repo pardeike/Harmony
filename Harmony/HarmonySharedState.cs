@@ -9,8 +9,8 @@ namespace Harmony
 	public static class HarmonySharedState
 	{
 		static readonly string name = "HarmonySharedState";
-		public static readonly int internalVersion = 100;
-		public static int actualVersion = -1;
+		internal static readonly int internalVersion = 100;
+		internal static int actualVersion = -1;
 
 		static Dictionary<MethodBase, byte[]> GetState()
 		{
@@ -48,14 +48,19 @@ namespace Harmony
 				.FirstOrDefault(a => a.GetName().Name.Contains(name));
 		}
 
-		public static PatchInfo GetPatchInfo(MethodBase method)
+		internal static PatchInfo GetPatchInfo(MethodBase method)
 		{
 			var bytes = GetState().GetValueSafe(method);
 			if (bytes == null) return null;
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
 
-		public static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
+		internal static IEnumerable<MethodBase> GetPatchedMethods()
+		{
+			return GetState().Keys.AsEnumerable();
+		}
+
+		internal static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
 		{
 			GetState()[method] = patchInfo.Serialize();
 		}

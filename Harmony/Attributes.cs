@@ -2,6 +2,12 @@
 
 namespace Harmony
 {
+	public enum PropertyMethod
+	{
+		Getter,
+		Setter
+	}
+
 	public class HarmonyAttribute : Attribute
 	{
 		public HarmonyMethod info = new HarmonyMethod();
@@ -22,6 +28,12 @@ namespace Harmony
 		public HarmonyPatch(string methodName)
 		{
 			info.methodName = methodName;
+		}
+
+		public HarmonyPatch(string propertyName, PropertyMethod type)
+		{
+			var prefix = type == PropertyMethod.Getter ? "get_" : "set_";
+			info.methodName = prefix + propertyName;
 		}
 
 		public HarmonyPatch(Type[] parameter)
