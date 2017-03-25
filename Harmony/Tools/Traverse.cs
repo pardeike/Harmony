@@ -159,9 +159,9 @@ namespace Harmony
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
-			_method = Cache.GetMethodInfo(resolved._type, name, types);
-			if (_method == null) return new Traverse();
-			return new Traverse(resolved._root, (MethodInfo)_method, arguments);
+			var method = Cache.GetMethodInfo(resolved._type, name, types);
+			if (method == null) return new Traverse();
+			return new Traverse(resolved._root, (MethodInfo)method, arguments);
 		}
 
 		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
@@ -169,9 +169,9 @@ namespace Harmony
 			if (name == null) throw new Exception("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
-			_method = Cache.GetMethodInfo(resolved._type, name, paramTypes);
-			if (_method == null) return new Traverse();
-			return new Traverse(resolved._root, (MethodInfo)_method, arguments);
+			var method = Cache.GetMethodInfo(resolved._type, name, paramTypes);
+			if (method == null) return new Traverse();
+			return new Traverse(resolved._root, (MethodInfo)method, arguments);
 		}
 
 		public static void IterateFields(object source, Action<Traverse> action)
