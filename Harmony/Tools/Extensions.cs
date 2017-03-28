@@ -88,12 +88,11 @@ namespace Harmony
 			if (replacer == null)
 				throw new ArgumentNullException(nameof(replacer));
 
-			return ReplaceMatchingSequenceInner(source, predicates, replacer);
+			return ReplaceMatchingSequenceInner(source, p, replacer);
 		}
 
-		private static IEnumerable<T> ReplaceMatchingSequenceInner<T>(this IEnumerable<T> source, IEnumerable<Func<T, bool>> predicates, Func<IEnumerable<T>, IEnumerable<T>> replacer)
+		private static IEnumerable<T> ReplaceMatchingSequenceInner<T>(this IEnumerable<T> source, Func<T, bool>[] predicates, Func<IEnumerable<T>, IEnumerable<T>> replacer)
 		{
-			var p = predicates.ToArray();
 			var matchingIndex = -1;
 
 			var buffer = new List<T>();
@@ -101,7 +100,7 @@ namespace Harmony
 			foreach (var e in source)
 			{
 				// matched next predicate
-				if (p[matchingIndex + 1](e))
+				if (predicates[matchingIndex + 1](e))
 				{
 					matchingIndex++;
 
@@ -109,7 +108,7 @@ namespace Harmony
 					buffer.Add(e);
 
 					// all predicates matched
-					if (matchingIndex + 1 == p.Length)
+					if (matchingIndex + 1 == predicates.Length)
 					{
 						matchingIndex = -1;
 						foreach (var r in replacer(buffer))
