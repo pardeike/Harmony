@@ -20,43 +20,82 @@ namespace Harmony
 			return Handler(methodInfo, methodInfo.DeclaringType.Module);
 		}
 
-		static FastInvokeHandler Handler(MethodInfo methodInfo, Module module)
+		static FastInvokeHandler Handler(MethodInfo methodInfo, Module module, bool directBoxValueAccess = false)
 		{
-			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name, typeof(object), new Type[] { typeof(object), typeof(object[]) }, module);
+			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name + "_" + (directBoxValueAccess ? "direct" : "indirect"), typeof(object), new Type[] { typeof(object), typeof(object[]) }, module);
 			var il = dynamicMethod.GetILGenerator();
 
+			bool generateLocalBoxValuePtr = true;
+
 			var ps = methodInfo.GetParameters();
-			var paramTypes = new Type[ps.Length];
-			for (int i = 0; i < paramTypes.Length; i++)
-			{
-				if (ps[i].ParameterType.IsByRef)
-					paramTypes[i] = ps[i].ParameterType.GetElementType();
-				else
-					paramTypes[i] = ps[i].ParameterType;
-			}
-
-			var locals = new LocalBuilder[paramTypes.Length];
-			for (int i = 0; i < paramTypes.Length; i++)
-				locals[i] = il.DeclareLocal(paramTypes[i], true);
-
-			for (int i = 0; i < paramTypes.Length; i++)
-			{
-				il.Emit(OpCodes.Ldarg_1);
-				EmitFastInt(il, i);
-				il.Emit(OpCodes.Ldelem_Ref);
-				EmitCastToReference(il, paramTypes[i]);
-				il.Emit(OpCodes.Stloc, locals[i]);
-			}
 
 			if (!methodInfo.IsStatic)
-				il.Emit(OpCodes.Ldarg_0);
-
-			for (int i = 0; i < paramTypes.Length; i++)
 			{
-				if (ps[i].ParameterType.IsByRef)
-					il.Emit(OpCodes.Ldloca_S, locals[i]);
+				il.Emit(OpCodes.Ldarg_0);
+				EmitUnboxIfNeeded(il, methodInfo.DeclaringType);
+			}
+
+			for (int i = 0; i < ps.Length; i++)
+			{
+				Type argType = ps[i].ParameterType;
+				bool argIsByRef = argType.IsByRef;
+				if (argIsByRef)
+					argType = argType.GetElementType();
+				bool argIsValueType = argType.IsValueType;
+
+				if (argIsByRef && argIsValueType && !directBoxValueAccess)
+				{
+					// Used later when storing back the reference to the new box in the array.
+					il.Emit(OpCodes.Ldarg_1);
+					EmitFastInt(il, i);
+				}
+
+				il.Emit(OpCodes.Ldarg_1);
+				EmitFastInt(il, i);
+
+				if (argIsByRef && !argIsValueType)
+				{
+					il.Emit(OpCodes.Ldelema, typeof(object));
+				}
 				else
-					il.Emit(OpCodes.Ldloc, locals[i]);
+				{
+					il.Emit(OpCodes.Ldelem_Ref);
+					if (argIsValueType)
+					{
+						if (!argIsByRef || !directBoxValueAccess)
+						{
+							// if !directBoxValueAccess, create a new box if required
+							il.Emit(OpCodes.Unbox_Any, argType);
+							if (argIsByRef)
+							{
+								// box back
+								il.Emit(OpCodes.Box, argType);
+
+								// store new box value address to local 0
+								il.Emit(OpCodes.Dup);
+								il.Emit(OpCodes.Unbox, argType);
+								if (generateLocalBoxValuePtr)
+								{
+									generateLocalBoxValuePtr = false;
+									// Yes, you're seeing this right - a local of type void* to store the box value address!
+									il.DeclareLocal(typeof(void*), true);
+								}
+								il.Emit(OpCodes.Stloc_0);
+
+								// arr and index set up already
+								il.Emit(OpCodes.Stelem_Ref);
+
+								// load address back to stack
+								il.Emit(OpCodes.Ldloc_0);
+							}
+						}
+						else
+						{
+							// if directBoxValueAccess, emit unbox (get value address)
+							il.Emit(OpCodes.Unbox, argType);
+						}
+					}
+				}
 			}
 
 #pragma warning disable XS0001
@@ -71,19 +110,6 @@ namespace Harmony
 			else
 				EmitBoxIfNeeded(il, methodInfo.ReturnType);
 
-			for (int i = 0; i < paramTypes.Length; i++)
-			{
-				if (ps[i].ParameterType.IsByRef)
-				{
-					il.Emit(OpCodes.Ldarg_1);
-					EmitFastInt(il, i);
-					il.Emit(OpCodes.Ldloc, locals[i]);
-					if (locals[i].LocalType.IsValueType)
-						il.Emit(OpCodes.Box, locals[i].LocalType);
-					il.Emit(OpCodes.Stelem_Ref);
-				}
-			}
-
 			il.Emit(OpCodes.Ret);
 
 			var invoder = (FastInvokeHandler)dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
@@ -96,6 +122,12 @@ namespace Harmony
 				il.Emit(OpCodes.Unbox_Any, type);
 			else
 				il.Emit(OpCodes.Castclass, type);
+		}
+
+		static void EmitUnboxIfNeeded(ILGenerator il, Type type)
+		{
+			if (type.IsValueType)
+				il.Emit(OpCodes.Unbox_Any, type);
 		}
 
 		static void EmitBoxIfNeeded(ILGenerator il, Type type)
