@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Harmony.ILCopying
 {
@@ -25,21 +26,23 @@ namespace Harmony.ILCopying
 
 		private readonly static FieldInfo f_DynamicMethod_m_method =
 			// .NET
-			typeof(DynamicMethod).GetField("m_method", BindingFlags.NonPublic | BindingFlags.Instance);
+			typeof(DynamicMethod).GetField("m_method", BindingFlags.NonPublic | BindingFlags.Instance) ??
+			// Mono
+			typeof(DynamicMethod).GetField("mhandle", BindingFlags.NonPublic | BindingFlags.Instance);
 		public static long GetMethodStart(MethodBase method)
 		{
 			RuntimeMethodHandle handle;
 
-			if (method is DynamicMethod)
-			{
-				if (f_DynamicMethod_m_method != null)
-					handle = (RuntimeMethodHandle) f_DynamicMethod_m_method.GetValue(method);
-				else
-					handle = method.MethodHandle;
-			}
+			if (method is DynamicMethod && f_DynamicMethod_m_method != null)
+				handle = (RuntimeMethodHandle) f_DynamicMethod_m_method.GetValue(method);
 			else
 				handle = method.MethodHandle;
 
+			/* Required to ensure that the method is already JITed and the method start doesn't change.
+			 * This seemingly only affects the .NET Framework.
+			 * - ade
+			 */
+			RuntimeHelpers.PrepareMethod(handle);
 			return handle.GetFunctionPointer().ToInt64();
 		}
 

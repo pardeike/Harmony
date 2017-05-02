@@ -7,8 +7,6 @@ namespace HarmonyTests.Assets
 {
 	public class Class1
 	{
-		// NoInlining required for .NET Framework
-		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static void Method1()
 		{
 			Class1Patch.originalExecuted = true;

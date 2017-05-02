@@ -1,6 +1,8 @@
 ﻿using Harmony;
+using Harmony.ILCopying;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Reflection;
 
 namespace HarmonyTests
@@ -41,9 +43,20 @@ namespace HarmonyTests
 			var patcher = new PatchProcessor(instance, originalMethod, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod), new HarmonyMethod(transpilerMethod));
 			Assert.IsNotNull(patcher);
 
+			var originalMethodStartPre = Memory.GetMethodStart(originalMethod);
 			patcher.Patch();
-			Class1.Method1();
+			var originalMethodStartPost = Memory.GetMethodStart(originalMethod);
+			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
+			unsafe
+			{
+				byte patchedCode = *(byte*) originalMethodStartPre;
+				if (IntPtr.Size == sizeof(long))
+					Assert.IsTrue(patchedCode == 0x48);
+				else
+					Assert.IsTrue(patchedCode == 0x68);
+			}
 
+			Class1.Method1();
 			Assert.IsTrue(Class1Patch.prefixed);
 			Assert.IsTrue(Class1Patch.originalExecuted);
 			Assert.IsTrue(Class1Patch.postfixed);
