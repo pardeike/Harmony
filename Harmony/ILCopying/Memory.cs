@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Harmony.ILCopying
 {
@@ -22,9 +23,24 @@ namespace Harmony.ILCopying
 			return memory;
 		}
 
+		private readonly static FieldInfo f_DynamicMethod_m_method =
+			// .NET
+			typeof(DynamicMethod).GetField("m_method", BindingFlags.NonPublic | BindingFlags.Instance);
 		public static long GetMethodStart(MethodBase method)
 		{
-			return method.MethodHandle.GetFunctionPointer().ToInt64();
+			RuntimeMethodHandle handle;
+
+			if (method is DynamicMethod)
+			{
+				if (f_DynamicMethod_m_method != null)
+					handle = (RuntimeMethodHandle) f_DynamicMethod_m_method.GetValue(method);
+				else
+					handle = method.MethodHandle;
+			}
+			else
+				handle = method.MethodHandle;
+
+			return handle.GetFunctionPointer().ToInt64();
 		}
 
 		public static unsafe long WriteByte(long memory, byte value)
