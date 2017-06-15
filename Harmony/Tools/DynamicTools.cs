@@ -23,7 +23,7 @@ namespace Harmony
 
 			var method = new DynamicMethod(
 				patchName,
-				MethodAttributes.Public | (original.IsStatic ? MethodAttributes.Static : 0),
+				MethodAttributes.Public | MethodAttributes.Static,
 				CallingConventions.Standard,
 				AccessTools.GetReturnedType(original),
 				paramTypes,
