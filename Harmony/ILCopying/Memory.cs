@@ -29,14 +29,38 @@ namespace Harmony.ILCopying
 			typeof(DynamicMethod).GetField("m_method", BindingFlags.NonPublic | BindingFlags.Instance) ??
 			// Mono
 			typeof(DynamicMethod).GetField("mhandle", BindingFlags.NonPublic | BindingFlags.Instance);
-		public static long GetMethodStart(MethodBase method)
+
+		private readonly static MethodInfo f_DynamicMethod_GetMethodDescriptor =
+			typeof(DynamicMethod).GetMethod("GetMethodDescriptor", BindingFlags.NonPublic | BindingFlags.Instance);
+
+		private static RuntimeMethodHandle GetMethodHandle(MethodBase method)
 		{
 			RuntimeMethodHandle handle;
 
-			if (method is DynamicMethod && f_DynamicMethod_m_method != null)
-				handle = (RuntimeMethodHandle) f_DynamicMethod_m_method.GetValue(method);
+			if (method is DynamicMethod)
+			{
+				if (f_DynamicMethod_GetMethodDescriptor != null)
+				{
+					// DynamicMethod actually generates its m_methodHandle on-the-fly and therefore
+					// we should call GetMethodDescriptor to force it to be created.
+					handle = (RuntimeMethodHandle)f_DynamicMethod_GetMethodDescriptor.Invoke(method, new object[0]);
+				}
+				else
+				{
+					handle = (RuntimeMethodHandle)f_DynamicMethod_m_method.GetValue(method);
+				}
+			}
 			else
+			{
 				handle = method.MethodHandle;
+			}
+
+			return handle;
+		}
+
+		public static long GetMethodStart(MethodBase method)
+		{
+			RuntimeMethodHandle handle = GetMethodHandle(method);
 
 			/* Required to ensure that the method is already JITed and the method start doesn't change.
 			 * This seemingly only affects the .NET Framework.
