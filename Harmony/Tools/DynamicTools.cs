@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
@@ -87,7 +88,20 @@ namespace Harmony
 		public static void PrepareDynamicMethod(DynamicMethod method)
 		{
 			var m_CreateDynMethod = typeof(DynamicMethod).GetMethod("CreateDynMethod", BindingFlags.NonPublic | BindingFlags.Instance);
-			m_CreateDynMethod.Invoke(method, new object[0]);
+			if (m_CreateDynMethod != null)
+			{
+				m_CreateDynMethod.Invoke(method, new object[0]);
+			}
+			else
+			{
+				var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", BindingFlags.NonPublic | BindingFlags.Instance);
+				var m__CompileMethod = typeof(RuntimeHelpers).GetMethod("_CompileMethod", BindingFlags.NonPublic | BindingFlags.Static);
+				RuntimeMethodHandle handle = (RuntimeMethodHandle)m_GetMethodDescriptor.Invoke(method, new object[0]);
+				if (m__CompileMethod.GetParameters()[0].ParameterType == typeof(IntPtr))
+					m__CompileMethod.Invoke(null, new object[] { handle.Value });
+				else
+					m__CompileMethod.Invoke(null, new object[] { handle });
+			}
 		}
 	}
 }
