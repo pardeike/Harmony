@@ -8,7 +8,7 @@ namespace Harmony
 
 	public delegate object FastInvokeHandler(object target, object[] paramters);
 
-	class MethodInvoker
+	public class MethodInvoker
 	{
 		public static FastInvokeHandler GetHandler(DynamicMethod methodInfo, Module module)
 		{
