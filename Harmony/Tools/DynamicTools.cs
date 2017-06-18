@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
@@ -22,7 +23,7 @@ namespace Harmony
 
 			var method = new DynamicMethod(
 				patchName,
-				MethodAttributes.Public | (original.IsStatic ? MethodAttributes.Static : 0),
+				MethodAttributes.Public | MethodAttributes.Static,
 				CallingConventions.Standard,
 				AccessTools.GetReturnedType(original),
 				paramTypes,
@@ -87,7 +88,26 @@ namespace Harmony
 		public static void PrepareDynamicMethod(DynamicMethod method)
 		{
 			var m_CreateDynMethod = typeof(DynamicMethod).GetMethod("CreateDynMethod", BindingFlags.NonPublic | BindingFlags.Instance);
-			m_CreateDynMethod.Invoke(method, new object[0]);
+			if (m_CreateDynMethod != null)
+			{
+				m_CreateDynMethod.Invoke(method, new object[0]);
+			}
+			else
+			{
+				var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", BindingFlags.NonPublic | BindingFlags.Instance);
+				var m__CompileMethod = typeof(RuntimeHelpers).GetMethod("_CompileMethod", BindingFlags.NonPublic | BindingFlags.Static);
+				RuntimeMethodHandle handle = (RuntimeMethodHandle)m_GetMethodDescriptor.Invoke(method, new object[0]);
+				var m_GetMethodInfo = typeof(RuntimeMethodHandle).GetMethod("GetMethodInfo", BindingFlags.NonPublic | BindingFlags.Instance);
+				if (m_GetMethodInfo != null)
+				{
+					object runtimeMethodInfo = m_GetMethodInfo.Invoke(handle, new object[0]);
+					m__CompileMethod.Invoke(null, new object[] { runtimeMethodInfo });
+				}
+				else if (m__CompileMethod.GetParameters()[0].ParameterType == typeof(IntPtr))
+					m__CompileMethod.Invoke(null, new object[] { handle.Value });
+				else
+					m__CompileMethod.Invoke(null, new object[] { handle });
+			}
 		}
 	}
 }
