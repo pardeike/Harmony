@@ -55,7 +55,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Extras\Assets\MethodInvokerClasses.cs" />
     <Compile Include="Patching\Assets\PatchClasses.cs" />
+    <Compile Include="Extras\TestMethodInvoker.cs" />
     <Compile Include="Patching\StaticPatches.cs" />
     <Compile Include="Tools\Assets\AccessToolsClass.cs" />
     <Compile Include="Tools\Assets\AttributesClass.cs" />
