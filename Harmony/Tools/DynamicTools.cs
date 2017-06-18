@@ -87,27 +87,46 @@ namespace Harmony
 
 		public static void PrepareDynamicMethod(DynamicMethod method)
 		{
-			var m_CreateDynMethod = typeof(DynamicMethod).GetMethod("CreateDynMethod", BindingFlags.NonPublic | BindingFlags.Instance);
+			var nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
+			var nonPublicStatic = BindingFlags.NonPublic | BindingFlags.Static;
+
+			// on mono, just call 'CreateDynMethod'
+			//
+			var m_CreateDynMethod = typeof(DynamicMethod).GetMethod("CreateDynMethod", nonPublicInstance);
 			if (m_CreateDynMethod != null)
 			{
 				m_CreateDynMethod.Invoke(method, new object[0]);
+				return;
 			}
-			else
+
+			// on all .NET Core versions, call 'RuntimeHelpers._CompileMethod' but with a different parameter:
+			//
+			var m__CompileMethod = typeof(RuntimeHelpers).GetMethod("_CompileMethod", nonPublicStatic);
+
+			var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", nonPublicInstance);
+			var handle = (RuntimeMethodHandle)m_GetMethodDescriptor.Invoke(method, new object[0]);
+
+			// 1) RuntimeHelpers._CompileMethod(handle.GetMethodInfo())
+			//
+			var m_GetMethodInfo = typeof(RuntimeMethodHandle).GetMethod("GetMethodInfo", nonPublicInstance);
+			if (m_GetMethodInfo != null)
 			{
-				var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", BindingFlags.NonPublic | BindingFlags.Instance);
-				var m__CompileMethod = typeof(RuntimeHelpers).GetMethod("_CompileMethod", BindingFlags.NonPublic | BindingFlags.Static);
-				RuntimeMethodHandle handle = (RuntimeMethodHandle)m_GetMethodDescriptor.Invoke(method, new object[0]);
-				var m_GetMethodInfo = typeof(RuntimeMethodHandle).GetMethod("GetMethodInfo", BindingFlags.NonPublic | BindingFlags.Instance);
-				if (m_GetMethodInfo != null)
-				{
-					object runtimeMethodInfo = m_GetMethodInfo.Invoke(handle, new object[0]);
-					m__CompileMethod.Invoke(null, new object[] { runtimeMethodInfo });
-				}
-				else if (m__CompileMethod.GetParameters()[0].ParameterType == typeof(IntPtr))
-					m__CompileMethod.Invoke(null, new object[] { handle.Value });
-				else
-					m__CompileMethod.Invoke(null, new object[] { handle });
+				var runtimeMethodInfo = m_GetMethodInfo.Invoke(handle, new object[0]);
+				m__CompileMethod.Invoke(null, new object[] { runtimeMethodInfo });
+				return;
 			}
+
+			// 2) RuntimeHelpers._CompileMethod(handle.Value)
+			//
+			if (m__CompileMethod.GetParameters()[0].ParameterType == typeof(IntPtr))
+			{
+				m__CompileMethod.Invoke(null, new object[] { handle.Value });
+				return;
+			}
+
+			// 3) RuntimeHelpers._CompileMethod(handle)
+			//
+			m__CompileMethod.Invoke(null, new object[] { handle });
 		}
 	}
 }

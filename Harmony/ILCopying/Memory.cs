@@ -24,49 +24,39 @@ namespace Harmony.ILCopying
 			return memory;
 		}
 
-		private readonly static FieldInfo f_DynamicMethod_m_method =
-			// .NET
-			typeof(DynamicMethod).GetField("m_method", BindingFlags.NonPublic | BindingFlags.Instance) ??
-			// Mono
-			typeof(DynamicMethod).GetField("mhandle", BindingFlags.NonPublic | BindingFlags.Instance);
-
-		private readonly static MethodInfo f_DynamicMethod_GetMethodDescriptor =
-			typeof(DynamicMethod).GetMethod("GetMethodDescriptor", BindingFlags.NonPublic | BindingFlags.Instance);
-
-		private static RuntimeMethodHandle GetMethodHandle(MethodBase method)
+		private static RuntimeMethodHandle GetRuntimeMethodHandle(MethodBase method)
 		{
-			RuntimeMethodHandle handle;
-
 			if (method is DynamicMethod)
 			{
-				if (f_DynamicMethod_GetMethodDescriptor != null)
-				{
-					// DynamicMethod actually generates its m_methodHandle on-the-fly and therefore
-					// we should call GetMethodDescriptor to force it to be created.
-					handle = (RuntimeMethodHandle)f_DynamicMethod_GetMethodDescriptor.Invoke(method, new object[0]);
-				}
-				else
-				{
-					handle = (RuntimeMethodHandle)f_DynamicMethod_m_method.GetValue(method);
-				}
-			}
-			else
-			{
-				handle = method.MethodHandle;
+				var nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
+
+				// DynamicMethod actually generates its m_methodHandle on-the-fly and therefore
+				// we should call GetMethodDescriptor to force it to be created.
+				//
+				var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", nonPublicInstance);
+				if (m_GetMethodDescriptor != null)
+					return (RuntimeMethodHandle)m_GetMethodDescriptor.Invoke(method, new object[0]);
+
+				// .Net Core
+				var f_m_method = typeof(DynamicMethod).GetField("m_method", nonPublicInstance);
+				if (f_m_method != null)
+					return (RuntimeMethodHandle)f_m_method.GetValue(method);
+
+				// Mono
+				var f_mhandle = typeof(DynamicMethod).GetField("mhandle", nonPublicInstance);
+				return (RuntimeMethodHandle)f_mhandle.GetValue(method);
 			}
 
-			return handle;
+			return method.MethodHandle;
 		}
 
 		public static long GetMethodStart(MethodBase method)
 		{
-			RuntimeMethodHandle handle = GetMethodHandle(method);
-
-			/* Required to ensure that the method is already JITed and the method start doesn't change.
-			 * This seemingly only affects the .NET Framework.
-			 * - ade
-			 */
+			// Required in .NET Core so that the method is JITed and the method start does not change
+			//
+			var handle = GetRuntimeMethodHandle(method);
 			RuntimeHelpers.PrepareMethod(handle);
+
 			return handle.GetFunctionPointer().ToInt64();
 		}
 
