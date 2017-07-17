@@ -4,6 +4,7 @@ using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace HarmonyTests
 {
@@ -112,6 +113,64 @@ namespace HarmonyTests
 			Assert.IsTrue(Class2Patch.prefixed);
 			Assert.IsTrue(Class2Patch.originalExecuted);
 			Assert.IsTrue(Class2Patch.postfixed);
+		}
+
+		[TestMethod]
+		public void MethodRestorationTest()
+		{
+			var originalMethod = typeof(RestoreableClass).GetMethod("Method2");
+			Assert.IsNotNull(originalMethod);
+
+			MethodInfo prefixMethod;
+			MethodInfo postfixMethod;
+			MethodInfo transpilerMethod;
+			PatchTools.GetPatches(typeof(Class2Patch), originalMethod, out prefixMethod, out postfixMethod, out transpilerMethod);
+
+			var instance = HarmonyInstance.Create("test");
+			var patcher = new PatchProcessor(instance, originalMethod, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod), null);
+
+			// Check if the class is clean before using it for patching
+			Assert.AreEqual(null, instance.IsPatched(originalMethod), "Class already patched!");
+
+			var start = Memory.GetMethodStart(originalMethod);
+			var oldBytes = new byte[12];
+			if (IntPtr.Size == sizeof(long))
+			{
+				Marshal.Copy((IntPtr)start, oldBytes, 0, 12);
+			}
+			else
+			{
+				Marshal.Copy((IntPtr)start, oldBytes, 0, 6);
+			}
+
+			patcher.Patch();
+
+			patcher.Restore();
+
+			var newBytes = new byte[12];
+			if (IntPtr.Size == sizeof(long))
+			{
+				Marshal.Copy((IntPtr)start, newBytes, 0, 12);
+			}
+			else
+			{
+				Marshal.Copy((IntPtr)start, newBytes, 0, 6);
+			}
+			for (int i = 0; i < oldBytes.Length; i++)
+			{
+				Assert.AreEqual(oldBytes[i], newBytes[i], string.Format("Byte {0} differs after restoration", i));
+			}
+
+			Class2Patch._reset();
+			new RestoreableClass().Method2();
+
+			Assert.IsFalse(Class2Patch.prefixed);
+			Assert.IsTrue(Class2Patch.originalExecuted);
+			Assert.IsFalse(Class2Patch.postfixed);
+
+			Assert.AreEqual(0, instance.IsPatched(originalMethod).Postfixes.Count);
+			Assert.AreEqual(0, instance.IsPatched(originalMethod).Prefixes.Count);
+			Assert.AreEqual(0, instance.IsPatched(originalMethod).Transpilers.Count);
 		}
 	}
 }

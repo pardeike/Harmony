@@ -76,6 +76,12 @@ namespace Harmony
 			processor.Patch();
 		}
 
+		public void Restore(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler = null)
+		{
+			var processor = new PatchProcessor(this, original, prefix, postfix, transpiler);
+			processor.Restore();
+		}
+
 		//
 
 		public Patches IsPatched(MethodBase method)

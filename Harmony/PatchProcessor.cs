@@ -66,6 +66,22 @@ namespace Harmony
 			}
 		}
 
+		public void Restore()
+		{
+			lock (locker)
+			{
+				var patchInfo = HarmonySharedState.GetPatchInfo(original);
+				if (patchInfo == null) return;
+
+				PatchFunctions.RemovePrefix(patchInfo, prefix);
+				PatchFunctions.RemovePostfix(patchInfo, postfix);
+				PatchFunctions.RemoveTranspiler(patchInfo, transpiler);
+				PatchFunctions.UpdateWrapper(original, patchInfo);
+
+				HarmonySharedState.UpdatePatchInfo(original, patchInfo);
+			}
+		}
+
 		bool CallPrepare()
 		{
 			if (original != null)

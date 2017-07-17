@@ -14,6 +14,16 @@ namespace Harmony
 			objectReferences[key] = value;
 		}
 
+		public static void ForgetObject(object key)
+		{
+			objectReferences.Remove(key);
+		}
+
+		public static bool RecallObject(object key, out object value)
+		{
+			return objectReferences.TryGetValue(key, out value);
+		}
+
 		public static MethodInfo GetPatchMethod<T>(Type patchType, string name, Type[] parameters = null)
 		{
 			var method = patchType.GetMethods(AccessTools.all)
