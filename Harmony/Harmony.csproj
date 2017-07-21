@@ -48,6 +48,7 @@
     <Compile Include="CodeInstruction.cs" />
     <Compile Include="HarmonySharedState.cs" />
     <Compile Include="ILCopying\Emitter.cs" />
+    <Compile Include="NativeLibrary.cs" />
     <Compile Include="Tools\AccessCache.cs" />
     <Compile Include="Tools\AccessTools.cs" />
     <Compile Include="Attributes.cs" />
