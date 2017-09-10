@@ -2,8 +2,10 @@ language: csharp
 solution: Harmony.sln
 mono:
   - latest
+dotnet: 1.0.3
 install:
-  - nuget restore Harmony.sln
+  - nuget restore
+  - dotnet restore
   - nuget install NUnit.Console -Version 3.7.0 -OutputDirectory testrunner
 script:
   - msbuild /p:Configuration=Release
