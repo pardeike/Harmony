@@ -1,4 +1,7 @@
 language: csharp
+os:
+  - linux
+  - osx
 solution: Harmony.sln
 mono:
   - latest
