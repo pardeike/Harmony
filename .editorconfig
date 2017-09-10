@@ -15,7 +15,11 @@ insert_final_newline = true
 [**/*.cs]
 charset = utf-8-bom
 
+[**/*.*proj]
+indent_style = space
+indent_size = 2
+
 # Matches the exact files .travis.yml
-[{appveyor.yml, .travis.yml}]
+[{appveyor.yml,.travis.yml}]
 indent_style = space
 indent_size = 2

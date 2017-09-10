@@ -1,0 +1,6 @@
+language: csharp
+solution: Harmony.sln
+mono:
+  - latest
+script:
+  - msbuild
