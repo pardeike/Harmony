@@ -8,6 +8,7 @@ namespace HarmonyTests
 	[TestClass]
 	public class TestTraverse_Methods
 	{
+		[Ignore]
 		[TestMethod]
 		public void Traverse_Missing_Method()
 		{

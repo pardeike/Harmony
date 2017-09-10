@@ -97,6 +97,7 @@ namespace HarmonyTests
 			Assert.AreNotSame(pinfo3, pinfo4);
 		}
 
+		[Ignore]
 		[TestMethod]
 		public void AccessCache_Method()
 		{

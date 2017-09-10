@@ -13,6 +13,7 @@ namespace HarmonyTests
 	{
 		private class InnerClass { }
 
+		[Ignore]
 		[TestMethod]
 		public void Traverse_Types()
 		{
