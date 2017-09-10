@@ -1,0 +1,6 @@
+version: 1.0.{build}
+
+image: Visual Studio 2017
+
+artifacts:
+- path: 'Harmony\bin\Debug\0Harmony.*'
