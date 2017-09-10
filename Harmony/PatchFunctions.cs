@@ -61,7 +61,6 @@ namespace Harmony
 
 			var originalCodeStart = Memory.GetMethodStart(original);
 			var patchCodeStart = Memory.GetMethodStart(replacement);
-			Memory.UnprotectMemoryPage(originalCodeStart);
 			Memory.WriteJump(originalCodeStart, patchCodeStart);
 
 			PatchTools.RememberObject(original, replacement); // no gc for new value + release old value to gc
