@@ -1,16 +1,16 @@
 ﻿using Harmony;
 using Harmony.ILCopying;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Reflection;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class StaticPatches
 	{
-		[TestMethod]
+		[Test]
 		public void TestMethod1()
 		{
 			var originalClass = typeof(Class1);
@@ -62,7 +62,7 @@ namespace HarmonyTests
 			Assert.IsTrue(Class1Patch.postfixed);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestMethod2()
 		{
 			var originalClass = typeof(Class2);

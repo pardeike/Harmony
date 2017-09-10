@@ -1,15 +1,15 @@
 ﻿using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class TestTraverse_Methods
 	{
-		[Ignore]
-		[TestMethod]
+		[Ignore("Skip failed test")]
+		[Test]
 		public void Traverse_Missing_Method()
 		{
 			var instance = new TraverseMethods_Instance();
@@ -39,7 +39,7 @@ namespace HarmonyTests
 			Assert.AreEqual("FooBar(System.String, System.Int32)", methodSig2);
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_Method_Instance()
 		{
 			var instance = new TraverseMethods_Instance();
@@ -54,7 +54,7 @@ namespace HarmonyTests
 			Assert.AreEqual("argarg", mtrv2.GetValue());
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_Method_Static()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_Static));
@@ -62,7 +62,7 @@ namespace HarmonyTests
 			Assert.AreEqual(42, mtrv.GetValue<int>());
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_Method_VariableArguments()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_VarArgs));
@@ -75,7 +75,7 @@ namespace HarmonyTests
 			Assert.AreEqual(6000, trv.Method("Test3", 100, new int[] { 10, 20, 30 }).GetValue<int>());
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_Method_RefParameters()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_Parameter));
@@ -88,7 +88,7 @@ namespace HarmonyTests
 			Assert.AreEqual("hello", parameters[0]);
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_Method_OutParameters()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_Parameter));

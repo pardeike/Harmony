@@ -1,17 +1,14 @@
 ﻿using Harmony;
-using Harmony.ILCopying;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Reflection;
+using NUnit.Framework;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class TestMethodInvoker
     {
 
-		[TestMethod]
+		[Test]
         public void TestMethodInvokerGeneral()
         {
             var type = typeof(MethodInvokerClass);
@@ -31,7 +28,7 @@ namespace HarmonyTests
             Assert.AreEqual(((TestMethodInvokerStruct) args[4]).Value, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void TestMethodInvokerSelfObject()
         {
             var type = typeof(TestMethodInvokerObject);
