@@ -31,6 +31,10 @@ If you develop in C# and your code is loaded as a module/plugin into a host appl
 
 Hope you enjoy Harmony!
 
+<hr>
+
+**Help by promoting this library** so developers can find it. One way is to upvote [this](https://stackoverflow.com/questions/7299097/dynamically-replace-the-contents-of-a-c-sharp-method/42043003#42043003) stackoverflow answer. Or spread the word in your developer communities. Thank you!
+
 For more information and my other open source projects, follow me on twitter: @pardeike
 
 <hr>
