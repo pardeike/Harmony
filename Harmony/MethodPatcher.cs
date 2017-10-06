@@ -103,8 +103,9 @@ namespace Harmony
 			{
 				if (patchParam.Name == INSTANCE_PARAM)
 				{
-					if (!isInstance) throw new Exception("Cannot get instance from static method " + original);
-					if (patchParam.ParameterType.IsByRef)
+                    if (!isInstance)
+                        Emitter.Emit(il, OpCodes.Ldnull);
+					else if (patchParam.ParameterType.IsByRef)
 						Emitter.Emit(il, OpCodes.Ldarga, 0); // probably won't work or will be useless
 					else
 						Emitter.Emit(il, OpCodes.Ldarg_0);

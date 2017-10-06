@@ -14,7 +14,8 @@ namespace Harmony
 		public string methodName;
 		public Type[] parameter;
 		public int prioritiy = -1;
-		public string[] before;
+        public BindingFlags patchAllFlags = BindingFlags.Default;
+        public string[] before;
 		public string[] after;
 
 		public HarmonyMethod()

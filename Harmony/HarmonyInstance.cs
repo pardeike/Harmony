@@ -72,7 +72,7 @@ namespace Harmony
 
 		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler = null)
 		{
-			var processor = new PatchProcessor(this, original, prefix, postfix, transpiler);
+			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler);
 			processor.Patch();
 		}
 
