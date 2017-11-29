@@ -94,6 +94,16 @@ namespace Harmony
 			return OpCodes.Ldind_Ref;
 		}
 
+		static HarmonyParameter GetParameterAttribute(this ParameterInfo parameter)
+		{
+			return parameter.GetCustomAttributes(false).FirstOrDefault(attr => attr is HarmonyParameter) as HarmonyParameter;
+		}
+
+		static HarmonyParameter[] GetParameterAttributes(this MethodInfo method)
+		{
+			return method.GetCustomAttributes(false).Where(attr => attr is HarmonyParameter).Cast<HarmonyParameter>().ToArray();
+		}
+
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables)
 		{
 			var isInstance = original.IsStatic == false;
@@ -127,8 +137,24 @@ namespace Harmony
 					continue;
 				}
 
-				var paramAttr = patchParam.GetCustomAttributes(false).FirstOrDefault(attr => attr is HarmonyParameter) as HarmonyParameter;
-				var patchParamName = paramAttr != null ? paramAttr.name : patchParam.Name;
+				string patchParamName = patchParam.Name;
+
+				var paramAttr = patchParam.GetParameterAttribute();
+				if (paramAttr != null)
+				{
+					patchParamName = paramAttr.Name;
+				}
+				else
+				{
+					var patchAttributes = patch.GetParameterAttributes();
+					if (patchAttributes.Any())
+					{
+						paramAttr = patchAttributes.SingleOrDefault(p => p.Name == patchParam.Name);
+						if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.CustomName))
+							patchParamName = paramAttr.CustomName;
+					}
+				}
+
 				var idx = Array.IndexOf(originalParameterNames, patchParamName);
 				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original);
 
