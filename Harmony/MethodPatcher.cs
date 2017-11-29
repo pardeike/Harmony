@@ -127,7 +127,9 @@ namespace Harmony
 					continue;
 				}
 
-				var idx = Array.IndexOf(originalParameterNames, patchParam.Name);
+				var paramAttr = patchParam.GetCustomAttributes(false).FirstOrDefault(attr => attr is HarmonyParameter) as HarmonyParameter;
+				var patchParamName = paramAttr != null ? paramAttr.name : patchParam.Name;
+				var idx = Array.IndexOf(originalParameterNames, patchParamName);
 				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original);
 
 				//   original -> patch     opcode
