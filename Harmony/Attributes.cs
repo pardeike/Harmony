@@ -113,19 +113,19 @@ namespace Harmony
 	// If you want to rename parameter name in case it's obfuscated or something else 
 	// you can use the following attribute:
 
-	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class)]
 	public class HarmonyParameter : Attribute
 	{
 		public string Name { get; private set; }
 		public string CustomName { get; private set; }
 
-		public HarmonyParameter(string name)
+		public HarmonyParameter(string name) : this(name, null)
 		{
-			Name = name;
 		}
 
-		public HarmonyParameter(string name, string customName) : this(name)
+		public HarmonyParameter(string name, string customName)
 		{
+			Name = name;
 			CustomName = customName;
 		}
 	}

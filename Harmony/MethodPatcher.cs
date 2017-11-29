@@ -104,6 +104,41 @@ namespace Harmony
 			return method.GetCustomAttributes(false).Where(attr => attr is HarmonyParameter).Cast<HarmonyParameter>().ToArray();
 		}
 
+		static HarmonyParameter[] GetParameterAttributes(this Type type)
+		{
+			return type.GetCustomAttributes(false).Where(attr => attr is HarmonyParameter).Cast<HarmonyParameter>().ToArray();
+		}
+
+		static string GetParameterOverride(this ParameterInfo parameter)
+		{
+			var paramAttr = parameter.GetParameterAttribute();
+			if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.Name))
+				return paramAttr.Name;
+
+			return null;
+		}
+
+		static string GetParameterOverride(HarmonyParameter[] patchAttributes, string name)
+		{
+			if (patchAttributes.Length > 0)
+			{
+				var paramAttr = patchAttributes.SingleOrDefault(p => p.CustomName == name);
+				if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.Name))
+					return paramAttr.Name;
+			}
+
+			return null;
+		}
+
+		static string GetParameterOverride(this MethodInfo method, string name, bool checkClass)
+		{
+			var customParam = GetParameterOverride(method.GetParameterAttributes(), name);
+			if (customParam == null && checkClass)
+				return GetParameterOverride(method.DeclaringType.GetParameterAttributes(), name);
+
+			return customParam;
+		}
+
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables)
 		{
 			var isInstance = original.IsStatic == false;
@@ -139,20 +174,16 @@ namespace Harmony
 
 				string patchParamName = patchParam.Name;
 
-				var paramAttr = patchParam.GetParameterAttribute();
-				if (paramAttr != null)
+				var customName = patchParam.GetParameterOverride();
+				if (customName != null)
 				{
-					patchParamName = paramAttr.Name;
+					patchParamName = customName;
 				}
 				else
 				{
-					var patchAttributes = patch.GetParameterAttributes();
-					if (patchAttributes.Any())
-					{
-						paramAttr = patchAttributes.SingleOrDefault(p => p.Name == patchParam.Name);
-						if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.CustomName))
-							patchParamName = paramAttr.CustomName;
-					}
+					customName = patch.GetParameterOverride(patchParamName, true);
+					if (customName != null)
+						patchParamName = customName;
 				}
 
 				var idx = Array.IndexOf(originalParameterNames, patchParamName);
