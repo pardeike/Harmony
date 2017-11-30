@@ -116,17 +116,17 @@ namespace Harmony
 	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
 	public class HarmonyParameter : Attribute
 	{
-		public string Name { get; private set; }
-		public string CustomName { get; private set; }
+		public string OriginalName { get; private set; }
+		public string NewName { get; private set; }
 
-		public HarmonyParameter(string name) : this(name, null)
+		public HarmonyParameter(string originalName) : this(originalName, null)
 		{
 		}
 
-		public HarmonyParameter(string name, string customName)
+		public HarmonyParameter(string originalName, string newName)
 		{
-			Name = name;
-			CustomName = customName;
+			OriginalName = originalName;
+			NewName = newName;
 		}
 	}
 }

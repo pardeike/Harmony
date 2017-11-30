@@ -112,8 +112,8 @@ namespace Harmony
 		static string GetParameterOverride(this ParameterInfo parameter)
 		{
 			var paramAttr = parameter.GetParameterAttribute();
-			if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.Name))
-				return paramAttr.Name;
+			if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.OriginalName))
+				return paramAttr.OriginalName;
 
 			return null;
 		}
@@ -122,9 +122,9 @@ namespace Harmony
 		{
 			if (patchAttributes.Length > 0)
 			{
-				var paramAttr = patchAttributes.SingleOrDefault(p => p.CustomName == name);
-				if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.Name))
-					return paramAttr.Name;
+				var paramAttr = patchAttributes.SingleOrDefault(p => p.NewName == name);
+				if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.OriginalName))
+					return paramAttr.OriginalName;
 			}
 
 			return null;
@@ -174,16 +174,16 @@ namespace Harmony
 
 				string patchParamName = patchParam.Name;
 
-				var customName = patchParam.GetParameterOverride();
-				if (customName != null)
+				var originalName = patchParam.GetParameterOverride();
+				if (originalName != null)
 				{
-					patchParamName = customName;
+					patchParamName = originalName;
 				}
 				else
 				{
-					customName = patch.GetParameterOverride(patchParamName, true);
-					if (customName != null)
-						patchParamName = customName;
+					originalName = patch.GetParameterOverride(patchParamName, true);
+					if (originalName != null)
+						patchParamName = originalName;
 				}
 
 				var idx = Array.IndexOf(originalParameterNames, patchParamName);
