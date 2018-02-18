@@ -21,6 +21,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 - Rimworld
 - The Long Dark
 - Subnautica
+- 7 Days To Die
 - Cities: Skylines
 - Kerbal Space Program
 - Besiege
