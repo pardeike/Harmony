@@ -17,7 +17,18 @@
 
 <hr>
 
-Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is in fact well established in games like <b>Rimworld</b>, <b>The Long Dark</b>, <b>Subnautica</b>, <b>Cities: Skylines</b>, <b>Kerbal Space Program</b>, <b>Stardew Valley</b>, <b>Staxel</b> and many others.
+Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is in fact well established in games like  
+- Rimworld
+- The Long Dark
+- Subnautica
+- Cities: Skylines
+- Kerbal Space Program
+- Besiege
+- Stardew Valley
+- Staxel
+- Ravenfield
+
+It is also used in unit testing Windows Presentation Foundation controls and in many other areas.
 
 If you develop in C# and your code is loaded as a module/plugin into a host application, you can use Harmony to alter the functionality of all the available assemblies of that application. Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:
 
