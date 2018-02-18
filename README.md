@@ -26,6 +26,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 - Besiege
 - Stardew Valley
 - Staxel
+- Total Miner
 - Ravenfield
 - The Ultimate Nerd Game
 
