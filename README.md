@@ -27,6 +27,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 - Stardew Valley
 - Staxel
 - Ravenfield
+- The Ultimate Nerd Game
 
 It is also used in unit testing Windows Presentation Foundation controls and in many other areas.
 
