@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Harmony
 {
@@ -55,7 +56,21 @@ namespace Harmony
 		}
 	}
 
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Class)]
+    public class HarmonyPatchAll  : HarmonyAttribute
+    {
+    }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class HarmonyMethodFilter : HarmonyAttribute
+    {
+        public HarmonyMethodFilter(BindingFlags flags)
+        {
+            info.patchAllFlags = flags;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 	public class HarmonyPriority : HarmonyAttribute
 	{
 		public HarmonyPriority(int prioritiy)
