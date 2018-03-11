@@ -52,7 +52,15 @@ namespace HarmonyTests.Assets
 		}
 	}
 
-	public class Class2Patch
+    public class RestoreableClass
+    {
+        public void Method2()
+		{
+			Class2Patch.originalExecuted = true;
+        }
+    }
+
+    public class Class2Patch
 	{
 		public static bool prefixed = false;
 		public static bool originalExecuted = false;
