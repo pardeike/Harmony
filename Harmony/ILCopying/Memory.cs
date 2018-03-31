@@ -41,14 +41,9 @@ namespace Harmony.ILCopying
 		{
 			if (IsWindows)
 			{
-				var succ = VirtualProtect(
-					new IntPtr(memory), new UIntPtr(1),
-					Protection.PAGE_EXECUTE_READWRITE, out var _ignored);
-
-				if (!succ)
-				{
+				var success = VirtualProtect(new IntPtr(memory), new UIntPtr(1), Protection.PAGE_EXECUTE_READWRITE, out var _ignored);
+				if (success == false)
 					throw new System.ComponentModel.Win32Exception();
-				}
 			}
 		}
 
