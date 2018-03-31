@@ -131,6 +131,51 @@ namespace Harmony
 			return OpCodes.Ldind_Ref;
 		}
 
+		static HarmonyParameter GetParameterAttribute(this ParameterInfo parameter)
+		{
+			return parameter.GetCustomAttributes(false).FirstOrDefault(attr => attr is HarmonyParameter) as HarmonyParameter;
+		}
+
+		static HarmonyParameter[] GetParameterAttributes(this MethodInfo method)
+		{
+			return method.GetCustomAttributes(false).Where(attr => attr is HarmonyParameter).Cast<HarmonyParameter>().ToArray();
+		}
+
+		static HarmonyParameter[] GetParameterAttributes(this Type type)
+		{
+			return type.GetCustomAttributes(false).Where(attr => attr is HarmonyParameter).Cast<HarmonyParameter>().ToArray();
+		}
+
+		static string GetParameterOverride(this ParameterInfo parameter)
+		{
+			var paramAttr = parameter.GetParameterAttribute();
+			if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.OriginalName))
+				return paramAttr.OriginalName;
+
+			return null;
+		}
+
+		static string GetParameterOverride(HarmonyParameter[] patchAttributes, string name)
+		{
+			if (patchAttributes.Length > 0)
+			{
+				var paramAttr = patchAttributes.SingleOrDefault(p => p.NewName == name);
+				if (paramAttr != null && !string.IsNullOrEmpty(paramAttr.OriginalName))
+					return paramAttr.OriginalName;
+			}
+
+			return null;
+		}
+
+		static string GetParameterOverride(this MethodInfo method, string name, bool checkClass)
+		{
+			var customParam = GetParameterOverride(method.GetParameterAttributes(), name);
+			if (customParam == null && checkClass)
+				return GetParameterOverride(method.DeclaringType.GetParameterAttributes(), name);
+
+			return customParam;
+		}
+
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables)
 		{
 			var isInstance = original.IsStatic == false;
@@ -164,7 +209,21 @@ namespace Harmony
 					continue;
 				}
 
-				var idx = Array.IndexOf(originalParameterNames, patchParam.Name);
+				string patchParamName = patchParam.Name;
+
+				var originalName = patchParam.GetParameterOverride();
+				if (originalName != null)
+				{
+					patchParamName = originalName;
+				}
+				else
+				{
+					originalName = patch.GetParameterOverride(patchParamName, true);
+					if (originalName != null)
+						patchParamName = originalName;
+				}
+
+				var idx = Array.IndexOf(originalParameterNames, patchParamName);
 				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original);
 
 				//   original -> patch     opcode

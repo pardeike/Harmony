@@ -117,4 +117,24 @@ namespace Harmony
 	public class HarmonyTranspiler : Attribute
 	{
 	}
+
+	// If you want to rename parameter name in case it's obfuscated or something else 
+	// you can use the following attribute:
+
+	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
+	public class HarmonyParameter : Attribute
+	{
+		public string OriginalName { get; private set; }
+		public string NewName { get; private set; }
+
+		public HarmonyParameter(string originalName) : this(originalName, null)
+		{
+		}
+
+		public HarmonyParameter(string originalName, string newName)
+		{
+			OriginalName = originalName;
+			NewName = newName;
+		}
+	}
 }
