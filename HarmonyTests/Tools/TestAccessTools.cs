@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -33,13 +33,13 @@ namespace HarmonyTests
 
 			Assert.IsNull(AccessTools.Property(null, null));
 			Assert.IsNull(AccessTools.Property(type, null));
-			Assert.IsNull(AccessTools.Property(null, "property"));
+			Assert.IsNull(AccessTools.Property(null, "Property"));
 			Assert.IsNull(AccessTools.Property(type, "unknown"));
 
-			var prop = AccessTools.Property(type, "property");
+			var prop = AccessTools.Property(type, "Property");
 			Assert.IsNotNull(prop);
 			Assert.AreEqual(type, prop.DeclaringType);
-			Assert.AreEqual("property", prop.Name);
+			Assert.AreEqual("Property", prop.Name);
 		}
 
 		[TestMethod]
@@ -49,18 +49,18 @@ namespace HarmonyTests
 
 			Assert.IsNull(AccessTools.Method(null, null));
 			Assert.IsNull(AccessTools.Method(type, null));
-			Assert.IsNull(AccessTools.Method(null, "method"));
+			Assert.IsNull(AccessTools.Method(null, "Method"));
 			Assert.IsNull(AccessTools.Method(type, "unknown"));
 
-			var m1 = AccessTools.Method(type, "method");
+			var m1 = AccessTools.Method(type, "Method");
 			Assert.IsNotNull(m1);
 			Assert.AreEqual(type, m1.DeclaringType);
-			Assert.AreEqual("method", m1.Name);
+			Assert.AreEqual("Method", m1.Name);
 
-			var m2 = AccessTools.Method(type, "method", new Type[] { });
+			var m2 = AccessTools.Method(type, "Method", new Type[] { });
 			Assert.IsNotNull(m2);
 
-			var m3 = AccessTools.Method(type, "setfield", new Type[] { typeof(string) });
+			var m3 = AccessTools.Method(type, "SetField", new Type[] { typeof(string) });
 			Assert.IsNotNull(m3);
 		}
 
@@ -71,13 +71,13 @@ namespace HarmonyTests
 
 			Assert.IsNull(AccessTools.Inner(null, null));
 			Assert.IsNull(AccessTools.Inner(type, null));
-			Assert.IsNull(AccessTools.Inner(null, "inner"));
+			Assert.IsNull(AccessTools.Inner(null, "Inner"));
 			Assert.IsNull(AccessTools.Inner(type, "unknown"));
 
-			var cls = AccessTools.Inner(type, "inner");
+			var cls = AccessTools.Inner(type, "Inner");
 			Assert.IsNotNull(cls);
 			Assert.AreEqual(type, cls.DeclaringType);
-			Assert.AreEqual("inner", cls.Name);
+			Assert.AreEqual("Inner", cls.Name);
 		}
 
 		[TestMethod]

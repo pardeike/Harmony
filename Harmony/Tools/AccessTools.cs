@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -69,6 +69,18 @@ namespace Harmony
 			return result;
 		}
 
+		public static List<string> GetMethodNames(Type type)
+		{
+			if (type == null) return new List<string>();
+			return type.GetMethods(all).Select(m => m.Name).ToList();
+		}
+
+		public static List<string> GetMethodNames(object instance)
+		{
+			if (instance == null) return new List<string>();
+			return GetMethodNames(instance.GetType());
+		}
+
 		public static ConstructorInfo Constructor(Type type, Type[] parameters = null)
 		{
 			if (type == null) return null;
@@ -103,6 +115,7 @@ namespace Harmony
 
 		public static List<string> GetFieldNames(Type type)
 		{
+			if (type == null) return new List<string>();
 			return type.GetFields(all).Select(f => f.Name).ToList();
 		}
 
@@ -114,6 +127,7 @@ namespace Harmony
 
 		public static List<string> GetPropertyNames(Type type)
 		{
+			if (type == null) return new List<string>();
 			return type.GetProperties(all).Select(f => f.Name).ToList();
 		}
 
@@ -121,6 +135,13 @@ namespace Harmony
 		{
 			if (instance == null) return new List<string>();
 			return GetPropertyNames(instance.GetType());
+		}
+
+		public static void ThrowMissingMemberException(Type type, params string[] names)
+		{
+			var fields = string.Join(",", GetFieldNames(type).ToArray());
+			var properties = string.Join(",", GetPropertyNames(type).ToArray());
+			throw new MissingMemberException(string.Join(",", names) + "; available fields: " + fields + "; available properties: " + properties);
 		}
 
 		public static object GetDefaultValue(Type type)
@@ -132,22 +153,22 @@ namespace Harmony
 			return null;
 		}
 
-		public static bool isStruct(Type type)
+		public static bool IsStruct(Type type)
 		{
-			return type.IsValueType && !isValue(type) && !isVoid(type);
+			return type.IsValueType && !IsValue(type) && !IsVoid(type);
 		}
 
-		public static bool isClass(Type type)
+		public static bool IsClass(Type type)
 		{
 			return !type.IsValueType;
 		}
 
-		public static bool isValue(Type type)
+		public static bool IsValue(Type type)
 		{
 			return type.IsPrimitive || type.IsEnum;
 		}
 
-		public static bool isVoid(Type type)
+		public static bool IsVoid(Type type)
 		{
 			return type == typeof(void);
 		}

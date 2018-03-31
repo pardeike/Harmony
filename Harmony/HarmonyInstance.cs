@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -76,11 +75,23 @@ namespace Harmony
 			processor.Patch();
 		}
 
+		public void RemovePatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
+		{
+			var processor = new PatchProcessor(this, original);
+			processor.Unpatch(type, harmonyID);
+		}
+
+		public void RemovePatch(MethodBase original, MethodInfo patch)
+		{
+			var processor = new PatchProcessor(this, original);
+			processor.Unpatch(patch);
+		}
+
 		//
 
-		public Patches IsPatched(MethodBase method)
+		public Patches GetPatchInfo(MethodBase method)
 		{
-			return PatchProcessor.IsPatched(method);
+			return PatchProcessor.GetPatchInfo(method);
 		}
 
 		public IEnumerable<MethodBase> GetPatchedMethods()

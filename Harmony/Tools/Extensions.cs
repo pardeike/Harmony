@@ -38,17 +38,16 @@ namespace Harmony
 
 	public static class CollectionExtensions
 	{
-		public static IEnumerable<T> Do<T>(this IEnumerable<T> sequence, Action<T> action)
+		public static void Do<T>(this IEnumerable<T> sequence, Action<T> action)
 		{
-			if (sequence == null) return null;
+			if (sequence == null) return;
 			var enumerator = sequence.GetEnumerator();
 			while (enumerator.MoveNext()) action(enumerator.Current);
-			return sequence;
 		}
 
-		public static IEnumerable<T> DoIf<T>(this IEnumerable<T> sequence, Func<T, bool> condition, Action<T> action)
+		public static void DoIf<T>(this IEnumerable<T> sequence, Func<T, bool> condition, Action<T> action)
 		{
-			return sequence.Where(condition).Do(action);
+			sequence.Where(condition).Do(action);
 		}
 
 		public static IEnumerable<T> Add<T>(this IEnumerable<T> sequence, T item)

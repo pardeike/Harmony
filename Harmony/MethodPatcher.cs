@@ -1,4 +1,4 @@
-﻿using Harmony.ILCopying;
+using Harmony.ILCopying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,63 +15,100 @@ namespace Harmony
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
 
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
+		// in case of trouble, set to true to write dynamic method to desktop as a dll
+		// won't work for all methods because of the inability to extend a type compared
+		// to the way DynamicTools.CreateDynamicMethod works
+		//
+		static readonly bool DEBUG_METHOD_GENERATION_BY_DLL_CREATION = false;
+
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
-			if (HarmonyInstance.DEBUG) FileLog.Log("PATCHING " + original.DeclaringType + " " + original);
-
-			var idx = prefixes.Count() + postfixes.Count();
-			var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
-			var il = patch.GetILGenerator();
-
-			var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
-			var privateVars = new Dictionary<string, LocalBuilder>();
-
-			LocalBuilder resultVariable = null;
-			if (idx > 0)
+			try
 			{
-				resultVariable = DynamicTools.DeclareLocalVariable(il, AccessTools.GetReturnedType(original));
-				privateVars[RESULT_VAR] = resultVariable;
+				if (HarmonyInstance.DEBUG) FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
+
+				var idx = prefixes.Count() + postfixes.Count();
+				var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
+				var il = patch.GetILGenerator();
+
+				// for debugging
+				AssemblyBuilder assemblyBuilder = null;
+				TypeBuilder typeBuilder = null;
+				if (DEBUG_METHOD_GENERATION_BY_DLL_CREATION)
+					il = DynamicTools.CreateSaveableMethod(original, "_Patch" + idx, out assemblyBuilder, out typeBuilder);
+
+				var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
+				var privateVars = new Dictionary<string, LocalBuilder>();
+
+				LocalBuilder resultVariable = null;
+				if (idx > 0)
+				{
+					resultVariable = DynamicTools.DeclareLocalVariable(il, AccessTools.GetReturnedType(original));
+					privateVars[RESULT_VAR] = resultVariable;
+				}
+
+				prefixes.ForEach(prefix =>
+				{
+					prefix.GetParameters()
+						.Where(patchParam => patchParam.Name == STATE_VAR)
+						.Do(patchParam =>
+						{
+							var privateStateVariable = DynamicTools.DeclareLocalVariable(il, patchParam.ParameterType);
+							privateVars[prefix.DeclaringType.FullName] = privateStateVariable;
+						});
+				});
+
+				var skipOriginalLabel = il.DefineLabel();
+				var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, skipOriginalLabel);
+
+				var copier = new MethodCopier(original, il, originalVariables);
+				foreach (var transpiler in transpilers)
+					copier.AddTranspiler(transpiler);
+
+				var endLabels = new List<Label>();
+				var endBlocks = new List<ExceptionBlock>();
+				copier.Finalize(endLabels, endBlocks);
+
+				foreach (var label in endLabels)
+					Emitter.MarkLabel(il, label);
+				foreach (var block in endBlocks)
+					Emitter.MarkBlockAfter(il, block);
+				if (resultVariable != null)
+					Emitter.Emit(il, OpCodes.Stloc, resultVariable);
+				if (canHaveJump)
+					Emitter.MarkLabel(il, skipOriginalLabel);
+
+				AddPostfixes(il, original, postfixes, privateVars);
+
+				if (resultVariable != null)
+					Emitter.Emit(il, OpCodes.Ldloc, resultVariable);
+				Emitter.Emit(il, OpCodes.Ret);
+
+				if (HarmonyInstance.DEBUG)
+				{
+					FileLog.LogBuffered("DONE");
+					FileLog.LogBuffered("");
+				}
+
+				// for debugging
+				if (DEBUG_METHOD_GENERATION_BY_DLL_CREATION)
+				{
+					DynamicTools.SaveMethod(assemblyBuilder, typeBuilder);
+					return null;
+				}
+
+				DynamicTools.PrepareDynamicMethod(patch);
+				return patch;
 			}
-
-			prefixes.ForEach(prefix =>
+			catch (Exception ex)
 			{
-				prefix.GetParameters()
-					.Where(patchParam => patchParam.Name == STATE_VAR)
-					.Do(patchParam =>
-					{
-						var privateStateVariable = DynamicTools.DeclareLocalVariable(il, patchParam.ParameterType);
-						privateVars[prefix.DeclaringType.FullName] = privateStateVariable;
-					});
-			});
-
-			var afterOriginal1 = il.DefineLabel();
-			var afterOriginal2 = il.DefineLabel();
-			var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, afterOriginal2);
-
-			var copier = new MethodCopier(original, patch, originalVariables);
-			foreach (var transpiler in transpilers)
-				copier.AddTranspiler(transpiler);
-			copier.Emit(afterOriginal1);
-			Emitter.MarkLabel(il, afterOriginal1);
-			if (resultVariable != null)
-				Emitter.Emit(il, OpCodes.Stloc, resultVariable);
-			if (canHaveJump)
-				Emitter.MarkLabel(il, afterOriginal2);
-
-			AddPostfixes(il, original, postfixes, privateVars);
-
-			if (resultVariable != null)
-				Emitter.Emit(il, OpCodes.Ldloc, resultVariable);
-			Emitter.Emit(il, OpCodes.Ret);
-
-			if (HarmonyInstance.DEBUG)
-			{
-				FileLog.Log("DONE");
-				FileLog.Log("");
+				throw new Exception("Exception from HarmonyInstance \"" + harmonyInstanceID + "\"", ex);
 			}
-
-			DynamicTools.PrepareDynamicMethod(patch);
-			return patch;
+			finally
+			{
+				if (HarmonyInstance.DEBUG)
+					FileLog.FlushBuffer();
+			}
 		}
 
 		static OpCode LoadIndOpCodeFor(Type type)

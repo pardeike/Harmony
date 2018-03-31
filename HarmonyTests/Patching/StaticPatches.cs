@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using Harmony.ILCopying;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -49,7 +49,7 @@ namespace HarmonyTests
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
 			{
-				byte patchedCode = *(byte*) originalMethodStartPre;
+				var patchedCode = *(byte*)originalMethodStartPre;
 				if (IntPtr.Size == sizeof(long))
 					Assert.IsTrue(patchedCode == 0x48);
 				else
@@ -101,7 +101,7 @@ namespace HarmonyTests
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
 			{
-				byte patchedCode = *(byte*) originalMethodStartPre;
+				var patchedCode = *(byte*)originalMethodStartPre;
 				if (IntPtr.Size == sizeof(long))
 					Assert.IsTrue(patchedCode == 0x48);
 				else

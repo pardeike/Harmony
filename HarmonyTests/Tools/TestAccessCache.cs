@@ -1,8 +1,9 @@
-﻿using Harmony;
+using Harmony;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace HarmonyTests
@@ -34,25 +35,25 @@ namespace HarmonyTests
 			properties.TryGetValue(typeof(AccessToolsClass), out infos);
 			Assert.IsNotNull(infos);
 
-			infos.Remove("property");
-			infos.Add("property", typeof(AccessToolsClass).GetProperty("property2", AccessTools.all));
+			infos.Remove("Property");
+			infos.Add("Property", typeof(AccessToolsClass).GetProperty("Property2", AccessTools.all));
 		}
 
 		private void InjectMethod(AccessCache cache)
 		{
 			var f_methods = cache.GetType().GetField("methods", AccessTools.all);
 			Assert.IsNotNull(f_methods);
-			var methods = (Dictionary<Type, Dictionary<string, Dictionary<Type[], MethodInfo>>>)f_methods.GetValue(cache);
+			var methods = (Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>)f_methods.GetValue(cache);
 			Assert.IsNotNull(methods);
-			Dictionary<string, Dictionary<Type[], MethodInfo>> dicts;
+			Dictionary<string, Dictionary<int, MethodBase>> dicts;
 			methods.TryGetValue(typeof(AccessToolsClass), out dicts);
 			Assert.IsNotNull(dicts);
-			Dictionary<Type[], MethodInfo> infos;
-			dicts.TryGetValue("method", out infos);
+			Dictionary<int, MethodBase> infos;
+			dicts.TryGetValue("Method", out infos);
 			Assert.IsNotNull(dicts);
-
-			infos.Remove(Type.EmptyTypes);
-			infos.Add(Type.EmptyTypes, typeof(AccessToolsClass).GetMethod("method2", AccessTools.all));
+			var argumentHash = infos.Keys.ToList().First();
+			infos.Remove(argumentHash);
+			infos.Add(argumentHash, typeof(AccessToolsClass).GetMethod("Method2", AccessTools.all));
 		}
 
 		[TestMethod]
@@ -81,19 +82,19 @@ namespace HarmonyTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNotNull((new AccessCache()).GetPropertyInfo(type, "property"));
+			Assert.IsNotNull((new AccessCache()).GetPropertyInfo(type, "Property"));
 
 			var cache1 = new AccessCache();
-			var pinfo1 = cache1.GetPropertyInfo(type, "property");
+			var pinfo1 = cache1.GetPropertyInfo(type, "Property");
 			InjectProperty(cache1);
 			var cache2 = new AccessCache();
-			var pinfo2 = cache2.GetPropertyInfo(type, "property");
+			var pinfo2 = cache2.GetPropertyInfo(type, "Property");
 			Assert.AreSame(pinfo1, pinfo2);
 
 			var cache = new AccessCache();
-			var pinfo3 = cache.GetPropertyInfo(type, "property");
+			var pinfo3 = cache.GetPropertyInfo(type, "Property");
 			InjectProperty(cache);
-			var pinfo4 = cache.GetPropertyInfo(type, "property");
+			var pinfo4 = cache.GetPropertyInfo(type, "Property");
 			Assert.AreNotSame(pinfo3, pinfo4);
 		}
 
@@ -102,19 +103,19 @@ namespace HarmonyTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNotNull((new AccessCache()).GetMethodInfo(type, "method", Type.EmptyTypes));
+			Assert.IsNotNull((new AccessCache()).GetMethodInfo(type, "Method", Type.EmptyTypes));
 
 			var cache1 = new AccessCache();
-			var minfo1 = cache1.GetMethodInfo(type, "method", Type.EmptyTypes);
+			var minfo1 = cache1.GetMethodInfo(type, "Method", Type.EmptyTypes);
 			InjectMethod(cache1);
 			var cache2 = new AccessCache();
-			var minfo2 = cache2.GetMethodInfo(type, "method", Type.EmptyTypes);
+			var minfo2 = cache2.GetMethodInfo(type, "Method", Type.EmptyTypes);
 			Assert.AreSame(minfo1, minfo2);
 
 			var cache = new AccessCache();
-			var minfo3 = cache.GetMethodInfo(type, "method", Type.EmptyTypes);
+			var minfo3 = cache.GetMethodInfo(type, "Method", Type.EmptyTypes);
 			InjectMethod(cache);
-			var minfo4 = cache.GetMethodInfo(type, "method", Type.EmptyTypes);
+			var minfo4 = cache.GetMethodInfo(type, "Method", Type.EmptyTypes);
 			Assert.AreNotSame(minfo3, minfo4);
 		}
 	}

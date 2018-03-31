@@ -31,7 +31,7 @@ namespace Harmony.ILCopying
 				var nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
 
 				// DynamicMethod actually generates its m_methodHandle on-the-fly and therefore
-				// we should call GetMethodDescriptor to force it to be created.
+				// we should call GetMethodDescriptor to force it to be created
 				//
 				var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", nonPublicInstance);
 				if (m_GetMethodDescriptor != null)
@@ -52,7 +52,7 @@ namespace Harmony.ILCopying
 
 		public static long GetMethodStart(MethodBase method)
 		{
-			// Required in .NET Core so that the method is JITed and the method start does not change
+			// required in .NET Core so that the method is JITed and the method start does not change
 			//
 			var handle = GetRuntimeMethodHandle(method);
 			RuntimeHelpers.PrepareMethod(handle);

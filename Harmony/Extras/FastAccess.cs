@@ -10,7 +10,7 @@ namespace Harmony
 	public delegate void SetterHandler(object source, object value);
 	public delegate object InstantiationHandler();
 
-	class FastAccess
+	public class FastAccess
 	{
 		public static InstantiationHandler CreateInstantiationHandler(Type type)
 		{
@@ -52,6 +52,19 @@ namespace Harmony
 			getGenerator.Emit(OpCodes.Ret);
 
 			return (GetterHandler)dynamicGet.CreateDelegate(typeof(GetterHandler));
+		}
+
+		public static GetterHandler CreateFieldGetter(Type type, params string[] names)
+		{
+			foreach (var name in names)
+			{
+				if (AccessTools.Field(typeof(ILGenerator), name) != null)
+					return CreateGetterHandler(AccessTools.Field(type, name));
+
+				if (AccessTools.Property(typeof(ILGenerator), name) != null)
+					return CreateGetterHandler(AccessTools.Property(type, name));
+			}
+			return null;
 		}
 
 		public static SetterHandler CreateSetterHandler(PropertyInfo propertyInfo)

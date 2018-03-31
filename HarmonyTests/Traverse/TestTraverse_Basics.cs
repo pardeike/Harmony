@@ -1,13 +1,16 @@
-﻿using Harmony;
+using Harmony;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 
 namespace HarmonyTests
 {
 	[TestClass]
 	public class TestTraverse_Basics
 	{
+		static List<string> fieldNames = new List<string> { "_root", "_type", "_info", "_method", "_params" };
+
 		// Basic integrity check for our test class and the field-testvalue relations
 		//
 		[TestMethod]
@@ -15,16 +18,24 @@ namespace HarmonyTests
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
 
-			for (int i = 0; i < TraverseFields.testStrings.Length; i++)
+			for (var i = 0; i < TraverseFields.testStrings.Length; i++)
 				Assert.AreEqual(TraverseFields.testStrings[i], instance.GetTestField(i));
+		}
+
+		[TestMethod]
+		public void Traverse_Has_Expected_Internal_Fields()
+		{
+			foreach (var name in fieldNames)
+			{
+				var fInfo = AccessTools.Field(typeof(Traverse), name);
+				Assert.IsNotNull(fInfo);
+			}
 		}
 
 		public static void AssertIsEmpty(Traverse trv)
 		{
-			Assert.AreEqual(null, AccessTools.Field(typeof(Traverse), "_root").GetValue(trv));
-			Assert.AreEqual(null, AccessTools.Field(typeof(Traverse), "_type").GetValue(trv));
-			Assert.AreEqual(null, AccessTools.Field(typeof(Traverse), "_info").GetValue(trv));
-			Assert.AreEqual(null, AccessTools.Field(typeof(Traverse), "_index").GetValue(trv));
+			foreach (var name in fieldNames)
+				Assert.AreEqual(null, AccessTools.Field(typeof(Traverse), name).GetValue(trv));
 		}
 
 		class FooBar

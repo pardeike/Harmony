@@ -1,7 +1,7 @@
-﻿using Harmony;
+using Harmony;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace HarmonyTests.Assets
 {
@@ -80,6 +80,40 @@ namespace HarmonyTests.Assets
 			prefixed = false;
 			originalExecuted = false;
 			postfixed = false;
+		}
+	}
+
+	public class Class3
+	{
+		public string log = "-";
+		public string GetLog => log;
+
+		public void TestMethod(string s)
+		{
+			log = s;
+			try
+			{
+				log = log + ",test";
+				var z = 0;
+				var n = 1 / z;
+				if (n == 0)
+					log = log + ",zero";
+				else
+					log = log + ",!zero";
+				goto ending;
+			}
+			catch (Exception ex)
+			{
+				log = log + ",ex:" + ex.GetType().Name;
+			}
+			finally
+			{
+				log = log + ",finally";
+			}
+			log = log + ",end";
+			return;
+			ending:
+			log = log + ",fail";
 		}
 	}
 }

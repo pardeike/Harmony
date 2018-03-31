@@ -25,27 +25,25 @@ namespace Harmony
 			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name + "_" + (directBoxValueAccess ? "direct" : "indirect"), typeof(object), new Type[] { typeof(object), typeof(object[]) }, module);
 			var il = dynamicMethod.GetILGenerator();
 
-			bool generateLocalBoxValuePtr = true;
-
-			var ps = methodInfo.GetParameters();
-
 			if (!methodInfo.IsStatic)
 			{
 				il.Emit(OpCodes.Ldarg_0);
 				EmitUnboxIfNeeded(il, methodInfo.DeclaringType);
 			}
 
-			for (int i = 0; i < ps.Length; i++)
+			var generateLocalBoxValuePtr = true;
+			var ps = methodInfo.GetParameters();
+			for (var i = 0; i < ps.Length; i++)
 			{
-				Type argType = ps[i].ParameterType;
-				bool argIsByRef = argType.IsByRef;
+				var argType = ps[i].ParameterType;
+				var argIsByRef = argType.IsByRef;
 				if (argIsByRef)
 					argType = argType.GetElementType();
-				bool argIsValueType = argType.IsValueType;
+				var argIsValueType = argType.IsValueType;
 
 				if (argIsByRef && argIsValueType && !directBoxValueAccess)
 				{
-					// Used later when storing back the reference to the new box in the array.
+					// used later when storing back the reference to the new box in the array.
 					il.Emit(OpCodes.Ldarg_1);
 					EmitFastInt(il, i);
 				}

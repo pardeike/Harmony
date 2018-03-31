@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -8,36 +8,6 @@ namespace HarmonyTests
 	[TestClass]
 	public class TestTraverse_Methods
 	{
-		[TestMethod]
-		public void Traverse_Missing_Method()
-		{
-			var instance = new TraverseMethods_Instance();
-			var trv = Traverse.Create(instance);
-
-			string methodSig1 = "";
-			try
-			{
-				trv.Method("FooBar", new object[] { "hello", 123 });
-			}
-			catch (MissingMethodException e)
-			{
-				methodSig1 = e.Message;
-			}
-			Assert.AreEqual("FooBar(System.String, System.Int32)", methodSig1);
-
-			string methodSig2 = "";
-			try
-			{
-				var types = new Type[] { typeof(string), typeof(int) };
-				trv.Method("FooBar", types, new object[] { "hello", 123 });
-			}
-			catch (MissingMethodException e)
-			{
-				methodSig2 = e.Message;
-			}
-			Assert.AreEqual("FooBar(System.String, System.Int32)", methodSig2);
-		}
-
 		[TestMethod]
 		public void Traverse_Method_Instance()
 		{

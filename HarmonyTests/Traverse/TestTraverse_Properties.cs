@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -27,7 +27,7 @@ namespace HarmonyTests
 			var instance = new TraverseProperties_AccessModifiers(TraverseProperties.testStrings);
 			var trv = Traverse.Create(instance);
 
-			for (int i = 0; i < TraverseProperties.testStrings.Length; i++)
+			for (var i = 0; i < TraverseProperties.testStrings.Length; i++)
 			{
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
@@ -47,7 +47,7 @@ namespace HarmonyTests
 			var instance = new TraverseProperties_AccessModifiers(TraverseProperties.testStrings);
 			var trv = Traverse.Create(instance);
 
-			for (int i = 0; i < TraverseProperties.testStrings.Length - 1; i++)
+			for (var i = 0; i < TraverseProperties.testStrings.Length - 1; i++)
 			{
 				var newValue = "newvalue" + i;
 

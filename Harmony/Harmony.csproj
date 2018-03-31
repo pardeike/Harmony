@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeInstruction.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HarmonySharedState.cs" />
     <Compile Include="ILCopying\Emitter.cs" />
     <Compile Include="Tools\AccessCache.cs" />

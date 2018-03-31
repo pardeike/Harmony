@@ -1,8 +1,31 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 
 namespace Harmony.ILCopying
 {
+	public enum ExceptionBlockType
+	{
+		BeginExceptionBlock,
+		BeginCatchBlock,
+		BeginExceptFilterBlock,
+		BeginFaultBlock,
+		BeginFinallyBlock,
+		EndExceptionBlock
+	}
+
+	public class ExceptionBlock
+	{
+		public ExceptionBlockType blockType;
+		public Type catchType;
+
+		public ExceptionBlock(ExceptionBlockType blockType, Type catchType)
+		{
+			this.blockType = blockType;
+			this.catchType = catchType;
+		}
+	}
+
 	public class ILInstruction
 	{
 		public int offset;
@@ -11,12 +34,13 @@ namespace Harmony.ILCopying
 		public object argument;
 
 		public List<Label> labels = new List<Label>();
+		public List<ExceptionBlock> blocks = new List<ExceptionBlock>();
 
 		public ILInstruction(OpCode opcode, object operand = null)
 		{
 			this.opcode = opcode;
 			this.operand = operand;
-			this.argument = operand;
+			argument = operand;
 		}
 
 		public CodeInstruction GetCodeInstruction()
@@ -25,12 +49,13 @@ namespace Harmony.ILCopying
 			if (opcode.OperandType == OperandType.InlineNone)
 				instr.operand = null;
 			instr.labels = labels;
+			instr.blocks = blocks;
 			return instr;
 		}
 
 		public int GetSize()
 		{
-			int size = opcode.Size;
+			var size = opcode.Size;
 
 			switch (opcode.OperandType)
 			{
@@ -89,7 +114,7 @@ namespace Harmony.ILCopying
 
 				case OperandType.InlineSwitch:
 					var switchLabels = (ILInstruction[])operand;
-					for (int i = 0; i < switchLabels.Length; i++)
+					for (var i = 0; i < switchLabels.Length; i++)
 					{
 						if (i > 0)
 							instruction = instruction + ",";

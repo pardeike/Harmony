@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Harmony
 {
@@ -6,6 +6,14 @@ namespace Harmony
 	{
 		Getter,
 		Setter
+	}
+
+	public enum HarmonyPatchType
+	{
+		All,
+		Prefix,
+		Postfix,
+		Transpiler
 	}
 
 	public class HarmonyAttribute : Attribute
