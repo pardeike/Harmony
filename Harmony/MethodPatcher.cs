@@ -12,6 +12,7 @@ namespace Harmony
 		// special parameter names that can be used in prefix and postfix methods
 		//
 		public static string INSTANCE_PARAM = "__instance";
+		public static string ORIGINAL_METHOD_PARAM = "__originalMethod";
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
 
@@ -176,6 +177,8 @@ namespace Harmony
 			return customParam;
 		}
 
+		static MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
+
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables)
 		{
 			var isInstance = original.IsStatic == false;
@@ -183,10 +186,31 @@ namespace Harmony
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
 			foreach (var patchParam in patch.GetParameters())
 			{
+				if (patchParam.Name == ORIGINAL_METHOD_PARAM)
+				{
+					var constructorInfo = original as ConstructorInfo;
+					if (constructorInfo != null)
+					{
+						Emitter.Emit(il, OpCodes.Ldtoken, constructorInfo);
+						Emitter.Emit(il, OpCodes.Call, getMethodMethod);
+						continue;
+					}
+					var methodInfo = original as MethodInfo;
+					if (methodInfo != null)
+					{
+						Emitter.Emit(il, OpCodes.Ldtoken, methodInfo);
+						Emitter.Emit(il, OpCodes.Call, getMethodMethod);
+						continue;
+					}
+					Emitter.Emit(il, OpCodes.Ldnull);
+					continue;
+				}
+
 				if (patchParam.Name == INSTANCE_PARAM)
 				{
-					if (!isInstance) throw new Exception("Cannot get instance from static method " + original);
-					if (patchParam.ParameterType.IsByRef)
+					if (original.IsStatic)
+						Emitter.Emit(il, OpCodes.Ldnull);
+					else if (patchParam.ParameterType.IsByRef)
 						Emitter.Emit(il, OpCodes.Ldarga, 0); // probably won't work or will be useless
 					else
 						Emitter.Emit(il, OpCodes.Ldarg_0);
