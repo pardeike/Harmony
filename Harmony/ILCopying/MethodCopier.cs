@@ -48,12 +48,11 @@ namespace Harmony.ILCopying
 
 		LocalBuilder[] variables;
 
-		public static List<ILInstruction> GetInstructions(MethodBase method)
+		public static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
 			if (method == null) throw new Exception("method cannot be null");
-			var reader = new MethodBodyReader(method, null);
-			var originalVariables = DynamicTools.DeclareLocalVariables(method, reader.generator, false);
-			reader.DeclareVariables(originalVariables);
+			var reader = new MethodBodyReader(method, generator);
+			reader.DeclareVariables(null);
 			reader.ReadInstructions();
 			return reader.ilInstructions;
 		}
