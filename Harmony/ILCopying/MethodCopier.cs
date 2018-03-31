@@ -48,12 +48,21 @@ namespace Harmony.ILCopying
 
 		LocalBuilder[] variables;
 
-		public static List<ILInstruction> GetInstructions(MethodBase method)
+		// NOTE: you cannot simply "copy" ILInstructions from a method. They contain references to
+		// local variables which must be CREATED on an ILGenerator or else they are invalid when you
+		// want to use the ILInstruction. If you are really clever, you can supply a dummy generator
+		// and edit out all labels during the processing but that might be more tricky than you think.
+		//
+		// In order to copy together a bunch of method parts within a transpiler, you either have to
+		// accep that by passing the generator that will build your new method, you will end up with
+		// the sum of all declared local variables of all methods you query with GetInstructions or
+		// you tricks around with fake generators (not recommended)
+		//
+		public static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
 			if (method == null) throw new Exception("method cannot be null");
-			var reader = new MethodBodyReader(method, null);
-			var originalVariables = DynamicTools.DeclareLocalVariables(method, reader.generator, false);
-			reader.DeclareVariables(originalVariables);
+			var reader = new MethodBodyReader(method, generator);
+			reader.DeclareVariables(null);
 			reader.ReadInstructions();
 			return reader.ilInstructions;
 		}
