@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -10,7 +10,8 @@ namespace Harmony
 		{
 			foreach (var instruction in instructions)
 			{
-				if (instruction.operand == from)
+				var method = instruction.operand as MethodBase;
+				if (method == from)
 					instruction.operand = to;
 				yield return instruction;
 			}
