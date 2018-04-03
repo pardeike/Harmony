@@ -12,7 +12,7 @@ namespace Harmony
 	{
 		public static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
-			if (original == null) throw new Exception("original cannot be null");
+			if (original == null) throw new ArgumentNullException("original cannot be null");
 			var patchName = original.Name + suffix;
 			patchName = patchName.Replace("<>", "");
 
@@ -46,7 +46,7 @@ namespace Harmony
 			var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name, assemblyName.Name + ".dll");
 			typeBuilder = moduleBuilder.DefineType("Debug" + original.DeclaringType.Name, TypeAttributes.Public);
 
-			if (original == null) throw new Exception("original cannot be null");
+			if (original == null) throw new ArgumentNullException("original cannot be null");
 			var patchName = original.Name + suffix;
 			patchName = patchName.Replace("<>", "");
 
@@ -75,7 +75,10 @@ namespace Harmony
 
 		public static LocalBuilder[] DeclareLocalVariables(MethodBase original, ILGenerator il, bool logOutput = true)
 		{
-			return original.GetMethodBody().LocalVariables.Select(lvi =>
+			var vars = original.GetMethodBody()?.LocalVariables;
+			if (vars == null)
+				return new LocalBuilder[0];
+			return vars.Select(lvi =>
 			{
 				var localBuilder = il.DeclareLocal(lvi.LocalType, lvi.IsPinned);
 				if (logOutput)
