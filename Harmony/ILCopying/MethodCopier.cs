@@ -14,7 +14,7 @@ namespace Harmony.ILCopying
 
 		public MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
 		{
-			if (fromMethod == null) throw new Exception("method cannot be null");
+			if (fromMethod == null) throw new ArgumentNullException("Method cannot be null");
 			reader = new MethodBodyReader(fromMethod, toILGenerator);
 			reader.DeclareVariables(existingVariables);
 			reader.ReadInstructions();
@@ -60,7 +60,7 @@ namespace Harmony.ILCopying
 		//
 		public static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
-			if (method == null) throw new Exception("method cannot be null");
+			if (method == null) throw new ArgumentNullException("Method cannot be null");
 			var reader = new MethodBodyReader(method, generator);
 			reader.DeclareVariables(null);
 			reader.ReadInstructions();
@@ -77,21 +77,27 @@ namespace Harmony.ILCopying
 
 			var body = method.GetMethodBody();
 			if (body == null)
-				throw new ArgumentException("Method has no body");
+				throw new ArgumentException("Method " + method.FullDescription() + " has no body");
 
 			var bytes = body.GetILAsByteArray();
 			if (bytes == null)
-				throw new ArgumentException("Can not get the bytes of the method");
+				throw new ArgumentException("Can not get IL bytes of method " + method.FullDescription());
 			ilBytes = new ByteBuffer(bytes);
 			ilInstructions = new List<ILInstruction>((bytes.Length + 1) / 2);
 
 			var type = method.DeclaringType;
 
-			try { typeArguments = type?.GetGenericArguments(); }
-			catch { typeArguments = null; }
+			if (type.IsGenericType)
+			{
+				try { typeArguments = type.GetGenericArguments(); }
+				catch { typeArguments = null; }
+			}
 
-			try { methodArguments = method.GetGenericArguments(); }
-			catch { methodArguments = null; }
+			if (method.IsGenericMethod)
+			{
+				try { methodArguments = method.GetGenericArguments(); }
+				catch { methodArguments = null; }
+			}
 
 			if (!method.IsStatic)
 				this_parameter = new ThisParameter(method);
