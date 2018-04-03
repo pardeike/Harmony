@@ -114,7 +114,7 @@ namespace Harmony
 			if (_info is PropertyInfo)
 				((PropertyInfo)_info).SetValue(_root, value, AccessTools.all, null, _params, CultureInfo.CurrentCulture);
 			if (_method != null)
-				throw new Exception("cannot set value of a method");
+				throw new Exception("cannot set value of method " + _method.FullDescription());
 			return this;
 		}
 
@@ -126,7 +126,7 @@ namespace Harmony
 
 		public Traverse Type(string name)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			if (_type == null) return new Traverse();
 			var type = AccessTools.Inner(_type, name);
 			if (type == null) return new Traverse();
@@ -135,7 +135,7 @@ namespace Harmony
 
 		public Traverse Field(string name)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetFieldInfo(resolved._type, name);
@@ -152,7 +152,7 @@ namespace Harmony
 
 		public Traverse Property(string name, object[] index = null)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._root == null || resolved._type == null) return new Traverse();
 			var info = Cache.GetPropertyInfo(resolved._type, name);
@@ -168,7 +168,7 @@ namespace Harmony
 
 		public Traverse Method(string name, params object[] arguments)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
@@ -179,7 +179,7 @@ namespace Harmony
 
 		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var method = Cache.GetMethodInfo(resolved._type, name, paramTypes);
@@ -193,10 +193,19 @@ namespace Harmony
 			return AccessTools.GetMethodNames(resolved._type);
 		}
 
-		public bool Exists()
+		public bool FieldExists()
 		{
-			var emptyTraverse = _info == null && _method == null && _type == null && _root == null;
-			return emptyTraverse == false;
+			return _info != null;
+		}
+
+		public bool MethodExists()
+		{
+			return _method != null;
+		}
+
+		public bool TypeExists()
+		{
+			return _type != null;
 		}
 
 		public static void IterateFields(object source, Action<Traverse> action)

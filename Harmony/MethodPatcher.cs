@@ -22,6 +22,13 @@ namespace Harmony
 		//
 		static readonly bool DEBUG_METHOD_GENERATION_BY_DLL_CREATION = false;
 
+		// for fixing old harmony bugs
+		[UpgradeToLatestVersion(1)]
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
+		{
+			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.0", prefixes, postfixes, transpilers);
+		}
+
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			try
@@ -227,13 +234,13 @@ namespace Harmony
 				if (patchParam.Name == RESULT_VAR)
 				{
 					if (AccessTools.GetReturnedType(original) == typeof(void))
-						throw new Exception("Cannot get result from void method " + original);
+						throw new Exception("Cannot get result from void method " + original.FullDescription());
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					Emitter.Emit(il, ldlocCode, variables[RESULT_VAR]);
 					continue;
 				}
 
-				string patchParamName = patchParam.Name;
+				var patchParamName = patchParam.Name;
 
 				var originalName = patchParam.GetParameterOverride();
 				if (originalName != null)
@@ -248,7 +255,7 @@ namespace Harmony
 				}
 
 				var idx = Array.IndexOf(originalParameterNames, patchParamName);
-				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original);
+				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original.FullDescription());
 
 				//   original -> patch     opcode
 				// --------------------------------------

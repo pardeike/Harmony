@@ -10,6 +10,7 @@ namespace Harmony
 		Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
 		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
 
+		[UpgradeToLatestVersion(1)]
 		public FieldInfo GetFieldInfo(Type type, string name)
 		{
 			Dictionary<string, FieldInfo> fieldsByType = null;
