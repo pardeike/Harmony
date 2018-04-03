@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,11 +23,8 @@ namespace Harmony
 			return method;
 		}
 
-		public static void GetPatches(Type patchType, MethodBase original, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo transpiler)
+		public static void GetPatches(Type patchType, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo transpiler)
 		{
-			var type = original.DeclaringType;
-			var methodName = original.Name;
-
 			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix");
 			postfix = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix");
 			transpiler = GetPatchMethod<HarmonyTranspiler>(patchType, "Transpiler");
