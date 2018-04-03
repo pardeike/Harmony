@@ -30,7 +30,7 @@ namespace Harmony
 			return type;
 		}
 
-		public static T FindRecursive<T>(Type type, Func<Type, T> action)
+		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> action)
 		{
 			while (true)
 			{
@@ -41,28 +41,50 @@ namespace Harmony
 			}
 		}
 
+		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> action)
+		{
+			var result = action(type);
+			if (result != null) return result;
+			foreach (var subType in type.GetNestedTypes(all))
+			{
+				result = FindIncludingInnerTypes(subType, action);
+				if (result != null)
+					break;
+			}
+			return result;
+		}
+
 		public static FieldInfo Field(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return FindRecursive(type, t => t.GetField(name, all));
+			return FindIncludingBaseTypes(type, t => t.GetField(name, all));
 		}
 
 		public static PropertyInfo Property(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return FindRecursive(type, t => t.GetProperty(name, all));
+			return FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
 		}
 
 		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
 			MethodInfo result;
+			var modifiers = new ParameterModifier[] { };
 			if (parameters == null)
-				result = FindRecursive(type, t => t.GetMethod(name, all));
+			{
+				try
+				{
+					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all));
+				}
+				catch (AmbiguousMatchException)
+				{
+					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, new Type[0], modifiers));
+				}
+			}
 			else
 			{
-				var modifiers = new ParameterModifier[] { };
-				result = FindRecursive(type, t => t.GetMethod(name, all, null, parameters, modifiers));
+				result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, parameters, modifiers));
 			}
 			if (result == null) return null;
 			if (generics != null) result = result.MakeGenericMethod(generics);
@@ -85,7 +107,27 @@ namespace Harmony
 		{
 			if (type == null) return null;
 			if (parameters == null) parameters = new Type[0];
-			return FindRecursive(type, t => t.GetConstructor(all, null, parameters, new ParameterModifier[] { }));
+			return FindIncludingBaseTypes(type, t => t.GetConstructor(all, null, parameters, new ParameterModifier[] { }));
+		}
+
+		public static List<ConstructorInfo> GetDeclaredConstructors(Type type)
+		{
+			return type.GetConstructors(all).Where(method => method.DeclaringType == type).ToList();
+		}
+
+		public static List<MethodInfo> GetDeclaredMethods(Type type)
+		{
+			return type.GetMethods(all).Where(method => method.DeclaringType == type).ToList();
+		}
+
+		public static List<PropertyInfo> GetDeclaredProperties(Type type)
+		{
+			return type.GetProperties(all).Where(property => property.DeclaringType == type).ToList();
+		}
+
+		public static List<FieldInfo> GetDeclaredFields(Type type)
+		{
+			return type.GetFields(all).Where(field => field.DeclaringType == type).ToList();
 		}
 
 		public static Type GetReturnedType(MethodBase method)
@@ -98,13 +140,31 @@ namespace Harmony
 		public static Type Inner(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return FindRecursive(type, t => t.GetNestedType(name, all));
+			return FindIncludingBaseTypes(type, t => t.GetNestedType(name, all));
 		}
 
 		public static Type FirstInner(Type type, Func<Type, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
-			return FindRecursive(type, t => t.GetNestedTypes(all).First(predicate));
+			return type.GetNestedTypes(all).FirstOrDefault(subType => predicate(subType));
+		}
+
+		public static MethodInfo FirstMethod(Type type, Func<MethodInfo, bool> predicate)
+		{
+			if (type == null || predicate == null) return null;
+			return type.GetMethods(all).FirstOrDefault(method => predicate(method));
+		}
+
+		public static ConstructorInfo FirstConstructor(Type type, Func<ConstructorInfo, bool> predicate)
+		{
+			if (type == null || predicate == null) return null;
+			return type.GetConstructors(all).FirstOrDefault(constructor => predicate(constructor));
+		}
+
+		public static PropertyInfo FirstProperty(Type type, Func<PropertyInfo, bool> predicate)
+		{
+			if (type == null || predicate == null) return null;
+			return type.GetProperties(all).FirstOrDefault(property => predicate(property));
 		}
 
 		public static Type[] GetTypes(object[] parameters)
