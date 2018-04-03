@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +11,11 @@ namespace Harmony
 		{
 			var types = parameters.Select(p => p == null ? "null" : p.FullName);
 			return "(" + types.Aggregate("", (s, x) => s.Length == 0 ? x : s + ", " + x) + ")";
+		}
+
+		public static string FullDescription(this MethodBase method)
+		{
+			return method.DeclaringType.FullName + "." + method.Name + method.GetParameters().Select(p => p.ParameterType).ToArray().Description();
 		}
 
 		public static Type[] Types(this ParameterInfo[] pinfo)
