@@ -77,7 +77,7 @@ namespace Harmony
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers);
 
 			var replacement = MethodPatcher.CreatePatchedMethod(original, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers);
-			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original);
+			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original.FullDescription());
 
 			var originalCodeStart = Memory.GetMethodStart(original);
 			var patchCodeStart = Memory.GetMethodStart(replacement);
