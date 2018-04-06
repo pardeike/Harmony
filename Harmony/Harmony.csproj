@@ -10,10 +10,15 @@
         <PackageId>Harmony</PackageId>
         <Authors>Andreas Pardeike</Authors>
         <AssemblyName>0Harmony</AssemblyName>
+        <SignAssembly>false</SignAssembly>
+        <Version>1.1.0</Version>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DefineConstants>TRACE;DEBUG;NET35</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
