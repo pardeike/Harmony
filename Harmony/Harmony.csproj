@@ -14,16 +14,19 @@
         <Version>1.1.0</Version>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
+        <Configurations>Debug;Release</Configurations>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <DefineConstants>DEBUG;TRACE;NET35</DefineConstants>
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <DefineConstants>TRACE;DEBUG;NET35</DefineConstants>
+      <Optimize>false</Optimize>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <DefineConstants>NET35</DefineConstants>
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <DefineConstants>RELEASE;NET35</DefineConstants>
+      <Optimize>true</Optimize>
       <DebugType>none</DebugType>
       <DebugSymbols>false</DebugSymbols>
     </PropertyGroup>
