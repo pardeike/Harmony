@@ -30,6 +30,23 @@ namespace Harmony.ILCopying
 			PlatformID.Win32NT, PlatformID.Win32S, PlatformID.Win32Windows, PlatformID.WinCE
 		};
 
+		public static bool IsWindows => WindowsPlatformIDSet.Contains(Environment.OSVersion.Platform);
+
+		// Safe to use windows reference since this will only ever be called on windows
+		//
+		[DllImport("kernel32.dll")]
+		public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, Protection flNewProtect, out Protection lpflOldProtect);
+
+		public static void UnprotectMemoryPage(long memory)
+		{
+			if (IsWindows)
+			{
+				var success = VirtualProtect(new IntPtr(memory), new UIntPtr(1), Protection.PAGE_EXECUTE_READWRITE, out var _ignored);
+				if (success == false)
+					throw new System.ComponentModel.Win32Exception();
+			}
+		}
+
 		public static long WriteJump(long memory, long destination)
 		{
 			UnprotectMemoryPage(memory);
@@ -111,21 +128,6 @@ namespace Harmony.ILCopying
 			var p = (long*)memory;
 			*p = value;
 			return memory + sizeof(long);
-		}
-
-		internal static void UnprotectMemoryPage(long memory)
-		{
-			if (NativeLibrary.IsWindows)
-			{
-				var succ = NativeLibrary.VirtualProtect(
-					new IntPtr(memory), new UIntPtr(1),
-					NativeLibrary.Protection.PAGE_EXECUTE_READWRITE, out var _ignored);
-
-				if (!succ)
-				{
-					throw new System.ComponentModel.Win32Exception();
-				}
-			}
 		}
 	}
 }
