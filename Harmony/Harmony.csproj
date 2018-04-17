@@ -1,16 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>0Harmony</AssemblyName>
-    <TargetFrameworks>net35</TargetFrameworks>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net35</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Product>Harmony</Product>
+        <Company>Andreas Pardeike</Company>
+        <Copyright>Copyright © 2016</Copyright>
+        <Description>A general non-destructive patch library for .NET 2 modules</Description>
+        <PackageId>Harmony</PackageId>
+        <Authors>Andreas Pardeike</Authors>
+        <AssemblyName>0Harmony</AssemblyName>
+        <SignAssembly>false</SignAssembly>
+        <Version>1.1.0</Version>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
+        <Configurations>Debug;Release</Configurations>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <Description>A general non-destructive patch library for .NET 2 modules</Description>
-    <Company>Andreas Pardeike</Company>
-    <Copyright>Copyright © 2016</Copyright>
-    <Version>1.0.9.1</Version>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <DefineConstants>DEBUG;TRACE;NET35</DefineConstants>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <Optimize>false</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <DefineConstants>NET35</DefineConstants>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <Optimize>true</Optimize>
+      <DebugType>none</DebugType>
+      <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
 
 </Project>

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace HarmonyTests.Assets
 {
@@ -25,8 +24,7 @@ namespace HarmonyTests.Assets
 			ListOfBoolField = (new bool[] { false, true }).Select(b => !b);
 
 			var d = new Dictionary<T, List<string>>();
-			var l = new List<string>();
-			l.Add("world");
+			var l = new List<string> { "world" };
 			key = new T();
 			d.Add(key, l);
 			MixedField = d;

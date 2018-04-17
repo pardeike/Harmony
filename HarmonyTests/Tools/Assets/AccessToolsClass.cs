@@ -1,8 +1,8 @@
-﻿namespace HarmonyTests.Assets
+namespace HarmonyTests.Assets
 {
 	public class AccessToolsClass
 	{
-		private class inner
+		private class Inner
 		{
 		}
 
@@ -10,15 +10,15 @@
 		private string field2;
 
 		private int _property;
-		private int property
+		private int Property
 		{
-			get { return _property; }
-			set { _property = value; }
+			get => _property;
+			set => _property = value;
 		}
-		private int property2
+		private int Property2
 		{
-			get { return _property; }
-			set { _property = value; }
+			get => _property;
+			set => _property = value;
 		}
 
 		public AccessToolsClass()
@@ -27,17 +27,17 @@
 			field2 = "dummy";
 		}
 
-		public string method()
+		public string Method()
 		{
 			return field;
 		}
 
-		public string method2()
+		public string Method2()
 		{
 			return field2;
 		}
 
-		public void setfield(string val)
+		public void SetField(string val)
 		{
 			field = val;
 		}

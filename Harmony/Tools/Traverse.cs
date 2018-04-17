@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -54,13 +55,13 @@ namespace Harmony
 		public Traverse(object root)
 		{
 			_root = root;
-			_type = root == null ? null : root.GetType();
+			_type = root?.GetType();
 		}
 
 		Traverse(object root, MemberInfo info, object[] index)
 		{
 			_root = root;
-			_type = root == null ? null : root.GetType();
+			_type = root?.GetType();
 			_info = info;
 			_params = index;
 		}
@@ -113,7 +114,7 @@ namespace Harmony
 			if (_info is PropertyInfo)
 				((PropertyInfo)_info).SetValue(_root, value, AccessTools.all, null, _params, CultureInfo.CurrentCulture);
 			if (_method != null)
-				throw new Exception("cannot set value of a method");
+				throw new Exception("cannot set value of method " + _method.FullDescription());
 			return this;
 		}
 
@@ -125,7 +126,7 @@ namespace Harmony
 
 		public Traverse Type(string name)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			if (_type == null) return new Traverse();
 			var type = AccessTools.Inner(_type, name);
 			if (type == null) return new Traverse();
@@ -134,7 +135,7 @@ namespace Harmony
 
 		public Traverse Field(string name)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetFieldInfo(resolved._type, name);
@@ -143,9 +144,15 @@ namespace Harmony
 			return new Traverse(resolved._root, info, null);
 		}
 
+		public List<string> Fields()
+		{
+			var resolved = Resolve();
+			return AccessTools.GetFieldNames(resolved._type);
+		}
+
 		public Traverse Property(string name, object[] index = null)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._root == null || resolved._type == null) return new Traverse();
 			var info = Cache.GetPropertyInfo(resolved._type, name);
@@ -153,9 +160,15 @@ namespace Harmony
 			return new Traverse(resolved._root, info, index);
 		}
 
+		public List<string> Properties()
+		{
+			var resolved = Resolve();
+			return AccessTools.GetPropertyNames(resolved._type);
+		}
+
 		public Traverse Method(string name, params object[] arguments)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
@@ -166,12 +179,33 @@ namespace Harmony
 
 		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
 		{
-			if (name == null) throw new Exception("name cannot be null");
+			if (name == null) throw new ArgumentNullException("name cannot be null");
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var method = Cache.GetMethodInfo(resolved._type, name, paramTypes);
 			if (method == null) return new Traverse();
 			return new Traverse(resolved._root, (MethodInfo)method, arguments);
+		}
+
+		public List<string> Methods()
+		{
+			var resolved = Resolve();
+			return AccessTools.GetMethodNames(resolved._type);
+		}
+
+		public bool FieldExists()
+		{
+			return _info != null;
+		}
+
+		public bool MethodExists()
+		{
+			return _method != null;
+		}
+
+		public bool TypeExists()
+		{
+			return _type != null;
 		}
 
 		public static void IterateFields(object source, Action<Traverse> action)
@@ -187,6 +221,13 @@ namespace Harmony
 			AccessTools.GetFieldNames(source).ForEach(f => action(sourceTrv.Field(f), targetTrv.Field(f)));
 		}
 
+		public static void IterateFields(object source, object target, Action<string, Traverse, Traverse> action)
+		{
+			var sourceTrv = Create(source);
+			var targetTrv = Create(target);
+			AccessTools.GetFieldNames(source).ForEach(f => action(f, sourceTrv.Field(f), targetTrv.Field(f)));
+		}
+
 		public static void IterateProperties(object source, Action<Traverse> action)
 		{
 			var sourceTrv = Create(source);
@@ -200,11 +241,17 @@ namespace Harmony
 			AccessTools.GetPropertyNames(source).ForEach(f => action(sourceTrv.Property(f), targetTrv.Property(f)));
 		}
 
+		public static void IterateProperties(object source, object target, Action<string, Traverse, Traverse> action)
+		{
+			var sourceTrv = Create(source);
+			var targetTrv = Create(target);
+			AccessTools.GetPropertyNames(source).ForEach(f => action(f, sourceTrv.Property(f), targetTrv.Property(f)));
+		}
+
 		public override string ToString()
 		{
-			var value = _method != null ? _method : GetValue();
-			if (value == null) return null;
-			return value.ToString();
+			var value = _method ?? GetValue();
+			return value?.ToString();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -30,7 +30,7 @@ namespace Harmony
 			return type;
 		}
 
-		public static T FindRecursive<T>(Type type, Func<Type, T> action)
+		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> action)
 		{
 			while (true)
 			{
@@ -41,39 +41,93 @@ namespace Harmony
 			}
 		}
 
+		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> action)
+		{
+			var result = action(type);
+			if (result != null) return result;
+			foreach (var subType in type.GetNestedTypes(all))
+			{
+				result = FindIncludingInnerTypes(subType, action);
+				if (result != null)
+					break;
+			}
+			return result;
+		}
+
 		public static FieldInfo Field(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return FindRecursive(type, t => t.GetField(name, all));
+			return FindIncludingBaseTypes(type, t => t.GetField(name, all));
 		}
 
 		public static PropertyInfo Property(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return FindRecursive(type, t => t.GetProperty(name, all));
+			return FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
 		}
 
 		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
 			MethodInfo result;
+			var modifiers = new ParameterModifier[] { };
 			if (parameters == null)
-				result = FindRecursive(type, t => t.GetMethod(name, all));
+			{
+				try
+				{
+					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all));
+				}
+				catch (AmbiguousMatchException)
+				{
+					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, new Type[0], modifiers));
+				}
+			}
 			else
 			{
-				var modifiers = new ParameterModifier[] { };
-				result = FindRecursive(type, t => t.GetMethod(name, all, null, parameters, modifiers));
+				result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, parameters, modifiers));
 			}
 			if (result == null) return null;
 			if (generics != null) result = result.MakeGenericMethod(generics);
 			return result;
 		}
 
+		public static List<string> GetMethodNames(Type type)
+		{
+			if (type == null) return new List<string>();
+			return type.GetMethods(all).Select(m => m.Name).ToList();
+		}
+
+		public static List<string> GetMethodNames(object instance)
+		{
+			if (instance == null) return new List<string>();
+			return GetMethodNames(instance.GetType());
+		}
+
 		public static ConstructorInfo Constructor(Type type, Type[] parameters = null)
 		{
 			if (type == null) return null;
 			if (parameters == null) parameters = new Type[0];
-			return FindRecursive(type, t => t.GetConstructor(all, null, parameters, new ParameterModifier[] { }));
+			return FindIncludingBaseTypes(type, t => t.GetConstructor(all, null, parameters, new ParameterModifier[] { }));
+		}
+
+		public static List<ConstructorInfo> GetDeclaredConstructors(Type type)
+		{
+			return type.GetConstructors(all).Where(method => method.DeclaringType == type).ToList();
+		}
+
+		public static List<MethodInfo> GetDeclaredMethods(Type type)
+		{
+			return type.GetMethods(all).Where(method => method.DeclaringType == type).ToList();
+		}
+
+		public static List<PropertyInfo> GetDeclaredProperties(Type type)
+		{
+			return type.GetProperties(all).Where(property => property.DeclaringType == type).ToList();
+		}
+
+		public static List<FieldInfo> GetDeclaredFields(Type type)
+		{
+			return type.GetFields(all).Where(field => field.DeclaringType == type).ToList();
 		}
 
 		public static Type GetReturnedType(MethodBase method)
@@ -86,13 +140,31 @@ namespace Harmony
 		public static Type Inner(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return FindRecursive(type, t => t.GetNestedType(name, all));
+			return FindIncludingBaseTypes(type, t => t.GetNestedType(name, all));
 		}
 
 		public static Type FirstInner(Type type, Func<Type, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
-			return FindRecursive(type, t => t.GetNestedTypes(all).First(predicate));
+			return type.GetNestedTypes(all).FirstOrDefault(subType => predicate(subType));
+		}
+
+		public static MethodInfo FirstMethod(Type type, Func<MethodInfo, bool> predicate)
+		{
+			if (type == null || predicate == null) return null;
+			return type.GetMethods(all).FirstOrDefault(method => predicate(method));
+		}
+
+		public static ConstructorInfo FirstConstructor(Type type, Func<ConstructorInfo, bool> predicate)
+		{
+			if (type == null || predicate == null) return null;
+			return type.GetConstructors(all).FirstOrDefault(constructor => predicate(constructor));
+		}
+
+		public static PropertyInfo FirstProperty(Type type, Func<PropertyInfo, bool> predicate)
+		{
+			if (type == null || predicate == null) return null;
+			return type.GetProperties(all).FirstOrDefault(property => predicate(property));
 		}
 
 		public static Type[] GetTypes(object[] parameters)
@@ -103,6 +175,7 @@ namespace Harmony
 
 		public static List<string> GetFieldNames(Type type)
 		{
+			if (type == null) return new List<string>();
 			return type.GetFields(all).Select(f => f.Name).ToList();
 		}
 
@@ -114,6 +187,7 @@ namespace Harmony
 
 		public static List<string> GetPropertyNames(Type type)
 		{
+			if (type == null) return new List<string>();
 			return type.GetProperties(all).Select(f => f.Name).ToList();
 		}
 
@@ -121,6 +195,13 @@ namespace Harmony
 		{
 			if (instance == null) return new List<string>();
 			return GetPropertyNames(instance.GetType());
+		}
+
+		public static void ThrowMissingMemberException(Type type, params string[] names)
+		{
+			var fields = string.Join(",", GetFieldNames(type).ToArray());
+			var properties = string.Join(",", GetPropertyNames(type).ToArray());
+			throw new MissingMemberException(string.Join(",", names) + "; available fields: " + fields + "; available properties: " + properties);
 		}
 
 		public static object GetDefaultValue(Type type)
@@ -132,22 +213,22 @@ namespace Harmony
 			return null;
 		}
 
-		public static bool isStruct(Type type)
+		public static bool IsStruct(Type type)
 		{
-			return type.IsValueType && !isValue(type) && !isVoid(type);
+			return type.IsValueType && !IsValue(type) && !IsVoid(type);
 		}
 
-		public static bool isClass(Type type)
+		public static bool IsClass(Type type)
 		{
 			return !type.IsValueType;
 		}
 
-		public static bool isValue(Type type)
+		public static bool IsValue(Type type)
 		{
 			return type.IsPrimitive || type.IsEnum;
 		}
 
-		public static bool isVoid(Type type)
+		public static bool IsVoid(Type type)
 		{
 			return type == typeof(void);
 		}

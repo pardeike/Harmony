@@ -1,5 +1,6 @@
-﻿using Harmony.ILCopying;
+using Harmony.ILCopying;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -11,7 +12,7 @@ namespace Harmony
 	{
 		public static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
-			if (original == null) throw new Exception("original cannot be null");
+			if (original == null) throw new ArgumentNullException("original cannot be null");
 			var patchName = original.Name + suffix;
 			patchName = patchName.Replace("<>", "");
 
@@ -31,18 +32,57 @@ namespace Harmony
 				true
 			);
 
-			for (int i = 0; i < parameters.Length; i++)
+			for (var i = 0; i < parameters.Length; i++)
 				method.DefineParameter(i + 1, parameters[i].Attributes, parameters[i].Name);
 
 			return method;
 		}
 
-		public static LocalBuilder[] DeclareLocalVariables(MethodBase original, ILGenerator il)
+		public static ILGenerator CreateSaveableMethod(MethodBase original, string suffix, out AssemblyBuilder assemblyBuilder, out TypeBuilder typeBuilder)
 		{
-			return original.GetMethodBody().LocalVariables.Select(lvi =>
+			var assemblyName = new AssemblyName("DebugAssembly");
+			var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, path);
+			var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name, assemblyName.Name + ".dll");
+			typeBuilder = moduleBuilder.DefineType("Debug" + original.DeclaringType.Name, TypeAttributes.Public);
+
+			if (original == null) throw new ArgumentNullException("original cannot be null");
+			var patchName = original.Name + suffix;
+			patchName = patchName.Replace("<>", "");
+
+			var parameters = original.GetParameters();
+			var result = parameters.Types().ToList();
+			if (original.IsStatic == false)
+				result.Insert(0, typeof(object));
+			var paramTypes = result.ToArray();
+
+			var methodBuilder = typeBuilder.DefineMethod(
+				patchName,
+				MethodAttributes.Public | MethodAttributes.Static,
+				CallingConventions.Standard,
+				AccessTools.GetReturnedType(original),
+				paramTypes
+			);
+
+			return methodBuilder.GetILGenerator();
+		}
+
+		public static void SaveMethod(AssemblyBuilder assemblyBuilder, TypeBuilder typeBuilder)
+		{
+			var t = typeBuilder.CreateType();
+			assemblyBuilder.Save("HarmonyDebugAssembly.dll");
+		}
+
+		public static LocalBuilder[] DeclareLocalVariables(MethodBase original, ILGenerator il, bool logOutput = true)
+		{
+			var vars = original.GetMethodBody()?.LocalVariables;
+			if (vars == null)
+				return new LocalBuilder[0];
+			return vars.Select(lvi =>
 			{
 				var localBuilder = il.DeclareLocal(lvi.LocalType, lvi.IsPinned);
-				Emitter.LogLastLocalVariable(il);
+				if (logOutput)
+					Emitter.LogLocalVariable(il, localBuilder);
 				return localBuilder;
 			}).ToArray();
 		}
@@ -51,26 +91,26 @@ namespace Harmony
 		{
 			if (type.IsByRef) type = type.GetElementType();
 
-			if (AccessTools.isClass(type))
+			if (AccessTools.IsClass(type))
 			{
 				var v = il.DeclareLocal(type);
-				Emitter.LogLastLocalVariable(il);
+				Emitter.LogLocalVariable(il, v);
 				Emitter.Emit(il, OpCodes.Ldnull);
 				Emitter.Emit(il, OpCodes.Stloc, v);
 				return v;
 			}
-			if (AccessTools.isStruct(type))
+			if (AccessTools.IsStruct(type))
 			{
 				var v = il.DeclareLocal(type);
-				Emitter.LogLastLocalVariable(il);
+				Emitter.LogLocalVariable(il, v);
 				Emitter.Emit(il, OpCodes.Ldloca, v);
 				Emitter.Emit(il, OpCodes.Initobj, type);
 				return v;
 			}
-			if (AccessTools.isValue(type))
+			if (AccessTools.IsValue(type))
 			{
 				var v = il.DeclareLocal(type);
-				Emitter.LogLastLocalVariable(il);
+				Emitter.LogLocalVariable(il, v);
 				if (type == typeof(float))
 					Emitter.Emit(il, OpCodes.Ldc_R4, (float)0);
 				else if (type == typeof(double))

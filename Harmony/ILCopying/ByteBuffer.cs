@@ -39,7 +39,7 @@ namespace Harmony.ILCopying
 		public int ReadInt32()
 		{
 			CheckCanRead(4);
-			int value = buffer[position]
+			var value = buffer[position]
 				| (buffer[position + 1] << 8)
 				| (buffer[position + 2] << 16)
 				| (buffer[position + 3] << 24);
@@ -60,7 +60,7 @@ namespace Harmony.ILCopying
 				| (buffer[position + 6] << 16)
 				| (buffer[position + 7] << 24));
 
-			long value = (((long)high) << 32) | low;
+			var value = (((long)high) << 32) | low;
 			position += 8;
 			return value;
 		}

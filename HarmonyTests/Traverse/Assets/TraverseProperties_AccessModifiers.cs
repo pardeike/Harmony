@@ -1,82 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using System.Text;
 
 namespace HarmonyTests.Assets
 {
 	public class TraverseProperties
 	{
 		public static string[] testStrings = new string[] { "test01", "test02", "test03", "test04", "test05", "test06", "test07" };
-		public static string[] propertyNames = new string[] { "publicProperty", "publicPrivateProperty", "autoProperty", "baseProperty1", "baseProperty2", "baseProperty3", "immediateProperty" };
+		public static string[] propertyNames = new string[] { "PublicProperty", "PublicPrivateProperty", "AutoProperty", "BaseProperty1", "BaseProperty2", "BaseProperty3", "ImmediateProperty" };
 	}
 
 	public class TraverseProperties_BaseClass
 	{
 		string _basePropertyField1;
-		protected virtual string baseProperty1
+		protected virtual string BaseProperty1
 		{
-			get { return _basePropertyField1; }
-			set { _basePropertyField1 = value; }
+			get => _basePropertyField1;
+			set => _basePropertyField1 = value;
 		}
 
 		string _basePropertyField2;
-		protected virtual string baseProperty2
+		protected virtual string BaseProperty2
 		{
-			get { return _basePropertyField2; }
-			set { _basePropertyField2 = value; }
+			get => _basePropertyField2;
+			set => _basePropertyField2 = value;
 		}
 
-		public string baseProperty3
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
+		public string BaseProperty3
 		{
-			get { throw new Exception(); }
-			set { throw new Exception(); }
+			get => throw new Exception();
+			set => throw new Exception();
 		}
 	}
 
 	public class TraverseProperties_AccessModifiers : TraverseProperties_BaseClass
 	{
 		private string _publicPropertyField;
-		public string publicProperty
+		public string PublicProperty
 		{
-			get { return _publicPropertyField; }
-			set { _publicPropertyField = value; }
+			get => _publicPropertyField;
+			set => _publicPropertyField = value;
 		}
 
 		private string _publicPrivatePropertyField;
-		public string publicPrivateProperty
+		public string PublicPrivateProperty
 		{
-			get { return _publicPrivatePropertyField; }
-			private set { _publicPrivatePropertyField = value; }
+			get => _publicPrivatePropertyField;
+			private set => _publicPrivatePropertyField = value;
 		}
 
-		string autoProperty { get; set; }
+		string AutoProperty { get; set; }
 
-		protected override string baseProperty1
+		protected override string BaseProperty1
 		{
-			get { return base.baseProperty1; }
-			set { base.baseProperty1 = value; }
+			get => base.BaseProperty1;
+			set => base.BaseProperty1 = value;
 		}
 
 		// baseProperty2 defined and used in base class
 
 		string _basePropertyField3;
-		public new string baseProperty3
+		public new string BaseProperty3
 		{
-			get { return _basePropertyField3; }
-			set { _basePropertyField3 = value; }
+			get => _basePropertyField3;
+			set => _basePropertyField3 = value;
 		}
 
-		string immediateProperty => TraverseProperties.testStrings.Last();
+		string ImmediateProperty => TraverseProperties.testStrings.Last();
 
+		// TODO: should this really be suppressed?
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		public TraverseProperties_AccessModifiers(string[] s)
 		{
-			publicProperty = s[0];
-			publicPrivateProperty = s[1];
-			autoProperty = s[2];
-			baseProperty1 = s[3];
-			baseProperty2 = s[4];
-			baseProperty3 = s[5];
+			PublicProperty = s[0];
+			PublicPrivateProperty = s[1];
+			AutoProperty = s[2];
+			BaseProperty1 = s[3];
+			BaseProperty2 = s[4];
+			BaseProperty3 = s[5];
 			// immediateProperty is readonly
 		}
 
@@ -85,19 +86,19 @@ namespace HarmonyTests.Assets
 			switch (n)
 			{
 				case 0:
-					return publicProperty;
+					return PublicProperty;
 				case 1:
-					return publicPrivateProperty;
+					return PublicPrivateProperty;
 				case 2:
-					return autoProperty;
+					return AutoProperty;
 				case 3:
-					return baseProperty1;
+					return BaseProperty1;
 				case 4:
-					return baseProperty2;
+					return BaseProperty2;
 				case 5:
-					return baseProperty3;
+					return BaseProperty3;
 				case 6:
-					return immediateProperty;
+					return ImmediateProperty;
 			}
 			return null;
 		}
@@ -107,25 +108,25 @@ namespace HarmonyTests.Assets
 			switch (n)
 			{
 				case 0:
-					publicProperty = value;
+					PublicProperty = value;
 					break;
 				case 1:
-					publicPrivateProperty = value;
+					PublicPrivateProperty = value;
 					break;
 				case 2:
-					autoProperty = value;
+					AutoProperty = value;
 					break;
 				case 3:
-					baseProperty1 = value;
+					BaseProperty1 = value;
 					break;
 				case 4:
-					baseProperty2 = value;
+					BaseProperty2 = value;
 					break;
 				case 5:
-					baseProperty3 = value;
+					BaseProperty3 = value;
 					break;
 				case 6:
-					// immediateProperty = value;
+					// ImmediateProperty = value;
 					break;
 			}
 		}

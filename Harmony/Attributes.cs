@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Reflection;
 
 namespace Harmony
 {
@@ -6,6 +7,14 @@ namespace Harmony
 	{
 		Getter,
 		Setter
+	}
+
+	public enum HarmonyPatchType
+	{
+		All,
+		Prefix,
+		Postfix,
+		Transpiler
 	}
 
 	public class HarmonyAttribute : Attribute
@@ -55,6 +64,14 @@ namespace Harmony
 		}
 	}
 
+	[AttributeUsage(AttributeTargets.Class)]
+	public class HarmonyPatchAll : HarmonyAttribute
+	{
+		public HarmonyPatchAll()
+		{
+		}
+	}
+
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 	public class HarmonyPriority : HarmonyAttribute
 	{
@@ -91,7 +108,17 @@ namespace Harmony
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyCleanup : Attribute
+	{
+	}
+
+	[AttributeUsage(AttributeTargets.Method)]
 	public class HarmonyTargetMethod : Attribute
+	{
+	}
+
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyTargetMethods : Attribute
 	{
 	}
 
@@ -108,5 +135,35 @@ namespace Harmony
 	[AttributeUsage(AttributeTargets.Method)]
 	public class HarmonyTranspiler : Attribute
 	{
+	}
+
+	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
+	public class HarmonyParameter : Attribute
+	{
+		public string OriginalName { get; private set; }
+		public string NewName { get; private set; }
+
+		public HarmonyParameter(string originalName) : this(originalName, null)
+		{
+		}
+
+		public HarmonyParameter(string originalName, string newName)
+		{
+			OriginalName = originalName;
+			NewName = newName;
+		}
+	}
+
+	// This attribute is for Harmony patching itself to the latest
+	//
+	[AttributeUsage(AttributeTargets.Method)]
+	internal class UpgradeToLatestVersion : Attribute
+	{
+		public int version;
+
+		public UpgradeToLatestVersion(int version)
+		{
+			this.version = version;
+		}
 	}
 }

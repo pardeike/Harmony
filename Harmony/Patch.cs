@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,8 +41,7 @@ namespace Harmony
 
 		public static PatchInfo Deserialize(byte[] bytes)
 		{
-			var formatter = new BinaryFormatter();
-			formatter.Binder = new Binder();
+			var formatter = new BinaryFormatter { Binder = new Binder() };
 #pragma warning disable XS0001
 			var streamMemory = new MemoryStream(bytes);
 #pragma warning restore XS0001
@@ -90,6 +89,16 @@ namespace Harmony
 			prefixes = l.ToArray();
 		}
 
+		public void RemovePrefix(string owner)
+		{
+			if (owner == "*")
+			{
+				prefixes = new Patch[0];
+				return;
+			}
+			prefixes = prefixes.Where(patch => patch.owner != owner).ToArray();
+		}
+
 		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
 			var l = postfixes.ToList();
@@ -97,11 +106,38 @@ namespace Harmony
 			postfixes = l.ToArray();
 		}
 
+		public void RemovePostfix(string owner)
+		{
+			if (owner == "*")
+			{
+				postfixes = new Patch[0];
+				return;
+			}
+			postfixes = postfixes.Where(patch => patch.owner != owner).ToArray();
+		}
+
 		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
 			var l = transpilers.ToList();
 			l.Add(new Patch(patch, transpilers.Count() + 1, owner, priority, before, after));
 			transpilers = l.ToArray();
+		}
+
+		public void RemoveTranspiler(string owner)
+		{
+			if (owner == "*")
+			{
+				transpilers = new Patch[0];
+				return;
+			}
+			transpilers = transpilers.Where(patch => patch.owner != owner).ToArray();
+		}
+
+		public void RemovePatch(MethodInfo patch)
+		{
+			prefixes = prefixes.Where(p => p.patch != patch).ToArray();
+			postfixes = postfixes.Where(p => p.patch != patch).ToArray();
+			transpilers = transpilers.Where(p => p.patch != patch).ToArray();
 		}
 	}
 
@@ -118,7 +154,7 @@ namespace Harmony
 
 		public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after)
 		{
-			if (patch is DynamicMethod) throw new Exception("Cannot directly reference dynamic method \"" + patch + "\" in Harmony. Use a factory method instead that will return the dynamic method.");
+			if (patch is DynamicMethod) throw new Exception("Cannot directly reference dynamic method \"" + patch.FullDescription() + "\" in Harmony. Use a factory method instead that will return the dynamic method.");
 
 			this.index = index;
 			this.owner = owner;

@@ -1,4 +1,4 @@
-﻿using Harmony.ILCopying;
+using Harmony.ILCopying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +19,11 @@ namespace Harmony
 			patchInfo.AddPrefix(info.method, owner, priority, before, after);
 		}
 
+		public static void RemovePrefix(PatchInfo patchInfo, string owner)
+		{
+			patchInfo.RemovePrefix(owner);
+		}
+
 		public static void AddPostfix(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
 			if (info == null || info.method == null) return;
@@ -28,6 +33,11 @@ namespace Harmony
 			var after = info.after ?? new string[0];
 
 			patchInfo.AddPostfix(info.method, owner, priority, before, after);
+		}
+
+		public static void RemovePostfix(PatchInfo patchInfo, string owner)
+		{
+			patchInfo.RemovePostfix(owner);
 		}
 
 		public static void AddTranspiler(PatchInfo patchInfo, string owner, HarmonyMethod info)
@@ -41,6 +51,16 @@ namespace Harmony
 			patchInfo.AddTranspiler(info.method, owner, priority, before, after);
 		}
 
+		public static void RemoveTranspiler(PatchInfo patchInfo, string owner)
+		{
+			patchInfo.RemoveTranspiler(owner);
+		}
+
+		public static void RemovePatch(PatchInfo patchInfo, MethodInfo patch)
+		{
+			patchInfo.RemovePatch(patch);
+		}
+
 		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
 		{
 			return patches
@@ -50,14 +70,14 @@ namespace Harmony
 				.ToList();
 		}
 
-		public static void UpdateWrapper(MethodBase original, PatchInfo patchInfo)
+		public static void UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
 		{
 			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes);
 			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes);
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers);
 
-			var replacement = MethodPatcher.CreatePatchedMethod(original, sortedPrefixes, sortedPostfixes, sortedTranspilers);
-			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original);
+			var replacement = MethodPatcher.CreatePatchedMethod(original, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers);
+			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original.FullDescription());
 
 			var originalCodeStart = Memory.GetMethodStart(original);
 			var patchCodeStart = Memory.GetMethodStart(replacement);

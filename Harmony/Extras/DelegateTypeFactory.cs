@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Harmony
 {
-	class DelegateTypeFactory
+	public class DelegateTypeFactory
 	{
 		readonly ModuleBuilder module;
 
@@ -34,7 +34,7 @@ namespace Harmony
 				 method.ReturnType, parameters.Types());
 			invokeMethod.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
-			for (int i = 0; i < parameters.Length; i++)
+			for (var i = 0; i < parameters.Length; i++)
 				invokeMethod.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
 
 			return typeBuilder.CreateType();

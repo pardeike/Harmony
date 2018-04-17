@@ -4,6 +4,8 @@
     <IsPackable>false</IsPackable>
     <TargetFrameworks>net45</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup>

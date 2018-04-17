@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Harmony
@@ -11,19 +10,18 @@ namespace Harmony
 		Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
 		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
 
+		[UpgradeToLatestVersion(1)]
 		public FieldInfo GetFieldInfo(Type type, string name)
 		{
 			Dictionary<string, FieldInfo> fieldsByType = null;
-			fields.TryGetValue(type, out fieldsByType);
-			if (fieldsByType == null)
+			if (fields.TryGetValue(type, out fieldsByType) == false)
 			{
 				fieldsByType = new Dictionary<string, FieldInfo>();
 				fields.Add(type, fieldsByType);
 			}
 
 			FieldInfo field = null;
-			fieldsByType.TryGetValue(name, out field);
-			if (field == null)
+			if (fieldsByType.TryGetValue(name, out field) == false)
 			{
 				field = AccessTools.Field(type, name);
 				fieldsByType.Add(name, field);
@@ -34,16 +32,14 @@ namespace Harmony
 		public PropertyInfo GetPropertyInfo(Type type, string name)
 		{
 			Dictionary<string, PropertyInfo> propertiesByType = null;
-			properties.TryGetValue(type, out propertiesByType);
-			if (propertiesByType == null)
+			if (properties.TryGetValue(type, out propertiesByType) == false)
 			{
 				propertiesByType = new Dictionary<string, PropertyInfo>();
 				properties.Add(type, propertiesByType);
 			}
 
 			PropertyInfo property = null;
-			propertiesByType.TryGetValue(name, out property);
-			if (property == null)
+			if (propertiesByType.TryGetValue(name, out property) == false)
 			{
 				property = AccessTools.Property(type, name);
 				propertiesByType.Add(name, property);
@@ -53,9 +49,9 @@ namespace Harmony
 
 		static int CombinedHashCode(IEnumerable<object> objects)
 		{
-			int hash1 = (5381 << 16) + 5381;
-			int hash2 = hash1;
-			int i = 0;
+			var hash1 = (5381 << 16) + 5381;
+			var hash2 = hash1;
+			var i = 0;
 			foreach (var obj in objects)
 			{
 				if (i % 2 == 0)
