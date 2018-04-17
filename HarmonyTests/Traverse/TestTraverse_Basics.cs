@@ -47,7 +47,6 @@ namespace HarmonyTests
 
 		// Traverse should default to an empty instance to avoid errors
 		//
-		[Ignore("Skip failed test")]
 		[Test]
 		public void Traverse_SilentFailures()
 		{

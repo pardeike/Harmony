@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using HarmonyTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -11,7 +11,6 @@ namespace HarmonyTests
 	{
 		private class InnerClass { }
 
-		[Ignore("Skip failed test")]
 		[Test]
 		public void Traverse_Types()
 		{
