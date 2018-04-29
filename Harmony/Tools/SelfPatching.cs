@@ -22,11 +22,18 @@ namespace Harmony.Tools
 
 		static bool IsHarmonyAssembly(Assembly assembly)
 		{
-			var attribute = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
-			if (attribute.Length < 1)
+			try
+			{
+				var attribute = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
+				if (attribute.Length < 1)
+					return false;
+				var guidAttribute = attribute.GetValue(0) as GuidAttribute;
+				return guidAttribute.Value.ToString() == "69aee16a-b6e7-4642-8081-3928b32455df";
+			}
+			catch (Exception)
+			{
 				return false;
-			var guidAttribute = attribute.GetValue(0) as GuidAttribute;
-			return guidAttribute.Value.ToString() == "69aee16a-b6e7-4642-8081-3928b32455df";
+			}
 		}
 
 		// globally shared between all our identical versions
