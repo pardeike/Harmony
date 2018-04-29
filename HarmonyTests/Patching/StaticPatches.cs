@@ -44,9 +44,9 @@ namespace HarmonyTests
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod), new HarmonyMethod(transpilerMethod));
 			Assert.IsNotNull(patcher);
 
-			var originalMethodStartPre = Memory.GetMethodStart(originalMethod);
+			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
 			patcher.Patch();
-			var originalMethodStartPost = Memory.GetMethodStart(originalMethod);
+			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out exception);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
 			{
@@ -96,9 +96,9 @@ namespace HarmonyTests
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod), new HarmonyMethod(transpilerMethod));
 			Assert.IsNotNull(patcher);
 
-			var originalMethodStartPre = Memory.GetMethodStart(originalMethod);
+			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
 			patcher.Patch();
-			var originalMethodStartPost = Memory.GetMethodStart(originalMethod);
+			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out exception);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
 			{

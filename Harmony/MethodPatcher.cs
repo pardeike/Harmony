@@ -37,6 +37,9 @@ namespace Harmony
 
 				var idx = prefixes.Count() + postfixes.Count();
 				var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
+				if (patch == null)
+					return null;
+
 				var il = patch.GetILGenerator();
 
 				// for debugging
@@ -96,6 +99,7 @@ namespace Harmony
 				{
 					FileLog.LogBuffered("DONE");
 					FileLog.LogBuffered("");
+					FileLog.FlushBuffer();
 				}
 
 				// for debugging

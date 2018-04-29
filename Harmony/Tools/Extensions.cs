@@ -10,7 +10,7 @@ namespace Harmony
 		public static string Description(this Type[] parameters)
 		{
 			var types = parameters.Select(p => p == null ? "null" : p.FullName);
-			return "(" + types.Aggregate("", (s, x) => s.Length == 0 ? x : s + ", " + x) + ")";
+			return "(" + types.Aggregate("", (s, x) => s == null ? x : s.Length == 0 ? x : (s != "" ? s + ", " : "") + x) + ")";
 		}
 
 		public static string FullDescription(this MethodBase method)

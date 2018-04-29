@@ -72,6 +72,7 @@ namespace Harmony.ILCopying
 				case OperandType.InlineField:
 				case OperandType.InlineI:
 				case OperandType.InlineMethod:
+				case OperandType.InlineSig:
 				case OperandType.InlineString:
 				case OperandType.InlineTok:
 				case OperandType.InlineType:

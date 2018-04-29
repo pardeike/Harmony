@@ -58,10 +58,7 @@ namespace Harmony.Tools
 						if (patchedMethods.Contains(oldMethod) == false)
 						{
 							patchedMethods.Add(oldMethod);
-
-							var originalStart = Memory.GetMethodStart(oldMethod);
-							var newVersionStart = Memory.GetMethodStart(newMethod);
-							Memory.WriteJump(originalStart, newVersionStart);
+							Memory.DetourMethod(oldMethod, newMethod);
 						}
 					}
 				});

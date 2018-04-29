@@ -1,6 +1,5 @@
 using Harmony.ILCopying;
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -10,6 +9,37 @@ namespace Harmony
 {
 	public static class DynamicTools
 	{
+		/* TODO add support for functions that return structs larger than 8 bytes
+		 *
+		 * https://github.com/dotnet/coreclr/issues/12503
+		 * https://stackoverflow.com/questions/44641195/what-could-cause-p-invoke-arguments-to-be-out-of-order-when-passed
+		 *
+		 * ERROR
+		 * Managed Debugging Assistant 'FatalExecutionEngineError' 
+		 * The runtime has encountered a fatal error. The address of the error was at 0x72747d0e, on thread 0x9c38. The error code is 0xc0000005. This error may be a bug in the CLR or in the unsafe or non-verifiable portions of user code. Common sources of this bug include user marshaling errors for COM-interop or PInvoke, which may corrupt the stack.
+		 *
+		 * Calling signatures change:
+		 * .NET <4.5 jits to void Func(ref LargeReturnStruct, object this, params)
+		 * .NET 4.5+ jits to Func(object this, ref LargeReturnStruct, params)
+		 * 
+		 * // Test case
+
+			[StructLayout(LayoutKind.Sequential, Pack = 8)]
+			public struct Struct1
+			{
+				 public double foo;
+				 public double bar;
+			}
+
+			public class StructTest1
+			{
+				public Struct1 PatchMe()
+				{
+					return default(Struct1);
+				}
+			}
+		 * 
+		 */
 		public static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
 			if (original == null) throw new ArgumentNullException("original cannot be null");
@@ -21,16 +51,29 @@ namespace Harmony
 			if (original.IsStatic == false)
 				result.Insert(0, typeof(object));
 			var paramTypes = result.ToArray();
+			var returnType = AccessTools.GetReturnedType(original);
 
-			var method = new DynamicMethod(
+			// DynamicMethod does not support byref return types
+			if (returnType == null || returnType.IsByRef)
+				return null;
+
+			DynamicMethod method;
+			try
+			{
+				method = new DynamicMethod(
 				patchName,
 				MethodAttributes.Public | MethodAttributes.Static,
 				CallingConventions.Standard,
-				AccessTools.GetReturnedType(original),
+				returnType,
 				paramTypes,
 				original.DeclaringType,
 				true
 			);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 
 			for (var i = 0; i < parameters.Length; i++)
 				method.DefineParameter(i + 1, parameters[i].Attributes, parameters[i].Name);
@@ -152,8 +195,15 @@ namespace Harmony
 			if (m_GetMethodInfo != null)
 			{
 				var runtimeMethodInfo = m_GetMethodInfo.Invoke(handle, new object[0]);
-				m__CompileMethod.Invoke(null, new object[] { runtimeMethodInfo });
-				return;
+				try
+				{
+					// this can throw BadImageFormatException "An attempt was made to load a program with an incorrect format"
+					m__CompileMethod.Invoke(null, new object[] { runtimeMethodInfo });
+					return;
+				}
+				catch (Exception)
+				{
+				}
 			}
 
 			// 2) RuntimeHelpers._CompileMethod(handle.Value)

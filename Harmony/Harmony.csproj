@@ -21,6 +21,8 @@
       <DefineConstants>DEBUG;TRACE;NET35</DefineConstants>
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
       <Optimize>false</Optimize>
+      <DebugType>full</DebugType>
+      <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

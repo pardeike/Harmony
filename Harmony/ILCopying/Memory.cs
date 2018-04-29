@@ -47,23 +47,53 @@ namespace Harmony.ILCopying
 			}
 		}
 
-		public static long WriteJump(long memory, long destination)
+		public static string DetourMethod(MethodBase original, MethodBase replacement)
+		{
+			var originalCodeStart = GetMethodStart(original, out var exception);
+			if (originalCodeStart == 0)
+				return exception.Message;
+			var patchCodeStart = GetMethodStart(replacement, out exception);
+			if (patchCodeStart == 0)
+				return exception.Message;
+
+			return WriteJump(originalCodeStart, patchCodeStart);
+		}
+
+		/*
+		 * This is still a rough part in Harmony. So much information and no easy way
+		 * to determine when and what is valid. Especially with different environments
+		 * and .NET versions. More information might be found here:
+		 * 
+		 * https://stackoverflow.com/questions/38782934/how-to-replace-the-pointer-to-the-overridden-virtual-method-in-the-pointer-of/
+		 * https://stackoverflow.com/questions/39034018/how-to-replace-a-pointer-to-a-pointer-to-a-method-in-a-class-of-my-method-inheri
+		 *
+		 */
+		public static string WriteJump(long memory, long destination)
 		{
 			UnprotectMemoryPage(memory);
 
 			if (IntPtr.Size == sizeof(long))
 			{
+				if (CompareBytes(memory, new byte[] { 0xe9 }))
+				{
+					var offset = ReadInt(memory + 1);
+					memory += 5 + offset;
+				}
+
 				memory = WriteBytes(memory, new byte[] { 0x48, 0xB8 });
 				memory = WriteLong(memory, destination);
 				memory = WriteBytes(memory, new byte[] { 0xFF, 0xE0 });
 			}
 			else
 			{
+				if (CompareBytes(memory, new byte[] { 0xe9 }))
+					return "0xe9 JMP";
+
 				memory = WriteByte(memory, 0x68);
 				memory = WriteInt(memory, (int)destination);
 				memory = WriteByte(memory, 0xc3);
 			}
-			return memory;
+			return null;
 		}
 
 		private static RuntimeMethodHandle GetRuntimeMethodHandle(MethodBase method)
@@ -92,14 +122,58 @@ namespace Harmony.ILCopying
 			return method.MethodHandle;
 		}
 
-		public static long GetMethodStart(MethodBase method)
+		public static long GetMethodStart(MethodBase method, out Exception exception)
 		{
 			// required in .NET Core so that the method is JITed and the method start does not change
 			//
 			var handle = GetRuntimeMethodHandle(method);
-			RuntimeHelpers.PrepareMethod(handle);
+			try
+			{
+				RuntimeHelpers.PrepareMethod(handle);
+			}
+			catch (Exception)
+			{
+			}
 
-			return handle.GetFunctionPointer().ToInt64();
+			try
+			{
+				exception = null;
+				return handle.GetFunctionPointer().ToInt64();
+			}
+			catch (Exception ex)
+			{
+				exception = ex;
+				return 0;
+			}
+		}
+
+		public static unsafe bool CompareBytes(long memory, byte[] values)
+		{
+			var p = (byte*)memory;
+			foreach (var value in values)
+			{
+				if (value != *p) return false;
+				p++;
+			}
+			return true;
+		}
+
+		public static unsafe byte ReadByte(long memory)
+		{
+			var p = (byte*)memory;
+			return *p;
+		}
+
+		public static unsafe int ReadInt(long memory)
+		{
+			var p = (int*)memory;
+			return *p;
+		}
+
+		public static unsafe long ReadLong(long memory)
+		{
+			var p = (long*)memory;
+			return *p;
 		}
 
 		public static unsafe long WriteByte(long memory, byte value)

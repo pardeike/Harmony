@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -172,142 +172,144 @@ namespace Harmony.ILCopying
 			}
 		}
 
+		// MethodCopier calls when Operand type is InlineNone
 		public static void Emit(ILGenerator il, OpCode opcode)
 		{
 			if (HarmonyInstance.DEBUG) FileLog.LogBuffered(CodePos(il) + opcode);
 			il.Emit(opcode);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, LocalBuilder local)
 		{
 			LogIL(il, opcode, local);
 			il.Emit(opcode, local);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, FieldInfo field)
 		{
 			LogIL(il, opcode, field);
 			il.Emit(opcode, field);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, Label[] labels)
 		{
 			LogIL(il, opcode, labels);
 			il.Emit(opcode, labels);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, Label label)
 		{
 			LogIL(il, opcode, label);
 			il.Emit(opcode, label);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, string str)
 		{
 			LogIL(il, opcode, str);
 			il.Emit(opcode, str);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, float arg)
 		{
 			LogIL(il, opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, byte arg)
 		{
 			LogIL(il, opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, sbyte arg)
 		{
 			LogIL(il, opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, double arg)
 		{
 			LogIL(il, opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, int arg)
 		{
 			LogIL(il, opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, MethodInfo meth)
 		{
 			LogIL(il, opcode, meth);
 			il.Emit(opcode, meth);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, short arg)
 		{
 			LogIL(il, opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, SignatureHelper signature)
 		{
 			LogIL(il, opcode, signature);
 			il.Emit(opcode, signature);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, ConstructorInfo con)
 		{
 			LogIL(il, opcode, con);
 			il.Emit(opcode, con);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, Type cls)
 		{
 			LogIL(il, opcode, cls);
 			il.Emit(opcode, cls);
 		}
 
+		// MethodCopier calls by 3rd argument type
 		public static void Emit(ILGenerator il, OpCode opcode, long arg)
 		{
 			LogIL(il, opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
+		// called from MethodInvoker (calls from MethodCopier use the corresponding Emit() call above)
 		public static void EmitCall(ILGenerator il, OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
 		{
 			if (HarmonyInstance.DEBUG) FileLog.LogBuffered(string.Format("{0}Call {1} {2} {3}", CodePos(il), opcode, methodInfo, optionalParameterTypes));
 			il.EmitCall(opcode, methodInfo, optionalParameterTypes);
 		}
 
+		// not called yet
 		public static void EmitCalli(ILGenerator il, OpCode opcode, CallingConvention unmanagedCallConv, Type returnType, Type[] parameterTypes)
 		{
 			if (HarmonyInstance.DEBUG) FileLog.LogBuffered(string.Format("{0}Calli {1} {2} {3} {4}", CodePos(il), opcode, unmanagedCallConv, returnType, parameterTypes));
 			il.EmitCalli(opcode, unmanagedCallConv, returnType, parameterTypes);
 		}
 
+		// not called yet
 		public static void EmitCalli(ILGenerator il, OpCode opcode, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type[] optionalParameterTypes)
 		{
 			if (HarmonyInstance.DEBUG) FileLog.LogBuffered(string.Format("{0}Calli {1} {2} {3} {4} {5}", CodePos(il), opcode, callingConvention, returnType, parameterTypes, optionalParameterTypes));
 			il.EmitCalli(opcode, callingConvention, returnType, parameterTypes, optionalParameterTypes);
-		}
-
-		public static void EmitWriteLine(ILGenerator il, string value)
-		{
-			if (HarmonyInstance.DEBUG) FileLog.LogBuffered(string.Format("{0}WriteLine {1}", CodePos(il), FormatArgument(value)));
-			il.EmitWriteLine(value);
-		}
-
-		public static void EmitWriteLine(ILGenerator il, LocalBuilder localBuilder)
-		{
-			if (HarmonyInstance.DEBUG) FileLog.LogBuffered(string.Format("{0}WriteLine {1}", CodePos(il), FormatArgument(localBuilder)));
-			il.EmitWriteLine(localBuilder);
-		}
-
-		public static void EmitWriteLine(ILGenerator il, FieldInfo fld)
-		{
-			if (HarmonyInstance.DEBUG) FileLog.LogBuffered(string.Format("{0}WriteLine {1}", CodePos(il), FormatArgument(fld)));
-			il.EmitWriteLine(fld);
 		}
 	}
 }

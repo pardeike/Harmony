@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -218,6 +219,25 @@ namespace Harmony.ILCopying
 			}
 		}
 
+		// used in FinalizeILCodes to convert short jumps to long ones
+		static Dictionary<OpCode, OpCode> shortJumps = new Dictionary<OpCode, OpCode>()
+		{
+			{ OpCodes.Leave_S, OpCodes.Leave },
+			{ OpCodes.Brfalse_S, OpCodes.Brfalse },
+			{ OpCodes.Brtrue_S, OpCodes.Brtrue },
+			{ OpCodes.Beq_S, OpCodes.Beq },
+			{ OpCodes.Bge_S, OpCodes.Bge },
+			{ OpCodes.Bgt_S, OpCodes.Bgt },
+			{ OpCodes.Ble_S, OpCodes.Ble },
+			{ OpCodes.Blt_S, OpCodes.Blt },
+			{ OpCodes.Bne_Un_S, OpCodes.Bne_Un },
+			{ OpCodes.Bge_Un_S, OpCodes.Bge_Un },
+			{ OpCodes.Bgt_Un_S, OpCodes.Bgt_Un },
+			{ OpCodes.Ble_Un_S, OpCodes.Ble_Un },
+			{ OpCodes.Br_S, OpCodes.Br },
+			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
+		};
+
 		// use parsed IL codes and emit them to a generator
 		//
 		public void FinalizeILCodes(List<MethodInfo> transpilers, List<Label> endLabels, List<ExceptionBlock> endBlocks)
@@ -308,6 +328,10 @@ namespace Harmony.ILCopying
 					endLabels.Add(endLabel);
 				}
 
+				// replace short jumps with long ones (can be optimized but requires byte counting, not instruction counting)
+				if (shortJumps.TryGetValue(code, out var longJump))
+					code = longJump;
+
 				var emitCode = true;
 
 				//if (code == OpCodes.Leave || code == OpCodes.Leave_S)
@@ -324,15 +348,42 @@ namespace Harmony.ILCopying
 
 				if (emitCode)
 				{
-					if (code.OperandType == OperandType.InlineNone)
-						Emitter.Emit(generator, code);
-					else
+					switch (code.OperandType)
 					{
-						if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
-						var emitMethod = EmitMethodForType(operand.GetType());
-						if (emitMethod == null) throw new Exception("Unknown Emit argument type " + operand.GetType() + " in " + codeInstruction);
-						if (HarmonyInstance.DEBUG) FileLog.LogBuffered(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
-						emitMethod.Invoke(generator, new object[] { code, operand });
+						case OperandType.InlineNone:
+							Emitter.Emit(generator, code);
+							break;
+
+						case OperandType.InlineSig:
+
+							// TODO the following will fail because we do not convert the token (operand)
+							// All the decompilers can show the arguments correctly, we just need to find out how
+							//
+							if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
+							if ((operand is int) == false) throw new Exception("Wrong Emit argument type " + operand.GetType() + " in " + codeInstruction);
+							Emitter.Emit(generator, code, (int)operand);
+
+							/*
+							// the following will only work if we can convert the original signature token to the required arguments
+							//
+							var callingConvention = System.Runtime.InteropServices.CallingConvention.ThisCall;
+							var returnType = typeof(object);
+							var parameterTypes = new[] { typeof(object) };
+							Emitter.EmitCalli(generator, code, callingConvention, returnType, parameterTypes);
+
+							var callingConventions = System.Reflection.CallingConventions.Standard;
+							var optionalParameterTypes = new[] { typeof(object) };
+							Emitter.EmitCalli(generator, code, callingConventions, returnType, parameterTypes, optionalParameterTypes);
+							*/
+							break;
+
+						default:
+							if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
+							var emitMethod = EmitMethodForType(operand.GetType());
+							if (emitMethod == null) throw new Exception("Unknown Emit argument type " + operand.GetType() + " in " + codeInstruction);
+							if (HarmonyInstance.DEBUG) FileLog.LogBuffered(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
+							emitMethod.Invoke(generator, new object[] { code, operand });
+							break;
 					}
 				}
 
@@ -465,8 +516,12 @@ namespace Harmony.ILCopying
 				case OperandType.InlineSig:
 					{
 						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveSignature(val);
-						instruction.argument = (SignatureHelper)instruction.operand;
+						var bytes = module.ResolveSignature(val);
+						instruction.operand = bytes;
+						instruction.argument = bytes;
+						Debugger.Log(0, "TEST", "METHOD " + method.FullDescription() + "\n");
+						Debugger.Log(0, "TEST", "Signature = " + bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b) + "\n");
+						Debugger.Break();
 						break;
 					}
 

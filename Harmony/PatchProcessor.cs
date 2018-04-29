@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Harmony
 {
@@ -57,10 +58,11 @@ namespace Harmony
 			}
 		}
 
-		public void Patch()
+		public List<DynamicMethod> Patch()
 		{
 			lock (locker)
 			{
+				var dynamicMethods = new List<DynamicMethod>();
 				foreach (var original in originals)
 				{
 					if (original == null)
@@ -75,13 +77,14 @@ namespace Harmony
 						PatchFunctions.AddPrefix(patchInfo, instance.Id, prefix);
 						PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
 						PatchFunctions.AddTranspiler(patchInfo, instance.Id, transpiler);
-						PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
+						dynamicMethods.Add(PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id));
 
 						HarmonySharedState.UpdatePatchInfo(original, patchInfo);
 
 						RunMethod<HarmonyCleanup>(original);
 					}
 				}
+				return dynamicMethods;
 			}
 		}
 

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Harmony
 {
@@ -79,10 +80,10 @@ namespace Harmony
 			});
 		}
 
-		public void Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler = null)
+		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler = null)
 		{
 			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler);
-			processor.Patch();
+			return processor.Patch().FirstOrDefault();
 		}
 
 		public void RemovePatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
