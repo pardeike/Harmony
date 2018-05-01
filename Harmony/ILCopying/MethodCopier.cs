@@ -297,16 +297,13 @@ namespace Harmony.ILCopying
 				// remember any existing labels
 				endLabels.AddRange(lastInstruction.labels);
 
-				var l = codeInstructions.ToList();
-				l.RemoveAt(l.Count - 1);
-				codeInstructions = l;
+				codeInstructions.RemoveAt(codeInstructions.Count - 1);
 			}
 
 			// pass4 - mark labels and exceptions and emit codes
 			//
-			var instructions = codeInstructions.ToArray();
 			var idx = 0;
-			instructions.Do(codeInstruction =>
+			codeInstructions.Do(codeInstruction =>
 			{
 				// mark all labels
 				codeInstruction.labels.Do(label => Emitter.MarkLabel(generator, label));

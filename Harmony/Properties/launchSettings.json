@@ -1,7 +1,9 @@
 {
   "profiles": {
     "Harmony": {
-      "commandName": "Project"
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files (x86)\\RimWorld1722Win\\RimWorld1722Win.exe",
+      "workingDirectory": "C:\\Program Files (x86)\\RimWorld1722Win\\"
     }
   }
 }

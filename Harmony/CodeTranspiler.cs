@@ -25,17 +25,17 @@ namespace Harmony
 			transpilers.Add(transpiler);
 		}
 
-		public static object ConvertInstruction(Type type, object op, out List<KeyValuePair<string, object>> unassigned)
+		public static object ConvertInstruction(Type type, object op, out Dictionary<string, object> unassigned)
 		{
 			var elementTo = Activator.CreateInstance(type, new object[] { OpCodes.Nop, null });
-			var nonExisting = new List<KeyValuePair<string, object>>();
+			var nonExisting = new Dictionary<string, object>();
 			Traverse.IterateFields(op, elementTo, (name, trvFrom, trvDest) =>
 			{
 				var val = trvFrom.GetValue();
 
 				if (trvDest.FieldExists() == false)
 				{
-					nonExisting.Add(new KeyValuePair<string, object>(name, val));
+					nonExisting[name] = val;
 					return;
 				}
 
@@ -51,7 +51,109 @@ namespace Harmony
 			return elementTo;
 		}
 
-		public static IEnumerable ConvertInstructions(Type type, IEnumerable enumerable, out Dictionary<object, List<KeyValuePair<string, object>>> unassignedValues)
+		public static bool ShouldAddExceptionInfo(object op, int opIndex, List<object> originalInstructions, List<object> newInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
+		{
+			var originalIndex = originalInstructions.IndexOf(op);
+			if (originalIndex == -1)
+				return false; // no need, new instruction
+
+			Dictionary<string, object> unassigned = null;
+			if (unassignedValues.TryGetValue(op, out unassigned) == false)
+				return false; // no need, no unassigned info
+
+			if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out var blocksObject) == false)
+				return false; // no need, no try-catch info
+			var blocks = blocksObject as List<ExceptionBlock>;
+
+			var dupCount = newInstructions.Count(instr => instr == op);
+			if (dupCount <= 1)
+				return true; // ok, no duplicate found
+
+			var isStartBlock = blocks.FirstOrDefault(block => block.blockType != ExceptionBlockType.EndExceptionBlock);
+			var isEndBlock = blocks.FirstOrDefault(block => block.blockType == ExceptionBlockType.EndExceptionBlock);
+
+			if (isStartBlock != null && isEndBlock == null)
+			{
+				var pairInstruction = originalInstructions.Skip(originalIndex + 1).FirstOrDefault(instr =>
+				{
+					if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+						return false;
+					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+						return false;
+					blocks = blocksObject as List<ExceptionBlock>;
+					return blocks.Count() > 0;
+				});
+				if (pairInstruction != null)
+				{
+					var pairStart = originalIndex + 1;
+					var pairEnd = pairStart + originalInstructions.Skip(pairStart).ToList().IndexOf(pairInstruction) - 1;
+					var originalBetweenInstructions = originalInstructions
+						.GetRange(pairStart, pairEnd - pairStart)
+						.Intersect(newInstructions);
+
+					pairInstruction = newInstructions.Skip(opIndex + 1).FirstOrDefault(instr =>
+					{
+						if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+							return false;
+						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+							return false;
+						blocks = blocksObject as List<ExceptionBlock>;
+						return blocks.Count() > 0;
+					});
+					if (pairInstruction != null)
+					{
+						pairStart = opIndex + 1;
+						pairEnd = pairStart + newInstructions.Skip(opIndex + 1).ToList().IndexOf(pairInstruction) - 1;
+						var newBetweenInstructions = newInstructions.GetRange(pairStart, pairEnd - pairStart);
+						var remaining = originalBetweenInstructions.Except(newBetweenInstructions).ToList();
+						return remaining.Count() == 0;
+					}
+				}
+			}
+			if (isStartBlock == null && isEndBlock != null)
+			{
+				var pairInstruction = originalInstructions.GetRange(0, originalIndex).LastOrDefault(instr =>
+				{
+					if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+						return false;
+					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+						return false;
+					blocks = blocksObject as List<ExceptionBlock>;
+					return blocks.Count() > 0;
+				});
+				if (pairInstruction != null)
+				{
+					var pairStart = originalInstructions.GetRange(0, originalIndex).LastIndexOf(pairInstruction);
+					var pairEnd = originalIndex;
+					var originalBetweenInstructions = originalInstructions
+						.GetRange(pairStart, pairEnd - pairStart)
+						.Intersect(newInstructions);
+
+					pairInstruction = newInstructions.GetRange(0, opIndex).LastOrDefault(instr =>
+					{
+						if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+							return false;
+						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+							return false;
+						blocks = blocksObject as List<ExceptionBlock>;
+						return blocks.Count() > 0;
+					});
+					if (pairInstruction != null)
+					{
+						pairStart = newInstructions.GetRange(0, opIndex).LastIndexOf(pairInstruction);
+						pairEnd = opIndex;
+						var newBetweenInstructions = newInstructions.GetRange(pairStart, pairEnd - pairStart);
+						var remaining = originalBetweenInstructions.Except(newBetweenInstructions);
+						return remaining.Count() == 0;
+					}
+				}
+			}
+
+			// unclear or unexpected case, ok by default
+			return true;
+		}
+
+		public static IEnumerable ConvertInstructionsAndUnassignedValues(Type type, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var enumerableAssembly = type.GetGenericTypeDefinition().Assembly;
 			var genericListType = enumerableAssembly.GetType(typeof(List<>).FullName);
@@ -59,40 +161,50 @@ namespace Harmony
 			var listType = enumerableAssembly.GetType(genericListType.MakeGenericType(new Type[] { elementType }).FullName);
 			var list = Activator.CreateInstance(listType);
 			var listAdd = list.GetType().GetMethod("Add");
-			unassignedValues = new Dictionary<object, List<KeyValuePair<string, object>>>();
+			unassignedValues = new Dictionary<object, Dictionary<string, object>>();
 			foreach (var op in enumerable)
 			{
 				var elementTo = ConvertInstruction(elementType, op, out var unassigned);
 				unassignedValues.Add(elementTo, unassigned);
 				listAdd.Invoke(list, new object[] { elementTo });
+				// cannot yield return 'elementTo' here because we have an out parameter in the method
 			}
 			return list as IEnumerable;
 		}
 
-		public static IEnumerable<CodeInstruction> ConvertInstructions(IEnumerable instructions, Dictionary<object, List<KeyValuePair<string, object>>> unassignedValues)
+		public static IEnumerable<CodeInstruction> ConvertToOurInstructions(IEnumerable instructions, List<object> originalInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var result = new List<CodeInstruction>();
-			foreach (var op in instructions)
+			var newInstructions = instructions.Cast<object>().ToList();
+
+			var index = -1;
+			foreach (var op in newInstructions)
 			{
+				index++;
+
 				var elementTo = new CodeInstruction(OpCodes.Nop, null);
 				Traverse.IterateFields(op, elementTo, (trvFrom, trvDest) => trvDest.SetValue(trvFrom.GetValue()));
-				if (unassignedValues.TryGetValue(op, out var values))
+				if (unassignedValues.TryGetValue(op, out var fields))
 				{
+					var addExceptionInfo = ShouldAddExceptionInfo(op, index, originalInstructions, newInstructions, unassignedValues);
+
 					var trv = Traverse.Create(elementTo);
-					foreach (var value in values)
-						trv.Field(value.Key).SetValue(value.Value);
+					foreach (var field in fields)
+					{
+						if (addExceptionInfo || field.Key != nameof(CodeInstruction.blocks))
+							trv.Field(field.Key).SetValue(field.Value);
+					}
 				}
-				result.Add(elementTo);
+				yield return elementTo;
 			}
-			return result;
 		}
 
-		public static IEnumerable ConvertInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, List<KeyValuePair<string, object>>> unassignedValues)
+		public static IEnumerable ConvertToGeneralInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var type = transpiler.GetParameters()
 				  .Select(p => p.ParameterType)
 				  .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name.StartsWith("IEnumerable"));
-			return ConvertInstructions(type, enumerable, out unassignedValues);
+			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
 
 		public static List<object> GetTranspilerCallParameters(ILGenerator generator, MethodInfo transpiler, MethodBase method, IEnumerable instructions)
@@ -110,17 +222,27 @@ namespace Harmony
 			return parameter;
 		}
 
-		public IEnumerable<CodeInstruction> GetResult(ILGenerator generator, MethodBase method)
+		public List<CodeInstruction> GetResult(ILGenerator generator, MethodBase method)
 		{
 			IEnumerable instructions = codeInstructions;
 			transpilers.ForEach(transpiler =>
 			{
-				instructions = ConvertInstructions(transpiler, instructions, out var unassignedValues);
+				// before calling some transpiler, convert the input to 'their' CodeInstruction type
+				// also remember any unassignable values that otherwise would be lost
+				instructions = ConvertToGeneralInstructions(transpiler, instructions, out var unassignedValues);
+
+				// remember the order of the original input (for detection of dupped code instructions)
+				var originalInstructions = new List<object>();
+				originalInstructions.AddRange(instructions.Cast<object>());
+
+				// call the transpiler
 				var parameter = GetTranspilerCallParameters(generator, transpiler, method, instructions);
 				instructions = transpiler.Invoke(null, parameter.ToArray()) as IEnumerable;
-				instructions = ConvertInstructions(instructions, unassignedValues);
+
+				// convert result back to 'our' CodeInstruction and re-assign otherwise lost fields
+				instructions = ConvertToOurInstructions(instructions, originalInstructions, unassignedValues);
 			});
-			return instructions as IEnumerable<CodeInstruction>;
+			return instructions.Cast<CodeInstruction>().ToList();
 		}
 
 		//

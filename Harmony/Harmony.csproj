@@ -6,7 +6,7 @@
         <Product>Harmony</Product>
         <Company>Andreas Pardeike</Company>
         <Copyright>Copyright © 2016</Copyright>
-        <Description>A general non-destructive patch library for .NET 2 modules</Description>
+        <Description>A general non-destructive patch library for .NET and Mono modules</Description>
         <PackageId>Harmony</PackageId>
         <Authors>Andreas Pardeike</Authors>
         <AssemblyName>0Harmony</AssemblyName>
