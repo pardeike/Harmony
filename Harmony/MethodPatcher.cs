@@ -194,11 +194,13 @@ namespace Harmony
 
 		static MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 
-		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
+		static List<KeyValuePair<LocalBuilder, FieldInfo>> EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
 			var isInstance = original.IsStatic == false;
 			var originalParameters = original.GetParameters();
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
+
+			var privateFieldVars = new List<KeyValuePair<LocalBuilder, FieldInfo>>();
 
 			// check for passthrough using first parameter (which must have same type as return type)
 			var parameters = patch.GetParameters().ToList();
@@ -240,12 +242,20 @@ namespace Harmony
 
 				if (patchParam.Name.StartsWith(INSTANCE_FIELD_PREFIX))
 				{
-					if (original.IsStatic || patchParam.ParameterType.IsByRef)
-						Emitter.Emit(il, OpCodes.Ldnull);
+					var fieldInfo = AccessTools.Field(original.DeclaringType, patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length));
+					if (patchParam.ParameterType.IsByRef)
+					{
+						var localVar = DynamicTools.DeclareLocalVariable(il, fieldInfo.FieldType);
+						Emitter.Emit(il, OpCodes.Ldarg_0);
+						Emitter.Emit(il, OpCodes.Ldfld, fieldInfo);
+						Emitter.Emit(il, OpCodes.Stloc, localVar);
+						Emitter.Emit(il, OpCodes.Ldloca, localVar);
+						privateFieldVars.Add(new KeyValuePair<LocalBuilder, FieldInfo>(localVar, fieldInfo));
+					}
 					else
 					{
 						Emitter.Emit(il, OpCodes.Ldarg_0);
-						Emitter.Emit(il, OpCodes.Ldfld, AccessTools.Field(original.DeclaringType, patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length)));
+						Emitter.Emit(il, OpCodes.Ldfld, fieldInfo);
 					}
 					continue;
 				}
@@ -312,6 +322,8 @@ namespace Harmony
 				Emitter.Emit(il, OpCodes.Ldarg, patchArgIndex);
 				Emitter.Emit(il, LoadIndOpCodeFor(originalParameters[idx].ParameterType));
 			}
+
+			return privateFieldVars;
 		}
 
 		static bool AddPrefixes(ILGenerator il, MethodBase original, List<MethodInfo> prefixes, Dictionary<string, LocalBuilder> variables, Label label)
@@ -319,8 +331,16 @@ namespace Harmony
 			var canHaveJump = false;
 			prefixes.ForEach(fix =>
 			{
-				EmitCallParameter(il, original, fix, variables, false);
+				var privateFieldVars = EmitCallParameter(il, original, fix, variables, false);
 				Emitter.Emit(il, OpCodes.Call, fix);
+
+				foreach (var privateFieldVar in privateFieldVars)
+				{
+					Emitter.Emit(il, OpCodes.Ldloc, privateFieldVar.Key);
+					Emitter.Emit(il, OpCodes.Ldarg_0);
+					Emitter.Emit(il, OpCodes.Stfld, privateFieldVar.Value);
+				}
+
 				if (fix.ReturnType != typeof(void))
 				{
 					if (fix.ReturnType != typeof(bool))
@@ -338,8 +358,15 @@ namespace Harmony
 				.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void)))
 				.Do(fix =>
 				{
-					EmitCallParameter(il, original, fix, variables, true);
+					var privateFieldVars = EmitCallParameter(il, original, fix, variables, true);
 					Emitter.Emit(il, OpCodes.Call, fix);
+
+					foreach (var privateFieldVar in privateFieldVars)
+					{
+						Emitter.Emit(il, OpCodes.Ldloc, privateFieldVar.Key);
+						Emitter.Emit(il, OpCodes.Ldarg_0);
+						Emitter.Emit(il, OpCodes.Stfld, privateFieldVar.Value);
+					}
 
 					if (fix.ReturnType != typeof(void))
 					{
