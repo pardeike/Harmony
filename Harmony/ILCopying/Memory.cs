@@ -86,9 +86,6 @@ namespace Harmony.ILCopying
 			}
 			else
 			{
-				if (CompareBytes(memory, new byte[] { 0xe9 }))
-					return "0xe9 JMP";
-
 				memory = WriteByte(memory, 0x68);
 				memory = WriteInt(memory, (int)destination);
 				memory = WriteByte(memory, 0xc3);
