@@ -336,8 +336,8 @@ namespace Harmony
 
 				foreach (var privateFieldVar in privateFieldVars)
 				{
-					Emitter.Emit(il, OpCodes.Ldloc, privateFieldVar.Key);
 					Emitter.Emit(il, OpCodes.Ldarg_0);
+					Emitter.Emit(il, OpCodes.Ldloc, privateFieldVar.Key);
 					Emitter.Emit(il, OpCodes.Stfld, privateFieldVar.Value);
 				}
 
@@ -363,8 +363,8 @@ namespace Harmony
 
 					foreach (var privateFieldVar in privateFieldVars)
 					{
-						Emitter.Emit(il, OpCodes.Ldloc, privateFieldVar.Key);
 						Emitter.Emit(il, OpCodes.Ldarg_0);
+						Emitter.Emit(il, OpCodes.Ldloc, privateFieldVar.Key);
 						Emitter.Emit(il, OpCodes.Stfld, privateFieldVar.Value);
 					}
 
