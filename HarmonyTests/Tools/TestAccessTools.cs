@@ -47,7 +47,7 @@ namespace HarmonyTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNull(AccessTools.Method(null, null));
+			Assert.IsNull(AccessTools.Method(null));
 			Assert.IsNull(AccessTools.Method(type, null));
 			Assert.IsNull(AccessTools.Method(null, "Method"));
 			Assert.IsNull(AccessTools.Method(type, "unknown"));
@@ -57,11 +57,16 @@ namespace HarmonyTests
 			Assert.AreEqual(type, m1.DeclaringType);
 			Assert.AreEqual("Method", m1.Name);
 
-			var m2 = AccessTools.Method(type, "Method", new Type[] { });
+			var m2 = AccessTools.Method("HarmonyTests.Assets.AccessToolsClass:Method");
 			Assert.IsNotNull(m2);
+			Assert.AreEqual(type, m2.DeclaringType);
+			Assert.AreEqual("Method", m2.Name);
 
-			var m3 = AccessTools.Method(type, "SetField", new Type[] { typeof(string) });
+			var m3 = AccessTools.Method(type, "Method", new Type[] { });
 			Assert.IsNotNull(m3);
+
+			var m4 = AccessTools.Method(type, "SetField", new Type[] { typeof(string) });
+			Assert.IsNotNull(m4);
 		}
 
 		[TestMethod]

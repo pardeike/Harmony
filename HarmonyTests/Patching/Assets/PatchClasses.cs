@@ -10,6 +10,10 @@ namespace HarmonyTests.Assets
 		public static void Method1()
 		{
 			Class1Patch.originalExecuted = true;
+			// some useless work to prevent inlining when testing Release builds
+			for (var i = 0; i < "abcd".Length; i++)
+				if (i > 4)
+					Console.WriteLine("");
 		}
 	}
 
@@ -49,6 +53,10 @@ namespace HarmonyTests.Assets
 		public void Method2()
 		{
 			Class2Patch.originalExecuted = true;
+			// some useless work to prevent inlining when testing Release builds
+			for (var i = 0; i < "abcd".Length; i++)
+				if (i > 4)
+					Console.WriteLine("");
 		}
 	}
 

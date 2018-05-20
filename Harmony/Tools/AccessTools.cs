@@ -91,6 +91,17 @@ namespace Harmony
 			return result;
 		}
 
+		public static MethodInfo Method(string typeColonMethodname, Type[] parameters = null, Type[] generics = null)
+		{
+			if (typeColonMethodname == null) return null;
+			var parts = typeColonMethodname.Split(':');
+			if (parts.Length != 2)
+				throw new ArgumentException("Method must be specified as 'Namespace.Type1.Type2:MethodName", nameof(typeColonMethodname));
+
+			var type = TypeByName(parts[0]);
+			return Method(type, parts[1], parameters, generics);
+		}
+
 		public static List<string> GetMethodNames(Type type)
 		{
 			if (type == null) return new List<string>();

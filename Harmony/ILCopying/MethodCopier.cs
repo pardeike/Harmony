@@ -52,12 +52,14 @@ namespace Harmony.ILCopying
 		// NOTE: you cannot simply "copy" ILInstructions from a method. They contain references to
 		// local variables which must be CREATED on an ILGenerator or else they are invalid when you
 		// want to use the ILInstruction. If you are really clever, you can supply a dummy generator
-		// and edit out all labels during the processing but that might be more tricky than you think.
+		// and edit out all labels during the processing but that might be more trickier than you think
 		//
-		// In order to copy together a bunch of method parts within a transpiler, you either have to
-		// accep that by passing the generator that will build your new method, you will end up with
-		// the sum of all declared local variables of all methods you query with GetInstructions or
-		// you tricks around with fake generators (not recommended)
+		// In order to copy together a bunch of method parts within a transpiler, you have to pass in
+		// your current generator that builds your new method
+		//
+		// You will end up with the sum of all declared local variables of all methods you run
+		// GetInstructions on or use a dummy generator but edit out the invalid labels from the codes
+		// you copy
 		//
 		public static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{

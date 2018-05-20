@@ -1,36 +1,75 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net35</TargetFramework>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Product>Harmony</Product>
-        <Company>Andreas Pardeike</Company>
-        <Copyright>Copyright © 2016</Copyright>
-        <Description>A general non-destructive patch library for .NET and Mono modules</Description>
-        <PackageId>Harmony</PackageId>
-        <Authors>Andreas Pardeike</Authors>
-        <AssemblyName>0Harmony</AssemblyName>
-        <SignAssembly>false</SignAssembly>
-        <Version>1.1.0</Version>
-        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
-        <Configurations>Debug;Release</Configurations>
-    </PropertyGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Product>Harmony</Product>
+		<Company>Andreas Pardeike</Company>
+		<Copyright>Copyright © 2016</Copyright>
+		<Description>A general non-destructive patch library for .NET and Mono modules</Description>
+		<PackageId>Harmony</PackageId>
+		<Authors>Andreas Pardeike</Authors>
+		<AssemblyName>0Harmony</AssemblyName>
+		<SignAssembly>false</SignAssembly>
+		<Version>1.1.0</Version>
+		<PackageLicenseUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
+		<Configurations>Debug-3.5;Release-3.5;Debug-4.7.1;Release-4.7.1</Configurations>
+		<TargetFrameworks>net35;net471</TargetFrameworks>
+	</PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-      <DefineConstants>DEBUG;TRACE;NET35</DefineConstants>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <Optimize>false</Optimize>
-      <DebugType>full</DebugType>
-      <DebugSymbols>true</DebugSymbols>
-    </PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Data" />
+		<Reference Include="System.Runtime.Serialization" />
+		<Reference Include="System.XML" />
+		<Reference Include="System.XML.Linq" />
+	</ItemGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-      <DefineConstants>NET35</DefineConstants>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <Optimize>true</Optimize>
-      <DebugType>none</DebugType>
-      <DebugSymbols>false</DebugSymbols>
-    </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-3.5|AnyCPU'">
+		<DefineConstants>DEBUG;TRACE;NET35</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<TargetFramework>net35</TargetFramework>
+		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+		<OutputPath>build\Debug\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-4.7.1|AnyCPU'">
+		<DefineConstants>DEBUG;TRACE;NET471</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<TargetFramework>net471</TargetFramework>
+		<TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+		<OutputPath>build\Debug\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-3.5|AnyCPU'">
+		<DefineConstants>NET35</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>true</Optimize>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+		<TargetFramework>net35</TargetFramework>
+		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+		<OutputPath>build\Release\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-4.7.1|AnyCPU'">
+		<DefineConstants>NET471</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>true</Optimize>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+		<TargetFramework>net471</TargetFramework>
+		<TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+		<OutputPath>build\Release\</OutputPath>
+	</PropertyGroup>
 
 </Project>

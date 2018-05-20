@@ -16,9 +16,9 @@ namespace Harmony.ILCopying
 
 	public static class Emitter
 	{
-		static GetterHandler codeLenGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "code_len", "m_length");
-		static GetterHandler localsGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "locals");
-		static GetterHandler localCountGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "m_localCount");
+		static readonly GetterHandler codeLenGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "code_len", "m_length");
+		static readonly GetterHandler localsGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "locals");
+		static readonly GetterHandler localCountGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "m_localCount");
 
 		public static string CodePos(ILGenerator il)
 		{

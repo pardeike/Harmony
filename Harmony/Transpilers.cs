@@ -23,5 +23,7 @@ namespace Harmony
 			yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FileLog), nameof(FileLog.Log)));
 			foreach (var instruction in instructions) yield return instruction;
 		}
+
+		// more added soon
 	}
 }

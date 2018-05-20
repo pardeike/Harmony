@@ -51,6 +51,10 @@ namespace Harmony
 			return elementTo;
 		}
 
+		// ShouldAddExceptionInfo is used to determine if CodeInstructions from an older Harmony version were duplicating
+		// exception information as well as to preserve the exception information from being dropped when piping through
+		// multiple transpilers with mixed Harmony versions.
+		//
 		public static bool ShouldAddExceptionInfo(object op, int opIndex, List<object> originalInstructions, List<object> newInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var originalIndex = originalInstructions.IndexOf(op);

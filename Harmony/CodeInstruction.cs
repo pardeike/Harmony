@@ -25,6 +25,26 @@ namespace Harmony
 			labels = instruction.labels.ToArray().ToList();
 		}
 
+		public CodeInstruction Clone()
+		{
+			return new CodeInstruction(this) { labels = new List<Label>() };
+		}
+
+		public CodeInstruction Clone(OpCode opcode)
+		{
+			var instruction = new CodeInstruction(this) { labels = new List<Label>() };
+			instruction.opcode = opcode;
+			return instruction;
+		}
+
+		public CodeInstruction Clone(OpCode opcode, object operand)
+		{
+			var instruction = new CodeInstruction(this) { labels = new List<Label>() };
+			instruction.opcode = opcode;
+			instruction.operand = operand;
+			return instruction;
+		}
+
 		public override string ToString()
 		{
 			var list = new List<string>();

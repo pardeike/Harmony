@@ -62,6 +62,13 @@ namespace Harmony
 			patchInfo.RemovePatch(patch);
 		}
 
+		// pass in a generator that will create local variables for the returned instructions
+		//
+		public static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
+		{
+			return MethodBodyReader.GetInstructions(generator, method);
+		}
+
 		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
 		{
 			return patches
