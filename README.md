@@ -19,6 +19,7 @@
 
 Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is in fact well established in games like  
 - Rimworld
+- BattleTech
 - The Long Dark
 - Oxygen Not Included
 - Subnautica
