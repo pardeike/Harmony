@@ -1,10 +1,10 @@
 <p align="center">
-    <img src="https://s24.postimg.org/58bl1rz39/logo.png" alt="Harmony" />
+    <img src="" alt="Harmony" />
 </p>
 
 <p align="center">
-  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.0.9.1">
-    <img src="https://img.shields.io/badge/release-1.0.9.1-4BC51D.svg?style=flat" alt="v1.0.9.1" />
+  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.1.0">
+    <img src="https://img.shields.io/badge/release-1.1.0.0-4BC51D.svg?style=flat" alt="v1.1.0" />
   </a>
   <a href="../../wiki">
     <img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
