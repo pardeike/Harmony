@@ -45,7 +45,7 @@ If you develop in C# and your code is loaded as a module/plugin into a host appl
 
 * Multiple Harmony patches co-exist and don't conflict with each other
 
-Please check out the documentation on the **[GitHub Wiki](../../wiki)**
+Please check out the documentation on the **[GitHub Wiki](../../wiki)** or join us at the official **[discord server](https://discord.gg/xXgghXR)**
 
 Also, an introduction to Transpilers: **[Simple Harmony Transpiler Tutorial](https://gist.github.com/pardeike/c02e29f9e030e6a016422ca8a89eefc9)**
 
