@@ -24,41 +24,34 @@ namespace Harmony
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class HarmonyPatch : HarmonyAttribute
 	{
-		public HarmonyPatch()
+		public HarmonyPatch() : this(null, (string)null, null)
 		{
 		}
 
-		public HarmonyPatch(Type type)
+		public HarmonyPatch(Type type) : this(type, (string)null, null)
+		{
+		}
+
+		public HarmonyPatch(string methodName) : this(null, methodName, null)
+		{
+		}
+
+		public HarmonyPatch(params Type[] parameter) : this(null, null, parameter)
+		{
+		}
+
+		public HarmonyPatch(string propertyName, PropertyMethod type) : this(null, (type == PropertyMethod.Getter ? "get_" : "set_") + propertyName, null)
+		{
+		}
+
+		public HarmonyPatch(Type type, params Type[] parameter) : this(type, null, parameter)
+		{
+		}
+
+		public HarmonyPatch(Type type, string methodName, params Type[] parameter)
 		{
 			info.originalType = type;
-		}
-
-		public HarmonyPatch(string methodName)
-		{
 			info.methodName = methodName;
-		}
-
-		public HarmonyPatch(string propertyName, PropertyMethod type)
-		{
-			var prefix = type == PropertyMethod.Getter ? "get_" : "set_";
-			info.methodName = prefix + propertyName;
-		}
-
-		public HarmonyPatch(Type[] parameter)
-		{
-			info.parameter = parameter;
-		}
-
-		public HarmonyPatch(Type type, string methodName, Type[] parameter = null)
-		{
-			info.originalType = type;
-			info.methodName = methodName;
-			info.parameter = parameter;
-		}
-
-		public HarmonyPatch(Type type, Type[] parameter = null)
-		{
-			info.originalType = type;
 			info.parameter = parameter;
 		}
 	}
@@ -137,19 +130,32 @@ namespace Harmony
 	}
 
 	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
-	public class HarmonyParameter : Attribute
+	public class HarmonyArgument : Attribute
 	{
 		public string OriginalName { get; private set; }
+		public int Index { get; private set; }
 		public string NewName { get; private set; }
 
-		public HarmonyParameter(string originalName) : this(originalName, null)
+		public HarmonyArgument(string originalName) : this(originalName, null)
 		{
 		}
 
-		public HarmonyParameter(string originalName, string newName)
+		public HarmonyArgument(int index) : this(index, null)
+		{
+		}
+
+		public HarmonyArgument(string originalName, string newName)
 		{
 			OriginalName = originalName;
+			Index = -1;
 			NewName = newName;
+		}
+
+		public HarmonyArgument(int index, string name)
+		{
+			OriginalName = null;
+			Index = index;
+			NewName = name;
 		}
 	}
 

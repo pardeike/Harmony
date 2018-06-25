@@ -17,7 +17,7 @@ namespace Harmony
 		public static MethodInfo GetPatchMethod<T>(Type patchType, string name, Type[] parameters = null)
 		{
 			var method = patchType.GetMethods(AccessTools.all)
-				.FirstOrDefault(m => m.GetCustomAttributes(typeof(T), true).Count() > 0);
+				.FirstOrDefault(m => m.GetCustomAttributes(typeof(T), true).Any());
 			if (method == null)
 				method = AccessTools.Method(patchType, name, parameters);
 			return method;
