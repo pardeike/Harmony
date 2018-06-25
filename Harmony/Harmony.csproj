@@ -10,13 +10,15 @@
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>false</SignAssembly>
-		<Version>1.1.0</Version>
+		<Version>1.1.1</Version>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/LICENSE</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
 		<Configurations>Debug-3.5;Release-3.5;Debug-4.7.1;Release-4.7.1</Configurations>
 		<TargetFrameworks>net35;net471</TargetFrameworks>
+		<AssemblyVersion>1.1.1.0</AssemblyVersion>
+		<FileVersion>1.1.1.0</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
