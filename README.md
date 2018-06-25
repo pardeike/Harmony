@@ -1,10 +1,10 @@
 <p align="center">
-    <img src="https://s24.postimg.org/58bl1rz39/logo.png" alt="Harmony" />
+    <img src="" alt="Harmony" />
 </p>
 
 <p align="center">
-  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.0.9.1">
-    <img src="https://img.shields.io/badge/release-1.0.9.1-4BC51D.svg?style=flat" alt="v1.0.9.1" />
+  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.1.0">
+    <img src="https://img.shields.io/badge/release-1.1.0.0-4BC51D.svg?style=flat" alt="v1.1.0" />
   </a>
   <a href="../../wiki">
     <img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
@@ -45,7 +45,7 @@ If you develop in C# and your code is loaded as a module/plugin into a host appl
 
 * Multiple Harmony patches co-exist and don't conflict with each other
 
-Please check out the documentation on the **[GitHub Wiki](../../wiki)**
+Please check out the documentation on the **[GitHub Wiki](../../wiki)** or join us at the official **[discord server](https://discord.gg/xXgghXR)**
 
 Also, an introduction to Transpilers: **[Simple Harmony Transpiler Tutorial](https://gist.github.com/pardeike/c02e29f9e030e6a016422ca8a89eefc9)**
 

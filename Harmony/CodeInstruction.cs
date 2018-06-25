@@ -56,7 +56,7 @@ namespace Harmony
 			var extras = list.Count > 0 ? " [" + string.Join(", ", list.ToArray()) + "]" : "";
 			var operandStr = Emitter.FormatArgument(operand);
 			if (operandStr != "") operandStr = " " + operandStr;
-			return string.Format(opcode + operandStr + extras);
+			return opcode + operandStr + extras;
 		}
 	}
 }

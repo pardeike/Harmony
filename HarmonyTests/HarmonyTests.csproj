@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Extras\Assets\MethodInvokerClasses.cs" />
     <Compile Include="Extras\TestMethodInvoker.cs" />
+    <Compile Include="IL\Instructions.cs" />
     <Compile Include="Patching\Assets\PatchClasses.cs" />
     <Compile Include="Patching\StaticPatches.cs" />
     <Compile Include="Patching\Transpiling.cs" />
