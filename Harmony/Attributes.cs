@@ -24,43 +24,44 @@ namespace Harmony
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class HarmonyPatch : HarmonyAttribute
 	{
+
 		public HarmonyPatch()
+		: this(null, (string) null, null)
 		{
 		}
 
-		public HarmonyPatch(Type type)
+	  public HarmonyPatch(Type type)
+			: this(type, (string) null, null)
 		{
-			info.originalType = type;
 		}
 
 		public HarmonyPatch(string methodName)
+			: this(null, methodName, null)
 		{
-			info.methodName = methodName;
 		}
 
-		public HarmonyPatch(string propertyName, PropertyMethod type)
+		public HarmonyPatch(params Type[] parameter)
+			: this(null, null, parameter)
 		{
-			var prefix = type == PropertyMethod.Getter ? "get_" : "set_";
-			info.methodName = prefix + propertyName;
 		}
 
-		public HarmonyPatch(Type[] parameter)
+	  public HarmonyPatch(string propertyName, PropertyMethod type)
+			: this(null, (type == PropertyMethod.Getter ? "get_" : "set_") + propertyName, null)
 		{
-			info.parameter = parameter;
 		}
 
-		public HarmonyPatch(Type type, string methodName, Type[] parameter = null)
+		public HarmonyPatch(Type type, params Type[] parameter)
+			: this(type, null, parameter)
+		{
+		}
+
+		public HarmonyPatch(Type type, string methodName, params Type[] parameter)
 		{
 			info.originalType = type;
 			info.methodName = methodName;
 			info.parameter = parameter;
 		}
 
-		public HarmonyPatch(Type type, Type[] parameter = null)
-		{
-			info.originalType = type;
-			info.parameter = parameter;
-		}
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
