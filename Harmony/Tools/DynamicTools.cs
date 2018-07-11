@@ -208,7 +208,7 @@ namespace Harmony
 
 			// 2) RuntimeHelpers._CompileMethod(handle.Value)
 			//
-			if (m__CompileMethod.GetParameters()[0].ParameterType == typeof(IntPtr))
+			if (m__CompileMethod.GetParameters()[0].ParameterType.IsAssignableFrom(handle.Value.GetType()))
 			{
 				m__CompileMethod.Invoke(null, new object[] { handle.Value });
 				return;
@@ -216,7 +216,11 @@ namespace Harmony
 
 			// 3) RuntimeHelpers._CompileMethod(handle)
 			//
-			m__CompileMethod.Invoke(null, new object[] { handle });
+			if (m__CompileMethod.GetParameters()[0].ParameterType.IsAssignableFrom(handle.GetType()))
+			{
+				m__CompileMethod.Invoke(null, new object[] { handle });
+				return;
+			}
 		}
 	}
 }
