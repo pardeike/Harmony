@@ -197,11 +197,17 @@ namespace Harmony
 
 		static string GetOriginalArgumentName(this MethodInfo method, string[] originalParameterNames, string name)
 		{
-			var argumentName = GetOriginalArgumentName(method.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName == null)
-				return GetOriginalArgumentName(method.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
+			string argumentName;
 
-			return argumentName;
+			argumentName = GetOriginalArgumentName(method.GetArgumentAttributes(), name, originalParameterNames);
+			if (argumentName != null)
+				return argumentName;
+
+			argumentName = GetOriginalArgumentName(method.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
+			if (argumentName != null)
+				return argumentName;
+
+			return name;
 		}
 
 		private static int GetArgumentIndex(MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam)
