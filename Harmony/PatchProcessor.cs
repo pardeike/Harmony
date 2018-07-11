@@ -143,7 +143,7 @@ namespace Harmony
 				var isPatchAll = Attribute.GetCustomAttribute(container, typeof(HarmonyPatchAll)) != null;
 				if (isPatchAll)
 				{
-					var type = containerAttributes.originalType;
+					var type = containerAttributes.declaringType;
 					originals.AddRange(AccessTools.GetDeclaredConstructors(type).Cast<MethodBase>());
 					originals.AddRange(AccessTools.GetDeclaredMethods(type).Cast<MethodBase>());
 				}
@@ -192,10 +192,10 @@ namespace Harmony
 		MethodBase GetOriginalMethod()
 		{
 			var attr = containerAttributes;
-			if (attr.originalType == null) return null;
+			if (attr.declaringType == null) return null;
 			if (attr.methodName == null)
-				return AccessTools.Constructor(attr.originalType, attr.parameter);
-			return AccessTools.Method(attr.originalType, attr.methodName, attr.parameter);
+				return AccessTools.Constructor(attr.declaringType, attr.argumentTypes);
+			return AccessTools.Method(attr.declaringType, attr.methodName, attr.argumentTypes);
 		}
 
 		T RunMethod<S, T>(T defaultIfNotExisting, params object[] parameters)
