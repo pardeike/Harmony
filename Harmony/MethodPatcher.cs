@@ -272,7 +272,11 @@ namespace Harmony
 
 				if (patchParam.Name.StartsWith(INSTANCE_FIELD_PREFIX))
 				{
-					var fieldInfo = AccessTools.Field(original.DeclaringType, patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length));
+					var fieldName = patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length);
+					var fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
+					if (fieldInfo == null)
+						throw new ArgumentException("No such field defined in class " + original.DeclaringType.FullName, fieldName);
+
 					if (fieldInfo.IsStatic)
 					{
 						if (patchParam.ParameterType.IsByRef)
