@@ -124,4 +124,70 @@ namespace HarmonyTests.Assets
 			log = log + ",fail";
 		}
 	}
+
+	public class Class4
+	{
+		public void Method4(object sender)
+		{
+			Console.WriteLine("In Class4.Method4");
+			Class4Patch.originalExecuted = true;
+		}
+	}
+
+	public class Class4Patch
+	{
+		public static bool prefixed = false;
+		public static object senderValue = null;
+		public static bool originalExecuted = false;
+
+		public static bool Prefix(Class4 __instance, object sender)
+		{
+			Console.Write("In Class4Patch.Prefix");
+			prefixed = true;
+			senderValue = sender;
+			return true;
+		}
+
+		public static void _reset()
+		{
+			prefixed = false;
+			senderValue = null;
+			originalExecuted = false;
+		}
+	}
+
+	public class Class5
+	{
+		public void Method5(object xxxyyy)
+		{
+			Console.WriteLine("In Class5.Method5");
+		}
+	}
+
+	public class Class5Patch
+	{
+		public static bool prefixed = false;
+		public static bool postfixed = false;
+
+		[HarmonyArgument("xxxyyy", "bar")]
+		public static void Prefix(object bar)
+		{
+			Console.Write("In Class5Patch.Prefix");
+			prefixed = true;
+		}
+
+		public static void Postfix(
+			[HarmonyArgument("xxxyyy")] object bar
+		)
+		{
+			Console.Write("In Class5Patch.Prefix");
+			postfixed = true;
+		}
+
+		public static void _reset()
+		{
+			prefixed = false;
+			postfixed = false;
+		}
+	}
 }

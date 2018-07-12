@@ -15,12 +15,12 @@ namespace HarmonyTests.Tools
 			var infos = type.GetHarmonyMethods();
 			var info = HarmonyMethod.Merge(infos);
 			Assert.IsNotNull(info);
-			Assert.AreEqual(typeof(string), info.originalType);
+			Assert.AreEqual(typeof(string), info.declaringType);
 			Assert.AreEqual("foobar", info.methodName);
-			Assert.IsNotNull(info.parameter);
-			Assert.AreEqual(2, info.parameter.Length);
-			Assert.AreEqual(typeof(float), info.parameter[0]);
-			Assert.AreEqual(typeof(string), info.parameter[1]);
+			Assert.IsNotNull(info.argumentTypes);
+			Assert.AreEqual(2, info.argumentTypes.Length);
+			Assert.AreEqual(typeof(float), info.argumentTypes[0]);
+			Assert.AreEqual(typeof(string), info.argumentTypes[1]);
 		}
 	}
 }

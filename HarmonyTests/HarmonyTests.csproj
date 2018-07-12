@@ -78,6 +78,7 @@
     <Compile Include="Patching\Assets\PatchClasses.cs" />
     <Compile Include="Patching\StaticPatches.cs" />
     <Compile Include="Patching\Transpiling.cs" />
+    <Compile Include="Patching\ValueTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\Assets\AccessToolsClass.cs" />
     <Compile Include="Tools\Assets\AttributesClass.cs" />
@@ -111,6 +112,7 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.3.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Harmony\Harmony.csproj">
