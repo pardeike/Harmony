@@ -193,9 +193,34 @@ namespace Harmony
 		{
 			var attr = containerAttributes;
 			if (attr.declaringType == null) return null;
-			if (attr.methodName == null)
-				return AccessTools.Constructor(attr.declaringType, attr.argumentTypes);
-			return AccessTools.Method(attr.declaringType, attr.methodName, attr.argumentTypes);
+
+			switch (attr.methodType)
+			{
+				case MethodType.Normal:
+					if (attr.methodName == null)
+						return null;
+					return AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
+
+				case MethodType.Getter:
+					if (attr.methodName == null)
+						return null;
+					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod();
+
+				case MethodType.Setter:
+					if (attr.methodName == null)
+						return null;
+					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod();
+
+				case MethodType.Constructor:
+					return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes);
+
+				case MethodType.StaticConstructor:
+					return AccessTools.GetDeclaredConstructors(attr.declaringType)
+						.Where(c => c.IsStatic)
+						.FirstOrDefault();
+			}
+
+			return null;
 		}
 
 		T RunMethod<S, T>(T defaultIfNotExisting, params object[] parameters)

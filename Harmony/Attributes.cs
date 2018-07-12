@@ -1,11 +1,23 @@
 using System;
+using System.Collections.Generic;
 
 namespace Harmony
 {
-	public enum PropertyMethod
+	public enum MethodType
 	{
+		Normal,
 		Getter,
-		Setter
+		Setter,
+		Constructor,
+		StaticConstructor
+	}
+
+	public enum ArgumentType
+	{
+		Normal,
+		Ref,
+		Out,
+		Pointer
 	}
 
 	public enum HarmonyPatchType
@@ -21,38 +33,97 @@ namespace Harmony
 		public HarmonyMethod info = new HarmonyMethod();
 	}
 
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 	public class HarmonyPatch : HarmonyAttribute
 	{
-		public HarmonyPatch() : this(null, (string)null, null)
+		// no argument (for use with TargetMethod)
+
+		public HarmonyPatch()
 		{
 		}
 
-		public HarmonyPatch(Type type) : this(type, (string)null, null)
+		// single argument attributes (should be combined with multiple attributes)
+
+		public HarmonyPatch(Type declaringType)
 		{
+			info.declaringType = declaringType;
 		}
 
-		public HarmonyPatch(string methodName) : this(null, methodName, null)
+		public HarmonyPatch(string methodName)
 		{
-		}
-
-		public HarmonyPatch(params Type[] parameter) : this(null, null, parameter)
-		{
-		}
-
-		public HarmonyPatch(string propertyName, PropertyMethod type) : this(null, (type == PropertyMethod.Getter ? "get_" : "set_") + propertyName, null)
-		{
-		}
-
-		public HarmonyPatch(Type type, params Type[] parameter) : this(type, null, parameter)
-		{
-		}
-
-		public HarmonyPatch(Type type, string methodName, params Type[] parameter)
-		{
-			info.originalType = type;
 			info.methodName = methodName;
-			info.parameter = parameter;
+		}
+
+		public HarmonyPatch(MethodType methodType)
+		{
+			info.methodType = methodType;
+		}
+
+		public HarmonyPatch(params Type[] argumentTypes)
+		{
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		// multiple arguments
+
+		public HarmonyPatch(Type declaringType, string methodName, MethodType methodType = MethodType.Normal)
+		{
+			info.declaringType = declaringType;
+			info.methodName = methodName;
+			info.methodType = methodType;
+		}
+
+		public HarmonyPatch(Type declaringType, string methodName, MethodType methodType, params Type[] argumentTypes)
+		{
+			info.declaringType = declaringType;
+			info.methodName = methodName;
+			info.methodType = methodType;
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(Type declaringType, string methodName, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.declaringType = declaringType;
+			info.methodName = methodName;
+			info.methodType = methodType;
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		//
+
+		private void ParseSpecialArguments(Type[] argumentTypes, params ArgumentType[] argumentVariations)
+		{
+			if (argumentVariations == null || argumentVariations.Length == 0)
+			{
+				info.argumentTypes = argumentTypes;
+				return;
+			}
+
+			if (argumentTypes.Length < argumentVariations.Length)
+				throw new ArgumentException("argumentVariations contains more elements than argumentTypes", nameof(argumentVariations));
+
+			var types = new List<Type>();
+			for (var i = 0; i < argumentTypes.Length; i++)
+			{
+				var type = argumentTypes[i];
+				switch (argumentVariations[i])
+				{
+					case ArgumentType.Ref:
+					case ArgumentType.Out:
+						type = type.MakeByRefType();
+						break;
+					case ArgumentType.Pointer:
+						type = type.MakePointerType();
+						break;
+				}
+				types.Add(type);
+			}
+			info.argumentTypes = types.ToArray();
 		}
 	}
 
