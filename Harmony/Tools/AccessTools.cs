@@ -60,10 +60,32 @@ namespace Harmony
 			return FindIncludingBaseTypes(type, t => t.GetField(name, all));
 		}
 
+		public static PropertyInfo DeclaredProperty(Type type, string name)
+		{
+			if (type == null || name == null) return null;
+			return type.GetProperty(name, all);
+		}
+
 		public static PropertyInfo Property(Type type, string name)
 		{
 			if (type == null || name == null) return null;
 			return FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
+		}
+
+		public static MethodInfo DeclaredMethod(Type type, string name, Type[] parameters = null, Type[] generics = null)
+		{
+			if (type == null || name == null) return null;
+			MethodInfo result;
+			var modifiers = new ParameterModifier[] { };
+
+			if (parameters == null)
+				result = type.GetMethod(name, all);
+			else
+				result = type.GetMethod(name, all, null, parameters, modifiers);
+
+			if (result == null) return null;
+			if (generics != null) result = result.MakeGenericMethod(generics);
+			return result;
 		}
 
 		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
@@ -112,6 +134,13 @@ namespace Harmony
 		{
 			if (instance == null) return new List<string>();
 			return GetMethodNames(instance.GetType());
+		}
+
+		public static ConstructorInfo DeclaredConstructor(Type type, Type[] parameters = null)
+		{
+			if (type == null) return null;
+			if (parameters == null) parameters = new Type[0];
+			return type.GetConstructor(all, null, parameters, new ParameterModifier[] { });
 		}
 
 		public static ConstructorInfo Constructor(Type type, Type[] parameters = null)
