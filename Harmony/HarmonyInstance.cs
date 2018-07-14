@@ -22,7 +22,7 @@ namespace Harmony
 				var result = new HashSet<string>();
 				result.UnionWith(Prefixes.Select(p => p.owner));
 				result.UnionWith(Postfixes.Select(p => p.owner));
-				result.UnionWith(Postfixes.Select(p => p.owner));
+				result.UnionWith(Transpilers.Select(p => p.owner));
 				return result.ToList().AsReadOnly();
 			}
 		}
