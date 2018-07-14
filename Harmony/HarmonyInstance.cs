@@ -88,16 +88,15 @@ namespace Harmony
 
 		public void UnpatchAll(string harmonyID = null)
 		{
+			bool IDCheck(Patch patchInfo) => harmonyID == null || patchInfo.owner == harmonyID;
+
 			var originals = GetPatchedMethods().ToList();
 			foreach (var original in originals)
 			{
 				var info = GetPatchInfo(original);
-				if (harmonyID == null || info.Owners.Contains(harmonyID))
-				{
-					info.Prefixes.Do(patchInfo => Unpatch(original, patchInfo.patch));
-					info.Postfixes.Do(patchInfo => Unpatch(original, patchInfo.patch));
-					info.Transpilers.Do(patchInfo => Unpatch(original, patchInfo.patch));
-				}
+				info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
+				info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
+				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
 			}
 		}
 
