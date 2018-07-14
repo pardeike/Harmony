@@ -190,4 +190,40 @@ namespace HarmonyTests.Assets
 			postfixed = false;
 		}
 	}
+
+	public struct Class6Struct
+	{
+		public double d1;
+		public double d2;
+		public double d3;
+	}
+
+	public class Class6
+	{
+		public float someFloat;
+		public string someString;
+		public Class6Struct someStruct;
+
+		public Tuple<float, string, Class6Struct> Method6()
+		{
+			Console.WriteLine("In Class6.Method6");
+			return new Tuple<float, string, Class6Struct>(someFloat, someString, someStruct);
+		}
+	}
+
+	public class Class6Patch
+	{
+		public static void Prefix(ref float ___someFloat, ref string ___someString, ref Class6Struct ___someStruct)
+		{
+			Console.Write("In Class6Patch.Prefix");
+			___someFloat = 123;
+			___someString = "patched";
+			___someStruct = new Class6Struct()
+			{
+				d1 = 10.0,
+				d2 = 20.0,
+				d3 = 30.0
+			};
+		}
+	}
 }
