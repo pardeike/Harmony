@@ -1,4 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net35;net45;net472</TargetFrameworks>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -15,23 +19,22 @@
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
-		<TargetFrameworks>net35;net471</TargetFrameworks>
 		<AssemblyVersion>1.1.1.0</AssemblyVersion>
 		<FileVersion>1.1.1.0</FileVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	  <Optimize>false</Optimize>
-	  <DebugType>full</DebugType>
-	  <DebugSymbols>true</DebugSymbols>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	  <Optimize>false</Optimize>
-	  <DebugType>none</DebugType>
-	  <DebugSymbols>false</DebugSymbols>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>false</Optimize>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
 </Project>
