@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="" alt="Harmony" />
+    <img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" />
 </p>
 
 <p align="center">
