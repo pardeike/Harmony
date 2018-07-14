@@ -86,19 +86,41 @@ namespace Harmony
 			return processor.Patch().FirstOrDefault();
 		}
 
-		public void RemovePatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
+		public void UnpatchAll(string harmonyID = null)
+		{
+			var originals = GetPatchedMethods().ToList();
+			foreach (var original in originals)
+			{
+				var info = GetPatchInfo(original);
+				if (harmonyID == null || info.Owners.Contains(harmonyID))
+				{
+					info.Prefixes.Do(patchInfo => Unpatch(original, patchInfo.patch));
+					info.Postfixes.Do(patchInfo => Unpatch(original, patchInfo.patch));
+					info.Transpilers.Do(patchInfo => Unpatch(original, patchInfo.patch));
+				}
+			}
+		}
+
+		public void Unpatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
 		{
 			var processor = new PatchProcessor(this, new List<MethodBase> { original });
 			processor.Unpatch(type, harmonyID);
 		}
 
-		public void RemovePatch(MethodBase original, MethodInfo patch)
+		public void Unpatch(MethodBase original, MethodInfo patch)
 		{
 			var processor = new PatchProcessor(this, new List<MethodBase> { original });
 			processor.Unpatch(patch);
 		}
 
 		//
+
+		public bool HasAnyPatches(string harmonyID)
+		{
+			return GetPatchedMethods()
+				.Select(original => GetPatchInfo(original))
+				.Any(info => info.Owners.Contains(harmonyID));
+		}
 
 		public Patches GetPatchInfo(MethodBase method)
 		{
