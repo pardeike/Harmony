@@ -150,12 +150,22 @@ namespace Harmony
 				else
 				{
 					var original = GetOriginalMethod();
+
 					if (original == null)
 						original = RunMethod<HarmonyTargetMethod, MethodBase>(null);
-					if (original != null)
-						originals.Add(original);
-					else
-						throw new ArgumentException("No target method specified for class " + container.FullName);
+
+					if (original == null)
+					{
+						var info = "(";
+						info += "declaringType=" + containerAttributes.declaringType + ", ";
+						info += "methodName =" + containerAttributes.methodName + ", ";
+						info += "methodType=" + containerAttributes.methodType + ", ";
+						info += "argumentTypes=" + containerAttributes.argumentTypes.Description();
+						info += ")";
+						throw new ArgumentException("No target method specified for class " + container.FullName + " " + info);
+					}
+
+					originals.Add(original);
 				}
 			}
 
