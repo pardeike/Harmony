@@ -10,7 +10,7 @@
 		<Company>Andreas Pardeike</Company>
 		<Copyright>Copyright © 2016</Copyright>
 		<Description>A general non-destructive patch library for .NET and Mono modules</Description>
-		<PackageId>Harmony</PackageId>
+		<PackageId>Lib.Harmony</PackageId>
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>false</SignAssembly>
@@ -21,6 +21,7 @@
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
 		<AssemblyVersion>1.1.1.0</AssemblyVersion>
 		<FileVersion>1.1.1.0</FileVersion>
+		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
