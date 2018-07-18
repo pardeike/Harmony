@@ -69,9 +69,16 @@ namespace Harmony
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
-		// multiple arguments
+	  // multiple arguments
 
-		public HarmonyPatch(Type declaringType, string methodName, MethodType methodType = MethodType.Normal)
+		public HarmonyPatch(Type declaringType, params Type[] argumentTypes)
+		{
+			info.declaringType = declaringType;
+			info.argumentTypes = argumentTypes;
+			info.methodType = MethodType.Constructor;
+		}
+
+	  public HarmonyPatch(Type declaringType, string methodName, MethodType methodType = MethodType.Normal)
 		{
 			info.declaringType = declaringType;
 			info.methodName = methodName;
