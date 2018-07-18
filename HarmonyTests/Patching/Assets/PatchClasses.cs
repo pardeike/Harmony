@@ -226,4 +226,29 @@ namespace HarmonyTests.Assets
 			};
 		}
 	}
+
+	// fails (Issue #77)
+	public struct Class7ReturnType { public long a, b; }
+
+	// works
+	// public struct Class7ReturnType { public byte a, b; }
+	// public class Class7ReturnType { public long a, b; }
+
+	public class Class7
+	{
+		public Class7ReturnType Method7()
+		{
+			var result = new Class7ReturnType() { a = 1, b = 2 };
+			Console.Write("In Class7Patch.Method7 " + result.a + " " + result.b);
+			return result;
+		}
+	}
+
+	public class Class7Patch
+	{
+		public static void Prefix()
+		{
+			Console.Write("In Class7Patch.Prefix");
+		}
+	}
 }

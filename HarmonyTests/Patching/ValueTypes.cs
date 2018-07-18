@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HarmonyTests
 {
+	// 'struct' does not work, only 'class'
 	public struct Something
 	{
 		public int n;
@@ -70,9 +71,9 @@ namespace HarmonyTests
 
 			try
 			{
-				//instance.TestMethod1("new");
-				//Assert.AreEqual(instance.n, 2);
-				//Assert.AreEqual(instance.s, "new");
+				instance.TestMethod1("new");
+				Assert.AreEqual(instance.n, 2);
+				Assert.AreEqual(instance.s, "new");
 			}
 			catch (System.Exception)
 			{
