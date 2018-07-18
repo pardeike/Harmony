@@ -9,6 +9,7 @@ namespace Harmony
 	{
 		public static string Description(this Type[] parameters)
 		{
+			if (parameters == null) return "NULL";
 			var types = parameters.Select(p => p == null ? "null" : p.FullName);
 			return "(" + types.Aggregate("", (s, x) => s == null ? x : s.Length == 0 ? x : (s != "" ? s + ", " : "") + x) + ")";
 		}
