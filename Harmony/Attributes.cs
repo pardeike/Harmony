@@ -49,10 +49,13 @@ namespace Harmony
 			info.declaringType = declaringType;
 		}
 
-		public HarmonyPatch(string methodName)
-		{
-			info.methodName = methodName;
-		}
+		// overlaps with
+		// HarmonyPatch(string methodName, MethodType methodType = MethodType.Normal)
+		//
+		// public HarmonyPatch(string methodName)
+		// {
+		// 	info.methodName = methodName;
+		// }
 
 		public HarmonyPatch(MethodType methodType)
 		{
@@ -70,6 +73,39 @@ namespace Harmony
 		}
 
 		// multiple arguments
+
+		public HarmonyPatch(Type declaringType, params Type[] argumentTypes)
+		{
+			info.declaringType = declaringType;
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(Type declaringType, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.declaringType = declaringType;
+			info.argumentTypes = argumentTypes;
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		public HarmonyPatch(string methodName, MethodType methodType = MethodType.Normal)
+		{
+			info.methodName = methodName;
+			info.methodType = methodType;
+		}
+
+		public HarmonyPatch(string methodName, MethodType methodType, params Type[] argumentTypes)
+		{
+			info.methodName = methodName;
+			info.methodType = methodType;
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(string methodName, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.methodName = methodName;
+			info.methodType = methodType;
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
 
 		public HarmonyPatch(Type declaringType, string methodName, MethodType methodType = MethodType.Normal)
 		{
