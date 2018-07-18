@@ -12,7 +12,7 @@ namespace Harmony
 
 		public Type declaringType;
 		public string methodName;
-		public MethodType methodType;
+		public MethodType? methodType;
 		public Type[] argumentTypes;
 		public int prioritiy = -1;
 		public string[] before;
@@ -68,6 +68,17 @@ namespace Harmony
 				});
 			});
 			return result;
+		}
+
+		public override string ToString()
+		{
+			var result = "HarmonyMethod[";
+			var trv = Traverse.Create(this);
+			HarmonyFields().ForEach(f =>
+			{
+				result += f + '=' + trv.Field(f).GetValue();
+			});
+			return result + "]";
 		}
 	}
 
