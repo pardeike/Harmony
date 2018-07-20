@@ -7,7 +7,7 @@ namespace Harmony
 {
 	public static class Transpilers
 	{
-		public static IEnumerable<CodeInstruction> MethodReplacer(this IEnumerable<CodeInstruction> instructions, MethodBase from, MethodBase to, OpCode? callOpcode = null)
+		public static IEnumerable<CodeInstruction> MethodReplacer(this IEnumerable<CodeInstruction> instructions, MethodBase from, MethodBase to)
 		{
 			if (from == null)
 				throw new ArgumentException("Unexpected null argument", nameof(from));
@@ -19,7 +19,7 @@ namespace Harmony
 				var method = instruction.operand as MethodBase;
 				if (method == from)
 				{
-					instruction.opcode = callOpcode ?? OpCodes.Call;
+					instruction.opcode = OpCodes.Call;
 					instruction.operand = to;
 				}
 				yield return instruction;
