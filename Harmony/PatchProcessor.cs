@@ -149,10 +149,10 @@ namespace Harmony
 				}
 				else
 				{
-					var original = GetOriginalMethod();
+					var original = RunMethod<HarmonyTargetMethod, MethodBase>(null);
 
 					if (original == null)
-						original = RunMethod<HarmonyTargetMethod, MethodBase>(null);
+						original = GetOriginalMethod();
 
 					if (original == null)
 					{
