@@ -214,12 +214,12 @@ namespace Harmony
 				case MethodType.Getter:
 					if (attr.methodName == null)
 						return null;
-					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod();
+					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod(true);
 
 				case MethodType.Setter:
 					if (attr.methodName == null)
 						return null;
-					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod();
+					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod(true);
 
 				case MethodType.Constructor:
 					return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes);
