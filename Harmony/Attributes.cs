@@ -49,20 +49,17 @@ namespace Harmony
 			info.declaringType = declaringType;
 		}
 
-		// overlaps with
-		// HarmonyPatch(string methodName, MethodType methodType = MethodType.Normal)
-		//
-		// public HarmonyPatch(string methodName)
-		// {
-		// 	info.methodName = methodName;
-		// }
+		//public HarmonyPatch(string methodName)
+		//{
+		//	info.methodName = methodName;
+		//}
 
 		public HarmonyPatch(MethodType methodType)
 		{
 			info.methodType = methodType;
 		}
 
-		public HarmonyPatch(params Type[] argumentTypes)
+		public HarmonyPatch(Type[] argumentTypes)
 		{
 			info.argumentTypes = argumentTypes;
 		}
@@ -73,19 +70,6 @@ namespace Harmony
 		}
 
 		// multiple arguments
-
-		public HarmonyPatch(Type declaringType, params Type[] argumentTypes)
-		{
-			info.declaringType = declaringType;
-			info.argumentTypes = argumentTypes;
-		}
-
-		public HarmonyPatch(Type declaringType, Type[] argumentTypes, ArgumentType[] argumentVariations)
-		{
-			info.declaringType = declaringType;
-			info.argumentTypes = argumentTypes;
-			ParseSpecialArguments(argumentTypes, argumentVariations);
-		}
 
 		public HarmonyPatch(string methodName, MethodType methodType = MethodType.Normal)
 		{
@@ -104,6 +88,31 @@ namespace Harmony
 		{
 			info.methodName = methodName;
 			info.methodType = methodType;
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		public HarmonyPatch(string methodName, params Type[] argumentTypes)
+		{
+			info.methodName = methodName;
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.methodName = methodName;
+			info.argumentTypes = argumentTypes;
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		public HarmonyPatch(Type declaringType, Type[] argumentTypes)
+		{
+			info.declaringType = declaringType;
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(Type declaringType, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.declaringType = declaringType;
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
