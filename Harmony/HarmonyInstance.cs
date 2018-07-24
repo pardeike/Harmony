@@ -80,7 +80,7 @@ namespace Harmony
 			});
 		}
 
-		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler = null)
+		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
 		{
 			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler);
 			return processor.Patch().FirstOrDefault();
