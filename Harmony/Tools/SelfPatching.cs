@@ -9,10 +9,15 @@ namespace Harmony.Tools
 {
 	internal class SelfPatching
 	{
+		static readonly string upgradeToLatestVersionFullName = typeof(UpgradeToLatestVersion).FullName;
 		static int GetVersion(MethodInfo method)
 		{
-			var attribute = method.GetCustomAttributes(false).OfType<UpgradeToLatestVersion>().FirstOrDefault();
-			return attribute?.version ?? -1;
+			var attribute = method.GetCustomAttributes(false)
+				.Where(attr => attr.GetType().FullName == upgradeToLatestVersionFullName)
+				.FirstOrDefault();
+			if (attribute == null)
+				return -1;
+			return Traverse.Create(attribute).Field("version").GetValue<int>();
 		}
 
 		static string MethodKey(MethodInfo method)
@@ -42,13 +47,14 @@ namespace Harmony.Tools
 		public static void PatchOldHarmonyMethods()
 		{
 			var potentialMethodsToUpgrade = new Dictionary<string, MethodInfo>();
-			typeof(SelfPatching).Assembly.GetTypes()
+			var ourAssembly = typeof(SelfPatching).Assembly;
+			ourAssembly.GetTypes()
 				.SelectMany(type => type.GetMethods(AccessTools.all))
 				.Where(method => method.GetCustomAttributes(false).Any(attr => attr is UpgradeToLatestVersion))
 				.Do(method => potentialMethodsToUpgrade.Add(MethodKey(method), method));
 
 			AppDomain.CurrentDomain.GetAssemblies()
-				.Where(assembly => IsHarmonyAssembly(assembly))
+				.Where(assembly => IsHarmonyAssembly(assembly) && assembly != ourAssembly)
 				.SelectMany(assembly => assembly.GetTypes())
 				.SelectMany(type => type.GetMethods(AccessTools.all))
 				.Select(method =>
@@ -56,11 +62,15 @@ namespace Harmony.Tools
 					potentialMethodsToUpgrade.TryGetValue(MethodKey(method), out var newMethod);
 					return new KeyValuePair<MethodInfo, MethodInfo>(method, newMethod);
 				})
-				.Do(pair =>
+				.DoIf(pair => pair.Value != null, pair =>
 				{
 					var oldMethod = pair.Key;
+					var oldVersion = GetVersion(oldMethod);
+
 					var newMethod = pair.Value;
-					if (newMethod != null && GetVersion(oldMethod) < GetVersion(newMethod))
+					var newVersion = GetVersion(newMethod);
+
+					if (oldVersion != -1 && newVersion != -1 && oldVersion < newVersion)
 					{
 						if (patchedMethods.Contains(oldMethod) == false)
 						{
