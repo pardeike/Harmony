@@ -12,7 +12,7 @@ namespace Harmony
 		StaticConstructor
 	}
 
-	[Obsolete("This enum will be remove in the next major version. To define special methods, use MethodType")]
+	[Obsolete("This enum will be removed in the next major version. To define special methods, use MethodType")]
 	public enum PropertyMethod
 	{
 		Getter,
@@ -132,14 +132,14 @@ namespace Harmony
 
 		//
 
-		[Obsolete("This attribute will be remove in the next major version. Use HarmonyPatch together with MethodType.Getter or MethodType.Setter instead")]
+		[Obsolete("This attribute will be removed in the next major version. Use HarmonyPatch together with MethodType.Getter or MethodType.Setter instead")]
 		public HarmonyPatch(string propertyName, PropertyMethod type)
 		{
 			info.methodName = propertyName;
 			info.methodType = type == PropertyMethod.Getter ? MethodType.Getter : MethodType.Setter;
 		}
 
-		[Obsolete("This attribute will be remove in the next major version. Use a combination of the other attributes instead")]
+		[Obsolete("This attribute will be removed in the next major version. Use a combination of the other attributes instead")]
 		public HarmonyPatch(Type declaringType, Type[] argumentTypes)
 		{
 			info.declaringType = declaringType;
