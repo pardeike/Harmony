@@ -12,7 +12,7 @@ namespace Harmony
 
 		public Type declaringType;
 		public string methodName;
-		public MethodType? methodType;
+		public MethodType methodType;
 		public Type[] argumentTypes;
 		public int prioritiy = -1;
 		public string[] before;
@@ -20,6 +20,7 @@ namespace Harmony
 
 		public HarmonyMethod()
 		{
+			methodType = MethodType.Normal;
 		}
 
 		void ImportMethod(MethodInfo theMethod)
