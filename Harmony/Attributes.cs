@@ -49,42 +49,25 @@ namespace Harmony
 		{
 		}
 
-		// simple types (designed to be combined with each other)
-		// ======================================================
+		// starting with 'Type'
 
 		public HarmonyPatch(Type declaringType)
 		{
 			info.declaringType = declaringType;
 		}
 
-		public HarmonyPatch(string methodName, MethodType methodType = MethodType.Normal)
+		public HarmonyPatch(Type declaringType, Type[] argumentTypes)
 		{
-			info.methodName = methodName;
-			info.methodType = methodType;
-		}
-
-		// new in v1.1.1
-		public HarmonyPatch(MethodType methodType = MethodType.Normal)
-		{
-			info.methodType = methodType;
-		}
-
-		// added params in v1.1.1
-		public HarmonyPatch(params Type[] argumentTypes)
-		{
+			info.declaringType = declaringType;
 			info.argumentTypes = argumentTypes;
 		}
 
-		// new in v1.1.1
-		public HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)
+		public HarmonyPatch(Type declaringType, string methodName)
 		{
-			ParseSpecialArguments(argumentTypes, argumentVariations);
+			info.declaringType = declaringType;
+			info.methodName = methodName;
 		}
 
-		// combined types - methods
-		// ========================
-
-		// added params in v1.1.1 (simple)
 		public HarmonyPatch(Type declaringType, string methodName, params Type[] argumentTypes)
 		{
 			info.declaringType = declaringType;
@@ -92,7 +75,6 @@ namespace Harmony
 			info.argumentTypes = argumentTypes;
 		}
 
-		// new in v1.1.1 (complex)
 		public HarmonyPatch(Type declaringType, string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)
 		{
 			info.declaringType = declaringType;
@@ -100,10 +82,12 @@ namespace Harmony
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
-		// combined types - constructors
-		// =============================
+		public HarmonyPatch(Type declaringType, MethodType methodType)
+		{
+			info.declaringType = declaringType;
+			info.methodType = methodType;
+		}
 
-		// new in v1.1.1 (simple)
 		public HarmonyPatch(Type declaringType, MethodType methodType, params Type[] argumentTypes)
 		{
 			info.declaringType = declaringType;
@@ -111,7 +95,6 @@ namespace Harmony
 			info.argumentTypes = argumentTypes;
 		}
 
-		// new in v1.1.1 (complex)
 		public HarmonyPatch(Type declaringType, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
 		{
 			info.declaringType = declaringType;
@@ -119,10 +102,6 @@ namespace Harmony
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
-		// combined types - properties
-		// ===========================
-
-		// new in v1.1.1
 		public HarmonyPatch(Type declaringType, string propertyName, MethodType methodType)
 		{
 			info.declaringType = declaringType;
@@ -130,20 +109,69 @@ namespace Harmony
 			info.methodType = methodType;
 		}
 
-		//
+		// starting with 'string'
+
+		public HarmonyPatch(string methodName)
+		{
+			info.methodName = methodName;
+		}
+
+		public HarmonyPatch(string methodName, params Type[] argumentTypes)
+		{
+			info.methodName = methodName;
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.methodName = methodName;
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		public HarmonyPatch(string propertyName, MethodType methodType)
+		{
+			info.methodName = propertyName;
+			info.methodType = methodType;
+		}
+
+		// starting with 'MethodType'
+
+		public HarmonyPatch(MethodType methodType)
+		{
+			info.methodType = methodType;
+		}
+
+		public HarmonyPatch(MethodType methodType, params Type[] argumentTypes)
+		{
+			info.methodType = methodType;
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.methodType = methodType;
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		// starting with 'Type[]'
+
+		public HarmonyPatch(Type[] argumentTypes)
+		{
+			info.argumentTypes = argumentTypes;
+		}
+
+		public HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			ParseSpecialArguments(argumentTypes, argumentVariations);
+		}
+
+		// Obsolete attributes
 
 		[Obsolete("This attribute will be removed in the next major version. Use HarmonyPatch together with MethodType.Getter or MethodType.Setter instead")]
 		public HarmonyPatch(string propertyName, PropertyMethod type)
 		{
 			info.methodName = propertyName;
 			info.methodType = type == PropertyMethod.Getter ? MethodType.Getter : MethodType.Setter;
-		}
-
-		[Obsolete("This attribute will be removed in the next major version. Use a combination of the other attributes instead")]
-		public HarmonyPatch(Type declaringType, Type[] argumentTypes)
-		{
-			info.declaringType = declaringType;
-			info.argumentTypes = argumentTypes;
 		}
 
 		//

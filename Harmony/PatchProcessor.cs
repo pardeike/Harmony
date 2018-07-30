@@ -140,6 +140,12 @@ namespace Harmony
 			}
 			else
 			{
+				var originalMethodType = containerAttributes.methodType;
+
+				// MethodType default is Normal
+				if (containerAttributes.methodType == null)
+					containerAttributes.methodType = MethodType.Normal;
+
 				var isPatchAll = Attribute.GetCustomAttribute(container, typeof(HarmonyPatchAll)) != null;
 				if (isPatchAll)
 				{
@@ -159,7 +165,7 @@ namespace Harmony
 						var info = "(";
 						info += "declaringType=" + containerAttributes.declaringType + ", ";
 						info += "methodName =" + containerAttributes.methodName + ", ";
-						info += "methodType=" + containerAttributes.methodType + ", ";
+						info += "methodType=" + originalMethodType + ", ";
 						info += "argumentTypes=" + containerAttributes.argumentTypes.Description();
 						info += ")";
 						throw new ArgumentException("No target method specified for class " + container.FullName + " " + info);
