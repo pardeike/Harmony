@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.1.0">
-    <img src="https://img.shields.io/badge/release-1.1.0.0-4BC51D.svg?style=flat" alt="v1.1.0" />
+  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.2.0">
+    <img src="https://img.shields.io/badge/release-1.2.0.0-4BC51D.svg?style=flat" alt="v1.2.0" />
   </a>
   <a href="../../wiki">
     <img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
@@ -44,6 +44,8 @@ If you develop in C# and your code is loaded as a module/plugin into a host appl
 * Modify the original with IL code processors
 
 * Multiple Harmony patches co-exist and don't conflict with each other
+
+Installation is usually done by referencing the **0Harmony.dll** (from the zip file) from your project or by using the **[Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony)** nuget package.
 
 Please check out the documentation on the **[GitHub Wiki](../../wiki)** or join us at the official **[discord server](https://discord.gg/xXgghXR)**
 
