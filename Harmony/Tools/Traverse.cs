@@ -138,6 +138,15 @@ namespace Harmony
 			return this;
 		}
 
+		public Type GetValueType()
+		{
+			if (_info is FieldInfo)
+				return ((FieldInfo)_info).FieldType;
+			if (_info is PropertyInfo)
+				return ((PropertyInfo)_info).PropertyType;
+			return null;
+		}
+
 		Traverse Resolve()
 		{
 			if (_root == null && _type != null) return this;
