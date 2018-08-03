@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Harmony
 {
@@ -251,6 +253,74 @@ namespace Harmony
 			if (type.IsValueType)
 				return Activator.CreateInstance(type);
 			return null;
+		}
+
+		public static object CreateInstance(Type type)
+		{
+			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, CallingConventions.Any, new Type[0], null);
+			if (ctor != null)
+				return Activator.CreateInstance(type);
+			return FormatterServices.GetUninitializedObject(type);
+		}
+
+		public static object MakeDeepCopy(object source, Type resultType, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
+		{
+			if (source == null)
+				return null;
+
+			var type = source.GetType();
+
+			if (type.IsPrimitive || type.IsEnum)
+				return source;
+
+			if (type.IsGenericType && resultType.IsGenericType)
+			{
+				// TODO: are dictionaries supported?
+				// maybe they are because Dictionary<string,int> -> Dictionary<KeyValuePair<string,int>>
+
+				var addOperation = resultType.GetMethod("Add");
+				if (addOperation != null)
+				{
+					var addableResult = Activator.CreateInstance(resultType);
+					var addInvoker = MethodInvoker.GetHandler(addOperation);
+					var newElementType = resultType.GetElementType();
+					foreach (var element in source as IEnumerable)
+					{
+						var newElement = MakeDeepCopy(element, newElementType, processor, pathRoot);
+						addInvoker(addableResult, new object[] { newElement });
+					}
+					return addableResult;
+				}
+			}
+
+			if (type.IsArray && resultType.IsArray)
+			{
+				var elementType = resultType.GetElementType();
+				var length = ((Array)source).Length;
+				var arrayResult = Activator.CreateInstance(resultType, new object[] { length }) as object[];
+				var originalArray = source as object[];
+				for (var i = 0; i < length; i++)
+					arrayResult[i] = MakeDeepCopy(originalArray[i], elementType, processor, pathRoot);
+				return arrayResult;
+			}
+
+			var ns = type.Namespace;
+			if (ns == "System" || (ns?.StartsWith("System.") ?? false))
+				return source;
+
+			var result = CreateInstance(resultType);
+			Traverse.IterateFields(source, result, (name, src, dst) =>
+			{
+				var path = pathRoot.Length > 0 ? pathRoot + "." + name : name;
+				var value = processor != null ? processor(path, src, dst) : src.GetValue();
+				dst.SetValue(MakeDeepCopy(value, dst.GetValueType(), processor, path));
+			});
+			return result;
+		}
+
+		public static void MakeDeepCopy<T>(object source, out T result, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
+		{
+			result = (T)MakeDeepCopy(source, typeof(T), processor, pathRoot);
 		}
 
 		public static bool IsStruct(Type type)

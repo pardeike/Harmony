@@ -19,10 +19,6 @@ namespace Harmony.ILCopying
 		public ExceptionBlockType blockType;
 		public Type catchType;
 
-		public ExceptionBlock()
-		{
-		}
-
 		public ExceptionBlock(ExceptionBlockType blockType, Type catchType)
 		{
 			this.blockType = blockType;

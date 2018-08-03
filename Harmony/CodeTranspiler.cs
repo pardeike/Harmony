@@ -25,54 +25,24 @@ namespace Harmony
 			transpilers.Add(transpiler);
 		}
 
-		private static object ConvertBlock(object originalBlock, Type type)
-		{
-			var block = Activator.CreateInstance(type);
-			Traverse.IterateFields(originalBlock, block, (trvFrom, trvDest) => trvDest.SetValue(trvFrom.GetValue()));
-			return block;
-		}
-
-		private static object ConvertBlocks(object originalBlocks, Type type)
-		{
-			var enumerableAssembly = type.GetGenericTypeDefinition().Assembly;
-			var genericListType = enumerableAssembly.GetType(typeof(List<>).FullName);
-			var elementType = type.GetGenericArguments()[0];
-			var listType = enumerableAssembly.GetType(genericListType.MakeGenericType(new Type[] { elementType }).FullName);
-			var blocks = Activator.CreateInstance(listType);
-			var listAdd = blocks.GetType().GetMethod("Add");
-			foreach (var originalBlock in originalBlocks as IEnumerable)
-			{
-				var block = ConvertBlock(originalBlock, elementType);
-				listAdd.Invoke(blocks, new object[] { block });
-			}
-			return blocks;
-		}
-
 		[UpgradeToLatestVersion(1)]
 		public static object ConvertInstruction(Type type, object op, out Dictionary<string, object> unassigned)
 		{
-			var elementTo = Activator.CreateInstance(type, new object[] { OpCodes.Nop, null });
 			var nonExisting = new Dictionary<string, object>();
-			Traverse.IterateFields(op, elementTo, (name, trvFrom, trvDest) =>
+			var elementTo = AccessTools.MakeDeepCopy(op, type, (namePath, trvSrc, trvDest) =>
 			{
-				var val = trvFrom.GetValue();
+				var value = trvSrc.GetValue();
 
 				if (trvDest.FieldExists() == false)
 				{
-					nonExisting[name] = val;
-					return;
+					nonExisting[namePath] = value;
+					return null;
 				}
 
-				// TODO - improve the logic here. for now, we replace all short jumps
-				//        with long jumps regardless of how far the jump is
-				//
-				if (name == nameof(CodeInstruction.opcode))
-					val = ReplaceShortJumps((OpCode)val);
+				if (namePath == nameof(CodeInstruction.opcode))
+					return ReplaceShortJumps((OpCode)value);
 
-				if (name == nameof(ILInstruction.blocks))
-					val = ConvertBlocks(val, trvDest.GetValueType());
-
-				trvDest.SetValue(val);
+				return value;
 			});
 			unassigned = nonExisting;
 			return elementTo;
@@ -213,15 +183,7 @@ namespace Harmony
 			foreach (var op in newInstructions)
 			{
 				index++;
-
-				var elementTo = new CodeInstruction(OpCodes.Nop, null);
-				Traverse.IterateFields(op, elementTo, (name, trvFrom, trvDest) =>
-				{
-					var val = trvFrom.GetValue();
-					if (name == nameof(ILInstruction.blocks))
-						val = ConvertBlocks(val, trvDest.GetValueType());
-					trvDest.SetValue(val);
-				});
+				AccessTools.MakeDeepCopy(op, out CodeInstruction elementTo);
 				if (unassignedValues.TryGetValue(op, out var fields))
 				{
 					var addExceptionInfo = ShouldAddExceptionInfo(op, index, originalInstructions, newInstructions, unassignedValues);
