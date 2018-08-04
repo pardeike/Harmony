@@ -257,6 +257,8 @@ namespace Harmony
 
 		public static object CreateInstance(Type type)
 		{
+			if (type == null)
+				throw new NullReferenceException("Cannot create instance for NULL type");
 			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, CallingConventions.Any, new Type[0], null);
 			if (ctor != null)
 				return Activator.CreateInstance(type);
@@ -275,22 +277,25 @@ namespace Harmony
 
 			if (type.IsGenericType && resultType.IsGenericType)
 			{
-				// TODO: are dictionaries supported?
-				// maybe they are because Dictionary<string,int> -> Dictionary<KeyValuePair<string,int>>
-
-				var addOperation = resultType.GetMethod("Add");
+				var addOperation = FirstMethod(resultType, m => m.Name == "Add" && m.GetParameters().Count() == 1);
 				if (addOperation != null)
 				{
 					var addableResult = Activator.CreateInstance(resultType);
 					var addInvoker = MethodInvoker.GetHandler(addOperation);
-					var newElementType = resultType.GetElementType();
+					var newElementType = resultType.GetGenericArguments()[0];
+					var i = 0;
 					foreach (var element in source as IEnumerable)
 					{
-						var newElement = MakeDeepCopy(element, newElementType, processor, pathRoot);
+						var iStr = (i++).ToString();
+						var path = pathRoot.Length > 0 ? pathRoot + "." + iStr : iStr;
+						var newElement = MakeDeepCopy(element, newElementType, processor, path);
 						addInvoker(addableResult, new object[] { newElement });
 					}
 					return addableResult;
 				}
+
+				// TODO: add dictionaries support
+				// maybe use methods in Dictionary<KeyValuePair<TKey,TVal>>
 			}
 
 			if (type.IsArray && resultType.IsArray)
@@ -300,7 +305,11 @@ namespace Harmony
 				var arrayResult = Activator.CreateInstance(resultType, new object[] { length }) as object[];
 				var originalArray = source as object[];
 				for (var i = 0; i < length; i++)
-					arrayResult[i] = MakeDeepCopy(originalArray[i], elementType, processor, pathRoot);
+				{
+					var iStr = i.ToString();
+					var path = pathRoot.Length > 0 ? pathRoot + "." + iStr : iStr;
+					arrayResult[i] = MakeDeepCopy(originalArray[i], elementType, processor, path);
+				}
 				return arrayResult;
 			}
 
