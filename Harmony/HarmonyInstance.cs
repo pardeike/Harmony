@@ -45,16 +45,50 @@ namespace Harmony
 		public string Id => id;
 		public static bool DEBUG = false;
 
+		private static bool selfPatchingDone = false;
+
 		HarmonyInstance(string id)
 		{
+			if (DEBUG)
+			{
+				var assembly = typeof(HarmonyInstance).Assembly;
+				var version = assembly.GetName().Version;
+				var location = assembly.Location;
+				if (location == null || location == "") location = new Uri(assembly.CodeBase).LocalPath;
+				FileLog.Log("### Harmony id=" + id + ", version=" + version + ", location=" + location);
+				var callingMethod = GetOutsideCaller();
+				var callingAssembly = callingMethod.DeclaringType.Assembly;
+				location = callingAssembly.Location;
+				if (location == null || location == "") location = new Uri(callingAssembly.CodeBase).LocalPath;
+				FileLog.Log("### Started from " + callingMethod.FullDescription() + ", location " + location);
+				FileLog.Log("### At " + DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss"));
+			}
+
 			this.id = id;
-			SelfPatching.PatchOldHarmonyMethods();
+
+			if (!selfPatchingDone)
+			{
+				selfPatchingDone = true;
+				SelfPatching.PatchOldHarmonyMethods();
+			}
 		}
 
 		public static HarmonyInstance Create(string id)
 		{
 			if (id == null) throw new Exception("id cannot be null");
 			return new HarmonyInstance(id);
+		}
+
+		private MethodBase GetOutsideCaller()
+		{
+			var trace = new StackTrace(true);
+			foreach (var frame in trace.GetFrames())
+			{
+				var method = frame.GetMethod();
+				if (method.DeclaringType.Namespace != typeof(HarmonyInstance).Namespace)
+					return method;
+			}
+			throw new Exception("Unexpected end of stack trace");
 		}
 
 		//
@@ -133,7 +167,7 @@ namespace Harmony
 
 		public Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{
-			currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+			currentVersion = typeof(HarmonyInstance).Assembly.GetName().Version;
 			var assemblies = new Dictionary<string, Assembly>();
 			GetPatchedMethods().Do(method =>
 			{
