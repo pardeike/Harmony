@@ -272,8 +272,11 @@ namespace Harmony
 
 			var type = source.GetType();
 
-			if (type.IsPrimitive || type.IsEnum)
+			if (type.IsPrimitive)
 				return source;
+
+			if (type.IsEnum)
+				return Enum.ToObject(resultType, (int)source);
 
 			if (type.IsGenericType && resultType.IsGenericType)
 			{
