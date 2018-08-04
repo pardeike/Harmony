@@ -176,17 +176,6 @@ namespace Harmony.ILCopying
 				var handler_start = exception.HandlerOffset;
 				var handler_end = exception.HandlerOffset + exception.HandlerLength - 1;
 
-				var clauseName = exception.Flags == ExceptionHandlingClauseOptions.Clause ? "catch" : exception.Flags.ToString().ToLower();
-
-				//FileLog.Log("METHOD " + method.DeclaringType.Name + "." + method.Name + "()");
-				//FileLog.Log("- EXCEPTION BLOCK:");
-				//FileLog.Log("  - try: " + string.Format("{0} + {1} = L_{0:x4} - L_{1:x4}", exception.TryOffset, exception.TryLength, try_start, try_end));
-				//FileLog.Log("  - " + clauseName + ": " + string.Format("{0} + {1} = L_{0:x4} - L_{1:x4}", exception.HandlerOffset, exception.HandlerLength, handler_start, handler_end));
-				//if (exception.Flags == ExceptionHandlingClauseOptions.Filter)
-				//	FileLog.Log("    Filter Offset: " + exception.FilterOffset);
-				//if (exception.Flags != ExceptionHandlingClauseOptions.Filter && exception.Flags != ExceptionHandlingClauseOptions.Finally)
-				//	FileLog.Log("    Exception Type: " + exception.CatchType);
-
 				var instr1 = GetInstruction(try_start, false);
 				instr1.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock, null));
 
