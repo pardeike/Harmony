@@ -312,7 +312,7 @@ namespace Harmony
 
 	// This attribute is for Harmony patching itself to the latest
 	//
-	[AttributeUsage(AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor)]
 	internal class UpgradeToLatestVersion : Attribute
 	{
 		public int version;
