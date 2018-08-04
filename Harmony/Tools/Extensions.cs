@@ -2,21 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Harmony
 {
 	public static class GeneralExtensions
 	{
+		public static string Join<T>(this IEnumerable<T> enumeration, Func<T, string> converter = null, string delimiter = ", ")
+		{
+			if (converter == null) converter = t => t.ToString();
+			return enumeration.Aggregate("", (prev, curr) => prev + (prev != "" ? delimiter : "") + converter(curr));
+		}
+
 		public static string Description(this Type[] parameters)
 		{
 			if (parameters == null) return "NULL";
-			var types = parameters.Select(p => p == null ? "null" : p.FullName);
-			return "(" + types.Aggregate("", (s, x) => s == null ? x : s.Length == 0 ? x : (s != "" ? s + ", " : "") + x) + ")";
+			var pattern = @", \w+, Version=[0-9.]+, Culture=neutral, PublicKeyToken=[0-9a-f]+";
+			return "(" + parameters.Join(p => p?.FullName == null ? "null" : Regex.Replace(p.FullName, pattern, "")) + ")";
 		}
 
 		public static string FullDescription(this MethodBase method)
 		{
-			return method.DeclaringType.FullName + "." + method.Name + method.GetParameters().Select(p => p.ParameterType).ToArray().Description();
+			var parameters = method.GetParameters().Select(p => p.ParameterType).ToArray();
+			return method.DeclaringType.FullName + "." + method.Name + parameters.Description();
 		}
 
 		public static Type[] Types(this ParameterInfo[] pinfo)
