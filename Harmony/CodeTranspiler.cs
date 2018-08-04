@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Harmony
 {
@@ -174,16 +175,35 @@ namespace Harmony
 		}
 
 		[UpgradeToLatestVersion(1)]
-		public static IEnumerable<CodeInstruction> ConvertToOurInstructions(IEnumerable instructions, List<object> originalInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
+		public static IEnumerable ConvertToOurInstructions(IEnumerable instructions, List<object> originalInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
-			var result = new List<CodeInstruction>();
+			// Since we are patching this method, we cannot use typeof(CodeInstruction)
+			// because that would use the CodeInstruction of the Harmony lib that patches
+			// us and we get a type assignment error.
+			// Instead, we know that our caller returns List<X> where X is the type we need
+			//
+			var codeInstructionType = new StackTrace().GetFrames()
+				.Select(frame => frame.GetMethod())
+				.OfType<MethodInfo>()
+				.Select(method =>
+				{
+					var returnType = method.ReturnType;
+					if (returnType.IsGenericType == false) return null;
+					var listTypes = returnType.GetGenericArguments();
+					if (listTypes.Length != 1) return null;
+					var type = listTypes[0];
+					return type.FullName == typeof(CodeInstruction).FullName ? type : null;
+				})
+				.Where(type => type != null)
+				.First();
+
 			var newInstructions = instructions.Cast<object>().ToList();
 
 			var index = -1;
 			foreach (var op in newInstructions)
 			{
 				index++;
-				AccessTools.MakeDeepCopy(op, out CodeInstruction elementTo);
+				var elementTo = AccessTools.MakeDeepCopy(op, codeInstructionType);
 				if (unassignedValues.TryGetValue(op, out var fields))
 				{
 					var addExceptionInfo = ShouldAddExceptionInfo(op, index, originalInstructions, newInstructions, unassignedValues);
