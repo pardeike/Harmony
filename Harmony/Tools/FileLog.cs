@@ -15,15 +15,10 @@ namespace Harmony
 		public static int indentLevel = 0;
 		static List<string> buffer = new List<string>();
 
+		[UpgradeToLatestVersion(1)]
 		static FileLog()
 		{
 			logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + "harmony.log.txt";
-			if (HarmonyInstance.DEBUG)
-			{
-				var version = Assembly.GetExecutingAssembly().GetName().Version;
-				Log("### Harmony " + version + " started at " + DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss"));
-				Log("### ");
-			}
 		}
 
 		static string IndentString()
@@ -51,12 +46,15 @@ namespace Harmony
 		{
 			lock (logPath)
 			{
-				using (var writer = File.AppendText(logPath))
+				if (buffer.Count > 0)
 				{
-					foreach (var str in buffer)
-						writer.WriteLine(str);
+					using (var writer = File.AppendText(logPath))
+					{
+						foreach (var str in buffer)
+							writer.WriteLine(str);
+					}
+					buffer.Clear();
 				}
-				buffer.Clear();
 			}
 		}
 
