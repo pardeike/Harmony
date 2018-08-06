@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.Serialization;
 
 namespace Harmony
@@ -237,6 +238,33 @@ namespace Harmony
 		{
 			if (instance == null) return new List<string>();
 			return GetPropertyNames(instance.GetType());
+		}
+
+		public static Func<T, TValue> MakeGetter<T, TValue>(string fieldName)
+		{
+			var fieldInfo = Field(typeof(T), fieldName);
+			if (fieldInfo == null)
+				throw new Exception("No field '" + fieldName + "' in " + typeof(T).FullName);
+			var dynamicMethod = new DynamicMethod("getter", typeof(void), new[] { typeof(T) }, true);
+			var generator = dynamicMethod.GetILGenerator();
+			generator.Emit(OpCodes.Ldarg_0);
+			generator.Emit(OpCodes.Ldfld, fieldInfo);
+			generator.Emit(OpCodes.Ret);
+			return (Func<T, TValue>)dynamicMethod.CreateDelegate(typeof(Func<T, TValue>));
+		}
+
+		public static Action<T, TValue> MakeSetter<T, TValue>(string fieldName)
+		{
+			var fieldInfo = Field(typeof(T), fieldName);
+			if (fieldInfo == null)
+				throw new Exception("No field '" + fieldName + "' in " + typeof(T).FullName);
+			var dynamicMethod = new DynamicMethod("setter", typeof(void), new[] { typeof(T), typeof(TValue) }, true);
+			var generator = dynamicMethod.GetILGenerator();
+			generator.Emit(OpCodes.Ldarg_0);
+			generator.Emit(OpCodes.Ldarg_1);
+			generator.Emit(OpCodes.Stfld, fieldInfo);
+			generator.Emit(OpCodes.Ret);
+			return (Action<T, TValue>)dynamicMethod.CreateDelegate(typeof(Action<T, TValue>));
 		}
 
 		public static void ThrowMissingMemberException(Type type, params string[] names)
