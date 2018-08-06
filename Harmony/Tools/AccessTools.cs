@@ -269,6 +269,11 @@ namespace Harmony
 			return (FieldRef<T, U>)dm.CreateDelegate(typeof(FieldRef<T, U>));
 		}
 
+		public static ref U FieldRefAccess<T, U>(T instance, string fieldName)
+		{
+			return ref FieldRefAccess<T, U>(fieldName)(instance);
+		}
+
 		public static void ThrowMissingMemberException(Type type, params string[] names)
 		{
 			var fields = string.Join(",", GetFieldNames(type).ToArray());
