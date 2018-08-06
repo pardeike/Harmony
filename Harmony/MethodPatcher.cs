@@ -15,6 +15,7 @@ namespace Harmony
 		public static string ORIGINAL_METHOD_PARAM = "__originalMethod";
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
+		public static string PARAM_INDEX_PREFIX = "__";
 		public static string INSTANCE_FIELD_PREFIX = "___";
 
 		// in case of trouble, set to true to write dynamic method to desktop as a dll
@@ -273,7 +274,11 @@ namespace Harmony
 				if (patchParam.Name.StartsWith(INSTANCE_FIELD_PREFIX))
 				{
 					var fieldName = patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length);
-					var fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
+					FieldInfo fieldInfo;
+					if (fieldName.All(char.IsDigit))
+						fieldInfo = AccessTools.Field(original.DeclaringType, int.Parse(fieldName));
+					else
+						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
 					if (fieldInfo == null)
 						throw new ArgumentException("No such field defined in class " + original.DeclaringType.FullName, fieldName);
 
@@ -316,8 +321,18 @@ namespace Harmony
 					continue;
 				}
 
-				var idx = GetArgumentIndex(patch, originalParameterNames, patchParam);
-				if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original.FullDescription());
+				int idx;
+				if (patchParam.Name.StartsWith(PARAM_INDEX_PREFIX))
+				{
+					var val = patchParam.Name.Substring(PARAM_INDEX_PREFIX.Length);
+					if (!int.TryParse(val, out idx))
+						throw new Exception("Parameter " + patchParam.Name + " does not contain a valid index");
+				}
+				else
+				{
+					idx = GetArgumentIndex(patch, originalParameterNames, patchParam);
+					if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original.FullDescription());
+				}
 
 				//   original -> patch     opcode
 				// --------------------------------------

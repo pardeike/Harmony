@@ -60,6 +60,11 @@ namespace Harmony
 			return FindIncludingBaseTypes(type, t => t.GetField(name, all));
 		}
 
+		public static FieldInfo Field(Type type, int idx)
+		{
+			return GetDeclaredFields(type).ElementAtOrDefault(idx);
+		}
+
 		public static PropertyInfo DeclaredProperty(Type type, string name)
 		{
 			if (type == null || name == null) return null;
