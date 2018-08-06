@@ -287,6 +287,8 @@ namespace Harmony
 			AccessTools.GetPropertyNames(source).ForEach(f => action(f, sourceTrv.Property(f), targetTrv.Property(f)));
 		}
 
+		public static Action<Traverse, Traverse> CopyFields = (from, to) => { to.SetValue(from.GetValue()); };
+
 		public override string ToString()
 		{
 			var value = _method ?? GetValue();
