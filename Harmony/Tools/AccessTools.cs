@@ -240,31 +240,33 @@ namespace Harmony
 			return GetPropertyNames(instance.GetType());
 		}
 
-		public static Func<T, TValue> MakeGetter<T, TValue>(string fieldName)
+		public delegate ref U FieldRef<T, U>(T obj);
+		public static FieldRef<T, U> FieldRefAccess<T, U>(string fieldName)
 		{
-			var fieldInfo = Field(typeof(T), fieldName);
-			if (fieldInfo == null)
-				throw new Exception("No field '" + fieldName + "' in " + typeof(T).FullName);
-			var dynamicMethod = new DynamicMethod("getter", typeof(void), new[] { typeof(T) }, true);
-			var generator = dynamicMethod.GetILGenerator();
-			generator.Emit(OpCodes.Ldarg_0);
-			generator.Emit(OpCodes.Ldfld, fieldInfo);
-			generator.Emit(OpCodes.Ret);
-			return (Func<T, TValue>)dynamicMethod.CreateDelegate(typeof(Func<T, TValue>));
-		}
+			const BindingFlags bf = BindingFlags.NonPublic |
+											BindingFlags.Instance |
+											BindingFlags.DeclaredOnly;
 
-		public static Action<T, TValue> MakeSetter<T, TValue>(string fieldName)
-		{
-			var fieldInfo = Field(typeof(T), fieldName);
-			if (fieldInfo == null)
-				throw new Exception("No field '" + fieldName + "' in " + typeof(T).FullName);
-			var dynamicMethod = new DynamicMethod("setter", typeof(void), new[] { typeof(T), typeof(TValue) }, true);
-			var generator = dynamicMethod.GetILGenerator();
-			generator.Emit(OpCodes.Ldarg_0);
-			generator.Emit(OpCodes.Ldarg_1);
-			generator.Emit(OpCodes.Stfld, fieldInfo);
-			generator.Emit(OpCodes.Ret);
-			return (Action<T, TValue>)dynamicMethod.CreateDelegate(typeof(Action<T, TValue>));
+			var fi = typeof(T).GetField(fieldName, bf);
+			if (fi == null)
+				throw new MissingFieldException(typeof(T).Name, fieldName);
+
+			var s_name = "__refget_" + typeof(T).Name + "_fi_" + fi.Name;
+
+			// workaround for using ref-return with DynamicMethod:
+			// a.) initialize with dummy return value
+			var dm = new DynamicMethod(s_name, typeof(U), new[] { typeof(T) }, typeof(T), true);
+
+			// b.) replace with desired 'ByRef' return value
+			var trv = Traverse.Create(dm);
+			trv.Field("returnType").SetValue(typeof(U).MakeByRefType());
+			trv.Field("m_returnType").SetValue(typeof(U).MakeByRefType());
+
+			var il = dm.GetILGenerator();
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldflda, fi);
+			il.Emit(OpCodes.Ret);
+			return (FieldRef<T, U>)dm.CreateDelegate(typeof(FieldRef<T, U>));
 		}
 
 		public static void ThrowMissingMemberException(Type type, params string[] names)
