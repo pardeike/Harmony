@@ -276,11 +276,17 @@ namespace Harmony
 					var fieldName = patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length);
 					FieldInfo fieldInfo;
 					if (fieldName.All(char.IsDigit))
+					{
 						fieldInfo = AccessTools.Field(original.DeclaringType, int.Parse(fieldName));
+						if (fieldInfo == null)
+							throw new ArgumentException("No field found at given index in class " + original.DeclaringType.FullName, fieldName);
+					}
 					else
+					{
 						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
-					if (fieldInfo == null)
-						throw new ArgumentException("No such field defined in class " + original.DeclaringType.FullName, fieldName);
+						if (fieldInfo == null)
+							throw new ArgumentException("No such field defined in class " + original.DeclaringType.FullName, fieldName);
+					}
 
 					if (fieldInfo.IsStatic)
 					{
@@ -327,6 +333,8 @@ namespace Harmony
 					var val = patchParam.Name.Substring(PARAM_INDEX_PREFIX.Length);
 					if (!int.TryParse(val, out idx))
 						throw new Exception("Parameter " + patchParam.Name + " does not contain a valid index");
+					if (idx < 0 || idx >= originalParameters.Length)
+						throw new Exception("No parameter found at index " + idx);
 				}
 				else
 				{
