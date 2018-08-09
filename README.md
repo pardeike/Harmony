@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/pardeike/Harmony/releases/tag/v1.2.0">
+  <a href="../../releases/latest">
     <img src="https://img.shields.io/badge/release-1.2.0.1-4BC51D.svg?style=flat" alt="v1.2.0.1" />
   </a>
   <a href="../../wiki">
