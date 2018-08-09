@@ -9,6 +9,7 @@
   <a href="../../wiki">
     <img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
   </a>
+  <img src="https://img.shields.io/github/downloads-pre/pardeike/harmony/total.svg?style=popout-square" />
 </p>
 
 <p align="center">
