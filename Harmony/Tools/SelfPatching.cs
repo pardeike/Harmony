@@ -9,13 +9,13 @@ namespace Harmony.Tools
 {
 	internal class SelfPatching
 	{
-		static readonly int upgradeToLatestVersionFullNameHash = typeof(UpgradeToLatestVersion).FullName.GetHashCode();
+		static readonly string upgradeToLatestVersionFullName = typeof(UpgradeToLatestVersion).FullName;
 
 		[UpgradeToLatestVersion(1)]
 		static int GetVersion(MethodBase method)
 		{
 			var attribute = method.GetCustomAttributes(false)
-				.Where(attr => attr.GetType().FullName.GetHashCode() == upgradeToLatestVersionFullNameHash)
+				.Where(attr => attr.GetType().FullName == upgradeToLatestVersionFullName)
 				.FirstOrDefault();
 			if (attribute == null)
 				return -1;
