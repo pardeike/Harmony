@@ -91,7 +91,7 @@ namespace Harmony
 		public bool IsInvalid => Pos < 0 || Pos >= Length;
 		public int Remaining => Length - Math.Max(0, Pos);
 
-		public CodeMatcher Clone => new CodeMatcher(generator, codes) { Pos = Pos };
+		public CodeMatcher Clone => new CodeMatcher(codes, generator) { Pos = Pos };
 		public CodeMatcher() { }
 
 		public ref OpCode Opcode => ref codes[Pos].opcode;
@@ -101,7 +101,7 @@ namespace Harmony
 
 		// make a deep copy of all instructions and settings
 		//
-		public CodeMatcher(ILGenerator generator, IEnumerable<CodeInstruction> instructions)
+		public CodeMatcher(IEnumerable<CodeInstruction> instructions, ILGenerator generator = null)
 		{
 			this.generator = generator;
 			codes = instructions.Select(c => new CodeInstruction(c)).ToList();
