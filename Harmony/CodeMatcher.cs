@@ -27,7 +27,9 @@ namespace Harmony
 		public CodeMatch(CodeInstruction instruction) : this(instruction.opcode, instruction.operand) { }
 
 		public CodeMatch(Func<CodeInstruction, bool> predicate)
-			=> this.predicate = predicate;
+		{
+			this.predicate = predicate;
+		}
 
 		public bool Matches(List<CodeInstruction> codes, CodeInstruction instruction)
 		{
@@ -86,7 +88,7 @@ namespace Harmony
 		public CodeInstruction Instruction => codes[Pos];
 		public int Length => codes.Count;
 		public bool IsValid => Pos >= 0 && Pos < Length;
-		public bool IsInvalid => IsValid == false;
+		public bool IsInvalid => Pos < 0 || Pos >= Length;
 		public int Remaining => Length - Math.Max(0, Pos);
 
 		public CodeMatcher Clone => new CodeMatcher(generator, codes) { Pos = Pos };
@@ -315,7 +317,11 @@ namespace Harmony
 			outOfBounds = start < 0 || end >= Length;
 			if (outOfBounds) return false;
 			foreach (var match in matches)
-				if (match.Matches(codes, codes[start++]) == false) return false;
+			{
+				if (match.Matches(codes, codes[start]) == false)
+					return false;
+				start++;
+			}
 			return true;
 		}
 	}
