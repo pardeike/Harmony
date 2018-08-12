@@ -274,7 +274,7 @@ namespace Harmony
 		public CodeMatcher End()
 		{
 			var matcher = Clone;
-			matcher.Pos = Length - 1;
+			matcher.Pos = matcher.Length - 1;
 			return matcher;
 		}
 
@@ -295,30 +295,24 @@ namespace Harmony
 		{
 			var matcher = Clone;
 			matcher.FixStart();
-			while (true)
+			while (matcher.IsValid)
 			{
-				var matched = matcher.MatchSequence(matcher.Pos, matches, out var outOfBounds);
-				if (outOfBounds)
-				{
-					matcher.SetOutOfBounds(direction);
-					return matcher;
-				}
-				if (matched)
+				if (matcher.MatchSequence(matcher.Pos, matches))
 				{
 					if (useEnd) matcher.Pos += matches.Count() - 1;
-					return matcher;
+					break;
 				}
 				matcher.Pos += direction;
 			}
+			return matcher;
 		}
-		private bool MatchSequence(int start, CodeMatch[] matches, out bool outOfBounds)
+
+		private bool MatchSequence(int start, CodeMatch[] matches)
 		{
-			var end = start + matches.Length - 1;
-			outOfBounds = start < 0 || end >= Length;
-			if (outOfBounds) return false;
+			if (start < 0) return false;
 			foreach (var match in matches)
 			{
-				if (match.Matches(codes, codes[start]) == false)
+				if (start >= Length || match.Matches(codes, codes[start]) == false)
 					return false;
 				start++;
 			}
