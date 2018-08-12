@@ -8,6 +8,8 @@ namespace Harmony
 {
 	public class CodeMatch
 	{
+		public string name = null;
+
 		public List<OpCode> opcodes = new List<OpCode>();
 		public List<object> operands = new List<object>();
 		public List<Label> labels = new List<Label>();
@@ -18,17 +20,19 @@ namespace Harmony
 
 		public Func<CodeInstruction, bool> predicate = null;
 
-		public CodeMatch(OpCode? opcode = null, object operand = null)
+		public CodeMatch(OpCode? opcode = null, object operand = null, string name = null)
 		{
 			if (opcode is OpCode opcodeValue) opcodes.Add(opcodeValue);
 			if (operand != null) operands.Add(operand);
+			this.name = name;
 		}
 
-		public CodeMatch(CodeInstruction instruction) : this(instruction.opcode, instruction.operand) { }
+		public CodeMatch(CodeInstruction instruction, string name = null) : this(instruction.opcode, instruction.operand, name) { }
 
-		public CodeMatch(Func<CodeInstruction, bool> predicate)
+		public CodeMatch(Func<CodeInstruction, bool> predicate, string name = null)
 		{
 			this.predicate = predicate;
+			this.name = name;
 		}
 
 		public bool Matches(List<CodeInstruction> codes, CodeInstruction instruction)
@@ -58,6 +62,8 @@ namespace Harmony
 		public override string ToString()
 		{
 			var result = "[";
+			if (name != null)
+				result += name + ": ";
 			if (opcodes.Count > 0)
 				result += "opcodes=" + opcodes.Join() + " ";
 			if (operands.Count > 0)
@@ -81,6 +87,7 @@ namespace Harmony
 		private readonly ILGenerator generator;
 		private readonly List<CodeInstruction> codes = new List<CodeInstruction>();
 		public int Pos { get; private set; } = -1;
+		private Dictionary<string, CodeInstruction> lastMatches = new Dictionary<string, CodeInstruction>();
 
 		private void FixStart() { Pos = Math.Max(0, Pos); }
 		private void SetOutOfBounds(int direction) { Pos = direction > 0 ? Length : -1; }
@@ -91,7 +98,7 @@ namespace Harmony
 		public bool IsInvalid => Pos < 0 || Pos >= Length;
 		public int Remaining => Length - Math.Max(0, Pos);
 
-		public CodeMatcher Clone => new CodeMatcher(codes, generator) { Pos = Pos };
+		public CodeMatcher Clone => new CodeMatcher(codes, generator) { Pos = Pos, lastMatches = lastMatches };
 		public CodeMatcher() { }
 
 		public ref OpCode Opcode => ref codes[Pos].opcode;
@@ -307,13 +314,19 @@ namespace Harmony
 			return matcher;
 		}
 
+		public CodeInstruction NamedMatch(string name)
+			=> lastMatches[name];
+
 		private bool MatchSequence(int start, CodeMatch[] matches)
 		{
 			if (start < 0) return false;
+			lastMatches = new Dictionary<string, CodeInstruction>();
 			foreach (var match in matches)
 			{
 				if (start >= Length || match.Matches(codes, codes[start]) == false)
 					return false;
+				if (match.name != null)
+					lastMatches.Add(match.name, codes[start]);
 				start++;
 			}
 			return true;
