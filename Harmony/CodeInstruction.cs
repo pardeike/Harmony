@@ -18,29 +18,41 @@ namespace Harmony
 			this.operand = operand;
 		}
 
+		// full copy (be careful with duplicate labels and exception blocks!)
+		// for normal cases, use Clone()
+		//
 		public CodeInstruction(CodeInstruction instruction)
 		{
 			opcode = instruction.opcode;
 			operand = instruction.operand;
 			labels = instruction.labels.ToArray().ToList();
+			blocks = instruction.blocks.ToArray().ToList();
 		}
 
+		// copy only opcode and operand
+		//
 		public CodeInstruction Clone()
 		{
-			return new CodeInstruction(this) { labels = new List<Label>() };
+			var instruction = new CodeInstruction(this);
+			instruction.labels = new List<Label>();
+			instruction.blocks = new List<ExceptionBlock>();
+			return instruction;
 		}
 
+		// copy only operand, use new opcode
+		//
 		public CodeInstruction Clone(OpCode opcode)
 		{
-			var instruction = new CodeInstruction(this) { labels = new List<Label>() };
+			var instruction = Clone();
 			instruction.opcode = opcode;
 			return instruction;
 		}
 
-		public CodeInstruction Clone(OpCode opcode, object operand)
+		// copy only opcode, use new operand
+		//
+		public CodeInstruction Clone(object operand)
 		{
-			var instruction = new CodeInstruction(this) { labels = new List<Label>() };
-			instruction.opcode = opcode;
+			var instruction = Clone();
 			instruction.operand = operand;
 			return instruction;
 		}
