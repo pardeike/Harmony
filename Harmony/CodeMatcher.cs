@@ -85,7 +85,8 @@ namespace Harmony
 
 		public CodeInstruction Instruction => codes[Pos];
 		public int Length => codes.Count;
-		public bool Valid => Pos >= 0 && Pos < Length;
+		public bool IsValid => Pos >= 0 && Pos < Length;
+		public bool IsInvalid => IsValid == false;
 		public int Remaining => Length - Math.Max(0, Pos);
 
 		public CodeMatcher Clone => new CodeMatcher(generator, codes) { Pos = Pos };
@@ -191,13 +192,10 @@ namespace Harmony
 
 		// insert operations ----------------------------------------------------
 
-		public void Insert(CodeInstruction instruction)
-			=> codes.Insert(Pos, instruction);
-
-		public void Insert(IEnumerable<CodeInstruction> instructions)
+		public void Insert(params CodeInstruction[] instructions)
 			=> codes.InsertRange(Pos, instructions);
 
-		public void Insert(params CodeInstruction[] instructions)
+		public void Insert(IEnumerable<CodeInstruction> instructions)
 			=> codes.InsertRange(Pos, instructions);
 
 		public CodeInstruction InsertBranch(OpCode opcode, int destination)
@@ -208,16 +206,16 @@ namespace Harmony
 			return instruction;
 		}
 
-		public void InsertAndAdvance(CodeInstruction instruction)
+		public void InsertAndAdvance(params CodeInstruction[] instructions)
 		{
-			Insert(instruction);
-			Pos++;
+			instructions.Do(instruction =>
+			{
+				Insert(instruction);
+				Pos++;
+			});
 		}
 
 		public void InsertAndAdvance(IEnumerable<CodeInstruction> instructions)
-			=> instructions.Do(instruction => InsertAndAdvance(instruction));
-
-		public void InsertAndAdvance(params CodeInstruction[] instructions)
 			=> instructions.Do(instruction => InsertAndAdvance(instruction));
 
 		public CodeInstruction InsertBranchAndAdvance(OpCode opcode, int destination)
@@ -260,7 +258,7 @@ namespace Harmony
 		{
 			var matcher = Clone;
 			matcher.Pos += offset;
-			if (matcher.Valid == false) matcher.SetOutOfBounds(offset);
+			if (matcher.IsValid == false) matcher.SetOutOfBounds(offset);
 			return matcher;
 		}
 
@@ -284,7 +282,7 @@ namespace Harmony
 		{
 			var matcher = Clone;
 			matcher.FixStart();
-			while (matcher.Valid && predicate(matcher.Instruction) == false)
+			while (matcher.IsValid && predicate(matcher.Instruction) == false)
 				matcher.Pos += direction;
 			return matcher;
 		}
