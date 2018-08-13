@@ -1,19 +1,39 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" />
+	<img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" />
 </p>
 
 <p align="center">
-  <a href="../../releases/latest">
-    <img src="https://img.shields.io/badge/release-1.2.0.1-4BC51D.svg?style=flat" alt="v1.2.0.1" />
-  </a>
-  <a href="../../wiki">
-    <img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
-  </a>
-  <img src="https://img.shields.io/github/downloads-pre/pardeike/harmony/total.svg?style=flat" />
+	<a href="../../releases/latest">
+		<img src="https://img.shields.io/github/release/pardeike/harmony.svg?style=flat" />
+	</a>
+	<a href="../../wiki">
+		<img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
+	</a>
+	<a href="https://github.com/pardeike/Harmony/blob/master/LICENSE">
+		<img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" />
+	</a>
+	<img src="https://img.shields.io/github/repo-size/pardeike/harmony.svg?style=flat" />
+	<a href="https://discord.gg/xXgghXR">
+		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat" />
+	</a>
 </p>
+<p align="center">
+	<img src="https://img.shields.io/github/downloads/pardeike/harmony/total.svg?style=flat" />
+	<img src="https://img.shields.io/github/commits-since/pardeike/harmony/latest.svg?style=flat" />
+	<img src="https://img.shields.io/github/last-commit/pardeike/harmony.svg?style=flat" />
+	<img src="https://img.shields.io/github/issues-raw/pardeike/harmony.svg?style=flat" />
+</p>
+<p align="center">
+	<a href="mailto:andreas@pardeike.net">
+		<img src="https://img.shields.io/badge/email-andreas@pardeike.net-blue.svg?style=flat" />
+	</a>
+	<a href="https://twitter.com/pardeike">
+		<img src="https://img.shields.io/badge/twitter-@pardeike-blue.svg?style=flat" />
+	</a>
+</p> 
 
 <p align="center">
-  A library for patching, replacing and decorating .NET and Mono methods during runtime.
+	A library for patching, replacing and decorating .NET and Mono methods during runtime.
 </p>
 
 <hr>
@@ -59,17 +79,3 @@ Also, an introduction to Transpilers: **[Simple Harmony Transpiler Tutorial](htt
 For more information from me and my other open source projects, follow me on twitter: @pardeike
 
 Hope you enjoy Harmony!
-
-<hr>
-
-<p align="center">
-  <a href="mailto:andreas@pardeike.net">
-    <img src="https://img.shields.io/badge/email-andreas@pardeike.net-blue.svg?style=flat" alt="Email: andreas@pardeike.net" />
-  </a>
-  <a href="https://twitter.com/pardeike">
-    <img src="https://img.shields.io/badge/twitter-@pardeike-blue.svg?style=flat" alt="Twitter: @pardeike" />
-  </a>
-  <a href="https://raw.githubusercontent.com/pardeike/Harmony/master/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-lightgray.svg?style=flat" alt="MIT License" />
-  </a>
-</p> 
