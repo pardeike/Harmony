@@ -5,14 +5,14 @@ using System.Reflection.Emit;
 namespace HarmonyTests.IL
 {
 	[TestClass]
-   public class Instructions
-   {
+	public class Instructions
+	{
 		[TestMethod]
 		public void TestMalformedStringOperand()
-	   {
-			string expectedOperand = "this should not fail {4}";
+		{
+			var expectedOperand = "this should not fail {4}";
 			var inst = new CodeInstruction(OpCodes.Ldstr, expectedOperand);
 			Assert.AreEqual($"ldstr \"{expectedOperand}\"", inst.ToString());
-	   }
-   }
+		}
+	}
 }
