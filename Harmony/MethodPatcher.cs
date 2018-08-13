@@ -33,6 +33,9 @@ namespace Harmony
 
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
+			if (original == null)
+				throw new ArgumentNullException(nameof(original), "Original method is null. Did you specify it correctly?");
+
 			try
 			{
 				if (HarmonyInstance.DEBUG) FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
@@ -119,7 +122,10 @@ namespace Harmony
 			}
 			catch (Exception ex)
 			{
-				throw new Exception("Exception from HarmonyInstance \"" + harmonyInstanceID + "\"", ex);
+				var exceptionString = "Exception from HarmonyInstance \"" + harmonyInstanceID + "\" patching " + original.FullDescription();
+				if (HarmonyInstance.DEBUG)
+					FileLog.Log("Exception: " + exceptionString);
+				throw new Exception(exceptionString, ex);
 			}
 			finally
 			{
