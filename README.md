@@ -6,27 +6,27 @@
 	<a href="../../releases/latest">
 		<img src="https://img.shields.io/github/release/pardeike/harmony.svg?style=flat" />
 	</a>
-	<a href="">
+	<a href="https://www.nuget.org/packages/lib.harmony">
 		<img src="https://img.shields.io/nuget/v/lib.harmony.svg?style=flat" />
 	</a>
-	<a href="https://github.com/pardeike/Harmony/blob/master/LICENSE">
+	<a href="../../blob/master/LICENSE">
 		<img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" />
 	</a>
 </p>
 <p align="center">
-	<a href="#">
+	<a href="../../archive/master.zip">
 		<img src="https://img.shields.io/github/downloads/pardeike/harmony/total.svg?style=flat" />
 	</a>
-	<a href="#">
+	<a href="../../commits/master">
 		<img src="https://img.shields.io/github/commits-since/pardeike/harmony/latest.svg?style=flat" />
 	</a>
-	<a href="#">
+	<a href="../../commits/master">
 		<img src="https://img.shields.io/github/last-commit/pardeike/harmony.svg?style=flat" />
 	</a>
-	<a href="#">
+	<a href="../../issues">
 		<img src="https://img.shields.io/github/issues-raw/pardeike/harmony.svg?style=flat" />
 	</a>
-	<a href="#">
+	<a href="../../releases/latest">
 		<img src="https://img.shields.io/github/repo-size/pardeike/harmony.svg?style=flat" />
 	</a>
 </p>
