@@ -33,10 +33,11 @@ namespace Harmony
 		//
 		public CodeInstruction Clone()
 		{
-			var instruction = new CodeInstruction(this);
-			instruction.labels = new List<Label>();
-			instruction.blocks = new List<ExceptionBlock>();
-			return instruction;
+			return new CodeInstruction(this)
+			{
+				labels = new List<Label>(),
+				blocks = new List<ExceptionBlock>()
+			};
 		}
 
 		// copy only operand, use new opcode
