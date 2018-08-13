@@ -91,6 +91,8 @@ namespace Harmony
 		public int Pos { get; private set; } = -1;
 		private Dictionary<string, CodeInstruction> lastMatches = new Dictionary<string, CodeInstruction>();
 		private string lastError = null;
+		private bool lastUseEnd = false;
+		private CodeMatch[] lastCodeMatches = null;
 
 		private void FixStart() { Pos = Math.Max(0, Pos); }
 		private void SetOutOfBounds(int direction) { Pos = direction > 0 ? Length : -1; }
@@ -123,7 +125,9 @@ namespace Harmony
 			{
 				Pos = Pos,
 				lastMatches = lastMatches,
-				lastError = lastError
+				lastError = lastError,
+				lastUseEnd = lastUseEnd,
+				lastCodeMatches = lastCodeMatches
 			};
 		}
 
@@ -346,6 +350,8 @@ namespace Harmony
 			FixStart();
 			while (IsValid)
 			{
+				lastUseEnd = useEnd;
+				lastCodeMatches = matches;
 				if (MatchSequence(Pos, matches))
 				{
 					if (useEnd) Pos += matches.Count() - 1;
@@ -354,6 +360,26 @@ namespace Harmony
 				Pos += direction;
 			}
 			lastError = IsInvalid ? "Cannot find " + matches.Join() : null;
+			return this;
+		}
+
+		public CodeMatcher Repeat(Action<CodeMatcher> matchAction, Action<string> notFoundAction = null)
+		{
+			var count = 0;
+			if (lastCodeMatches == null)
+				throw new InvalidOperationException("No previous Match operation - cannot repeat");
+
+			while (IsValid)
+			{
+				matchAction(this);
+				MatchForward(lastUseEnd, lastCodeMatches);
+				count++;
+			}
+			lastCodeMatches = null;
+
+			if (count == 0 && notFoundAction != null)
+				notFoundAction(lastError);
+
 			return this;
 		}
 
