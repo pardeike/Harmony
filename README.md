@@ -6,29 +6,42 @@
 	<a href="../../releases/latest">
 		<img src="https://img.shields.io/github/release/pardeike/harmony.svg?style=flat" />
 	</a>
-	<a href="../../wiki">
-		<img src="https://img.shields.io/badge/documentation-Wiki-4BC51D.svg?style=flat" alt="Documentation" />
+	<a href="">
+		<img src="https://img.shields.io/nuget/v/lib.harmony.svg?style=flat" />
 	</a>
 	<a href="https://github.com/pardeike/Harmony/blob/master/LICENSE">
 		<img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" />
 	</a>
-	<img src="https://img.shields.io/github/repo-size/pardeike/harmony.svg?style=flat" />
-	<a href="https://discord.gg/xXgghXR">
-		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat" />
+</p>
+<p align="center">
+	<a href="#">
+		<img src="https://img.shields.io/github/downloads/pardeike/harmony/total.svg?style=flat" />
+	</a>
+	<a href="#">
+		<img src="https://img.shields.io/github/commits-since/pardeike/harmony/latest.svg?style=flat" />
+	</a>
+	<a href="#">
+		<img src="https://img.shields.io/github/last-commit/pardeike/harmony.svg?style=flat" />
+	</a>
+	<a href="#">
+		<img src="https://img.shields.io/github/issues-raw/pardeike/harmony.svg?style=flat" />
+	</a>
+	<a href="#">
+		<img src="https://img.shields.io/github/repo-size/pardeike/harmony.svg?style=flat" />
 	</a>
 </p>
 <p align="center">
-	<img src="https://img.shields.io/github/downloads/pardeike/harmony/total.svg?style=flat" />
-	<img src="https://img.shields.io/github/commits-since/pardeike/harmony/latest.svg?style=flat" />
-	<img src="https://img.shields.io/github/last-commit/pardeike/harmony.svg?style=flat" />
-	<img src="https://img.shields.io/github/issues-raw/pardeike/harmony.svg?style=flat" />
-</p>
-<p align="center">
+	<a href="../../wiki">
+		<img src="https://img.shields.io/badge/documentation-Wiki-yellow.svg?style=flat" alt="Documentation" />
+	</a>
 	<a href="mailto:andreas@pardeike.net">
 		<img src="https://img.shields.io/badge/email-andreas@pardeike.net-blue.svg?style=flat" />
 	</a>
 	<a href="https://twitter.com/pardeike">
 		<img src="https://img.shields.io/badge/twitter-@pardeike-blue.svg?style=flat" />
+	</a>
+	<a href="https://discord.gg/xXgghXR">
+		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat" />
 	</a>
 </p> 
 
