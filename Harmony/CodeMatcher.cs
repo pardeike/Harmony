@@ -2,6 +2,7 @@ using Harmony.ILCopying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Harmony
@@ -27,7 +28,8 @@ namespace Harmony
 			this.name = name;
 		}
 
-		public CodeMatch(CodeInstruction instruction, string name = null) : this(instruction.opcode, instruction.operand, name) { }
+		public CodeMatch(CodeInstruction instruction, string name = null)
+			: this(instruction.opcode, instruction.operand, name) { }
 
 		public CodeMatch(Func<CodeInstruction, bool> predicate, string name = null)
 		{
@@ -88,23 +90,24 @@ namespace Harmony
 		private readonly List<CodeInstruction> codes = new List<CodeInstruction>();
 		public int Pos { get; private set; } = -1;
 		private Dictionary<string, CodeInstruction> lastMatches = new Dictionary<string, CodeInstruction>();
+		private string lastError = null;
 
 		private void FixStart() { Pos = Math.Max(0, Pos); }
 		private void SetOutOfBounds(int direction) { Pos = direction > 0 ? Length : -1; }
 
-		public CodeInstruction Instruction => codes[Pos];
 		public int Length => codes.Count;
 		public bool IsValid => Pos >= 0 && Pos < Length;
 		public bool IsInvalid => Pos < 0 || Pos >= Length;
 		public int Remaining => Length - Math.Max(0, Pos);
 
-		public CodeMatcher Clone => new CodeMatcher(codes, generator) { Pos = Pos, lastMatches = lastMatches };
-		public CodeMatcher() { }
-
 		public ref OpCode Opcode => ref codes[Pos].opcode;
 		public ref object Operand => ref codes[Pos].operand;
 		public ref List<Label> Labels => ref codes[Pos].labels;
 		public ref List<ExceptionBlock> Blocks => ref codes[Pos].blocks;
+
+		public CodeMatcher()
+		{
+		}
 
 		// make a deep copy of all instructions and settings
 		//
@@ -114,7 +117,19 @@ namespace Harmony
 			codes = instructions.Select(c => new CodeInstruction(c)).ToList();
 		}
 
+		public CodeMatcher Clone()
+		{
+			return new CodeMatcher(codes, generator)
+			{
+				Pos = Pos,
+				lastMatches = lastMatches,
+				lastError = lastError
+			};
+		}
+
 		// reading instructions out ---------------------------------------------
+
+		public CodeInstruction Instruction => codes[Pos];
 
 		public CodeInstruction InstructionAt(int offset) => codes[Pos + offset];
 
@@ -137,181 +152,209 @@ namespace Harmony
 		public List<Label> DistinctLabels(IEnumerable<CodeInstruction> instructions)
 			=> instructions.SelectMany(instruction => instruction.labels).Distinct().ToList();
 
+		public bool ReportFailure(MethodBase method, Action<string> logger)
+		{
+			if (IsValid) return false;
+			var err = lastError ?? "Unexpected code";
+			logger(err + " in " + method);
+			return true;
+		}
+
 		// edit operation -------------------------------------------------------
 
-		public void SetInstruction(CodeInstruction instruction)
-			=> codes[Pos] = instruction;
+		public CodeMatcher SetInstruction(CodeInstruction instruction)
+		{
+			codes[Pos] = instruction;
+			return this;
+		}
 
-		public void SetInstructionAndAdvance(CodeInstruction instruction)
+		public CodeMatcher SetInstructionAndAdvance(CodeInstruction instruction)
 		{
 			SetInstruction(instruction);
 			Pos++;
+			return this;
 		}
 
-		public void Set(OpCode opcode, object operand)
+		public CodeMatcher Set(OpCode opcode, object operand)
 		{
 			Opcode = opcode;
 			Operand = operand;
+			return this;
 		}
 
-		public void SetAndAdvance(OpCode opcode, object operand)
+		public CodeMatcher SetAndAdvance(OpCode opcode, object operand)
 		{
 			Set(opcode, operand);
 			Pos++;
+			return this;
 		}
 
-		public void SetOpcodeAndAdvance(OpCode opcode)
+		public CodeMatcher SetOpcodeAndAdvance(OpCode opcode)
 		{
 			Opcode = opcode;
 			Pos++;
+			return this;
 		}
 
-		public void SetOperandAndAdvance(object operand)
+		public CodeMatcher SetOperandAndAdvance(object operand)
 		{
 			Operand = operand;
 			Pos++;
+			return this;
 		}
 
-		public Label CreateLabel()
+		public CodeMatcher CreateLabel(out Label label)
 		{
-			var label = generator.DefineLabel();
+			label = generator.DefineLabel();
 			Labels.Add(label);
-			return label;
+			return this;
 		}
 
-		public Label CreateLabelAt(int position)
+		public CodeMatcher CreateLabelAt(int position, out Label label)
 		{
-			var label = generator.DefineLabel();
+			label = generator.DefineLabel();
 			codes[position].labels.Add(label);
-			return label;
+			return this;
 		}
 
-		public void AddLabels(IEnumerable<Label> labels)
-			=> Labels.AddRange(labels);
-
-		public void AddLabelsAt(int position, IEnumerable<Label> labels)
-			=> codes[position].labels.AddRange(labels);
-
-		public Label SetJumpTo(int destination)
+		public CodeMatcher AddLabels(IEnumerable<Label> labels)
 		{
-			var label = CreateLabelAt(destination);
+			Labels.AddRange(labels);
+			return this;
+		}
+
+		public CodeMatcher AddLabelsAt(int position, IEnumerable<Label> labels)
+		{
+			codes[position].labels.AddRange(labels);
+			return this;
+		}
+
+		public CodeMatcher SetJumpTo(int destination, out Label label)
+		{
+			CreateLabelAt(destination, out label);
 			Labels.Add(label);
-			return label;
+			return this;
 		}
 
 		// insert operations ----------------------------------------------------
 
-		public void Insert(params CodeInstruction[] instructions)
-			=> codes.InsertRange(Pos, instructions);
-
-		public void Insert(IEnumerable<CodeInstruction> instructions)
-			=> codes.InsertRange(Pos, instructions);
-
-		public CodeInstruction InsertBranch(OpCode opcode, int destination)
+		public CodeMatcher Insert(params CodeInstruction[] instructions)
 		{
-			var label = CreateLabelAt(destination);
-			var instruction = new CodeInstruction(opcode, label);
-			codes.Insert(Pos, instruction);
-			return instruction;
+			codes.InsertRange(Pos, instructions);
+			return this;
 		}
 
-		public void InsertAndAdvance(params CodeInstruction[] instructions)
+		public CodeMatcher Insert(IEnumerable<CodeInstruction> instructions)
+		{
+			codes.InsertRange(Pos, instructions);
+			return this;
+		}
+
+		public CodeMatcher InsertBranch(OpCode opcode, int destination)
+		{
+			CreateLabelAt(destination, out var label);
+			codes.Insert(Pos, new CodeInstruction(opcode, label));
+			return this;
+		}
+
+		public CodeMatcher InsertAndAdvance(params CodeInstruction[] instructions)
 		{
 			instructions.Do(instruction =>
 			{
 				Insert(instruction);
 				Pos++;
 			});
+			return this;
 		}
 
-		public void InsertAndAdvance(IEnumerable<CodeInstruction> instructions)
-			=> instructions.Do(instruction => InsertAndAdvance(instruction));
-
-		public CodeInstruction InsertBranchAndAdvance(OpCode opcode, int destination)
+		public CodeMatcher InsertAndAdvance(IEnumerable<CodeInstruction> instructions)
 		{
-			var instruction = InsertBranch(opcode, destination);
+			instructions.Do(instruction => InsertAndAdvance(instruction));
+			return this;
+		}
+
+		public CodeMatcher InsertBranchAndAdvance(OpCode opcode, int destination)
+		{
+			InsertBranch(opcode, destination);
 			Pos++;
-			return instruction;
+			return this;
 		}
 
 		// delete operations --------------------------------------------------------
 
-		public CodeInstruction RemoveInstruction()
+		public CodeMatcher RemoveInstruction()
 		{
-			var instruction = new CodeInstruction(Instruction);
 			codes.RemoveAt(Pos);
-			return instruction;
+			return this;
 		}
 
-		public List<CodeInstruction> RemoveInstructions(int count)
+		public CodeMatcher RemoveInstructions(int count)
 		{
-			var instructions = Instructions(count);
 			codes.RemoveRange(Pos, Pos + count - 1);
-			return instructions;
+			return this;
 		}
 
-		public List<CodeInstruction> RemoveInstructionsInRange(int start, int end)
+		public CodeMatcher RemoveInstructionsInRange(int start, int end)
 		{
-			var instructions = InstructionsInRange(start, end);
 			if (start > end) { var tmp = start; start = end; end = tmp; }
 			codes.RemoveRange(start, end - start + 1);
-			return instructions;
+			return this;
 		}
 
-		public List<CodeInstruction> RemoveInstructionsWithOffsets(int startOffset, int endOffset)
-			=> RemoveInstructionsInRange(Pos + startOffset, Pos + endOffset);
+		public CodeMatcher RemoveInstructionsWithOffsets(int startOffset, int endOffset)
+		{
+			RemoveInstructionsInRange(Pos + startOffset, Pos + endOffset);
+			return this;
+		}
 
 		// moving around ------------------------------------------------------------
 
 		public CodeMatcher Advance(int offset)
 		{
-			var matcher = Clone;
-			matcher.Pos += offset;
-			if (matcher.IsValid == false) matcher.SetOutOfBounds(offset);
-			return matcher;
+			Pos += offset;
+			if (IsValid == false) SetOutOfBounds(offset);
+			return this;
 		}
 
 		public CodeMatcher Start()
 		{
-			var matcher = Clone;
-			matcher.Pos = 0;
-			return matcher;
+			Pos = 0;
+			return this;
 		}
 
 		public CodeMatcher End()
 		{
-			var matcher = Clone;
-			matcher.Pos = matcher.Length - 1;
-			return matcher;
+			Pos = Length - 1;
+			return this;
 		}
 
 		public CodeMatcher SearchForward(Func<CodeInstruction, bool> predicate) => Search(predicate, 1);
 		public CodeMatcher SearchBack(Func<CodeInstruction, bool> predicate) => Search(predicate, -1);
 		private CodeMatcher Search(Func<CodeInstruction, bool> predicate, int direction)
 		{
-			var matcher = Clone;
-			matcher.FixStart();
-			while (matcher.IsValid && predicate(matcher.Instruction) == false)
-				matcher.Pos += direction;
-			return matcher;
+			FixStart();
+			while (IsValid && predicate(Instruction) == false)
+				Pos += direction;
+			lastError = IsInvalid ? "Cannot find " + predicate : null;
+			return this;
 		}
 
 		public CodeMatcher MatchForward(bool useEnd, params CodeMatch[] matches) => Match(matches, 1, useEnd);
 		public CodeMatcher MatchBack(bool useEnd, params CodeMatch[] matches) => Match(matches, -1, useEnd);
 		private CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd)
 		{
-			var matcher = Clone;
-			matcher.FixStart();
-			while (matcher.IsValid)
+			FixStart();
+			while (IsValid)
 			{
-				if (matcher.MatchSequence(matcher.Pos, matches))
+				if (MatchSequence(Pos, matches))
 				{
-					if (useEnd) matcher.Pos += matches.Count() - 1;
+					if (useEnd) Pos += matches.Count() - 1;
 					break;
 				}
-				matcher.Pos += direction;
+				Pos += direction;
 			}
-			return matcher;
+			lastError = IsInvalid ? "Cannot find " + matches.Join() : null;
+			return this;
 		}
 
 		public CodeInstruction NamedMatch(string name)
