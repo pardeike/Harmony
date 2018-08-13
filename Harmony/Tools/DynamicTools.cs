@@ -178,27 +178,31 @@ namespace Harmony
 			var m_CreateDynMethod = typeof(DynamicMethod).GetMethod("CreateDynMethod", nonPublicInstance);
 			if (m_CreateDynMethod != null)
 			{
-				m_CreateDynMethod.Invoke(method, new object[0]);
+				var h_CreateDynMethod = MethodInvoker.GetHandler(m_CreateDynMethod);
+				h_CreateDynMethod(method, new object[0]);
 				return;
 			}
 
 			// on all .NET Core versions, call 'RuntimeHelpers._CompileMethod' but with a different parameter:
 			//
 			var m__CompileMethod = typeof(RuntimeHelpers).GetMethod("_CompileMethod", nonPublicStatic);
+			var h__CompileMethod = MethodInvoker.GetHandler(m__CompileMethod);
 
 			var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", nonPublicInstance);
-			var handle = (RuntimeMethodHandle)m_GetMethodDescriptor.Invoke(method, new object[0]);
+			var h_GetMethodDescriptor = MethodInvoker.GetHandler(m_GetMethodDescriptor);
+			var handle = (RuntimeMethodHandle)h_GetMethodDescriptor(method, new object[0]);
 
 			// 1) RuntimeHelpers._CompileMethod(handle.GetMethodInfo())
 			//
 			var m_GetMethodInfo = typeof(RuntimeMethodHandle).GetMethod("GetMethodInfo", nonPublicInstance);
 			if (m_GetMethodInfo != null)
 			{
-				var runtimeMethodInfo = m_GetMethodInfo.Invoke(handle, new object[0]);
+				var h_GetMethodInfo = MethodInvoker.GetHandler(m_GetMethodInfo);
+				var runtimeMethodInfo = h_GetMethodInfo(handle, new object[0]);
 				try
 				{
 					// this can throw BadImageFormatException "An attempt was made to load a program with an incorrect format"
-					m__CompileMethod.Invoke(null, new object[] { runtimeMethodInfo });
+					h__CompileMethod(null, new object[] { runtimeMethodInfo });
 					return;
 				}
 				catch (Exception)
@@ -210,7 +214,7 @@ namespace Harmony
 			//
 			if (m__CompileMethod.GetParameters()[0].ParameterType.IsAssignableFrom(handle.Value.GetType()))
 			{
-				m__CompileMethod.Invoke(null, new object[] { handle.Value });
+				h__CompileMethod(null, new object[] { handle.Value });
 				return;
 			}
 
@@ -218,7 +222,7 @@ namespace Harmony
 			//
 			if (m__CompileMethod.GetParameters()[0].ParameterType.IsAssignableFrom(handle.GetType()))
 			{
-				m__CompileMethod.Invoke(null, new object[] { handle });
+				h__CompileMethod(null, new object[] { handle });
 				return;
 			}
 		}
