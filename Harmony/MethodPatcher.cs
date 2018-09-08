@@ -328,6 +328,8 @@ namespace Harmony
 				{
 					if (AccessTools.GetReturnedType(original) == typeof(void))
 						throw new Exception("Cannot get result from void method " + original.FullDescription());
+					if (AccessTools.GetReturnedType(original) != patchParam.ParameterType)
+						throw new Exception("Return type mismatch from method " + original.FullDescription());
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					Emitter.Emit(il, ldlocCode, variables[RESULT_VAR]);
 					continue;

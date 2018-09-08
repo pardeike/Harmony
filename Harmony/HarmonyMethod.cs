@@ -41,6 +41,8 @@ namespace Harmony
 		public HarmonyMethod(Type type, string name, Type[] parameters = null)
 		{
 			var method = AccessTools.Method(type, name, parameters);
+			if (method == null)
+				throw new Exception($"Method cannot be null. {type}.{name} does not exist.");
 			ImportMethod(method);
 		}
 
