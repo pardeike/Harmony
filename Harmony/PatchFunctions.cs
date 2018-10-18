@@ -13,7 +13,7 @@ namespace Harmony
 		{
 			if (info == null || info.method == null) return;
 
-			var priority = info.prioritiy == -1 ? Priority.Normal : info.prioritiy;
+			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
 
@@ -29,7 +29,7 @@ namespace Harmony
 		{
 			if (info == null || info.method == null) return;
 
-			var priority = info.prioritiy == -1 ? Priority.Normal : info.prioritiy;
+			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
 
@@ -45,7 +45,7 @@ namespace Harmony
 		{
 			if (info == null || info.method == null) return;
 
-			var priority = info.prioritiy == -1 ? Priority.Normal : info.prioritiy;
+			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
 

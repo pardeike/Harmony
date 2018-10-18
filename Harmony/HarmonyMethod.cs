@@ -14,7 +14,7 @@ namespace Harmony
 		public string methodName;
 		public MethodType? methodType;
 		public Type[] argumentTypes;
-		public int prioritiy = -1;
+		public int priority = -1;
 		public string[] before;
 		public string[] after;
 
