@@ -218,9 +218,9 @@ namespace Harmony
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 	public class HarmonyPriority : HarmonyAttribute
 	{
-		public HarmonyPriority(int prioritiy)
+		public HarmonyPriority(int priority)
 		{
-			info.prioritiy = prioritiy;
+			info.priority = priority;
 		}
 	}
 
