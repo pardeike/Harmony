@@ -107,9 +107,12 @@ namespace Harmony
 				{
 					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all));
 				}
-				catch (AmbiguousMatchException)
+				catch (AmbiguousMatchException ex)
 				{
 					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, new Type[0], modifiers));
+
+					if (result == null)
+						throw new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}." + ex);
 				}
 			}
 			else
