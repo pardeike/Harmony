@@ -49,19 +49,25 @@ namespace Harmony
 		}
 
 		// general sorting by (in that order): before, after, priority and index
-		public static int PriorityComparer(object obj, int index, int priority, string[] before, string[] after)
+		public static int PriorityComparer(object obj, string owner, int index, int priority, string[] before, string[] after)
 		{
 			var trv = Traverse.Create(obj);
 			var theirOwner = trv.Field("owner").GetValue<string>();
 			var theirPriority = trv.Field("priority").GetValue<int>();
 			var theirIndex = trv.Field("index").GetValue<int>();
+			var theirBefore = trv.Field("before").GetValue<string[]>();
+			var theirAfter = trv.Field("after").GetValue<string[]>();
 
-			if (before != null && Array.IndexOf(before, theirOwner) > -1)
+		 if (before != null && Array.IndexOf(before, theirOwner) > -1)
 				return -1;
 			if (after != null && Array.IndexOf(after, theirOwner) > -1)
 				return 1;
+		 if (theirBefore != null && Array.IndexOf(theirBefore, owner) > -1)
+			return 1;
+		 if (theirAfter != null && Array.IndexOf(theirAfter, owner) > -1)
+			return -1;
 
-			if (priority != theirPriority)
+		 if (priority != theirPriority)
 				return -(priority.CompareTo(theirPriority));
 
 			return index.CompareTo(theirIndex);
@@ -183,7 +189,7 @@ namespace Harmony
 
 		public int CompareTo(object obj)
 		{
-			return PatchInfoSerialization.PriorityComparer(obj, index, priority, before, after);
+			return PatchInfoSerialization.PriorityComparer(obj, owner, index, priority, before, after);
 		}
 
 		public override int GetHashCode()
