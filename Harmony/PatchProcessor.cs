@@ -66,7 +66,7 @@ namespace Harmony
 				foreach (var original in originals)
 				{
 					if (original == null)
-						throw new NullReferenceException("original");
+						throw new NullReferenceException($"Null method for {instance.Id}.");
 
 					var individualPrepareResult = RunMethod<HarmonyPrepare, bool>(true, original);
 					if (individualPrepareResult)
