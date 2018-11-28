@@ -119,7 +119,14 @@ namespace Harmony
 			{
 				result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, parameters, modifiers));
 			}
-			if (result == null) return null;
+
+			if (result == null)
+			{
+				if (HarmonyInstance.DEBUG)
+					FileLog.Log($"Harmony could not find method {type.FullName}:{name} to target using the {parameters?.Length ?? 0} parameters given.");
+
+				return null;
+			}
 			if (generics != null) result = result.MakeGenericMethod(generics);
 			return result;
 		}
