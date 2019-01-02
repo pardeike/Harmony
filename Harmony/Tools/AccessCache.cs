@@ -70,7 +70,7 @@ namespace Harmony
 			if (methodsByName == null)
 			{
 				methodsByName = new Dictionary<string, Dictionary<int, MethodBase>>();
-				methods.Add(type, methodsByName);
+				methods[type] = methodsByName;
 			}
 
 			Dictionary<int, MethodBase> methodsByArguments = null;
@@ -78,13 +78,12 @@ namespace Harmony
 			if (methodsByArguments == null)
 			{
 				methodsByArguments = new Dictionary<int, MethodBase>();
-				methodsByName.Add(name, methodsByArguments);
+				methodsByName[name] = methodsByArguments;
 			}
 
 			MethodBase method = null;
 			var argumentsHash = CombinedHashCode(arguments);
-			methodsByArguments.TryGetValue(argumentsHash, out method);
-			if (method == null)
+			if (methodsByArguments.TryGetValue(argumentsHash, out method) == false)
 			{
 				method = AccessTools.Method(type, name, arguments);
 				methodsByArguments.Add(argumentsHash, method);
