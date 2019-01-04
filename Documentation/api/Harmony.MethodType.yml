@@ -1,0 +1,199 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.MethodType
+  commentId: T:Harmony.MethodType
+  id: MethodType
+  parent: Harmony
+  children:
+  - Harmony.MethodType.Constructor
+  - Harmony.MethodType.Getter
+  - Harmony.MethodType.Normal
+  - Harmony.MethodType.Setter
+  - Harmony.MethodType.StaticConstructor
+  langs:
+  - csharp
+  - vb
+  name: MethodType
+  nameWithType: MethodType
+  fullName: Harmony.MethodType
+  type: Enum
+  source:
+    id: MethodType
+    path: ''
+    startLine: 10
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Values that represent method types.
+  example: []
+  syntax:
+    content: public enum MethodType
+    content.vb: Public Enum MethodType
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: Harmony.MethodType.Normal
+  commentId: F:Harmony.MethodType.Normal
+  id: Normal
+  parent: Harmony.MethodType
+  langs:
+  - csharp
+  - vb
+  name: Normal
+  nameWithType: MethodType.Normal
+  fullName: Harmony.MethodType.Normal
+  type: Field
+  source:
+    id: Normal
+    path: ''
+    startLine: 13
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the normal option.
+  example: []
+  syntax:
+    content: Normal = 0
+    return:
+      type: Harmony.MethodType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.MethodType.Getter
+  commentId: F:Harmony.MethodType.Getter
+  id: Getter
+  parent: Harmony.MethodType
+  langs:
+  - csharp
+  - vb
+  name: Getter
+  nameWithType: MethodType.Getter
+  fullName: Harmony.MethodType.Getter
+  type: Field
+  source:
+    id: Getter
+    path: ''
+    startLine: 15
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the getter option.
+  example: []
+  syntax:
+    content: Getter = 1
+    return:
+      type: Harmony.MethodType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.MethodType.Setter
+  commentId: F:Harmony.MethodType.Setter
+  id: Setter
+  parent: Harmony.MethodType
+  langs:
+  - csharp
+  - vb
+  name: Setter
+  nameWithType: MethodType.Setter
+  fullName: Harmony.MethodType.Setter
+  type: Field
+  source:
+    id: Setter
+    path: ''
+    startLine: 17
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the setter option.
+  example: []
+  syntax:
+    content: Setter = 2
+    return:
+      type: Harmony.MethodType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.MethodType.Constructor
+  commentId: F:Harmony.MethodType.Constructor
+  id: Constructor
+  parent: Harmony.MethodType
+  langs:
+  - csharp
+  - vb
+  name: Constructor
+  nameWithType: MethodType.Constructor
+  fullName: Harmony.MethodType.Constructor
+  type: Field
+  source:
+    id: Constructor
+    path: ''
+    startLine: 19
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the constructor option.
+  example: []
+  syntax:
+    content: Constructor = 3
+    return:
+      type: Harmony.MethodType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.MethodType.StaticConstructor
+  commentId: F:Harmony.MethodType.StaticConstructor
+  id: StaticConstructor
+  parent: Harmony.MethodType
+  langs:
+  - csharp
+  - vb
+  name: StaticConstructor
+  nameWithType: MethodType.StaticConstructor
+  fullName: Harmony.MethodType.StaticConstructor
+  type: Field
+  source:
+    id: StaticConstructor
+    path: ''
+    startLine: 21
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the static constructor option.
+  example: []
+  syntax:
+    content: StaticConstructor = 4
+    return:
+      type: Harmony.MethodType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: Harmony.MethodType
+  commentId: T:Harmony.MethodType
+  parent: Harmony
+  name: MethodType
+  nameWithType: MethodType
+  fullName: Harmony.MethodType

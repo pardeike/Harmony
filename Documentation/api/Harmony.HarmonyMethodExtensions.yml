@@ -1,0 +1,392 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.HarmonyMethodExtensions
+  commentId: T:Harmony.HarmonyMethodExtensions
+  id: HarmonyMethodExtensions
+  parent: Harmony
+  children:
+  - Harmony.HarmonyMethodExtensions.Clone(Harmony.HarmonyMethod)
+  - Harmony.HarmonyMethodExtensions.CopyTo(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  - Harmony.HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  - Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
+  - Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  langs:
+  - csharp
+  - vb
+  name: HarmonyMethodExtensions
+  nameWithType: HarmonyMethodExtensions
+  fullName: Harmony.HarmonyMethodExtensions
+  type: Class
+  source:
+    id: HarmonyMethodExtensions
+    path: ''
+    startLine: 1566
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A harmony method extensions.
+  example: []
+  syntax:
+    content: public static class HarmonyMethodExtensions
+    content.vb: Public Module HarmonyMethodExtensions
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: Harmony.HarmonyMethodExtensions.CopyTo(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  commentId: M:Harmony.HarmonyMethodExtensions.CopyTo(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  id: CopyTo(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  isExtensionMethod: true
+  parent: Harmony.HarmonyMethodExtensions
+  langs:
+  - csharp
+  - vb
+  name: CopyTo(HarmonyMethod, HarmonyMethod)
+  nameWithType: HarmonyMethodExtensions.CopyTo(HarmonyMethod, HarmonyMethod)
+  fullName: Harmony.HarmonyMethodExtensions.CopyTo(Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  type: Method
+  source:
+    id: CopyTo
+    path: ''
+    startLine: 1572
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A HarmonyMethod extension method that copies to.
+  example: []
+  syntax:
+    content: public static void CopyTo(this HarmonyMethod from, HarmonyMethod to)
+    parameters:
+    - id: from
+      type: Harmony.HarmonyMethod
+      description: from to act on.
+    - id: to
+      type: Harmony.HarmonyMethod
+      description: to.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Sub CopyTo(from As HarmonyMethod, to As HarmonyMethod)
+  overload: Harmony.HarmonyMethodExtensions.CopyTo*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.HarmonyMethodExtensions.Clone(Harmony.HarmonyMethod)
+  commentId: M:Harmony.HarmonyMethodExtensions.Clone(Harmony.HarmonyMethod)
+  id: Clone(Harmony.HarmonyMethod)
+  isExtensionMethod: true
+  parent: Harmony.HarmonyMethodExtensions
+  langs:
+  - csharp
+  - vb
+  name: Clone(HarmonyMethod)
+  nameWithType: HarmonyMethodExtensions.Clone(HarmonyMethod)
+  fullName: Harmony.HarmonyMethodExtensions.Clone(Harmony.HarmonyMethod)
+  type: Method
+  source:
+    id: Clone
+    path: ''
+    startLine: 1588
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A HarmonyMethod extension method that makes a deep copy of this HarmonyMethodExtensions.
+  example: []
+  syntax:
+    content: public static HarmonyMethod Clone(this HarmonyMethod original)
+    parameters:
+    - id: original
+      type: Harmony.HarmonyMethod
+      description: The original to act on.
+    return:
+      type: Harmony.HarmonyMethod
+      description: A copy of this HarmonyMethodExtensions.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function Clone(original As HarmonyMethod) As HarmonyMethod
+  overload: Harmony.HarmonyMethodExtensions.Clone*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  commentId: M:Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  id: Merge(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  isExtensionMethod: true
+  parent: Harmony.HarmonyMethodExtensions
+  langs:
+  - csharp
+  - vb
+  name: Merge(HarmonyMethod, HarmonyMethod)
+  nameWithType: HarmonyMethodExtensions.Merge(HarmonyMethod, HarmonyMethod)
+  fullName: Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  type: Method
+  source:
+    id: Merge
+    path: ''
+    startLine: 1600
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A HarmonyMethod extension method that merges.
+  example: []
+  syntax:
+    content: public static HarmonyMethod Merge(this HarmonyMethod master, HarmonyMethod detail)
+    parameters:
+    - id: master
+      type: Harmony.HarmonyMethod
+      description: The master to act on.
+    - id: detail
+      type: Harmony.HarmonyMethod
+      description: The detail.
+    return:
+      type: Harmony.HarmonyMethod
+      description: A HarmonyMethod.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function Merge(master As HarmonyMethod, detail As HarmonyMethod) As HarmonyMethod
+  overload: Harmony.HarmonyMethodExtensions.Merge*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
+  commentId: M:Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
+  id: GetHarmonyMethods(System.Type)
+  isExtensionMethod: true
+  parent: Harmony.HarmonyMethodExtensions
+  langs:
+  - csharp
+  - vb
+  name: GetHarmonyMethods(Type)
+  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods(Type)
+  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
+  type: Method
+  source:
+    id: GetHarmonyMethods
+    path: ''
+    startLine: 1620
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A MethodBase extension method that gets harmony methods.
+  example: []
+  syntax:
+    content: public static List<HarmonyMethod> GetHarmonyMethods(this Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type to act on.
+    return:
+      type: System.Collections.Generic.List{Harmony.HarmonyMethod}
+      description: The harmony methods.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function GetHarmonyMethods(type As Type) As List(Of HarmonyMethod)
+  overload: Harmony.HarmonyMethodExtensions.GetHarmonyMethods*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  commentId: M:Harmony.HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  id: GetHarmonyMethods(MethodBase)
+  isExtensionMethod: true
+  parent: Harmony.HarmonyMethodExtensions
+  langs:
+  - csharp
+  - vb
+  name: GetHarmonyMethods(MethodBase)
+  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  type: Method
+  source:
+    id: GetHarmonyMethods
+    path: ''
+    startLine: 1633
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A MethodBase extension method that gets harmony methods.
+  example: []
+  syntax:
+    content: public static List<HarmonyMethod> GetHarmonyMethods(this MethodBase method)
+    parameters:
+    - id: method
+      type: MethodBase
+      description: The method to act on.
+    return:
+      type: System.Collections.Generic.List{Harmony.HarmonyMethod}
+      description: The harmony methods.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function GetHarmonyMethods(method As MethodBase) As List(Of HarmonyMethod)
+  overload: Harmony.HarmonyMethodExtensions.GetHarmonyMethods*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Harmony.HarmonyMethodExtensions.CopyTo*
+  commentId: Overload:Harmony.HarmonyMethodExtensions.CopyTo
+  name: CopyTo
+  nameWithType: HarmonyMethodExtensions.CopyTo
+  fullName: Harmony.HarmonyMethodExtensions.CopyTo
+- uid: Harmony.HarmonyMethod
+  commentId: T:Harmony.HarmonyMethod
+  parent: Harmony
+  name: HarmonyMethod
+  nameWithType: HarmonyMethod
+  fullName: Harmony.HarmonyMethod
+- uid: Harmony.HarmonyMethodExtensions.Clone*
+  commentId: Overload:Harmony.HarmonyMethodExtensions.Clone
+  name: Clone
+  nameWithType: HarmonyMethodExtensions.Clone
+  fullName: Harmony.HarmonyMethodExtensions.Clone
+- uid: Harmony.HarmonyMethodExtensions.Merge*
+  commentId: Overload:Harmony.HarmonyMethodExtensions.Merge
+  name: Merge
+  nameWithType: HarmonyMethodExtensions.Merge
+  fullName: Harmony.HarmonyMethodExtensions.Merge
+- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods*
+  commentId: Overload:Harmony.HarmonyMethodExtensions.GetHarmonyMethods
+  name: GetHarmonyMethods
+  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods
+  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods
+- uid: System.Type
+  commentId: T:System.Type
+  parent: System
+  isExternal: true
+  name: Type
+  nameWithType: Type
+  fullName: System.Type
+- uid: System.Collections.Generic.List{Harmony.HarmonyMethod}
+  commentId: T:System.Collections.Generic.List{Harmony.HarmonyMethod}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<HarmonyMethod>
+  nameWithType: List<HarmonyMethod>
+  fullName: System.Collections.Generic.List<Harmony.HarmonyMethod>
+  nameWithType.vb: List(Of HarmonyMethod)
+  fullName.vb: System.Collections.Generic.List(Of Harmony.HarmonyMethod)
+  name.vb: List(Of HarmonyMethod)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Harmony.HarmonyMethod
+    name: HarmonyMethod
+    nameWithType: HarmonyMethod
+    fullName: Harmony.HarmonyMethod
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Harmony.HarmonyMethod
+    name: HarmonyMethod
+    nameWithType: HarmonyMethod
+    fullName: Harmony.HarmonyMethod
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: MethodBase
+  isExternal: true
+  name: MethodBase
+  nameWithType: MethodBase
+  fullName: MethodBase

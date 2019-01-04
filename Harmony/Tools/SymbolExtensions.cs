@@ -4,46 +4,43 @@ using System;
 
 namespace Harmony
 {
+	/// <summary>A helper class to retrieve reflection info for non-private methods</summary>
 	public static class SymbolExtensions
 	{
-		/// <summary>
-		/// Given a lambda expression that calls a method, returns the method info.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="expression">The expression.</param>
-		/// <returns></returns>
+		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		///
 		public static MethodInfo GetMethodInfo(Expression<Action> expression)
 		{
 			return GetMethodInfo((LambdaExpression)expression);
 		}
 
-		/// <summary>
-		/// Given a lambda expression that calls a method, returns the method info.
-		/// </summary>
+		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="expression">The expression.</param>
-		/// <returns></returns>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		///
 		public static MethodInfo GetMethodInfo<T>(Expression<Action<T>> expression)
 		{
 			return GetMethodInfo((LambdaExpression)expression);
 		}
 
-		/// <summary>
-		/// Given a lambda expression that calls a method, returns the method info.
-		/// </summary>
+		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="expression">The expression.</param>
-		/// <returns></returns>
+		/// <typeparam name="TResult"></typeparam>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		///
 		public static MethodInfo GetMethodInfo<T, TResult>(Expression<Func<T, TResult>> expression)
 		{
 			return GetMethodInfo((LambdaExpression)expression);
 		}
 
-		/// <summary>
-		/// Given a lambda expression that calls a method, returns the method info.
-		/// </summary>
-		/// <param name="expression">The expression.</param>
-		/// <returns></returns>
+		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		///
 		public static MethodInfo GetMethodInfo(LambdaExpression expression)
 		{
 			var outermostExpression = expression.Body as MethodCallExpression;

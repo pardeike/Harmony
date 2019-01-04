@@ -9,11 +9,15 @@ using System.Diagnostics;
 
 namespace Harmony
 {
+	/// <summary>A helper class to transpile code</summary>
 	public class CodeTranspiler
 	{
-		private IEnumerable<CodeInstruction> codeInstructions;
+		private readonly IEnumerable<CodeInstruction> codeInstructions;
 		private List<MethodInfo> transpilers = new List<MethodInfo>();
 
+		/// <summary>Create a code transpiler with an enumeration of instructions</summary>
+		/// <param name="ilInstructions">The IL instructions</param>
+		///
 		public CodeTranspiler(List<ILInstruction> ilInstructions)
 		{
 			codeInstructions = ilInstructions
@@ -21,16 +25,25 @@ namespace Harmony
 				.ToList().AsEnumerable();
 		}
 
+		/// <summary>Add a transpiler</summary>
+		/// <param name="transpiler">The transpiler</param>
+		///
 		public void Add(MethodInfo transpiler)
 		{
 			transpilers.Add(transpiler);
 		}
 
+		/// <summary>Convert an instruction</summary>
+		/// <param name="type">The instruction type</param>
+		/// <param name="instruction">The instruction</param>
+		/// <param name="unassigned">[out] Unassigned instructions</param>
+		/// <returns>The converted instruction</returns>
+		///
 		[UpgradeToLatestVersion(1)]
-		public static object ConvertInstruction(Type type, object op, out Dictionary<string, object> unassigned)
+		public static object ConvertInstruction(Type type, object instruction, out Dictionary<string, object> unassigned)
 		{
 			var nonExisting = new Dictionary<string, object>();
-			var elementTo = AccessTools.MakeDeepCopy(op, type, (namePath, trvSrc, trvDest) =>
+			var elementTo = AccessTools.MakeDeepCopy(instruction, type, (namePath, trvSrc, trvDest) =>
 			{
 				var value = trvSrc.GetValue();
 
@@ -49,10 +62,17 @@ namespace Harmony
 			return elementTo;
 		}
 
-		// ShouldAddExceptionInfo is used to determine if CodeInstructions from an older Harmony version were duplicating
-		// exception information as well as to preserve the exception information from being dropped when piping through
-		// multiple transpilers with mixed Harmony versions.
-		//
+		/// <summary>ShouldAddExceptionInfo is used to determine if CodeInstructions from an older Harmony version were duplicating
+		///   exception information as well as to preserve the exception information from being dropped when piping through
+		///   multiple transpilers with mixed Harmony versions.
+		/// </summary>
+		/// <param name="op">The operation</param>
+		/// <param name="opIndex">Zero-based index</param>
+		/// <param name="originalInstructions">Original instructions</param>
+		/// <param name="newInstructions">New instructions</param>
+		/// <param name="unassignedValues">[out] Unassigned instructions</param>
+		/// <returns>True if exception info should be added</returns>
+		///
 		public static bool ShouldAddExceptionInfo(object op, int opIndex, List<object> originalInstructions, List<object> newInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var originalIndex = originalInstructions.IndexOf(op);
@@ -155,6 +175,12 @@ namespace Harmony
 			return true;
 		}
 
+		/// <summary>Convert instructions and unassigned values</summary>
+		/// <param name="type">The type</param>
+		/// <param name="enumerable">The enumerable</param>
+		/// <param name="unassignedValues">[out] The unassigned values</param>
+		/// <returns>The instructions converted</returns>
+		///
 		public static IEnumerable ConvertInstructionsAndUnassignedValues(Type type, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var enumerableAssembly = type.GetGenericTypeDefinition().Assembly;
@@ -174,6 +200,12 @@ namespace Harmony
 			return list as IEnumerable;
 		}
 
+		/// <summary>Converts instructions to our own instructions</summary>
+		/// <param name="instructions">The instructions to be converted</param>
+		/// <param name="originalInstructions">The original instructions</param>
+		/// <param name="unassignedValues">[out] The unassigned values</param>
+		/// <returns>The converted instructions</returns>
+		///
 		[UpgradeToLatestVersion(1)]
 		public static IEnumerable ConvertToOurInstructions(IEnumerable instructions, List<object> originalInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
@@ -219,6 +251,12 @@ namespace Harmony
 			}
 		}
 
+		/// <summary>Converts instructions to general instructions</summary>
+		/// <param name="transpiler">The transpiler</param>
+		/// <param name="enumerable">The instructions</param>
+		/// <param name="unassignedValues">[out] The unassigned values</param>
+		/// <returns>The converted instructions</returns>
+		///
 		public static IEnumerable ConvertToGeneralInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var type = transpiler.GetParameters()
@@ -227,6 +265,13 @@ namespace Harmony
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
 
+		/// <summary>Gets transpiler call parameters</summary>
+		/// <param name="generator">The generator</param>
+		/// <param name="transpiler">The transpiler</param>
+		/// <param name="method">The method</param>
+		/// <param name="instructions">The instructions</param>
+		/// <returns>The call parameters</returns>
+		///
 		public static List<object> GetTranspilerCallParameters(ILGenerator generator, MethodInfo transpiler, MethodBase method, IEnumerable instructions)
 		{
 			var parameter = new List<object>();
@@ -242,6 +287,11 @@ namespace Harmony
 			return parameter;
 		}
 
+		/// <summary>Gets a the final instructions</summary>
+		/// <param name="generator">The generator</param>
+		/// <param name="method">The original method</param>
+		/// <returns>The final instruction</returns>
+		///
 		public List<CodeInstruction> GetResult(ILGenerator generator, MethodBase method)
 		{
 			IEnumerable instructions = codeInstructions;

@@ -1,0 +1,3245 @@
+### YamlMime:XRefMap
+sorted: true
+references:
+- uid: Harmony
+  name: Harmony
+  href: api/Harmony.html
+  commentId: N:Harmony
+  fullName: Harmony
+  nameWithType: Harmony
+- uid: Harmony.AccessTools
+  name: AccessTools
+  href: api/Harmony.AccessTools.html
+  commentId: T:Harmony.AccessTools
+  fullName: Harmony.AccessTools
+  nameWithType: AccessTools
+- uid: Harmony.AccessTools.all
+  name: all
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_all
+  commentId: F:Harmony.AccessTools.all
+  fullName: Harmony.AccessTools.all
+  nameWithType: AccessTools.all
+- uid: Harmony.AccessTools.Constructor(System.Type,System.Type[])
+  name: Constructor(Type, Type[])
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Constructor_System_Type_System_Type___
+  commentId: M:Harmony.AccessTools.Constructor(System.Type,System.Type[])
+  name.vb: Constructor(Type, Type())
+  fullName: Harmony.AccessTools.Constructor(System.Type, System.Type[])
+  fullName.vb: Harmony.AccessTools.Constructor(System.Type, System.Type())
+  nameWithType: AccessTools.Constructor(Type, Type[])
+  nameWithType.vb: AccessTools.Constructor(Type, Type())
+- uid: Harmony.AccessTools.Constructor*
+  name: Constructor
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Constructor_
+  commentId: Overload:Harmony.AccessTools.Constructor
+  isSpec: "True"
+  fullName: Harmony.AccessTools.Constructor
+  nameWithType: AccessTools.Constructor
+- uid: Harmony.AccessTools.CreateInstance(System.Type)
+  name: CreateInstance(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_CreateInstance_System_Type_
+  commentId: M:Harmony.AccessTools.CreateInstance(System.Type)
+  fullName: Harmony.AccessTools.CreateInstance(System.Type)
+  nameWithType: AccessTools.CreateInstance(Type)
+- uid: Harmony.AccessTools.CreateInstance*
+  name: CreateInstance
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_CreateInstance_
+  commentId: Overload:Harmony.AccessTools.CreateInstance
+  isSpec: "True"
+  fullName: Harmony.AccessTools.CreateInstance
+  nameWithType: AccessTools.CreateInstance
+- uid: Harmony.AccessTools.DeclaredConstructor(System.Type,System.Type[])
+  name: DeclaredConstructor(Type, Type[])
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredConstructor_System_Type_System_Type___
+  commentId: M:Harmony.AccessTools.DeclaredConstructor(System.Type,System.Type[])
+  name.vb: DeclaredConstructor(Type, Type())
+  fullName: Harmony.AccessTools.DeclaredConstructor(System.Type, System.Type[])
+  fullName.vb: Harmony.AccessTools.DeclaredConstructor(System.Type, System.Type())
+  nameWithType: AccessTools.DeclaredConstructor(Type, Type[])
+  nameWithType.vb: AccessTools.DeclaredConstructor(Type, Type())
+- uid: Harmony.AccessTools.DeclaredConstructor*
+  name: DeclaredConstructor
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredConstructor_
+  commentId: Overload:Harmony.AccessTools.DeclaredConstructor
+  isSpec: "True"
+  fullName: Harmony.AccessTools.DeclaredConstructor
+  nameWithType: AccessTools.DeclaredConstructor
+- uid: Harmony.AccessTools.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  name: DeclaredMethod(Type, String, Type[], Type[])
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredMethod_System_Type_System_String_System_Type___System_Type___
+  commentId: M:Harmony.AccessTools.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  name.vb: DeclaredMethod(Type, String, Type(), Type())
+  fullName: Harmony.AccessTools.DeclaredMethod(System.Type, System.String, System.Type[], System.Type[])
+  fullName.vb: Harmony.AccessTools.DeclaredMethod(System.Type, System.String, System.Type(), System.Type())
+  nameWithType: AccessTools.DeclaredMethod(Type, String, Type[], Type[])
+  nameWithType.vb: AccessTools.DeclaredMethod(Type, String, Type(), Type())
+- uid: Harmony.AccessTools.DeclaredMethod*
+  name: DeclaredMethod
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredMethod_
+  commentId: Overload:Harmony.AccessTools.DeclaredMethod
+  isSpec: "True"
+  fullName: Harmony.AccessTools.DeclaredMethod
+  nameWithType: AccessTools.DeclaredMethod
+- uid: Harmony.AccessTools.DeclaredProperty(System.Type,System.String)
+  name: DeclaredProperty(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredProperty_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.DeclaredProperty(System.Type,System.String)
+  fullName: Harmony.AccessTools.DeclaredProperty(System.Type, System.String)
+  nameWithType: AccessTools.DeclaredProperty(Type, String)
+- uid: Harmony.AccessTools.DeclaredProperty*
+  name: DeclaredProperty
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredProperty_
+  commentId: Overload:Harmony.AccessTools.DeclaredProperty
+  isSpec: "True"
+  fullName: Harmony.AccessTools.DeclaredProperty
+  nameWithType: AccessTools.DeclaredProperty
+- uid: Harmony.AccessTools.Field(System.Type,System.Int32)
+  name: Field(Type, Int32)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Field_System_Type_System_Int32_
+  commentId: M:Harmony.AccessTools.Field(System.Type,System.Int32)
+  fullName: Harmony.AccessTools.Field(System.Type, System.Int32)
+  nameWithType: AccessTools.Field(Type, Int32)
+- uid: Harmony.AccessTools.Field(System.Type,System.String)
+  name: Field(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Field_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.Field(System.Type,System.String)
+  fullName: Harmony.AccessTools.Field(System.Type, System.String)
+  nameWithType: AccessTools.Field(Type, String)
+- uid: Harmony.AccessTools.Field*
+  name: Field
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Field_
+  commentId: Overload:Harmony.AccessTools.Field
+  isSpec: "True"
+  fullName: Harmony.AccessTools.Field
+  nameWithType: AccessTools.Field
+- uid: Harmony.AccessTools.FieldRef`2
+  name: AccessTools.FieldRef<T, U>
+  href: api/Harmony.AccessTools.FieldRef-2.html
+  commentId: T:Harmony.AccessTools.FieldRef`2
+  name.vb: AccessTools.FieldRef(Of T, U)
+  fullName: Harmony.AccessTools.FieldRef<T, U>
+  fullName.vb: Harmony.AccessTools.FieldRef(Of T, U)
+  nameWithType: AccessTools.FieldRef<T, U>
+  nameWithType.vb: AccessTools.FieldRef(Of T, U)
+- uid: Harmony.AccessTools.FieldRefAccess*
+  name: FieldRefAccess
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FieldRefAccess_
+  commentId: Overload:Harmony.AccessTools.FieldRefAccess
+  isSpec: "True"
+  fullName: Harmony.AccessTools.FieldRefAccess
+  nameWithType: AccessTools.FieldRefAccess
+- uid: Harmony.AccessTools.FieldRefAccess``2(``0,System.String)
+  name: FieldRefAccess<T, U>(T, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FieldRefAccess__2___0_System_String_
+  commentId: M:Harmony.AccessTools.FieldRefAccess``2(``0,System.String)
+  name.vb: FieldRefAccess(Of T, U)(T, String)
+  fullName: Harmony.AccessTools.FieldRefAccess<T, U>(T, System.String)
+  fullName.vb: Harmony.AccessTools.FieldRefAccess(Of T, U)(T, System.String)
+  nameWithType: AccessTools.FieldRefAccess<T, U>(T, String)
+  nameWithType.vb: AccessTools.FieldRefAccess(Of T, U)(T, String)
+- uid: Harmony.AccessTools.FieldRefAccess``2(System.String)
+  name: FieldRefAccess<T, U>(String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FieldRefAccess__2_System_String_
+  commentId: M:Harmony.AccessTools.FieldRefAccess``2(System.String)
+  name.vb: FieldRefAccess(Of T, U)(String)
+  fullName: Harmony.AccessTools.FieldRefAccess<T, U>(System.String)
+  fullName.vb: Harmony.AccessTools.FieldRefAccess(Of T, U)(System.String)
+  nameWithType: AccessTools.FieldRefAccess<T, U>(String)
+  nameWithType.vb: AccessTools.FieldRefAccess(Of T, U)(String)
+- uid: Harmony.AccessTools.FindIncludingBaseTypes*
+  name: FindIncludingBaseTypes
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FindIncludingBaseTypes_
+  commentId: Overload:Harmony.AccessTools.FindIncludingBaseTypes
+  isSpec: "True"
+  fullName: Harmony.AccessTools.FindIncludingBaseTypes
+  nameWithType: AccessTools.FindIncludingBaseTypes
+- uid: Harmony.AccessTools.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  name: FindIncludingBaseTypes<T>(Type, Func<Type, T>)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FindIncludingBaseTypes__1_System_Type_System_Func_System_Type___0__
+  commentId: M:Harmony.AccessTools.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  name.vb: FindIncludingBaseTypes(Of T)(Type, Func(Of Type, T))
+  fullName: Harmony.AccessTools.FindIncludingBaseTypes<T>(System.Type, System.Func<System.Type, T>)
+  fullName.vb: Harmony.AccessTools.FindIncludingBaseTypes(Of T)(System.Type, System.Func(Of System.Type, T))
+  nameWithType: AccessTools.FindIncludingBaseTypes<T>(Type, Func<Type, T>)
+  nameWithType.vb: AccessTools.FindIncludingBaseTypes(Of T)(Type, Func(Of Type, T))
+- uid: Harmony.AccessTools.FindIncludingInnerTypes*
+  name: FindIncludingInnerTypes
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FindIncludingInnerTypes_
+  commentId: Overload:Harmony.AccessTools.FindIncludingInnerTypes
+  isSpec: "True"
+  fullName: Harmony.AccessTools.FindIncludingInnerTypes
+  nameWithType: AccessTools.FindIncludingInnerTypes
+- uid: Harmony.AccessTools.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  name: FindIncludingInnerTypes<T>(Type, Func<Type, T>)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FindIncludingInnerTypes__1_System_Type_System_Func_System_Type___0__
+  commentId: M:Harmony.AccessTools.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  name.vb: FindIncludingInnerTypes(Of T)(Type, Func(Of Type, T))
+  fullName: Harmony.AccessTools.FindIncludingInnerTypes<T>(System.Type, System.Func<System.Type, T>)
+  fullName.vb: Harmony.AccessTools.FindIncludingInnerTypes(Of T)(System.Type, System.Func(Of System.Type, T))
+  nameWithType: AccessTools.FindIncludingInnerTypes<T>(Type, Func<Type, T>)
+  nameWithType.vb: AccessTools.FindIncludingInnerTypes(Of T)(Type, Func(Of Type, T))
+- uid: Harmony.AccessTools.FirstConstructor(System.Type,System.Func{ConstructorInfo,System.Boolean})
+  name: FirstConstructor(Type, Func<ConstructorInfo, Boolean>)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstConstructor_System_Type_System_Func_ConstructorInfo_System_Boolean__
+  commentId: M:Harmony.AccessTools.FirstConstructor(System.Type,System.Func{ConstructorInfo,System.Boolean})
+  name.vb: FirstConstructor(Type, Func(Of ConstructorInfo, Boolean))
+  fullName: Harmony.AccessTools.FirstConstructor(System.Type, System.Func<ConstructorInfo, System.Boolean>)
+  fullName.vb: Harmony.AccessTools.FirstConstructor(System.Type, System.Func(Of ConstructorInfo, System.Boolean))
+  nameWithType: AccessTools.FirstConstructor(Type, Func<ConstructorInfo, Boolean>)
+  nameWithType.vb: AccessTools.FirstConstructor(Type, Func(Of ConstructorInfo, Boolean))
+- uid: Harmony.AccessTools.FirstConstructor*
+  name: FirstConstructor
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstConstructor_
+  commentId: Overload:Harmony.AccessTools.FirstConstructor
+  isSpec: "True"
+  fullName: Harmony.AccessTools.FirstConstructor
+  nameWithType: AccessTools.FirstConstructor
+- uid: Harmony.AccessTools.FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  name: FirstInner(Type, Func<Type, Boolean>)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstInner_System_Type_System_Func_System_Type_System_Boolean__
+  commentId: M:Harmony.AccessTools.FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  name.vb: FirstInner(Type, Func(Of Type, Boolean))
+  fullName: Harmony.AccessTools.FirstInner(System.Type, System.Func<System.Type, System.Boolean>)
+  fullName.vb: Harmony.AccessTools.FirstInner(System.Type, System.Func(Of System.Type, System.Boolean))
+  nameWithType: AccessTools.FirstInner(Type, Func<Type, Boolean>)
+  nameWithType.vb: AccessTools.FirstInner(Type, Func(Of Type, Boolean))
+- uid: Harmony.AccessTools.FirstInner*
+  name: FirstInner
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstInner_
+  commentId: Overload:Harmony.AccessTools.FirstInner
+  isSpec: "True"
+  fullName: Harmony.AccessTools.FirstInner
+  nameWithType: AccessTools.FirstInner
+- uid: Harmony.AccessTools.FirstMethod(System.Type,System.Func{MethodInfo,System.Boolean})
+  name: FirstMethod(Type, Func<MethodInfo, Boolean>)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstMethod_System_Type_System_Func_MethodInfo_System_Boolean__
+  commentId: M:Harmony.AccessTools.FirstMethod(System.Type,System.Func{MethodInfo,System.Boolean})
+  name.vb: FirstMethod(Type, Func(Of MethodInfo, Boolean))
+  fullName: Harmony.AccessTools.FirstMethod(System.Type, System.Func<MethodInfo, System.Boolean>)
+  fullName.vb: Harmony.AccessTools.FirstMethod(System.Type, System.Func(Of MethodInfo, System.Boolean))
+  nameWithType: AccessTools.FirstMethod(Type, Func<MethodInfo, Boolean>)
+  nameWithType.vb: AccessTools.FirstMethod(Type, Func(Of MethodInfo, Boolean))
+- uid: Harmony.AccessTools.FirstMethod*
+  name: FirstMethod
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstMethod_
+  commentId: Overload:Harmony.AccessTools.FirstMethod
+  isSpec: "True"
+  fullName: Harmony.AccessTools.FirstMethod
+  nameWithType: AccessTools.FirstMethod
+- uid: Harmony.AccessTools.FirstProperty(System.Type,System.Func{PropertyInfo,System.Boolean})
+  name: FirstProperty(Type, Func<PropertyInfo, Boolean>)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstProperty_System_Type_System_Func_PropertyInfo_System_Boolean__
+  commentId: M:Harmony.AccessTools.FirstProperty(System.Type,System.Func{PropertyInfo,System.Boolean})
+  name.vb: FirstProperty(Type, Func(Of PropertyInfo, Boolean))
+  fullName: Harmony.AccessTools.FirstProperty(System.Type, System.Func<PropertyInfo, System.Boolean>)
+  fullName.vb: Harmony.AccessTools.FirstProperty(System.Type, System.Func(Of PropertyInfo, System.Boolean))
+  nameWithType: AccessTools.FirstProperty(Type, Func<PropertyInfo, Boolean>)
+  nameWithType.vb: AccessTools.FirstProperty(Type, Func(Of PropertyInfo, Boolean))
+- uid: Harmony.AccessTools.FirstProperty*
+  name: FirstProperty
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_FirstProperty_
+  commentId: Overload:Harmony.AccessTools.FirstProperty
+  isSpec: "True"
+  fullName: Harmony.AccessTools.FirstProperty
+  nameWithType: AccessTools.FirstProperty
+- uid: Harmony.AccessTools.GetDeclaredConstructors(System.Type)
+  name: GetDeclaredConstructors(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredConstructors_System_Type_
+  commentId: M:Harmony.AccessTools.GetDeclaredConstructors(System.Type)
+  fullName: Harmony.AccessTools.GetDeclaredConstructors(System.Type)
+  nameWithType: AccessTools.GetDeclaredConstructors(Type)
+- uid: Harmony.AccessTools.GetDeclaredConstructors*
+  name: GetDeclaredConstructors
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredConstructors_
+  commentId: Overload:Harmony.AccessTools.GetDeclaredConstructors
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetDeclaredConstructors
+  nameWithType: AccessTools.GetDeclaredConstructors
+- uid: Harmony.AccessTools.GetDeclaredFields(System.Type)
+  name: GetDeclaredFields(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredFields_System_Type_
+  commentId: M:Harmony.AccessTools.GetDeclaredFields(System.Type)
+  fullName: Harmony.AccessTools.GetDeclaredFields(System.Type)
+  nameWithType: AccessTools.GetDeclaredFields(Type)
+- uid: Harmony.AccessTools.GetDeclaredFields*
+  name: GetDeclaredFields
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredFields_
+  commentId: Overload:Harmony.AccessTools.GetDeclaredFields
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetDeclaredFields
+  nameWithType: AccessTools.GetDeclaredFields
+- uid: Harmony.AccessTools.GetDeclaredMethods(System.Type)
+  name: GetDeclaredMethods(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredMethods_System_Type_
+  commentId: M:Harmony.AccessTools.GetDeclaredMethods(System.Type)
+  fullName: Harmony.AccessTools.GetDeclaredMethods(System.Type)
+  nameWithType: AccessTools.GetDeclaredMethods(Type)
+- uid: Harmony.AccessTools.GetDeclaredMethods*
+  name: GetDeclaredMethods
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredMethods_
+  commentId: Overload:Harmony.AccessTools.GetDeclaredMethods
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetDeclaredMethods
+  nameWithType: AccessTools.GetDeclaredMethods
+- uid: Harmony.AccessTools.GetDeclaredProperties(System.Type)
+  name: GetDeclaredProperties(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredProperties_System_Type_
+  commentId: M:Harmony.AccessTools.GetDeclaredProperties(System.Type)
+  fullName: Harmony.AccessTools.GetDeclaredProperties(System.Type)
+  nameWithType: AccessTools.GetDeclaredProperties(Type)
+- uid: Harmony.AccessTools.GetDeclaredProperties*
+  name: GetDeclaredProperties
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDeclaredProperties_
+  commentId: Overload:Harmony.AccessTools.GetDeclaredProperties
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetDeclaredProperties
+  nameWithType: AccessTools.GetDeclaredProperties
+- uid: Harmony.AccessTools.GetDefaultValue(System.Type)
+  name: GetDefaultValue(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDefaultValue_System_Type_
+  commentId: M:Harmony.AccessTools.GetDefaultValue(System.Type)
+  fullName: Harmony.AccessTools.GetDefaultValue(System.Type)
+  nameWithType: AccessTools.GetDefaultValue(Type)
+- uid: Harmony.AccessTools.GetDefaultValue*
+  name: GetDefaultValue
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetDefaultValue_
+  commentId: Overload:Harmony.AccessTools.GetDefaultValue
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetDefaultValue
+  nameWithType: AccessTools.GetDefaultValue
+- uid: Harmony.AccessTools.GetFieldNames(System.Object)
+  name: GetFieldNames(Object)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetFieldNames_System_Object_
+  commentId: M:Harmony.AccessTools.GetFieldNames(System.Object)
+  fullName: Harmony.AccessTools.GetFieldNames(System.Object)
+  nameWithType: AccessTools.GetFieldNames(Object)
+- uid: Harmony.AccessTools.GetFieldNames(System.Type)
+  name: GetFieldNames(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetFieldNames_System_Type_
+  commentId: M:Harmony.AccessTools.GetFieldNames(System.Type)
+  fullName: Harmony.AccessTools.GetFieldNames(System.Type)
+  nameWithType: AccessTools.GetFieldNames(Type)
+- uid: Harmony.AccessTools.GetFieldNames*
+  name: GetFieldNames
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetFieldNames_
+  commentId: Overload:Harmony.AccessTools.GetFieldNames
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetFieldNames
+  nameWithType: AccessTools.GetFieldNames
+- uid: Harmony.AccessTools.GetMethodNames(System.Object)
+  name: GetMethodNames(Object)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetMethodNames_System_Object_
+  commentId: M:Harmony.AccessTools.GetMethodNames(System.Object)
+  fullName: Harmony.AccessTools.GetMethodNames(System.Object)
+  nameWithType: AccessTools.GetMethodNames(Object)
+- uid: Harmony.AccessTools.GetMethodNames(System.Type)
+  name: GetMethodNames(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetMethodNames_System_Type_
+  commentId: M:Harmony.AccessTools.GetMethodNames(System.Type)
+  fullName: Harmony.AccessTools.GetMethodNames(System.Type)
+  nameWithType: AccessTools.GetMethodNames(Type)
+- uid: Harmony.AccessTools.GetMethodNames*
+  name: GetMethodNames
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetMethodNames_
+  commentId: Overload:Harmony.AccessTools.GetMethodNames
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetMethodNames
+  nameWithType: AccessTools.GetMethodNames
+- uid: Harmony.AccessTools.GetPropertyNames(System.Object)
+  name: GetPropertyNames(Object)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetPropertyNames_System_Object_
+  commentId: M:Harmony.AccessTools.GetPropertyNames(System.Object)
+  fullName: Harmony.AccessTools.GetPropertyNames(System.Object)
+  nameWithType: AccessTools.GetPropertyNames(Object)
+- uid: Harmony.AccessTools.GetPropertyNames(System.Type)
+  name: GetPropertyNames(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetPropertyNames_System_Type_
+  commentId: M:Harmony.AccessTools.GetPropertyNames(System.Type)
+  fullName: Harmony.AccessTools.GetPropertyNames(System.Type)
+  nameWithType: AccessTools.GetPropertyNames(Type)
+- uid: Harmony.AccessTools.GetPropertyNames*
+  name: GetPropertyNames
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetPropertyNames_
+  commentId: Overload:Harmony.AccessTools.GetPropertyNames
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetPropertyNames
+  nameWithType: AccessTools.GetPropertyNames
+- uid: Harmony.AccessTools.GetReturnedType(MethodBase)
+  name: GetReturnedType(MethodBase)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetReturnedType_MethodBase_
+  commentId: M:Harmony.AccessTools.GetReturnedType(MethodBase)
+  fullName: Harmony.AccessTools.GetReturnedType(MethodBase)
+  nameWithType: AccessTools.GetReturnedType(MethodBase)
+- uid: Harmony.AccessTools.GetReturnedType*
+  name: GetReturnedType
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetReturnedType_
+  commentId: Overload:Harmony.AccessTools.GetReturnedType
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetReturnedType
+  nameWithType: AccessTools.GetReturnedType
+- uid: Harmony.AccessTools.GetTypes(System.Object[])
+  name: GetTypes(Object[])
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetTypes_System_Object___
+  commentId: M:Harmony.AccessTools.GetTypes(System.Object[])
+  name.vb: GetTypes(Object())
+  fullName: Harmony.AccessTools.GetTypes(System.Object[])
+  fullName.vb: Harmony.AccessTools.GetTypes(System.Object())
+  nameWithType: AccessTools.GetTypes(Object[])
+  nameWithType.vb: AccessTools.GetTypes(Object())
+- uid: Harmony.AccessTools.GetTypes*
+  name: GetTypes
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetTypes_
+  commentId: Overload:Harmony.AccessTools.GetTypes
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetTypes
+  nameWithType: AccessTools.GetTypes
+- uid: Harmony.AccessTools.Inner(System.Type,System.String)
+  name: Inner(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Inner_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.Inner(System.Type,System.String)
+  fullName: Harmony.AccessTools.Inner(System.Type, System.String)
+  nameWithType: AccessTools.Inner(Type, String)
+- uid: Harmony.AccessTools.Inner*
+  name: Inner
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Inner_
+  commentId: Overload:Harmony.AccessTools.Inner
+  isSpec: "True"
+  fullName: Harmony.AccessTools.Inner
+  nameWithType: AccessTools.Inner
+- uid: Harmony.AccessTools.IsClass(System.Type)
+  name: IsClass(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsClass_System_Type_
+  commentId: M:Harmony.AccessTools.IsClass(System.Type)
+  fullName: Harmony.AccessTools.IsClass(System.Type)
+  nameWithType: AccessTools.IsClass(Type)
+- uid: Harmony.AccessTools.IsClass*
+  name: IsClass
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsClass_
+  commentId: Overload:Harmony.AccessTools.IsClass
+  isSpec: "True"
+  fullName: Harmony.AccessTools.IsClass
+  nameWithType: AccessTools.IsClass
+- uid: Harmony.AccessTools.IsStruct(System.Type)
+  name: IsStruct(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsStruct_System_Type_
+  commentId: M:Harmony.AccessTools.IsStruct(System.Type)
+  fullName: Harmony.AccessTools.IsStruct(System.Type)
+  nameWithType: AccessTools.IsStruct(Type)
+- uid: Harmony.AccessTools.IsStruct*
+  name: IsStruct
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsStruct_
+  commentId: Overload:Harmony.AccessTools.IsStruct
+  isSpec: "True"
+  fullName: Harmony.AccessTools.IsStruct
+  nameWithType: AccessTools.IsStruct
+- uid: Harmony.AccessTools.IsValue(System.Type)
+  name: IsValue(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsValue_System_Type_
+  commentId: M:Harmony.AccessTools.IsValue(System.Type)
+  fullName: Harmony.AccessTools.IsValue(System.Type)
+  nameWithType: AccessTools.IsValue(Type)
+- uid: Harmony.AccessTools.IsValue*
+  name: IsValue
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsValue_
+  commentId: Overload:Harmony.AccessTools.IsValue
+  isSpec: "True"
+  fullName: Harmony.AccessTools.IsValue
+  nameWithType: AccessTools.IsValue
+- uid: Harmony.AccessTools.IsVoid(System.Type)
+  name: IsVoid(Type)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsVoid_System_Type_
+  commentId: M:Harmony.AccessTools.IsVoid(System.Type)
+  fullName: Harmony.AccessTools.IsVoid(System.Type)
+  nameWithType: AccessTools.IsVoid(Type)
+- uid: Harmony.AccessTools.IsVoid*
+  name: IsVoid
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_IsVoid_
+  commentId: Overload:Harmony.AccessTools.IsVoid
+  isSpec: "True"
+  fullName: Harmony.AccessTools.IsVoid
+  nameWithType: AccessTools.IsVoid
+- uid: Harmony.AccessTools.MakeDeepCopy(System.Object,System.Type,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  name: MakeDeepCopy(Object, Type, Func<String, Traverse, Traverse, Object>, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_MakeDeepCopy_System_Object_System_Type_System_Func_System_String_Harmony_Traverse_Harmony_Traverse_System_Object__System_String_
+  commentId: M:Harmony.AccessTools.MakeDeepCopy(System.Object,System.Type,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  name.vb: MakeDeepCopy(Object, Type, Func(Of String, Traverse, Traverse, Object), String)
+  fullName: Harmony.AccessTools.MakeDeepCopy(System.Object, System.Type, System.Func<System.String, Harmony.Traverse, Harmony.Traverse, System.Object>, System.String)
+  fullName.vb: Harmony.AccessTools.MakeDeepCopy(System.Object, System.Type, System.Func(Of System.String, Harmony.Traverse, Harmony.Traverse, System.Object), System.String)
+  nameWithType: AccessTools.MakeDeepCopy(Object, Type, Func<String, Traverse, Traverse, Object>, String)
+  nameWithType.vb: AccessTools.MakeDeepCopy(Object, Type, Func(Of String, Traverse, Traverse, Object), String)
+- uid: Harmony.AccessTools.MakeDeepCopy*
+  name: MakeDeepCopy
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_MakeDeepCopy_
+  commentId: Overload:Harmony.AccessTools.MakeDeepCopy
+  isSpec: "True"
+  fullName: Harmony.AccessTools.MakeDeepCopy
+  nameWithType: AccessTools.MakeDeepCopy
+- uid: Harmony.AccessTools.MakeDeepCopy``1(System.Object,``0@,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  name: MakeDeepCopy<T>(Object, out T, Func<String, Traverse, Traverse, Object>, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_MakeDeepCopy__1_System_Object___0__System_Func_System_String_Harmony_Traverse_Harmony_Traverse_System_Object__System_String_
+  commentId: M:Harmony.AccessTools.MakeDeepCopy``1(System.Object,``0@,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  name.vb: MakeDeepCopy(Of T)(Object, ByRef T, Func(Of String, Traverse, Traverse, Object), String)
+  fullName: Harmony.AccessTools.MakeDeepCopy<T>(System.Object, out T, System.Func<System.String, Harmony.Traverse, Harmony.Traverse, System.Object>, System.String)
+  fullName.vb: Harmony.AccessTools.MakeDeepCopy(Of T)(System.Object, ByRef T, System.Func(Of System.String, Harmony.Traverse, Harmony.Traverse, System.Object), System.String)
+  nameWithType: AccessTools.MakeDeepCopy<T>(Object, out T, Func<String, Traverse, Traverse, Object>, String)
+  nameWithType.vb: AccessTools.MakeDeepCopy(Of T)(Object, ByRef T, Func(Of String, Traverse, Traverse, Object), String)
+- uid: Harmony.AccessTools.Method(System.String,System.Type[],System.Type[])
+  name: Method(String, Type[], Type[])
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Method_System_String_System_Type___System_Type___
+  commentId: M:Harmony.AccessTools.Method(System.String,System.Type[],System.Type[])
+  name.vb: Method(String, Type(), Type())
+  fullName: Harmony.AccessTools.Method(System.String, System.Type[], System.Type[])
+  fullName.vb: Harmony.AccessTools.Method(System.String, System.Type(), System.Type())
+  nameWithType: AccessTools.Method(String, Type[], Type[])
+  nameWithType.vb: AccessTools.Method(String, Type(), Type())
+- uid: Harmony.AccessTools.Method(System.Type,System.String,System.Type[],System.Type[])
+  name: Method(Type, String, Type[], Type[])
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Method_System_Type_System_String_System_Type___System_Type___
+  commentId: M:Harmony.AccessTools.Method(System.Type,System.String,System.Type[],System.Type[])
+  name.vb: Method(Type, String, Type(), Type())
+  fullName: Harmony.AccessTools.Method(System.Type, System.String, System.Type[], System.Type[])
+  fullName.vb: Harmony.AccessTools.Method(System.Type, System.String, System.Type(), System.Type())
+  nameWithType: AccessTools.Method(Type, String, Type[], Type[])
+  nameWithType.vb: AccessTools.Method(Type, String, Type(), Type())
+- uid: Harmony.AccessTools.Method*
+  name: Method
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Method_
+  commentId: Overload:Harmony.AccessTools.Method
+  isSpec: "True"
+  fullName: Harmony.AccessTools.Method
+  nameWithType: AccessTools.Method
+- uid: Harmony.AccessTools.Property(System.Type,System.String)
+  name: Property(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Property_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.Property(System.Type,System.String)
+  fullName: Harmony.AccessTools.Property(System.Type, System.String)
+  nameWithType: AccessTools.Property(Type, String)
+- uid: Harmony.AccessTools.Property*
+  name: Property
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_Property_
+  commentId: Overload:Harmony.AccessTools.Property
+  isSpec: "True"
+  fullName: Harmony.AccessTools.Property
+  nameWithType: AccessTools.Property
+- uid: Harmony.AccessTools.ThrowMissingMemberException(System.Type,System.String[])
+  name: ThrowMissingMemberException(Type, String[])
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_ThrowMissingMemberException_System_Type_System_String___
+  commentId: M:Harmony.AccessTools.ThrowMissingMemberException(System.Type,System.String[])
+  name.vb: ThrowMissingMemberException(Type, String())
+  fullName: Harmony.AccessTools.ThrowMissingMemberException(System.Type, System.String[])
+  fullName.vb: Harmony.AccessTools.ThrowMissingMemberException(System.Type, System.String())
+  nameWithType: AccessTools.ThrowMissingMemberException(Type, String[])
+  nameWithType.vb: AccessTools.ThrowMissingMemberException(Type, String())
+- uid: Harmony.AccessTools.ThrowMissingMemberException*
+  name: ThrowMissingMemberException
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_ThrowMissingMemberException_
+  commentId: Overload:Harmony.AccessTools.ThrowMissingMemberException
+  isSpec: "True"
+  fullName: Harmony.AccessTools.ThrowMissingMemberException
+  nameWithType: AccessTools.ThrowMissingMemberException
+- uid: Harmony.AccessTools.TypeByName(System.String)
+  name: TypeByName(String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_TypeByName_System_String_
+  commentId: M:Harmony.AccessTools.TypeByName(System.String)
+  fullName: Harmony.AccessTools.TypeByName(System.String)
+  nameWithType: AccessTools.TypeByName(String)
+- uid: Harmony.AccessTools.TypeByName*
+  name: TypeByName
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_TypeByName_
+  commentId: Overload:Harmony.AccessTools.TypeByName
+  isSpec: "True"
+  fullName: Harmony.AccessTools.TypeByName
+  nameWithType: AccessTools.TypeByName
+- uid: Harmony.ArgumentType
+  name: ArgumentType
+  href: api/Harmony.ArgumentType.html
+  commentId: T:Harmony.ArgumentType
+  fullName: Harmony.ArgumentType
+  nameWithType: ArgumentType
+- uid: Harmony.ArgumentType.Normal
+  name: Normal
+  href: api/Harmony.ArgumentType.html#Harmony_ArgumentType_Normal
+  commentId: F:Harmony.ArgumentType.Normal
+  fullName: Harmony.ArgumentType.Normal
+  nameWithType: ArgumentType.Normal
+- uid: Harmony.ArgumentType.Out
+  name: Out
+  href: api/Harmony.ArgumentType.html#Harmony_ArgumentType_Out
+  commentId: F:Harmony.ArgumentType.Out
+  fullName: Harmony.ArgumentType.Out
+  nameWithType: ArgumentType.Out
+- uid: Harmony.ArgumentType.Pointer
+  name: Pointer
+  href: api/Harmony.ArgumentType.html#Harmony_ArgumentType_Pointer
+  commentId: F:Harmony.ArgumentType.Pointer
+  fullName: Harmony.ArgumentType.Pointer
+  nameWithType: ArgumentType.Pointer
+- uid: Harmony.ArgumentType.Ref
+  name: Ref
+  href: api/Harmony.ArgumentType.html#Harmony_ArgumentType_Ref
+  commentId: F:Harmony.ArgumentType.Ref
+  fullName: Harmony.ArgumentType.Ref
+  nameWithType: ArgumentType.Ref
+- uid: Harmony.CodeInstruction
+  name: CodeInstruction
+  href: api/Harmony.CodeInstruction.html
+  commentId: T:Harmony.CodeInstruction
+  fullName: Harmony.CodeInstruction
+  nameWithType: CodeInstruction
+- uid: Harmony.CodeInstruction.#ctor(Harmony.CodeInstruction)
+  name: CodeInstruction(CodeInstruction)
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction__ctor_Harmony_CodeInstruction_
+  commentId: M:Harmony.CodeInstruction.#ctor(Harmony.CodeInstruction)
+  fullName: Harmony.CodeInstruction.CodeInstruction(Harmony.CodeInstruction)
+  nameWithType: CodeInstruction.CodeInstruction(CodeInstruction)
+- uid: Harmony.CodeInstruction.#ctor(OpCode,System.Object)
+  name: CodeInstruction(OpCode, Object)
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction__ctor_OpCode_System_Object_
+  commentId: M:Harmony.CodeInstruction.#ctor(OpCode,System.Object)
+  fullName: Harmony.CodeInstruction.CodeInstruction(OpCode, System.Object)
+  nameWithType: CodeInstruction.CodeInstruction(OpCode, Object)
+- uid: Harmony.CodeInstruction.#ctor*
+  name: CodeInstruction
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction__ctor_
+  commentId: Overload:Harmony.CodeInstruction.#ctor
+  isSpec: "True"
+  fullName: Harmony.CodeInstruction.CodeInstruction
+  nameWithType: CodeInstruction.CodeInstruction
+- uid: Harmony.CodeInstruction.blocks
+  name: blocks
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_blocks
+  commentId: F:Harmony.CodeInstruction.blocks
+  fullName: Harmony.CodeInstruction.blocks
+  nameWithType: CodeInstruction.blocks
+- uid: Harmony.CodeInstruction.Clone
+  name: Clone()
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_Clone
+  commentId: M:Harmony.CodeInstruction.Clone
+  fullName: Harmony.CodeInstruction.Clone()
+  nameWithType: CodeInstruction.Clone()
+- uid: Harmony.CodeInstruction.Clone(OpCode)
+  name: Clone(OpCode)
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_Clone_OpCode_
+  commentId: M:Harmony.CodeInstruction.Clone(OpCode)
+  fullName: Harmony.CodeInstruction.Clone(OpCode)
+  nameWithType: CodeInstruction.Clone(OpCode)
+- uid: Harmony.CodeInstruction.Clone(System.Object)
+  name: Clone(Object)
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_Clone_System_Object_
+  commentId: M:Harmony.CodeInstruction.Clone(System.Object)
+  fullName: Harmony.CodeInstruction.Clone(System.Object)
+  nameWithType: CodeInstruction.Clone(Object)
+- uid: Harmony.CodeInstruction.Clone*
+  name: Clone
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_Clone_
+  commentId: Overload:Harmony.CodeInstruction.Clone
+  isSpec: "True"
+  fullName: Harmony.CodeInstruction.Clone
+  nameWithType: CodeInstruction.Clone
+- uid: Harmony.CodeInstruction.labels
+  name: labels
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_labels
+  commentId: F:Harmony.CodeInstruction.labels
+  fullName: Harmony.CodeInstruction.labels
+  nameWithType: CodeInstruction.labels
+- uid: Harmony.CodeInstruction.opcode
+  name: opcode
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_opcode
+  commentId: F:Harmony.CodeInstruction.opcode
+  fullName: Harmony.CodeInstruction.opcode
+  nameWithType: CodeInstruction.opcode
+- uid: Harmony.CodeInstruction.operand
+  name: operand
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_operand
+  commentId: F:Harmony.CodeInstruction.operand
+  fullName: Harmony.CodeInstruction.operand
+  nameWithType: CodeInstruction.operand
+- uid: Harmony.CodeInstruction.ToString
+  name: ToString()
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_ToString
+  commentId: M:Harmony.CodeInstruction.ToString
+  fullName: Harmony.CodeInstruction.ToString()
+  nameWithType: CodeInstruction.ToString()
+- uid: Harmony.CodeInstruction.ToString*
+  name: ToString
+  href: api/Harmony.CodeInstruction.html#Harmony_CodeInstruction_ToString_
+  commentId: Overload:Harmony.CodeInstruction.ToString
+  isSpec: "True"
+  fullName: Harmony.CodeInstruction.ToString
+  nameWithType: CodeInstruction.ToString
+- uid: Harmony.CodeMatch
+  name: CodeMatch
+  href: api/Harmony.CodeMatch.html
+  commentId: T:Harmony.CodeMatch
+  fullName: Harmony.CodeMatch
+  nameWithType: CodeMatch
+- uid: Harmony.CodeMatch.#ctor(Harmony.CodeInstruction,System.String)
+  name: CodeMatch(CodeInstruction, String)
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch__ctor_Harmony_CodeInstruction_System_String_
+  commentId: M:Harmony.CodeMatch.#ctor(Harmony.CodeInstruction,System.String)
+  fullName: Harmony.CodeMatch.CodeMatch(Harmony.CodeInstruction, System.String)
+  nameWithType: CodeMatch.CodeMatch(CodeInstruction, String)
+- uid: Harmony.CodeMatch.#ctor(System.Collections.Generic.List{OpCode},System.Object,System.String)
+  name: CodeMatch(List<OpCode>, Object, String)
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch__ctor_System_Collections_Generic_List_OpCode__System_Object_System_String_
+  commentId: M:Harmony.CodeMatch.#ctor(System.Collections.Generic.List{OpCode},System.Object,System.String)
+  name.vb: CodeMatch(List(Of OpCode), Object, String)
+  fullName: Harmony.CodeMatch.CodeMatch(System.Collections.Generic.List<OpCode>, System.Object, System.String)
+  fullName.vb: Harmony.CodeMatch.CodeMatch(System.Collections.Generic.List(Of OpCode), System.Object, System.String)
+  nameWithType: CodeMatch.CodeMatch(List<OpCode>, Object, String)
+  nameWithType.vb: CodeMatch.CodeMatch(List(Of OpCode), Object, String)
+- uid: Harmony.CodeMatch.#ctor(System.Func{Harmony.CodeInstruction,System.Boolean},System.String)
+  name: CodeMatch(Func<CodeInstruction, Boolean>, String)
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch__ctor_System_Func_Harmony_CodeInstruction_System_Boolean__System_String_
+  commentId: M:Harmony.CodeMatch.#ctor(System.Func{Harmony.CodeInstruction,System.Boolean},System.String)
+  name.vb: CodeMatch(Func(Of CodeInstruction, Boolean), String)
+  fullName: Harmony.CodeMatch.CodeMatch(System.Func<Harmony.CodeInstruction, System.Boolean>, System.String)
+  fullName.vb: Harmony.CodeMatch.CodeMatch(System.Func(Of Harmony.CodeInstruction, System.Boolean), System.String)
+  nameWithType: CodeMatch.CodeMatch(Func<CodeInstruction, Boolean>, String)
+  nameWithType.vb: CodeMatch.CodeMatch(Func(Of CodeInstruction, Boolean), String)
+- uid: Harmony.CodeMatch.#ctor(System.Nullable{OpCode},System.Object,System.String)
+  name: CodeMatch(Nullable<OpCode>, Object, String)
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch__ctor_System_Nullable_OpCode__System_Object_System_String_
+  commentId: M:Harmony.CodeMatch.#ctor(System.Nullable{OpCode},System.Object,System.String)
+  name.vb: CodeMatch(Nullable(Of OpCode), Object, String)
+  fullName: Harmony.CodeMatch.CodeMatch(System.Nullable<OpCode>, System.Object, System.String)
+  fullName.vb: Harmony.CodeMatch.CodeMatch(System.Nullable(Of OpCode), System.Object, System.String)
+  nameWithType: CodeMatch.CodeMatch(Nullable<OpCode>, Object, String)
+  nameWithType.vb: CodeMatch.CodeMatch(Nullable(Of OpCode), Object, String)
+- uid: Harmony.CodeMatch.#ctor*
+  name: CodeMatch
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch__ctor_
+  commentId: Overload:Harmony.CodeMatch.#ctor
+  isSpec: "True"
+  fullName: Harmony.CodeMatch.CodeMatch
+  nameWithType: CodeMatch.CodeMatch
+- uid: Harmony.CodeMatch.Name
+  name: Name
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch_Name
+  commentId: F:Harmony.CodeMatch.Name
+  fullName: Harmony.CodeMatch.Name
+  nameWithType: CodeMatch.Name
+- uid: Harmony.CodeMatch.ToString
+  name: ToString()
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch_ToString
+  commentId: M:Harmony.CodeMatch.ToString
+  fullName: Harmony.CodeMatch.ToString()
+  nameWithType: CodeMatch.ToString()
+- uid: Harmony.CodeMatch.ToString*
+  name: ToString
+  href: api/Harmony.CodeMatch.html#Harmony_CodeMatch_ToString_
+  commentId: Overload:Harmony.CodeMatch.ToString
+  isSpec: "True"
+  fullName: Harmony.CodeMatch.ToString
+  nameWithType: CodeMatch.ToString
+- uid: Harmony.CodeMatcher
+  name: CodeMatcher
+  href: api/Harmony.CodeMatcher.html
+  commentId: T:Harmony.CodeMatcher
+  fullName: Harmony.CodeMatcher
+  nameWithType: CodeMatcher
+- uid: Harmony.CodeMatcher.#ctor
+  name: CodeMatcher()
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher__ctor
+  commentId: M:Harmony.CodeMatcher.#ctor
+  fullName: Harmony.CodeMatcher.CodeMatcher()
+  nameWithType: CodeMatcher.CodeMatcher()
+- uid: Harmony.CodeMatcher.#ctor(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction},ILGenerator)
+  name: CodeMatcher(IEnumerable<CodeInstruction>, ILGenerator)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher__ctor_System_Collections_Generic_IEnumerable_Harmony_CodeInstruction__ILGenerator_
+  commentId: M:Harmony.CodeMatcher.#ctor(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction},ILGenerator)
+  name.vb: CodeMatcher(IEnumerable(Of CodeInstruction), ILGenerator)
+  fullName: Harmony.CodeMatcher.CodeMatcher(System.Collections.Generic.IEnumerable<Harmony.CodeInstruction>, ILGenerator)
+  fullName.vb: Harmony.CodeMatcher.CodeMatcher(System.Collections.Generic.IEnumerable(Of Harmony.CodeInstruction), ILGenerator)
+  nameWithType: CodeMatcher.CodeMatcher(IEnumerable<CodeInstruction>, ILGenerator)
+  nameWithType.vb: CodeMatcher.CodeMatcher(IEnumerable(Of CodeInstruction), ILGenerator)
+- uid: Harmony.CodeMatcher.#ctor*
+  name: CodeMatcher
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher__ctor_
+  commentId: Overload:Harmony.CodeMatcher.#ctor
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.CodeMatcher
+  nameWithType: CodeMatcher.CodeMatcher
+- uid: Harmony.CodeMatcher.AddLabels(System.Collections.Generic.IEnumerable{Label})
+  name: AddLabels(IEnumerable<Label>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_AddLabels_System_Collections_Generic_IEnumerable_Label__
+  commentId: M:Harmony.CodeMatcher.AddLabels(System.Collections.Generic.IEnumerable{Label})
+  name.vb: AddLabels(IEnumerable(Of Label))
+  fullName: Harmony.CodeMatcher.AddLabels(System.Collections.Generic.IEnumerable<Label>)
+  fullName.vb: Harmony.CodeMatcher.AddLabels(System.Collections.Generic.IEnumerable(Of Label))
+  nameWithType: CodeMatcher.AddLabels(IEnumerable<Label>)
+  nameWithType.vb: CodeMatcher.AddLabels(IEnumerable(Of Label))
+- uid: Harmony.CodeMatcher.AddLabels*
+  name: AddLabels
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_AddLabels_
+  commentId: Overload:Harmony.CodeMatcher.AddLabels
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.AddLabels
+  nameWithType: CodeMatcher.AddLabels
+- uid: Harmony.CodeMatcher.AddLabelsAt(System.Int32,System.Collections.Generic.IEnumerable{Label})
+  name: AddLabelsAt(Int32, IEnumerable<Label>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_AddLabelsAt_System_Int32_System_Collections_Generic_IEnumerable_Label__
+  commentId: M:Harmony.CodeMatcher.AddLabelsAt(System.Int32,System.Collections.Generic.IEnumerable{Label})
+  name.vb: AddLabelsAt(Int32, IEnumerable(Of Label))
+  fullName: Harmony.CodeMatcher.AddLabelsAt(System.Int32, System.Collections.Generic.IEnumerable<Label>)
+  fullName.vb: Harmony.CodeMatcher.AddLabelsAt(System.Int32, System.Collections.Generic.IEnumerable(Of Label))
+  nameWithType: CodeMatcher.AddLabelsAt(Int32, IEnumerable<Label>)
+  nameWithType.vb: CodeMatcher.AddLabelsAt(Int32, IEnumerable(Of Label))
+- uid: Harmony.CodeMatcher.AddLabelsAt*
+  name: AddLabelsAt
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_AddLabelsAt_
+  commentId: Overload:Harmony.CodeMatcher.AddLabelsAt
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.AddLabelsAt
+  nameWithType: CodeMatcher.AddLabelsAt
+- uid: Harmony.CodeMatcher.Advance(System.Int32)
+  name: Advance(Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Advance_System_Int32_
+  commentId: M:Harmony.CodeMatcher.Advance(System.Int32)
+  fullName: Harmony.CodeMatcher.Advance(System.Int32)
+  nameWithType: CodeMatcher.Advance(Int32)
+- uid: Harmony.CodeMatcher.Advance*
+  name: Advance
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Advance_
+  commentId: Overload:Harmony.CodeMatcher.Advance
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Advance
+  nameWithType: CodeMatcher.Advance
+- uid: Harmony.CodeMatcher.Blocks
+  name: Blocks
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Blocks
+  commentId: P:Harmony.CodeMatcher.Blocks
+  fullName: Harmony.CodeMatcher.Blocks
+  nameWithType: CodeMatcher.Blocks
+- uid: Harmony.CodeMatcher.Blocks*
+  name: Blocks
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Blocks_
+  commentId: Overload:Harmony.CodeMatcher.Blocks
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Blocks
+  nameWithType: CodeMatcher.Blocks
+- uid: Harmony.CodeMatcher.Clone
+  name: Clone()
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Clone
+  commentId: M:Harmony.CodeMatcher.Clone
+  fullName: Harmony.CodeMatcher.Clone()
+  nameWithType: CodeMatcher.Clone()
+- uid: Harmony.CodeMatcher.Clone*
+  name: Clone
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Clone_
+  commentId: Overload:Harmony.CodeMatcher.Clone
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Clone
+  nameWithType: CodeMatcher.Clone
+- uid: Harmony.CodeMatcher.CreateLabel(Label@)
+  name: CreateLabel(out Label)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_CreateLabel_Label__
+  commentId: M:Harmony.CodeMatcher.CreateLabel(Label@)
+  name.vb: CreateLabel(ByRef Label)
+  fullName: Harmony.CodeMatcher.CreateLabel(out Label)
+  fullName.vb: Harmony.CodeMatcher.CreateLabel(ByRef Label)
+  nameWithType: CodeMatcher.CreateLabel(out Label)
+  nameWithType.vb: CodeMatcher.CreateLabel(ByRef Label)
+- uid: Harmony.CodeMatcher.CreateLabel*
+  name: CreateLabel
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_CreateLabel_
+  commentId: Overload:Harmony.CodeMatcher.CreateLabel
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.CreateLabel
+  nameWithType: CodeMatcher.CreateLabel
+- uid: Harmony.CodeMatcher.CreateLabelAt(System.Int32,Label@)
+  name: CreateLabelAt(Int32, out Label)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_CreateLabelAt_System_Int32_Label__
+  commentId: M:Harmony.CodeMatcher.CreateLabelAt(System.Int32,Label@)
+  name.vb: CreateLabelAt(Int32, ByRef Label)
+  fullName: Harmony.CodeMatcher.CreateLabelAt(System.Int32, out Label)
+  fullName.vb: Harmony.CodeMatcher.CreateLabelAt(System.Int32, ByRef Label)
+  nameWithType: CodeMatcher.CreateLabelAt(Int32, out Label)
+  nameWithType.vb: CodeMatcher.CreateLabelAt(Int32, ByRef Label)
+- uid: Harmony.CodeMatcher.CreateLabelAt*
+  name: CreateLabelAt
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_CreateLabelAt_
+  commentId: Overload:Harmony.CodeMatcher.CreateLabelAt
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.CreateLabelAt
+  nameWithType: CodeMatcher.CreateLabelAt
+- uid: Harmony.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction})
+  name: DistinctLabels(IEnumerable<CodeInstruction>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_DistinctLabels_System_Collections_Generic_IEnumerable_Harmony_CodeInstruction__
+  commentId: M:Harmony.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction})
+  name.vb: DistinctLabels(IEnumerable(Of CodeInstruction))
+  fullName: Harmony.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable<Harmony.CodeInstruction>)
+  fullName.vb: Harmony.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable(Of Harmony.CodeInstruction))
+  nameWithType: CodeMatcher.DistinctLabels(IEnumerable<CodeInstruction>)
+  nameWithType.vb: CodeMatcher.DistinctLabels(IEnumerable(Of CodeInstruction))
+- uid: Harmony.CodeMatcher.DistinctLabels*
+  name: DistinctLabels
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_DistinctLabels_
+  commentId: Overload:Harmony.CodeMatcher.DistinctLabels
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.DistinctLabels
+  nameWithType: CodeMatcher.DistinctLabels
+- uid: Harmony.CodeMatcher.End
+  name: End()
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_End
+  commentId: M:Harmony.CodeMatcher.End
+  fullName: Harmony.CodeMatcher.End()
+  nameWithType: CodeMatcher.End()
+- uid: Harmony.CodeMatcher.End*
+  name: End
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_End_
+  commentId: Overload:Harmony.CodeMatcher.End
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.End
+  nameWithType: CodeMatcher.End
+- uid: Harmony.CodeMatcher.Insert(Harmony.CodeInstruction[])
+  name: Insert(CodeInstruction[])
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Insert_Harmony_CodeInstruction___
+  commentId: M:Harmony.CodeMatcher.Insert(Harmony.CodeInstruction[])
+  name.vb: Insert(CodeInstruction())
+  fullName: Harmony.CodeMatcher.Insert(Harmony.CodeInstruction[])
+  fullName.vb: Harmony.CodeMatcher.Insert(Harmony.CodeInstruction())
+  nameWithType: CodeMatcher.Insert(CodeInstruction[])
+  nameWithType.vb: CodeMatcher.Insert(CodeInstruction())
+- uid: Harmony.CodeMatcher.Insert(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction})
+  name: Insert(IEnumerable<CodeInstruction>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Insert_System_Collections_Generic_IEnumerable_Harmony_CodeInstruction__
+  commentId: M:Harmony.CodeMatcher.Insert(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction})
+  name.vb: Insert(IEnumerable(Of CodeInstruction))
+  fullName: Harmony.CodeMatcher.Insert(System.Collections.Generic.IEnumerable<Harmony.CodeInstruction>)
+  fullName.vb: Harmony.CodeMatcher.Insert(System.Collections.Generic.IEnumerable(Of Harmony.CodeInstruction))
+  nameWithType: CodeMatcher.Insert(IEnumerable<CodeInstruction>)
+  nameWithType.vb: CodeMatcher.Insert(IEnumerable(Of CodeInstruction))
+- uid: Harmony.CodeMatcher.Insert*
+  name: Insert
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Insert_
+  commentId: Overload:Harmony.CodeMatcher.Insert
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Insert
+  nameWithType: CodeMatcher.Insert
+- uid: Harmony.CodeMatcher.InsertAndAdvance(Harmony.CodeInstruction[])
+  name: InsertAndAdvance(CodeInstruction[])
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InsertAndAdvance_Harmony_CodeInstruction___
+  commentId: M:Harmony.CodeMatcher.InsertAndAdvance(Harmony.CodeInstruction[])
+  name.vb: InsertAndAdvance(CodeInstruction())
+  fullName: Harmony.CodeMatcher.InsertAndAdvance(Harmony.CodeInstruction[])
+  fullName.vb: Harmony.CodeMatcher.InsertAndAdvance(Harmony.CodeInstruction())
+  nameWithType: CodeMatcher.InsertAndAdvance(CodeInstruction[])
+  nameWithType.vb: CodeMatcher.InsertAndAdvance(CodeInstruction())
+- uid: Harmony.CodeMatcher.InsertAndAdvance(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction})
+  name: InsertAndAdvance(IEnumerable<CodeInstruction>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InsertAndAdvance_System_Collections_Generic_IEnumerable_Harmony_CodeInstruction__
+  commentId: M:Harmony.CodeMatcher.InsertAndAdvance(System.Collections.Generic.IEnumerable{Harmony.CodeInstruction})
+  name.vb: InsertAndAdvance(IEnumerable(Of CodeInstruction))
+  fullName: Harmony.CodeMatcher.InsertAndAdvance(System.Collections.Generic.IEnumerable<Harmony.CodeInstruction>)
+  fullName.vb: Harmony.CodeMatcher.InsertAndAdvance(System.Collections.Generic.IEnumerable(Of Harmony.CodeInstruction))
+  nameWithType: CodeMatcher.InsertAndAdvance(IEnumerable<CodeInstruction>)
+  nameWithType.vb: CodeMatcher.InsertAndAdvance(IEnumerable(Of CodeInstruction))
+- uid: Harmony.CodeMatcher.InsertAndAdvance*
+  name: InsertAndAdvance
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InsertAndAdvance_
+  commentId: Overload:Harmony.CodeMatcher.InsertAndAdvance
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.InsertAndAdvance
+  nameWithType: CodeMatcher.InsertAndAdvance
+- uid: Harmony.CodeMatcher.InsertBranch(OpCode,System.Int32)
+  name: InsertBranch(OpCode, Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InsertBranch_OpCode_System_Int32_
+  commentId: M:Harmony.CodeMatcher.InsertBranch(OpCode,System.Int32)
+  fullName: Harmony.CodeMatcher.InsertBranch(OpCode, System.Int32)
+  nameWithType: CodeMatcher.InsertBranch(OpCode, Int32)
+- uid: Harmony.CodeMatcher.InsertBranch*
+  name: InsertBranch
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InsertBranch_
+  commentId: Overload:Harmony.CodeMatcher.InsertBranch
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.InsertBranch
+  nameWithType: CodeMatcher.InsertBranch
+- uid: Harmony.CodeMatcher.InsertBranchAndAdvance(OpCode,System.Int32)
+  name: InsertBranchAndAdvance(OpCode, Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InsertBranchAndAdvance_OpCode_System_Int32_
+  commentId: M:Harmony.CodeMatcher.InsertBranchAndAdvance(OpCode,System.Int32)
+  fullName: Harmony.CodeMatcher.InsertBranchAndAdvance(OpCode, System.Int32)
+  nameWithType: CodeMatcher.InsertBranchAndAdvance(OpCode, Int32)
+- uid: Harmony.CodeMatcher.InsertBranchAndAdvance*
+  name: InsertBranchAndAdvance
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InsertBranchAndAdvance_
+  commentId: Overload:Harmony.CodeMatcher.InsertBranchAndAdvance
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.InsertBranchAndAdvance
+  nameWithType: CodeMatcher.InsertBranchAndAdvance
+- uid: Harmony.CodeMatcher.Instruction
+  name: Instruction
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Instruction
+  commentId: P:Harmony.CodeMatcher.Instruction
+  fullName: Harmony.CodeMatcher.Instruction
+  nameWithType: CodeMatcher.Instruction
+- uid: Harmony.CodeMatcher.Instruction*
+  name: Instruction
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Instruction_
+  commentId: Overload:Harmony.CodeMatcher.Instruction
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Instruction
+  nameWithType: CodeMatcher.Instruction
+- uid: Harmony.CodeMatcher.InstructionAt(System.Int32)
+  name: InstructionAt(Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InstructionAt_System_Int32_
+  commentId: M:Harmony.CodeMatcher.InstructionAt(System.Int32)
+  fullName: Harmony.CodeMatcher.InstructionAt(System.Int32)
+  nameWithType: CodeMatcher.InstructionAt(Int32)
+- uid: Harmony.CodeMatcher.InstructionAt*
+  name: InstructionAt
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InstructionAt_
+  commentId: Overload:Harmony.CodeMatcher.InstructionAt
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.InstructionAt
+  nameWithType: CodeMatcher.InstructionAt
+- uid: Harmony.CodeMatcher.Instructions
+  name: Instructions()
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Instructions
+  commentId: M:Harmony.CodeMatcher.Instructions
+  fullName: Harmony.CodeMatcher.Instructions()
+  nameWithType: CodeMatcher.Instructions()
+- uid: Harmony.CodeMatcher.Instructions(System.Int32)
+  name: Instructions(Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Instructions_System_Int32_
+  commentId: M:Harmony.CodeMatcher.Instructions(System.Int32)
+  fullName: Harmony.CodeMatcher.Instructions(System.Int32)
+  nameWithType: CodeMatcher.Instructions(Int32)
+- uid: Harmony.CodeMatcher.Instructions*
+  name: Instructions
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Instructions_
+  commentId: Overload:Harmony.CodeMatcher.Instructions
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Instructions
+  nameWithType: CodeMatcher.Instructions
+- uid: Harmony.CodeMatcher.InstructionsInRange(System.Int32,System.Int32)
+  name: InstructionsInRange(Int32, Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InstructionsInRange_System_Int32_System_Int32_
+  commentId: M:Harmony.CodeMatcher.InstructionsInRange(System.Int32,System.Int32)
+  fullName: Harmony.CodeMatcher.InstructionsInRange(System.Int32, System.Int32)
+  nameWithType: CodeMatcher.InstructionsInRange(Int32, Int32)
+- uid: Harmony.CodeMatcher.InstructionsInRange*
+  name: InstructionsInRange
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InstructionsInRange_
+  commentId: Overload:Harmony.CodeMatcher.InstructionsInRange
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.InstructionsInRange
+  nameWithType: CodeMatcher.InstructionsInRange
+- uid: Harmony.CodeMatcher.InstructionsWithOffsets(System.Int32,System.Int32)
+  name: InstructionsWithOffsets(Int32, Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InstructionsWithOffsets_System_Int32_System_Int32_
+  commentId: M:Harmony.CodeMatcher.InstructionsWithOffsets(System.Int32,System.Int32)
+  fullName: Harmony.CodeMatcher.InstructionsWithOffsets(System.Int32, System.Int32)
+  nameWithType: CodeMatcher.InstructionsWithOffsets(Int32, Int32)
+- uid: Harmony.CodeMatcher.InstructionsWithOffsets*
+  name: InstructionsWithOffsets
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_InstructionsWithOffsets_
+  commentId: Overload:Harmony.CodeMatcher.InstructionsWithOffsets
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.InstructionsWithOffsets
+  nameWithType: CodeMatcher.InstructionsWithOffsets
+- uid: Harmony.CodeMatcher.IsInvalid
+  name: IsInvalid
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_IsInvalid
+  commentId: P:Harmony.CodeMatcher.IsInvalid
+  fullName: Harmony.CodeMatcher.IsInvalid
+  nameWithType: CodeMatcher.IsInvalid
+- uid: Harmony.CodeMatcher.IsInvalid*
+  name: IsInvalid
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_IsInvalid_
+  commentId: Overload:Harmony.CodeMatcher.IsInvalid
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.IsInvalid
+  nameWithType: CodeMatcher.IsInvalid
+- uid: Harmony.CodeMatcher.IsValid
+  name: IsValid
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_IsValid
+  commentId: P:Harmony.CodeMatcher.IsValid
+  fullName: Harmony.CodeMatcher.IsValid
+  nameWithType: CodeMatcher.IsValid
+- uid: Harmony.CodeMatcher.IsValid*
+  name: IsValid
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_IsValid_
+  commentId: Overload:Harmony.CodeMatcher.IsValid
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.IsValid
+  nameWithType: CodeMatcher.IsValid
+- uid: Harmony.CodeMatcher.Labels
+  name: Labels
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Labels
+  commentId: P:Harmony.CodeMatcher.Labels
+  fullName: Harmony.CodeMatcher.Labels
+  nameWithType: CodeMatcher.Labels
+- uid: Harmony.CodeMatcher.Labels*
+  name: Labels
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Labels_
+  commentId: Overload:Harmony.CodeMatcher.Labels
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Labels
+  nameWithType: CodeMatcher.Labels
+- uid: Harmony.CodeMatcher.Length
+  name: Length
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Length
+  commentId: P:Harmony.CodeMatcher.Length
+  fullName: Harmony.CodeMatcher.Length
+  nameWithType: CodeMatcher.Length
+- uid: Harmony.CodeMatcher.Length*
+  name: Length
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Length_
+  commentId: Overload:Harmony.CodeMatcher.Length
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Length
+  nameWithType: CodeMatcher.Length
+- uid: Harmony.CodeMatcher.MatchBack(System.Boolean,Harmony.CodeMatch[])
+  name: MatchBack(Boolean, CodeMatch[])
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_MatchBack_System_Boolean_Harmony_CodeMatch___
+  commentId: M:Harmony.CodeMatcher.MatchBack(System.Boolean,Harmony.CodeMatch[])
+  name.vb: MatchBack(Boolean, CodeMatch())
+  fullName: Harmony.CodeMatcher.MatchBack(System.Boolean, Harmony.CodeMatch[])
+  fullName.vb: Harmony.CodeMatcher.MatchBack(System.Boolean, Harmony.CodeMatch())
+  nameWithType: CodeMatcher.MatchBack(Boolean, CodeMatch[])
+  nameWithType.vb: CodeMatcher.MatchBack(Boolean, CodeMatch())
+- uid: Harmony.CodeMatcher.MatchBack*
+  name: MatchBack
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_MatchBack_
+  commentId: Overload:Harmony.CodeMatcher.MatchBack
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.MatchBack
+  nameWithType: CodeMatcher.MatchBack
+- uid: Harmony.CodeMatcher.MatchForward(System.Boolean,Harmony.CodeMatch[])
+  name: MatchForward(Boolean, CodeMatch[])
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_MatchForward_System_Boolean_Harmony_CodeMatch___
+  commentId: M:Harmony.CodeMatcher.MatchForward(System.Boolean,Harmony.CodeMatch[])
+  name.vb: MatchForward(Boolean, CodeMatch())
+  fullName: Harmony.CodeMatcher.MatchForward(System.Boolean, Harmony.CodeMatch[])
+  fullName.vb: Harmony.CodeMatcher.MatchForward(System.Boolean, Harmony.CodeMatch())
+  nameWithType: CodeMatcher.MatchForward(Boolean, CodeMatch[])
+  nameWithType.vb: CodeMatcher.MatchForward(Boolean, CodeMatch())
+- uid: Harmony.CodeMatcher.MatchForward*
+  name: MatchForward
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_MatchForward_
+  commentId: Overload:Harmony.CodeMatcher.MatchForward
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.MatchForward
+  nameWithType: CodeMatcher.MatchForward
+- uid: Harmony.CodeMatcher.NamedMatch(System.String)
+  name: NamedMatch(String)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_NamedMatch_System_String_
+  commentId: M:Harmony.CodeMatcher.NamedMatch(System.String)
+  fullName: Harmony.CodeMatcher.NamedMatch(System.String)
+  nameWithType: CodeMatcher.NamedMatch(String)
+- uid: Harmony.CodeMatcher.NamedMatch*
+  name: NamedMatch
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_NamedMatch_
+  commentId: Overload:Harmony.CodeMatcher.NamedMatch
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.NamedMatch
+  nameWithType: CodeMatcher.NamedMatch
+- uid: Harmony.CodeMatcher.Opcode
+  name: Opcode
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Opcode
+  commentId: P:Harmony.CodeMatcher.Opcode
+  fullName: Harmony.CodeMatcher.Opcode
+  nameWithType: CodeMatcher.Opcode
+- uid: Harmony.CodeMatcher.Opcode*
+  name: Opcode
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Opcode_
+  commentId: Overload:Harmony.CodeMatcher.Opcode
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Opcode
+  nameWithType: CodeMatcher.Opcode
+- uid: Harmony.CodeMatcher.Operand
+  name: Operand
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Operand
+  commentId: P:Harmony.CodeMatcher.Operand
+  fullName: Harmony.CodeMatcher.Operand
+  nameWithType: CodeMatcher.Operand
+- uid: Harmony.CodeMatcher.Operand*
+  name: Operand
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Operand_
+  commentId: Overload:Harmony.CodeMatcher.Operand
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Operand
+  nameWithType: CodeMatcher.Operand
+- uid: Harmony.CodeMatcher.Pos
+  name: Pos
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Pos
+  commentId: P:Harmony.CodeMatcher.Pos
+  fullName: Harmony.CodeMatcher.Pos
+  nameWithType: CodeMatcher.Pos
+- uid: Harmony.CodeMatcher.Pos*
+  name: Pos
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Pos_
+  commentId: Overload:Harmony.CodeMatcher.Pos
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Pos
+  nameWithType: CodeMatcher.Pos
+- uid: Harmony.CodeMatcher.Remaining
+  name: Remaining
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Remaining
+  commentId: P:Harmony.CodeMatcher.Remaining
+  fullName: Harmony.CodeMatcher.Remaining
+  nameWithType: CodeMatcher.Remaining
+- uid: Harmony.CodeMatcher.Remaining*
+  name: Remaining
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Remaining_
+  commentId: Overload:Harmony.CodeMatcher.Remaining
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Remaining
+  nameWithType: CodeMatcher.Remaining
+- uid: Harmony.CodeMatcher.RemoveInstruction
+  name: RemoveInstruction()
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstruction
+  commentId: M:Harmony.CodeMatcher.RemoveInstruction
+  fullName: Harmony.CodeMatcher.RemoveInstruction()
+  nameWithType: CodeMatcher.RemoveInstruction()
+- uid: Harmony.CodeMatcher.RemoveInstruction*
+  name: RemoveInstruction
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstruction_
+  commentId: Overload:Harmony.CodeMatcher.RemoveInstruction
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.RemoveInstruction
+  nameWithType: CodeMatcher.RemoveInstruction
+- uid: Harmony.CodeMatcher.RemoveInstructions(System.Int32)
+  name: RemoveInstructions(Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstructions_System_Int32_
+  commentId: M:Harmony.CodeMatcher.RemoveInstructions(System.Int32)
+  fullName: Harmony.CodeMatcher.RemoveInstructions(System.Int32)
+  nameWithType: CodeMatcher.RemoveInstructions(Int32)
+- uid: Harmony.CodeMatcher.RemoveInstructions*
+  name: RemoveInstructions
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstructions_
+  commentId: Overload:Harmony.CodeMatcher.RemoveInstructions
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.RemoveInstructions
+  nameWithType: CodeMatcher.RemoveInstructions
+- uid: Harmony.CodeMatcher.RemoveInstructionsInRange(System.Int32,System.Int32)
+  name: RemoveInstructionsInRange(Int32, Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstructionsInRange_System_Int32_System_Int32_
+  commentId: M:Harmony.CodeMatcher.RemoveInstructionsInRange(System.Int32,System.Int32)
+  fullName: Harmony.CodeMatcher.RemoveInstructionsInRange(System.Int32, System.Int32)
+  nameWithType: CodeMatcher.RemoveInstructionsInRange(Int32, Int32)
+- uid: Harmony.CodeMatcher.RemoveInstructionsInRange*
+  name: RemoveInstructionsInRange
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstructionsInRange_
+  commentId: Overload:Harmony.CodeMatcher.RemoveInstructionsInRange
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.RemoveInstructionsInRange
+  nameWithType: CodeMatcher.RemoveInstructionsInRange
+- uid: Harmony.CodeMatcher.RemoveInstructionsWithOffsets(System.Int32,System.Int32)
+  name: RemoveInstructionsWithOffsets(Int32, Int32)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstructionsWithOffsets_System_Int32_System_Int32_
+  commentId: M:Harmony.CodeMatcher.RemoveInstructionsWithOffsets(System.Int32,System.Int32)
+  fullName: Harmony.CodeMatcher.RemoveInstructionsWithOffsets(System.Int32, System.Int32)
+  nameWithType: CodeMatcher.RemoveInstructionsWithOffsets(Int32, Int32)
+- uid: Harmony.CodeMatcher.RemoveInstructionsWithOffsets*
+  name: RemoveInstructionsWithOffsets
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_RemoveInstructionsWithOffsets_
+  commentId: Overload:Harmony.CodeMatcher.RemoveInstructionsWithOffsets
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.RemoveInstructionsWithOffsets
+  nameWithType: CodeMatcher.RemoveInstructionsWithOffsets
+- uid: Harmony.CodeMatcher.Repeat(System.Action{Harmony.CodeMatcher},System.Action{System.String})
+  name: Repeat(Action<CodeMatcher>, Action<String>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Repeat_System_Action_Harmony_CodeMatcher__System_Action_System_String__
+  commentId: M:Harmony.CodeMatcher.Repeat(System.Action{Harmony.CodeMatcher},System.Action{System.String})
+  name.vb: Repeat(Action(Of CodeMatcher), Action(Of String))
+  fullName: Harmony.CodeMatcher.Repeat(System.Action<Harmony.CodeMatcher>, System.Action<System.String>)
+  fullName.vb: Harmony.CodeMatcher.Repeat(System.Action(Of Harmony.CodeMatcher), System.Action(Of System.String))
+  nameWithType: CodeMatcher.Repeat(Action<CodeMatcher>, Action<String>)
+  nameWithType.vb: CodeMatcher.Repeat(Action(Of CodeMatcher), Action(Of String))
+- uid: Harmony.CodeMatcher.Repeat*
+  name: Repeat
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Repeat_
+  commentId: Overload:Harmony.CodeMatcher.Repeat
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Repeat
+  nameWithType: CodeMatcher.Repeat
+- uid: Harmony.CodeMatcher.ReportFailure(MethodBase,System.Action{System.String})
+  name: ReportFailure(MethodBase, Action<String>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_ReportFailure_MethodBase_System_Action_System_String__
+  commentId: M:Harmony.CodeMatcher.ReportFailure(MethodBase,System.Action{System.String})
+  name.vb: ReportFailure(MethodBase, Action(Of String))
+  fullName: Harmony.CodeMatcher.ReportFailure(MethodBase, System.Action<System.String>)
+  fullName.vb: Harmony.CodeMatcher.ReportFailure(MethodBase, System.Action(Of System.String))
+  nameWithType: CodeMatcher.ReportFailure(MethodBase, Action<String>)
+  nameWithType.vb: CodeMatcher.ReportFailure(MethodBase, Action(Of String))
+- uid: Harmony.CodeMatcher.ReportFailure*
+  name: ReportFailure
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_ReportFailure_
+  commentId: Overload:Harmony.CodeMatcher.ReportFailure
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.ReportFailure
+  nameWithType: CodeMatcher.ReportFailure
+- uid: Harmony.CodeMatcher.SearchBack(System.Func{Harmony.CodeInstruction,System.Boolean})
+  name: SearchBack(Func<CodeInstruction, Boolean>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SearchBack_System_Func_Harmony_CodeInstruction_System_Boolean__
+  commentId: M:Harmony.CodeMatcher.SearchBack(System.Func{Harmony.CodeInstruction,System.Boolean})
+  name.vb: SearchBack(Func(Of CodeInstruction, Boolean))
+  fullName: Harmony.CodeMatcher.SearchBack(System.Func<Harmony.CodeInstruction, System.Boolean>)
+  fullName.vb: Harmony.CodeMatcher.SearchBack(System.Func(Of Harmony.CodeInstruction, System.Boolean))
+  nameWithType: CodeMatcher.SearchBack(Func<CodeInstruction, Boolean>)
+  nameWithType.vb: CodeMatcher.SearchBack(Func(Of CodeInstruction, Boolean))
+- uid: Harmony.CodeMatcher.SearchBack*
+  name: SearchBack
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SearchBack_
+  commentId: Overload:Harmony.CodeMatcher.SearchBack
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SearchBack
+  nameWithType: CodeMatcher.SearchBack
+- uid: Harmony.CodeMatcher.SearchForward(System.Func{Harmony.CodeInstruction,System.Boolean})
+  name: SearchForward(Func<CodeInstruction, Boolean>)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SearchForward_System_Func_Harmony_CodeInstruction_System_Boolean__
+  commentId: M:Harmony.CodeMatcher.SearchForward(System.Func{Harmony.CodeInstruction,System.Boolean})
+  name.vb: SearchForward(Func(Of CodeInstruction, Boolean))
+  fullName: Harmony.CodeMatcher.SearchForward(System.Func<Harmony.CodeInstruction, System.Boolean>)
+  fullName.vb: Harmony.CodeMatcher.SearchForward(System.Func(Of Harmony.CodeInstruction, System.Boolean))
+  nameWithType: CodeMatcher.SearchForward(Func<CodeInstruction, Boolean>)
+  nameWithType.vb: CodeMatcher.SearchForward(Func(Of CodeInstruction, Boolean))
+- uid: Harmony.CodeMatcher.SearchForward*
+  name: SearchForward
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SearchForward_
+  commentId: Overload:Harmony.CodeMatcher.SearchForward
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SearchForward
+  nameWithType: CodeMatcher.SearchForward
+- uid: Harmony.CodeMatcher.Set(OpCode,System.Object)
+  name: Set(OpCode, Object)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Set_OpCode_System_Object_
+  commentId: M:Harmony.CodeMatcher.Set(OpCode,System.Object)
+  fullName: Harmony.CodeMatcher.Set(OpCode, System.Object)
+  nameWithType: CodeMatcher.Set(OpCode, Object)
+- uid: Harmony.CodeMatcher.Set*
+  name: Set
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Set_
+  commentId: Overload:Harmony.CodeMatcher.Set
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Set
+  nameWithType: CodeMatcher.Set
+- uid: Harmony.CodeMatcher.SetAndAdvance(OpCode,System.Object)
+  name: SetAndAdvance(OpCode, Object)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetAndAdvance_OpCode_System_Object_
+  commentId: M:Harmony.CodeMatcher.SetAndAdvance(OpCode,System.Object)
+  fullName: Harmony.CodeMatcher.SetAndAdvance(OpCode, System.Object)
+  nameWithType: CodeMatcher.SetAndAdvance(OpCode, Object)
+- uid: Harmony.CodeMatcher.SetAndAdvance*
+  name: SetAndAdvance
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetAndAdvance_
+  commentId: Overload:Harmony.CodeMatcher.SetAndAdvance
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SetAndAdvance
+  nameWithType: CodeMatcher.SetAndAdvance
+- uid: Harmony.CodeMatcher.SetInstruction(Harmony.CodeInstruction)
+  name: SetInstruction(CodeInstruction)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetInstruction_Harmony_CodeInstruction_
+  commentId: M:Harmony.CodeMatcher.SetInstruction(Harmony.CodeInstruction)
+  fullName: Harmony.CodeMatcher.SetInstruction(Harmony.CodeInstruction)
+  nameWithType: CodeMatcher.SetInstruction(CodeInstruction)
+- uid: Harmony.CodeMatcher.SetInstruction*
+  name: SetInstruction
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetInstruction_
+  commentId: Overload:Harmony.CodeMatcher.SetInstruction
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SetInstruction
+  nameWithType: CodeMatcher.SetInstruction
+- uid: Harmony.CodeMatcher.SetInstructionAndAdvance(Harmony.CodeInstruction)
+  name: SetInstructionAndAdvance(CodeInstruction)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetInstructionAndAdvance_Harmony_CodeInstruction_
+  commentId: M:Harmony.CodeMatcher.SetInstructionAndAdvance(Harmony.CodeInstruction)
+  fullName: Harmony.CodeMatcher.SetInstructionAndAdvance(Harmony.CodeInstruction)
+  nameWithType: CodeMatcher.SetInstructionAndAdvance(CodeInstruction)
+- uid: Harmony.CodeMatcher.SetInstructionAndAdvance*
+  name: SetInstructionAndAdvance
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetInstructionAndAdvance_
+  commentId: Overload:Harmony.CodeMatcher.SetInstructionAndAdvance
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SetInstructionAndAdvance
+  nameWithType: CodeMatcher.SetInstructionAndAdvance
+- uid: Harmony.CodeMatcher.SetJumpTo(System.Int32,Label@)
+  name: SetJumpTo(Int32, out Label)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetJumpTo_System_Int32_Label__
+  commentId: M:Harmony.CodeMatcher.SetJumpTo(System.Int32,Label@)
+  name.vb: SetJumpTo(Int32, ByRef Label)
+  fullName: Harmony.CodeMatcher.SetJumpTo(System.Int32, out Label)
+  fullName.vb: Harmony.CodeMatcher.SetJumpTo(System.Int32, ByRef Label)
+  nameWithType: CodeMatcher.SetJumpTo(Int32, out Label)
+  nameWithType.vb: CodeMatcher.SetJumpTo(Int32, ByRef Label)
+- uid: Harmony.CodeMatcher.SetJumpTo*
+  name: SetJumpTo
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetJumpTo_
+  commentId: Overload:Harmony.CodeMatcher.SetJumpTo
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SetJumpTo
+  nameWithType: CodeMatcher.SetJumpTo
+- uid: Harmony.CodeMatcher.SetOpcodeAndAdvance(OpCode)
+  name: SetOpcodeAndAdvance(OpCode)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetOpcodeAndAdvance_OpCode_
+  commentId: M:Harmony.CodeMatcher.SetOpcodeAndAdvance(OpCode)
+  fullName: Harmony.CodeMatcher.SetOpcodeAndAdvance(OpCode)
+  nameWithType: CodeMatcher.SetOpcodeAndAdvance(OpCode)
+- uid: Harmony.CodeMatcher.SetOpcodeAndAdvance*
+  name: SetOpcodeAndAdvance
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetOpcodeAndAdvance_
+  commentId: Overload:Harmony.CodeMatcher.SetOpcodeAndAdvance
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SetOpcodeAndAdvance
+  nameWithType: CodeMatcher.SetOpcodeAndAdvance
+- uid: Harmony.CodeMatcher.SetOperandAndAdvance(System.Object)
+  name: SetOperandAndAdvance(Object)
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetOperandAndAdvance_System_Object_
+  commentId: M:Harmony.CodeMatcher.SetOperandAndAdvance(System.Object)
+  fullName: Harmony.CodeMatcher.SetOperandAndAdvance(System.Object)
+  nameWithType: CodeMatcher.SetOperandAndAdvance(Object)
+- uid: Harmony.CodeMatcher.SetOperandAndAdvance*
+  name: SetOperandAndAdvance
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_SetOperandAndAdvance_
+  commentId: Overload:Harmony.CodeMatcher.SetOperandAndAdvance
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.SetOperandAndAdvance
+  nameWithType: CodeMatcher.SetOperandAndAdvance
+- uid: Harmony.CodeMatcher.Start
+  name: Start()
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Start
+  commentId: M:Harmony.CodeMatcher.Start
+  fullName: Harmony.CodeMatcher.Start()
+  nameWithType: CodeMatcher.Start()
+- uid: Harmony.CodeMatcher.Start*
+  name: Start
+  href: api/Harmony.CodeMatcher.html#Harmony_CodeMatcher_Start_
+  commentId: Overload:Harmony.CodeMatcher.Start
+  isSpec: "True"
+  fullName: Harmony.CodeMatcher.Start
+  nameWithType: CodeMatcher.Start
+- uid: Harmony.CollectionExtensions
+  name: CollectionExtensions
+  href: api/Harmony.CollectionExtensions.html
+  commentId: T:Harmony.CollectionExtensions
+  fullName: Harmony.CollectionExtensions
+  nameWithType: CollectionExtensions
+- uid: Harmony.CollectionExtensions.Add*
+  name: Add
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_Add_
+  commentId: Overload:Harmony.CollectionExtensions.Add
+  isSpec: "True"
+  fullName: Harmony.CollectionExtensions.Add
+  nameWithType: CollectionExtensions.Add
+- uid: Harmony.CollectionExtensions.Add``1(System.Collections.Generic.IEnumerable{``0},``0)
+  name: Add<T>(IEnumerable<T>, T)
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_Add__1_System_Collections_Generic_IEnumerable___0____0_
+  commentId: M:Harmony.CollectionExtensions.Add``1(System.Collections.Generic.IEnumerable{``0},``0)
+  name.vb: Add(Of T)(IEnumerable(Of T), T)
+  fullName: Harmony.CollectionExtensions.Add<T>(System.Collections.Generic.IEnumerable<T>, T)
+  fullName.vb: Harmony.CollectionExtensions.Add(Of T)(System.Collections.Generic.IEnumerable(Of T), T)
+  nameWithType: CollectionExtensions.Add<T>(IEnumerable<T>, T)
+  nameWithType.vb: CollectionExtensions.Add(Of T)(IEnumerable(Of T), T)
+- uid: Harmony.CollectionExtensions.AddRangeToArray*
+  name: AddRangeToArray
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_AddRangeToArray_
+  commentId: Overload:Harmony.CollectionExtensions.AddRangeToArray
+  isSpec: "True"
+  fullName: Harmony.CollectionExtensions.AddRangeToArray
+  nameWithType: CollectionExtensions.AddRangeToArray
+- uid: Harmony.CollectionExtensions.AddRangeToArray``1(``0[],``0[])
+  name: AddRangeToArray<T>(T[], T[])
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_AddRangeToArray__1___0_____0___
+  commentId: M:Harmony.CollectionExtensions.AddRangeToArray``1(``0[],``0[])
+  name.vb: AddRangeToArray(Of T)(T(), T())
+  fullName: Harmony.CollectionExtensions.AddRangeToArray<T>(T[], T[])
+  fullName.vb: Harmony.CollectionExtensions.AddRangeToArray(Of T)(T(), T())
+  nameWithType: CollectionExtensions.AddRangeToArray<T>(T[], T[])
+  nameWithType.vb: CollectionExtensions.AddRangeToArray(Of T)(T(), T())
+- uid: Harmony.CollectionExtensions.AddToArray*
+  name: AddToArray
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_AddToArray_
+  commentId: Overload:Harmony.CollectionExtensions.AddToArray
+  isSpec: "True"
+  fullName: Harmony.CollectionExtensions.AddToArray
+  nameWithType: CollectionExtensions.AddToArray
+- uid: Harmony.CollectionExtensions.AddToArray``1(``0[],``0)
+  name: AddToArray<T>(T[], T)
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_AddToArray__1___0_____0_
+  commentId: M:Harmony.CollectionExtensions.AddToArray``1(``0[],``0)
+  name.vb: AddToArray(Of T)(T(), T)
+  fullName: Harmony.CollectionExtensions.AddToArray<T>(T[], T)
+  fullName.vb: Harmony.CollectionExtensions.AddToArray(Of T)(T(), T)
+  nameWithType: CollectionExtensions.AddToArray<T>(T[], T)
+  nameWithType.vb: CollectionExtensions.AddToArray(Of T)(T(), T)
+- uid: Harmony.CollectionExtensions.Do*
+  name: Do
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_Do_
+  commentId: Overload:Harmony.CollectionExtensions.Do
+  isSpec: "True"
+  fullName: Harmony.CollectionExtensions.Do
+  nameWithType: CollectionExtensions.Do
+- uid: Harmony.CollectionExtensions.Do``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})
+  name: Do<T>(IEnumerable<T>, Action<T>)
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_Do__1_System_Collections_Generic_IEnumerable___0__System_Action___0__
+  commentId: M:Harmony.CollectionExtensions.Do``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})
+  name.vb: Do(Of T)(IEnumerable(Of T), Action(Of T))
+  fullName: Harmony.CollectionExtensions.Do<T>(System.Collections.Generic.IEnumerable<T>, System.Action<T>)
+  fullName.vb: Harmony.CollectionExtensions.Do(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Action(Of T))
+  nameWithType: CollectionExtensions.Do<T>(IEnumerable<T>, Action<T>)
+  nameWithType.vb: CollectionExtensions.Do(Of T)(IEnumerable(Of T), Action(Of T))
+- uid: Harmony.CollectionExtensions.DoIf*
+  name: DoIf
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_DoIf_
+  commentId: Overload:Harmony.CollectionExtensions.DoIf
+  isSpec: "True"
+  fullName: Harmony.CollectionExtensions.DoIf
+  nameWithType: CollectionExtensions.DoIf
+- uid: Harmony.CollectionExtensions.DoIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Action{``0})
+  name: DoIf<T>(IEnumerable<T>, Func<T, Boolean>, Action<T>)
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_DoIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Action___0__
+  commentId: M:Harmony.CollectionExtensions.DoIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Action{``0})
+  name.vb: DoIf(Of T)(IEnumerable(Of T), Func(Of T, Boolean), Action(Of T))
+  fullName: Harmony.CollectionExtensions.DoIf<T>(System.Collections.Generic.IEnumerable<T>, System.Func<T, System.Boolean>, System.Action<T>)
+  fullName.vb: Harmony.CollectionExtensions.DoIf(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Func(Of T, System.Boolean), System.Action(Of T))
+  nameWithType: CollectionExtensions.DoIf<T>(IEnumerable<T>, Func<T, Boolean>, Action<T>)
+  nameWithType.vb: CollectionExtensions.DoIf(Of T)(IEnumerable(Of T), Func(Of T, Boolean), Action(Of T))
+- uid: Harmony.DelegateTypeFactory
+  name: DelegateTypeFactory
+  href: api/Harmony.DelegateTypeFactory.html
+  commentId: T:Harmony.DelegateTypeFactory
+  fullName: Harmony.DelegateTypeFactory
+  nameWithType: DelegateTypeFactory
+- uid: Harmony.DelegateTypeFactory.#ctor
+  name: DelegateTypeFactory()
+  href: api/Harmony.DelegateTypeFactory.html#Harmony_DelegateTypeFactory__ctor
+  commentId: M:Harmony.DelegateTypeFactory.#ctor
+  fullName: Harmony.DelegateTypeFactory.DelegateTypeFactory()
+  nameWithType: DelegateTypeFactory.DelegateTypeFactory()
+- uid: Harmony.DelegateTypeFactory.#ctor*
+  name: DelegateTypeFactory
+  href: api/Harmony.DelegateTypeFactory.html#Harmony_DelegateTypeFactory__ctor_
+  commentId: Overload:Harmony.DelegateTypeFactory.#ctor
+  isSpec: "True"
+  fullName: Harmony.DelegateTypeFactory.DelegateTypeFactory
+  nameWithType: DelegateTypeFactory.DelegateTypeFactory
+- uid: Harmony.DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  name: CreateDelegateType(MethodInfo)
+  href: api/Harmony.DelegateTypeFactory.html#Harmony_DelegateTypeFactory_CreateDelegateType_MethodInfo_
+  commentId: M:Harmony.DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  fullName: Harmony.DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  nameWithType: DelegateTypeFactory.CreateDelegateType(MethodInfo)
+- uid: Harmony.DelegateTypeFactory.CreateDelegateType*
+  name: CreateDelegateType
+  href: api/Harmony.DelegateTypeFactory.html#Harmony_DelegateTypeFactory_CreateDelegateType_
+  commentId: Overload:Harmony.DelegateTypeFactory.CreateDelegateType
+  isSpec: "True"
+  fullName: Harmony.DelegateTypeFactory.CreateDelegateType
+  nameWithType: DelegateTypeFactory.CreateDelegateType
+- uid: Harmony.FastAccess
+  name: FastAccess
+  href: api/Harmony.FastAccess.html
+  commentId: T:Harmony.FastAccess
+  fullName: Harmony.FastAccess
+  nameWithType: FastAccess
+- uid: Harmony.FastAccess.CreateFieldGetter(System.Type,System.String[])
+  name: CreateFieldGetter(Type, String[])
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateFieldGetter_System_Type_System_String___
+  commentId: M:Harmony.FastAccess.CreateFieldGetter(System.Type,System.String[])
+  name.vb: CreateFieldGetter(Type, String())
+  fullName: Harmony.FastAccess.CreateFieldGetter(System.Type, System.String[])
+  fullName.vb: Harmony.FastAccess.CreateFieldGetter(System.Type, System.String())
+  nameWithType: FastAccess.CreateFieldGetter(Type, String[])
+  nameWithType.vb: FastAccess.CreateFieldGetter(Type, String())
+- uid: Harmony.FastAccess.CreateFieldGetter*
+  name: CreateFieldGetter
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateFieldGetter_
+  commentId: Overload:Harmony.FastAccess.CreateFieldGetter
+  isSpec: "True"
+  fullName: Harmony.FastAccess.CreateFieldGetter
+  nameWithType: FastAccess.CreateFieldGetter
+- uid: Harmony.FastAccess.CreateGetterHandler(FieldInfo)
+  name: CreateGetterHandler(FieldInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler_FieldInfo_
+  commentId: M:Harmony.FastAccess.CreateGetterHandler(FieldInfo)
+  fullName: Harmony.FastAccess.CreateGetterHandler(FieldInfo)
+  nameWithType: FastAccess.CreateGetterHandler(FieldInfo)
+- uid: Harmony.FastAccess.CreateGetterHandler(PropertyInfo)
+  name: CreateGetterHandler(PropertyInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler_PropertyInfo_
+  commentId: M:Harmony.FastAccess.CreateGetterHandler(PropertyInfo)
+  fullName: Harmony.FastAccess.CreateGetterHandler(PropertyInfo)
+  nameWithType: FastAccess.CreateGetterHandler(PropertyInfo)
+- uid: Harmony.FastAccess.CreateGetterHandler*
+  name: CreateGetterHandler
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler_
+  commentId: Overload:Harmony.FastAccess.CreateGetterHandler
+  isSpec: "True"
+  fullName: Harmony.FastAccess.CreateGetterHandler
+  nameWithType: FastAccess.CreateGetterHandler
+- uid: Harmony.FastAccess.CreateInstantiationHandler(System.Type)
+  name: CreateInstantiationHandler(Type)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateInstantiationHandler_System_Type_
+  commentId: M:Harmony.FastAccess.CreateInstantiationHandler(System.Type)
+  fullName: Harmony.FastAccess.CreateInstantiationHandler(System.Type)
+  nameWithType: FastAccess.CreateInstantiationHandler(Type)
+- uid: Harmony.FastAccess.CreateInstantiationHandler*
+  name: CreateInstantiationHandler
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateInstantiationHandler_
+  commentId: Overload:Harmony.FastAccess.CreateInstantiationHandler
+  isSpec: "True"
+  fullName: Harmony.FastAccess.CreateInstantiationHandler
+  nameWithType: FastAccess.CreateInstantiationHandler
+- uid: Harmony.FastAccess.CreateSetterHandler(FieldInfo)
+  name: CreateSetterHandler(FieldInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler_FieldInfo_
+  commentId: M:Harmony.FastAccess.CreateSetterHandler(FieldInfo)
+  fullName: Harmony.FastAccess.CreateSetterHandler(FieldInfo)
+  nameWithType: FastAccess.CreateSetterHandler(FieldInfo)
+- uid: Harmony.FastAccess.CreateSetterHandler(PropertyInfo)
+  name: CreateSetterHandler(PropertyInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler_PropertyInfo_
+  commentId: M:Harmony.FastAccess.CreateSetterHandler(PropertyInfo)
+  fullName: Harmony.FastAccess.CreateSetterHandler(PropertyInfo)
+  nameWithType: FastAccess.CreateSetterHandler(PropertyInfo)
+- uid: Harmony.FastAccess.CreateSetterHandler*
+  name: CreateSetterHandler
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler_
+  commentId: Overload:Harmony.FastAccess.CreateSetterHandler
+  isSpec: "True"
+  fullName: Harmony.FastAccess.CreateSetterHandler
+  nameWithType: FastAccess.CreateSetterHandler
+- uid: Harmony.FastInvokeHandler
+  name: FastInvokeHandler
+  href: api/Harmony.FastInvokeHandler.html
+  commentId: T:Harmony.FastInvokeHandler
+  fullName: Harmony.FastInvokeHandler
+  nameWithType: FastInvokeHandler
+- uid: Harmony.FileLog
+  name: FileLog
+  href: api/Harmony.FileLog.html
+  commentId: T:Harmony.FileLog
+  fullName: Harmony.FileLog
+  nameWithType: FileLog
+- uid: Harmony.FileLog.ChangeIndent(System.Int32)
+  name: ChangeIndent(Int32)
+  href: api/Harmony.FileLog.html#Harmony_FileLog_ChangeIndent_System_Int32_
+  commentId: M:Harmony.FileLog.ChangeIndent(System.Int32)
+  fullName: Harmony.FileLog.ChangeIndent(System.Int32)
+  nameWithType: FileLog.ChangeIndent(Int32)
+- uid: Harmony.FileLog.ChangeIndent*
+  name: ChangeIndent
+  href: api/Harmony.FileLog.html#Harmony_FileLog_ChangeIndent_
+  commentId: Overload:Harmony.FileLog.ChangeIndent
+  isSpec: "True"
+  fullName: Harmony.FileLog.ChangeIndent
+  nameWithType: FileLog.ChangeIndent
+- uid: Harmony.FileLog.FlushBuffer
+  name: FlushBuffer()
+  href: api/Harmony.FileLog.html#Harmony_FileLog_FlushBuffer
+  commentId: M:Harmony.FileLog.FlushBuffer
+  fullName: Harmony.FileLog.FlushBuffer()
+  nameWithType: FileLog.FlushBuffer()
+- uid: Harmony.FileLog.FlushBuffer*
+  name: FlushBuffer
+  href: api/Harmony.FileLog.html#Harmony_FileLog_FlushBuffer_
+  commentId: Overload:Harmony.FileLog.FlushBuffer
+  isSpec: "True"
+  fullName: Harmony.FileLog.FlushBuffer
+  nameWithType: FileLog.FlushBuffer
+- uid: Harmony.FileLog.indentChar
+  name: indentChar
+  href: api/Harmony.FileLog.html#Harmony_FileLog_indentChar
+  commentId: F:Harmony.FileLog.indentChar
+  fullName: Harmony.FileLog.indentChar
+  nameWithType: FileLog.indentChar
+- uid: Harmony.FileLog.indentLevel
+  name: indentLevel
+  href: api/Harmony.FileLog.html#Harmony_FileLog_indentLevel
+  commentId: F:Harmony.FileLog.indentLevel
+  fullName: Harmony.FileLog.indentLevel
+  nameWithType: FileLog.indentLevel
+- uid: Harmony.FileLog.Log(System.String)
+  name: Log(String)
+  href: api/Harmony.FileLog.html#Harmony_FileLog_Log_System_String_
+  commentId: M:Harmony.FileLog.Log(System.String)
+  fullName: Harmony.FileLog.Log(System.String)
+  nameWithType: FileLog.Log(String)
+- uid: Harmony.FileLog.Log*
+  name: Log
+  href: api/Harmony.FileLog.html#Harmony_FileLog_Log_
+  commentId: Overload:Harmony.FileLog.Log
+  isSpec: "True"
+  fullName: Harmony.FileLog.Log
+  nameWithType: FileLog.Log
+- uid: Harmony.FileLog.LogBuffered(System.String)
+  name: LogBuffered(String)
+  href: api/Harmony.FileLog.html#Harmony_FileLog_LogBuffered_System_String_
+  commentId: M:Harmony.FileLog.LogBuffered(System.String)
+  fullName: Harmony.FileLog.LogBuffered(System.String)
+  nameWithType: FileLog.LogBuffered(String)
+- uid: Harmony.FileLog.LogBuffered*
+  name: LogBuffered
+  href: api/Harmony.FileLog.html#Harmony_FileLog_LogBuffered_
+  commentId: Overload:Harmony.FileLog.LogBuffered
+  isSpec: "True"
+  fullName: Harmony.FileLog.LogBuffered
+  nameWithType: FileLog.LogBuffered
+- uid: Harmony.FileLog.LogBytes(System.Int64,System.Int32)
+  name: LogBytes(Int64, Int32)
+  href: api/Harmony.FileLog.html#Harmony_FileLog_LogBytes_System_Int64_System_Int32_
+  commentId: M:Harmony.FileLog.LogBytes(System.Int64,System.Int32)
+  fullName: Harmony.FileLog.LogBytes(System.Int64, System.Int32)
+  nameWithType: FileLog.LogBytes(Int64, Int32)
+- uid: Harmony.FileLog.LogBytes*
+  name: LogBytes
+  href: api/Harmony.FileLog.html#Harmony_FileLog_LogBytes_
+  commentId: Overload:Harmony.FileLog.LogBytes
+  isSpec: "True"
+  fullName: Harmony.FileLog.LogBytes
+  nameWithType: FileLog.LogBytes
+- uid: Harmony.FileLog.logPath
+  name: logPath
+  href: api/Harmony.FileLog.html#Harmony_FileLog_logPath
+  commentId: F:Harmony.FileLog.logPath
+  fullName: Harmony.FileLog.logPath
+  nameWithType: FileLog.logPath
+- uid: Harmony.FileLog.Reset
+  name: Reset()
+  href: api/Harmony.FileLog.html#Harmony_FileLog_Reset
+  commentId: M:Harmony.FileLog.Reset
+  fullName: Harmony.FileLog.Reset()
+  nameWithType: FileLog.Reset()
+- uid: Harmony.FileLog.Reset*
+  name: Reset
+  href: api/Harmony.FileLog.html#Harmony_FileLog_Reset_
+  commentId: Overload:Harmony.FileLog.Reset
+  isSpec: "True"
+  fullName: Harmony.FileLog.Reset
+  nameWithType: FileLog.Reset
+- uid: Harmony.GeneralExtensions
+  name: GeneralExtensions
+  href: api/Harmony.GeneralExtensions.html
+  commentId: T:Harmony.GeneralExtensions
+  fullName: Harmony.GeneralExtensions
+  nameWithType: GeneralExtensions
+- uid: Harmony.GeneralExtensions.Description(System.Type[])
+  name: Description(Type[])
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_Description_System_Type___
+  commentId: M:Harmony.GeneralExtensions.Description(System.Type[])
+  name.vb: Description(Type())
+  fullName: Harmony.GeneralExtensions.Description(System.Type[])
+  fullName.vb: Harmony.GeneralExtensions.Description(System.Type())
+  nameWithType: GeneralExtensions.Description(Type[])
+  nameWithType.vb: GeneralExtensions.Description(Type())
+- uid: Harmony.GeneralExtensions.Description*
+  name: Description
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_Description_
+  commentId: Overload:Harmony.GeneralExtensions.Description
+  isSpec: "True"
+  fullName: Harmony.GeneralExtensions.Description
+  nameWithType: GeneralExtensions.Description
+- uid: Harmony.GeneralExtensions.FullDescription(MethodBase)
+  name: FullDescription(MethodBase)
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_FullDescription_MethodBase_
+  commentId: M:Harmony.GeneralExtensions.FullDescription(MethodBase)
+  fullName: Harmony.GeneralExtensions.FullDescription(MethodBase)
+  nameWithType: GeneralExtensions.FullDescription(MethodBase)
+- uid: Harmony.GeneralExtensions.FullDescription*
+  name: FullDescription
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_FullDescription_
+  commentId: Overload:Harmony.GeneralExtensions.FullDescription
+  isSpec: "True"
+  fullName: Harmony.GeneralExtensions.FullDescription
+  nameWithType: GeneralExtensions.FullDescription
+- uid: Harmony.GeneralExtensions.GetTypedValue*
+  name: GetTypedValue
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_GetTypedValue_
+  commentId: Overload:Harmony.GeneralExtensions.GetTypedValue
+  isSpec: "True"
+  fullName: Harmony.GeneralExtensions.GetTypedValue
+  nameWithType: GeneralExtensions.GetTypedValue
+- uid: Harmony.GeneralExtensions.GetTypedValue``1(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)
+  name: GetTypedValue<T>(Dictionary<String, Object>, String)
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_GetTypedValue__1_System_Collections_Generic_Dictionary_System_String_System_Object__System_String_
+  commentId: M:Harmony.GeneralExtensions.GetTypedValue``1(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)
+  name.vb: GetTypedValue(Of T)(Dictionary(Of String, Object), String)
+  fullName: Harmony.GeneralExtensions.GetTypedValue<T>(System.Collections.Generic.Dictionary<System.String, System.Object>, System.String)
+  fullName.vb: Harmony.GeneralExtensions.GetTypedValue(Of T)(System.Collections.Generic.Dictionary(Of System.String, System.Object), System.String)
+  nameWithType: GeneralExtensions.GetTypedValue<T>(Dictionary<String, Object>, String)
+  nameWithType.vb: GeneralExtensions.GetTypedValue(Of T)(Dictionary(Of String, Object), String)
+- uid: Harmony.GeneralExtensions.GetValueSafe*
+  name: GetValueSafe
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_GetValueSafe_
+  commentId: Overload:Harmony.GeneralExtensions.GetValueSafe
+  isSpec: "True"
+  fullName: Harmony.GeneralExtensions.GetValueSafe
+  nameWithType: GeneralExtensions.GetValueSafe
+- uid: Harmony.GeneralExtensions.GetValueSafe``2(System.Collections.Generic.Dictionary{``0,``1},``0)
+  name: GetValueSafe<S, T>(Dictionary<S, T>, S)
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_GetValueSafe__2_System_Collections_Generic_Dictionary___0___1____0_
+  commentId: M:Harmony.GeneralExtensions.GetValueSafe``2(System.Collections.Generic.Dictionary{``0,``1},``0)
+  name.vb: GetValueSafe(Of S, T)(Dictionary(Of S, T), S)
+  fullName: Harmony.GeneralExtensions.GetValueSafe<S, T>(System.Collections.Generic.Dictionary<S, T>, S)
+  fullName.vb: Harmony.GeneralExtensions.GetValueSafe(Of S, T)(System.Collections.Generic.Dictionary(Of S, T), S)
+  nameWithType: GeneralExtensions.GetValueSafe<S, T>(Dictionary<S, T>, S)
+  nameWithType.vb: GeneralExtensions.GetValueSafe(Of S, T)(Dictionary(Of S, T), S)
+- uid: Harmony.GeneralExtensions.Join*
+  name: Join
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_Join_
+  commentId: Overload:Harmony.GeneralExtensions.Join
+  isSpec: "True"
+  fullName: Harmony.GeneralExtensions.Join
+  nameWithType: GeneralExtensions.Join
+- uid: Harmony.GeneralExtensions.Join``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.String},System.String)
+  name: Join<T>(IEnumerable<T>, Func<T, String>, String)
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_Join__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_String__System_String_
+  commentId: M:Harmony.GeneralExtensions.Join``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.String},System.String)
+  name.vb: Join(Of T)(IEnumerable(Of T), Func(Of T, String), String)
+  fullName: Harmony.GeneralExtensions.Join<T>(System.Collections.Generic.IEnumerable<T>, System.Func<T, System.String>, System.String)
+  fullName.vb: Harmony.GeneralExtensions.Join(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Func(Of T, System.String), System.String)
+  nameWithType: GeneralExtensions.Join<T>(IEnumerable<T>, Func<T, String>, String)
+  nameWithType.vb: GeneralExtensions.Join(Of T)(IEnumerable(Of T), Func(Of T, String), String)
+- uid: Harmony.GeneralExtensions.Types(ParameterInfo[])
+  name: Types(ParameterInfo[])
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_Types_ParameterInfo___
+  commentId: M:Harmony.GeneralExtensions.Types(ParameterInfo[])
+  name.vb: Types(ParameterInfo())
+  fullName: Harmony.GeneralExtensions.Types(ParameterInfo[])
+  fullName.vb: Harmony.GeneralExtensions.Types(ParameterInfo())
+  nameWithType: GeneralExtensions.Types(ParameterInfo[])
+  nameWithType.vb: GeneralExtensions.Types(ParameterInfo())
+- uid: Harmony.GeneralExtensions.Types*
+  name: Types
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_Types_
+  commentId: Overload:Harmony.GeneralExtensions.Types
+  isSpec: "True"
+  fullName: Harmony.GeneralExtensions.Types
+  nameWithType: GeneralExtensions.Types
+- uid: Harmony.GetterHandler
+  name: GetterHandler
+  href: api/Harmony.GetterHandler.html
+  commentId: T:Harmony.GetterHandler
+  fullName: Harmony.GetterHandler
+  nameWithType: GetterHandler
+- uid: Harmony.HarmonyAfter
+  name: HarmonyAfter
+  href: api/Harmony.HarmonyAfter.html
+  commentId: T:Harmony.HarmonyAfter
+  fullName: Harmony.HarmonyAfter
+  nameWithType: HarmonyAfter
+- uid: Harmony.HarmonyAfter.#ctor(System.String[])
+  name: HarmonyAfter(String[])
+  href: api/Harmony.HarmonyAfter.html#Harmony_HarmonyAfter__ctor_System_String___
+  commentId: M:Harmony.HarmonyAfter.#ctor(System.String[])
+  name.vb: HarmonyAfter(String())
+  fullName: Harmony.HarmonyAfter.HarmonyAfter(System.String[])
+  fullName.vb: Harmony.HarmonyAfter.HarmonyAfter(System.String())
+  nameWithType: HarmonyAfter.HarmonyAfter(String[])
+  nameWithType.vb: HarmonyAfter.HarmonyAfter(String())
+- uid: Harmony.HarmonyAfter.#ctor*
+  name: HarmonyAfter
+  href: api/Harmony.HarmonyAfter.html#Harmony_HarmonyAfter__ctor_
+  commentId: Overload:Harmony.HarmonyAfter.#ctor
+  isSpec: "True"
+  fullName: Harmony.HarmonyAfter.HarmonyAfter
+  nameWithType: HarmonyAfter.HarmonyAfter
+- uid: Harmony.HarmonyArgument
+  name: HarmonyArgument
+  href: api/Harmony.HarmonyArgument.html
+  commentId: T:Harmony.HarmonyArgument
+  fullName: Harmony.HarmonyArgument
+  nameWithType: HarmonyArgument
+- uid: Harmony.HarmonyArgument.#ctor(System.Int32)
+  name: HarmonyArgument(Int32)
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument__ctor_System_Int32_
+  commentId: M:Harmony.HarmonyArgument.#ctor(System.Int32)
+  fullName: Harmony.HarmonyArgument.HarmonyArgument(System.Int32)
+  nameWithType: HarmonyArgument.HarmonyArgument(Int32)
+- uid: Harmony.HarmonyArgument.#ctor(System.Int32,System.String)
+  name: HarmonyArgument(Int32, String)
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument__ctor_System_Int32_System_String_
+  commentId: M:Harmony.HarmonyArgument.#ctor(System.Int32,System.String)
+  fullName: Harmony.HarmonyArgument.HarmonyArgument(System.Int32, System.String)
+  nameWithType: HarmonyArgument.HarmonyArgument(Int32, String)
+- uid: Harmony.HarmonyArgument.#ctor(System.String)
+  name: HarmonyArgument(String)
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument__ctor_System_String_
+  commentId: M:Harmony.HarmonyArgument.#ctor(System.String)
+  fullName: Harmony.HarmonyArgument.HarmonyArgument(System.String)
+  nameWithType: HarmonyArgument.HarmonyArgument(String)
+- uid: Harmony.HarmonyArgument.#ctor(System.String,System.String)
+  name: HarmonyArgument(String, String)
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument__ctor_System_String_System_String_
+  commentId: M:Harmony.HarmonyArgument.#ctor(System.String,System.String)
+  fullName: Harmony.HarmonyArgument.HarmonyArgument(System.String, System.String)
+  nameWithType: HarmonyArgument.HarmonyArgument(String, String)
+- uid: Harmony.HarmonyArgument.#ctor*
+  name: HarmonyArgument
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument__ctor_
+  commentId: Overload:Harmony.HarmonyArgument.#ctor
+  isSpec: "True"
+  fullName: Harmony.HarmonyArgument.HarmonyArgument
+  nameWithType: HarmonyArgument.HarmonyArgument
+- uid: Harmony.HarmonyArgument.Index
+  name: Index
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument_Index
+  commentId: P:Harmony.HarmonyArgument.Index
+  fullName: Harmony.HarmonyArgument.Index
+  nameWithType: HarmonyArgument.Index
+- uid: Harmony.HarmonyArgument.Index*
+  name: Index
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument_Index_
+  commentId: Overload:Harmony.HarmonyArgument.Index
+  isSpec: "True"
+  fullName: Harmony.HarmonyArgument.Index
+  nameWithType: HarmonyArgument.Index
+- uid: Harmony.HarmonyArgument.NewName
+  name: NewName
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument_NewName
+  commentId: P:Harmony.HarmonyArgument.NewName
+  fullName: Harmony.HarmonyArgument.NewName
+  nameWithType: HarmonyArgument.NewName
+- uid: Harmony.HarmonyArgument.NewName*
+  name: NewName
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument_NewName_
+  commentId: Overload:Harmony.HarmonyArgument.NewName
+  isSpec: "True"
+  fullName: Harmony.HarmonyArgument.NewName
+  nameWithType: HarmonyArgument.NewName
+- uid: Harmony.HarmonyArgument.OriginalName
+  name: OriginalName
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument_OriginalName
+  commentId: P:Harmony.HarmonyArgument.OriginalName
+  fullName: Harmony.HarmonyArgument.OriginalName
+  nameWithType: HarmonyArgument.OriginalName
+- uid: Harmony.HarmonyArgument.OriginalName*
+  name: OriginalName
+  href: api/Harmony.HarmonyArgument.html#Harmony_HarmonyArgument_OriginalName_
+  commentId: Overload:Harmony.HarmonyArgument.OriginalName
+  isSpec: "True"
+  fullName: Harmony.HarmonyArgument.OriginalName
+  nameWithType: HarmonyArgument.OriginalName
+- uid: Harmony.HarmonyAttribute
+  name: HarmonyAttribute
+  href: api/Harmony.HarmonyAttribute.html
+  commentId: T:Harmony.HarmonyAttribute
+  fullName: Harmony.HarmonyAttribute
+  nameWithType: HarmonyAttribute
+- uid: Harmony.HarmonyAttribute.info
+  name: info
+  href: api/Harmony.HarmonyAttribute.html#Harmony_HarmonyAttribute_info
+  commentId: F:Harmony.HarmonyAttribute.info
+  fullName: Harmony.HarmonyAttribute.info
+  nameWithType: HarmonyAttribute.info
+- uid: Harmony.HarmonyBefore
+  name: HarmonyBefore
+  href: api/Harmony.HarmonyBefore.html
+  commentId: T:Harmony.HarmonyBefore
+  fullName: Harmony.HarmonyBefore
+  nameWithType: HarmonyBefore
+- uid: Harmony.HarmonyBefore.#ctor(System.String[])
+  name: HarmonyBefore(String[])
+  href: api/Harmony.HarmonyBefore.html#Harmony_HarmonyBefore__ctor_System_String___
+  commentId: M:Harmony.HarmonyBefore.#ctor(System.String[])
+  name.vb: HarmonyBefore(String())
+  fullName: Harmony.HarmonyBefore.HarmonyBefore(System.String[])
+  fullName.vb: Harmony.HarmonyBefore.HarmonyBefore(System.String())
+  nameWithType: HarmonyBefore.HarmonyBefore(String[])
+  nameWithType.vb: HarmonyBefore.HarmonyBefore(String())
+- uid: Harmony.HarmonyBefore.#ctor*
+  name: HarmonyBefore
+  href: api/Harmony.HarmonyBefore.html#Harmony_HarmonyBefore__ctor_
+  commentId: Overload:Harmony.HarmonyBefore.#ctor
+  isSpec: "True"
+  fullName: Harmony.HarmonyBefore.HarmonyBefore
+  nameWithType: HarmonyBefore.HarmonyBefore
+- uid: Harmony.HarmonyCleanup
+  name: HarmonyCleanup
+  href: api/Harmony.HarmonyCleanup.html
+  commentId: T:Harmony.HarmonyCleanup
+  fullName: Harmony.HarmonyCleanup
+  nameWithType: HarmonyCleanup
+- uid: Harmony.HarmonyInstance
+  name: HarmonyInstance
+  href: api/Harmony.HarmonyInstance.html
+  commentId: T:Harmony.HarmonyInstance
+  fullName: Harmony.HarmonyInstance
+  nameWithType: HarmonyInstance
+- uid: Harmony.HarmonyInstance.Create(System.String)
+  name: Create(String)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Create_System_String_
+  commentId: M:Harmony.HarmonyInstance.Create(System.String)
+  fullName: Harmony.HarmonyInstance.Create(System.String)
+  nameWithType: HarmonyInstance.Create(String)
+- uid: Harmony.HarmonyInstance.Create*
+  name: Create
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Create_
+  commentId: Overload:Harmony.HarmonyInstance.Create
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.Create
+  nameWithType: HarmonyInstance.Create
+- uid: Harmony.HarmonyInstance.DEBUG
+  name: DEBUG
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_DEBUG
+  commentId: F:Harmony.HarmonyInstance.DEBUG
+  fullName: Harmony.HarmonyInstance.DEBUG
+  nameWithType: HarmonyInstance.DEBUG
+- uid: Harmony.HarmonyInstance.GetPatchedMethods
+  name: GetPatchedMethods()
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_GetPatchedMethods
+  commentId: M:Harmony.HarmonyInstance.GetPatchedMethods
+  fullName: Harmony.HarmonyInstance.GetPatchedMethods()
+  nameWithType: HarmonyInstance.GetPatchedMethods()
+- uid: Harmony.HarmonyInstance.GetPatchedMethods*
+  name: GetPatchedMethods
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_GetPatchedMethods_
+  commentId: Overload:Harmony.HarmonyInstance.GetPatchedMethods
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.GetPatchedMethods
+  nameWithType: HarmonyInstance.GetPatchedMethods
+- uid: Harmony.HarmonyInstance.GetPatchInfo(MethodBase)
+  name: GetPatchInfo(MethodBase)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_GetPatchInfo_MethodBase_
+  commentId: M:Harmony.HarmonyInstance.GetPatchInfo(MethodBase)
+  fullName: Harmony.HarmonyInstance.GetPatchInfo(MethodBase)
+  nameWithType: HarmonyInstance.GetPatchInfo(MethodBase)
+- uid: Harmony.HarmonyInstance.GetPatchInfo*
+  name: GetPatchInfo
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_GetPatchInfo_
+  commentId: Overload:Harmony.HarmonyInstance.GetPatchInfo
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.GetPatchInfo
+  nameWithType: HarmonyInstance.GetPatchInfo
+- uid: Harmony.HarmonyInstance.HasAnyPatches(System.String)
+  name: HasAnyPatches(String)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_HasAnyPatches_System_String_
+  commentId: M:Harmony.HarmonyInstance.HasAnyPatches(System.String)
+  fullName: Harmony.HarmonyInstance.HasAnyPatches(System.String)
+  nameWithType: HarmonyInstance.HasAnyPatches(String)
+- uid: Harmony.HarmonyInstance.HasAnyPatches*
+  name: HasAnyPatches
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_HasAnyPatches_
+  commentId: Overload:Harmony.HarmonyInstance.HasAnyPatches
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.HasAnyPatches
+  nameWithType: HarmonyInstance.HasAnyPatches
+- uid: Harmony.HarmonyInstance.Id
+  name: Id
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Id
+  commentId: P:Harmony.HarmonyInstance.Id
+  fullName: Harmony.HarmonyInstance.Id
+  nameWithType: HarmonyInstance.Id
+- uid: Harmony.HarmonyInstance.Id*
+  name: Id
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Id_
+  commentId: Overload:Harmony.HarmonyInstance.Id
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.Id
+  nameWithType: HarmonyInstance.Id
+- uid: Harmony.HarmonyInstance.Patch(MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  name: Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Patch_MethodBase_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
+  commentId: M:Harmony.HarmonyInstance.Patch(MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  fullName: Harmony.HarmonyInstance.Patch(MethodBase, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  nameWithType: HarmonyInstance.Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+- uid: Harmony.HarmonyInstance.Patch*
+  name: Patch
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Patch_
+  commentId: Overload:Harmony.HarmonyInstance.Patch
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.Patch
+  nameWithType: HarmonyInstance.Patch
+- uid: Harmony.HarmonyInstance.PatchAll
+  name: PatchAll()
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_PatchAll
+  commentId: M:Harmony.HarmonyInstance.PatchAll
+  fullName: Harmony.HarmonyInstance.PatchAll()
+  nameWithType: HarmonyInstance.PatchAll()
+- uid: Harmony.HarmonyInstance.PatchAll(Assembly)
+  name: PatchAll(Assembly)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_PatchAll_Assembly_
+  commentId: M:Harmony.HarmonyInstance.PatchAll(Assembly)
+  fullName: Harmony.HarmonyInstance.PatchAll(Assembly)
+  nameWithType: HarmonyInstance.PatchAll(Assembly)
+- uid: Harmony.HarmonyInstance.PatchAll*
+  name: PatchAll
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_PatchAll_
+  commentId: Overload:Harmony.HarmonyInstance.PatchAll
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.PatchAll
+  nameWithType: HarmonyInstance.PatchAll
+- uid: Harmony.HarmonyInstance.Unpatch(MethodBase,Harmony.HarmonyPatchType,System.String)
+  name: Unpatch(MethodBase, HarmonyPatchType, String)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Unpatch_MethodBase_Harmony_HarmonyPatchType_System_String_
+  commentId: M:Harmony.HarmonyInstance.Unpatch(MethodBase,Harmony.HarmonyPatchType,System.String)
+  fullName: Harmony.HarmonyInstance.Unpatch(MethodBase, Harmony.HarmonyPatchType, System.String)
+  nameWithType: HarmonyInstance.Unpatch(MethodBase, HarmonyPatchType, String)
+- uid: Harmony.HarmonyInstance.Unpatch(MethodBase,MethodInfo)
+  name: Unpatch(MethodBase, MethodInfo)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Unpatch_MethodBase_MethodInfo_
+  commentId: M:Harmony.HarmonyInstance.Unpatch(MethodBase,MethodInfo)
+  fullName: Harmony.HarmonyInstance.Unpatch(MethodBase, MethodInfo)
+  nameWithType: HarmonyInstance.Unpatch(MethodBase, MethodInfo)
+- uid: Harmony.HarmonyInstance.Unpatch*
+  name: Unpatch
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Unpatch_
+  commentId: Overload:Harmony.HarmonyInstance.Unpatch
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.Unpatch
+  nameWithType: HarmonyInstance.Unpatch
+- uid: Harmony.HarmonyInstance.UnpatchAll(System.String)
+  name: UnpatchAll(String)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_UnpatchAll_System_String_
+  commentId: M:Harmony.HarmonyInstance.UnpatchAll(System.String)
+  fullName: Harmony.HarmonyInstance.UnpatchAll(System.String)
+  nameWithType: HarmonyInstance.UnpatchAll(String)
+- uid: Harmony.HarmonyInstance.UnpatchAll*
+  name: UnpatchAll
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_UnpatchAll_
+  commentId: Overload:Harmony.HarmonyInstance.UnpatchAll
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.UnpatchAll
+  nameWithType: HarmonyInstance.UnpatchAll
+- uid: Harmony.HarmonyInstance.VersionInfo(System.Version@)
+  name: VersionInfo(out Version)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_VersionInfo_System_Version__
+  commentId: M:Harmony.HarmonyInstance.VersionInfo(System.Version@)
+  name.vb: VersionInfo(ByRef Version)
+  fullName: Harmony.HarmonyInstance.VersionInfo(out System.Version)
+  fullName.vb: Harmony.HarmonyInstance.VersionInfo(ByRef System.Version)
+  nameWithType: HarmonyInstance.VersionInfo(out Version)
+  nameWithType.vb: HarmonyInstance.VersionInfo(ByRef Version)
+- uid: Harmony.HarmonyInstance.VersionInfo*
+  name: VersionInfo
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_VersionInfo_
+  commentId: Overload:Harmony.HarmonyInstance.VersionInfo
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.VersionInfo
+  nameWithType: HarmonyInstance.VersionInfo
+- uid: Harmony.HarmonyMethod
+  name: HarmonyMethod
+  href: api/Harmony.HarmonyMethod.html
+  commentId: T:Harmony.HarmonyMethod
+  fullName: Harmony.HarmonyMethod
+  nameWithType: HarmonyMethod
+- uid: Harmony.HarmonyMethod.#ctor
+  name: HarmonyMethod()
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod__ctor
+  commentId: M:Harmony.HarmonyMethod.#ctor
+  fullName: Harmony.HarmonyMethod.HarmonyMethod()
+  nameWithType: HarmonyMethod.HarmonyMethod()
+- uid: Harmony.HarmonyMethod.#ctor(MethodInfo)
+  name: HarmonyMethod(MethodInfo)
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod__ctor_MethodInfo_
+  commentId: M:Harmony.HarmonyMethod.#ctor(MethodInfo)
+  fullName: Harmony.HarmonyMethod.HarmonyMethod(MethodInfo)
+  nameWithType: HarmonyMethod.HarmonyMethod(MethodInfo)
+- uid: Harmony.HarmonyMethod.#ctor(System.Type,System.String,System.Type[])
+  name: HarmonyMethod(Type, String, Type[])
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod__ctor_System_Type_System_String_System_Type___
+  commentId: M:Harmony.HarmonyMethod.#ctor(System.Type,System.String,System.Type[])
+  name.vb: HarmonyMethod(Type, String, Type())
+  fullName: Harmony.HarmonyMethod.HarmonyMethod(System.Type, System.String, System.Type[])
+  fullName.vb: Harmony.HarmonyMethod.HarmonyMethod(System.Type, System.String, System.Type())
+  nameWithType: HarmonyMethod.HarmonyMethod(Type, String, Type[])
+  nameWithType.vb: HarmonyMethod.HarmonyMethod(Type, String, Type())
+- uid: Harmony.HarmonyMethod.#ctor*
+  name: HarmonyMethod
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod__ctor_
+  commentId: Overload:Harmony.HarmonyMethod.#ctor
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethod.HarmonyMethod
+  nameWithType: HarmonyMethod.HarmonyMethod
+- uid: Harmony.HarmonyMethod.after
+  name: after
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_after
+  commentId: F:Harmony.HarmonyMethod.after
+  fullName: Harmony.HarmonyMethod.after
+  nameWithType: HarmonyMethod.after
+- uid: Harmony.HarmonyMethod.argumentTypes
+  name: argumentTypes
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_argumentTypes
+  commentId: F:Harmony.HarmonyMethod.argumentTypes
+  fullName: Harmony.HarmonyMethod.argumentTypes
+  nameWithType: HarmonyMethod.argumentTypes
+- uid: Harmony.HarmonyMethod.before
+  name: before
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_before
+  commentId: F:Harmony.HarmonyMethod.before
+  fullName: Harmony.HarmonyMethod.before
+  nameWithType: HarmonyMethod.before
+- uid: Harmony.HarmonyMethod.declaringType
+  name: declaringType
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_declaringType
+  commentId: F:Harmony.HarmonyMethod.declaringType
+  fullName: Harmony.HarmonyMethod.declaringType
+  nameWithType: HarmonyMethod.declaringType
+- uid: Harmony.HarmonyMethod.HarmonyFields
+  name: HarmonyFields()
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_HarmonyFields
+  commentId: M:Harmony.HarmonyMethod.HarmonyFields
+  fullName: Harmony.HarmonyMethod.HarmonyFields()
+  nameWithType: HarmonyMethod.HarmonyFields()
+- uid: Harmony.HarmonyMethod.HarmonyFields*
+  name: HarmonyFields
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_HarmonyFields_
+  commentId: Overload:Harmony.HarmonyMethod.HarmonyFields
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethod.HarmonyFields
+  nameWithType: HarmonyMethod.HarmonyFields
+- uid: Harmony.HarmonyMethod.Merge(System.Collections.Generic.List{Harmony.HarmonyMethod})
+  name: Merge(List<HarmonyMethod>)
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_Merge_System_Collections_Generic_List_Harmony_HarmonyMethod__
+  commentId: M:Harmony.HarmonyMethod.Merge(System.Collections.Generic.List{Harmony.HarmonyMethod})
+  name.vb: Merge(List(Of HarmonyMethod))
+  fullName: Harmony.HarmonyMethod.Merge(System.Collections.Generic.List<Harmony.HarmonyMethod>)
+  fullName.vb: Harmony.HarmonyMethod.Merge(System.Collections.Generic.List(Of Harmony.HarmonyMethod))
+  nameWithType: HarmonyMethod.Merge(List<HarmonyMethod>)
+  nameWithType.vb: HarmonyMethod.Merge(List(Of HarmonyMethod))
+- uid: Harmony.HarmonyMethod.Merge*
+  name: Merge
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_Merge_
+  commentId: Overload:Harmony.HarmonyMethod.Merge
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethod.Merge
+  nameWithType: HarmonyMethod.Merge
+- uid: Harmony.HarmonyMethod.method
+  name: method
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_method
+  commentId: F:Harmony.HarmonyMethod.method
+  fullName: Harmony.HarmonyMethod.method
+  nameWithType: HarmonyMethod.method
+- uid: Harmony.HarmonyMethod.methodName
+  name: methodName
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_methodName
+  commentId: F:Harmony.HarmonyMethod.methodName
+  fullName: Harmony.HarmonyMethod.methodName
+  nameWithType: HarmonyMethod.methodName
+- uid: Harmony.HarmonyMethod.methodType
+  name: methodType
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_methodType
+  commentId: F:Harmony.HarmonyMethod.methodType
+  fullName: Harmony.HarmonyMethod.methodType
+  nameWithType: HarmonyMethod.methodType
+- uid: Harmony.HarmonyMethod.prioritiy
+  name: prioritiy
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_prioritiy
+  commentId: F:Harmony.HarmonyMethod.prioritiy
+  fullName: Harmony.HarmonyMethod.prioritiy
+  nameWithType: HarmonyMethod.prioritiy
+- uid: Harmony.HarmonyMethod.ToString
+  name: ToString()
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_ToString
+  commentId: M:Harmony.HarmonyMethod.ToString
+  fullName: Harmony.HarmonyMethod.ToString()
+  nameWithType: HarmonyMethod.ToString()
+- uid: Harmony.HarmonyMethod.ToString*
+  name: ToString
+  href: api/Harmony.HarmonyMethod.html#Harmony_HarmonyMethod_ToString_
+  commentId: Overload:Harmony.HarmonyMethod.ToString
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethod.ToString
+  nameWithType: HarmonyMethod.ToString
+- uid: Harmony.HarmonyMethodExtensions
+  name: HarmonyMethodExtensions
+  href: api/Harmony.HarmonyMethodExtensions.html
+  commentId: T:Harmony.HarmonyMethodExtensions
+  fullName: Harmony.HarmonyMethodExtensions
+  nameWithType: HarmonyMethodExtensions
+- uid: Harmony.HarmonyMethodExtensions.Clone(Harmony.HarmonyMethod)
+  name: Clone(HarmonyMethod)
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_Clone_Harmony_HarmonyMethod_
+  commentId: M:Harmony.HarmonyMethodExtensions.Clone(Harmony.HarmonyMethod)
+  fullName: Harmony.HarmonyMethodExtensions.Clone(Harmony.HarmonyMethod)
+  nameWithType: HarmonyMethodExtensions.Clone(HarmonyMethod)
+- uid: Harmony.HarmonyMethodExtensions.Clone*
+  name: Clone
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_Clone_
+  commentId: Overload:Harmony.HarmonyMethodExtensions.Clone
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethodExtensions.Clone
+  nameWithType: HarmonyMethodExtensions.Clone
+- uid: Harmony.HarmonyMethodExtensions.CopyTo(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  name: CopyTo(HarmonyMethod, HarmonyMethod)
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_CopyTo_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
+  commentId: M:Harmony.HarmonyMethodExtensions.CopyTo(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  fullName: Harmony.HarmonyMethodExtensions.CopyTo(Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  nameWithType: HarmonyMethodExtensions.CopyTo(HarmonyMethod, HarmonyMethod)
+- uid: Harmony.HarmonyMethodExtensions.CopyTo*
+  name: CopyTo
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_CopyTo_
+  commentId: Overload:Harmony.HarmonyMethodExtensions.CopyTo
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethodExtensions.CopyTo
+  nameWithType: HarmonyMethodExtensions.CopyTo
+- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  name: GetHarmonyMethods(MethodBase)
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetHarmonyMethods_MethodBase_
+  commentId: M:Harmony.HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
+- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
+  name: GetHarmonyMethods(Type)
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetHarmonyMethods_System_Type_
+  commentId: M:Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
+  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
+  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods(Type)
+- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods*
+  name: GetHarmonyMethods
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetHarmonyMethods_
+  commentId: Overload:Harmony.HarmonyMethodExtensions.GetHarmonyMethods
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods
+  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods
+- uid: Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  name: Merge(HarmonyMethod, HarmonyMethod)
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_Merge_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
+  commentId: M:Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  fullName: Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  nameWithType: HarmonyMethodExtensions.Merge(HarmonyMethod, HarmonyMethod)
+- uid: Harmony.HarmonyMethodExtensions.Merge*
+  name: Merge
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_Merge_
+  commentId: Overload:Harmony.HarmonyMethodExtensions.Merge
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethodExtensions.Merge
+  nameWithType: HarmonyMethodExtensions.Merge
+- uid: Harmony.HarmonyPatch
+  name: HarmonyPatch
+  href: api/Harmony.HarmonyPatch.html
+  commentId: T:Harmony.HarmonyPatch
+  fullName: Harmony.HarmonyPatch
+  nameWithType: HarmonyPatch
+- uid: Harmony.HarmonyPatch.#ctor
+  name: HarmonyPatch()
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor
+  commentId: M:Harmony.HarmonyPatch.#ctor
+  fullName: Harmony.HarmonyPatch.HarmonyPatch()
+  nameWithType: HarmonyPatch.HarmonyPatch()
+- uid: Harmony.HarmonyPatch.#ctor(Harmony.MethodType)
+  name: HarmonyPatch(MethodType)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_Harmony_MethodType_
+  commentId: M:Harmony.HarmonyPatch.#ctor(Harmony.MethodType)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(Harmony.MethodType)
+  nameWithType: HarmonyPatch.HarmonyPatch(MethodType)
+- uid: Harmony.HarmonyPatch.#ctor(Harmony.MethodType,System.Type[])
+  name: HarmonyPatch(MethodType, Type[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_Harmony_MethodType_System_Type___
+  commentId: M:Harmony.HarmonyPatch.#ctor(Harmony.MethodType,System.Type[])
+  name.vb: HarmonyPatch(MethodType, Type())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(Harmony.MethodType, System.Type[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(Harmony.MethodType, System.Type())
+  nameWithType: HarmonyPatch.HarmonyPatch(MethodType, Type[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(MethodType, Type())
+- uid: Harmony.HarmonyPatch.#ctor(Harmony.MethodType,System.Type[],Harmony.ArgumentType[])
+  name: HarmonyPatch(MethodType, Type[], ArgumentType[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_Harmony_MethodType_System_Type___Harmony_ArgumentType___
+  commentId: M:Harmony.HarmonyPatch.#ctor(Harmony.MethodType,System.Type[],Harmony.ArgumentType[])
+  name.vb: HarmonyPatch(MethodType, Type(), ArgumentType())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(Harmony.MethodType, System.Type[], Harmony.ArgumentType[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(Harmony.MethodType, System.Type(), Harmony.ArgumentType())
+  nameWithType: HarmonyPatch.HarmonyPatch(MethodType, Type[], ArgumentType[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(MethodType, Type(), ArgumentType())
+- uid: Harmony.HarmonyPatch.#ctor(System.String)
+  name: HarmonyPatch(String)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_String_
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.String)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.String)
+  nameWithType: HarmonyPatch.HarmonyPatch(String)
+- uid: Harmony.HarmonyPatch.#ctor(System.String,Harmony.MethodType)
+  name: HarmonyPatch(String, MethodType)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_String_Harmony_MethodType_
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.String,Harmony.MethodType)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.String, Harmony.MethodType)
+  nameWithType: HarmonyPatch.HarmonyPatch(String, MethodType)
+- uid: Harmony.HarmonyPatch.#ctor(System.String,Harmony.PropertyMethod)
+  name: HarmonyPatch(String, PropertyMethod)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_String_Harmony_PropertyMethod_
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.String,Harmony.PropertyMethod)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.String, Harmony.PropertyMethod)
+  nameWithType: HarmonyPatch.HarmonyPatch(String, PropertyMethod)
+- uid: Harmony.HarmonyPatch.#ctor(System.String,System.Type[])
+  name: HarmonyPatch(String, Type[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_String_System_Type___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.String,System.Type[])
+  name.vb: HarmonyPatch(String, Type())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.String, System.Type[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.String, System.Type())
+  nameWithType: HarmonyPatch.HarmonyPatch(String, Type[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(String, Type())
+- uid: Harmony.HarmonyPatch.#ctor(System.String,System.Type[],Harmony.ArgumentType[])
+  name: HarmonyPatch(String, Type[], ArgumentType[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_String_System_Type___Harmony_ArgumentType___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.String,System.Type[],Harmony.ArgumentType[])
+  name.vb: HarmonyPatch(String, Type(), ArgumentType())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.String, System.Type[], Harmony.ArgumentType[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.String, System.Type(), Harmony.ArgumentType())
+  nameWithType: HarmonyPatch.HarmonyPatch(String, Type[], ArgumentType[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(String, Type(), ArgumentType())
+- uid: Harmony.HarmonyPatch.#ctor(System.Type)
+  name: HarmonyPatch(Type)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type)
+  nameWithType: HarmonyPatch.HarmonyPatch(Type)
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,Harmony.MethodType)
+  name: HarmonyPatch(Type, MethodType)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_Harmony_MethodType_
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,Harmony.MethodType)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, Harmony.MethodType)
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, MethodType)
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,Harmony.MethodType,System.Type[])
+  name: HarmonyPatch(Type, MethodType, Type[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_Harmony_MethodType_System_Type___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,Harmony.MethodType,System.Type[])
+  name.vb: HarmonyPatch(Type, MethodType, Type())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, Harmony.MethodType, System.Type[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.Type, Harmony.MethodType, System.Type())
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, MethodType, Type[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(Type, MethodType, Type())
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,Harmony.MethodType,System.Type[],Harmony.ArgumentType[])
+  name: HarmonyPatch(Type, MethodType, Type[], ArgumentType[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_Harmony_MethodType_System_Type___Harmony_ArgumentType___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,Harmony.MethodType,System.Type[],Harmony.ArgumentType[])
+  name.vb: HarmonyPatch(Type, MethodType, Type(), ArgumentType())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, Harmony.MethodType, System.Type[], Harmony.ArgumentType[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.Type, Harmony.MethodType, System.Type(), Harmony.ArgumentType())
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, MethodType, Type[], ArgumentType[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(Type, MethodType, Type(), ArgumentType())
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,System.String)
+  name: HarmonyPatch(Type, String)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_System_String_
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,System.String)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.String)
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, String)
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,System.String,Harmony.MethodType)
+  name: HarmonyPatch(Type, String, MethodType)
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_System_String_Harmony_MethodType_
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,System.String,Harmony.MethodType)
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.String, Harmony.MethodType)
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, String, MethodType)
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,System.String,System.Type[])
+  name: HarmonyPatch(Type, String, Type[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_System_String_System_Type___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,System.String,System.Type[])
+  name.vb: HarmonyPatch(Type, String, Type())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.String, System.Type[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.String, System.Type())
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, String, Type[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(Type, String, Type())
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,System.String,System.Type[],Harmony.ArgumentType[])
+  name: HarmonyPatch(Type, String, Type[], ArgumentType[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_System_String_System_Type___Harmony_ArgumentType___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,System.String,System.Type[],Harmony.ArgumentType[])
+  name.vb: HarmonyPatch(Type, String, Type(), ArgumentType())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.String, System.Type[], Harmony.ArgumentType[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.String, System.Type(), Harmony.ArgumentType())
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, String, Type[], ArgumentType[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(Type, String, Type(), ArgumentType())
+- uid: Harmony.HarmonyPatch.#ctor(System.Type,System.Type[])
+  name: HarmonyPatch(Type, Type[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type_System_Type___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type,System.Type[])
+  name.vb: HarmonyPatch(Type, Type())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.Type[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.Type, System.Type())
+  nameWithType: HarmonyPatch.HarmonyPatch(Type, Type[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(Type, Type())
+- uid: Harmony.HarmonyPatch.#ctor(System.Type[])
+  name: HarmonyPatch(Type[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type[])
+  name.vb: HarmonyPatch(Type())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.Type())
+  nameWithType: HarmonyPatch.HarmonyPatch(Type[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(Type())
+- uid: Harmony.HarmonyPatch.#ctor(System.Type[],Harmony.ArgumentType[])
+  name: HarmonyPatch(Type[], ArgumentType[])
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_System_Type___Harmony_ArgumentType___
+  commentId: M:Harmony.HarmonyPatch.#ctor(System.Type[],Harmony.ArgumentType[])
+  name.vb: HarmonyPatch(Type(), ArgumentType())
+  fullName: Harmony.HarmonyPatch.HarmonyPatch(System.Type[], Harmony.ArgumentType[])
+  fullName.vb: Harmony.HarmonyPatch.HarmonyPatch(System.Type(), Harmony.ArgumentType())
+  nameWithType: HarmonyPatch.HarmonyPatch(Type[], ArgumentType[])
+  nameWithType.vb: HarmonyPatch.HarmonyPatch(Type(), ArgumentType())
+- uid: Harmony.HarmonyPatch.#ctor*
+  name: HarmonyPatch
+  href: api/Harmony.HarmonyPatch.html#Harmony_HarmonyPatch__ctor_
+  commentId: Overload:Harmony.HarmonyPatch.#ctor
+  isSpec: "True"
+  fullName: Harmony.HarmonyPatch.HarmonyPatch
+  nameWithType: HarmonyPatch.HarmonyPatch
+- uid: Harmony.HarmonyPatchAll
+  name: HarmonyPatchAll
+  href: api/Harmony.HarmonyPatchAll.html
+  commentId: T:Harmony.HarmonyPatchAll
+  fullName: Harmony.HarmonyPatchAll
+  nameWithType: HarmonyPatchAll
+- uid: Harmony.HarmonyPatchAll.#ctor
+  name: HarmonyPatchAll()
+  href: api/Harmony.HarmonyPatchAll.html#Harmony_HarmonyPatchAll__ctor
+  commentId: M:Harmony.HarmonyPatchAll.#ctor
+  fullName: Harmony.HarmonyPatchAll.HarmonyPatchAll()
+  nameWithType: HarmonyPatchAll.HarmonyPatchAll()
+- uid: Harmony.HarmonyPatchAll.#ctor*
+  name: HarmonyPatchAll
+  href: api/Harmony.HarmonyPatchAll.html#Harmony_HarmonyPatchAll__ctor_
+  commentId: Overload:Harmony.HarmonyPatchAll.#ctor
+  isSpec: "True"
+  fullName: Harmony.HarmonyPatchAll.HarmonyPatchAll
+  nameWithType: HarmonyPatchAll.HarmonyPatchAll
+- uid: Harmony.HarmonyPatchType
+  name: HarmonyPatchType
+  href: api/Harmony.HarmonyPatchType.html
+  commentId: T:Harmony.HarmonyPatchType
+  fullName: Harmony.HarmonyPatchType
+  nameWithType: HarmonyPatchType
+- uid: Harmony.HarmonyPatchType.All
+  name: All
+  href: api/Harmony.HarmonyPatchType.html#Harmony_HarmonyPatchType_All
+  commentId: F:Harmony.HarmonyPatchType.All
+  fullName: Harmony.HarmonyPatchType.All
+  nameWithType: HarmonyPatchType.All
+- uid: Harmony.HarmonyPatchType.Postfix
+  name: Postfix
+  href: api/Harmony.HarmonyPatchType.html#Harmony_HarmonyPatchType_Postfix
+  commentId: F:Harmony.HarmonyPatchType.Postfix
+  fullName: Harmony.HarmonyPatchType.Postfix
+  nameWithType: HarmonyPatchType.Postfix
+- uid: Harmony.HarmonyPatchType.Prefix
+  name: Prefix
+  href: api/Harmony.HarmonyPatchType.html#Harmony_HarmonyPatchType_Prefix
+  commentId: F:Harmony.HarmonyPatchType.Prefix
+  fullName: Harmony.HarmonyPatchType.Prefix
+  nameWithType: HarmonyPatchType.Prefix
+- uid: Harmony.HarmonyPatchType.Transpiler
+  name: Transpiler
+  href: api/Harmony.HarmonyPatchType.html#Harmony_HarmonyPatchType_Transpiler
+  commentId: F:Harmony.HarmonyPatchType.Transpiler
+  fullName: Harmony.HarmonyPatchType.Transpiler
+  nameWithType: HarmonyPatchType.Transpiler
+- uid: Harmony.HarmonyPostfix
+  name: HarmonyPostfix
+  href: api/Harmony.HarmonyPostfix.html
+  commentId: T:Harmony.HarmonyPostfix
+  fullName: Harmony.HarmonyPostfix
+  nameWithType: HarmonyPostfix
+- uid: Harmony.HarmonyPrefix
+  name: HarmonyPrefix
+  href: api/Harmony.HarmonyPrefix.html
+  commentId: T:Harmony.HarmonyPrefix
+  fullName: Harmony.HarmonyPrefix
+  nameWithType: HarmonyPrefix
+- uid: Harmony.HarmonyPrepare
+  name: HarmonyPrepare
+  href: api/Harmony.HarmonyPrepare.html
+  commentId: T:Harmony.HarmonyPrepare
+  fullName: Harmony.HarmonyPrepare
+  nameWithType: HarmonyPrepare
+- uid: Harmony.HarmonyPriority
+  name: HarmonyPriority
+  href: api/Harmony.HarmonyPriority.html
+  commentId: T:Harmony.HarmonyPriority
+  fullName: Harmony.HarmonyPriority
+  nameWithType: HarmonyPriority
+- uid: Harmony.HarmonyPriority.#ctor(System.Int32)
+  name: HarmonyPriority(Int32)
+  href: api/Harmony.HarmonyPriority.html#Harmony_HarmonyPriority__ctor_System_Int32_
+  commentId: M:Harmony.HarmonyPriority.#ctor(System.Int32)
+  fullName: Harmony.HarmonyPriority.HarmonyPriority(System.Int32)
+  nameWithType: HarmonyPriority.HarmonyPriority(Int32)
+- uid: Harmony.HarmonyPriority.#ctor*
+  name: HarmonyPriority
+  href: api/Harmony.HarmonyPriority.html#Harmony_HarmonyPriority__ctor_
+  commentId: Overload:Harmony.HarmonyPriority.#ctor
+  isSpec: "True"
+  fullName: Harmony.HarmonyPriority.HarmonyPriority
+  nameWithType: HarmonyPriority.HarmonyPriority
+- uid: Harmony.HarmonyTargetMethod
+  name: HarmonyTargetMethod
+  href: api/Harmony.HarmonyTargetMethod.html
+  commentId: T:Harmony.HarmonyTargetMethod
+  fullName: Harmony.HarmonyTargetMethod
+  nameWithType: HarmonyTargetMethod
+- uid: Harmony.HarmonyTargetMethods
+  name: HarmonyTargetMethods
+  href: api/Harmony.HarmonyTargetMethods.html
+  commentId: T:Harmony.HarmonyTargetMethods
+  fullName: Harmony.HarmonyTargetMethods
+  nameWithType: HarmonyTargetMethods
+- uid: Harmony.HarmonyTranspiler
+  name: HarmonyTranspiler
+  href: api/Harmony.HarmonyTranspiler.html
+  commentId: T:Harmony.HarmonyTranspiler
+  fullName: Harmony.HarmonyTranspiler
+  nameWithType: HarmonyTranspiler
+- uid: Harmony.InstantiationHandler
+  name: InstantiationHandler
+  href: api/Harmony.InstantiationHandler.html
+  commentId: T:Harmony.InstantiationHandler
+  fullName: Harmony.InstantiationHandler
+  nameWithType: InstantiationHandler
+- uid: Harmony.MethodInvoker
+  name: MethodInvoker
+  href: api/Harmony.MethodInvoker.html
+  commentId: T:Harmony.MethodInvoker
+  fullName: Harmony.MethodInvoker
+  nameWithType: MethodInvoker
+- uid: Harmony.MethodInvoker.GetHandler(DynamicMethod,Module)
+  name: GetHandler(DynamicMethod, Module)
+  href: api/Harmony.MethodInvoker.html#Harmony_MethodInvoker_GetHandler_DynamicMethod_Module_
+  commentId: M:Harmony.MethodInvoker.GetHandler(DynamicMethod,Module)
+  fullName: Harmony.MethodInvoker.GetHandler(DynamicMethod, Module)
+  nameWithType: MethodInvoker.GetHandler(DynamicMethod, Module)
+- uid: Harmony.MethodInvoker.GetHandler(MethodInfo)
+  name: GetHandler(MethodInfo)
+  href: api/Harmony.MethodInvoker.html#Harmony_MethodInvoker_GetHandler_MethodInfo_
+  commentId: M:Harmony.MethodInvoker.GetHandler(MethodInfo)
+  fullName: Harmony.MethodInvoker.GetHandler(MethodInfo)
+  nameWithType: MethodInvoker.GetHandler(MethodInfo)
+- uid: Harmony.MethodInvoker.GetHandler*
+  name: GetHandler
+  href: api/Harmony.MethodInvoker.html#Harmony_MethodInvoker_GetHandler_
+  commentId: Overload:Harmony.MethodInvoker.GetHandler
+  isSpec: "True"
+  fullName: Harmony.MethodInvoker.GetHandler
+  nameWithType: MethodInvoker.GetHandler
+- uid: Harmony.MethodType
+  name: MethodType
+  href: api/Harmony.MethodType.html
+  commentId: T:Harmony.MethodType
+  fullName: Harmony.MethodType
+  nameWithType: MethodType
+- uid: Harmony.MethodType.Constructor
+  name: Constructor
+  href: api/Harmony.MethodType.html#Harmony_MethodType_Constructor
+  commentId: F:Harmony.MethodType.Constructor
+  fullName: Harmony.MethodType.Constructor
+  nameWithType: MethodType.Constructor
+- uid: Harmony.MethodType.Getter
+  name: Getter
+  href: api/Harmony.MethodType.html#Harmony_MethodType_Getter
+  commentId: F:Harmony.MethodType.Getter
+  fullName: Harmony.MethodType.Getter
+  nameWithType: MethodType.Getter
+- uid: Harmony.MethodType.Normal
+  name: Normal
+  href: api/Harmony.MethodType.html#Harmony_MethodType_Normal
+  commentId: F:Harmony.MethodType.Normal
+  fullName: Harmony.MethodType.Normal
+  nameWithType: MethodType.Normal
+- uid: Harmony.MethodType.Setter
+  name: Setter
+  href: api/Harmony.MethodType.html#Harmony_MethodType_Setter
+  commentId: F:Harmony.MethodType.Setter
+  fullName: Harmony.MethodType.Setter
+  nameWithType: MethodType.Setter
+- uid: Harmony.MethodType.StaticConstructor
+  name: StaticConstructor
+  href: api/Harmony.MethodType.html#Harmony_MethodType_StaticConstructor
+  commentId: F:Harmony.MethodType.StaticConstructor
+  fullName: Harmony.MethodType.StaticConstructor
+  nameWithType: MethodType.StaticConstructor
+- uid: Harmony.Patches
+  name: Patches
+  href: api/Harmony.Patches.html
+  commentId: T:Harmony.Patches
+  fullName: Harmony.Patches
+  nameWithType: Patches
+- uid: Harmony.Patches.#ctor(Patch[],Patch[],Patch[])
+  name: Patches(Patch[], Patch[], Patch[])
+  href: api/Harmony.Patches.html#Harmony_Patches__ctor_Patch___Patch___Patch___
+  commentId: M:Harmony.Patches.#ctor(Patch[],Patch[],Patch[])
+  name.vb: Patches(Patch(), Patch(), Patch())
+  fullName: Harmony.Patches.Patches(Patch[], Patch[], Patch[])
+  fullName.vb: Harmony.Patches.Patches(Patch(), Patch(), Patch())
+  nameWithType: Patches.Patches(Patch[], Patch[], Patch[])
+  nameWithType.vb: Patches.Patches(Patch(), Patch(), Patch())
+- uid: Harmony.Patches.#ctor*
+  name: Patches
+  href: api/Harmony.Patches.html#Harmony_Patches__ctor_
+  commentId: Overload:Harmony.Patches.#ctor
+  isSpec: "True"
+  fullName: Harmony.Patches.Patches
+  nameWithType: Patches.Patches
+- uid: Harmony.Patches.Owners
+  name: Owners
+  href: api/Harmony.Patches.html#Harmony_Patches_Owners
+  commentId: P:Harmony.Patches.Owners
+  fullName: Harmony.Patches.Owners
+  nameWithType: Patches.Owners
+- uid: Harmony.Patches.Owners*
+  name: Owners
+  href: api/Harmony.Patches.html#Harmony_Patches_Owners_
+  commentId: Overload:Harmony.Patches.Owners
+  isSpec: "True"
+  fullName: Harmony.Patches.Owners
+  nameWithType: Patches.Owners
+- uid: Harmony.Patches.Postfixes
+  name: Postfixes
+  href: api/Harmony.Patches.html#Harmony_Patches_Postfixes
+  commentId: F:Harmony.Patches.Postfixes
+  fullName: Harmony.Patches.Postfixes
+  nameWithType: Patches.Postfixes
+- uid: Harmony.Patches.Prefixes
+  name: Prefixes
+  href: api/Harmony.Patches.html#Harmony_Patches_Prefixes
+  commentId: F:Harmony.Patches.Prefixes
+  fullName: Harmony.Patches.Prefixes
+  nameWithType: Patches.Prefixes
+- uid: Harmony.Patches.Transpilers
+  name: Transpilers
+  href: api/Harmony.Patches.html#Harmony_Patches_Transpilers
+  commentId: F:Harmony.Patches.Transpilers
+  fullName: Harmony.Patches.Transpilers
+  nameWithType: Patches.Transpilers
+- uid: Harmony.Priority
+  name: Priority
+  href: api/Harmony.Priority.html
+  commentId: T:Harmony.Priority
+  fullName: Harmony.Priority
+  nameWithType: Priority
+- uid: Harmony.Priority.First
+  name: First
+  href: api/Harmony.Priority.html#Harmony_Priority_First
+  commentId: F:Harmony.Priority.First
+  fullName: Harmony.Priority.First
+  nameWithType: Priority.First
+- uid: Harmony.Priority.High
+  name: High
+  href: api/Harmony.Priority.html#Harmony_Priority_High
+  commentId: F:Harmony.Priority.High
+  fullName: Harmony.Priority.High
+  nameWithType: Priority.High
+- uid: Harmony.Priority.HigherThanNormal
+  name: HigherThanNormal
+  href: api/Harmony.Priority.html#Harmony_Priority_HigherThanNormal
+  commentId: F:Harmony.Priority.HigherThanNormal
+  fullName: Harmony.Priority.HigherThanNormal
+  nameWithType: Priority.HigherThanNormal
+- uid: Harmony.Priority.Last
+  name: Last
+  href: api/Harmony.Priority.html#Harmony_Priority_Last
+  commentId: F:Harmony.Priority.Last
+  fullName: Harmony.Priority.Last
+  nameWithType: Priority.Last
+- uid: Harmony.Priority.Low
+  name: Low
+  href: api/Harmony.Priority.html#Harmony_Priority_Low
+  commentId: F:Harmony.Priority.Low
+  fullName: Harmony.Priority.Low
+  nameWithType: Priority.Low
+- uid: Harmony.Priority.LowerThanNormal
+  name: LowerThanNormal
+  href: api/Harmony.Priority.html#Harmony_Priority_LowerThanNormal
+  commentId: F:Harmony.Priority.LowerThanNormal
+  fullName: Harmony.Priority.LowerThanNormal
+  nameWithType: Priority.LowerThanNormal
+- uid: Harmony.Priority.Normal
+  name: Normal
+  href: api/Harmony.Priority.html#Harmony_Priority_Normal
+  commentId: F:Harmony.Priority.Normal
+  fullName: Harmony.Priority.Normal
+  nameWithType: Priority.Normal
+- uid: Harmony.Priority.VeryHigh
+  name: VeryHigh
+  href: api/Harmony.Priority.html#Harmony_Priority_VeryHigh
+  commentId: F:Harmony.Priority.VeryHigh
+  fullName: Harmony.Priority.VeryHigh
+  nameWithType: Priority.VeryHigh
+- uid: Harmony.Priority.VeryLow
+  name: VeryLow
+  href: api/Harmony.Priority.html#Harmony_Priority_VeryLow
+  commentId: F:Harmony.Priority.VeryLow
+  fullName: Harmony.Priority.VeryLow
+  nameWithType: Priority.VeryLow
+- uid: Harmony.PropertyMethod
+  name: PropertyMethod
+  href: api/Harmony.PropertyMethod.html
+  commentId: T:Harmony.PropertyMethod
+  fullName: Harmony.PropertyMethod
+  nameWithType: PropertyMethod
+- uid: Harmony.PropertyMethod.Getter
+  name: Getter
+  href: api/Harmony.PropertyMethod.html#Harmony_PropertyMethod_Getter
+  commentId: F:Harmony.PropertyMethod.Getter
+  fullName: Harmony.PropertyMethod.Getter
+  nameWithType: PropertyMethod.Getter
+- uid: Harmony.PropertyMethod.Setter
+  name: Setter
+  href: api/Harmony.PropertyMethod.html#Harmony_PropertyMethod_Setter
+  commentId: F:Harmony.PropertyMethod.Setter
+  fullName: Harmony.PropertyMethod.Setter
+  nameWithType: PropertyMethod.Setter
+- uid: Harmony.SetterHandler
+  name: SetterHandler
+  href: api/Harmony.SetterHandler.html
+  commentId: T:Harmony.SetterHandler
+  fullName: Harmony.SetterHandler
+  nameWithType: SetterHandler
+- uid: Harmony.SymbolExtensions
+  name: SymbolExtensions
+  href: api/Harmony.SymbolExtensions.html
+  commentId: T:Harmony.SymbolExtensions
+  fullName: Harmony.SymbolExtensions
+  nameWithType: SymbolExtensions
+- uid: Harmony.SymbolExtensions.GetMethodInfo(Expression{System.Action})
+  name: GetMethodInfo(Expression<Action>)
+  href: api/Harmony.SymbolExtensions.html#Harmony_SymbolExtensions_GetMethodInfo_Expression_System_Action__
+  commentId: M:Harmony.SymbolExtensions.GetMethodInfo(Expression{System.Action})
+  name.vb: GetMethodInfo(Expression(Of Action))
+  fullName: Harmony.SymbolExtensions.GetMethodInfo(Expression<System.Action>)
+  fullName.vb: Harmony.SymbolExtensions.GetMethodInfo(Expression(Of System.Action))
+  nameWithType: SymbolExtensions.GetMethodInfo(Expression<Action>)
+  nameWithType.vb: SymbolExtensions.GetMethodInfo(Expression(Of Action))
+- uid: Harmony.SymbolExtensions.GetMethodInfo(LambdaExpression)
+  name: GetMethodInfo(LambdaExpression)
+  href: api/Harmony.SymbolExtensions.html#Harmony_SymbolExtensions_GetMethodInfo_LambdaExpression_
+  commentId: M:Harmony.SymbolExtensions.GetMethodInfo(LambdaExpression)
+  fullName: Harmony.SymbolExtensions.GetMethodInfo(LambdaExpression)
+  nameWithType: SymbolExtensions.GetMethodInfo(LambdaExpression)
+- uid: Harmony.SymbolExtensions.GetMethodInfo*
+  name: GetMethodInfo
+  href: api/Harmony.SymbolExtensions.html#Harmony_SymbolExtensions_GetMethodInfo_
+  commentId: Overload:Harmony.SymbolExtensions.GetMethodInfo
+  isSpec: "True"
+  fullName: Harmony.SymbolExtensions.GetMethodInfo
+  nameWithType: SymbolExtensions.GetMethodInfo
+- uid: Harmony.SymbolExtensions.GetMethodInfo``1(Expression{System.Action{``0}})
+  name: GetMethodInfo<T>(Expression<Action<T>>)
+  href: api/Harmony.SymbolExtensions.html#Harmony_SymbolExtensions_GetMethodInfo__1_Expression_System_Action___0___
+  commentId: M:Harmony.SymbolExtensions.GetMethodInfo``1(Expression{System.Action{``0}})
+  name.vb: GetMethodInfo(Of T)(Expression(Of Action(Of T)))
+  fullName: Harmony.SymbolExtensions.GetMethodInfo<T>(Expression<System.Action<T>>)
+  fullName.vb: Harmony.SymbolExtensions.GetMethodInfo(Of T)(Expression(Of System.Action(Of T)))
+  nameWithType: SymbolExtensions.GetMethodInfo<T>(Expression<Action<T>>)
+  nameWithType.vb: SymbolExtensions.GetMethodInfo(Of T)(Expression(Of Action(Of T)))
+- uid: Harmony.SymbolExtensions.GetMethodInfo``2(Expression{System.Func{``0,``1}})
+  name: GetMethodInfo<T, TResult>(Expression<Func<T, TResult>>)
+  href: api/Harmony.SymbolExtensions.html#Harmony_SymbolExtensions_GetMethodInfo__2_Expression_System_Func___0___1___
+  commentId: M:Harmony.SymbolExtensions.GetMethodInfo``2(Expression{System.Func{``0,``1}})
+  name.vb: GetMethodInfo(Of T, TResult)(Expression(Of Func(Of T, TResult)))
+  fullName: Harmony.SymbolExtensions.GetMethodInfo<T, TResult>(Expression<System.Func<T, TResult>>)
+  fullName.vb: Harmony.SymbolExtensions.GetMethodInfo(Of T, TResult)(Expression(Of System.Func(Of T, TResult)))
+  nameWithType: SymbolExtensions.GetMethodInfo<T, TResult>(Expression<Func<T, TResult>>)
+  nameWithType.vb: SymbolExtensions.GetMethodInfo(Of T, TResult)(Expression(Of Func(Of T, TResult)))
+- uid: Harmony.Traverse
+  name: Traverse
+  href: api/Harmony.Traverse.html
+  commentId: T:Harmony.Traverse
+  fullName: Harmony.Traverse
+  nameWithType: Traverse
+- uid: Harmony.Traverse.#ctor(System.Object)
+  name: Traverse(Object)
+  href: api/Harmony.Traverse.html#Harmony_Traverse__ctor_System_Object_
+  commentId: M:Harmony.Traverse.#ctor(System.Object)
+  fullName: Harmony.Traverse.Traverse(System.Object)
+  nameWithType: Traverse.Traverse(Object)
+- uid: Harmony.Traverse.#ctor(System.Type)
+  name: Traverse(Type)
+  href: api/Harmony.Traverse.html#Harmony_Traverse__ctor_System_Type_
+  commentId: M:Harmony.Traverse.#ctor(System.Type)
+  fullName: Harmony.Traverse.Traverse(System.Type)
+  nameWithType: Traverse.Traverse(Type)
+- uid: Harmony.Traverse.#ctor*
+  name: Traverse
+  href: api/Harmony.Traverse.html#Harmony_Traverse__ctor_
+  commentId: Overload:Harmony.Traverse.#ctor
+  isSpec: "True"
+  fullName: Harmony.Traverse.Traverse
+  nameWithType: Traverse.Traverse
+- uid: Harmony.Traverse.CopyFields
+  name: CopyFields
+  href: api/Harmony.Traverse.html#Harmony_Traverse_CopyFields
+  commentId: F:Harmony.Traverse.CopyFields
+  fullName: Harmony.Traverse.CopyFields
+  nameWithType: Traverse.CopyFields
+- uid: Harmony.Traverse.Create(System.Object)
+  name: Create(Object)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Create_System_Object_
+  commentId: M:Harmony.Traverse.Create(System.Object)
+  fullName: Harmony.Traverse.Create(System.Object)
+  nameWithType: Traverse.Create(Object)
+- uid: Harmony.Traverse.Create(System.Type)
+  name: Create(Type)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Create_System_Type_
+  commentId: M:Harmony.Traverse.Create(System.Type)
+  fullName: Harmony.Traverse.Create(System.Type)
+  nameWithType: Traverse.Create(Type)
+- uid: Harmony.Traverse.Create*
+  name: Create
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Create_
+  commentId: Overload:Harmony.Traverse.Create
+  isSpec: "True"
+  fullName: Harmony.Traverse.Create
+  nameWithType: Traverse.Create
+- uid: Harmony.Traverse.Create``1
+  name: Create<T>()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Create__1
+  commentId: M:Harmony.Traverse.Create``1
+  name.vb: Create(Of T)()
+  fullName: Harmony.Traverse.Create<T>()
+  fullName.vb: Harmony.Traverse.Create(Of T)()
+  nameWithType: Traverse.Create<T>()
+  nameWithType.vb: Traverse.Create(Of T)()
+- uid: Harmony.Traverse.CreateWithType(System.String)
+  name: CreateWithType(String)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_CreateWithType_System_String_
+  commentId: M:Harmony.Traverse.CreateWithType(System.String)
+  fullName: Harmony.Traverse.CreateWithType(System.String)
+  nameWithType: Traverse.CreateWithType(String)
+- uid: Harmony.Traverse.CreateWithType*
+  name: CreateWithType
+  href: api/Harmony.Traverse.html#Harmony_Traverse_CreateWithType_
+  commentId: Overload:Harmony.Traverse.CreateWithType
+  isSpec: "True"
+  fullName: Harmony.Traverse.CreateWithType
+  nameWithType: Traverse.CreateWithType
+- uid: Harmony.Traverse.Field(System.String)
+  name: Field(String)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Field_System_String_
+  commentId: M:Harmony.Traverse.Field(System.String)
+  fullName: Harmony.Traverse.Field(System.String)
+  nameWithType: Traverse.Field(String)
+- uid: Harmony.Traverse.Field*
+  name: Field
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Field_
+  commentId: Overload:Harmony.Traverse.Field
+  isSpec: "True"
+  fullName: Harmony.Traverse.Field
+  nameWithType: Traverse.Field
+- uid: Harmony.Traverse.Field``1(System.String)
+  name: Field<T>(String)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Field__1_System_String_
+  commentId: M:Harmony.Traverse.Field``1(System.String)
+  name.vb: Field(Of T)(String)
+  fullName: Harmony.Traverse.Field<T>(System.String)
+  fullName.vb: Harmony.Traverse.Field(Of T)(System.String)
+  nameWithType: Traverse.Field<T>(String)
+  nameWithType.vb: Traverse.Field(Of T)(String)
+- uid: Harmony.Traverse.FieldExists
+  name: FieldExists()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_FieldExists
+  commentId: M:Harmony.Traverse.FieldExists
+  fullName: Harmony.Traverse.FieldExists()
+  nameWithType: Traverse.FieldExists()
+- uid: Harmony.Traverse.FieldExists*
+  name: FieldExists
+  href: api/Harmony.Traverse.html#Harmony_Traverse_FieldExists_
+  commentId: Overload:Harmony.Traverse.FieldExists
+  isSpec: "True"
+  fullName: Harmony.Traverse.FieldExists
+  nameWithType: Traverse.FieldExists
+- uid: Harmony.Traverse.Fields
+  name: Fields()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Fields
+  commentId: M:Harmony.Traverse.Fields
+  fullName: Harmony.Traverse.Fields()
+  nameWithType: Traverse.Fields()
+- uid: Harmony.Traverse.Fields*
+  name: Fields
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Fields_
+  commentId: Overload:Harmony.Traverse.Fields
+  isSpec: "True"
+  fullName: Harmony.Traverse.Fields
+  nameWithType: Traverse.Fields
+- uid: Harmony.Traverse.GetValue
+  name: GetValue()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_GetValue
+  commentId: M:Harmony.Traverse.GetValue
+  fullName: Harmony.Traverse.GetValue()
+  nameWithType: Traverse.GetValue()
+- uid: Harmony.Traverse.GetValue(System.Object[])
+  name: GetValue(Object[])
+  href: api/Harmony.Traverse.html#Harmony_Traverse_GetValue_System_Object___
+  commentId: M:Harmony.Traverse.GetValue(System.Object[])
+  name.vb: GetValue(Object())
+  fullName: Harmony.Traverse.GetValue(System.Object[])
+  fullName.vb: Harmony.Traverse.GetValue(System.Object())
+  nameWithType: Traverse.GetValue(Object[])
+  nameWithType.vb: Traverse.GetValue(Object())
+- uid: Harmony.Traverse.GetValue*
+  name: GetValue
+  href: api/Harmony.Traverse.html#Harmony_Traverse_GetValue_
+  commentId: Overload:Harmony.Traverse.GetValue
+  isSpec: "True"
+  fullName: Harmony.Traverse.GetValue
+  nameWithType: Traverse.GetValue
+- uid: Harmony.Traverse.GetValue``1
+  name: GetValue<T>()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_GetValue__1
+  commentId: M:Harmony.Traverse.GetValue``1
+  name.vb: GetValue(Of T)()
+  fullName: Harmony.Traverse.GetValue<T>()
+  fullName.vb: Harmony.Traverse.GetValue(Of T)()
+  nameWithType: Traverse.GetValue<T>()
+  nameWithType.vb: Traverse.GetValue(Of T)()
+- uid: Harmony.Traverse.GetValue``1(System.Object[])
+  name: GetValue<T>(Object[])
+  href: api/Harmony.Traverse.html#Harmony_Traverse_GetValue__1_System_Object___
+  commentId: M:Harmony.Traverse.GetValue``1(System.Object[])
+  name.vb: GetValue(Of T)(Object())
+  fullName: Harmony.Traverse.GetValue<T>(System.Object[])
+  fullName.vb: Harmony.Traverse.GetValue(Of T)(System.Object())
+  nameWithType: Traverse.GetValue<T>(Object[])
+  nameWithType.vb: Traverse.GetValue(Of T)(Object())
+- uid: Harmony.Traverse.GetValueType
+  name: GetValueType()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_GetValueType
+  commentId: M:Harmony.Traverse.GetValueType
+  fullName: Harmony.Traverse.GetValueType()
+  nameWithType: Traverse.GetValueType()
+- uid: Harmony.Traverse.GetValueType*
+  name: GetValueType
+  href: api/Harmony.Traverse.html#Harmony_Traverse_GetValueType_
+  commentId: Overload:Harmony.Traverse.GetValueType
+  isSpec: "True"
+  fullName: Harmony.Traverse.GetValueType
+  nameWithType: Traverse.GetValueType
+- uid: Harmony.Traverse.IterateFields(System.Object,System.Action{Harmony.Traverse})
+  name: IterateFields(Object, Action<Traverse>)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateFields_System_Object_System_Action_Harmony_Traverse__
+  commentId: M:Harmony.Traverse.IterateFields(System.Object,System.Action{Harmony.Traverse})
+  name.vb: IterateFields(Object, Action(Of Traverse))
+  fullName: Harmony.Traverse.IterateFields(System.Object, System.Action<Harmony.Traverse>)
+  fullName.vb: Harmony.Traverse.IterateFields(System.Object, System.Action(Of Harmony.Traverse))
+  nameWithType: Traverse.IterateFields(Object, Action<Traverse>)
+  nameWithType.vb: Traverse.IterateFields(Object, Action(Of Traverse))
+- uid: Harmony.Traverse.IterateFields(System.Object,System.Object,System.Action{Harmony.Traverse,Harmony.Traverse})
+  name: IterateFields(Object, Object, Action<Traverse, Traverse>)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateFields_System_Object_System_Object_System_Action_Harmony_Traverse_Harmony_Traverse__
+  commentId: M:Harmony.Traverse.IterateFields(System.Object,System.Object,System.Action{Harmony.Traverse,Harmony.Traverse})
+  name.vb: IterateFields(Object, Object, Action(Of Traverse, Traverse))
+  fullName: Harmony.Traverse.IterateFields(System.Object, System.Object, System.Action<Harmony.Traverse, Harmony.Traverse>)
+  fullName.vb: Harmony.Traverse.IterateFields(System.Object, System.Object, System.Action(Of Harmony.Traverse, Harmony.Traverse))
+  nameWithType: Traverse.IterateFields(Object, Object, Action<Traverse, Traverse>)
+  nameWithType.vb: Traverse.IterateFields(Object, Object, Action(Of Traverse, Traverse))
+- uid: Harmony.Traverse.IterateFields(System.Object,System.Object,System.Action{System.String,Harmony.Traverse,Harmony.Traverse})
+  name: IterateFields(Object, Object, Action<String, Traverse, Traverse>)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateFields_System_Object_System_Object_System_Action_System_String_Harmony_Traverse_Harmony_Traverse__
+  commentId: M:Harmony.Traverse.IterateFields(System.Object,System.Object,System.Action{System.String,Harmony.Traverse,Harmony.Traverse})
+  name.vb: IterateFields(Object, Object, Action(Of String, Traverse, Traverse))
+  fullName: Harmony.Traverse.IterateFields(System.Object, System.Object, System.Action<System.String, Harmony.Traverse, Harmony.Traverse>)
+  fullName.vb: Harmony.Traverse.IterateFields(System.Object, System.Object, System.Action(Of System.String, Harmony.Traverse, Harmony.Traverse))
+  nameWithType: Traverse.IterateFields(Object, Object, Action<String, Traverse, Traverse>)
+  nameWithType.vb: Traverse.IterateFields(Object, Object, Action(Of String, Traverse, Traverse))
+- uid: Harmony.Traverse.IterateFields*
+  name: IterateFields
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateFields_
+  commentId: Overload:Harmony.Traverse.IterateFields
+  isSpec: "True"
+  fullName: Harmony.Traverse.IterateFields
+  nameWithType: Traverse.IterateFields
+- uid: Harmony.Traverse.IterateProperties(System.Object,System.Action{Harmony.Traverse})
+  name: IterateProperties(Object, Action<Traverse>)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateProperties_System_Object_System_Action_Harmony_Traverse__
+  commentId: M:Harmony.Traverse.IterateProperties(System.Object,System.Action{Harmony.Traverse})
+  name.vb: IterateProperties(Object, Action(Of Traverse))
+  fullName: Harmony.Traverse.IterateProperties(System.Object, System.Action<Harmony.Traverse>)
+  fullName.vb: Harmony.Traverse.IterateProperties(System.Object, System.Action(Of Harmony.Traverse))
+  nameWithType: Traverse.IterateProperties(Object, Action<Traverse>)
+  nameWithType.vb: Traverse.IterateProperties(Object, Action(Of Traverse))
+- uid: Harmony.Traverse.IterateProperties(System.Object,System.Object,System.Action{Harmony.Traverse,Harmony.Traverse})
+  name: IterateProperties(Object, Object, Action<Traverse, Traverse>)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateProperties_System_Object_System_Object_System_Action_Harmony_Traverse_Harmony_Traverse__
+  commentId: M:Harmony.Traverse.IterateProperties(System.Object,System.Object,System.Action{Harmony.Traverse,Harmony.Traverse})
+  name.vb: IterateProperties(Object, Object, Action(Of Traverse, Traverse))
+  fullName: Harmony.Traverse.IterateProperties(System.Object, System.Object, System.Action<Harmony.Traverse, Harmony.Traverse>)
+  fullName.vb: Harmony.Traverse.IterateProperties(System.Object, System.Object, System.Action(Of Harmony.Traverse, Harmony.Traverse))
+  nameWithType: Traverse.IterateProperties(Object, Object, Action<Traverse, Traverse>)
+  nameWithType.vb: Traverse.IterateProperties(Object, Object, Action(Of Traverse, Traverse))
+- uid: Harmony.Traverse.IterateProperties(System.Object,System.Object,System.Action{System.String,Harmony.Traverse,Harmony.Traverse})
+  name: IterateProperties(Object, Object, Action<String, Traverse, Traverse>)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateProperties_System_Object_System_Object_System_Action_System_String_Harmony_Traverse_Harmony_Traverse__
+  commentId: M:Harmony.Traverse.IterateProperties(System.Object,System.Object,System.Action{System.String,Harmony.Traverse,Harmony.Traverse})
+  name.vb: IterateProperties(Object, Object, Action(Of String, Traverse, Traverse))
+  fullName: Harmony.Traverse.IterateProperties(System.Object, System.Object, System.Action<System.String, Harmony.Traverse, Harmony.Traverse>)
+  fullName.vb: Harmony.Traverse.IterateProperties(System.Object, System.Object, System.Action(Of System.String, Harmony.Traverse, Harmony.Traverse))
+  nameWithType: Traverse.IterateProperties(Object, Object, Action<String, Traverse, Traverse>)
+  nameWithType.vb: Traverse.IterateProperties(Object, Object, Action(Of String, Traverse, Traverse))
+- uid: Harmony.Traverse.IterateProperties*
+  name: IterateProperties
+  href: api/Harmony.Traverse.html#Harmony_Traverse_IterateProperties_
+  commentId: Overload:Harmony.Traverse.IterateProperties
+  isSpec: "True"
+  fullName: Harmony.Traverse.IterateProperties
+  nameWithType: Traverse.IterateProperties
+- uid: Harmony.Traverse.Method(System.String,System.Object[])
+  name: Method(String, Object[])
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Method_System_String_System_Object___
+  commentId: M:Harmony.Traverse.Method(System.String,System.Object[])
+  name.vb: Method(String, Object())
+  fullName: Harmony.Traverse.Method(System.String, System.Object[])
+  fullName.vb: Harmony.Traverse.Method(System.String, System.Object())
+  nameWithType: Traverse.Method(String, Object[])
+  nameWithType.vb: Traverse.Method(String, Object())
+- uid: Harmony.Traverse.Method(System.String,System.Type[],System.Object[])
+  name: Method(String, Type[], Object[])
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Method_System_String_System_Type___System_Object___
+  commentId: M:Harmony.Traverse.Method(System.String,System.Type[],System.Object[])
+  name.vb: Method(String, Type(), Object())
+  fullName: Harmony.Traverse.Method(System.String, System.Type[], System.Object[])
+  fullName.vb: Harmony.Traverse.Method(System.String, System.Type(), System.Object())
+  nameWithType: Traverse.Method(String, Type[], Object[])
+  nameWithType.vb: Traverse.Method(String, Type(), Object())
+- uid: Harmony.Traverse.Method*
+  name: Method
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Method_
+  commentId: Overload:Harmony.Traverse.Method
+  isSpec: "True"
+  fullName: Harmony.Traverse.Method
+  nameWithType: Traverse.Method
+- uid: Harmony.Traverse.MethodExists
+  name: MethodExists()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_MethodExists
+  commentId: M:Harmony.Traverse.MethodExists
+  fullName: Harmony.Traverse.MethodExists()
+  nameWithType: Traverse.MethodExists()
+- uid: Harmony.Traverse.MethodExists*
+  name: MethodExists
+  href: api/Harmony.Traverse.html#Harmony_Traverse_MethodExists_
+  commentId: Overload:Harmony.Traverse.MethodExists
+  isSpec: "True"
+  fullName: Harmony.Traverse.MethodExists
+  nameWithType: Traverse.MethodExists
+- uid: Harmony.Traverse.Methods
+  name: Methods()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Methods
+  commentId: M:Harmony.Traverse.Methods
+  fullName: Harmony.Traverse.Methods()
+  nameWithType: Traverse.Methods()
+- uid: Harmony.Traverse.Methods*
+  name: Methods
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Methods_
+  commentId: Overload:Harmony.Traverse.Methods
+  isSpec: "True"
+  fullName: Harmony.Traverse.Methods
+  nameWithType: Traverse.Methods
+- uid: Harmony.Traverse.Properties
+  name: Properties()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Properties
+  commentId: M:Harmony.Traverse.Properties
+  fullName: Harmony.Traverse.Properties()
+  nameWithType: Traverse.Properties()
+- uid: Harmony.Traverse.Properties*
+  name: Properties
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Properties_
+  commentId: Overload:Harmony.Traverse.Properties
+  isSpec: "True"
+  fullName: Harmony.Traverse.Properties
+  nameWithType: Traverse.Properties
+- uid: Harmony.Traverse.Property(System.String,System.Object[])
+  name: Property(String, Object[])
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Property_System_String_System_Object___
+  commentId: M:Harmony.Traverse.Property(System.String,System.Object[])
+  name.vb: Property(String, Object())
+  fullName: Harmony.Traverse.Property(System.String, System.Object[])
+  fullName.vb: Harmony.Traverse.Property(System.String, System.Object())
+  nameWithType: Traverse.Property(String, Object[])
+  nameWithType.vb: Traverse.Property(String, Object())
+- uid: Harmony.Traverse.Property*
+  name: Property
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Property_
+  commentId: Overload:Harmony.Traverse.Property
+  isSpec: "True"
+  fullName: Harmony.Traverse.Property
+  nameWithType: Traverse.Property
+- uid: Harmony.Traverse.Property``1(System.String,System.Object[])
+  name: Property<T>(String, Object[])
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Property__1_System_String_System_Object___
+  commentId: M:Harmony.Traverse.Property``1(System.String,System.Object[])
+  name.vb: Property(Of T)(String, Object())
+  fullName: Harmony.Traverse.Property<T>(System.String, System.Object[])
+  fullName.vb: Harmony.Traverse.Property(Of T)(System.String, System.Object())
+  nameWithType: Traverse.Property<T>(String, Object[])
+  nameWithType.vb: Traverse.Property(Of T)(String, Object())
+- uid: Harmony.Traverse.SetValue(System.Object)
+  name: SetValue(Object)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_SetValue_System_Object_
+  commentId: M:Harmony.Traverse.SetValue(System.Object)
+  fullName: Harmony.Traverse.SetValue(System.Object)
+  nameWithType: Traverse.SetValue(Object)
+- uid: Harmony.Traverse.SetValue*
+  name: SetValue
+  href: api/Harmony.Traverse.html#Harmony_Traverse_SetValue_
+  commentId: Overload:Harmony.Traverse.SetValue
+  isSpec: "True"
+  fullName: Harmony.Traverse.SetValue
+  nameWithType: Traverse.SetValue
+- uid: Harmony.Traverse.ToString
+  name: ToString()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_ToString
+  commentId: M:Harmony.Traverse.ToString
+  fullName: Harmony.Traverse.ToString()
+  nameWithType: Traverse.ToString()
+- uid: Harmony.Traverse.ToString*
+  name: ToString
+  href: api/Harmony.Traverse.html#Harmony_Traverse_ToString_
+  commentId: Overload:Harmony.Traverse.ToString
+  isSpec: "True"
+  fullName: Harmony.Traverse.ToString
+  nameWithType: Traverse.ToString
+- uid: Harmony.Traverse.Type(System.String)
+  name: Type(String)
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Type_System_String_
+  commentId: M:Harmony.Traverse.Type(System.String)
+  fullName: Harmony.Traverse.Type(System.String)
+  nameWithType: Traverse.Type(String)
+- uid: Harmony.Traverse.Type*
+  name: Type
+  href: api/Harmony.Traverse.html#Harmony_Traverse_Type_
+  commentId: Overload:Harmony.Traverse.Type
+  isSpec: "True"
+  fullName: Harmony.Traverse.Type
+  nameWithType: Traverse.Type
+- uid: Harmony.Traverse.TypeExists
+  name: TypeExists()
+  href: api/Harmony.Traverse.html#Harmony_Traverse_TypeExists
+  commentId: M:Harmony.Traverse.TypeExists
+  fullName: Harmony.Traverse.TypeExists()
+  nameWithType: Traverse.TypeExists()
+- uid: Harmony.Traverse.TypeExists*
+  name: TypeExists
+  href: api/Harmony.Traverse.html#Harmony_Traverse_TypeExists_
+  commentId: Overload:Harmony.Traverse.TypeExists
+  isSpec: "True"
+  fullName: Harmony.Traverse.TypeExists
+  nameWithType: Traverse.TypeExists
+- uid: Harmony.Traverse`1
+  name: Traverse<T>
+  href: api/Harmony.Traverse-1.html
+  commentId: T:Harmony.Traverse`1
+  name.vb: Traverse(Of T)
+  fullName: Harmony.Traverse<T>
+  fullName.vb: Harmony.Traverse(Of T)
+  nameWithType: Traverse<T>
+  nameWithType.vb: Traverse(Of T)
+- uid: Harmony.Traverse`1.#ctor(Harmony.Traverse)
+  name: Traverse(Traverse)
+  href: api/Harmony.Traverse-1.html#Harmony_Traverse_1__ctor_Harmony_Traverse_
+  commentId: M:Harmony.Traverse`1.#ctor(Harmony.Traverse)
+  fullName: Harmony.Traverse<T>.Traverse(Harmony.Traverse)
+  fullName.vb: Harmony.Traverse(Of T).Traverse(Harmony.Traverse)
+  nameWithType: Traverse<T>.Traverse(Traverse)
+  nameWithType.vb: Traverse(Of T).Traverse(Traverse)
+- uid: Harmony.Traverse`1.#ctor*
+  name: Traverse
+  href: api/Harmony.Traverse-1.html#Harmony_Traverse_1__ctor_
+  commentId: Overload:Harmony.Traverse`1.#ctor
+  isSpec: "True"
+  fullName: Harmony.Traverse<T>.Traverse
+  fullName.vb: Harmony.Traverse(Of T).Traverse
+  nameWithType: Traverse<T>.Traverse
+  nameWithType.vb: Traverse(Of T).Traverse
+- uid: Harmony.Traverse`1.Value
+  name: Value
+  href: api/Harmony.Traverse-1.html#Harmony_Traverse_1_Value
+  commentId: P:Harmony.Traverse`1.Value
+  fullName: Harmony.Traverse<T>.Value
+  fullName.vb: Harmony.Traverse(Of T).Value
+  nameWithType: Traverse<T>.Value
+  nameWithType.vb: Traverse(Of T).Value
+- uid: Harmony.Traverse`1.Value*
+  name: Value
+  href: api/Harmony.Traverse-1.html#Harmony_Traverse_1_Value_
+  commentId: Overload:Harmony.Traverse`1.Value
+  isSpec: "True"
+  fullName: Harmony.Traverse<T>.Value
+  fullName.vb: Harmony.Traverse(Of T).Value
+  nameWithType: Traverse<T>.Value
+  nameWithType.vb: Traverse(Of T).Value

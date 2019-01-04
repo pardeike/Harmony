@@ -4,12 +4,18 @@ using System.Reflection;
 
 namespace Harmony
 {
+	/// <summary>A access cache for speeding up reflections</summary>
 	public class AccessCache
 	{
 		Dictionary<Type, Dictionary<string, FieldInfo>> fields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
 		Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
 		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
 
+		/// <summary>Gets field information</summary>
+		/// <param name="type">The type</param>
+		/// <param name="name">The name</param>
+		/// <returns>The field information</returns>
+		///
 		[UpgradeToLatestVersion(1)]
 		public FieldInfo GetFieldInfo(Type type, string name)
 		{
@@ -23,12 +29,17 @@ namespace Harmony
 			FieldInfo field = null;
 			if (fieldsByType.TryGetValue(name, out field) == false)
 			{
-				field = AccessTools.Field(type, name);
+				field = AccessTools.DeclaredField(type, name);
 				fieldsByType.Add(name, field);
 			}
 			return field;
 		}
 
+		/// <summary>Gets property information</summary>
+		/// <param name="type">The type</param>
+		/// <param name="name">The name</param>
+		/// <returns>The property information</returns>
+		///
 		public PropertyInfo GetPropertyInfo(Type type, string name)
 		{
 			Dictionary<string, PropertyInfo> propertiesByType = null;
@@ -41,7 +52,7 @@ namespace Harmony
 			PropertyInfo property = null;
 			if (propertiesByType.TryGetValue(name, out property) == false)
 			{
-				property = AccessTools.Property(type, name);
+				property = AccessTools.DeclaredProperty(type, name);
 				propertiesByType.Add(name, property);
 			}
 			return property;
@@ -63,6 +74,12 @@ namespace Harmony
 			return hash1 + (hash2 * 1566083941);
 		}
 
+		/// <summary>Gets method information</summary>
+		/// <param name="type">		 The type</param>
+		/// <param name="name">		 The name</param>
+		/// <param name="arguments">The arguments</param>
+		/// <returns>The method information</returns>
+		///
 		public MethodBase GetMethodInfo(Type type, string name, Type[] arguments)
 		{
 			Dictionary<string, Dictionary<int, MethodBase>> methodsByName = null;

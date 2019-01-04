@@ -7,7 +7,7 @@ namespace HarmonyTests.Assets
 		}
 
 		private string field;
-		private string field2;
+		private readonly string field2;
 
 		private int _property;
 		private int Property

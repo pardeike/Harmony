@@ -6,9 +6,10 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
+	/// <summary>A patch processor</summary>
 	public class PatchProcessor
 	{
-		static object locker = new object();
+		static readonly object locker = new object();
 
 		readonly HarmonyInstance instance;
 
@@ -20,6 +21,11 @@ namespace Harmony
 		HarmonyMethod postfix;
 		HarmonyMethod transpiler;
 
+		/// <summary>Creates a patch processor</summary>
+		/// <param name="instance">The Harmony instance</param>
+		/// <param name="type">The patch class</param>
+		/// <param name="attributes">The Harmony attributes</param>
+		///
 		public PatchProcessor(HarmonyInstance instance, Type type, HarmonyMethod attributes)
 		{
 			this.instance = instance;
@@ -31,6 +37,13 @@ namespace Harmony
 			PrepareType();
 		}
 
+		/// <summary>Creates a patch processor</summary>
+		/// <param name="instance">The Harmony instance.</param>
+		/// <param name="originals">The original methods</param>
+		/// <param name="prefix">The optional prefix.</param>
+		/// <param name="postfix">The optional postfix.</param>
+		/// <param name="transpiler">The optional transpiler.</param>
+		///
 		public PatchProcessor(HarmonyInstance instance, List<MethodBase> originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
 		{
 			this.instance = instance;
@@ -40,6 +53,10 @@ namespace Harmony
 			this.transpiler = transpiler ?? new HarmonyMethod(null);
 		}
 
+		/// <summary>Gets patch information</summary>
+		/// <param name="method">The original method</param>
+		/// <returns>The patch information</returns>
+		///
 		public static Patches GetPatchInfo(MethodBase method)
 		{
 			lock (locker)
@@ -50,6 +67,9 @@ namespace Harmony
 			}
 		}
 
+		/// <summary>Gets all patched original methods</summary>
+		/// <returns>All patched original methods</returns>
+		///
 		public static IEnumerable<MethodBase> AllPatchedMethods()
 		{
 			lock (locker)
@@ -58,6 +78,9 @@ namespace Harmony
 			}
 		}
 
+		/// <summary>Applies the patch</summary>
+		/// <returns>A list of all created dynamic methods</returns>
+		///
 		public List<DynamicMethod> Patch()
 		{
 			lock (locker)
@@ -88,6 +111,10 @@ namespace Harmony
 			}
 		}
 
+		/// <summary>Unpatches patches of a given type and/or Harmony ID</summary>
+		/// <param name="type">The patch type</param>
+		/// <param name="harmonyID">Harmony ID or (*) for any</param>
+		///
 		public void Unpatch(HarmonyPatchType type, string harmonyID)
 		{
 			lock (locker)
@@ -110,6 +137,9 @@ namespace Harmony
 			}
 		}
 
+		/// <summary>Unpatches the given patch</summary>
+		/// <param name="patch">The patch</param>
+		///
 		public void Unpatch(MethodInfo patch)
 		{
 			lock (locker)
@@ -152,6 +182,9 @@ namespace Harmony
 					var type = containerAttributes.declaringType;
 					originals.AddRange(AccessTools.GetDeclaredConstructors(type).Cast<MethodBase>());
 					originals.AddRange(AccessTools.GetDeclaredMethods(type).Cast<MethodBase>());
+					var props = AccessTools.GetDeclaredProperties(type);
+					originals.AddRange(props.Select(prop => prop.GetGetMethod(true)).Where(method => method != null).Cast<MethodBase>());
+					originals.AddRange(props.Select(prop => prop.GetSetMethod(true)).Where(method => method != null).Cast<MethodBase>());
 				}
 				else
 				{

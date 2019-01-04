@@ -1,23 +1,37 @@
-﻿using System;
+using System;
 
 namespace Harmony.ILCopying
 {
+	/// <summary>A byte buffer</summary>
 	public class ByteBuffer
 	{
+		/// <summary>The buffer</summary>
 		public byte[] buffer;
+
+		/// <summary>The position</summary>
 		public int position;
 
+		/// <summary>Creates a buffer from a byte array</summary>
+		/// <param name="buffer">The byte array</param>
+		///
 		public ByteBuffer(byte[] buffer)
 		{
 			this.buffer = buffer;
 		}
 
+		/// <summary>Reads a byte</summary>
+		/// <returns>The byte</returns>
+		///
 		public byte ReadByte()
 		{
 			CheckCanRead(1);
 			return buffer[position++];
 		}
 
+		/// <summary>Reads some bytes</summary>
+		/// <param name="length">The number of bytes to read</param>
+		/// <returns>An array of bytes</returns>
+		///
 		public byte[] ReadBytes(int length)
 		{
 			CheckCanRead(length);
@@ -27,6 +41,9 @@ namespace Harmony.ILCopying
 			return value;
 		}
 
+		/// <summary>Reads an Int16</summary>
+		/// <returns>The Int16</returns>
+		///
 		public short ReadInt16()
 		{
 			CheckCanRead(2);
@@ -36,6 +53,9 @@ namespace Harmony.ILCopying
 			return value;
 		}
 
+		/// <summary>Reads Int32</summary>
+		/// <returns>The Int32</returns>
+		///
 		public int ReadInt32()
 		{
 			CheckCanRead(4);
@@ -47,6 +67,9 @@ namespace Harmony.ILCopying
 			return value;
 		}
 
+		/// <summary>Reads Int64</summary>
+		/// <returns>The Int64</returns>
+		///
 		public long ReadInt64()
 		{
 			CheckCanRead(8);
@@ -65,6 +88,9 @@ namespace Harmony.ILCopying
 			return value;
 		}
 
+		/// <summary>Reads a Single</summary>
+		/// <returns>The single</returns>
+		///
 		public float ReadSingle()
 		{
 			if (!BitConverter.IsLittleEndian)
@@ -80,6 +106,9 @@ namespace Harmony.ILCopying
 			return value;
 		}
 
+		/// <summary>Reads a Double</summary>
+		/// <returns>The double</returns>
+		///
 		public double ReadDouble()
 		{
 			if (!BitConverter.IsLittleEndian)

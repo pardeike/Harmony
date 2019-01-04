@@ -6,15 +6,30 @@ namespace Harmony
 {
 	// Based on https://www.codeproject.com/Articles/14593/A-General-Fast-Method-Invoker
 
-	public delegate object FastInvokeHandler(object target, object[] paramters);
+	/// <summary>A delegate to invoke a method</summary>
+	/// <param name="target">The instance</param>
+	/// <param name="parameters">The method parameters</param>
+	/// <returns>The method result</returns>
+	///
+	public delegate object FastInvokeHandler(object target, object[] parameters);
 
+	/// <summary>A helper class to invoke method with delegates</summary>
 	public class MethodInvoker
 	{
+		/// <summary>Creates a fast invocation handler from a method and a module</summary>
+		/// <param name="methodInfo">The method to invoke</param>
+		/// <param name="module">The module context</param>
+		/// <returns>The fast invocation handler</returns>
+		///
 		public static FastInvokeHandler GetHandler(DynamicMethod methodInfo, Module module)
 		{
 			return Handler(methodInfo, module);
 		}
 
+		/// <summary>Creates a fast invocation handler from a method and a module</summary>
+		/// <param name="methodInfo">The method to invoke</param>
+		/// <returns>The fast invocation handler</returns>
+		///
 		public static FastInvokeHandler GetHandler(MethodInfo methodInfo)
 		{
 			return Handler(methodInfo, methodInfo.DeclaringType.Module);

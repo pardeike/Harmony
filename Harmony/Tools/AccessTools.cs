@@ -8,8 +8,10 @@ using System.Runtime.Serialization;
 
 namespace Harmony
 {
+	/// <summary>A helper class for reflection related functions</summary>
 	public static class AccessTools
 	{
+		/// <summary>Shortcut to simplify the use of reflections and make it work for any access level</summary>
 		public static BindingFlags all = BindingFlags.Public
 			| BindingFlags.NonPublic
 			| BindingFlags.Instance
@@ -19,6 +21,10 @@ namespace Harmony
 			| BindingFlags.GetProperty
 			| BindingFlags.SetProperty;
 
+		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
+		/// <param name="name">The name</param>
+		/// <returns>A Type</returns>
+		///
 		public static Type TypeByName(string name)
 		{
 			var type = Type.GetType(name, false);
@@ -33,53 +39,104 @@ namespace Harmony
 			return type;
 		}
 
-		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> action)
+		/// <summary>Applies a function going up the type hierarchy and stops at the first non null result</summary>
+		/// <typeparam name="T">Result type of func()</typeparam>
+		/// <param name="type">The type to start with</param>
+		/// <param name="func">The evaluation function returning T</param>
+		/// <returns>Returns the first non null result or default(T) when reaching the top level type object</returns>
+		///
+		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> func)
 		{
 			while (true)
 			{
-				var result = action(type);
+				var result = func(type);
 				if (result != null) return result;
 				if (type == typeof(object)) return default(T);
 				type = type.BaseType;
 			}
 		}
 
-		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> action)
+		/// <summary>Applies a function going into inner types and stops at the first non null result</summary>
+		/// <typeparam name="T">Generic type parameter</typeparam>
+		/// <param name="type">The type to start with</param>
+		/// <param name="func">The evaluation function returning T</param>
+		/// <returns>Returns the first non null result or null with no match</returns>
+		///
+		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> func)
 		{
-			var result = action(type);
+			var result = func(type);
 			if (result != null) return result;
 			foreach (var subType in type.GetNestedTypes(all))
 			{
-				result = FindIncludingInnerTypes(subType, action);
+				result = FindIncludingInnerTypes(subType, func);
 				if (result != null)
 					break;
 			}
 			return result;
 		}
 
+		/// <summary>Gets the reflection information for a directly declared field</summary>
+		/// <param name="type">The class where the field is defined</param>
+		/// <param name="name">The name of the field</param>
+		/// <returns>A FieldInfo or null when type/name is null or when the field cannot be found</returns>
+		///
+		public static FieldInfo DeclaredField(Type type, string name)
+		{
+			if (type == null || name == null) return null;
+			return type.GetField(name, all);
+		}
+
+		/// <summary>Gets the reflection information for a field by searching the type and all its super types</summary>
+		/// <param name="type">The class where the field is defined</param>
+		/// <param name="name">The name of the field (case sensitive)</param>
+		/// <returns>A FieldInfo or null when type/name is null or when the field cannot be found</returns>
+		///
 		public static FieldInfo Field(Type type, string name)
 		{
 			if (type == null || name == null) return null;
 			return FindIncludingBaseTypes(type, t => t.GetField(name, all));
 		}
 
-		public static FieldInfo Field(Type type, int idx)
+		/// <summary>Gets the reflection information for a field</summary>
+		/// <param name="type">The class where the field is declared</param>
+		/// <param name="idx">The zero-based index of the field inside the class definition</param>
+		/// <returns>A FieldInfo or null when type is null or when the field cannot be found</returns>
+		///
+		public static FieldInfo DeclaredField(Type type, int idx)
 		{
+			if (type == null) return null;
 			return GetDeclaredFields(type).ElementAtOrDefault(idx);
 		}
 
+		/// <summary>Gets the reflection information for a directly declared property</summary>
+		/// <param name="type">The class where the property is declared</param>
+		/// <param name="name">The name of the property (case sensitive)</param>
+		/// <returns>A PropertyInfo or null when type/name is null or when the property cannot be found</returns>
+		///
 		public static PropertyInfo DeclaredProperty(Type type, string name)
 		{
 			if (type == null || name == null) return null;
 			return type.GetProperty(name, all);
 		}
 
+		/// <summary>Gets the reflection information for a property by searching the type and all its super types</summary>
+		/// <param name="type">The type</param>
+		/// <param name="name">The name</param>
+		/// <returns>A PropertyInfo or null when type/name is null or when the property cannot be found</returns>
+		///
 		public static PropertyInfo Property(Type type, string name)
 		{
 			if (type == null || name == null) return null;
 			return FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
 		}
 
+		/// <summary>Gets the reflection information for a directly declared method</summary>
+		/// <param name="type">The class where the method is declared</param>
+		/// <param name="name">The name of the method (case sensitive)</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <param name="generics">Optional list of types that define the generic version of the method</param>
+		/// <returns>A MethodInfo or null when type/name is null or when the method cannot be found</returns>
+		///
 		public static MethodInfo DeclaredMethod(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
@@ -96,6 +153,13 @@ namespace Harmony
 			return result;
 		}
 
+		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
+		/// <param name="type">The class where the method is declared</param>
+		/// <param name="name">The name of the method (case sensitive)</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <param name="generics">Optional list of types that define the generic version of the method</param>
+		/// <returns>A MethodInfo or null when type/name is null or when the method cannot be found</returns>
+		///
 		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			if (type == null || name == null) return null;
@@ -124,6 +188,12 @@ namespace Harmony
 			return result;
 		}
 
+		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
+		/// <param name="typeColonMethodname">The full name (Namespace.Type1.Type2:MethodName) of the type where the method is declared</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <param name="generics">Optional list of types that define the generic version of the method</param>
+		/// <returns>A MethodInfo or null when type/name is null or when the method cannot be found</returns>
+		///
 		public static MethodInfo Method(string typeColonMethodname, Type[] parameters = null, Type[] generics = null)
 		{
 			if (typeColonMethodname == null) return null;
@@ -132,21 +202,74 @@ namespace Harmony
 				throw new ArgumentException("Method must be specified as 'Namespace.Type1.Type2:MethodName", nameof(typeColonMethodname));
 
 			var type = TypeByName(parts[0]);
-			return Method(type, parts[1], parameters, generics);
+			return DeclaredMethod(type, parts[1], parameters, generics);
 		}
 
+		/// <summary>Gets the names of all method that are declared in a type</summary>
+		/// <param name="type">The declaring type</param>
+		/// <returns>A list of method names</returns>
+		///
 		public static List<string> GetMethodNames(Type type)
 		{
 			if (type == null) return new List<string>();
-			return type.GetMethods(all).Select(m => m.Name).ToList();
+			return GetDeclaredMethods(type).Select(m => m.Name).ToList();
 		}
 
+		/// <summary>Gets the names of all method that are declared in the type of the instance</summary>
+		/// <param name="instance">An instance of the type to search in</param>
+		/// <returns>A list of method names</returns>
+		///
 		public static List<string> GetMethodNames(object instance)
 		{
 			if (instance == null) return new List<string>();
 			return GetMethodNames(instance.GetType());
 		}
 
+		/// <summary>Gets the names of all fields that are declared in a type</summary>
+		/// <param name="type">The declaring type</param>
+		/// <returns>A list of field names</returns>
+		///
+		public static List<string> GetFieldNames(Type type)
+		{
+			if (type == null) return new List<string>();
+			return GetDeclaredFields(type).Select(f => f.Name).ToList();
+		}
+
+		/// <summary>Gets the names of all fields that are declared in the type of the instance</summary>
+		/// <param name="instance">An instance of the type to search in</param>
+		/// <returns>A list of field names</returns>
+		///
+		public static List<string> GetFieldNames(object instance)
+		{
+			if (instance == null) return new List<string>();
+			return GetFieldNames(instance.GetType());
+		}
+
+		/// <summary>Gets the names of all properties that are declared in a type</summary>
+		/// <param name="type">The declaring type</param>
+		/// <returns>A list of property names</returns>
+		///
+		public static List<string> GetPropertyNames(Type type)
+		{
+			if (type == null) return new List<string>();
+			return GetDeclaredProperties(type).Select(f => f.Name).ToList();
+		}
+
+		/// <summary>Gets the names of all properties that are declared in the type of the instance</summary>
+		/// <param name="instance">An instance of the type to search in</param>
+		/// <returns>A list of property names</returns>
+		///
+		public static List<string> GetPropertyNames(object instance)
+		{
+			if (instance == null) return new List<string>();
+			return GetPropertyNames(instance.GetType());
+		}
+
+		/// <summary>Gets the reflection information for a directly declared constructor</summary>
+		/// <param name="type">The class where the constructor is declared</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the constructor</param>
+		/// <returns>A ConstructorInfo or null when type is null or when the constructor cannot be found</returns>
+		///
 		public static ConstructorInfo DeclaredConstructor(Type type, Type[] parameters = null)
 		{
 			if (type == null) return null;
@@ -154,6 +277,11 @@ namespace Harmony
 			return type.GetConstructor(all, null, parameters, new ParameterModifier[] { });
 		}
 
+		/// <summary>Gets the reflection information for a constructor by searching the type and all its super types</summary>
+		/// <param name="type">The class where the constructor is declared</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <returns>A ConstructorInfo or null when type is null or when the method cannot be found</returns>
+		///
 		public static ConstructorInfo Constructor(Type type, Type[] parameters = null)
 		{
 			if (type == null) return null;
@@ -161,94 +289,137 @@ namespace Harmony
 			return FindIncludingBaseTypes(type, t => t.GetConstructor(all, null, parameters, new ParameterModifier[] { }));
 		}
 
+		/// <summary>Gets reflection information for all declared constructors</summary>
+		/// <param name="type">The class where the constructors are declared</param>
+		/// <returns>A list of ConstructorInfo</returns>
+		///
 		public static List<ConstructorInfo> GetDeclaredConstructors(Type type)
 		{
+			if (type == null) return null;
 			return type.GetConstructors(all).Where(method => method.DeclaringType == type).ToList();
 		}
 
+		/// <summary>Gets reflection information for all declared methods</summary>
+		/// <param name="type">The class where the methods are declared</param>
+		/// <returns>A list of MethodInfo</returns>
+		///
 		public static List<MethodInfo> GetDeclaredMethods(Type type)
 		{
+			if (type == null) return null;
 			return type.GetMethods(all).Where(method => method.DeclaringType == type).ToList();
 		}
 
+		/// <summary>Gets reflection information for all declared properties</summary>
+		/// <param name="type">The class where the properties are declared</param>
+		/// <returns>A list of PropertyInfo</returns>
+		///
 		public static List<PropertyInfo> GetDeclaredProperties(Type type)
 		{
+			if (type == null) return null;
 			return type.GetProperties(all).Where(property => property.DeclaringType == type).ToList();
 		}
 
+		/// <summary>Gets reflection information for all declared fields</summary>
+		/// <param name="type">The class where the fields are declared</param>
+		/// <returns>A list of FieldInfo</returns>
+		///
 		public static List<FieldInfo> GetDeclaredFields(Type type)
 		{
+			if (type == null) return null;
 			return type.GetFields(all).Where(field => field.DeclaringType == type).ToList();
 		}
 
-		public static Type GetReturnedType(MethodBase method)
+		/// <summary>Gets the return type of a method or constructor</summary>
+		/// <param name="methodOrConstructor">The method or constructor</param>
+		/// <returns>The return type of the method</returns>
+		///
+		public static Type GetReturnedType(MethodBase methodOrConstructor)
 		{
-			var constructor = method as ConstructorInfo;
+			if (methodOrConstructor == null) return null;
+			var constructor = methodOrConstructor as ConstructorInfo;
 			if (constructor != null) return typeof(void);
-			return ((MethodInfo)method).ReturnType;
+			return ((MethodInfo)methodOrConstructor).ReturnType;
 		}
 
+		/// <summary>Given a type, returns the first inner type matching a recursive search by name</summary>
+		/// <param name="type">The type to start searching at</param>
+		/// <param name="name">The name of the inner type (case sensitive)</param>
+		/// <returns>The inner type or null if type/name is null or if a type with that name cannot be found</returns>
+		///
 		public static Type Inner(Type type, string name)
 		{
 			if (type == null || name == null) return null;
 			return FindIncludingBaseTypes(type, t => t.GetNestedType(name, all));
 		}
 
+		/// <summary>Given a type, returns the first inner type matching a recursive search with a predicate</summary>
+		/// <param name="type">The type to start searching at</param>
+		/// <param name="predicate">The predicate to search with</param>
+		/// <returns>The inner type or null if type/predicate is null or if a type with that name cannot be found</returns>
+		///
 		public static Type FirstInner(Type type, Func<Type, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
 			return type.GetNestedTypes(all).FirstOrDefault(subType => predicate(subType));
 		}
 
+		/// <summary>Given a type, returns the first method matching a predicate</summary>
+		/// <param name="type">The type to start searching at</param>
+		/// <param name="predicate">The predicate to search with</param>
+		/// <returns>The MethodInfo or null if type/predicate is null or if a type with that name cannot be found</returns>
+		///
 		public static MethodInfo FirstMethod(Type type, Func<MethodInfo, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
 			return type.GetMethods(all).FirstOrDefault(method => predicate(method));
 		}
 
+		/// <summary>Given a type, returns the first constructor matching a predicate</summary>
+		/// <param name="type">The type to start searching at</param>
+		/// <param name="predicate">The predicate to search with</param>
+		/// <returns>The ConstructorInfo or null if type/predicate is null or if a type with that name cannot be found</returns>
+		///
 		public static ConstructorInfo FirstConstructor(Type type, Func<ConstructorInfo, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
 			return type.GetConstructors(all).FirstOrDefault(constructor => predicate(constructor));
 		}
 
+		/// <summary>Given a type, returns the first property matching a predicate</summary>
+		/// <param name="type">The type to start searching at</param>
+		/// <param name="predicate">The predicate to search with</param>
+		/// <returns>The PropertyInfo or null if type/predicate is null or if a type with that name cannot be found</returns>
+		///
 		public static PropertyInfo FirstProperty(Type type, Func<PropertyInfo, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
 			return type.GetProperties(all).FirstOrDefault(property => predicate(property));
 		}
 
+		/// <summary>Returns an array containing the type of each object in the given array</summary>
+		/// <param name="parameters">An array of objects</param>
+		/// <returns>An array of types or an empty array if parameters is null (if an object is null, the type for it will be object)</returns>
+		///
 		public static Type[] GetTypes(object[] parameters)
 		{
 			if (parameters == null) return new Type[0];
 			return parameters.Select(p => p == null ? typeof(object) : p.GetType()).ToArray();
 		}
 
-		public static List<string> GetFieldNames(Type type)
-		{
-			if (type == null) return new List<string>();
-			return type.GetFields(all).Select(f => f.Name).ToList();
-		}
-
-		public static List<string> GetFieldNames(object instance)
-		{
-			if (instance == null) return new List<string>();
-			return GetFieldNames(instance.GetType());
-		}
-
-		public static List<string> GetPropertyNames(Type type)
-		{
-			if (type == null) return new List<string>();
-			return type.GetProperties(all).Select(f => f.Name).ToList();
-		}
-
-		public static List<string> GetPropertyNames(object instance)
-		{
-			if (instance == null) return new List<string>();
-			return GetPropertyNames(instance.GetType());
-		}
-
+		/// <summary>A read/writable reference to a field</summary>
+		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <typeparam name="U">The type of the field</typeparam>
+		/// <param name="obj">The runtime instance to access the field</param>
+		/// <returns>The value of the field (or an assignable object)</returns>
+		///
 		public delegate ref U FieldRef<T, U>(T obj);
+
+		/// <summary>Creates a field reference</summary>
+		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <typeparam name="U">The type of the field</typeparam>
+		/// <param name="fieldName">The name of the field</param>
+		/// <returns>A read and writable field reference</returns>
+		///
 		public static FieldRef<T, U> FieldRefAccess<T, U>(string fieldName)
 		{
 			const BindingFlags bf = BindingFlags.NonPublic |
@@ -277,11 +448,22 @@ namespace Harmony
 			return (FieldRef<T, U>)dm.CreateDelegate(typeof(FieldRef<T, U>));
 		}
 
+		/// <summary>Creates a field reference for a specific instance</summary>
+		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <typeparam name="U">The type of the field</typeparam>
+		/// <param name="instance">The instance</param>
+		/// <param name="fieldName">The name of the field</param>
+		/// <returns>A read and writable field reference</returns>
+		///
 		public static ref U FieldRefAccess<T, U>(T instance, string fieldName)
 		{
 			return ref FieldRefAccess<T, U>(fieldName)(instance);
 		}
 
+		/// <summary>Throws a missing member runtime exception</summary>
+		/// <param name="type">The class that is involved</param>
+		/// <param name="names">A list of names</param>
+		///
 		public static void ThrowMissingMemberException(Type type, params string[] names)
 		{
 			var fields = string.Join(",", GetFieldNames(type).ToArray());
@@ -289,6 +471,10 @@ namespace Harmony
 			throw new MissingMemberException(string.Join(",", names) + "; available fields: " + fields + "; available properties: " + properties);
 		}
 
+		/// <summary>Gets default value for a specific type</summary>
+		/// <param name="type">The type</param>
+		/// <returns>The default value</returns>
+		///
 		public static object GetDefaultValue(Type type)
 		{
 			if (type == null) return null;
@@ -298,6 +484,10 @@ namespace Harmony
 			return null;
 		}
 
+		/// <summary>Creates an (possibly uninitialized) instance of a given type</summary>
+		/// <param name="type">The type</param>
+		/// <returns>The new instance</returns>
+		///
 		public static object CreateInstance(Type type)
 		{
 			if (type == null)
@@ -308,6 +498,35 @@ namespace Harmony
 			return FormatterServices.GetUninitializedObject(type);
 		}
 
+		/// <summary>Makes a deep copy of any object</summary>
+		/// <typeparam name="T">The type of the instance that should be created</typeparam>
+		/// <param name="source">The original object</param>
+		/// <returns>A copy of the original object but of type T</returns>
+		///
+		public static T MakeDeepCopy<T>(object source) where T : class
+		{
+			return MakeDeepCopy(source, typeof(T)) as T;
+		}
+
+		/// <summary>Makes a deep copy of any object</summary>
+		/// <typeparam name="T">The type of the instance that should be created</typeparam>
+		/// <param name="source">The original object</param>
+		/// <param name="result">[out] The copy of the original object</param>
+		/// <param name="processor">Optional value transformation function (taking a field name and src/dst traverse objects)</param>
+		/// <param name="pathRoot">The optional path root to start with</param>
+		///
+		public static void MakeDeepCopy<T>(object source, out T result, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
+		{
+			result = (T)MakeDeepCopy(source, typeof(T), processor, pathRoot);
+		}
+
+		/// <summary>Makes a deep copy of any object</summary>
+		/// <param name="source">The original object</param>
+		/// <param name="resultType">The type of the instance that should be created</param>
+		/// <param name="processor">Optional value transformation function (taking a field name and src/dst traverse objects)</param>
+		/// <param name="pathRoot">The optional path root to start with</param>
+		/// <returns>The copy of the original object</returns>
+		///
 		public static object MakeDeepCopy(object source, Type resultType, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
 		{
 			if (source == null)
@@ -373,26 +592,37 @@ namespace Harmony
 			return result;
 		}
 
-		public static void MakeDeepCopy<T>(object source, out T result, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
-		{
-			result = (T)MakeDeepCopy(source, typeof(T), processor, pathRoot);
-		}
-
+		/// <summary>Tests if a type is a struct</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type is a struct</returns>
+		///
 		public static bool IsStruct(Type type)
 		{
 			return type.IsValueType && !IsValue(type) && !IsVoid(type);
 		}
 
+		/// <summary>Tests if a type is a class</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type is a class</returns>
+		///
 		public static bool IsClass(Type type)
 		{
 			return !type.IsValueType;
 		}
 
+		/// <summary>Tests if a type is a value type</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type is a value type</returns>
+		///
 		public static bool IsValue(Type type)
 		{
 			return type.IsPrimitive || type.IsEnum;
 		}
 
+		/// <summary>Tests if a type is void</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type is void</returns>
+		///
 		public static bool IsVoid(Type type)
 		{
 			return type == typeof(void);

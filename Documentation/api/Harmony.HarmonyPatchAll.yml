@@ -1,0 +1,124 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.HarmonyPatchAll
+  commentId: T:Harmony.HarmonyPatchAll
+  id: HarmonyPatchAll
+  parent: Harmony
+  children:
+  - Harmony.HarmonyPatchAll.#ctor
+  langs:
+  - csharp
+  - vb
+  name: HarmonyPatchAll
+  nameWithType: HarmonyPatchAll
+  fullName: Harmony.HarmonyPatchAll
+  type: Class
+  source:
+    id: HarmonyPatchAll
+    path: ''
+    startLine: 298
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A harmony patch all.
+  example: []
+  syntax:
+    content: >-
+      [AttributeUsage(AttributeTargets.Class)]
+
+      public class HarmonyPatchAll : HarmonyAttribute, _Attribute
+    content.vb: >-
+      <AttributeUsage(AttributeTargets.Class)>
+
+      Public Class HarmonyPatchAll
+          Inherits HarmonyAttribute
+          Implements _Attribute
+  inheritance:
+  - System.Object
+  - System.Attribute
+  - Harmony.HarmonyAttribute
+  inheritedMembers:
+  - Harmony.HarmonyAttribute.info
+  attributes:
+  - type: System.AttributeUsageAttribute
+    ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
+    arguments:
+    - type: System.AttributeTargets
+      value: 4
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Harmony.HarmonyPatchAll.#ctor
+  commentId: M:Harmony.HarmonyPatchAll.#ctor
+  id: '#ctor'
+  parent: Harmony.HarmonyPatchAll
+  langs:
+  - csharp
+  - vb
+  name: HarmonyPatchAll()
+  nameWithType: HarmonyPatchAll.HarmonyPatchAll()
+  fullName: Harmony.HarmonyPatchAll.HarmonyPatchAll()
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 302
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Default constructor.
+  example: []
+  syntax:
+    content: public HarmonyPatchAll()
+    content.vb: Public Sub New
+  overload: Harmony.HarmonyPatchAll.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Attribute
+  commentId: T:System.Attribute
+  parent: System
+  isExternal: true
+  name: Attribute
+  nameWithType: Attribute
+  fullName: System.Attribute
+- uid: Harmony.HarmonyAttribute
+  commentId: T:Harmony.HarmonyAttribute
+  parent: Harmony
+  name: HarmonyAttribute
+  nameWithType: HarmonyAttribute
+  fullName: Harmony.HarmonyAttribute
+- uid: Harmony.HarmonyAttribute.info
+  commentId: F:Harmony.HarmonyAttribute.info
+  parent: Harmony.HarmonyAttribute
+  name: info
+  nameWithType: HarmonyAttribute.info
+  fullName: Harmony.HarmonyAttribute.info
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Harmony.HarmonyPatchAll.#ctor*
+  commentId: Overload:Harmony.HarmonyPatchAll.#ctor
+  name: HarmonyPatchAll
+  nameWithType: HarmonyPatchAll.HarmonyPatchAll
+  fullName: Harmony.HarmonyPatchAll.HarmonyPatchAll

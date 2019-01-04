@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
+	/// <summary>Harmony shared state</summary>
 	public static class HarmonySharedState
 	{
 		static readonly string name = "HarmonySharedState";

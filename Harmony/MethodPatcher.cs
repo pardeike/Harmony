@@ -7,15 +7,22 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
+	/// <summary>A method patch helper</summary>
 	public static class MethodPatcher
 	{
-		// special parameter names that can be used in prefix and postfix methods
-		//
+		/// special parameter names that can be used in prefix and postfix methods
+
+		/// <summary>Instance parameter name</summary>
 		public static string INSTANCE_PARAM = "__instance";
+		/// <summary>Original method parameter name</summary>
 		public static string ORIGINAL_METHOD_PARAM = "__originalMethod";
+		/// <summary>Result variable name</summary>
 		public static string RESULT_VAR = "__result";
+		/// <summary>State variable name</summary>
 		public static string STATE_VAR = "__state";
+		/// <summary>Parameter index prefix</summary>
 		public static string PARAM_INDEX_PREFIX = "__";
+		/// <summary>Instance field prefix</summary>
 		public static string INSTANCE_FIELD_PREFIX = "___";
 
 		// in case of trouble, set to true to write dynamic method to desktop as a dll
@@ -24,13 +31,29 @@ namespace Harmony
 		//
 		static readonly bool DEBUG_METHOD_GENERATION_BY_DLL_CREATION = false;
 
-		// for fixing old harmony bugs
+		/// <summary>Creates patched method</summary>
+		/// <param name="original">The original method</param>
+		/// <param name="prefixes">The prefix methods</param>
+		/// <param name="postfixes">The postfix methods</param>
+		/// <param name="transpilers">The transpiler methods</param>
+		/// <returns>A new dynamic method</returns>
+		///
 		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.1", prefixes, postfixes, transpilers);
 		}
 
+		/// <summary>Creates patched method.</summary>
+		/// <exception cref="ArgumentNullException">Thrown when one or more required arguments are null.</exception>
+		/// <exception cref="Exception">				  Thrown when an exception error condition occurs.</exception>
+		/// <param name="original">			The original method.</param>
+		/// <param name="harmonyInstanceID">Identifier for the harmony instance.</param>
+		/// <param name="prefixes">			The prefix methods.</param>
+		/// <param name="postfixes">			The postfix methods.</param>
+		/// <param name="transpilers">		The transpiler methods.</param>
+		/// <returns>A new dynamic method.</returns>
+		///
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			if (original == null)
@@ -231,7 +254,7 @@ namespace Harmony
 			return -1;
 		}
 
-		static MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
+		static readonly MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
@@ -283,13 +306,13 @@ namespace Harmony
 					FieldInfo fieldInfo;
 					if (fieldName.All(char.IsDigit))
 					{
-						fieldInfo = AccessTools.Field(original.DeclaringType, int.Parse(fieldName));
+						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, int.Parse(fieldName));
 						if (fieldInfo == null)
 							throw new ArgumentException("No field found at given index in class " + original.DeclaringType.FullName, fieldName);
 					}
 					else
 					{
-						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
+						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, fieldName);
 						if (fieldInfo == null)
 							throw new ArgumentException("No such field defined in class " + original.DeclaringType.FullName, fieldName);
 					}

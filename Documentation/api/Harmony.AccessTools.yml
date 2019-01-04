@@ -1,0 +1,2980 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.AccessTools
+  commentId: T:Harmony.AccessTools
+  id: AccessTools
+  parent: Harmony
+  children:
+  - Harmony.AccessTools.all
+  - Harmony.AccessTools.Constructor(System.Type,System.Type[])
+  - Harmony.AccessTools.CreateInstance(System.Type)
+  - Harmony.AccessTools.DeclaredConstructor(System.Type,System.Type[])
+  - Harmony.AccessTools.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  - Harmony.AccessTools.DeclaredProperty(System.Type,System.String)
+  - Harmony.AccessTools.Field(System.Type,System.Int32)
+  - Harmony.AccessTools.Field(System.Type,System.String)
+  - Harmony.AccessTools.FieldRefAccess``2(``0,System.String)
+  - Harmony.AccessTools.FieldRefAccess``2(System.String)
+  - Harmony.AccessTools.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  - Harmony.AccessTools.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  - Harmony.AccessTools.FirstConstructor(System.Type,System.Func{ConstructorInfo,System.Boolean})
+  - Harmony.AccessTools.FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  - Harmony.AccessTools.FirstMethod(System.Type,System.Func{MethodInfo,System.Boolean})
+  - Harmony.AccessTools.FirstProperty(System.Type,System.Func{PropertyInfo,System.Boolean})
+  - Harmony.AccessTools.GetDeclaredConstructors(System.Type)
+  - Harmony.AccessTools.GetDeclaredFields(System.Type)
+  - Harmony.AccessTools.GetDeclaredMethods(System.Type)
+  - Harmony.AccessTools.GetDeclaredProperties(System.Type)
+  - Harmony.AccessTools.GetDefaultValue(System.Type)
+  - Harmony.AccessTools.GetFieldNames(System.Object)
+  - Harmony.AccessTools.GetFieldNames(System.Type)
+  - Harmony.AccessTools.GetMethodNames(System.Object)
+  - Harmony.AccessTools.GetMethodNames(System.Type)
+  - Harmony.AccessTools.GetPropertyNames(System.Object)
+  - Harmony.AccessTools.GetPropertyNames(System.Type)
+  - Harmony.AccessTools.GetReturnedType(MethodBase)
+  - Harmony.AccessTools.GetTypes(System.Object[])
+  - Harmony.AccessTools.Inner(System.Type,System.String)
+  - Harmony.AccessTools.IsClass(System.Type)
+  - Harmony.AccessTools.IsStruct(System.Type)
+  - Harmony.AccessTools.IsValue(System.Type)
+  - Harmony.AccessTools.IsVoid(System.Type)
+  - Harmony.AccessTools.MakeDeepCopy(System.Object,System.Type,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  - Harmony.AccessTools.MakeDeepCopy``1(System.Object,``0@,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  - Harmony.AccessTools.Method(System.String,System.Type[],System.Type[])
+  - Harmony.AccessTools.Method(System.Type,System.String,System.Type[],System.Type[])
+  - Harmony.AccessTools.Property(System.Type,System.String)
+  - Harmony.AccessTools.ThrowMissingMemberException(System.Type,System.String[])
+  - Harmony.AccessTools.TypeByName(System.String)
+  langs:
+  - csharp
+  - vb
+  name: AccessTools
+  nameWithType: AccessTools
+  fullName: Harmony.AccessTools
+  type: Class
+  source:
+    id: AccessTools
+    path: ''
+    startLine: 2080
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: The access tools.
+  example: []
+  syntax:
+    content: public static class AccessTools
+    content.vb: Public Module AccessTools
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: Harmony.AccessTools.all
+  commentId: F:Harmony.AccessTools.all
+  id: all
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: all
+  nameWithType: AccessTools.all
+  fullName: Harmony.AccessTools.all
+  type: Field
+  source:
+    id: all
+    path: ''
+    startLine: 2083
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: all.
+  example: []
+  syntax:
+    content: public static BindingFlags all
+    return:
+      type: BindingFlags
+    content.vb: Public Shared all As BindingFlags
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.TypeByName(System.String)
+  commentId: M:Harmony.AccessTools.TypeByName(System.String)
+  id: TypeByName(System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: TypeByName(String)
+  nameWithType: AccessTools.TypeByName(String)
+  fullName: Harmony.AccessTools.TypeByName(System.String)
+  type: Method
+  source:
+    id: TypeByName
+    path: ''
+    startLine: 2096
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Type by name.
+  example: []
+  syntax:
+    content: public static Type TypeByName(string name)
+    parameters:
+    - id: name
+      type: System.String
+      description: The name.
+    return:
+      type: System.Type
+      description: A Type.
+    content.vb: Public Shared Function TypeByName(name As String) As Type
+  overload: Harmony.AccessTools.TypeByName*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  commentId: M:Harmony.AccessTools.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  id: FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FindIncludingBaseTypes<T>(Type, Func<Type, T>)
+  nameWithType: AccessTools.FindIncludingBaseTypes<T>(Type, Func<Type, T>)
+  fullName: Harmony.AccessTools.FindIncludingBaseTypes<T>(System.Type, System.Func<System.Type, T>)
+  type: Method
+  source:
+    id: FindIncludingBaseTypes
+    path: ''
+    startLine: 2116
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Searches for the first including base types.
+  example: []
+  syntax:
+    content: public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> action)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: action
+      type: System.Func{System.Type,{T}}
+      description: The action.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    return:
+      type: '{T}'
+      description: The found including base types.
+    content.vb: Public Shared Function FindIncludingBaseTypes(Of T)(type As Type, action As Func(Of Type, T)) As T
+  overload: Harmony.AccessTools.FindIncludingBaseTypes*
+  nameWithType.vb: AccessTools.FindIncludingBaseTypes(Of T)(Type, Func(Of Type, T))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FindIncludingBaseTypes(Of T)(System.Type, System.Func(Of System.Type, T))
+  name.vb: FindIncludingBaseTypes(Of T)(Type, Func(Of Type, T))
+- uid: Harmony.AccessTools.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  commentId: M:Harmony.AccessTools.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  id: FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FindIncludingInnerTypes<T>(Type, Func<Type, T>)
+  nameWithType: AccessTools.FindIncludingInnerTypes<T>(Type, Func<Type, T>)
+  fullName: Harmony.AccessTools.FindIncludingInnerTypes<T>(System.Type, System.Func<System.Type, T>)
+  type: Method
+  source:
+    id: FindIncludingInnerTypes
+    path: ''
+    startLine: 2133
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Searches for the first including inner types.
+  example: []
+  syntax:
+    content: public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> action)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: action
+      type: System.Func{System.Type,{T}}
+      description: The action.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    return:
+      type: '{T}'
+      description: The found including inner types.
+    content.vb: Public Shared Function FindIncludingInnerTypes(Of T)(type As Type, action As Func(Of Type, T)) As T
+  overload: Harmony.AccessTools.FindIncludingInnerTypes*
+  nameWithType.vb: AccessTools.FindIncludingInnerTypes(Of T)(Type, Func(Of Type, T))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FindIncludingInnerTypes(Of T)(System.Type, System.Func(Of System.Type, T))
+  name.vb: FindIncludingInnerTypes(Of T)(Type, Func(Of Type, T))
+- uid: Harmony.AccessTools.Field(System.Type,System.String)
+  commentId: M:Harmony.AccessTools.Field(System.Type,System.String)
+  id: Field(System.Type,System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: Field(Type, String)
+  nameWithType: AccessTools.Field(Type, String)
+  fullName: Harmony.AccessTools.Field(System.Type, System.String)
+  type: Method
+  source:
+    id: Field
+    path: ''
+    startLine: 2151
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Fields.
+  example: []
+  syntax:
+    content: public static FieldInfo Field(Type type, string name)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: name
+      type: System.String
+      description: The name.
+    return:
+      type: FieldInfo
+      description: A FieldInfo.
+    content.vb: Public Shared Function Field(type As Type, name As String) As FieldInfo
+  overload: Harmony.AccessTools.Field*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.Field(System.Type,System.Int32)
+  commentId: M:Harmony.AccessTools.Field(System.Type,System.Int32)
+  id: Field(System.Type,System.Int32)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: Field(Type, Int32)
+  nameWithType: AccessTools.Field(Type, Int32)
+  fullName: Harmony.AccessTools.Field(System.Type, System.Int32)
+  type: Method
+  source:
+    id: Field
+    path: ''
+    startLine: 2162
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Fields.
+  example: []
+  syntax:
+    content: public static FieldInfo Field(Type type, int idx)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: idx
+      type: System.Int32
+      description: Zero-based index of the.
+    return:
+      type: FieldInfo
+      description: A FieldInfo.
+    content.vb: Public Shared Function Field(type As Type, idx As Integer) As FieldInfo
+  overload: Harmony.AccessTools.Field*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.DeclaredProperty(System.Type,System.String)
+  commentId: M:Harmony.AccessTools.DeclaredProperty(System.Type,System.String)
+  id: DeclaredProperty(System.Type,System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: DeclaredProperty(Type, String)
+  nameWithType: AccessTools.DeclaredProperty(Type, String)
+  fullName: Harmony.AccessTools.DeclaredProperty(System.Type, System.String)
+  type: Method
+  source:
+    id: DeclaredProperty
+    path: ''
+    startLine: 2172
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Declared property.
+  example: []
+  syntax:
+    content: public static PropertyInfo DeclaredProperty(Type type, string name)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: name
+      type: System.String
+      description: The name.
+    return:
+      type: PropertyInfo
+      description: A PropertyInfo.
+    content.vb: Public Shared Function DeclaredProperty(type As Type, name As String) As PropertyInfo
+  overload: Harmony.AccessTools.DeclaredProperty*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.Property(System.Type,System.String)
+  commentId: M:Harmony.AccessTools.Property(System.Type,System.String)
+  id: Property(System.Type,System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: Property(Type, String)
+  nameWithType: AccessTools.Property(Type, String)
+  fullName: Harmony.AccessTools.Property(System.Type, System.String)
+  type: Method
+  source:
+    id: Property
+    path: ''
+    startLine: 2183
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Properties.
+  example: []
+  syntax:
+    content: public static PropertyInfo Property(Type type, string name)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: name
+      type: System.String
+      description: The name.
+    return:
+      type: PropertyInfo
+      description: A PropertyInfo.
+    content.vb: Public Shared Function Property(type As Type, name As String) As PropertyInfo
+  overload: Harmony.AccessTools.Property*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  commentId: M:Harmony.AccessTools.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  id: DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: DeclaredMethod(Type, String, Type[], Type[])
+  nameWithType: AccessTools.DeclaredMethod(Type, String, Type[], Type[])
+  fullName: Harmony.AccessTools.DeclaredMethod(System.Type, System.String, System.Type[], System.Type[])
+  type: Method
+  source:
+    id: DeclaredMethod
+    path: ''
+    startLine: 2196
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Declared method.
+  example: []
+  syntax:
+    content: public static MethodInfo DeclaredMethod(Type type, string name, Type[] parameters = null, Type[] generics = null)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: name
+      type: System.String
+      description: The name.
+    - id: parameters
+      type: System.Type[]
+      description: (Optional) Options for controlling the operation.
+    - id: generics
+      type: System.Type[]
+      description: (Optional) The generics.
+    return:
+      type: MethodInfo
+      description: A MethodInfo.
+    content.vb: Public Shared Function DeclaredMethod(type As Type, name As String, parameters As Type() = Nothing, generics As Type() = Nothing) As MethodInfo
+  overload: Harmony.AccessTools.DeclaredMethod*
+  nameWithType.vb: AccessTools.DeclaredMethod(Type, String, Type(), Type())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.DeclaredMethod(System.Type, System.String, System.Type(), System.Type())
+  name.vb: DeclaredMethod(Type, String, Type(), Type())
+- uid: Harmony.AccessTools.Method(System.Type,System.String,System.Type[],System.Type[])
+  commentId: M:Harmony.AccessTools.Method(System.Type,System.String,System.Type[],System.Type[])
+  id: Method(System.Type,System.String,System.Type[],System.Type[])
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: Method(Type, String, Type[], Type[])
+  nameWithType: AccessTools.Method(Type, String, Type[], Type[])
+  fullName: Harmony.AccessTools.Method(System.Type, System.String, System.Type[], System.Type[])
+  type: Method
+  source:
+    id: Method
+    path: ''
+    startLine: 2219
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Methods.
+  example: []
+  syntax:
+    content: public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: name
+      type: System.String
+      description: The name.
+    - id: parameters
+      type: System.Type[]
+      description: (Optional) Options for controlling the operation.
+    - id: generics
+      type: System.Type[]
+      description: (Optional) The generics.
+    return:
+      type: MethodInfo
+      description: A MethodInfo.
+    content.vb: Public Shared Function Method(type As Type, name As String, parameters As Type() = Nothing, generics As Type() = Nothing) As MethodInfo
+  overload: Harmony.AccessTools.Method*
+  nameWithType.vb: AccessTools.Method(Type, String, Type(), Type())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.Method(System.Type, System.String, System.Type(), System.Type())
+  name.vb: Method(Type, String, Type(), Type())
+- uid: Harmony.AccessTools.Method(System.String,System.Type[],System.Type[])
+  commentId: M:Harmony.AccessTools.Method(System.String,System.Type[],System.Type[])
+  id: Method(System.String,System.Type[],System.Type[])
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: Method(String, Type[], Type[])
+  nameWithType: AccessTools.Method(String, Type[], Type[])
+  fullName: Harmony.AccessTools.Method(System.String, System.Type[], System.Type[])
+  type: Method
+  source:
+    id: Method
+    path: ''
+    startLine: 2251
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Methods.
+  example: []
+  syntax:
+    content: public static MethodInfo Method(string typeColonMethodname, Type[] parameters = null, Type[] generics = null)
+    parameters:
+    - id: typeColonMethodname
+      type: System.String
+      description: The type colon methodname.
+    - id: parameters
+      type: System.Type[]
+      description: (Optional) Options for controlling the operation.
+    - id: generics
+      type: System.Type[]
+      description: (Optional) The generics.
+    return:
+      type: MethodInfo
+      description: A MethodInfo.
+    content.vb: Public Shared Function Method(typeColonMethodname As String, parameters As Type() = Nothing, generics As Type() = Nothing) As MethodInfo
+  overload: Harmony.AccessTools.Method*
+  exceptions:
+  - type: System.ArgumentException
+    commentId: T:System.ArgumentException
+    description: Thrown when one or more arguments have unsupported or illegal values.
+  nameWithType.vb: AccessTools.Method(String, Type(), Type())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.Method(System.String, System.Type(), System.Type())
+  name.vb: Method(String, Type(), Type())
+- uid: Harmony.AccessTools.GetMethodNames(System.Type)
+  commentId: M:Harmony.AccessTools.GetMethodNames(System.Type)
+  id: GetMethodNames(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetMethodNames(Type)
+  nameWithType: AccessTools.GetMethodNames(Type)
+  fullName: Harmony.AccessTools.GetMethodNames(System.Type)
+  type: Method
+  source:
+    id: GetMethodNames
+    path: ''
+    startLine: 2266
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets method names.
+  example: []
+  syntax:
+    content: public static List<string> GetMethodNames(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: The method names.
+    content.vb: Public Shared Function GetMethodNames(type As Type) As List(Of String)
+  overload: Harmony.AccessTools.GetMethodNames*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetMethodNames(System.Object)
+  commentId: M:Harmony.AccessTools.GetMethodNames(System.Object)
+  id: GetMethodNames(System.Object)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetMethodNames(Object)
+  nameWithType: AccessTools.GetMethodNames(Object)
+  fullName: Harmony.AccessTools.GetMethodNames(System.Object)
+  type: Method
+  source:
+    id: GetMethodNames
+    path: ''
+    startLine: 2276
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets method names.
+  example: []
+  syntax:
+    content: public static List<string> GetMethodNames(object instance)
+    parameters:
+    - id: instance
+      type: System.Object
+      description: The instance.
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: The method names.
+    content.vb: Public Shared Function GetMethodNames(instance As Object) As List(Of String)
+  overload: Harmony.AccessTools.GetMethodNames*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.DeclaredConstructor(System.Type,System.Type[])
+  commentId: M:Harmony.AccessTools.DeclaredConstructor(System.Type,System.Type[])
+  id: DeclaredConstructor(System.Type,System.Type[])
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: DeclaredConstructor(Type, Type[])
+  nameWithType: AccessTools.DeclaredConstructor(Type, Type[])
+  fullName: Harmony.AccessTools.DeclaredConstructor(System.Type, System.Type[])
+  type: Method
+  source:
+    id: DeclaredConstructor
+    path: ''
+    startLine: 2287
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Declared constructor.
+  example: []
+  syntax:
+    content: public static ConstructorInfo DeclaredConstructor(Type type, Type[] parameters = null)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: parameters
+      type: System.Type[]
+      description: (Optional) Options for controlling the operation.
+    return:
+      type: ConstructorInfo
+      description: A ConstructorInfo.
+    content.vb: Public Shared Function DeclaredConstructor(type As Type, parameters As Type() = Nothing) As ConstructorInfo
+  overload: Harmony.AccessTools.DeclaredConstructor*
+  nameWithType.vb: AccessTools.DeclaredConstructor(Type, Type())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.DeclaredConstructor(System.Type, System.Type())
+  name.vb: DeclaredConstructor(Type, Type())
+- uid: Harmony.AccessTools.Constructor(System.Type,System.Type[])
+  commentId: M:Harmony.AccessTools.Constructor(System.Type,System.Type[])
+  id: Constructor(System.Type,System.Type[])
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: Constructor(Type, Type[])
+  nameWithType: AccessTools.Constructor(Type, Type[])
+  fullName: Harmony.AccessTools.Constructor(System.Type, System.Type[])
+  type: Method
+  source:
+    id: Constructor
+    path: ''
+    startLine: 2299
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructors.
+  example: []
+  syntax:
+    content: public static ConstructorInfo Constructor(Type type, Type[] parameters = null)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: parameters
+      type: System.Type[]
+      description: (Optional) Options for controlling the operation.
+    return:
+      type: ConstructorInfo
+      description: A ConstructorInfo.
+    content.vb: Public Shared Function Constructor(type As Type, parameters As Type() = Nothing) As ConstructorInfo
+  overload: Harmony.AccessTools.Constructor*
+  nameWithType.vb: AccessTools.Constructor(Type, Type())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.Constructor(System.Type, System.Type())
+  name.vb: Constructor(Type, Type())
+- uid: Harmony.AccessTools.GetDeclaredConstructors(System.Type)
+  commentId: M:Harmony.AccessTools.GetDeclaredConstructors(System.Type)
+  id: GetDeclaredConstructors(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetDeclaredConstructors(Type)
+  nameWithType: AccessTools.GetDeclaredConstructors(Type)
+  fullName: Harmony.AccessTools.GetDeclaredConstructors(System.Type)
+  type: Method
+  source:
+    id: GetDeclaredConstructors
+    path: ''
+    startLine: 2310
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets declared constructors.
+  example: []
+  syntax:
+    content: public static List<ConstructorInfo> GetDeclaredConstructors(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Collections.Generic.List{ConstructorInfo}
+      description: The declared constructors.
+    content.vb: Public Shared Function GetDeclaredConstructors(type As Type) As List(Of ConstructorInfo)
+  overload: Harmony.AccessTools.GetDeclaredConstructors*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetDeclaredMethods(System.Type)
+  commentId: M:Harmony.AccessTools.GetDeclaredMethods(System.Type)
+  id: GetDeclaredMethods(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetDeclaredMethods(Type)
+  nameWithType: AccessTools.GetDeclaredMethods(Type)
+  fullName: Harmony.AccessTools.GetDeclaredMethods(System.Type)
+  type: Method
+  source:
+    id: GetDeclaredMethods
+    path: ''
+    startLine: 2319
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets declared methods.
+  example: []
+  syntax:
+    content: public static List<MethodInfo> GetDeclaredMethods(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Collections.Generic.List{MethodInfo}
+      description: The declared methods.
+    content.vb: Public Shared Function GetDeclaredMethods(type As Type) As List(Of MethodInfo)
+  overload: Harmony.AccessTools.GetDeclaredMethods*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetDeclaredProperties(System.Type)
+  commentId: M:Harmony.AccessTools.GetDeclaredProperties(System.Type)
+  id: GetDeclaredProperties(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetDeclaredProperties(Type)
+  nameWithType: AccessTools.GetDeclaredProperties(Type)
+  fullName: Harmony.AccessTools.GetDeclaredProperties(System.Type)
+  type: Method
+  source:
+    id: GetDeclaredProperties
+    path: ''
+    startLine: 2328
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets declared properties.
+  example: []
+  syntax:
+    content: public static List<PropertyInfo> GetDeclaredProperties(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Collections.Generic.List{PropertyInfo}
+      description: The declared properties.
+    content.vb: Public Shared Function GetDeclaredProperties(type As Type) As List(Of PropertyInfo)
+  overload: Harmony.AccessTools.GetDeclaredProperties*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetDeclaredFields(System.Type)
+  commentId: M:Harmony.AccessTools.GetDeclaredFields(System.Type)
+  id: GetDeclaredFields(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetDeclaredFields(Type)
+  nameWithType: AccessTools.GetDeclaredFields(Type)
+  fullName: Harmony.AccessTools.GetDeclaredFields(System.Type)
+  type: Method
+  source:
+    id: GetDeclaredFields
+    path: ''
+    startLine: 2337
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets declared fields.
+  example: []
+  syntax:
+    content: public static List<FieldInfo> GetDeclaredFields(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Collections.Generic.List{FieldInfo}
+      description: The declared fields.
+    content.vb: Public Shared Function GetDeclaredFields(type As Type) As List(Of FieldInfo)
+  overload: Harmony.AccessTools.GetDeclaredFields*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetReturnedType(MethodBase)
+  commentId: M:Harmony.AccessTools.GetReturnedType(MethodBase)
+  id: GetReturnedType(MethodBase)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetReturnedType(MethodBase)
+  nameWithType: AccessTools.GetReturnedType(MethodBase)
+  fullName: Harmony.AccessTools.GetReturnedType(MethodBase)
+  type: Method
+  source:
+    id: GetReturnedType
+    path: ''
+    startLine: 2346
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets returned type.
+  example: []
+  syntax:
+    content: public static Type GetReturnedType(MethodBase method)
+    parameters:
+    - id: method
+      type: MethodBase
+      description: The method.
+    return:
+      type: System.Type
+      description: The returned type.
+    content.vb: Public Shared Function GetReturnedType(method As MethodBase) As Type
+  overload: Harmony.AccessTools.GetReturnedType*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.Inner(System.Type,System.String)
+  commentId: M:Harmony.AccessTools.Inner(System.Type,System.String)
+  id: Inner(System.Type,System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: Inner(Type, String)
+  nameWithType: AccessTools.Inner(Type, String)
+  fullName: Harmony.AccessTools.Inner(System.Type, System.String)
+  type: Method
+  source:
+    id: Inner
+    path: ''
+    startLine: 2358
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Inners.
+  example: []
+  syntax:
+    content: public static Type Inner(Type type, string name)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: name
+      type: System.String
+      description: The name.
+    return:
+      type: System.Type
+      description: A Type.
+    content.vb: Public Shared Function Inner(type As Type, name As String) As Type
+  overload: Harmony.AccessTools.Inner*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  commentId: M:Harmony.AccessTools.FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  id: FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FirstInner(Type, Func<Type, Boolean>)
+  nameWithType: AccessTools.FirstInner(Type, Func<Type, Boolean>)
+  fullName: Harmony.AccessTools.FirstInner(System.Type, System.Func<System.Type, System.Boolean>)
+  type: Method
+  source:
+    id: FirstInner
+    path: ''
+    startLine: 2369
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: First inner.
+  example: []
+  syntax:
+    content: public static Type FirstInner(Type type, Func<Type, bool> predicate)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: predicate
+      type: System.Func{System.Type,System.Boolean}
+      description: The predicate.
+    return:
+      type: System.Type
+      description: A Type.
+    content.vb: Public Shared Function FirstInner(type As Type, predicate As Func(Of Type, Boolean)) As Type
+  overload: Harmony.AccessTools.FirstInner*
+  nameWithType.vb: AccessTools.FirstInner(Type, Func(Of Type, Boolean))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FirstInner(System.Type, System.Func(Of System.Type, System.Boolean))
+  name.vb: FirstInner(Type, Func(Of Type, Boolean))
+- uid: Harmony.AccessTools.FirstMethod(System.Type,System.Func{MethodInfo,System.Boolean})
+  commentId: M:Harmony.AccessTools.FirstMethod(System.Type,System.Func{MethodInfo,System.Boolean})
+  id: FirstMethod(System.Type,System.Func{MethodInfo,System.Boolean})
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FirstMethod(Type, Func<MethodInfo, Boolean>)
+  nameWithType: AccessTools.FirstMethod(Type, Func<MethodInfo, Boolean>)
+  fullName: Harmony.AccessTools.FirstMethod(System.Type, System.Func<MethodInfo, System.Boolean>)
+  type: Method
+  source:
+    id: FirstMethod
+    path: ''
+    startLine: 2380
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: First method.
+  example: []
+  syntax:
+    content: public static MethodInfo FirstMethod(Type type, Func<MethodInfo, bool> predicate)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: predicate
+      type: System.Func{MethodInfo,System.Boolean}
+      description: The predicate.
+    return:
+      type: MethodInfo
+      description: A MethodInfo.
+    content.vb: Public Shared Function FirstMethod(type As Type, predicate As Func(Of MethodInfo, Boolean)) As MethodInfo
+  overload: Harmony.AccessTools.FirstMethod*
+  nameWithType.vb: AccessTools.FirstMethod(Type, Func(Of MethodInfo, Boolean))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FirstMethod(System.Type, System.Func(Of MethodInfo, System.Boolean))
+  name.vb: FirstMethod(Type, Func(Of MethodInfo, Boolean))
+- uid: Harmony.AccessTools.FirstConstructor(System.Type,System.Func{ConstructorInfo,System.Boolean})
+  commentId: M:Harmony.AccessTools.FirstConstructor(System.Type,System.Func{ConstructorInfo,System.Boolean})
+  id: FirstConstructor(System.Type,System.Func{ConstructorInfo,System.Boolean})
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FirstConstructor(Type, Func<ConstructorInfo, Boolean>)
+  nameWithType: AccessTools.FirstConstructor(Type, Func<ConstructorInfo, Boolean>)
+  fullName: Harmony.AccessTools.FirstConstructor(System.Type, System.Func<ConstructorInfo, System.Boolean>)
+  type: Method
+  source:
+    id: FirstConstructor
+    path: ''
+    startLine: 2391
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: First constructor.
+  example: []
+  syntax:
+    content: public static ConstructorInfo FirstConstructor(Type type, Func<ConstructorInfo, bool> predicate)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: predicate
+      type: System.Func{ConstructorInfo,System.Boolean}
+      description: The predicate.
+    return:
+      type: ConstructorInfo
+      description: A ConstructorInfo.
+    content.vb: Public Shared Function FirstConstructor(type As Type, predicate As Func(Of ConstructorInfo, Boolean)) As ConstructorInfo
+  overload: Harmony.AccessTools.FirstConstructor*
+  nameWithType.vb: AccessTools.FirstConstructor(Type, Func(Of ConstructorInfo, Boolean))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FirstConstructor(System.Type, System.Func(Of ConstructorInfo, System.Boolean))
+  name.vb: FirstConstructor(Type, Func(Of ConstructorInfo, Boolean))
+- uid: Harmony.AccessTools.FirstProperty(System.Type,System.Func{PropertyInfo,System.Boolean})
+  commentId: M:Harmony.AccessTools.FirstProperty(System.Type,System.Func{PropertyInfo,System.Boolean})
+  id: FirstProperty(System.Type,System.Func{PropertyInfo,System.Boolean})
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FirstProperty(Type, Func<PropertyInfo, Boolean>)
+  nameWithType: AccessTools.FirstProperty(Type, Func<PropertyInfo, Boolean>)
+  fullName: Harmony.AccessTools.FirstProperty(System.Type, System.Func<PropertyInfo, System.Boolean>)
+  type: Method
+  source:
+    id: FirstProperty
+    path: ''
+    startLine: 2402
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: First property.
+  example: []
+  syntax:
+    content: public static PropertyInfo FirstProperty(Type type, Func<PropertyInfo, bool> predicate)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: predicate
+      type: System.Func{PropertyInfo,System.Boolean}
+      description: The predicate.
+    return:
+      type: PropertyInfo
+      description: A PropertyInfo.
+    content.vb: Public Shared Function FirstProperty(type As Type, predicate As Func(Of PropertyInfo, Boolean)) As PropertyInfo
+  overload: Harmony.AccessTools.FirstProperty*
+  nameWithType.vb: AccessTools.FirstProperty(Type, Func(Of PropertyInfo, Boolean))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FirstProperty(System.Type, System.Func(Of PropertyInfo, System.Boolean))
+  name.vb: FirstProperty(Type, Func(Of PropertyInfo, Boolean))
+- uid: Harmony.AccessTools.GetTypes(System.Object[])
+  commentId: M:Harmony.AccessTools.GetTypes(System.Object[])
+  id: GetTypes(System.Object[])
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetTypes(Object[])
+  nameWithType: AccessTools.GetTypes(Object[])
+  fullName: Harmony.AccessTools.GetTypes(System.Object[])
+  type: Method
+  source:
+    id: GetTypes
+    path: ''
+    startLine: 2412
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets the types.
+  example: []
+  syntax:
+    content: public static Type[] GetTypes(object[] parameters)
+    parameters:
+    - id: parameters
+      type: System.Object[]
+      description: Options for controlling the operation.
+    return:
+      type: System.Type[]
+      description: An array of type.
+    content.vb: Public Shared Function GetTypes(parameters As Object()) As Type()
+  overload: Harmony.AccessTools.GetTypes*
+  nameWithType.vb: AccessTools.GetTypes(Object())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.GetTypes(System.Object())
+  name.vb: GetTypes(Object())
+- uid: Harmony.AccessTools.GetFieldNames(System.Type)
+  commentId: M:Harmony.AccessTools.GetFieldNames(System.Type)
+  id: GetFieldNames(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetFieldNames(Type)
+  nameWithType: AccessTools.GetFieldNames(Type)
+  fullName: Harmony.AccessTools.GetFieldNames(System.Type)
+  type: Method
+  source:
+    id: GetFieldNames
+    path: ''
+    startLine: 2422
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets field names.
+  example: []
+  syntax:
+    content: public static List<string> GetFieldNames(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: The field names.
+    content.vb: Public Shared Function GetFieldNames(type As Type) As List(Of String)
+  overload: Harmony.AccessTools.GetFieldNames*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetFieldNames(System.Object)
+  commentId: M:Harmony.AccessTools.GetFieldNames(System.Object)
+  id: GetFieldNames(System.Object)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetFieldNames(Object)
+  nameWithType: AccessTools.GetFieldNames(Object)
+  fullName: Harmony.AccessTools.GetFieldNames(System.Object)
+  type: Method
+  source:
+    id: GetFieldNames
+    path: ''
+    startLine: 2432
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets field names.
+  example: []
+  syntax:
+    content: public static List<string> GetFieldNames(object instance)
+    parameters:
+    - id: instance
+      type: System.Object
+      description: The instance.
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: The field names.
+    content.vb: Public Shared Function GetFieldNames(instance As Object) As List(Of String)
+  overload: Harmony.AccessTools.GetFieldNames*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetPropertyNames(System.Type)
+  commentId: M:Harmony.AccessTools.GetPropertyNames(System.Type)
+  id: GetPropertyNames(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetPropertyNames(Type)
+  nameWithType: AccessTools.GetPropertyNames(Type)
+  fullName: Harmony.AccessTools.GetPropertyNames(System.Type)
+  type: Method
+  source:
+    id: GetPropertyNames
+    path: ''
+    startLine: 2442
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets property names.
+  example: []
+  syntax:
+    content: public static List<string> GetPropertyNames(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: The property names.
+    content.vb: Public Shared Function GetPropertyNames(type As Type) As List(Of String)
+  overload: Harmony.AccessTools.GetPropertyNames*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.GetPropertyNames(System.Object)
+  commentId: M:Harmony.AccessTools.GetPropertyNames(System.Object)
+  id: GetPropertyNames(System.Object)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetPropertyNames(Object)
+  nameWithType: AccessTools.GetPropertyNames(Object)
+  fullName: Harmony.AccessTools.GetPropertyNames(System.Object)
+  type: Method
+  source:
+    id: GetPropertyNames
+    path: ''
+    startLine: 2452
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets property names.
+  example: []
+  syntax:
+    content: public static List<string> GetPropertyNames(object instance)
+    parameters:
+    - id: instance
+      type: System.Object
+      description: The instance.
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: The property names.
+    content.vb: Public Shared Function GetPropertyNames(instance As Object) As List(Of String)
+  overload: Harmony.AccessTools.GetPropertyNames*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.FieldRefAccess``2(System.String)
+  commentId: M:Harmony.AccessTools.FieldRefAccess``2(System.String)
+  id: FieldRefAccess``2(System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FieldRefAccess<T, U>(String)
+  nameWithType: AccessTools.FieldRefAccess<T, U>(String)
+  fullName: Harmony.AccessTools.FieldRefAccess<T, U>(System.String)
+  type: Method
+  source:
+    id: FieldRefAccess
+    path: ''
+    startLine: 2473
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Field reference access.
+  example: []
+  syntax:
+    content: public static AccessTools.FieldRef<T, U> FieldRefAccess<T, U>(string fieldName)
+    parameters:
+    - id: fieldName
+      type: System.String
+      description: Name of the field.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    - id: U
+      description: Generic type parameter.
+    return:
+      type: Harmony.AccessTools.FieldRef{{T},{U}}
+      description: A ref U.
+    content.vb: Public Shared Function FieldRefAccess(Of T, U)(fieldName As String) As AccessTools.FieldRef(Of T, U)
+  overload: Harmony.AccessTools.FieldRefAccess*
+  exceptions:
+  - type: System.MissingFieldException
+    commentId: T:System.MissingFieldException
+    description: Thrown when a Missing Field error condition occurs.
+  nameWithType.vb: AccessTools.FieldRefAccess(Of T, U)(String)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FieldRefAccess(Of T, U)(System.String)
+  name.vb: FieldRefAccess(Of T, U)(String)
+- uid: Harmony.AccessTools.FieldRefAccess``2(``0,System.String)
+  commentId: M:Harmony.AccessTools.FieldRefAccess``2(``0,System.String)
+  id: FieldRefAccess``2(``0,System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: FieldRefAccess<T, U>(T, String)
+  nameWithType: AccessTools.FieldRefAccess<T, U>(T, String)
+  fullName: Harmony.AccessTools.FieldRefAccess<T, U>(T, System.String)
+  type: Method
+  source:
+    id: FieldRefAccess
+    path: ''
+    startLine: 2508
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Field reference access.
+  example: []
+  syntax:
+    content: public static U FieldRefAccess<T, U>(T instance, string fieldName)
+    parameters:
+    - id: instance
+      type: '{T}'
+      description: The instance.
+    - id: fieldName
+      type: System.String
+      description: Name of the field.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    - id: U
+      description: Generic type parameter.
+    return:
+      type: '{U}'
+      description: A ref U.
+    content.vb: Public Shared Function FieldRefAccess(Of T, U)(instance As T, fieldName As String) As U
+  overload: Harmony.AccessTools.FieldRefAccess*
+  nameWithType.vb: AccessTools.FieldRefAccess(Of T, U)(T, String)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.FieldRefAccess(Of T, U)(T, System.String)
+  name.vb: FieldRefAccess(Of T, U)(T, String)
+- uid: Harmony.AccessTools.ThrowMissingMemberException(System.Type,System.String[])
+  commentId: M:Harmony.AccessTools.ThrowMissingMemberException(System.Type,System.String[])
+  id: ThrowMissingMemberException(System.Type,System.String[])
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: ThrowMissingMemberException(Type, String[])
+  nameWithType: AccessTools.ThrowMissingMemberException(Type, String[])
+  fullName: Harmony.AccessTools.ThrowMissingMemberException(System.Type, System.String[])
+  type: Method
+  source:
+    id: ThrowMissingMemberException
+    path: ''
+    startLine: 2518
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Throw missing member exception.
+  example: []
+  syntax:
+    content: public static void ThrowMissingMemberException(Type type, params string[] names)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: names
+      type: System.String[]
+      description: A variable-length parameters list containing names.
+    content.vb: Public Shared Sub ThrowMissingMemberException(type As Type, ParamArray names As String())
+  overload: Harmony.AccessTools.ThrowMissingMemberException*
+  exceptions:
+  - type: System.MissingMemberException
+    commentId: T:System.MissingMemberException
+    description: Thrown when a Missing Member error condition occurs.
+  nameWithType.vb: AccessTools.ThrowMissingMemberException(Type, String())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.ThrowMissingMemberException(System.Type, System.String())
+  name.vb: ThrowMissingMemberException(Type, String())
+- uid: Harmony.AccessTools.GetDefaultValue(System.Type)
+  commentId: M:Harmony.AccessTools.GetDefaultValue(System.Type)
+  id: GetDefaultValue(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: GetDefaultValue(Type)
+  nameWithType: AccessTools.GetDefaultValue(Type)
+  fullName: Harmony.AccessTools.GetDefaultValue(System.Type)
+  type: Method
+  source:
+    id: GetDefaultValue
+    path: ''
+    startLine: 2529
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets default value.
+  example: []
+  syntax:
+    content: public static object GetDefaultValue(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Object
+      description: The default value.
+    content.vb: Public Shared Function GetDefaultValue(type As Type) As Object
+  overload: Harmony.AccessTools.GetDefaultValue*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.CreateInstance(System.Type)
+  commentId: M:Harmony.AccessTools.CreateInstance(System.Type)
+  id: CreateInstance(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: CreateInstance(Type)
+  nameWithType: AccessTools.CreateInstance(Type)
+  fullName: Harmony.AccessTools.CreateInstance(System.Type)
+  type: Method
+  source:
+    id: CreateInstance
+    path: ''
+    startLine: 2543
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Creates an instance.
+  example: []
+  syntax:
+    content: public static object CreateInstance(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Object
+      description: The new instance.
+    content.vb: Public Shared Function CreateInstance(type As Type) As Object
+  overload: Harmony.AccessTools.CreateInstance*
+  exceptions:
+  - type: System.NullReferenceException
+    commentId: T:System.NullReferenceException
+    description: Thrown when a value was unexpectedly null.
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.MakeDeepCopy(System.Object,System.Type,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  commentId: M:Harmony.AccessTools.MakeDeepCopy(System.Object,System.Type,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  id: MakeDeepCopy(System.Object,System.Type,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: MakeDeepCopy(Object, Type, Func<String, Traverse, Traverse, Object>, String)
+  nameWithType: AccessTools.MakeDeepCopy(Object, Type, Func<String, Traverse, Traverse, Object>, String)
+  fullName: Harmony.AccessTools.MakeDeepCopy(System.Object, System.Type, System.Func<System.String, Harmony.Traverse, Harmony.Traverse, System.Object>, System.String)
+  type: Method
+  source:
+    id: MakeDeepCopy
+    path: ''
+    startLine: 2560
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Makes deep copy.
+  example: []
+  syntax:
+    content: public static object MakeDeepCopy(object source, Type resultType, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
+    parameters:
+    - id: source
+      type: System.Object
+      description: Source for the.
+    - id: resultType
+      type: System.Type
+      description: Type of the result.
+    - id: processor
+      type: System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object}
+      description: (Optional) The processor.
+    - id: pathRoot
+      type: System.String
+      description: (Optional) The path root.
+    return:
+      type: System.Object
+      description: An object.
+    content.vb: Public Shared Function MakeDeepCopy(source As Object, resultType As Type, processor As Func(Of String, Traverse, Traverse, Object) = Nothing, pathRoot As String = "") As Object
+  overload: Harmony.AccessTools.MakeDeepCopy*
+  nameWithType.vb: AccessTools.MakeDeepCopy(Object, Type, Func(Of String, Traverse, Traverse, Object), String)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.MakeDeepCopy(System.Object, System.Type, System.Func(Of System.String, Harmony.Traverse, Harmony.Traverse, System.Object), System.String)
+  name.vb: MakeDeepCopy(Object, Type, Func(Of String, Traverse, Traverse, Object), String)
+- uid: Harmony.AccessTools.MakeDeepCopy``1(System.Object,``0@,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  commentId: M:Harmony.AccessTools.MakeDeepCopy``1(System.Object,``0@,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  id: MakeDeepCopy``1(System.Object,``0@,System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object},System.String)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: MakeDeepCopy<T>(Object, out T, Func<String, Traverse, Traverse, Object>, String)
+  nameWithType: AccessTools.MakeDeepCopy<T>(Object, out T, Func<String, Traverse, Traverse, Object>, String)
+  fullName: Harmony.AccessTools.MakeDeepCopy<T>(System.Object, out T, System.Func<System.String, Harmony.Traverse, Harmony.Traverse, System.Object>, System.String)
+  type: Method
+  source:
+    id: MakeDeepCopy
+    path: ''
+    startLine: 2632
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Makes deep copy.
+  example: []
+  syntax:
+    content: public static void MakeDeepCopy<T>(object source, out T result, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
+    parameters:
+    - id: source
+      type: System.Object
+      description: Source for the.
+    - id: result
+      type: '{T}'
+      description: '[out] The result.'
+    - id: processor
+      type: System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object}
+      description: (Optional) The processor.
+    - id: pathRoot
+      type: System.String
+      description: (Optional) The path root.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    content.vb: Public Shared Sub MakeDeepCopy(Of T)(source As Object, ByRef result As T, processor As Func(Of String, Traverse, Traverse, Object) = Nothing, pathRoot As String = "")
+  overload: Harmony.AccessTools.MakeDeepCopy*
+  nameWithType.vb: AccessTools.MakeDeepCopy(Of T)(Object, ByRef T, Func(Of String, Traverse, Traverse, Object), String)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.AccessTools.MakeDeepCopy(Of T)(System.Object, ByRef T, System.Func(Of System.String, Harmony.Traverse, Harmony.Traverse, System.Object), System.String)
+  name.vb: MakeDeepCopy(Of T)(Object, ByRef T, Func(Of String, Traverse, Traverse, Object), String)
+- uid: Harmony.AccessTools.IsStruct(System.Type)
+  commentId: M:Harmony.AccessTools.IsStruct(System.Type)
+  id: IsStruct(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: IsStruct(Type)
+  nameWithType: AccessTools.IsStruct(Type)
+  fullName: Harmony.AccessTools.IsStruct(System.Type)
+  type: Method
+  source:
+    id: IsStruct
+    path: ''
+    startLine: 2641
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Query if &apos;type&apos; is structure.
+  example: []
+  syntax:
+    content: public static bool IsStruct(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Boolean
+      description: True if structure, false if not.
+    content.vb: Public Shared Function IsStruct(type As Type) As Boolean
+  overload: Harmony.AccessTools.IsStruct*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.IsClass(System.Type)
+  commentId: M:Harmony.AccessTools.IsClass(System.Type)
+  id: IsClass(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: IsClass(Type)
+  nameWithType: AccessTools.IsClass(Type)
+  fullName: Harmony.AccessTools.IsClass(System.Type)
+  type: Method
+  source:
+    id: IsClass
+    path: ''
+    startLine: 2650
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Query if &apos;type&apos; is class.
+  example: []
+  syntax:
+    content: public static bool IsClass(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Boolean
+      description: True if class, false if not.
+    content.vb: Public Shared Function IsClass(type As Type) As Boolean
+  overload: Harmony.AccessTools.IsClass*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.IsValue(System.Type)
+  commentId: M:Harmony.AccessTools.IsValue(System.Type)
+  id: IsValue(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: IsValue(Type)
+  nameWithType: AccessTools.IsValue(Type)
+  fullName: Harmony.AccessTools.IsValue(System.Type)
+  type: Method
+  source:
+    id: IsValue
+    path: ''
+    startLine: 2659
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Query if &apos;type&apos; is value.
+  example: []
+  syntax:
+    content: public static bool IsValue(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Boolean
+      description: True if value, false if not.
+    content.vb: Public Shared Function IsValue(type As Type) As Boolean
+  overload: Harmony.AccessTools.IsValue*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.AccessTools.IsVoid(System.Type)
+  commentId: M:Harmony.AccessTools.IsVoid(System.Type)
+  id: IsVoid(System.Type)
+  parent: Harmony.AccessTools
+  langs:
+  - csharp
+  - vb
+  name: IsVoid(Type)
+  nameWithType: AccessTools.IsVoid(Type)
+  fullName: Harmony.AccessTools.IsVoid(System.Type)
+  type: Method
+  source:
+    id: IsVoid
+    path: ''
+    startLine: 2668
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Query if &apos;type&apos; is void.
+  example: []
+  syntax:
+    content: public static bool IsVoid(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: System.Boolean
+      description: True if void, false if not.
+    content.vb: Public Shared Function IsVoid(type As Type) As Boolean
+  overload: Harmony.AccessTools.IsVoid*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: BindingFlags
+  commentId: '!:BindingFlags'
+  isExternal: true
+  name: BindingFlags
+  nameWithType: BindingFlags
+  fullName: BindingFlags
+- uid: Harmony.AccessTools.TypeByName*
+  commentId: Overload:Harmony.AccessTools.TypeByName
+  name: TypeByName
+  nameWithType: AccessTools.TypeByName
+  fullName: Harmony.AccessTools.TypeByName
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Type
+  commentId: T:System.Type
+  parent: System
+  isExternal: true
+  name: Type
+  nameWithType: Type
+  fullName: System.Type
+- uid: Harmony.AccessTools.FindIncludingBaseTypes*
+  commentId: Overload:Harmony.AccessTools.FindIncludingBaseTypes
+  name: FindIncludingBaseTypes
+  nameWithType: AccessTools.FindIncludingBaseTypes
+  fullName: Harmony.AccessTools.FindIncludingBaseTypes
+- uid: System.Func{System.Type,{T}}
+  commentId: T:System.Func{System.Type,``0}
+  parent: System
+  definition: System.Func`2
+  name: Func<Type, T>
+  nameWithType: Func<Type, T>
+  fullName: System.Func<System.Type, T>
+  nameWithType.vb: Func(Of Type, T)
+  fullName.vb: System.Func(Of System.Type, T)
+  name.vb: Func(Of Type, T)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: System.Func`2
+  commentId: T:System.Func`2
+  isExternal: true
+  name: Func<T, TResult>
+  nameWithType: Func<T, TResult>
+  fullName: System.Func<T, TResult>
+  nameWithType.vb: Func(Of T, TResult)
+  fullName.vb: System.Func(Of T, TResult)
+  name.vb: Func(Of T, TResult)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: Harmony.AccessTools.FindIncludingInnerTypes*
+  commentId: Overload:Harmony.AccessTools.FindIncludingInnerTypes
+  name: FindIncludingInnerTypes
+  nameWithType: AccessTools.FindIncludingInnerTypes
+  fullName: Harmony.AccessTools.FindIncludingInnerTypes
+- uid: Harmony.AccessTools.Field*
+  commentId: Overload:Harmony.AccessTools.Field
+  name: Field
+  nameWithType: AccessTools.Field
+  fullName: Harmony.AccessTools.Field
+- uid: FieldInfo
+  isExternal: true
+  name: FieldInfo
+  nameWithType: FieldInfo
+  fullName: FieldInfo
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: Harmony.AccessTools.DeclaredProperty*
+  commentId: Overload:Harmony.AccessTools.DeclaredProperty
+  name: DeclaredProperty
+  nameWithType: AccessTools.DeclaredProperty
+  fullName: Harmony.AccessTools.DeclaredProperty
+- uid: PropertyInfo
+  isExternal: true
+  name: PropertyInfo
+  nameWithType: PropertyInfo
+  fullName: PropertyInfo
+- uid: Harmony.AccessTools.Property*
+  commentId: Overload:Harmony.AccessTools.Property
+  name: Property
+  nameWithType: AccessTools.Property
+  fullName: Harmony.AccessTools.Property
+- uid: Harmony.AccessTools.DeclaredMethod*
+  commentId: Overload:Harmony.AccessTools.DeclaredMethod
+  name: DeclaredMethod
+  nameWithType: AccessTools.DeclaredMethod
+  fullName: Harmony.AccessTools.DeclaredMethod
+- uid: System.Type[]
+  isExternal: true
+  name: Type[]
+  nameWithType: Type[]
+  fullName: System.Type[]
+  nameWithType.vb: Type()
+  fullName.vb: System.Type()
+  name.vb: Type()
+  spec.csharp:
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: MethodInfo
+  isExternal: true
+  name: MethodInfo
+  nameWithType: MethodInfo
+  fullName: MethodInfo
+- uid: Harmony.AccessTools.Method*
+  commentId: Overload:Harmony.AccessTools.Method
+  name: Method
+  nameWithType: AccessTools.Method
+  fullName: Harmony.AccessTools.Method
+- uid: System.ArgumentException
+  commentId: T:System.ArgumentException
+  isExternal: true
+- uid: Harmony.AccessTools.GetMethodNames*
+  commentId: Overload:Harmony.AccessTools.GetMethodNames
+  name: GetMethodNames
+  nameWithType: AccessTools.GetMethodNames
+  fullName: Harmony.AccessTools.GetMethodNames
+- uid: System.Collections.Generic.List{System.String}
+  commentId: T:System.Collections.Generic.List{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<String>
+  nameWithType: List<String>
+  fullName: System.Collections.Generic.List<System.String>
+  nameWithType.vb: List(Of String)
+  fullName.vb: System.Collections.Generic.List(Of System.String)
+  name.vb: List(Of String)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: Harmony.AccessTools.DeclaredConstructor*
+  commentId: Overload:Harmony.AccessTools.DeclaredConstructor
+  name: DeclaredConstructor
+  nameWithType: AccessTools.DeclaredConstructor
+  fullName: Harmony.AccessTools.DeclaredConstructor
+- uid: ConstructorInfo
+  isExternal: true
+  name: ConstructorInfo
+  nameWithType: ConstructorInfo
+  fullName: ConstructorInfo
+- uid: Harmony.AccessTools.Constructor*
+  commentId: Overload:Harmony.AccessTools.Constructor
+  name: Constructor
+  nameWithType: AccessTools.Constructor
+  fullName: Harmony.AccessTools.Constructor
+- uid: Harmony.AccessTools.GetDeclaredConstructors*
+  commentId: Overload:Harmony.AccessTools.GetDeclaredConstructors
+  name: GetDeclaredConstructors
+  nameWithType: AccessTools.GetDeclaredConstructors
+  fullName: Harmony.AccessTools.GetDeclaredConstructors
+- uid: System.Collections.Generic.List{ConstructorInfo}
+  commentId: T:System.Collections.Generic.List{ConstructorInfo}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<ConstructorInfo>
+  nameWithType: List<ConstructorInfo>
+  fullName: System.Collections.Generic.List<ConstructorInfo>
+  nameWithType.vb: List(Of ConstructorInfo)
+  fullName.vb: System.Collections.Generic.List(Of ConstructorInfo)
+  name.vb: List(Of ConstructorInfo)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ConstructorInfo
+    name: ConstructorInfo
+    nameWithType: ConstructorInfo
+    fullName: ConstructorInfo
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ConstructorInfo
+    name: ConstructorInfo
+    nameWithType: ConstructorInfo
+    fullName: ConstructorInfo
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.GetDeclaredMethods*
+  commentId: Overload:Harmony.AccessTools.GetDeclaredMethods
+  name: GetDeclaredMethods
+  nameWithType: AccessTools.GetDeclaredMethods
+  fullName: Harmony.AccessTools.GetDeclaredMethods
+- uid: System.Collections.Generic.List{MethodInfo}
+  commentId: T:System.Collections.Generic.List{MethodInfo}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<MethodInfo>
+  nameWithType: List<MethodInfo>
+  fullName: System.Collections.Generic.List<MethodInfo>
+  nameWithType.vb: List(Of MethodInfo)
+  fullName.vb: System.Collections.Generic.List(Of MethodInfo)
+  name.vb: List(Of MethodInfo)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: MethodInfo
+    name: MethodInfo
+    nameWithType: MethodInfo
+    fullName: MethodInfo
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: MethodInfo
+    name: MethodInfo
+    nameWithType: MethodInfo
+    fullName: MethodInfo
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.GetDeclaredProperties*
+  commentId: Overload:Harmony.AccessTools.GetDeclaredProperties
+  name: GetDeclaredProperties
+  nameWithType: AccessTools.GetDeclaredProperties
+  fullName: Harmony.AccessTools.GetDeclaredProperties
+- uid: System.Collections.Generic.List{PropertyInfo}
+  commentId: T:System.Collections.Generic.List{PropertyInfo}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<PropertyInfo>
+  nameWithType: List<PropertyInfo>
+  fullName: System.Collections.Generic.List<PropertyInfo>
+  nameWithType.vb: List(Of PropertyInfo)
+  fullName.vb: System.Collections.Generic.List(Of PropertyInfo)
+  name.vb: List(Of PropertyInfo)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: PropertyInfo
+    name: PropertyInfo
+    nameWithType: PropertyInfo
+    fullName: PropertyInfo
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: PropertyInfo
+    name: PropertyInfo
+    nameWithType: PropertyInfo
+    fullName: PropertyInfo
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.GetDeclaredFields*
+  commentId: Overload:Harmony.AccessTools.GetDeclaredFields
+  name: GetDeclaredFields
+  nameWithType: AccessTools.GetDeclaredFields
+  fullName: Harmony.AccessTools.GetDeclaredFields
+- uid: System.Collections.Generic.List{FieldInfo}
+  commentId: T:System.Collections.Generic.List{FieldInfo}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<FieldInfo>
+  nameWithType: List<FieldInfo>
+  fullName: System.Collections.Generic.List<FieldInfo>
+  nameWithType.vb: List(Of FieldInfo)
+  fullName.vb: System.Collections.Generic.List(Of FieldInfo)
+  name.vb: List(Of FieldInfo)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: FieldInfo
+    name: FieldInfo
+    nameWithType: FieldInfo
+    fullName: FieldInfo
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: FieldInfo
+    name: FieldInfo
+    nameWithType: FieldInfo
+    fullName: FieldInfo
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.GetReturnedType*
+  commentId: Overload:Harmony.AccessTools.GetReturnedType
+  name: GetReturnedType
+  nameWithType: AccessTools.GetReturnedType
+  fullName: Harmony.AccessTools.GetReturnedType
+- uid: MethodBase
+  isExternal: true
+  name: MethodBase
+  nameWithType: MethodBase
+  fullName: MethodBase
+- uid: Harmony.AccessTools.Inner*
+  commentId: Overload:Harmony.AccessTools.Inner
+  name: Inner
+  nameWithType: AccessTools.Inner
+  fullName: Harmony.AccessTools.Inner
+- uid: Harmony.AccessTools.FirstInner*
+  commentId: Overload:Harmony.AccessTools.FirstInner
+  name: FirstInner
+  nameWithType: AccessTools.FirstInner
+  fullName: Harmony.AccessTools.FirstInner
+- uid: System.Func{System.Type,System.Boolean}
+  commentId: T:System.Func{System.Type,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  name: Func<Type, Boolean>
+  nameWithType: Func<Type, Boolean>
+  fullName: System.Func<System.Type, System.Boolean>
+  nameWithType.vb: Func(Of Type, Boolean)
+  fullName.vb: System.Func(Of System.Type, System.Boolean)
+  name.vb: Func(Of Type, Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.FirstMethod*
+  commentId: Overload:Harmony.AccessTools.FirstMethod
+  name: FirstMethod
+  nameWithType: AccessTools.FirstMethod
+  fullName: Harmony.AccessTools.FirstMethod
+- uid: System.Func{MethodInfo,System.Boolean}
+  commentId: T:System.Func{MethodInfo,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  name: Func<MethodInfo, Boolean>
+  nameWithType: Func<MethodInfo, Boolean>
+  fullName: System.Func<MethodInfo, System.Boolean>
+  nameWithType.vb: Func(Of MethodInfo, Boolean)
+  fullName.vb: System.Func(Of MethodInfo, System.Boolean)
+  name.vb: Func(Of MethodInfo, Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: MethodInfo
+    name: MethodInfo
+    nameWithType: MethodInfo
+    fullName: MethodInfo
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: MethodInfo
+    name: MethodInfo
+    nameWithType: MethodInfo
+    fullName: MethodInfo
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.FirstConstructor*
+  commentId: Overload:Harmony.AccessTools.FirstConstructor
+  name: FirstConstructor
+  nameWithType: AccessTools.FirstConstructor
+  fullName: Harmony.AccessTools.FirstConstructor
+- uid: System.Func{ConstructorInfo,System.Boolean}
+  commentId: T:System.Func{ConstructorInfo,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  name: Func<ConstructorInfo, Boolean>
+  nameWithType: Func<ConstructorInfo, Boolean>
+  fullName: System.Func<ConstructorInfo, System.Boolean>
+  nameWithType.vb: Func(Of ConstructorInfo, Boolean)
+  fullName.vb: System.Func(Of ConstructorInfo, System.Boolean)
+  name.vb: Func(Of ConstructorInfo, Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ConstructorInfo
+    name: ConstructorInfo
+    nameWithType: ConstructorInfo
+    fullName: ConstructorInfo
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ConstructorInfo
+    name: ConstructorInfo
+    nameWithType: ConstructorInfo
+    fullName: ConstructorInfo
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.FirstProperty*
+  commentId: Overload:Harmony.AccessTools.FirstProperty
+  name: FirstProperty
+  nameWithType: AccessTools.FirstProperty
+  fullName: Harmony.AccessTools.FirstProperty
+- uid: System.Func{PropertyInfo,System.Boolean}
+  commentId: T:System.Func{PropertyInfo,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  name: Func<PropertyInfo, Boolean>
+  nameWithType: Func<PropertyInfo, Boolean>
+  fullName: System.Func<PropertyInfo, System.Boolean>
+  nameWithType.vb: Func(Of PropertyInfo, Boolean)
+  fullName.vb: System.Func(Of PropertyInfo, System.Boolean)
+  name.vb: Func(Of PropertyInfo, Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: PropertyInfo
+    name: PropertyInfo
+    nameWithType: PropertyInfo
+    fullName: PropertyInfo
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: PropertyInfo
+    name: PropertyInfo
+    nameWithType: PropertyInfo
+    fullName: PropertyInfo
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.GetTypes*
+  commentId: Overload:Harmony.AccessTools.GetTypes
+  name: GetTypes
+  nameWithType: AccessTools.GetTypes
+  fullName: Harmony.AccessTools.GetTypes
+- uid: System.Object[]
+  isExternal: true
+  name: Object[]
+  nameWithType: Object[]
+  fullName: System.Object[]
+  nameWithType.vb: Object()
+  fullName.vb: System.Object()
+  name.vb: Object()
+  spec.csharp:
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: Harmony.AccessTools.GetFieldNames*
+  commentId: Overload:Harmony.AccessTools.GetFieldNames
+  name: GetFieldNames
+  nameWithType: AccessTools.GetFieldNames
+  fullName: Harmony.AccessTools.GetFieldNames
+- uid: Harmony.AccessTools.GetPropertyNames*
+  commentId: Overload:Harmony.AccessTools.GetPropertyNames
+  name: GetPropertyNames
+  nameWithType: AccessTools.GetPropertyNames
+  fullName: Harmony.AccessTools.GetPropertyNames
+- uid: System.MissingFieldException
+  commentId: T:System.MissingFieldException
+  isExternal: true
+- uid: Harmony.AccessTools.FieldRefAccess*
+  commentId: Overload:Harmony.AccessTools.FieldRefAccess
+  name: FieldRefAccess
+  nameWithType: AccessTools.FieldRefAccess
+  fullName: Harmony.AccessTools.FieldRefAccess
+- uid: Harmony.AccessTools.FieldRef{{T},{U}}
+  commentId: T:Harmony.AccessTools.FieldRef{``0,``1}
+  parent: Harmony
+  definition: Harmony.AccessTools.FieldRef`2
+  name: AccessTools.FieldRef<T, U>
+  nameWithType: AccessTools.FieldRef<T, U>
+  fullName: Harmony.AccessTools.FieldRef<T, U>
+  nameWithType.vb: AccessTools.FieldRef(Of T, U)
+  fullName.vb: Harmony.AccessTools.FieldRef(Of T, U)
+  name.vb: AccessTools.FieldRef(Of T, U)
+  spec.csharp:
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef
+    nameWithType: AccessTools.FieldRef
+    fullName: Harmony.AccessTools.FieldRef
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: U
+    nameWithType: U
+    fullName: U
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef
+    nameWithType: AccessTools.FieldRef
+    fullName: Harmony.AccessTools.FieldRef
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: U
+    nameWithType: U
+    fullName: U
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.FieldRef`2
+  commentId: T:Harmony.AccessTools.FieldRef`2
+  name: AccessTools.FieldRef<T, U>
+  nameWithType: AccessTools.FieldRef<T, U>
+  fullName: Harmony.AccessTools.FieldRef<T, U>
+  nameWithType.vb: AccessTools.FieldRef(Of T, U)
+  fullName.vb: Harmony.AccessTools.FieldRef(Of T, U)
+  name.vb: AccessTools.FieldRef(Of T, U)
+  spec.csharp:
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef
+    nameWithType: AccessTools.FieldRef
+    fullName: Harmony.AccessTools.FieldRef
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: U
+    nameWithType: U
+    fullName: U
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef
+    nameWithType: AccessTools.FieldRef
+    fullName: Harmony.AccessTools.FieldRef
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: U
+    nameWithType: U
+    fullName: U
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: '{U}'
+  commentId: '!:U'
+  definition: U
+  name: U
+  nameWithType: U
+  fullName: U
+- uid: U
+  name: U
+  nameWithType: U
+  fullName: U
+- uid: System.MissingMemberException
+  commentId: T:System.MissingMemberException
+  isExternal: true
+- uid: Harmony.AccessTools.ThrowMissingMemberException*
+  commentId: Overload:Harmony.AccessTools.ThrowMissingMemberException
+  name: ThrowMissingMemberException
+  nameWithType: AccessTools.ThrowMissingMemberException
+  fullName: Harmony.AccessTools.ThrowMissingMemberException
+- uid: System.String[]
+  isExternal: true
+  name: String[]
+  nameWithType: String[]
+  fullName: System.String[]
+  nameWithType.vb: String()
+  fullName.vb: System.String()
+  name.vb: String()
+  spec.csharp:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: Harmony.AccessTools.GetDefaultValue*
+  commentId: Overload:Harmony.AccessTools.GetDefaultValue
+  name: GetDefaultValue
+  nameWithType: AccessTools.GetDefaultValue
+  fullName: Harmony.AccessTools.GetDefaultValue
+- uid: System.NullReferenceException
+  commentId: T:System.NullReferenceException
+  isExternal: true
+- uid: Harmony.AccessTools.CreateInstance*
+  commentId: Overload:Harmony.AccessTools.CreateInstance
+  name: CreateInstance
+  nameWithType: AccessTools.CreateInstance
+  fullName: Harmony.AccessTools.CreateInstance
+- uid: Harmony.AccessTools.MakeDeepCopy*
+  commentId: Overload:Harmony.AccessTools.MakeDeepCopy
+  name: MakeDeepCopy
+  nameWithType: AccessTools.MakeDeepCopy
+  fullName: Harmony.AccessTools.MakeDeepCopy
+- uid: System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object}
+  commentId: T:System.Func{System.String,Harmony.Traverse,Harmony.Traverse,System.Object}
+  parent: System
+  definition: System.Func`4
+  name: Func<String, Traverse, Traverse, Object>
+  nameWithType: Func<String, Traverse, Traverse, Object>
+  fullName: System.Func<System.String, Harmony.Traverse, Harmony.Traverse, System.Object>
+  nameWithType.vb: Func(Of String, Traverse, Traverse, Object)
+  fullName.vb: System.Func(Of System.String, Harmony.Traverse, Harmony.Traverse, System.Object)
+  name.vb: Func(Of String, Traverse, Traverse, Object)
+  spec.csharp:
+  - uid: System.Func`4
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Harmony.Traverse
+    name: Traverse
+    nameWithType: Traverse
+    fullName: Harmony.Traverse
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Harmony.Traverse
+    name: Traverse
+    nameWithType: Traverse
+    fullName: Harmony.Traverse
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`4
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Harmony.Traverse
+    name: Traverse
+    nameWithType: Traverse
+    fullName: Harmony.Traverse
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Harmony.Traverse
+    name: Traverse
+    nameWithType: Traverse
+    fullName: Harmony.Traverse
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Func`4
+  commentId: T:System.Func`4
+  isExternal: true
+  name: Func<T1, T2, T3, TResult>
+  nameWithType: Func<T1, T2, T3, TResult>
+  fullName: System.Func<T1, T2, T3, TResult>
+  nameWithType.vb: Func(Of T1, T2, T3, TResult)
+  fullName.vb: System.Func(Of T1, T2, T3, TResult)
+  name.vb: Func(Of T1, T2, T3, TResult)
+  spec.csharp:
+  - uid: System.Func`4
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T1
+    nameWithType: T1
+    fullName: T1
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T2
+    nameWithType: T2
+    fullName: T2
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T3
+    nameWithType: T3
+    fullName: T3
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`4
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T1
+    nameWithType: T1
+    fullName: T1
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T2
+    nameWithType: T2
+    fullName: T2
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: T3
+    nameWithType: T3
+    fullName: T3
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.AccessTools.IsStruct*
+  commentId: Overload:Harmony.AccessTools.IsStruct
+  name: IsStruct
+  nameWithType: AccessTools.IsStruct
+  fullName: Harmony.AccessTools.IsStruct
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: Harmony.AccessTools.IsClass*
+  commentId: Overload:Harmony.AccessTools.IsClass
+  name: IsClass
+  nameWithType: AccessTools.IsClass
+  fullName: Harmony.AccessTools.IsClass
+- uid: Harmony.AccessTools.IsValue*
+  commentId: Overload:Harmony.AccessTools.IsValue
+  name: IsValue
+  nameWithType: AccessTools.IsValue
+  fullName: Harmony.AccessTools.IsValue
+- uid: Harmony.AccessTools.IsVoid*
+  commentId: Overload:Harmony.AccessTools.IsVoid
+  name: IsVoid
+  nameWithType: AccessTools.IsVoid
+  fullName: Harmony.AccessTools.IsVoid

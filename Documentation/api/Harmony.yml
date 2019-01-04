@@ -1,0 +1,356 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony
+  commentId: N:Harmony
+  id: Harmony
+  children:
+  - Harmony.AccessTools
+  - Harmony.AccessTools.FieldRef`2
+  - Harmony.ArgumentType
+  - Harmony.CodeInstruction
+  - Harmony.CodeMatch
+  - Harmony.CodeMatcher
+  - Harmony.CollectionExtensions
+  - Harmony.DelegateTypeFactory
+  - Harmony.FastAccess
+  - Harmony.FastInvokeHandler
+  - Harmony.FileLog
+  - Harmony.GeneralExtensions
+  - Harmony.GetterHandler
+  - Harmony.HarmonyAfter
+  - Harmony.HarmonyArgument
+  - Harmony.HarmonyAttribute
+  - Harmony.HarmonyBefore
+  - Harmony.HarmonyCleanup
+  - Harmony.HarmonyInstance
+  - Harmony.HarmonyMethod
+  - Harmony.HarmonyMethodExtensions
+  - Harmony.HarmonyPatch
+  - Harmony.HarmonyPatchAll
+  - Harmony.HarmonyPatchType
+  - Harmony.HarmonyPostfix
+  - Harmony.HarmonyPrefix
+  - Harmony.HarmonyPrepare
+  - Harmony.HarmonyPriority
+  - Harmony.HarmonyTargetMethod
+  - Harmony.HarmonyTargetMethods
+  - Harmony.HarmonyTranspiler
+  - Harmony.InstantiationHandler
+  - Harmony.MethodInvoker
+  - Harmony.MethodType
+  - Harmony.Patches
+  - Harmony.Priority
+  - Harmony.PropertyMethod
+  - Harmony.SetterHandler
+  - Harmony.SymbolExtensions
+  - Harmony.Traverse
+  - Harmony.Traverse`1
+  langs:
+  - csharp
+  - vb
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+  type: Namespace
+  assemblies:
+  - cs.temp.dll
+references:
+- uid: Harmony.MethodType
+  commentId: T:Harmony.MethodType
+  parent: Harmony
+  name: MethodType
+  nameWithType: MethodType
+  fullName: Harmony.MethodType
+- uid: Harmony.PropertyMethod
+  commentId: T:Harmony.PropertyMethod
+  parent: Harmony
+  name: PropertyMethod
+  nameWithType: PropertyMethod
+  fullName: Harmony.PropertyMethod
+- uid: Harmony.ArgumentType
+  commentId: T:Harmony.ArgumentType
+  parent: Harmony
+  name: ArgumentType
+  nameWithType: ArgumentType
+  fullName: Harmony.ArgumentType
+- uid: Harmony.HarmonyPatchType
+  commentId: T:Harmony.HarmonyPatchType
+  parent: Harmony
+  name: HarmonyPatchType
+  nameWithType: HarmonyPatchType
+  fullName: Harmony.HarmonyPatchType
+- uid: Harmony.HarmonyAttribute
+  commentId: T:Harmony.HarmonyAttribute
+  parent: Harmony
+  name: HarmonyAttribute
+  nameWithType: HarmonyAttribute
+  fullName: Harmony.HarmonyAttribute
+- uid: Harmony.HarmonyPatch
+  commentId: T:Harmony.HarmonyPatch
+  name: HarmonyPatch
+  nameWithType: HarmonyPatch
+  fullName: Harmony.HarmonyPatch
+- uid: Harmony.HarmonyPatchAll
+  commentId: T:Harmony.HarmonyPatchAll
+  name: HarmonyPatchAll
+  nameWithType: HarmonyPatchAll
+  fullName: Harmony.HarmonyPatchAll
+- uid: Harmony.HarmonyPriority
+  commentId: T:Harmony.HarmonyPriority
+  name: HarmonyPriority
+  nameWithType: HarmonyPriority
+  fullName: Harmony.HarmonyPriority
+- uid: Harmony.HarmonyBefore
+  commentId: T:Harmony.HarmonyBefore
+  name: HarmonyBefore
+  nameWithType: HarmonyBefore
+  fullName: Harmony.HarmonyBefore
+- uid: Harmony.HarmonyAfter
+  commentId: T:Harmony.HarmonyAfter
+  name: HarmonyAfter
+  nameWithType: HarmonyAfter
+  fullName: Harmony.HarmonyAfter
+- uid: Harmony.HarmonyPrepare
+  commentId: T:Harmony.HarmonyPrepare
+  name: HarmonyPrepare
+  nameWithType: HarmonyPrepare
+  fullName: Harmony.HarmonyPrepare
+- uid: Harmony.HarmonyCleanup
+  commentId: T:Harmony.HarmonyCleanup
+  name: HarmonyCleanup
+  nameWithType: HarmonyCleanup
+  fullName: Harmony.HarmonyCleanup
+- uid: Harmony.HarmonyTargetMethod
+  commentId: T:Harmony.HarmonyTargetMethod
+  name: HarmonyTargetMethod
+  nameWithType: HarmonyTargetMethod
+  fullName: Harmony.HarmonyTargetMethod
+- uid: Harmony.HarmonyTargetMethods
+  commentId: T:Harmony.HarmonyTargetMethods
+  name: HarmonyTargetMethods
+  nameWithType: HarmonyTargetMethods
+  fullName: Harmony.HarmonyTargetMethods
+- uid: Harmony.HarmonyPrefix
+  commentId: T:Harmony.HarmonyPrefix
+  name: HarmonyPrefix
+  nameWithType: HarmonyPrefix
+  fullName: Harmony.HarmonyPrefix
+- uid: Harmony.HarmonyPostfix
+  commentId: T:Harmony.HarmonyPostfix
+  name: HarmonyPostfix
+  nameWithType: HarmonyPostfix
+  fullName: Harmony.HarmonyPostfix
+- uid: Harmony.HarmonyTranspiler
+  commentId: T:Harmony.HarmonyTranspiler
+  name: HarmonyTranspiler
+  nameWithType: HarmonyTranspiler
+  fullName: Harmony.HarmonyTranspiler
+- uid: Harmony.HarmonyArgument
+  commentId: T:Harmony.HarmonyArgument
+  name: HarmonyArgument
+  nameWithType: HarmonyArgument
+  fullName: Harmony.HarmonyArgument
+- uid: Harmony.CodeInstruction
+  commentId: T:Harmony.CodeInstruction
+  parent: Harmony
+  name: CodeInstruction
+  nameWithType: CodeInstruction
+  fullName: Harmony.CodeInstruction
+- uid: Harmony.CodeMatch
+  commentId: T:Harmony.CodeMatch
+  name: CodeMatch
+  nameWithType: CodeMatch
+  fullName: Harmony.CodeMatch
+- uid: Harmony.CodeMatcher
+  commentId: T:Harmony.CodeMatcher
+  parent: Harmony
+  name: CodeMatcher
+  nameWithType: CodeMatcher
+  fullName: Harmony.CodeMatcher
+- uid: Harmony.Patches
+  commentId: T:Harmony.Patches
+  parent: Harmony
+  name: Patches
+  nameWithType: Patches
+  fullName: Harmony.Patches
+- uid: Harmony.HarmonyInstance
+  commentId: T:Harmony.HarmonyInstance
+  parent: Harmony
+  name: HarmonyInstance
+  nameWithType: HarmonyInstance
+  fullName: Harmony.HarmonyInstance
+- uid: Harmony.HarmonyMethod
+  commentId: T:Harmony.HarmonyMethod
+  parent: Harmony
+  name: HarmonyMethod
+  nameWithType: HarmonyMethod
+  fullName: Harmony.HarmonyMethod
+- uid: Harmony.HarmonyMethodExtensions
+  commentId: T:Harmony.HarmonyMethodExtensions
+  name: HarmonyMethodExtensions
+  nameWithType: HarmonyMethodExtensions
+  fullName: Harmony.HarmonyMethodExtensions
+- uid: Harmony.Priority
+  commentId: T:Harmony.Priority
+  name: Priority
+  nameWithType: Priority
+  fullName: Harmony.Priority
+- uid: Harmony.DelegateTypeFactory
+  commentId: T:Harmony.DelegateTypeFactory
+  name: DelegateTypeFactory
+  nameWithType: DelegateTypeFactory
+  fullName: Harmony.DelegateTypeFactory
+- uid: Harmony.GetterHandler
+  commentId: T:Harmony.GetterHandler
+  parent: Harmony
+  name: GetterHandler
+  nameWithType: GetterHandler
+  fullName: Harmony.GetterHandler
+- uid: Harmony.SetterHandler
+  commentId: T:Harmony.SetterHandler
+  parent: Harmony
+  name: SetterHandler
+  nameWithType: SetterHandler
+  fullName: Harmony.SetterHandler
+- uid: Harmony.InstantiationHandler
+  commentId: T:Harmony.InstantiationHandler
+  parent: Harmony
+  name: InstantiationHandler
+  nameWithType: InstantiationHandler
+  fullName: Harmony.InstantiationHandler
+- uid: Harmony.FastAccess
+  commentId: T:Harmony.FastAccess
+  name: FastAccess
+  nameWithType: FastAccess
+  fullName: Harmony.FastAccess
+- uid: Harmony.FastInvokeHandler
+  commentId: T:Harmony.FastInvokeHandler
+  parent: Harmony
+  name: FastInvokeHandler
+  nameWithType: FastInvokeHandler
+  fullName: Harmony.FastInvokeHandler
+- uid: Harmony.MethodInvoker
+  commentId: T:Harmony.MethodInvoker
+  name: MethodInvoker
+  nameWithType: MethodInvoker
+  fullName: Harmony.MethodInvoker
+- uid: Harmony.AccessTools
+  commentId: T:Harmony.AccessTools
+  name: AccessTools
+  nameWithType: AccessTools
+  fullName: Harmony.AccessTools
+- uid: Harmony.AccessTools.FieldRef`2
+  commentId: T:Harmony.AccessTools.FieldRef`2
+  name: AccessTools.FieldRef<T, U>
+  nameWithType: AccessTools.FieldRef<T, U>
+  fullName: Harmony.AccessTools.FieldRef<T, U>
+  nameWithType.vb: AccessTools.FieldRef(Of T, U)
+  fullName.vb: Harmony.AccessTools.FieldRef(Of T, U)
+  name.vb: AccessTools.FieldRef(Of T, U)
+  spec.csharp:
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef
+    nameWithType: AccessTools.FieldRef
+    fullName: Harmony.AccessTools.FieldRef
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: U
+    nameWithType: U
+    fullName: U
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef
+    nameWithType: AccessTools.FieldRef
+    fullName: Harmony.AccessTools.FieldRef
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: U
+    nameWithType: U
+    fullName: U
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.GeneralExtensions
+  commentId: T:Harmony.GeneralExtensions
+  name: GeneralExtensions
+  nameWithType: GeneralExtensions
+  fullName: Harmony.GeneralExtensions
+- uid: Harmony.CollectionExtensions
+  commentId: T:Harmony.CollectionExtensions
+  name: CollectionExtensions
+  nameWithType: CollectionExtensions
+  fullName: Harmony.CollectionExtensions
+- uid: Harmony.FileLog
+  commentId: T:Harmony.FileLog
+  name: FileLog
+  nameWithType: FileLog
+  fullName: Harmony.FileLog
+- uid: Harmony.SymbolExtensions
+  commentId: T:Harmony.SymbolExtensions
+  name: SymbolExtensions
+  nameWithType: SymbolExtensions
+  fullName: Harmony.SymbolExtensions
+- uid: Harmony.Traverse`1
+  commentId: T:Harmony.Traverse`1
+  name: Traverse<T>
+  nameWithType: Traverse<T>
+  fullName: Harmony.Traverse<T>
+  nameWithType.vb: Traverse(Of T)
+  fullName.vb: Harmony.Traverse(Of T)
+  name.vb: Traverse(Of T)
+  spec.csharp:
+  - uid: Harmony.Traverse`1
+    name: Traverse
+    nameWithType: Traverse
+    fullName: Harmony.Traverse
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Harmony.Traverse`1
+    name: Traverse
+    nameWithType: Traverse
+    fullName: Harmony.Traverse
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.Traverse
+  commentId: T:Harmony.Traverse
+  parent: Harmony
+  name: Traverse
+  nameWithType: Traverse
+  fullName: Harmony.Traverse
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony

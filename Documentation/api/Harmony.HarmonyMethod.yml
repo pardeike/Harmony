@@ -1,0 +1,838 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.HarmonyMethod
+  commentId: T:Harmony.HarmonyMethod
+  id: HarmonyMethod
+  parent: Harmony
+  children:
+  - Harmony.HarmonyMethod.#ctor
+  - Harmony.HarmonyMethod.#ctor(MethodInfo)
+  - Harmony.HarmonyMethod.#ctor(System.Type,System.String,System.Type[])
+  - Harmony.HarmonyMethod.after
+  - Harmony.HarmonyMethod.argumentTypes
+  - Harmony.HarmonyMethod.before
+  - Harmony.HarmonyMethod.declaringType
+  - Harmony.HarmonyMethod.HarmonyFields
+  - Harmony.HarmonyMethod.Merge(System.Collections.Generic.List{Harmony.HarmonyMethod})
+  - Harmony.HarmonyMethod.method
+  - Harmony.HarmonyMethod.methodName
+  - Harmony.HarmonyMethod.methodType
+  - Harmony.HarmonyMethod.prioritiy
+  - Harmony.HarmonyMethod.ToString
+  langs:
+  - csharp
+  - vb
+  name: HarmonyMethod
+  nameWithType: HarmonyMethod
+  fullName: Harmony.HarmonyMethod
+  type: Class
+  source:
+    id: HarmonyMethod
+    path: ''
+    startLine: 1470
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A harmony method.
+  example: []
+  syntax:
+    content: public class HarmonyMethod
+    content.vb: Public Class HarmonyMethod
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Harmony.HarmonyMethod.method
+  commentId: F:Harmony.HarmonyMethod.method
+  id: method
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: method
+  nameWithType: HarmonyMethod.method
+  fullName: Harmony.HarmonyMethod.method
+  type: Field
+  source:
+    id: method
+    path: ''
+    startLine: 1473
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: The method.
+  example: []
+  syntax:
+    content: public MethodInfo method
+    return:
+      type: MethodInfo
+    content.vb: Public method As MethodInfo
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.declaringType
+  commentId: F:Harmony.HarmonyMethod.declaringType
+  id: declaringType
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: declaringType
+  nameWithType: HarmonyMethod.declaringType
+  fullName: Harmony.HarmonyMethod.declaringType
+  type: Field
+  source:
+    id: declaringType
+    path: ''
+    startLine: 1475
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public Type declaringType
+    return:
+      type: System.Type
+    content.vb: Public declaringType As Type
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.methodName
+  commentId: F:Harmony.HarmonyMethod.methodName
+  id: methodName
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: methodName
+  nameWithType: HarmonyMethod.methodName
+  fullName: Harmony.HarmonyMethod.methodName
+  type: Field
+  source:
+    id: methodName
+    path: ''
+    startLine: 1476
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public string methodName
+    return:
+      type: System.String
+    content.vb: Public methodName As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.methodType
+  commentId: F:Harmony.HarmonyMethod.methodType
+  id: methodType
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: methodType
+  nameWithType: HarmonyMethod.methodType
+  fullName: Harmony.HarmonyMethod.methodType
+  type: Field
+  source:
+    id: methodType
+    path: ''
+    startLine: 1477
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public MethodType? methodType
+    return:
+      type: System.Nullable{Harmony.MethodType}
+    content.vb: Public methodType As MethodType?
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.argumentTypes
+  commentId: F:Harmony.HarmonyMethod.argumentTypes
+  id: argumentTypes
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: argumentTypes
+  nameWithType: HarmonyMethod.argumentTypes
+  fullName: Harmony.HarmonyMethod.argumentTypes
+  type: Field
+  source:
+    id: argumentTypes
+    path: ''
+    startLine: 1478
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public Type[] argumentTypes
+    return:
+      type: System.Type[]
+    content.vb: Public argumentTypes As Type()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.prioritiy
+  commentId: F:Harmony.HarmonyMethod.prioritiy
+  id: prioritiy
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: prioritiy
+  nameWithType: HarmonyMethod.prioritiy
+  fullName: Harmony.HarmonyMethod.prioritiy
+  type: Field
+  source:
+    id: prioritiy
+    path: ''
+    startLine: 1479
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public int prioritiy
+    return:
+      type: System.Int32
+    content.vb: Public prioritiy As Integer
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.before
+  commentId: F:Harmony.HarmonyMethod.before
+  id: before
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: before
+  nameWithType: HarmonyMethod.before
+  fullName: Harmony.HarmonyMethod.before
+  type: Field
+  source:
+    id: before
+    path: ''
+    startLine: 1480
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public string[] before
+    return:
+      type: System.String[]
+    content.vb: Public before As String()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.after
+  commentId: F:Harmony.HarmonyMethod.after
+  id: after
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: after
+  nameWithType: HarmonyMethod.after
+  fullName: Harmony.HarmonyMethod.after
+  type: Field
+  source:
+    id: after
+    path: ''
+    startLine: 1481
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public string[] after
+    return:
+      type: System.String[]
+    content.vb: Public after As String()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.#ctor
+  commentId: M:Harmony.HarmonyMethod.#ctor
+  id: '#ctor'
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: HarmonyMethod()
+  nameWithType: HarmonyMethod.HarmonyMethod()
+  fullName: Harmony.HarmonyMethod.HarmonyMethod()
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 1483
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: public HarmonyMethod()
+    content.vb: Public Sub New
+  overload: Harmony.HarmonyMethod.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.#ctor(MethodInfo)
+  commentId: M:Harmony.HarmonyMethod.#ctor(MethodInfo)
+  id: '#ctor(MethodInfo)'
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: HarmonyMethod(MethodInfo)
+  nameWithType: HarmonyMethod.HarmonyMethod(MethodInfo)
+  fullName: Harmony.HarmonyMethod.HarmonyMethod(MethodInfo)
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 1501
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor.
+  example: []
+  syntax:
+    content: public HarmonyMethod(MethodInfo method)
+    parameters:
+    - id: method
+      type: MethodInfo
+      description: The method.
+    content.vb: Public Sub New(method As MethodInfo)
+  overload: Harmony.HarmonyMethod.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.HarmonyMethod.#ctor(System.Type,System.String,System.Type[])
+  commentId: M:Harmony.HarmonyMethod.#ctor(System.Type,System.String,System.Type[])
+  id: '#ctor(System.Type,System.String,System.Type[])'
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: HarmonyMethod(Type, String, Type[])
+  nameWithType: HarmonyMethod.HarmonyMethod(Type, String, Type[])
+  fullName: Harmony.HarmonyMethod.HarmonyMethod(System.Type, System.String, System.Type[])
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 1511
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor.
+  example: []
+  syntax:
+    content: public HarmonyMethod(Type type, string name, Type[] parameters = null)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: name
+      type: System.String
+      description: The name.
+    - id: parameters
+      type: System.Type[]
+      description: (Optional) Options for controlling the operation.
+    content.vb: Public Sub New(type As Type, name As String, parameters As Type() = Nothing)
+  overload: Harmony.HarmonyMethod.#ctor*
+  nameWithType.vb: HarmonyMethod.HarmonyMethod(Type, String, Type())
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Harmony.HarmonyMethod.HarmonyMethod(System.Type, System.String, System.Type())
+  name.vb: HarmonyMethod(Type, String, Type())
+- uid: Harmony.HarmonyMethod.HarmonyFields
+  commentId: M:Harmony.HarmonyMethod.HarmonyFields
+  id: HarmonyFields
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: HarmonyFields()
+  nameWithType: HarmonyMethod.HarmonyFields()
+  fullName: Harmony.HarmonyMethod.HarmonyFields()
+  type: Method
+  source:
+    id: HarmonyFields
+    path: ''
+    startLine: 1520
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Harmony fields.
+  example: []
+  syntax:
+    content: public static List<string> HarmonyFields()
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: A List&lt;string>
+    content.vb: Public Shared Function HarmonyFields As List(Of String)
+  overload: Harmony.HarmonyMethod.HarmonyFields*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.HarmonyMethod.Merge(System.Collections.Generic.List{Harmony.HarmonyMethod})
+  commentId: M:Harmony.HarmonyMethod.Merge(System.Collections.Generic.List{Harmony.HarmonyMethod})
+  id: Merge(System.Collections.Generic.List{Harmony.HarmonyMethod})
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: Merge(List<HarmonyMethod>)
+  nameWithType: HarmonyMethod.Merge(List<HarmonyMethod>)
+  fullName: Harmony.HarmonyMethod.Merge(System.Collections.Generic.List<Harmony.HarmonyMethod>)
+  type: Method
+  source:
+    id: Merge
+    path: ''
+    startLine: 1532
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Merges the given attributes.
+  example: []
+  syntax:
+    content: public static HarmonyMethod Merge(List<HarmonyMethod> attributes)
+    parameters:
+    - id: attributes
+      type: System.Collections.Generic.List{Harmony.HarmonyMethod}
+      description: The attributes.
+    return:
+      type: Harmony.HarmonyMethod
+      description: A HarmonyMethod.
+    content.vb: Public Shared Function Merge(attributes As List(Of HarmonyMethod)) As HarmonyMethod
+  overload: Harmony.HarmonyMethod.Merge*
+  nameWithType.vb: HarmonyMethod.Merge(List(Of HarmonyMethod))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.HarmonyMethod.Merge(System.Collections.Generic.List(Of Harmony.HarmonyMethod))
+  name.vb: Merge(List(Of HarmonyMethod))
+- uid: Harmony.HarmonyMethod.ToString
+  commentId: M:Harmony.HarmonyMethod.ToString
+  id: ToString
+  parent: Harmony.HarmonyMethod
+  langs:
+  - csharp
+  - vb
+  name: ToString()
+  nameWithType: HarmonyMethod.ToString()
+  fullName: Harmony.HarmonyMethod.ToString()
+  type: Method
+  source:
+    id: ToString
+    path: ''
+    startLine: 1553
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Returns a string that represents the current object.
+  example: []
+  syntax:
+    content: public override string ToString()
+    return:
+      type: System.String
+      description: A string that represents the current object.
+    content.vb: Public Overrides Function ToString As String
+  overridden: System.Object.ToString
+  overload: Harmony.HarmonyMethod.ToString*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: MethodInfo
+  isExternal: true
+  name: MethodInfo
+  nameWithType: MethodInfo
+  fullName: MethodInfo
+- uid: System.Type
+  commentId: T:System.Type
+  parent: System
+  isExternal: true
+  name: Type
+  nameWithType: Type
+  fullName: System.Type
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Nullable{Harmony.MethodType}
+  commentId: T:System.Nullable{Harmony.MethodType}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<MethodType>
+  nameWithType: Nullable<MethodType>
+  fullName: System.Nullable<Harmony.MethodType>
+  nameWithType.vb: Nullable(Of MethodType)
+  fullName.vb: System.Nullable(Of Harmony.MethodType)
+  name.vb: Nullable(Of MethodType)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Harmony.MethodType
+    name: MethodType
+    nameWithType: MethodType
+    fullName: Harmony.MethodType
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Harmony.MethodType
+    name: MethodType
+    nameWithType: MethodType
+    fullName: Harmony.MethodType
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Type[]
+  isExternal: true
+  name: Type[]
+  nameWithType: Type[]
+  fullName: System.Type[]
+  nameWithType.vb: Type()
+  fullName.vb: System.Type()
+  name.vb: Type()
+  spec.csharp:
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Type
+    name: Type
+    nameWithType: Type
+    fullName: System.Type
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.String[]
+  isExternal: true
+  name: String[]
+  nameWithType: String[]
+  fullName: System.String[]
+  nameWithType.vb: String()
+  fullName.vb: System.String()
+  name.vb: String()
+  spec.csharp:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: Harmony.HarmonyMethod.#ctor*
+  commentId: Overload:Harmony.HarmonyMethod.#ctor
+  name: HarmonyMethod
+  nameWithType: HarmonyMethod.HarmonyMethod
+  fullName: Harmony.HarmonyMethod.HarmonyMethod
+- uid: Harmony.HarmonyMethod.HarmonyFields*
+  commentId: Overload:Harmony.HarmonyMethod.HarmonyFields
+  name: HarmonyFields
+  nameWithType: HarmonyMethod.HarmonyFields
+  fullName: Harmony.HarmonyMethod.HarmonyFields
+- uid: System.Collections.Generic.List{System.String}
+  commentId: T:System.Collections.Generic.List{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<String>
+  nameWithType: List<String>
+  fullName: System.Collections.Generic.List<System.String>
+  nameWithType.vb: List(Of String)
+  fullName.vb: System.Collections.Generic.List(Of System.String)
+  name.vb: List(Of String)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: Harmony.HarmonyMethod.Merge*
+  commentId: Overload:Harmony.HarmonyMethod.Merge
+  name: Merge
+  nameWithType: HarmonyMethod.Merge
+  fullName: Harmony.HarmonyMethod.Merge
+- uid: System.Collections.Generic.List{Harmony.HarmonyMethod}
+  commentId: T:System.Collections.Generic.List{Harmony.HarmonyMethod}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<HarmonyMethod>
+  nameWithType: List<HarmonyMethod>
+  fullName: System.Collections.Generic.List<Harmony.HarmonyMethod>
+  nameWithType.vb: List(Of HarmonyMethod)
+  fullName.vb: System.Collections.Generic.List(Of Harmony.HarmonyMethod)
+  name.vb: List(Of HarmonyMethod)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Harmony.HarmonyMethod
+    name: HarmonyMethod
+    nameWithType: HarmonyMethod
+    fullName: Harmony.HarmonyMethod
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Harmony.HarmonyMethod
+    name: HarmonyMethod
+    nameWithType: HarmonyMethod
+    fullName: Harmony.HarmonyMethod
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.HarmonyMethod
+  commentId: T:Harmony.HarmonyMethod
+  parent: Harmony
+  name: HarmonyMethod
+  nameWithType: HarmonyMethod
+  fullName: Harmony.HarmonyMethod
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.HarmonyMethod.ToString*
+  commentId: Overload:Harmony.HarmonyMethod.ToString
+  name: ToString
+  nameWithType: HarmonyMethod.ToString
+  fullName: Harmony.HarmonyMethod.ToString

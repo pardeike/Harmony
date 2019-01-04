@@ -1,0 +1,168 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.ArgumentType
+  commentId: T:Harmony.ArgumentType
+  id: ArgumentType
+  parent: Harmony
+  children:
+  - Harmony.ArgumentType.Normal
+  - Harmony.ArgumentType.Out
+  - Harmony.ArgumentType.Pointer
+  - Harmony.ArgumentType.Ref
+  langs:
+  - csharp
+  - vb
+  name: ArgumentType
+  nameWithType: ArgumentType
+  fullName: Harmony.ArgumentType
+  type: Enum
+  source:
+    id: ArgumentType
+    path: ''
+    startLine: 34
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Values that represent argument types.
+  example: []
+  syntax:
+    content: public enum ArgumentType
+    content.vb: Public Enum ArgumentType
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: Harmony.ArgumentType.Normal
+  commentId: F:Harmony.ArgumentType.Normal
+  id: Normal
+  parent: Harmony.ArgumentType
+  langs:
+  - csharp
+  - vb
+  name: Normal
+  nameWithType: ArgumentType.Normal
+  fullName: Harmony.ArgumentType.Normal
+  type: Field
+  source:
+    id: Normal
+    path: ''
+    startLine: 37
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the normal option.
+  example: []
+  syntax:
+    content: Normal = 0
+    return:
+      type: Harmony.ArgumentType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.ArgumentType.Ref
+  commentId: F:Harmony.ArgumentType.Ref
+  id: Ref
+  parent: Harmony.ArgumentType
+  langs:
+  - csharp
+  - vb
+  name: Ref
+  nameWithType: ArgumentType.Ref
+  fullName: Harmony.ArgumentType.Ref
+  type: Field
+  source:
+    id: Ref
+    path: ''
+    startLine: 39
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the Reference option.
+  example: []
+  syntax:
+    content: Ref = 1
+    return:
+      type: Harmony.ArgumentType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.ArgumentType.Out
+  commentId: F:Harmony.ArgumentType.Out
+  id: Out
+  parent: Harmony.ArgumentType
+  langs:
+  - csharp
+  - vb
+  name: Out
+  nameWithType: ArgumentType.Out
+  fullName: Harmony.ArgumentType.Out
+  type: Field
+  source:
+    id: Out
+    path: ''
+    startLine: 41
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the out option.
+  example: []
+  syntax:
+    content: Out = 2
+    return:
+      type: Harmony.ArgumentType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.ArgumentType.Pointer
+  commentId: F:Harmony.ArgumentType.Pointer
+  id: Pointer
+  parent: Harmony.ArgumentType
+  langs:
+  - csharp
+  - vb
+  name: Pointer
+  nameWithType: ArgumentType.Pointer
+  fullName: Harmony.ArgumentType.Pointer
+  type: Field
+  source:
+    id: Pointer
+    path: ''
+    startLine: 43
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the pointer option.
+  example: []
+  syntax:
+    content: Pointer = 3
+    return:
+      type: Harmony.ArgumentType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: Harmony.ArgumentType
+  commentId: T:Harmony.ArgumentType
+  parent: Harmony
+  name: ArgumentType
+  nameWithType: ArgumentType
+  fullName: Harmony.ArgumentType

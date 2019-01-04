@@ -7,22 +7,36 @@ using System.Runtime.InteropServices;
 
 namespace Harmony.ILCopying
 {
+
+	/// <summary>A bit-field of flags for protections</summary>
 	[Flags]
 	public enum Protection
 	{
+		/// <summary>No access</summary>
 		PAGE_NOACCESS = 0x01,
+		/// <summary>Read only</summary>
 		PAGE_READONLY = 0x02,
+		/// <summary>Read write</summary>
 		PAGE_READWRITE = 0x04,
+		/// <summary>Write copy</summary>
 		PAGE_WRITECOPY = 0x08,
+		/// <summary>No access</summary>
 		PAGE_EXECUTE = 0x10,
+		/// <summary>Execute read</summary>
 		PAGE_EXECUTE_READ = 0x20,
+		/// <summary>Execute read write</summary>
 		PAGE_EXECUTE_READWRITE = 0x40,
+		/// <summary>Execute write copy</summary>
 		PAGE_EXECUTE_WRITECOPY = 0x80,
+		/// <summary>guard</summary>
 		PAGE_GUARD = 0x100,
+		/// <summary>No cache</summary>
 		PAGE_NOCACHE = 0x200,
+		/// <summary>Write combine</summary>
 		PAGE_WRITECOMBINE = 0x400
 	}
 
+	/// <summary>A low level memory helper</summary>
 	public static class Memory
 	{
 		private static readonly HashSet<PlatformID> WindowsPlatformIDSet = new HashSet<PlatformID>
@@ -30,13 +44,26 @@ namespace Harmony.ILCopying
 			PlatformID.Win32NT, PlatformID.Win32S, PlatformID.Win32Windows, PlatformID.WinCE
 		};
 
+		/// <summary>Is current environment Windows?</summary>
+		/// <value>True if it is Windows</value>
+		///
 		public static bool IsWindows => WindowsPlatformIDSet.Contains(Environment.OSVersion.Platform);
 
+		/// <summary>Virtual protect</summary>
+		/// <param name="lpAddress">The address</param>
+		/// <param name="dwSize">The size</param>
+		/// <param name="flNewProtect">The fl new protect</param>
+		/// <param name="lpflOldProtect">[out] The lpfl old protect</param>
+		/// <returns>Status</returns>
+		///
 		// Safe to use windows reference since this will only ever be called on windows
 		//
 		[DllImport("kernel32.dll")]
 		public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, Protection flNewProtect, out Protection lpflOldProtect);
 
+		/// <summary>Unprotect a memory page</summary>
+		/// <param name="memory">The memory address</param>
+		///
 		public static void UnprotectMemoryPage(long memory)
 		{
 			if (IsWindows)
@@ -47,6 +74,11 @@ namespace Harmony.ILCopying
 			}
 		}
 
+		/// <summary>Detours a method</summary>
+		/// <param name="original">The original method</param>
+		/// <param name="replacement">The replacement method</param>
+		/// <returns>An error string</returns>
+		///
 		public static string DetourMethod(MethodBase original, MethodBase replacement)
 		{
 			var originalCodeStart = GetMethodStart(original, out var exception);
@@ -68,6 +100,12 @@ namespace Harmony.ILCopying
 		 * https://stackoverflow.com/questions/39034018/how-to-replace-a-pointer-to-a-pointer-to-a-method-in-a-class-of-my-method-inheri
 		 *
 		 */
+
+		/// <summary>Writes a jump to memory</summary>
+		/// <param name="memory">The memory address</param>
+		/// <param name="destination">Jump destination</param>
+		/// <returns>An error string</returns>
+		///
 		public static string WriteJump(long memory, long destination)
 		{
 			UnprotectMemoryPage(memory);
@@ -119,6 +157,11 @@ namespace Harmony.ILCopying
 			return method.MethodHandle;
 		}
 
+		/// <summary>Gets the start of a method in memory</summary>
+		/// <param name="method">The method</param>
+		/// <param name="exception">[out] Details of the exception</param>
+		/// <returns>The method start address</returns>
+		///
 		public static long GetMethodStart(MethodBase method, out Exception exception)
 		{
 			// required in .NET Core so that the method is JITed and the method start does not change
@@ -144,6 +187,11 @@ namespace Harmony.ILCopying
 			}
 		}
 
+		/// <summary>Compare bytes</summary>
+		/// <param name="memory">The memory address</param>
+		/// <param name="values">The bytes to compare to</param>
+		/// <returns>True if memory address contains the bytes</returns>
+		///
 		public static unsafe bool CompareBytes(long memory, byte[] values)
 		{
 			var p = (byte*)memory;
@@ -155,24 +203,41 @@ namespace Harmony.ILCopying
 			return true;
 		}
 
+		/// <summary>Reads a byte</summary>
+		/// <param name="memory">The memory address</param>
+		/// <returns>The byte</returns>
+		///
 		public static unsafe byte ReadByte(long memory)
 		{
 			var p = (byte*)memory;
 			return *p;
 		}
 
+		/// <summary>Reads an int</summary>
+		/// <param name="memory">The memory address</param>
+		/// <returns>The int</returns>
+		///
 		public static unsafe int ReadInt(long memory)
 		{
 			var p = (int*)memory;
 			return *p;
 		}
 
+		/// <summary>Reads a long</summary>
+		/// <param name="memory">The memory address</param>
+		/// <returns>The long</returns>
+		///
 		public static unsafe long ReadLong(long memory)
 		{
 			var p = (long*)memory;
 			return *p;
 		}
 
+		/// <summary>Writes a byte</summary>
+		/// <param name="memory">The memory address</param>
+		/// <param name="value">The byte</param>
+		/// <returns>Advanced memory address</returns>
+		///
 		public static unsafe long WriteByte(long memory, byte value)
 		{
 			var p = (byte*)memory;
@@ -180,6 +245,11 @@ namespace Harmony.ILCopying
 			return memory + sizeof(byte);
 		}
 
+		/// <summary>Writes some bytes</summary>
+		/// <param name="memory">The memory address</param>
+		/// <param name="values">The bytes to write</param>
+		/// <returns>Advanced memory address</returns>
+		///
 		public static unsafe long WriteBytes(long memory, byte[] values)
 		{
 			foreach (var value in values)
@@ -187,6 +257,11 @@ namespace Harmony.ILCopying
 			return memory;
 		}
 
+		/// <summary>Writes an int</summary>
+		/// <param name="memory">The memory address</param>
+		/// <param name="value">The int</param>
+		/// <returns>Advanced memory address</returns>
+		///
 		public static unsafe long WriteInt(long memory, int value)
 		{
 			var p = (int*)memory;
@@ -194,6 +269,11 @@ namespace Harmony.ILCopying
 			return memory + sizeof(int);
 		}
 
+		/// <summary>Writes a long</summary>
+		/// <param name="memory">The memory address</param>
+		/// <param name="value"> The long</param>
+		/// <returns>Advanced memory address</returns>
+		///
 		public static unsafe long WriteLong(long memory, long value)
 		{
 			var p = (long*)memory;

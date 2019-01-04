@@ -1,0 +1,413 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.FileLog
+  commentId: T:Harmony.FileLog
+  id: FileLog
+  parent: Harmony
+  children:
+  - Harmony.FileLog.ChangeIndent(System.Int32)
+  - Harmony.FileLog.FlushBuffer
+  - Harmony.FileLog.indentChar
+  - Harmony.FileLog.indentLevel
+  - Harmony.FileLog.Log(System.String)
+  - Harmony.FileLog.LogBuffered(System.String)
+  - Harmony.FileLog.LogBytes(System.Int64,System.Int32)
+  - Harmony.FileLog.logPath
+  - Harmony.FileLog.Reset
+  langs:
+  - csharp
+  - vb
+  name: FileLog
+  nameWithType: FileLog
+  fullName: Harmony.FileLog
+  type: Class
+  source:
+    id: FileLog
+    path: ''
+    startLine: 2837
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A file log.
+  example: []
+  syntax:
+    content: public static class FileLog
+    content.vb: Public Module FileLog
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: Harmony.FileLog.logPath
+  commentId: F:Harmony.FileLog.logPath
+  id: logPath
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: logPath
+  nameWithType: FileLog.logPath
+  fullName: Harmony.FileLog.logPath
+  type: Field
+  source:
+    id: logPath
+    path: ''
+    startLine: 2840
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Full pathname of the log file.
+  example: []
+  syntax:
+    content: public static string logPath
+    return:
+      type: System.String
+    content.vb: Public Shared logPath As String
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.indentChar
+  commentId: F:Harmony.FileLog.indentChar
+  id: indentChar
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: indentChar
+  nameWithType: FileLog.indentChar
+  fullName: Harmony.FileLog.indentChar
+  type: Field
+  source:
+    id: indentChar
+    path: ''
+    startLine: 2842
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: The indent character.
+  example: []
+  syntax:
+    content: public static char indentChar
+    return:
+      type: System.Char
+    content.vb: Public Shared indentChar As Char
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.indentLevel
+  commentId: F:Harmony.FileLog.indentLevel
+  id: indentLevel
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: indentLevel
+  nameWithType: FileLog.indentLevel
+  fullName: Harmony.FileLog.indentLevel
+  type: Field
+  source:
+    id: indentLevel
+    path: ''
+    startLine: 2844
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: The indent level.
+  example: []
+  syntax:
+    content: public static int indentLevel
+    return:
+      type: System.Int32
+    content.vb: Public Shared indentLevel As Integer
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.ChangeIndent(System.Int32)
+  commentId: M:Harmony.FileLog.ChangeIndent(System.Int32)
+  id: ChangeIndent(System.Int32)
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: ChangeIndent(Int32)
+  nameWithType: FileLog.ChangeIndent(Int32)
+  fullName: Harmony.FileLog.ChangeIndent(System.Int32)
+  type: Method
+  source:
+    id: ChangeIndent
+    path: ''
+    startLine: 2861
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Change indent.
+  example: []
+  syntax:
+    content: public static void ChangeIndent(int delta)
+    parameters:
+    - id: delta
+      type: System.Int32
+      description: The delta.
+    content.vb: Public Shared Sub ChangeIndent(delta As Integer)
+  overload: Harmony.FileLog.ChangeIndent*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.LogBuffered(System.String)
+  commentId: M:Harmony.FileLog.LogBuffered(System.String)
+  id: LogBuffered(System.String)
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: LogBuffered(String)
+  nameWithType: FileLog.LogBuffered(String)
+  fullName: Harmony.FileLog.LogBuffered(System.String)
+  type: Method
+  source:
+    id: LogBuffered
+    path: ''
+    startLine: 2872
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: "\nuse this method only if you are sure that FlushBuffer will be called\nor else logging information is incomplete in case of a crash.\n"
+  example: []
+  syntax:
+    content: public static void LogBuffered(string str)
+    parameters:
+    - id: str
+      type: System.String
+      description: The string.
+    content.vb: Public Shared Sub LogBuffered(str As String)
+  overload: Harmony.FileLog.LogBuffered*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.FlushBuffer
+  commentId: M:Harmony.FileLog.FlushBuffer
+  id: FlushBuffer
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: FlushBuffer()
+  nameWithType: FileLog.FlushBuffer()
+  fullName: Harmony.FileLog.FlushBuffer()
+  type: Method
+  source:
+    id: FlushBuffer
+    path: ''
+    startLine: 2881
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Flushes the buffer.
+  example: []
+  syntax:
+    content: public static void FlushBuffer()
+    content.vb: Public Shared Sub FlushBuffer
+  overload: Harmony.FileLog.FlushBuffer*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.Log(System.String)
+  commentId: M:Harmony.FileLog.Log(System.String)
+  id: Log(System.String)
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: Log(String)
+  nameWithType: FileLog.Log(String)
+  fullName: Harmony.FileLog.Log(System.String)
+  type: Method
+  source:
+    id: Log
+    path: ''
+    startLine: 2903
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: "\nthis is the slower method that flushes changes directly to the file\nto prevent missing information in case of a cache.\n"
+  example: []
+  syntax:
+    content: public static void Log(string str)
+    parameters:
+    - id: str
+      type: System.String
+      description: The string.
+    content.vb: Public Shared Sub Log(str As String)
+  overload: Harmony.FileLog.Log*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.Reset
+  commentId: M:Harmony.FileLog.Reset
+  id: Reset
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: Reset()
+  nameWithType: FileLog.Reset()
+  fullName: Harmony.FileLog.Reset()
+  type: Method
+  source:
+    id: Reset
+    path: ''
+    startLine: 2915
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Resets this FileLog.
+  example: []
+  syntax:
+    content: public static void Reset()
+    content.vb: Public Shared Sub Reset
+  overload: Harmony.FileLog.Reset*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FileLog.LogBytes(System.Int64,System.Int32)
+  commentId: M:Harmony.FileLog.LogBytes(System.Int64,System.Int32)
+  id: LogBytes(System.Int64,System.Int32)
+  parent: Harmony.FileLog
+  langs:
+  - csharp
+  - vb
+  name: LogBytes(Int64, Int32)
+  nameWithType: FileLog.LogBytes(Int64, Int32)
+  fullName: Harmony.FileLog.LogBytes(System.Int64, System.Int32)
+  type: Method
+  source:
+    id: LogBytes
+    path: ''
+    startLine: 2928
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Logs the bytes.
+  example: []
+  syntax:
+    content: public static void LogBytes(long ptr, int len)
+    parameters:
+    - id: ptr
+      type: System.Int64
+      description: The pointer.
+    - id: len
+      type: System.Int32
+      description: The length.
+    content.vb: Public Shared Sub LogBytes(ptr As Long, len As Integer)
+  overload: Harmony.FileLog.LogBytes*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Char
+  commentId: T:System.Char
+  parent: System
+  isExternal: true
+  name: Char
+  nameWithType: Char
+  fullName: System.Char
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: Harmony.FileLog.ChangeIndent*
+  commentId: Overload:Harmony.FileLog.ChangeIndent
+  name: ChangeIndent
+  nameWithType: FileLog.ChangeIndent
+  fullName: Harmony.FileLog.ChangeIndent
+- uid: Harmony.FileLog.LogBuffered*
+  commentId: Overload:Harmony.FileLog.LogBuffered
+  name: LogBuffered
+  nameWithType: FileLog.LogBuffered
+  fullName: Harmony.FileLog.LogBuffered
+- uid: Harmony.FileLog.FlushBuffer*
+  commentId: Overload:Harmony.FileLog.FlushBuffer
+  name: FlushBuffer
+  nameWithType: FileLog.FlushBuffer
+  fullName: Harmony.FileLog.FlushBuffer
+- uid: Harmony.FileLog.Log*
+  commentId: Overload:Harmony.FileLog.Log
+  name: Log
+  nameWithType: FileLog.Log
+  fullName: Harmony.FileLog.Log
+- uid: Harmony.FileLog.Reset*
+  commentId: Overload:Harmony.FileLog.Reset
+  name: Reset
+  nameWithType: FileLog.Reset
+  fullName: Harmony.FileLog.Reset
+- uid: Harmony.FileLog.LogBytes*
+  commentId: Overload:Harmony.FileLog.LogBytes
+  name: LogBytes
+  nameWithType: FileLog.LogBytes
+  fullName: Harmony.FileLog.LogBytes
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  name: Int64
+  nameWithType: Int64
+  fullName: System.Int64

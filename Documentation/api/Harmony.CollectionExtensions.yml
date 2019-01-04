@@ -1,0 +1,634 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.CollectionExtensions
+  commentId: T:Harmony.CollectionExtensions
+  id: CollectionExtensions
+  parent: Harmony
+  children:
+  - Harmony.CollectionExtensions.Add``1(System.Collections.Generic.IEnumerable{``0},``0)
+  - Harmony.CollectionExtensions.AddRangeToArray``1(``0[],``0[])
+  - Harmony.CollectionExtensions.AddToArray``1(``0[],``0)
+  - Harmony.CollectionExtensions.Do``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})
+  - Harmony.CollectionExtensions.DoIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Action{``0})
+  langs:
+  - csharp
+  - vb
+  name: CollectionExtensions
+  nameWithType: CollectionExtensions
+  fullName: Harmony.CollectionExtensions
+  type: Class
+  source:
+    id: CollectionExtensions
+    path: ''
+    startLine: 2764
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A collection extensions.
+  example: []
+  syntax:
+    content: public static class CollectionExtensions
+    content.vb: Public Module CollectionExtensions
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: Harmony.CollectionExtensions.Do``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})
+  commentId: M:Harmony.CollectionExtensions.Do``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})
+  id: Do``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})
+  isExtensionMethod: true
+  parent: Harmony.CollectionExtensions
+  langs:
+  - csharp
+  - vb
+  name: Do<T>(IEnumerable<T>, Action<T>)
+  nameWithType: CollectionExtensions.Do<T>(IEnumerable<T>, Action<T>)
+  fullName: Harmony.CollectionExtensions.Do<T>(System.Collections.Generic.IEnumerable<T>, System.Action<T>)
+  type: Method
+  source:
+    id: Do
+    path: ''
+    startLine: 2771
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An IEnumerable&lt;T> extension method that does.
+  example: []
+  syntax:
+    content: public static void Do<T>(this IEnumerable<T> sequence, Action<T> action)
+    parameters:
+    - id: sequence
+      type: System.Collections.Generic.IEnumerable{{T}}
+      description: The sequence to act on.
+    - id: action
+      type: System.Action{{T}}
+      description: The action.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Sub Do(Of T)(sequence As IEnumerable(Of T), action As Action(Of T))
+  overload: Harmony.CollectionExtensions.Do*
+  nameWithType.vb: CollectionExtensions.Do(Of T)(IEnumerable(Of T), Action(Of T))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.CollectionExtensions.Do(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Action(Of T))
+  name.vb: Do(Of T)(IEnumerable(Of T), Action(Of T))
+- uid: Harmony.CollectionExtensions.DoIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Action{``0})
+  commentId: M:Harmony.CollectionExtensions.DoIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Action{``0})
+  id: DoIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Action{``0})
+  isExtensionMethod: true
+  parent: Harmony.CollectionExtensions
+  langs:
+  - csharp
+  - vb
+  name: DoIf<T>(IEnumerable<T>, Func<T, Boolean>, Action<T>)
+  nameWithType: CollectionExtensions.DoIf<T>(IEnumerable<T>, Func<T, Boolean>, Action<T>)
+  fullName: Harmony.CollectionExtensions.DoIf<T>(System.Collections.Generic.IEnumerable<T>, System.Func<T, System.Boolean>, System.Action<T>)
+  type: Method
+  source:
+    id: DoIf
+    path: ''
+    startLine: 2784
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An IEnumerable&lt;T> extension method that executes if operation.
+  example: []
+  syntax:
+    content: public static void DoIf<T>(this IEnumerable<T> sequence, Func<T, bool> condition, Action<T> action)
+    parameters:
+    - id: sequence
+      type: System.Collections.Generic.IEnumerable{{T}}
+      description: The sequence to act on.
+    - id: condition
+      type: System.Func{{T},System.Boolean}
+      description: The condition.
+    - id: action
+      type: System.Action{{T}}
+      description: The action.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Sub DoIf(Of T)(sequence As IEnumerable(Of T), condition As Func(Of T, Boolean), action As Action(Of T))
+  overload: Harmony.CollectionExtensions.DoIf*
+  nameWithType.vb: CollectionExtensions.DoIf(Of T)(IEnumerable(Of T), Func(Of T, Boolean), Action(Of T))
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.CollectionExtensions.DoIf(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Func(Of T, System.Boolean), System.Action(Of T))
+  name.vb: DoIf(Of T)(IEnumerable(Of T), Func(Of T, Boolean), Action(Of T))
+- uid: Harmony.CollectionExtensions.Add``1(System.Collections.Generic.IEnumerable{``0},``0)
+  commentId: M:Harmony.CollectionExtensions.Add``1(System.Collections.Generic.IEnumerable{``0},``0)
+  id: Add``1(System.Collections.Generic.IEnumerable{``0},``0)
+  isExtensionMethod: true
+  parent: Harmony.CollectionExtensions
+  langs:
+  - csharp
+  - vb
+  name: Add<T>(IEnumerable<T>, T)
+  nameWithType: CollectionExtensions.Add<T>(IEnumerable<T>, T)
+  fullName: Harmony.CollectionExtensions.Add<T>(System.Collections.Generic.IEnumerable<T>, T)
+  type: Method
+  source:
+    id: Add
+    path: ''
+    startLine: 2795
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Enumerates add in this collection.
+  example: []
+  syntax:
+    content: public static IEnumerable<T> Add<T>(this IEnumerable<T> sequence, T item)
+    parameters:
+    - id: sequence
+      type: System.Collections.Generic.IEnumerable{{T}}
+      description: The sequence to act on.
+    - id: item
+      type: '{T}'
+      description: The item.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    return:
+      type: System.Collections.Generic.IEnumerable{{T}}
+      description: An enumerator that allows foreach to be used to process add in this collection.
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function Add(Of T)(sequence As IEnumerable(Of T), item As T) As IEnumerable(Of T)
+  overload: Harmony.CollectionExtensions.Add*
+  nameWithType.vb: CollectionExtensions.Add(Of T)(IEnumerable(Of T), T)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.CollectionExtensions.Add(Of T)(System.Collections.Generic.IEnumerable(Of T), T)
+  name.vb: Add(Of T)(IEnumerable(Of T), T)
+- uid: Harmony.CollectionExtensions.AddRangeToArray``1(``0[],``0[])
+  commentId: M:Harmony.CollectionExtensions.AddRangeToArray``1(``0[],``0[])
+  id: AddRangeToArray``1(``0[],``0[])
+  isExtensionMethod: true
+  parent: Harmony.CollectionExtensions
+  langs:
+  - csharp
+  - vb
+  name: AddRangeToArray<T>(T[], T[])
+  nameWithType: CollectionExtensions.AddRangeToArray<T>(T[], T[])
+  fullName: Harmony.CollectionExtensions.AddRangeToArray<T>(T[], T[])
+  type: Method
+  source:
+    id: AddRangeToArray
+    path: ''
+    startLine: 2806
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A T[] extension method that adds a range to array to &apos;items&apos;.
+  example: []
+  syntax:
+    content: public static T[] AddRangeToArray<T>(this T[] sequence, T[] items)
+    parameters:
+    - id: sequence
+      type: '{T}[]'
+      description: The sequence to act on.
+    - id: items
+      type: '{T}[]'
+      description: The items.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    return:
+      type: '{T}[]'
+      description: A T[].
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function AddRangeToArray(Of T)(sequence As T(), items As T()) As T()
+  overload: Harmony.CollectionExtensions.AddRangeToArray*
+  nameWithType.vb: CollectionExtensions.AddRangeToArray(Of T)(T(), T())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.CollectionExtensions.AddRangeToArray(Of T)(T(), T())
+  name.vb: AddRangeToArray(Of T)(T(), T())
+- uid: Harmony.CollectionExtensions.AddToArray``1(``0[],``0)
+  commentId: M:Harmony.CollectionExtensions.AddToArray``1(``0[],``0)
+  id: AddToArray``1(``0[],``0)
+  isExtensionMethod: true
+  parent: Harmony.CollectionExtensions
+  langs:
+  - csharp
+  - vb
+  name: AddToArray<T>(T[], T)
+  nameWithType: CollectionExtensions.AddToArray<T>(T[], T)
+  fullName: Harmony.CollectionExtensions.AddToArray<T>(T[], T)
+  type: Method
+  source:
+    id: AddToArray
+    path: ''
+    startLine: 2817
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A T[] extension method that adds to the array.
+  example: []
+  syntax:
+    content: public static T[] AddToArray<T>(this T[] sequence, T item)
+    parameters:
+    - id: sequence
+      type: '{T}[]'
+      description: The sequence to act on.
+    - id: item
+      type: '{T}'
+      description: The item.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    return:
+      type: '{T}[]'
+      description: A T[].
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function AddToArray(Of T)(sequence As T(), item As T) As T()
+  overload: Harmony.CollectionExtensions.AddToArray*
+  nameWithType.vb: CollectionExtensions.AddToArray(Of T)(T(), T)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.CollectionExtensions.AddToArray(Of T)(T(), T)
+  name.vb: AddToArray(Of T)(T(), T)
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Harmony.CollectionExtensions.Do*
+  commentId: Overload:Harmony.CollectionExtensions.Do
+  name: Do
+  nameWithType: CollectionExtensions.Do
+  fullName: Harmony.CollectionExtensions.Do
+- uid: System.Collections.Generic.IEnumerable{{T}}
+  commentId: T:System.Collections.Generic.IEnumerable{``0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Action{{T}}
+  commentId: T:System.Action{``0}
+  parent: System
+  definition: System.Action`1
+  name: Action<T>
+  nameWithType: Action<T>
+  fullName: System.Action<T>
+  nameWithType.vb: Action(Of T)
+  fullName.vb: System.Action(Of T)
+  name.vb: Action(Of T)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    nameWithType: Action
+    fullName: System.Action
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    nameWithType: Action
+    fullName: System.Action
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: System.Action`1
+  commentId: T:System.Action`1
+  isExternal: true
+  name: Action<T>
+  nameWithType: Action<T>
+  fullName: System.Action<T>
+  nameWithType.vb: Action(Of T)
+  fullName.vb: System.Action(Of T)
+  name.vb: Action(Of T)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    nameWithType: Action
+    fullName: System.Action
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    nameWithType: Action
+    fullName: System.Action
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.CollectionExtensions.DoIf*
+  commentId: Overload:Harmony.CollectionExtensions.DoIf
+  name: DoIf
+  nameWithType: CollectionExtensions.DoIf
+  fullName: Harmony.CollectionExtensions.DoIf
+- uid: System.Func{{T},System.Boolean}
+  commentId: T:System.Func{``0,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  name: Func<T, Boolean>
+  nameWithType: Func<T, Boolean>
+  fullName: System.Func<T, System.Boolean>
+  nameWithType.vb: Func(Of T, Boolean)
+  fullName.vb: System.Func(Of T, System.Boolean)
+  name.vb: Func(Of T, Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Func`2
+  commentId: T:System.Func`2
+  isExternal: true
+  name: Func<T, TResult>
+  nameWithType: Func<T, TResult>
+  fullName: System.Func<T, TResult>
+  nameWithType.vb: Func(Of T, TResult)
+  fullName.vb: System.Func(Of T, TResult)
+  name.vb: Func(Of T, TResult)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.CollectionExtensions.Add*
+  commentId: Overload:Harmony.CollectionExtensions.Add
+  name: Add
+  nameWithType: CollectionExtensions.Add
+  fullName: Harmony.CollectionExtensions.Add
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: Harmony.CollectionExtensions.AddRangeToArray*
+  commentId: Overload:Harmony.CollectionExtensions.AddRangeToArray
+  name: AddRangeToArray
+  nameWithType: CollectionExtensions.AddRangeToArray
+  fullName: Harmony.CollectionExtensions.AddRangeToArray
+- uid: '{T}[]'
+  isExternal: true
+  name: T[]
+  nameWithType: T[]
+  fullName: T[]
+  nameWithType.vb: T()
+  fullName.vb: T()
+  name.vb: T()
+  spec.csharp:
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: Harmony.CollectionExtensions.AddToArray*
+  commentId: Overload:Harmony.CollectionExtensions.AddToArray
+  name: AddToArray
+  nameWithType: CollectionExtensions.AddToArray
+  fullName: Harmony.CollectionExtensions.AddToArray

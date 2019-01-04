@@ -1,0 +1,73 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.AccessTools.FieldRef`2
+  commentId: T:Harmony.AccessTools.FieldRef`2
+  id: AccessTools.FieldRef`2
+  parent: Harmony
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: AccessTools.FieldRef<T, U>
+  nameWithType: AccessTools.FieldRef<T, U>
+  fullName: Harmony.AccessTools.FieldRef<T, U>
+  type: Delegate
+  source:
+    id: FieldRef
+    path: ''
+    startLine: 2464
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Field reference.
+  example: []
+  syntax:
+    content: public delegate U FieldRef<T, U>(T obj);
+    parameters:
+    - id: obj
+      type: '{T}'
+      description: The object.
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    - id: U
+      description: Generic type parameter.
+    return:
+      type: '{U}'
+      description: A ref U.
+    content.vb: Public Delegate Function FieldRef(Of T, U)(obj As T) As U
+  nameWithType.vb: AccessTools.FieldRef(Of T, U)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+  fullName.vb: Harmony.AccessTools.FieldRef(Of T, U)
+  name.vb: AccessTools.FieldRef(Of T, U)
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: '{U}'
+  commentId: '!:U'
+  definition: U
+  name: U
+  nameWithType: U
+  fullName: U
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: U
+  name: U
+  nameWithType: U
+  fullName: U

@@ -1,0 +1,140 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.DelegateTypeFactory
+  commentId: T:Harmony.DelegateTypeFactory
+  id: DelegateTypeFactory
+  parent: Harmony
+  children:
+  - Harmony.DelegateTypeFactory.#ctor
+  - Harmony.DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  langs:
+  - csharp
+  - vb
+  name: DelegateTypeFactory
+  nameWithType: DelegateTypeFactory
+  fullName: Harmony.DelegateTypeFactory
+  type: Class
+  source:
+    id: DelegateTypeFactory
+    path: ''
+    startLine: 1667
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A delegate type factory.
+  example: []
+  syntax:
+    content: public class DelegateTypeFactory
+    content.vb: Public Class DelegateTypeFactory
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Harmony.DelegateTypeFactory.#ctor
+  commentId: M:Harmony.DelegateTypeFactory.#ctor
+  id: '#ctor'
+  parent: Harmony.DelegateTypeFactory
+  langs:
+  - csharp
+  - vb
+  name: DelegateTypeFactory()
+  nameWithType: DelegateTypeFactory.DelegateTypeFactory()
+  fullName: Harmony.DelegateTypeFactory.DelegateTypeFactory()
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 1673
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Default constructor.
+  example: []
+  syntax:
+    content: public DelegateTypeFactory()
+    content.vb: Public Sub New
+  overload: Harmony.DelegateTypeFactory.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  commentId: M:Harmony.DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  id: CreateDelegateType(MethodInfo)
+  parent: Harmony.DelegateTypeFactory
+  langs:
+  - csharp
+  - vb
+  name: CreateDelegateType(MethodInfo)
+  nameWithType: DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  fullName: Harmony.DelegateTypeFactory.CreateDelegateType(MethodInfo)
+  type: Method
+  source:
+    id: CreateDelegateType
+    path: ''
+    startLine: 1685
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Creates delegate type.
+  example: []
+  syntax:
+    content: public Type CreateDelegateType(MethodInfo method)
+    parameters:
+    - id: method
+      type: MethodInfo
+      description: The method.
+    return:
+      type: System.Type
+      description: The new delegate type.
+    content.vb: Public Function CreateDelegateType(method As MethodInfo) As Type
+  overload: Harmony.DelegateTypeFactory.CreateDelegateType*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Harmony.DelegateTypeFactory.#ctor*
+  commentId: Overload:Harmony.DelegateTypeFactory.#ctor
+  name: DelegateTypeFactory
+  nameWithType: DelegateTypeFactory.DelegateTypeFactory
+  fullName: Harmony.DelegateTypeFactory.DelegateTypeFactory
+- uid: Harmony.DelegateTypeFactory.CreateDelegateType*
+  commentId: Overload:Harmony.DelegateTypeFactory.CreateDelegateType
+  name: CreateDelegateType
+  nameWithType: DelegateTypeFactory.CreateDelegateType
+  fullName: Harmony.DelegateTypeFactory.CreateDelegateType
+- uid: MethodInfo
+  isExternal: true
+  name: MethodInfo
+  nameWithType: MethodInfo
+  fullName: MethodInfo
+- uid: System.Type
+  commentId: T:System.Type
+  parent: System
+  isExternal: true
+  name: Type
+  nameWithType: Type
+  fullName: System.Type

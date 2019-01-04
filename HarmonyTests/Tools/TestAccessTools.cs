@@ -15,12 +15,12 @@ namespace HarmonyTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNull(AccessTools.Field(null, null));
-			Assert.IsNull(AccessTools.Field(type, null));
-			Assert.IsNull(AccessTools.Field(null, "field"));
-			Assert.IsNull(AccessTools.Field(type, "unknown"));
+			Assert.IsNull(AccessTools.DeclaredField(null, null));
+			Assert.IsNull(AccessTools.DeclaredField(type, null));
+			Assert.IsNull(AccessTools.DeclaredField(null, "field"));
+			Assert.IsNull(AccessTools.DeclaredField(type, "unknown"));
 
-			var field = AccessTools.Field(type, "field");
+			var field = AccessTools.DeclaredField(type, "field");
 			Assert.IsNotNull(field);
 			Assert.AreEqual(type, field.DeclaringType);
 			Assert.AreEqual("field", field.Name);

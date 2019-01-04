@@ -1,0 +1,628 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.CodeMatch
+  commentId: T:Harmony.CodeMatch
+  id: CodeMatch
+  parent: Harmony
+  children:
+  - Harmony.CodeMatch.#ctor(Harmony.CodeInstruction,System.String)
+  - Harmony.CodeMatch.#ctor(System.Collections.Generic.List{OpCode},System.Object,System.String)
+  - Harmony.CodeMatch.#ctor(System.Func{Harmony.CodeInstruction,System.Boolean},System.String)
+  - Harmony.CodeMatch.#ctor(System.Nullable{OpCode},System.Object,System.String)
+  - Harmony.CodeMatch.Name
+  - Harmony.CodeMatch.ToString
+  langs:
+  - csharp
+  - vb
+  name: CodeMatch
+  nameWithType: CodeMatch
+  fullName: Harmony.CodeMatch
+  type: Class
+  source:
+    id: CodeMatch
+    path: ''
+    startLine: 571
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Defines a matching condition for a <xref href="Harmony.CodeInstruction" data-throw-if-not-resolved="false"></xref>
+  example: []
+  syntax:
+    content: public class CodeMatch
+    content.vb: Public Class CodeMatch
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Harmony.CodeMatch.Name
+  commentId: F:Harmony.CodeMatch.Name
+  id: Name
+  parent: Harmony.CodeMatch
+  langs:
+  - csharp
+  - vb
+  name: Name
+  nameWithType: CodeMatch.Name
+  fullName: Harmony.CodeMatch.Name
+  type: Field
+  source:
+    id: Name
+    path: ''
+    startLine: 575
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: The name <xref href="Harmony.CodeMatcher" data-throw-if-not-resolved="false"></xref> uses to refer to this match
+  example: []
+  syntax:
+    content: public readonly string Name
+    return:
+      type: System.String
+    content.vb: Public ReadOnly Name As String
+  modifiers.csharp:
+  - public
+  - readonly
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: Harmony.CodeMatch.#ctor(System.Nullable{OpCode},System.Object,System.String)
+  commentId: M:Harmony.CodeMatch.#ctor(System.Nullable{OpCode},System.Object,System.String)
+  id: '#ctor(System.Nullable{OpCode},System.Object,System.String)'
+  parent: Harmony.CodeMatch
+  langs:
+  - csharp
+  - vb
+  name: CodeMatch(Nullable<OpCode>, Object, String)
+  nameWithType: CodeMatch.CodeMatch(Nullable<OpCode>, Object, String)
+  fullName: Harmony.CodeMatch.CodeMatch(System.Nullable<OpCode>, System.Object, System.String)
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 593
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor creating a <xref href="Harmony.CodeMatch" data-throw-if-not-resolved="false"></xref>. Use without opcode/operand to match any instruction
+  example: []
+  syntax:
+    content: public CodeMatch(OpCode? opcode = default(OpCode? ), object operand = null, string name = null)
+    parameters:
+    - id: opcode
+      type: System.Nullable{OpCode}
+      description: (Optional) The <xref href="System.Reflection.Emit.OpCode" data-throw-if-not-resolved="false"></xref>. Use <xref uid="langword_csharp_null" name="null" href=""></xref> to ignore the opcode
+    - id: operand
+      type: System.Object
+      description: (Optional) The operand. Use <xref uid="langword_csharp_null" name="null" href=""></xref> to ignore the operand
+    - id: name
+      type: System.String
+      description: (Optional) The name under this match is saved
+    content.vb: Public Sub New(opcode As OpCode? = Nothing, operand As Object = Nothing, name As String = Nothing)
+  overload: Harmony.CodeMatch.#ctor*
+  nameWithType.vb: CodeMatch.CodeMatch(Nullable(Of OpCode), Object, String)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Harmony.CodeMatch.CodeMatch(System.Nullable(Of OpCode), System.Object, System.String)
+  name.vb: CodeMatch(Nullable(Of OpCode), Object, String)
+- uid: Harmony.CodeMatch.#ctor(System.Collections.Generic.List{OpCode},System.Object,System.String)
+  commentId: M:Harmony.CodeMatch.#ctor(System.Collections.Generic.List{OpCode},System.Object,System.String)
+  id: '#ctor(System.Collections.Generic.List{OpCode},System.Object,System.String)'
+  parent: Harmony.CodeMatch
+  langs:
+  - csharp
+  - vb
+  name: CodeMatch(List<OpCode>, Object, String)
+  nameWithType: CodeMatch.CodeMatch(List<OpCode>, Object, String)
+  fullName: Harmony.CodeMatch.CodeMatch(System.Collections.Generic.List<OpCode>, System.Object, System.String)
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 605
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor creating a <xref href="Harmony.CodeMatch" data-throw-if-not-resolved="false"></xref> using multiple opcodes
+  example: []
+  syntax:
+    content: public CodeMatch(List<OpCode> opcodes, object operand = null, string name = null)
+    parameters:
+    - id: opcodes
+      type: System.Collections.Generic.List{OpCode}
+      description: A list of possible <xref href="System.Reflection.Emit.OpCode" data-throw-if-not-resolved="false"></xref>
+    - id: operand
+      type: System.Object
+      description: (Optional) The operand. Use <xref uid="langword_csharp_null" name="null" href=""></xref> to ignore the operand.
+    - id: name
+      type: System.String
+      description: (Optional) The name under this match is saved.
+    content.vb: Public Sub New(opcodes As List(Of OpCode), operand As Object = Nothing, name As String = Nothing)
+  overload: Harmony.CodeMatch.#ctor*
+  nameWithType.vb: CodeMatch.CodeMatch(List(Of OpCode), Object, String)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Harmony.CodeMatch.CodeMatch(System.Collections.Generic.List(Of OpCode), System.Object, System.String)
+  name.vb: CodeMatch(List(Of OpCode), Object, String)
+- uid: Harmony.CodeMatch.#ctor(Harmony.CodeInstruction,System.String)
+  commentId: M:Harmony.CodeMatch.#ctor(Harmony.CodeInstruction,System.String)
+  id: '#ctor(Harmony.CodeInstruction,System.String)'
+  parent: Harmony.CodeMatch
+  langs:
+  - csharp
+  - vb
+  name: CodeMatch(CodeInstruction, String)
+  nameWithType: CodeMatch.CodeMatch(CodeInstruction, String)
+  fullName: Harmony.CodeMatch.CodeMatch(Harmony.CodeInstruction, System.String)
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 616
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor creating a <xref href="Harmony.CodeMatch" data-throw-if-not-resolved="false"></xref> using a <xref href="Harmony.CodeInstruction" data-throw-if-not-resolved="false"></xref>
+  example: []
+  syntax:
+    content: public CodeMatch(CodeInstruction instruction, string name = null)
+    parameters:
+    - id: instruction
+      type: Harmony.CodeInstruction
+      description: The <xref href="Harmony.CodeInstruction" data-throw-if-not-resolved="false"></xref> to match
+    - id: name
+      type: System.String
+      description: (Optional) The name under this match is saved
+    content.vb: Public Sub New(instruction As CodeInstruction, name As String = Nothing)
+  overload: Harmony.CodeMatch.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Harmony.CodeMatch.#ctor(System.Func{Harmony.CodeInstruction,System.Boolean},System.String)
+  commentId: M:Harmony.CodeMatch.#ctor(System.Func{Harmony.CodeInstruction,System.Boolean},System.String)
+  id: '#ctor(System.Func{Harmony.CodeInstruction,System.Boolean},System.String)'
+  parent: Harmony.CodeMatch
+  langs:
+  - csharp
+  - vb
+  name: CodeMatch(Func<CodeInstruction, Boolean>, String)
+  nameWithType: CodeMatch.CodeMatch(Func<CodeInstruction, Boolean>, String)
+  fullName: Harmony.CodeMatch.CodeMatch(System.Func<Harmony.CodeInstruction, System.Boolean>, System.String)
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 623
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor creating a <xref href="Harmony.CodeMatch" data-throw-if-not-resolved="false"></xref> using a predicate
+  example: []
+  syntax:
+    content: public CodeMatch(Func<CodeInstruction, bool> predicate, string name = null)
+    parameters:
+    - id: predicate
+      type: System.Func{Harmony.CodeInstruction,System.Boolean}
+      description: The predicate function that determines the match
+    - id: name
+      type: System.String
+      description: (Optional) The name under this match is saved
+    content.vb: Public Sub New(predicate As Func(Of CodeInstruction, Boolean), name As String = Nothing)
+  overload: Harmony.CodeMatch.#ctor*
+  nameWithType.vb: CodeMatch.CodeMatch(Func(Of CodeInstruction, Boolean), String)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Harmony.CodeMatch.CodeMatch(System.Func(Of Harmony.CodeInstruction, System.Boolean), System.String)
+  name.vb: CodeMatch(Func(Of CodeInstruction, Boolean), String)
+- uid: Harmony.CodeMatch.ToString
+  commentId: M:Harmony.CodeMatch.ToString
+  id: ToString
+  parent: Harmony.CodeMatch
+  langs:
+  - csharp
+  - vb
+  name: ToString()
+  nameWithType: CodeMatch.ToString()
+  fullName: Harmony.CodeMatch.ToString()
+  type: Method
+  source:
+    id: ToString
+    path: ''
+    startLine: 656
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Returns a string representation
+  example: []
+  syntax:
+    content: public override string ToString()
+    return:
+      type: System.String
+      description: A string that represents the <xref href="Harmony.CodeMatch" data-throw-if-not-resolved="false"></xref>
+    content.vb: Public Overrides Function ToString As String
+  overridden: System.Object.ToString
+  overload: Harmony.CodeMatch.ToString*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+references:
+- uid: Harmony.CodeInstruction
+  commentId: T:Harmony.CodeInstruction
+  parent: Harmony
+  name: CodeInstruction
+  nameWithType: CodeInstruction
+  fullName: Harmony.CodeInstruction
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Harmony.CodeMatcher
+  commentId: T:Harmony.CodeMatcher
+  parent: Harmony
+  name: CodeMatcher
+  nameWithType: CodeMatcher
+  fullName: Harmony.CodeMatcher
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: Harmony.CodeMatch
+  commentId: T:Harmony.CodeMatch
+  name: CodeMatch
+  nameWithType: CodeMatch
+  fullName: Harmony.CodeMatch
+- uid: System.Reflection.Emit.OpCode
+  commentId: T:System.Reflection.Emit.OpCode
+  isExternal: true
+- uid: Harmony.CodeMatch.#ctor*
+  commentId: Overload:Harmony.CodeMatch.#ctor
+  name: CodeMatch
+  nameWithType: CodeMatch.CodeMatch
+  fullName: Harmony.CodeMatch.CodeMatch
+- uid: System.Nullable{OpCode}
+  commentId: T:System.Nullable{OpCode}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<OpCode>
+  nameWithType: Nullable<OpCode>
+  fullName: System.Nullable<OpCode>
+  nameWithType.vb: Nullable(Of OpCode)
+  fullName.vb: System.Nullable(Of OpCode)
+  name.vb: Nullable(Of OpCode)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: OpCode
+    name: OpCode
+    nameWithType: OpCode
+    fullName: OpCode
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: OpCode
+    name: OpCode
+    nameWithType: OpCode
+    fullName: OpCode
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    nameWithType: Nullable
+    fullName: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List{OpCode}
+  commentId: T:System.Collections.Generic.List{OpCode}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<OpCode>
+  nameWithType: List<OpCode>
+  fullName: System.Collections.Generic.List<OpCode>
+  nameWithType.vb: List(Of OpCode)
+  fullName.vb: System.Collections.Generic.List(Of OpCode)
+  name.vb: List(Of OpCode)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: OpCode
+    name: OpCode
+    nameWithType: OpCode
+    fullName: OpCode
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: OpCode
+    name: OpCode
+    nameWithType: OpCode
+    fullName: OpCode
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: System.Func{Harmony.CodeInstruction,System.Boolean}
+  commentId: T:System.Func{Harmony.CodeInstruction,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  name: Func<CodeInstruction, Boolean>
+  nameWithType: Func<CodeInstruction, Boolean>
+  fullName: System.Func<Harmony.CodeInstruction, System.Boolean>
+  nameWithType.vb: Func(Of CodeInstruction, Boolean)
+  fullName.vb: System.Func(Of Harmony.CodeInstruction, System.Boolean)
+  name.vb: Func(Of CodeInstruction, Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Harmony.CodeInstruction
+    name: CodeInstruction
+    nameWithType: CodeInstruction
+    fullName: Harmony.CodeInstruction
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Harmony.CodeInstruction
+    name: CodeInstruction
+    nameWithType: CodeInstruction
+    fullName: Harmony.CodeInstruction
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Func`2
+  commentId: T:System.Func`2
+  isExternal: true
+  name: Func<T, TResult>
+  nameWithType: Func<T, TResult>
+  fullName: System.Func<T, TResult>
+  nameWithType.vb: Func(Of T, TResult)
+  fullName.vb: System.Func(Of T, TResult)
+  name.vb: Func(Of T, TResult)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    nameWithType: Func
+    fullName: System.Func
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Harmony.CodeMatch.ToString*
+  commentId: Overload:Harmony.CodeMatch.ToString
+  name: ToString
+  nameWithType: CodeMatch.ToString
+  fullName: Harmony.CodeMatch.ToString

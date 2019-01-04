@@ -9,7 +9,7 @@ namespace HarmonyTests
 	[TestClass]
 	public class TestTraverse_Basics
 	{
-		static List<string> fieldNames = new List<string> { "_root", "_type", "_info", "_method", "_params" };
+		static readonly List<string> fieldNames = new List<string> { "_root", "_type", "_info", "_method", "_params" };
 
 		// Basic integrity check for our test class and the field-testvalue relations
 		//
@@ -27,7 +27,7 @@ namespace HarmonyTests
 		{
 			foreach (var name in fieldNames)
 			{
-				var fInfo = AccessTools.Field(typeof(Traverse), name);
+				var fInfo = AccessTools.DeclaredField(typeof(Traverse), name);
 				Assert.IsNotNull(fInfo);
 			}
 		}
@@ -35,13 +35,13 @@ namespace HarmonyTests
 		public static void AssertIsEmpty(Traverse trv)
 		{
 			foreach (var name in fieldNames)
-				Assert.AreEqual(null, AccessTools.Field(typeof(Traverse), name).GetValue(trv));
+				Assert.AreEqual(null, AccessTools.DeclaredField(typeof(Traverse), name).GetValue(trv));
 		}
 
 		class FooBar
 		{
 #pragma warning disable CS0169
-			string field;
+			readonly string field;
 #pragma warning restore CS0169
 		}
 

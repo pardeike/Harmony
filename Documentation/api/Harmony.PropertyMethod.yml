@@ -1,0 +1,116 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.PropertyMethod
+  commentId: T:Harmony.PropertyMethod
+  id: PropertyMethod
+  parent: Harmony
+  children:
+  - Harmony.PropertyMethod.Getter
+  - Harmony.PropertyMethod.Setter
+  langs:
+  - csharp
+  - vb
+  name: PropertyMethod
+  nameWithType: PropertyMethod
+  fullName: Harmony.PropertyMethod
+  type: Enum
+  source:
+    id: PropertyMethod
+    path: ''
+    startLine: 24
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  syntax:
+    content: >-
+      [Obsolete("This enum will be removed in the next major version. To define special methods, use MethodType")]
+
+      public enum PropertyMethod
+    content.vb: >-
+      <Obsolete("This enum will be removed in the next major version. To define special methods, use MethodType")>
+
+      Public Enum PropertyMethod
+  attributes:
+  - type: System.ObsoleteAttribute
+    ctor: System.ObsoleteAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: This enum will be removed in the next major version. To define special methods, use MethodType
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: Harmony.PropertyMethod.Getter
+  commentId: F:Harmony.PropertyMethod.Getter
+  id: Getter
+  parent: Harmony.PropertyMethod
+  langs:
+  - csharp
+  - vb
+  name: Getter
+  nameWithType: PropertyMethod.Getter
+  fullName: Harmony.PropertyMethod.Getter
+  type: Field
+  source:
+    id: Getter
+    path: ''
+    startLine: 28
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the getter option.
+  example: []
+  syntax:
+    content: Getter = 0
+    return:
+      type: Harmony.PropertyMethod
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Harmony.PropertyMethod.Setter
+  commentId: F:Harmony.PropertyMethod.Setter
+  id: Setter
+  parent: Harmony.PropertyMethod
+  langs:
+  - csharp
+  - vb
+  name: Setter
+  nameWithType: PropertyMethod.Setter
+  fullName: Harmony.PropertyMethod.Setter
+  type: Field
+  source:
+    id: Setter
+    path: ''
+    startLine: 30
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: An enum constant representing the setter option.
+  example: []
+  syntax:
+    content: Setter = 1
+    return:
+      type: Harmony.PropertyMethod
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: Harmony.PropertyMethod
+  commentId: T:Harmony.PropertyMethod
+  parent: Harmony
+  name: PropertyMethod
+  nameWithType: PropertyMethod
+  fullName: Harmony.PropertyMethod

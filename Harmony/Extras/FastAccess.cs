@@ -6,12 +6,31 @@ namespace Harmony
 {
 	// Based on https://www.codeproject.com/Articles/14973/Dynamic-Code-Generation-vs-Reflection
 
+	/// <summary>A getter delegate type</summary>
+	/// <param name="source">The instance get getter uses</param>
+	/// <returns>An delegate</returns>
+	///
 	public delegate object GetterHandler(object source);
+
+	/// <summary>A setter delegate type</summary>
+	/// <param name="source">The instance the setter uses</param>
+	/// <param name="value">The value the setter uses</param>
+	/// <returns>An delegate</returns>
+	///
 	public delegate void SetterHandler(object source, object value);
+
+	/// <summary>A constructor delegate type</summary>
+	/// <returns>An delegate</returns>
+	///
 	public delegate object InstantiationHandler();
 
+	/// <summary>A helper class for fast access to getters and setters</summary>
 	public class FastAccess
 	{
+		/// <summary>Creates an instantiation delegate</summary>
+		/// <param name="type">The type</param>
+		/// <returns>The new instantiation delegate</returns>
+		///
 		public static InstantiationHandler CreateInstantiationHandler(Type type)
 		{
 			var constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
@@ -27,6 +46,10 @@ namespace Harmony
 			return (InstantiationHandler)dynamicMethod.CreateDelegate(typeof(InstantiationHandler));
 		}
 
+		/// <summary>Creates an getter delegate for a property</summary>
+		/// <param name="propertyInfo">The property</param>
+		/// <returns>The new getter delegate</returns>
+		///
 		public static GetterHandler CreateGetterHandler(PropertyInfo propertyInfo)
 		{
 			var getMethodInfo = propertyInfo.GetGetMethod(true);
@@ -41,6 +64,10 @@ namespace Harmony
 			return (GetterHandler)dynamicGet.CreateDelegate(typeof(GetterHandler));
 		}
 
+		/// <summary>Creates an getter delegate for a field</summary>
+		/// <param name="fieldInfo">The field</param>
+		/// <returns>The new getter delegate</returns>
+		///
 		public static GetterHandler CreateGetterHandler(FieldInfo fieldInfo)
 		{
 			var dynamicGet = CreateGetDynamicMethod(fieldInfo.DeclaringType);
@@ -54,12 +81,17 @@ namespace Harmony
 			return (GetterHandler)dynamicGet.CreateDelegate(typeof(GetterHandler));
 		}
 
+		/// <summary>Creates an getter delegate for a field (with a list of possible field names)</summary>
+		/// <param name="type">The type</param>
+		/// <param name="names">A list of possible field names</param>
+		/// <returns>The new getter delegate</returns>
+		///
 		public static GetterHandler CreateFieldGetter(Type type, params string[] names)
 		{
 			foreach (var name in names)
 			{
-				if (AccessTools.Field(typeof(ILGenerator), name) != null)
-					return CreateGetterHandler(AccessTools.Field(type, name));
+				if (AccessTools.DeclaredField(typeof(ILGenerator), name) != null)
+					return CreateGetterHandler(AccessTools.DeclaredField(type, name));
 
 				if (AccessTools.Property(typeof(ILGenerator), name) != null)
 					return CreateGetterHandler(AccessTools.Property(type, name));
@@ -67,6 +99,10 @@ namespace Harmony
 			return null;
 		}
 
+		/// <summary>Creates an setter delegate</summary>
+		/// <param name="propertyInfo">The property</param>
+		/// <returns>The new setter delegate</returns>
+		///
 		public static SetterHandler CreateSetterHandler(PropertyInfo propertyInfo)
 		{
 			var setMethodInfo = propertyInfo.GetSetMethod(true);
@@ -82,6 +118,10 @@ namespace Harmony
 			return (SetterHandler)dynamicSet.CreateDelegate(typeof(SetterHandler));
 		}
 
+		/// <summary>Creates an setter delegate for a field</summary>
+		/// <param name="fieldInfo">The field</param>
+		/// <returns>The new getter delegate</returns>
+		///
 		public static SetterHandler CreateSetterHandler(FieldInfo fieldInfo)
 		{
 			var dynamicSet = CreateSetDynamicMethod(fieldInfo.DeclaringType);

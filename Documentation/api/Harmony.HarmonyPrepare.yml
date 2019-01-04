@@ -1,0 +1,75 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.HarmonyPrepare
+  commentId: T:Harmony.HarmonyPrepare
+  id: HarmonyPrepare
+  parent: Harmony
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: HarmonyPrepare
+  nameWithType: HarmonyPrepare
+  fullName: Harmony.HarmonyPrepare
+  type: Class
+  source:
+    id: HarmonyPrepare
+    path: ''
+    startLine: 351
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: "\nIf you don&apos;t want to use the special method names you can annotate\nusing the following attributes:\n"
+  example: []
+  syntax:
+    content: >-
+      [AttributeUsage(AttributeTargets.Method)]
+
+      public class HarmonyPrepare : Attribute, _Attribute
+    content.vb: >-
+      <AttributeUsage(AttributeTargets.Method)>
+
+      Public Class HarmonyPrepare
+          Inherits Attribute
+          Implements _Attribute
+  inheritance:
+  - System.Object
+  - System.Attribute
+  attributes:
+  - type: System.AttributeUsageAttribute
+    ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
+    arguments:
+    - type: System.AttributeTargets
+      value: 64
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Attribute
+  commentId: T:System.Attribute
+  parent: System
+  isExternal: true
+  name: Attribute
+  nameWithType: Attribute
+  fullName: System.Attribute
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System

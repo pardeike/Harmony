@@ -1,0 +1,161 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.Traverse`1
+  commentId: T:Harmony.Traverse`1
+  id: Traverse`1
+  parent: Harmony
+  children:
+  - Harmony.Traverse`1.#ctor(Harmony.Traverse)
+  - Harmony.Traverse`1.Value
+  langs:
+  - csharp
+  - vb
+  name: Traverse<T>
+  nameWithType: Traverse<T>
+  fullName: Harmony.Traverse<T>
+  type: Class
+  source:
+    id: Traverse
+    path: ''
+    startLine: 3046
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A traverse.
+  example: []
+  syntax:
+    content: public class Traverse<T>
+    typeParameters:
+    - id: T
+      description: Generic type parameter.
+    content.vb: Public Class Traverse(Of T)
+  inheritance:
+  - System.Object
+  nameWithType.vb: Traverse(Of T)
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+  fullName.vb: Harmony.Traverse(Of T)
+  name.vb: Traverse(Of T)
+- uid: Harmony.Traverse`1.#ctor(Harmony.Traverse)
+  commentId: M:Harmony.Traverse`1.#ctor(Harmony.Traverse)
+  id: '#ctor(Harmony.Traverse)'
+  parent: Harmony.Traverse`1
+  langs:
+  - csharp
+  - vb
+  name: Traverse(Traverse)
+  nameWithType: Traverse<T>.Traverse(Traverse)
+  fullName: Harmony.Traverse<T>.Traverse(Harmony.Traverse)
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 3057
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor.
+  example: []
+  syntax:
+    content: public Traverse(Traverse traverse)
+    parameters:
+    - id: traverse
+      type: Harmony.Traverse
+      description: The traverse.
+    content.vb: Public Sub New(traverse As Traverse)
+  overload: Harmony.Traverse`1.#ctor*
+  nameWithType.vb: Traverse(Of T).Traverse(Traverse)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Harmony.Traverse(Of T).Traverse(Harmony.Traverse)
+- uid: Harmony.Traverse`1.Value
+  commentId: P:Harmony.Traverse`1.Value
+  id: Value
+  parent: Harmony.Traverse`1
+  langs:
+  - csharp
+  - vb
+  name: Value
+  nameWithType: Traverse<T>.Value
+  fullName: Harmony.Traverse<T>.Value
+  type: Property
+  source:
+    id: Value
+    path: ''
+    startLine: 3065
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Gets or sets the value.
+  example: []
+  syntax:
+    content: public T Value { get; set; }
+    parameters: []
+    return:
+      type: '{T}'
+      description: The value.
+    content.vb: Public Property Value As T
+  overload: Harmony.Traverse`1.Value*
+  nameWithType.vb: Traverse(Of T).Value
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  fullName.vb: Harmony.Traverse(Of T).Value
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Harmony.Traverse`1.#ctor*
+  commentId: Overload:Harmony.Traverse`1.#ctor
+  name: Traverse
+  nameWithType: Traverse<T>.Traverse
+  fullName: Harmony.Traverse<T>.Traverse
+  nameWithType.vb: Traverse(Of T).Traverse
+  fullName.vb: Harmony.Traverse(Of T).Traverse
+- uid: Harmony.Traverse
+  commentId: T:Harmony.Traverse
+  parent: Harmony
+  name: Traverse
+  nameWithType: Traverse
+  fullName: Harmony.Traverse
+- uid: Harmony.Traverse`1.Value*
+  commentId: Overload:Harmony.Traverse`1.Value
+  name: Value
+  nameWithType: Traverse<T>.Value
+  fullName: Harmony.Traverse<T>.Value
+  nameWithType.vb: Traverse(Of T).Value
+  fullName.vb: Harmony.Traverse(Of T).Value
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T

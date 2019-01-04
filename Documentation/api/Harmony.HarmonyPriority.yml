@@ -1,0 +1,135 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.HarmonyPriority
+  commentId: T:Harmony.HarmonyPriority
+  id: HarmonyPriority
+  parent: Harmony
+  children:
+  - Harmony.HarmonyPriority.#ctor(System.Int32)
+  langs:
+  - csharp
+  - vb
+  name: HarmonyPriority
+  nameWithType: HarmonyPriority
+  fullName: Harmony.HarmonyPriority
+  type: Class
+  source:
+    id: HarmonyPriority
+    path: ''
+    startLine: 308
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A harmony priority.
+  example: []
+  syntax:
+    content: >-
+      [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+
+      public class HarmonyPriority : HarmonyAttribute, _Attribute
+    content.vb: >-
+      <AttributeUsage(AttributeTargets.Class Or AttributeTargets.Method)>
+
+      Public Class HarmonyPriority
+          Inherits HarmonyAttribute
+          Implements _Attribute
+  inheritance:
+  - System.Object
+  - System.Attribute
+  - Harmony.HarmonyAttribute
+  inheritedMembers:
+  - Harmony.HarmonyAttribute.info
+  attributes:
+  - type: System.AttributeUsageAttribute
+    ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
+    arguments:
+    - type: System.AttributeTargets
+      value: 68
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Harmony.HarmonyPriority.#ctor(System.Int32)
+  commentId: M:Harmony.HarmonyPriority.#ctor(System.Int32)
+  id: '#ctor(System.Int32)'
+  parent: Harmony.HarmonyPriority
+  langs:
+  - csharp
+  - vb
+  name: HarmonyPriority(Int32)
+  nameWithType: HarmonyPriority.HarmonyPriority(Int32)
+  fullName: Harmony.HarmonyPriority.HarmonyPriority(System.Int32)
+  type: Constructor
+  source:
+    id: .ctor
+    path: ''
+    startLine: 314
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Constructor.
+  example: []
+  syntax:
+    content: public HarmonyPriority(int prioritiy)
+    parameters:
+    - id: prioritiy
+      type: System.Int32
+      description: The prioritiy.
+    content.vb: Public Sub New(prioritiy As Integer)
+  overload: Harmony.HarmonyPriority.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Attribute
+  commentId: T:System.Attribute
+  parent: System
+  isExternal: true
+  name: Attribute
+  nameWithType: Attribute
+  fullName: System.Attribute
+- uid: Harmony.HarmonyAttribute
+  commentId: T:Harmony.HarmonyAttribute
+  parent: Harmony
+  name: HarmonyAttribute
+  nameWithType: HarmonyAttribute
+  fullName: Harmony.HarmonyAttribute
+- uid: Harmony.HarmonyAttribute.info
+  commentId: F:Harmony.HarmonyAttribute.info
+  parent: Harmony.HarmonyAttribute
+  name: info
+  nameWithType: HarmonyAttribute.info
+  fullName: Harmony.HarmonyAttribute.info
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Harmony.HarmonyPriority.#ctor*
+  commentId: Overload:Harmony.HarmonyPriority.#ctor
+  name: HarmonyPriority
+  nameWithType: HarmonyPriority.HarmonyPriority
+  fullName: Harmony.HarmonyPriority.HarmonyPriority
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

@@ -1,0 +1,375 @@
+### YamlMime:ManagedReference
+items:
+- uid: Harmony.FastAccess
+  commentId: T:Harmony.FastAccess
+  id: FastAccess
+  parent: Harmony
+  children:
+  - Harmony.FastAccess.CreateFieldGetter(System.Type,System.String[])
+  - Harmony.FastAccess.CreateGetterHandler(FieldInfo)
+  - Harmony.FastAccess.CreateGetterHandler(PropertyInfo)
+  - Harmony.FastAccess.CreateInstantiationHandler(System.Type)
+  - Harmony.FastAccess.CreateSetterHandler(FieldInfo)
+  - Harmony.FastAccess.CreateSetterHandler(PropertyInfo)
+  langs:
+  - csharp
+  - vb
+  name: FastAccess
+  nameWithType: FastAccess
+  fullName: Harmony.FastAccess
+  type: Class
+  source:
+    id: FastAccess
+    path: ''
+    startLine: 1734
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: A fast access.
+  example: []
+  syntax:
+    content: public class FastAccess
+    content.vb: Public Class FastAccess
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Harmony.FastAccess.CreateInstantiationHandler(System.Type)
+  commentId: M:Harmony.FastAccess.CreateInstantiationHandler(System.Type)
+  id: CreateInstantiationHandler(System.Type)
+  parent: Harmony.FastAccess
+  langs:
+  - csharp
+  - vb
+  name: CreateInstantiationHandler(Type)
+  nameWithType: FastAccess.CreateInstantiationHandler(Type)
+  fullName: Harmony.FastAccess.CreateInstantiationHandler(System.Type)
+  type: Method
+  source:
+    id: CreateInstantiationHandler
+    path: ''
+    startLine: 1741
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Handler, called when the create instantiation.
+  example: []
+  syntax:
+    content: public static InstantiationHandler CreateInstantiationHandler(Type type)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    return:
+      type: Harmony.InstantiationHandler
+      description: The new instantiation handler.
+    content.vb: Public Shared Function CreateInstantiationHandler(type As Type) As InstantiationHandler
+  overload: Harmony.FastAccess.CreateInstantiationHandler*
+  exceptions:
+  - type: System.ApplicationException
+    commentId: T:System.ApplicationException
+    description: Thrown when an Application error condition occurs.
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FastAccess.CreateGetterHandler(PropertyInfo)
+  commentId: M:Harmony.FastAccess.CreateGetterHandler(PropertyInfo)
+  id: CreateGetterHandler(PropertyInfo)
+  parent: Harmony.FastAccess
+  langs:
+  - csharp
+  - vb
+  name: CreateGetterHandler(PropertyInfo)
+  nameWithType: FastAccess.CreateGetterHandler(PropertyInfo)
+  fullName: Harmony.FastAccess.CreateGetterHandler(PropertyInfo)
+  type: Method
+  source:
+    id: CreateGetterHandler
+    path: ''
+    startLine: 1760
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Handler, called when the create getter.
+  example: []
+  syntax:
+    content: public static GetterHandler CreateGetterHandler(PropertyInfo propertyInfo)
+    parameters:
+    - id: propertyInfo
+      type: PropertyInfo
+      description: Information describing the property.
+    return:
+      type: Harmony.GetterHandler
+      description: The new getter handler.
+    content.vb: Public Shared Function CreateGetterHandler(propertyInfo As PropertyInfo) As GetterHandler
+  overload: Harmony.FastAccess.CreateGetterHandler*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FastAccess.CreateGetterHandler(FieldInfo)
+  commentId: M:Harmony.FastAccess.CreateGetterHandler(FieldInfo)
+  id: CreateGetterHandler(FieldInfo)
+  parent: Harmony.FastAccess
+  langs:
+  - csharp
+  - vb
+  name: CreateGetterHandler(FieldInfo)
+  nameWithType: FastAccess.CreateGetterHandler(FieldInfo)
+  fullName: Harmony.FastAccess.CreateGetterHandler(FieldInfo)
+  type: Method
+  source:
+    id: CreateGetterHandler
+    path: ''
+    startLine: 1778
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Handler, called when the create getter.
+  example: []
+  syntax:
+    content: public static GetterHandler CreateGetterHandler(FieldInfo fieldInfo)
+    parameters:
+    - id: fieldInfo
+      type: FieldInfo
+      description: Information describing the field.
+    return:
+      type: Harmony.GetterHandler
+      description: The new getter handler.
+    content.vb: Public Shared Function CreateGetterHandler(fieldInfo As FieldInfo) As GetterHandler
+  overload: Harmony.FastAccess.CreateGetterHandler*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FastAccess.CreateFieldGetter(System.Type,System.String[])
+  commentId: M:Harmony.FastAccess.CreateFieldGetter(System.Type,System.String[])
+  id: CreateFieldGetter(System.Type,System.String[])
+  parent: Harmony.FastAccess
+  langs:
+  - csharp
+  - vb
+  name: CreateFieldGetter(Type, String[])
+  nameWithType: FastAccess.CreateFieldGetter(Type, String[])
+  fullName: Harmony.FastAccess.CreateFieldGetter(System.Type, System.String[])
+  type: Method
+  source:
+    id: CreateFieldGetter
+    path: ''
+    startLine: 1796
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Creates field getter.
+  example: []
+  syntax:
+    content: public static GetterHandler CreateFieldGetter(Type type, params string[] names)
+    parameters:
+    - id: type
+      type: System.Type
+      description: The type.
+    - id: names
+      type: System.String[]
+      description: A variable-length parameters list containing names.
+    return:
+      type: Harmony.GetterHandler
+      description: The new field getter.
+    content.vb: Public Shared Function CreateFieldGetter(type As Type, ParamArray names As String()) As GetterHandler
+  overload: Harmony.FastAccess.CreateFieldGetter*
+  nameWithType.vb: FastAccess.CreateFieldGetter(Type, String())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Harmony.FastAccess.CreateFieldGetter(System.Type, System.String())
+  name.vb: CreateFieldGetter(Type, String())
+- uid: Harmony.FastAccess.CreateSetterHandler(PropertyInfo)
+  commentId: M:Harmony.FastAccess.CreateSetterHandler(PropertyInfo)
+  id: CreateSetterHandler(PropertyInfo)
+  parent: Harmony.FastAccess
+  langs:
+  - csharp
+  - vb
+  name: CreateSetterHandler(PropertyInfo)
+  nameWithType: FastAccess.CreateSetterHandler(PropertyInfo)
+  fullName: Harmony.FastAccess.CreateSetterHandler(PropertyInfo)
+  type: Method
+  source:
+    id: CreateSetterHandler
+    path: ''
+    startLine: 1813
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Handler, called when the create setter.
+  example: []
+  syntax:
+    content: public static SetterHandler CreateSetterHandler(PropertyInfo propertyInfo)
+    parameters:
+    - id: propertyInfo
+      type: PropertyInfo
+      description: Information describing the property.
+    return:
+      type: Harmony.SetterHandler
+      description: The new setter handler.
+    content.vb: Public Shared Function CreateSetterHandler(propertyInfo As PropertyInfo) As SetterHandler
+  overload: Harmony.FastAccess.CreateSetterHandler*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Harmony.FastAccess.CreateSetterHandler(FieldInfo)
+  commentId: M:Harmony.FastAccess.CreateSetterHandler(FieldInfo)
+  id: CreateSetterHandler(FieldInfo)
+  parent: Harmony.FastAccess
+  langs:
+  - csharp
+  - vb
+  name: CreateSetterHandler(FieldInfo)
+  nameWithType: FastAccess.CreateSetterHandler(FieldInfo)
+  fullName: Harmony.FastAccess.CreateSetterHandler(FieldInfo)
+  type: Method
+  source:
+    id: CreateSetterHandler
+    path: ''
+    startLine: 1832
+  assemblies:
+  - cs.temp.dll
+  namespace: Harmony
+  summary: Handler, called when the create setter.
+  example: []
+  syntax:
+    content: public static SetterHandler CreateSetterHandler(FieldInfo fieldInfo)
+    parameters:
+    - id: fieldInfo
+      type: FieldInfo
+      description: Information describing the field.
+    return:
+      type: Harmony.SetterHandler
+      description: The new setter handler.
+    content.vb: Public Shared Function CreateSetterHandler(fieldInfo As FieldInfo) As SetterHandler
+  overload: Harmony.FastAccess.CreateSetterHandler*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: Harmony
+  commentId: N:Harmony
+  name: Harmony
+  nameWithType: Harmony
+  fullName: Harmony
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.ApplicationException
+  commentId: T:System.ApplicationException
+  isExternal: true
+- uid: Harmony.FastAccess.CreateInstantiationHandler*
+  commentId: Overload:Harmony.FastAccess.CreateInstantiationHandler
+  name: CreateInstantiationHandler
+  nameWithType: FastAccess.CreateInstantiationHandler
+  fullName: Harmony.FastAccess.CreateInstantiationHandler
+- uid: System.Type
+  commentId: T:System.Type
+  parent: System
+  isExternal: true
+  name: Type
+  nameWithType: Type
+  fullName: System.Type
+- uid: Harmony.InstantiationHandler
+  commentId: T:Harmony.InstantiationHandler
+  parent: Harmony
+  name: InstantiationHandler
+  nameWithType: InstantiationHandler
+  fullName: Harmony.InstantiationHandler
+- uid: Harmony.FastAccess.CreateGetterHandler*
+  commentId: Overload:Harmony.FastAccess.CreateGetterHandler
+  name: CreateGetterHandler
+  nameWithType: FastAccess.CreateGetterHandler
+  fullName: Harmony.FastAccess.CreateGetterHandler
+- uid: PropertyInfo
+  isExternal: true
+  name: PropertyInfo
+  nameWithType: PropertyInfo
+  fullName: PropertyInfo
+- uid: Harmony.GetterHandler
+  commentId: T:Harmony.GetterHandler
+  parent: Harmony
+  name: GetterHandler
+  nameWithType: GetterHandler
+  fullName: Harmony.GetterHandler
+- uid: FieldInfo
+  isExternal: true
+  name: FieldInfo
+  nameWithType: FieldInfo
+  fullName: FieldInfo
+- uid: Harmony.FastAccess.CreateFieldGetter*
+  commentId: Overload:Harmony.FastAccess.CreateFieldGetter
+  name: CreateFieldGetter
+  nameWithType: FastAccess.CreateFieldGetter
+  fullName: Harmony.FastAccess.CreateFieldGetter
+- uid: System.String[]
+  isExternal: true
+  name: String[]
+  nameWithType: String[]
+  fullName: System.String[]
+  nameWithType.vb: String()
+  fullName.vb: System.String()
+  name.vb: String()
+  spec.csharp:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: Harmony.FastAccess.CreateSetterHandler*
+  commentId: Overload:Harmony.FastAccess.CreateSetterHandler
+  name: CreateSetterHandler
+  nameWithType: FastAccess.CreateSetterHandler
+  fullName: Harmony.FastAccess.CreateSetterHandler
+- uid: Harmony.SetterHandler
+  commentId: T:Harmony.SetterHandler
+  parent: Harmony
+  name: SetterHandler
+  nameWithType: SetterHandler
+  fullName: Harmony.SetterHandler

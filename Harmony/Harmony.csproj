@@ -14,13 +14,13 @@
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>false</SignAssembly>
-		<Version>1.2.0.2</Version>
+		<Version>1.2.1</Version>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/LICENSE</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
-		<AssemblyVersion>1.2.0.2</AssemblyVersion>
-		<FileVersion>1.2.0.2</FileVersion>
+		<AssemblyVersion>1.2.1.0</AssemblyVersion>
+		<FileVersion>1.2.1.0</FileVersion>
 		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
 	</PropertyGroup>
 
@@ -36,6 +36,15 @@
 		<Optimize>false</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
+	  <DocumentationFile>..\bin\Release\0Harmony.xml</DocumentationFile>
+	  <OutputPath></OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net35|AnyCPU'">
+	  <DocumentationFile>..\bin\Debug\0Harmony.xml</DocumentationFile>
 	</PropertyGroup>
 
 </Project>
