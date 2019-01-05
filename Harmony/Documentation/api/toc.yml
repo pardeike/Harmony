@@ -1,0 +1,135 @@
+### YamlMime:TableOfContent
+- uid: Harmony
+  name: Harmony
+  items:
+  - uid: Harmony.AccessCache
+    name: AccessCache
+  - uid: Harmony.AccessTools
+    name: AccessTools
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef<T, U>
+    name.vb: AccessTools.FieldRef(Of T, U)
+  - uid: Harmony.ArgumentType
+    name: ArgumentType
+  - uid: Harmony.CodeInstruction
+    name: CodeInstruction
+  - uid: Harmony.CodeMatch
+    name: CodeMatch
+  - uid: Harmony.CodeMatcher
+    name: CodeMatcher
+  - uid: Harmony.CodeTranspiler
+    name: CodeTranspiler
+  - uid: Harmony.CollectionExtensions
+    name: CollectionExtensions
+  - uid: Harmony.DelegateTypeFactory
+    name: DelegateTypeFactory
+  - uid: Harmony.DynamicTools
+    name: DynamicTools
+  - uid: Harmony.FastAccess
+    name: FastAccess
+  - uid: Harmony.FastInvokeHandler
+    name: FastInvokeHandler
+  - uid: Harmony.FileLog
+    name: FileLog
+  - uid: Harmony.GeneralExtensions
+    name: GeneralExtensions
+  - uid: Harmony.GetterHandler
+    name: GetterHandler
+  - uid: Harmony.HarmonyAfter
+    name: HarmonyAfter
+  - uid: Harmony.HarmonyArgument
+    name: HarmonyArgument
+  - uid: Harmony.HarmonyAttribute
+    name: HarmonyAttribute
+  - uid: Harmony.HarmonyBefore
+    name: HarmonyBefore
+  - uid: Harmony.HarmonyCleanup
+    name: HarmonyCleanup
+  - uid: Harmony.HarmonyInstance
+    name: HarmonyInstance
+  - uid: Harmony.HarmonyMethod
+    name: HarmonyMethod
+  - uid: Harmony.HarmonyMethodExtensions
+    name: HarmonyMethodExtensions
+  - uid: Harmony.HarmonyPatch
+    name: HarmonyPatch
+  - uid: Harmony.HarmonyPatchAll
+    name: HarmonyPatchAll
+  - uid: Harmony.HarmonyPatchType
+    name: HarmonyPatchType
+  - uid: Harmony.HarmonyPostfix
+    name: HarmonyPostfix
+  - uid: Harmony.HarmonyPrefix
+    name: HarmonyPrefix
+  - uid: Harmony.HarmonyPrepare
+    name: HarmonyPrepare
+  - uid: Harmony.HarmonyPriority
+    name: HarmonyPriority
+  - uid: Harmony.HarmonySharedState
+    name: HarmonySharedState
+  - uid: Harmony.HarmonyTargetMethod
+    name: HarmonyTargetMethod
+  - uid: Harmony.HarmonyTargetMethods
+    name: HarmonyTargetMethods
+  - uid: Harmony.HarmonyTranspiler
+    name: HarmonyTranspiler
+  - uid: Harmony.InstantiationHandler
+    name: InstantiationHandler
+  - uid: Harmony.MethodInvoker
+    name: MethodInvoker
+  - uid: Harmony.MethodPatcher
+    name: MethodPatcher
+  - uid: Harmony.MethodType
+    name: MethodType
+  - uid: Harmony.Patch
+    name: Patch
+  - uid: Harmony.Patches
+    name: Patches
+  - uid: Harmony.PatchFunctions
+    name: PatchFunctions
+  - uid: Harmony.PatchInfo
+    name: PatchInfo
+  - uid: Harmony.PatchInfoSerialization
+    name: PatchInfoSerialization
+  - uid: Harmony.PatchProcessor
+    name: PatchProcessor
+  - uid: Harmony.PatchTools
+    name: PatchTools
+  - uid: Harmony.Priority
+    name: Priority
+  - uid: Harmony.PropertyMethod
+    name: PropertyMethod
+  - uid: Harmony.SetterHandler
+    name: SetterHandler
+  - uid: Harmony.SymbolExtensions
+    name: SymbolExtensions
+  - uid: Harmony.Transpilers
+    name: Transpilers
+  - uid: Harmony.Traverse
+    name: Traverse
+  - uid: Harmony.Traverse`1
+    name: Traverse<T>
+    name.vb: Traverse(Of T)
+- uid: Harmony.ILCopying
+  name: Harmony.ILCopying
+  items:
+  - uid: Harmony.ILCopying.ByteBuffer
+    name: ByteBuffer
+  - uid: Harmony.ILCopying.Emitter
+    name: Emitter
+  - uid: Harmony.ILCopying.ExceptionBlock
+    name: ExceptionBlock
+  - uid: Harmony.ILCopying.ExceptionBlockType
+    name: ExceptionBlockType
+  - uid: Harmony.ILCopying.ILInstruction
+    name: ILInstruction
+  - uid: Harmony.ILCopying.LeaveTry
+    name: LeaveTry
+  - uid: Harmony.ILCopying.Memory
+    name: Memory
+  - uid: Harmony.ILCopying.MethodBodyReader
+    name: MethodBodyReader
+  - uid: Harmony.ILCopying.MethodCopier
+    name: MethodCopier
+  - uid: Harmony.ILCopying.Protection
+    name: Protection

@@ -1,0 +1,42 @@
+#logo {
+	width: 50px;
+	height: 50px;
+	opacity: 0;
+}
+
+div.navbar-header a.navbar-brand {
+	background-image: url(https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png);
+	background-size: 48px 36px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.bs-docs-sidenav {
+	height: auto !important;
+}
+
+.sidetoc {
+	position: fixed;
+	width: 260px;
+	top: 150px;
+	bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: #f1f1f1;
+	border-left: 1px solid #e7e7e7;
+	border-right: 1px solid #e7e7e7;
+	z-index: 1;
+}
+
+.bs-docs-sidebar {
+	height: unset;
+}
+
+.sideaffix {
+	bottom: 0;
+	overflow-y: auto;
+}
+
+.sideaffix.shiftup {
+	bottom: 70px;
+}

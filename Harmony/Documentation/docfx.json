@@ -1,0 +1,55 @@
+{
+	"metadata": [
+		{
+			"src": [
+				{
+					"src": "..",
+					"files": [
+						"Harmony.csproj"
+					]
+				}
+			],
+			"dest": "api",
+			"properties": {
+				"TargetFramework": "net35"
+			}
+		}
+	],
+	"build": {
+		"content": [
+			{
+				"files": [
+					"api/**.yml",
+					"api/index.md"
+				]
+			},
+			{
+				"files": [
+					"articles/**.md",
+					"toc.yml",
+					"index.md"
+				]
+			}
+		],
+		"resource": [
+			{
+				"files": [
+					"images/**"
+				]
+			}
+		],
+		"dest": "../../docs",
+		"globalMetadataFiles": [],
+		"fileMetadataFiles": [],
+		"template": [
+			"default",
+			"templates/harmony"
+		],
+		"postProcessors": [],
+		"markdownEngineName": "markdig",
+		"noLangKeyword": false,
+		"keepFileLink": false,
+		"cleanupCacheHistory": false,
+		"disableGitFeatures": false
+	}
+}
