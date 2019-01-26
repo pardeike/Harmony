@@ -13,14 +13,16 @@ namespace HarmonyTests.Patching
 	public class Transpiling
 	{
 		static CodeInstruction[] savedInstructions = null;
-
-#if DEBUG
+		
 		static OpCode insertLoc = OpCodes.Stloc_3;
-		static int codeLength = 75;
-#else
-		static OpCode insertLoc = OpCodes.Stloc_1;
-		static readonly int codeLength = 61;
-#endif
+		static readonly int codeLength = 75;
+
+		// compiling Harmony with optimization on breaks ILCopying
+		// so we always use unoptimized compilation, which means that
+		// these case/values is never valid:
+		//
+		// static OpCode insertLoc = OpCodes.Stloc_1;
+		// static readonly int codeLength = 61;
 
 		[TestMethod]
 		public void TestTranspilerException1()

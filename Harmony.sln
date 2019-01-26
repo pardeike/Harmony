@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony", "Harmony\Harmony.csproj", "{69AEE16A-B6E7-4642-8081-3928B32455DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarmonyTests", "HarmonyTests\HarmonyTests.csproj", "{DEE74EFC-29A8-4704-8536-7DA38D3999F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarmonyTests", "HarmonyTests\HarmonyTests.csproj", "{DEE74EFC-29A8-4704-8536-7DA38D3999F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

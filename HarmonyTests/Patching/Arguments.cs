@@ -58,31 +58,66 @@ namespace HarmonyTests
 			Assert.IsNotNull(originalMethod);
 
 			var patchClass = typeof(Class7Patch);
-			var realPrefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(realPrefix);
-
-			var instance6 = new Class6();
+			var realPostfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(realPostfix);
 
 			MethodInfo prefixMethod;
 			MethodInfo postfixMethod;
 			MethodInfo transpilerMethod;
 			PatchTools.GetPatches(typeof(Class7Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
 
-			Assert.AreSame(realPrefix, prefixMethod);
+			Assert.AreSame(realPostfix, postfixMethod);
 
+			HarmonyInstance.DEBUG = true;
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefixMethod), null);
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfixMethod));
 			Assert.IsNotNull(patcher);
 
 			patcher.Patch();
-
+			
 			var instance7 = new Class7();
-			var result = instance7.Method7();
+			var result = instance7.Method7("patched");
+			
+			Assert.IsTrue(instance7.mainRun);
+			Assert.AreEqual(10, result.a);
+			Assert.AreEqual(20, result.b);
+		}
 
-			Assert.AreEqual(1, result.a);
-			Assert.AreEqual(2, result.b);
+		[TestMethod]
+		public void TestMethod8()
+		{
+			var originalClass = typeof(Class8);
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("Method8");
+			Assert.IsNotNull(originalMethod);
+
+			var patchClass = typeof(Class8Patch);
+			var realPostfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(realPostfix);
+
+			MethodInfo prefixMethod;
+			MethodInfo postfixMethod;
+			MethodInfo transpilerMethod;
+			PatchTools.GetPatches(typeof(Class8Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
+			
+			Assert.AreSame(realPostfix, postfixMethod);
+
+			HarmonyInstance.DEBUG = true;
+			var instance = HarmonyInstance.Create("test");
+			Assert.IsNotNull(instance);
+
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfixMethod));
+			Assert.IsNotNull(patcher);
+
+			patcher.Patch();
+		
+			var result = Class8.Method8("patched");
+
+			Assert.IsTrue(Class8.mainRun);
+			Assert.AreEqual(10, result.a);
+			Assert.AreEqual(20, result.b);
 		}
 	}
 }

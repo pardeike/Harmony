@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace Harmony
 {
@@ -24,12 +25,6 @@ namespace Harmony
 		public static string PARAM_INDEX_PREFIX = "__";
 		/// <summary>Instance field prefix</summary>
 		public static string INSTANCE_FIELD_PREFIX = "___";
-
-		// in case of trouble, set to true to write dynamic method to desktop as a dll
-		// won't work for all methods because of the inability to extend a type compared
-		// to the way DynamicTools.CreateDynamicMethod works
-		//
-		static readonly bool DEBUG_METHOD_GENERATION_BY_DLL_CREATION = false;
 
 		/// <summary>Creates patched method</summary>
 		/// <param name="original">The original method</param>
@@ -54,6 +49,7 @@ namespace Harmony
 		/// <param name="transpilers">		The transpiler methods.</param>
 		/// <returns>A new dynamic method.</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			if (original == null)
@@ -64,17 +60,13 @@ namespace Harmony
 				if (HarmonyInstance.DEBUG) FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
 
 				var idx = prefixes.Count() + postfixes.Count();
+				var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+				var returnType = AccessTools.GetReturnedType(original);
 				var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
 				if (patch == null)
 					return null;
 
 				var il = patch.GetILGenerator();
-
-				// for debugging
-				AssemblyBuilder assemblyBuilder = null;
-				TypeBuilder typeBuilder = null;
-				if (DEBUG_METHOD_GENERATION_BY_DLL_CREATION)
-					il = DynamicTools.CreateSaveableMethod(original, "_Patch" + idx, out assemblyBuilder, out typeBuilder);
 
 				var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
 				var privateVars = new Dictionary<string, LocalBuilder>();
@@ -82,7 +74,7 @@ namespace Harmony
 				LocalBuilder resultVariable = null;
 				if (idx > 0)
 				{
-					resultVariable = DynamicTools.DeclareLocalVariable(il, AccessTools.GetReturnedType(original));
+					resultVariable = DynamicTools.DeclareLocalVariable(il, returnType);
 					privateVars[RESULT_VAR] = resultVariable;
 				}
 
@@ -96,6 +88,9 @@ namespace Harmony
 							privateVars[prefix.DeclaringType.FullName] = privateStateVariable;
 						});
 				});
+
+				if (firstArgIsReturnBuffer)
+					Emitter.Emit(il, original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
 
 				var skipOriginalLabel = il.DefineLabel();
 				var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, skipOriginalLabel);
@@ -124,6 +119,9 @@ namespace Harmony
 
 				AddPostfixes(il, original, postfixes, privateVars, true);
 
+				if (firstArgIsReturnBuffer)
+					Emitter.Emit(il, OpCodes.Stobj, returnType);
+
 				Emitter.Emit(il, OpCodes.Ret);
 
 				if (HarmonyInstance.DEBUG)
@@ -131,13 +129,6 @@ namespace Harmony
 					FileLog.LogBuffered("DONE");
 					FileLog.LogBuffered("");
 					FileLog.FlushBuffer();
-				}
-
-				// for debugging
-				if (DEBUG_METHOD_GENERATION_BY_DLL_CREATION)
-				{
-					DynamicTools.SaveMethod(assemblyBuilder, typeBuilder);
-					return null;
 				}
 
 				DynamicTools.PrepareDynamicMethod(patch);
@@ -177,19 +168,36 @@ namespace Harmony
 			return OpCodes.Ldind_Ref;
 		}
 
+		static HarmonyArgument[] AllHarmonyArguments(object[] attributes)
+		{
+			return attributes.Select(attr => 
+			{
+				if (attr.GetType().Name != nameof(HarmonyArgument)) return null;
+				return AccessTools.MakeDeepCopy<HarmonyArgument>(attr);
+			})
+			.Where(harg => harg != null)
+			.ToArray();
+		}
+
+		[UpgradeToLatestVersion(1)]
 		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
-			return parameter.GetCustomAttributes(false).FirstOrDefault(attr => attr is HarmonyArgument) as HarmonyArgument;
+			var attributes = parameter.GetCustomAttributes(false);
+			return AllHarmonyArguments(attributes).FirstOrDefault();
 		}
 
+		[UpgradeToLatestVersion(1)]
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
-			return method.GetCustomAttributes(false).Where(attr => attr is HarmonyArgument).Cast<HarmonyArgument>().ToArray();
+			var attributes = method.GetCustomAttributes(false);
+			return AllHarmonyArguments(attributes);
 		}
 
+		[UpgradeToLatestVersion(1)]
 		static HarmonyArgument[] GetArgumentAttributes(this Type type)
 		{
-			return type.GetCustomAttributes(false).Where(attr => attr is HarmonyArgument).Cast<HarmonyArgument>().ToArray();
+			var attributes = type.GetCustomAttributes(false);
+			return AllHarmonyArguments(attributes);
 		}
 
 		static string GetOriginalArgumentName(this ParameterInfo parameter, string[] originalParameterNames)
@@ -256,16 +264,21 @@ namespace Harmony
 
 		static readonly MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 
+		[UpgradeToLatestVersion(1)]
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
 			var isInstance = original.IsStatic == false;
 			var originalParameters = original.GetParameters();
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
+			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 
 			// check for passthrough using first parameter (which must have same type as return type)
 			var parameters = patch.GetParameters().ToList();
 			if (allowFirsParamPassthrough && patch.ReturnType != typeof(void) && parameters.Count > 0 && parameters[0].ParameterType == patch.ReturnType)
 				parameters.RemoveRange(0, 1);
+
+			// this
+			var thisOpcode = firstArgIsReturnBuffer ? OpCodes.Ldarg_1 : OpCodes.Ldarg_0;
 
 			foreach (var patchParam in parameters)
 			{
@@ -294,9 +307,9 @@ namespace Harmony
 					if (original.IsStatic)
 						Emitter.Emit(il, OpCodes.Ldnull);
 					else if (patchParam.ParameterType.IsByRef)
-						Emitter.Emit(il, OpCodes.Ldarga, 0); // probably won't work or will be useless
+						Emitter.Emit(il, OpCodes.Ldarga, firstArgIsReturnBuffer ? 1 : 0); // probably won't work or will be useless
 					else
-						Emitter.Emit(il, OpCodes.Ldarg_0);
+						Emitter.Emit(il, thisOpcode);
 					continue;
 				}
 
@@ -328,12 +341,12 @@ namespace Harmony
 					{
 						if (patchParam.ParameterType.IsByRef)
 						{
-							Emitter.Emit(il, OpCodes.Ldarg_0);
+							Emitter.Emit(il, thisOpcode);
 							Emitter.Emit(il, OpCodes.Ldflda, fieldInfo);
 						}
 						else
 						{
-							Emitter.Emit(il, OpCodes.Ldarg_0);
+							Emitter.Emit(il, thisOpcode);
 							Emitter.Emit(il, OpCodes.Ldfld, fieldInfo);
 						}
 					}
@@ -380,7 +393,7 @@ namespace Harmony
 				//
 				var originalIsNormal = originalParameters[idx].IsOut == false && originalParameters[idx].ParameterType.IsByRef == false;
 				var patchIsNormal = patchParam.IsOut == false && patchParam.ParameterType.IsByRef == false;
-				var patchArgIndex = idx + (isInstance ? 1 : 0);
+				var patchArgIndex = idx + (isInstance ? 1 : 0) + (firstArgIsReturnBuffer ? 1 : 0);
 
 				// Case 1 + 4
 				if (originalIsNormal == patchIsNormal)

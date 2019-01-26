@@ -1,6 +1,7 @@
 using Harmony;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace HarmonyTests.Assets
@@ -226,29 +227,47 @@ namespace HarmonyTests.Assets
 			};
 		}
 	}
-
-	// fails (Issue #77)
-	public struct Class7ReturnType { public long a, b; }
-
-	// works
-	// public struct Class7ReturnType { public byte a, b; }
-	// public class Class7ReturnType { public long a, b; }
+	
+	public struct TestStruct {
+		public long a;
+		public long b;
+	}
 
 	public class Class7
 	{
-		public Class7ReturnType Method7()
+		public bool mainRun = false;
+
+		public TestStruct Method7(string test)
 		{
-			var result = new Class7ReturnType() { a = 1, b = 2 };
-			Console.Write("In Class7Patch.Method7 " + result.a + " " + result.b);
-			return result;
+			mainRun = true;
+			return new TestStruct() { a = 1, b = 2 };
 		}
 	}
 
 	public class Class7Patch
 	{
-		public static void Prefix()
+		public static void Postfix(ref TestStruct __result)
 		{
-			Console.Write("In Class7Patch.Prefix");
+			__result = new TestStruct() { a = 10, b = 20 };
+		}
+	}
+
+	public class Class8
+	{
+		public static bool mainRun = false;
+
+		public static TestStruct Method8(string test)
+		{
+			mainRun = true;
+			return new TestStruct() { a = 1, b = 2 };
+		}
+	}
+
+	public class Class8Patch
+	{
+		public static void Postfix(ref TestStruct __result)
+		{
+			__result = new TestStruct() { a = 10, b = 20 };
 		}
 	}
 }

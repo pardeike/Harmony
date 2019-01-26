@@ -119,6 +119,26 @@ namespace Harmony
 			return type.GetProperty(name, all);
 		}
 
+		/// <summary>Gets the reflection information for the getter method of a directly declared property</summary>
+		/// <param name="type">The class where the property is declared</param>
+		/// <param name="name">The name of the property (case sensitive)</param>
+		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		///
+		public static MethodInfo DeclaredPropertyGetter(Type type, string name)
+		{
+			return DeclaredProperty(type, name)?.GetGetMethod(true);
+		}
+
+		/// <summary>Gets the reflection information for the setter method of a directly declared property</summary>
+		/// <param name="type">The class where the property is declared</param>
+		/// <param name="name">The name of the property (case sensitive)</param>
+		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		///
+		public static MethodInfo DeclaredPropertySetter(Type type, string name)
+		{
+			return DeclaredProperty(type, name)?.GetSetMethod(true);
+		}
+
 		/// <summary>Gets the reflection information for a property by searching the type and all its super types</summary>
 		/// <param name="type">The type</param>
 		/// <param name="name">The name</param>
@@ -128,6 +148,26 @@ namespace Harmony
 		{
 			if (type == null || name == null) return null;
 			return FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
+		}
+
+		/// <summary>Gets the reflection information for the getter method of a property by searching the type and all its super types</summary>
+		/// <param name="type">The type</param>
+		/// <param name="name">The name</param>
+		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		///
+		public static MethodInfo PropertyGetter(Type type, string name)
+		{
+			return Property(type, name)?.GetGetMethod(true);
+		}
+
+		/// <summary>Gets the reflection information for the setter method of a property by searching the type and all its super types</summary>
+		/// <param name="type">The type</param>
+		/// <param name="name">The name</param>
+		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		///
+		public static MethodInfo PropertySetter(Type type, string name)
+		{
+			return Property(type, name)?.GetSetMethod(true);
 		}
 
 		/// <summary>Gets the reflection information for a directly declared method</summary>
@@ -263,6 +303,27 @@ namespace Harmony
 		{
 			if (instance == null) return new List<string>();
 			return GetPropertyNames(instance.GetType());
+		}
+
+		/// <summary>Gets the type of any member of a class</summary>
+		/// <param name="member">An EventInfo, FieldInfo, MethodInfo, or PropertyInfo</param>
+		/// <returns>The type that represents the output of this member</returns>
+		///
+		public static Type GetUnderlyingType(this MemberInfo member)
+		{
+			switch (member.MemberType)
+			{
+				case MemberTypes.Event:
+					return ((EventInfo)member).EventHandlerType;
+				case MemberTypes.Field:
+					return ((FieldInfo)member).FieldType;
+				case MemberTypes.Method:
+					return ((MethodInfo)member).ReturnType;
+				case MemberTypes.Property:
+					return ((PropertyInfo)member).PropertyType;
+				default:
+					throw new ArgumentException("Member must be of type EventInfo, FieldInfo, MethodInfo, or PropertyInfo");
+			}
 		}
 
 		/// <summary>Gets the reflection information for a directly declared constructor</summary>

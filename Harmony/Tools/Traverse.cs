@@ -118,7 +118,7 @@ namespace Harmony
 		Traverse(object root, MemberInfo info, object[] index)
 		{
 			_root = root;
-			_type = root?.GetType();
+			_type = root?.GetType() ?? info.GetUnderlyingType();
 			_info = info;
 			_params = index;
 		}

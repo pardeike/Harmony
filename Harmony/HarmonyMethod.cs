@@ -163,15 +163,25 @@ namespace Harmony
 			return result;
 		}
 
+		private static HarmonyMethod GetHarmonyMethodInfo(object attribute)
+		{
+			var f_info = AccessTools.Field(attribute.GetType(), nameof(HarmonyAttribute.info));
+			if (f_info == null) return null;
+			if (f_info.FieldType.Name != nameof(HarmonyMethod)) return null;
+			var info = f_info.GetValue(attribute);
+			return AccessTools.MakeDeepCopy<HarmonyMethod>(info);
+		}
+
 		/// <summary>Gets all annotations on a class</summary>
 		/// <param name="type">The class</param>
 		/// <returns>All annotations</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static List<HarmonyMethod> GetHarmonyMethods(this Type type)
 		{
 			return type.GetCustomAttributes(true)
-						.Where(attr => attr.GetType().Name == nameof(HarmonyAttribute))
-						.Select(attr => AccessTools.MakeDeepCopy<HarmonyAttribute>(attr).info)
+						.Select(attr => GetHarmonyMethodInfo(attr))
+						.Where(info => info != null)
 						.ToList();
 		}
 
@@ -179,12 +189,13 @@ namespace Harmony
 		/// <param name="method">The method</param>
 		/// <returns>All annotations</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static List<HarmonyMethod> GetHarmonyMethods(this MethodBase method)
 		{
 			if (method is DynamicMethod) return new List<HarmonyMethod>();
 			return method.GetCustomAttributes(true)
-						.Where(attr => attr.GetType().Name == nameof(HarmonyAttribute))
-						.Select(attr => AccessTools.MakeDeepCopy<HarmonyAttribute>(attr).info)
+						.Select(attr => GetHarmonyMethodInfo(attr))
+						.Where(info => info != null)
 						.ToList();
 		}
 	}

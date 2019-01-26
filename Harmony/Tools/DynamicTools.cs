@@ -10,55 +10,27 @@ namespace Harmony
 	/// <summary>Creating dynamic methods</summary>
 	public static class DynamicTools
 	{
-		/* TODO add support for functions that return structs larger than 8 bytes
-		 *
-		 * https://github.com/dotnet/coreclr/issues/12503
-		 * https://stackoverflow.com/questions/44641195/what-could-cause-p-invoke-arguments-to-be-out-of-order-when-passed
-		 *
-		 * ERROR
-		 * Managed Debugging Assistant 'FatalExecutionEngineError' 
-		 * The runtime has encountered a fatal error. The address of the error was at 0x72747d0e, on thread 0x9c38. The error code is 0xc0000005. This error may be a bug in the CLR or in the unsafe or non-verifiable portions of user code. Common sources of this bug include user marshaling errors for COM-interop or PInvoke, which may corrupt the stack.
-		 *
-		 * Calling signatures change:
-		 * .NET <4.5 jits to void Func(ref LargeReturnStruct, object this, params)
-		 * .NET 4.5+ jits to Func(object this, ref LargeReturnStruct, params)
-		 * 
-		 * // Test case
-
-			[StructLayout(LayoutKind.Sequential, Pack = 8)]
-			public struct Struct1
-			{
-				 public double foo;
-				 public double bar;
-			}
-
-			public class StructTest1
-			{
-				public Struct1 PatchMe()
-				{
-					return default(Struct1);
-				}
-			}
-		 * 
-		 */
-
 		/// <summary>Creates a new dynamic method based on the signature of an existing method</summary>
 		/// <param name="original">The original method</param>
 		/// <param name="suffix">A suffix for the new method name</param>
 		/// <returns>The new and so far empty dynamic method, ready to be implemented</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
 			if (original == null) throw new ArgumentNullException("original cannot be null");
 			var patchName = original.Name + suffix;
 			patchName = patchName.Replace("<>", "");
 
+			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 			var parameters = original.GetParameters();
 			var result = parameters.Types().ToList();
 			if (original.IsStatic == false)
 				result.Insert(0, typeof(object));
-			var paramTypes = result.ToArray();
+			if (firstArgIsReturnBuffer)
+				result.Insert(0, typeof(object));
 			var returnType = AccessTools.GetReturnedType(original);
+			var paramTypes = result.ToArray();
 
 			// DynamicMethod does not support byref return types
 			if (returnType == null || returnType.IsByRef)
@@ -71,7 +43,7 @@ namespace Harmony
 				patchName,
 				MethodAttributes.Public | MethodAttributes.Static,
 				CallingConventions.Standard,
-				returnType,
+				firstArgIsReturnBuffer ? typeof(void) : returnType,
 				paramTypes,
 				original.DeclaringType,
 				true
@@ -82,45 +54,11 @@ namespace Harmony
 				return null;
 			}
 
+			var offset = (original.IsStatic ? 0 : 1) + (firstArgIsReturnBuffer ? 1 : 0);
 			for (var i = 0; i < parameters.Length; i++)
-				method.DefineParameter(i + 1, parameters[i].Attributes, parameters[i].Name);
+				method.DefineParameter(i + offset, parameters[i].Attributes, parameters[i].Name);
 
 			return method;
-		}
-
-		internal static ILGenerator CreateSaveableMethod(MethodBase original, string suffix, out AssemblyBuilder assemblyBuilder, out TypeBuilder typeBuilder)
-		{
-			var assemblyName = new AssemblyName("DebugAssembly");
-			var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-			assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, path);
-			var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name, assemblyName.Name + ".dll");
-			typeBuilder = moduleBuilder.DefineType("Debug" + original.DeclaringType.Name, TypeAttributes.Public);
-
-			if (original == null) throw new ArgumentNullException("original cannot be null");
-			var patchName = original.Name + suffix;
-			patchName = patchName.Replace("<>", "");
-
-			var parameters = original.GetParameters();
-			var result = parameters.Types().ToList();
-			if (original.IsStatic == false)
-				result.Insert(0, typeof(object));
-			var paramTypes = result.ToArray();
-
-			var methodBuilder = typeBuilder.DefineMethod(
-				patchName,
-				MethodAttributes.Public | MethodAttributes.Static,
-				CallingConventions.Standard,
-				AccessTools.GetReturnedType(original),
-				paramTypes
-			);
-
-			return methodBuilder.GetILGenerator();
-		}
-
-		internal static void SaveMethod(AssemblyBuilder assemblyBuilder, TypeBuilder typeBuilder)
-		{
-			var t = typeBuilder.CreateType();
-			assemblyBuilder.Save("HarmonyDebugAssembly.dll");
 		}
 
 		/// <summary>Creates local variables by copying them from an original method</summary>
@@ -196,7 +134,7 @@ namespace Harmony
 
 			// on mono, just call 'CreateDynMethod'
 			//
-			var m_CreateDynMethod = typeof(DynamicMethod).GetMethod("CreateDynMethod", nonPublicInstance);
+			var m_CreateDynMethod = method.GetType().GetMethod("CreateDynMethod", nonPublicInstance);
 			if (m_CreateDynMethod != null)
 			{
 				var h_CreateDynMethod = MethodInvoker.GetHandler(m_CreateDynMethod);
@@ -209,17 +147,27 @@ namespace Harmony
 			var m__CompileMethod = typeof(RuntimeHelpers).GetMethod("_CompileMethod", nonPublicStatic);
 			var h__CompileMethod = MethodInvoker.GetHandler(m__CompileMethod);
 
-			var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", nonPublicInstance);
+			var m_GetMethodDescriptor = method.GetType().GetMethod("GetMethodDescriptor", nonPublicInstance);
 			var h_GetMethodDescriptor = MethodInvoker.GetHandler(m_GetMethodDescriptor);
 			var handle = (RuntimeMethodHandle)h_GetMethodDescriptor(method, new object[0]);
 
 			// 1) RuntimeHelpers._CompileMethod(handle.GetMethodInfo())
 			//
-			var m_GetMethodInfo = typeof(RuntimeMethodHandle).GetMethod("GetMethodInfo", nonPublicInstance);
-			if (m_GetMethodInfo != null)
+			object runtimeMethodInfo = null;
+			var f_m_value = handle.GetType().GetField("m_value", nonPublicInstance);
+			if (f_m_value != null)
+				runtimeMethodInfo = f_m_value.GetValue(handle);
+			else
 			{
-				var h_GetMethodInfo = MethodInvoker.GetHandler(m_GetMethodInfo);
-				var runtimeMethodInfo = h_GetMethodInfo(handle, new object[0]);
+				var m_GetMethodInfo = handle.GetType().GetMethod("GetMethodInfo", nonPublicInstance);
+				if (m_GetMethodInfo != null)
+				{
+					var h_GetMethodInfo = MethodInvoker.GetHandler(m_GetMethodInfo);
+					runtimeMethodInfo = h_GetMethodInfo(handle, new object[0]);
+				}
+			}
+			if (runtimeMethodInfo != null)
+			{
 				try
 				{
 					// this can throw BadImageFormatException "An attempt was made to load a program with an incorrect format"

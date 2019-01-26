@@ -110,9 +110,9 @@ namespace HarmonyTests
 			}
 
 			new Class2().Method2();
-			Assert.IsTrue(Class1Patch.prefixed, "Prefix was not executed");
-			Assert.IsTrue(Class1Patch.originalExecuted, "Original was not executed");
-			Assert.IsTrue(Class1Patch.postfixed, "Postfix was not executed");
+			Assert.IsTrue(Class2Patch.prefixed, "Prefix was not executed");
+			Assert.IsTrue(Class2Patch.originalExecuted, "Original was not executed");
+			Assert.IsTrue(Class2Patch.postfixed, "Postfix was not executed");
 		}
 
 		[TestMethod]
