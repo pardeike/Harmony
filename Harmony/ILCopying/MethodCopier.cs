@@ -57,9 +57,9 @@ namespace Harmony.ILCopying
 		readonly ByteBuffer ilBytes;
 		readonly ParameterInfo this_parameter;
 		readonly ParameterInfo[] parameters;
-		readonly IList<LocalVariableInfo> locals;
 		readonly IList<ExceptionHandlingClause> exceptions;
 		List<ILInstruction> ilInstructions;
+		List<LocalVariableInfo> localVariables;
 
 		LocalBuilder[] variables;
 
@@ -127,7 +127,7 @@ namespace Harmony.ILCopying
 				this_parameter = new ThisParameter(method);
 			parameters = method.GetParameters();
 
-			locals = body.LocalVariables;
+			localVariables = body.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
 			exceptions = body.ExceptionHandlingClauses;
 		}
 
@@ -155,7 +155,7 @@ namespace Harmony.ILCopying
 			if (existingVariables != null)
 				variables = existingVariables;
 			else
-				variables = locals.Select(
+				variables = localVariables.Select(
 					lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)
 				).ToArray();
 		}
@@ -303,7 +303,23 @@ namespace Harmony.ILCopying
 			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 
-			// pass3 - remove RET if it appears at the end
+			if (HarmonyInstance.DEBUG)
+				Emitter.LogComment(generator, "start original");
+
+			// pass3 - log out all new local variables
+			//
+			foreach (var instruction in codeInstructions)
+			{
+				var local = instruction.operand as LocalBuilder;
+				if (local == null)
+					continue;
+				if (localVariables.Contains(local))
+					continue;
+				Emitter.LogLocalVariable(generator, local);
+				localVariables.Add(local);
+			}
+
+			// pass4 - remove RET if it appears at the end
 			while (true)
 			{
 				var lastInstruction = codeInstructions.LastOrDefault();
@@ -315,7 +331,7 @@ namespace Harmony.ILCopying
 				codeInstructions.RemoveAt(codeInstructions.Count - 1);
 			}
 
-			// pass4 - mark labels and exceptions and emit codes
+			// pass5 - mark labels and exceptions and emit codes
 			//
 			var idx = 0;
 			codeInstructions.Do(codeInstruction =>
@@ -326,7 +342,10 @@ namespace Harmony.ILCopying
 				// start all exception blocks
 				// TODO: we ignore the resulting label because we have no way to use it
 				//
-				codeInstruction.blocks.Do(block => { Label? label; Emitter.MarkBlockBefore(generator, block, out label); });
+				codeInstruction.blocks.Do(block => {
+					Label? label;
+					Emitter.MarkBlockBefore(generator, block, out label);
+				});
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
@@ -403,6 +422,9 @@ namespace Harmony.ILCopying
 
 				idx++;
 			});
+
+			if (HarmonyInstance.DEBUG)
+				Emitter.LogComment(generator, "end original");
 		}
 
 		// interpret member info value
@@ -669,7 +691,7 @@ namespace Harmony.ILCopying
 
 		LocalVariableInfo GetLocalVariable(int index)
 		{
-			return locals?[index];
+			return localVariables?[index];
 		}
 
 		ParameterInfo GetParameter(int index)

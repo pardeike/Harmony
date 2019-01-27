@@ -202,33 +202,13 @@ namespace Harmony
 
 		/// <summary>Converts instructions to our own instructions</summary>
 		/// <param name="instructions">The instructions to be converted</param>
+		/// <param name="codeInstructionType">The instruction type to convert to</param>
 		/// <param name="originalInstructions">The original instructions</param>
 		/// <param name="unassignedValues">[out] The unassigned values</param>
 		/// <returns>The converted instructions</returns>
 		///
-		[UpgradeToLatestVersion(1)]
-		public static IEnumerable ConvertToOurInstructions(IEnumerable instructions, List<object> originalInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
+		public static IEnumerable ConvertToOurInstructions(IEnumerable instructions, Type codeInstructionType, List<object> originalInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
-			// Since we are patching this method, we cannot use typeof(CodeInstruction)
-			// because that would use the CodeInstruction of the Harmony lib that patches
-			// us and we get a type assignment error.
-			// Instead, we know that our caller returns List<X> where X is the type we need
-			//
-			var codeInstructionType = new StackTrace().GetFrames()
-				.Select(frame => frame.GetMethod())
-				.OfType<MethodInfo>()
-				.Select(method =>
-				{
-					var returnType = method.ReturnType;
-					if (returnType.IsGenericType == false) return null;
-					var listTypes = returnType.GetGenericArguments();
-					if (listTypes.Length != 1) return null;
-					var type = listTypes[0];
-					return type.FullName == typeof(CodeInstruction).FullName ? type : null;
-				})
-				.Where(type => type != null)
-				.First();
-
 			var newInstructions = instructions.Cast<object>().ToList();
 
 			var index = -1;
@@ -292,6 +272,7 @@ namespace Harmony
 		/// <param name="method">The original method</param>
 		/// <returns>The final instruction</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public List<CodeInstruction> GetResult(ILGenerator generator, MethodBase method)
 		{
 			IEnumerable instructions = codeInstructions;
@@ -310,7 +291,7 @@ namespace Harmony
 				instructions = transpiler.Invoke(null, parameter.ToArray()) as IEnumerable;
 
 				// convert result back to 'our' CodeInstruction and re-assign otherwise lost fields
-				instructions = ConvertToOurInstructions(instructions, originalInstructions, unassignedValues);
+				instructions = ConvertToOurInstructions(instructions, typeof(CodeInstruction), originalInstructions, unassignedValues);
 			});
 			return instructions.Cast<CodeInstruction>().ToList();
 		}

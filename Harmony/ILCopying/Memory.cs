@@ -74,6 +74,20 @@ namespace Harmony.ILCopying
 			}
 		}
 
+		/// <summary>Mark method for no inlining</summary>
+		/// <param name="method">The method to change</param>
+		unsafe public static void MarkForNoInlining(MethodBase method)
+		{
+			//var methodDef = method.MetadataToken;
+
+			// TODO for now, this only works on mono
+			if (Type.GetType("Mono.Runtime") != null)
+			{
+				var iflags = (ushort*)(method.MethodHandle.Value) + 1;
+				*iflags |= (ushort)MethodImplOptions.NoInlining;
+			}
+		}
+
 		/// <summary>Detours a method</summary>
 		/// <param name="original">The original method</param>
 		/// <param name="replacement">The replacement method</param>

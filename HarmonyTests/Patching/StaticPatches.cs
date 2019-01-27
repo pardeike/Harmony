@@ -12,6 +12,37 @@ namespace HarmonyTests
 	public class StaticPatches
 	{
 		[TestMethod]
+		public void TestMethod0()
+		{
+			var originalClass = typeof(Class0);
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("Method0");
+			Assert.IsNotNull(originalMethod);
+
+			var patchClass = typeof(Class0Patch);
+			var realPostfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(realPostfix);
+
+			MethodInfo prefixMethod;
+			MethodInfo postfixMethod;
+			MethodInfo transpilerMethod;
+			PatchTools.GetPatches(typeof(Class0Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
+			
+			Assert.AreSame(realPostfix, postfixMethod);
+
+			//HarmonyInstance.DEBUG = true;
+			var instance = HarmonyInstance.Create("test");
+			Assert.IsNotNull(instance);
+
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfixMethod), null);
+			Assert.IsNotNull(patcher);
+			patcher.Patch();
+
+			var result = new Class0().Method0();
+			Assert.AreEqual("patched", result);
+		}
+
+		[TestMethod]
 		public void TestMethod1()
 		{
 			var originalClass = typeof(Class1);
@@ -38,6 +69,7 @@ namespace HarmonyTests
 			Assert.AreSame(realPostfix, postfixMethod);
 			Assert.AreSame(realTranspiler, transpilerMethod);
 
+			//HarmonyInstance.DEBUG = true;
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 

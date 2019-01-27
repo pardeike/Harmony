@@ -22,7 +22,6 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Optimize>false</Optimize>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,11 +29,13 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<Optimize>false</Optimize>
 		<DebugType>full</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>

@@ -1,11 +1,29 @@
 using Harmony;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyTests.Assets
 {
+	public class Class0
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string Method0()
+		{
+			return "original";
+		}
+	}
+
+	public class Class0Patch
+	{
+		public static void Postfix(ref string __result)
+		{
+			__result = "patched";
+		}
+	}
+
 	public class Class1
 	{
 		public static void Method1()
@@ -35,10 +53,14 @@ namespace HarmonyTests.Assets
 			postfixed = true;
 		}
 
-		public static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, MethodBase original, IEnumerable<CodeInstruction> instructions)
 		{
-			// no-op / passthrough
-			return instructions;
+			var localVar = il.DeclareLocal(typeof(int));
+			yield return new CodeInstruction(OpCodes.Ldc_I4, 123);
+			yield return new CodeInstruction(OpCodes.Stloc, localVar);
+
+			foreach (var instruction in instructions)
+				yield return instruction;
 		}
 
 		public static void _reset()
@@ -316,6 +338,7 @@ namespace HarmonyTests.Assets
 	{
 		public string s;
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void TestMethod(string val)
 		{
 			s = val;
