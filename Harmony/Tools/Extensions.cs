@@ -114,8 +114,11 @@ namespace Harmony
 		/// <param name="sequence">The collection</param>
 		/// <param name="item">The item to add</param>
 		/// <returns>The collection containing the item</returns>
+		/// 
+		/// Note: this was called 'Add' before but that led to unwanted side effect
+		///       See https://github.com/pardeike/Harmony/issues/147
 		///
-		public static IEnumerable<T> Add<T>(this IEnumerable<T> sequence, T item)
+		public static IEnumerable<T> AddItem<T>(this IEnumerable<T> sequence, T item)
 		{
 			return (sequence ?? Enumerable.Empty<T>()).Concat(new[] { item });
 		}
@@ -128,7 +131,7 @@ namespace Harmony
 		///
 		public static T[] AddToArray<T>(this T[] sequence, T item)
 		{
-			return Add(sequence, item).ToArray();
+			return AddItem(sequence, item).ToArray();
 		}
 
 		/// <summary>A helper to add items to an array</summary>
