@@ -21,6 +21,9 @@ namespace Harmony
 			| BindingFlags.GetProperty
 			| BindingFlags.SetProperty;
 
+		/// <summary>Shortcut to simplify the use of reflections and make it work for any access level but only within the current type</summary>
+		public static BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
+
 		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
 		/// <param name="name">The name</param>
 		/// <returns>A Type</returns>
@@ -83,7 +86,7 @@ namespace Harmony
 		public static FieldInfo DeclaredField(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return type.GetField(name, all);
+			return type.GetField(name, allDeclared);
 		}
 
 		/// <summary>Gets the reflection information for a field by searching the type and all its super types</summary>
@@ -116,7 +119,7 @@ namespace Harmony
 		public static PropertyInfo DeclaredProperty(Type type, string name)
 		{
 			if (type == null || name == null) return null;
-			return type.GetProperty(name, all);
+			return type.GetProperty(name, allDeclared);
 		}
 
 		/// <summary>Gets the reflection information for the getter method of a directly declared property</summary>
@@ -184,9 +187,9 @@ namespace Harmony
 			var modifiers = new ParameterModifier[] { };
 
 			if (parameters == null)
-				result = type.GetMethod(name, all);
+				result = type.GetMethod(name, allDeclared);
 			else
-				result = type.GetMethod(name, all, null, parameters, modifiers);
+				result = type.GetMethod(name, allDeclared, null, parameters, modifiers);
 
 			if (result == null) return null;
 			if (generics != null) result = result.MakeGenericMethod(generics);
@@ -335,7 +338,7 @@ namespace Harmony
 		{
 			if (type == null) return null;
 			if (parameters == null) parameters = new Type[0];
-			return type.GetConstructor(all, null, parameters, new ParameterModifier[] { });
+			return type.GetConstructor(allDeclared, null, parameters, new ParameterModifier[] { });
 		}
 
 		/// <summary>Gets the reflection information for a constructor by searching the type and all its super types</summary>
@@ -357,7 +360,7 @@ namespace Harmony
 		public static List<ConstructorInfo> GetDeclaredConstructors(Type type)
 		{
 			if (type == null) return null;
-			return type.GetConstructors(all).Where(method => method.DeclaringType == type).ToList();
+			return type.GetConstructors(allDeclared).Where(method => method.DeclaringType == type).ToList();
 		}
 
 		/// <summary>Gets reflection information for all declared methods</summary>
@@ -367,7 +370,7 @@ namespace Harmony
 		public static List<MethodInfo> GetDeclaredMethods(Type type)
 		{
 			if (type == null) return null;
-			return type.GetMethods(all).Where(method => method.DeclaringType == type).ToList();
+			return type.GetMethods(allDeclared).ToList();
 		}
 
 		/// <summary>Gets reflection information for all declared properties</summary>
@@ -377,7 +380,7 @@ namespace Harmony
 		public static List<PropertyInfo> GetDeclaredProperties(Type type)
 		{
 			if (type == null) return null;
-			return type.GetProperties(all).Where(property => property.DeclaringType == type).ToList();
+			return type.GetProperties(allDeclared).ToList();
 		}
 
 		/// <summary>Gets reflection information for all declared fields</summary>
@@ -387,7 +390,7 @@ namespace Harmony
 		public static List<FieldInfo> GetDeclaredFields(Type type)
 		{
 			if (type == null) return null;
-			return type.GetFields(all).Where(field => field.DeclaringType == type).ToList();
+			return type.GetFields(allDeclared).ToList();
 		}
 
 		/// <summary>Gets the return type of a method or constructor</summary>
@@ -432,7 +435,7 @@ namespace Harmony
 		public static MethodInfo FirstMethod(Type type, Func<MethodInfo, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
-			return type.GetMethods(all).FirstOrDefault(method => predicate(method));
+			return type.GetMethods(allDeclared).FirstOrDefault(method => predicate(method));
 		}
 
 		/// <summary>Given a type, returns the first constructor matching a predicate</summary>
@@ -443,7 +446,7 @@ namespace Harmony
 		public static ConstructorInfo FirstConstructor(Type type, Func<ConstructorInfo, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
-			return type.GetConstructors(all).FirstOrDefault(constructor => predicate(constructor));
+			return type.GetConstructors(allDeclared).FirstOrDefault(constructor => predicate(constructor));
 		}
 
 		/// <summary>Given a type, returns the first property matching a predicate</summary>
@@ -454,7 +457,7 @@ namespace Harmony
 		public static PropertyInfo FirstProperty(Type type, Func<PropertyInfo, bool> predicate)
 		{
 			if (type == null || predicate == null) return null;
-			return type.GetProperties(all).FirstOrDefault(property => predicate(property));
+			return type.GetProperties(allDeclared).FirstOrDefault(property => predicate(property));
 		}
 
 		/// <summary>Returns an array containing the type of each object in the given array</summary>

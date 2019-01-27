@@ -42,4 +42,8 @@ namespace HarmonyTests.Assets
 			field = val;
 		}
 	}
+
+	public class AccessToolsSubClass : AccessToolsClass
+	{
+	}
 }

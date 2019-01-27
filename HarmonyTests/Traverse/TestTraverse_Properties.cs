@@ -32,9 +32,17 @@ namespace HarmonyTests
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
 				Assert.IsNotNull(ptrv);
-
-				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
-				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
+				if (name == "BaseProperty2")
+				{
+					// BaseProperty2 is only defined in base class
+					Assert.IsNull(ptrv.GetValue());
+					Assert.IsNull(ptrv.GetValue<string>());
+				}
+				else
+				{
+					Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
+					Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
+				}
 			}
 		}
 
@@ -56,12 +64,23 @@ namespace HarmonyTests
 
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
+				Assert.IsNotNull(ptrv);
 				ptrv.SetValue(newValue);
 
 				// after
-				Assert.AreEqual(newValue, instance.GetTestProperty(i));
-				Assert.AreEqual(newValue, ptrv.GetValue());
-				Assert.AreEqual(newValue, ptrv.GetValue<string>());
+				if (name == "BaseProperty2")
+				{
+					// BaseProperty2 is only defined in base class
+					Assert.AreEqual(TraverseProperties.testStrings[i], instance.GetTestProperty(i));
+					Assert.IsNull(ptrv.GetValue());
+					Assert.IsNull(ptrv.GetValue<string>());
+				}
+				else
+				{
+					Assert.AreEqual(newValue, instance.GetTestProperty(i));
+					Assert.AreEqual(newValue, ptrv.GetValue());
+					Assert.AreEqual(newValue, ptrv.GetValue<string>());
+				}
 			}
 		}
 	}

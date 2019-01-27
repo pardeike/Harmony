@@ -11,7 +11,7 @@ namespace HarmonyTests
 	public class Test_AccessTools
 	{
 		[TestMethod]
-		public void AccessTools_Field()
+		public void AccessTools_Field1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -27,7 +27,19 @@ namespace HarmonyTests
 		}
 
 		[TestMethod]
-		public void AccessTools_Property()
+		public void AccessTools_Field2()
+		{
+			var type = typeof(AccessToolsClass);
+			Assert.IsNotNull(AccessTools.Field(type, "field"));
+			Assert.IsNotNull(AccessTools.DeclaredField(type, "field"));
+
+			var subtype = typeof(AccessToolsSubClass);
+			Assert.IsNotNull(AccessTools.Field(subtype, "field"));
+			Assert.IsNull(AccessTools.DeclaredField(subtype, "field"));
+		}
+
+		[TestMethod]
+		public void AccessTools_Property1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -40,6 +52,18 @@ namespace HarmonyTests
 			Assert.IsNotNull(prop);
 			Assert.AreEqual(type, prop.DeclaringType);
 			Assert.AreEqual("Property", prop.Name);
+		}
+
+		[TestMethod]
+		public void AccessTools_Property2()
+		{
+			var type = typeof(AccessToolsClass);
+			Assert.IsNotNull(AccessTools.Property(type, "Property"));
+			Assert.IsNotNull(AccessTools.DeclaredProperty(type, "Property"));
+
+			var subtype = typeof(AccessToolsSubClass);
+			Assert.IsNotNull(AccessTools.Property(subtype, "Property"));
+			Assert.IsNull(AccessTools.DeclaredProperty(subtype, "Property"));
 		}
 
 		[TestMethod]
