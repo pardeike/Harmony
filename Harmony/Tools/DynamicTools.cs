@@ -22,15 +22,20 @@ namespace Harmony
 			var patchName = original.Name + suffix;
 			patchName = patchName.Replace("<>", "");
 
-			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 			var parameters = original.GetParameters();
-			var result = parameters.Types().ToList();
+			var parameterTypes = parameters.Types().ToList();
 			if (original.IsStatic == false)
-				result.Insert(0, typeof(object));
+			{
+				if (AccessTools.IsStruct(original.DeclaringType))
+					parameterTypes.Insert(0, original.DeclaringType.MakeByRefType());
+				else
+					parameterTypes.Insert(0, original.DeclaringType);
+			}
+
+			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 			if (firstArgIsReturnBuffer)
-				result.Insert(0, typeof(object));
-			var returnType = AccessTools.GetReturnedType(original);
-			var paramTypes = result.ToArray();
+				parameterTypes.Insert(0, typeof(IntPtr));
+			var returnType = firstArgIsReturnBuffer ? typeof(void) : AccessTools.GetReturnedType(original);
 
 			// DynamicMethod does not support byref return types
 			if (returnType == null || returnType.IsByRef)
@@ -43,8 +48,8 @@ namespace Harmony
 				patchName,
 				MethodAttributes.Public | MethodAttributes.Static,
 				CallingConventions.Standard,
-				firstArgIsReturnBuffer ? typeof(void) : returnType,
-				paramTypes,
+				returnType,
+				parameterTypes.ToArray(),
 				original.DeclaringType,
 				true
 			);

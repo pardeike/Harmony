@@ -277,9 +277,6 @@ namespace Harmony
 			if (allowFirsParamPassthrough && patch.ReturnType != typeof(void) && parameters.Count > 0 && parameters[0].ParameterType == patch.ReturnType)
 				parameters.RemoveRange(0, 1);
 
-			// this
-			var thisOpcode = firstArgIsReturnBuffer ? OpCodes.Ldarg_1 : OpCodes.Ldarg_0;
-
 			foreach (var patchParam in parameters)
 			{
 				if (patchParam.Name == ORIGINAL_METHOD_PARAM)
@@ -306,10 +303,24 @@ namespace Harmony
 				{
 					if (original.IsStatic)
 						Emitter.Emit(il, OpCodes.Ldnull);
-					else if (patchParam.ParameterType.IsByRef)
-						Emitter.Emit(il, OpCodes.Ldarga, firstArgIsReturnBuffer ? 1 : 0); // probably won't work or will be useless
-					else
-						Emitter.Emit(il, thisOpcode);
+					else 
+					{
+						var instanceIsRef = AccessTools.IsStruct(original.DeclaringType);
+						var parameterIsRef = patchParam.ParameterType.IsByRef;
+						if (instanceIsRef == parameterIsRef)
+						{
+							Emitter.Emit(il, firstArgIsReturnBuffer ? OpCodes.Ldarg_1 : OpCodes.Ldarg_0);
+						}
+						if (instanceIsRef && parameterIsRef == false)
+						{
+							Emitter.Emit(il, firstArgIsReturnBuffer ? OpCodes.Ldarg_1 : OpCodes.Ldarg_0);
+							Emitter.Emit(il, OpCodes.Ldobj, original.DeclaringType);
+						}
+						if (instanceIsRef == false && parameterIsRef)
+						{
+							Emitter.Emit(il, OpCodes.Ldarga, firstArgIsReturnBuffer ? 1 : 0);
+						}
+					}
 					continue;
 				}
 
@@ -331,24 +342,11 @@ namespace Harmony
 					}
 
 					if (fieldInfo.IsStatic)
-					{
-						if (patchParam.ParameterType.IsByRef)
-							Emitter.Emit(il, OpCodes.Ldsflda, fieldInfo);
-						else
-							Emitter.Emit(il, OpCodes.Ldsfld, fieldInfo);
-					}
+						Emitter.Emit(il, patchParam.ParameterType.IsByRef ? OpCodes.Ldsflda : OpCodes.Ldsfld, fieldInfo);
 					else
 					{
-						if (patchParam.ParameterType.IsByRef)
-						{
-							Emitter.Emit(il, thisOpcode);
-							Emitter.Emit(il, OpCodes.Ldflda, fieldInfo);
-						}
-						else
-						{
-							Emitter.Emit(il, thisOpcode);
-							Emitter.Emit(il, OpCodes.Ldfld, fieldInfo);
-						}
+						Emitter.Emit(il, firstArgIsReturnBuffer ? OpCodes.Ldarg_1 : OpCodes.Ldarg_0);
+						Emitter.Emit(il, patchParam.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fieldInfo);
 					}
 					continue;
 				}
@@ -459,3 +457,4 @@ namespace Harmony
 		}
 	}
 }
+ 

@@ -270,4 +270,63 @@ namespace HarmonyTests.Assets
 			__result = new TestStruct() { a = 10, b = 20 };
 		}
 	}
+
+	public struct Struct1
+	{
+		public int n;
+		public string s;
+		public long l1;
+		public long l2;
+		public long l3;
+		public long l4;
+
+		public static bool prefixed = false;
+		public static bool originalExecuted = false;
+		public static bool postfixed = false;
+
+		public void TestMethod(string val)
+		{
+			s = val;
+			n++;
+			originalExecuted = true;
+		}
+
+		public static void Reset()
+		{
+			prefixed = false;
+			originalExecuted = false;
+			postfixed = false;
+		}
+	}
+
+	public class Struct1Patch
+	{
+		public static void Prefix()
+		{
+			Struct1.prefixed = true;
+		}
+
+		public static void Postfix()
+		{
+			Struct1.postfixed = true;
+		}
+	}
+
+	public struct Struct2
+	{
+		public string s;
+
+		public void TestMethod(string val)
+		{
+			s = val;
+		}
+	}
+
+	public class Struct2Patch
+	{
+		public static void Postfix(ref Struct2 __instance)
+		{
+			__instance.s = "patched";
+		}
+	}
 }
