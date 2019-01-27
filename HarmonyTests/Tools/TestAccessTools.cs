@@ -67,7 +67,7 @@ namespace HarmonyTests
 		}
 
 		[TestMethod]
-		public void AccessTools_Method()
+		public void AccessTools_Method1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -91,6 +91,18 @@ namespace HarmonyTests
 
 			var m4 = AccessTools.Method(type, "SetField", new Type[] { typeof(string) });
 			Assert.IsNotNull(m4);
+		}
+
+		[TestMethod]
+		public void AccessTools_Method2()
+		{
+			var type = typeof(AccessToolsSubClass);
+
+			var m1 = AccessTools.Method(type, "Method");
+			Assert.IsNotNull(m1);
+
+			var m2 = AccessTools.DeclaredMethod(type, "Method");
+			Assert.IsNull(m2);
 		}
 
 		[TestMethod]

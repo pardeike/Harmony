@@ -29,8 +29,7 @@ namespace HarmonyTests
 			PatchTools.GetPatches(typeof(Class0Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
 			
 			Assert.AreSame(realPostfix, postfixMethod);
-
-			//HarmonyInstance.DEBUG = true;
+			
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
@@ -68,8 +67,7 @@ namespace HarmonyTests
 			Assert.AreSame(realPrefix, prefixMethod);
 			Assert.AreSame(realPostfix, postfixMethod);
 			Assert.AreSame(realTranspiler, transpilerMethod);
-
-			//HarmonyInstance.DEBUG = true;
+			
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 

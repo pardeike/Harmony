@@ -78,21 +78,26 @@ namespace Harmony
 			PatchAll(assembly);
 		}
 
+		/// <summary>Create a patch processor from an annotated class</summary>
+		/// <param name="type">The class</param>
+		/// 
+		public PatchProcessor ProcessorForAnnotatedClass(Type type)
+		{
+			var parentMethodInfos = type.GetHarmonyMethods();
+			if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
+			{
+				var info = HarmonyMethod.Merge(parentMethodInfos);
+				return new PatchProcessor(this, type, info);
+			}
+			return null;
+		}
+
 		/// <summary>Searches an assembly for Harmony annotations and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
 		/// 
 		public void PatchAll(Assembly assembly)
 		{
-			assembly.GetTypes().Do(type =>
-			{
-				var parentMethodInfos = type.GetHarmonyMethods();
-				if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
-				{
-					var info = HarmonyMethod.Merge(parentMethodInfos);
-					var processor = new PatchProcessor(this, type, info);
-					processor.Patch();
-				}
-			});
+			assembly.GetTypes().Do(type => ProcessorForAnnotatedClass(type)?.Patch());
 		}
 
 		/// <summary>Creates patches by manually specifying the methods</summary>
