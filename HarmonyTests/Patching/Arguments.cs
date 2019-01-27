@@ -1,8 +1,6 @@
 using Harmony;
-using Harmony.ILCopying;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -67,8 +65,7 @@ namespace HarmonyTests
 			PatchTools.GetPatches(typeof(Class7Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
 
 			Assert.AreSame(realPostfix, postfixMethod);
-
-			HarmonyInstance.DEBUG = true;
+			
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
@@ -103,8 +100,7 @@ namespace HarmonyTests
 			PatchTools.GetPatches(typeof(Class8Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
 			
 			Assert.AreSame(realPostfix, postfixMethod);
-
-			HarmonyInstance.DEBUG = true;
+			
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
