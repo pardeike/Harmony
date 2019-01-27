@@ -115,21 +115,19 @@
   items:
   - uid: Harmony.ILCopying.ByteBuffer
     name: ByteBuffer
-  - uid: Harmony.ILCopying.Emitter
-    name: Emitter
   - uid: Harmony.ILCopying.ExceptionBlock
     name: ExceptionBlock
   - uid: Harmony.ILCopying.ExceptionBlockType
     name: ExceptionBlockType
   - uid: Harmony.ILCopying.ILInstruction
     name: ILInstruction
-  - uid: Harmony.ILCopying.LeaveTry
-    name: LeaveTry
   - uid: Harmony.ILCopying.Memory
     name: Memory
   - uid: Harmony.ILCopying.MethodBodyReader
     name: MethodBodyReader
   - uid: Harmony.ILCopying.MethodCopier
     name: MethodCopier
+  - uid: Harmony.ILCopying.NativeThisPointer
+    name: NativeThisPointer
   - uid: Harmony.ILCopying.Protection
     name: Protection

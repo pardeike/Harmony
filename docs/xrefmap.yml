@@ -67,6 +67,12 @@ references:
   commentId: F:Harmony.AccessTools.all
   fullName: Harmony.AccessTools.all
   nameWithType: AccessTools.all
+- uid: Harmony.AccessTools.allDeclared
+  name: allDeclared
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_allDeclared
+  commentId: F:Harmony.AccessTools.allDeclared
+  fullName: Harmony.AccessTools.allDeclared
+  nameWithType: AccessTools.allDeclared
 - uid: Harmony.AccessTools.Constructor(System.Type,System.Type[])
   name: Constructor(Type, Type[])
   href: api/Harmony.AccessTools.html#Harmony_AccessTools_Constructor_System_Type_System_Type___
@@ -160,6 +166,32 @@ references:
   isSpec: "True"
   fullName: Harmony.AccessTools.DeclaredProperty
   nameWithType: AccessTools.DeclaredProperty
+- uid: Harmony.AccessTools.DeclaredPropertyGetter(System.Type,System.String)
+  name: DeclaredPropertyGetter(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredPropertyGetter_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.DeclaredPropertyGetter(System.Type,System.String)
+  fullName: Harmony.AccessTools.DeclaredPropertyGetter(System.Type, System.String)
+  nameWithType: AccessTools.DeclaredPropertyGetter(Type, String)
+- uid: Harmony.AccessTools.DeclaredPropertyGetter*
+  name: DeclaredPropertyGetter
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredPropertyGetter_
+  commentId: Overload:Harmony.AccessTools.DeclaredPropertyGetter
+  isSpec: "True"
+  fullName: Harmony.AccessTools.DeclaredPropertyGetter
+  nameWithType: AccessTools.DeclaredPropertyGetter
+- uid: Harmony.AccessTools.DeclaredPropertySetter(System.Type,System.String)
+  name: DeclaredPropertySetter(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredPropertySetter_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.DeclaredPropertySetter(System.Type,System.String)
+  fullName: Harmony.AccessTools.DeclaredPropertySetter(System.Type, System.String)
+  nameWithType: AccessTools.DeclaredPropertySetter(Type, String)
+- uid: Harmony.AccessTools.DeclaredPropertySetter*
+  name: DeclaredPropertySetter
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_DeclaredPropertySetter_
+  commentId: Overload:Harmony.AccessTools.DeclaredPropertySetter
+  isSpec: "True"
+  fullName: Harmony.AccessTools.DeclaredPropertySetter
+  nameWithType: AccessTools.DeclaredPropertySetter
 - uid: Harmony.AccessTools.Field(System.Type,System.String)
   name: Field(Type, String)
   href: api/Harmony.AccessTools.html#Harmony_AccessTools_Field_System_Type_System_String_
@@ -454,6 +486,19 @@ references:
   isSpec: "True"
   fullName: Harmony.AccessTools.GetTypes
   nameWithType: AccessTools.GetTypes
+- uid: Harmony.AccessTools.GetUnderlyingType(System.Reflection.MemberInfo)
+  name: GetUnderlyingType(MemberInfo)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetUnderlyingType_System_Reflection_MemberInfo_
+  commentId: M:Harmony.AccessTools.GetUnderlyingType(System.Reflection.MemberInfo)
+  fullName: Harmony.AccessTools.GetUnderlyingType(System.Reflection.MemberInfo)
+  nameWithType: AccessTools.GetUnderlyingType(MemberInfo)
+- uid: Harmony.AccessTools.GetUnderlyingType*
+  name: GetUnderlyingType
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_GetUnderlyingType_
+  commentId: Overload:Harmony.AccessTools.GetUnderlyingType
+  isSpec: "True"
+  fullName: Harmony.AccessTools.GetUnderlyingType
+  nameWithType: AccessTools.GetUnderlyingType
 - uid: Harmony.AccessTools.Inner(System.Type,System.String)
   name: Inner(Type, String)
   href: api/Harmony.AccessTools.html#Harmony_AccessTools_Inner_System_Type_System_String_
@@ -591,6 +636,32 @@ references:
   isSpec: "True"
   fullName: Harmony.AccessTools.Property
   nameWithType: AccessTools.Property
+- uid: Harmony.AccessTools.PropertyGetter(System.Type,System.String)
+  name: PropertyGetter(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_PropertyGetter_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.PropertyGetter(System.Type,System.String)
+  fullName: Harmony.AccessTools.PropertyGetter(System.Type, System.String)
+  nameWithType: AccessTools.PropertyGetter(Type, String)
+- uid: Harmony.AccessTools.PropertyGetter*
+  name: PropertyGetter
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_PropertyGetter_
+  commentId: Overload:Harmony.AccessTools.PropertyGetter
+  isSpec: "True"
+  fullName: Harmony.AccessTools.PropertyGetter
+  nameWithType: AccessTools.PropertyGetter
+- uid: Harmony.AccessTools.PropertySetter(System.Type,System.String)
+  name: PropertySetter(Type, String)
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_PropertySetter_System_Type_System_String_
+  commentId: M:Harmony.AccessTools.PropertySetter(System.Type,System.String)
+  fullName: Harmony.AccessTools.PropertySetter(System.Type, System.String)
+  nameWithType: AccessTools.PropertySetter(Type, String)
+- uid: Harmony.AccessTools.PropertySetter*
+  name: PropertySetter
+  href: api/Harmony.AccessTools.html#Harmony_AccessTools_PropertySetter_
+  commentId: Overload:Harmony.AccessTools.PropertySetter
+  isSpec: "True"
+  fullName: Harmony.AccessTools.PropertySetter
+  nameWithType: AccessTools.PropertySetter
 - uid: Harmony.AccessTools.ThrowMissingMemberException(System.Type,System.String[])
   name: ThrowMissingMemberException(Type, String[])
   href: api/Harmony.AccessTools.html#Harmony_AccessTools_ThrowMissingMemberException_System_Type_System_String___
@@ -1597,15 +1668,15 @@ references:
   isSpec: "True"
   fullName: Harmony.CodeTranspiler.ConvertToGeneralInstructions
   nameWithType: CodeTranspiler.ConvertToGeneralInstructions
-- uid: Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable,System.Collections.Generic.List{System.Object},System.Collections.Generic.Dictionary{System.Object,System.Collections.Generic.Dictionary{System.String,System.Object}})
-  name: ConvertToOurInstructions(IEnumerable, List<Object>, Dictionary<Object, Dictionary<String, Object>>)
-  href: api/Harmony.CodeTranspiler.html#Harmony_CodeTranspiler_ConvertToOurInstructions_System_Collections_IEnumerable_System_Collections_Generic_List_System_Object__System_Collections_Generic_Dictionary_System_Object_System_Collections_Generic_Dictionary_System_String_System_Object___
-  commentId: M:Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable,System.Collections.Generic.List{System.Object},System.Collections.Generic.Dictionary{System.Object,System.Collections.Generic.Dictionary{System.String,System.Object}})
-  name.vb: ConvertToOurInstructions(IEnumerable, List(Of Object), Dictionary(Of Object, Dictionary(Of String, Object)))
-  fullName: Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable, System.Collections.Generic.List<System.Object>, System.Collections.Generic.Dictionary<System.Object, System.Collections.Generic.Dictionary<System.String, System.Object>>)
-  fullName.vb: Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable, System.Collections.Generic.List(Of System.Object), System.Collections.Generic.Dictionary(Of System.Object, System.Collections.Generic.Dictionary(Of System.String, System.Object)))
-  nameWithType: CodeTranspiler.ConvertToOurInstructions(IEnumerable, List<Object>, Dictionary<Object, Dictionary<String, Object>>)
-  nameWithType.vb: CodeTranspiler.ConvertToOurInstructions(IEnumerable, List(Of Object), Dictionary(Of Object, Dictionary(Of String, Object)))
+- uid: Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable,System.Type,System.Collections.Generic.List{System.Object},System.Collections.Generic.Dictionary{System.Object,System.Collections.Generic.Dictionary{System.String,System.Object}})
+  name: ConvertToOurInstructions(IEnumerable, Type, List<Object>, Dictionary<Object, Dictionary<String, Object>>)
+  href: api/Harmony.CodeTranspiler.html#Harmony_CodeTranspiler_ConvertToOurInstructions_System_Collections_IEnumerable_System_Type_System_Collections_Generic_List_System_Object__System_Collections_Generic_Dictionary_System_Object_System_Collections_Generic_Dictionary_System_String_System_Object___
+  commentId: M:Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable,System.Type,System.Collections.Generic.List{System.Object},System.Collections.Generic.Dictionary{System.Object,System.Collections.Generic.Dictionary{System.String,System.Object}})
+  name.vb: ConvertToOurInstructions(IEnumerable, Type, List(Of Object), Dictionary(Of Object, Dictionary(Of String, Object)))
+  fullName: Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable, System.Type, System.Collections.Generic.List<System.Object>, System.Collections.Generic.Dictionary<System.Object, System.Collections.Generic.Dictionary<System.String, System.Object>>)
+  fullName.vb: Harmony.CodeTranspiler.ConvertToOurInstructions(System.Collections.IEnumerable, System.Type, System.Collections.Generic.List(Of System.Object), System.Collections.Generic.Dictionary(Of System.Object, System.Collections.Generic.Dictionary(Of System.String, System.Object)))
+  nameWithType: CodeTranspiler.ConvertToOurInstructions(IEnumerable, Type, List<Object>, Dictionary<Object, Dictionary<String, Object>>)
+  nameWithType.vb: CodeTranspiler.ConvertToOurInstructions(IEnumerable, Type, List(Of Object), Dictionary(Of Object, Dictionary(Of String, Object)))
 - uid: Harmony.CodeTranspiler.ConvertToOurInstructions*
   name: ConvertToOurInstructions
   href: api/Harmony.CodeTranspiler.html#Harmony_CodeTranspiler_ConvertToOurInstructions_
@@ -1661,22 +1732,22 @@ references:
   commentId: T:Harmony.CollectionExtensions
   fullName: Harmony.CollectionExtensions
   nameWithType: CollectionExtensions
-- uid: Harmony.CollectionExtensions.Add*
-  name: Add
-  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_Add_
-  commentId: Overload:Harmony.CollectionExtensions.Add
+- uid: Harmony.CollectionExtensions.AddItem*
+  name: AddItem
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_AddItem_
+  commentId: Overload:Harmony.CollectionExtensions.AddItem
   isSpec: "True"
-  fullName: Harmony.CollectionExtensions.Add
-  nameWithType: CollectionExtensions.Add
-- uid: Harmony.CollectionExtensions.Add``1(System.Collections.Generic.IEnumerable{``0},``0)
-  name: Add<T>(IEnumerable<T>, T)
-  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_Add__1_System_Collections_Generic_IEnumerable___0____0_
-  commentId: M:Harmony.CollectionExtensions.Add``1(System.Collections.Generic.IEnumerable{``0},``0)
-  name.vb: Add(Of T)(IEnumerable(Of T), T)
-  fullName: Harmony.CollectionExtensions.Add<T>(System.Collections.Generic.IEnumerable<T>, T)
-  fullName.vb: Harmony.CollectionExtensions.Add(Of T)(System.Collections.Generic.IEnumerable(Of T), T)
-  nameWithType: CollectionExtensions.Add<T>(IEnumerable<T>, T)
-  nameWithType.vb: CollectionExtensions.Add(Of T)(IEnumerable(Of T), T)
+  fullName: Harmony.CollectionExtensions.AddItem
+  nameWithType: CollectionExtensions.AddItem
+- uid: Harmony.CollectionExtensions.AddItem``1(System.Collections.Generic.IEnumerable{``0},``0)
+  name: AddItem<T>(IEnumerable<T>, T)
+  href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_AddItem__1_System_Collections_Generic_IEnumerable___0____0_
+  commentId: M:Harmony.CollectionExtensions.AddItem``1(System.Collections.Generic.IEnumerable{``0},``0)
+  name.vb: AddItem(Of T)(IEnumerable(Of T), T)
+  fullName: Harmony.CollectionExtensions.AddItem<T>(System.Collections.Generic.IEnumerable<T>, T)
+  fullName.vb: Harmony.CollectionExtensions.AddItem(Of T)(System.Collections.Generic.IEnumerable(Of T), T)
+  nameWithType: CollectionExtensions.AddItem<T>(IEnumerable<T>, T)
+  nameWithType.vb: CollectionExtensions.AddItem(Of T)(IEnumerable(Of T), T)
 - uid: Harmony.CollectionExtensions.AddRangeToArray*
   name: AddRangeToArray
   href: api/Harmony.CollectionExtensions.html#Harmony_CollectionExtensions_AddRangeToArray_
@@ -2364,6 +2435,19 @@ references:
   isSpec: "True"
   fullName: Harmony.HarmonyInstance.PatchAll
   nameWithType: HarmonyInstance.PatchAll
+- uid: Harmony.HarmonyInstance.ProcessorForAnnotatedClass(System.Type)
+  name: ProcessorForAnnotatedClass(Type)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_ProcessorForAnnotatedClass_System_Type_
+  commentId: M:Harmony.HarmonyInstance.ProcessorForAnnotatedClass(System.Type)
+  fullName: Harmony.HarmonyInstance.ProcessorForAnnotatedClass(System.Type)
+  nameWithType: HarmonyInstance.ProcessorForAnnotatedClass(Type)
+- uid: Harmony.HarmonyInstance.ProcessorForAnnotatedClass*
+  name: ProcessorForAnnotatedClass
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_ProcessorForAnnotatedClass_
+  commentId: Overload:Harmony.HarmonyInstance.ProcessorForAnnotatedClass
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.ProcessorForAnnotatedClass
+  nameWithType: HarmonyInstance.ProcessorForAnnotatedClass
 - uid: Harmony.HarmonyInstance.Unpatch(System.Reflection.MethodBase,Harmony.HarmonyPatchType,System.String)
   name: Unpatch(MethodBase, HarmonyPatchType, String)
   href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Unpatch_System_Reflection_MethodBase_Harmony_HarmonyPatchType_System_String_
@@ -3007,259 +3091,6 @@ references:
   isSpec: "True"
   fullName: Harmony.ILCopying.ByteBuffer.ReadSingle
   nameWithType: ByteBuffer.ReadSingle
-- uid: Harmony.ILCopying.Emitter
-  name: Emitter
-  href: api/Harmony.ILCopying.Emitter.html
-  commentId: T:Harmony.ILCopying.Emitter
-  fullName: Harmony.ILCopying.Emitter
-  nameWithType: Emitter
-- uid: Harmony.ILCopying.Emitter.CodePos(System.Reflection.Emit.ILGenerator)
-  name: CodePos(ILGenerator)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_CodePos_System_Reflection_Emit_ILGenerator_
-  commentId: M:Harmony.ILCopying.Emitter.CodePos(System.Reflection.Emit.ILGenerator)
-  fullName: Harmony.ILCopying.Emitter.CodePos(System.Reflection.Emit.ILGenerator)
-  nameWithType: Emitter.CodePos(ILGenerator)
-- uid: Harmony.ILCopying.Emitter.CodePos*
-  name: CodePos
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_CodePos_
-  commentId: Overload:Harmony.ILCopying.Emitter.CodePos
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.CodePos
-  nameWithType: Emitter.CodePos
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode)
-  name: Emit(ILGenerator, OpCode)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Byte)
-  name: Emit(ILGenerator, OpCode, Byte)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Byte_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Byte)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Byte)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Byte)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Double)
-  name: Emit(ILGenerator, OpCode, Double)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Double_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Double)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Double)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Double)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int16)
-  name: Emit(ILGenerator, OpCode, Int16)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Int16_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int16)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Int16)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Int16)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)
-  name: Emit(ILGenerator, OpCode, Int32)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Int32_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Int32)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Int32)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int64)
-  name: Emit(ILGenerator, OpCode, Int64)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Int64_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int64)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Int64)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Int64)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.ConstructorInfo)
-  name: Emit(ILGenerator, OpCode, ConstructorInfo)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_ConstructorInfo_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.ConstructorInfo)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.ConstructorInfo)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, ConstructorInfo)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.Label)
-  name: Emit(ILGenerator, OpCode, Label)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_Emit_Label_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.Label)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.Emit.Label)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Label)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.Label[])
-  name: Emit(ILGenerator, OpCode, Label[])
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_Emit_Label___
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.Label[])
-  name.vb: Emit(ILGenerator, OpCode, Label())
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.Emit.Label[])
-  fullName.vb: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.Emit.Label())
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Label[])
-  nameWithType.vb: Emitter.Emit(ILGenerator, OpCode, Label())
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.LocalBuilder)
-  name: Emit(ILGenerator, OpCode, LocalBuilder)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_Emit_LocalBuilder_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.LocalBuilder)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.Emit.LocalBuilder)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, LocalBuilder)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.SignatureHelper)
-  name: Emit(ILGenerator, OpCode, SignatureHelper)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_Emit_SignatureHelper_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.Emit.SignatureHelper)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.Emit.SignatureHelper)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, SignatureHelper)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.FieldInfo)
-  name: Emit(ILGenerator, OpCode, FieldInfo)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_FieldInfo_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.FieldInfo)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.FieldInfo)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, FieldInfo)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.MethodInfo)
-  name: Emit(ILGenerator, OpCode, MethodInfo)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_MethodInfo_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.MethodInfo)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.MethodInfo)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, MethodInfo)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.SByte)
-  name: Emit(ILGenerator, OpCode, SByte)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_SByte_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.SByte)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.SByte)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, SByte)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Single)
-  name: Emit(ILGenerator, OpCode, Single)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Single_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Single)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Single)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Single)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.String)
-  name: Emit(ILGenerator, OpCode, String)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_String_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.String)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.String)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, String)
-- uid: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Type)
-  name: Emit(ILGenerator, OpCode, Type)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Type_
-  commentId: M:Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Type)
-  fullName: Harmony.ILCopying.Emitter.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Type)
-  nameWithType: Emitter.Emit(ILGenerator, OpCode, Type)
-- uid: Harmony.ILCopying.Emitter.Emit*
-  name: Emit
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_Emit_
-  commentId: Overload:Harmony.ILCopying.Emitter.Emit
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.Emit
-  nameWithType: Emitter.Emit
-- uid: Harmony.ILCopying.Emitter.EmitCall(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.MethodInfo,System.Type[])
-  name: EmitCall(ILGenerator, OpCode, MethodInfo, Type[])
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_EmitCall_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_MethodInfo_System_Type___
-  commentId: M:Harmony.ILCopying.Emitter.EmitCall(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.MethodInfo,System.Type[])
-  name.vb: EmitCall(ILGenerator, OpCode, MethodInfo, Type())
-  fullName: Harmony.ILCopying.Emitter.EmitCall(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.MethodInfo, System.Type[])
-  fullName.vb: Harmony.ILCopying.Emitter.EmitCall(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.MethodInfo, System.Type())
-  nameWithType: Emitter.EmitCall(ILGenerator, OpCode, MethodInfo, Type[])
-  nameWithType.vb: Emitter.EmitCall(ILGenerator, OpCode, MethodInfo, Type())
-- uid: Harmony.ILCopying.Emitter.EmitCall*
-  name: EmitCall
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_EmitCall_
-  commentId: Overload:Harmony.ILCopying.Emitter.EmitCall
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.EmitCall
-  nameWithType: Emitter.EmitCall
-- uid: Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.CallingConventions,System.Type,System.Type[],System.Type[])
-  name: EmitCalli(ILGenerator, OpCode, CallingConventions, Type, Type[], Type[])
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_EmitCalli_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_CallingConventions_System_Type_System_Type___System_Type___
-  commentId: M:Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.CallingConventions,System.Type,System.Type[],System.Type[])
-  name.vb: EmitCalli(ILGenerator, OpCode, CallingConventions, Type, Type(), Type())
-  fullName: Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.CallingConventions, System.Type, System.Type[], System.Type[])
-  fullName.vb: Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.CallingConventions, System.Type, System.Type(), System.Type())
-  nameWithType: Emitter.EmitCalli(ILGenerator, OpCode, CallingConventions, Type, Type[], Type[])
-  nameWithType.vb: Emitter.EmitCalli(ILGenerator, OpCode, CallingConventions, Type, Type(), Type())
-- uid: Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Runtime.InteropServices.CallingConvention,System.Type,System.Type[])
-  name: EmitCalli(ILGenerator, OpCode, CallingConvention, Type, Type[])
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_EmitCalli_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Runtime_InteropServices_CallingConvention_System_Type_System_Type___
-  commentId: M:Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Runtime.InteropServices.CallingConvention,System.Type,System.Type[])
-  name.vb: EmitCalli(ILGenerator, OpCode, CallingConvention, Type, Type())
-  fullName: Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Runtime.InteropServices.CallingConvention, System.Type, System.Type[])
-  fullName.vb: Harmony.ILCopying.Emitter.EmitCalli(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Runtime.InteropServices.CallingConvention, System.Type, System.Type())
-  nameWithType: Emitter.EmitCalli(ILGenerator, OpCode, CallingConvention, Type, Type[])
-  nameWithType.vb: Emitter.EmitCalli(ILGenerator, OpCode, CallingConvention, Type, Type())
-- uid: Harmony.ILCopying.Emitter.EmitCalli*
-  name: EmitCalli
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_EmitCalli_
-  commentId: Overload:Harmony.ILCopying.Emitter.EmitCalli
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.EmitCalli
-  nameWithType: Emitter.EmitCalli
-- uid: Harmony.ILCopying.Emitter.FormatArgument(System.Object)
-  name: FormatArgument(Object)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_FormatArgument_System_Object_
-  commentId: M:Harmony.ILCopying.Emitter.FormatArgument(System.Object)
-  fullName: Harmony.ILCopying.Emitter.FormatArgument(System.Object)
-  nameWithType: Emitter.FormatArgument(Object)
-- uid: Harmony.ILCopying.Emitter.FormatArgument*
-  name: FormatArgument
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_FormatArgument_
-  commentId: Overload:Harmony.ILCopying.Emitter.FormatArgument
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.FormatArgument
-  nameWithType: Emitter.FormatArgument
-- uid: Harmony.ILCopying.Emitter.LogIL(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Object)
-  name: LogIL(ILGenerator, OpCode, Object)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_LogIL_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Object_
-  commentId: M:Harmony.ILCopying.Emitter.LogIL(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Object)
-  fullName: Harmony.ILCopying.Emitter.LogIL(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Object)
-  nameWithType: Emitter.LogIL(ILGenerator, OpCode, Object)
-- uid: Harmony.ILCopying.Emitter.LogIL*
-  name: LogIL
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_LogIL_
-  commentId: Overload:Harmony.ILCopying.Emitter.LogIL
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.LogIL
-  nameWithType: Emitter.LogIL
-- uid: Harmony.ILCopying.Emitter.LogLocalVariable(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.LocalBuilder)
-  name: LogLocalVariable(ILGenerator, LocalBuilder)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_LogLocalVariable_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_LocalBuilder_
-  commentId: M:Harmony.ILCopying.Emitter.LogLocalVariable(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.LocalBuilder)
-  fullName: Harmony.ILCopying.Emitter.LogLocalVariable(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.LocalBuilder)
-  nameWithType: Emitter.LogLocalVariable(ILGenerator, LocalBuilder)
-- uid: Harmony.ILCopying.Emitter.LogLocalVariable*
-  name: LogLocalVariable
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_LogLocalVariable_
-  commentId: Overload:Harmony.ILCopying.Emitter.LogLocalVariable
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.LogLocalVariable
-  nameWithType: Emitter.LogLocalVariable
-- uid: Harmony.ILCopying.Emitter.MarkBlockAfter(System.Reflection.Emit.ILGenerator,Harmony.ILCopying.ExceptionBlock)
-  name: MarkBlockAfter(ILGenerator, ExceptionBlock)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_MarkBlockAfter_System_Reflection_Emit_ILGenerator_Harmony_ILCopying_ExceptionBlock_
-  commentId: M:Harmony.ILCopying.Emitter.MarkBlockAfter(System.Reflection.Emit.ILGenerator,Harmony.ILCopying.ExceptionBlock)
-  fullName: Harmony.ILCopying.Emitter.MarkBlockAfter(System.Reflection.Emit.ILGenerator, Harmony.ILCopying.ExceptionBlock)
-  nameWithType: Emitter.MarkBlockAfter(ILGenerator, ExceptionBlock)
-- uid: Harmony.ILCopying.Emitter.MarkBlockAfter*
-  name: MarkBlockAfter
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_MarkBlockAfter_
-  commentId: Overload:Harmony.ILCopying.Emitter.MarkBlockAfter
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.MarkBlockAfter
-  nameWithType: Emitter.MarkBlockAfter
-- uid: Harmony.ILCopying.Emitter.MarkBlockBefore(System.Reflection.Emit.ILGenerator,Harmony.ILCopying.ExceptionBlock,System.Nullable{System.Reflection.Emit.Label}@)
-  name: MarkBlockBefore(ILGenerator, ExceptionBlock, out Nullable<Label>)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_MarkBlockBefore_System_Reflection_Emit_ILGenerator_Harmony_ILCopying_ExceptionBlock_System_Nullable_System_Reflection_Emit_Label___
-  commentId: M:Harmony.ILCopying.Emitter.MarkBlockBefore(System.Reflection.Emit.ILGenerator,Harmony.ILCopying.ExceptionBlock,System.Nullable{System.Reflection.Emit.Label}@)
-  name.vb: MarkBlockBefore(ILGenerator, ExceptionBlock, ByRef Nullable(Of Label))
-  fullName: Harmony.ILCopying.Emitter.MarkBlockBefore(System.Reflection.Emit.ILGenerator, Harmony.ILCopying.ExceptionBlock, out System.Nullable<System.Reflection.Emit.Label>)
-  fullName.vb: Harmony.ILCopying.Emitter.MarkBlockBefore(System.Reflection.Emit.ILGenerator, Harmony.ILCopying.ExceptionBlock, ByRef System.Nullable(Of System.Reflection.Emit.Label))
-  nameWithType: Emitter.MarkBlockBefore(ILGenerator, ExceptionBlock, out Nullable<Label>)
-  nameWithType.vb: Emitter.MarkBlockBefore(ILGenerator, ExceptionBlock, ByRef Nullable(Of Label))
-- uid: Harmony.ILCopying.Emitter.MarkBlockBefore*
-  name: MarkBlockBefore
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_MarkBlockBefore_
-  commentId: Overload:Harmony.ILCopying.Emitter.MarkBlockBefore
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.MarkBlockBefore
-  nameWithType: Emitter.MarkBlockBefore
-- uid: Harmony.ILCopying.Emitter.MarkLabel(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.Label)
-  name: MarkLabel(ILGenerator, Label)
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_MarkLabel_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_Label_
-  commentId: M:Harmony.ILCopying.Emitter.MarkLabel(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.Label)
-  fullName: Harmony.ILCopying.Emitter.MarkLabel(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.Label)
-  nameWithType: Emitter.MarkLabel(ILGenerator, Label)
-- uid: Harmony.ILCopying.Emitter.MarkLabel*
-  name: MarkLabel
-  href: api/Harmony.ILCopying.Emitter.html#Harmony_ILCopying_Emitter_MarkLabel_
-  commentId: Overload:Harmony.ILCopying.Emitter.MarkLabel
-  isSpec: "True"
-  fullName: Harmony.ILCopying.Emitter.MarkLabel
-  nameWithType: Emitter.MarkLabel
 - uid: Harmony.ILCopying.ExceptionBlock
   name: ExceptionBlock
   href: api/Harmony.ILCopying.ExceptionBlock.html
@@ -3427,25 +3258,6 @@ references:
   isSpec: "True"
   fullName: Harmony.ILCopying.ILInstruction.ToString
   nameWithType: ILInstruction.ToString
-- uid: Harmony.ILCopying.LeaveTry
-  name: LeaveTry
-  href: api/Harmony.ILCopying.LeaveTry.html
-  commentId: T:Harmony.ILCopying.LeaveTry
-  fullName: Harmony.ILCopying.LeaveTry
-  nameWithType: LeaveTry
-- uid: Harmony.ILCopying.LeaveTry.ToString
-  name: ToString()
-  href: api/Harmony.ILCopying.LeaveTry.html#Harmony_ILCopying_LeaveTry_ToString
-  commentId: M:Harmony.ILCopying.LeaveTry.ToString
-  fullName: Harmony.ILCopying.LeaveTry.ToString()
-  nameWithType: LeaveTry.ToString()
-- uid: Harmony.ILCopying.LeaveTry.ToString*
-  name: ToString
-  href: api/Harmony.ILCopying.LeaveTry.html#Harmony_ILCopying_LeaveTry_ToString_
-  commentId: Overload:Harmony.ILCopying.LeaveTry.ToString
-  isSpec: "True"
-  fullName: Harmony.ILCopying.LeaveTry.ToString
-  nameWithType: LeaveTry.ToString
 - uid: Harmony.ILCopying.Memory
   name: Memory
   href: api/Harmony.ILCopying.Memory.html
@@ -3510,6 +3322,19 @@ references:
   isSpec: "True"
   fullName: Harmony.ILCopying.Memory.IsWindows
   nameWithType: Memory.IsWindows
+- uid: Harmony.ILCopying.Memory.MarkForNoInlining(System.Reflection.MethodBase)
+  name: MarkForNoInlining(MethodBase)
+  href: api/Harmony.ILCopying.Memory.html#Harmony_ILCopying_Memory_MarkForNoInlining_System_Reflection_MethodBase_
+  commentId: M:Harmony.ILCopying.Memory.MarkForNoInlining(System.Reflection.MethodBase)
+  fullName: Harmony.ILCopying.Memory.MarkForNoInlining(System.Reflection.MethodBase)
+  nameWithType: Memory.MarkForNoInlining(MethodBase)
+- uid: Harmony.ILCopying.Memory.MarkForNoInlining*
+  name: MarkForNoInlining
+  href: api/Harmony.ILCopying.Memory.html#Harmony_ILCopying_Memory_MarkForNoInlining_
+  commentId: Overload:Harmony.ILCopying.Memory.MarkForNoInlining
+  isSpec: "True"
+  fullName: Harmony.ILCopying.Memory.MarkForNoInlining
+  nameWithType: Memory.MarkForNoInlining
 - uid: Harmony.ILCopying.Memory.ReadByte(System.Int64)
   name: ReadByte(Int64)
   href: api/Harmony.ILCopying.Memory.html#Harmony_ILCopying_Memory_ReadByte_System_Int64_
@@ -3773,6 +3598,12 @@ references:
   isSpec: "True"
   fullName: Harmony.ILCopying.MethodCopier.Finalize
   nameWithType: MethodCopier.Finalize
+- uid: Harmony.ILCopying.NativeThisPointer
+  name: NativeThisPointer
+  href: api/Harmony.ILCopying.NativeThisPointer.html
+  commentId: T:Harmony.ILCopying.NativeThisPointer
+  fullName: Harmony.ILCopying.NativeThisPointer
+  nameWithType: NativeThisPointer
 - uid: Harmony.ILCopying.Protection
   name: Protection
   href: api/Harmony.ILCopying.Protection.html
