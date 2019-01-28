@@ -171,12 +171,21 @@ namespace Harmony
 			return PatchProcessor.GetPatchInfo(method);
 		}
 
-		/// <summary>Gets a patched methods</summary>
+		/// <summary>Gets all patched methods in the appdomain</summary>
+		/// <returns>An enumeration of original methods</returns>
+		///
+		public static IEnumerable<MethodBase> GetAllPatchedMethods()
+		{
+			return HarmonySharedState.GetPatchedMethods();
+		}
+
+		/// <summary>Gets the methods this instance has patched</summary>
 		/// <returns>An enumeration of original methods</returns>
 		///
 		public IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			return HarmonySharedState.GetPatchedMethods();
+			return HarmonySharedState.GetPatchedMethods()
+				.Where(original => GetPatchInfo(original).Owners.Contains(Id));
 		}
 
 		/// <summary>Gets current version information</summary>
