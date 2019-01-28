@@ -163,7 +163,7 @@ namespace Harmony
 			return result;
 		}
 
-		private static HarmonyMethod GetHarmonyMethodInfo(object attribute)
+		static HarmonyMethod GetHarmonyMethodInfo(object attribute)
 		{
 			var f_info = AccessTools.Field(attribute.GetType(), nameof(HarmonyAttribute.info));
 			if (f_info == null) return null;

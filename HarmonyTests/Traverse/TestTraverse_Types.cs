@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace HarmonyTests
 	[TestClass]
 	public class TestTraverse_Types
 	{
-		private class InnerClass { }
+		class InnerClass { }
 
 		[TestMethod]
 		public void Traverse_Types()

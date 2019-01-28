@@ -1,38 +1,25 @@
 using System;
 
-namespace Harmony.ILCopying
+namespace Harmony
 {
-	/// <summary>A byte buffer</summary>
-	public class ByteBuffer
+	internal class ByteBuffer
 	{
-		/// <summary>The buffer</summary>
-		public byte[] buffer;
-
-		/// <summary>The position</summary>
-		public int position;
-
-		/// <summary>Creates a buffer from a byte array</summary>
-		/// <param name="buffer">The byte array</param>
-		///
-		public ByteBuffer(byte[] buffer)
+		internal byte[] buffer;
+		
+		internal int position;
+		
+		internal ByteBuffer(byte[] buffer)
 		{
 			this.buffer = buffer;
 		}
-
-		/// <summary>Reads a byte</summary>
-		/// <returns>The byte</returns>
-		///
-		public byte ReadByte()
+		
+		internal byte ReadByte()
 		{
 			CheckCanRead(1);
 			return buffer[position++];
 		}
-
-		/// <summary>Reads some bytes</summary>
-		/// <param name="length">The number of bytes to read</param>
-		/// <returns>An array of bytes</returns>
-		///
-		public byte[] ReadBytes(int length)
+		
+		internal byte[] ReadBytes(int length)
 		{
 			CheckCanRead(length);
 			var value = new byte[length];
@@ -40,11 +27,8 @@ namespace Harmony.ILCopying
 			position += length;
 			return value;
 		}
-
-		/// <summary>Reads an Int16</summary>
-		/// <returns>The Int16</returns>
-		///
-		public short ReadInt16()
+		
+		internal short ReadInt16()
 		{
 			CheckCanRead(2);
 			var value = (short)(buffer[position]
@@ -52,11 +36,8 @@ namespace Harmony.ILCopying
 			position += 2;
 			return value;
 		}
-
-		/// <summary>Reads Int32</summary>
-		/// <returns>The Int32</returns>
-		///
-		public int ReadInt32()
+		
+		internal int ReadInt32()
 		{
 			CheckCanRead(4);
 			var value = buffer[position]
@@ -66,11 +47,8 @@ namespace Harmony.ILCopying
 			position += 4;
 			return value;
 		}
-
-		/// <summary>Reads Int64</summary>
-		/// <returns>The Int64</returns>
-		///
-		public long ReadInt64()
+		
+		internal long ReadInt64()
 		{
 			CheckCanRead(8);
 			var low = (uint)(buffer[position]
@@ -87,11 +65,8 @@ namespace Harmony.ILCopying
 			position += 8;
 			return value;
 		}
-
-		/// <summary>Reads a Single</summary>
-		/// <returns>The single</returns>
-		///
-		public float ReadSingle()
+		
+		internal float ReadSingle()
 		{
 			if (!BitConverter.IsLittleEndian)
 			{
@@ -105,11 +80,8 @@ namespace Harmony.ILCopying
 			position += 4;
 			return value;
 		}
-
-		/// <summary>Reads a Double</summary>
-		/// <returns>The double</returns>
-		///
-		public double ReadDouble()
+		
+		internal double ReadDouble()
 		{
 			if (!BitConverter.IsLittleEndian)
 			{

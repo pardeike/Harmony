@@ -1,4 +1,3 @@
-using Harmony.ILCopying;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,7 +40,7 @@ namespace Harmony.Tools
 			}
 		}
 
-		private static List<MethodBase> GetAllMethods(Assembly assembly)
+		static List<MethodBase> GetAllMethods(Assembly assembly)
 		{
 			var types = assembly.GetTypes();
 			return types
@@ -54,7 +53,7 @@ namespace Harmony.Tools
 				.ToList();
 		}
 
-		private static string AssemblyInfo(Assembly assembly)
+		static string AssemblyInfo(Assembly assembly)
 		{
 			var version = assembly.GetName().Version;
 			var location = assembly.Location;
@@ -63,7 +62,7 @@ namespace Harmony.Tools
 		}
 
 		[UpgradeToLatestVersion(1)]
-		public static void PatchOldHarmonyMethods()
+		internal static void PatchOldHarmonyMethods()
 		{
 			var watch = new Stopwatch();
 			watch.Start();

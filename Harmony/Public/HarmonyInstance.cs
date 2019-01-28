@@ -19,7 +19,7 @@ namespace Harmony
 		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
 		public static bool DEBUG = false;
 
-		private static bool selfPatchingDone = false;
+		static bool selfPatchingDone = false;
 
 		HarmonyInstance(string id)
 		{
@@ -57,7 +57,7 @@ namespace Harmony
 			return new HarmonyInstance(id);
 		}
 
-		private MethodBase GetOutsideCaller()
+		MethodBase GetOutsideCaller()
 		{
 			var trace = new StackTrace(true);
 			foreach (var frame in trace.GetFrames())

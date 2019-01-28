@@ -6,47 +6,33 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace Harmony.ILCopying
+namespace Harmony
 {
-	/// <summary>A method copier</summary>
-	public class MethodCopier
+	internal class MethodCopier
 	{
 		readonly MethodBodyReader reader;
 		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
-
-		/// <summary>Creates a method copier</summary>
-		/// <param name="fromMethod">Source method</param>
-		/// <param name="toILGenerator">The IL generator.</param>
-		/// <param name="existingVariables">Optionally, existing variables</param>
-		///
-		public MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
+		
+		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
 		{
 			if (fromMethod == null) throw new ArgumentNullException("Method cannot be null");
 			reader = new MethodBodyReader(fromMethod, toILGenerator);
 			reader.DeclareVariables(existingVariables);
 			reader.ReadInstructions();
 		}
-
-		/// <summary>Adds a transpiler</summary>
-		/// <param name="transpiler">The transpiler</param>
-		///
-		public void AddTranspiler(MethodInfo transpiler)
+		
+		internal void AddTranspiler(MethodInfo transpiler)
 		{
 			transpilers.Add(transpiler);
 		}
-
-		/// <summary>Finalizes all codes</summary>
-		/// <param name="endLabels">The end labels</param>
-		/// <param name="endBlocks">The end blocks</param>
-		///
-		public void Finalize(List<Label> endLabels, List<ExceptionBlock> endBlocks)
+		
+		internal void Finalize(List<Label> endLabels, List<ExceptionBlock> endBlocks)
 		{
 			reader.FinalizeILCodes(transpilers, endLabels, endBlocks);
 		}
 	}
-
-	/// <summary>A method body reader</summary>
-	public class MethodBodyReader
+	
+	internal class MethodBodyReader
 	{
 		readonly ILGenerator generator;
 
@@ -62,25 +48,8 @@ namespace Harmony.ILCopying
 		List<LocalVariableInfo> localVariables;
 
 		LocalBuilder[] variables;
-
-		/// <summary>
-		///   NOTE: you cannot simply "copy" ILInstructions from a method. They contain references to
-		///   local variables which must be CREATED on an ILGenerator or else they are invalid when you
-		///   want to use the ILInstruction. If you are really clever, you can supply a dummy generator
-		///   and edit out all labels during the processing but that might be more trickier than you think
-		///   
-		///   In order to copy together a bunch of method parts within a transpiler, you have to pass in
-		///   your current generator that builds your new method
-		///   
-		///   You will end up with the sum of all declared local variables of all methods you run
-		///   GetInstructions on or use a dummy generator but edit out the invalid labels from the codes
-		///   you copy.
-		/// </summary>
-		/// <param name="generator">The generator.</param>
-		/// <param name="method">	 The method.</param>
-		/// <returns>The instructions.</returns>
-		///
-		public static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
+		
+		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
 			if (method == null) throw new ArgumentNullException("Method cannot be null");
 			var reader = new MethodBodyReader(method, generator);
@@ -88,12 +57,8 @@ namespace Harmony.ILCopying
 			reader.ReadInstructions();
 			return reader.ilInstructions;
 		}
-
-		/// <summary>Creates a method body reader</summary>
-		/// <param name="method">The original method</param>
-		/// <param name="generator">The IL generator</param>
-		///
-		public MethodBodyReader(MethodBase method, ILGenerator generator)
+		
+		internal MethodBodyReader(MethodBase method, ILGenerator generator)
 		{
 			this.generator = generator;
 			this.method = method;
@@ -130,9 +95,8 @@ namespace Harmony.ILCopying
 			localVariables = body.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
 			exceptions = body.ExceptionHandlingClauses;
 		}
-
-		/// <summary>Read and parse IL codes</summary>
-		public void ReadInstructions()
+		
+		internal void ReadInstructions()
 		{
 			while (ilBytes.position < ilBytes.buffer.Length)
 			{
@@ -145,11 +109,8 @@ namespace Harmony.ILCopying
 			ResolveBranches();
 			ParseExceptions();
 		}
-
-		/// <summary>Declare local variables</summary>
-		/// <param name="existingVariables">The existing variables to copy</param>
-		///
-		public void DeclareVariables(LocalBuilder[] existingVariables)
+		
+		internal void DeclareVariables(LocalBuilder[] existingVariables)
 		{
 			if (generator == null) return;
 			if (existingVariables != null)
@@ -249,13 +210,8 @@ namespace Harmony.ILCopying
 			{ OpCodes.Br_S, OpCodes.Br },
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
-
-		/// <summary>Finalize all codes and apply all transpilers</summary>
-		/// <param name="transpilers">The transpilers to apply</param>
-		/// <param name="endLabels">The end labels</param>
-		/// <param name="endBlocks">The end blocks</param>
-		///
-		public void FinalizeILCodes(List<MethodInfo> transpilers, List<Label> endLabels, List<ExceptionBlock> endBlocks)
+		
+		internal void FinalizeILCodes(List<MethodInfo> transpilers, List<Label> endLabels, List<ExceptionBlock> endBlocks)
 		{
 			if (generator == null) return;
 
@@ -764,10 +720,7 @@ namespace Harmony.ILCopying
 
 		class ThisParameter : ParameterInfo
 		{
-			/// <summary>Creates a new this parameter</summary>
-			/// <param name="method">The method</param>
-			///
-			public ThisParameter(MethodBase method)
+			internal ThisParameter(MethodBase method)
 			{
 				MemberImpl = method;
 				ClassImpl = method.DeclaringType;

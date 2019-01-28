@@ -11,7 +11,7 @@ namespace HarmonyTests
 	[TestClass]
 	public class Test_AccessCache
 	{
-		private void InjectField(AccessCache cache)
+		void InjectField(AccessCache cache)
 		{
 			var f_fields = cache.GetType().GetField("fields", AccessTools.all);
 			Assert.IsNotNull(f_fields);
@@ -25,7 +25,7 @@ namespace HarmonyTests
 			infos.Add("field", typeof(AccessToolsClass).GetField("field2", AccessTools.all));
 		}
 
-		private void InjectProperty(AccessCache cache)
+		void InjectProperty(AccessCache cache)
 		{
 			var f_properties = cache.GetType().GetField("properties", AccessTools.all);
 			Assert.IsNotNull(f_properties);
@@ -39,7 +39,7 @@ namespace HarmonyTests
 			infos.Add("Property", typeof(AccessToolsClass).GetProperty("Property2", AccessTools.all));
 		}
 
-		private void InjectMethod(AccessCache cache)
+		void InjectMethod(AccessCache cache)
 		{
 			var f_methods = cache.GetType().GetField("methods", AccessTools.all);
 			Assert.IsNotNull(f_methods);

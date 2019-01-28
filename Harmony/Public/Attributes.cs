@@ -18,13 +18,10 @@ namespace Harmony
 		StaticConstructor
 	}
 
-	/// <summary>[Obsolete] Specifies the type of property</summary>
-	[Obsolete("This enum will be removed in the next major version. To define special methods, use MethodType")]
-	public enum PropertyMethod
+	// Obsolete: Specifies the type of property
+	internal enum PropertyMethod
 	{
-		/// <summary>[Obsolete] This is a getter</summary>
 		Getter,
-		/// <summary>[Obsolete] This is a setter</summary>
 		Setter
 	}
 
@@ -256,12 +253,8 @@ namespace Harmony
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
-		/// <summary>[Obsolete] An annotation that specifies a property to patch</summary>
-		/// <param name="propertyName">Name of the property</param>
-		/// <param name="type">The type</param>
-		///
-		[Obsolete("This attribute will be removed in the next major version. Use HarmonyPatch together with MethodType.Getter or MethodType.Setter instead")]
-		public HarmonyPatch(string propertyName, PropertyMethod type)
+		// Obsolete: An annotation that specifies a property to patch
+		internal HarmonyPatch(string propertyName, PropertyMethod type)
 		{
 			info.methodName = propertyName;
 			info.methodType = type == PropertyMethod.Getter ? MethodType.Getter : MethodType.Setter;
@@ -269,7 +262,7 @@ namespace Harmony
 
 		//
 
-		private void ParseSpecialArguments(Type[] argumentTypes, ArgumentType[] argumentVariations)
+		void ParseSpecialArguments(Type[] argumentTypes, ArgumentType[] argumentVariations)
 		{
 			if (argumentVariations == null || argumentVariations.Length == 0)
 			{

@@ -6,8 +6,7 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
-	/// <summary>Harmony shared state</summary>
-	public static class HarmonySharedState
+	internal static class HarmonySharedState
 	{
 		static readonly string name = "HarmonySharedState";
 		internal static readonly int internalVersion = 100;

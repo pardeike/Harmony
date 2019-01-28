@@ -17,14 +17,16 @@
     name: CodeMatch
   - uid: Harmony.CodeMatcher
     name: CodeMatcher
-  - uid: Harmony.CodeTranspiler
-    name: CodeTranspiler
   - uid: Harmony.CollectionExtensions
     name: CollectionExtensions
   - uid: Harmony.DelegateTypeFactory
     name: DelegateTypeFactory
   - uid: Harmony.DynamicTools
     name: DynamicTools
+  - uid: Harmony.ExceptionBlock
+    name: ExceptionBlock
+  - uid: Harmony.ExceptionBlockType
+    name: ExceptionBlockType
   - uid: Harmony.FastAccess
     name: FastAccess
   - uid: Harmony.FastInvokeHandler
@@ -65,8 +67,6 @@
     name: HarmonyPrepare
   - uid: Harmony.HarmonyPriority
     name: HarmonyPriority
-  - uid: Harmony.HarmonySharedState
-    name: HarmonySharedState
   - uid: Harmony.HarmonyTargetMethod
     name: HarmonyTargetMethod
   - uid: Harmony.HarmonyTargetMethods
@@ -75,18 +75,16 @@
     name: HarmonyTranspiler
   - uid: Harmony.InstantiationHandler
     name: InstantiationHandler
+  - uid: Harmony.Memory
+    name: Memory
   - uid: Harmony.MethodInvoker
     name: MethodInvoker
-  - uid: Harmony.MethodPatcher
-    name: MethodPatcher
   - uid: Harmony.MethodType
     name: MethodType
   - uid: Harmony.Patch
     name: Patch
   - uid: Harmony.Patches
     name: Patches
-  - uid: Harmony.PatchFunctions
-    name: PatchFunctions
   - uid: Harmony.PatchInfo
     name: PatchInfo
   - uid: Harmony.PatchInfoSerialization
@@ -97,8 +95,6 @@
     name: PatchTools
   - uid: Harmony.Priority
     name: Priority
-  - uid: Harmony.PropertyMethod
-    name: PropertyMethod
   - uid: Harmony.SetterHandler
     name: SetterHandler
   - uid: Harmony.SymbolExtensions
@@ -110,24 +106,3 @@
   - uid: Harmony.Traverse`1
     name: Traverse<T>
     name.vb: Traverse(Of T)
-- uid: Harmony.ILCopying
-  name: Harmony.ILCopying
-  items:
-  - uid: Harmony.ILCopying.ByteBuffer
-    name: ByteBuffer
-  - uid: Harmony.ILCopying.ExceptionBlock
-    name: ExceptionBlock
-  - uid: Harmony.ILCopying.ExceptionBlockType
-    name: ExceptionBlockType
-  - uid: Harmony.ILCopying.ILInstruction
-    name: ILInstruction
-  - uid: Harmony.ILCopying.Memory
-    name: Memory
-  - uid: Harmony.ILCopying.MethodBodyReader
-    name: MethodBodyReader
-  - uid: Harmony.ILCopying.MethodCopier
-    name: MethodCopier
-  - uid: Harmony.ILCopying.NativeThisPointer
-    name: NativeThisPointer
-  - uid: Harmony.ILCopying.Protection
-    name: Protection

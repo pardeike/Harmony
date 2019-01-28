@@ -9,7 +9,7 @@ namespace HarmonyTests.Assets
 	public class TraverseFields_AccessModifiers
 	{
 		public string publicField;
-		private readonly string privateField;
+		readonly string privateField;
 		protected string protectedField;
 		internal string internalField;
 

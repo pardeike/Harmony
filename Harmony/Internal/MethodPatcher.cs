@@ -1,54 +1,28 @@
-using Harmony.ILCopying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 
 namespace Harmony
 {
-	/// <summary>A method patch helper</summary>
-	public static class MethodPatcher
+	internal static class MethodPatcher
 	{
 		/// special parameter names that can be used in prefix and postfix methods
-
-		/// <summary>Instance parameter name</summary>
+		
 		public static string INSTANCE_PARAM = "__instance";
-		/// <summary>Original method parameter name</summary>
 		public static string ORIGINAL_METHOD_PARAM = "__originalMethod";
-		/// <summary>Result variable name</summary>
 		public static string RESULT_VAR = "__result";
-		/// <summary>State variable name</summary>
 		public static string STATE_VAR = "__state";
-		/// <summary>Parameter index prefix</summary>
 		public static string PARAM_INDEX_PREFIX = "__";
-		/// <summary>Instance field prefix</summary>
 		public static string INSTANCE_FIELD_PREFIX = "___";
-
-		/// <summary>Creates patched method</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="prefixes">The prefix methods</param>
-		/// <param name="postfixes">The postfix methods</param>
-		/// <param name="transpilers">The transpiler methods</param>
-		/// <returns>A new dynamic method</returns>
-		///
+		
 		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.1", prefixes, postfixes, transpilers);
 		}
-
-		/// <summary>Creates patched method.</summary>
-		/// <exception cref="ArgumentNullException">Thrown when one or more required arguments are null.</exception>
-		/// <exception cref="Exception">				  Thrown when an exception error condition occurs.</exception>
-		/// <param name="original">			The original method.</param>
-		/// <param name="harmonyInstanceID">Identifier for the harmony instance.</param>
-		/// <param name="prefixes">			The prefix methods.</param>
-		/// <param name="postfixes">			The postfix methods.</param>
-		/// <param name="transpilers">		The transpiler methods.</param>
-		/// <returns>A new dynamic method.</returns>
-		///
+		
 		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
@@ -248,7 +222,7 @@ namespace Harmony
 			return name;
 		}
 
-		private static int GetArgumentIndex(MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam)
+		static int GetArgumentIndex(MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam)
 		{
 			var originalName = patchParam.GetOriginalArgumentName(originalParameterNames);
 			if (originalName != null)

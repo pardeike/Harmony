@@ -1,13 +1,4 @@
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.Remoting.Contexts;
-using System.Linq;
-
-namespace Harmony.ILCopying
+namespace Harmony
 {
 	/*
 	 * TODO - this needs to be worked on. The purpose is to decode the signature into

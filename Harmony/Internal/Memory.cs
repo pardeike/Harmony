@@ -5,12 +5,11 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Harmony.ILCopying
+namespace Harmony
 {
-
 	/// <summary>A bit-field of flags for protections</summary>
 	[Flags]
-	public enum Protection
+	internal enum Protection
 	{
 		/// <summary>No access</summary>
 		PAGE_NOACCESS = 0x01,
@@ -39,7 +38,7 @@ namespace Harmony.ILCopying
 	/// <summary>A low level memory helper</summary>
 	public static class Memory
 	{
-		private static readonly HashSet<PlatformID> WindowsPlatformIDSet = new HashSet<PlatformID>
+		static readonly HashSet<PlatformID> WindowsPlatformIDSet = new HashSet<PlatformID>
 		{
 			PlatformID.Win32NT, PlatformID.Win32S, PlatformID.Win32Windows, PlatformID.WinCE
 		};
@@ -47,7 +46,7 @@ namespace Harmony.ILCopying
 		/// <summary>Is current environment Windows?</summary>
 		/// <value>True if it is Windows</value>
 		///
-		public static bool IsWindows => WindowsPlatformIDSet.Contains(Environment.OSVersion.Platform);
+		internal static bool IsWindows => WindowsPlatformIDSet.Contains(Environment.OSVersion.Platform);
 
 		/// <summary>Virtual protect</summary>
 		/// <param name="lpAddress">The address</param>
@@ -59,12 +58,12 @@ namespace Harmony.ILCopying
 		// Safe to use windows reference since this will only ever be called on windows
 		//
 		[DllImport("kernel32.dll")]
-		public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, Protection flNewProtect, out Protection lpflOldProtect);
+		internal static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, Protection flNewProtect, out Protection lpflOldProtect);
 
 		/// <summary>Unprotect a memory page</summary>
 		/// <param name="memory">The memory address</param>
 		///
-		public static void UnprotectMemoryPage(long memory)
+		internal static void UnprotectMemoryPage(long memory)
 		{
 			if (IsWindows)
 			{
@@ -112,7 +111,6 @@ namespace Harmony.ILCopying
 		 * 
 		 * https://stackoverflow.com/questions/38782934/how-to-replace-the-pointer-to-the-overridden-virtual-method-in-the-pointer-of/
 		 * https://stackoverflow.com/questions/39034018/how-to-replace-a-pointer-to-a-pointer-to-a-method-in-a-class-of-my-method-inheri
-		 *
 		 */
 
 		/// <summary>Writes a jump to memory</summary>
@@ -145,26 +143,26 @@ namespace Harmony.ILCopying
 			return null;
 		}
 
-		private static RuntimeMethodHandle GetRuntimeMethodHandle(MethodBase method)
+		static RuntimeMethodHandle GetRuntimeMethodHandle(MethodBase method)
 		{
 			if (method is DynamicMethod)
 			{
-				var nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
+				var noninternalInstance = BindingFlags.NonPublic | BindingFlags.Instance;
 
 				// DynamicMethod actually generates its m_methodHandle on-the-fly and therefore
 				// we should call GetMethodDescriptor to force it to be created
 				//
-				var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", nonPublicInstance);
+				var m_GetMethodDescriptor = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", noninternalInstance);
 				if (m_GetMethodDescriptor != null)
 					return (RuntimeMethodHandle)m_GetMethodDescriptor.Invoke(method, new object[0]);
 
 				// .Net Core
-				var f_m_method = typeof(DynamicMethod).GetField("m_method", nonPublicInstance);
+				var f_m_method = typeof(DynamicMethod).GetField("m_method", noninternalInstance);
 				if (f_m_method != null)
 					return (RuntimeMethodHandle)f_m_method.GetValue(method);
 
 				// Mono
-				var f_mhandle = typeof(DynamicMethod).GetField("mhandle", nonPublicInstance);
+				var f_mhandle = typeof(DynamicMethod).GetField("mhandle", noninternalInstance);
 				return (RuntimeMethodHandle)f_mhandle.GetValue(method);
 			}
 
@@ -206,7 +204,7 @@ namespace Harmony.ILCopying
 		/// <param name="values">The bytes to compare to</param>
 		/// <returns>True if memory address contains the bytes</returns>
 		///
-		public static unsafe bool CompareBytes(long memory, byte[] values)
+		internal static unsafe bool CompareBytes(long memory, byte[] values)
 		{
 			var p = (byte*)memory;
 			foreach (var value in values)
@@ -221,7 +219,7 @@ namespace Harmony.ILCopying
 		/// <param name="memory">The memory address</param>
 		/// <returns>The byte</returns>
 		///
-		public static unsafe byte ReadByte(long memory)
+		internal static unsafe byte ReadByte(long memory)
 		{
 			var p = (byte*)memory;
 			return *p;
@@ -231,7 +229,7 @@ namespace Harmony.ILCopying
 		/// <param name="memory">The memory address</param>
 		/// <returns>The int</returns>
 		///
-		public static unsafe int ReadInt(long memory)
+		internal static unsafe int ReadInt(long memory)
 		{
 			var p = (int*)memory;
 			return *p;
@@ -241,7 +239,7 @@ namespace Harmony.ILCopying
 		/// <param name="memory">The memory address</param>
 		/// <returns>The long</returns>
 		///
-		public static unsafe long ReadLong(long memory)
+		internal static unsafe long ReadLong(long memory)
 		{
 			var p = (long*)memory;
 			return *p;
@@ -252,7 +250,7 @@ namespace Harmony.ILCopying
 		/// <param name="value">The byte</param>
 		/// <returns>Advanced memory address</returns>
 		///
-		public static unsafe long WriteByte(long memory, byte value)
+		internal static unsafe long WriteByte(long memory, byte value)
 		{
 			var p = (byte*)memory;
 			*p = value;
@@ -264,7 +262,7 @@ namespace Harmony.ILCopying
 		/// <param name="values">The bytes to write</param>
 		/// <returns>Advanced memory address</returns>
 		///
-		public static unsafe long WriteBytes(long memory, byte[] values)
+		internal static unsafe long WriteBytes(long memory, byte[] values)
 		{
 			foreach (var value in values)
 				memory = WriteByte(memory, value);
@@ -276,7 +274,7 @@ namespace Harmony.ILCopying
 		/// <param name="value">The int</param>
 		/// <returns>Advanced memory address</returns>
 		///
-		public static unsafe long WriteInt(long memory, int value)
+		internal static unsafe long WriteInt(long memory, int value)
 		{
 			var p = (int*)memory;
 			*p = value;
@@ -288,7 +286,7 @@ namespace Harmony.ILCopying
 		/// <param name="value"> The long</param>
 		/// <returns>Advanced memory address</returns>
 		///
-		public static unsafe long WriteLong(long memory, long value)
+		internal static unsafe long WriteLong(long memory, long value)
 		{
 			var p = (long*)memory;
 			*p = value;

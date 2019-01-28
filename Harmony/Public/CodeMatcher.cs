@@ -1,4 +1,3 @@
-using Harmony.ILCopying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,20 +111,20 @@ namespace Harmony
 	/// <summary>A CodeInstruction matcher</summary>
 	public class CodeMatcher
 	{
-		private readonly ILGenerator generator;
-		private readonly List<CodeInstruction> codes = new List<CodeInstruction>();
+		readonly ILGenerator generator;
+		readonly List<CodeInstruction> codes = new List<CodeInstruction>();
 
 		/// <summary>The current position</summary>
 		/// <value>The index or -1 if out of bounds</value>
 		///
 		public int Pos { get; private set; } = -1;
-		private Dictionary<string, CodeInstruction> lastMatches = new Dictionary<string, CodeInstruction>();
-		private string lastError = null;
-		private bool lastUseEnd = false;
-		private CodeMatch[] lastCodeMatches = null;
+		Dictionary<string, CodeInstruction> lastMatches = new Dictionary<string, CodeInstruction>();
+		string lastError = null;
+		bool lastUseEnd = false;
+		CodeMatch[] lastCodeMatches = null;
 
-		private void FixStart() { Pos = Math.Max(0, Pos); }
-		private void SetOutOfBounds(int direction) { Pos = direction > 0 ? Length : -1; }
+		void FixStart() { Pos = Math.Max(0, Pos); }
+		void SetOutOfBounds(int direction) { Pos = direction > 0 ? Length : -1; }
 
 		/// <summary>Gets the number of code instructions in this matcher</summary>
 		/// <value>The count</value>
@@ -554,7 +553,7 @@ namespace Harmony
 			return Search(predicate, -1);
 		}
 
-		private CodeMatcher Search(Func<CodeInstruction, bool> predicate, int direction)
+		CodeMatcher Search(Func<CodeInstruction, bool> predicate, int direction)
 		{
 			FixStart();
 			while (IsValid && predicate(Instruction) == false)
@@ -583,7 +582,7 @@ namespace Harmony
 			return Match(matches, -1, useEnd);
 		}
 
-		private CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd)
+		CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd)
 		{
 			FixStart();
 			while (IsValid)
@@ -635,7 +634,7 @@ namespace Harmony
 			return lastMatches[name];
 		}
 
-		private bool MatchSequence(int start, CodeMatch[] matches)
+		bool MatchSequence(int start, CodeMatch[] matches)
 		{
 			if (start < 0) return false;
 			lastMatches = new Dictionary<string, CodeInstruction>();

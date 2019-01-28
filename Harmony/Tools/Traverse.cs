@@ -11,7 +11,7 @@ namespace Harmony
 	///
 	public class Traverse<T>
 	{
-		private Traverse traverse;
+		Traverse traverse;
 
 		Traverse()
 		{

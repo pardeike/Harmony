@@ -1,5 +1,4 @@
 using Harmony;
-using Harmony.ILCopying;
 using HarmonyTests.Assets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

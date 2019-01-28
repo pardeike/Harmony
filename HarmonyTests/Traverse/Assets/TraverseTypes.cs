@@ -33,12 +33,12 @@ namespace HarmonyTests.Assets
 
 	public class TraverseNestedTypes
 	{
-		private class InnerClass1
+		class InnerClass1
 		{
-			private class InnerClass2
+			class InnerClass2
 			{
 #pragma warning disable CS0414
-				private readonly string field;
+				readonly string field;
 #pragma warning restore CS0414
 
 				public InnerClass2()
@@ -47,7 +47,7 @@ namespace HarmonyTests.Assets
 				}
 			}
 
-			private readonly InnerClass2 inner2;
+			readonly InnerClass2 inner2;
 
 			public InnerClass1()
 			{
@@ -55,16 +55,16 @@ namespace HarmonyTests.Assets
 			}
 		}
 
-		private class InnerStaticFieldClass1
+		class InnerStaticFieldClass1
 		{
-			private class InnerStaticFieldClass2
+			class InnerStaticFieldClass2
 			{
 #pragma warning disable CS0414
-				private static readonly string field = "helloStatic";
+				static readonly string field = "helloStatic";
 #pragma warning restore CS0414
 			}
 
-			private static InnerStaticFieldClass2 inner2;
+			static InnerStaticFieldClass2 inner2;
 
 			public InnerStaticFieldClass1()
 			{
@@ -80,8 +80,8 @@ namespace HarmonyTests.Assets
 			}
 		}
 
-		private readonly InnerClass1 innerInstance;
-		private static InnerStaticFieldClass1 innerStatic;
+		readonly InnerClass1 innerInstance;
+		static InnerStaticFieldClass1 innerStatic;
 
 		public TraverseNestedTypes(string staticValue)
 		{

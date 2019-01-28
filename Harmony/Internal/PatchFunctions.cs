@@ -1,4 +1,3 @@
-using Harmony.ILCopying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +7,14 @@ using System.Reflection.Emit;
 namespace Harmony
 {
 	/// <summary>Patch function helpers</summary>
-	public static class PatchFunctions
+	internal static class PatchFunctions
 	{
 		/// <summary>Adds a prefix</summary>
 		/// <param name="patchInfo">The patch info</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="info">The annotation info</param>
 		///
-		public static void AddPrefix(PatchInfo patchInfo, string owner, HarmonyMethod info)
+		internal static void AddPrefix(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
 			if (info == null || info.method == null) return;
 
@@ -30,7 +29,7 @@ namespace Harmony
 		/// <param name="patchInfo">The patch info</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		///
-		public static void RemovePrefix(PatchInfo patchInfo, string owner)
+		internal static void RemovePrefix(PatchInfo patchInfo, string owner)
 		{
 			patchInfo.RemovePrefix(owner);
 		}
@@ -40,7 +39,7 @@ namespace Harmony
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="info">The annotation info</param>
 		///
-		public static void AddPostfix(PatchInfo patchInfo, string owner, HarmonyMethod info)
+		internal static void AddPostfix(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
 			if (info == null || info.method == null) return;
 
@@ -55,7 +54,7 @@ namespace Harmony
 		/// <param name="patchInfo">The patch info</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		///
-		public static void RemovePostfix(PatchInfo patchInfo, string owner)
+		internal static void RemovePostfix(PatchInfo patchInfo, string owner)
 		{
 			patchInfo.RemovePostfix(owner);
 		}
@@ -65,7 +64,7 @@ namespace Harmony
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="info">The annotation info</param>
 		///
-		public static void AddTranspiler(PatchInfo patchInfo, string owner, HarmonyMethod info)
+		internal static void AddTranspiler(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
 			if (info == null || info.method == null) return;
 
@@ -80,7 +79,7 @@ namespace Harmony
 		/// <param name="patchInfo">The patch info</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		///
-		public static void RemoveTranspiler(PatchInfo patchInfo, string owner)
+		internal static void RemoveTranspiler(PatchInfo patchInfo, string owner)
 		{
 			patchInfo.RemoveTranspiler(owner);
 		}
@@ -89,7 +88,7 @@ namespace Harmony
 		/// <param name="patchInfo">The patch info</param>
 		/// <param name="patch">The patch method</param>
 		///
-		public static void RemovePatch(PatchInfo patchInfo, MethodInfo patch)
+		internal static void RemovePatch(PatchInfo patchInfo, MethodInfo patch)
 		{
 			patchInfo.RemovePatch(patch);
 		}
@@ -99,7 +98,7 @@ namespace Harmony
 		/// <param name="method">The original method</param>
 		/// <returns>The instructions</returns>
 		///
-		public static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
+		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
 			return MethodBodyReader.GetInstructions(generator, method);
 		}
@@ -109,7 +108,7 @@ namespace Harmony
 		/// <param name="patches">Patches to sort</param>
 		/// <returns>The sorted patch methods</returns>
 		///
-		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
+		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
 		{
 			return patches
 				.Where(p => p.patch != null)
@@ -125,7 +124,7 @@ namespace Harmony
 		/// <returns>The newly created dynamic method</returns>
 		///
 		[UpgradeToLatestVersion(1)]
-		public static DynamicMethod UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
+		internal static DynamicMethod UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
 		{
 			Memory.MarkForNoInlining(original);
 

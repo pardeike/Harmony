@@ -4,14 +4,12 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace Harmony.ILCopying
+namespace Harmony
 {
-	/// <summary>A test for https://github.com/dotnet/coreclr/blob/master/Documentation/botr/clr-abi.md </summary>
-	public class NativeThisPointer
+	// A test for https://github.com/dotnet/coreclr/blob/master/Documentation/botr/clr-abi.md
+	//
+	internal class NativeThisPointer
 	{
-		/// <summary>Checks if the current runtime has a native this pointer and if method needs it</summary>
-		/// <returns>Returns true if this pointer is first argument to methods returning a struct</returns>
-		///
 		internal static bool NeedsNativeThisPointerFix(MethodBase method)
 		{
 			var returnType = AccessTools.GetReturnedType(method);
@@ -21,8 +19,8 @@ namespace Harmony.ILCopying
 			return HasNativeThis();
 		}
 
-		private static bool hasTestResult, hasNativeThis;
-		private static bool HasNativeThis()
+		static bool hasTestResult, hasNativeThis;
+		static bool HasNativeThis()
 		{
 			if (hasTestResult == false)
 			{
@@ -37,22 +35,22 @@ namespace Harmony.ILCopying
 			return hasNativeThis;
 		}
 
-		private struct SomeStruct
+		struct SomeStruct
 		{
 #pragma warning disable CS0169
-			private readonly byte b1;
-			private readonly byte b2;
-			private readonly byte b3;
+			readonly byte b1;
+			readonly byte b2;
+			readonly byte b3;
 #pragma warning restore CS0169
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		private SomeStruct GetStruct(IntPtr x, IntPtr y)
+		SomeStruct GetStruct(IntPtr x, IntPtr y)
 		{
 			throw new Exception("This method should've been detoured!");
 		}
 
-		private static unsafe void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
+		static unsafe void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
 		{
 			// Normal argument order:
 			// this, a, b
@@ -63,8 +61,8 @@ namespace Harmony.ILCopying
 			hasNativeThis = (a == (IntPtr)0xdeadbeef) && (b == (IntPtr)0xdeadbeef);
 		}
 
-		private static readonly Dictionary<Type, int> _getManagedSizeCache = new Dictionary<Type, int>() { { typeof(void), 0 } };
-		private static int GetManagedSize(Type t)
+		static readonly Dictionary<Type, int> _getManagedSizeCache = new Dictionary<Type, int>() { { typeof(void), 0 } };
+		static int GetManagedSize(Type t)
 		{
 			if (_getManagedSizeCache.TryGetValue(t, out var size))
 				return size;
