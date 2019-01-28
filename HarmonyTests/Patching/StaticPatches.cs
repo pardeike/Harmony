@@ -19,20 +19,13 @@ namespace HarmonyTests
 			Assert.IsNotNull(originalMethod);
 
 			var patchClass = typeof(Class0Patch);
-			var realPostfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(realPostfix);
-
-			MethodInfo prefixMethod;
-			MethodInfo postfixMethod;
-			MethodInfo transpilerMethod;
-			PatchTools.GetPatches(typeof(Class0Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
-			
-			Assert.AreSame(realPostfix, postfixMethod);
+			var postfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(postfix);
 			
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfixMethod), null);
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix), null);
 			Assert.IsNotNull(patcher);
 			patcher.Patch();
 
@@ -49,28 +42,19 @@ namespace HarmonyTests
 			Assert.IsNotNull(originalMethod);
 
 			var patchClass = typeof(Class1Patch);
-			var realPrefix = patchClass.GetMethod("Prefix");
-			var realPostfix = patchClass.GetMethod("Postfix");
-			var realTranspiler = patchClass.GetMethod("Transpiler");
-			Assert.IsNotNull(realPrefix);
-			Assert.IsNotNull(realPostfix);
-			Assert.IsNotNull(realTranspiler);
+			var prefix = patchClass.GetMethod("Prefix");
+			var postfix = patchClass.GetMethod("Postfix");
+			var transpiler = patchClass.GetMethod("Transpiler");
+			Assert.IsNotNull(prefix);
+			Assert.IsNotNull(postfix);
+			Assert.IsNotNull(transpiler);
 
 			Class1Patch._reset();
-
-			MethodInfo prefixMethod;
-			MethodInfo postfixMethod;
-			MethodInfo transpilerMethod;
-			PatchTools.GetPatches(typeof(Class1Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
-
-			Assert.AreSame(realPrefix, prefixMethod);
-			Assert.AreSame(realPostfix, postfixMethod);
-			Assert.AreSame(realTranspiler, transpilerMethod);
 			
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod), new HarmonyMethod(transpilerMethod));
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix), new HarmonyMethod(transpiler));
 			Assert.IsNotNull(patcher);
 
 			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
@@ -101,28 +85,19 @@ namespace HarmonyTests
 			Assert.IsNotNull(originalMethod);
 
 			var patchClass = typeof(Class2Patch);
-			var realPrefix = patchClass.GetMethod("Prefix");
-			var realPostfix = patchClass.GetMethod("Postfix");
-			var realTranspiler = patchClass.GetMethod("Transpiler");
-			Assert.IsNotNull(realPrefix);
-			Assert.IsNotNull(realPostfix);
-			Assert.IsNotNull(realTranspiler);
+			var prefix = patchClass.GetMethod("Prefix");
+			var postfix = patchClass.GetMethod("Postfix");
+			var transpiler = patchClass.GetMethod("Transpiler");
+			Assert.IsNotNull(prefix);
+			Assert.IsNotNull(postfix);
+			Assert.IsNotNull(transpiler);
 
 			Class2Patch._reset();
-
-			MethodInfo prefixMethod;
-			MethodInfo postfixMethod;
-			MethodInfo transpilerMethod;
-			PatchTools.GetPatches(typeof(Class2Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
-
-			Assert.AreSame(realPrefix, prefixMethod);
-			Assert.AreSame(realPostfix, postfixMethod);
-			Assert.AreSame(realTranspiler, transpilerMethod);
 
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod), new HarmonyMethod(transpilerMethod));
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix), new HarmonyMethod(transpiler));
 			Assert.IsNotNull(patcher);
 
 			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
@@ -153,22 +128,15 @@ namespace HarmonyTests
 			Assert.IsNotNull(originalMethod);
 
 			var patchClass = typeof(Class4Patch);
-			var realPrefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(realPrefix);
+			var prefix = patchClass.GetMethod("Prefix");
+			Assert.IsNotNull(prefix);
 
 			Class4Patch._reset();
-
-			MethodInfo prefixMethod;
-			MethodInfo postfixMethod;
-			MethodInfo transpilerMethod;
-			PatchTools.GetPatches(typeof(Class4Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
-
-			Assert.AreSame(realPrefix, prefixMethod);
 
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefixMethod), null, null);
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), null, null);
 			Assert.IsNotNull(patcher);
 
 			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
@@ -199,22 +167,17 @@ namespace HarmonyTests
 			Assert.IsNotNull(originalMethod);
 
 			var patchClass = typeof(Class5Patch);
-			var realPrefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(realPrefix);
-			var realPostfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(realPostfix);
+			var prefix = patchClass.GetMethod("Prefix");
+			Assert.IsNotNull(prefix);
+			var postfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(postfix);
 
 			Class5Patch._reset();
 
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
-			MethodInfo prefixMethod;
-			MethodInfo postfixMethod;
-			MethodInfo transpilerMethod;
-			PatchTools.GetPatches(typeof(Class5Patch), out prefixMethod, out postfixMethod, out transpilerMethod);
-
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefixMethod), new HarmonyMethod(postfixMethod), null);
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 			Assert.IsNotNull(patcher);
 			patcher.Patch();
 
