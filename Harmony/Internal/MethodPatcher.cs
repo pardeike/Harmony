@@ -31,7 +31,11 @@ namespace Harmony
 
 			try
 			{
-				if (HarmonyInstance.DEBUG) FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
+				if (HarmonyInstance.DEBUG)
+				{
+					FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
+					FileLog.FlushBuffer();
+				}
 
 				var idx = prefixes.Count() + postfixes.Count();
 				var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
@@ -328,7 +332,10 @@ namespace Harmony
 				if (patchParam.Name == STATE_VAR)
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					Emitter.Emit(il, ldlocCode, variables[patch.DeclaringType.FullName]);
+					if (variables.TryGetValue(patch.DeclaringType.FullName, out var stateVar))
+						Emitter.Emit(il, ldlocCode, stateVar);
+					else
+						Emitter.Emit(il, OpCodes.Ldnull);
 					continue;
 				}
 
