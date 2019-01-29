@@ -81,6 +81,7 @@ namespace Harmony
 		/// <summary>Applies the patch</summary>
 		/// <returns>A list of all created dynamic methods</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public List<DynamicMethod> Patch()
 		{
 			lock (locker)
@@ -157,6 +158,7 @@ namespace Harmony
 			}
 		}
 
+		[UpgradeToLatestVersion(1)]
 		void PrepareType()
 		{
 			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);
@@ -176,7 +178,7 @@ namespace Harmony
 				if (containerAttributes.methodType == null)
 					containerAttributes.methodType = MethodType.Normal;
 
-				var isPatchAll = Attribute.GetCustomAttribute(container, typeof(HarmonyPatchAll)) != null;
+				var isPatchAll = container.GetCustomAttributes(true).Any(a => a.GetType().FullName == typeof(HarmonyPatchAll).FullName);
 				if (isPatchAll)
 				{
 					var type = containerAttributes.declaringType;
@@ -215,7 +217,7 @@ namespace Harmony
 				if (prefix.method.IsStatic == false)
 					throw new ArgumentException("Patch method " + prefix.method.FullDescription() + " must be static");
 
-				var prefixAttributes = prefix.method.GetHarmonyMethods();
+				var prefixAttributes = HarmonyMethodExtensions.GetFromMethod(prefix.method);
 				containerAttributes.Merge(HarmonyMethod.Merge(prefixAttributes)).CopyTo(prefix);
 			}
 
@@ -224,7 +226,7 @@ namespace Harmony
 				if (postfix.method.IsStatic == false)
 					throw new ArgumentException("Patch method " + postfix.method.FullDescription() + " must be static");
 
-				var postfixAttributes = postfix.method.GetHarmonyMethods();
+				var postfixAttributes = HarmonyMethodExtensions.GetFromMethod(postfix.method);
 				containerAttributes.Merge(HarmonyMethod.Merge(postfixAttributes)).CopyTo(postfix);
 			}
 
@@ -233,7 +235,7 @@ namespace Harmony
 				if (transpiler.method.IsStatic == false)
 					throw new ArgumentException("Patch method " + transpiler.method.FullDescription() + " must be static");
 
-				var infixAttributes = transpiler.method.GetHarmonyMethods();
+				var infixAttributes = HarmonyMethodExtensions.GetFromMethod(transpiler.method);
 				containerAttributes.Merge(HarmonyMethod.Merge(infixAttributes)).CopyTo(transpiler);
 			}
 		}

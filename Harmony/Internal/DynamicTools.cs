@@ -9,7 +9,7 @@ namespace Harmony
 	/// <summary>Creating dynamic methods</summary>
 	internal static class DynamicTools
 	{
-		//[UpgradeToLatestVersion(1)]
+		[UpgradeToLatestVersion(1)]
 		internal static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
 			if (original == null) throw new ArgumentNullException("original cannot be null");

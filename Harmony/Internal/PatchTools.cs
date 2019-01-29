@@ -13,16 +13,18 @@ namespace Harmony
 		{
 			objectReferences[key] = value;
 		}
-		
+
 		internal static MethodInfo GetPatchMethod<T>(Type patchType, string name, Type[] parameters = null)
 		{
+			var attributeType = typeof(T).FullName;
 			var method = patchType.GetMethods(AccessTools.all)
-				.FirstOrDefault(m => m.GetCustomAttributes(typeof(T), true).Any());
+				.FirstOrDefault(m => m.GetCustomAttributes(true).Any(a => a.GetType().FullName == attributeType));
 			if (method == null)
 				method = AccessTools.Method(patchType, name, parameters);
 			return method;
 		}
-		
+
+		[UpgradeToLatestVersion(1)]
 		internal static void GetPatches(Type patchType, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo transpiler)
 		{
 			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix");

@@ -18,13 +18,6 @@ namespace Harmony
 		StaticConstructor
 	}
 
-	// Obsolete: Specifies the type of property
-	internal enum PropertyMethod
-	{
-		Getter,
-		Setter
-	}
-
 	/// <summary>Specifies the type of argument</summary>
 	public enum ArgumentType
 	{
@@ -253,13 +246,6 @@ namespace Harmony
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
-		// Obsolete: An annotation that specifies a property to patch
-		internal HarmonyPatch(string propertyName, PropertyMethod type)
-		{
-			info.methodName = propertyName;
-			info.methodType = type == PropertyMethod.Getter ? MethodType.Getter : MethodType.Setter;
-		}
-
 		//
 
 		void ParseSpecialArguments(Type[] argumentTypes, ArgumentType[] argumentVariations)
@@ -439,10 +425,18 @@ namespace Harmony
 	{
 		/// <summary>The version.</summary>
 		public int version;
+		public Type[] types;
 
 		public UpgradeToLatestVersion(int version)
 		{
 			this.version = version;
+			types = null;
+		}
+
+		public UpgradeToLatestVersion(int version, Type[] types)
+		{
+			this.version = version;
+			this.types = types;
 		}
 	}
 }

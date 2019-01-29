@@ -26,21 +26,50 @@ namespace Harmony
 		/// <param name="parameters">The array of types</param>
 		/// <returns>A human readable description including brackets</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static string Description(this Type[] parameters)
 		{
 			if (parameters == null) return "NULL";
-			var pattern = @", \w+, Version=[0-9.]+, Culture=neutral, PublicKeyToken=[0-9a-f]+";
-			return "(" + parameters.Join(p => p?.FullName == null ? "null" : Regex.Replace(p.FullName, pattern, "")) + ")";
+			return "(" + parameters.Join(p => p.FullDescription()) + ")";
 		}
 
-		/// <summary>A a full description of a method or a constructor</summary>
+		/// <summary>A full description of a type</summary>
+		/// <param name="type">The type</param>
+		/// <returns>A human readable description</returns>
+		///
+		public static string FullDescription(this Type type)
+		{
+			if (type == null)
+				return "null";
+
+			var ns = type.Namespace;
+			if (ns != null && ns != "") ns += ".";
+			var result = ns + type.Name;
+
+			if (type.IsGenericType)
+			{
+				result += "<";
+				var subTypes = type.GetGenericArguments();
+				for (var i = 0; i < subTypes.Length; i++)
+				{
+					if (result.EndsWith("<") == false)
+						result += ", ";
+					result += subTypes[i].FullDescription();
+				}
+				result += ">";
+			}
+			return result;
+		}
+
+		/// <summary>A a full description of a method or a constructor without assembly details but with generics</summary>
 		/// <param name="method">The method or constructor</param>
 		/// <returns>A human readable description</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static string FullDescription(this MethodBase method)
 		{
 			var parameters = method.GetParameters().Select(p => p.ParameterType).ToArray();
-			return method.DeclaringType.FullName + "." + method.Name + parameters.Description();
+			return method.DeclaringType.FullDescription() + "." + method.Name + parameters.Description();
 		}
 
 		/// <summary>A helper converting parameter infos to types</summary>

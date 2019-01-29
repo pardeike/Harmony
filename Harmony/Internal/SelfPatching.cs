@@ -10,15 +10,30 @@ namespace Harmony.Tools
 	{
 		static readonly string upgradeToLatestVersionFullName = typeof(UpgradeToLatestVersion).FullName;
 
+		static bool IsUpgrade(object attribute)
+		{
+			return attribute.GetType().FullName == upgradeToLatestVersionFullName;
+		}
+
 		[UpgradeToLatestVersion(1)]
 		static int GetVersion(MethodBase method)
+		{
+			var attribute = method.GetCustomAttributes(false)
+				.Where(attr => IsUpgrade(attr))
+				.FirstOrDefault();
+			if (attribute == null)
+				return -1;
+			return Traverse.Create(attribute).Field("version").GetValue<int>();
+		}
+
+		static Type[] GetGenericTypes(MethodBase method)
 		{
 			var attribute = method.GetCustomAttributes(false)
 				.Where(attr => attr.GetType().FullName == upgradeToLatestVersionFullName)
 				.FirstOrDefault();
 			if (attribute == null)
-				return -1;
-			return Traverse.Create(attribute).Field("version").GetValue<int>();
+				return null;
+			return Traverse.Create(attribute).Field("types").GetValue<Type[]>();
 		}
 
 		[UpgradeToLatestVersion(1)]
@@ -61,7 +76,7 @@ namespace Harmony.Tools
 			return location + "(v" + version + (assembly.GlobalAssemblyCache ? ", cached" : "") + ")";
 		}
 
-		[UpgradeToLatestVersion(1)]
+		[UpgradeToLatestVersion(2)]
 		internal static void PatchOldHarmonyMethods()
 		{
 			var watch = new Stopwatch();
@@ -85,7 +100,7 @@ namespace Harmony.Tools
 
 			var potentialMethodsToUpgrade = new Dictionary<string, MethodBase>();
 			GetAllMethods(ourAssembly)
-				.Where(method => method != null && method.GetCustomAttributes(false).Any(attr => attr is UpgradeToLatestVersion))
+				.Where(method => method != null && method.GetCustomAttributes(false).Any(attr => IsUpgrade(attr)))
 				.Do(method => potentialMethodsToUpgrade.Add(MethodKey(method), method));
 
 			var otherHarmonyAssemblies = AppDomain.CurrentDomain.GetAssemblies()
@@ -117,10 +132,26 @@ namespace Harmony.Tools
 						var oldVersion = GetVersion(oldMethod);
 						if (oldVersion < newVersion)
 						{
-							if (HarmonyInstance.DEBUG)
-								FileLog.Log("Self-patching " + oldMethod.FullDescription() + " in " + AssemblyInfo(assembly));
-							patchedCounter++;
-							Memory.DetourMethod(oldMethod, newMethod);
+							var generics = GetGenericTypes(newMethod);
+							if (generics != null)
+							{
+								foreach (var generic in generics)
+								{
+									var oldMethodInfo = (oldMethod as MethodInfo).MakeGenericMethod(generic);
+									var newMethodInfo = (newMethod as MethodInfo).MakeGenericMethod(generic);
+									if (HarmonyInstance.DEBUG)
+										FileLog.Log("Self-patching " + oldMethodInfo.FullDescription() + " with <" + generic.FullName + "> in " + AssemblyInfo(assembly));
+									Memory.DetourMethod(oldMethodInfo, newMethodInfo);
+								}
+								patchedCounter++;
+							}
+							else
+							{
+								if (HarmonyInstance.DEBUG)
+									FileLog.Log("Self-patching " + oldMethod.FullDescription() + " in " + AssemblyInfo(assembly));
+								patchedCounter++;
+								Memory.DetourMethod(oldMethod, newMethod);
+							}
 						}
 					}
 				}

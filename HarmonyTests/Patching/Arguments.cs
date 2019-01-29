@@ -29,10 +29,12 @@ namespace HarmonyTests
 
 			patcher.Patch();
 
-			var instance6 = new Class6();
-			instance6.someFloat = 999;
-			instance6.someString = "original";
-			instance6.someStruct = new Class6Struct() { d1 = 1, d2 = 2, d3 = 3 };
+			var instance6 = new Class6
+			{
+				someFloat = 999,
+				someString = "original",
+				someStruct = new Class6Struct() { d1 = 1, d2 = 2, d3 = 3 }
+			};
 			var res = instance6.Method6();
 			Assert.AreEqual(123, res.Item1);
 			Assert.AreEqual("patched", res.Item2);

@@ -19,6 +19,9 @@ namespace Harmony
 		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
 		public static bool DEBUG = false;
 
+		/// <summary>Set to false before instantiating Harmony to prevent Harmony from patching other older instances of itself</summary>
+		public static bool SELF_PATCHING = true;
+
 		static bool selfPatchingDone = false;
 
 		HarmonyInstance(string id)
@@ -43,7 +46,8 @@ namespace Harmony
 			if (!selfPatchingDone)
 			{
 				selfPatchingDone = true;
-				SelfPatching.PatchOldHarmonyMethods();
+				if (SELF_PATCHING)
+					SelfPatching.PatchOldHarmonyMethods();
 			}
 		}
 
@@ -83,7 +87,7 @@ namespace Harmony
 		/// 
 		public PatchProcessor ProcessorForAnnotatedClass(Type type)
 		{
-			var parentMethodInfos = type.GetHarmonyMethods();
+			var parentMethodInfos = HarmonyMethodExtensions.GetFromType(type);
 			if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
 			{
 				var info = HarmonyMethod.Merge(parentMethodInfos);

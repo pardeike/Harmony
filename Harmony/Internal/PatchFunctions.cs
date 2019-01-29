@@ -123,11 +123,8 @@ namespace Harmony
 		/// <param name="instanceID">Harmony ID</param>
 		/// <returns>The newly created dynamic method</returns>
 		///
-		//[UpgradeToLatestVersion(1)]
 		internal static DynamicMethod UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
 		{
-			Memory.MarkForNoInlining(original);
-
 			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes);
 			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes);
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers);

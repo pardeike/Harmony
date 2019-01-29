@@ -33,12 +33,13 @@ namespace Harmony
 		{
 		}
 
+		[UpgradeToLatestVersion(1)]
 		void ImportMethod(MethodInfo theMethod)
 		{
 			method = theMethod;
 			if (method != null)
 			{
-				var infos = method.GetHarmonyMethods();
+				var infos = HarmonyMethodExtensions.GetFromMethod(method);
 				if (infos != null)
 					Merge(infos).CopyTo(this);
 			}
@@ -78,6 +79,7 @@ namespace Harmony
 		/// <param name="attributes">The annotations</param>
 		/// <returns>A merged annotation</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static HarmonyMethod Merge(List<HarmonyMethod> attributes)
 		{
 			var result = new HarmonyMethod();
@@ -90,7 +92,7 @@ namespace Harmony
 				{
 					var val = trv.Field(f).GetValue();
 					if (val != null)
-						resultTrv.Field(f).SetValue(val);
+						HarmonyMethodExtensions.SetValue(resultTrv, f, val);
 				});
 			});
 			return result;
@@ -111,14 +113,25 @@ namespace Harmony
 		}
 	}
 
-
 	/// <summary>Annotation extensions</summary>
 	public static class HarmonyMethodExtensions
 	{
+		internal static void SetValue(Traverse trv, string name, object val)
+		{
+			var fld = trv.Field(name);
+			if (name == nameof(HarmonyMethod.methodType))
+			{
+				var enumType = Nullable.GetUnderlyingType(fld.GetValueType());
+				val = Enum.ToObject(enumType, (int)val);
+			}
+			fld.SetValue(val);
+		}
+
 		/// <summary>Copies annotation information</summary>
 		/// <param name="from">from</param>
 		/// <param name="to">to</param>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static void CopyTo(this HarmonyMethod from, HarmonyMethod to)
 		{
 			if (to == null) return;
@@ -127,7 +140,8 @@ namespace Harmony
 			HarmonyMethod.HarmonyFields().ForEach(f =>
 			{
 				var val = fromTrv.Field(f).GetValue();
-				if (val != null) toTrv.Field(f).SetValue(val);
+				if (val != null)
+					SetValue(toTrv, f, val);
 			});
 		}
 
@@ -147,6 +161,7 @@ namespace Harmony
 		/// <param name="detail">The detail</param>
 		/// <returns>A new, merged copy</returns>
 		///
+		[UpgradeToLatestVersion(1)]
 		public static HarmonyMethod Merge(this HarmonyMethod master, HarmonyMethod detail)
 		{
 			if (detail == null) return master;
@@ -158,7 +173,7 @@ namespace Harmony
 			{
 				var baseValue = masterTrv.Field(f).GetValue();
 				var detailValue = detailTrv.Field(f).GetValue();
-				resultTrv.Field(f).SetValue(detailValue ?? baseValue);
+				SetValue(resultTrv, f, detailValue ?? baseValue);
 			});
 			return result;
 		}
@@ -176,8 +191,7 @@ namespace Harmony
 		/// <param name="type">The class</param>
 		/// <returns>All annotations</returns>
 		///
-		//[UpgradeToLatestVersion(1)]
-		public static List<HarmonyMethod> GetHarmonyMethods(this Type type)
+		public static List<HarmonyMethod> GetFromType(Type type)
 		{
 			return type.GetCustomAttributes(true)
 						.Select(attr => GetHarmonyMethodInfo(attr))
@@ -189,8 +203,7 @@ namespace Harmony
 		/// <param name="method">The method</param>
 		/// <returns>All annotations</returns>
 		///
-		//[UpgradeToLatestVersion(1)]
-		public static List<HarmonyMethod> GetHarmonyMethods(this MethodBase method)
+		public static List<HarmonyMethod> GetFromMethod(MethodBase method)
 		{
 			if (method is DynamicMethod) return new List<HarmonyMethod>();
 			return method.GetCustomAttributes(true)

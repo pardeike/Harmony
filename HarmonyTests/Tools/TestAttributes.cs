@@ -12,7 +12,7 @@ namespace HarmonyTests.Tools
 		public void TestAttributes()
 		{
 			var type = typeof(AllAttributesClass);
-			var infos = type.GetHarmonyMethods();
+			var infos = HarmonyMethodExtensions.GetFromType(type);
 			var info = HarmonyMethod.Merge(infos);
 			Assert.IsNotNull(info);
 			Assert.AreEqual(typeof(string), info.declaringType);
