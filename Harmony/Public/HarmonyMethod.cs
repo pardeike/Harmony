@@ -48,8 +48,11 @@ namespace Harmony
 		/// <summary>Creates an annotation from a method</summary>
 		/// <param name="method">The original method</param>
 		///
+		[UpgradeToLatestVersion(1)]
 		public HarmonyMethod(MethodInfo method)
 		{
+			if (method == null)
+				throw new ArgumentNullException(nameof(method));
 			ImportMethod(method);
 		}
 
@@ -58,9 +61,12 @@ namespace Harmony
 		/// <param name="name">The method name</param>
 		/// <param name="parameters">The optional argument types for overloaded methods</param>
 		///
+		[UpgradeToLatestVersion(1)]
 		public HarmonyMethod(Type type, string name, Type[] parameters = null)
 		{
 			var method = AccessTools.Method(type, name, parameters);
+			if (method == null)
+				throw new ArgumentException("Cannot not find method for type " + type + " and name " + name + " and parameters " + parameters?.Description());
 			ImportMethod(method);
 		}
 

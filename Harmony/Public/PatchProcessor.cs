@@ -48,9 +48,9 @@ namespace Harmony
 		{
 			this.instance = instance;
 			this.originals = originals;
-			this.prefix = prefix ?? new HarmonyMethod(null);
-			this.postfix = postfix ?? new HarmonyMethod(null);
-			this.transpiler = transpiler ?? new HarmonyMethod(null);
+			this.prefix = prefix;
+			this.postfix = postfix;
+			this.transpiler = transpiler;
 		}
 
 		/// <summary>Gets patch information</summary>
@@ -210,32 +210,38 @@ namespace Harmony
 				}
 			}
 
-			PatchTools.GetPatches(container, out prefix.method, out postfix.method, out transpiler.method);
+			PatchTools.GetPatches(container, out var prefixMethod, out var postfixMethod, out var transpilerMethod);
+			if (prefix != null)
+				prefix.method = prefixMethod;
+			if (postfix != null)
+				postfix.method = postfixMethod;
+			if (transpiler != null)
+				transpiler.method = transpilerMethod;
 
-			if (prefix.method != null)
+			if (prefixMethod != null)
 			{
-				if (prefix.method.IsStatic == false)
-					throw new ArgumentException("Patch method " + prefix.method.FullDescription() + " must be static");
+				if (prefixMethod.IsStatic == false)
+					throw new ArgumentException("Patch method " + prefixMethod.FullDescription() + " must be static");
 
 				var prefixAttributes = HarmonyMethodExtensions.GetFromMethod(prefix.method);
 				containerAttributes.Merge(HarmonyMethod.Merge(prefixAttributes)).CopyTo(prefix);
 			}
 
-			if (postfix.method != null)
+			if (postfixMethod != null)
 			{
-				if (postfix.method.IsStatic == false)
-					throw new ArgumentException("Patch method " + postfix.method.FullDescription() + " must be static");
+				if (postfixMethod.IsStatic == false)
+					throw new ArgumentException("Patch method " + postfixMethod.FullDescription() + " must be static");
 
-				var postfixAttributes = HarmonyMethodExtensions.GetFromMethod(postfix.method);
+				var postfixAttributes = HarmonyMethodExtensions.GetFromMethod(postfixMethod);
 				containerAttributes.Merge(HarmonyMethod.Merge(postfixAttributes)).CopyTo(postfix);
 			}
 
-			if (transpiler.method != null)
+			if (transpilerMethod != null)
 			{
-				if (transpiler.method.IsStatic == false)
-					throw new ArgumentException("Patch method " + transpiler.method.FullDescription() + " must be static");
+				if (transpilerMethod.IsStatic == false)
+					throw new ArgumentException("Patch method " + transpilerMethod.FullDescription() + " must be static");
 
-				var infixAttributes = HarmonyMethodExtensions.GetFromMethod(transpiler.method);
+				var infixAttributes = HarmonyMethodExtensions.GetFromMethod(transpilerMethod);
 				containerAttributes.Merge(HarmonyMethod.Merge(infixAttributes)).CopyTo(transpiler);
 			}
 		}

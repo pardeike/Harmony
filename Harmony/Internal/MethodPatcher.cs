@@ -169,6 +169,7 @@ namespace Harmony
 		[UpgradeToLatestVersion(1)]
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
+			if (method == null) return new HarmonyArgument[0];
 			var attributes = method.GetCustomAttributes(false);
 			return AllHarmonyArguments(attributes);
 		}
@@ -197,7 +198,7 @@ namespace Harmony
 
 		static string GetOriginalArgumentName(HarmonyArgument[] attributes, string name, string[] originalParameterNames)
 		{
-			if (attributes.Length <= 0)
+			if ((attributes?.Length ?? 0) <= 0)
 				return null;
 
 			var attribute = attributes.SingleOrDefault(p => p.NewName == name);
@@ -207,7 +208,7 @@ namespace Harmony
 			if (string.IsNullOrEmpty(attribute.OriginalName) == false)
 				return attribute.OriginalName;
 
-			if (attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
+			if (originalParameterNames != null && attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
 				return originalParameterNames[attribute.Index];
 
 			return null;
@@ -217,11 +218,11 @@ namespace Harmony
 		{
 			string argumentName;
 
-			argumentName = GetOriginalArgumentName(method.GetArgumentAttributes(), name, originalParameterNames);
+			argumentName = GetOriginalArgumentName(method?.GetArgumentAttributes(), name, originalParameterNames);
 			if (argumentName != null)
 				return argumentName;
 
-			argumentName = GetOriginalArgumentName(method.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
+			argumentName = GetOriginalArgumentName(method?.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
 			if (argumentName != null)
 				return argumentName;
 
@@ -343,8 +344,12 @@ namespace Harmony
 
 				if (patchParam.Name == RESULT_VAR)
 				{
-					if (AccessTools.GetReturnedType(original) == typeof(void))
+					var returnType = AccessTools.GetReturnedType(original);
+					if (returnType == typeof(void))
 						throw new Exception("Cannot get result from void method " + original.FullDescription());
+					var resultType = patchParam.ParameterType.GetElementType();
+					if (resultType.IsAssignableFrom(returnType) == false)
+						throw new Exception("Cannot assign method return type " + returnType.FullName + " to " + RESULT_VAR + " type " + resultType.FullName + " for method " + original.FullDescription());
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					Emitter.Emit(il, ldlocCode, variables[RESULT_VAR]);
 					continue;

@@ -271,7 +271,7 @@ namespace Harmony
 			if (result == null)
 			{
 				if (HarmonyInstance.DEBUG)
-					FileLog.Log("AccessTools.DeclaredMethod: Could not find method for type " + type + " and name " + name + " and parameters " + parameters.Description());
+					FileLog.Log("AccessTools.DeclaredMethod: Could not find method for type " + type + " and name " + name + " and parameters " + parameters?.Description());
 				return null;
 			}
 
@@ -324,7 +324,7 @@ namespace Harmony
 			if (result == null)
 			{
 				if (HarmonyInstance.DEBUG)
-					FileLog.Log("AccessTools.Method: Could not find method for type " + type + " and name " + name + " and parameters " + parameters.Description());
+					FileLog.Log("AccessTools.Method: Could not find method for type " + type + " and name " + name + " and parameters " + parameters?.Description());
 				return null;
 			}
 

@@ -68,6 +68,7 @@ namespace Harmony
 		[UpgradeToLatestVersion(1)]
 		public static string FullDescription(this MethodBase method)
 		{
+			if (method == null) return "null";
 			var parameters = method.GetParameters().Select(p => p.ParameterType).ToArray();
 			return method.DeclaringType.FullDescription() + "." + method.Name + parameters.Description();
 		}
