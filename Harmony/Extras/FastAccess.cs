@@ -98,10 +98,10 @@ namespace Harmony
 		{
 			foreach (var name in names)
 			{
-				if (AccessTools.DeclaredField(typeof(ILGenerator), name) != null)
+				if (AccessTools.DeclaredField(typeof(T), name) != null)
 					return CreateGetterHandler<T, S>(AccessTools.DeclaredField(typeof(T), name));
 
-				if (AccessTools.Property(typeof(ILGenerator), name) != null)
+				if (AccessTools.Property(typeof(T), name) != null)
 					return CreateGetterHandler<T, S>(AccessTools.Property(typeof(T), name));
 			}
 			return null;
