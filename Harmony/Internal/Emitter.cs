@@ -16,9 +16,9 @@ namespace Harmony
 
 	internal static class Emitter
 	{
-		static readonly GetterHandler<ILGenerator,int> codeLenGetter = FastAccess.CreateFieldGetter<ILGenerator,int>( "code_len", "m_length");
+		static readonly GetterHandler<ILGenerator, int> codeLenGetter = FastAccess.CreateFieldGetter<ILGenerator, int>( "code_len", "m_length");
 		static readonly GetterHandler<ILGenerator, LocalBuilder[]> localsGetter = FastAccess.CreateFieldGetter<ILGenerator, LocalBuilder[]>( "locals");
-		static readonly GetterHandler<ILGenerator,int> localCountGetter = FastAccess.CreateFieldGetter<ILGenerator,int>( "m_localCount");
+		static readonly GetterHandler<ILGenerator, int> localCountGetter = FastAccess.CreateFieldGetter<ILGenerator, int>( "m_localCount");
 
 		internal static string CodePos(int offset)
 		{
