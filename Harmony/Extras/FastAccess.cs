@@ -32,19 +32,18 @@ namespace Harmony
 	public class FastAccess
 	{
 		/// <summary>Creates an instantiation delegate</summary>
-		/// <param name="type">The type</param>
 		/// <typeparam name="T">Type that constructor creates</typeparam>
 		/// <returns>The new instantiation delegate</returns>
 		///
-		public static InstantiationHandler<T> CreateInstantiationHandler<T>(Type type)
+		public static InstantiationHandler<T> CreateInstantiationHandler<T>()
 		{
-			var constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
+			var constructorInfo = typeof(T).GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
 			if (constructorInfo == null)
 			{
-				throw new ApplicationException(string.Format("The type {0} must declare an empty constructor (the constructor may be private, internal, protected, protected internal, or public).", type));
+				throw new ApplicationException(string.Format("The type {0} must declare an empty constructor (the constructor may be private, internal, protected, protected internal, or public).", typeof(T)));
 			}
 
-			var dynamicMethod = new DynamicMethod("InstantiateObject_" + type.Name, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(T), null, type, true);
+			var dynamicMethod = new DynamicMethod("InstantiateObject_" + typeof(T).Name, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(T), null, typeof(T), true);
 			var generator = dynamicMethod.GetILGenerator();
 			generator.Emit(OpCodes.Newobj, constructorInfo);
 			generator.Emit(OpCodes.Ret);
