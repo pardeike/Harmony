@@ -70,7 +70,7 @@ namespace Harmony
 			// sizeof is more accurate for the "managed size" than Marshal.SizeOf (marshalled size)
 			// It also returns a value for types of which the size cannot be determined otherwise.
 
-			var method = new DynamicMethod( $"GetSize:{t.FullName}", typeof(int), Type.EmptyTypes, true);
+			var method = new DynamicMethod("GetSize:" + t.FullName, typeof(int), Type.EmptyTypes, true);
 			var il = method.GetILGenerator();
 			il.Emit(OpCodes.Sizeof, t);
 			il.Emit(OpCodes.Ret);
