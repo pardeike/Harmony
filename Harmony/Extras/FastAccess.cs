@@ -8,16 +8,20 @@ namespace Harmony
 
 	/// <summary>A getter delegate type</summary>
 	/// <param name="source">The instance get getter uses</param>
+	/// <typeparam name="T">Type that getter gets field/property value from</typeparam>
+	/// <typeparam name="S">Type of the value that getter gets</typeparam>
 	/// <returns>An delegate</returns>
 	///
 	public delegate S GetterHandler<in T,out S>(T source);
 
-	/// <summary>A setter delegate type</summary>
-	/// <param name="source">The instance the setter uses</param>
-	/// <param name="value">The value the setter uses</param>
-	/// <returns>An delegate</returns>
-	///
-	public delegate void SetterHandler<in T, in S>(T source, S value);
+   /// <summary>A setter delegate type</summary>
+   /// <param name="source">The instance the setter uses</param>
+   /// <param name="value">The value the setter uses</param>
+   /// <typeparam name="T">Type that setter sets field/property value for</typeparam>
+   /// <typeparam name="S">Type of the value that setter sets</typeparam>
+   /// <returns>An delegate</returns>
+   ///
+   public delegate void SetterHandler<in T, in S>(T source, S value);
 
 	/// <summary>A constructor delegate type</summary>
 	/// <returns>An delegate</returns>
@@ -29,6 +33,7 @@ namespace Harmony
 	{
 		/// <summary>Creates an instantiation delegate</summary>
 		/// <param name="type">The type</param>
+		/// <typeparam name="T">Type that constructor creates</typeparam>
 		/// <returns>The new instantiation delegate</returns>
 		///
 		public static InstantiationHandler<T> CreateInstantiationHandler<T>(Type type)
@@ -48,6 +53,8 @@ namespace Harmony
 
 		/// <summary>Creates an getter delegate for a property</summary>
 		/// <param name="propertyInfo">The property</param>
+		/// <typeparam name="T">Type that getter reads property from</typeparam>
+		/// <typeparam name="S">Type of the property that gets accessed</typeparam>
 		/// <returns>The new getter delegate</returns>
 		///
 		public static GetterHandler<T,S> CreateGetterHandler<T,S>(PropertyInfo propertyInfo)
@@ -63,11 +70,13 @@ namespace Harmony
 			return (GetterHandler<T,S>)dynamicGet.CreateDelegate(typeof(GetterHandler<T,S>));
 		}
 
-		/// <summary>Creates an getter delegate for a field</summary>
-		/// <param name="fieldInfo">The field</param>
-		/// <returns>The new getter delegate</returns>
-		///
-		public static GetterHandler<T,S> CreateGetterHandler<T,S>(FieldInfo fieldInfo)
+	  /// <summary>Creates an getter delegate for a field</summary>
+	  /// <param name="fieldInfo">The field</param>
+	  /// <typeparam name="T">Type that getter reads field from</typeparam>
+	  /// <typeparam name="S">Type of the field that gets accessed</typeparam>
+	  /// <returns>The new getter delegate</returns>
+	  ///
+	  public static GetterHandler<T,S> CreateGetterHandler<T,S>(FieldInfo fieldInfo)
 		{
 			var dynamicGet = CreateGetDynamicMethod<T,S>(fieldInfo.DeclaringType);
 			var getGenerator = dynamicGet.GetILGenerator();
@@ -79,12 +88,13 @@ namespace Harmony
 			return (GetterHandler<T,S>)dynamicGet.CreateDelegate(typeof(GetterHandler<T,S>));
 		}
 
-		/// <summary>Creates an getter delegate for a field (with a list of possible field names)</summary>
-		/// <param name="type">The type</param>
-		/// <param name="names">A list of possible field names</param>
-		/// <returns>The new getter delegate</returns>
-		///
-		public static GetterHandler<T,S> CreateFieldGetter<T,S>(params string[] names)
+	  /// <summary>Creates an getter delegate for a field (with a list of possible field names)</summary>
+	  /// <param name="names">A list of possible field names</param>
+	  /// <typeparam name="T">Type that getter reads field/property from</typeparam>
+	  /// <typeparam name="S">Type of the field/property that gets accessed</typeparam>
+	  /// <returns>The new getter delegate</returns>
+	  ///
+	  public static GetterHandler<T,S> CreateFieldGetter<T,S>(params string[] names)
 		{
 			foreach (var name in names)
 			{
@@ -97,11 +107,13 @@ namespace Harmony
 			return null;
 		}
 
-		/// <summary>Creates an setter delegate</summary>
-		/// <param name="propertyInfo">The property</param>
-		/// <returns>The new setter delegate</returns>
-		///
-		public static SetterHandler<T,S> CreateSetterHandler<T,S>(PropertyInfo propertyInfo)
+	  /// <summary>Creates an setter delegate</summary>
+	  /// <param name="propertyInfo">The property</param>
+	  /// <typeparam name="T">Type that setter assigns property value to</typeparam>
+	  /// <typeparam name="S">Type of the property that gets assigned</typeparam>
+	  /// <returns>The new setter delegate</returns>
+	  ///
+	  public static SetterHandler<T,S> CreateSetterHandler<T,S>(PropertyInfo propertyInfo)
 		{
 			var setMethodInfo = propertyInfo.GetSetMethod(true);
 			var dynamicSet = CreateSetDynamicMethod<T,S>(propertyInfo.DeclaringType);
@@ -115,11 +127,13 @@ namespace Harmony
 			return (SetterHandler<T,S>)dynamicSet.CreateDelegate(typeof(SetterHandler<T,S>));
 		}
 
-		/// <summary>Creates an setter delegate for a field</summary>
-		/// <param name="fieldInfo">The field</param>
-		/// <returns>The new getter delegate</returns>
-		///
-		public static SetterHandler<T,S> CreateSetterHandler<T,S>(FieldInfo fieldInfo)
+	  /// <summary>Creates an setter delegate for a field</summary>
+	  /// <param name="fieldInfo">The field</param>
+	  /// <typeparam name="T">Type that setter assigns field value to</typeparam>
+	  /// <typeparam name="S">Type of the field that gets assigned</typeparam>
+	  /// <returns>The new getter delegate</returns>
+	  ///
+	  public static SetterHandler<T,S> CreateSetterHandler<T,S>(FieldInfo fieldInfo)
 		{
 			var dynamicSet = CreateSetDynamicMethod<T,S>(fieldInfo.DeclaringType);
 			var setGenerator = dynamicSet.GetILGenerator();
