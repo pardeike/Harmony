@@ -176,7 +176,7 @@ namespace Harmony
 		/// <param name="type">The class</param>
 		/// <returns>All annotations</returns>
 		///
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		public static List<HarmonyMethod> GetHarmonyMethods(this Type type)
 		{
 			return type.GetCustomAttributes(true)
@@ -189,7 +189,7 @@ namespace Harmony
 		/// <param name="method">The method</param>
 		/// <returns>All annotations</returns>
 		///
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		public static List<HarmonyMethod> GetHarmonyMethods(this MethodBase method)
 		{
 			if (method is DynamicMethod) return new List<HarmonyMethod>();

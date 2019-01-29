@@ -7,15 +7,10 @@ using System.Runtime.CompilerServices;
 namespace Harmony
 {
 	/// <summary>Creating dynamic methods</summary>
-	public static class DynamicTools
+	internal static class DynamicTools
 	{
-		/// <summary>Creates a new dynamic method based on the signature of an existing method</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="suffix">A suffix for the new method name</param>
-		/// <returns>The new and so far empty dynamic method, ready to be implemented</returns>
-		///
-		[UpgradeToLatestVersion(1)]
-		public static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
+		//[UpgradeToLatestVersion(1)]
+		internal static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
 			if (original == null) throw new ArgumentNullException("original cannot be null");
 			var patchName = original.Name + suffix;
@@ -64,40 +59,22 @@ namespace Harmony
 
 			return method;
 		}
-
-		/// <summary>Creates local variables by copying them from an original method</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="generator">A IL generator to generate the variables with</param>
-		/// <param name="logOutput">Set to true to log the actions to the debug log</param>
-		/// <returns>An array of newly defined variables, each represented by a LocalBuilder</returns>
-		///
-		public static LocalBuilder[] DeclareLocalVariables(MethodBase original, ILGenerator generator, bool logOutput = true)
+		
+		internal static LocalBuilder[] DeclareLocalVariables(MethodBase original, ILGenerator generator)
 		{
 			var vars = original.GetMethodBody()?.LocalVariables;
 			if (vars == null)
 				return new LocalBuilder[0];
-			return vars.Select(lvi =>
-			{
-				var localBuilder = generator.DeclareLocal(lvi.LocalType, lvi.IsPinned);
-				if (logOutput)
-					Emitter.LogLocalVariable(generator, localBuilder);
-				return localBuilder;
-			}).ToArray();
+			return vars.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 		}
-
-		/// <summary>Creates a local variable</summary>
-		/// <param name="generator">A IL generator to generate the variable with</param>
-		/// <param name="type">The variable type</param>
-		/// <returns>A LocalBuilder representing the new variable</returns>
-		///
-		public static LocalBuilder DeclareLocalVariable(ILGenerator generator, Type type)
+		
+		internal static LocalBuilder DeclareLocalVariable(ILGenerator generator, Type type)
 		{
 			if (type.IsByRef) type = type.GetElementType();
 
 			if (AccessTools.IsClass(type))
 			{
 				var v = generator.DeclareLocal(type);
-				Emitter.LogLocalVariable(generator, v);
 				Emitter.Emit(generator, OpCodes.Ldnull);
 				Emitter.Emit(generator, OpCodes.Stloc, v);
 				return v;
@@ -105,7 +82,6 @@ namespace Harmony
 			if (AccessTools.IsStruct(type))
 			{
 				var v = generator.DeclareLocal(type);
-				Emitter.LogLocalVariable(generator, v);
 				Emitter.Emit(generator, OpCodes.Ldloca, v);
 				Emitter.Emit(generator, OpCodes.Initobj, type);
 				return v;
@@ -113,7 +89,6 @@ namespace Harmony
 			if (AccessTools.IsValue(type))
 			{
 				var v = generator.DeclareLocal(type);
-				Emitter.LogLocalVariable(generator, v);
 				if (type == typeof(float))
 					Emitter.Emit(generator, OpCodes.Ldc_R4, (float)0);
 				else if (type == typeof(double))
@@ -127,11 +102,8 @@ namespace Harmony
 			}
 			return null;
 		}
-
-		/// <summary>Prepares a dynamic method so it is jitted</summary>
-		/// <param name="method">The dynamic method</param>
-		///
-		public static void PrepareDynamicMethod(DynamicMethod method)
+		
+		internal static void PrepareDynamicMethod(DynamicMethod method)
 		{
 			var nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
 			var nonPublicStatic = BindingFlags.NonPublic | BindingFlags.Static;

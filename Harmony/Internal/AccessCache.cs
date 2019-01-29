@@ -4,20 +4,14 @@ using System.Reflection;
 
 namespace Harmony
 {
-	/// <summary>A access cache for speeding up reflections</summary>
-	public class AccessCache
+	internal class AccessCache
 	{
 		Dictionary<Type, Dictionary<string, FieldInfo>> fields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
 		Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
 		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
-
-		/// <summary>Gets field information</summary>
-		/// <param name="type">The type</param>
-		/// <param name="name">The name</param>
-		/// <returns>The field information</returns>
-		///
+		
 		[UpgradeToLatestVersion(1)]
-		public FieldInfo GetFieldInfo(Type type, string name)
+		internal FieldInfo GetFieldInfo(Type type, string name)
 		{
 			Dictionary<string, FieldInfo> fieldsByType = null;
 			if (fields.TryGetValue(type, out fieldsByType) == false)
@@ -34,13 +28,8 @@ namespace Harmony
 			}
 			return field;
 		}
-
-		/// <summary>Gets property information</summary>
-		/// <param name="type">The type</param>
-		/// <param name="name">The name</param>
-		/// <returns>The property information</returns>
-		///
-		public PropertyInfo GetPropertyInfo(Type type, string name)
+		
+		internal PropertyInfo GetPropertyInfo(Type type, string name)
 		{
 			Dictionary<string, PropertyInfo> propertiesByType = null;
 			if (properties.TryGetValue(type, out propertiesByType) == false)
@@ -73,14 +62,8 @@ namespace Harmony
 			}
 			return hash1 + (hash2 * 1566083941);
 		}
-
-		/// <summary>Gets method information</summary>
-		/// <param name="type">		 The type</param>
-		/// <param name="name">		 The name</param>
-		/// <param name="arguments">The arguments</param>
-		/// <returns>The method information</returns>
-		///
-		public MethodBase GetMethodInfo(Type type, string name, Type[] arguments)
+		
+		internal MethodBase GetMethodInfo(Type type, string name, Type[] arguments)
 		{
 			Dictionary<string, Dictionary<int, MethodBase>> methodsByName = null;
 			methods.TryGetValue(type, out methodsByName);

@@ -215,7 +215,7 @@ namespace Harmony
 			return parameter;
 		}
 		
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		internal List<CodeInstruction> GetResult(ILGenerator generator, MethodBase method)
 		{
 			IEnumerable instructions = codeInstructions;

@@ -23,7 +23,7 @@ namespace Harmony
 			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.1", prefixes, postfixes, transpilers);
 		}
 		
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			if (original == null)
@@ -157,21 +157,21 @@ namespace Harmony
 			.ToArray();
 		}
 
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
 			var attributes = parameter.GetCustomAttributes(false);
 			return AllHarmonyArguments(attributes).FirstOrDefault();
 		}
 
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
 			var attributes = method.GetCustomAttributes(false);
 			return AllHarmonyArguments(attributes);
 		}
 
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		static HarmonyArgument[] GetArgumentAttributes(this Type type)
 		{
 			var attributes = type.GetCustomAttributes(false);
@@ -242,7 +242,7 @@ namespace Harmony
 
 		static readonly MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 
-		[UpgradeToLatestVersion(1)]
+		//[UpgradeToLatestVersion(1)]
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
 			var isInstance = original.IsStatic == false;
