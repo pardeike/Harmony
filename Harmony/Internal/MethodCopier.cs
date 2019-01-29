@@ -116,9 +116,7 @@ namespace Harmony
 			if (existingVariables != null)
 				variables = existingVariables;
 			else
-				variables = localVariables.Select(
-					lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)
-				).ToArray();
+				variables = localVariables.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 		}
 
 		// process all jumps
@@ -264,18 +262,12 @@ namespace Harmony
 
 			// pass3 - log out all new local variables
 			//
-			foreach (var instruction in codeInstructions)
-			{
-				var local = instruction.operand as LocalBuilder;
-				if (local == null)
-					continue;
-				if (localVariables.Contains(local))
-					continue;
-				Emitter.LogLocalVariable(generator, local);
-				localVariables.Add(local);
-			}
+			var savedLog = FileLog.GetBuffer(true);
+			Emitter.AllLocalVariables(generator).Do(local => Emitter.LogLocalVariable(generator, local));
+			FileLog.LogBuffered(savedLog);
 
 			// pass4 - remove RET if it appears at the end
+			//
 			while (true)
 			{
 				var lastInstruction = codeInstructions.LastOrDefault();

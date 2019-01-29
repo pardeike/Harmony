@@ -54,6 +54,43 @@ namespace Harmony
 			}
 		}
 
+		/// <summary>Logs a list of string in a buffered way. Use this method only if you are sure that FlushBuffer will be called
+		/// or else logging information is incomplete in case of a crash</summary>
+		/// <param name="strings">The strings to log (they will not be re-indented)</param>
+		///
+		public static void LogBuffered(List<string> strings)
+		{
+			lock (logPath)
+			{
+				buffer.AddRange(strings);
+			}
+		}
+
+		/// <summary>Returns the log buffer and optionally empties it</summary>
+		/// <param name="clear">True to empty the buffer</param>
+		/// <returns>The buffer.</returns>
+		///
+		public static List<string> GetBuffer(bool clear)
+		{
+			lock (logPath)
+			{
+				var result = buffer;
+				if (clear)
+					buffer = new List<string>();
+				return result;
+			}
+		}
+
+		/// <summary>Replaces the buffer with new lines</summary>
+		/// <param name="buffer">The lines to store</param>
+		///
+		public static void SetBuffer(List<string> buffer)
+		{
+			lock (logPath)
+			{
+				FileLog.buffer = buffer;
+			}
+		}
 
 		/// <summary>Flushes the log buffer to disk (use in combination with LogBuffered)</summary>
 		public static void FlushBuffer()

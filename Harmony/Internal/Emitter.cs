@@ -20,10 +20,15 @@ namespace Harmony
 		static readonly GetterHandler localsGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "locals");
 		static readonly GetterHandler localCountGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "m_localCount");
 
+		internal static string CodePos(int offset)
+		{
+			return string.Format("L_{0:x4}: ", offset);
+		}
+
 		internal static string CodePos(ILGenerator il)
 		{
 			var offset = (int)codeLenGetter(il);
-			return string.Format("L_{0:x4}: ", offset);
+			return CodePos(offset);
 		}
 
 		internal static void LogComment(ILGenerator il, string comment)
@@ -41,19 +46,17 @@ namespace Harmony
 				FileLog.LogBuffered(string.Format("{0}{1}{2}{3}", CodePos(il), opCode, space, argStr));
 			}
 		}
+
+		internal static LocalBuilder[] AllLocalVariables(ILGenerator il)
+		{
+			return localsGetter != null ? (LocalBuilder[])localsGetter(il) : new LocalBuilder[0];
+		}
 		
 		internal static void LogLocalVariable(ILGenerator il, LocalBuilder variable)
 		{
 			if (HarmonyInstance.DEBUG)
 			{
-				var localCount = -1;
-				var localsArray = localsGetter != null ? (LocalBuilder[])localsGetter(il) : null;
-				if (localsArray != null && localsArray.Length > 0)
-					localCount = localsArray.Length;
-				else
-					localCount = (int)localCountGetter(il);
-
-				var str = string.Format("{0}Local var {1}: {2}{3}", CodePos(il), localCount - 1, variable.LocalType.FullName, variable.IsPinned ? "(pinned)" : "");
+				var str = string.Format("{0}Local var {1}: {2}{3}", CodePos(0), variable.LocalIndex, variable.LocalType.FullName, variable.IsPinned ? "(pinned)" : "");
 				FileLog.LogBuffered(str);
 			}
 		}
