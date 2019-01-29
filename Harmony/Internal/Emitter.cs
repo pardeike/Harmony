@@ -16,9 +16,9 @@ namespace Harmony
 
 	internal static class Emitter
 	{
-		static readonly GetterHandler codeLenGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "code_len", "m_length");
-		static readonly GetterHandler localsGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "locals");
-		static readonly GetterHandler localCountGetter = FastAccess.CreateFieldGetter(typeof(ILGenerator), "m_localCount");
+		static readonly GetterHandler<ILGenerator,int> codeLenGetter = FastAccess.CreateFieldGetter<ILGenerator,int>( "code_len", "m_length");
+		static readonly GetterHandler<ILGenerator, LocalBuilder[]> localsGetter = FastAccess.CreateFieldGetter<ILGenerator, LocalBuilder[]>( "locals");
+		static readonly GetterHandler<ILGenerator,int> localCountGetter = FastAccess.CreateFieldGetter<ILGenerator,int>( "m_localCount");
 
 		internal static string CodePos(int offset)
 		{
@@ -27,7 +27,7 @@ namespace Harmony
 
 		internal static string CodePos(ILGenerator il)
 		{
-			var offset = (int)codeLenGetter(il);
+			var offset = codeLenGetter(il);
 			return CodePos(offset);
 		}
 
@@ -49,7 +49,7 @@ namespace Harmony
 
 		internal static LocalBuilder[] AllLocalVariables(ILGenerator il)
 		{
-			return localsGetter != null ? (LocalBuilder[])localsGetter(il) : new LocalBuilder[0];
+			return localsGetter != null ? localsGetter(il) : new LocalBuilder[0];
 		}
 		
 		internal static void LogLocalVariable(ILGenerator il, LocalBuilder variable)

@@ -10,19 +10,19 @@ namespace Harmony
 	/// <param name="source">The instance get getter uses</param>
 	/// <returns>An delegate</returns>
 	///
-	public delegate object GetterHandler(object source);
+	public delegate S GetterHandler<in T,out S>(T source);
 
 	/// <summary>A setter delegate type</summary>
 	/// <param name="source">The instance the setter uses</param>
 	/// <param name="value">The value the setter uses</param>
 	/// <returns>An delegate</returns>
 	///
-	public delegate void SetterHandler(object source, object value);
+	public delegate void SetterHandler<in T, in S>(T source, S value);
 
 	/// <summary>A constructor delegate type</summary>
 	/// <returns>An delegate</returns>
 	///
-	public delegate object InstantiationHandler();
+	public delegate T InstantiationHandler<out T>();
 
 	/// <summary>A helper class for fast access to getters and setters</summary>
 	public class FastAccess
@@ -31,7 +31,7 @@ namespace Harmony
 		/// <param name="type">The type</param>
 		/// <returns>The new instantiation delegate</returns>
 		///
-		public static InstantiationHandler CreateInstantiationHandler(Type type)
+		public static InstantiationHandler<T> CreateInstantiationHandler<T>(Type type)
 		{
 			var constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
 			if (constructorInfo == null)
@@ -39,46 +39,44 @@ namespace Harmony
 				throw new ApplicationException(string.Format("The type {0} must declare an empty constructor (the constructor may be private, internal, protected, protected internal, or public).", type));
 			}
 
-			var dynamicMethod = new DynamicMethod("InstantiateObject_" + type.Name, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(object), null, type, true);
+			var dynamicMethod = new DynamicMethod("InstantiateObject_" + type.Name, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(T), null, type, true);
 			var generator = dynamicMethod.GetILGenerator();
 			generator.Emit(OpCodes.Newobj, constructorInfo);
 			generator.Emit(OpCodes.Ret);
-			return (InstantiationHandler)dynamicMethod.CreateDelegate(typeof(InstantiationHandler));
+			return (InstantiationHandler<T>)dynamicMethod.CreateDelegate(typeof(InstantiationHandler<T>));
 		}
 
 		/// <summary>Creates an getter delegate for a property</summary>
 		/// <param name="propertyInfo">The property</param>
 		/// <returns>The new getter delegate</returns>
 		///
-		public static GetterHandler CreateGetterHandler(PropertyInfo propertyInfo)
+		public static GetterHandler<T,S> CreateGetterHandler<T,S>(PropertyInfo propertyInfo)
 		{
 			var getMethodInfo = propertyInfo.GetGetMethod(true);
-			var dynamicGet = CreateGetDynamicMethod(propertyInfo.DeclaringType);
+			var dynamicGet = CreateGetDynamicMethod<T,S>(propertyInfo.DeclaringType);
 			var getGenerator = dynamicGet.GetILGenerator();
 
 			getGenerator.Emit(OpCodes.Ldarg_0);
 			getGenerator.Emit(OpCodes.Call, getMethodInfo);
-			BoxIfNeeded(getMethodInfo.ReturnType, getGenerator);
 			getGenerator.Emit(OpCodes.Ret);
 
-			return (GetterHandler)dynamicGet.CreateDelegate(typeof(GetterHandler));
+			return (GetterHandler<T,S>)dynamicGet.CreateDelegate(typeof(GetterHandler<T,S>));
 		}
 
 		/// <summary>Creates an getter delegate for a field</summary>
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>The new getter delegate</returns>
 		///
-		public static GetterHandler CreateGetterHandler(FieldInfo fieldInfo)
+		public static GetterHandler<T,S> CreateGetterHandler<T,S>(FieldInfo fieldInfo)
 		{
-			var dynamicGet = CreateGetDynamicMethod(fieldInfo.DeclaringType);
+			var dynamicGet = CreateGetDynamicMethod<T,S>(fieldInfo.DeclaringType);
 			var getGenerator = dynamicGet.GetILGenerator();
 
 			getGenerator.Emit(OpCodes.Ldarg_0);
 			getGenerator.Emit(OpCodes.Ldfld, fieldInfo);
-			BoxIfNeeded(fieldInfo.FieldType, getGenerator);
 			getGenerator.Emit(OpCodes.Ret);
 
-			return (GetterHandler)dynamicGet.CreateDelegate(typeof(GetterHandler));
+			return (GetterHandler<T,S>)dynamicGet.CreateDelegate(typeof(GetterHandler<T,S>));
 		}
 
 		/// <summary>Creates an getter delegate for a field (with a list of possible field names)</summary>
@@ -86,15 +84,15 @@ namespace Harmony
 		/// <param name="names">A list of possible field names</param>
 		/// <returns>The new getter delegate</returns>
 		///
-		public static GetterHandler CreateFieldGetter(Type type, params string[] names)
+		public static GetterHandler<T,S> CreateFieldGetter<T,S>(params string[] names)
 		{
 			foreach (var name in names)
 			{
 				if (AccessTools.DeclaredField(typeof(ILGenerator), name) != null)
-					return CreateGetterHandler(AccessTools.DeclaredField(type, name));
+					return CreateGetterHandler<T,S>(AccessTools.DeclaredField(typeof(T), name));
 
 				if (AccessTools.Property(typeof(ILGenerator), name) != null)
-					return CreateGetterHandler(AccessTools.Property(type, name));
+					return CreateGetterHandler<T,S>(AccessTools.Property(typeof(T), name));
 			}
 			return null;
 		}
@@ -103,61 +101,47 @@ namespace Harmony
 		/// <param name="propertyInfo">The property</param>
 		/// <returns>The new setter delegate</returns>
 		///
-		public static SetterHandler CreateSetterHandler(PropertyInfo propertyInfo)
+		public static SetterHandler<T,S> CreateSetterHandler<T,S>(PropertyInfo propertyInfo)
 		{
 			var setMethodInfo = propertyInfo.GetSetMethod(true);
-			var dynamicSet = CreateSetDynamicMethod(propertyInfo.DeclaringType);
+			var dynamicSet = CreateSetDynamicMethod<T,S>(propertyInfo.DeclaringType);
 			var setGenerator = dynamicSet.GetILGenerator();
 
 			setGenerator.Emit(OpCodes.Ldarg_0);
 			setGenerator.Emit(OpCodes.Ldarg_1);
-			UnboxIfNeeded(setMethodInfo.GetParameters()[0].ParameterType, setGenerator);
 			setGenerator.Emit(OpCodes.Call, setMethodInfo);
 			setGenerator.Emit(OpCodes.Ret);
 
-			return (SetterHandler)dynamicSet.CreateDelegate(typeof(SetterHandler));
+			return (SetterHandler<T,S>)dynamicSet.CreateDelegate(typeof(SetterHandler<T,S>));
 		}
 
 		/// <summary>Creates an setter delegate for a field</summary>
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>The new getter delegate</returns>
 		///
-		public static SetterHandler CreateSetterHandler(FieldInfo fieldInfo)
+		public static SetterHandler<T,S> CreateSetterHandler<T,S>(FieldInfo fieldInfo)
 		{
-			var dynamicSet = CreateSetDynamicMethod(fieldInfo.DeclaringType);
+			var dynamicSet = CreateSetDynamicMethod<T,S>(fieldInfo.DeclaringType);
 			var setGenerator = dynamicSet.GetILGenerator();
 
 			setGenerator.Emit(OpCodes.Ldarg_0);
 			setGenerator.Emit(OpCodes.Ldarg_1);
-			UnboxIfNeeded(fieldInfo.FieldType, setGenerator);
 			setGenerator.Emit(OpCodes.Stfld, fieldInfo);
 			setGenerator.Emit(OpCodes.Ret);
 
-			return (SetterHandler)dynamicSet.CreateDelegate(typeof(SetterHandler));
+			return (SetterHandler<T,S>)dynamicSet.CreateDelegate(typeof(SetterHandler<T,S>));
 		}
 
 		//
 
-		static DynamicMethod CreateGetDynamicMethod(Type type)
+		static DynamicMethod CreateGetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethod("DynamicGet_" + type.Name, typeof(object), new Type[] { typeof(object) }, type, true);
+			return new DynamicMethod("DynamicGet_" + type.Name, typeof(S), new Type[] { typeof(T) }, type, true);
 		}
 
-		static DynamicMethod CreateSetDynamicMethod(Type type)
+		static DynamicMethod CreateSetDynamicMethod<T,S>(Type type)
 		{
-			return new DynamicMethod("DynamicSet_" + type.Name, typeof(void), new Type[] { typeof(object), typeof(object) }, type, true);
-		}
-
-		static void BoxIfNeeded(Type type, ILGenerator generator)
-		{
-			if (type.IsValueType)
-				generator.Emit(OpCodes.Box, type);
-		}
-
-		static void UnboxIfNeeded(Type type, ILGenerator generator)
-		{
-			if (type.IsValueType)
-				generator.Emit(OpCodes.Unbox_Any, type);
+			return new DynamicMethod("DynamicSet_" + type.Name, typeof(void), new Type[] { typeof(T), typeof(S) }, type, true);
 		}
 	}
 }
