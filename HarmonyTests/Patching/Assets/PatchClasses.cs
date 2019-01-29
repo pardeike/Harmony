@@ -293,6 +293,27 @@ namespace HarmonyTests.Assets
 		}
 	}
 
+	public class Class9
+	{
+		public override string ToString()
+		{
+			return string.Format("foobar");
+		}
+	}
+	
+	public class Class9Patch
+	{
+		public static void Prefix(out object __state)
+		{
+			__state = null;
+		}
+
+		public static void Postfix(int __state)
+		{
+
+		}
+	}
+
 	public struct Struct1
 	{
 		public int n;

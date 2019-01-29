@@ -21,7 +21,7 @@ namespace HarmonyTests
 			var patchClass = typeof(Class0Patch);
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
-			
+
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
@@ -50,7 +50,7 @@ namespace HarmonyTests
 			Assert.IsNotNull(transpiler);
 
 			Class1Patch._reset();
-			
+
 			var instance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(instance);
 
@@ -184,6 +184,33 @@ namespace HarmonyTests
 			(new Class5()).Method5("foo");
 			Assert.IsTrue(Class5Patch.prefixed, "Prefix was not executed");
 			Assert.IsTrue(Class5Patch.postfixed, "Prefix was not executed");
+		}
+
+		[TestMethod]
+		public void TestPatchUnpatch()
+		{
+			var originalClass = typeof(Class9);
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("ToString");
+			Assert.IsNotNull(originalMethod);
+
+			var patchClass = typeof(Class9Patch);
+			var prefix = patchClass.GetMethod("Prefix");
+			Assert.IsNotNull(prefix);
+			var postfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(postfix);
+
+			var instanceA = HarmonyInstance.Create("test");
+			Assert.IsNotNull(instanceA);
+
+			var patcher = new PatchProcessor(instanceA, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
+			Assert.IsNotNull(patcher);
+			patcher.Patch();
+
+			var instanceB = HarmonyInstance.Create("test");
+			Assert.IsNotNull(instanceB);
+
+			instanceB.UnpatchAll("test");
 		}
 	}
 }
