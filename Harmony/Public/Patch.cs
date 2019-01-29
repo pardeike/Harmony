@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Harmony
 {
 	/// <summary>Patch serialization</summary>
-	public static class PatchInfoSerialization
+	internal static class PatchInfoSerialization
 	{
 		class Binder : SerializationBinder
 		{
@@ -37,7 +38,7 @@ namespace Harmony
 		/// <param name="patchInfo">The patch info</param>
 		/// <returns>A byte array</returns>
 		///
-		public static byte[] Serialize(this PatchInfo patchInfo)
+		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
 #pragma warning disable XS0001
 			using (var streamMemory = new MemoryStream())
@@ -53,7 +54,7 @@ namespace Harmony
 		/// <param name="bytes">The byte array</param>
 		/// <returns>A patch info</returns>
 		///
-		public static PatchInfo Deserialize(byte[] bytes)
+		internal static PatchInfo Deserialize(byte[] bytes)
 		{
 			var formatter = new BinaryFormatter { Binder = new Binder() };
 #pragma warning disable XS0001
@@ -64,23 +65,33 @@ namespace Harmony
 
 		/// <summary>Compare function to sort patch priorities</summary>
 		/// <param name="obj">The patch</param>
+		/// <param name="owner">The owner</param>
 		/// <param name="index">Zero-based index</param>
 		/// <param name="priority">The priority</param>
 		/// <param name="before">The before parameter</param>
 		/// <param name="after">The after parameter</param>
 		/// <returns>A standard sort integer (-1, 0, 1)</returns>
 		///
-		public static int PriorityComparer(object obj, int index, int priority, string[] before, string[] after)
+		internal static int PriorityComparer(object obj, string owner, int index, int priority, string[] before, string[] after)
 		{
 			var trv = Traverse.Create(obj);
 			var theirOwner = trv.Field("owner").GetValue<string>();
 			var theirPriority = trv.Field("priority").GetValue<int>();
 			var theirIndex = trv.Field("index").GetValue<int>();
+			var theirBefore = trv.Field("before").GetValue<string[]>();
+			var theirAfter = trv.Field("after").GetValue<string[]>();
 
-			if (before != null && Array.IndexOf(before, theirOwner) > -1)
+			Console.WriteLine("##### " + owner + " - " + theirOwner);
+
+			if (before != null && before.Contains(theirOwner))
 				return -1;
-			if (after != null && Array.IndexOf(after, theirOwner) > -1)
+			if (after != null && after.Contains(theirOwner))
 				return 1;
+
+			if (theirBefore != null && theirBefore.Contains(owner))
+				return 1;
+			if (theirAfter != null && theirAfter.Contains(owner))
+				return -1;
 
 			if (priority != theirPriority)
 				return -(priority.CompareTo(theirPriority));
@@ -269,7 +280,7 @@ namespace Harmony
 		///
 		public int CompareTo(object obj)
 		{
-			return PatchInfoSerialization.PriorityComparer(obj, index, priority, before, after);
+			return PatchInfoSerialization.PriorityComparer(obj, owner, index, priority, before, after);
 		}
 
 		/// <summary>Hash function</summary>
