@@ -7,10 +7,10 @@ namespace Harmony.Internal
 {
 	internal class PatchSorter
 	{
-		private List<PatchSortingWrapper> _patches;
-		private HashSet<PatchSortingWrapper> _handledPatches;
-		private List<PatchSortingWrapper> _result;
-		private List<PatchSortingWrapper> _waitingList;
+		List<PatchSortingWrapper> _patches;
+		HashSet<PatchSortingWrapper> _handledPatches;
+		List<PatchSortingWrapper> _result;
+		List<PatchSortingWrapper> _waitingList;
 		internal Patch[] sortedPatchArray;
 
 		/// <summary>Creates a patch sorter</summary>
@@ -90,7 +90,7 @@ namespace Harmony.Internal
 		}
 
 		/// <summary>Removes one unresolved dependency from the least important patch.</summary>
-		private void CullDependency()
+		void CullDependency()
 		{
 			// Waiting list is already sorted on priority so start from the end.
 			// It should always be the last element, otherwise it would not be on the waiting list because
@@ -110,7 +110,7 @@ namespace Harmony.Internal
 		}
 
 		/// <summary>Outputs all unblocked patches from the waiting list to results list</summary>
-		private void ProcessWaitingList()
+		void ProcessWaitingList()
 		{
 			// Need to change loop limit as patches are removed from the waiting list.
 			var waitingListCount = _waitingList.Count;
@@ -137,7 +137,7 @@ namespace Harmony.Internal
 
 		/// <summary>Adds patch to both results list and handled patches set</summary>
 		/// <param name="node">Patch to add</param>
-		private void AddNodeToResult(PatchSortingWrapper node)
+		void AddNodeToResult(PatchSortingWrapper node)
 		{
 			_result.Add(node);
 			_handledPatches.Add(node);
