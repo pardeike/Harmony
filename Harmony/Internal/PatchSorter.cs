@@ -26,6 +26,8 @@ namespace Harmony.Internal
 
 		public List<MethodInfo> Sort(MethodBase original)
 		{
+			if (_result != null) return _result.Select(x => x.innerPatch.GetMethod(original)).ToList();
+
 			_handledPatches = new HashSet<PatchSortingWrapper>();
 			_waitingList = new List<PatchSortingWrapper>();
 			_result = new List<PatchSortingWrapper>(_patches.Count);
@@ -48,6 +50,8 @@ namespace Harmony.Internal
 				_waitingList.Clear();
 			}
 
+			_handledPatches = null;
+			_waitingList = null;
 			return _result.Select(x => x.innerPatch.GetMethod(original)).ToList();
 		}
 
@@ -57,8 +61,7 @@ namespace Harmony.Internal
 				foreach (var afterNode in _waitingList[i].after)
 					if (!_handledPatches.Contains(afterNode))
 					{
-						_waitingList[i].after.Remove(afterNode);
-						afterNode.before.Remove(_waitingList[i]);
+						_waitingList[i].RemoveAfterDependency(afterNode);
 						Console.WriteLine(
 							$"Breaking dependance between {afterNode.innerPatch.owner} and {_waitingList[i].innerPatch.owner}");
 						return;
@@ -68,15 +71,18 @@ namespace Harmony.Internal
 		private void ProcessWaitingList()
 		{
 			var waitingListCount = _waitingList.Count;
-			for (var i = 0; i < waitingListCount; i++)
+			for (var i = 0; i < waitingListCount;)
 			{
 				var node = _waitingList[i];
-				if (!node.after.All(_handledPatches.Contains)) continue;
-
-				_waitingList.Remove(node);
-				AddNodeToResult(node);
-				waitingListCount--;
-				i = 0;
+				if (node.after.All(_handledPatches.Contains))
+				{
+					_waitingList.Remove(node);
+					AddNodeToResult(node);
+					waitingListCount--;
+					i = 0;
+				}
+				else
+					i++;
 			}
 		}
 
@@ -89,7 +95,6 @@ namespace Harmony.Internal
 		private class PatchSortingWrapper : IComparable
 		{
 			public readonly HashSet<PatchSortingWrapper> after;
-
 			public readonly HashSet<PatchSortingWrapper> before;
 			public readonly Patch innerPatch;
 
@@ -141,6 +146,18 @@ namespace Harmony.Internal
 					after.Add(i);
 					i.before.Add(this);
 				}
+			}
+
+			public void RemoveAfterDependency(PatchSortingWrapper afterNode)
+			{
+				after.Remove(afterNode);
+				afterNode.before.Remove(this);
+			}
+
+			public void RemoveBeforeDependency(PatchSortingWrapper beforeNode)
+			{
+				before.Remove(beforeNode);
+				beforeNode.after.Remove(this);
 			}
 		}
 	}

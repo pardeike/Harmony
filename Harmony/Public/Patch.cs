@@ -68,8 +68,6 @@ namespace Harmony
 		/// <param name="owner">The owner</param>
 		/// <param name="index">Zero-based index</param>
 		/// <param name="priority">The priority</param>
-		/// <param name="before">The before parameter</param>
-		/// <param name="after">The after parameter</param>
 		/// <returns>A standard sort integer (-1, 0, 1)</returns>
 		///
 		internal static int PriorityComparer(object obj, string owner, int index, int priority)
