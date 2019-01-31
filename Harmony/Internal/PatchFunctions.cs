@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using Harmony.Internal;
 
 namespace Harmony
 {
@@ -110,11 +111,7 @@ namespace Harmony
 		///
 		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
 		{
-			return patches
-				.Where(p => p.patch != null)
-				.OrderBy(p => p)
-				.Select(p => p.GetMethod(original))
-				.ToList();
+			return new PatchSorter(patches).Sort(original);
 		}
 
 		/// <summary>Creates new dynamic method with the latest patches and detours the original method</summary>

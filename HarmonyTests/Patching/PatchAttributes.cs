@@ -42,19 +42,19 @@ namespace HarmonyTests
 				patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
 
 			var patchInstances = new Patch[] {
-				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], new string[0]),			// #3
-				new Patch(patches[1], 1, "owner A", Priority.Normal, new string[0], new string[0]),			// #4
+				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], new string[0]),			// #4
+				new Patch(patches[1], 1, "owner A", Priority.Normal, new string[0], new string[0]),			// #5
 				new Patch(patches[2], 2, "owner B", Priority.Normal, new[] { "owner A" }, new string[0]),	// #2
 				new Patch(patches[3], 3, "owner C", Priority.First, new string[0], new string[0]),			// #1
-				new Patch(patches[4], 4, "owner D", Priority.Low, new[] { "owner A" }, new string[0])		// #5
+				new Patch(patches[4], 4, "owner D", Priority.Low, new[] { "owner A" }, new string[0])		// #3
 			};
 
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			Assert.AreSame(patches[3], methods[0], "#0");
 			Assert.AreSame(patches[2], methods[1], "#1");
-			Assert.AreSame(patches[0], methods[2], "#2");
-			Assert.AreSame(patches[1], methods[3], "#3");
-			Assert.AreSame(patches[4], methods[4], "#4");
+			Assert.AreSame(patches[4], methods[2], "#2");
+			Assert.AreSame(patches[0], methods[3], "#3");
+			Assert.AreSame(patches[1], methods[4], "#4");
 		}
 
 		[TestMethod]

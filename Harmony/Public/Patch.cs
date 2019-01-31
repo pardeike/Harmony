@@ -72,26 +72,11 @@ namespace Harmony
 		/// <param name="after">The after parameter</param>
 		/// <returns>A standard sort integer (-1, 0, 1)</returns>
 		///
-		internal static int PriorityComparer(object obj, string owner, int index, int priority, string[] before, string[] after)
+		internal static int PriorityComparer(object obj, string owner, int index, int priority)
 		{
 			var trv = Traverse.Create(obj);
-			var theirOwner = trv.Field("owner").GetValue<string>();
 			var theirPriority = trv.Field("priority").GetValue<int>();
 			var theirIndex = trv.Field("index").GetValue<int>();
-			var theirBefore = trv.Field("before").GetValue<string[]>();
-			var theirAfter = trv.Field("after").GetValue<string[]>();
-
-			Console.WriteLine("##### " + owner + " - " + theirOwner);
-
-			if (before != null && before.Contains(theirOwner))
-				return -1;
-			if (after != null && after.Contains(theirOwner))
-				return 1;
-
-			if (theirBefore != null && theirBefore.Contains(owner))
-				return 1;
-			if (theirAfter != null && theirAfter.Contains(owner))
-				return -1;
 
 			if (priority != theirPriority)
 				return -(priority.CompareTo(theirPriority));
@@ -280,7 +265,7 @@ namespace Harmony
 		///
 		public int CompareTo(object obj)
 		{
-			return PatchInfoSerialization.PriorityComparer(obj, owner, index, priority, before, after);
+			return PatchInfoSerialization.PriorityComparer(obj, owner, index, priority);
 		}
 
 		/// <summary>Hash function</summary>
