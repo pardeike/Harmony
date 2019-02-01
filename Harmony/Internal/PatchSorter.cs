@@ -86,7 +86,9 @@ namespace Harmony.Internal
 		/// <returns>true if equal</returns>
 		internal bool ComparePatchLists(Patch[] patches)
 		{
-			return sortedPatchArray.Length == patches.Length && sortedPatchArray.All(patches.Contains);
+			if (sortedPatchArray == null) Sort(null);
+			return patches != null && sortedPatchArray.Length == patches.Length &&
+			       sortedPatchArray.All(x => patches.Contains(x, new PatchDetailedComparer()));
 		}
 
 		/// <summary>Removes one unresolved dependency from the least important patch.</summary>
@@ -221,6 +223,22 @@ namespace Harmony.Internal
 			{
 				before.Remove(beforeNode);
 				beforeNode.after.Remove(this);
+			}
+		}
+
+		internal class PatchDetailedComparer : IEqualityComparer<Patch>
+		{
+			public bool Equals(Patch x, Patch y)
+			{
+				return y != null && x != null && x.owner == y.owner && x.patch == y.patch && x.index == y.index &&
+				       x.priority == y.priority
+				       && x.before.Length == y.before.Length && x.after.Length == y.after.Length &&
+				       x.before.All(y.before.Contains) && x.after.All(y.after.Contains);
+			}
+
+			public int GetHashCode(Patch obj)
+			{
+				return obj.GetHashCode();
 			}
 		}
 	}
