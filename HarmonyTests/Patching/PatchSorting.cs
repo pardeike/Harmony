@@ -154,7 +154,7 @@ namespace HarmonyTests
 					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
 		}
 
-		// Test with 2 crossdependant cyclic dependencies.
+		// Test with 2 crossdependant cyclic dependencies. Impossible to break any cycle with just 1 cut.
 		[TestMethod]
 		public void PatchCycle3()
 		{
@@ -169,12 +169,12 @@ namespace HarmonyTests
 				new Patch(patches[2], 2, "owner C", Priority.Normal, new[] {"owner B"}, new string[0]),
 				new Patch(patches[3], 3, "owner D", Priority.Normal, new string[0], new string[0]),
 				new Patch(patches[4], 4, "owner E", Priority.First, new string[0], new string[0]),
-				new Patch(patches[5], 5, "owner F", Priority.High, new string[0], new[] {"owner G", "owner B"}),
+				new Patch(patches[5], 5, "owner F", Priority.Low, new []{"owner C", "owner H"}, new[] {"owner G", "owner B"}),
 				new Patch(patches[6], 6, "owner G", Priority.Normal, new string[0], new[] {"owner H"}),
 				new Patch(patches[7], 7, "owner H", Priority.Normal, new string[0], new[] {"owner F"})
 			};
 
-			var expectedOrder = new[] {4, 3, 7, 6, 2, 1, 5, 0};
+			var expectedOrder = new[] { 4, 3, 5, 7, 6, 2, 1, 0 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
