@@ -17,9 +17,10 @@ namespace HarmonyTests
 		void Patch6(){}
 		void Patch7(){}
 		void Patch8(){}
+		void Patch9(){}
 
 		[TestMethod]
-		public void PatchOrder0()
+		public void PatchOrder_SamePriorities()
 		{
 			var patches = new MethodInfo[3];
 			for (var i = 0; i < patches.Length; i++)
@@ -40,7 +41,34 @@ namespace HarmonyTests
 		}
 
 		[TestMethod]
-		public void PatchOrder1()
+		public void PatchOrder_AllPriorities()
+		{
+			var patches = new MethodInfo[9];
+			for (var i = 0; i < patches.Length; i++)
+			patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
+
+			var patchInstances = new[]
+			{
+				new Patch(patches[0], 0, "owner A", Priority.Last, new string[0], new string[0]),
+				new Patch(patches[1], 1, "owner B", Priority.VeryLow, new string[0], new string[0]),
+				new Patch(patches[2], 2, "owner C", Priority.Low, new string[0], new string[0]),
+				new Patch(patches[3], 3, "owner D", Priority.LowerThanNormal, new string[0], new string[0]),
+				new Patch(patches[4], 4, "owner E", Priority.Normal, new string[0], new string[0]),
+				new Patch(patches[5], 5, "owner F", Priority.HigherThanNormal, new string[0], new string[0]),
+				new Patch(patches[6], 6, "owner G", Priority.High, new string[0], new string[0]),
+				new Patch(patches[7], 7, "owner H", Priority.VeryHigh, new string[0], new string[0]),
+				new Patch(patches[8], 8, "owner I", Priority.First, new string[0], new string[0])
+			};
+
+			var expectedOrder = new[] { 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
+			for (var i = 0; i < expectedOrder.Length; i++)
+				Assert.AreSame(patches[expectedOrder[i]], methods[i],
+					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
+		}
+
+		[TestMethod]
+		public void PatchOrder_BeforeAndPriorities()
 		{
 			var patches = new MethodInfo[5];
 			for (var i = 0; i < patches.Length; i++)
@@ -63,9 +91,9 @@ namespace HarmonyTests
 		}
 
 		[TestMethod]
-		public void PatchOrder2()
+		public void PatchOrder_AfterAndPriorities()
 		{
-			var patches = new MethodInfo[3];
+			var patches = new MethodInfo[4];
 			for (var i = 0; i < patches.Length; i++)
 				patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
 
@@ -73,10 +101,80 @@ namespace HarmonyTests
 			{
 				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], new[] {"owner C"}),
 				new Patch(patches[1], 1, "owner B", Priority.Normal, new string[0], new string[0]),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0])
+				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0]),
+				new Patch(patches[3], 3, "owner D", Priority.First, new string[0], new[] {"owner C"})
 			};
 
-			var expectedOrder = new[] {1, 2, 0};
+			var expectedOrder = new[] {1, 2, 3, 0};
+			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
+			for (var i = 0; i < expectedOrder.Length; i++)
+				Assert.AreSame(patches[expectedOrder[i]], methods[i],
+					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
+		}
+
+		[TestMethod]
+		public void PatchOrder_BeforeAndAfterAndPriorities()
+		{
+			var patches = new MethodInfo[5];
+			for (var i = 0; i < patches.Length; i++)
+				patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
+
+			var patchInstances = new[]
+			{
+				new Patch(patches[0], 0, "owner A", Priority.First, new string[0], new string[0]),
+				new Patch(patches[1], 1, "owner B", Priority.HigherThanNormal, new string[] { "owner E" }, new string[] { "owner C" }),
+				new Patch(patches[2], 2, "owner C", Priority.First, new string[0], new string[0]),
+				new Patch(patches[3], 3, "owner D", Priority.VeryHigh, new string[] { "owner E" }, new string[] { "owner C" }),
+				new Patch(patches[4], 4, "owner E", Priority.First, new string[0], new string[0])
+			};
+
+			var expectedOrder = new[] { 0, 2, 3, 1, 4 };
+			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
+			for (var i = 0; i < expectedOrder.Length; i++)
+				Assert.AreSame(patches[expectedOrder[i]], methods[i],
+					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
+		}
+
+		[TestMethod]
+		public void PatchOrder_TransitiveBefore()
+		{
+			var patches = new MethodInfo[5];
+			for (var i = 0; i < patches.Length; i++)
+				patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
+
+			var patchInstances = new[]
+			{
+				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[] { "owner B" }, new string[0]),
+				new Patch(patches[1], 1, "owner B", Priority.HigherThanNormal, new string[] { "owner C" }, new string[0]),
+				new Patch(patches[2], 2, "owner C", Priority.High, new string[] { "owner D" }, new string[0]),
+				new Patch(patches[3], 3, "owner D", Priority.VeryHigh, new string[] { "owner E" }, new string[0]),
+				new Patch(patches[4], 4, "owner E", Priority.First, new string[0], new string[0])
+			};
+
+			var expectedOrder = new[] { 0, 1, 2, 3, 4 };
+			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
+			for (var i = 0; i < expectedOrder.Length; i++)
+				Assert.AreSame(patches[expectedOrder[i]], methods[i],
+					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
+		}
+
+		[TestMethod]
+		public void PatchOrder_TransitiveAfter()
+		{
+			var patches = new MethodInfo[5];
+			for (var i = 0; i < patches.Length; i++)
+				patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
+
+			var patchInstances = new[]
+			{
+				new Patch(patches[0], 0, "owner A", Priority.First, new string[0], new string[] { "owner B" }),
+				new Patch(patches[1], 1, "owner B", Priority.VeryHigh, new string[0], new string[] { "owner C" }),
+				new Patch(patches[2], 2, "owner C", Priority.High, new string[0], new string[] { "owner D" }),
+				new Patch(patches[3], 3, "owner D", Priority.HigherThanNormal, new string[0], new string[] { "owner E" }),
+				new Patch(patches[4], 4, "owner E", Priority.Normal, new string[0], new string[0])
+			};
+
+			var expectedOrder = new[] { 4, 3, 2, 1, 0 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
