@@ -7,54 +7,6 @@ references:
   commentId: N:Harmony
   fullName: Harmony
   nameWithType: Harmony
-- uid: Harmony.AccessCache
-  name: AccessCache
-  href: api/Harmony.AccessCache.html
-  commentId: T:Harmony.AccessCache
-  fullName: Harmony.AccessCache
-  nameWithType: AccessCache
-- uid: Harmony.AccessCache.GetFieldInfo(System.Type,System.String)
-  name: GetFieldInfo(Type, String)
-  href: api/Harmony.AccessCache.html#Harmony_AccessCache_GetFieldInfo_System_Type_System_String_
-  commentId: M:Harmony.AccessCache.GetFieldInfo(System.Type,System.String)
-  fullName: Harmony.AccessCache.GetFieldInfo(System.Type, System.String)
-  nameWithType: AccessCache.GetFieldInfo(Type, String)
-- uid: Harmony.AccessCache.GetFieldInfo*
-  name: GetFieldInfo
-  href: api/Harmony.AccessCache.html#Harmony_AccessCache_GetFieldInfo_
-  commentId: Overload:Harmony.AccessCache.GetFieldInfo
-  isSpec: "True"
-  fullName: Harmony.AccessCache.GetFieldInfo
-  nameWithType: AccessCache.GetFieldInfo
-- uid: Harmony.AccessCache.GetMethodInfo(System.Type,System.String,System.Type[])
-  name: GetMethodInfo(Type, String, Type[])
-  href: api/Harmony.AccessCache.html#Harmony_AccessCache_GetMethodInfo_System_Type_System_String_System_Type___
-  commentId: M:Harmony.AccessCache.GetMethodInfo(System.Type,System.String,System.Type[])
-  name.vb: GetMethodInfo(Type, String, Type())
-  fullName: Harmony.AccessCache.GetMethodInfo(System.Type, System.String, System.Type[])
-  fullName.vb: Harmony.AccessCache.GetMethodInfo(System.Type, System.String, System.Type())
-  nameWithType: AccessCache.GetMethodInfo(Type, String, Type[])
-  nameWithType.vb: AccessCache.GetMethodInfo(Type, String, Type())
-- uid: Harmony.AccessCache.GetMethodInfo*
-  name: GetMethodInfo
-  href: api/Harmony.AccessCache.html#Harmony_AccessCache_GetMethodInfo_
-  commentId: Overload:Harmony.AccessCache.GetMethodInfo
-  isSpec: "True"
-  fullName: Harmony.AccessCache.GetMethodInfo
-  nameWithType: AccessCache.GetMethodInfo
-- uid: Harmony.AccessCache.GetPropertyInfo(System.Type,System.String)
-  name: GetPropertyInfo(Type, String)
-  href: api/Harmony.AccessCache.html#Harmony_AccessCache_GetPropertyInfo_System_Type_System_String_
-  commentId: M:Harmony.AccessCache.GetPropertyInfo(System.Type,System.String)
-  fullName: Harmony.AccessCache.GetPropertyInfo(System.Type, System.String)
-  nameWithType: AccessCache.GetPropertyInfo(Type, String)
-- uid: Harmony.AccessCache.GetPropertyInfo*
-  name: GetPropertyInfo
-  href: api/Harmony.AccessCache.html#Harmony_AccessCache_GetPropertyInfo_
-  commentId: Overload:Harmony.AccessCache.GetPropertyInfo
-  isSpec: "True"
-  fullName: Harmony.AccessCache.GetPropertyInfo
-  nameWithType: AccessCache.GetPropertyInfo
 - uid: Harmony.AccessTools
   name: AccessTools
   href: api/Harmony.AccessTools.html
@@ -1703,64 +1655,6 @@ references:
   isSpec: "True"
   fullName: Harmony.DelegateTypeFactory.CreateDelegateType
   nameWithType: DelegateTypeFactory.CreateDelegateType
-- uid: Harmony.DynamicTools
-  name: DynamicTools
-  href: api/Harmony.DynamicTools.html
-  commentId: T:Harmony.DynamicTools
-  fullName: Harmony.DynamicTools
-  nameWithType: DynamicTools
-- uid: Harmony.DynamicTools.CreateDynamicMethod(System.Reflection.MethodBase,System.String)
-  name: CreateDynamicMethod(MethodBase, String)
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_CreateDynamicMethod_System_Reflection_MethodBase_System_String_
-  commentId: M:Harmony.DynamicTools.CreateDynamicMethod(System.Reflection.MethodBase,System.String)
-  fullName: Harmony.DynamicTools.CreateDynamicMethod(System.Reflection.MethodBase, System.String)
-  nameWithType: DynamicTools.CreateDynamicMethod(MethodBase, String)
-- uid: Harmony.DynamicTools.CreateDynamicMethod*
-  name: CreateDynamicMethod
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_CreateDynamicMethod_
-  commentId: Overload:Harmony.DynamicTools.CreateDynamicMethod
-  isSpec: "True"
-  fullName: Harmony.DynamicTools.CreateDynamicMethod
-  nameWithType: DynamicTools.CreateDynamicMethod
-- uid: Harmony.DynamicTools.DeclareLocalVariable(System.Reflection.Emit.ILGenerator,System.Type)
-  name: DeclareLocalVariable(ILGenerator, Type)
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_DeclareLocalVariable_System_Reflection_Emit_ILGenerator_System_Type_
-  commentId: M:Harmony.DynamicTools.DeclareLocalVariable(System.Reflection.Emit.ILGenerator,System.Type)
-  fullName: Harmony.DynamicTools.DeclareLocalVariable(System.Reflection.Emit.ILGenerator, System.Type)
-  nameWithType: DynamicTools.DeclareLocalVariable(ILGenerator, Type)
-- uid: Harmony.DynamicTools.DeclareLocalVariable*
-  name: DeclareLocalVariable
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_DeclareLocalVariable_
-  commentId: Overload:Harmony.DynamicTools.DeclareLocalVariable
-  isSpec: "True"
-  fullName: Harmony.DynamicTools.DeclareLocalVariable
-  nameWithType: DynamicTools.DeclareLocalVariable
-- uid: Harmony.DynamicTools.DeclareLocalVariables(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator,System.Boolean)
-  name: DeclareLocalVariables(MethodBase, ILGenerator, Boolean)
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_DeclareLocalVariables_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator_System_Boolean_
-  commentId: M:Harmony.DynamicTools.DeclareLocalVariables(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator,System.Boolean)
-  fullName: Harmony.DynamicTools.DeclareLocalVariables(System.Reflection.MethodBase, System.Reflection.Emit.ILGenerator, System.Boolean)
-  nameWithType: DynamicTools.DeclareLocalVariables(MethodBase, ILGenerator, Boolean)
-- uid: Harmony.DynamicTools.DeclareLocalVariables*
-  name: DeclareLocalVariables
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_DeclareLocalVariables_
-  commentId: Overload:Harmony.DynamicTools.DeclareLocalVariables
-  isSpec: "True"
-  fullName: Harmony.DynamicTools.DeclareLocalVariables
-  nameWithType: DynamicTools.DeclareLocalVariables
-- uid: Harmony.DynamicTools.PrepareDynamicMethod(System.Reflection.Emit.DynamicMethod)
-  name: PrepareDynamicMethod(DynamicMethod)
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_PrepareDynamicMethod_System_Reflection_Emit_DynamicMethod_
-  commentId: M:Harmony.DynamicTools.PrepareDynamicMethod(System.Reflection.Emit.DynamicMethod)
-  fullName: Harmony.DynamicTools.PrepareDynamicMethod(System.Reflection.Emit.DynamicMethod)
-  nameWithType: DynamicTools.PrepareDynamicMethod(DynamicMethod)
-- uid: Harmony.DynamicTools.PrepareDynamicMethod*
-  name: PrepareDynamicMethod
-  href: api/Harmony.DynamicTools.html#Harmony_DynamicTools_PrepareDynamicMethod_
-  commentId: Overload:Harmony.DynamicTools.PrepareDynamicMethod
-  isSpec: "True"
-  fullName: Harmony.DynamicTools.PrepareDynamicMethod
-  nameWithType: DynamicTools.PrepareDynamicMethod
 - uid: Harmony.ExceptionBlock
   name: ExceptionBlock
   href: api/Harmony.ExceptionBlock.html
@@ -1840,15 +1734,6 @@ references:
   commentId: T:Harmony.FastAccess
   fullName: Harmony.FastAccess
   nameWithType: FastAccess
-- uid: Harmony.FastAccess.CreateFieldGetter(System.Type,System.String[])
-  name: CreateFieldGetter(Type, String[])
-  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateFieldGetter_System_Type_System_String___
-  commentId: M:Harmony.FastAccess.CreateFieldGetter(System.Type,System.String[])
-  name.vb: CreateFieldGetter(Type, String())
-  fullName: Harmony.FastAccess.CreateFieldGetter(System.Type, System.String[])
-  fullName.vb: Harmony.FastAccess.CreateFieldGetter(System.Type, System.String())
-  nameWithType: FastAccess.CreateFieldGetter(Type, String[])
-  nameWithType.vb: FastAccess.CreateFieldGetter(Type, String())
 - uid: Harmony.FastAccess.CreateFieldGetter*
   name: CreateFieldGetter
   href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateFieldGetter_
@@ -1856,18 +1741,15 @@ references:
   isSpec: "True"
   fullName: Harmony.FastAccess.CreateFieldGetter
   nameWithType: FastAccess.CreateFieldGetter
-- uid: Harmony.FastAccess.CreateGetterHandler(System.Reflection.FieldInfo)
-  name: CreateGetterHandler(FieldInfo)
-  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler_System_Reflection_FieldInfo_
-  commentId: M:Harmony.FastAccess.CreateGetterHandler(System.Reflection.FieldInfo)
-  fullName: Harmony.FastAccess.CreateGetterHandler(System.Reflection.FieldInfo)
-  nameWithType: FastAccess.CreateGetterHandler(FieldInfo)
-- uid: Harmony.FastAccess.CreateGetterHandler(System.Reflection.PropertyInfo)
-  name: CreateGetterHandler(PropertyInfo)
-  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler_System_Reflection_PropertyInfo_
-  commentId: M:Harmony.FastAccess.CreateGetterHandler(System.Reflection.PropertyInfo)
-  fullName: Harmony.FastAccess.CreateGetterHandler(System.Reflection.PropertyInfo)
-  nameWithType: FastAccess.CreateGetterHandler(PropertyInfo)
+- uid: Harmony.FastAccess.CreateFieldGetter``2(System.String[])
+  name: CreateFieldGetter<T, S>(String[])
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateFieldGetter__2_System_String___
+  commentId: M:Harmony.FastAccess.CreateFieldGetter``2(System.String[])
+  name.vb: CreateFieldGetter(Of T, S)(String())
+  fullName: Harmony.FastAccess.CreateFieldGetter<T, S>(System.String[])
+  fullName.vb: Harmony.FastAccess.CreateFieldGetter(Of T, S)(System.String())
+  nameWithType: FastAccess.CreateFieldGetter<T, S>(String[])
+  nameWithType.vb: FastAccess.CreateFieldGetter(Of T, S)(String())
 - uid: Harmony.FastAccess.CreateGetterHandler*
   name: CreateGetterHandler
   href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler_
@@ -1875,12 +1757,24 @@ references:
   isSpec: "True"
   fullName: Harmony.FastAccess.CreateGetterHandler
   nameWithType: FastAccess.CreateGetterHandler
-- uid: Harmony.FastAccess.CreateInstantiationHandler(System.Type)
-  name: CreateInstantiationHandler(Type)
-  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateInstantiationHandler_System_Type_
-  commentId: M:Harmony.FastAccess.CreateInstantiationHandler(System.Type)
-  fullName: Harmony.FastAccess.CreateInstantiationHandler(System.Type)
-  nameWithType: FastAccess.CreateInstantiationHandler(Type)
+- uid: Harmony.FastAccess.CreateGetterHandler``2(System.Reflection.FieldInfo)
+  name: CreateGetterHandler<T, S>(FieldInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler__2_System_Reflection_FieldInfo_
+  commentId: M:Harmony.FastAccess.CreateGetterHandler``2(System.Reflection.FieldInfo)
+  name.vb: CreateGetterHandler(Of T, S)(FieldInfo)
+  fullName: Harmony.FastAccess.CreateGetterHandler<T, S>(System.Reflection.FieldInfo)
+  fullName.vb: Harmony.FastAccess.CreateGetterHandler(Of T, S)(System.Reflection.FieldInfo)
+  nameWithType: FastAccess.CreateGetterHandler<T, S>(FieldInfo)
+  nameWithType.vb: FastAccess.CreateGetterHandler(Of T, S)(FieldInfo)
+- uid: Harmony.FastAccess.CreateGetterHandler``2(System.Reflection.PropertyInfo)
+  name: CreateGetterHandler<T, S>(PropertyInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateGetterHandler__2_System_Reflection_PropertyInfo_
+  commentId: M:Harmony.FastAccess.CreateGetterHandler``2(System.Reflection.PropertyInfo)
+  name.vb: CreateGetterHandler(Of T, S)(PropertyInfo)
+  fullName: Harmony.FastAccess.CreateGetterHandler<T, S>(System.Reflection.PropertyInfo)
+  fullName.vb: Harmony.FastAccess.CreateGetterHandler(Of T, S)(System.Reflection.PropertyInfo)
+  nameWithType: FastAccess.CreateGetterHandler<T, S>(PropertyInfo)
+  nameWithType.vb: FastAccess.CreateGetterHandler(Of T, S)(PropertyInfo)
 - uid: Harmony.FastAccess.CreateInstantiationHandler*
   name: CreateInstantiationHandler
   href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateInstantiationHandler_
@@ -1888,18 +1782,15 @@ references:
   isSpec: "True"
   fullName: Harmony.FastAccess.CreateInstantiationHandler
   nameWithType: FastAccess.CreateInstantiationHandler
-- uid: Harmony.FastAccess.CreateSetterHandler(System.Reflection.FieldInfo)
-  name: CreateSetterHandler(FieldInfo)
-  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler_System_Reflection_FieldInfo_
-  commentId: M:Harmony.FastAccess.CreateSetterHandler(System.Reflection.FieldInfo)
-  fullName: Harmony.FastAccess.CreateSetterHandler(System.Reflection.FieldInfo)
-  nameWithType: FastAccess.CreateSetterHandler(FieldInfo)
-- uid: Harmony.FastAccess.CreateSetterHandler(System.Reflection.PropertyInfo)
-  name: CreateSetterHandler(PropertyInfo)
-  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler_System_Reflection_PropertyInfo_
-  commentId: M:Harmony.FastAccess.CreateSetterHandler(System.Reflection.PropertyInfo)
-  fullName: Harmony.FastAccess.CreateSetterHandler(System.Reflection.PropertyInfo)
-  nameWithType: FastAccess.CreateSetterHandler(PropertyInfo)
+- uid: Harmony.FastAccess.CreateInstantiationHandler``1
+  name: CreateInstantiationHandler<T>()
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateInstantiationHandler__1
+  commentId: M:Harmony.FastAccess.CreateInstantiationHandler``1
+  name.vb: CreateInstantiationHandler(Of T)()
+  fullName: Harmony.FastAccess.CreateInstantiationHandler<T>()
+  fullName.vb: Harmony.FastAccess.CreateInstantiationHandler(Of T)()
+  nameWithType: FastAccess.CreateInstantiationHandler<T>()
+  nameWithType.vb: FastAccess.CreateInstantiationHandler(Of T)()
 - uid: Harmony.FastAccess.CreateSetterHandler*
   name: CreateSetterHandler
   href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler_
@@ -1907,6 +1798,24 @@ references:
   isSpec: "True"
   fullName: Harmony.FastAccess.CreateSetterHandler
   nameWithType: FastAccess.CreateSetterHandler
+- uid: Harmony.FastAccess.CreateSetterHandler``2(System.Reflection.FieldInfo)
+  name: CreateSetterHandler<T, S>(FieldInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler__2_System_Reflection_FieldInfo_
+  commentId: M:Harmony.FastAccess.CreateSetterHandler``2(System.Reflection.FieldInfo)
+  name.vb: CreateSetterHandler(Of T, S)(FieldInfo)
+  fullName: Harmony.FastAccess.CreateSetterHandler<T, S>(System.Reflection.FieldInfo)
+  fullName.vb: Harmony.FastAccess.CreateSetterHandler(Of T, S)(System.Reflection.FieldInfo)
+  nameWithType: FastAccess.CreateSetterHandler<T, S>(FieldInfo)
+  nameWithType.vb: FastAccess.CreateSetterHandler(Of T, S)(FieldInfo)
+- uid: Harmony.FastAccess.CreateSetterHandler``2(System.Reflection.PropertyInfo)
+  name: CreateSetterHandler<T, S>(PropertyInfo)
+  href: api/Harmony.FastAccess.html#Harmony_FastAccess_CreateSetterHandler__2_System_Reflection_PropertyInfo_
+  commentId: M:Harmony.FastAccess.CreateSetterHandler``2(System.Reflection.PropertyInfo)
+  name.vb: CreateSetterHandler(Of T, S)(PropertyInfo)
+  fullName: Harmony.FastAccess.CreateSetterHandler<T, S>(System.Reflection.PropertyInfo)
+  fullName.vb: Harmony.FastAccess.CreateSetterHandler(Of T, S)(System.Reflection.PropertyInfo)
+  nameWithType: FastAccess.CreateSetterHandler<T, S>(PropertyInfo)
+  nameWithType.vb: FastAccess.CreateSetterHandler(Of T, S)(PropertyInfo)
 - uid: Harmony.FastInvokeHandler
   name: FastInvokeHandler
   href: api/Harmony.FastInvokeHandler.html
@@ -1945,6 +1854,19 @@ references:
   isSpec: "True"
   fullName: Harmony.FileLog.FlushBuffer
   nameWithType: FileLog.FlushBuffer
+- uid: Harmony.FileLog.GetBuffer(System.Boolean)
+  name: GetBuffer(Boolean)
+  href: api/Harmony.FileLog.html#Harmony_FileLog_GetBuffer_System_Boolean_
+  commentId: M:Harmony.FileLog.GetBuffer(System.Boolean)
+  fullName: Harmony.FileLog.GetBuffer(System.Boolean)
+  nameWithType: FileLog.GetBuffer(Boolean)
+- uid: Harmony.FileLog.GetBuffer*
+  name: GetBuffer
+  href: api/Harmony.FileLog.html#Harmony_FileLog_GetBuffer_
+  commentId: Overload:Harmony.FileLog.GetBuffer
+  isSpec: "True"
+  fullName: Harmony.FileLog.GetBuffer
+  nameWithType: FileLog.GetBuffer
 - uid: Harmony.FileLog.indentChar
   name: indentChar
   href: api/Harmony.FileLog.html#Harmony_FileLog_indentChar
@@ -1970,6 +1892,15 @@ references:
   isSpec: "True"
   fullName: Harmony.FileLog.Log
   nameWithType: FileLog.Log
+- uid: Harmony.FileLog.LogBuffered(System.Collections.Generic.List{System.String})
+  name: LogBuffered(List<String>)
+  href: api/Harmony.FileLog.html#Harmony_FileLog_LogBuffered_System_Collections_Generic_List_System_String__
+  commentId: M:Harmony.FileLog.LogBuffered(System.Collections.Generic.List{System.String})
+  name.vb: LogBuffered(List(Of String))
+  fullName: Harmony.FileLog.LogBuffered(System.Collections.Generic.List<System.String>)
+  fullName.vb: Harmony.FileLog.LogBuffered(System.Collections.Generic.List(Of System.String))
+  nameWithType: FileLog.LogBuffered(List<String>)
+  nameWithType.vb: FileLog.LogBuffered(List(Of String))
 - uid: Harmony.FileLog.LogBuffered(System.String)
   name: LogBuffered(String)
   href: api/Harmony.FileLog.html#Harmony_FileLog_LogBuffered_System_String_
@@ -2015,6 +1946,22 @@ references:
   isSpec: "True"
   fullName: Harmony.FileLog.Reset
   nameWithType: FileLog.Reset
+- uid: Harmony.FileLog.SetBuffer(System.Collections.Generic.List{System.String})
+  name: SetBuffer(List<String>)
+  href: api/Harmony.FileLog.html#Harmony_FileLog_SetBuffer_System_Collections_Generic_List_System_String__
+  commentId: M:Harmony.FileLog.SetBuffer(System.Collections.Generic.List{System.String})
+  name.vb: SetBuffer(List(Of String))
+  fullName: Harmony.FileLog.SetBuffer(System.Collections.Generic.List<System.String>)
+  fullName.vb: Harmony.FileLog.SetBuffer(System.Collections.Generic.List(Of System.String))
+  nameWithType: FileLog.SetBuffer(List<String>)
+  nameWithType.vb: FileLog.SetBuffer(List(Of String))
+- uid: Harmony.FileLog.SetBuffer*
+  name: SetBuffer
+  href: api/Harmony.FileLog.html#Harmony_FileLog_SetBuffer_
+  commentId: Overload:Harmony.FileLog.SetBuffer
+  isSpec: "True"
+  fullName: Harmony.FileLog.SetBuffer
+  nameWithType: FileLog.SetBuffer
 - uid: Harmony.GeneralExtensions
   name: GeneralExtensions
   href: api/Harmony.GeneralExtensions.html
@@ -2043,6 +1990,12 @@ references:
   commentId: M:Harmony.GeneralExtensions.FullDescription(System.Reflection.MethodBase)
   fullName: Harmony.GeneralExtensions.FullDescription(System.Reflection.MethodBase)
   nameWithType: GeneralExtensions.FullDescription(MethodBase)
+- uid: Harmony.GeneralExtensions.FullDescription(System.Type)
+  name: FullDescription(Type)
+  href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_FullDescription_System_Type_
+  commentId: M:Harmony.GeneralExtensions.FullDescription(System.Type)
+  fullName: Harmony.GeneralExtensions.FullDescription(System.Type)
+  nameWithType: GeneralExtensions.FullDescription(Type)
 - uid: Harmony.GeneralExtensions.FullDescription*
   name: FullDescription
   href: api/Harmony.GeneralExtensions.html#Harmony_GeneralExtensions_FullDescription_
@@ -2114,12 +2067,15 @@ references:
   isSpec: "True"
   fullName: Harmony.GeneralExtensions.Types
   nameWithType: GeneralExtensions.Types
-- uid: Harmony.GetterHandler
-  name: GetterHandler
-  href: api/Harmony.GetterHandler.html
-  commentId: T:Harmony.GetterHandler
-  fullName: Harmony.GetterHandler
-  nameWithType: GetterHandler
+- uid: Harmony.GetterHandler`2
+  name: GetterHandler<T, S>
+  href: api/Harmony.GetterHandler-2.html
+  commentId: T:Harmony.GetterHandler`2
+  name.vb: GetterHandler(Of T, S)
+  fullName: Harmony.GetterHandler<T, S>
+  fullName.vb: Harmony.GetterHandler(Of T, S)
+  nameWithType: GetterHandler<T, S>
+  nameWithType.vb: GetterHandler(Of T, S)
 - uid: Harmony.HarmonyAfter
   name: HarmonyAfter
   href: api/Harmony.HarmonyAfter.html
@@ -2283,6 +2239,19 @@ references:
   commentId: F:Harmony.HarmonyInstance.DEBUG
   fullName: Harmony.HarmonyInstance.DEBUG
   nameWithType: HarmonyInstance.DEBUG
+- uid: Harmony.HarmonyInstance.GetAllPatchedMethods
+  name: GetAllPatchedMethods()
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_GetAllPatchedMethods
+  commentId: M:Harmony.HarmonyInstance.GetAllPatchedMethods
+  fullName: Harmony.HarmonyInstance.GetAllPatchedMethods()
+  nameWithType: HarmonyInstance.GetAllPatchedMethods()
+- uid: Harmony.HarmonyInstance.GetAllPatchedMethods*
+  name: GetAllPatchedMethods
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_GetAllPatchedMethods_
+  commentId: Overload:Harmony.HarmonyInstance.GetAllPatchedMethods
+  isSpec: "True"
+  fullName: Harmony.HarmonyInstance.GetAllPatchedMethods
+  nameWithType: HarmonyInstance.GetAllPatchedMethods
 - uid: Harmony.HarmonyInstance.GetPatchedMethods
   name: GetPatchedMethods()
   href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_GetPatchedMethods
@@ -2380,6 +2349,12 @@ references:
   isSpec: "True"
   fullName: Harmony.HarmonyInstance.ProcessorForAnnotatedClass
   nameWithType: HarmonyInstance.ProcessorForAnnotatedClass
+- uid: Harmony.HarmonyInstance.SELF_PATCHING
+  name: SELF_PATCHING
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_SELF_PATCHING
+  commentId: F:Harmony.HarmonyInstance.SELF_PATCHING
+  fullName: Harmony.HarmonyInstance.SELF_PATCHING
+  nameWithType: HarmonyInstance.SELF_PATCHING
 - uid: Harmony.HarmonyInstance.Unpatch(System.Reflection.MethodBase,Harmony.HarmonyPatchType,System.String)
   name: Unpatch(MethodBase, HarmonyPatchType, String)
   href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Unpatch_System_Reflection_MethodBase_Harmony_HarmonyPatchType_System_String_
@@ -2584,25 +2559,32 @@ references:
   isSpec: "True"
   fullName: Harmony.HarmonyMethodExtensions.CopyTo
   nameWithType: HarmonyMethodExtensions.CopyTo
-- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Reflection.MethodBase)
-  name: GetHarmonyMethods(MethodBase)
-  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetHarmonyMethods_System_Reflection_MethodBase_
-  commentId: M:Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Reflection.MethodBase)
-  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Reflection.MethodBase)
-  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods(MethodBase)
-- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
-  name: GetHarmonyMethods(Type)
-  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetHarmonyMethods_System_Type_
-  commentId: M:Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
-  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods(System.Type)
-  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods(Type)
-- uid: Harmony.HarmonyMethodExtensions.GetHarmonyMethods*
-  name: GetHarmonyMethods
-  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetHarmonyMethods_
-  commentId: Overload:Harmony.HarmonyMethodExtensions.GetHarmonyMethods
+- uid: Harmony.HarmonyMethodExtensions.GetFromMethod(System.Reflection.MethodBase)
+  name: GetFromMethod(MethodBase)
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetFromMethod_System_Reflection_MethodBase_
+  commentId: M:Harmony.HarmonyMethodExtensions.GetFromMethod(System.Reflection.MethodBase)
+  fullName: Harmony.HarmonyMethodExtensions.GetFromMethod(System.Reflection.MethodBase)
+  nameWithType: HarmonyMethodExtensions.GetFromMethod(MethodBase)
+- uid: Harmony.HarmonyMethodExtensions.GetFromMethod*
+  name: GetFromMethod
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetFromMethod_
+  commentId: Overload:Harmony.HarmonyMethodExtensions.GetFromMethod
   isSpec: "True"
-  fullName: Harmony.HarmonyMethodExtensions.GetHarmonyMethods
-  nameWithType: HarmonyMethodExtensions.GetHarmonyMethods
+  fullName: Harmony.HarmonyMethodExtensions.GetFromMethod
+  nameWithType: HarmonyMethodExtensions.GetFromMethod
+- uid: Harmony.HarmonyMethodExtensions.GetFromType(System.Type)
+  name: GetFromType(Type)
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetFromType_System_Type_
+  commentId: M:Harmony.HarmonyMethodExtensions.GetFromType(System.Type)
+  fullName: Harmony.HarmonyMethodExtensions.GetFromType(System.Type)
+  nameWithType: HarmonyMethodExtensions.GetFromType(Type)
+- uid: Harmony.HarmonyMethodExtensions.GetFromType*
+  name: GetFromType
+  href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_GetFromType_
+  commentId: Overload:Harmony.HarmonyMethodExtensions.GetFromType
+  isSpec: "True"
+  fullName: Harmony.HarmonyMethodExtensions.GetFromType
+  nameWithType: HarmonyMethodExtensions.GetFromType
 - uid: Harmony.HarmonyMethodExtensions.Merge(Harmony.HarmonyMethod,Harmony.HarmonyMethod)
   name: Merge(HarmonyMethod, HarmonyMethod)
   href: api/Harmony.HarmonyMethodExtensions.html#Harmony_HarmonyMethodExtensions_Merge_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
@@ -2880,12 +2862,15 @@ references:
   commentId: T:Harmony.HarmonyTranspiler
   fullName: Harmony.HarmonyTranspiler
   nameWithType: HarmonyTranspiler
-- uid: Harmony.InstantiationHandler
-  name: InstantiationHandler
-  href: api/Harmony.InstantiationHandler.html
-  commentId: T:Harmony.InstantiationHandler
-  fullName: Harmony.InstantiationHandler
-  nameWithType: InstantiationHandler
+- uid: Harmony.InstantiationHandler`1
+  name: InstantiationHandler<T>
+  href: api/Harmony.InstantiationHandler-1.html
+  commentId: T:Harmony.InstantiationHandler`1
+  name.vb: InstantiationHandler(Of T)
+  fullName: Harmony.InstantiationHandler<T>
+  fullName.vb: Harmony.InstantiationHandler(Of T)
+  nameWithType: InstantiationHandler<T>
+  nameWithType.vb: InstantiationHandler(Of T)
 - uid: Harmony.Memory
   name: Memory
   href: api/Harmony.Memory.html
@@ -3308,57 +3293,6 @@ references:
   commentId: F:Harmony.PatchInfo.transpilers
   fullName: Harmony.PatchInfo.transpilers
   nameWithType: PatchInfo.transpilers
-- uid: Harmony.PatchInfoSerialization
-  name: PatchInfoSerialization
-  href: api/Harmony.PatchInfoSerialization.html
-  commentId: T:Harmony.PatchInfoSerialization
-  fullName: Harmony.PatchInfoSerialization
-  nameWithType: PatchInfoSerialization
-- uid: Harmony.PatchInfoSerialization.Deserialize(System.Byte[])
-  name: Deserialize(Byte[])
-  href: api/Harmony.PatchInfoSerialization.html#Harmony_PatchInfoSerialization_Deserialize_System_Byte___
-  commentId: M:Harmony.PatchInfoSerialization.Deserialize(System.Byte[])
-  name.vb: Deserialize(Byte())
-  fullName: Harmony.PatchInfoSerialization.Deserialize(System.Byte[])
-  fullName.vb: Harmony.PatchInfoSerialization.Deserialize(System.Byte())
-  nameWithType: PatchInfoSerialization.Deserialize(Byte[])
-  nameWithType.vb: PatchInfoSerialization.Deserialize(Byte())
-- uid: Harmony.PatchInfoSerialization.Deserialize*
-  name: Deserialize
-  href: api/Harmony.PatchInfoSerialization.html#Harmony_PatchInfoSerialization_Deserialize_
-  commentId: Overload:Harmony.PatchInfoSerialization.Deserialize
-  isSpec: "True"
-  fullName: Harmony.PatchInfoSerialization.Deserialize
-  nameWithType: PatchInfoSerialization.Deserialize
-- uid: Harmony.PatchInfoSerialization.PriorityComparer(System.Object,System.Int32,System.Int32,System.String[],System.String[])
-  name: PriorityComparer(Object, Int32, Int32, String[], String[])
-  href: api/Harmony.PatchInfoSerialization.html#Harmony_PatchInfoSerialization_PriorityComparer_System_Object_System_Int32_System_Int32_System_String___System_String___
-  commentId: M:Harmony.PatchInfoSerialization.PriorityComparer(System.Object,System.Int32,System.Int32,System.String[],System.String[])
-  name.vb: PriorityComparer(Object, Int32, Int32, String(), String())
-  fullName: Harmony.PatchInfoSerialization.PriorityComparer(System.Object, System.Int32, System.Int32, System.String[], System.String[])
-  fullName.vb: Harmony.PatchInfoSerialization.PriorityComparer(System.Object, System.Int32, System.Int32, System.String(), System.String())
-  nameWithType: PatchInfoSerialization.PriorityComparer(Object, Int32, Int32, String[], String[])
-  nameWithType.vb: PatchInfoSerialization.PriorityComparer(Object, Int32, Int32, String(), String())
-- uid: Harmony.PatchInfoSerialization.PriorityComparer*
-  name: PriorityComparer
-  href: api/Harmony.PatchInfoSerialization.html#Harmony_PatchInfoSerialization_PriorityComparer_
-  commentId: Overload:Harmony.PatchInfoSerialization.PriorityComparer
-  isSpec: "True"
-  fullName: Harmony.PatchInfoSerialization.PriorityComparer
-  nameWithType: PatchInfoSerialization.PriorityComparer
-- uid: Harmony.PatchInfoSerialization.Serialize(Harmony.PatchInfo)
-  name: Serialize(PatchInfo)
-  href: api/Harmony.PatchInfoSerialization.html#Harmony_PatchInfoSerialization_Serialize_Harmony_PatchInfo_
-  commentId: M:Harmony.PatchInfoSerialization.Serialize(Harmony.PatchInfo)
-  fullName: Harmony.PatchInfoSerialization.Serialize(Harmony.PatchInfo)
-  nameWithType: PatchInfoSerialization.Serialize(PatchInfo)
-- uid: Harmony.PatchInfoSerialization.Serialize*
-  name: Serialize
-  href: api/Harmony.PatchInfoSerialization.html#Harmony_PatchInfoSerialization_Serialize_
-  commentId: Overload:Harmony.PatchInfoSerialization.Serialize
-  isSpec: "True"
-  fullName: Harmony.PatchInfoSerialization.Serialize
-  nameWithType: PatchInfoSerialization.Serialize
 - uid: Harmony.PatchProcessor
   name: PatchProcessor
   href: api/Harmony.PatchProcessor.html
@@ -3445,57 +3379,6 @@ references:
   isSpec: "True"
   fullName: Harmony.PatchProcessor.Unpatch
   nameWithType: PatchProcessor.Unpatch
-- uid: Harmony.PatchTools
-  name: PatchTools
-  href: api/Harmony.PatchTools.html
-  commentId: T:Harmony.PatchTools
-  fullName: Harmony.PatchTools
-  nameWithType: PatchTools
-- uid: Harmony.PatchTools.GetPatches(System.Type,System.Reflection.MethodInfo@,System.Reflection.MethodInfo@,System.Reflection.MethodInfo@)
-  name: GetPatches(Type, out MethodInfo, out MethodInfo, out MethodInfo)
-  href: api/Harmony.PatchTools.html#Harmony_PatchTools_GetPatches_System_Type_System_Reflection_MethodInfo__System_Reflection_MethodInfo__System_Reflection_MethodInfo__
-  commentId: M:Harmony.PatchTools.GetPatches(System.Type,System.Reflection.MethodInfo@,System.Reflection.MethodInfo@,System.Reflection.MethodInfo@)
-  name.vb: GetPatches(Type, ByRef MethodInfo, ByRef MethodInfo, ByRef MethodInfo)
-  fullName: Harmony.PatchTools.GetPatches(System.Type, out System.Reflection.MethodInfo, out System.Reflection.MethodInfo, out System.Reflection.MethodInfo)
-  fullName.vb: Harmony.PatchTools.GetPatches(System.Type, ByRef System.Reflection.MethodInfo, ByRef System.Reflection.MethodInfo, ByRef System.Reflection.MethodInfo)
-  nameWithType: PatchTools.GetPatches(Type, out MethodInfo, out MethodInfo, out MethodInfo)
-  nameWithType.vb: PatchTools.GetPatches(Type, ByRef MethodInfo, ByRef MethodInfo, ByRef MethodInfo)
-- uid: Harmony.PatchTools.GetPatches*
-  name: GetPatches
-  href: api/Harmony.PatchTools.html#Harmony_PatchTools_GetPatches_
-  commentId: Overload:Harmony.PatchTools.GetPatches
-  isSpec: "True"
-  fullName: Harmony.PatchTools.GetPatches
-  nameWithType: PatchTools.GetPatches
-- uid: Harmony.PatchTools.GetPatchMethod*
-  name: GetPatchMethod
-  href: api/Harmony.PatchTools.html#Harmony_PatchTools_GetPatchMethod_
-  commentId: Overload:Harmony.PatchTools.GetPatchMethod
-  isSpec: "True"
-  fullName: Harmony.PatchTools.GetPatchMethod
-  nameWithType: PatchTools.GetPatchMethod
-- uid: Harmony.PatchTools.GetPatchMethod``1(System.Type,System.String,System.Type[])
-  name: GetPatchMethod<T>(Type, String, Type[])
-  href: api/Harmony.PatchTools.html#Harmony_PatchTools_GetPatchMethod__1_System_Type_System_String_System_Type___
-  commentId: M:Harmony.PatchTools.GetPatchMethod``1(System.Type,System.String,System.Type[])
-  name.vb: GetPatchMethod(Of T)(Type, String, Type())
-  fullName: Harmony.PatchTools.GetPatchMethod<T>(System.Type, System.String, System.Type[])
-  fullName.vb: Harmony.PatchTools.GetPatchMethod(Of T)(System.Type, System.String, System.Type())
-  nameWithType: PatchTools.GetPatchMethod<T>(Type, String, Type[])
-  nameWithType.vb: PatchTools.GetPatchMethod(Of T)(Type, String, Type())
-- uid: Harmony.PatchTools.RememberObject(System.Object,System.Object)
-  name: RememberObject(Object, Object)
-  href: api/Harmony.PatchTools.html#Harmony_PatchTools_RememberObject_System_Object_System_Object_
-  commentId: M:Harmony.PatchTools.RememberObject(System.Object,System.Object)
-  fullName: Harmony.PatchTools.RememberObject(System.Object, System.Object)
-  nameWithType: PatchTools.RememberObject(Object, Object)
-- uid: Harmony.PatchTools.RememberObject*
-  name: RememberObject
-  href: api/Harmony.PatchTools.html#Harmony_PatchTools_RememberObject_
-  commentId: Overload:Harmony.PatchTools.RememberObject
-  isSpec: "True"
-  fullName: Harmony.PatchTools.RememberObject
-  nameWithType: PatchTools.RememberObject
 - uid: Harmony.Priority
   name: Priority
   href: api/Harmony.Priority.html
@@ -3556,12 +3439,15 @@ references:
   commentId: F:Harmony.Priority.VeryLow
   fullName: Harmony.Priority.VeryLow
   nameWithType: Priority.VeryLow
-- uid: Harmony.SetterHandler
-  name: SetterHandler
-  href: api/Harmony.SetterHandler.html
-  commentId: T:Harmony.SetterHandler
-  fullName: Harmony.SetterHandler
-  nameWithType: SetterHandler
+- uid: Harmony.SetterHandler`2
+  name: SetterHandler<T, S>
+  href: api/Harmony.SetterHandler-2.html
+  commentId: T:Harmony.SetterHandler`2
+  name.vb: SetterHandler(Of T, S)
+  fullName: Harmony.SetterHandler<T, S>
+  fullName.vb: Harmony.SetterHandler(Of T, S)
+  nameWithType: SetterHandler<T, S>
+  nameWithType.vb: SetterHandler(Of T, S)
 - uid: Harmony.SymbolExtensions
   name: SymbolExtensions
   href: api/Harmony.SymbolExtensions.html
