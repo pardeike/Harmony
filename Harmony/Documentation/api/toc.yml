@@ -2,8 +2,6 @@
 - uid: Harmony
   name: Harmony
   items:
-  - uid: Harmony.AccessCache
-    name: AccessCache
   - uid: Harmony.AccessTools
     name: AccessTools
   - uid: Harmony.AccessTools.FieldRef`2
@@ -21,8 +19,6 @@
     name: CollectionExtensions
   - uid: Harmony.DelegateTypeFactory
     name: DelegateTypeFactory
-  - uid: Harmony.DynamicTools
-    name: DynamicTools
   - uid: Harmony.ExceptionBlock
     name: ExceptionBlock
   - uid: Harmony.ExceptionBlockType
@@ -35,8 +31,9 @@
     name: FileLog
   - uid: Harmony.GeneralExtensions
     name: GeneralExtensions
-  - uid: Harmony.GetterHandler
-    name: GetterHandler
+  - uid: Harmony.GetterHandler`2
+    name: GetterHandler<T, S>
+    name.vb: GetterHandler(Of T, S)
   - uid: Harmony.HarmonyAfter
     name: HarmonyAfter
   - uid: Harmony.HarmonyArgument
@@ -73,8 +70,9 @@
     name: HarmonyTargetMethods
   - uid: Harmony.HarmonyTranspiler
     name: HarmonyTranspiler
-  - uid: Harmony.InstantiationHandler
-    name: InstantiationHandler
+  - uid: Harmony.InstantiationHandler`1
+    name: InstantiationHandler<T>
+    name.vb: InstantiationHandler(Of T)
   - uid: Harmony.Memory
     name: Memory
   - uid: Harmony.MethodInvoker
@@ -87,16 +85,13 @@
     name: Patches
   - uid: Harmony.PatchInfo
     name: PatchInfo
-  - uid: Harmony.PatchInfoSerialization
-    name: PatchInfoSerialization
   - uid: Harmony.PatchProcessor
     name: PatchProcessor
-  - uid: Harmony.PatchTools
-    name: PatchTools
   - uid: Harmony.Priority
     name: Priority
-  - uid: Harmony.SetterHandler
-    name: SetterHandler
+  - uid: Harmony.SetterHandler`2
+    name: SetterHandler<T, S>
+    name.vb: SetterHandler(Of T, S)
   - uid: Harmony.SymbolExtensions
     name: SymbolExtensions
   - uid: Harmony.Transpilers
