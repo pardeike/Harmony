@@ -824,9 +824,10 @@ namespace Harmony
 		///
 		public static object MakeDeepCopy(object source, Type resultType, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
 		{
-			if (source == null)
+			if (source == null || resultType == null)
 				return null;
 
+			resultType = Nullable.GetUnderlyingType(resultType) ?? resultType;
 			var type = source.GetType();
 
 			if (type.IsPrimitive)
@@ -921,6 +922,16 @@ namespace Harmony
 		public static bool IsVoid(Type type)
 		{
 			return type == typeof(void);
+		}
+
+		/// <summary>Test whether an instance is of a nullable type</summary>
+		/// <typeparam name="T">Type of instance</typeparam>
+		/// <param name="instance">An instance to test</param>
+		/// <returns>True if instance is of nullable type, false if not</returns>
+		///
+		public static bool IsOfNullableType<T>(T instance)
+		{
+			return Nullable.GetUnderlyingType(typeof(T)) != null;
 		}
 	}
 }
