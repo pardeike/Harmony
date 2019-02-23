@@ -212,5 +212,33 @@ namespace HarmonyTests
 
 			instanceB.UnpatchAll("test");
 		}
+
+		[TestMethod]
+		public void TestAttributes()
+		{
+			var originalClass = typeof(AttributesClass);
+			Assert.IsNotNull(originalClass);
+
+			var originalMethod = originalClass.GetMethod("Method");
+			Assert.IsNotNull(originalMethod);
+			Assert.AreEqual(originalMethod, AttributesPatch.Patch0());
+			
+			var instance = HarmonyInstance.Create("test");
+			Assert.IsNotNull(instance);
+
+			var patchClass = typeof(AttributesPatch);
+			Assert.IsNotNull(patchClass);
+
+			AttributesPatch._reset();
+
+			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			Assert.IsNotNull(patcher);
+			patcher.Patch();
+
+			(new AttributesClass()).Method("foo");
+			Assert.IsTrue(AttributesPatch.targeted, "TargetMethod was not executed");
+			Assert.IsTrue(AttributesPatch.postfixed, "Prefix was not executed");
+			Assert.IsTrue(AttributesPatch.postfixed, "Prefix was not executed");
+		}
 	}
 }

@@ -14,13 +14,13 @@ namespace Harmony
 			objectReferences[key] = value;
 		}
 
-		internal static MethodInfo GetPatchMethod<T>(Type patchType, string name, Type[] parameters = null)
+		internal static MethodInfo GetPatchMethod<T>(Type patchType, string name)
 		{
 			var attributeType = typeof(T).FullName;
 			var method = patchType.GetMethods(AccessTools.all)
 				.FirstOrDefault(m => m.GetCustomAttributes(true).Any(a => a.GetType().FullName == attributeType));
 			if (method == null)
-				method = AccessTools.Method(patchType, name, parameters);
+				method = AccessTools.Method(patchType, name);
 			return method;
 		}
 

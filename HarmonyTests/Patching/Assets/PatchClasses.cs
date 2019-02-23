@@ -373,4 +373,48 @@ namespace HarmonyTests.Assets
 			__instance.s = "patched";
 		}
 	}
+
+	public class AttributesClass
+	{
+		public void Method(string foo)
+		{
+			Console.WriteLine("foo=" + foo);
+		}
+	}
+
+	[HarmonyPatch]
+	public class AttributesPatch
+	{
+		public static bool targeted = false;
+		public static bool prefixed = false;
+		public static bool postfixed = false;
+
+		[HarmonyTargetMethod]
+		public static MethodBase Patch0()
+		{
+			targeted = true;
+			return AccessTools.Method(typeof(AttributesClass), "Method");
+		}
+
+		[HarmonyPrefix]
+		public static void Patch1()
+		{
+			Console.WriteLine("prefix");
+			prefixed = true;
+		}
+
+		[HarmonyPostfix]
+		public static void Patch2()
+		{
+			Console.WriteLine("postfix");
+			postfixed = true;
+		}
+
+		public static void _reset()
+		{
+			targeted = false;
+			prefixed = false;
+			postfixed = false;
+		}
+	}
 }

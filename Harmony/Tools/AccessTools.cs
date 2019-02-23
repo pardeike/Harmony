@@ -696,6 +696,22 @@ namespace Harmony
 			return parameters.Select(p => p == null ? typeof(object) : p.GetType()).ToArray();
 		}
 
+		/// <summary>Creates an array of input parameters for a given method and a given set of potential inputs</summary>
+		/// <param name="method">The method you are planing to call</param>
+		/// <param name="inputs"> The possible input parameters in any order</param>
+		/// <returns>An object array matching the method signature</returns>
+		///
+		public static object[] ActualParameters(MethodBase method, object[] inputs)
+		{
+			var inputTypes = inputs.Select(obj => obj.GetType()).ToList();
+			return method.GetParameters().Select(p => p.ParameterType).Select(pType => {
+				var index = inputTypes.FindIndex(inType => pType.IsAssignableFrom(inType));
+				if (index >= 0)
+					return inputs[index];
+				return GetDefaultValue(pType);
+			}).ToArray();
+		}
+
 		/// <summary>A read/writable reference to a field</summary>
 		/// <typeparam name="T">The class the field is defined in</typeparam>
 		/// <typeparam name="U">The type of the field</typeparam>

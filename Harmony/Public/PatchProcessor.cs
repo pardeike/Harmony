@@ -26,11 +26,12 @@ namespace Harmony
 		/// <param name="type">The patch class</param>
 		/// <param name="attributes">The Harmony attributes</param>
 		///
+		[UpgradeToLatestVersion(1)]
 		public PatchProcessor(HarmonyInstance instance, Type type, HarmonyMethod attributes)
 		{
 			this.instance = instance;
 			container = type;
-			containerAttributes = attributes ?? new HarmonyMethod(null);
+			containerAttributes = attributes ?? new HarmonyMethod();
 			prefix = containerAttributes.Clone();
 			postfix = containerAttributes.Clone();
 			transpiler = containerAttributes.Clone();
@@ -81,7 +82,7 @@ namespace Harmony
 		/// <summary>Applies the patch</summary>
 		/// <returns>A list of all created dynamic methods</returns>
 		///
-		[UpgradeToLatestVersion(1)]
+		[UpgradeToLatestVersion(2)]
 		public List<DynamicMethod> Patch()
 		{
 			lock (locker)
@@ -158,7 +159,7 @@ namespace Harmony
 			}
 		}
 
-		[UpgradeToLatestVersion(1)]
+		[UpgradeToLatestVersion(2)]
 		void PrepareType()
 		{
 			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);
@@ -286,25 +287,15 @@ namespace Harmony
 				return defaultIfNotExisting;
 
 			var methodName = typeof(S).Name.Replace("Harmony", "");
-
-			var paramList = new List<object> { instance };
-			paramList.AddRange(parameters);
-			var paramTypes = AccessTools.GetTypes(paramList.ToArray());
-			var method = PatchTools.GetPatchMethod<S>(container, methodName, paramTypes);
-			if (method != null && typeof(T).IsAssignableFrom(method.ReturnType))
-				return (T)method.Invoke(null, paramList.ToArray());
-
-			method = PatchTools.GetPatchMethod<S>(container, methodName, new Type[] { typeof(HarmonyInstance) });
-			if (method != null && typeof(T).IsAssignableFrom(method.ReturnType))
-				return (T)method.Invoke(null, new object[] { instance });
-
-			method = PatchTools.GetPatchMethod<S>(container, methodName, Type.EmptyTypes);
+			var method = PatchTools.GetPatchMethod<S>(container, methodName);
 			if (method != null)
 			{
 				if (typeof(T).IsAssignableFrom(method.ReturnType))
 					return (T)method.Invoke(null, Type.EmptyTypes);
 
-				method.Invoke(null, Type.EmptyTypes);
+				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
+				var actualParameters = AccessTools.ActualParameters(method, input);
+				method.Invoke(null, actualParameters);
 				return defaultIfNotExisting;
 			}
 
@@ -317,30 +308,15 @@ namespace Harmony
 				return;
 
 			var methodName = typeof(S).Name.Replace("Harmony", "");
-
-			var paramList = new List<object> { instance };
-			paramList.AddRange(parameters);
-			var paramTypes = AccessTools.GetTypes(paramList.ToArray());
-			var method = PatchTools.GetPatchMethod<S>(container, methodName, paramTypes);
+			var method = PatchTools.GetPatchMethod<S>(container, methodName);
 			if (method != null)
 			{
-				method.Invoke(null, paramList.ToArray());
-				return;
+				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
+				var actualParameters = AccessTools.ActualParameters(method, input);
+				method.Invoke(null, actualParameters);
 			}
 
-			method = PatchTools.GetPatchMethod<S>(container, methodName, new Type[] { typeof(HarmonyInstance) });
-			if (method != null)
-			{
-				method.Invoke(null, new object[] { instance });
-				return;
-			}
-
-			method = PatchTools.GetPatchMethod<S>(container, methodName, Type.EmptyTypes);
-			if (method != null)
-			{
-				method.Invoke(null, Type.EmptyTypes);
-				return;
-			}
+			return;
 		}
 	}
 }
