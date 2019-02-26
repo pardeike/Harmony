@@ -12,7 +12,7 @@ namespace HarmonyTests.Assets
 
 		string field;
 		readonly string field2;
-		private static string field3;
+		private static string field3 = field3Value;
 
 		int _property;
 		int Property

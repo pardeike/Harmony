@@ -177,10 +177,10 @@ namespace HarmonyTests
 			Assert.IsNotNull(fieldInfo);
 			var instance = new AccessToolsClass();
 			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, String>("field");
-			ref String value = ref fieldRef(instance);
+			ref var value = ref fieldRef(instance);
 
 			Assert.AreEqual(AccessToolsClass.field1Value, value);
-			string newValue = AccessToolsClass.field1Value + "1";
+			var newValue = AccessToolsClass.field1Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
 	  }
@@ -192,10 +192,10 @@ namespace HarmonyTests
 			Assert.IsNotNull(fieldInfo);
 			var instance = new AccessToolsClass();
 			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, String>(fieldInfo);
-			ref String value = ref fieldRef(instance);
+			ref var value = ref fieldRef(instance);
 
 			Assert.AreEqual(AccessToolsClass.field1Value, value);
-			string newValue = AccessToolsClass.field1Value + "1";
+			var newValue = AccessToolsClass.field1Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
 	  }
@@ -207,10 +207,10 @@ namespace HarmonyTests
 			Assert.IsNotNull(fieldInfo);
 			var instance = new AccessToolsClass();
 			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, String>(fieldInfo);
-			ref String value = ref fieldRef(instance);
+			ref var value = ref fieldRef(instance);
 
 			Assert.AreEqual(AccessToolsClass.field2Value, value);
-			string newValue = AccessToolsClass.field2Value + "1";
+			var newValue = AccessToolsClass.field2Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
 	  }
@@ -220,11 +220,13 @@ namespace HarmonyTests
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
+			// Call constructor to reset static field, just in case
+			new AccessToolsClass();
 			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, String>(fieldInfo);
-			ref String value = ref fieldRef(null);
+			ref var value = ref fieldRef();
 
 			Assert.AreEqual(AccessToolsClass.field3Value, value);
-			string newValue = AccessToolsClass.field3Value + "1";
+			var newValue = AccessToolsClass.field3Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(null));
 		}
@@ -236,12 +238,12 @@ namespace HarmonyTests
 			Assert.IsNotNull(fieldInfo);
 			var instance = new AccessToolsSubClass();
 			var fieldRef = AccessTools.FieldRefAccess<AccessToolsSubClass, String>(fieldInfo);
-			ref String value = ref fieldRef(instance);
+			ref var value = ref fieldRef(instance);
 
 			Assert.AreEqual(AccessToolsClass.field1Value, value);
-			string newValue = AccessToolsClass.field1Value + "1";
+			var newValue = AccessToolsClass.field1Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-	  }
+		}
    }
 }
