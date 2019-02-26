@@ -733,14 +733,27 @@ namespace Harmony
 											BindingFlags.DeclaredOnly;
 
 			var fi = typeof(T).GetField(fieldName, bf);
-			if (fi == null)
-				throw new MissingFieldException(typeof(T).Name, fieldName);
+			return FieldRefAccess<T,U>(fi);
+		}
 
-			var s_name = "__refget_" + typeof(T).Name + "_fi_" + fi.Name;
+		/// <summary>Creates a field reference</summary>
+		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <typeparam name="U">The type of the field</typeparam>
+		/// <param name="fieldInfo">FieldInfo for the field</param>
+		/// <returns>A read and writable field reference</returns>
+		///
+		public static FieldRef<T, U> FieldRefAccess<T, U>(FieldInfo fieldInfo)
+		{
+			if (fieldInfo == null)
+				throw new ArgumentException("FieldInfo for FieldRefAccess is null.");
+			if (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T)))
+				throw new MissingFieldException(typeof(T).Name, fieldInfo.Name);
+
+			var s_name = "__refget_" + typeof(T).Name + "_fi_" + fieldInfo.Name;
 
 			// workaround for using ref-return with DynamicMethod:
 			// a.) initialize with dummy return value
-			var dm = new DynamicMethod(s_name, typeof(U), new[] { typeof(T) }, typeof(T), true);
+			var dm = new DynamicMethod(s_name, typeof(U), new[] {typeof(T)}, typeof(T), true);
 
 			// b.) replace with desired 'ByRef' return value
 			var trv = Traverse.Create(dm);
@@ -748,8 +761,15 @@ namespace Harmony
 			trv.Field("m_returnType").SetValue(typeof(U).MakeByRefType());
 
 			var il = dm.GetILGenerator();
-			il.Emit(OpCodes.Ldarg_0);
-			il.Emit(OpCodes.Ldflda, fi);
+
+			if (fieldInfo.IsStatic)
+				il.Emit(OpCodes.Ldsflda, fieldInfo);
+			else
+			{
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldflda, fieldInfo);
+			}
+
 			il.Emit(OpCodes.Ret);
 			return (FieldRef<T, U>)dm.CreateDelegate(typeof(FieldRef<T, U>));
 		}
