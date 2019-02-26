@@ -6,8 +6,13 @@ namespace HarmonyTests.Assets
 		{
 		}
 
+		public const string field1Value="hello";
+		public const string field2Value="dummy";
+		public const string field3Value="!";
+
 		string field;
 		readonly string field2;
+		private static string field3 = field3Value;
 
 		int _property;
 		int Property
@@ -23,8 +28,9 @@ namespace HarmonyTests.Assets
 
 		public AccessToolsClass()
 		{
-			field = "hello";
-			field2 = "dummy";
+			field = field1Value;
+			field2 = field2Value;
+			field3 = field3Value;
 		}
 
 		public string Method()
