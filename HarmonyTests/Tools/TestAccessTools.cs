@@ -220,14 +220,13 @@ namespace HarmonyTests
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
-			var instance = new AccessToolsClass();
 			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, String>(fieldInfo);
-			ref String value = ref fieldRef(instance);
+			ref String value = ref fieldRef(null);
 
 			Assert.AreEqual(AccessToolsClass.field3Value, value);
 			string newValue = AccessToolsClass.field3Value + "1";
 			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
+			Assert.AreEqual(newValue, fieldInfo.GetValue(null));
 		}
 
 		[TestMethod]
