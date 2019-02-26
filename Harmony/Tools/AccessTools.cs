@@ -715,7 +715,7 @@ namespace Harmony
 		/// <summary>A read/writable reference to a field</summary>
 		/// <typeparam name="T">The class the field is defined in</typeparam>
 		/// <typeparam name="U">The type of the field</typeparam>
-		/// <param name="obj">The runtime instance to access the field</param>
+		/// <param name="obj">The runtime instance to access the field (leave empty for static fields)</param>
 		/// <returns>The value of the field (or an assignable object)</returns>
 		///
 		public delegate ref U FieldRef<T, U>(T obj = default(T));
