@@ -19,6 +19,10 @@
 	</a>
 </p>
 <p align="center">
+	<img src="https://img.shields.io/travis/com/pardeike/Harmony/master.svg?logo=travis&label=travis:master" /> 
+	<img src="https://img.shields.io/appveyor/ci/pardeike/Harmony/master.svg?logo=appveyor&label=appveyor:master" /> 
+</p>
+<p align="center">
 	<a href="mailto:andreas@pardeike.net">
 		<img src="https://img.shields.io/badge/email-andreas@pardeike.net-blue.svg?style=flat" />
 	</a>
@@ -28,7 +32,7 @@
 	<a href="https://discord.gg/xXgghXR">
 		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat&logo=discord&label=discord" />
 	</a>
-</p> 
+</p>
 
 <p align="center">
 	A library for patching, replacing and decorating .NET and Mono methods during runtime.
