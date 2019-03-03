@@ -1,16 +1,16 @@
 using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class StaticPatches
 	{
-		[TestMethod]
+		[Test]
 		public void TestMethod0()
 		{
 			var originalClass = typeof(Class0);
@@ -33,7 +33,7 @@ namespace HarmonyTests
 			Assert.AreEqual("patched", result);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestMethod1()
 		{
 			var originalClass = typeof(Class1);
@@ -76,7 +76,7 @@ namespace HarmonyTests
 			Assert.IsTrue(Class1Patch.postfixed, "Postfix was not executed");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestMethod2()
 		{
 			var originalClass = typeof(Class2);
@@ -119,7 +119,7 @@ namespace HarmonyTests
 			Assert.IsTrue(Class2Patch.postfixed, "Postfix was not executed");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestMethod4()
 		{
 			var originalClass = typeof(Class4);
@@ -158,7 +158,7 @@ namespace HarmonyTests
 			Assert.AreEqual(Class4Patch.senderValue, "foo");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestMethod5()
 		{
 			var originalClass = typeof(Class5);
@@ -186,7 +186,7 @@ namespace HarmonyTests
 			Assert.IsTrue(Class5Patch.postfixed, "Prefix was not executed");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestPatchUnpatch()
 		{
 			var originalClass = typeof(Class9);
@@ -213,7 +213,7 @@ namespace HarmonyTests
 			instanceB.UnpatchAll("test");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestAttributes()
 		{
 			var originalClass = typeof(AttributesClass);

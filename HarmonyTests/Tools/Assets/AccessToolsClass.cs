@@ -10,8 +10,8 @@ namespace HarmonyTests.Assets
 		public const string field2Value="dummy";
 		public const string field3Value="!";
 
-		string field;
-		readonly string field2;
+		private string field;
+		private readonly string field2;
 		private static string field3 = field3Value;
 
 		int _property;
@@ -46,6 +46,11 @@ namespace HarmonyTests.Assets
 		public void SetField(string val)
 		{
 			field = val;
+		}
+
+		public string Method3()
+		{
+			return field3;
 		}
 	}
 

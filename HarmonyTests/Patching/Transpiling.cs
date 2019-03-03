@@ -1,6 +1,6 @@
 using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace HarmonyTests.Patching
 {
-	[TestClass]
+	[TestFixture]
 	public class Transpiling
 	{
 		static CodeInstruction[] savedInstructions = null;
@@ -21,7 +21,7 @@ namespace HarmonyTests.Patching
 		static readonly int codeLength = 61;
 #endif
 
-		[TestMethod]
+		[Test]
 		public void TestTranspilerException1()
 		{
 			var test = new Class3();

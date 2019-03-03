@@ -1,12 +1,12 @@
 using Harmony;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class ValueTypes
 	{
-		[TestMethod]
+		[Test]
 		public void ValueTypeInstance()
 		{
 			var originalClass = typeof(Assets.Struct1);
@@ -38,7 +38,7 @@ namespace HarmonyTests
 			Assert.AreEqual("new", instance.s);
 		}
 
-		[TestMethod]
+		[Test]
 		public void StructInstanceByRef()
 		{
 			var originalClass = typeof(Assets.Struct2);

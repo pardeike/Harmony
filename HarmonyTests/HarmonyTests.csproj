@@ -1,6 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<IsPackable>false</IsPackable>
 		<TargetFrameworks>net45;net472</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
@@ -19,8 +20,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
-		<PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.0" />
+		<PackageReference Include="NUnit" Version="3.11.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
 	</ItemGroup>
 
 	<ItemGroup>

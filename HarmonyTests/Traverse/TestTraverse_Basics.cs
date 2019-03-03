@@ -1,19 +1,19 @@
 using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class TestTraverse_Basics
 	{
 		static readonly List<string> fieldNames = new List<string> { "_root", "_type", "_info", "_method", "_params" };
 
 		// Basic integrity check for our test class and the field-testvalue relations
 		//
-		[TestMethod]
+		[Test]
 		public void Instantiate_TraverseFields_AccessModifiers()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -22,7 +22,7 @@ namespace HarmonyTests
 				Assert.AreEqual(TraverseFields.testStrings[i], instance.GetTestField(i));
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_Has_Expected_Internal_Fields()
 		{
 			foreach (var name in fieldNames)
@@ -47,7 +47,7 @@ namespace HarmonyTests
 
 		// Traverse should default to an empty instance to avoid errors
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_SilentFailures()
 		{
 			var trv1 = new Traverse(null);
@@ -69,7 +69,7 @@ namespace HarmonyTests
 
 		// Traverse should handle basic null values
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Create_With_Null()
 		{
 			var trv = Traverse.Create(null);
@@ -110,7 +110,7 @@ namespace HarmonyTests
 
 		// Traverse.ToString() should return a meaningful string representation of its initial value
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Create_Instance_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -121,7 +121,7 @@ namespace HarmonyTests
 
 		// Traverse.ToString() should return a meaningful string representation of its initial type
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Create_Type_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
