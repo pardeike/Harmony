@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class HarmonyInstance
    ">
-    <meta name="generator" content="docfx 2.40.10.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -81,35 +81,11 @@
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">HarmonyInstance</span></div>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <span class="xref">System.Object.ToString()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetHashCode()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetType()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.MemberwiseClone()</span>
-    </div>
-  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Harmony.html">Harmony</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
   <h5 id="Harmony_HarmonyInstance_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class HarmonyInstance</code></pre>
+    <pre><code class="lang-csharp hljs">public class HarmonyInstance : object</code></pre>
   </div>
   <h3 id="fields">Fields
   </h3>
@@ -284,7 +260,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.MethodBase</span>&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">MethodBase</span>&gt;</td>
         <td><p>An enumeration of original methods</p>
 </td>
       </tr>
@@ -316,7 +292,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.MethodBase</span>&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">MethodBase</span>&gt;</td>
         <td><p>An enumeration of original methods</p>
 </td>
       </tr>
@@ -324,13 +300,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_GetPatchInfo_System_Reflection_MethodBase_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.GetPatchInfo(System.Reflection.MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_GetPatchInfo_MethodBase_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.GetPatchInfo(MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyInstance.cs/#L173">View Source</a>
   </span>
   <a id="Harmony_HarmonyInstance_GetPatchInfo_" data-uid="Harmony.HarmonyInstance.GetPatchInfo*"></a>
-  <h4 id="Harmony_HarmonyInstance_GetPatchInfo_System_Reflection_MethodBase_" data-uid="Harmony.HarmonyInstance.GetPatchInfo(System.Reflection.MethodBase)">GetPatchInfo(MethodBase)</h4>
+  <h4 id="Harmony_HarmonyInstance_GetPatchInfo_MethodBase_" data-uid="Harmony.HarmonyInstance.GetPatchInfo(MethodBase)">GetPatchInfo(MethodBase)</h4>
   <div class="markdown level1 summary"><p>Gets patch information for a given original method</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -349,7 +325,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="xref">MethodBase</span></td>
         <td><span class="parametername">method</span></td>
         <td><p>The original method</p>
 </td>
@@ -424,13 +400,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_Patch_System_Reflection_MethodBase_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.Patch(System.Reflection.MethodBase%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_Patch_MethodBase_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.Patch(MethodBase%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyInstance.cs/#L114">View Source</a>
   </span>
   <a id="Harmony_HarmonyInstance_Patch_" data-uid="Harmony.HarmonyInstance.Patch*"></a>
-  <h4 id="Harmony_HarmonyInstance_Patch_System_Reflection_MethodBase_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_" data-uid="Harmony.HarmonyInstance.Patch(System.Reflection.MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)">Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod)</h4>
+  <h4 id="Harmony_HarmonyInstance_Patch_MethodBase_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_" data-uid="Harmony.HarmonyInstance.Patch(MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)">Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod)</h4>
   <div class="markdown level1 summary"><p>Creates patches by manually specifying the methods</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -449,7 +425,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="xref">MethodBase</span></td>
         <td><span class="parametername">original</span></td>
         <td><p>The original method</p>
 </td>
@@ -484,7 +460,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.Emit.DynamicMethod</span></td>
+        <td><span class="xref">DynamicMethod</span></td>
         <td><p>The dynamic method that was created to patch the original method</p>
 </td>
       </tr>
@@ -508,13 +484,13 @@
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_PatchAll_System_Reflection_Assembly_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.PatchAll(System.Reflection.Assembly)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_PatchAll_Assembly_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.PatchAll(Assembly)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyInstance.cs/#L102">View Source</a>
   </span>
   <a id="Harmony_HarmonyInstance_PatchAll_" data-uid="Harmony.HarmonyInstance.PatchAll*"></a>
-  <h4 id="Harmony_HarmonyInstance_PatchAll_System_Reflection_Assembly_" data-uid="Harmony.HarmonyInstance.PatchAll(System.Reflection.Assembly)">PatchAll(Assembly)</h4>
+  <h4 id="Harmony_HarmonyInstance_PatchAll_Assembly_" data-uid="Harmony.HarmonyInstance.PatchAll(Assembly)">PatchAll(Assembly)</h4>
   <div class="markdown level1 summary"><p>Searches an assembly for Harmony annotations and uses them to create patches</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -533,7 +509,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.Assembly</span></td>
+        <td><span class="xref">Assembly</span></td>
         <td><span class="parametername">assembly</span></td>
         <td><p>The assembly</p>
 </td>
@@ -542,13 +518,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_ProcessorForAnnotatedClass_System_Type_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.ProcessorForAnnotatedClass(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_ProcessorForAnnotatedClass_Type_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.ProcessorForAnnotatedClass(Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyInstance.cs/#L88">View Source</a>
   </span>
   <a id="Harmony_HarmonyInstance_ProcessorForAnnotatedClass_" data-uid="Harmony.HarmonyInstance.ProcessorForAnnotatedClass*"></a>
-  <h4 id="Harmony_HarmonyInstance_ProcessorForAnnotatedClass_System_Type_" data-uid="Harmony.HarmonyInstance.ProcessorForAnnotatedClass(System.Type)">ProcessorForAnnotatedClass(Type)</h4>
+  <h4 id="Harmony_HarmonyInstance_ProcessorForAnnotatedClass_Type_" data-uid="Harmony.HarmonyInstance.ProcessorForAnnotatedClass(Type)">ProcessorForAnnotatedClass(Type)</h4>
   <div class="markdown level1 summary"><p>Create a patch processor from an annotated class</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -567,7 +543,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Type</span></td>
+        <td><span class="xref">Type</span></td>
         <td><span class="parametername">type</span></td>
         <td><p>The class</p>
 </td>
@@ -591,13 +567,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_Unpatch_System_Reflection_MethodBase_Harmony_HarmonyPatchType_System_String_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.Unpatch(System.Reflection.MethodBase%2CHarmony.HarmonyPatchType%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_Unpatch_MethodBase_Harmony_HarmonyPatchType_System_String_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.Unpatch(MethodBase%2CHarmony.HarmonyPatchType%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyInstance.cs/#L142">View Source</a>
   </span>
   <a id="Harmony_HarmonyInstance_Unpatch_" data-uid="Harmony.HarmonyInstance.Unpatch*"></a>
-  <h4 id="Harmony_HarmonyInstance_Unpatch_System_Reflection_MethodBase_Harmony_HarmonyPatchType_System_String_" data-uid="Harmony.HarmonyInstance.Unpatch(System.Reflection.MethodBase,Harmony.HarmonyPatchType,System.String)">Unpatch(MethodBase, HarmonyPatchType, String)</h4>
+  <h4 id="Harmony_HarmonyInstance_Unpatch_MethodBase_Harmony_HarmonyPatchType_System_String_" data-uid="Harmony.HarmonyInstance.Unpatch(MethodBase,Harmony.HarmonyPatchType,System.String)">Unpatch(MethodBase, HarmonyPatchType, String)</h4>
   <div class="markdown level1 summary"><p>Unpatches a method</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -616,7 +592,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="xref">MethodBase</span></td>
         <td><span class="parametername">original</span></td>
         <td><p>The original method</p>
 </td>
@@ -637,13 +613,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_Unpatch_System_Reflection_MethodBase_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.Unpatch(System.Reflection.MethodBase%2CSystem.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_Unpatch_MethodBase_MethodInfo_.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.Unpatch(MethodBase%2CMethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyInstance.cs/#L152">View Source</a>
   </span>
   <a id="Harmony_HarmonyInstance_Unpatch_" data-uid="Harmony.HarmonyInstance.Unpatch*"></a>
-  <h4 id="Harmony_HarmonyInstance_Unpatch_System_Reflection_MethodBase_System_Reflection_MethodInfo_" data-uid="Harmony.HarmonyInstance.Unpatch(System.Reflection.MethodBase,System.Reflection.MethodInfo)">Unpatch(MethodBase, MethodInfo)</h4>
+  <h4 id="Harmony_HarmonyInstance_Unpatch_MethodBase_MethodInfo_" data-uid="Harmony.HarmonyInstance.Unpatch(MethodBase,MethodInfo)">Unpatch(MethodBase, MethodInfo)</h4>
   <div class="markdown level1 summary"><p>Unpatches a method</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -662,13 +638,13 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="xref">MethodBase</span></td>
         <td><span class="parametername">original</span></td>
         <td><p>The original method</p>
 </td>
       </tr>
       <tr>
-        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="xref">MethodInfo</span></td>
         <td><span class="parametername">patch</span></td>
         <td><p>The patch method to remove</p>
 </td>
@@ -711,13 +687,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_VersionInfo_System_Version__.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.VersionInfo(System.Version%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_HarmonyInstance_VersionInfo_Version__.md&amp;value=---%0Auid%3A%20Harmony.HarmonyInstance.VersionInfo(Version%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyInstance.cs/#L199">View Source</a>
   </span>
   <a id="Harmony_HarmonyInstance_VersionInfo_" data-uid="Harmony.HarmonyInstance.VersionInfo*"></a>
-  <h4 id="Harmony_HarmonyInstance_VersionInfo_System_Version__" data-uid="Harmony.HarmonyInstance.VersionInfo(System.Version@)">VersionInfo(out Version)</h4>
+  <h4 id="Harmony_HarmonyInstance_VersionInfo_Version__" data-uid="Harmony.HarmonyInstance.VersionInfo(Version@)">VersionInfo(out Version)</h4>
   <div class="markdown level1 summary"><p>Gets current version information</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -736,7 +712,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Version</span></td>
+        <td><span class="xref">Version</span></td>
         <td><span class="parametername">currentVersion</span></td>
         <td><p>[out] The current Harmony version</p>
 </td>
@@ -753,7 +729,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.Dictionary</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Version</span>&gt;</td>
+        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.String</span>, <span class="xref">Version</span>&gt;</td>
         <td><p>A dictionary containing assembly versions keyed by Harmony version</p>
 </td>
       </tr>

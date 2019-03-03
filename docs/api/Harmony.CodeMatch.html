@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class CodeMatch
    ">
-    <meta name="generator" content="docfx 2.40.10.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -81,35 +81,54 @@
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">CodeMatch</span></div>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetHashCode()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetType()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.MemberwiseClone()</span>
-    </div>
-  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Harmony.html">Harmony</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
   <h5 id="Harmony_CodeMatch_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class CodeMatch</code></pre>
+    <pre><code class="lang-csharp hljs">public class CodeMatch : object</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeMatch__ctor_Func_Harmony_CodeInstruction_System_Boolean__System_String_.md&amp;value=---%0Auid%3A%20Harmony.CodeMatch.%23ctor(Func%7BHarmony.CodeInstruction%2CSystem.Boolean%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L55">View Source</a>
+  </span>
+  <a id="Harmony_CodeMatch__ctor_" data-uid="Harmony.CodeMatch.#ctor*"></a>
+  <h4 id="Harmony_CodeMatch__ctor_Func_Harmony_CodeInstruction_System_Boolean__System_String_" data-uid="Harmony.CodeMatch.#ctor(Func{Harmony.CodeInstruction,System.Boolean},System.String)">CodeMatch(Func&lt;CodeInstruction, Boolean&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Creates a code match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatch(Func&lt;CodeInstruction, bool&gt; predicate, string name = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<a class="xref" href="Harmony.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>The predicate</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>An optional name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeMatch__ctor_Harmony_CodeInstruction_System_String_.md&amp;value=---%0Auid%3A%20Harmony.CodeMatch.%23ctor(Harmony.CodeInstruction%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -152,59 +171,19 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeMatch__ctor_System_Func_Harmony_CodeInstruction_System_Boolean__System_String_.md&amp;value=---%0Auid%3A%20Harmony.CodeMatch.%23ctor(System.Func%7BHarmony.CodeInstruction%2CSystem.Boolean%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L55">View Source</a>
-  </span>
-  <a id="Harmony_CodeMatch__ctor_" data-uid="Harmony.CodeMatch.#ctor*"></a>
-  <h4 id="Harmony_CodeMatch__ctor_System_Func_Harmony_CodeInstruction_System_Boolean__System_String_" data-uid="Harmony.CodeMatch.#ctor(System.Func{Harmony.CodeInstruction,System.Boolean},System.String)">CodeMatch(Func&lt;CodeInstruction, Boolean&gt;, String)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeMatch(Func&lt;CodeInstruction, bool&gt; predicate, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="Harmony.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
-        <td><span class="parametername">predicate</span></td>
-        <td><p>The predicate</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeMatch__ctor_System_Nullable_System_Reflection_Emit_OpCode__System_Object_System_String_.md&amp;value=---%0Auid%3A%20Harmony.CodeMatch.%23ctor(System.Nullable%7BSystem.Reflection.Emit.OpCode%7D%2CSystem.Object%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeMatch__ctor_System_Nullable_OpCode__System_Object_System_String_.md&amp;value=---%0Auid%3A%20Harmony.CodeMatch.%23ctor(System.Nullable%7BOpCode%7D%2CSystem.Object%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L37">View Source</a>
   </span>
   <a id="Harmony_CodeMatch__ctor_" data-uid="Harmony.CodeMatch.#ctor*"></a>
-  <h4 id="Harmony_CodeMatch__ctor_System_Nullable_System_Reflection_Emit_OpCode__System_Object_System_String_" data-uid="Harmony.CodeMatch.#ctor(System.Nullable{System.Reflection.Emit.OpCode},System.Object,System.String)">CodeMatch(Nullable&lt;OpCode&gt;, Object, String)</h4>
+  <h4 id="Harmony_CodeMatch__ctor_System_Nullable_OpCode__System_Object_System_String_" data-uid="Harmony.CodeMatch.#ctor(System.Nullable{OpCode},System.Object,System.String)">CodeMatch(Nullable&lt;OpCode&gt;, Object, String)</h4>
   <div class="markdown level1 summary"><p>Creates a code match</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeMatch(OpCode? opcode = default(OpCode? ), object operand = null, string name = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public CodeMatch(OpCode? opcode = null, object operand = null, string name = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -217,7 +196,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Reflection.Emit.OpCode</span>&gt;</td>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">OpCode</span>&gt;</td>
         <td><span class="parametername">opcode</span></td>
         <td><p>The optional opcode</p>
 </td>
@@ -263,7 +242,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="Harmony.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Harmony.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -293,7 +272,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
+        <td><span class="xref">List</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -323,7 +302,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
+        <td><span class="xref">List</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -353,7 +332,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><span class="xref">List</span>&lt;<span class="xref">Label</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -413,7 +392,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.OpCode</span>&gt;</td>
+        <td><span class="xref">List</span>&lt;<span class="xref">OpCode</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -443,7 +422,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Object</span>&gt;</td>
+        <td><span class="xref">List</span>&lt;<span class="xref">System.Object</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -473,7 +452,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="Harmony.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="xref">Func</span>&lt;<a class="xref" href="Harmony.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -512,8 +491,6 @@
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><span class="xref">System.Object.ToString()</span></div>
 </article>
           </div>
           

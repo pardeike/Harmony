@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class CodeInstruction
    ">
-    <meta name="generator" content="docfx 2.40.10.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -81,32 +81,11 @@
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">CodeInstruction</span></div>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetHashCode()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetType()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.MemberwiseClone()</span>
-    </div>
-  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Harmony.html">Harmony</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
   <h5 id="Harmony_CodeInstruction_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class CodeInstruction</code></pre>
+    <pre><code class="lang-csharp hljs">public class CodeInstruction : object</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -146,13 +125,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeInstruction__ctor_System_Reflection_Emit_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20Harmony.CodeInstruction.%23ctor(System.Reflection.Emit.OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeInstruction__ctor_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20Harmony.CodeInstruction.%23ctor(OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/CodeInstruction.cs/#L23">View Source</a>
   </span>
   <a id="Harmony_CodeInstruction__ctor_" data-uid="Harmony.CodeInstruction.#ctor*"></a>
-  <h4 id="Harmony_CodeInstruction__ctor_System_Reflection_Emit_OpCode_System_Object_" data-uid="Harmony.CodeInstruction.#ctor(System.Reflection.Emit.OpCode,System.Object)">CodeInstruction(OpCode, Object)</h4>
+  <h4 id="Harmony_CodeInstruction__ctor_OpCode_System_Object_" data-uid="Harmony.CodeInstruction.#ctor(OpCode,System.Object)">CodeInstruction(OpCode, Object)</h4>
   <div class="markdown level1 summary"><p>Creates a new CodeInstruction with a given opcode and optional operand</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -171,7 +150,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="xref">OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
         <td><p>The code</p>
 </td>
@@ -211,7 +190,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="Harmony.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Harmony.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -241,7 +220,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><span class="xref">List</span>&lt;<span class="xref">Label</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -271,7 +250,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="xref">OpCode</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -342,6 +321,56 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeInstruction_Clone_OpCode_.md&amp;value=---%0Auid%3A%20Harmony.CodeInstruction.Clone(OpCode)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/CodeInstruction.cs/#L56">View Source</a>
+  </span>
+  <a id="Harmony_CodeInstruction_Clone_" data-uid="Harmony.CodeInstruction.Clone*"></a>
+  <h4 id="Harmony_CodeInstruction_Clone_OpCode_" data-uid="Harmony.CodeInstruction.Clone(OpCode)">Clone(OpCode)</h4>
+  <div class="markdown level1 summary"><p>Clones a CodeInstruction, resets labels and exception blocks and sets its opcode</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeInstruction Clone(OpCode opcode)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The opcode</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Harmony.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>A copy of this CodeInstruction with a new opcode</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeInstruction_Clone_System_Object_.md&amp;value=---%0Auid%3A%20Harmony.CodeInstruction.Clone(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -392,56 +421,6 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeInstruction_Clone_System_Reflection_Emit_OpCode_.md&amp;value=---%0Auid%3A%20Harmony.CodeInstruction.Clone(System.Reflection.Emit.OpCode)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/CodeInstruction.cs/#L56">View Source</a>
-  </span>
-  <a id="Harmony_CodeInstruction_Clone_" data-uid="Harmony.CodeInstruction.Clone*"></a>
-  <h4 id="Harmony_CodeInstruction_Clone_System_Reflection_Emit_OpCode_" data-uid="Harmony.CodeInstruction.Clone(System.Reflection.Emit.OpCode)">Clone(OpCode)</h4>
-  <div class="markdown level1 summary"><p>Clones a CodeInstruction, resets labels and exception blocks and sets its opcode</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeInstruction Clone(OpCode opcode)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
-        <td><span class="parametername">opcode</span></td>
-        <td><p>The opcode</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Harmony.CodeInstruction.html">CodeInstruction</a></td>
-        <td><p>A copy of this CodeInstruction with a new opcode</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_CodeInstruction_ToString.md&amp;value=---%0Auid%3A%20Harmony.CodeInstruction.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -472,8 +451,6 @@
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><span class="xref">System.Object.ToString()</span></div>
 </article>
           </div>
           
