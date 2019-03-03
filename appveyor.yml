@@ -8,8 +8,5 @@ before_build:
 - nuget restore
 - dotnet restore
 
-build:
-- verbosity: minimal
-
 artifacts:
 - path: 'Harmony\bin\Release\Lib.Harmony.*.nupkg'
