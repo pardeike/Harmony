@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 namespace Harmony
 {
 
-	/// <summary>A harmony annotation</summary>
+	/// <summary>A wrapper around a method to use it as a patch (for example a Prefix)</summary>
 	public class HarmonyMethod
 	{
 		/// <summary>The original method</summary>
