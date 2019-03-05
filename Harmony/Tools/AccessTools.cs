@@ -737,7 +737,7 @@ namespace Harmony
 		}
 
 		/// <summary>Creates a field reference</summary>
-		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="U">The type of the field</typeparam>
 		/// <param name="fieldInfo">FieldInfo for the field</param>
 		/// <returns>A read and writable field reference</returns>
@@ -746,7 +746,10 @@ namespace Harmony
 		{
 			if (fieldInfo == null)
 				throw new ArgumentException("FieldInfo for FieldRefAccess is null.");
-			if (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T)))
+			if (!typeof(U).IsAssignableFrom(fieldInfo.FieldType))
+				throw new ArgumentException("FieldInfo type does not match FieldRefAccess return type.");
+			if (typeof(T) != typeof(object) &&
+			    (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T))))
 				throw new MissingFieldException(typeof(T).Name, fieldInfo.Name);
 
 			var s_name = "__refget_" + typeof(T).Name + "_fi_" + fieldInfo.Name;

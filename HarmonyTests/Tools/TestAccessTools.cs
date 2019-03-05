@@ -183,7 +183,7 @@ namespace HarmonyTests
 			var newValue = AccessToolsClass.field1Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-	  }
+		}
 
 		[Test]
 		public void AccessTools_FieldRefAccess_ByFieldInfo()
@@ -198,7 +198,7 @@ namespace HarmonyTests
 			var newValue = AccessToolsClass.field1Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-	  }
+		}
 
 		[Test]
 		public void AccessTools_FieldRefAccess_ByFieldInfo_Readonly()
@@ -213,9 +213,9 @@ namespace HarmonyTests
 			var newValue = AccessToolsClass.field2Value + "1";
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-	  }
+		}
 
-	  [Test]
+		[Test]
 		public void AccessTools_FieldRefAccess_ByFieldInfo_Static()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
@@ -245,5 +245,20 @@ namespace HarmonyTests
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
 		}
-   }
+
+		[Test]
+		public void AccessTools_FieldRefAccess_Anonymous()
+		{
+			var fieldInfo = typeof(AccessToolsClass).GetField("field", BindingFlags.Instance | BindingFlags.NonPublic);
+			Assert.IsNotNull(fieldInfo);
+			var instance = new AccessToolsClass();
+			var fieldRef = AccessTools.FieldRefAccess<object, string>(fieldInfo);
+			ref var value = ref fieldRef(instance);
+
+			Assert.AreEqual(AccessToolsClass.field1Value, value);
+			var newValue = AccessToolsClass.field1Value + "1";
+			value = newValue;
+			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
+		}
+	}
 }
