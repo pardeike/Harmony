@@ -50,6 +50,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 - Cities: Skylines
 - Kerbal Space Program
 - Besiege
+- Sheltered
 - Stardew Valley
 - Staxel
 - Total Miner
