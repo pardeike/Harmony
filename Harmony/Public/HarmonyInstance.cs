@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
-	/// <summary>A Harmony instance</summary>
+	/// <summary>The Harmony instance is the main entry to Harmony. After creating one with an unique identifier, it is used to patch and query the current application domain</summary>
 	public class HarmonyInstance
 	{
 		readonly string id;
