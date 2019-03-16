@@ -69,6 +69,51 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="introduction-to-harmony">Introduction to Harmony</h1>
 
+<h2 id="a-library-for-patching-replacing-and-decorating-net-methods-during-runtime">A library for patching, replacing and decorating .NET methods during runtime.</h2>
+<p>If you develop in C# and your code is loaded as a module/plugin into a host application, you can use Harmony to alter the functionality of all the available assemblies of that application. Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:</p>
+<ul>
+<li>A way to keep the original method intact</li>
+<li>Execute your code before and/or after the original method</li>
+<li>Modify the original with IL code processors</li>
+<li>Multiple Harmony patches co-exist and don't conflict with each other</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Harmony is designed to work with a minimum requirement of .NET 2.0 and is compatible with Mono which makes it a great way to develop extensions for <a href="https://unity3d.com">Unity</a> games. It has no other dependencies and will most likely work in other environments too. Harmony was tested on PC, Mac and Linux and support 32- and 64-bit. For a typical Unity target, simply set your project to .Net 3.5 or Mono 2.x and include the Harmony dll.</p>
+<p>Support for .NET Core in all its versions is upcoming and currently being tested. Stay tuned!</p>
+<p>Add the Harmony dll to your project and merge it into your final dll with a tool like ILMerge. Alternatively, let your IDE copy the dll to your assembly folder and make sure it is loaded early (for that, the dll is already conveniently named 0Harmony.dll).</p>
+<h3 id="quick-example">Quick example</h3>
+<p><em>The following is a specific example. Harmony works with any kind of application and code.</em></p>
+<p>Here is a very short example on how to patch the method <code>WindowStack.Add(Window)</code> in a mod for the game <a href="https://rimworldgame.com">RimWorld</a> so that it logs the window object to the games debug window:</p>
+<pre><code class="lang-csharp">using System;
+using Verse;
+using Harmony;
+using System.Reflection;
+
+namespace HarmonyTest
+{
+	[StaticConstructorOnStartup]
+	class Main
+	{
+		static Main()
+		{
+			var harmony = HarmonyInstance.Create(&quot;com.github.harmony.rimworld.mod.example&quot;);
+			harmony.PatchAll(Assembly.GetExecutingAssembly());
+		}
+	}
+
+	[HarmonyPatch(typeof(WindowStack))]
+	[HarmonyPatch(&quot;Add&quot;)]
+	[HarmonyPatch(new Type[] { typeof(Window) })]
+	class Patch
+	{
+		static void Prefix(Window window)
+		{
+			Log.Warning(&quot;Window: &quot; + window);
+		}
+	}
+}
+</code></pre>
+<p>The important parts that are not RimWorld specific are the two lines inside the Main() method and the Patch class. The Prefix is always execute before Window.Add() everywhere that method is called and logs the window instance to the RimWorld debug window.</p>
 </article>
           </div>
           
