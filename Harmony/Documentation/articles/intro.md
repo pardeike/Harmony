@@ -1,5 +1,4 @@
-# Introduction to Harmony
-
+# Introduction to Harmony  
 A library for patching, replacing and decorating .NET methods during runtime.
 ---
 
