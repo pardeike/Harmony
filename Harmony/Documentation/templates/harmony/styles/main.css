@@ -68,3 +68,7 @@ div.navbar-header a.navbar-brand {
 .sideaffix.shiftup {
 	bottom: 70px;
 }
+
+pre code {
+	white-space: unset;
+ }
