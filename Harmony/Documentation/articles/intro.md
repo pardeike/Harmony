@@ -53,5 +53,117 @@ Where other patch libraries simply allow you to replace the original method, Har
 * Modify the original with IL code processors
 * Multiple Harmony patches co-exist and don't conflict with each other
 
+![](https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/patch-logic.svg?sanitize=true)
+
+## Limits of runtime patching
+
+![note] Harmony can't do everything. Make sure you understand the following:
+
+- With Harmony, you only manipulate **methods**. This includes constructors and getters/setters.
+
+- You can only work with methods that have an actual IL code body, which means that they appear in a dissassembler like [dnSpy](https://github.com/0xd4d/dnSpy).
+
+- Methods that are too small might get [inlined](https://wikipedia.org/wiki/Inline_expansion) and your patches will not run.
+
+- You cannot add fields to classes and you cannot extend enums (they get compiled into ints).
+
 ## Hello World Example
 
+Original game code:
+
+```cs
+public class SomeGameClass
+{
+	private bool isRunning;
+	private int counter;
+
+	private int DoSomething()
+	{
+		if (isRunning)
+		{
+			counter++;
+			return counter * 10;
+		}
+	}
+}
+```
+
+Patching with Harmony annotations:
+
+```cs
+// your code, most likely in your own dll
+
+using SomeGame;
+using Harmony;
+
+public class MyPatcher
+{
+	// make sure DoPatching() is called at start either by
+	// the mod loader or by your injector
+	
+	public static void DoPatching()
+	{
+		var harmony = HarmonyInstance.Create("com.example.patch");
+		harmony.PatchAll();
+	}
+}
+
+[HarmonyPatch(typeof(SomeGameClass))]
+[HarmonyPatch("DoSomething")]
+class Patch01
+{
+	static FieldRef<SomeGameClass,bool> isRunningRef = AccessTools.FieldRefAccess<SomeGameClass,bool>("isRunning");
+
+	static bool Prefix(SomeGameClass __instance, ref int ___counter)
+	{
+		isRunningRef(__instance) = true;
+		if (___counter > 100)
+			return false;
+			___counter = 0;
+	}
+
+	static void Postfix(ref int __result)
+	{
+		__result *= 2;
+	}
+}
+```
+
+Alternatively, manual patching with reflection:
+
+```cs
+// your code, most likely in your own dll
+
+using SomeGame;
+using Harmony;
+
+public class MyPatcher
+{
+	// make sure DoPatching() is called at start either by
+	// the mod loader or by your injector
+	
+	public static void DoPatching()
+	{
+		var harmony = HarmonyInstance.Create("com.example.patch");
+		
+		var mOriginal = typeof(SomeGameClass).GetMethod("DoSomething", BindingFlags.Instance | BindingFlags.NonPublic);
+		var mPrefix = typeof(MyPatcher).GetMethod("MyPrefix", BindingFlags.Static | BindingFlags.Public);
+		var mPostfix = typeof(MyPatcher).GetMethod("MyPostfix", BindingFlags.Static | BindingFlags.Public);
+		// add null checks here
+		
+		harmony.Patch(mOriginal, new HarmonyMethod(mPrefix), new HarmonyMethod(mPostfix));
+	}
+	
+	public static void MyPrefix()
+	{
+		// ...
+	}
+	
+	public static void MyPostfix()
+	{
+		// ...
+	}
+}
+```
+
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
