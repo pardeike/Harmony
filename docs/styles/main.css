@@ -71,4 +71,8 @@ div.navbar-header a.navbar-brand {
 
 pre code {
 	white-space: unset;
- }
+}
+
+code {
+	display: inline-block !important;
+}
