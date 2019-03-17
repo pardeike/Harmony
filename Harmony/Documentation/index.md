@@ -19,15 +19,13 @@ Installation is usually done by copying and referencing [0Harmony.dll](https://g
 
 # Documentation
 
-You can learn more about Harmony by using the top menu links:
+You can learn more about Harmony by using the top menu links. The main section [[Harmony](articles/intro.html)] brings you to the full documentation that explains everything about Harmony and gives you lots of high level examples. In the second section [[API Documentation](api/index.html)] you can browse the public API and all its methods and classes.
 
-## Harmony
+If you find a factual error or if you have feedback about the documentation you are welcome to
 
-The main section [[Harmony](articles/intro.html)] brings you to the full documentation that explains everything about Harmony and gives you lots of high level examples.
-
-## API Documentation
-
-In the second section [[API Documentation](api/index.html)] you can browse the public API and all its methods and classes.
+- fork the repository and create a pull request
+- file a documentation Issue on the repo
+- or write about it on the official discord
 
 ## Community
 
