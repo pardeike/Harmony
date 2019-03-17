@@ -1,57 +1,57 @@
-# Introduction to Harmony  
-A library for patching, replacing and decorating .NET methods during runtime.
----
+# Introduction
 
-If you develop in C# and your code is loaded as a module/plugin into a host application, you can use Harmony to alter the functionality of all the available assemblies of that application. Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:
+*Harmony - a library for patching, replacing and decorating .NET methods during runtime.*
+
+## Prerequisites
+
+Harmony works with all languages that compile to [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), Microsofts intermediate byte code language. This is foremost the [.NET Framework](https://wikipedia.org/wiki/Portal:.NET_Framework) and of course [Mono](https://wikipedia.org/wiki/Mono_(software)) - used by the game engine Unity.
+
+The exception is [.NET Core](https://wikipedia.org/wiki/.NET_Core), which does not provide the functionality to fully create methods on the fly at runtime. There might be a future version of Harmony supporting it but it is unclear if that is possible at all.
+
+### Bootstrapping and Injection
+
+Harmony does not provide you with a way to run your own code within an application that is not designed to execute foreign code. You need a way to inject at least the few lines that start the Harmony patching and this is usually done with a loader. Here are some common examples of loaders (incomplete):
+
+- [Unity Doorstep](https://github.com/NeighTools/UnityDoorstop)
+- [BepInEx](https://github.com/BepInEx/BepInEx)
+- [UnityAssemblyInjector](https://github.com/avail/UnityAssemblyInjector)
+- [MonoJunkie](https://github.com/wledfor2/MonoJunkie)
+- [MInjector](https://github.com/EquiFox/MInjector)
+- and more...
+
+You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld ([Wiki](https://rimworldwiki.com/wiki/Main_Page)).
+
+### Dependencies
+
+It has no other dependencies and will most likely work in other environments too. Harmony was tested on PC, Mac and Linux and support 32- and 64-bit. For a typical Unity target, simply set your project to .Net 3.5 or Mono 2.x and include the Harmony dll.
+
+## Altering functionality (Patching)
+
+If you want to change how an exising C# application like a game works and you don't have the source code for that application, you have basically two options to do that:
+
+1) Alter dll files on disk
+2) Re-point method implementations (hooking)
+
+Depending on the needs and situation, altering dll files is not always a desirable solution. For example
+
+- it has legal implications
+- it might be blocked by an anti-cheat system
+- it does not coordindate nicely with multiple concurrent changes
+- it has to be done before and outside the original application
+
+Harmony focuces only on runtime changes that don't affect files on disk. That has its own disadvantages:
+
+- if a method is [inlined](https://wikipedia.org/wiki/Inline_expansion) by the [JIT](https://wikipedia.org/wiki/Just-in-time_compilation)er, you cannot hook it
+- patching has to be done on every start of the application
+
+## How Harmony works
+
+Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:
 
 * A way to keep the original method intact
 * Execute your code before and/or after the original method
 * Modify the original with IL code processors
 * Multiple Harmony patches co-exist and don't conflict with each other
 
-### Prerequisites
+## Hello World Example
 
-Harmony is designed to work with a minimum requirement of .NET 2.0 and is compatible with Mono which makes it a great way to develop extensions for [Unity](https://unity3d.com) games. It has no other dependencies and will most likely work in other environments too. Harmony was tested on PC, Mac and Linux and support 32- and 64-bit. For a typical Unity target, simply set your project to .Net 3.5 or Mono 2.x and include the Harmony dll.
-
-Support for .NET Core in all its versions is upcoming and currently being tested. Stay tuned!
-
-Add the Harmony dll to your project and merge it into your final dll with a tool like ILMerge. Alternatively, let your IDE copy the dll to your assembly folder and make sure it is loaded early (for that, the dll is already conveniently named 0Harmony.dll).
-
-### Quick example
-
-_The following is a specific example. Harmony works with any kind of application and code._
-
-Here is a very short example on how to patch the method `WindowStack.Add(Window)` in a mod for the game [RimWorld](https://rimworldgame.com) so that it logs the window object to the games debug window:
-
-```csharp
-using System;
-using Verse;
-using Harmony;
-using System.Reflection;
-
-namespace HarmonyTest
-{
-	[StaticConstructorOnStartup]
-	class Main
-	{
-		static Main()
-		{
-			var harmony = HarmonyInstance.Create("com.github.harmony.rimworld.mod.example");
-			harmony.PatchAll(Assembly.GetExecutingAssembly());
-		}
-	}
-
-	[HarmonyPatch(typeof(WindowStack))]
-	[HarmonyPatch("Add")]
-	[HarmonyPatch(new Type[] { typeof(Window) })]
-	class Patch
-	{
-		static void Prefix(Window window)
-		{
-			Log.Warning("Window: " + window);
-		}
-	}
-}
-```
-
-The important parts that are not RimWorld specific are the two lines inside the Main() method and the Patch class. The Prefix is always execute before Window.Add() everywhere that method is called and logs the window instance to the RimWorld debug window.
