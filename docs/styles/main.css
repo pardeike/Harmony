@@ -4,6 +4,34 @@
 	opacity: 0;
 }
 
+code {
+	tab-size: 3;
+}
+
+.h1, h1 {
+	font-size: 24px !important;
+}
+
+.h2, h2 {
+	font-size: 20px !important;
+}
+
+.h3, h3 {
+	font-size: 18px !important;
+}
+
+.h4, h4 {
+	font-size: 16px !important;
+}
+
+.h5, h5 {
+	font-size: 14px !important;
+}
+
+.h6, h6 {
+	font-size: 12px !important;
+}
+
 div.navbar-header a.navbar-brand {
 	background-image: url(https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png);
 	background-size: 48px 36px;
