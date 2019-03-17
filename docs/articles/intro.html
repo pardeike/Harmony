@@ -164,14 +164,16 @@ public class MyPatcher
 [HarmonyPatch(&quot;DoSomething&quot;)]
 class Patch01
 {
-	static FieldRef&lt;SomeGameClass,bool&gt; isRunningRef = AccessTools.FieldRefAccess&lt;SomeGameClass,bool&gt;(&quot;isRunning&quot;);
+	static FieldRef&lt;SomeGameClass,bool&gt; isRunningRef = 
+		AccessTools.FieldRefAccess&lt;SomeGameClass,bool&gt;(&quot;isRunning&quot;);
 
 	static bool Prefix(SomeGameClass __instance, ref int ___counter)
 	{
 		isRunningRef(__instance) = true;
 		if (___counter &gt; 100)
 			return false;
-			___counter = 0;
+		___counter = 0;
+		return true;
 	}
 
 	static void Postfix(ref int __result)
