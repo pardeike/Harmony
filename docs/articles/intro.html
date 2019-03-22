@@ -72,7 +72,7 @@
 <p><em>Harmony - a library for patching, replacing and decorating .NET methods during runtime.</em></p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>Harmony works with all languages that compile to <a href="https://wikipedia.org/wiki/Common_Intermediate_Language">CIL</a>, Microsofts intermediate byte code language. This is foremost the <a href="https://wikipedia.org/wiki/Portal:.NET_Framework">.NET Framework</a> and of course <a href="https://wikipedia.org/wiki/Mono_(software)">Mono</a> - used by the game engine Unity.</p>
-<p>The exception is <a href="https://wikipedia.org/wiki/.NET_Core">.NET Core</a>, which does not provide the functionality to fully create methods on the fly at runtime. There might be a future version of Harmony supporting it but it is unclear if that is possible at all.</p>
+<p>The exception is <a href="https://wikipedia.org/wiki/.NET_Core">.NET Core</a>, which does not provide the functionality to fully create methods on the fly at runtime. Chances are that .NET Core v3 might include everything to support Harmony [<a href="https://github.com/dotnet/corefx/issues/29715">See this Issue</a>]</p>
 <h3 id="bootstrapping-and-injection">Bootstrapping and Injection</h3>
 <p>Harmony does not provide you with a way to run your own code within an application that is not designed to execute foreign code. You need a way to inject at least the few lines that start the Harmony patching and this is usually done with a loader. Here are some common examples of loaders (incomplete):</p>
 <ul>

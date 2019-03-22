@@ -6,7 +6,7 @@
 
 Harmony works with all languages that compile to [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), Microsofts intermediate byte code language. This is foremost the [.NET Framework](https://wikipedia.org/wiki/Portal:.NET_Framework) and of course [Mono](https://wikipedia.org/wiki/Mono_(software)) - used by the game engine Unity.
 
-The exception is [.NET Core](https://wikipedia.org/wiki/.NET_Core), which does not provide the functionality to fully create methods on the fly at runtime. There might be a future version of Harmony supporting it but it is unclear if that is possible at all.
+The exception is [.NET Core](https://wikipedia.org/wiki/.NET_Core), which does not provide the functionality to fully create methods on the fly at runtime. Chances are that .NET Core v3 might include everything to support Harmony [[See this Issue](https://github.com/dotnet/corefx/issues/29715)]
 
 ### Bootstrapping and Injection
 
