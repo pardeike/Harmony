@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.40.12.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h3 id="patch-methods">Patch methods</h3>
+<p>Inside the class Harmony searches for methods with the specific names <code>TargetMethod()</code>, <code>Prepare()</code>, <code>Prefix()</code>, <code>Postfix()</code> or <code>Transpiler()</code>. Instead of relying on those names, you can also use the method annoations <code>[HarmonyTargetMethod]</code>, <code>[HarmonyPrepare]</code>, <code>[HarmonyPrefix]</code>, <code>[HarmonyPostfix]</code> or <code>[HarmonyTranspiler]</code>.</p>
+<p><strong>TargetMethod</strong> (Optional)</p>
+<p>Most of the times, you will use a combination of <code>HarmonyPatch()</code> annotations on the class to define the method you want to patch. Sometimes though, it is necessary to calculate the method with code. For this, Harmony searches for a method called</p>
+<pre><code class="lang-csharp">static MethodBase TargetMethod()
+static MethodBase TargetMethod(HarmonyInstance instance)
+// or
+[HarmonyTargetMethod]
+// NOTE: not passing harmony instance with attributes is broken in 1.2.0.1
+static MethodBase CalculateMethod(HarmonyInstance instance)
+</code></pre>
+<p>That method, if it exists, is expected to return a <code>MethodInfo</code> of the method to be patched. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
+<p><strong>Prepare</strong> (Optional)</p>
+<p>Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called</p>
+<pre><code class="lang-csharp">static bool Prepare()
+static bool Prepare(HarmonyInstance instance)
+// or
+[HarmonyPrepare]
+static bool MyInitializer(...)
+</code></pre>
+<p>That method, if it exists, is expected to return a boolean that controls if patching will happen. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
+<p><strong>Prefix</strong> (Optional)</p>
+<pre><code class="lang-csharp">static bool Prefix(...)
+// or
+[HarmonyPrefix]
+static bool MyPrefix(...)
+</code></pre>
+<p>This method defines the code that is executed before the original method. Execution will be skipped if an earlier prefix indicates it wants to skip the original method. It follows the guidelines defined in [[Patching|Patching]].</p>
+<p><strong>Postfix</strong> (Optional)</p>
+<pre><code class="lang-csharp">static void Postfix(...)
+// or
+[HarmonyPostfix]
+static void MyPostfix(...)
+</code></pre>
+<p>This method defines the code that is executed after the original method. This is a good place to execute code that always needs execution. It follows the guidelines defined in [[Patching|Patching]].</p>
+<p><strong>Transpiler</strong> (Optional)</p>
+<pre><code class="lang-csharp">static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instr, ...)
+// or
+[HarmonyTranspiler]
+static IEnumerable&lt;CodeInstruction&gt; MyTranspiler(IEnumerable&lt;CodeInstruction&gt; instr, ...)
+</code></pre>
+<p>This method defines the transpiler that modifies the code of the original method. Use this in the advanced case where you want to modify the original methods IL codes. It follows the guidelines defined in [[Patching|Patching]].</p>
+<h3 id="patch-parameters">Patch parameters</h3>
+<p>Each prefix and postfix can get all the parameters of the original method as well as the instance (if original method is not static) and the return value. In order to patch a method your patches need to follow the following principles when defining them:</p>
+<ul>
+<li>A patch must be a <strong>static</strong> method</li>
+<li>A prefix patch has a return type of <strong>void</strong> or <strong>bool</strong></li>
+<li>A postfix patch has a return type of <strong>void</strong> or the return signature must match the type of the <strong>first</strong> parameter (passthrough mode)</li>
+<li>Patches can use a parameter named <strong>__instance</strong> to access the instance value if original method is not static</li>
+<li>Patches can use a parameter named <strong>__result</strong> to access the returned value (prefixes get default value)</li>
+<li>Patches can use a parameter named <strong>__state</strong> to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix</li>
+<li>Parameter names starting with three underscores, for example <strong>___someField</strong>, can be used to read and write (with 'ref') private fields on the instance that has the same name (minus the underscores)</li>
+<li>Patches can define only those parameters they want to access (no need to define all)</li>
+<li>Patch parameters must use the <strong>exact</strong> same name and type as the original method (<em>object</em> is ok too)</li>
+<li>Patches can either get parameters normally or by declaring any parameter <strong>ref</strong> (for manipulation)</li>
+<li>To allow patch reusing, one can inject the original method by using a parameter named <strong>__originalMethod</strong></li>
+</ul>
+<p>Transpilers have some other optional parameters:</p>
+<ul>
+<li>A parameter of type <code>ILGenerator</code> that will be set to the current IL code generator</li>
+<li>A parameter of type <code>MethodBase</code> that will be set to the current original method being patched</li>
+<li>They must contain one parameter of type <code>IEnumerable&lt;CodeInstruction&gt;</code> that will be used to pass the IL codes to it</li>
+</ul>
+<p>Example:</p>
+<pre><code class="lang-csharp">// original method in class Customer
+private List&lt;string&gt; getNames(int count, out Error error)
+
+// prefix
+// - wants instance, result and count
+// - wants to change count
+// - returns a boolean that controls if original is executed (true) or not (false)
+static bool Prefix(Customer __instance, List&lt;string&gt; __result, ref int count)
+
+// postfix
+// - wants result and error
+// - does not change any of those
+static void Postfix(List&lt;string&gt; __result, Error error)
+
+// transpiler
+// - wants to use original method
+static IEnumerable&lt;CodeInstruction&gt; Transpiler(MethodBase original, IEnumerable&lt;CodeInstruction&gt; instructions)
+</code></pre>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Documentation/articles/patching.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

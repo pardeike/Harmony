@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Annotations </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Annotations ">
+    <meta name="generator" content="docfx 2.40.12.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="annotations">Annotations</h1>
+
+<p>When you use the <strong>PatchAll(Assembly assembly)</strong> call, Harmony will search through all classes and methods inside the given <strong>assembly</strong> looking for specific Harmony annotations.</p>
+<h3 id="example">Example</h3>
+<p>A typical patch consists of a class with annotations that looks like this:</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(SomeTypeHere))]
+[HarmonyPatch(&quot;SomeMethodName&quot;)]
+class MyPatchClass
+{
+	static void Postfix(...)
+	{
+		//...
+	}
+}
+</code></pre>
+<p>This will annotate the class with enough information to identify the method to patch. Usually, you will have one class for each method that you want to patch. Inside that class, you define a combination of <strong>Prefix</strong>, <strong>Postfix</strong> or <strong>Transpiler</strong> methods. Harmony will find them by their name. If you annotate those methods you can even have different names.</p>
+<h3 id="annotation-types">Annotation types</h3>
+<p>To indicate that a class contains patch methods it needs to be annotated with at lease one of the following class annotations:</p>
+<ul>
+<li><p><strong>[HarmonyPatch(Type, Type[])]</strong>
+Defines the type that contains the method to be patched (optional Type[] for generics)</p>
+</li>
+<li><p><strong>[HarmonyPatch(String)]</strong>
+Defines the method to be patched by name</p>
+</li>
+<li><p><strong>[HarmonyPatch(String, PropertyMethod)]</strong>
+Defines the property to be patched by name</p>
+</li>
+<li><p><strong>[HarmonyPatch(Type[])]</strong>
+Defines the parameters of the method to be patched (only necessary if multiple methods with the same name exist)</p>
+</li>
+</ul>
+<p>Additionally to repeating the basic annotations, the following shortcut can be used:</p>
+<ul>
+<li><strong>[HarmonyPatch(Type, String, Type[])]</strong>
+Defines the type and method to be patched in a single annotation</li>
+</ul>
+<h3 id="combining-annotations">Combining annotations</h3>
+<p>The combination of those annotations defines the target method. Examples:</p>
+<p>To patch method <strong>String.ToUpper()</strong> :</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(String))]
+[HarmonyPatch(&quot;ToUpper&quot;)]
+</code></pre>
+<p>To patch the setter for a property <strong>Account</strong> in class <strong>MyClass</strong> :</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(MyClass))]
+[HarmonyPatch(&quot;Account&quot;, PropertyMethod.Setter)]
+</code></pre>
+<p>To patch method <strong>String.IndexOf(char, int)</strong> :</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(String))]
+[HarmonyPatch(&quot;IndexOf&quot;)]
+[HarmonyPatch(new Type[] { typeof(char), typeof(int) })]
+
+//or
+
+[HarmonyPatch(typeof(String), &quot;IndexOf&quot;, new Type[] { typeof(char), typeof(int) })]
+</code></pre>
+<p>Patch classes can be public or private, static or not. Patch methods can be public or private but must be static since the patched original method does not have any reference to an instance of your patch class. If you use the manual way to specify the patch methods, your patch methods can even be DynamicMethod's.</p>
+<h3 id="constructors">Constructors</h3>
+<p>To patch constructors, do not use the method name &quot;.ctor&quot;. Instead, omit the method name completely and only specify the argument types. Example:</p>
+<pre><code class="lang-cshapr">[HarmonyPatch(typeof(TestClass))]
+[HarmonyPatch(new Type[] { })]
+</code></pre>
+<h3 id="generic-methods">Generic Methods</h3>
+<p>To patch methods with generic signatures, you need to patch specific versions of the method. It is not possible to patch an open generic method. Example: AddItem(<strong>T</strong> item) cannot be patched directly but you can define one patch for i.e. AddItem(<strong>string</strong> item) and one for AddItem(<strong>int</strong> item). Pro tip: to patch a large number of variations, create your patches dynamically.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Documentation/articles/annotations.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
