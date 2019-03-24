@@ -189,12 +189,12 @@ namespace Harmony
 		///
 		public static IEnumerable<MethodBase> GetAllPatchedMethods()
 		{
-			return HarmonySharedStatey.GetPatchedMethods();
+			return HarmonySharedState.GetPatchedMethods();
 		}
 
-		/// <summary>Gets current version information</summary>
+		/// <summary>Gets Harmony version for all active Harmony instances</summary>
 		/// <param name="currentVersion">[out] The current Harmony version</param>
-		/// <returns>A dictionary containing assembly versions keyed by Harmony version</returns>
+		/// <returns>A dictionary containing assembly versions keyed by Harmony IDs</returns>
 		///
 		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{
