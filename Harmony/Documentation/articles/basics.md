@@ -42,6 +42,26 @@ var harmony = HarmonyInstance.Create("com.company.project.product");
 
 The id should be in reverse domain notation and must be unique. In order to understand and react on existing patches of others, all patches in Harmony are bound to that id. This allows other authors to execute their patches before or after a specific patch by referring to this id.
 
+### Debug Log
+
+If you want to know more about the patching or the IL code Harmony produces, you can enable the debug log. Harmony offers and uses a class called `FileLog` that will create a log file on your systems Desktop called "harmony.log.txt".
+
+If you set the global debug flag to true, it will make Harmony log out many details that can help you while debugging your usage of Harmony:
+
+```csharp
+HarmonyInstance.DEBUG = true;
+```
+
+You can also use it in your own code:
+
+```csharp
+FileLog.Log("something");
+// or buffered:
+FileLog.LogBuffered("A");
+FileLog.LogBuffered("B");
+FileLog.FlushBuffer(); // don't forget to flush
+```
+
 ### Patching using annotations
 
 If you prefer annotations to organize your patches, you instruct Harmony to search for them by using `PatchAll()`:
@@ -78,41 +98,64 @@ A common mistake here is to fail to retrieve a valid reference for original or y
 
 ### Checking for existing patches
 
-To get a list of already patched methods, you call
+To get a list of all patched methods in the current appdomain (yours and others), call GetAllPatchedMethods:
 
 ```csharp
-var harmony = HarmonyInstance.Create("com.company.project.product"); 
-var methods = harmony.GetPatchedMethods();
-foreach (var method in methods)
+var originalMethods = HarmonyInstance.GetAllPatchedMethods();
+foreach (var method in originalMethods)
 {
 	//...
 }
 ```
 
-If you want to know if a specific method is already patched, you can call `HarmonyInstance.IsPatched(MethodInfo)`:
+If you are only interested in your own patched methods, use GetPatchedMethods:
 
 ```csharp
-var harmony = HarmonyInstance.Create("com.company.project.product"); 
+var myOriginalMethods = harmony.GetPatchedMethods();
+foreach (var method in myOriginalMethods)
+{
+	//...
+}
+```
+
+If you want to know more about all existing patches (yours or others) on a specific original method, you can call GetPatchInfo:
+
+```csharp
+// get the MethodBase of the original
 var original = typeof(TheClass).GetMethod("TheMethod");
-var info = harmony.IsPatched(original);
+
+// retrieve all patches
+var patches = HarmonyInstance.GetPatchInfo(original);
 if (info == null) return; // not patched
-foreach (var patch in info.Prefixes)
+
+// get a summary of all different Harmony ids involved
+FileLog.Log("all owners: " + patches.Owners);
+
+// get info about all Prefixes/Postfixes/Transpilers
+foreach (var patch in patches.Prefixes)
 {
-	Console.WriteLine("index: " + patch.index);
-	Console.WriteLine("index: " + patch.owner);
-	Console.WriteLine("index: " + patch.patch);
-	Console.WriteLine("index: " + patch.priority);
-	Console.WriteLine("index: " + patch.before);
-	Console.WriteLine("index: " + patch.after);
+	FileLog.Log("index: " + patch.index);
+	FileLog.Log("owner: " + patch.owner);
+	FileLog.Log("patch method: " + patch.patch);
+	FileLog.Log("priority: " + patch.priority);
+	FileLog.Log("before: " + patch.before);
+	FileLog.Log("after: " + patch.after);
 }
-foreach (var patch in info.Postfixes)
+```
+
+Sometimes it is necessary to test if another mod is loaded. This is best done by resolving one of their types by name. However, if you want to know if a specific Harmony has applied any patches so far, you can use HasAnyPatches:
+
+```csharp
+if(HarmonyInstance.HasAnyPatches("com.some.product"))
 {
 	//...
 }
-foreach (var patch in info.Transpilers)
-{
-	//...
-}
-// all owners shortcut
-Console.WriteLine("all owners: " + info.Owners);
+```
+
+Finally, to retrieve an overview of which assemblies use which version of Harmony you can use (based on actice patches only)
+
+```csharp
+var dict = HarmonyInstance.VersionInfo(out var myVersion);
+// dict keys contain Harmony IDs
+// dict values are corresponding assembly versions 
 ```
