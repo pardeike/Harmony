@@ -83,11 +83,11 @@
 <p>Some games or applications already supply Harmony from either a loader or another mod. While this seems easier, it requires that the version of Harmony you compile against is the same as the one available at runtime or else your code will not run (missing dependency). It also ties the release cycle of that solution to your. Harmony can co-exist in multiple versions with itself so it is totally fine that each user packs their own 0Harmony.dll with their mod.</p>
 <p><em>Note for application/game makers: it seems you can embed multiple versions of Harmony at once which will avoid the issue described above.</em></p>
 <h3 id="manual-dll-adding">Manual dll adding</h3>
-<p>To add Harmony manually to your Visual Studio project, you right-click on ˋReferencesˋ in your solution explorer and choose ˋAdd Referenceˋ to open the Reference Manager. There, browse for 0Harmony.dll and select add it.</p>
+<p>To add Harmony manually to your Visual Studio project, you right-click on <code>References</code> in your solution explorer and choose <code>Add Reference</code> to open the Reference Manager. There, browse for 0Harmony.dll and select add it.</p>
 <h3 id="adding-using-nuget">Adding using nuget</h3>
-<p>To add Harmony manually to your Visual Studio project, you right-click on ˋReferencesˋ in your solution explorer and choose ˋManage NuGet Packagesˋ, then search for &quot;Harmony Library&quot; and install it.</p>
+<p>To add Harmony manually to your Visual Studio project, you right-click on <code>References</code> in your solution explorer and choose <code>Manage NuGet Packages</code>, then search for &quot;Harmony Library&quot; and install it.</p>
 <h3 id="import">Import</h3>
-<p>Once you reference Harmony correctly, you should be able to import it by adding ˋusing Harmonyˋ to your imports. That gives you code completion so you can discover the API:</p>
+<p>Once you reference Harmony correctly, you should be able to import it by adding Harmony to your imports. That gives you code completion so you can discover the API:</p>
 <pre><code class="lang-csharp">using Harmony;
 </code></pre>
 <h2 id="creating-a-harmony-instance">Creating a Harmony instance</h2>
@@ -96,7 +96,7 @@
 </code></pre>
 <p>The id should be in reverse domain notation and must be unique. In order to understand and react on existing patches of others, all patches in Harmony are bound to that id. This allows other authors to execute their patches before or after a specific patch by referring to this id.</p>
 <h3 id="patching-using-annotations">Patching using annotations</h3>
-<p>If you prefer annotations to organize your patches, you instruct Harmony to search for them by using PatchAll():</p>
+<p>If you prefer annotations to organize your patches, you instruct Harmony to search for them by using <code>PatchAll()</code>:</p>
 <pre><code class="lang-csharp">var assembly = Assembly.GetExecutingAssembly();
 harmony.PatchAll(assembly);
 </code></pre>
@@ -105,7 +105,7 @@ harmony.PatchAll(assembly);
 </code></pre>
 <p>which will search the give assembly for all classes that are decorated with Harmony annotations. All patches are registered automatically and you're done.</p>
 <h3 id="manual-patching">Manual patching</h3>
-<p>For more control, you use ˋPatch()ˋ. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to ˋPatch()ˋ to skip one type of patch):</p>
+<p>For more control, you use <code>Patch()</code>. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to <code>Patch()</code> to skip one type of patch):</p>
 <pre><code class="lang-csharp">// add null checks to the following lines, they are omitted for clarity
 var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
 var prefix = typeof(MyPatchClass1).GetMethod(&quot;SomeMethod&quot;);
@@ -114,7 +114,7 @@ var postfix = typeof(MyPatchClass2).GetMethod(&quot;SomeMethod&quot;);
 harmony.Patch(original, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 </code></pre>
 <p>The use of an extra HarmonyMethod is to allow for you to define extra properties like priority and such together with the method pointer. HarmonyMethod is the common class shared by manual and annotation patching.</p>
-<p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a ˋnullˋ value which when passed to HarmonyMethod will throw an error.</p>
+<p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a <code>null</code> value which when passed to HarmonyMethod will throw an error.</p>
 <h3 id="checking-for-existing-patches">Checking for existing patches</h3>
 <p>To get a list of already patched methods, you call</p>
 <pre><code class="lang-csharp">var harmony = HarmonyInstance.Create(&quot;com.company.project.product&quot;); 
