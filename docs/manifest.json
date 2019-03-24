@@ -621,7 +621,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/basics.html",
-          "hash": "Hw2DzTS++NcCDAoHSC1k6w=="
+          "hash": "YYcQXzhtrQvRqDYnWQBWuw=="
         }
       },
       "is_incremental": false,
@@ -789,16 +789,16 @@
           "total_file_count": 0,
           "skipped_file_count": 0
         },
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 9,
-          "skipped_file_count": 0
-        },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 48,
+          "skipped_file_count": 0
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 9,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
