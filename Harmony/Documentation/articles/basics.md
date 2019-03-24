@@ -18,15 +18,15 @@ Some games or applications already supply Harmony from either a loader or anothe
 
 ### Manual dll adding
 
-To add Harmony manually to your Visual Studio project, you right-click on ˋReferencesˋ in your solution explorer and choose ˋAdd Referenceˋ to open the Reference Manager. There, browse for 0Harmony.dll and select add it.
+To add Harmony manually to your Visual Studio project, you right-click on `References` in your solution explorer and choose `Add Reference` to open the Reference Manager. There, browse for 0Harmony.dll and select add it.
 
 ### Adding using nuget
 
-To add Harmony manually to your Visual Studio project, you right-click on ˋReferencesˋ in your solution explorer and choose ˋManage NuGet Packagesˋ, then search for "Harmony Library" and install it.
+To add Harmony manually to your Visual Studio project, you right-click on `References` in your solution explorer and choose `Manage NuGet Packages`, then search for "Harmony Library" and install it.
 
 ### Import 
 
-Once you reference Harmony correctly, you should be able to import it by adding ˋusing Harmonyˋ to your imports. That gives you code completion so you can discover the API:
+Once you reference Harmony correctly, you should be able to import it by adding Harmony to your imports. That gives you code completion so you can discover the API:
 
 ```csharp
 using Harmony;
@@ -44,7 +44,7 @@ The id should be in reverse domain notation and must be unique. In order to unde
 
 ### Patching using annotations
 
-If you prefer annotations to organize your patches, you instruct Harmony to search for them by using PatchAll():
+If you prefer annotations to organize your patches, you instruct Harmony to search for them by using `PatchAll()`:
 
 ```csharp
 var assembly = Assembly.GetExecutingAssembly();
@@ -61,7 +61,7 @@ which will search the give assembly for all classes that are decorated with Harm
 
 ### Manual patching
 
-For more control, you use ˋPatch()ˋ. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to ˋPatch()ˋ to skip one type of patch):
+For more control, you use `Patch()`. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to `Patch()` to skip one type of patch):
 
 ```csharp
 // add null checks to the following lines, they are omitted for clarity
@@ -74,7 +74,7 @@ harmony.Patch(original, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 
 The use of an extra HarmonyMethod is to allow for you to define extra properties like priority and such together with the method pointer. HarmonyMethod is the common class shared by manual and annotation patching.
 
-A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a ˋnullˋ value which when passed to HarmonyMethod will throw an error.
+A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a `null` value which when passed to HarmonyMethod will throw an error.
 
 ### Checking for existing patches
 

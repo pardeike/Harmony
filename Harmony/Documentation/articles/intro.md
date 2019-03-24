@@ -29,7 +29,7 @@ It has no other dependencies and will most likely work in other environments too
 
 If you want to change how an exising C# application like a game works and you don't have the source code for that application, you have basically two options to do that:
 
-1) Alter dll files on disk
+1) Alter dll files on disk  
 2) Re-point method implementations (hooking)
 
 Depending on the needs and situation, altering dll files is not always a desirable solution. For example
