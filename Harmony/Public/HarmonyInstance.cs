@@ -159,9 +159,9 @@ namespace Harmony
 		/// <param name="harmonyID">The Harmony ID</param>
 		/// <returns>True if patches for this ID exist</returns>
 		///
-		public bool HasAnyPatches(string harmonyID)
+		public static bool HasAnyPatches(string harmonyID)
 		{
-			return GetPatchedMethods()
+			return GetAllPatchedMethods()
 				.Select(original => GetPatchInfo(original))
 				.Any(info => info.Owners.Contains(harmonyID));
 		}
@@ -170,17 +170,9 @@ namespace Harmony
 		/// <param name="method">The original method</param>
 		/// <returns>The patch information</returns>
 		///
-		public Patches GetPatchInfo(MethodBase method)
+		public static Patches GetPatchInfo(MethodBase method)
 		{
 			return PatchProcessor.GetPatchInfo(method);
-		}
-
-		/// <summary>Gets all patched methods in the appdomain</summary>
-		/// <returns>An enumeration of original methods</returns>
-		///
-		public static IEnumerable<MethodBase> GetAllPatchedMethods()
-		{
-			return HarmonySharedState.GetPatchedMethods();
 		}
 
 		/// <summary>Gets the methods this instance has patched</summary>
@@ -188,19 +180,27 @@ namespace Harmony
 		///
 		public IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			return HarmonySharedState.GetPatchedMethods()
+			return GetAllPatchedMethods()
 				.Where(original => GetPatchInfo(original).Owners.Contains(Id));
+		}
+
+		/// <summary>Gets all patched methods in the appdomain</summary>
+		/// <returns>An enumeration of original methods</returns>
+		///
+		public static IEnumerable<MethodBase> GetAllPatchedMethods()
+		{
+			return HarmonySharedStatey.GetPatchedMethods();
 		}
 
 		/// <summary>Gets current version information</summary>
 		/// <param name="currentVersion">[out] The current Harmony version</param>
 		/// <returns>A dictionary containing assembly versions keyed by Harmony version</returns>
 		///
-		public Dictionary<string, Version> VersionInfo(out Version currentVersion)
+		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{
 			currentVersion = typeof(HarmonyInstance).Assembly.GetName().Version;
 			var assemblies = new Dictionary<string, Assembly>();
-			GetPatchedMethods().Do(method =>
+			GetAllPatchedMethods().Do(method =>
 			{
 				var info = HarmonySharedState.GetPatchInfo(method);
 				info.prefixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
