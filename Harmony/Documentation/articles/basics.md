@@ -126,7 +126,7 @@ var original = typeof(TheClass).GetMethod("TheMethod");
 
 // retrieve all patches
 var patches = HarmonyInstance.GetPatchInfo(original);
-if (info == null) return; // not patched
+if (patches == null) return; // not patched
 
 // get a summary of all different Harmony ids involved
 FileLog.Log("all owners: " + patches.Owners);
@@ -156,6 +156,11 @@ Finally, to retrieve an overview of which assemblies use which version of Harmon
 
 ```csharp
 var dict = HarmonyInstance.VersionInfo(out var myVersion);
-// dict keys contain Harmony IDs
-// dict values are corresponding assembly versions 
+FileLog.Log("My version: " + myVersion);
+foreach (var entry in dict)
+{
+	var id = entry.Key;
+	var version = entry.Value;
+	FileLog.Log("Mod " + id + " uses Harmony version " + version);
+}
 ```

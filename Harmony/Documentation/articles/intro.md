@@ -117,7 +117,7 @@ public class MyPatcher
 class Patch01
 {
 	static FieldRef<SomeGameClass,bool> isRunningRef = 
-		AccessTools.FieldRefAccess<SomeGameClass,bool>("isRunning");
+		AccessTools.FieldRefAccess<SomeGameClass, bool>("isRunning");
 
 	static bool Prefix(SomeGameClass __instance, ref int ___counter)
 	{
