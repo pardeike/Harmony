@@ -148,7 +148,7 @@ var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
 
 // retrieve all patches
 var patches = HarmonyInstance.GetPatchInfo(original);
-if (info == null) return; // not patched
+if (patches == null) return; // not patched
 
 // get a summary of all different Harmony ids involved
 FileLog.Log(&quot;all owners: &quot; + patches.Owners);
@@ -172,8 +172,13 @@ foreach (var patch in patches.Prefixes)
 </code></pre>
 <p>Finally, to retrieve an overview of which assemblies use which version of Harmony you can use (based on actice patches only)</p>
 <pre><code class="lang-csharp">var dict = HarmonyInstance.VersionInfo(out var myVersion);
-// dict keys contain Harmony IDs
-// dict values are corresponding assembly versions 
+FileLog.Log(&quot;My version: &quot; + myVersion);
+foreach (var entry in dict)
+{
+	var id = entry.Key;
+	var version = entry.Value;
+	FileLog.Log(&quot;Mod &quot; + id + &quot; uses Harmony version &quot; + version);
+}
 </code></pre>
 </article>
           </div>
