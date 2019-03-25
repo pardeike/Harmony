@@ -19,7 +19,7 @@ Harmony does not provide you with a way to run your own code within an applicati
 - [MInjector](https://github.com/EquiFox/MInjector)
 - and more...
 
-You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld ([Wiki](https://rimworldwiki.com/wiki/Main_Page)).
+You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld ([Wiki](https://rimworldwiki.com/wiki/Modding_Tutorials/)).
 
 ### Dependencies
 
@@ -36,13 +36,17 @@ Depending on the needs and situation, altering dll files is not always a desirab
 
 - it has legal implications
 - it might be blocked by an anti-cheat system
-- it does not coordindate nicely with multiple concurrent changes
+- it does not coordinate nicely with multiple concurrent changes
 - it has to be done before and outside the original application
 
-Harmony focuces only on runtime changes that don't affect files on disk. That has its own disadvantages:
+Harmony focuces only on runtime changes that don't affect files on disk:
 
-- if a method is [inlined](https://wikipedia.org/wiki/Inline_expansion) by the [JIT](https://wikipedia.org/wiki/Just-in-time_compilation)er, you cannot hook it
-- patching has to be done on every start of the application
+- less conflicts with multiple mods  
+- supports existing mod loaders  
+- changes can be made dynamically/conditionally  
+- the patch order can be flexible  
+- other mods can be patched too  
+- less legal issues  
 
 ## How Harmony works
 
