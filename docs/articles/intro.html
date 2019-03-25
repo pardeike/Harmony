@@ -83,7 +83,7 @@
 <li><a href="https://github.com/EquiFox/MInjector">MInjector</a></li>
 <li>and more...</li>
 </ul>
-<p>You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld (<a href="https://rimworldwiki.com/wiki/Main_Page">Wiki</a>).</p>
+<p>You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld (<a href="https://rimworldwiki.com/wiki/Modding_Tutorials/">Wiki</a>).</p>
 <h3 id="dependencies">Dependencies</h3>
 <p>It has no other dependencies and will most likely work in other environments too. Harmony was tested on PC, Mac and Linux and support 32- and 64-bit. For a typical Unity target, simply set your project to .Net 3.5 or Mono 2.x and include the Harmony dll.</p>
 <h2 id="altering-functionality-patching">Altering functionality (Patching)</h2>
@@ -96,13 +96,17 @@
 <ul>
 <li>it has legal implications</li>
 <li>it might be blocked by an anti-cheat system</li>
-<li>it does not coordindate nicely with multiple concurrent changes</li>
+<li>it does not coordinate nicely with multiple concurrent changes</li>
 <li>it has to be done before and outside the original application</li>
 </ul>
-<p>Harmony focuces only on runtime changes that don't affect files on disk. That has its own disadvantages:</p>
+<p>Harmony focuces only on runtime changes that don't affect files on disk:</p>
 <ul>
-<li>if a method is <a href="https://wikipedia.org/wiki/Inline_expansion">inlined</a> by the <a href="https://wikipedia.org/wiki/Just-in-time_compilation">JIT</a>er, you cannot hook it</li>
-<li>patching has to be done on every start of the application</li>
+<li>less conflicts with multiple mods</li>
+<li>supports existing mod loaders</li>
+<li>changes can be made dynamically/conditionally</li>
+<li>the patch order can be flexible</li>
+<li>other mods can be patched too</li>
+<li>less legal issues</li>
 </ul>
 <h2 id="how-harmony-works">How Harmony works</h2>
 <p>Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:</p>
