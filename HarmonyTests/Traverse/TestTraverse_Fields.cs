@@ -1,15 +1,15 @@
 using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class TestTraverse_Fields
 	{
 		// Traverse.ToString() should return the value of a traversed field
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Field_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -21,7 +21,7 @@ namespace HarmonyTests
 		// Traverse.GetValue() should return the value of a traversed field
 		// regardless of its access modifier
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Field_GetValue()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -41,7 +41,7 @@ namespace HarmonyTests
 		// Traverse.SetValue() should set the value of a traversed field
 		// regardless of its access modifier
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Field_SetValue()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);

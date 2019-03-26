@@ -1,15 +1,15 @@
 using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class TestTraverse_Properties
 	{
 		// Traverse.ToString() should return the value of a traversed property
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Property_ToString()
 		{
 			var instance = new TraverseProperties_AccessModifiers(TraverseProperties.testStrings);
@@ -21,7 +21,7 @@ namespace HarmonyTests
 		// Traverse.GetValue() should return the value of a traversed property
 		// regardless of its access modifier
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Property_GetValue()
 		{
 			var instance = new TraverseProperties_AccessModifiers(TraverseProperties.testStrings);
@@ -32,16 +32,24 @@ namespace HarmonyTests
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
 				Assert.IsNotNull(ptrv);
-
-				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
-				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
+				if (name == "BaseProperty2")
+				{
+					// BaseProperty2 is only defined in base class
+					Assert.IsNull(ptrv.GetValue());
+					Assert.IsNull(ptrv.GetValue<string>());
+				}
+				else
+				{
+					Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
+					Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
+				}
 			}
 		}
 
 		// Traverse.SetValue() should set the value of a traversed property
 		// regardless of its access modifier
 		//
-		[TestMethod]
+		[Test]
 		public void Traverse_Property_SetValue()
 		{
 			var instance = new TraverseProperties_AccessModifiers(TraverseProperties.testStrings);
@@ -56,12 +64,23 @@ namespace HarmonyTests
 
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
+				Assert.IsNotNull(ptrv);
 				ptrv.SetValue(newValue);
 
 				// after
-				Assert.AreEqual(newValue, instance.GetTestProperty(i));
-				Assert.AreEqual(newValue, ptrv.GetValue());
-				Assert.AreEqual(newValue, ptrv.GetValue<string>());
+				if (name == "BaseProperty2")
+				{
+					// BaseProperty2 is only defined in base class
+					Assert.AreEqual(TraverseProperties.testStrings[i], instance.GetTestProperty(i));
+					Assert.IsNull(ptrv.GetValue());
+					Assert.IsNull(ptrv.GetValue<string>());
+				}
+				else
+				{
+					Assert.AreEqual(newValue, instance.GetTestProperty(i));
+					Assert.AreEqual(newValue, ptrv.GetValue());
+					Assert.AreEqual(newValue, ptrv.GetValue<string>());
+				}
 			}
 		}
 	}

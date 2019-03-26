@@ -1,7 +1,6 @@
 using Harmony;
-using Harmony.ILCopying;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +8,20 @@ using System.Reflection.Emit;
 
 namespace HarmonyTests.Patching
 {
-	[TestClass]
+	[TestFixture]
 	public class Transpiling
 	{
 		static CodeInstruction[] savedInstructions = null;
 
 #if DEBUG
 		static OpCode insertLoc = OpCodes.Stloc_3;
-		static int codeLength = 75;
+		static readonly int codeLength = 75;
 #else
 		static OpCode insertLoc = OpCodes.Stloc_1;
-		static int codeLength = 61;
+		static readonly int codeLength = 61;
 #endif
 
-		[TestMethod]
+		[Test]
 		public void TestTranspilerException1()
 		{
 			var test = new Class3();
@@ -57,7 +56,7 @@ namespace HarmonyTests.Patching
 					var blocks = instruction.blocks;
 					instruction.blocks = new List<ExceptionBlock>();
 
-					var log = AccessTools.Field(typeof(Class3), "log");
+					var log = AccessTools.DeclaredField(typeof(Class3), "log");
 					var tst = typeof(string);
 					var concat = AccessTools.Method(typeof(string), nameof(string.Concat), new Type[] { tst, tst });
 					yield return new CodeInstruction(OpCodes.Ldarg_0) { blocks = blocks };

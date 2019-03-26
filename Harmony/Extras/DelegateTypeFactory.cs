@@ -4,11 +4,14 @@ using System.Reflection.Emit;
 
 namespace Harmony
 {
+	/// <summary>A factory to create delegate types</summary>
 	public class DelegateTypeFactory
 	{
 		readonly ModuleBuilder module;
 
 		static int counter;
+
+		/// <summary>Default constructor</summary>
 		public DelegateTypeFactory()
 		{
 			counter++;
@@ -17,6 +20,10 @@ namespace Harmony
 			module = assembly.DefineDynamicModule("HarmonyDTFModule" + counter);
 		}
 
+		/// <summary>Creates a delegate type for a method</summary>
+		/// <param name="method">The method</param>
+		/// <returns>The new delegate type</returns>
+		///
 		public Type CreateDelegateType(MethodInfo method)
 		{
 			var attr = TypeAttributes.Sealed | TypeAttributes.Public;

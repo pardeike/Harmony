@@ -1,0 +1,449 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"title": "DocFx configuraton file",
+	"type": "object",
+	"properties": {
+		"metadata": {
+			"$ref": "#/definitions/metadataConfig"
+		},
+		"build": {
+			"$ref": "#/definitions/buildConfig"
+		}
+	},
+	"definitions": {
+		"buildConfig": {
+			"type": "object",
+			"properties": {
+				"content": {
+					"$ref": "#/definitions/fileMappingContent"
+				},
+				"resource": {
+					"$ref": "#/definitions/fileMappingResource"
+				},
+				"overwrite": {
+					"$ref": "#/definitions/fileMappingOverwrite"
+				},
+				"externalReference": {
+					"$ref": "#/definitions/fileMappingExternalReferences"
+				},
+				"xref": {
+					"$ref": "#/definitions/xref"
+				},
+				"dest": {
+					"type": "string"
+				},
+				"globalMetadata": {
+					"type": "object",
+					"additionalProperties": true,
+					"description": "Contains metadata that will be applied to every file, in key-value pair format."
+				},
+				"globalMetadataFiles": {
+					"$ref": "#/definitions/globalMetadataFiles"
+				},
+				"fileMetadata": {
+					"type": "object",
+					"additionalProperties": true,
+					"description": "Contains metadata that will be applied to specific files."
+				},
+				"fileMetadataFiles": {
+					"$ref": "#/definitions/fileMetadataFiles"
+				},
+				"template": {
+					"$ref": "#/definitions/template"
+				},
+				"theme": {
+					"$ref": "#/definitions/theme"
+				},
+				"postProcessors": {
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					]
+				},
+				"serve": {
+					"type": "boolean"
+				},
+				"force": {
+					"type": "boolean"
+				},
+				"port": {
+					"type": "string"
+				},
+				"exportRawModel": {
+					"type": "boolean",
+					"description": "If set to true, data model to run template script will be extracted in `.raw.json` extension."
+				},
+				"rawModelOutputFolder": {
+					"type": "string",
+					"description": "Specify the output folder for the raw model. If not set, the raw model will be generated to the same folder as the output documentation."
+				},
+				"exportViewModel": {
+					"type": "boolean",
+					"description": "If set to true, data model to apply template will be extracted in `.view.json` extension."
+				},
+				"viewModelOutputFolder": {
+					"type": "string",
+					"description": "Specify the output folder for the view model. If not set, the view model will be generated to the same folder as the output documentation."
+				},
+				"dryRun": {
+					"type": "boolean",
+					"description": "If set to true, template will not be actually applied to the documents. This option is always used with `--exportRawModel` or `--exportViewModel`, so that only raw model files or view model files are generated."
+				},
+				"maxParallelism": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "Set the max parallelism, 0 (default) is same as the count of CPU cores."
+				},
+				"markdownEngineName": {
+					"type": "string",
+					"description": "Set the name of markdown engine, default is dfm, and another build-in engine is gfm."
+				},
+				"markdownEngineProperties": {
+					"type": "object",
+					"additionalProperties": true,
+					"description": "Set the parameters for markdown engine."
+				},
+				"noLangKeyword": {
+					"type": "boolean",
+					"description": "Disable default lang keyword, e.g. `null`."
+				},
+				"keepFileLink": {
+					"type": "boolean"
+				},
+				"cleanupCacheHistory": {
+					"type": "boolean"
+				},
+				"disableGitFeatures": {
+					"type": "boolean"
+				},
+				"intermediateFolder": {
+					"type": "string"
+				},
+				"changesFile": {
+					"type": "string"
+				}
+			},
+			"description": "Build section defines configuration values for the build command.",
+			"additionalProperties": false
+		},
+		"metadataConfig": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/metadataConfigItem"
+			},
+			"description": "Metadata section defines an array of source projects and their output folder."
+		},
+		"metadataConfigItem": {
+			"type": "object",
+			"properties": {
+				"src": {
+					"$ref": "#/definitions/fileMappingSrc"
+				},
+				"dest": {
+					"type": "string",
+					"description": "Defines the output folder of the generated metadata files."
+				},
+				"force": {
+					"type": "boolean",
+					"description": "If set to true, it would disable incremental build."
+				},
+				"shouldSkipMarkup": {
+					"type": "boolean",
+					"description": "If set to true, DocFX would not render triple-slash-comments in source code as markdown."
+				},
+				"raw": {
+					"type": "boolean"
+				},
+				"filter": {
+					"type": "string",
+					"description": "Defines the filter configuration file."
+				},
+				"useCompatibilityFileName": {
+					"type": "boolean",
+					"description": " If set to true, DocFX would keep ` in comment id instead of replacing it with."
+				},
+				"properties": {
+					"type": "object",
+					"properties": {
+						"TargetFramework": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"src",
+				"dest"
+			]
+		},
+		"fileMappingContent": {
+			"anyOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/fileMappingItem"
+					}
+				}
+			],
+			"description": "Contains all the files to generate documentation, including metadata `yml` files and conceptual `md` files."
+		},
+		"fileMappingResource": {
+			"anyOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/fileMappingItem"
+					}
+				}
+			],
+			"description": "Contains all the resource files that conceptual and metadata files dependent on, e.g. image files."
+		},
+		"fileMappingOverwrite": {
+			"anyOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/fileMappingItem"
+					}
+				}
+			],
+			"description": "Contains all the conceputal files which contains yaml header with `uid` and is intended to override the existing metadata `yml` files."
+		},
+		"fileMappingExternalReferences": {
+			"anyOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/fileMappingItem"
+					}
+				}
+			],
+			"description": "[Obsoleted] Contains `rpk` files that define the external references."
+		},
+		"fileMappingSrc": {
+			"anyOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/fileMappingItem"
+					}
+				}
+			],
+			"description": "Defines the source projects to have metadata generated."
+		},
+		"fileMappingItem": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "The name of current item, the value is not used for now."
+				},
+				"files": {
+					"$ref": "#/definitions/files"
+				},
+				"exclude": {
+					"$ref": "#/definitions/exclude"
+				},
+				"src": {
+					"type": "string",
+					"description": "Defines the root folder for the source files, it has the same meaning as `cwd`"
+				},
+				"cwd": {
+					"type": "string",
+					"description": "[Obsoleted] Defines the root folder for the source files, it has the same meaning as `src`"
+				},
+				"dest": {
+					"type": "string",
+					"description": "The destination folder for the files if copy/transform is used."
+				},
+				"version": {
+					"type": "string",
+					"description": "Version name for the current file-mapping item.\nIf not set, treat the current file-mapping item as in default version.\nMappings with the same version name will be built together.\nCross reference doesn't support cross different versions."
+				},
+				"rootTocPath": {
+					"type": "string",
+					"description": "The Root TOC Path used for navbar in current version, relative to output root.\nIf not set, will use the toc in output root in current version if exists."
+				},
+				"case": {
+					"type": "boolean",
+					"description": "Pattern match will be case sensitive.\nBy default the pattern is case insensitive."
+				},
+				"noNegate": {
+					"type": "boolean",
+					"description": "Disable pattern begin with `!` to mean negate.\nBy default the usage is enabled."
+				},
+				"noExpand": {
+					"type": "boolean",
+					"description": "Disable `{a,b}c` => `[\"ac\", \"bc\"]`. By default the usage is enabled."
+				},
+				"noEscape": {
+					"type": "boolean",
+					"description": "Disable the usage of `\\` to escape values.\nBy default the usage is enabled."
+				},
+				"noGlobStar": {
+					"type": "boolean",
+					"description": "Disable the usage of `**` to match everything including `/` when it is the beginning of the pattern or is after `/`.\nBy default the usage is enable."
+				},
+				"dot": {
+					"type": "boolean",
+					"description": "Allow files start with `.` to be matched even if `.` is not explicitly specified in the pattern.\nBy default files start with `.` will not be matched by `*` unless the pattern starts with `.`."
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"files"
+			]
+		},
+		"xref": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"description": "Specifies the urls of xrefmap used by content files. Currently, it supports following scheme: http, https, ftp, file, embedded."
+		},
+		"globalMetadataFiles": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"description": "Specify a list of JSON file path containing globalMetadata settings, as similar to `{\"key\":\"value\"}`."
+		},
+		"fileMetadataFiles": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"description": "Specify a list of JSON file path containing fileMetadata settings, as similar to `{\"key\":\"value\"}`."
+		},
+		"template": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"description": "The latter ones will override the former ones if the name of the file inside the template collides. If ommited, embedded default template will be used."
+		},
+		"theme": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"description": "The themes applied to the documentation. Theme is used to customize the styles generated by `template`. It can be a string or an array. The latter ones will override the former ones if the name of the file inside the template collides. If ommited, no theme will be applied, the default theme inside the template will be used."
+		},
+		"files": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"description": "The file glob pattern collection, with path relative to property `src`/`cwd` if value is set."
+		},
+		"exclude": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"description": "The file glob pattern collection for files that should be excluded, with path relative to property `src`/`cwd` if value is set."
+		}
+	}
+}

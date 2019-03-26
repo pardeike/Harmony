@@ -9,6 +9,11 @@ indent_style = tab
 indent_size = 3
 trim_trailing_whitespace = true
 
+# Matches the exact files .travis.yml
+[{appveyor.yml,.travis.yml}]
+indent_style = space
+indent_size = 2
+
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion

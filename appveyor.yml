@@ -1,0 +1,12 @@
+version: 1.0.{build}
+
+max_jobs: 1
+image: Visual Studio 2017
+configuration: Release
+
+before_build:
+- nuget restore
+- dotnet restore
+
+artifacts:
+- path: 'Harmony\bin\Release\Lib.Harmony.*.nupkg'

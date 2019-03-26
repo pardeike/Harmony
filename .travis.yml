@@ -1,0 +1,15 @@
+language: csharp
+os:
+  - linux
+  - osx
+solution: Harmony.sln
+mono:
+  - latest
+dotnet: 2.0.3
+install:
+  - nuget restore
+  - dotnet restore
+  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
+script:
+  - msbuild /p:Configuration=Release
+  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe HarmonyTests/bin/Release/net45/HarmonyTests.dll

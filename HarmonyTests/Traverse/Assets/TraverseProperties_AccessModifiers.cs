@@ -35,18 +35,18 @@ namespace HarmonyTests.Assets
 
 	public class TraverseProperties_AccessModifiers : TraverseProperties_BaseClass
 	{
-		private string _publicPropertyField;
+		string _publicPropertyField;
 		public string PublicProperty
 		{
 			get => _publicPropertyField;
 			set => _publicPropertyField = value;
 		}
 
-		private string _publicPrivatePropertyField;
+		string _publicPrivatePropertyField;
 		public string PublicPrivateProperty
 		{
 			get => _publicPrivatePropertyField;
-			private set => _publicPrivatePropertyField = value;
+			set => _publicPrivatePropertyField = value;
 		}
 
 		string AutoProperty { get; set; }
@@ -57,7 +57,7 @@ namespace HarmonyTests.Assets
 			set => base.BaseProperty1 = value;
 		}
 
-		// baseProperty2 defined and used in base class
+		// BaseProperty2 defined and used in base class
 
 		string _basePropertyField3;
 		public new string BaseProperty3

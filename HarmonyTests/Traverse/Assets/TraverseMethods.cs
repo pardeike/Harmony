@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 
 namespace HarmonyTests.Assets
 {
@@ -6,12 +6,12 @@ namespace HarmonyTests.Assets
 	{
 		public bool Method1_called;
 
-		private void Method1()
+		void Method1()
 		{
 			Method1_called = true;
 		}
 
-		private string Method2(string arg1)
+		string Method2(string arg1)
 		{
 			return arg1 + arg1;
 		}

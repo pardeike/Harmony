@@ -1,53 +1,20 @@
 using Harmony;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HarmonyTests
 {
-	// 'struct' does not work, only 'class'
-	public struct Something
-	{
-		public int n;
-		public string s;
-		public long l1;
-		public long l2;
-		public long l3;
-		public long l4;
-
-		public void TestMethod1(string val)
-		{
-			FileLog.Log("CALLED: TestMethod1 with " + val);
-			s = val;
-			n++;
-		}
-	}
-
-	public class ValueTypePatch1
-	{
-		public static void Prefix()
-		{
-			FileLog.Log("CALLED: Prefix");
-		}
-
-		public static void Postfix()
-		{
-			FileLog.Log("CALLED: Postfix");
-		}
-	}
-
-	[TestClass]
+	[TestFixture]
 	public class ValueTypes
 	{
-		[TestMethod]
+		[Test]
 		public void ValueTypeInstance()
 		{
-			var originalClass = typeof(Something);
+			var originalClass = typeof(Assets.Struct1);
 			Assert.IsNotNull(originalClass);
-			var originalMethod = originalClass.GetMethod("TestMethod1");
+			var originalMethod = originalClass.GetMethod("TestMethod");
 			Assert.IsNotNull(originalMethod);
 
-			FileLog.Log("Patching " + originalMethod.FullDescription());
-
-			var patchClass = typeof(ValueTypePatch1);
+			var patchClass = typeof(Assets.Struct1Patch);
 
 			Assert.IsNotNull(patchClass);
 			var prefix = patchClass.GetMethod("Prefix");
@@ -57,28 +24,43 @@ namespace HarmonyTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			var instance = new Something() { s = "before", n = 1 };
+			var instance = new Assets.Struct1() { s = "before", n = 1 };
 
-			HarmonyInstance.DEBUG = true;
 			var harmonyInstance = HarmonyInstance.Create("test");
 			Assert.IsNotNull(harmonyInstance);
 
 			var result = harmonyInstance.Patch(originalMethod, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 			Assert.IsNotNull(result);
 
-			FileLog.Log("Dynamic Method = " + result);
-			FileLog.FlushBuffer();
+			Assets.Struct1.Reset();
+			instance.TestMethod("new");
+			Assert.AreEqual(2, instance.n);
+			Assert.AreEqual("new", instance.s);
+		}
 
-			try
-			{
-				instance.TestMethod1("new");
-				Assert.AreEqual(instance.n, 2);
-				Assert.AreEqual(instance.s, "new");
-			}
-			catch (System.Exception)
-			{
-				Assert.Fail();
-			}
+		[Test]
+		public void StructInstanceByRef()
+		{
+			var originalClass = typeof(Assets.Struct2);
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("TestMethod");
+			Assert.IsNotNull(originalMethod);
+
+			var patchClass = typeof(Assets.Struct2Patch);
+
+			Assert.IsNotNull(patchClass);
+			var postfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(postfix);
+
+			var harmonyInstance = HarmonyInstance.Create("test");
+			Assert.IsNotNull(harmonyInstance);
+
+			var result = harmonyInstance.Patch(originalMethod, null, new HarmonyMethod(postfix));
+			Assert.IsNotNull(result);
+
+			var instance = new Assets.Struct2() { s = "before" };
+			instance.TestMethod("original");
+			Assert.AreEqual("patched", instance.s);
 		}
 	}
 }

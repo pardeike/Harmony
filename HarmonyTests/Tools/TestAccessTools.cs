@@ -1,33 +1,45 @@
 using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class Test_AccessTools
 	{
-		[TestMethod]
-		public void AccessTools_Field()
+		[Test]
+		public void AccessTools_Field1()
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNull(AccessTools.Field(null, null));
-			Assert.IsNull(AccessTools.Field(type, null));
-			Assert.IsNull(AccessTools.Field(null, "field"));
-			Assert.IsNull(AccessTools.Field(type, "unknown"));
+			Assert.IsNull(AccessTools.DeclaredField(null, null));
+			Assert.IsNull(AccessTools.DeclaredField(type, null));
+			Assert.IsNull(AccessTools.DeclaredField(null, "field"));
+			Assert.IsNull(AccessTools.DeclaredField(type, "unknown"));
 
-			var field = AccessTools.Field(type, "field");
+			var field = AccessTools.DeclaredField(type, "field");
 			Assert.IsNotNull(field);
 			Assert.AreEqual(type, field.DeclaringType);
 			Assert.AreEqual("field", field.Name);
 		}
 
-		[TestMethod]
-		public void AccessTools_Property()
+		[Test]
+		public void AccessTools_Field2()
+		{
+			var type = typeof(AccessToolsClass);
+			Assert.IsNotNull(AccessTools.Field(type, "field"));
+			Assert.IsNotNull(AccessTools.DeclaredField(type, "field"));
+
+			var subtype = typeof(AccessToolsSubClass);
+			Assert.IsNotNull(AccessTools.Field(subtype, "field"));
+			Assert.IsNull(AccessTools.DeclaredField(subtype, "field"));
+		}
+
+		[Test]
+		public void AccessTools_Property1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -42,8 +54,20 @@ namespace HarmonyTests
 			Assert.AreEqual("Property", prop.Name);
 		}
 
-		[TestMethod]
-		public void AccessTools_Method()
+		[Test]
+		public void AccessTools_Property2()
+		{
+			var type = typeof(AccessToolsClass);
+			Assert.IsNotNull(AccessTools.Property(type, "Property"));
+			Assert.IsNotNull(AccessTools.DeclaredProperty(type, "Property"));
+
+			var subtype = typeof(AccessToolsSubClass);
+			Assert.IsNotNull(AccessTools.Property(subtype, "Property"));
+			Assert.IsNull(AccessTools.DeclaredProperty(subtype, "Property"));
+		}
+
+		[Test]
+		public void AccessTools_Method1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -69,7 +93,19 @@ namespace HarmonyTests
 			Assert.IsNotNull(m4);
 		}
 
-		[TestMethod]
+		[Test]
+		public void AccessTools_Method2()
+		{
+			var type = typeof(AccessToolsSubClass);
+
+			var m1 = AccessTools.Method(type, "Method");
+			Assert.IsNotNull(m1);
+
+			var m2 = AccessTools.DeclaredMethod(type, "Method");
+			Assert.IsNull(m2);
+		}
+
+		[Test]
 		public void AccessTools_InnerClass()
 		{
 			var type = typeof(AccessToolsClass);
@@ -85,7 +121,7 @@ namespace HarmonyTests
 			Assert.AreEqual("Inner", cls.Name);
 		}
 
-		[TestMethod]
+		[Test]
 		public void AccessTools_GetTypes()
 		{
 			var empty = AccessTools.GetTypes(null);
@@ -102,7 +138,7 @@ namespace HarmonyTests
 			Assert.AreEqual(typeof(Test_AccessTools), types[3]);
 		}
 
-		[TestMethod]
+		[Test]
 		public void AccessTools_GetDefaultValue()
 		{
 			Assert.AreEqual(null, AccessTools.GetDefaultValue(null));
@@ -113,14 +149,14 @@ namespace HarmonyTests
 			Assert.AreEqual(null, AccessTools.GetDefaultValue(typeof(void)));
 		}
 
-		[TestMethod]
+		[Test]
 		public void AccessTools_TypeExtension_Description()
 		{
 			var types = new Type[] { typeof(string), typeof(int), null, typeof(void), typeof(Test_AccessTools) };
 			Assert.AreEqual("(System.String, System.Int32, null, System.Void, HarmonyTests.Test_AccessTools)", types.Description());
 		}
 
-		[TestMethod]
+		[Test]
 		public void AccessTools_TypeExtension_Types()
 		{
 			// public static void Resize<T>(ref T[] array, int newSize);
@@ -133,5 +169,81 @@ namespace HarmonyTests
 			Assert.AreEqual(pinfo[0].ParameterType, types[0]);
 			Assert.AreEqual(pinfo[1].ParameterType, types[1]);
 		}
-	}
+
+		[Test]
+		public void AccessTools_FieldRefAccess_ByName()
+		{
+			var fieldInfo = typeof(AccessToolsClass).GetField("field", BindingFlags.Instance | BindingFlags.NonPublic);
+			Assert.IsNotNull(fieldInfo);
+			var instance = new AccessToolsClass();
+			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>("field");
+			ref var value = ref fieldRef(instance);
+
+			Assert.AreEqual(AccessToolsClass.field1Value, value);
+			var newValue = AccessToolsClass.field1Value + "1";
+			value = newValue;
+			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
+	  }
+
+		[Test]
+		public void AccessTools_FieldRefAccess_ByFieldInfo()
+		{
+			var fieldInfo = typeof(AccessToolsClass).GetField("field", BindingFlags.Instance | BindingFlags.NonPublic);
+			Assert.IsNotNull(fieldInfo);
+			var instance = new AccessToolsClass();
+			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>(fieldInfo);
+			ref var value = ref fieldRef(instance);
+
+			Assert.AreEqual(AccessToolsClass.field1Value, value);
+			var newValue = AccessToolsClass.field1Value + "1";
+			value = newValue;
+			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
+	  }
+
+		[Test]
+		public void AccessTools_FieldRefAccess_ByFieldInfo_Readonly()
+		{
+			var fieldInfo = typeof(AccessToolsClass).GetField("field2", BindingFlags.Instance | BindingFlags.NonPublic);
+			Assert.IsNotNull(fieldInfo);
+			var instance = new AccessToolsClass();
+			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>(fieldInfo);
+			ref var value = ref fieldRef(instance);
+
+			Assert.AreEqual(AccessToolsClass.field2Value, value);
+			var newValue = AccessToolsClass.field2Value + "1";
+			value = newValue;
+			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
+	  }
+
+	  [Test]
+		public void AccessTools_FieldRefAccess_ByFieldInfo_Static()
+		{
+			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
+			Assert.IsNotNull(fieldInfo);
+			// Call constructor to reset static field, just in case
+			new AccessToolsClass();
+			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>(fieldInfo);
+			ref var value = ref fieldRef();
+
+			Assert.AreEqual(AccessToolsClass.field3Value, value);
+			var newValue = AccessToolsClass.field3Value + "1";
+			value = newValue;
+			Assert.AreEqual(newValue, fieldInfo.GetValue(null));
+		}
+
+		[Test]
+		public void AccessTools_FieldRefAccess_ByFieldInfo_SubClass()
+		{
+			var fieldInfo = typeof(AccessToolsClass).GetField("field", BindingFlags.Instance | BindingFlags.NonPublic);
+			Assert.IsNotNull(fieldInfo);
+			var instance = new AccessToolsSubClass();
+			var fieldRef = AccessTools.FieldRefAccess<AccessToolsSubClass, string>(fieldInfo);
+			ref var value = ref fieldRef(instance);
+
+			Assert.AreEqual(AccessToolsClass.field1Value, value);
+			var newValue = AccessToolsClass.field1Value + "1";
+			value = newValue;
+			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
+		}
+   }
 }

@@ -1,6 +1,7 @@
 using Harmony;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyTests.Assets
 {
@@ -37,5 +38,33 @@ namespace HarmonyTests.Assets
 		[HarmonyPatch(typeof(List<string>), "TestMethod")]
 		[HarmonyPatch(new Type[] { typeof(string), typeof(string), typeof(string) }, new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal })]
 		static void Patch() { }
+	}
+
+	public class MainClass
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void SomeMethod()
+		{
+		}
+	}
+
+	public class SubClass : MainClass
+	{
+	}
+
+	[HarmonyPatch(typeof(MainClass), "SomeMethod")]
+	public class MainClassPatch
+	{
+		public static void Prefix()
+		{
+		}
+	}
+
+	[HarmonyPatch(typeof(SubClass), "SomeMethod")]
+	public class SubClassPatch
+	{
+		public static void Prefix()
+		{
+		}
 	}
 }

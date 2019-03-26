@@ -1,0 +1,103 @@
+### YamlMime:TableOfContent
+- uid: Harmony
+  name: Harmony
+  items:
+  - uid: Harmony.AccessTools
+    name: AccessTools
+  - uid: Harmony.AccessTools.FieldRef`2
+    name: AccessTools.FieldRef<T, U>
+    name.vb: AccessTools.FieldRef(Of T, U)
+  - uid: Harmony.ArgumentType
+    name: ArgumentType
+  - uid: Harmony.CodeInstruction
+    name: CodeInstruction
+  - uid: Harmony.CodeMatch
+    name: CodeMatch
+  - uid: Harmony.CodeMatcher
+    name: CodeMatcher
+  - uid: Harmony.CollectionExtensions
+    name: CollectionExtensions
+  - uid: Harmony.DelegateTypeFactory
+    name: DelegateTypeFactory
+  - uid: Harmony.ExceptionBlock
+    name: ExceptionBlock
+  - uid: Harmony.ExceptionBlockType
+    name: ExceptionBlockType
+  - uid: Harmony.FastAccess
+    name: FastAccess
+  - uid: Harmony.FastInvokeHandler
+    name: FastInvokeHandler
+  - uid: Harmony.FileLog
+    name: FileLog
+  - uid: Harmony.GeneralExtensions
+    name: GeneralExtensions
+  - uid: Harmony.GetterHandler`2
+    name: GetterHandler<T, S>
+    name.vb: GetterHandler(Of T, S)
+  - uid: Harmony.HarmonyAfter
+    name: HarmonyAfter
+  - uid: Harmony.HarmonyArgument
+    name: HarmonyArgument
+  - uid: Harmony.HarmonyAttribute
+    name: HarmonyAttribute
+  - uid: Harmony.HarmonyBefore
+    name: HarmonyBefore
+  - uid: Harmony.HarmonyCleanup
+    name: HarmonyCleanup
+  - uid: Harmony.HarmonyInstance
+    name: HarmonyInstance
+  - uid: Harmony.HarmonyMethod
+    name: HarmonyMethod
+  - uid: Harmony.HarmonyMethodExtensions
+    name: HarmonyMethodExtensions
+  - uid: Harmony.HarmonyPatch
+    name: HarmonyPatch
+  - uid: Harmony.HarmonyPatchAll
+    name: HarmonyPatchAll
+  - uid: Harmony.HarmonyPatchType
+    name: HarmonyPatchType
+  - uid: Harmony.HarmonyPostfix
+    name: HarmonyPostfix
+  - uid: Harmony.HarmonyPrefix
+    name: HarmonyPrefix
+  - uid: Harmony.HarmonyPrepare
+    name: HarmonyPrepare
+  - uid: Harmony.HarmonyPriority
+    name: HarmonyPriority
+  - uid: Harmony.HarmonyTargetMethod
+    name: HarmonyTargetMethod
+  - uid: Harmony.HarmonyTargetMethods
+    name: HarmonyTargetMethods
+  - uid: Harmony.HarmonyTranspiler
+    name: HarmonyTranspiler
+  - uid: Harmony.InstantiationHandler`1
+    name: InstantiationHandler<T>
+    name.vb: InstantiationHandler(Of T)
+  - uid: Harmony.Memory
+    name: Memory
+  - uid: Harmony.MethodInvoker
+    name: MethodInvoker
+  - uid: Harmony.MethodType
+    name: MethodType
+  - uid: Harmony.Patch
+    name: Patch
+  - uid: Harmony.Patches
+    name: Patches
+  - uid: Harmony.PatchInfo
+    name: PatchInfo
+  - uid: Harmony.PatchProcessor
+    name: PatchProcessor
+  - uid: Harmony.Priority
+    name: Priority
+  - uid: Harmony.SetterHandler`2
+    name: SetterHandler<T, S>
+    name.vb: SetterHandler(Of T, S)
+  - uid: Harmony.SymbolExtensions
+    name: SymbolExtensions
+  - uid: Harmony.Transpilers
+    name: Transpilers
+  - uid: Harmony.Traverse
+    name: Traverse
+  - uid: Harmony.Traverse`1
+    name: Traverse<T>
+    name.vb: Traverse(Of T)

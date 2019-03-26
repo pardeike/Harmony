@@ -1,13 +1,13 @@
 using Harmony;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Reflection.Emit;
 
 namespace HarmonyTests.IL
 {
-	[TestClass]
+	[TestFixture]
 	public class Instructions
 	{
-		[TestMethod]
+		[Test]
 		public void TestMalformedStringOperand()
 		{
 			var expectedOperand = "this should not fail {4}";

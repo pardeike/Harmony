@@ -1,6 +1,6 @@
 using Harmony;
 using HarmonyTests.Assets;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +8,10 @@ using System.Reflection;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class Test_AccessCache
 	{
-		private void InjectField(AccessCache cache)
+		void InjectField(AccessCache cache)
 		{
 			var f_fields = cache.GetType().GetField("fields", AccessTools.all);
 			Assert.IsNotNull(f_fields);
@@ -25,7 +25,7 @@ namespace HarmonyTests
 			infos.Add("field", typeof(AccessToolsClass).GetField("field2", AccessTools.all));
 		}
 
-		private void InjectProperty(AccessCache cache)
+		void InjectProperty(AccessCache cache)
 		{
 			var f_properties = cache.GetType().GetField("properties", AccessTools.all);
 			Assert.IsNotNull(f_properties);
@@ -39,7 +39,7 @@ namespace HarmonyTests
 			infos.Add("Property", typeof(AccessToolsClass).GetProperty("Property2", AccessTools.all));
 		}
 
-		private void InjectMethod(AccessCache cache)
+		void InjectMethod(AccessCache cache)
 		{
 			var f_methods = cache.GetType().GetField("methods", AccessTools.all);
 			Assert.IsNotNull(f_methods);
@@ -56,7 +56,7 @@ namespace HarmonyTests
 			infos.Add(argumentHash, typeof(AccessToolsClass).GetMethod("Method2", AccessTools.all));
 		}
 
-		[TestMethod]
+		[Test]
 		public void AccessCache_Field()
 		{
 			var type = typeof(AccessToolsClass);
@@ -77,7 +77,7 @@ namespace HarmonyTests
 			Assert.AreNotSame(finfo3, finfo4);
 		}
 
-		[TestMethod]
+		[Test]
 		public void AccessCache_Property()
 		{
 			var type = typeof(AccessToolsClass);
@@ -98,7 +98,7 @@ namespace HarmonyTests
 			Assert.AreNotSame(pinfo3, pinfo4);
 		}
 
-		[TestMethod]
+		[Test]
 		public void AccessCache_Method()
 		{
 			var type = typeof(AccessToolsClass);

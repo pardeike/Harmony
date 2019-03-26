@@ -6,19 +6,28 @@ using System.Runtime.CompilerServices;
 
 namespace Harmony
 {
+	/// <summary>A reflection helper to read and write private elements</summary>
+	/// <typeparam name="T">The result type defined by GetValue()</typeparam>
+	///
 	public class Traverse<T>
 	{
-		private Traverse traverse;
+		Traverse traverse;
 
 		Traverse()
 		{
 		}
 
+		/// <summary>Creates a traverse instance from an existing instance</summary>
+		/// <param name="traverse">The original</param>
+		///
 		public Traverse(Traverse traverse)
 		{
 			this.traverse = traverse;
 		}
 
+		/// <summary>Gets/Sets the current value</summary>
+		/// <value>The value to read or write</value>
+		///
 		public T Value
 		{
 			get => traverse.GetValue<T>();
@@ -26,15 +35,16 @@ namespace Harmony
 		}
 	}
 
+	/// <summary>A reflection helper to read and write private elements</summary>
 	public class Traverse
 	{
 		static AccessCache Cache;
 
 		Type _type;
 		object _root;
-		MemberInfo _info;
+		readonly MemberInfo _info;
 		MethodBase _method;
-		object[] _params;
+		readonly object[] _params;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		static Traverse()
@@ -43,35 +53,62 @@ namespace Harmony
 				Cache = new AccessCache();
 		}
 
+		/// <summary>Creates a new traverse instance from a class</summary>
+		/// <param name="type">The class</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public static Traverse Create(Type type)
 		{
 			return new Traverse(type);
 		}
 
+		/// <summary>Creates a new traverse instance from a class T</summary>
+		/// <typeparam name="T">The class</typeparam>
+		/// <returns>A traverse instance</returns>
+		///
 		public static Traverse Create<T>()
 		{
 			return Create(typeof(T));
 		}
 
+		/// <summary>Creates a new traverse instance from an instance</summary>
+		/// <param name="root">The object</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public static Traverse Create(object root)
 		{
 			return new Traverse(root);
 		}
 
+		/// <summary>Creates a new traverse instance from a named type</summary>
+		/// <param name="name">The type name</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public static Traverse CreateWithType(string name)
 		{
 			return new Traverse(AccessTools.TypeByName(name));
 		}
 
+		/// <summary>Creates a new and empty traverse instance</summary>
+		/// <returns>A traverse instance</returns>
+		///
 		Traverse()
 		{
 		}
 
+		/// <summary>Creates a new traverse instance from a class</summary>
+		/// <param name="type">The class</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse(Type type)
 		{
 			_type = type;
 		}
 
+		/// <summary>Creates a new traverse instance from an instance</summary>
+		/// <param name="root">The object</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse(object root)
 		{
 			_root = root;
@@ -81,7 +118,7 @@ namespace Harmony
 		Traverse(object root, MemberInfo info, object[] index)
 		{
 			_root = root;
-			_type = root?.GetType();
+			_type = root?.GetType() ?? info.GetUnderlyingType();
 			_info = info;
 			_params = index;
 		}
@@ -94,6 +131,9 @@ namespace Harmony
 			_params = parameter;
 		}
 
+		/// <summary>Gets the current value</summary>
+		/// <value>The value</value>
+		///
 		public object GetValue()
 		{
 			if (_info is FieldInfo)
@@ -106,6 +146,10 @@ namespace Harmony
 			return _root;
 		}
 
+		/// <summary>Gets the current value</summary>
+		/// <typeparam name="T">The type of the value</typeparam>
+		/// <value>The value</value>
+		///
 		public T GetValue<T>()
 		{
 			var value = GetValue();
@@ -113,6 +157,10 @@ namespace Harmony
 			return (T)value;
 		}
 
+		/// <summary>Invokes the current method with arguments and returns the result</summary>
+		/// <param name="arguments">The method arguments</param>
+		/// <value>The value returned by the method</value>
+		///
 		public object GetValue(params object[] arguments)
 		{
 			if (_method == null)
@@ -120,6 +168,11 @@ namespace Harmony
 			return _method.Invoke(_root, arguments);
 		}
 
+		/// <summary>Invokes the current method with arguments and returns the result</summary>
+		/// <typeparam name="T">The type of the value</typeparam>
+		/// <param name="arguments">The method arguments</param>
+		/// <value>The value returned by the method</value>
+		///
 		public T GetValue<T>(params object[] arguments)
 		{
 			if (_method == null)
@@ -127,6 +180,10 @@ namespace Harmony
 			return (T)_method.Invoke(_root, arguments);
 		}
 
+		/// <summary>Sets a value of the current field or property</summary>
+		/// <param name="value">The value</param>
+		/// <returns>The same traverse instance</returns>
+		///
 		public Traverse SetValue(object value)
 		{
 			if (_info is FieldInfo)
@@ -138,6 +195,9 @@ namespace Harmony
 			return this;
 		}
 
+		/// <summary>Gets the type of the current field or property</summary>
+		/// <returns>The type</returns>
+		///
 		public Type GetValueType()
 		{
 			if (_info is FieldInfo)
@@ -153,6 +213,10 @@ namespace Harmony
 			return new Traverse(GetValue());
 		}
 
+		/// <summary>Moves the current traverse instance to a inner type</summary>
+		/// <param name="name">The type name</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse Type(string name)
 		{
 			if (name == null) throw new ArgumentNullException("name cannot be null");
@@ -162,6 +226,10 @@ namespace Harmony
 			return new Traverse(type);
 		}
 
+		/// <summary>Moves the current traverse instance to a field</summary>
+		/// <param name="name">The type name</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse Field(string name)
 		{
 			if (name == null) throw new ArgumentNullException("name cannot be null");
@@ -173,17 +241,30 @@ namespace Harmony
 			return new Traverse(resolved._root, info, null);
 		}
 
+		/// <summary>Moves the current traverse instance to a field</summary>
+		/// <typeparam name="T">The type of the field</typeparam>
+		/// <param name="name">The type name</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse<T> Field<T>(string name)
 		{
 			return new Traverse<T>(Field(name));
 		}
 
+		/// <summary>Gets all fields of the current type</summary>
+		/// <returns>A list of field names</returns>
+		///
 		public List<string> Fields()
 		{
 			var resolved = Resolve();
 			return AccessTools.GetFieldNames(resolved._type);
 		}
 
+		/// <summary>Moves the current traverse instance to a property</summary>
+		/// <param name="name">The type name</param>
+		/// <param name="index">Optional property index</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse Property(string name, object[] index = null)
 		{
 			if (name == null) throw new ArgumentNullException("name cannot be null");
@@ -194,17 +275,31 @@ namespace Harmony
 			return new Traverse(resolved._root, info, index);
 		}
 
+		/// <summary>Moves the current traverse instance to a field</summary>
+		/// <typeparam name="T">The type of the property</typeparam>
+		/// <param name="name">The type name</param>
+		/// <param name="index">Optional property index</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse<T> Property<T>(string name, object[] index = null)
 		{
 			return new Traverse<T>(Property(name, index));
 		}
 
+		/// <summary>Gets all properties of the current type</summary>
+		/// <returns>A list of property names</returns>
+		///
 		public List<string> Properties()
 		{
 			var resolved = Resolve();
 			return AccessTools.GetPropertyNames(resolved._type);
 		}
 
+		/// <summary>Moves the current traverse instance to a method</summary>
+		/// <param name="name">The name of the method</param>
+		/// <param name="arguments">The arguments defining the argument types of the method overload</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse Method(string name, params object[] arguments)
 		{
 			if (name == null) throw new ArgumentNullException("name cannot be null");
@@ -216,6 +311,12 @@ namespace Harmony
 			return new Traverse(resolved._root, (MethodInfo)method, arguments);
 		}
 
+		/// <summary>Moves the current traverse instance to a method</summary>
+		/// <param name="name">The name of the method</param>
+		/// <param name="paramTypes">The argument types of the method</param>
+		/// <param name="arguments">The arguments for the method</param>
+		/// <returns>A traverse instance</returns>
+		///
 		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
 		{
 			if (name == null) throw new ArgumentNullException("name cannot be null");
@@ -226,33 +327,54 @@ namespace Harmony
 			return new Traverse(resolved._root, (MethodInfo)method, arguments);
 		}
 
+		/// <summary>Gets all methods of the current type</summary>
+		/// <returns>A list of method names</returns>
+		///
 		public List<string> Methods()
 		{
 			var resolved = Resolve();
 			return AccessTools.GetMethodNames(resolved._type);
 		}
 
+		/// <summary>Checks if the current traverse instance is for a field</summary>
+		/// <returns>True if its a field</returns>
+		///
 		public bool FieldExists()
 		{
 			return _info != null;
 		}
 
+		/// <summary>Checks if the current traverse instance is for a method</summary>
+		/// <returns>True if its a method</returns>
+		///
 		public bool MethodExists()
 		{
 			return _method != null;
 		}
 
+		/// <summary>Checks if the current traverse instance is for a type</summary>
+		/// <returns>True if its a type</returns>
+		///
 		public bool TypeExists()
 		{
 			return _type != null;
 		}
 
+		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>
+		/// <param name="source">Original object</param>
+		/// <param name="action">The action receiving a traverse for each field</param>
+		///
 		public static void IterateFields(object source, Action<Traverse> action)
 		{
 			var sourceTrv = Create(source);
 			AccessTools.GetFieldNames(source).ForEach(f => action(sourceTrv.Field(f)));
 		}
 
+		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>
+		/// <param name="source">Original object</param>
+		/// <param name="target">Target object</param>
+		/// <param name="action">The action receiving a traverse for each field traverse pair</param>
+		///
 		public static void IterateFields(object source, object target, Action<Traverse, Traverse> action)
 		{
 			var sourceTrv = Create(source);
@@ -260,6 +382,11 @@ namespace Harmony
 			AccessTools.GetFieldNames(source).ForEach(f => action(sourceTrv.Field(f), targetTrv.Field(f)));
 		}
 
+		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>
+		/// <param name="source">Original object</param>
+		/// <param name="target">Target object</param>
+		/// <param name="action">The action receiving a field dot path and a field pair</param>
+		///
 		public static void IterateFields(object source, object target, Action<string, Traverse, Traverse> action)
 		{
 			var sourceTrv = Create(source);
@@ -267,12 +394,21 @@ namespace Harmony
 			AccessTools.GetFieldNames(source).ForEach(f => action(f, sourceTrv.Field(f), targetTrv.Field(f)));
 		}
 
+		/// <summary>Iterates over all properties of the current type and executes a traverse action</summary>
+		/// <param name="source">Original object</param>
+		/// <param name="action">The action receiving a traverse for each property</param>
+		///
 		public static void IterateProperties(object source, Action<Traverse> action)
 		{
 			var sourceTrv = Create(source);
 			AccessTools.GetPropertyNames(source).ForEach(f => action(sourceTrv.Property(f)));
 		}
 
+		/// <summary>Iterates over all properties of the current type and executes a traverse action</summary>
+		/// <param name="source">Original object</param>
+		/// <param name="target">Target object</param>
+		/// <param name="action">The action receiving a traverse for each property traverse pair</param>
+		///
 		public static void IterateProperties(object source, object target, Action<Traverse, Traverse> action)
 		{
 			var sourceTrv = Create(source);
@@ -280,6 +416,11 @@ namespace Harmony
 			AccessTools.GetPropertyNames(source).ForEach(f => action(sourceTrv.Property(f), targetTrv.Property(f)));
 		}
 
+		/// <summary>Iterates over all properties of the current type and executes a traverse action</summary>
+		/// <param name="source">Original object</param>
+		/// <param name="target">Target object</param>
+		/// <param name="action">The action receiving a property dot path and a property pair</param>
+		///
 		public static void IterateProperties(object source, object target, Action<string, Traverse, Traverse> action)
 		{
 			var sourceTrv = Create(source);
@@ -287,8 +428,13 @@ namespace Harmony
 			AccessTools.GetPropertyNames(source).ForEach(f => action(f, sourceTrv.Property(f), targetTrv.Property(f)));
 		}
 
+
+		/// <summary>A default field action that copies fields to fields</summary>
 		public static Action<Traverse, Traverse> CopyFields = (from, to) => { to.SetValue(from.GetValue()); };
 
+		/// <summary>Returns a string that represents the current traverse</summary>
+		/// <returns>A string representation</returns>
+		///
 		public override string ToString()
 		{
 			var value = _method ?? GetValue();

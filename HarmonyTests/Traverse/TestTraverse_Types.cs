@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using HarmonyTests.Assets;
 using Harmony;
 
 namespace HarmonyTests
 {
-	[TestClass]
+	[TestFixture]
 	public class TestTraverse_Types
 	{
-		private class InnerClass { }
+		class InnerClass { }
 
-		[TestMethod]
+		[Test]
 		public void Traverse_Types()
 		{
 			var instance = new Assets.TraverseTypes<InnerClass>();
@@ -44,7 +44,7 @@ namespace HarmonyTests
 			TestTraverse_Basics.AssertIsEmpty(trvEmpty);
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_InnerInstance()
 		{
 			var instance = new TraverseNestedTypes(null);
@@ -58,7 +58,7 @@ namespace HarmonyTests
 			Assert.AreEqual("somevalue", field2.GetValue());
 		}
 
-		[TestMethod]
+		[Test]
 		public void Traverse_InnerStatic()
 		{
 			var trv1 = Traverse.Create(typeof(TraverseNestedTypes));

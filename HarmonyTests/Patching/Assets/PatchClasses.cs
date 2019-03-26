@@ -2,9 +2,28 @@ using Harmony;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyTests.Assets
 {
+	public class Class0
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string Method0()
+		{
+			return "original";
+		}
+	}
+
+	public class Class0Patch
+	{
+		public static void Postfix(ref string __result)
+		{
+			__result = "patched";
+		}
+	}
+
 	public class Class1
 	{
 		public static void Method1()
@@ -34,10 +53,14 @@ namespace HarmonyTests.Assets
 			postfixed = true;
 		}
 
-		public static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, MethodBase original, IEnumerable<CodeInstruction> instructions)
 		{
-			// no-op / passthrough
-			return instructions;
+			var localVar = il.DeclareLocal(typeof(int));
+			yield return new CodeInstruction(OpCodes.Ldc_I4, 123);
+			yield return new CodeInstruction(OpCodes.Stloc, localVar);
+
+			foreach (var instruction in instructions)
+				yield return instruction;
 		}
 
 		public static void _reset()
@@ -226,29 +249,172 @@ namespace HarmonyTests.Assets
 			};
 		}
 	}
-
-	// fails (Issue #77)
-	public struct Class7ReturnType { public long a, b; }
-
-	// works
-	// public struct Class7ReturnType { public byte a, b; }
-	// public class Class7ReturnType { public long a, b; }
+	
+	public struct TestStruct {
+		public long a;
+		public long b;
+	}
 
 	public class Class7
 	{
-		public Class7ReturnType Method7()
+		public bool mainRun = false;
+
+		public TestStruct Method7(string test)
 		{
-			var result = new Class7ReturnType() { a = 1, b = 2 };
-			Console.Write("In Class7Patch.Method7 " + result.a + " " + result.b);
-			return result;
+			mainRun = true;
+			return new TestStruct() { a = 1, b = 2 };
 		}
 	}
 
 	public class Class7Patch
 	{
+		public static void Postfix(ref TestStruct __result)
+		{
+			__result = new TestStruct() { a = 10, b = 20 };
+		}
+	}
+
+	public class Class8
+	{
+		public static bool mainRun = false;
+
+		public static TestStruct Method8(string test)
+		{
+			mainRun = true;
+			return new TestStruct() { a = 1, b = 2 };
+		}
+	}
+
+	public class Class8Patch
+	{
+		public static void Postfix(ref TestStruct __result)
+		{
+			__result = new TestStruct() { a = 10, b = 20 };
+		}
+	}
+
+	public class Class9
+	{
+		public override string ToString()
+		{
+			return string.Format("foobar");
+		}
+	}
+	
+	public class Class9Patch
+	{
+		public static void Prefix(out object __state)
+		{
+			__state = null;
+		}
+
+		public static void Postfix(int __state)
+		{
+
+		}
+	}
+
+	public struct Struct1
+	{
+		public int n;
+		public string s;
+		public long l1;
+		public long l2;
+		public long l3;
+		public long l4;
+
+		public static bool prefixed = false;
+		public static bool originalExecuted = false;
+		public static bool postfixed = false;
+
+		public void TestMethod(string val)
+		{
+			s = val;
+			n++;
+			originalExecuted = true;
+		}
+
+		public static void Reset()
+		{
+			prefixed = false;
+			originalExecuted = false;
+			postfixed = false;
+		}
+	}
+
+	public class Struct1Patch
+	{
 		public static void Prefix()
 		{
-			Console.Write("In Class7Patch.Prefix");
+			Struct1.prefixed = true;
+		}
+
+		public static void Postfix()
+		{
+			Struct1.postfixed = true;
+		}
+	}
+
+	public struct Struct2
+	{
+		public string s;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void TestMethod(string val)
+		{
+			s = val;
+		}
+	}
+
+	public class Struct2Patch
+	{
+		public static void Postfix(ref Struct2 __instance)
+		{
+			__instance.s = "patched";
+		}
+	}
+
+	public class AttributesClass
+	{
+		public void Method(string foo)
+		{
+			Console.WriteLine("foo=" + foo);
+		}
+	}
+
+	[HarmonyPatch]
+	public class AttributesPatch
+	{
+		public static bool targeted = false;
+		public static bool prefixed = false;
+		public static bool postfixed = false;
+
+		[HarmonyTargetMethod]
+		public static MethodBase Patch0()
+		{
+			targeted = true;
+			return AccessTools.Method(typeof(AttributesClass), "Method");
+		}
+
+		[HarmonyPrefix]
+		public static void Patch1()
+		{
+			Console.WriteLine("prefix");
+			prefixed = true;
+		}
+
+		[HarmonyPostfix]
+		public static void Patch2()
+		{
+			Console.WriteLine("postfix");
+			postfixed = true;
+		}
+
+		public static void _reset()
+		{
+			targeted = false;
+			prefixed = false;
+			postfixed = false;
 		}
 	}
 }
