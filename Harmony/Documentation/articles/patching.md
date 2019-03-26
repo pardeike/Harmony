@@ -2,11 +2,11 @@
 
 ## Concept
 
-In order to provide your own code to Harmony you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.
+In order to provide your own code to Harmony, you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.
 
 #### Main types of patches
 
-Two of them, **Prefix** and **Postfix** are high level and you can write them as simple static methods. The third, called **Transpiler**, is not a method that is not executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.
+Two of them, **Prefix** and **Postfix** are high level and you can write them as simple static methods. The third, called **Transpiler**, is not a method that is executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.
 
 #### Patches need to be static
 
@@ -55,15 +55,15 @@ Each of those names has a corresponding attribute starting with [Harmony...]. So
 
 ## Patch method types
 
-Both, prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments. Those are listed after the discussion of prefix and postfix.
+Both prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments. Those are listed after the discussion of prefix and postfix.
 
 ### Prefix
 
-A prefix is a method that is excuted before the original method. It commonly use to:
+A prefix is a method that is executed before the original method. It is commonly used to:
 
-- access and edit the arguments of the original method  
-- set the result of the original method  
-- skip the original method  
+- access and edit the arguments of the original method
+- set the result of the original method
+- skip the original method
 - set custom state that can be recalled in the postfix
 
 ![note] The first prefix that skips the original will skip all remaining prefixes too. Postfixes are not affected.
@@ -92,7 +92,7 @@ class Patch
 
 #### Changing the result and skipping the original
 
-To change the result of the original, use `__result` as a argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.
+To change the result of the original, use `__result` as an argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.
 
 To skip the original, let the prefix return a `bool` and return `true` to let the original run after all prefixes or `false` to stop executing prefixes and skip the original. Postfixes will always be executed.
 
@@ -118,6 +118,32 @@ class Patch
 }
 ```
 
+Some users have trouble understanding the disconnect between altering what the original method returns and what the Prefix returns. The following example is meant to illustrate that the boolean return value of the Prefix only determines if the original gets run or not.
+
+```csharp
+public class OriginalCode
+{
+    public bool IsFullAfterTakingIn(int i)
+    {
+        // do expensive calculations
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), "IsFullAfterTakingIn")]
+class Patch
+{
+    static bool Prefix(ref bool __result, int i)
+    {  
+        if (i > 5)
+        {
+            __result = true; // any call to IsFullAfterTakingIn(i) where i > 5 now immediately returns true
+	    return false; // skips the original and its expensive calculations
+        }
+        return true; // make sure you only skip if really necessary
+    }
+}
+```
+
 #### Passing state between prefix and postfix
 
 If you want to share state between your prefix and the corresponding postfix, you can use `__state` (with the `ref` or `out` keyword). If you need more than one value you can create your own type and pass it instead.
@@ -134,7 +160,7 @@ public class OriginalCode
 [HarmonyPatch(typeof(OriginalCode), "Test")]
 class Patch
 {
-    // this example choose to use a Stopwatch type to measure
+    // this example uses a Stopwatch type to measure
     // and share state between prefix and postfix
 
     static void Prefix(out Stopwatch __state)
@@ -153,11 +179,11 @@ class Patch
 
 ### Postfix
 
-A postfix is a method that is excuted after the original method. It commonly use to:
+A postfix is a method that is executed after the original method. It is commonly used to:
  
-- read or change the result of the original method  
-- access the arguments of the original method 
-- make sure your code is always executed  
+- read or change the result of the original method
+- access the arguments of the original method
+- make sure your code is always executed
 - read custom state from the prefix
 
 #### Reading or changing the result
@@ -262,17 +288,17 @@ Each prefix and postfix can get all the arguments of the original method as well
 
 #### Instance
 
-Patches can use an argument named `__instance` to access the instance value if original method is not static.
+Patches can use an argument named `__instance` to access the instance value if original method is not static. This is similar to the C# keyword `this` where used in the original method.
 
 #### Result
 
-Patches can use an argument named `__result` to access the returned value (prefixes get default value).
+Patches can use an argument named `__result` to access the returned value. The type `T` of argument must match the return type of the original or be assignable from it. For prefixes, as the original method hasn't run yet, the value of `__result` is default(T). For most reference types, that would be `null`. If you wish to alter the `__result`, you need to pass it by `ref`.
 
 #### State
 
 Patches can use an argument named `__state` to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix.
 
-#### Fields
+#### (Private) Fields
 
 Argument names starting with three underscores, for example `___someField`, can be used to read and (with `ref`) write private fields on the instance that has the corresponding name (minus the underscores).
 
