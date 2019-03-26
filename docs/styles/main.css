@@ -6,6 +6,12 @@
 
 code {
 	tab-size: 3;
+	background-color: #dadada;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0;
+	padding-bottom: 0;
+	color: black;
 }
 
 .h1, h1 {
@@ -30,6 +36,16 @@ code {
 
 .h6, h6 {
 	font-size: 12px !important;
+}
+
+.h1, h1, .h2, h2, .h3, h3, .h4, h4, .h5, h5, .h6, h6 {
+	border-bottom: 0 !important;
+	margin-bottom: 10px !important;
+}
+
+pre {
+	padding-top: 5px !important;
+    padding-bottom: 3px !important;
 }
 
 div.navbar-header a.navbar-brand {
