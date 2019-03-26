@@ -348,6 +348,8 @@ namespace Harmony
 					if (returnType == typeof(void))
 						throw new Exception("Cannot get result from void method " + original.FullDescription());
 					var resultType = patchParam.ParameterType;
+					if (resultType.IsByRef)
+						resultType = resultType.GetElementType();
 					if (resultType.IsAssignableFrom(returnType) == false)
 						throw new Exception("Cannot assign method return type " + returnType.FullName + " to " + RESULT_VAR + " type " + resultType.FullName + " for method " + original.FullDescription());
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
