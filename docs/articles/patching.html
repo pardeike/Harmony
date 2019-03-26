@@ -69,9 +69,246 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="patching">Patching</h1>
 
-<h3 id="patch-methods">Patch methods</h3>
-<p>Inside the class Harmony searches for methods with the specific names <code>TargetMethod()</code>, <code>Prepare()</code>, <code>Prefix()</code>, <code>Postfix()</code> or <code>Transpiler()</code>. Instead of relying on those names, you can also use the method annoations <code>[HarmonyTargetMethod]</code>, <code>[HarmonyPrepare]</code>, <code>[HarmonyPrefix]</code>, <code>[HarmonyPostfix]</code> or <code>[HarmonyTranspiler]</code>.</p>
-<p><strong>TargetMethod</strong> (Optional)</p>
+<h2 id="concept">Concept</h2>
+<p>In order to provide your own code to Harmony you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.</p>
+<h4 id="main-types-of-patches">Main types of patches</h4>
+<p>Two of them, <strong>Prefix</strong> and <strong>Postfix</strong> are high level and you can write them as simple static methods. The third, called <strong>Transpiler</strong>, is not a method that is not executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.</p>
+<h4 id="patches-need-to-be-static">Patches need to be static</h4>
+<p>Patch methods need to be static because Harmony works with multiple users in different assemblies in mind. In order to guarantee the correct patching order, patches are always re-applied as soon as someone wants to change the original. Since it is hard to serialize data in a generic way across assemblies in .NET, Harmony only stores a method pointer to your patch methods so it can use and apply them at a later point again.</p>
+<p>If you need custom state in your patches, it is recommended to use a static variable and store all your patch state in there. Keep in mind that Transpilers are only executed to generate the method so they don't &quot;run&quot; when the original is executed.</p>
+<h2 id="patch-class">Patch Class</h2>
+<p>With manual patching, you can put your patches anywhere you like. Patching by annotations simplifies patching by assuming you create one class for each patched original and define your patch methods inside it. The name of the class can be arbitrary but a common way to name them is <code>OriginalClass_OriginalMethodName_Patch</code>.</p>
+<p>The class can be static or not, public or private, it doesn't matter. However, in order to make Harmony find it, it must have at least one <code>[HarmonyPatch]</code> attribute. Inside the class you can define as many methods as you want and some of them should be (static) patch methods.</p>
+<p>The attributes of the methods in the class inherit the attributes of the class.</p>
+<h2 id="patch-methods">Patch methods</h2>
+<p>Harmony identifies your patch methods and their helper methods <strong>by name</strong>. If you prefer to name your methods differently, you can use attributes to tell Harmony what your methods are.</p>
+<pre><code class="lang-csharp">[HarmonyPatch(...)]
+class Patch
+{
+    static void Prefix()
+    {
+        // this method uses the name &quot;Prefix&quot;, no annotation necessary
+    }
+
+    [HarmonyPostfix]
+    static void MyOwnName()
+    {
+        // this method is a Postfix as defined by the attribute
+    }
+}
+</code></pre>
+<p>If you prefer manual patching, you can use any method name or class structure you want. You are responsible to retrieve the MethodInfo for the different patch methods and supply them to the Patch() method by wrapping them into HarmonyMethod objects.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> Patch methods <em>must</em> be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.</p>
+<h3 id="method-names">Method names</h3>
+<p>Manual patching knows only three main patch types: <strong>Prefix</strong>, <strong>Postfix</strong> and <strong>Transpiler</strong>. If you use attributes for patching, you can also use the helper methods: <strong>Prepare</strong>, <strong>TargetMethod</strong>, <strong>TargetMethods</strong> and <strong>Cleanup</strong> as explained below.</p>
+<p>Each of those names has a corresponding attribute starting with [Harmony...]. So instead of calling one of your methods &quot;Prepare&quot;, you can call it anything and decorate it with a <code>[HarmonyPrepare]</code> attribute.</p>
+<h2 id="patch-method-types">Patch method types</h2>
+<p>Both, prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments. Those are listed after the discussion of prefix and postfix.</p>
+<h3 id="prefix">Prefix</h3>
+<p>A prefix is a method that is excuted before the original method. It commonly use to:</p>
+<ul>
+<li>access and edit the arguments of the original method</li>
+<li>set the result of the original method</li>
+<li>skip the original method</li>
+<li>set custom state that can be recalled in the postfix</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> The first prefix that skips the original will skip all remaining prefixes too. Postfixes are not affected.</p>
+<h4 id="reading-and-changing-arguments">Reading and changing arguments</h4>
+<pre><code class="lang-csharp">public class OriginalCode
+{
+    public void Test(int counter, string name)
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+class Patch
+{
+    static void Prefix(int counter, ref string name)
+    {  
+        FileLog.Log(&quot;counter = &quot; + counter); // read
+        name = &quot;test&quot;; // write with ref keyword
+    }
+}
+</code></pre>
+<h4 id="changing-the-result-and-skipping-the-original">Changing the result and skipping the original</h4>
+<p>To change the result of the original, use <code>__result</code> as a argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.</p>
+<p>To skip the original, let the prefix return a <code>bool</code> and return <code>true</code> to let the original run after all prefixes or <code>false</code> to stop executing prefixes and skip the original. Postfixes will always be executed.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> It is not recommended to skip the original unless you want to completely change the way it works. If you only want a small change or a side effect, using a postfix or a transpiler is always preferred since it allows for multiple users changing the original without each implementation fighting over how the original should behave.</p>
+<pre><code class="lang-csharp">public class OriginalCode
+{
+    public string GetName()
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;GetName&quot;)]
+class Patch
+{
+    static bool Prefix(ref string __result)
+    {  
+        __result = &quot;test&quot;;
+        return true; // make sure you only skip if really necessary
+    }
+}
+</code></pre>
+<h4 id="passing-state-between-prefix-and-postfix">Passing state between prefix and postfix</h4>
+<p>If you want to share state between your prefix and the corresponding postfix, you can use <code>__state</code> (with the <code>ref</code> or <code>out</code> keyword). If you need more than one value you can create your own type and pass it instead.</p>
+<pre><code class="lang-cs">public class OriginalCode
+{
+    public void Test(int counter, string name)
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+class Patch
+{
+    // this example choose to use a Stopwatch type to measure
+    // and share state between prefix and postfix
+
+    static void Prefix(out Stopwatch __state)
+    {  
+        __state = new Stopwatch(); // assign your own state
+        __state.Start();
+    }
+
+    static void Postfix(Stopwatch __state)
+    {  
+        __state.Stop();
+        FileLog.Log(__state.Elapsed);
+    }
+}
+</code></pre>
+<h3 id="postfix">Postfix</h3>
+<p>A postfix is a method that is excuted after the original method. It commonly use to:</p>
+<ul>
+<li>read or change the result of the original method</li>
+<li>access the arguments of the original method</li>
+<li>make sure your code is always executed</li>
+<li>read custom state from the prefix</li>
+</ul>
+<h4 id="reading-or-changing-the-result">Reading or changing the result</h4>
+<p>Since the postfix has access to the result of the original (or a prefix that has skipped the original), it can read or alter the result by using the argument <code>__result</code>. It must match the return type of the original or be assignable from it.</p>
+<pre><code class="lang-csharp">public class OriginalCode
+{
+    public string GetName()
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;GetName&quot;)]
+class Patch
+{
+    static void Postfix(ref string __result)
+    {  
+        if (__result == &quot;foo&quot;)
+            __result = &quot;bar&quot;;
+    }
+}
+</code></pre>
+<h4 id="pass-through-postfixes">Pass through postfixes</h4>
+<p>An alternative way to change the result of an original method is to use a <strong>pass through</strong> postfix. A pass through postfix has a non-void return type that matches the type of the first argument.</p>
+<p>Harmony will call the postfix with the result of the original and will use the result of the postfix to continue. Since this works for all types, it is especially useful for types like <code>IEnumerable&lt;T&gt;</code> that cannot be combined with <code>ref</code>. This allows for changing the result with <code>yield</code> operations.</p>
+<pre><code class="lang-csharp">public class OriginalCode
+{
+    public string GetName()
+    {
+        return &quot;David&quot;;
+    }
+
+    public IEnumerable&lt;int&gt; GetNumbers()
+    {
+        yield return 1;
+        yield return 2;
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;GetName&quot;)]
+class Patch1
+{
+    static string Postfix(string name)
+    {  
+        return &quot;Hello &quot; + name;
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;GetNumbers&quot;)]
+class Patch2
+{
+    static IEnumerable&lt;int&gt; Postfix(IEnumerable&lt;int&gt; values)
+    {  
+        yield return 0;
+        foreach (var value in values)
+            yield return value;
+        yield return 99;
+    }
+}
+</code></pre>
+<h4 id="reading-original-arguments">Reading original arguments</h4>
+<pre><code class="lang-csharp">public class OriginalCode
+{
+    public void Test(int counter)
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+class Patch
+{
+    static void Prefix(int counter)
+    {  
+        FileLog.Log(&quot;counter = &quot; + counter);
+    }
+}
+</code></pre>
+<h4 id="postfixes-always-run">Postfixes always run</h4>
+<p>Harmony will not skip any postfix regardless of what any prefix or the original method do. It is good style to use postfixes as much as possible since they lead to more compatible code.</p>
+<h4 id="passing-state-between-prefix-and-postfix-1">Passing state between prefix and postfix</h4>
+<p>See prefix</p>
+<h3 id="common-injected-values">Common injected values</h3>
+<p>Each prefix and postfix can get all the arguments of the original method as well as the instance (if original method is not static) and the return value. Patches can define only those parameters they want to access.</p>
+<h4 id="instance">Instance</h4>
+<p>Patches can use an argument named <code>__instance</code> to access the instance value if original method is not static.</p>
+<h4 id="result">Result</h4>
+<p>Patches can use an argument named <code>__result</code> to access the returned value (prefixes get default value).</p>
+<h4 id="state">State</h4>
+<p>Patches can use an argument named <code>__state</code> to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix.</p>
+<h4 id="fields">Fields</h4>
+<p>Argument names starting with three underscores, for example <code>___someField</code>, can be used to read and (with <code>ref</code>) write private fields on the instance that has the corresponding name (minus the underscores).</p>
+<h4 id="argument-types">Argument types</h4>
+<p>Arguments from the original must use the exact same name and type as the original method but using <code>object</code> is ok too.</p>
+<h4 id="the-original">The original</h4>
+<p>To allow patch reusing, one can inject the original method by using an argument named <code>__originalMethod</code>.</p>
+<h4 id="special-arguments">Special arguments</h4>
+<p>In transpilers, arguments are only matched by their type so you can choose any argument name you like.</p>
+<p>An argument of type <code>IEnumerable&lt;CodeInstruction&gt;</code> is required and will be used to pass the IL codes to the transpiler
+An argument of type <code>ILGenerator</code> will be set to the current IL code generator
+An argument of type <code>MethodBase</code> will be set to the current original method being patched</p>
+<h3 id="transpiler">Transpiler</h3>
+<p>This method defines the transpiler that modifies the code of the original method. Use this in the advanced case where you want to modify the original methods IL codes.</p>
+<pre><code class="lang-csharp">static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instr, ...)
+// or
+[HarmonyTranspiler]
+static IEnumerable&lt;CodeInstruction&gt; MyTranspiler(IEnumerable&lt;CodeInstruction&gt; instr, ...)
+</code></pre>
+<p>+++</p>
+<h2 id="auxilary-patch-methods">Auxilary patch methods</h2>
+<h3 id="prepare">Prepare</h3>
+<p>Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called</p>
+<pre><code class="lang-csharp">static bool Prepare()
+static bool Prepare(HarmonyInstance instance)
+// or
+[HarmonyPrepare]
+static bool MyInitializer(...)
+</code></pre>
+<p>That method, if it exists, is expected to return a boolean that controls if patching will happen. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
+<h3 id="targetmethod">TargetMethod</h3>
 <p>Most of the times, you will use a combination of <code>HarmonyPatch()</code> annotations on the class to define the method you want to patch. Sometimes though, it is necessary to calculate the method with code. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static MethodBase TargetMethod()
 static MethodBase TargetMethod(HarmonyInstance instance)
@@ -81,76 +318,10 @@ static MethodBase TargetMethod(HarmonyInstance instance)
 static MethodBase CalculateMethod(HarmonyInstance instance)
 </code></pre>
 <p>That method, if it exists, is expected to return a <code>MethodInfo</code> of the method to be patched. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
-<p><strong>Prepare</strong> (Optional)</p>
-<p>Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called</p>
-<pre><code class="lang-csharp">static bool Prepare()
-static bool Prepare(HarmonyInstance instance)
-// or
-[HarmonyPrepare]
-static bool MyInitializer(...)
-</code></pre>
-<p>That method, if it exists, is expected to return a boolean that controls if patching will happen. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
-<p><strong>Prefix</strong> (Optional)</p>
-<pre><code class="lang-csharp">static bool Prefix(...)
-// or
-[HarmonyPrefix]
-static bool MyPrefix(...)
-</code></pre>
-<p>This method defines the code that is executed before the original method. Execution will be skipped if an earlier prefix indicates it wants to skip the original method. It follows the guidelines defined in [[Patching|Patching]].</p>
-<p><strong>Postfix</strong> (Optional)</p>
-<pre><code class="lang-csharp">static void Postfix(...)
-// or
-[HarmonyPostfix]
-static void MyPostfix(...)
-</code></pre>
-<p>This method defines the code that is executed after the original method. This is a good place to execute code that always needs execution. It follows the guidelines defined in [[Patching|Patching]].</p>
-<p><strong>Transpiler</strong> (Optional)</p>
-<pre><code class="lang-csharp">static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instr, ...)
-// or
-[HarmonyTranspiler]
-static IEnumerable&lt;CodeInstruction&gt; MyTranspiler(IEnumerable&lt;CodeInstruction&gt; instr, ...)
-</code></pre>
-<p>This method defines the transpiler that modifies the code of the original method. Use this in the advanced case where you want to modify the original methods IL codes. It follows the guidelines defined in [[Patching|Patching]].</p>
-<h3 id="patch-parameters">Patch parameters</h3>
-<p>Each prefix and postfix can get all the parameters of the original method as well as the instance (if original method is not static) and the return value. In order to patch a method your patches need to follow the following principles when defining them:</p>
-<ul>
-<li>A patch must be a <strong>static</strong> method</li>
-<li>A prefix patch has a return type of <strong>void</strong> or <strong>bool</strong></li>
-<li>A postfix patch has a return type of <strong>void</strong> or the return signature must match the type of the <strong>first</strong> parameter (passthrough mode)</li>
-<li>Patches can use a parameter named <strong>__instance</strong> to access the instance value if original method is not static</li>
-<li>Patches can use a parameter named <strong>__result</strong> to access the returned value (prefixes get default value)</li>
-<li>Patches can use a parameter named <strong>__state</strong> to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix</li>
-<li>Parameter names starting with three underscores, for example <strong>___someField</strong>, can be used to read and write (with 'ref') private fields on the instance that has the same name (minus the underscores)</li>
-<li>Patches can define only those parameters they want to access (no need to define all)</li>
-<li>Patch parameters must use the <strong>exact</strong> same name and type as the original method (<em>object</em> is ok too)</li>
-<li>Patches can either get parameters normally or by declaring any parameter <strong>ref</strong> (for manipulation)</li>
-<li>To allow patch reusing, one can inject the original method by using a parameter named <strong>__originalMethod</strong></li>
-</ul>
-<p>Transpilers have some other optional parameters:</p>
-<ul>
-<li>A parameter of type <code>ILGenerator</code> that will be set to the current IL code generator</li>
-<li>A parameter of type <code>MethodBase</code> that will be set to the current original method being patched</li>
-<li>They must contain one parameter of type <code>IEnumerable&lt;CodeInstruction&gt;</code> that will be used to pass the IL codes to it</li>
-</ul>
-<p>Example:</p>
-<pre><code class="lang-csharp">// original method in class Customer
-private List&lt;string&gt; getNames(int count, out Error error)
-
-// prefix
-// - wants instance, result and count
-// - wants to change count
-// - returns a boolean that controls if original is executed (true) or not (false)
-static bool Prefix(Customer __instance, List&lt;string&gt; __result, ref int count)
-
-// postfix
-// - wants result and error
-// - does not change any of those
-static void Postfix(List&lt;string&gt; __result, Error error)
-
-// transpiler
-// - wants to use original method
-static IEnumerable&lt;CodeInstruction&gt; Transpiler(MethodBase original, IEnumerable&lt;CodeInstruction&gt; instructions)
-</code></pre>
+<h3 id="targetmethods">TargetMethods</h3>
+<p>+++</p>
+<h3 id="cleanup">Cleanup</h3>
+<p>+++</p>
 </article>
           </div>
           

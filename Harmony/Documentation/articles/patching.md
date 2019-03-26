@@ -68,7 +68,7 @@ A prefix is a method that is excuted before the original method. It commonly use
 
 ![note] The first prefix that skips the original will skip all remaining prefixes too. Postfixes are not affected.
 
-##### Reading and changing arguments
+#### Reading and changing arguments
 
 ```csharp
 public class OriginalCode
@@ -90,7 +90,7 @@ class Patch
 }
 ```
 
-##### Changing the result and skipping the original
+#### Changing the result and skipping the original
 
 To change the result of the original, use `__result` as a argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.
 
@@ -118,7 +118,7 @@ class Patch
 }
 ```
 
-##### Passing state between prefix and postfix
+#### Passing state between prefix and postfix
 
 If you want to share state between your prefix and the corresponding postfix, you can use `__state` (with the `ref` or `out` keyword). If you need more than one value you can create your own type and pass it instead.
 
@@ -160,7 +160,7 @@ A postfix is a method that is excuted after the original method. It commonly use
 - make sure your code is always executed  
 - read custom state from the prefix
 
-##### Reading or changing the result
+#### Reading or changing the result
 
 Since the postfix has access to the result of the original (or a prefix that has skipped the original), it can read or alter the result by using the argument `__result`. It must match the return type of the original or be assignable from it.
 
@@ -184,7 +184,7 @@ class Patch
 }
 ```
 
-##### Pass through postfixes
+#### Pass through postfixes
 
 An alternative way to change the result of an original method is to use a **pass through** postfix. A pass through postfix has a non-void return type that matches the type of the first argument.
 
@@ -227,7 +227,7 @@ class Patch2
 }
 ```
 
-##### Reading original arguments
+#### Reading original arguments
 
 ```csharp
 public class OriginalCode
@@ -248,11 +248,11 @@ class Patch
 }
 ```
 
-##### Postfixes always run
+#### Postfixes always run
 
 Harmony will not skip any postfix regardless of what any prefix or the original method do. It is good style to use postfixes as much as possible since they lead to more compatible code.
 
-##### Passing state between prefix and postfix
+#### Passing state between prefix and postfix
 
 See prefix
 
@@ -260,31 +260,31 @@ See prefix
 
 Each prefix and postfix can get all the arguments of the original method as well as the instance (if original method is not static) and the return value. Patches can define only those parameters they want to access.
 
-##### Instance
+#### Instance
 
 Patches can use an argument named `__instance` to access the instance value if original method is not static.
 
-##### Result
+#### Result
 
 Patches can use an argument named `__result` to access the returned value (prefixes get default value).
 
-##### State
+#### State
 
 Patches can use an argument named `__state` to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix.
 
-##### Fields
+#### Fields
 
 Argument names starting with three underscores, for example `___someField`, can be used to read and (with `ref`) write private fields on the instance that has the corresponding name (minus the underscores).
 
-##### Argument types
+#### Argument types
 
 Arguments from the original must use the exact same name and type as the original method but using `object` is ok too.
 
-##### The original
+#### The original
 
 To allow patch reusing, one can inject the original method by using an argument named `__originalMethod`.
 
-##### Special arguments
+#### Special arguments
 
 In transpilers, arguments are only matched by their type so you can choose any argument name you like.
 
