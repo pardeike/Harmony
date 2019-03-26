@@ -45,6 +45,7 @@ namespace Harmony
 		/// <param name="postfix">The optional postfix.</param>
 		/// <param name="transpiler">The optional transpiler.</param>
 		///
+		[UpgradeToLatestVersion(1)]
 		public PatchProcessor(HarmonyInstance instance, List<MethodBase> originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
 		{
 			this.instance = instance;
