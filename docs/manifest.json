@@ -653,11 +653,71 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/patching-auxilary.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-auxilary.html",
+          "hash": "vjKcO77oDeD+CRuTMIaUqA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/patching-injections.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-injections.html",
+          "hash": "MRzrRA+ej13V1Szud2hzcA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/patching-postfix.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-postfix.html",
+          "hash": "Swc/W5dpBjGPQYzc7kV6VA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/patching-prefix.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-prefix.html",
+          "hash": "srg/2gqSfqVSUL4LbE5Llg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/patching-transpiler.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-transpiler.html",
+          "hash": "69K5IIOgwy17sJSNqNnGFA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/patching.md",
       "output": {
         ".html": {
           "relative_path": "articles/patching.html",
-          "hash": "ADKCcsqfH+63sSCGufHNXg=="
+          "hash": "mDrjxlRTl8z4I4oz19w7Aw=="
         }
       },
       "is_incremental": false,
@@ -681,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "Zy5tppCI5lSOzByihIQxBg=="
+          "hash": "pNrzRU0s8Y08D7IYF78bQw=="
         }
       },
       "is_incremental": false,
@@ -782,28 +842,28 @@
         "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 14,
+          "skipped_file_count": 0
+        },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 48,
           "skipped_file_count": 0
         },
-        "ConceptualDocumentProcessor": {
+        "ResourceDocumentProcessor": {
           "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
-          "total_file_count": 9,
+          "total_file_count": 0,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
-        "ResourceDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
           "total_file_count": 0,
           "skipped_file_count": 0
