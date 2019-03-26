@@ -417,4 +417,27 @@ namespace HarmonyTests.Assets
 			postfixed = false;
 		}
 	}
+
+	public class Class10
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public bool Method10()
+		{
+			Console.WriteLine("Method10");
+			return true;
+		}
+	}
+
+	public class Class10Patch
+	{
+		public static bool originalResult = false;
+		public static bool postfixed = false;
+
+		public static void Postfix(bool __result)
+		{
+			Console.WriteLine("Method10 Patch result: " + __result);
+			originalResult = __result;
+			postfixed = true;
+		}
+	}
 }

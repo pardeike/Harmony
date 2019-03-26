@@ -242,5 +242,29 @@ namespace HarmonyTests
 			Assert.IsTrue(AttributesPatch.postfixed, "Prefix was not executed");
 			Assert.IsTrue(AttributesPatch.postfixed, "Prefix was not executed");
 		}
+
+		[Test]
+		public void TestMethod10()
+		{
+			var originalClass = typeof(Class10);
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("Method10");
+			Assert.IsNotNull(originalMethod);
+
+			var patchClass = typeof(Class10Patch);
+			var postfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(postfix);
+
+			var instance = HarmonyInstance.Create("test");
+			Assert.IsNotNull(instance);
+
+			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix), null);
+			Assert.IsNotNull(patcher);
+			patcher.Patch();
+
+			new Class10().Method10();
+			Assert.IsTrue(Class10Patch.postfixed);
+			Assert.IsTrue(Class10Patch.originalResult);
+		}
 	}
 }
