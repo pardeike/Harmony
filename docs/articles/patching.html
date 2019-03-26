@@ -70,9 +70,9 @@
 <h1 id="patching">Patching</h1>
 
 <h2 id="concept">Concept</h2>
-<p>In order to provide your own code to Harmony you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.</p>
+<p>In order to provide your own code to Harmony, you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.</p>
 <h4 id="main-types-of-patches">Main types of patches</h4>
-<p>Two of them, <strong>Prefix</strong> and <strong>Postfix</strong> are high level and you can write them as simple static methods. The third, called <strong>Transpiler</strong>, is not a method that is not executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.</p>
+<p>Two of them, <strong>Prefix</strong> and <strong>Postfix</strong> are high level and you can write them as simple static methods. The third, called <strong>Transpiler</strong>, is not a method that is executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.</p>
 <h4 id="patches-need-to-be-static">Patches need to be static</h4>
 <p>Patch methods need to be static because Harmony works with multiple users in different assemblies in mind. In order to guarantee the correct patching order, patches are always re-applied as soon as someone wants to change the original. Since it is hard to serialize data in a generic way across assemblies in .NET, Harmony only stores a method pointer to your patch methods so it can use and apply them at a later point again.</p>
 <p>If you need custom state in your patches, it is recommended to use a static variable and store all your patch state in there. Keep in mind that Transpilers are only executed to generate the method so they don't &quot;run&quot; when the original is executed.</p>
@@ -103,9 +103,9 @@ class Patch
 <p>Manual patching knows only three main patch types: <strong>Prefix</strong>, <strong>Postfix</strong> and <strong>Transpiler</strong>. If you use attributes for patching, you can also use the helper methods: <strong>Prepare</strong>, <strong>TargetMethod</strong>, <strong>TargetMethods</strong> and <strong>Cleanup</strong> as explained below.</p>
 <p>Each of those names has a corresponding attribute starting with [Harmony...]. So instead of calling one of your methods &quot;Prepare&quot;, you can call it anything and decorate it with a <code>[HarmonyPrepare]</code> attribute.</p>
 <h2 id="patch-method-types">Patch method types</h2>
-<p>Both, prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments. Those are listed after the discussion of prefix and postfix.</p>
+<p>Both prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments. Those are listed after the discussion of prefix and postfix.</p>
 <h3 id="prefix">Prefix</h3>
-<p>A prefix is a method that is excuted before the original method. It commonly use to:</p>
+<p>A prefix is a method that is executed before the original method. It is commonly used to:</p>
 <ul>
 <li>access and edit the arguments of the original method</li>
 <li>set the result of the original method</li>
@@ -133,7 +133,7 @@ class Patch
 }
 </code></pre>
 <h4 id="changing-the-result-and-skipping-the-original">Changing the result and skipping the original</h4>
-<p>To change the result of the original, use <code>__result</code> as a argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.</p>
+<p>To change the result of the original, use <code>__result</code> as an argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.</p>
 <p>To skip the original, let the prefix return a <code>bool</code> and return <code>true</code> to let the original run after all prefixes or <code>false</code> to stop executing prefixes and skip the original. Postfixes will always be executed.</p>
 <p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> It is not recommended to skip the original unless you want to completely change the way it works. If you only want a small change or a side effect, using a postfix or a transpiler is always preferred since it allows for multiple users changing the original without each implementation fighting over how the original should behave.</p>
 <pre><code class="lang-csharp">public class OriginalCode
@@ -154,6 +154,29 @@ class Patch
     }
 }
 </code></pre>
+<p>Some users have trouble understanding the disconnect between altering what the original method returns and what the Prefix returns. The following example is meant to illustrate that the boolean return value of the Prefix only determines if the original gets run or not.</p>
+<pre><code class="lang-csharp">public class OriginalCode
+{
+    public bool IsFullAfterTakingIn(int i)
+    {
+        // do expensive calculations
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), &quot;IsFullAfterTakingIn&quot;)]
+class Patch
+{
+    static bool Prefix(ref bool __result, int i)
+    {  
+        if (i &gt; 5)
+        {
+            __result = true; // any call to IsFullAfterTakingIn(i) where i &gt; 5 now immediately returns true
+	    return false; // skips the original and its expensive calculations
+        }
+        return true; // make sure you only skip if really necessary
+    }
+}
+</code></pre>
 <h4 id="passing-state-between-prefix-and-postfix">Passing state between prefix and postfix</h4>
 <p>If you want to share state between your prefix and the corresponding postfix, you can use <code>__state</code> (with the <code>ref</code> or <code>out</code> keyword). If you need more than one value you can create your own type and pass it instead.</p>
 <pre><code class="lang-cs">public class OriginalCode
@@ -167,7 +190,7 @@ class Patch
 [HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
 class Patch
 {
-    // this example choose to use a Stopwatch type to measure
+    // this example uses a Stopwatch type to measure
     // and share state between prefix and postfix
 
     static void Prefix(out Stopwatch __state)
@@ -184,7 +207,7 @@ class Patch
 }
 </code></pre>
 <h3 id="postfix">Postfix</h3>
-<p>A postfix is a method that is excuted after the original method. It commonly use to:</p>
+<p>A postfix is a method that is executed after the original method. It is commonly used to:</p>
 <ul>
 <li>read or change the result of the original method</li>
 <li>access the arguments of the original method</li>
@@ -274,12 +297,12 @@ class Patch
 <h3 id="common-injected-values">Common injected values</h3>
 <p>Each prefix and postfix can get all the arguments of the original method as well as the instance (if original method is not static) and the return value. Patches can define only those parameters they want to access.</p>
 <h4 id="instance">Instance</h4>
-<p>Patches can use an argument named <code>__instance</code> to access the instance value if original method is not static.</p>
+<p>Patches can use an argument named <code>__instance</code> to access the instance value if original method is not static. This is similar to the C# keyword <code>this</code> where used in the original method.</p>
 <h4 id="result">Result</h4>
-<p>Patches can use an argument named <code>__result</code> to access the returned value (prefixes get default value).</p>
+<p>Patches can use an argument named <code>__result</code> to access the returned value. The type <code>T</code> of argument must match the return type of the original or be assignable from it. For prefixes, as the original method hasn't run yet, the value of <code>__result</code> is default(T). For most reference types, that would be <code>null</code>. If you wish to alter the <code>__result</code>, you need to pass it by <code>ref</code>.</p>
 <h4 id="state">State</h4>
 <p>Patches can use an argument named <code>__state</code> to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix.</p>
-<h4 id="fields">Fields</h4>
+<h4 id="private-fields">(Private) Fields</h4>
 <p>Argument names starting with three underscores, for example <code>___someField</code>, can be used to read and (with <code>ref</code>) write private fields on the instance that has the corresponding name (minus the underscores).</p>
 <h4 id="argument-types">Argument types</h4>
 <p>Arguments from the original must use the exact same name and type as the original method but using <code>object</code> is ok too.</p>

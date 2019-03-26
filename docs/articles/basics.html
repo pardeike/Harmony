@@ -97,10 +97,10 @@
 <p>The id should be in reverse domain notation and must be unique. In order to understand and react on existing patches of others, all patches in Harmony are bound to that id. This allows other authors to execute their patches before or after a specific patch by referring to this id.</p>
 <h3 id="debug-log">Debug Log</h3>
 <p>If you want to know more about the patching or the IL code Harmony produces, you can enable the debug log. Harmony offers and uses a class called <code>FileLog</code> that will create a log file on your systems Desktop called &quot;harmony.log.txt&quot;.</p>
-<p>If you set the global debug flag to true, it will make Harmony log out many details that can help you while debugging your usage of Harmony:</p>
+<p>You can set Harmony's global DEBUG flag to true, which will make Harmony log out many details that can help you while debugging your usage of Harmony:</p>
 <pre><code class="lang-csharp">HarmonyInstance.DEBUG = true;
 </code></pre>
-<p>You can also use it in your own code:</p>
+<p>You can also use Harmony's file logger in your own code:</p>
 <pre><code class="lang-csharp">FileLog.Log(&quot;something&quot;);
 // or buffered:
 FileLog.LogBuffered(&quot;A&quot;);
@@ -115,7 +115,7 @@ harmony.PatchAll(assembly);
 <p>or</p>
 <pre><code class="lang-csharp">harmony.PatchAll(); // implies current assembly
 </code></pre>
-<p>which will search the give assembly for all classes that are decorated with Harmony annotations. All patches are registered automatically and you're done.</p>
+<p>which will search the given assembly for all classes that are decorated with Harmony annotations. All patches are registered automatically and Harmony will do the rest.</p>
 <h3 id="manual-patching">Manual patching</h3>
 <p>For more control, you use <code>Patch()</code>. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to <code>Patch()</code> to skip one type of patch):</p>
 <pre><code class="lang-csharp">// add null checks to the following lines, they are omitted for clarity
@@ -126,7 +126,7 @@ var postfix = typeof(MyPatchClass2).GetMethod(&quot;SomeMethod&quot;);
 harmony.Patch(original, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 </code></pre>
 <p>The use of an extra HarmonyMethod is to allow for you to define extra properties like priority and such together with the method pointer. HarmonyMethod is the common class shared by manual and annotation patching.</p>
-<p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a <code>null</code> value which when passed to HarmonyMethod will throw an error.</p>
+<p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a <code>null</code> value which when passed to HarmonyMethod will throw an error. You can use standard <code>System.Reflection</code> to get the MethodInfo of the original and your HarmonyMethods. See the Utilities section for the various ways Harmony can make Reflection easier.</p>
 <h3 id="checking-for-existing-patches">Checking for existing patches</h3>
 <p>To get a list of all patched methods in the current appdomain (yours and others), call GetAllPatchedMethods:</p>
 <pre><code class="lang-csharp">var originalMethods = HarmonyInstance.GetAllPatchedMethods();
