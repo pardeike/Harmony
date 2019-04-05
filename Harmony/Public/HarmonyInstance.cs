@@ -57,7 +57,7 @@ namespace Harmony
 		///
 		public static HarmonyInstance Create(string id)
 		{
-			if (id == null) throw new Exception("id cannot be null");
+			if (string.IsNullOrEmpty(id)) throw new ArgumentException("id cannot be null or empty");
 			return new HarmonyInstance(id);
 		}
 
