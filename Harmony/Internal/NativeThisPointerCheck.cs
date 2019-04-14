@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Harmony
 {
@@ -12,9 +11,10 @@ namespace Harmony
 	{
 		internal static bool NeedsNativeThisPointerFix(MethodBase method)
 		{
+			if (method.IsStatic) return false;
 			var returnType = AccessTools.GetReturnedType(method);
 			if (AccessTools.IsStruct(returnType) == false) return false;
-			var size = GetManagedSize(returnType);
+			var size = Marshal.SizeOf(returnType);
 			if (size != 3 && size != 5 && size != 6 && size != 7 && size < 9) return false;
 			return HasNativeThis();
 		}
@@ -57,29 +57,8 @@ namespace Harmony
 
 			// If we have a native return buffer pointer, the order is:
 			// this, ptr, a, b
-			
+
 			hasNativeThis = (a == (IntPtr)0xdeadbeef) && (b == (IntPtr)0xdeadbeef);
-		}
-
-		static readonly Dictionary<Type, int> _getManagedSizeCache = new Dictionary<Type, int>() { { typeof(void), 0 } };
-		static int GetManagedSize(Type t)
-		{
-			if (_getManagedSizeCache.TryGetValue(t, out var size))
-				return size;
-
-			// sizeof is more accurate for the "managed size" than Marshal.SizeOf (marshalled size)
-			// It also returns a value for types of which the size cannot be determined otherwise.
-
-			var method = new DynamicMethod("GetSize:" + t.FullName, typeof(int), Type.EmptyTypes, true);
-			var il = method.GetILGenerator();
-			il.Emit(OpCodes.Sizeof, t);
-			il.Emit(OpCodes.Ret);
-
-			lock (_getManagedSizeCache)
-			{
-				var d_GetSize = method.CreateDelegate(typeof(Func<int>)) as Func<int>;
-				return _getManagedSizeCache[t] = d_GetSize();
-			}
 		}
 	}
 }
