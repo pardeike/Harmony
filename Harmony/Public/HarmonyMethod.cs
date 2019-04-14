@@ -186,7 +186,7 @@ namespace Harmony
 
 		static HarmonyMethod GetHarmonyMethodInfo(object attribute)
 		{
-			var f_info = AccessTools.Field(attribute.GetType(), nameof(HarmonyAttribute.info));
+			var f_info = attribute.GetType().GetField(nameof(HarmonyAttribute.info), AccessTools.all);
 			if (f_info == null) return null;
 			if (f_info.FieldType.Name != nameof(HarmonyMethod)) return null;
 			var info = f_info.GetValue(attribute);
