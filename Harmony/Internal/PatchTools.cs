@@ -20,7 +20,10 @@ namespace Harmony
 			var method = patchType.GetMethods(AccessTools.all)
 				.FirstOrDefault(m => m.GetCustomAttributes(true).Any(a => a.GetType().FullName == attributeType));
 			if (method == null)
-				method = AccessTools.Method(patchType, name);
+			{
+				// not-found is common and normal case, don't use AccessTools which will generate not-found warnings
+				method = patchType.GetMethod(name, AccessTools.all);
+			}
 			return method;
 		}
 
