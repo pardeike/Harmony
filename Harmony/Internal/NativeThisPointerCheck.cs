@@ -19,6 +19,7 @@ namespace Harmony
 			return HasNativeThis();
 		}
 
+		static IntPtr magicValue = (IntPtr)0xabadbabe;
 		static bool hasTestResult, hasNativeThis;
 		static bool HasNativeThis()
 		{
@@ -29,7 +30,7 @@ namespace Harmony
 				var original = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStruct");
 				var replacement = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStructReplacement");
 				Memory.DetourMethod(original, replacement);
-				new NativeThisPointer().GetStruct((IntPtr)0xdeadbeef, (IntPtr)0xdeadbeef);
+				new NativeThisPointer().GetStruct(magicValue, magicValue);
 				hasTestResult = true;
 			}
 			return hasNativeThis;
@@ -58,7 +59,7 @@ namespace Harmony
 			// If we have a native return buffer pointer, the order is:
 			// this, ptr, a, b
 
-			hasNativeThis = (a == (IntPtr)0xdeadbeef) && (b == (IntPtr)0xdeadbeef);
+			hasNativeThis = a == magicValue && b == magicValue;
 		}
 	}
 }
