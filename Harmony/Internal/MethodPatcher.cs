@@ -58,15 +58,18 @@ namespace Harmony
 					privateVars[RESULT_VAR] = resultVariable;
 				}
 
-				prefixes.ForEach(prefix =>
+				prefixes.Union(postfixes).ToList().ForEach(fix =>
 				{
-					prefix.GetParameters()
+					if (privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
+					{
+						fix.GetParameters()
 						.Where(patchParam => patchParam.Name == STATE_VAR)
 						.Do(patchParam =>
 						{
 							var privateStateVariable = DynamicTools.DeclareLocalVariable(il, patchParam.ParameterType);
-							privateVars[prefix.DeclaringType.FullName] = privateStateVariable;
+							privateVars[fix.DeclaringType.FullName] = privateStateVariable;
 						});
+					}
 				});
 
 				if (firstArgIsReturnBuffer)
