@@ -19,7 +19,7 @@ namespace Harmony
 			return HasNativeThis();
 		}
 
-		static IntPtr magicValue = (IntPtr)0xabadbabe;
+		static IntPtr magicValue = (IntPtr)0x12345678;
 		static bool hasTestResult, hasNativeThis;
 		static bool HasNativeThis()
 		{
