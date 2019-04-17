@@ -42,8 +42,8 @@ namespace Harmony
 		Postfix,
 		/// <summary>A transpiler</summary>
 		Transpiler,
-		/// <summary>A finally handler</summary>
-		Finally
+		/// <summary>A finalizer</summary>
+		Finalizer
 	}
 
 	/// <summary>The base class for all Harmony annotations (not meant to be used directly)</summary>
@@ -370,9 +370,9 @@ namespace Harmony
 	{
 	}
 
-	/// <summary>Specifies the Transpiler function in a patch class</summary>
+	/// <summary>Specifies the Finalizer function in a patch class</summary>
 	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyFinally : Attribute
+	public class HarmonyFinalizer : Attribute
 	{
 	}
 

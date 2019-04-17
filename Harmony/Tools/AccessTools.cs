@@ -965,9 +965,11 @@ namespace Harmony
 		/// <param name="instance">An instance to test</param>
 		/// <returns>True if instance is of nullable type, false if not</returns>
 		///
+#pragma warning disable RECS0154
 		public static bool IsOfNullableType<T>(T instance)
 		{
 			return Nullable.GetUnderlyingType(typeof(T)) != null;
 		}
+#pragma warning restore RECS0154
 	}
 }

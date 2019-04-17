@@ -17,12 +17,12 @@ namespace Harmony
 		public string Id => id;
 
 		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
-		public static bool DEBUG = false;
+		public static bool DEBUG;
 
 		/// <summary>Set to false before instantiating Harmony to prevent Harmony from patching other older instances of itself</summary>
 		public static bool SELF_PATCHING = true;
 
-		static bool selfPatchingDone = false;
+		static bool selfPatchingDone;
 
 		HarmonyInstance(string id)
 		{
@@ -109,12 +109,12 @@ namespace Harmony
 		/// <param name="prefix">An optional prefix method wrapped in a HarmonyMethod object</param>
 		/// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
 		/// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
-		/// <param name="finally">An optional finally handler method wrapped in a HarmonyMethod object</param>
+		/// <param name="finalizer">An optional finalizer method wrapped in a HarmonyMethod object</param>
 		/// <returns>The dynamic method that was created to patch the original method</returns>
 		///
-		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod @finally = null)
+		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
-			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler, @finally);
+			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler, finalizer);
 			return processor.Patch().FirstOrDefault();
 		}
 
@@ -207,7 +207,7 @@ namespace Harmony
 				info.prefixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 				info.postfixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 				info.transpilers.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
-				info.finallys.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
+				info.finalizers.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 			});
 
 			var result = new Dictionary<string, Version>();

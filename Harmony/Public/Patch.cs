@@ -91,8 +91,8 @@ namespace Harmony
 		public Patch[] postfixes;
 		/// <summary>The transpilers</summary>
 		public Patch[] transpilers;
-		/// <summary>The finallys</summary>
-		public Patch[] finallys;
+		/// <summary>The finalizers</summary>
+		public Patch[] finalizers;
 
 		/// <summary>Default constructor</summary>
 		public PatchInfo()
@@ -100,7 +100,7 @@ namespace Harmony
 			prefixes = new Patch[0];
 			postfixes = new Patch[0];
 			transpilers = new Patch[0];
-			finallys = new Patch[0];
+			finalizers = new Patch[0];
 		}
 
 		/// <summary>Adds a prefix</summary>
@@ -184,31 +184,31 @@ namespace Harmony
 			transpilers = transpilers.Where(patch => patch.owner != owner).ToArray();
 		}
 
-		/// <summary>Adds a finally</summary>
+		/// <summary>Adds a finalizer</summary>
 		/// <param name="patch">The patch</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="priority">The priority</param>
 		/// <param name="before">The before parameter</param>
 		/// <param name="after">The after parameter</param>
 		///
-		public void AddFinally(MethodInfo patch, string owner, int priority, string[] before, string[] after)
+		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after)
 		{
-			var l = finallys.ToList();
-			l.Add(new Patch(patch, finallys.Count() + 1, owner, priority, before, after));
-			finallys = l.ToArray();
+			var l = finalizers.ToList();
+			l.Add(new Patch(patch, finalizers.Count() + 1, owner, priority, before, after));
+			finalizers = l.ToArray();
 		}
 
-		/// <summary>Removes a finally</summary>
+		/// <summary>Removes a finalizer</summary>
 		/// <param name="owner">The owner or (*) for any</param>
 		///
-		public void RemoveFinally(string owner)
+		public void RemoveFinalizer(string owner)
 		{
 			if (owner == "*")
 			{
-				finallys = new Patch[0];
+				finalizers = new Patch[0];
 				return;
 			}
-			finallys = finallys.Where(patch => patch.owner != owner).ToArray();
+			finalizers = finalizers.Where(patch => patch.owner != owner).ToArray();
 		}
 
 		/// <summary>Removes a patch</summary>
@@ -219,7 +219,7 @@ namespace Harmony
 			prefixes = prefixes.Where(p => p.patch != patch).ToArray();
 			postfixes = postfixes.Where(p => p.patch != patch).ToArray();
 			transpilers = transpilers.Where(p => p.patch != patch).ToArray();
-			finallys = finallys.Where(p => p.patch != patch).ToArray();
+			finalizers = finalizers.Where(p => p.patch != patch).ToArray();
 		}
 	}
 

@@ -24,7 +24,7 @@ namespace Harmony
 		}
 		
 		[UpgradeToLatestVersion(1)]
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finallys)
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
 		{
 			Memory.MarkForNoInlining(original);
 
