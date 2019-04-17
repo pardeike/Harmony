@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Harmony.AccessTools.FieldRef-2.html",
-          "hash": "XjIhHMq4TuYfAqXOJc9FIQ=="
+          "hash": "m7LrZnuDEIEvW2soNltaaQ=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Harmony.AccessTools.html",
-          "hash": "fJ3iCcjBpp2oQct8Uxl2kg=="
+          "hash": "a3YzenK9V0FgfgcVTNQlBg=="
         }
       },
       "is_incremental": false,
@@ -842,9 +842,9 @@
         "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
-        "TocDocumentProcessor": {
+        "ResourceDocumentProcessor": {
           "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
           "total_file_count": 0,
           "skipped_file_count": 0
@@ -861,9 +861,9 @@
           "total_file_count": 48,
           "skipped_file_count": 0
         },
-        "ResourceDocumentProcessor": {
+        "TocDocumentProcessor": {
           "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
           "total_file_count": 0,
           "skipped_file_count": 0
