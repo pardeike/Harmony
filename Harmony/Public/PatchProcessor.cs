@@ -20,6 +20,7 @@ namespace Harmony
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
 		HarmonyMethod transpiler;
+		HarmonyMethod @finally;
 
 		/// <summary>Creates a patch processor</summary>
 		/// <param name="instance">The Harmony instance</param>
@@ -35,6 +36,7 @@ namespace Harmony
 			prefix = containerAttributes.Clone();
 			postfix = containerAttributes.Clone();
 			transpiler = containerAttributes.Clone();
+			@finally = containerAttributes.Clone();
 			PrepareType();
 		}
 
@@ -44,15 +46,17 @@ namespace Harmony
 		/// <param name="prefix">The optional prefix.</param>
 		/// <param name="postfix">The optional postfix.</param>
 		/// <param name="transpiler">The optional transpiler.</param>
+		/// <param name="finally">The optional finally.</param>
 		///
 		[UpgradeToLatestVersion(1)]
-		public PatchProcessor(HarmonyInstance instance, List<MethodBase> originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+		public PatchProcessor(HarmonyInstance instance, List<MethodBase> originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod @finally = null)
 		{
 			this.instance = instance;
 			this.originals = originals;
 			this.prefix = prefix;
 			this.postfix = postfix;
 			this.transpiler = transpiler;
+			this.@finally = @finally;
 		}
 
 		/// <summary>Gets patch information</summary>
@@ -65,7 +69,7 @@ namespace Harmony
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(method);
 				if (patchInfo == null) return null;
-				return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers);
+				return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finallys);
 			}
 		}
 
@@ -103,6 +107,7 @@ namespace Harmony
 						PatchFunctions.AddPrefix(patchInfo, instance.Id, prefix);
 						PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
 						PatchFunctions.AddTranspiler(patchInfo, instance.Id, transpiler);
+						PatchFunctions.AddFinally(patchInfo, instance.Id, @finally);
 						dynamicMethods.Add(PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id));
 
 						HarmonySharedState.UpdatePatchInfo(original, patchInfo);
@@ -133,6 +138,8 @@ namespace Harmony
 						PatchFunctions.RemovePostfix(patchInfo, harmonyID);
 					if (type == HarmonyPatchType.All || type == HarmonyPatchType.Transpiler)
 						PatchFunctions.RemoveTranspiler(patchInfo, harmonyID);
+					if (type == HarmonyPatchType.All || type == HarmonyPatchType.Finally)
+						PatchFunctions.RemoveFinally(patchInfo, harmonyID);
 					PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
 
 					HarmonySharedState.UpdatePatchInfo(original, patchInfo);
@@ -212,13 +219,15 @@ namespace Harmony
 				}
 			}
 
-			PatchTools.GetPatches(container, out var prefixMethod, out var postfixMethod, out var transpilerMethod);
+			PatchTools.GetPatches(container, out var prefixMethod, out var postfixMethod, out var transpilerMethod, out var finallyMethod);
 			if (prefix != null)
 				prefix.method = prefixMethod;
 			if (postfix != null)
 				postfix.method = postfixMethod;
 			if (transpiler != null)
 				transpiler.method = transpilerMethod;
+			if (@finally != null)
+				@finally.method = finallyMethod;
 
 			if (prefixMethod != null)
 			{
@@ -245,6 +254,15 @@ namespace Harmony
 
 				var infixAttributes = HarmonyMethodExtensions.GetFromMethod(transpilerMethod);
 				containerAttributes.Merge(HarmonyMethod.Merge(infixAttributes)).CopyTo(transpiler);
+			}
+
+			if (finallyMethod != null)
+			{
+				if (finallyMethod.IsStatic == false)
+					throw new ArgumentException("Patch method " + finallyMethod.FullDescription() + " must be static");
+
+				var finallyAttributes = HarmonyMethodExtensions.GetFromMethod(finallyMethod);
+				containerAttributes.Merge(HarmonyMethod.Merge(finallyAttributes)).CopyTo(@finally);
 			}
 		}
 

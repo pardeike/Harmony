@@ -109,11 +109,12 @@ namespace Harmony
 		/// <param name="prefix">An optional prefix method wrapped in a HarmonyMethod object</param>
 		/// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
 		/// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
+		/// <param name="finally">An optional finally handler method wrapped in a HarmonyMethod object</param>
 		/// <returns>The dynamic method that was created to patch the original method</returns>
 		///
-		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod @finally = null)
 		{
-			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler);
+			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler, @finally);
 			return processor.Patch().FirstOrDefault();
 		}
 
@@ -206,6 +207,7 @@ namespace Harmony
 				info.prefixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 				info.postfixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 				info.transpilers.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
+				info.finallys.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 			});
 
 			var result = new Dictionary<string, Version>();

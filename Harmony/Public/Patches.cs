@@ -13,6 +13,8 @@ namespace Harmony
 		public readonly ReadOnlyCollection<Patch> Postfixes;
 		/// <summary>The transpilers</summary>
 		public readonly ReadOnlyCollection<Patch> Transpilers;
+		/// <summary>The finallys</summary>
+		public readonly ReadOnlyCollection<Patch> Finallys;
 
 		/// <summary>Gets all owners (Harmony IDs) or all known patches</summary>
 		/// <value>The patch owners</value>
@@ -25,6 +27,7 @@ namespace Harmony
 				result.UnionWith(Prefixes.Select(p => p.owner));
 				result.UnionWith(Postfixes.Select(p => p.owner));
 				result.UnionWith(Transpilers.Select(p => p.owner));
+				result.UnionWith(Finallys.Select(p => p.owner));
 				return result.ToList().AsReadOnly();
 			}
 		}
@@ -33,16 +36,19 @@ namespace Harmony
 		/// <param name="prefixes">The prefixes</param>
 		/// <param name="postfixes">The postfixes</param>
 		/// <param name="transpilers">The transpilers</param>
+		/// <param name="finallys">The transpilers</param>
 		///
-		public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers)
+		public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finallys)
 		{
 			if (prefixes == null) prefixes = new Patch[0];
 			if (postfixes == null) postfixes = new Patch[0];
 			if (transpilers == null) transpilers = new Patch[0];
+			if (finallys == null) finallys = new Patch[0];
 
 			Prefixes = prefixes.ToList().AsReadOnly();
 			Postfixes = postfixes.ToList().AsReadOnly();
 			Transpilers = transpilers.ToList().AsReadOnly();
+			Finallys = finallys.ToList().AsReadOnly();
 		}
 	}
 }
