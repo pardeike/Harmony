@@ -55,7 +55,9 @@ namespace Harmony
 			while (true)
 			{
 				var result = func(type);
+#pragma warning disable RECS0017
 				if (result != null) return result;
+#pragma warning restore RECS0017
 				if (type == typeof(object)) return default(T);
 				type = type.BaseType;
 			}
@@ -70,12 +72,16 @@ namespace Harmony
 		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> func)
 		{
 			var result = func(type);
+#pragma warning disable RECS0017
 			if (result != null) return result;
+#pragma warning restore RECS0017
 			foreach (var subType in type.GetNestedTypes(all))
 			{
 				result = FindIncludingInnerTypes(subType, func);
+#pragma warning disable RECS0017
 				if (result != null)
 					break;
+#pragma warning restore RECS0017
 			}
 			return result;
 		}
@@ -745,12 +751,12 @@ namespace Harmony
 		public static FieldRef<T, U> FieldRefAccess<T, U>(FieldInfo fieldInfo)
 		{
 			if (fieldInfo == null)
-				throw new ArgumentException("FieldInfo for FieldRefAccess is null.");
+				throw new ArgumentNullException(nameof(fieldInfo));
 			if (!typeof(U).IsAssignableFrom(fieldInfo.FieldType))
 				throw new ArgumentException("FieldInfo type does not match FieldRefAccess return type.");
-			if (typeof(T) != typeof(object) &&
-			    (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T))))
-				throw new MissingFieldException(typeof(T).Name, fieldInfo.Name);
+			if (typeof(T) != typeof(object))
+				if (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T)))
+					throw new MissingFieldException(typeof(T).Name, fieldInfo.Name);
 
 			var s_name = "__refget_" + typeof(T).Name + "_fi_" + fieldInfo.Name;
 
@@ -825,7 +831,7 @@ namespace Harmony
 		public static object CreateInstance(Type type)
 		{
 			if (type == null)
-				throw new NullReferenceException("Cannot create instance for NULL type");
+				throw new ArgumentNullException(nameof(type));
 			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, CallingConventions.Any, new Type[0], null);
 			if (ctor != null)
 				return Activator.CreateInstance(type);
