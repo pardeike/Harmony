@@ -77,7 +77,7 @@ namespace Harmony
 					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
 						return false;
 					blocks = blocksObject as List<ExceptionBlock>;
-					return blocks.Count() > 0;
+					return blocks.Any();
 				});
 				if (pairInstruction != null)
 				{
@@ -94,7 +94,7 @@ namespace Harmony
 						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
 							return false;
 						blocks = blocksObject as List<ExceptionBlock>;
-						return blocks.Count() > 0;
+						return blocks.Any();
 					});
 					if (pairInstruction != null)
 					{
@@ -102,7 +102,7 @@ namespace Harmony
 						pairEnd = pairStart + newInstructions.Skip(opIndex + 1).ToList().IndexOf(pairInstruction) - 1;
 						var newBetweenInstructions = newInstructions.GetRange(pairStart, pairEnd - pairStart);
 						var remaining = originalBetweenInstructions.Except(newBetweenInstructions).ToList();
-						return remaining.Count() == 0;
+						return remaining.Any() == false;
 					}
 				}
 			}
@@ -115,7 +115,7 @@ namespace Harmony
 					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
 						return false;
 					blocks = blocksObject as List<ExceptionBlock>;
-					return blocks.Count() > 0;
+					return blocks.Any();
 				});
 				if (pairInstruction != null)
 				{
@@ -132,7 +132,7 @@ namespace Harmony
 						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
 							return false;
 						blocks = blocksObject as List<ExceptionBlock>;
-						return blocks.Count() > 0;
+						return blocks.Any();
 					});
 					if (pairInstruction != null)
 					{
@@ -140,7 +140,7 @@ namespace Harmony
 						pairEnd = opIndex;
 						var newBetweenInstructions = newInstructions.GetRange(pairStart, pairEnd - pairStart);
 						var remaining = originalBetweenInstructions.Except(newBetweenInstructions);
-						return remaining.Count() == 0;
+						return remaining.Any() == false;
 					}
 				}
 			}
@@ -196,7 +196,7 @@ namespace Harmony
 		{
 			var type = transpiler.GetParameters()
 				  .Select(p => p.ParameterType)
-				  .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name.StartsWith("IEnumerable"));
+				  .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal));
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
 		

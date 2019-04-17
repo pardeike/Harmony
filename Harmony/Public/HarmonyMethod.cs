@@ -64,10 +64,10 @@ namespace Harmony
 		[UpgradeToLatestVersion(1)]
 		public HarmonyMethod(Type type, string name, Type[] parameters = null)
 		{
-			var method = AccessTools.Method(type, name, parameters);
-			if (method == null)
+			var result = AccessTools.Method(type, name, parameters);
+			if (result == null)
 				throw new ArgumentException("Cannot not find method for type " + type + " and name " + name + " and parameters " + parameters?.Description());
-			ImportMethod(method);
+			ImportMethod(result);
 		}
 
 		/// <summary>Gets the names of all internal patch info fields</summary>

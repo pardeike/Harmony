@@ -43,7 +43,7 @@ namespace Harmony
 				return "null";
 
 			var ns = type.Namespace;
-			if (ns != null && ns != "") ns += ".";
+			if (string.IsNullOrEmpty(ns) == false) ns += ".";
 			var result = ns + type.Name;
 
 			if (type.IsGenericType)
@@ -52,7 +52,7 @@ namespace Harmony
 				var subTypes = type.GetGenericArguments();
 				for (var i = 0; i < subTypes.Length; i++)
 				{
-					if (result.EndsWith("<") == false)
+					if (result.EndsWith("<", StringComparison.Ordinal) == false)
 						result += ", ";
 					result += subTypes[i].FullDescription();
 				}

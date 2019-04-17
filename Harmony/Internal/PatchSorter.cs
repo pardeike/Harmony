@@ -168,8 +168,7 @@ namespace Harmony.Internal
 			public int CompareTo(object obj)
 			{
 				var p = obj as PatchSortingWrapper;
-				return PatchInfoSerialization.PriorityComparer(p?.innerPatch, innerPatch.owner, innerPatch.index,
-					innerPatch.priority);
+				return PatchInfoSerialization.PriorityComparer(p?.innerPatch, innerPatch.index, innerPatch.priority);
 			}
 
 			/// <summary>Determines whether patches are equal</summary>
@@ -233,7 +232,9 @@ namespace Harmony.Internal
 				return y != null && x != null && x.owner == y.owner && x.patch == y.patch && x.index == y.index &&
 				       x.priority == y.priority
 				       && x.before.Length == y.before.Length && x.after.Length == y.after.Length &&
-				       x.before.All(y.before.Contains) && x.after.All(y.after.Contains);
+#pragma warning disable RECS0030
+						 x.before.All(y.before.Contains) && x.after.All(y.after.Contains);
+#pragma warning restore RECS0030
 			}
 
 			public int GetHashCode(Patch obj)

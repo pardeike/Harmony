@@ -83,13 +83,10 @@ namespace Harmony
 					copier.AddTranspiler(transpiler);
 
 				var endLabels = new List<Label>();
-				var endBlocks = new List<ExceptionBlock>();
-				copier.Finalize(endLabels, endBlocks);
+				copier.Finalize(endLabels);
 
 				foreach (var label in endLabels)
 					Emitter.MarkLabel(il, label);
-				foreach (var block in endBlocks)
-					Emitter.MarkBlockAfter(il, block);
 				if (resultVariable != null)
 					Emitter.Emit(il, OpCodes.Stloc, resultVariable);
 				if (canHaveJump)
@@ -308,7 +305,7 @@ namespace Harmony
 					continue;
 				}
 
-				if (patchParam.Name.StartsWith(INSTANCE_FIELD_PREFIX))
+				if (patchParam.Name.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal))
 				{
 					var fieldName = patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length);
 					FieldInfo fieldInfo;
@@ -361,7 +358,7 @@ namespace Harmony
 				}
 
 				int idx;
-				if (patchParam.Name.StartsWith(PARAM_INDEX_PREFIX))
+				if (patchParam.Name.StartsWith(PARAM_INDEX_PREFIX, StringComparison.Ordinal))
 				{
 					var val = patchParam.Name.Substring(PARAM_INDEX_PREFIX.Length);
 					if (!int.TryParse(val, out idx))

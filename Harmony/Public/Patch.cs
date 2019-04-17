@@ -64,12 +64,11 @@ namespace Harmony
 
 		/// <summary>Compare function to sort patch priorities</summary>
 		/// <param name="obj">The patch</param>
-		/// <param name="owner">The owner</param>
 		/// <param name="index">Zero-based index</param>
 		/// <param name="priority">The priority</param>
 		/// <returns>A standard sort integer (-1, 0, 1)</returns>
 		///
-		internal static int PriorityComparer(object obj, string owner, int index, int priority)
+		internal static int PriorityComparer(object obj, int index, int priority)
 		{
 			var trv = Traverse.Create(obj);
 			var theirPriority = trv.Field("priority").GetValue<int>();
@@ -293,7 +292,7 @@ namespace Harmony
 		///
 		public int CompareTo(object obj)
 		{
-			return PatchInfoSerialization.PriorityComparer(obj, owner, index, priority);
+			return PatchInfoSerialization.PriorityComparer(obj, index, priority);
 		}
 
 		/// <summary>Hash function</summary>

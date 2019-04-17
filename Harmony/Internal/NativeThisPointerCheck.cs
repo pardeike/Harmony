@@ -51,7 +51,7 @@ namespace Harmony
 			throw new Exception("This method should've been detoured!");
 		}
 
-		static unsafe void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
+		static void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
 		{
 			// Normal argument order:
 			// this, a, b

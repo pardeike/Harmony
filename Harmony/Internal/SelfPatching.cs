@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Harmony.Tools
 {
-	internal class SelfPatching
+	internal static class SelfPatching
 	{
 		static readonly string upgradeToLatestVersionFullName = typeof(UpgradeToLatestVersion).FullName;
 
@@ -72,7 +72,7 @@ namespace Harmony.Tools
 		{
 			var version = assembly.GetName().Version;
 			var location = assembly.Location;
-			if (location == null || location == "") location = new Uri(assembly.CodeBase).LocalPath;
+			if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 			return location + "(v" + version + (assembly.GlobalAssemblyCache ? ", cached" : "") + ")";
 		}
 

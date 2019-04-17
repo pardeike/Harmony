@@ -183,7 +183,9 @@ namespace Harmony
 			{
 				RuntimeHelpers.PrepareMethod(handle);
 			}
-			catch (Exception)
+#pragma warning disable RECS0022
+			catch
+#pragma warning restore RECS0022
 			{
 			}
 
@@ -262,7 +264,7 @@ namespace Harmony
 		/// <param name="values">The bytes to write</param>
 		/// <returns>Advanced memory address</returns>
 		///
-		internal static unsafe long WriteBytes(long memory, byte[] values)
+		internal static long WriteBytes(long memory, byte[] values)
 		{
 			foreach (var value in values)
 				memory = WriteByte(memory, value);

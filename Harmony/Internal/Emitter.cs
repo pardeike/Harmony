@@ -51,7 +51,7 @@ namespace Harmony
 			return localsGetter != null ? localsGetter(il) : new LocalBuilder[0];
 		}
 
-		internal static void LogLocalVariable(ILGenerator il, LocalBuilder variable)
+		internal static void LogLocalVariable(LocalBuilder variable)
 		{
 			if (HarmonyInstance.DEBUG)
 			{

@@ -267,6 +267,8 @@ namespace Harmony
 				var type = argumentTypes[i];
 				switch (argumentVariations[i])
 				{
+					case ArgumentType.Normal:
+						break;
 					case ArgumentType.Ref:
 					case ArgumentType.Out:
 						type = type.MakeByRefType();
@@ -281,14 +283,10 @@ namespace Harmony
 		}
 	}
 
-	/// <summary>A Harmony annotation</summary>
+	/// <summary>A Harmony annotation to define that all methods in a class are to be patched</summary>
 	[AttributeUsage(AttributeTargets.Class)]
 	public class HarmonyPatchAll : HarmonyAttribute
 	{
-		/// <summary>A Harmony annotation to define that all methods in a class are to be patched</summary>
-		public HarmonyPatchAll()
-		{
-		}
 	}
 
 	/// <summary>A Harmony annotation</summary>

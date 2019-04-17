@@ -31,12 +31,12 @@ namespace Harmony
 				var assembly = typeof(HarmonyInstance).Assembly;
 				var version = assembly.GetName().Version;
 				var location = assembly.Location;
-				if (location == null || location == "") location = new Uri(assembly.CodeBase).LocalPath;
+				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 				FileLog.Log("### Harmony id=" + id + ", version=" + version + ", location=" + location);
 				var callingMethod = GetOutsideCaller();
 				var callingAssembly = callingMethod.DeclaringType.Assembly;
 				location = callingAssembly.Location;
-				if (location == null || location == "") location = new Uri(callingAssembly.CodeBase).LocalPath;
+				if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
 				FileLog.Log("### Started from " + callingMethod.FullDescription() + ", location " + location);
 				FileLog.Log("### At " + DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss"));
 			}
@@ -88,7 +88,7 @@ namespace Harmony
 		public PatchProcessor ProcessorForAnnotatedClass(Type type)
 		{
 			var parentMethodInfos = HarmonyMethodExtensions.GetFromType(type);
-			if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
+			if (parentMethodInfos != null && parentMethodInfos.Any())
 			{
 				var info = HarmonyMethod.Merge(parentMethodInfos);
 				return new PatchProcessor(this, type, info);
@@ -213,7 +213,7 @@ namespace Harmony
 			var result = new Dictionary<string, Version>();
 			assemblies.Do(info =>
 			{
-				var assemblyName = info.Value.GetReferencedAssemblies().FirstOrDefault(a => a.FullName.StartsWith("0Harmony, Version"));
+				var assemblyName = info.Value.GetReferencedAssemblies().FirstOrDefault(a => a.FullName.StartsWith("0Harmony, Version", StringComparison.Ordinal));
 				if (assemblyName != null)
 					result[info.Key] = assemblyName.Version;
 			});

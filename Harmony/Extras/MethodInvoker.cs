@@ -14,7 +14,7 @@ namespace Harmony
 	public delegate object FastInvokeHandler(object target, object[] parameters);
 
 	/// <summary>A helper class to invoke method with delegates</summary>
-	public class MethodInvoker
+	public static class MethodInvoker
 	{
 		/// <summary>Creates a fast invocation handler from a method and a module</summary>
 		/// <param name="methodInfo">The method to invoke</param>
@@ -129,13 +129,13 @@ namespace Harmony
 			return invoder;
 		}
 
-		static void EmitCastToReference(ILGenerator il, Type type)
+		/*static void EmitCastToReference(ILGenerator il, Type type)
 		{
 			if (type.IsValueType)
 				il.Emit(OpCodes.Unbox_Any, type);
 			else
 				il.Emit(OpCodes.Castclass, type);
-		}
+		}*/
 
 		static void EmitUnboxIfNeeded(ILGenerator il, Type type)
 		{

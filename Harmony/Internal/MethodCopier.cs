@@ -15,7 +15,7 @@ namespace Harmony
 		
 		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
 		{
-			if (fromMethod == null) throw new ArgumentNullException("Method cannot be null");
+			if (fromMethod == null) throw new ArgumentNullException(nameof(fromMethod));
 			reader = new MethodBodyReader(fromMethod, toILGenerator);
 			reader.DeclareVariables(existingVariables);
 			reader.ReadInstructions();
@@ -26,9 +26,9 @@ namespace Harmony
 			transpilers.Add(transpiler);
 		}
 		
-		internal void Finalize(List<Label> endLabels, List<ExceptionBlock> endBlocks)
+		internal void Finalize(List<Label> endLabels)
 		{
-			reader.FinalizeILCodes(transpilers, endLabels, endBlocks);
+			reader.FinalizeILCodes(transpilers, endLabels);
 		}
 	}
 	
@@ -51,7 +51,7 @@ namespace Harmony
 		
 		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
-			if (method == null) throw new ArgumentNullException("Method cannot be null");
+			if (method == null) throw new ArgumentNullException(nameof(method));
 			var reader = new MethodBodyReader(method, generator);
 			reader.DeclareVariables(null);
 			reader.ReadInstructions();
@@ -191,7 +191,7 @@ namespace Harmony
 		}
 
 		// used in FinalizeILCodes to convert short jumps to long ones
-		static Dictionary<OpCode, OpCode> shortJumps = new Dictionary<OpCode, OpCode>()
+		static readonly Dictionary<OpCode, OpCode> shortJumps = new Dictionary<OpCode, OpCode>
 		{
 			{ OpCodes.Leave_S, OpCodes.Leave },
 			{ OpCodes.Brfalse_S, OpCodes.Brfalse },
@@ -209,7 +209,7 @@ namespace Harmony
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
 		
-		internal void FinalizeILCodes(List<MethodInfo> transpilers, List<Label> endLabels, List<ExceptionBlock> endBlocks)
+		internal void FinalizeILCodes(List<MethodInfo> transpilers, List<Label> endLabels)
 		{
 			if (generator == null) return;
 
@@ -263,7 +263,7 @@ namespace Harmony
 			// pass3 - log out all new local variables
 			//
 			var savedLog = FileLog.GetBuffer(true);
-			Emitter.AllLocalVariables(generator).Do(local => Emitter.LogLocalVariable(generator, local));
+			Emitter.AllLocalVariables(generator).Do(local => Emitter.LogLocalVariable(local));
 			FileLog.LogBuffered(savedLog);
 
 			// pass4 - remove RET if it appears at the end

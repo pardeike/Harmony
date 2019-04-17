@@ -12,7 +12,7 @@ namespace Harmony
 		[UpgradeToLatestVersion(1)]
 		internal static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
-			if (original == null) throw new ArgumentNullException("original cannot be null");
+			if (original == null) throw new ArgumentNullException(nameof(original));
 			var patchName = original.Name + suffix;
 			patchName = patchName.Replace("<>", "");
 
@@ -150,7 +150,9 @@ namespace Harmony
 					h__CompileMethod(null, new object[] { runtimeMethodInfo });
 					return;
 				}
-				catch (Exception)
+#pragma warning disable RECS0022
+				catch
+#pragma warning restore RECS0022
 				{
 				}
 			}

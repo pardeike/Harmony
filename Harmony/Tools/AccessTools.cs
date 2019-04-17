@@ -50,7 +50,7 @@ namespace Harmony
 		/// <param name="func">The evaluation function returning T</param>
 		/// <returns>Returns the first non null result or default(T) when reaching the top level type object</returns>
 		///
-		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> func)
+		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
 			while (true)
 			{
@@ -67,7 +67,7 @@ namespace Harmony
 		/// <param name="func">The evaluation function returning T</param>
 		/// <returns>Returns the first non null result or null with no match</returns>
 		///
-		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> func)
+		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
 			var result = func(type);
 			if (result != null) return result;
