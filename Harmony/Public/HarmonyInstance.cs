@@ -132,6 +132,7 @@ namespace Harmony
 				info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
 				info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
 				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
+				info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
 			}
 		}
 
