@@ -14,6 +14,7 @@ namespace Harmony
 		public static string ORIGINAL_METHOD_PARAM = "__originalMethod";
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
+		public static string EXCEPTION_VAR = "__exception";
 		public static string PARAM_INDEX_PREFIX = "__";
 		public static string INSTANCE_FIELD_PREFIX = "___";
 		
@@ -26,22 +27,23 @@ namespace Harmony
 		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
 		{
-			Memory.MarkForNoInlining(original);
-
-			if (original == null)
-				throw new ArgumentNullException(nameof(original), "Original method is null. Did you specify it correctly?");
-
 			try
 			{
+				if (original == null)
+					throw new ArgumentNullException(nameof(original));
+
+				Memory.MarkForNoInlining(original);
+
 				if (HarmonyInstance.DEBUG)
 				{
 					FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
 					FileLog.FlushBuffer();
 				}
 
-				var idx = prefixes.Count() + postfixes.Count();
+				var idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
 				var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 				var returnType = AccessTools.GetReturnedType(original);
+				var hasFinalizers = finalizers.Any();
 				var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
 				if (patch == null)
 					return null;
@@ -72,8 +74,22 @@ namespace Harmony
 					}
 				});
 
-				if (firstArgIsReturnBuffer)
-					Emitter.Emit(il, original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
+				LocalBuilder finalizedVariable = null;
+				LocalBuilder exceptionVariable = null;
+				if (hasFinalizers)
+				{
+					finalizedVariable = DynamicTools.DeclareLocalVariable(il, typeof(bool));
+
+					exceptionVariable = DynamicTools.DeclareLocalVariable(il, typeof(Exception));
+					privateVars[EXCEPTION_VAR] = exceptionVariable;
+
+					// begin try
+					Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
+				}
+
+				// TODO: verify correct usage
+				// if (firstArgIsReturnBuffer)
+				// 	Emitter.Emit(il, original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
 
 				var skipOriginalLabel = il.DefineLabel();
 				var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, skipOriginalLabel);
@@ -99,10 +115,61 @@ namespace Harmony
 
 				AddPostfixes(il, original, postfixes, privateVars, true);
 
-				if (firstArgIsReturnBuffer)
-					Emitter.Emit(il, OpCodes.Stobj, returnType);
+				if (hasFinalizers)
+				{
+					AddFinalizers(il, original, finalizers, privateVars, false);
+					Emitter.Emit(il, OpCodes.Ldc_I4_1);
+					Emitter.Emit(il, OpCodes.Stloc, finalizedVariable);
+					Emitter.Emit(il, OpCodes.Ldloc, exceptionVariable);
+					var noExceptionLabel = il.DefineLabel();
+					Emitter.Emit(il, OpCodes.Brfalse, noExceptionLabel);
+					Emitter.Emit(il, OpCodes.Ldloc, exceptionVariable);
+					Emitter.Emit(il, OpCodes.Throw);
+					il.MarkLabel(noExceptionLabel);
 
-				Emitter.Emit(il, OpCodes.Ret);
+					// end try (includes leave)
+					Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+				}
+				else
+				{
+					// TODO: verify correct usage
+					// if (firstArgIsReturnBuffer)
+					// 	Emitter.Emit(il, OpCodes.Stobj, returnType);
+
+					Emitter.Emit(il, OpCodes.Ret);
+				}
+
+				if (hasFinalizers)
+				{
+					// begin catch
+					Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
+					Emitter.Emit(il, OpCodes.Stloc, exceptionVariable);
+
+					Emitter.Emit(il, OpCodes.Ldloc, finalizedVariable);
+					var endFinalizerLabel = il.DefineLabel();
+					Emitter.Emit(il, OpCodes.Brtrue, endFinalizerLabel);
+
+					var rethrowPossible = AddFinalizers(il, original, finalizers, privateVars, true);
+
+					il.MarkLabel(endFinalizerLabel);
+
+					if (rethrowPossible)
+						Emitter.Emit(il, OpCodes.Rethrow);
+					else
+					{
+						Emitter.Emit(il, OpCodes.Ldloc, exceptionVariable);
+						Emitter.Emit(il, OpCodes.Throw);
+					}
+					
+					// end catch
+					Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+
+					// TODO: verify correct usage
+					// if (firstArgIsReturnBuffer)
+					// 	Emitter.Emit(il, OpCodes.Stobj, returnType);
+
+					Emitter.Emit(il, OpCodes.Ret);
+				}
 
 				if (HarmonyInstance.DEBUG)
 				{
@@ -444,6 +511,34 @@ namespace Harmony
 						}
 					}
 				});
+		}
+
+		static bool AddFinalizers(ILGenerator il, MethodBase original, List<MethodInfo> finalizers, Dictionary<string, LocalBuilder> variables, bool catchExceptions)
+		{
+			var rethrowPossible = true;
+			finalizers
+				.Do(fix =>
+				{
+					if (catchExceptions)
+						Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
+
+					EmitCallParameter(il, original, fix, variables, true);
+					Emitter.Emit(il, OpCodes.Call, fix);
+					if (fix.ReturnType != typeof(void))
+					{
+						Emitter.Emit(il, OpCodes.Stloc, variables[EXCEPTION_VAR]);
+						rethrowPossible = false;
+					}
+
+					if (catchExceptions)
+					{
+						Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+						Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
+						Emitter.Emit(il, OpCodes.Pop);
+						Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+					}
+				});
+			return rethrowPossible;
 		}
 	}
 }

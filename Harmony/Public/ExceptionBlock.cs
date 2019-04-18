@@ -32,10 +32,10 @@ namespace Harmony
 		/// <param name="blockType">Block type</param>
 		/// <param name="catchType">Catch type</param>
 		///
-		public ExceptionBlock(ExceptionBlockType blockType, Type catchType)
+		public ExceptionBlock(ExceptionBlockType blockType, Type catchType = null)
 		{
 			this.blockType = blockType;
-			this.catchType = catchType;
+			this.catchType = catchType ?? typeof(object);
 		}
 	}
 }

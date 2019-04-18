@@ -291,8 +291,7 @@ namespace Harmony
 				// TODO: we ignore the resulting label because we have no way to use it
 				//
 				codeInstruction.blocks.Do(block => {
-					Label? label;
-					Emitter.MarkBlockBefore(generator, block, out label);
+					Emitter.MarkBlockBefore(generator, block, out var label);
 				});
 
 				var code = codeInstruction.opcode;

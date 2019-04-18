@@ -308,7 +308,7 @@ namespace HarmonyTests.Assets
 			__state = null;
 		}
 
-		public static void Postfix(int __state)
+		public static void Postfix(object __state)
 		{
 
 		}
@@ -438,6 +438,25 @@ namespace HarmonyTests.Assets
 			Console.WriteLine("Method10 Patch result: " + __result);
 			originalResult = __result;
 			postfixed = true;
+		}
+	}
+
+	public class SimpleFinalizerClass
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Method()
+		{
+			Console.WriteLine("Method");
+		}
+	}
+
+	public class SimpleFinalizerPatch
+	{
+		public static bool finalized = false;
+
+		public static void Finalizer()
+		{
+			finalized = true;
 		}
 	}
 }
