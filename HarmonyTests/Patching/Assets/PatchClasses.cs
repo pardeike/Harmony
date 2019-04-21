@@ -143,7 +143,7 @@ namespace HarmonyTests.Assets
 			}
 			log = log + ",end";
 			return;
-			ending:
+		ending:
 			log = log + ",fail";
 		}
 	}
@@ -249,8 +249,9 @@ namespace HarmonyTests.Assets
 			};
 		}
 	}
-	
-	public struct TestStruct {
+
+	public struct TestStruct
+	{
 		public long a;
 		public long b;
 	}
@@ -300,7 +301,7 @@ namespace HarmonyTests.Assets
 			return string.Format("foobar");
 		}
 	}
-	
+
 	public class Class9Patch
 	{
 		public static void Prefix(out object __state)
@@ -438,25 +439,6 @@ namespace HarmonyTests.Assets
 			Console.WriteLine("Method10 Patch result: " + __result);
 			originalResult = __result;
 			postfixed = true;
-		}
-	}
-
-	public class SimpleFinalizerClass
-	{
-		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Method()
-		{
-			Console.WriteLine("Method");
-		}
-	}
-
-	public class SimpleFinalizerPatch
-	{
-		public static bool finalized = false;
-
-		public static void Finalizer()
-		{
-			finalized = true;
 		}
 	}
 }
