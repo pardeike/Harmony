@@ -153,7 +153,7 @@ namespace Harmony
 		public T GetValue<T>()
 		{
 			var value = GetValue();
-			if (value == null) return default(T);
+			if (value == null) return default;
 			return (T)value;
 		}
 

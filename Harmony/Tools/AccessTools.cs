@@ -56,7 +56,7 @@ namespace Harmony
 			{
 				var result = func(type);
 				if (result != null) return result;
-				if (type == typeof(object)) return default(T);
+				if (type == typeof(object)) return default;
 				type = type.BaseType;
 			}
 		}
@@ -704,7 +704,8 @@ namespace Harmony
 		public static object[] ActualParameters(MethodBase method, object[] inputs)
 		{
 			var inputTypes = inputs.Select(obj => obj.GetType()).ToList();
-			return method.GetParameters().Select(p => p.ParameterType).Select(pType => {
+			return method.GetParameters().Select(p => p.ParameterType).Select(pType =>
+			{
 				var index = inputTypes.FindIndex(inType => pType.IsAssignableFrom(inType));
 				if (index >= 0)
 					return inputs[index];
@@ -718,7 +719,7 @@ namespace Harmony
 		/// <param name="obj">The runtime instance to access the field (leave empty for static fields)</param>
 		/// <returns>The value of the field (or an assignable object)</returns>
 		///
-		public delegate ref U FieldRef<T, U>(T obj = default(T));
+		public delegate ref U FieldRef<T, U>(T obj = default);
 
 		/// <summary>Creates a field reference</summary>
 		/// <typeparam name="T">The class the field is defined in</typeparam>
@@ -733,7 +734,7 @@ namespace Harmony
 											BindingFlags.DeclaredOnly;
 
 			var fi = typeof(T).GetField(fieldName, bf);
-			return FieldRefAccess<T,U>(fi);
+			return FieldRefAccess<T, U>(fi);
 		}
 
 		/// <summary>Creates a field reference</summary>
@@ -753,7 +754,7 @@ namespace Harmony
 
 			// workaround for using ref-return with DynamicMethod:
 			// a.) initialize with dummy return value
-			var dm = new DynamicMethod(s_name, typeof(U), new[] {typeof(T)}, typeof(T), true);
+			var dm = new DynamicMethod(s_name, typeof(U), new[] { typeof(T) }, typeof(T), true);
 
 			// b.) replace with desired 'ByRef' return value
 			var trv = Traverse.Create(dm);

@@ -49,7 +49,7 @@ namespace Harmony.Tools
 			{
 				return assembly.ReflectionOnly == false && assembly.GetType(typeof(HarmonyInstance).FullName) != null;
 			}
-			catch (Exception)
+			catch
 			{
 				return false;
 			}

@@ -94,7 +94,7 @@ namespace Harmony
 			T result;
 			if (dictionary.TryGetValue(key, out result))
 				return result;
-			return default(T);
+			return default;
 		}
 
 		/// <summary>A helper to access a value via key from a dictionary with extra casting</summary>
@@ -109,7 +109,7 @@ namespace Harmony
 			if (dictionary.TryGetValue(key, out result))
 				if (result is T)
 					return (T)result;
-			return default(T);
+			return default;
 		}
 	}
 
