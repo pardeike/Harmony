@@ -2255,6 +2255,12 @@ references:
   commentId: T:Harmony.HarmonyCleanup
   fullName: Harmony.HarmonyCleanup
   nameWithType: HarmonyCleanup
+- uid: Harmony.HarmonyFinalizer
+  name: HarmonyFinalizer
+  href: api/Harmony.HarmonyFinalizer.html
+  commentId: T:Harmony.HarmonyFinalizer
+  fullName: Harmony.HarmonyFinalizer
+  nameWithType: HarmonyFinalizer
 - uid: Harmony.HarmonyInstance
   name: HarmonyInstance
   href: api/Harmony.HarmonyInstance.html
@@ -2345,12 +2351,12 @@ references:
   isSpec: "True"
   fullName: Harmony.HarmonyInstance.Id
   nameWithType: HarmonyInstance.Id
-- uid: Harmony.HarmonyInstance.Patch(MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
-  name: Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Patch_MethodBase_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
-  commentId: M:Harmony.HarmonyInstance.Patch(MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
-  fullName: Harmony.HarmonyInstance.Patch(MethodBase, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod)
-  nameWithType: HarmonyInstance.Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+- uid: Harmony.HarmonyInstance.Patch(MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  name: Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+  href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Patch_MethodBase_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
+  commentId: M:Harmony.HarmonyInstance.Patch(MethodBase,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  fullName: Harmony.HarmonyInstance.Patch(MethodBase, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  nameWithType: HarmonyInstance.Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
 - uid: Harmony.HarmonyInstance.Patch*
   name: Patch
   href: api/Harmony.HarmonyInstance.html#Harmony_HarmonyInstance_Patch_
@@ -2805,19 +2811,6 @@ references:
   commentId: T:Harmony.HarmonyPatchAll
   fullName: Harmony.HarmonyPatchAll
   nameWithType: HarmonyPatchAll
-- uid: Harmony.HarmonyPatchAll.#ctor
-  name: HarmonyPatchAll()
-  href: api/Harmony.HarmonyPatchAll.html#Harmony_HarmonyPatchAll__ctor
-  commentId: M:Harmony.HarmonyPatchAll.#ctor
-  fullName: Harmony.HarmonyPatchAll.HarmonyPatchAll()
-  nameWithType: HarmonyPatchAll.HarmonyPatchAll()
-- uid: Harmony.HarmonyPatchAll.#ctor*
-  name: HarmonyPatchAll
-  href: api/Harmony.HarmonyPatchAll.html#Harmony_HarmonyPatchAll__ctor_
-  commentId: Overload:Harmony.HarmonyPatchAll.#ctor
-  isSpec: "True"
-  fullName: Harmony.HarmonyPatchAll.HarmonyPatchAll
-  nameWithType: HarmonyPatchAll.HarmonyPatchAll
 - uid: Harmony.HarmonyPatchType
   name: HarmonyPatchType
   href: api/Harmony.HarmonyPatchType.html
@@ -2830,6 +2823,12 @@ references:
   commentId: F:Harmony.HarmonyPatchType.All
   fullName: Harmony.HarmonyPatchType.All
   nameWithType: HarmonyPatchType.All
+- uid: Harmony.HarmonyPatchType.Finalizer
+  name: Finalizer
+  href: api/Harmony.HarmonyPatchType.html#Harmony_HarmonyPatchType_Finalizer
+  commentId: F:Harmony.HarmonyPatchType.Finalizer
+  fullName: Harmony.HarmonyPatchType.Finalizer
+  nameWithType: HarmonyPatchType.Finalizer
 - uid: Harmony.HarmonyPatchType.Postfix
   name: Postfix
   href: api/Harmony.HarmonyPatchType.html#Harmony_HarmonyPatchType_Postfix
@@ -3150,15 +3149,15 @@ references:
   commentId: T:Harmony.Patches
   fullName: Harmony.Patches
   nameWithType: Patches
-- uid: Harmony.Patches.#ctor(Harmony.Patch[],Harmony.Patch[],Harmony.Patch[])
-  name: Patches(Patch[], Patch[], Patch[])
-  href: api/Harmony.Patches.html#Harmony_Patches__ctor_Harmony_Patch___Harmony_Patch___Harmony_Patch___
-  commentId: M:Harmony.Patches.#ctor(Harmony.Patch[],Harmony.Patch[],Harmony.Patch[])
-  name.vb: Patches(Patch(), Patch(), Patch())
-  fullName: Harmony.Patches.Patches(Harmony.Patch[], Harmony.Patch[], Harmony.Patch[])
-  fullName.vb: Harmony.Patches.Patches(Harmony.Patch(), Harmony.Patch(), Harmony.Patch())
-  nameWithType: Patches.Patches(Patch[], Patch[], Patch[])
-  nameWithType.vb: Patches.Patches(Patch(), Patch(), Patch())
+- uid: Harmony.Patches.#ctor(Harmony.Patch[],Harmony.Patch[],Harmony.Patch[],Harmony.Patch[])
+  name: Patches(Patch[], Patch[], Patch[], Patch[])
+  href: api/Harmony.Patches.html#Harmony_Patches__ctor_Harmony_Patch___Harmony_Patch___Harmony_Patch___Harmony_Patch___
+  commentId: M:Harmony.Patches.#ctor(Harmony.Patch[],Harmony.Patch[],Harmony.Patch[],Harmony.Patch[])
+  name.vb: Patches(Patch(), Patch(), Patch(), Patch())
+  fullName: Harmony.Patches.Patches(Harmony.Patch[], Harmony.Patch[], Harmony.Patch[], Harmony.Patch[])
+  fullName.vb: Harmony.Patches.Patches(Harmony.Patch(), Harmony.Patch(), Harmony.Patch(), Harmony.Patch())
+  nameWithType: Patches.Patches(Patch[], Patch[], Patch[], Patch[])
+  nameWithType.vb: Patches.Patches(Patch(), Patch(), Patch(), Patch())
 - uid: Harmony.Patches.#ctor*
   name: Patches
   href: api/Harmony.Patches.html#Harmony_Patches__ctor_
@@ -3166,6 +3165,12 @@ references:
   isSpec: "True"
   fullName: Harmony.Patches.Patches
   nameWithType: Patches.Patches
+- uid: Harmony.Patches.Finalizers
+  name: Finalizers
+  href: api/Harmony.Patches.html#Harmony_Patches_Finalizers
+  commentId: F:Harmony.Patches.Finalizers
+  fullName: Harmony.Patches.Finalizers
+  nameWithType: Patches.Finalizers
 - uid: Harmony.Patches.Owners
   name: Owners
   href: api/Harmony.Patches.html#Harmony_Patches_Owners
@@ -3216,6 +3221,22 @@ references:
   isSpec: "True"
   fullName: Harmony.PatchInfo.PatchInfo
   nameWithType: PatchInfo.PatchInfo
+- uid: Harmony.PatchInfo.AddFinalizer(MethodInfo,System.String,System.Int32,System.String[],System.String[])
+  name: AddFinalizer(MethodInfo, String, Int32, String[], String[])
+  href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_AddFinalizer_MethodInfo_System_String_System_Int32_System_String___System_String___
+  commentId: M:Harmony.PatchInfo.AddFinalizer(MethodInfo,System.String,System.Int32,System.String[],System.String[])
+  name.vb: AddFinalizer(MethodInfo, String, Int32, String(), String())
+  fullName: Harmony.PatchInfo.AddFinalizer(MethodInfo, System.String, System.Int32, System.String[], System.String[])
+  fullName.vb: Harmony.PatchInfo.AddFinalizer(MethodInfo, System.String, System.Int32, System.String(), System.String())
+  nameWithType: PatchInfo.AddFinalizer(MethodInfo, String, Int32, String[], String[])
+  nameWithType.vb: PatchInfo.AddFinalizer(MethodInfo, String, Int32, String(), String())
+- uid: Harmony.PatchInfo.AddFinalizer*
+  name: AddFinalizer
+  href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_AddFinalizer_
+  commentId: Overload:Harmony.PatchInfo.AddFinalizer
+  isSpec: "True"
+  fullName: Harmony.PatchInfo.AddFinalizer
+  nameWithType: PatchInfo.AddFinalizer
 - uid: Harmony.PatchInfo.AddPostfix(MethodInfo,System.String,System.Int32,System.String[],System.String[])
   name: AddPostfix(MethodInfo, String, Int32, String[], String[])
   href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_AddPostfix_MethodInfo_System_String_System_Int32_System_String___System_String___
@@ -3264,6 +3285,12 @@ references:
   isSpec: "True"
   fullName: Harmony.PatchInfo.AddTranspiler
   nameWithType: PatchInfo.AddTranspiler
+- uid: Harmony.PatchInfo.finalizers
+  name: finalizers
+  href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_finalizers
+  commentId: F:Harmony.PatchInfo.finalizers
+  fullName: Harmony.PatchInfo.finalizers
+  nameWithType: PatchInfo.finalizers
 - uid: Harmony.PatchInfo.postfixes
   name: postfixes
   href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_postfixes
@@ -3276,6 +3303,19 @@ references:
   commentId: F:Harmony.PatchInfo.prefixes
   fullName: Harmony.PatchInfo.prefixes
   nameWithType: PatchInfo.prefixes
+- uid: Harmony.PatchInfo.RemoveFinalizer(System.String)
+  name: RemoveFinalizer(String)
+  href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_RemoveFinalizer_System_String_
+  commentId: M:Harmony.PatchInfo.RemoveFinalizer(System.String)
+  fullName: Harmony.PatchInfo.RemoveFinalizer(System.String)
+  nameWithType: PatchInfo.RemoveFinalizer(String)
+- uid: Harmony.PatchInfo.RemoveFinalizer*
+  name: RemoveFinalizer
+  href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_RemoveFinalizer_
+  commentId: Overload:Harmony.PatchInfo.RemoveFinalizer
+  isSpec: "True"
+  fullName: Harmony.PatchInfo.RemoveFinalizer
+  nameWithType: PatchInfo.RemoveFinalizer
 - uid: Harmony.PatchInfo.RemovePatch(MethodInfo)
   name: RemovePatch(MethodInfo)
   href: api/Harmony.PatchInfo.html#Harmony_PatchInfo_RemovePatch_MethodInfo_
@@ -3340,15 +3380,15 @@ references:
   commentId: T:Harmony.PatchProcessor
   fullName: Harmony.PatchProcessor
   nameWithType: PatchProcessor
-- uid: Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,List{MethodBase},Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
-  name: PatchProcessor(HarmonyInstance, List<MethodBase>, HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  href: api/Harmony.PatchProcessor.html#Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_List_MethodBase__Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
-  commentId: M:Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,List{MethodBase},Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
-  name.vb: PatchProcessor(HarmonyInstance, List(Of MethodBase), HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  fullName: Harmony.PatchProcessor.PatchProcessor(Harmony.HarmonyInstance, List<MethodBase>, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod)
-  fullName.vb: Harmony.PatchProcessor.PatchProcessor(Harmony.HarmonyInstance, List(Of MethodBase), Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod)
-  nameWithType: PatchProcessor.PatchProcessor(HarmonyInstance, List<MethodBase>, HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  nameWithType.vb: PatchProcessor.PatchProcessor(HarmonyInstance, List(Of MethodBase), HarmonyMethod, HarmonyMethod, HarmonyMethod)
+- uid: Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,List{MethodBase},Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  name: PatchProcessor(HarmonyInstance, List<MethodBase>, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+  href: api/Harmony.PatchProcessor.html#Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_List_MethodBase__Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_
+  commentId: M:Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,List{MethodBase},Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)
+  name.vb: PatchProcessor(HarmonyInstance, List(Of MethodBase), HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+  fullName: Harmony.PatchProcessor.PatchProcessor(Harmony.HarmonyInstance, List<MethodBase>, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  fullName.vb: Harmony.PatchProcessor.PatchProcessor(Harmony.HarmonyInstance, List(Of MethodBase), Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod, Harmony.HarmonyMethod)
+  nameWithType: PatchProcessor.PatchProcessor(HarmonyInstance, List<MethodBase>, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+  nameWithType.vb: PatchProcessor.PatchProcessor(HarmonyInstance, List(Of MethodBase), HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
 - uid: Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,Type,Harmony.HarmonyMethod)
   name: PatchProcessor(HarmonyInstance, Type, HarmonyMethod)
   href: api/Harmony.PatchProcessor.html#Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_Type_Harmony_HarmonyMethod_

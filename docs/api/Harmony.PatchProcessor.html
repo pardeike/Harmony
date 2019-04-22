@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class PatchProcessor
    ">
-    <meta name="generator" content="docfx 2.41.0.0">
+    <meta name="generator" content="docfx 2.42.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -91,19 +91,19 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_List_MethodBase__Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.%23ctor(Harmony.HarmonyInstance%2CList%7BMethodBase%7D%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_List_MethodBase__Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.%23ctor(Harmony.HarmonyInstance%2CList%7BMethodBase%7D%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod%2CHarmony.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L48">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L51">View Source</a>
   </span>
   <a id="Harmony_PatchProcessor__ctor_" data-uid="Harmony.PatchProcessor.#ctor*"></a>
-  <h4 id="Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_List_MethodBase__Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_" data-uid="Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,List{MethodBase},Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)">PatchProcessor(HarmonyInstance, List&lt;MethodBase&gt;, HarmonyMethod, HarmonyMethod, HarmonyMethod)</h4>
+  <h4 id="Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_List_MethodBase__Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_Harmony_HarmonyMethod_" data-uid="Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,List{MethodBase},Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod,Harmony.HarmonyMethod)">PatchProcessor(HarmonyInstance, List&lt;MethodBase&gt;, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)</h4>
   <div class="markdown level1 summary"><p>Creates a patch processor</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PatchProcessor(HarmonyInstance instance, List&lt;MethodBase&gt; originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public PatchProcessor(HarmonyInstance instance, List&lt;MethodBase&gt; originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -145,6 +145,12 @@
         <td><p>The optional transpiler.</p>
 </td>
       </tr>
+      <tr>
+        <td><a class="xref" href="Harmony.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><span class="parametername">finalizer</span></td>
+        <td><p>The optional finalizer.</p>
+</td>
+      </tr>
     </tbody>
   </table>
   <span class="small pull-right mobile-hide">
@@ -152,7 +158,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_Type_Harmony_HarmonyMethod_.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.%23ctor(Harmony.HarmonyInstance%2CType%2CHarmony.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L29">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L30">View Source</a>
   </span>
   <a id="Harmony_PatchProcessor__ctor_" data-uid="Harmony.PatchProcessor.#ctor*"></a>
   <h4 id="Harmony_PatchProcessor__ctor_Harmony_HarmonyInstance_Type_Harmony_HarmonyMethod_" data-uid="Harmony.PatchProcessor.#ctor(Harmony.HarmonyInstance,Type,Harmony.HarmonyMethod)">PatchProcessor(HarmonyInstance, Type, HarmonyMethod)</h4>
@@ -200,7 +206,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor_AllPatchedMethods.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.AllPatchedMethods%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L75">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L79">View Source</a>
   </span>
   <a id="Harmony_PatchProcessor_AllPatchedMethods_" data-uid="Harmony.PatchProcessor.AllPatchedMethods*"></a>
   <h4 id="Harmony_PatchProcessor_AllPatchedMethods" data-uid="Harmony.PatchProcessor.AllPatchedMethods">AllPatchedMethods()</h4>
@@ -232,7 +238,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor_GetPatchInfo_MethodBase_.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.GetPatchInfo(MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L62">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L66">View Source</a>
   </span>
   <a id="Harmony_PatchProcessor_GetPatchInfo_" data-uid="Harmony.PatchProcessor.GetPatchInfo*"></a>
   <h4 id="Harmony_PatchProcessor_GetPatchInfo_MethodBase_" data-uid="Harmony.PatchProcessor.GetPatchInfo(MethodBase)">GetPatchInfo(MethodBase)</h4>
@@ -282,7 +288,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor_Patch.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.Patch%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L86">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L90">View Source</a>
   </span>
   <a id="Harmony_PatchProcessor_Patch_" data-uid="Harmony.PatchProcessor.Patch*"></a>
   <h4 id="Harmony_PatchProcessor_Patch" data-uid="Harmony.PatchProcessor.Patch">Patch()</h4>
@@ -314,7 +320,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor_Unpatch_Harmony_HarmonyPatchType_System_String_.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.Unpatch(Harmony.HarmonyPatchType%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L121">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L126">View Source</a>
   </span>
   <a id="Harmony_PatchProcessor_Unpatch_" data-uid="Harmony.PatchProcessor.Unpatch*"></a>
   <h4 id="Harmony_PatchProcessor_Unpatch_Harmony_HarmonyPatchType_System_String_" data-uid="Harmony.PatchProcessor.Unpatch(Harmony.HarmonyPatchType,System.String)">Unpatch(HarmonyPatchType, String)</h4>
@@ -354,7 +360,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=Harmony_PatchProcessor_Unpatch_MethodInfo_.md&amp;value=---%0Auid%3A%20Harmony.PatchProcessor.Unpatch(MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L146">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L153">View Source</a>
   </span>
   <a id="Harmony_PatchProcessor_Unpatch_" data-uid="Harmony.PatchProcessor.Unpatch*"></a>
   <h4 id="Harmony_PatchProcessor_Unpatch_MethodInfo_" data-uid="Harmony.PatchProcessor.Unpatch(MethodInfo)">Unpatch(MethodInfo)</h4>
