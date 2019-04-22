@@ -143,7 +143,7 @@ namespace HarmonyTests.Assets
 			}
 			log = log + ",end";
 			return;
-			ending:
+		ending:
 			log = log + ",fail";
 		}
 	}
@@ -249,8 +249,9 @@ namespace HarmonyTests.Assets
 			};
 		}
 	}
-	
-	public struct TestStruct {
+
+	public struct TestStruct
+	{
 		public long a;
 		public long b;
 	}
@@ -300,7 +301,7 @@ namespace HarmonyTests.Assets
 			return string.Format("foobar");
 		}
 	}
-	
+
 	public class Class9Patch
 	{
 		public static void Prefix(out object __state)
@@ -308,7 +309,7 @@ namespace HarmonyTests.Assets
 			__state = null;
 		}
 
-		public static void Postfix(int __state)
+		public static void Postfix(object __state)
 		{
 
 		}

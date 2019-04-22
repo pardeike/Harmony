@@ -10,7 +10,7 @@ namespace Harmony
 	public class CodeMatch
 	{
 		/// <summary>The name of the match</summary>
-		public string name = null;
+		public string name;
 
 		/// <summary>The matched opcodes</summary>
 		public List<OpCode> opcodes = new List<OpCode>();
@@ -27,7 +27,7 @@ namespace Harmony
 		public List<int> jumpsTo = new List<int>();
 
 		/// <summary>The match predicate</summary>
-		public Func<CodeInstruction, bool> predicate = null;
+		public Func<CodeInstruction, bool> predicate;
 
 		/// <summary>Creates a code match</summary>
 		/// <param name="opcode">The optional opcode</param>
@@ -119,9 +119,9 @@ namespace Harmony
 		///
 		public int Pos { get; private set; } = -1;
 		Dictionary<string, CodeInstruction> lastMatches = new Dictionary<string, CodeInstruction>();
-		string lastError = null;
-		bool lastUseEnd = false;
-		CodeMatch[] lastCodeMatches = null;
+		string lastError;
+		bool lastUseEnd;
+		CodeMatch[] lastCodeMatches;
 
 		void FixStart() { Pos = Math.Max(0, Pos); }
 		void SetOutOfBounds(int direction) { Pos = direction > 0 ? Length : -1; }

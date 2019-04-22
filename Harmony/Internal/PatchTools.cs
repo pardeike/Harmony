@@ -28,11 +28,12 @@ namespace Harmony
 		}
 
 		[UpgradeToLatestVersion(1)]
-		internal static void GetPatches(Type patchType, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo transpiler)
+		internal static void GetPatches(Type patchType, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo transpiler, out MethodInfo finalizer)
 		{
 			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix");
 			postfix = GetPatchMethod<HarmonyPostfix>(patchType, "Postfix");
 			transpiler = GetPatchMethod<HarmonyTranspiler>(patchType, "Transpiler");
+			finalizer = GetPatchMethod<HarmonyFinalizer>(patchType, "Finalizer");
 		}
 	}
 }

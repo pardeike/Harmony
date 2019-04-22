@@ -18,7 +18,7 @@ namespace Harmony
 		public static char indentChar = '\t';
 
 		/// <summary>The indent level</summary>
-		public static int indentLevel = 0;
+		public static int indentLevel;
 
 		/// <summary>A buffer</summary>
 		static List<string> buffer = new List<string>();

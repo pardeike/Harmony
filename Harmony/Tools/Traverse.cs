@@ -153,7 +153,7 @@ namespace Harmony
 		public T GetValue<T>()
 		{
 			var value = GetValue();
-			if (value == null) return default(T);
+			if (value == null) return default;
 			return (T)value;
 		}
 
@@ -219,7 +219,7 @@ namespace Harmony
 		///
 		public Traverse Type(string name)
 		{
-			if (name == null) throw new ArgumentNullException("name cannot be null");
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			if (_type == null) return new Traverse();
 			var type = AccessTools.Inner(_type, name);
 			if (type == null) return new Traverse();
@@ -232,7 +232,7 @@ namespace Harmony
 		///
 		public Traverse Field(string name)
 		{
-			if (name == null) throw new ArgumentNullException("name cannot be null");
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetFieldInfo(resolved._type, name);
@@ -267,7 +267,7 @@ namespace Harmony
 		///
 		public Traverse Property(string name, object[] index = null)
 		{
-			if (name == null) throw new ArgumentNullException("name cannot be null");
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
 			if (resolved._root == null || resolved._type == null) return new Traverse();
 			var info = Cache.GetPropertyInfo(resolved._type, name);
@@ -302,7 +302,7 @@ namespace Harmony
 		///
 		public Traverse Method(string name, params object[] arguments)
 		{
-			if (name == null) throw new ArgumentNullException("name cannot be null");
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
@@ -319,7 +319,7 @@ namespace Harmony
 		///
 		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
 		{
-			if (name == null) throw new ArgumentNullException("name cannot be null");
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
 			if (resolved._type == null) return new Traverse();
 			var method = Cache.GetMethodInfo(resolved._type, name, paramTypes);

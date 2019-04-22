@@ -17,12 +17,12 @@ namespace Harmony
 		public string Id => id;
 
 		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
-		public static bool DEBUG = false;
+		public static bool DEBUG;
 
 		/// <summary>Set to false before instantiating Harmony to prevent Harmony from patching other older instances of itself</summary>
 		public static bool SELF_PATCHING = true;
 
-		static bool selfPatchingDone = false;
+		static bool selfPatchingDone;
 
 		HarmonyInstance(string id)
 		{
@@ -31,12 +31,12 @@ namespace Harmony
 				var assembly = typeof(HarmonyInstance).Assembly;
 				var version = assembly.GetName().Version;
 				var location = assembly.Location;
-				if (location == null || location == "") location = new Uri(assembly.CodeBase).LocalPath;
+				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 				FileLog.Log("### Harmony id=" + id + ", version=" + version + ", location=" + location);
 				var callingMethod = GetOutsideCaller();
 				var callingAssembly = callingMethod.DeclaringType.Assembly;
 				location = callingAssembly.Location;
-				if (location == null || location == "") location = new Uri(callingAssembly.CodeBase).LocalPath;
+				if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
 				FileLog.Log("### Started from " + callingMethod.FullDescription() + ", location " + location);
 				FileLog.Log("### At " + DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss"));
 			}
@@ -88,7 +88,7 @@ namespace Harmony
 		public PatchProcessor ProcessorForAnnotatedClass(Type type)
 		{
 			var parentMethodInfos = HarmonyMethodExtensions.GetFromType(type);
-			if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
+			if (parentMethodInfos != null && parentMethodInfos.Any())
 			{
 				var info = HarmonyMethod.Merge(parentMethodInfos);
 				return new PatchProcessor(this, type, info);
@@ -109,11 +109,12 @@ namespace Harmony
 		/// <param name="prefix">An optional prefix method wrapped in a HarmonyMethod object</param>
 		/// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
 		/// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
+		/// <param name="finalizer">An optional finalizer method wrapped in a HarmonyMethod object</param>
 		/// <returns>The dynamic method that was created to patch the original method</returns>
 		///
-		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
-			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler);
+			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler, finalizer);
 			return processor.Patch().FirstOrDefault();
 		}
 
@@ -131,6 +132,7 @@ namespace Harmony
 				info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
 				info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
 				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
+				info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
 			}
 		}
 
@@ -206,12 +208,13 @@ namespace Harmony
 				info.prefixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 				info.postfixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 				info.transpilers.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
+				info.finalizers.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
 			});
 
 			var result = new Dictionary<string, Version>();
 			assemblies.Do(info =>
 			{
-				var assemblyName = info.Value.GetReferencedAssemblies().FirstOrDefault(a => a.FullName.StartsWith("0Harmony, Version"));
+				var assemblyName = info.Value.GetReferencedAssemblies().FirstOrDefault(a => a.FullName.StartsWith("0Harmony, Version", StringComparison.Ordinal));
 				if (assemblyName != null)
 					result[info.Key] = assemblyName.Version;
 			});

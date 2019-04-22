@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -65,12 +64,11 @@ namespace Harmony
 
 		/// <summary>Compare function to sort patch priorities</summary>
 		/// <param name="obj">The patch</param>
-		/// <param name="owner">The owner</param>
 		/// <param name="index">Zero-based index</param>
 		/// <param name="priority">The priority</param>
 		/// <returns>A standard sort integer (-1, 0, 1)</returns>
 		///
-		internal static int PriorityComparer(object obj, string owner, int index, int priority)
+		internal static int PriorityComparer(object obj, int index, int priority)
 		{
 			var trv = Traverse.Create(obj);
 			var theirPriority = trv.Field("priority").GetValue<int>();
@@ -93,6 +91,8 @@ namespace Harmony
 		public Patch[] postfixes;
 		/// <summary>The transpilers</summary>
 		public Patch[] transpilers;
+		/// <summary>The finalizers</summary>
+		public Patch[] finalizers;
 
 		/// <summary>Default constructor</summary>
 		public PatchInfo()
@@ -100,6 +100,7 @@ namespace Harmony
 			prefixes = new Patch[0];
 			postfixes = new Patch[0];
 			transpilers = new Patch[0];
+			finalizers = new Patch[0];
 		}
 
 		/// <summary>Adds a prefix</summary>
@@ -183,6 +184,33 @@ namespace Harmony
 			transpilers = transpilers.Where(patch => patch.owner != owner).ToArray();
 		}
 
+		/// <summary>Adds a finalizer</summary>
+		/// <param name="patch">The patch</param>
+		/// <param name="owner">The owner (Harmony ID)</param>
+		/// <param name="priority">The priority</param>
+		/// <param name="before">The before parameter</param>
+		/// <param name="after">The after parameter</param>
+		///
+		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after)
+		{
+			var l = finalizers.ToList();
+			l.Add(new Patch(patch, finalizers.Count() + 1, owner, priority, before, after));
+			finalizers = l.ToArray();
+		}
+
+		/// <summary>Removes a finalizer</summary>
+		/// <param name="owner">The owner or (*) for any</param>
+		///
+		public void RemoveFinalizer(string owner)
+		{
+			if (owner == "*")
+			{
+				finalizers = new Patch[0];
+				return;
+			}
+			finalizers = finalizers.Where(patch => patch.owner != owner).ToArray();
+		}
+
 		/// <summary>Removes a patch</summary>
 		/// <param name="patch">The patch method</param>
 		///
@@ -191,6 +219,7 @@ namespace Harmony
 			prefixes = prefixes.Where(p => p.patch != patch).ToArray();
 			postfixes = postfixes.Where(p => p.patch != patch).ToArray();
 			transpilers = transpilers.Where(p => p.patch != patch).ToArray();
+			finalizers = finalizers.Where(p => p.patch != patch).ToArray();
 		}
 	}
 
@@ -263,7 +292,7 @@ namespace Harmony
 		///
 		public int CompareTo(object obj)
 		{
-			return PatchInfoSerialization.PriorityComparer(obj, owner, index, priority);
+			return PatchInfoSerialization.PriorityComparer(obj, index, priority);
 		}
 
 		/// <summary>Hash function</summary>

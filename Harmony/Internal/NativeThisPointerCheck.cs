@@ -39,19 +39,25 @@ namespace Harmony
 		struct SomeStruct
 		{
 #pragma warning disable CS0169
+#pragma warning disable IDE0051
 			readonly byte b1;
 			readonly byte b2;
 			readonly byte b3;
+#pragma warning restore IDE0051
 #pragma warning restore CS0169
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
+#pragma warning disable RECS0154
 		SomeStruct GetStruct(IntPtr x, IntPtr y)
 		{
 			throw new Exception("This method should've been detoured!");
 		}
+#pragma warning restore RECS0154
 
-		static unsafe void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
+#pragma warning disable RECS0154
+#pragma warning disable IDE0051
+		static void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
 		{
 			// Normal argument order:
 			// this, a, b
@@ -61,5 +67,7 @@ namespace Harmony
 
 			hasNativeThis = a == magicValue && b == magicValue;
 		}
+#pragma warning restore IDE0051
+#pragma warning restore RECS0154
 	}
 }

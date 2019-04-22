@@ -30,7 +30,7 @@ namespace Harmony
 	public delegate T InstantiationHandler<out T>();
 
 	/// <summary>A helper class for fast access to getters and setters</summary>
-	public class FastAccess
+	public static class FastAccess
 	{
 		/// <summary>Creates an instantiation delegate</summary>
 		/// <typeparam name="T">Type that constructor creates</typeparam>

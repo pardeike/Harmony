@@ -41,7 +41,9 @@ namespace Harmony
 		/// <summary>A postfix patch</summary>
 		Postfix,
 		/// <summary>A transpiler</summary>
-		Transpiler
+		Transpiler,
+		/// <summary>A finalizer</summary>
+		Finalizer
 	}
 
 	/// <summary>The base class for all Harmony annotations (not meant to be used directly)</summary>
@@ -265,6 +267,8 @@ namespace Harmony
 				var type = argumentTypes[i];
 				switch (argumentVariations[i])
 				{
+					case ArgumentType.Normal:
+						break;
 					case ArgumentType.Ref:
 					case ArgumentType.Out:
 						type = type.MakeByRefType();
@@ -279,14 +283,10 @@ namespace Harmony
 		}
 	}
 
-	/// <summary>A Harmony annotation</summary>
+	/// <summary>A Harmony annotation to define that all methods in a class are to be patched</summary>
 	[AttributeUsage(AttributeTargets.Class)]
 	public class HarmonyPatchAll : HarmonyAttribute
 	{
-		/// <summary>A Harmony annotation to define that all methods in a class are to be patched</summary>
-		public HarmonyPatchAll()
-		{
-		}
 	}
 
 	/// <summary>A Harmony annotation</summary>
@@ -367,6 +367,12 @@ namespace Harmony
 	/// <summary>Specifies the Transpiler function in a patch class</summary>
 	[AttributeUsage(AttributeTargets.Method)]
 	public class HarmonyTranspiler : Attribute
+	{
+	}
+
+	/// <summary>Specifies the Finalizer function in a patch class</summary>
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyFinalizer : Attribute
 	{
 	}
 

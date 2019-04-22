@@ -1,12 +1,12 @@
+/*
+ * TODO - this needs to be worked on. The purpose is to decode the signature into
+ *        a high level reflection based calling signature that is valid in the
+ *        current assembly
+ *
+ *        See also where OperandType.InlineSig is handled in MethodCopier.cs
+ * 
 namespace Harmony
 {
-	/*
-	 * TODO - this needs to be worked on. The purpose is to decode the signature into
-	 *        a high level reflection based calling signature that is valid in the
-	 *        current assembly
-	 *
-	 *        See also where OperandType.InlineSig is handled in MethodCopier.cs
-	 * 
 	public static class Signature
 	{
 		internal const byte DEFAULT = 0x00;
@@ -258,5 +258,5 @@ namespace Harmony
 			}
 		}
 	}
-	*/
 }
+*/

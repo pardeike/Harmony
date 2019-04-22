@@ -9,39 +9,41 @@ namespace Harmony
 	internal static class MethodPatcher
 	{
 		/// special parameter names that can be used in prefix and postfix methods
-		
+
 		public static string INSTANCE_PARAM = "__instance";
 		public static string ORIGINAL_METHOD_PARAM = "__originalMethod";
 		public static string RESULT_VAR = "__result";
 		public static string STATE_VAR = "__state";
+		public static string EXCEPTION_VAR = "__exception";
 		public static string PARAM_INDEX_PREFIX = "__";
 		public static string INSTANCE_FIELD_PREFIX = "___";
-		
+
 		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
-			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.1", prefixes, postfixes, transpilers);
+			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.1", prefixes, postfixes, transpilers, new List<MethodInfo>());
 		}
-		
+
 		[UpgradeToLatestVersion(1)]
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
 		{
-			Memory.MarkForNoInlining(original);
-
-			if (original == null)
-				throw new ArgumentNullException(nameof(original), "Original method is null. Did you specify it correctly?");
-
 			try
 			{
+				if (original == null)
+					throw new ArgumentNullException(nameof(original));
+
+				Memory.MarkForNoInlining(original);
+
 				if (HarmonyInstance.DEBUG)
 				{
 					FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
 					FileLog.FlushBuffer();
 				}
 
-				var idx = prefixes.Count() + postfixes.Count();
+				var idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
 				var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 				var returnType = AccessTools.GetReturnedType(original);
+				var hasFinalizers = finalizers.Any();
 				var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
 				if (patch == null)
 					return null;
@@ -58,7 +60,7 @@ namespace Harmony
 					privateVars[RESULT_VAR] = resultVariable;
 				}
 
-				prefixes.Union(postfixes).ToList().ForEach(fix =>
+				prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
 				{
 					if (privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
 					{
@@ -72,8 +74,20 @@ namespace Harmony
 					}
 				});
 
-				if (firstArgIsReturnBuffer)
-					Emitter.Emit(il, original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
+				LocalBuilder finalizedVariable = null;
+				if (hasFinalizers)
+				{
+					finalizedVariable = DynamicTools.DeclareLocalVariable(il, typeof(bool));
+
+					privateVars[EXCEPTION_VAR] = DynamicTools.DeclareLocalVariable(il, typeof(Exception));
+
+					// begin try
+					Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
+				}
+
+				// TODO: verify correct usage
+				// if (firstArgIsReturnBuffer)
+				// 	Emitter.Emit(il, original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
 
 				var skipOriginalLabel = il.DefineLabel();
 				var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, skipOriginalLabel);
@@ -83,13 +97,10 @@ namespace Harmony
 					copier.AddTranspiler(transpiler);
 
 				var endLabels = new List<Label>();
-				var endBlocks = new List<ExceptionBlock>();
-				copier.Finalize(endLabels, endBlocks);
+				copier.Finalize(endLabels);
 
 				foreach (var label in endLabels)
 					Emitter.MarkLabel(il, label);
-				foreach (var block in endBlocks)
-					Emitter.MarkBlockAfter(il, block);
 				if (resultVariable != null)
 					Emitter.Emit(il, OpCodes.Stloc, resultVariable);
 				if (canHaveJump)
@@ -102,8 +113,52 @@ namespace Harmony
 
 				AddPostfixes(il, original, postfixes, privateVars, true);
 
-				if (firstArgIsReturnBuffer)
-					Emitter.Emit(il, OpCodes.Stobj, returnType);
+				if (hasFinalizers)
+				{
+					AddFinalizers(il, original, finalizers, privateVars, false);
+					Emitter.Emit(il, OpCodes.Ldc_I4_1);
+					Emitter.Emit(il, OpCodes.Stloc, finalizedVariable);
+					var noExceptionLabel1 = il.DefineLabel();
+					Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+					Emitter.Emit(il, OpCodes.Brfalse, noExceptionLabel1);
+					Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+					Emitter.Emit(il, OpCodes.Throw);
+					Emitter.MarkLabel(il, noExceptionLabel1);
+
+					// end try, begin catch
+					Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
+					Emitter.Emit(il, OpCodes.Stloc, privateVars[EXCEPTION_VAR]);
+
+					Emitter.Emit(il, OpCodes.Ldloc, finalizedVariable);
+					var endFinalizerLabel = il.DefineLabel();
+					Emitter.Emit(il, OpCodes.Brtrue, endFinalizerLabel);
+
+					var rethrowPossible = AddFinalizers(il, original, finalizers, privateVars, true);
+
+					Emitter.MarkLabel(il, endFinalizerLabel);
+
+					var noExceptionLabel2 = il.DefineLabel();
+					Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+					Emitter.Emit(il, OpCodes.Brfalse, noExceptionLabel2);
+					if (rethrowPossible)
+						Emitter.Emit(il, OpCodes.Rethrow);
+					else
+					{
+						Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+						Emitter.Emit(il, OpCodes.Throw);
+					}
+					Emitter.MarkLabel(il, noExceptionLabel2);
+
+					// end catch
+					Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+
+					if (resultVariable != null)
+						Emitter.Emit(il, OpCodes.Ldloc, resultVariable);
+				}
+
+				// TODO: verify correct usage
+				// if (firstArgIsReturnBuffer)
+				// 	Emitter.Emit(il, OpCodes.Stobj, returnType);
 
 				Emitter.Emit(il, OpCodes.Ret);
 
@@ -153,7 +208,7 @@ namespace Harmony
 
 		static HarmonyArgument[] AllHarmonyArguments(object[] attributes)
 		{
-			return attributes.Select(attr => 
+			return attributes.Select(attr =>
 			{
 				if (attr.GetType().Name != nameof(HarmonyArgument)) return null;
 				return AccessTools.MakeDeepCopy<HarmonyArgument>(attr);
@@ -287,7 +342,7 @@ namespace Harmony
 				{
 					if (original.IsStatic)
 						Emitter.Emit(il, OpCodes.Ldnull);
-					else 
+					else
 					{
 						var instanceIsRef = AccessTools.IsStruct(original.DeclaringType);
 						var parameterIsRef = patchParam.ParameterType.IsByRef;
@@ -308,7 +363,7 @@ namespace Harmony
 					continue;
 				}
 
-				if (patchParam.Name.StartsWith(INSTANCE_FIELD_PREFIX))
+				if (patchParam.Name.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal))
 				{
 					var fieldName = patchParam.Name.Substring(INSTANCE_FIELD_PREFIX.Length);
 					FieldInfo fieldInfo;
@@ -335,6 +390,7 @@ namespace Harmony
 					continue;
 				}
 
+				// state is special too since each patch has its own local var
 				if (patchParam.Name == STATE_VAR)
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
@@ -345,6 +401,7 @@ namespace Harmony
 					continue;
 				}
 
+				// treat __result var special
 				if (patchParam.Name == RESULT_VAR)
 				{
 					var returnType = AccessTools.GetReturnedType(original);
@@ -360,8 +417,16 @@ namespace Harmony
 					continue;
 				}
 
+				// any other declared variables
+				if (variables.TryGetValue(patchParam.Name, out var localBuilder))
+				{
+					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
+					Emitter.Emit(il, ldlocCode, localBuilder);
+					continue;
+				}
+
 				int idx;
-				if (patchParam.Name.StartsWith(PARAM_INDEX_PREFIX))
+				if (patchParam.Name.StartsWith(PARAM_INDEX_PREFIX, StringComparison.Ordinal))
 				{
 					var val = patchParam.Name.Substring(PARAM_INDEX_PREFIX.Length);
 					if (!int.TryParse(val, out idx))
@@ -448,6 +513,32 @@ namespace Harmony
 					}
 				});
 		}
+
+		static bool AddFinalizers(ILGenerator il, MethodBase original, List<MethodInfo> finalizers, Dictionary<string, LocalBuilder> variables, bool catchExceptions)
+		{
+			var rethrowPossible = true;
+			finalizers
+				.Do(fix =>
+				{
+					if (catchExceptions)
+						Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
+
+					EmitCallParameter(il, original, fix, variables, false);
+					Emitter.Emit(il, OpCodes.Call, fix);
+					if (fix.ReturnType != typeof(void))
+					{
+						Emitter.Emit(il, OpCodes.Stloc, variables[EXCEPTION_VAR]);
+						rethrowPossible = false;
+					}
+
+					if (catchExceptions)
+					{
+						Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out _);
+						Emitter.Emit(il, OpCodes.Pop);
+						Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+					}
+				});
+			return rethrowPossible;
+		}
 	}
 }
- 

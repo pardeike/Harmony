@@ -1,5 +1,9 @@
 version: 1.0.{build}
 
+#########################################################################
+### TODO: this fails because AppVeyor has no Visual Studio 2019 image yet
+#########################################################################
+
 max_jobs: 1
 image: Visual Studio 2017
 configuration: Release

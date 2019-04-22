@@ -85,6 +85,31 @@ namespace Harmony
 			patchInfo.RemoveTranspiler(owner);
 		}
 
+		/// <summary>Adds a finalizer</summary>
+		/// <param name="patchInfo">The patch info</param>
+		/// <param name="owner">The owner (Harmony ID)</param>
+		/// <param name="info">The annotation info</param>
+		///
+		internal static void AddFinalizer(PatchInfo patchInfo, string owner, HarmonyMethod info)
+		{
+			if (info == null || info.method == null) return;
+
+			var priority = info.priority == -1 ? Priority.Normal : info.priority;
+			var before = info.before ?? new string[0];
+			var after = info.after ?? new string[0];
+
+			patchInfo.AddFinalizer(info.method, owner, priority, before, after);
+		}
+
+		/// <summary>Removes a finalizer</summary>
+		/// <param name="patchInfo">The patch info</param>
+		/// <param name="owner">The owner (Harmony ID)</param>
+		///
+		internal static void RemoveFinalizer(PatchInfo patchInfo, string owner)
+		{
+			patchInfo.RemoveFinalizer(owner);
+		}
+
 		/// <summary>Removes a patch method</summary>
 		/// <param name="patchInfo">The patch info</param>
 		/// <param name="patch">The patch method</param>
@@ -125,8 +150,9 @@ namespace Harmony
 			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes);
 			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes);
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers);
+			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers);
 
-			var replacement = MethodPatcher.CreatePatchedMethod(original, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers);
+			var replacement = MethodPatcher.CreatePatchedMethod(original, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
 			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original.FullDescription());
 
 			var errorString = Memory.DetourMethod(original, replacement);

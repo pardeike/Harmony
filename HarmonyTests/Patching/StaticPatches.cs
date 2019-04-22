@@ -186,7 +186,6 @@ namespace HarmonyTests
 			Assert.IsTrue(Class5Patch.postfixed, "Prefix was not executed");
 		}
 
-		/* fails during travis-ci testing, so disabled for now 
 		[Test]
 		public void TestPatchUnpatch()
 		{
@@ -213,7 +212,6 @@ namespace HarmonyTests
 
 			instanceB.UnpatchAll("test");
 		}
-		*/
 
 		[Test]
 		public void TestAttributes()
