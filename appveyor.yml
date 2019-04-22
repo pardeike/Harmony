@@ -1,8 +1,19 @@
 version: 1.0.{build}
 
 max_jobs: 1
-image: Visual Studio 2019
+image: Visual Studio 2017
 configuration: Release
+
+install:
+- ps: |
+    Write-Host "Installing .NET Core SDK..." -ForegroundColor Cyan
+    Write-Host "Downloading..."
+    $exePath = "$env:TEMP\dotnet-sdk.exe"
+    (New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/a7e73d05-4e75-4543-ac41-fc69d2f617e5/3f65a44f90c9df66664b44e86b0e6d29/dotnet-sdk-3.0.100-preview-010184-win-x64.exe', $exePath)
+    Write-Host "Installing..."
+    cmd /c start /wait "$exePath" /quiet /norestart
+    del $exePath
+    Write-Host "Installed" -ForegroundColor Green
 
 before_build:
 - nuget restore
