@@ -56,6 +56,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 - Total Miner
 - Ravenfield
 - The Ultimate Nerd Game
+- Unturned
 
 It is also used in unit testing Windows Presentation Foundation controls and in many other areas.
 
