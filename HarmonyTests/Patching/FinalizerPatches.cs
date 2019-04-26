@@ -171,8 +171,6 @@ namespace HarmonyLibTests
 		[SetUp]
 		public void SetUp()
 		{
-			Harmony.DEBUG = true;
-
 			var testMethod = TestContext.CurrentContext.Test.Name;
 			var parts = testMethod.Split('_');
 			var originalType = AccessTools.TypeByName("HarmonyLibTests.Assets." + parts[1]);
