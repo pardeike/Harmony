@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	internal static class MethodPatcher
 	{
@@ -18,13 +18,11 @@ namespace Harmony
 		public static string PARAM_INDEX_PREFIX = "__";
 		public static string INSTANCE_FIELD_PREFIX = "___";
 
-		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
 		{
 			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.1", prefixes, postfixes, transpilers, new List<MethodInfo>());
 		}
 
-		[UpgradeToLatestVersion(1)]
 		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
 		{
 			try
@@ -34,7 +32,7 @@ namespace Harmony
 
 				Memory.MarkForNoInlining(original);
 
-				if (HarmonyInstance.DEBUG)
+				if (Harmony.DEBUG)
 				{
 					FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
 					FileLog.FlushBuffer();
@@ -162,7 +160,7 @@ namespace Harmony
 
 				Emitter.Emit(il, OpCodes.Ret);
 
-				if (HarmonyInstance.DEBUG)
+				if (Harmony.DEBUG)
 				{
 					FileLog.LogBuffered("DONE");
 					FileLog.LogBuffered("");
@@ -175,13 +173,13 @@ namespace Harmony
 			catch (Exception ex)
 			{
 				var exceptionString = "Exception from HarmonyInstance \"" + harmonyInstanceID + "\" patching " + original.FullDescription();
-				if (HarmonyInstance.DEBUG)
+				if (Harmony.DEBUG)
 					FileLog.Log("Exception: " + exceptionString);
 				throw new Exception(exceptionString, ex);
 			}
 			finally
 			{
-				if (HarmonyInstance.DEBUG)
+				if (Harmony.DEBUG)
 					FileLog.FlushBuffer();
 			}
 		}
@@ -217,14 +215,12 @@ namespace Harmony
 			.ToArray();
 		}
 
-		[UpgradeToLatestVersion(1)]
 		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
 			var attributes = parameter.GetCustomAttributes(false);
 			return AllHarmonyArguments(attributes).FirstOrDefault();
 		}
 
-		[UpgradeToLatestVersion(1)]
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
 			if (method == null) return new HarmonyArgument[0];
@@ -232,7 +228,6 @@ namespace Harmony
 			return AllHarmonyArguments(attributes);
 		}
 
-		[UpgradeToLatestVersion(1)]
 		static HarmonyArgument[] GetArgumentAttributes(this Type type)
 		{
 			var attributes = type.GetCustomAttributes(false);
@@ -303,7 +298,6 @@ namespace Harmony
 
 		static readonly MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 
-		[UpgradeToLatestVersion(1)]
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
 			var isInstance = original.IsStatic == false;

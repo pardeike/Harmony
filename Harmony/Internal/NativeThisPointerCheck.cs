@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	// A test for https://github.com/dotnet/coreclr/blob/master/Documentation/botr/clr-abi.md
 	//
@@ -19,7 +19,7 @@ namespace Harmony
 			return HasNativeThis();
 		}
 
-		static IntPtr magicValue = (IntPtr)0x12345678;
+		static readonly IntPtr magicValue = (IntPtr)0x12345678;
 		static bool hasTestResult, hasNativeThis;
 		static bool HasNativeThis()
 		{
@@ -30,7 +30,7 @@ namespace Harmony
 				var original = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStruct");
 				var replacement = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStructReplacement");
 				Memory.DetourMethod(original, replacement);
-				new NativeThisPointer().GetStruct(magicValue, magicValue);
+				self.GetStruct(magicValue, magicValue);
 				hasTestResult = true;
 			}
 			return hasNativeThis;
@@ -38,26 +38,28 @@ namespace Harmony
 
 		struct SomeStruct
 		{
-#pragma warning disable CS0169
 #pragma warning disable IDE0051
+#pragma warning disable CS0169
 			readonly byte b1;
 			readonly byte b2;
 			readonly byte b3;
-#pragma warning restore IDE0051
 #pragma warning restore CS0169
+#pragma warning restore IDE0051
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-#pragma warning disable RECS0154
+#pragma warning disable IDE0060
 		SomeStruct GetStruct(IntPtr x, IntPtr y)
+#pragma warning restore IDE0060
 		{
 			throw new Exception("This method should've been detoured!");
 		}
-#pragma warning restore RECS0154
 
-#pragma warning disable RECS0154
+#pragma warning disable IDE0060
 #pragma warning disable IDE0051
 		static void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
+#pragma warning restore IDE0051
+#pragma warning restore IDE0060
 		{
 			// Normal argument order:
 			// this, a, b
@@ -67,7 +69,5 @@ namespace Harmony
 
 			hasNativeThis = a == magicValue && b == magicValue;
 		}
-#pragma warning restore IDE0051
-#pragma warning restore RECS0154
 	}
 }

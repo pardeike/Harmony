@@ -1,11 +1,11 @@
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class StaticPatches
@@ -22,7 +22,7 @@ namespace HarmonyTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			var instance = HarmonyInstance.Create("test");
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix), null);
@@ -49,17 +49,17 @@ namespace HarmonyTests
 			Assert.IsNotNull(postfix);
 			Assert.IsNotNull(transpiler);
 
-			Class1Patch._reset();
+			Class1Patch.ResetTest();
 
-			var instance = HarmonyInstance.Create("test");
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix), new HarmonyMethod(transpiler));
 			Assert.IsNotNull(patcher);
 
-			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
+			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out _);
 			patcher.Patch();
-			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out exception);
+			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out _);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
 			{
@@ -92,17 +92,17 @@ namespace HarmonyTests
 			Assert.IsNotNull(postfix);
 			Assert.IsNotNull(transpiler);
 
-			Class2Patch._reset();
+			Class2Patch.ResetTest();
 
-			var instance = HarmonyInstance.Create("test");
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix), new HarmonyMethod(transpiler));
 			Assert.IsNotNull(patcher);
 
-			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
+			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out _);
 			patcher.Patch();
-			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out exception);
+			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out _);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
 			{
@@ -131,17 +131,17 @@ namespace HarmonyTests
 			var prefix = patchClass.GetMethod("Prefix");
 			Assert.IsNotNull(prefix);
 
-			Class4Patch._reset();
+			Class4Patch.ResetTest();
 
-			var instance = HarmonyInstance.Create("test");
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), null, null);
 			Assert.IsNotNull(patcher);
 
-			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out var exception);
+			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out _);
 			patcher.Patch();
-			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out exception);
+			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out _);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
 			{
@@ -172,9 +172,9 @@ namespace HarmonyTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			Class5Patch._reset();
+			Class5Patch.ResetTest();
 
-			var instance = HarmonyInstance.Create("test");
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
@@ -200,14 +200,14 @@ namespace HarmonyTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			var instanceA = HarmonyInstance.Create("test");
+			var instanceA = new Harmony("test");
 			Assert.IsNotNull(instanceA);
 
 			var patcher = new PatchProcessor(instanceA, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 			Assert.IsNotNull(patcher);
 			patcher.Patch();
 
-			var instanceB = HarmonyInstance.Create("test");
+			var instanceB = new Harmony("test");
 			Assert.IsNotNull(instanceB);
 
 			instanceB.UnpatchAll("test");
@@ -222,14 +222,14 @@ namespace HarmonyTests
 			var originalMethod = originalClass.GetMethod("Method");
 			Assert.IsNotNull(originalMethod);
 			Assert.AreEqual(originalMethod, AttributesPatch.Patch0());
-			
-			var instance = HarmonyInstance.Create("test");
+
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patchClass = typeof(AttributesPatch);
 			Assert.IsNotNull(patchClass);
 
-			AttributesPatch._reset();
+			AttributesPatch.ResetTest();
 
 			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
 			Assert.IsNotNull(patcher);
@@ -253,7 +253,7 @@ namespace HarmonyTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			var instance = HarmonyInstance.Create("test");
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix), null);

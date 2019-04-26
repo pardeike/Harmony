@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace HarmonyTests.Assets
+namespace HarmonyLibTests.Assets
 {
 	public class OriginalException : Exception { }
 	public class ReplacedException : Exception { }

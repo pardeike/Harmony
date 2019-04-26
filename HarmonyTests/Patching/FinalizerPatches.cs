@@ -1,11 +1,11 @@
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class FinalizerPatches
@@ -171,12 +171,12 @@ namespace HarmonyTests
 		[SetUp]
 		public void SetUp()
 		{
-			HarmonyInstance.DEBUG = true;
+			Harmony.DEBUG = true;
 
 			var testMethod = TestContext.CurrentContext.Test.Name;
 			var parts = testMethod.Split('_');
-			var originalType = AccessTools.TypeByName("HarmonyTests.Assets." + parts[1]);
-			var patchType = AccessTools.TypeByName("HarmonyTests.Assets." + parts[2]);
+			var originalType = AccessTools.TypeByName("HarmonyLibTests.Assets." + parts[1]);
+			var patchType = AccessTools.TypeByName("HarmonyLibTests.Assets." + parts[2]);
 
 			Assert.IsNotNull(originalType);
 			var originalMethod = originalType.GetMethod("Method");
@@ -185,14 +185,14 @@ namespace HarmonyTests
 			var finalizer = patchType.GetMethod("Finalizer");
 			Assert.IsNotNull(finalizer);
 
-			HarmonyInstance.SELF_PATCHING = false;
-			if (HarmonyInstance.DEBUG)
+			Harmony.SELF_PATCHING = false;
+			if (Harmony.DEBUG)
 			{
 				FileLog.Reset();
 				FileLog.Log("### Original: " + parts[1]);
 				FileLog.Log("### Patching: " + parts[2]);
 			}
-			var instance = HarmonyInstance.Create("test");
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, null, null, new HarmonyMethod(finalizer));
 			Assert.IsNotNull(patcher);

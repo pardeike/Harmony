@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A collection of commonly used transpilers</summary>
 	public static class Transpilers

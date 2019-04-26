@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	// Based on https://www.codeproject.com/Articles/14973/Dynamic-Code-Generation-vs-Reflection
 
@@ -157,12 +157,12 @@ namespace Harmony
 
 		static DynamicMethod CreateGetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethod("DynamicGet_" + type.Name, typeof(S), new Type[] {typeof(T)}, type, true);
+			return new DynamicMethod("DynamicGet_" + type.Name, typeof(S), new Type[] { typeof(T) }, type, true);
 		}
 
 		static DynamicMethod CreateSetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethod("DynamicSet_" + type.Name, typeof(void), new Type[] {typeof(T), typeof(S)}, type,
+			return new DynamicMethod("DynamicSet_" + type.Name, typeof(void), new Type[] { typeof(T), typeof(S) }, type,
 				true);
 		}
 	}

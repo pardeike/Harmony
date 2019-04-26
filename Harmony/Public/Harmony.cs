@@ -1,4 +1,3 @@
-using Harmony.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,15 +5,13 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>The Harmony instance is the main entry to Harmony. After creating one with an unique identifier, it is used to patch and query the current application domain</summary>
-	public class HarmonyInstance
+	public class Harmony
 	{
-		readonly string id;
-
 		/// <summary>The unique identifier</summary>
-		public string Id => id;
+		public string Id { get; private set; }
 
 		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
 		public static bool DEBUG;
@@ -24,16 +21,22 @@ namespace Harmony
 
 		static bool selfPatchingDone;
 
-		HarmonyInstance(string id)
+		/// <summary>Creates a new Harmony instance</summary>
+		/// <param name="id">A unique identifier</param>
+		/// <returns>A Harmony instance</returns>
+		///
+		public Harmony(string id)
 		{
+			if (string.IsNullOrEmpty(id)) throw new ArgumentException(nameof(id) + " cannot be null or empty");
+
 			if (DEBUG)
 			{
-				var assembly = typeof(HarmonyInstance).Assembly;
+				var assembly = typeof(Harmony).Assembly;
 				var version = assembly.GetName().Version;
 				var location = assembly.Location;
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 				FileLog.Log("### Harmony id=" + id + ", version=" + version + ", location=" + location);
-				var callingMethod = GetOutsideCaller();
+				var callingMethod = AccessTools.GetOutsideCaller();
 				var callingAssembly = callingMethod.DeclaringType.Assembly;
 				location = callingAssembly.Location;
 				if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
@@ -41,7 +44,7 @@ namespace Harmony
 				FileLog.Log("### At " + DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss"));
 			}
 
-			this.id = id;
+			Id = id;
 
 			if (!selfPatchingDone)
 			{
@@ -49,28 +52,6 @@ namespace Harmony
 				if (SELF_PATCHING)
 					SelfPatching.PatchOldHarmonyMethods();
 			}
-		}
-
-		/// <summary>Creates a new Harmony instance</summary>
-		/// <param name="id">A unique identifier</param>
-		/// <returns>A Harmony instance</returns>
-		///
-		public static HarmonyInstance Create(string id)
-		{
-			if (string.IsNullOrEmpty(id)) throw new ArgumentException("id cannot be null or empty");
-			return new HarmonyInstance(id);
-		}
-
-		MethodBase GetOutsideCaller()
-		{
-			var trace = new StackTrace(true);
-			foreach (var frame in trace.GetFrames())
-			{
-				var method = frame.GetMethod();
-				if (method.DeclaringType.Namespace != typeof(HarmonyInstance).Namespace)
-					return method;
-			}
-			throw new Exception("Unexpected end of stack trace");
 		}
 
 		/// <summary>Searches current assembly for Harmony annotations and uses them to create patches</summary>
@@ -200,7 +181,7 @@ namespace Harmony
 		///
 		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{
-			currentVersion = typeof(HarmonyInstance).Assembly.GetName().Version;
+			currentVersion = typeof(Harmony).Assembly.GetName().Version;
 			var assemblies = new Dictionary<string, Assembly>();
 			GetAllPatchedMethods().Do(method =>
 			{

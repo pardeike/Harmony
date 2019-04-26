@@ -1,23 +1,24 @@
 using System.Linq;
 using System.Reflection;
-using Harmony;
-using Harmony.Internal;
+using HarmonyLib;
 using NUnit.Framework;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class PatchSorting
 	{
-		void Patch1(){}
-		void Patch2(){}
-		void Patch3(){}
-		void Patch4(){}
-		void Patch5(){}
-		void Patch6(){}
-		void Patch7(){}
-		void Patch8(){}
-		void Patch9(){}
+#pragma warning disable IDE0051
+		void Patch1() { }
+		void Patch2() { }
+		void Patch3() { }
+		void Patch4() { }
+		void Patch5() { }
+		void Patch6() { }
+		void Patch7() { }
+		void Patch8() { }
+		void Patch9() { }
+#pragma warning restore IDE0051
 
 		[Test]
 		public void PatchOrder_SamePriorities()
@@ -33,7 +34,7 @@ namespace HarmonyTests
 				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0])
 			};
 
-			var expectedOrder = new[] {0, 1, 2};
+			var expectedOrder = new[] { 0, 1, 2 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
@@ -45,7 +46,7 @@ namespace HarmonyTests
 		{
 			var patches = new MethodInfo[9];
 			for (var i = 0; i < patches.Length; i++)
-			patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
+				patches[i] = GetType().GetMethod("Patch" + (i + 1), AccessTools.all);
 
 			var patchInstances = new[]
 			{
@@ -83,7 +84,7 @@ namespace HarmonyTests
 				new Patch(patches[4], 4, "owner D", Priority.Low, new[] {"owner A"}, new string[0])
 			};
 
-			var expectedOrder = new[] {3, 2, 4, 0, 1};
+			var expectedOrder = new[] { 3, 2, 4, 0, 1 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
@@ -105,7 +106,7 @@ namespace HarmonyTests
 				new Patch(patches[3], 3, "owner D", Priority.First, new string[0], new[] {"owner C"})
 			};
 
-			var expectedOrder = new[] {1, 2, 3, 0};
+			var expectedOrder = new[] { 1, 2, 3, 0 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
@@ -196,7 +197,7 @@ namespace HarmonyTests
 				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new[] {"owner A"})
 			};
 
-			var expectedOrder = new[] {2, 1, 0};
+			var expectedOrder = new[] { 2, 1, 0 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
@@ -218,7 +219,7 @@ namespace HarmonyTests
 				new Patch(patches[2], 2, "owner C", Priority.Normal, new[] {"owner B"}, new string[0])
 			};
 
-			var expectedOrder = new[] {2, 1, 0};
+			var expectedOrder = new[] { 2, 1, 0 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
@@ -245,7 +246,7 @@ namespace HarmonyTests
 				new Patch(patches[7], 7, "owner H", Priority.Normal, new string[0], new[] {"owner F"})
 			};
 
-			var expectedOrder = new[] {4, 3, 5, 7, 6, 2, 1, 0};
+			var expectedOrder = new[] { 4, 3, 5, 7, 6, 2, 1, 0 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
@@ -294,7 +295,7 @@ namespace HarmonyTests
 				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0])
 			};
 
-			var expectedOrder = new[] {1, 2, 0};
+			var expectedOrder = new[] { 1, 2, 0 };
 			var methods = PatchFunctions.GetSortedPatchMethods(null, patchInstances);
 			for (var i = 0; i < expectedOrder.Length; i++)
 				Assert.AreSame(patches[expectedOrder[i]], methods[i],
@@ -322,15 +323,15 @@ namespace HarmonyTests
 			Assert.IsTrue(sorter.ComparePatchLists(patchInstances), "Same array");
 			Assert.IsTrue(sorter.ComparePatchLists(patchInstances.Reverse().ToArray()), "Patch array reversed");
 			Assert.IsFalse(sorter.ComparePatchLists(patchInstances.Take(2).ToArray()), "Sub-array of the original");
-			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.High, new[] {"owner A"}, new[] {"owner C"});
+			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.High, new[] { "owner A" }, new[] { "owner C" });
 			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Priority of patch changed");
-			patchInstances[1] = new Patch(patches[1], 2, "owner B", Priority.Normal, new[] {"owner A"}, new[] {"owner C"});
+			patchInstances[1] = new Patch(patches[1], 2, "owner B", Priority.Normal, new[] { "owner A" }, new[] { "owner C" });
 			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Index of patch changed");
-			patchInstances[1] = new Patch(patches[1], 1, "owner D", Priority.Normal, new[] {"owner A"}, new[] {"owner C"});
+			patchInstances[1] = new Patch(patches[1], 1, "owner D", Priority.Normal, new[] { "owner A" }, new[] { "owner C" });
 			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Owner of patch changed");
-			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.Normal, new[] {"owner D"}, new[] {"owner C"});
+			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.Normal, new[] { "owner D" }, new[] { "owner C" });
 			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Before of patch changed");
-			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.Normal, new[] {"owner A"}, new[] {"owner D"});
+			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.Normal, new[] { "owner A" }, new[] { "owner D" });
 			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "After of patch changed");
 		}
 	}

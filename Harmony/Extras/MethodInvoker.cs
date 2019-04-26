@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	// Based on https://www.codeproject.com/Articles/14593/A-General-Fast-Method-Invoker
 

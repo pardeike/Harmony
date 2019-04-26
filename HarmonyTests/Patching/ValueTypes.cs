@@ -1,7 +1,7 @@
-using Harmony;
+using HarmonyLib;
 using NUnit.Framework;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class ValueTypes
@@ -26,7 +26,7 @@ namespace HarmonyTests
 
 			var instance = new Assets.Struct1() { s = "before", n = 1 };
 
-			var harmonyInstance = HarmonyInstance.Create("test");
+			var harmonyInstance = new Harmony("test");
 			Assert.IsNotNull(harmonyInstance);
 
 			var result = harmonyInstance.Patch(originalMethod, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
@@ -52,7 +52,7 @@ namespace HarmonyTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			var harmonyInstance = HarmonyInstance.Create("test");
+			var harmonyInstance = new Harmony("test");
 			Assert.IsNotNull(harmonyInstance);
 
 			var result = harmonyInstance.Patch(originalMethod, null, new HarmonyMethod(postfix));

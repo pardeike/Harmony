@@ -1,8 +1,8 @@
-using Harmony;
+using HarmonyLib;
 using NUnit.Framework;
 using System.Reflection.Emit;
 
-namespace HarmonyTests.IL
+namespace HarmonyLibTests.IL
 {
 	[TestFixture]
 	public class Instructions

@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A helper class to retrieve reflection info for non-private methods</summary>
 	public static class SymbolExtensions

@@ -1,11 +1,11 @@
-using Harmony;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace HarmonyTests.Assets
+namespace HarmonyLibTests.Assets
 {
 	public class Class0
 	{
@@ -53,7 +53,7 @@ namespace HarmonyTests.Assets
 			postfixed = true;
 		}
 
-		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, MethodBase original, IEnumerable<CodeInstruction> instructions)
+		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, IEnumerable<CodeInstruction> instructions)
 		{
 			var localVar = il.DeclareLocal(typeof(int));
 			yield return new CodeInstruction(OpCodes.Ldc_I4, 123);
@@ -63,7 +63,7 @@ namespace HarmonyTests.Assets
 				yield return instruction;
 		}
 
-		public static void _reset()
+		public static void ResetTest()
 		{
 			prefixed = false;
 			originalExecuted = false;
@@ -100,13 +100,13 @@ namespace HarmonyTests.Assets
 			postfixed = true;
 		}
 
-		public static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			// no-op / passthrough
 			return instructions;
 		}
 
-		public static void _reset()
+		public static void ResetTest()
 		{
 			prefixed = false;
 			originalExecuted = false;
@@ -124,13 +124,13 @@ namespace HarmonyTests.Assets
 			log = s;
 			try
 			{
-				log = log + ",test";
+				log += ",test";
 				var z = 0;
 				var n = 1 / z;
 				if (n == 0)
-					log = log + ",zero";
+					log += ",zero";
 				else
-					log = log + ",!zero";
+					log += ",!zero";
 				goto ending;
 			}
 			catch (Exception ex)
@@ -139,18 +139,20 @@ namespace HarmonyTests.Assets
 			}
 			finally
 			{
-				log = log + ",finally";
+				log += ",finally";
 			}
-			log = log + ",end";
+			log += ",end";
 			return;
 		ending:
-			log = log + ",fail";
+			log += ",fail";
 		}
 	}
 
 	public class Class4
 	{
+#pragma warning disable IDE0060
 		public void Method4(object sender)
+#pragma warning restore IDE0060
 		{
 			Console.WriteLine("In Class4.Method4");
 			Class4Patch.originalExecuted = true;
@@ -163,7 +165,9 @@ namespace HarmonyTests.Assets
 		public static object senderValue = null;
 		public static bool originalExecuted = false;
 
+#pragma warning disable IDE0060
 		public static bool Prefix(Class4 __instance, object sender)
+#pragma warning restore IDE0060
 		{
 			Console.Write("In Class4Patch.Prefix");
 			prefixed = true;
@@ -171,7 +175,7 @@ namespace HarmonyTests.Assets
 			return true;
 		}
 
-		public static void _reset()
+		public static void ResetTest()
 		{
 			prefixed = false;
 			senderValue = null;
@@ -181,7 +185,9 @@ namespace HarmonyTests.Assets
 
 	public class Class5
 	{
+#pragma warning disable IDE0060
 		public void Method5(object xxxyyy)
+#pragma warning restore IDE0060
 		{
 			Console.WriteLine("In Class5.Method5");
 		}
@@ -193,21 +199,25 @@ namespace HarmonyTests.Assets
 		public static bool postfixed = false;
 
 		[HarmonyArgument("xxxyyy", "bar")]
+#pragma warning disable IDE0060
 		public static void Prefix(object bar)
+#pragma warning restore IDE0060
 		{
 			Console.Write("In Class5Patch.Prefix");
 			prefixed = true;
 		}
 
 		public static void Postfix(
+#pragma warning disable IDE0060
 			[HarmonyArgument("xxxyyy")] object bar
+#pragma warning restore IDE0060
 		)
 		{
 			Console.Write("In Class5Patch.Prefix");
 			postfixed = true;
 		}
 
-		public static void _reset()
+		public static void ResetTest()
 		{
 			prefixed = false;
 			postfixed = false;
@@ -260,7 +270,9 @@ namespace HarmonyTests.Assets
 	{
 		public bool mainRun = false;
 
+#pragma warning disable IDE0060
 		public TestStruct Method7(string test)
+#pragma warning restore IDE0060
 		{
 			mainRun = true;
 			return new TestStruct() { a = 1, b = 2 };
@@ -279,7 +291,9 @@ namespace HarmonyTests.Assets
 	{
 		public static bool mainRun = false;
 
+#pragma warning disable IDE0060
 		public static TestStruct Method8(string test)
+#pragma warning restore IDE0060
 		{
 			mainRun = true;
 			return new TestStruct() { a = 1, b = 2 };
@@ -309,7 +323,9 @@ namespace HarmonyTests.Assets
 			__state = null;
 		}
 
+#pragma warning disable IDE0060
 		public static void Postfix(object __state)
+#pragma warning restore IDE0060
 		{
 
 		}
@@ -411,7 +427,7 @@ namespace HarmonyTests.Assets
 			postfixed = true;
 		}
 
-		public static void _reset()
+		public static void ResetTest()
 		{
 			targeted = false;
 			prefixed = false;

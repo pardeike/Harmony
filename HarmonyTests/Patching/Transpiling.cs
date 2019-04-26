@@ -1,12 +1,12 @@
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 
-namespace HarmonyTests.Patching
+namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
 	public class Transpiling
@@ -35,7 +35,7 @@ namespace HarmonyTests.Patching
 			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(Transpiling.TestTranspiler));
 			Assert.IsNotNull(transpiler);
 
-			var instance = HarmonyInstance.Create("test-exception1");
+			var instance = new Harmony("test-exception1");
 			instance.Patch(original, null, null, new HarmonyMethod(transpiler));
 			Assert.IsNotNull(savedInstructions);
 			Assert.AreEqual(savedInstructions.Length, codeLength);
@@ -44,7 +44,7 @@ namespace HarmonyTests.Patching
 			Assert.AreEqual(test.GetLog, "restart,test,patch,ex:DivideByZeroException,finally,end");
 		}
 
-		public static IEnumerable<CodeInstruction> TestTranspiler(ILGenerator il, IEnumerable<CodeInstruction> instructions)
+		public static IEnumerable<CodeInstruction> TestTranspiler(IEnumerable<CodeInstruction> instructions)
 		{
 			savedInstructions = new CodeInstruction[instructions.Count()];
 			instructions.ToList().CopyTo(savedInstructions);

@@ -1,4 +1,4 @@
-namespace HarmonyTests.Assets
+namespace HarmonyLibTests.Assets
 {
 	public class TraverseFields
 	{

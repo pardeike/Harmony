@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 
 	/// <summary>A wrapper around a method to use it as a patch (for example a Prefix)</summary>
@@ -33,7 +33,6 @@ namespace Harmony
 		{
 		}
 
-		[UpgradeToLatestVersion(1)]
 		void ImportMethod(MethodInfo theMethod)
 		{
 			method = theMethod;
@@ -48,7 +47,6 @@ namespace Harmony
 		/// <summary>Creates an annotation from a method</summary>
 		/// <param name="method">The original method</param>
 		///
-		[UpgradeToLatestVersion(1)]
 		public HarmonyMethod(MethodInfo method)
 		{
 			if (method == null)
@@ -61,7 +59,6 @@ namespace Harmony
 		/// <param name="name">The method name</param>
 		/// <param name="parameters">The optional argument types for overloaded methods</param>
 		///
-		[UpgradeToLatestVersion(1)]
 		public HarmonyMethod(Type type, string name, Type[] parameters = null)
 		{
 			var result = AccessTools.Method(type, name, parameters);
@@ -85,7 +82,6 @@ namespace Harmony
 		/// <param name="attributes">The annotations</param>
 		/// <returns>A merged annotation</returns>
 		///
-		[UpgradeToLatestVersion(1)]
 		public static HarmonyMethod Merge(List<HarmonyMethod> attributes)
 		{
 			var result = new HarmonyMethod();
@@ -137,7 +133,6 @@ namespace Harmony
 		/// <param name="from">from</param>
 		/// <param name="to">to</param>
 		///
-		[UpgradeToLatestVersion(1)]
 		public static void CopyTo(this HarmonyMethod from, HarmonyMethod to)
 		{
 			if (to == null) return;
@@ -167,7 +162,6 @@ namespace Harmony
 		/// <param name="detail">The detail</param>
 		/// <returns>A new, merged copy</returns>
 		///
-		[UpgradeToLatestVersion(1)]
 		public static HarmonyMethod Merge(this HarmonyMethod master, HarmonyMethod detail)
 		{
 			if (detail == null) return master;

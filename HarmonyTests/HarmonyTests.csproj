@@ -4,6 +4,7 @@
 		<IsPackable>false</IsPackable>
 		<TargetFrameworks>net45;net472</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>7.3</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">

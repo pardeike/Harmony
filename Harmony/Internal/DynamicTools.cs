@@ -4,12 +4,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>Creating dynamic methods</summary>
 	internal static class DynamicTools
 	{
-		[UpgradeToLatestVersion(1)]
 		internal static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
 		{
 			if (original == null) throw new ArgumentNullException(nameof(original));
@@ -59,7 +58,7 @@ namespace Harmony
 
 			return method;
 		}
-		
+
 		internal static LocalBuilder[] DeclareLocalVariables(MethodBase original, ILGenerator generator)
 		{
 			var vars = original.GetMethodBody()?.LocalVariables;
@@ -67,7 +66,7 @@ namespace Harmony
 				return new LocalBuilder[0];
 			return vars.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 		}
-		
+
 		internal static LocalBuilder DeclareLocalVariable(ILGenerator generator, Type type)
 		{
 			if (type.IsByRef) type = type.GetElementType();
@@ -102,7 +101,7 @@ namespace Harmony
 			}
 			return null;
 		}
-		
+
 		internal static void PrepareDynamicMethod(DynamicMethod method)
 		{
 			var nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;

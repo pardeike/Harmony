@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>Specifies the type of method</summary>
 	public enum MethodType

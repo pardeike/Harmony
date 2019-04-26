@@ -5,7 +5,7 @@
  *
  *        See also where OperandType.InlineSig is handled in MethodCopier.cs
  * 
-namespace Harmony
+namespace HarmonyLib
 {
 	public static class Signature
 	{

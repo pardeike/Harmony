@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>General extensions for common cases</summary>
 	public static class GeneralExtensions
@@ -26,7 +25,6 @@ namespace Harmony
 		/// <param name="parameters">The array of types</param>
 		/// <returns>A human readable description including brackets</returns>
 		///
-		[UpgradeToLatestVersion(1)]
 		public static string Description(this Type[] parameters)
 		{
 			if (parameters == null) return "NULL";
@@ -65,7 +63,6 @@ namespace Harmony
 		/// <param name="method">The method or constructor</param>
 		/// <returns>A human readable description</returns>
 		///
-		[UpgradeToLatestVersion(1)]
 		public static string FullDescription(this MethodBase method)
 		{
 			if (method == null) return "null";

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>An abstract wrapper around OpCode and their operands. Used by transpilers</summary>
 	public class CodeInstruction

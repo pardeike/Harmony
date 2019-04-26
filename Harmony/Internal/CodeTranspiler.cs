@@ -5,26 +5,25 @@ using System.Reflection.Emit;
 using System;
 using System.Collections;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	internal class CodeTranspiler
 	{
 		readonly IEnumerable<CodeInstruction> codeInstructions;
-		List<MethodInfo> transpilers = new List<MethodInfo>();
-		
+		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
+
 		internal CodeTranspiler(List<ILInstruction> ilInstructions)
 		{
 			codeInstructions = ilInstructions
 				.Select(ilInstruction => ilInstruction.GetCodeInstruction())
 				.ToList().AsEnumerable();
 		}
-		
+
 		internal void Add(MethodInfo transpiler)
 		{
 			transpilers.Add(transpiler);
 		}
-		
-		[UpgradeToLatestVersion(1)]
+
 		internal static object ConvertInstruction(Type type, object instruction, out Dictionary<string, object> unassigned)
 		{
 			var nonExisting = new Dictionary<string, object>();
@@ -46,7 +45,7 @@ namespace Harmony
 			unassigned = nonExisting;
 			return elementTo;
 		}
-		
+
 		internal static bool ShouldAddExceptionInfo(object op, int opIndex, List<object> originalInstructions, List<object> newInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var originalIndex = originalInstructions.IndexOf(op);
@@ -148,7 +147,7 @@ namespace Harmony
 			// unclear or unexpected case, ok by default
 			return true;
 		}
-		
+
 		internal static IEnumerable ConvertInstructionsAndUnassignedValues(Type type, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var enumerableAssembly = type.GetGenericTypeDefinition().Assembly;
@@ -167,7 +166,7 @@ namespace Harmony
 			}
 			return list as IEnumerable;
 		}
-		
+
 		internal static IEnumerable ConvertToOurInstructions(IEnumerable instructions, Type codeInstructionType, List<object> originalInstructions, Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var newInstructions = instructions.Cast<object>().ToList();
@@ -191,7 +190,7 @@ namespace Harmony
 				yield return elementTo;
 			}
 		}
-		
+
 		internal static IEnumerable ConvertToGeneralInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var type = transpiler.GetParameters()
@@ -199,7 +198,7 @@ namespace Harmony
 				  .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal));
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
-		
+
 		internal static List<object> GetTranspilerCallParameters(ILGenerator generator, MethodInfo transpiler, MethodBase method, IEnumerable instructions)
 		{
 			var parameter = new List<object>();
@@ -214,8 +213,7 @@ namespace Harmony
 			});
 			return parameter;
 		}
-		
-		[UpgradeToLatestVersion(1)]
+
 		internal List<CodeInstruction> GetResult(ILGenerator generator, MethodBase method)
 		{
 			IEnumerable instructions = codeInstructions;

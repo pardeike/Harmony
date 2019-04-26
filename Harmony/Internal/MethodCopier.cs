@@ -6,13 +6,13 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	internal class MethodCopier
 	{
 		readonly MethodBodyReader reader;
 		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
-		
+
 		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
 		{
 			if (fromMethod == null) throw new ArgumentNullException(nameof(fromMethod));
@@ -20,18 +20,18 @@ namespace Harmony
 			reader.DeclareVariables(existingVariables);
 			reader.ReadInstructions();
 		}
-		
+
 		internal void AddTranspiler(MethodInfo transpiler)
 		{
 			transpilers.Add(transpiler);
 		}
-		
+
 		internal void Finalize(List<Label> endLabels)
 		{
 			reader.FinalizeILCodes(transpilers, endLabels);
 		}
 	}
-	
+
 	internal class MethodBodyReader
 	{
 		readonly ILGenerator generator;
@@ -44,11 +44,11 @@ namespace Harmony
 		readonly ParameterInfo this_parameter;
 		readonly ParameterInfo[] parameters;
 		readonly IList<ExceptionHandlingClause> exceptions;
-		List<ILInstruction> ilInstructions;
-		List<LocalVariableInfo> localVariables;
+		readonly List<ILInstruction> ilInstructions;
+		readonly List<LocalVariableInfo> localVariables;
 
 		LocalBuilder[] variables;
-		
+
 		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
 			if (method == null) throw new ArgumentNullException(nameof(method));
@@ -57,7 +57,7 @@ namespace Harmony
 			reader.ReadInstructions();
 			return reader.ilInstructions;
 		}
-		
+
 		internal MethodBodyReader(MethodBase method, ILGenerator generator)
 		{
 			this.generator = generator;
@@ -95,7 +95,7 @@ namespace Harmony
 			localVariables = body.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
 			exceptions = body.ExceptionHandlingClauses;
 		}
-		
+
 		internal void ReadInstructions()
 		{
 			while (ilBytes.position < ilBytes.buffer.Length)
@@ -109,7 +109,7 @@ namespace Harmony
 			ResolveBranches();
 			ParseExceptions();
 		}
-		
+
 		internal void DeclareVariables(LocalBuilder[] existingVariables)
 		{
 			if (generator == null) return;
@@ -208,7 +208,7 @@ namespace Harmony
 			{ OpCodes.Br_S, OpCodes.Br },
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
-		
+
 		internal void FinalizeILCodes(List<MethodInfo> transpilers, List<Label> endLabels)
 		{
 			if (generator == null) return;
@@ -257,7 +257,7 @@ namespace Harmony
 			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 
-			if (HarmonyInstance.DEBUG)
+			if (Harmony.DEBUG)
 				Emitter.LogComment(generator, "start original");
 
 			// pass3 - log out all new local variables
@@ -290,7 +290,8 @@ namespace Harmony
 				// start all exception blocks
 				// TODO: we ignore the resulting label because we have no way to use it
 				//
-				codeInstruction.blocks.Do(block => {
+				codeInstruction.blocks.Do(block =>
+				{
 					Emitter.MarkBlockBefore(generator, block, out var label);
 				});
 
@@ -359,7 +360,7 @@ namespace Harmony
 							if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
 							var emitMethod = EmitMethodForType(operand.GetType());
 							if (emitMethod == null) throw new Exception("Unknown Emit argument type " + operand.GetType() + " in " + codeInstruction);
-							if (HarmonyInstance.DEBUG) FileLog.LogBuffered(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
+							if (Harmony.DEBUG) FileLog.LogBuffered(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
 							emitMethod.Invoke(generator, new object[] { code, operand });
 							break;
 					}
@@ -370,7 +371,7 @@ namespace Harmony
 				idx++;
 			});
 
-			if (HarmonyInstance.DEBUG)
+			if (Harmony.DEBUG)
 				Emitter.LogComment(generator, "end original");
 		}
 

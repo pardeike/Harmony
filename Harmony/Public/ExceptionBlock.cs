@@ -1,6 +1,6 @@
 using System;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>Exception block types</summary>
 	public enum ExceptionBlockType

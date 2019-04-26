@@ -4,31 +4,30 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A patch processor</summary>
 	public class PatchProcessor
 	{
 		static readonly object locker = new object();
 
-		readonly HarmonyInstance instance;
+		readonly Harmony instance;
 
 		readonly Type container;
 		readonly HarmonyMethod containerAttributes;
 
 		List<MethodBase> originals = new List<MethodBase>();
-		HarmonyMethod prefix;
-		HarmonyMethod postfix;
-		HarmonyMethod transpiler;
-		HarmonyMethod finalizer;
+		readonly HarmonyMethod prefix;
+		readonly HarmonyMethod postfix;
+		readonly HarmonyMethod transpiler;
+		readonly HarmonyMethod finalizer;
 
 		/// <summary>Creates a patch processor</summary>
 		/// <param name="instance">The Harmony instance</param>
 		/// <param name="type">The patch class</param>
 		/// <param name="attributes">The Harmony attributes</param>
 		///
-		[UpgradeToLatestVersion(1)]
-		public PatchProcessor(HarmonyInstance instance, Type type, HarmonyMethod attributes)
+		public PatchProcessor(Harmony instance, Type type, HarmonyMethod attributes)
 		{
 			this.instance = instance;
 			container = type;
@@ -48,8 +47,7 @@ namespace Harmony
 		/// <param name="transpiler">The optional transpiler.</param>
 		/// <param name="finalizer">The optional finalizer.</param>
 		///
-		[UpgradeToLatestVersion(1)]
-		public PatchProcessor(HarmonyInstance instance, List<MethodBase> originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
+		public PatchProcessor(Harmony instance, List<MethodBase> originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
 			this.instance = instance;
 			this.originals = originals;
@@ -87,7 +85,6 @@ namespace Harmony
 		/// <summary>Applies the patch</summary>
 		/// <returns>A list of all created dynamic methods</returns>
 		///
-		[UpgradeToLatestVersion(2)]
 		public List<DynamicMethod> Patch()
 		{
 			lock (locker)
@@ -167,7 +164,6 @@ namespace Harmony
 			}
 		}
 
-		[UpgradeToLatestVersion(2)]
 		void PrepareType()
 		{
 			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);

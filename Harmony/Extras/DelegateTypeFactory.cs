@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A factory to create delegate types</summary>
 	public class DelegateTypeFactory

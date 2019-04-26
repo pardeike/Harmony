@@ -1,9 +1,9 @@
 using NUnit.Framework;
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using System.Linq;
 
-namespace HarmonyTests.Tools
+namespace HarmonyLibTests.Tools
 {
 	[TestFixture]
 	public class Test_Attributes
@@ -26,7 +26,7 @@ namespace HarmonyTests.Tools
 		[Test]
 		public void TestSubClassPatching()
 		{
-			var instance1 = HarmonyInstance.Create("test1");
+			var instance1 = new Harmony("test1");
 			Assert.IsNotNull(instance1);
 			var type1 = typeof(MainClassPatch);
 			Assert.IsNotNull(type1);
@@ -35,7 +35,7 @@ namespace HarmonyTests.Tools
 			var dynamicMethods1 = processor1.Patch();
 			Assert.AreEqual(1, dynamicMethods1.Count);
 
-			var instance2 = HarmonyInstance.Create("test2");
+			var instance2 = new Harmony("test2");
 			Assert.IsNotNull(instance2);
 			var type2 = typeof(SubClassPatch);
 			Assert.IsNotNull(type2);

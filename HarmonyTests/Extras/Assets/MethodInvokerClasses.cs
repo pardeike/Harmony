@@ -1,4 +1,4 @@
-namespace HarmonyTests.Assets
+namespace HarmonyLibTests.Assets
 {
 	public class TestMethodInvokerObject
 	{
@@ -18,7 +18,7 @@ namespace HarmonyTests.Assets
 	{
 		public static void Method1(int a, ref int b, out int c, out TestMethodInvokerObject d, ref TestMethodInvokerStruct e)
 		{
-			b = b + 1;
+			b += 1;
 			c = b * 2;
 			d = new TestMethodInvokerObject
 			{

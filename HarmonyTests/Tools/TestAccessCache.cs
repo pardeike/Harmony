@@ -1,12 +1,12 @@
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class Test_AccessCache

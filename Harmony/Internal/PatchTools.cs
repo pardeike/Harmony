@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	internal static class PatchTools
 	{
@@ -27,7 +27,6 @@ namespace Harmony
 			return method;
 		}
 
-		[UpgradeToLatestVersion(1)]
 		internal static void GetPatches(Type patchType, out MethodInfo prefix, out MethodInfo postfix, out MethodInfo transpiler, out MethodInfo finalizer)
 		{
 			prefix = GetPatchMethod<HarmonyPrefix>(patchType, "Prefix");

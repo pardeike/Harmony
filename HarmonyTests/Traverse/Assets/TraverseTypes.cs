@@ -2,17 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HarmonyTests.Assets
+namespace HarmonyLibTests.Assets
 {
 	public class TraverseTypes<T> where T : new()
 	{
+#pragma warning disable IDE0052
 #pragma warning disable CS0414
-		readonly int IntField;
-		readonly string StringField;
+		private readonly int IntField;
+		private readonly string StringField;
+		private readonly Type TypeField;
+		private readonly IEnumerable<bool> ListOfBoolField;
+		private readonly Dictionary<T, List<string>> MixedField;
 #pragma warning restore CS0414
-		readonly Type TypeField;
-		readonly IEnumerable<bool> ListOfBoolField;
-		readonly Dictionary<T, List<string>> MixedField;
+#pragma warning restore IDE0052
 
 		public T key;
 
@@ -37,9 +39,11 @@ namespace HarmonyTests.Assets
 		{
 			class InnerClass2
 			{
+#pragma warning disable IDE0052
 #pragma warning disable CS0414
-				readonly string field;
+				private readonly string field;
 #pragma warning restore CS0414
+#pragma warning restore IDE0052
 
 				public InnerClass2()
 				{
@@ -47,7 +51,9 @@ namespace HarmonyTests.Assets
 				}
 			}
 
+#pragma warning disable IDE0052
 			readonly InnerClass2 inner2;
+#pragma warning restore IDE0052
 
 			public InnerClass1()
 			{
@@ -59,12 +65,16 @@ namespace HarmonyTests.Assets
 		{
 			class InnerStaticFieldClass2
 			{
+#pragma warning disable IDE0051
 #pragma warning disable CS0414
 				static readonly string field = "helloStatic";
 #pragma warning restore CS0414
+#pragma warning restore IDE0051
 			}
 
+#pragma warning disable IDE0052
 			static InnerStaticFieldClass2 inner2;
+#pragma warning restore IDE0052
 
 			public InnerStaticFieldClass1()
 			{
@@ -80,8 +90,10 @@ namespace HarmonyTests.Assets
 			}
 		}
 
+#pragma warning disable IDE0052
 		readonly InnerClass1 innerInstance;
 		static InnerStaticFieldClass1 innerStatic;
+#pragma warning restore IDE0052
 
 		public TraverseNestedTypes(string staticValue)
 		{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Harmony.Internal
+namespace HarmonyLib
 {
 	internal class PatchSorter
 	{
@@ -88,7 +88,7 @@ namespace Harmony.Internal
 		{
 			if (sortedPatchArray == null) Sort(null);
 			return patches != null && sortedPatchArray.Length == patches.Length &&
-			       sortedPatchArray.All(x => patches.Contains(x, new PatchDetailedComparer()));
+					 sortedPatchArray.All(x => patches.Contains(x, new PatchDetailedComparer()));
 		}
 
 		/// <summary>Removes one unresolved dependency from the least important patch.</summary>
@@ -104,7 +104,7 @@ namespace Harmony.Internal
 					if (!_handledPatches.Contains(afterNode))
 					{
 						_waitingList[i].RemoveAfterDependency(afterNode);
-						if (HarmonyInstance.DEBUG)
+						if (Harmony.DEBUG)
 							FileLog.LogBuffered(
 								$"Breaking dependance between {afterNode.innerPatch.patch.FullDescription()} and {_waitingList[i].innerPatch.patch.FullDescription()}");
 						return;
@@ -230,8 +230,8 @@ namespace Harmony.Internal
 			public bool Equals(Patch x, Patch y)
 			{
 				return y != null && x != null && x.owner == y.owner && x.patch == y.patch && x.index == y.index &&
-				       x.priority == y.priority
-				       && x.before.Length == y.before.Length && x.after.Length == y.after.Length &&
+						 x.priority == y.priority
+						 && x.before.Length == y.before.Length && x.after.Length == y.after.Length &&
 #pragma warning disable RECS0030
 						 x.before.All(y.before.Contains) && x.after.All(y.after.Contains);
 #pragma warning restore RECS0030

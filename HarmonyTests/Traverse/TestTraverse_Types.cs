@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using HarmonyTests.Assets;
-using Harmony;
+using HarmonyLibTests.Assets;
+using HarmonyLib;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class TestTraverse_Types
@@ -54,7 +54,7 @@ namespace HarmonyTests
 			field1.SetValue("somevalue");
 
 			var trv2 = Traverse.Create(instance);
-			var field2 = trv1.Field("innerInstance").Field("inner2").Field("field");
+			var field2 = trv2.Field("innerInstance").Field("inner2").Field("field");
 			Assert.AreEqual("somevalue", field2.GetValue());
 		}
 
@@ -66,7 +66,7 @@ namespace HarmonyTests
 			field1.SetValue("somevalue1");
 
 			var trv2 = Traverse.Create(typeof(TraverseNestedTypes));
-			var field2 = trv1.Field("innerStatic").Field("inner2").Field("field");
+			var field2 = trv2.Field("innerStatic").Field("inner2").Field("field");
 			Assert.AreEqual("somevalue1", field2.GetValue());
 
 			var _ = new TraverseNestedTypes("somevalue2");

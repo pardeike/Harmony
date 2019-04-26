@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace HarmonyTests.Assets
+namespace HarmonyLibTests.Assets
 {
 	public class TraverseProperties
 	{

@@ -4,14 +4,14 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A reflection helper to read and write private elements</summary>
 	/// <typeparam name="T">The result type defined by GetValue()</typeparam>
 	///
 	public class Traverse<T>
 	{
-		Traverse traverse;
+		readonly Traverse traverse;
 
 		Traverse()
 		{
@@ -38,12 +38,12 @@ namespace Harmony
 	/// <summary>A reflection helper to read and write private elements</summary>
 	public class Traverse
 	{
-		static AccessCache Cache;
+		static readonly AccessCache Cache;
 
-		Type _type;
-		object _root;
+		readonly Type _type;
+		readonly object _root;
 		readonly MemberInfo _info;
-		MethodBase _method;
+		readonly MethodBase _method;
 		readonly object[] _params;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]

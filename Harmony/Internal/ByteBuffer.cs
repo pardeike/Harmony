@@ -1,24 +1,24 @@
 using System;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	internal class ByteBuffer
 	{
 		internal byte[] buffer;
-		
+
 		internal int position;
-		
+
 		internal ByteBuffer(byte[] buffer)
 		{
 			this.buffer = buffer;
 		}
-		
+
 		internal byte ReadByte()
 		{
 			CheckCanRead(1);
 			return buffer[position++];
 		}
-		
+
 		internal byte[] ReadBytes(int length)
 		{
 			CheckCanRead(length);
@@ -27,7 +27,7 @@ namespace Harmony
 			position += length;
 			return value;
 		}
-		
+
 		internal short ReadInt16()
 		{
 			CheckCanRead(2);
@@ -36,7 +36,7 @@ namespace Harmony
 			position += 2;
 			return value;
 		}
-		
+
 		internal int ReadInt32()
 		{
 			CheckCanRead(4);
@@ -47,7 +47,7 @@ namespace Harmony
 			position += 4;
 			return value;
 		}
-		
+
 		internal long ReadInt64()
 		{
 			CheckCanRead(8);
@@ -65,7 +65,7 @@ namespace Harmony
 			position += 8;
 			return value;
 		}
-		
+
 		internal float ReadSingle()
 		{
 			if (!BitConverter.IsLittleEndian)
@@ -80,7 +80,7 @@ namespace Harmony
 			position += 4;
 			return value;
 		}
-		
+
 		internal double ReadDouble()
 		{
 			if (!BitConverter.IsLittleEndian)

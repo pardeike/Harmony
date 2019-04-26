@@ -1,10 +1,10 @@
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class Arguments
@@ -20,8 +20,8 @@ namespace HarmonyTests
 			var patchClass = typeof(Class6Patch);
 			var prefix = patchClass.GetMethod("Prefix");
 			Assert.IsNotNull(prefix);
-			
-			var instance = HarmonyInstance.Create("test");
+
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), null);
@@ -101,4 +101,3 @@ namespace HarmonyTests
 		*/
 	}
 }
- 

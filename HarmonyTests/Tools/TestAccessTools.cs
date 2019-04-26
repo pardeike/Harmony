@@ -1,11 +1,11 @@
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class Test_AccessTools
@@ -81,7 +81,7 @@ namespace HarmonyTests
 			Assert.AreEqual(type, m1.DeclaringType);
 			Assert.AreEqual("Method", m1.Name);
 
-			var m2 = AccessTools.Method("HarmonyTests.Assets.AccessToolsClass:Method");
+			var m2 = AccessTools.Method("HarmonyLibTests.Assets.AccessToolsClass:Method");
 			Assert.IsNotNull(m2);
 			Assert.AreEqual(type, m2.DeclaringType);
 			Assert.AreEqual("Method", m2.Name);
@@ -153,7 +153,7 @@ namespace HarmonyTests
 		public void AccessTools_TypeExtension_Description()
 		{
 			var types = new Type[] { typeof(string), typeof(int), null, typeof(void), typeof(Test_AccessTools) };
-			Assert.AreEqual("(System.String, System.Int32, null, System.Void, HarmonyTests.Test_AccessTools)", types.Description());
+			Assert.AreEqual("(System.String, System.Int32, null, System.Void, HarmonyLibTests.Test_AccessTools)", types.Description());
 		}
 
 		[Test]

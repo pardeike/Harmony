@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	internal class ILInstruction
 	{
@@ -10,17 +10,17 @@ namespace Harmony
 		internal OpCode opcode;
 		internal object operand;
 		internal object argument;
-		
+
 		internal List<Label> labels = new List<Label>();
 		internal List<ExceptionBlock> blocks = new List<ExceptionBlock>();
-		
+
 		internal ILInstruction(OpCode opcode, object operand = null)
 		{
 			this.opcode = opcode;
 			this.operand = operand;
 			argument = operand;
 		}
-		
+
 		internal CodeInstruction GetCodeInstruction()
 		{
 			var instr = new CodeInstruction(opcode, argument);
@@ -30,7 +30,7 @@ namespace Harmony
 			instr.blocks = blocks;
 			return instr;
 		}
-		
+
 		internal int GetSize()
 		{
 			var size = opcode.Size;
@@ -71,7 +71,7 @@ namespace Harmony
 
 			return size;
 		}
-		
+
 		public override string ToString()
 		{
 			var instruction = "";
@@ -82,7 +82,7 @@ namespace Harmony
 			if (operand == null)
 				return instruction;
 
-			instruction = instruction + " ";
+			instruction += " ";
 
 			switch (opcode.OperandType)
 			{
@@ -96,7 +96,7 @@ namespace Harmony
 					for (var i = 0; i < switchLabels.Length; i++)
 					{
 						if (i > 0)
-							instruction = instruction + ",";
+							instruction += ",";
 
 						AppendLabel(ref instruction, switchLabels[i]);
 					}
@@ -107,7 +107,7 @@ namespace Harmony
 					break;
 
 				default:
-					instruction = instruction + operand;
+					instruction += operand;
 					break;
 			}
 

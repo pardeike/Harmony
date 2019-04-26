@@ -1,10 +1,10 @@
-using Harmony;
-using HarmonyTests.Assets;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace HarmonyTests
+namespace HarmonyLibTests
 {
 	[TestFixture]
 	public class TestTraverse_Basics
@@ -40,9 +40,11 @@ namespace HarmonyTests
 
 		class FooBar
 		{
+#pragma warning disable IDE0051
 #pragma warning disable CS0169
 			readonly string field;
 #pragma warning restore CS0169
+#pragma warning restore IDE0051
 		}
 
 		// Traverse should default to an empty instance to avoid errors
@@ -125,6 +127,7 @@ namespace HarmonyTests
 		public void Traverse_Create_Type_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
+			Assert.NotNull(instance);
 
 			var type = typeof(TraverseFields_AccessModifiers);
 			var trv = Traverse.Create(type);

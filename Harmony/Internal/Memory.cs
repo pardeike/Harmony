@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A bit-field of flags for protections</summary>
 	[Flags]
@@ -67,7 +67,7 @@ namespace Harmony
 		{
 			if (IsWindows)
 			{
-				var success = VirtualProtect(new IntPtr(memory), new UIntPtr(1), Protection.PAGE_EXECUTE_READWRITE, out var _ignored);
+				var success = VirtualProtect(new IntPtr(memory), new UIntPtr(1), Protection.PAGE_EXECUTE_READWRITE, out _);
 				if (success == false)
 					throw new System.ComponentModel.Win32Exception();
 			}
@@ -132,13 +132,13 @@ namespace Harmony
 
 				memory = WriteBytes(memory, new byte[] { 0x48, 0xB8 });
 				memory = WriteLong(memory, destination);
-				memory = WriteBytes(memory, new byte[] { 0xFF, 0xE0 });
+				_ = WriteBytes(memory, new byte[] { 0xFF, 0xE0 });
 			}
 			else
 			{
 				memory = WriteByte(memory, 0x68);
 				memory = WriteInt(memory, (int)destination);
-				memory = WriteByte(memory, 0xc3);
+				_ = WriteByte(memory, 0xc3);
 			}
 			return null;
 		}

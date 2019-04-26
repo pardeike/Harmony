@@ -1,4 +1,4 @@
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A patch priority</summary>
 	public static class Priority

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A group of patches</summary>
 	public class Patches

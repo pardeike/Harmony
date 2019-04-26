@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Harmony
+namespace HarmonyLib
 {
 	/// <summary>A file log for debugging</summary>
 	public static class FileLog
@@ -23,7 +23,6 @@ namespace Harmony
 		/// <summary>A buffer</summary>
 		static List<string> buffer = new List<string>();
 
-		[UpgradeToLatestVersion(1)]
 		static FileLog()
 		{
 			logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + "harmony.log.txt";
@@ -155,7 +154,7 @@ namespace Harmony
 							s = "";
 						}
 						else if (i % 4 == 0)
-							s = s + " ";
+							s += " ";
 					}
 					p++;
 				}
