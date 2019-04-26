@@ -217,8 +217,15 @@ namespace HarmonyLib
 
 		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
-			var attributes = parameter.GetCustomAttributes(false);
-			return AllHarmonyArguments(attributes).FirstOrDefault();
+			try
+			{
+				var attributes = parameter.GetCustomAttributes(false);
+				return AllHarmonyArguments(attributes).FirstOrDefault();
+			}
+			catch (NotSupportedException)
+			{
+				return default;
+			}
 		}
 
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
@@ -236,7 +243,14 @@ namespace HarmonyLib
 
 		static string GetOriginalArgumentName(this ParameterInfo parameter, string[] originalParameterNames)
 		{
-			var attribute = parameter.GetArgumentAttribute();
+			HarmonyArgument attribute = null;
+			try
+			{
+				attribute = parameter.GetArgumentAttribute();
+			}
+			catch (NotSupportedException)
+			{
+			}
 			if (attribute == null)
 				return null;
 
