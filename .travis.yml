@@ -6,17 +6,18 @@ solution: Harmony.sln
 matrix:
   include:
     - dotnet:
-      - 1.0.15
-      - 1.1.12
-      - 2.0.9
-      - 2.1.10
-      - 2.2.4
+      - 1.1.13
+      - 2.1.202
+      - 2.1.603
+      - 2.2.203
       mono: none
     - mono:
       - 2.10.8
       - 3.2.8
       - 3.8.0
       - latest
+before_install:
+  - if [ "$TRAVIS_COMMIT_MESSAGE" == "Update documentation" ]; then echo "Skipping documentation only commit" && exit; fi
 install:
   - nuget restore
   - dotnet restore
