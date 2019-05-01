@@ -1,20 +1,20 @@
 language: csharp
 os:
+  - windows
   - linux
   - osx
 solution: Harmony.sln
 matrix:
   include:
-    - dotnet:
-      - 1.1.13
-      - 2.1.202
-      - 2.1.603
-      - 2.2.203
+    - dotnet: 1.1.13
+      mono: none
+    - dotnet: 2.1.202
+      mono: none
+    - dotnet: 2.1.603
+      mono: none
+    - dotnet: 2.2.203
       mono: none
     - mono:
-      - 2.10.8
-      - 3.2.8
-      - 3.8.0
       - latest
 before_install:
   - if [ "$TRAVIS_COMMIT_MESSAGE" == "Update documentation" ]; then echo "Skipping documentation only commit" && exit; fi
@@ -25,3 +25,5 @@ install:
 script:
   - msbuild /p:Configuration=Release
   - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe HarmonyTests/bin/Release/net45/HarmonyTests.dll
+notifications:
+  email: false
