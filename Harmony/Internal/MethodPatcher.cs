@@ -224,10 +224,9 @@ namespace HarmonyLib
 
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
-			if (method is DynamicMethod)
+			if (method == null || method is DynamicMethod)
 				return default;
 			
-			if (method == null) return new HarmonyArgument[0];
 			var attributes = method.GetCustomAttributes(false);
 			return AllHarmonyArguments(attributes);
 		}
