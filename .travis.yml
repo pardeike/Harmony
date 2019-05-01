@@ -1,6 +1,5 @@
 language: csharp
 os:
-  - windows
   - linux
   - osx
 solution: Harmony.sln
