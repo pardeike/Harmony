@@ -205,7 +205,6 @@ namespace HarmonyLib
 		///
 		public static List<HarmonyMethod> GetFromMethod(MethodBase method)
 		{
-			if (method is DynamicMethod) return new List<HarmonyMethod>();
 			return method.GetCustomAttributes(true)
 						.Select(attr => GetHarmonyMethodInfo(attr))
 						.Where(info => info != null)
