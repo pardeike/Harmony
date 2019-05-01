@@ -60,7 +60,7 @@ namespace HarmonyLib
 
 				prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
 				{
-					if (fix.DeclaringType != null && !privateVars.ContainsKey(fix.DeclaringType.FullName))
+					if (fix.DeclaringType != null && privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
 					{
 						fix.GetParameters()
 						.Where(patchParam => patchParam.Name == STATE_VAR)
@@ -218,29 +218,18 @@ namespace HarmonyLib
 
 		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
-			try
-			{
-				var attributes = parameter.GetCustomAttributes(false);
-				return AllHarmonyArguments(attributes).FirstOrDefault();
-			}
-			catch (NotSupportedException)
-			{
-				return default;
-			}
+			var attributes = parameter.GetCustomAttributes(false);
+			return AllHarmonyArguments(attributes).FirstOrDefault();
 		}
 
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
-			try
-			{
-				if (method == null) return new HarmonyArgument[0];
-				var attributes = method.GetCustomAttributes(false);
-				return AllHarmonyArguments(attributes);
-			}
-			catch (NotImplementedException)
-			{
+			if (method is DynamicMethod)
 				return default;
-			}
+			
+			if (method == null) return new HarmonyArgument[0];
+			var attributes = method.GetCustomAttributes(false);
+			return AllHarmonyArguments(attributes);
 		}
 
 		static HarmonyArgument[] GetArgumentAttributes(this Type type)
@@ -251,14 +240,8 @@ namespace HarmonyLib
 
 		static string GetOriginalArgumentName(this ParameterInfo parameter, string[] originalParameterNames)
 		{
-			HarmonyArgument attribute = null;
-			try
-			{
-				attribute = parameter.GetArgumentAttribute();
-			}
-			catch (NotSupportedException)
-			{
-			}
+			HarmonyArgument attribute = parameter.GetArgumentAttribute();
+
 			if (attribute == null)
 				return null;
 
@@ -309,12 +292,14 @@ namespace HarmonyLib
 
 		static int GetArgumentIndex(MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam)
 		{
+			if (patch is DynamicMethod)
+				return Array.IndexOf(originalParameterNames, patchParam.Name);
+
 			var originalName = patchParam.GetOriginalArgumentName(originalParameterNames);
 			if (originalName != null)
 				return Array.IndexOf(originalParameterNames, originalName);
-
-			var patchParamName = patchParam.Name;
-			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParamName);
+			
+			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParam.Name);
 			if (originalName != null)
 				return Array.IndexOf(originalParameterNames, originalName);
 
