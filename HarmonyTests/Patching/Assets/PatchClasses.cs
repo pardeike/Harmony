@@ -466,7 +466,7 @@ namespace HarmonyLibTests.Assets
 		public string TestMethod(int dummy)
 		{
 			originalMethodRan = true;
-			return "original";
+			return "original" + dummy;
 		}
 	}
 
@@ -476,10 +476,10 @@ namespace HarmonyLibTests.Assets
 
 		public static DynamicMethod Prefix(MethodBase method)
 		{
-			var dynamicMethod = new DynamicMethod("Class11Patch_Prefix",
+			var dynamicMethod = new DynamicMethod(method.Name + "_Class11Patch_Prefix",
 				typeof(bool),
 				new[] { typeof(string).MakeByRefType(), typeof(int) });
-			
+
 			dynamicMethod.DefineParameter(1, ParameterAttributes.None, "__result");
 			dynamicMethod.DefineParameter(2, ParameterAttributes.None, "dummy");
 
@@ -501,5 +501,5 @@ namespace HarmonyLibTests.Assets
 
 			return dynamicMethod;
 		}
-   }
+	}
 }
