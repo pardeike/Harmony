@@ -15,8 +15,8 @@ namespace HarmonyLib
 		public DelegateTypeFactory()
 		{
 			counter++;
-			var name = new AssemblyName("HarmonyDTFAssembly" + counter);
-			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+			var name = "HarmonyDTFAssembly" + counter;
+			var assembly = PatchTools.DefineDynamicAssembly(name);
 			module = assembly.DefineDynamicModule("HarmonyDTFModule" + counter);
 		}
 

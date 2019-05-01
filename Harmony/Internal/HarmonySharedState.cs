@@ -19,7 +19,7 @@ namespace HarmonyLib
 				var assembly = SharedStateAssembly();
 				if (assembly == null)
 				{
-					var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(name), AssemblyBuilderAccess.Run);
+					var assemblyBuilder = PatchTools.DefineDynamicAssembly(name);
 					var moduleBuilder = assemblyBuilder.DefineDynamicModule(name);
 					var typeAttributes = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Sealed | TypeAttributes.Abstract;
 					var typeBuilder = moduleBuilder.DefineType(name, typeAttributes);
