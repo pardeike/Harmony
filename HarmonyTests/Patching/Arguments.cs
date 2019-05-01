@@ -1,8 +1,8 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace HarmonyLibTests
@@ -42,7 +42,6 @@ namespace HarmonyLibTests
 			Assert.AreEqual(((Class6Struct)res[2]).d1, 10.0);
 		}
 
-		/* disabled temporarily because appveyor.com fails this test
 		[Test]
 		public void TestMethod7()
 		{
@@ -54,25 +53,26 @@ namespace HarmonyLibTests
 			var patchClass = typeof(Class7Patch);
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
-			
-			var instance = HarmonyInstance.Create("test");
+
+			Harmony.DEBUG = true;
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix));
 			Assert.IsNotNull(patcher);
 
 			patcher.Patch();
-			
+
+			Class7.state2 = "before";
 			var instance7 = new Class7();
-			var result = instance7.Method7("patched");
-			
-			Assert.IsTrue(instance7.mainRun);
+			var result = instance7.Method7("parameter");
+			Console.WriteLine(Class7.state2);
+
+			Assert.AreEqual("parameter", instance7.state1);
 			Assert.AreEqual(10, result.a);
 			Assert.AreEqual(20, result.b);
 		}
-		*/
 
-		/* disabled temporarily because appveyor.com fails this test
 		[Test]
 		public void TestMethod8()
 		{
@@ -84,21 +84,21 @@ namespace HarmonyLibTests
 			var patchClass = typeof(Class8Patch);
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
-			
-			var instance = HarmonyInstance.Create("test");
+
+			Harmony.DEBUG = true;
+			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix));
 			Assert.IsNotNull(patcher);
 
 			patcher.Patch();
-		
+
 			var result = Class8.Method8("patched");
 
 			Assert.IsTrue(Class8.mainRun);
 			Assert.AreEqual(10, result.a);
 			Assert.AreEqual(20, result.b);
 		}
-		*/
 	}
 }

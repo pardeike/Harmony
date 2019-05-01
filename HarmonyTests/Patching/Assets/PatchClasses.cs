@@ -268,33 +268,82 @@ namespace HarmonyLibTests.Assets
 
 	public class Class7
 	{
-		public bool mainRun = false;
+		public object state1 = "-";
+		public static object state2;
 
-#pragma warning disable IDE0060
 		public TestStruct Method7(string test)
-#pragma warning restore IDE0060
 		{
-			mainRun = true;
-			return new TestStruct() { a = 1, b = 2 };
+			Console.WriteLine("Method7: " + test);
+			state1 = test;
+			return new TestStruct() { a = 333, b = 666 };
 		}
 	}
 
-	public class Class7Patch
+	public static class Class7Patch
 	{
 		public static void Postfix(ref TestStruct __result)
 		{
+			Console.WriteLine("Class8Patch Postfix");
 			__result = new TestStruct() { a = 10, b = 20 };
 		}
+
+		/*
+		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, IEnumerable<CodeInstruction> instructions)
+		{
+			var f_state1 = typeof(Class7).GetField("state1");
+			if (f_state1 == null) throw new NullReferenceException();
+
+			var f_a = typeof(TestStruct).GetField("a");
+			var f_b = typeof(TestStruct).GetField("b");
+
+			var local = il.DeclareLocal(typeof(TestStruct));
+
+			var list = new List<CodeInstruction>()
+			{
+				// arguments
+				// 0 - this
+				// 1 - pointer to valuetype (simulate return value)
+				// 2 - parameter 1
+				// 3 - parameter 2
+				// 4 - parameter 3
+				// ...
+
+				new CodeInstruction(OpCodes.Ldarg_0),
+				new CodeInstruction(OpCodes.Ldarg_2),
+				new CodeInstruction(OpCodes.Stfld, f_state1),
+
+				new CodeInstruction(OpCodes.Ldarg_1), // load ref to return value
+
+				new CodeInstruction(OpCodes.Ldloca, local),
+				new CodeInstruction(OpCodes.Initobj, typeof(TestStruct)),
+				new CodeInstruction(OpCodes.Ldloca, local),
+				new CodeInstruction(OpCodes.Ldc_I4_S, 10),
+				new CodeInstruction(OpCodes.Conv_I8),
+				new CodeInstruction(OpCodes.Stfld, f_a),
+				new CodeInstruction(OpCodes.Ldloca, local),
+				new CodeInstruction(OpCodes.Ldc_I4_S, 20),
+				new CodeInstruction(OpCodes.Conv_I8),
+				new CodeInstruction(OpCodes.Stfld, f_b),
+				new CodeInstruction(OpCodes.Ldloc, local), // here, result is on the stack
+
+				new CodeInstruction(OpCodes.Stobj, typeof(TestStruct)), // store it into ref
+
+				new CodeInstruction(OpCodes.Ret),
+			};
+
+			foreach (var item in list)
+				yield return item;
+		}
+		*/
 	}
 
 	public class Class8
 	{
 		public static bool mainRun = false;
 
-#pragma warning disable IDE0060
 		public static TestStruct Method8(string test)
-#pragma warning restore IDE0060
 		{
+			Console.WriteLine("Method8: " + test);
 			mainRun = true;
 			return new TestStruct() { a = 1, b = 2 };
 		}
@@ -304,6 +353,7 @@ namespace HarmonyLibTests.Assets
 	{
 		public static void Postfix(ref TestStruct __result)
 		{
+			Console.WriteLine("Class8Patch Postfix");
 			__result = new TestStruct() { a = 10, b = 20 };
 		}
 	}

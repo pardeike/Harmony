@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -9,6 +11,8 @@ namespace HarmonyLib
 	//
 	internal class NativeThisPointer
 	{
+		internal static MethodInfo m_ArgumentShiftTranspiler = SymbolExtensions.GetMethodInfo(() => ArgumentShiftTranspiler(null));
+
 		internal static bool NeedsNativeThisPointerFix(MethodBase method)
 		{
 			if (method.IsStatic) return false;
@@ -68,6 +72,51 @@ namespace HarmonyLib
 			// this, ptr, a, b
 
 			hasNativeThis = a == magicValue && b == magicValue;
+		}
+
+		private static IEnumerable<CodeInstruction> ArgumentShiftTranspiler(IEnumerable<CodeInstruction> instructions)
+		{
+			foreach (var instruction in instructions)
+			{
+				if (instruction.opcode == OpCodes.Ldarg_3)
+				{
+					instruction.opcode = OpCodes.Ldarg;
+					instruction.operand = 4;
+					yield return instruction;
+					continue;
+				}
+
+				if (instruction.opcode == OpCodes.Ldarg_2)
+				{
+					instruction.opcode = OpCodes.Ldarg_3;
+					yield return instruction;
+					continue;
+				}
+
+				if (instruction.opcode == OpCodes.Ldarg_1)
+				{
+					instruction.opcode = OpCodes.Ldarg_2;
+					yield return instruction;
+					continue;
+				}
+
+				if (instruction.opcode == OpCodes.Ldarg
+					|| instruction.opcode == OpCodes.Ldarga
+					|| instruction.opcode == OpCodes.Ldarga_S
+					|| instruction.opcode == OpCodes.Starg
+					|| instruction.opcode == OpCodes.Starg_S)
+				{
+					var n = (int)instruction.operand;
+					if (n > 0)
+					{
+						instruction.operand = n + 1;
+						yield return instruction;
+						continue;
+					}
+				}
+
+				yield return instruction;
+			}
 		}
 	}
 }
