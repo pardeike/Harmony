@@ -60,7 +60,7 @@ namespace HarmonyLib
 
 				prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
 				{
-					if (privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
+					if (fix.DeclaringType != null && privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
 					{
 						fix.GetParameters()
 						.Where(patchParam => patchParam.Name == STATE_VAR)
@@ -175,6 +175,7 @@ namespace HarmonyLib
 				var exceptionString = "Exception from HarmonyInstance \"" + harmonyInstanceID + "\" patching " + original.FullDescription();
 				if (Harmony.DEBUG)
 					FileLog.Log("Exception: " + exceptionString);
+
 				throw new Exception(exceptionString, ex);
 			}
 			finally
@@ -217,20 +218,15 @@ namespace HarmonyLib
 
 		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
-			try
-			{
-				var attributes = parameter.GetCustomAttributes(false);
-				return AllHarmonyArguments(attributes).FirstOrDefault();
-			}
-			catch (NotSupportedException)
-			{
-				return default;
-			}
+			var attributes = parameter.GetCustomAttributes(false);
+			return AllHarmonyArguments(attributes).FirstOrDefault();
 		}
 
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
-			if (method == null) return new HarmonyArgument[0];
+			if (method == null || method is DynamicMethod)
+				return default;
+			
 			var attributes = method.GetCustomAttributes(false);
 			return AllHarmonyArguments(attributes);
 		}
@@ -243,14 +239,8 @@ namespace HarmonyLib
 
 		static string GetOriginalArgumentName(this ParameterInfo parameter, string[] originalParameterNames)
 		{
-			HarmonyArgument attribute = null;
-			try
-			{
-				attribute = parameter.GetArgumentAttribute();
-			}
-			catch (NotSupportedException)
-			{
-			}
+			HarmonyArgument attribute = parameter.GetArgumentAttribute();
+
 			if (attribute == null)
 				return null;
 
@@ -289,21 +279,26 @@ namespace HarmonyLib
 			if (argumentName != null)
 				return argumentName;
 
-			argumentName = GetOriginalArgumentName(method?.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName != null)
-				return argumentName;
+			if (method?.DeclaringType != null)
+			{
+				argumentName = GetOriginalArgumentName(method?.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
+				if (argumentName != null)
+					return argumentName;
+			}
 
 			return name;
 		}
 
 		static int GetArgumentIndex(MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam)
 		{
+			if (patch is DynamicMethod)
+				return Array.IndexOf(originalParameterNames, patchParam.Name);
+
 			var originalName = patchParam.GetOriginalArgumentName(originalParameterNames);
 			if (originalName != null)
 				return Array.IndexOf(originalParameterNames, originalName);
-
-			var patchParamName = patchParam.Name;
-			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParamName);
+			
+			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParam.Name);
 			if (originalName != null)
 				return Array.IndexOf(originalParameterNames, originalName);
 
@@ -328,15 +323,14 @@ namespace HarmonyLib
 			{
 				if (patchParam.Name == ORIGINAL_METHOD_PARAM)
 				{
-					var constructorInfo = original as ConstructorInfo;
-					if (constructorInfo != null)
+					if (original is ConstructorInfo constructorInfo)
 					{
 						Emitter.Emit(il, OpCodes.Ldtoken, constructorInfo);
 						Emitter.Emit(il, OpCodes.Call, getMethodMethod);
 						continue;
 					}
-					var methodInfo = original as MethodInfo;
-					if (methodInfo != null)
+
+					if (original is MethodInfo methodInfo)
 					{
 						Emitter.Emit(il, OpCodes.Ldtoken, methodInfo);
 						Emitter.Emit(il, OpCodes.Call, getMethodMethod);

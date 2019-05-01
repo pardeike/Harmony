@@ -457,4 +457,49 @@ namespace HarmonyLibTests.Assets
 			postfixed = true;
 		}
 	}
+
+	public class Class11
+	{
+		public bool originalMethodRan = false;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string TestMethod(int dummy)
+		{
+			originalMethodRan = true;
+			return "original";
+		}
+	}
+
+	public static class Class11Patch
+	{
+		public static bool prefixed = false;
+
+		public static DynamicMethod Prefix(MethodBase method)
+		{
+			var dynamicMethod = new DynamicMethod("Class11Patch_Prefix",
+				typeof(bool),
+				new[] { typeof(string).MakeByRefType(), typeof(int) });
+			
+			dynamicMethod.DefineParameter(1, ParameterAttributes.None, "__result");
+			dynamicMethod.DefineParameter(2, ParameterAttributes.None, "dummy");
+
+			var il = dynamicMethod.GetILGenerator();
+
+			//load "patched" into __result
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldstr, "patched");
+			il.Emit(OpCodes.Stind_Ref);
+
+			//set prefixed to true
+			il.Emit(OpCodes.Ldnull);
+			il.Emit(OpCodes.Ldc_I4_1);
+			il.Emit(OpCodes.Stfld, typeof(Class11Patch).GetField(nameof(prefixed)));
+
+			//return false
+			il.Emit(OpCodes.Ldc_I4_0);
+			il.Emit(OpCodes.Ret);
+
+			return dynamicMethod;
+		}
+   }
 }
