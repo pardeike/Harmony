@@ -60,7 +60,7 @@ namespace HarmonyLib
 
 				prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
 				{
-					if (privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
+					if (fix.DeclaringType != null && !privateVars.ContainsKey(fix.DeclaringType.FullName))
 					{
 						fix.GetParameters()
 						.Where(patchParam => patchParam.Name == STATE_VAR)
@@ -175,6 +175,7 @@ namespace HarmonyLib
 				var exceptionString = "Exception from HarmonyInstance \"" + harmonyInstanceID + "\" patching " + original.FullDescription();
 				if (Harmony.DEBUG)
 					FileLog.Log("Exception: " + exceptionString);
+
 				throw new Exception(exceptionString, ex);
 			}
 			finally
@@ -230,9 +231,16 @@ namespace HarmonyLib
 
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
-			if (method == null) return new HarmonyArgument[0];
-			var attributes = method.GetCustomAttributes(false);
-			return AllHarmonyArguments(attributes);
+			try
+			{
+				if (method == null) return new HarmonyArgument[0];
+				var attributes = method.GetCustomAttributes(false);
+				return AllHarmonyArguments(attributes);
+			}
+			catch (NotImplementedException)
+			{
+				return default;
+			}
 		}
 
 		static HarmonyArgument[] GetArgumentAttributes(this Type type)
@@ -289,9 +297,12 @@ namespace HarmonyLib
 			if (argumentName != null)
 				return argumentName;
 
-			argumentName = GetOriginalArgumentName(method?.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName != null)
-				return argumentName;
+			if (method?.DeclaringType != null)
+			{
+				argumentName = GetOriginalArgumentName(method?.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
+				if (argumentName != null)
+					return argumentName;
+			}
 
 			return name;
 		}
@@ -328,15 +339,14 @@ namespace HarmonyLib
 			{
 				if (patchParam.Name == ORIGINAL_METHOD_PARAM)
 				{
-					var constructorInfo = original as ConstructorInfo;
-					if (constructorInfo != null)
+					if (original is ConstructorInfo constructorInfo)
 					{
 						Emitter.Emit(il, OpCodes.Ldtoken, constructorInfo);
 						Emitter.Emit(il, OpCodes.Call, getMethodMethod);
 						continue;
 					}
-					var methodInfo = original as MethodInfo;
-					if (methodInfo != null)
+
+					if (original is MethodInfo methodInfo)
 					{
 						Emitter.Emit(il, OpCodes.Ldtoken, methodInfo);
 						Emitter.Emit(il, OpCodes.Call, getMethodMethod);
