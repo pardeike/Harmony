@@ -1,3 +1,10 @@
+dist: xenial
+addons:
+  snaps:
+  - name: dotnet-sdk
+    classic: true
+    channel: latest/beta
+sudo: required
 language: csharp
 os:
   - linux
@@ -13,6 +20,8 @@ install:
   - dotnet restore
   - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
 script:
+  - sudo snap alias dotnet-sdk.dotnet dotnet
+  - dotnet --version
   - msbuild /p:Configuration=Release
   - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe HarmonyTests/bin/Release/net45/HarmonyTests.dll
 notifications:
