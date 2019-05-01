@@ -187,7 +187,8 @@ namespace HarmonyLib
 
 		static OpCode LoadIndOpCodeFor(Type type)
 		{
-			if (type.IsEnum) return OpCodes.Ldind_I4;
+			if (type.IsEnum)
+				return OpCodes.Ldind_I4;
 
 			if (type == typeof(float)) return OpCodes.Ldind_R4;
 			if (type == typeof(double)) return OpCodes.Ldind_R8;
@@ -226,7 +227,7 @@ namespace HarmonyLib
 		{
 			if (method == null || method is DynamicMethod)
 				return default;
-			
+
 			var attributes = method.GetCustomAttributes(false);
 			return AllHarmonyArguments(attributes);
 		}
@@ -239,7 +240,7 @@ namespace HarmonyLib
 
 		static string GetOriginalArgumentName(this ParameterInfo parameter, string[] originalParameterNames)
 		{
-			HarmonyArgument attribute = parameter.GetArgumentAttribute();
+			var attribute = parameter.GetArgumentAttribute();
 
 			if (attribute == null)
 				return null;
@@ -279,12 +280,9 @@ namespace HarmonyLib
 			if (argumentName != null)
 				return argumentName;
 
-			if (method?.DeclaringType != null)
-			{
-				argumentName = GetOriginalArgumentName(method?.DeclaringType.GetArgumentAttributes(), name, originalParameterNames);
-				if (argumentName != null)
-					return argumentName;
-			}
+			argumentName = GetOriginalArgumentName(method?.DeclaringType?.GetArgumentAttributes(), name, originalParameterNames);
+			if (argumentName != null)
+				return argumentName;
 
 			return name;
 		}
@@ -297,7 +295,7 @@ namespace HarmonyLib
 			var originalName = patchParam.GetOriginalArgumentName(originalParameterNames);
 			if (originalName != null)
 				return Array.IndexOf(originalParameterNames, originalName);
-			
+
 			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParam.Name);
 			if (originalName != null)
 				return Array.IndexOf(originalParameterNames, originalName);
