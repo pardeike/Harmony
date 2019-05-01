@@ -237,10 +237,10 @@ namespace HarmonyLibTests.Assets
 		public string someString;
 		public Class6Struct someStruct;
 
-		public Tuple<float, string, Class6Struct> Method6()
+		public List<object> Method6()
 		{
 			Console.WriteLine("In Class6.Method6");
-			return new Tuple<float, string, Class6Struct>(someFloat, someString, someStruct);
+			return new List<object>() { someFloat, someString, someStruct };
 		}
 	}
 

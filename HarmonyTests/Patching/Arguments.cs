@@ -2,6 +2,7 @@ using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace HarmonyLibTests
@@ -36,9 +37,9 @@ namespace HarmonyLibTests
 				someStruct = new Class6Struct() { d1 = 1, d2 = 2, d3 = 3 }
 			};
 			var res = instance6.Method6();
-			Assert.AreEqual(123, res.Item1);
-			Assert.AreEqual("patched", res.Item2);
-			Assert.AreEqual(10.0, res.Item3.d1);
+			Assert.AreEqual(res[0], 123);
+			Assert.AreEqual(res[1], "patched");
+			Assert.AreEqual(((Class6Struct)res[2]).d1, 10.0);
 		}
 
 		/* disabled temporarily because appveyor.com fails this test
