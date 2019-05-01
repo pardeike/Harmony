@@ -1,36 +1,12 @@
 language: csharp
+os:
+  - windows
+  - linux
+  - osx
 solution: Harmony.sln
-matrix:
-  include:
-
-    - dotnet: 1.1.13
-      os: windows
-      mono: none
-
-    - dotnet: 2.1.202
-      os: windows
-      mono: none
-
-    - dotnet: 2.1.603
-      os: windows
-      mono: none
-
-    - dotnet: 2.2.203
-      os: windows
-      mono: none
-
-    - mono:
-      - latest
-      os: windows
-
-    - mono:
-      - latest
-      os: linux
-
-    - mono:
-      - latest
-      os: osx
-
+mono:
+  - latest
+dotnet: 2.0.3
 before_install:
   - if [ "$TRAVIS_COMMIT_MESSAGE" == "Update documentation" ]; then echo "Skipping documentation only commit" && exit; fi
 install:
