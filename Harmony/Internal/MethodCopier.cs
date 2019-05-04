@@ -162,8 +162,8 @@ namespace HarmonyLib
 				var instr2 = GetInstruction(handler_end, true);
 				instr2.blocks.Add(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock, null));
 
-				// The FilterOffset property is meaningful only for Filter clauses. 
-				// The CatchType property is not meaningful for Filter or Finally clauses. 
+				// The FilterOffset property is meaningful only for Filter clauses.
+				// The CatchType property is not meaningful for Filter or Finally clauses.
 				//
 				switch (exception.Flags)
 				{
@@ -319,11 +319,19 @@ namespace HarmonyLib
 				//	if (codeInstruction.blocks.Any(block => block.blockType == ExceptionBlockType.EndExceptionBlock))
 				//		emitCode = false;
 
-				//	// skip LEAVE on next instruction starts a new exception handler and we are already in 
+				//	// skip LEAVE on next instruction starts a new exception handler and we are already in
 				//	if (idx < instructions.Length - 1)
 				//		if (instructions[idx + 1].blocks.Any(block => block.blockType != ExceptionBlockType.EndExceptionBlock))
 				//			emitCode = false;
 				//}
+
+                //for end filter exception instruction
+                //let BeginCatchBlock(null) call to emit the instruction
+                //and the API call will make ILGenerator stay in correct state
+                if (code == OpCodes.Endfilter) {
+                    emitCode = false;
+                    generator.BeginCatchBlock(null);
+                }
 
 				if (emitCode)
 				{
