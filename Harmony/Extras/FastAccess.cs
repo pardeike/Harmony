@@ -104,11 +104,13 @@ namespace HarmonyLib
 		{
 			foreach (var name in names)
 			{
-				if (AccessTools.DeclaredField(typeof(T), name) != null)
-					return CreateGetterHandler<T, S>(AccessTools.DeclaredField(typeof(T), name));
+				var field = typeof(T).GetField(name, AccessTools.all);
+				if (field != null)
+					return CreateGetterHandler<T, S>(field);
 
-				if (AccessTools.Property(typeof(T), name) != null)
-					return CreateGetterHandler<T, S>(AccessTools.Property(typeof(T), name));
+				var property = typeof(T).GetProperty(name, AccessTools.all);
+				if (property != null)
+					return CreateGetterHandler<T, S>(property);
 			}
 
 			return null;
