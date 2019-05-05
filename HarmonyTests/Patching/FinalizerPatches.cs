@@ -192,8 +192,9 @@ namespace HarmonyLibTests
 			}
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, null, null, new HarmonyMethod(finalizer));
+			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
+			patcher.AddFinalizer(finalizer);
 			patcher.Patch();
 
 			var trv = Traverse.Create(patchType);

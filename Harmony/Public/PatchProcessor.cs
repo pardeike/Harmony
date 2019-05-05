@@ -6,6 +6,18 @@ using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
+	static class PatchProcessorExtensions
+	{
+		/// <summary>Creates an empty patch processor</summary>
+		/// <param name="instance">The Harmony instance</param>
+		/// <param name="original">An optional original method</param>
+		///
+		public static PatchProcessor CreateProcessor(this Harmony instance, MethodBase original = null)
+		{
+			return new PatchProcessor(instance, original);
+		}
+	}
+
 	/// <summary>A patch processor</summary>
 	public class PatchProcessor
 	{
@@ -16,11 +28,22 @@ namespace HarmonyLib
 		readonly Type container;
 		readonly HarmonyMethod containerAttributes;
 
-		List<MethodBase> originals = new List<MethodBase>();
-		readonly HarmonyMethod prefix;
-		readonly HarmonyMethod postfix;
-		readonly HarmonyMethod transpiler;
-		readonly HarmonyMethod finalizer;
+		readonly List<MethodBase> originals = new List<MethodBase>();
+		HarmonyMethod prefix;
+		HarmonyMethod postfix;
+		HarmonyMethod transpiler;
+		HarmonyMethod finalizer;
+
+		/// <summary>Creates an empty patch processor</summary>
+		/// <param name="instance">The Harmony instance</param>
+		/// <param name="original">An optional original method</param>
+		///
+		public PatchProcessor(Harmony instance, MethodBase original = null)
+		{
+			this.instance = instance;
+			if (original != null)
+				originals.Add(original);
+		}
 
 		/// <summary>Creates a patch processor</summary>
 		/// <param name="instance">The Harmony instance</param>
@@ -39,22 +62,96 @@ namespace HarmonyLib
 			PrepareType();
 		}
 
-		/// <summary>Creates a patch processor</summary>
-		/// <param name="instance">The Harmony instance.</param>
-		/// <param name="originals">The original methods</param>
-		/// <param name="prefix">The optional prefix.</param>
-		/// <param name="postfix">The optional postfix.</param>
-		/// <param name="transpiler">The optional transpiler.</param>
-		/// <param name="finalizer">The optional finalizer.</param>
+		/// <summary>Add an original method</summary>
+		/// <param name="original">The method that will be patched.</param>
 		///
-		public PatchProcessor(Harmony instance, List<MethodBase> originals, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
+		public PatchProcessor AddOriginal(MethodBase original)
 		{
-			this.instance = instance;
-			this.originals = originals;
+			if (originals.Contains(original) == false)
+				originals.Add(original);
+			return this;
+		}
+
+		/// <summary>Sets the original methods</summary>
+		/// <param name="originals">The methods that will be patched.</param>
+		///
+		public PatchProcessor SetOriginals(List<MethodBase> originals)
+		{
+			this.originals.Clear();
+			this.originals.AddRange(originals);
+			return this;
+		}
+
+		/// <summary>Add a prefix</summary>
+		/// <param name="prefix">The prefix.</param>
+		///
+		public PatchProcessor AddPrefix(HarmonyMethod prefix)
+		{
 			this.prefix = prefix;
+			return this;
+		}
+
+		/// <summary>Add a prefix</summary>
+		/// <param name="fixMethod">The method.</param>
+		///
+		public PatchProcessor AddPrefix(MethodInfo fixMethod)
+		{
+			prefix = new HarmonyMethod(fixMethod);
+			return this;
+		}
+
+		/// <summary>Add a postfix</summary>
+		/// <param name="postfix">The postfix.</param>
+		///
+		public PatchProcessor AddPostfix(HarmonyMethod postfix)
+		{
 			this.postfix = postfix;
+			return this;
+		}
+
+		/// <summary>Add a postfix</summary>
+		/// <param name="fixMethod">The method.</param>
+		///
+		public PatchProcessor AddPostfix(MethodInfo fixMethod)
+		{
+			postfix = new HarmonyMethod(fixMethod);
+			return this;
+		}
+
+		/// <summary>Add a transpiler</summary>
+		/// <param name="transpiler">The transpiler.</param>
+		///
+		public PatchProcessor AddTranspiler(HarmonyMethod transpiler)
+		{
 			this.transpiler = transpiler;
+			return this;
+		}
+
+		/// <summary>Add a transpiler</summary>
+		/// <param name="fixMethod">The method.</param>
+		///
+		public PatchProcessor AddTranspiler(MethodInfo fixMethod)
+		{
+			transpiler = new HarmonyMethod(fixMethod);
+			return this;
+		}
+
+		/// <summary>Add a finalizer</summary>
+		/// <param name="finalizer">The finalizer.</param>
+		///
+		public PatchProcessor AddFinalizer(HarmonyMethod finalizer)
+		{
 			this.finalizer = finalizer;
+			return this;
+		}
+
+		/// <summary>Add a finalizer</summary>
+		/// <param name="fixMethod">The method.</param>
+		///
+		public PatchProcessor AddFinalizer(MethodInfo fixMethod)
+		{
+			finalizer = new HarmonyMethod(fixMethod);
+			return this;
 		}
 
 		/// <summary>Gets patch information</summary>
@@ -120,7 +217,7 @@ namespace HarmonyLib
 		/// <param name="type">The patch type</param>
 		/// <param name="harmonyID">Harmony ID or (*) for any</param>
 		///
-		public void Unpatch(HarmonyPatchType type, string harmonyID)
+		public PatchProcessor Unpatch(HarmonyPatchType type, string harmonyID)
 		{
 			lock (locker)
 			{
@@ -142,12 +239,13 @@ namespace HarmonyLib
 					HarmonySharedState.UpdatePatchInfo(original, patchInfo);
 				}
 			}
+			return this;
 		}
 
 		/// <summary>Unpatches the given patch</summary>
 		/// <param name="patch">The patch</param>
 		///
-		public void Unpatch(MethodInfo patch)
+		public PatchProcessor Unpatch(MethodInfo patch)
 		{
 			lock (locker)
 			{
@@ -162,6 +260,7 @@ namespace HarmonyLib
 					HarmonySharedState.UpdatePatchInfo(original, patchInfo);
 				}
 			}
+			return this;
 		}
 
 		void PrepareType()
@@ -173,7 +272,8 @@ namespace HarmonyLib
 			var customOriginals = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null);
 			if (customOriginals != null)
 			{
-				originals = customOriginals.ToList();
+				originals.Clear();
+				originals.AddRange(customOriginals);
 			}
 			else
 			{

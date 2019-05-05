@@ -95,7 +95,11 @@ namespace HarmonyLib
 		///
 		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
-			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler, finalizer);
+			var processor = new PatchProcessor(this, original);
+			processor.AddPrefix(prefix);
+			processor.AddPostfix(postfix);
+			processor.AddTranspiler(transpiler);
+			processor.AddFinalizer(finalizer);
 			return processor.Patch().FirstOrDefault();
 		}
 
@@ -124,7 +128,7 @@ namespace HarmonyLib
 		///
 		public void Unpatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
 		{
-			var processor = new PatchProcessor(this, new List<MethodBase> { original });
+			var processor = new PatchProcessor(this, original);
 			processor.Unpatch(type, harmonyID);
 		}
 
@@ -134,7 +138,7 @@ namespace HarmonyLib
 		///
 		public void Unpatch(MethodBase original, MethodInfo patch)
 		{
-			var processor = new PatchProcessor(this, new List<MethodBase> { original });
+			var processor = new PatchProcessor(this, original);
 			processor.Unpatch(patch);
 		}
 

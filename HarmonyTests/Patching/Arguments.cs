@@ -25,7 +25,9 @@ namespace HarmonyLibTests
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, new HarmonyMethod(prefix), null);
+			var patcher = instance.CreateProcessor(originalMethod);
+			Assert.IsNotNull(patcher);
+			patcher.AddPrefix(prefix);
 			Assert.IsNotNull(patcher);
 
 			patcher.Patch();
@@ -54,12 +56,12 @@ namespace HarmonyLibTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			Harmony.DEBUG = true;
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix));
+			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
+			patcher.AddPostfix(postfix);
 
 			patcher.Patch();
 
@@ -85,11 +87,12 @@ namespace HarmonyLibTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			Harmony.DEBUG = true;
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
-			var patcher = new PatchProcessor(instance, new List<MethodBase> { originalMethod }, null, new HarmonyMethod(postfix));
+			var patcher = instance.CreateProcessor(originalMethod);
+			Assert.IsNotNull(patcher);
+			patcher.AddPostfix(postfix);
 			Assert.IsNotNull(patcher);
 
 			patcher.Patch();
