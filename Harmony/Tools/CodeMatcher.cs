@@ -218,6 +218,14 @@ namespace HarmonyLib
 			return codes;
 		}
 
+		/// <summary>Gets all instructions as an enumeration</summary>
+		/// <returns>A list of instructions</returns>
+		///
+		public IEnumerable<CodeInstruction> InstructionEnumeration()
+		{
+			return codes.AsEnumerable();
+		}
+
 		/// <summary>Gets some instructions counting from current position</summary>
 		/// <param name="count">Number of instructions</param>
 		/// <returns>A list of instructions</returns>
