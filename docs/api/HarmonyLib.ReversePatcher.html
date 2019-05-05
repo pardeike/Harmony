@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class HarmonyAfter
+    <title>Class ReversePatcher
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class HarmonyAfter
+    <meta name="title" content="Class ReversePatcher
    ">
     <meta name="generator" content="docfx 2.42.0.0">
     
@@ -68,49 +68,42 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.HarmonyAfter">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.ReversePatcher">
   
   
-  <h1 id="HarmonyLib_HarmonyAfter" data-uid="HarmonyLib.HarmonyAfter" class="text-break">Class HarmonyAfter
+  <h1 id="HarmonyLib_ReversePatcher" data-uid="HarmonyLib.ReversePatcher" class="text-break">Class ReversePatcher
   </h1>
-  <div class="markdown level0 summary"><p>A Harmony annotation</p>
+  <div class="markdown level0 summary"><p>A reverse patcher</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></div>
-    <div class="level2"><span class="xref">HarmonyAfter</span></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="HarmonyLib.HarmonyAttribute.html#HarmonyLib_HarmonyAttribute_info">HarmonyAttribute.info</a>
-    </div>
+    <div class="level1"><span class="xref">ReversePatcher</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_HarmonyAfter_syntax">Syntax</h5>
+  <h5 id="HarmonyLib_ReversePatcher_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class HarmonyAfter : HarmonyAttribute</code></pre>
+    <pre><code class="lang-csharp hljs">public class ReversePatcher : object</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyAfter__ctor_System_String___.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyAfter.%23ctor(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_ReversePatcher__ctor_HarmonyLib_Harmony_MethodBase_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.ReversePatcher.%23ctor(HarmonyLib.Harmony%2CMethodBase%2CMethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Attributes.cs/#L351">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/ReversePatcher.cs/#L34">View Source</a>
   </span>
-  <a id="HarmonyLib_HarmonyAfter__ctor_" data-uid="HarmonyLib.HarmonyAfter.#ctor*"></a>
-  <h4 id="HarmonyLib_HarmonyAfter__ctor_System_String___" data-uid="HarmonyLib.HarmonyAfter.#ctor(System.String[])">HarmonyAfter(String[])</h4>
-  <div class="markdown level1 summary"><p>A Harmony annotation to define that a patch comes after another patch</p>
+  <a id="HarmonyLib_ReversePatcher__ctor_" data-uid="HarmonyLib.ReversePatcher.#ctor*"></a>
+  <h4 id="HarmonyLib_ReversePatcher__ctor_HarmonyLib_Harmony_MethodBase_MethodInfo_" data-uid="HarmonyLib.ReversePatcher.#ctor(HarmonyLib.Harmony,MethodBase,MethodInfo)">ReversePatcher(Harmony, MethodBase, MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Creates an empty reverse patcher</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public HarmonyAfter(params string[] after)</code></pre>
+    <pre><code class="lang-csharp hljs">public ReversePatcher(Harmony instance, MethodBase original, MethodInfo standin)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -123,10 +116,57 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.String</span>[]</td>
-        <td><span class="parametername">after</span></td>
-        <td><p>The harmony ID of the other patch</p>
+        <td><a class="xref" href="HarmonyLib.Harmony.html">Harmony</a></td>
+        <td><span class="parametername">instance</span></td>
+        <td><p>The Harmony instance</p>
 </td>
+      </tr>
+      <tr>
+        <td><span class="xref">MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">MethodInfo</span></td>
+        <td><span class="parametername">standin</span></td>
+        <td><p>The stand-in method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_ReversePatcher_Patch_HarmonyLib_HarmonyReversePatchType_.md&amp;value=---%0Auid%3A%20HarmonyLib.ReversePatcher.Patch(HarmonyLib.HarmonyReversePatchType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/ReversePatcher.cs/#L43">View Source</a>
+  </span>
+  <a id="HarmonyLib_ReversePatcher_Patch_" data-uid="HarmonyLib.ReversePatcher.Patch*"></a>
+  <h4 id="HarmonyLib_ReversePatcher_Patch_HarmonyLib_HarmonyReversePatchType_" data-uid="HarmonyLib.ReversePatcher.Patch(HarmonyLib.HarmonyReversePatchType)">Patch(HarmonyReversePatchType)</h4>
+  <div class="markdown level1 summary"><p>Applies the patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Patch(HarmonyReversePatchType type = HarmonyReversePatchType.Original)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyReversePatchType.html">HarmonyReversePatchType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -138,10 +178,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyAfter.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyAfter%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_ReversePatcher.md&amp;value=---%0Auid%3A%20HarmonyLib.ReversePatcher%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Attributes.cs/#L345" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/ReversePatcher.cs/#L23" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

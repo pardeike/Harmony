@@ -1174,6 +1174,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatcher.InstructionAt
   nameWithType: CodeMatcher.InstructionAt
+- uid: HarmonyLib.CodeMatcher.InstructionEnumeration
+  name: InstructionEnumeration()
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InstructionEnumeration
+  commentId: M:HarmonyLib.CodeMatcher.InstructionEnumeration
+  fullName: HarmonyLib.CodeMatcher.InstructionEnumeration()
+  nameWithType: CodeMatcher.InstructionEnumeration()
+- uid: HarmonyLib.CodeMatcher.InstructionEnumeration*
+  name: InstructionEnumeration
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InstructionEnumeration_
+  commentId: Overload:HarmonyLib.CodeMatcher.InstructionEnumeration
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatcher.InstructionEnumeration
+  nameWithType: CodeMatcher.InstructionEnumeration
 - uid: HarmonyLib.CodeMatcher.Instructions
   name: Instructions()
   href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_Instructions
@@ -2574,6 +2587,12 @@ references:
   commentId: F:HarmonyLib.HarmonyMethod.priority
   fullName: HarmonyLib.HarmonyMethod.priority
   nameWithType: HarmonyMethod.priority
+- uid: HarmonyLib.HarmonyMethod.reversePatchType
+  name: reversePatchType
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_reversePatchType
+  commentId: F:HarmonyLib.HarmonyMethod.reversePatchType
+  fullName: HarmonyLib.HarmonyMethod.reversePatchType
+  nameWithType: HarmonyMethod.reversePatchType
 - uid: HarmonyLib.HarmonyMethod.ToString
   name: ToString()
   href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_ToString
@@ -2897,6 +2916,43 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.HarmonyPriority.HarmonyPriority
   nameWithType: HarmonyPriority.HarmonyPriority
+- uid: HarmonyLib.HarmonyReversePatch
+  name: HarmonyReversePatch
+  href: api/HarmonyLib.HarmonyReversePatch.html
+  commentId: T:HarmonyLib.HarmonyReversePatch
+  fullName: HarmonyLib.HarmonyReversePatch
+  nameWithType: HarmonyReversePatch
+- uid: HarmonyLib.HarmonyReversePatch.#ctor(HarmonyLib.HarmonyReversePatchType)
+  name: HarmonyReversePatch(HarmonyReversePatchType)
+  href: api/HarmonyLib.HarmonyReversePatch.html#HarmonyLib_HarmonyReversePatch__ctor_HarmonyLib_HarmonyReversePatchType_
+  commentId: M:HarmonyLib.HarmonyReversePatch.#ctor(HarmonyLib.HarmonyReversePatchType)
+  fullName: HarmonyLib.HarmonyReversePatch.HarmonyReversePatch(HarmonyLib.HarmonyReversePatchType)
+  nameWithType: HarmonyReversePatch.HarmonyReversePatch(HarmonyReversePatchType)
+- uid: HarmonyLib.HarmonyReversePatch.#ctor*
+  name: HarmonyReversePatch
+  href: api/HarmonyLib.HarmonyReversePatch.html#HarmonyLib_HarmonyReversePatch__ctor_
+  commentId: Overload:HarmonyLib.HarmonyReversePatch.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyReversePatch.HarmonyReversePatch
+  nameWithType: HarmonyReversePatch.HarmonyReversePatch
+- uid: HarmonyLib.HarmonyReversePatchType
+  name: HarmonyReversePatchType
+  href: api/HarmonyLib.HarmonyReversePatchType.html
+  commentId: T:HarmonyLib.HarmonyReversePatchType
+  fullName: HarmonyLib.HarmonyReversePatchType
+  nameWithType: HarmonyReversePatchType
+- uid: HarmonyLib.HarmonyReversePatchType.Original
+  name: Original
+  href: api/HarmonyLib.HarmonyReversePatchType.html#HarmonyLib_HarmonyReversePatchType_Original
+  commentId: F:HarmonyLib.HarmonyReversePatchType.Original
+  fullName: HarmonyLib.HarmonyReversePatchType.Original
+  nameWithType: HarmonyReversePatchType.Original
+- uid: HarmonyLib.HarmonyReversePatchType.Wrapped
+  name: Wrapped
+  href: api/HarmonyLib.HarmonyReversePatchType.html#HarmonyLib_HarmonyReversePatchType_Wrapped
+  commentId: F:HarmonyLib.HarmonyReversePatchType.Wrapped
+  fullName: HarmonyLib.HarmonyReversePatchType.Wrapped
+  nameWithType: HarmonyReversePatchType.Wrapped
 - uid: HarmonyLib.HarmonyTargetMethod
   name: HarmonyTargetMethod
   href: api/HarmonyLib.HarmonyTargetMethod.html
@@ -3393,15 +3449,12 @@ references:
   commentId: T:HarmonyLib.PatchProcessor
   fullName: HarmonyLib.PatchProcessor
   nameWithType: PatchProcessor
-- uid: HarmonyLib.PatchProcessor.#ctor(HarmonyLib.Harmony,List{MethodBase},HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)
-  name: PatchProcessor(Harmony, List<MethodBase>, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor__ctor_HarmonyLib_Harmony_List_MethodBase__HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_
-  commentId: M:HarmonyLib.PatchProcessor.#ctor(HarmonyLib.Harmony,List{MethodBase},HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)
-  name.vb: PatchProcessor(Harmony, List(Of MethodBase), HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  fullName: HarmonyLib.PatchProcessor.PatchProcessor(HarmonyLib.Harmony, List<MethodBase>, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod)
-  fullName.vb: HarmonyLib.PatchProcessor.PatchProcessor(HarmonyLib.Harmony, List(Of MethodBase), HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod)
-  nameWithType: PatchProcessor.PatchProcessor(Harmony, List<MethodBase>, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  nameWithType.vb: PatchProcessor.PatchProcessor(Harmony, List(Of MethodBase), HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+- uid: HarmonyLib.PatchProcessor.#ctor(HarmonyLib.Harmony,MethodBase)
+  name: PatchProcessor(Harmony, MethodBase)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor__ctor_HarmonyLib_Harmony_MethodBase_
+  commentId: M:HarmonyLib.PatchProcessor.#ctor(HarmonyLib.Harmony,MethodBase)
+  fullName: HarmonyLib.PatchProcessor.PatchProcessor(HarmonyLib.Harmony, MethodBase)
+  nameWithType: PatchProcessor.PatchProcessor(Harmony, MethodBase)
 - uid: HarmonyLib.PatchProcessor.#ctor(HarmonyLib.Harmony,Type,HarmonyLib.HarmonyMethod)
   name: PatchProcessor(Harmony, Type, HarmonyMethod)
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor__ctor_HarmonyLib_Harmony_Type_HarmonyLib_HarmonyMethod_
@@ -3415,6 +3468,95 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.PatchProcessor
   nameWithType: PatchProcessor.PatchProcessor
+- uid: HarmonyLib.PatchProcessor.AddFinalizer(HarmonyLib.HarmonyMethod)
+  name: AddFinalizer(HarmonyMethod)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddFinalizer_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.PatchProcessor.AddFinalizer(HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.PatchProcessor.AddFinalizer(HarmonyLib.HarmonyMethod)
+  nameWithType: PatchProcessor.AddFinalizer(HarmonyMethod)
+- uid: HarmonyLib.PatchProcessor.AddFinalizer(MethodInfo)
+  name: AddFinalizer(MethodInfo)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddFinalizer_MethodInfo_
+  commentId: M:HarmonyLib.PatchProcessor.AddFinalizer(MethodInfo)
+  fullName: HarmonyLib.PatchProcessor.AddFinalizer(MethodInfo)
+  nameWithType: PatchProcessor.AddFinalizer(MethodInfo)
+- uid: HarmonyLib.PatchProcessor.AddFinalizer*
+  name: AddFinalizer
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddFinalizer_
+  commentId: Overload:HarmonyLib.PatchProcessor.AddFinalizer
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.AddFinalizer
+  nameWithType: PatchProcessor.AddFinalizer
+- uid: HarmonyLib.PatchProcessor.AddOriginal(MethodBase)
+  name: AddOriginal(MethodBase)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddOriginal_MethodBase_
+  commentId: M:HarmonyLib.PatchProcessor.AddOriginal(MethodBase)
+  fullName: HarmonyLib.PatchProcessor.AddOriginal(MethodBase)
+  nameWithType: PatchProcessor.AddOriginal(MethodBase)
+- uid: HarmonyLib.PatchProcessor.AddOriginal*
+  name: AddOriginal
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddOriginal_
+  commentId: Overload:HarmonyLib.PatchProcessor.AddOriginal
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.AddOriginal
+  nameWithType: PatchProcessor.AddOriginal
+- uid: HarmonyLib.PatchProcessor.AddPostfix(HarmonyLib.HarmonyMethod)
+  name: AddPostfix(HarmonyMethod)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddPostfix_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.PatchProcessor.AddPostfix(HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.PatchProcessor.AddPostfix(HarmonyLib.HarmonyMethod)
+  nameWithType: PatchProcessor.AddPostfix(HarmonyMethod)
+- uid: HarmonyLib.PatchProcessor.AddPostfix(MethodInfo)
+  name: AddPostfix(MethodInfo)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddPostfix_MethodInfo_
+  commentId: M:HarmonyLib.PatchProcessor.AddPostfix(MethodInfo)
+  fullName: HarmonyLib.PatchProcessor.AddPostfix(MethodInfo)
+  nameWithType: PatchProcessor.AddPostfix(MethodInfo)
+- uid: HarmonyLib.PatchProcessor.AddPostfix*
+  name: AddPostfix
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddPostfix_
+  commentId: Overload:HarmonyLib.PatchProcessor.AddPostfix
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.AddPostfix
+  nameWithType: PatchProcessor.AddPostfix
+- uid: HarmonyLib.PatchProcessor.AddPrefix(HarmonyLib.HarmonyMethod)
+  name: AddPrefix(HarmonyMethod)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddPrefix_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.PatchProcessor.AddPrefix(HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.PatchProcessor.AddPrefix(HarmonyLib.HarmonyMethod)
+  nameWithType: PatchProcessor.AddPrefix(HarmonyMethod)
+- uid: HarmonyLib.PatchProcessor.AddPrefix(MethodInfo)
+  name: AddPrefix(MethodInfo)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddPrefix_MethodInfo_
+  commentId: M:HarmonyLib.PatchProcessor.AddPrefix(MethodInfo)
+  fullName: HarmonyLib.PatchProcessor.AddPrefix(MethodInfo)
+  nameWithType: PatchProcessor.AddPrefix(MethodInfo)
+- uid: HarmonyLib.PatchProcessor.AddPrefix*
+  name: AddPrefix
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddPrefix_
+  commentId: Overload:HarmonyLib.PatchProcessor.AddPrefix
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.AddPrefix
+  nameWithType: PatchProcessor.AddPrefix
+- uid: HarmonyLib.PatchProcessor.AddTranspiler(HarmonyLib.HarmonyMethod)
+  name: AddTranspiler(HarmonyMethod)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddTranspiler_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.PatchProcessor.AddTranspiler(HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.PatchProcessor.AddTranspiler(HarmonyLib.HarmonyMethod)
+  nameWithType: PatchProcessor.AddTranspiler(HarmonyMethod)
+- uid: HarmonyLib.PatchProcessor.AddTranspiler(MethodInfo)
+  name: AddTranspiler(MethodInfo)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddTranspiler_MethodInfo_
+  commentId: M:HarmonyLib.PatchProcessor.AddTranspiler(MethodInfo)
+  fullName: HarmonyLib.PatchProcessor.AddTranspiler(MethodInfo)
+  nameWithType: PatchProcessor.AddTranspiler(MethodInfo)
+- uid: HarmonyLib.PatchProcessor.AddTranspiler*
+  name: AddTranspiler
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddTranspiler_
+  commentId: Overload:HarmonyLib.PatchProcessor.AddTranspiler
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.AddTranspiler
+  nameWithType: PatchProcessor.AddTranspiler
 - uid: HarmonyLib.PatchProcessor.AllPatchedMethods
   name: AllPatchedMethods()
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AllPatchedMethods
@@ -3454,6 +3596,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.Patch
   nameWithType: PatchProcessor.Patch
+- uid: HarmonyLib.PatchProcessor.SetOriginals(List{MethodBase})
+  name: SetOriginals(List<MethodBase>)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_SetOriginals_List_MethodBase__
+  commentId: M:HarmonyLib.PatchProcessor.SetOriginals(List{MethodBase})
+  name.vb: SetOriginals(List(Of MethodBase))
+  fullName: HarmonyLib.PatchProcessor.SetOriginals(List<MethodBase>)
+  fullName.vb: HarmonyLib.PatchProcessor.SetOriginals(List(Of MethodBase))
+  nameWithType: PatchProcessor.SetOriginals(List<MethodBase>)
+  nameWithType.vb: PatchProcessor.SetOriginals(List(Of MethodBase))
+- uid: HarmonyLib.PatchProcessor.SetOriginals*
+  name: SetOriginals
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_SetOriginals_
+  commentId: Overload:HarmonyLib.PatchProcessor.SetOriginals
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.SetOriginals
+  nameWithType: PatchProcessor.SetOriginals
 - uid: HarmonyLib.PatchProcessor.Unpatch(HarmonyLib.HarmonyPatchType,System.String)
   name: Unpatch(HarmonyPatchType, String)
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_Unpatch_HarmonyLib_HarmonyPatchType_System_String_
@@ -3533,6 +3691,38 @@ references:
   commentId: F:HarmonyLib.Priority.VeryLow
   fullName: HarmonyLib.Priority.VeryLow
   nameWithType: Priority.VeryLow
+- uid: HarmonyLib.ReversePatcher
+  name: ReversePatcher
+  href: api/HarmonyLib.ReversePatcher.html
+  commentId: T:HarmonyLib.ReversePatcher
+  fullName: HarmonyLib.ReversePatcher
+  nameWithType: ReversePatcher
+- uid: HarmonyLib.ReversePatcher.#ctor(HarmonyLib.Harmony,MethodBase,MethodInfo)
+  name: ReversePatcher(Harmony, MethodBase, MethodInfo)
+  href: api/HarmonyLib.ReversePatcher.html#HarmonyLib_ReversePatcher__ctor_HarmonyLib_Harmony_MethodBase_MethodInfo_
+  commentId: M:HarmonyLib.ReversePatcher.#ctor(HarmonyLib.Harmony,MethodBase,MethodInfo)
+  fullName: HarmonyLib.ReversePatcher.ReversePatcher(HarmonyLib.Harmony, MethodBase, MethodInfo)
+  nameWithType: ReversePatcher.ReversePatcher(Harmony, MethodBase, MethodInfo)
+- uid: HarmonyLib.ReversePatcher.#ctor*
+  name: ReversePatcher
+  href: api/HarmonyLib.ReversePatcher.html#HarmonyLib_ReversePatcher__ctor_
+  commentId: Overload:HarmonyLib.ReversePatcher.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.ReversePatcher.ReversePatcher
+  nameWithType: ReversePatcher.ReversePatcher
+- uid: HarmonyLib.ReversePatcher.Patch(HarmonyLib.HarmonyReversePatchType)
+  name: Patch(HarmonyReversePatchType)
+  href: api/HarmonyLib.ReversePatcher.html#HarmonyLib_ReversePatcher_Patch_HarmonyLib_HarmonyReversePatchType_
+  commentId: M:HarmonyLib.ReversePatcher.Patch(HarmonyLib.HarmonyReversePatchType)
+  fullName: HarmonyLib.ReversePatcher.Patch(HarmonyLib.HarmonyReversePatchType)
+  nameWithType: ReversePatcher.Patch(HarmonyReversePatchType)
+- uid: HarmonyLib.ReversePatcher.Patch*
+  name: Patch
+  href: api/HarmonyLib.ReversePatcher.html#HarmonyLib_ReversePatcher_Patch_
+  commentId: Overload:HarmonyLib.ReversePatcher.Patch
+  isSpec: "True"
+  fullName: HarmonyLib.ReversePatcher.Patch
+  nameWithType: ReversePatcher.Patch
 - uid: HarmonyLib.SetterHandler`2
   name: SetterHandler<T, S>
   href: api/HarmonyLib.SetterHandler-2.html
@@ -3610,6 +3800,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Transpilers.DebugLogger
   nameWithType: Transpilers.DebugLogger
+- uid: HarmonyLib.Transpilers.Manipulator(IEnumerable{HarmonyLib.CodeInstruction},Func{HarmonyLib.CodeInstruction,System.Boolean},Action{HarmonyLib.CodeInstruction})
+  name: Manipulator(IEnumerable<CodeInstruction>, Func<CodeInstruction, Boolean>, Action<CodeInstruction>)
+  href: api/HarmonyLib.Transpilers.html#HarmonyLib_Transpilers_Manipulator_IEnumerable_HarmonyLib_CodeInstruction__Func_HarmonyLib_CodeInstruction_System_Boolean__Action_HarmonyLib_CodeInstruction__
+  commentId: M:HarmonyLib.Transpilers.Manipulator(IEnumerable{HarmonyLib.CodeInstruction},Func{HarmonyLib.CodeInstruction,System.Boolean},Action{HarmonyLib.CodeInstruction})
+  name.vb: Manipulator(IEnumerable(Of CodeInstruction), Func(Of CodeInstruction, Boolean), Action(Of CodeInstruction))
+  fullName: HarmonyLib.Transpilers.Manipulator(IEnumerable<HarmonyLib.CodeInstruction>, Func<HarmonyLib.CodeInstruction, System.Boolean>, Action<HarmonyLib.CodeInstruction>)
+  fullName.vb: HarmonyLib.Transpilers.Manipulator(IEnumerable(Of HarmonyLib.CodeInstruction), Func(Of HarmonyLib.CodeInstruction, System.Boolean), Action(Of HarmonyLib.CodeInstruction))
+  nameWithType: Transpilers.Manipulator(IEnumerable<CodeInstruction>, Func<CodeInstruction, Boolean>, Action<CodeInstruction>)
+  nameWithType.vb: Transpilers.Manipulator(IEnumerable(Of CodeInstruction), Func(Of CodeInstruction, Boolean), Action(Of CodeInstruction))
+- uid: HarmonyLib.Transpilers.Manipulator*
+  name: Manipulator
+  href: api/HarmonyLib.Transpilers.html#HarmonyLib_Transpilers_Manipulator_
+  commentId: Overload:HarmonyLib.Transpilers.Manipulator
+  isSpec: "True"
+  fullName: HarmonyLib.Transpilers.Manipulator
+  nameWithType: Transpilers.Manipulator
 - uid: HarmonyLib.Transpilers.MethodReplacer(IEnumerable{HarmonyLib.CodeInstruction},MethodBase,MethodBase)
   name: MethodReplacer(IEnumerable<CodeInstruction>, MethodBase, MethodBase)
   href: api/HarmonyLib.Transpilers.html#HarmonyLib_Transpilers_MethodReplacer_IEnumerable_HarmonyLib_CodeInstruction__MethodBase_MethodBase_
