@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -31,6 +32,27 @@ namespace HarmonyLib
 				}
 				yield return instruction;
 			}
+		}
+
+		/// <summary>A transpiler that alters instructions that match a predicate by calling an action</summary>
+		/// <param name="instructions">The instructions to act on</param>
+		/// <param name="predicate">A predicate selecting the instructions to change</param>
+		/// <param name="action">An action to apply to matching instructions</param>
+		/// <returns>Modified instructions</returns>
+		///
+		public static IEnumerable<CodeInstruction> Manipulator(this IEnumerable<CodeInstruction> instructions, Func<CodeInstruction, bool> predicate, Action<CodeInstruction> action)
+		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return instructions.Select(instruction =>
+			{
+				if (predicate(instruction))
+					action(instruction);
+				return instruction;
+			}).AsEnumerable();
 		}
 
 		/// <summary>A transpiler that logs a text at the beginning of the method</summary>
