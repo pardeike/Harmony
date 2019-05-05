@@ -18,12 +18,7 @@ namespace HarmonyLib
 		public static string PARAM_INDEX_PREFIX = "__";
 		public static string INSTANCE_FIELD_PREFIX = "___";
 
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers)
-		{
-			return CreatePatchedMethod(original, "HARMONY_PATCH_1.1.1", prefixes, postfixes, transpilers, new List<MethodInfo>());
-		}
-
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
+		public static DynamicMethod CreatePatchedMethod(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
 		{
 			try
 			{
@@ -89,7 +84,7 @@ namespace HarmonyLib
 				var skipOriginalLabel = il.DefineLabel();
 				var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, skipOriginalLabel);
 
-				var copier = new MethodCopier(original, il, originalVariables);
+				var copier = new MethodCopier(source ?? original, il, originalVariables);
 				foreach (var transpiler in transpilers)
 					copier.AddTranspiler(transpiler);
 				if (firstArgIsReturnBuffer)
@@ -172,9 +167,14 @@ namespace HarmonyLib
 			}
 			catch (Exception ex)
 			{
-				var exceptionString = "Exception from HarmonyInstance \"" + harmonyInstanceID + "\" patching " + original.FullDescription();
+				var exceptionString = "Exception from HarmonyInstance \"" + harmonyInstanceID + "\" patching " + original.FullDescription() + ": " + ex;
 				if (Harmony.DEBUG)
-					FileLog.Log("Exception: " + exceptionString);
+				{
+					var savedIndentLevel = FileLog.indentLevel;
+					FileLog.indentLevel = 0;
+					FileLog.Log(exceptionString);
+					FileLog.indentLevel = savedIndentLevel;
+				}
 
 				throw new Exception(exceptionString, ex);
 			}

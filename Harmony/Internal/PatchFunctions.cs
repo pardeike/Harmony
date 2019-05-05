@@ -150,7 +150,7 @@ namespace HarmonyLib
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers);
 			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers);
 
-			var replacement = MethodPatcher.CreatePatchedMethod(original, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
+			var replacement = MethodPatcher.CreatePatchedMethod(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
 			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original.FullDescription());
 
 			var errorString = Memory.DetourMethod(original, replacement);
@@ -160,6 +160,23 @@ namespace HarmonyLib
 			PatchTools.RememberObject(original, replacement); // no gc for new value + release old value to gc
 
 			return replacement;
+		}
+
+		internal static void ReversePatch(MethodInfo standin, MethodBase original, string instanceID, MethodInfo transpiler)
+		{
+			var emptyFixes = new List<MethodInfo>();
+			var transpilers = new List<MethodInfo>();
+			if (transpiler != null)
+				transpilers.Add(transpiler);
+
+			var replacement = MethodPatcher.CreatePatchedMethod(standin, original, instanceID, emptyFixes, emptyFixes, transpilers, emptyFixes);
+			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + standin.FullDescription());
+
+			var errorString = Memory.DetourMethod(standin, replacement);
+			if (errorString != null)
+				throw new FormatException("Method " + standin.FullDescription() + " cannot be patched. Reason: " + errorString);
+
+			PatchTools.RememberObject(standin, replacement);
 		}
 	}
 }
