@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace HarmonyLib
 {
 	/// <summary>Specifies the type of method</summary>
+	///
 	public enum MethodType
 	{
 		/// <summary>This is a normal method</summary>
@@ -19,6 +20,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Specifies the type of argument</summary>
+	///
 	public enum ArgumentType
 	{
 		/// <summary>This is a normal argument</summary>
@@ -32,6 +34,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Specifies the type of patch</summary>
+	///
 	public enum HarmonyPatchType
 	{
 		/// <summary>Any patch</summary>
@@ -46,14 +49,26 @@ namespace HarmonyLib
 		Finalizer
 	}
 
+	/// <summary>Specifies the type of reverse patch</summary>
+	///
+	public enum HarmonyReversePatchType
+	{
+		/// <summary>Use the unmodified original method</summary>
+		Original,
+		/// <summary>Patch your local method with a new method that calls the (possibly patched) original</summary>
+		Wrapped
+	}
+
 	/// <summary>The base class for all Harmony annotations (not meant to be used directly)</summary>
+	///
 	public class HarmonyAttribute : Attribute
 	{
 		/// <summary>The common information for all attributes</summary>
 		public HarmonyMethod info = new HarmonyMethod();
 	}
 
-	/// <summary>The main Harmony annotation class</summary>
+	/// <summary>Annotation to define your Harmony patch methods</summary>
+	///
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 	public class HarmonyPatch : HarmonyAttribute
 	{
@@ -248,8 +263,6 @@ namespace HarmonyLib
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
-		//
-
 		void ParseSpecialArguments(Type[] argumentTypes, ArgumentType[] argumentVariations)
 		{
 			if (argumentVariations == null || argumentVariations.Length == 0)
@@ -280,6 +293,19 @@ namespace HarmonyLib
 				types.Add(type);
 			}
 			info.argumentTypes = types.ToArray();
+		}
+	}
+
+	/// <summary>Annotation to define your standin methods for reverse patching</summary>
+	///
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+	public class HarmonyReversePatch : HarmonyAttribute
+	{
+		/// <summary>An annotation that specifies the type of reverse patching</summary>
+		///
+		public HarmonyReversePatch(HarmonyReversePatchType type)
+		{
+			info.reversePatchType = type;
 		}
 	}
 

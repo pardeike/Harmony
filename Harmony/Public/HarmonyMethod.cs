@@ -27,6 +27,8 @@ namespace HarmonyLib
 		public string[] before;
 		/// <summary>After parameter</summary>
 		public string[] after;
+		/// <summary>Reverse patch type</summary>
+		public HarmonyReversePatchType reversePatchType;
 
 		/// <summary>Default constructor</summary>
 		public HarmonyMethod()
