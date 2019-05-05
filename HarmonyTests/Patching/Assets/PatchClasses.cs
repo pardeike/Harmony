@@ -552,4 +552,34 @@ namespace HarmonyLibTests.Assets
 			return dynamicMethod;
 		}
 	}
+
+	// disabled - see test case
+	/*
+	public class ClassExceptionFilter
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static int Method(Exception exception)
+		{
+			var result = 0;
+			try
+			{
+				if (exception != null)
+					throw exception;
+			}
+			catch (Exception e) when (e.Message == "test")
+			{
+				result += 1;
+			}
+			catch (ArithmeticException)
+			{
+				result += 10;
+			}
+			finally
+			{
+				result += 100;
+			}
+			return result;
+		}
+	}
+	*/
 }
