@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using HarmonyLib;
 using HarmonyLibTests.Assets;
-using System.Linq;
 
 namespace HarmonyLibTests.Tools
 {

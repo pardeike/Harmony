@@ -5,11 +5,16 @@ using NUnit.Framework;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class StaticReversePatches
+	public class ReverseTranspiling
 	{
 		[Test]
-		public void TestReversePatching()
+		public void TestReverseTranspilerPatching()
 		{
+			var class0 = new Class0Reverse();
+
+			var result1 = class0.Method("al-gin-Ori", 123);
+			Assert.AreEqual("Original123Prolog", result1);
+
 			var originalClass = typeof(Class0Reverse);
 			Assert.IsNotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method");
@@ -19,6 +24,7 @@ namespace HarmonyLibTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
+			Harmony.DEBUG = true;
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 
@@ -31,11 +37,6 @@ namespace HarmonyLibTests
 
 			var reversePatcher = instance.CreateReversePatcher(originalMethod, standin);
 			reversePatcher.Patch();
-
-			var class0 = new Class0Reverse();
-
-			var result1 = class0.Method("al-gin-Ori", 123);
-			Assert.AreEqual("Original123Prolog", result1);
 
 			var result2 = class0.Method("al-gin-Ori", 456);
 			Assert.AreEqual("EpilogOriginal", result2);

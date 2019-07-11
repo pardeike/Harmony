@@ -2,7 +2,9 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Assets
 {
@@ -20,25 +22,67 @@ namespace HarmonyLibTests.Assets
 	{
 		public static string StringOperation(string original)
 		{
+			// This inner transpiler will be applied to the original and
+			// the result will replace this method
+			//
+			// That will allow this method to have a different signature
+			// than the original and it must match the transpiled result
+			//
 			IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 			{
-				var mJoin = SymbolExtensions.GetMethodInfo(() => string.Join(null, null));
 				var list = Transpilers.Manipulator(instructions,
 					item => item.opcode == OpCodes.Ldarg_1,
 					item => item.opcode = OpCodes.Ldarg_0
 				).ToList();
-				var idx = list.FindIndex(item => item.opcode == OpCodes.Call && item.operand == mJoin);
+				var mJoin = SymbolExtensions.GetMethodInfo(() => string.Join(null, null));
+				var idx = list.FindIndex(item => item.opcode == OpCodes.Call && item.operand as MethodInfo == mJoin);
 				list.RemoveRange(idx + 1, list.Count - (idx + 1));
 				return list.AsEnumerable();
 			}
+
+			// make compiler happy
 			Transpiler(null);
 			return original;
 		}
 
-		public static void Postfix(string original, int n, ref string __result)
+		public static void Postfix(string original, ref string __result)
 		{
-			if (n == 456)
-				__result = "Epilog" + StringOperation(original);
+			__result = "Epilog" + StringOperation(original);
+		}
+	}
+
+	public class Class1Reverse
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string Method(string original, int n)
+		{
+			return original + GetExtra(n);
+		}
+
+		private static string GetExtra(int n)
+		{
+			return "Extra" + n;
+		}
+	}
+
+	[HarmonyPatch(typeof(Class1Reverse), "Method")]
+	[HarmonyPatch(MethodType.Normal)]
+	public class Class1ReversePatch
+	{
+		[HarmonyReversePatch]
+		[HarmonyPatch("GetExtra")]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static string GetExtra(int n)
+		{
+			return null;
+		}
+
+		public static bool Prefix(string original, int n, ref string __result)
+		{
+			if (n != 456) return true;
+
+			__result = "Prefixed" + GetExtra(n) + original;
+			return false;
 		}
 	}
 }
