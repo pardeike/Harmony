@@ -67,7 +67,8 @@ namespace HarmonyLib
 		{
 			if (method == null) return "null";
 			var parameters = method.GetParameters().Select(p => p.ParameterType).ToArray();
-			return method.DeclaringType.FullDescription() + "." + method.Name + parameters.Description();
+			var returnType = AccessTools.GetReturnedType(method);
+			return returnType.FullDescription() + " " + method.DeclaringType.FullDescription() + "." + method.Name + parameters.Description();
 		}
 
 		/// <summary>A helper converting parameter infos to types</summary>
