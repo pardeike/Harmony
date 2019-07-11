@@ -303,7 +303,7 @@ namespace HarmonyLib
 	{
 		/// <summary>An annotation that specifies the type of reverse patching</summary>
 		///
-		public HarmonyReversePatch(HarmonyReversePatchType type)
+		public HarmonyReversePatch(HarmonyReversePatchType type = HarmonyReversePatchType.Original)
 		{
 			info.reversePatchType = type;
 		}

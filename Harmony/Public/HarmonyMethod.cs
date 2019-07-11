@@ -28,7 +28,7 @@ namespace HarmonyLib
 		/// <summary>After parameter</summary>
 		public string[] after;
 		/// <summary>Reverse patch type</summary>
-		public HarmonyReversePatchType reversePatchType;
+		public HarmonyReversePatchType? reversePatchType;
 
 		/// <summary>Default constructor</summary>
 		public HarmonyMethod()
@@ -122,8 +122,9 @@ namespace HarmonyLib
 	{
 		internal static void SetValue(Traverse trv, string name, object val)
 		{
+			if (val == null) return;
 			var fld = trv.Field(name);
-			if (name == nameof(HarmonyMethod.methodType))
+			if (name == nameof(HarmonyMethod.methodType) || name == nameof(HarmonyMethod.reversePatchType))
 			{
 				var enumType = Nullable.GetUnderlyingType(fld.GetValueType());
 				val = Enum.ToObject(enumType, (int)val);

@@ -269,6 +269,20 @@ namespace HarmonyLib
 			if (mainPrepareResult == false)
 				return;
 
+			var originalMethodType = containerAttributes.methodType;
+
+			// MethodType default is Normal
+			if (containerAttributes.methodType == null)
+				containerAttributes.methodType = MethodType.Normal;
+
+			var reversePatchMethods = PatchTools.GetReversePatches(container);
+			foreach (var reversePatchMethod in reversePatchMethods)
+			{
+				var originalMethod = GetReverseOriginal(reversePatchMethod);
+				var reversePatcher = instance.CreateReversePatcher(originalMethod, reversePatchMethod);
+				reversePatcher.Patch();
+			}
+
 			var customOriginals = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null);
 			if (customOriginals != null)
 			{
@@ -277,12 +291,6 @@ namespace HarmonyLib
 			}
 			else
 			{
-				var originalMethodType = containerAttributes.methodType;
-
-				// MethodType default is Normal
-				if (containerAttributes.methodType == null)
-					containerAttributes.methodType = MethodType.Normal;
-
 				var isPatchAll = container.GetCustomAttributes(true).Any(a => a.GetType().FullName == typeof(HarmonyPatchAll).FullName);
 				if (isPatchAll)
 				{
@@ -367,6 +375,39 @@ namespace HarmonyLib
 			var attr = containerAttributes;
 			if (attr.declaringType == null) return null;
 
+			switch (attr.methodType)
+			{
+				case MethodType.Normal:
+					if (attr.methodName == null)
+						return null;
+					return AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
+
+				case MethodType.Getter:
+					if (attr.methodName == null)
+						return null;
+					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod(true);
+
+				case MethodType.Setter:
+					if (attr.methodName == null)
+						return null;
+					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod(true);
+
+				case MethodType.Constructor:
+					return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes);
+
+				case MethodType.StaticConstructor:
+					return AccessTools.GetDeclaredConstructors(attr.declaringType)
+						.Where(c => c.IsStatic)
+						.FirstOrDefault();
+			}
+
+			return null;
+		}
+
+		MethodBase GetReverseOriginal(MethodInfo standin)
+		{
+			var attr = containerAttributes.Merge(new HarmonyMethod(standin));
+			if (attr.declaringType == null) return null;
 			switch (attr.methodType)
 			{
 				case MethodType.Normal:
