@@ -29,7 +29,7 @@ namespace HarmonyLib
 
 				if (Harmony.DEBUG)
 				{
-					FileLog.LogBuffered("### Patch " + original.DeclaringType + ", " + original);
+					FileLog.LogBuffered("### Patch " + original.FullDescription());
 					FileLog.FlushBuffer();
 				}
 
@@ -43,7 +43,7 @@ namespace HarmonyLib
 
 				var il = patch.GetILGenerator();
 
-				var originalVariables = DynamicTools.DeclareLocalVariables(original, il);
+				var originalVariables = DynamicTools.DeclareLocalVariables(source ?? original, il);
 				var privateVars = new Dictionary<string, LocalBuilder>();
 
 				LocalBuilder resultVariable = null;
