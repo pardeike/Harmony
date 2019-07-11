@@ -506,7 +506,7 @@ namespace HarmonyLib
 						if (!hasPassThroughResultParam)
 						{
 							if (firstFixParam != null)
-								throw new Exception("Return type of postfix patch " + fix + " does match type of its first parameter");
+								throw new Exception("Return type of pass through postfix " + fix + " does not match type of its first parameter");
 
 							throw new Exception("Postfix patch " + fix + " must have a \"void\" return type");
 						}
