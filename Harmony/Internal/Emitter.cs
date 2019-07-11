@@ -65,6 +65,10 @@ namespace HarmonyLib
 			if (argument == null) return "NULL";
 			var type = argument.GetType();
 
+			var method = argument as MethodInfo;
+			if (method != null)
+				return ((MethodInfo)argument).FullDescription();
+
 			if (type == typeof(string))
 				return "\"" + argument + "\"";
 			if (type == typeof(Label))
