@@ -76,24 +76,51 @@ namespace HarmonyLibTests.IL
 		static MethodInfo m_Transpiler = SymbolExtensions.GetMethodInfo(() => Transpiler(null, null, null));
 		static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions, ILGenerator gen)
 		{
+			int idx;
 			var label = gen.DefineLabel();
+			var parameter = original.GetParameters();
+
+			idx = 0;
+			foreach (var pInfo in parameter)
+			{
+				var argIndex = idx++ + (original.IsStatic ? 0 : 1);
+				var pType = pInfo.ParameterType;
+				if (pInfo.IsOut || pInfo.IsRetval)
+				{
+					yield return new CodeInstruction(OpCodes.Ldarg, argIndex);
+					yield return CreateDefaultCodes(gen, pType).Last();
+					if (AccessTools.IsClass(pType))
+						yield return new CodeInstruction(OpCodes.Stind_Ref);
+					if (AccessTools.IsValue(pType))
+					{
+						if (pType == typeof(float))
+							yield return new CodeInstruction(OpCodes.Stind_R4, (float)0);
+						else if (pType == typeof(double))
+							yield return new CodeInstruction(OpCodes.Stind_R8, (double)0);
+						else if (pType == typeof(long))
+							yield return new CodeInstruction(OpCodes.Stind_I8, (long)0);
+						else
+							yield return new CodeInstruction(OpCodes.Stind_I4, 0);
+					}
+				}
+			}
 
 			yield return new CodeInstruction(OpCodes.Ldstr, original.DeclaringType.FullName);
 			yield return new CodeInstruction(OpCodes.Ldc_I4, original.MetadataToken);
 			yield return new CodeInstruction(original.IsStatic ? OpCodes.Ldc_I4_0 : OpCodes.Ldarg_0);
 
-			var parameter = original.GetParameters();
 			yield return new CodeInstruction(OpCodes.Ldc_I4, parameter.Length);
 			yield return new CodeInstruction(OpCodes.Newarr, typeof(object));
 
-			var i = original.IsStatic ? 0 : 1;
-			var j = 0;
+			idx = 0;
+			var arrayIdx = 0;
 			foreach (var pInfo in parameter)
 			{
+				var argIndex = idx++ + (original.IsStatic ? 0 : 1);
 				var pType = pInfo.ParameterType;
 				yield return new CodeInstruction(OpCodes.Dup);
-				yield return new CodeInstruction(OpCodes.Ldc_I4, j++);
-				yield return new CodeInstruction(OpCodes.Ldarg, i++);
+				yield return new CodeInstruction(OpCodes.Ldc_I4, arrayIdx++);
+				yield return new CodeInstruction(OpCodes.Ldarg, argIndex);
 				if (pInfo.IsOut || pInfo.IsRetval)
 				{
 					if (pType.IsValueType)
@@ -170,13 +197,16 @@ namespace HarmonyLibTests.IL
 
 			var n = 0;
 			Assert.AreEqual(11, log.Count);
+
 			Assert.AreEqual(log[n++], "Test1");
 			Assert.AreEqual(log[n++], "NULL");
 			Assert.AreEqual(log[n++], "NULL");
+
 			Assert.AreEqual(log[n++], "Test2");
 			Assert.AreEqual(log[n++], "TestMethods2");
 			Assert.AreEqual(log[n++], "123");
 			Assert.AreEqual(log[n++], "hello");
+
 			Assert.AreEqual(log[n++], "Test3");
 			Assert.AreEqual(log[n++], "NULL");
 			Assert.AreEqual(log[n++], "2,4,6");
