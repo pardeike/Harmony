@@ -29,28 +29,37 @@ namespace HarmonyLibTests.IL
 		}
 	}
 
-	[TestFixture]
-	public class DynamicArgumentPatches
+	public static class TestMethods1
 	{
-		static readonly DynamicArgumentPatches instance = new DynamicArgumentPatches();
-		static readonly List<string> log = new List<string>();
-
-		public void Test1()
+		public static void Test1(out string s)
 		{
 			Console.WriteLine("Test1");
+			s = "Test1";
 		}
+	}
 
+	public class TestMethods2
+	{
 		public string Test2(int n, string s)
 		{
 			Console.WriteLine("Test2");
 			return s;
 		}
+	}
 
+	public class TestMethods3
+	{
 		public static List<int> Test3(Vec3 v, List<int> list)
 		{
 			Console.WriteLine("Test3");
 			return new List<int>();
 		}
+	}
+
+	[TestFixture]
+	public class DynamicArgumentPatches
+	{
+		static readonly List<string> log = new List<string>();
 
 		static bool General(string typeName, int token, object instance, object[] args)
 		{
@@ -85,6 +94,13 @@ namespace HarmonyLibTests.IL
 				yield return new CodeInstruction(OpCodes.Dup);
 				yield return new CodeInstruction(OpCodes.Ldc_I4, j++);
 				yield return new CodeInstruction(OpCodes.Ldarg, i++);
+				if (pInfo.IsOut || pInfo.IsRetval)
+				{
+					if (pType.IsValueType)
+						yield return new CodeInstruction(OpCodes.Ldobj, pType);
+					else
+						yield return new CodeInstruction(OpCodes.Ldind_Ref);
+				}
 				if (pType.IsValueType)
 					yield return new CodeInstruction(OpCodes.Box, pType);
 				yield return new CodeInstruction(OpCodes.Stelem_Ref);
@@ -133,9 +149,9 @@ namespace HarmonyLibTests.IL
 
 		static MethodInfo[] methods = new MethodInfo[]
 		{
-			SymbolExtensions.GetMethodInfo(() => instance.Test1()),
-			SymbolExtensions.GetMethodInfo(() => instance.Test2(0, "")),
-			SymbolExtensions.GetMethodInfo(() => Test3(Vec3.Zero, null))
+			AccessTools.Method(typeof(TestMethods1), "Test1"),
+			SymbolExtensions.GetMethodInfo(() => new TestMethods2().Test2(0, "")),
+			SymbolExtensions.GetMethodInfo(() => TestMethods3.Test3(Vec3.Zero, null))
 		};
 
 		[Test]
@@ -148,16 +164,17 @@ namespace HarmonyLibTests.IL
 				harmony.Patch(m, transpiler: new HarmonyMethod(m_Transpiler));
 			});
 
-			instance.Test1();
-			instance.Test2(123, "hello");
-			Test3(new Vec3(2, 4, 6), new[] { 100, 200, 300 }.ToList());
+			TestMethods1.Test1(out var s);
+			new TestMethods2().Test2(123, "hello");
+			TestMethods3.Test3(new Vec3(2, 4, 6), new[] { 100, 200, 300 }.ToList());
 
 			var n = 0;
-			Assert.AreEqual(10, log.Count);
+			Assert.AreEqual(11, log.Count);
 			Assert.AreEqual(log[n++], "Test1");
-			Assert.AreEqual(log[n++], "DynamicArgumentPatches");
+			Assert.AreEqual(log[n++], "NULL");
+			Assert.AreEqual(log[n++], "NULL");
 			Assert.AreEqual(log[n++], "Test2");
-			Assert.AreEqual(log[n++], "DynamicArgumentPatches");
+			Assert.AreEqual(log[n++], "TestMethods2");
 			Assert.AreEqual(log[n++], "123");
 			Assert.AreEqual(log[n++], "hello");
 			Assert.AreEqual(log[n++], "Test3");
