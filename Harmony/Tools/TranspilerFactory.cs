@@ -1,11 +1,7 @@
-using HarmonyLib;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace HarmonyLib
@@ -14,6 +10,8 @@ namespace HarmonyLib
     {
         public static readonly OpCode AnyOpcode = (OpCode)typeof(OpCode).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0].Invoke(new object[] { 256, -257283419 });
         public static readonly object AnyOprand = "*";
+        public static readonly OpCode LocalvarOpcode = (OpCode)typeof(OpCode).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0].Invoke(new object[] { 257, 279317166 });
+        public static readonly OpCode LabelOpcode = (OpCode)typeof(OpCode).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0].Invoke(new object[] { 258, 279317166 });
         public static readonly Regex MatchMethod = new Regex(@"^(.*?)::?(.*?)(?:\((.*?)\))?$");
         public static readonly Dictionary<string, Type> KeywordTypes = new Dictionary<string, Type>{ { "bool", typeof(bool) }, { "byte", typeof(byte) }, { "char", typeof(char) },{"decimal",typeof(decimal)
 },{"double",typeof(double)},{"float",typeof(float)},{"int",typeof(int)},{"long",typeof(long)},{"sbyte",typeof(sbyte)},{"short",typeof(short)},{"string",typeof(string)},{"uint",typeof(uint)},{"ulong",typeof(ulong)},{"ushort",typeof(ushort)}};
@@ -33,21 +31,23 @@ namespace HarmonyLib
             OpCode opcode = AnyOpcode;
             if (opcodestr != "*")
             {
+                opcodestr = opcodestr.ToLower();
+                if (opcodestr == "localvar") return new CodeInstruction(LocalvarOpcode, String2Type(parts[1]));
+                if (opcodestr == "label") return new CodeInstruction(LabelOpcode, Convert.ToInt32(parts[1]));
                 opcodestr = opcodestr.Replace('.', '_');
                 opcode = (OpCode)typeof(OpCodes).GetField(opcodestr, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.Public).GetValue(null);
             }
-            if (parts.Length == 1)
+            if (parts.Length == 1 || opcode.OperandType == OperandType.InlineNone)
                 return new CodeInstruction(opcode);
             else
             {
                 string oprandstr = parts[1];
-                if (oprandstr == "*" || opcode.OperandType == OperandType.InlineNone)
+                if (oprandstr == "*")
                     return new CodeInstruction(opcode, AnyOprand);
-                else
+                object obj = null;
+                switch (opcode.OperandType)
                 {
-                    object obj = null;
-                    if (opcode.OperandType == OperandType.InlineMethod)
-                    {
+                    case OperandType.InlineMethod:
                         var result = MatchMethod.Match(oprandstr);
                         if (!result.Success) obj = null;
                         else
@@ -70,20 +70,40 @@ namespace HarmonyLib
                             if (opcode == OpCodes.Newobj) obj = AccessTools.Constructor(type, args);
                             else obj = AccessTools.Method(type, method, args);
                         }
-                    }
-                    else if (opcode.OperandType == OperandType.InlineField)
-                    {
+                        break;
+                    case OperandType.InlineField:
                         parts = oprandstr.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                         obj = AccessTools.Field(String2Type(parts[0]), parts[1]);
-                    }
-                    else if (opcode.OperandType == OperandType.InlineString)
+                        break;
+                    case OperandType.InlineString:
                         obj = oprandstr;
-                    else if (opcode.OperandType == OperandType.InlineI)
+                        break;
+                    case OperandType.InlineType:
+                        obj = String2Type(oprandstr);
+                        break;
+                    case OperandType.InlineI:
+                    case OperandType.InlineBrTarget:
+                    case OperandType.ShortInlineBrTarget:
                         obj = Convert.ToInt32(oprandstr);
-                    if (obj == null)
-                        throw new Exception("Unknown OperandType or Wrong operand");
-                    return new CodeInstruction(opcode, obj);
+                        break;
+                    case OperandType.InlineVar:
+                    case OperandType.ShortInlineI:
+                        obj = Convert.ToInt16(oprandstr);
+                        break;
+                    case OperandType.ShortInlineVar:
+                    case OperandType.InlineI8:
+                        obj = Convert.ToByte(oprandstr);
+                        break;
+                    case OperandType.InlineR:
+                        obj = Convert.ToDouble(oprandstr);
+                        break;
+                    case OperandType.ShortInlineR:
+                        obj = Convert.ToSingle(oprandstr);
+                        break;
                 }
+                if (obj == null)
+                    throw new Exception("Unknown OperandType or Wrong operand");
+                return new CodeInstruction(opcode, obj);
             }
         }
         public static List<CodeInstruction> ParseMutiple(string str)
@@ -104,20 +124,21 @@ namespace HarmonyLib
     }
     interface ITranspiler
     {
-        IEnumerable<CodeInstruction> TransMethod(IEnumerator<CodeInstruction> instructions);
+        IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory);
     }
-    public class SearchDeleteTranspiler : ITranspiler
+    class SearchDeleteTranspiler : ITranspiler
     {
-        public List<CodeInstruction> search;
+        List<CodeInstruction> search;
         public SearchDeleteTranspiler(List<CodeInstruction> codes)
         {
             if (codes == null || codes.Count <= 0) throw new Exception();
             search = codes;
         }
-        public IEnumerable<CodeInstruction> TransMethod(IEnumerator<CodeInstruction> instructions)
+        public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
         {
             CodeInstruction current;
             Queue<CodeInstruction> queue = new Queue<CodeInstruction>();
+            var instructions = factory.CodeEnumerator;
             while (instructions.MoveNext())
             {
                 current = instructions.Current;
@@ -141,18 +162,19 @@ namespace HarmonyLib
             while (queue.Count > 0) yield return queue.Dequeue();
         }
     }
-    public class SearchTranspiler : ITranspiler
+    class SearchTranspiler : ITranspiler
     {
-        public List<CodeInstruction> search;
+        List<CodeInstruction> search;
         public SearchTranspiler(List<CodeInstruction> codes)
         {
             if (codes == null || codes.Count <= 0) throw new Exception();
             search = codes;
         }
-        public IEnumerable<CodeInstruction> TransMethod(IEnumerator<CodeInstruction> instructions)
+        public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
         {
             CodeInstruction current;
             Queue<CodeInstruction> queue = new Queue<CodeInstruction>();
+            var instructions = factory.CodeEnumerator;
             while (instructions.MoveNext())
             {
                 current = instructions.Current;
@@ -176,89 +198,85 @@ namespace HarmonyLib
             while (queue.Count > 0) yield return queue.Dequeue();
         }
     }
-    public class SearchReplaceTranspiler : ITranspiler
+    class InsertTranspiler : ITranspiler
     {
-        public List<CodeInstruction> search;
-        public List<CodeInstruction> replace;
-        public SearchReplaceTranspiler(List<CodeInstruction> codes, List<CodeInstruction> toreplace)
-        {
-            if (codes == null || codes.Count <= 0) throw new Exception();
-            search = codes;
-            if (toreplace == null || toreplace.Count <= 0) throw new Exception();
-            replace = toreplace;
-        }
-        public IEnumerable<CodeInstruction> TransMethod(IEnumerator<CodeInstruction> instructions)
-        {
-            CodeInstruction current;
-            Queue<CodeInstruction> queue = new Queue<CodeInstruction>();
-            while (instructions.MoveNext())
-            {
-                current = instructions.Current;
-                queue.Enqueue(current);
-                if (queue.Count > search.Count) yield return queue.Dequeue();
-                if (queue.Count == search.Count)
-                {
-                    int count = 0;
-                    foreach (var item in queue)
-                    {
-                        if (search[count].isMatchWith(item)) count++;
-                        else break;
-                    }
-                    if (count >= search.Count)
-                    {
-                        queue.Clear();
-                        foreach (var i in replace) yield return i;
-                        yield break;
-                    }
-                }
-            }
-            while (queue.Count > 0) yield return queue.Dequeue();
-        }
-    }
-    public class InsertTranspiler : ITranspiler
-    {
-        public List<CodeInstruction> list;
+        List<CodeInstruction> list;
         public InsertTranspiler(List<CodeInstruction> codes)
         {
             if (codes == null || codes.Count <= 0) throw new Exception();
             list = codes;
         }
-        public IEnumerable<CodeInstruction> TransMethod(IEnumerator<CodeInstruction> instructions)
+        public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
         {
-            return list;
+            var instructions = factory.CodeEnumerator;
+            var generator = factory.Generator;
+            var locals = factory.Locals;
+            var labels = factory.Labels;
+            foreach (var code in list)
+            {
+                var no = code.opcode.Value;
+                if (code.opcode == CodeParser.LocalvarOpcode) locals.Add(generator.DeclareLocal((Type)code.operand));
+                else if (code.opcode == CodeParser.LabelOpcode)
+                {
+                    var index = (int)code.operand;
+                    for (int i = labels.Count - 1; i < index; i++) labels.Add(generator.DefineLabel());
+                    var t = new List<Label>() { labels[index] };
+                    yield return new CodeInstruction(OpCodes.Nop) { labels = t };
+                }
+                else if (no == 17 || no == 18 || no == 19 || no == -500 || no == -499 || no == -498)
+                {
+                    code.operand = locals[Convert.ToInt32(code.operand)];
+                    yield return code;
+                }
+                else if (code.opcode.OperandType == OperandType.InlineBrTarget || code.opcode.OperandType == OperandType.ShortInlineBrTarget)
+                {
+                    var index = (int)code.operand;
+                    for (int i = labels.Count - 1; i < index; i++) labels.Add(generator.DefineLabel());
+                    code.operand = labels[index];
+                    yield return code;
+                }
+                else yield return code;
+            }
         }
     }
-    public class EndingTranspiler : ITranspiler
+    class EndingTranspiler : ITranspiler
     {
         public EndingTranspiler() { }
-        public IEnumerable<CodeInstruction> TransMethod(IEnumerator<CodeInstruction> instructions)
+        public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
         {
+            var instructions = factory.CodeEnumerator;
             while (instructions.MoveNext()) yield return instructions.Current;
         }
     }
-    public class SkipTranspiler : ITranspiler
+    class SkipTranspiler : ITranspiler
     {
-        public int count;
+        int count;
         public SkipTranspiler(int num)
         {
             if (num <= 0) throw new Exception();
             count = num;
         }
-        public IEnumerable<CodeInstruction> TransMethod(IEnumerator<CodeInstruction> instructions)
+        public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
         {
             var t = count;
-            while (t > 0 && instructions.MoveNext()) ;
+            var instructions = factory.CodeEnumerator;
+            while (t > 0 && instructions.MoveNext()) t--;
             return null;
         }
     }
-    public delegate IEnumerable<CodeInstruction> TranspilerMethod(ILGenerator generator, IEnumerable<CodeInstruction> instructions);
+    public delegate IEnumerable<CodeInstruction> TranspilerDelegate(ILGenerator generator, IEnumerable<CodeInstruction> instructions);
     public class TranspilerFactory
     {
         List<ITranspiler> transpilers;
+        TranspilerDelegate GetTranspiler;
+        internal ILGenerator Generator;
+        internal IEnumerator<CodeInstruction> CodeEnumerator;
+        internal List<LocalBuilder> Locals;
+        internal List<Label> Labels;
         public TranspilerFactory()
         {
             transpilers = new List<ITranspiler>();
-            GetTranspiler = new TranspilerType(Transpiler);
+            GetTranspiler = new TranspilerDelegate(Transpiler);
         }
         public TranspilerFactory Search(string str)
         {
@@ -267,7 +285,8 @@ namespace HarmonyLib
         }
         public TranspilerFactory Replace(string from, string to)
         {
-            transpilers.Add(new SearchReplaceTranspiler(CodeParser.ParseMutiple(from), CodeParser.ParseMutiple(to)));
+            transpilers.Add(new SearchDeleteTranspiler(CodeParser.ParseMutiple(from)));
+            transpilers.Add(new InsertTranspiler(CodeParser.ParseMutiple(to)));
             return this;
         }
         public TranspilerFactory Insert(string str)
@@ -285,17 +304,17 @@ namespace HarmonyLib
             transpilers.Add(new SkipTranspiler(num));
             return this;
         }
-        public delegate IEnumerable<CodeInstruction> TranspilerType(ILGenerator generator, IEnumerable<CodeInstruction> instr);
-        private TranspilerType GetTranspiler;
         public HarmonyMethod GetTranspilerMethod() => new HarmonyMethod(GetTranspiler.Method);
         public IEnumerable<CodeInstruction> Transpiler(ILGenerator generator, IEnumerable<CodeInstruction> instr)
         {
-            var last = transpilers[transpilers.Count - 1];
-            if (!(last is EndingTranspiler)) transpilers.Add(new EndingTranspiler());
-            var iter = instr.GetEnumerator();
+            if (transpilers.Count == 0 || !(transpilers[transpilers.Count - 1] is EndingTranspiler)) transpilers.Add(new EndingTranspiler());
+            Generator = generator;
+            CodeEnumerator = instr.GetEnumerator();
+            Locals = new List<LocalBuilder>();
+            Labels = new List<Label>();
             foreach (var t in transpilers)
             {
-                foreach (var code in t.TransMethod(iter))
+                foreach (var code in t.TransMethod(this))
                 {
                     yield return code;
                 }
