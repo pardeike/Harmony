@@ -12,26 +12,31 @@ namespace HarmonyLib
 	/// <summary>A helper class for reflection related functions</summary>
 	public static class AccessTools
 	{
-		/// <summary>Shortcut to simplify the use of reflections and make it work for any access level</summary>
-		public static BindingFlags all = BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.GetField
-			| BindingFlags.SetField
-			| BindingFlags.GetProperty
-			| BindingFlags.SetProperty;
+        /// <summary>Shortcut to simplify the use of reflections and make it work for any access level</summary>
+        public static BindingFlags all = BindingFlags.Public
+            | BindingFlags.NonPublic
+            | BindingFlags.Instance
+            | BindingFlags.Static
+            | BindingFlags.GetField
+            | BindingFlags.SetField
+            | BindingFlags.GetProperty
+            | BindingFlags.SetProperty
+            | BindingFlags.FlattenHierarchy;
 
 		/// <summary>Shortcut to simplify the use of reflections and make it work for any access level but only within the current type</summary>
 		public static BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
-
-		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
-		/// <param name="name">The name</param>
-		/// <returns>A Type</returns>
-		///
-		public static Type TypeByName(string name)
+        static readonly Dictionary<string, Type> KeywordTypes = new Dictionary<string, Type>{ { "bool", typeof(bool) }, { "byte", typeof(byte) }, { "char", typeof(char) },{"decimal",typeof(decimal)
+},{"double",typeof(double)},{"float",typeof(float)},{"int",typeof(int)},{"long",typeof(long)},{"sbyte",typeof(sbyte)},{"short",typeof(short)},{"string",typeof(string)},{"uint",typeof(uint)},{"ulong",typeof(ulong)},{"ushort",typeof(ushort)}};
+        /// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
+        /// <param name="name">The name</param>
+        /// <returns>A Type</returns>
+        ///
+        public static Type TypeByName(string name)
 		{
-			var type = Type.GetType(name, false);
+            Type type;
+            KeywordTypes.TryGetValue(name, out type);
+            if (type != null) return type;
+            type = Type.GetType(name, false);
 			if (type == null)
 				type = AppDomain.CurrentDomain.GetAssemblies()
 					.SelectMany(x => x.GetTypes())

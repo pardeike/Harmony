@@ -265,9 +265,9 @@ namespace HarmonyLib
 
 		void PrepareType()
 		{
-			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);
-			if (mainPrepareResult == false)
-				return;
+			//var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);
+			//if (mainPrepareResult == false)
+			//	return;
 
 			var originalMethodType = containerAttributes.methodType;
 
