@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using System.Text.RegularExpressions;
+
+// see https://github.com/pardeike/Harmony/pull/206
 
 #pragma warning disable CS1591
 namespace HarmonyLib
@@ -90,24 +91,17 @@ namespace HarmonyLib
         }
     }
     /// <summary>
-    /// Parse input string with wildcards to CodeInstructionEx(s). Case insensitive. 
-    /// Better not type any extra space !!!
+    /// String parser collection
     /// </summary>
-    /// <remarks>
-    /// The format of MethodName is [type name][one or two colon][method name]([parameter types seperated by comma])(optional)
-    /// The format of FieldName is [type name][one or two colon][field name]
-    /// declare local var is localvar [type name]
-    /// declare label is label [zero-based number]
-    /// </remarks>
-    /// <example>
-    /// call string::Concat(string, string)
-    /// br 0
-    /// label 0
-    /// localvar int
-    /// </example>
     public static class Parser
     {
         static readonly Regex MatchMethod = new Regex(@"^(.*?)(?:::?(.*?))?(?:\((.*?)\))?$");
+        /// <summary>
+        /// The format of method name is "[type name][one or two colon][method name]([parameter types seperated by comma])(optional)"
+        /// Both Method and Constructor can be parsed
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static MethodBase ParseMethod(string str)
         {
             var match = MatchMethod.Match(str);
@@ -127,6 +121,9 @@ namespace HarmonyLib
             else method = AccessTools.Method(type, methodstr, args);
             return method;
         }
+        /// <summary>
+        /// The format of field name is "[type name][one or two colon][field name]"
+        /// </summary>
         static readonly Regex MatchField = new Regex(@"^(.*?)::?(.*?)$");
         public static FieldInfo ParseField(string str)
         {
@@ -136,11 +133,25 @@ namespace HarmonyLib
             var fieldstr = match.Groups[2].Value;
             return AccessTools.Field(type, fieldstr);
         }
-        public static CodeInstructionEx ParseSingle(string str)
+        /// <summary>
+        /// Parse input string with wildcards to CodeInstructionEx. Case insensitive.
+        /// Better not type any extra space !!!
+        /// Basic format is "opcode operand"
+        /// Format of declare local variable is "localvar [type name]"
+        /// Format of declare label is "label [zero-based number]"
+        /// e.g
+        /// call string::Concat(string, string)
+        /// br 0
+        /// label 0
+        /// localvar int
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static CodeInstructionEx ParseSingleCode(string str)
         {
             if (string.IsNullOrEmpty(str) || str == "*") return new CodeInstructionEx(CodeInstructionEx.Options.AnyOpcode);
             var parts = str.Split(new char[] { ' ' }, 2);
-            string opcodestr = parts[0].ToLower();
+            string opcodestr = parts[0].ToLower().TrimStart();
             if (opcodestr == "*") return new CodeInstructionEx(CodeInstructionEx.Options.AnyOpcode);
             if (opcodestr == "localvar")
                 return new CodeInstructionEx(CodeInstructionEx.Options.DeclareVar, AccessTools.TypeByName(parts[1]));
@@ -191,12 +202,17 @@ namespace HarmonyLib
                 throw new Exception("Unknown OperandType or Wrong operand");
             return new CodeInstructionEx(opcode, obj);
         }
-        public static List<CodeInstructionEx> Parse(string str)
+        /// <summary>
+        /// Parse multiple codes seperated by semicolon.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static List<CodeInstructionEx> ParseCodes(string str)
         {
             var codes = str.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             List<CodeInstructionEx> result = new List<CodeInstructionEx>(codes.Length);
             for (int i = 0; i < codes.Length; i++)
-                result.Add(ParseSingle(codes[i]));
+                result.Add(ParseSingleCode(codes[i]));
             return result;
         }
     }
@@ -233,13 +249,14 @@ namespace HarmonyLib
                     if (count >= search.Count)
                     {
                         queue.Clear();
-                        factory.TaskCount--;
+                        factory.remainingTasks--;
                         yield break;
                     }
                 }
             }
             while (queue.Count > 0) yield return queue.Dequeue();
         }
+        public override string ToString() => "SearchDelete: " + search.Join(delimiter: ";");
     }
     class SearchTranspiler : ITranspiler
     {
@@ -270,13 +287,14 @@ namespace HarmonyLib
                     if (count >= search.Count)
                     {
                         while (queue.Count > 0) yield return queue.Dequeue();
-                        factory.TaskCount--;
+                        factory.remainingTasks--;
                         yield break;
                     }
                 }
             }
             while (queue.Count > 0) yield return queue.Dequeue();
         }
+        public override string ToString() => "Search: " + search.Join(delimiter: ";");
     }
     class InsertTranspiler : ITranspiler
     {
@@ -321,8 +339,9 @@ namespace HarmonyLib
                         throw new Exception();
                 }
             }
-            factory.TaskCount--;
+            factory.remainingTasks--;
         }
+        public override string ToString() => "Insert: " + list.Join(delimiter: ";");
     }
     class SkipTranspiler : ITranspiler
     {
@@ -337,19 +356,21 @@ namespace HarmonyLib
             var t = count;
             var instructions = factory.CodeEnumerator;
             while (t > 0 && instructions.MoveNext()) t--;
-            factory.TaskCount--;
+            factory.remainingTasks--;
             return null;
         }
+        public override string ToString() => $"Skip: {count}";
     }
-    class EndingTranspiler : ITranspiler
-    {
-        public EndingTranspiler() { }
-        public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
+    /*    class EndingTranspiler : ITranspiler
         {
-            var instructions = factory.CodeEnumerator;
-            while (instructions.MoveNext()) yield return instructions.Current;
-        }
-    }
+            public EndingTranspiler() { }
+            public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
+            {
+                var instructions = factory.CodeEnumerator;
+                while (instructions.MoveNext()) yield return instructions.Current;
+            }
+            public override string ToString() => "Ending";
+        }*/
     /// <summary>
     /// The delegate type of transpiler used in TranspilerFactory
     /// </summary>
@@ -357,6 +378,10 @@ namespace HarmonyLib
     /// <param name="instructions"></param>
     /// <returns></returns>
     public delegate IEnumerable<CodeInstruction> TranspilerDelegate(ILGenerator generator, IEnumerable<CodeInstruction> instructions);
+    public class TaskNotCompleteException : Exception
+    {
+        public TaskNotCompleteException(string message) : base(message) { }
+    }
     /// <summary>
     /// A convenient Transpiler Factory to generate transpilers
     /// It consist of a FIFO list of tasks such as Search, Delete and Replace which is executed in order.
@@ -366,15 +391,20 @@ namespace HarmonyLib
     /// </example>
     public class TranspilerFactory
     {
+
         // Instance
+
         internal ILGenerator Generator;
         internal IEnumerator<CodeInstruction> CodeEnumerator;
         internal List<LocalBuilder> Locals;
         internal List<Label> Labels;
         List<ITranspiler> tasks = new List<ITranspiler>();
-        public int TaskCount = 0;
+        public int remainingTasks { get; internal set; }
+        public int totalTasks { get => tasks.Count; }
+        public int accomplishedTasks { get => tasks.Count - remainingTasks; }
         void AddTask(ITranspiler task)
         {
+            remainingTasks++;
             tasks.Add(task);
         }
         /// <summary>
@@ -395,14 +425,14 @@ namespace HarmonyLib
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public TranspilerFactory Search(string str) { Search(Parser.Parse(str)); return this; }
+        public TranspilerFactory Search(string str) { Search(Parser.ParseCodes(str)); return this; }
         /// <summary>
         /// Search the instructions list for certain times, the position after search is just after the last element.
         /// </summary>
         /// <param name="str"></param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public TranspilerFactory Search(string str, int num) { var codes = Parser.Parse(str); for (int i = 0; i < num; i++) Search(codes); return this; }
+        public TranspilerFactory Search(string str, int num) { var codes = Parser.ParseCodes(str); for (int i = 0; i < num; i++) Search(codes); return this; }
         /// <summary>
         /// Insert without moving postion
         /// </summary>
@@ -414,7 +444,7 @@ namespace HarmonyLib
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public TranspilerFactory Insert(string str) { Insert(Parser.Parse(str)); return this; }
+        public TranspilerFactory Insert(string str) { Insert(Parser.ParseCodes(str)); return this; }
         /// <summary>
         /// Search the instructions list and delete it.
         /// </summary>
@@ -433,14 +463,14 @@ namespace HarmonyLib
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public TranspilerFactory Delete(string str) { Delete(Parser.Parse(str)); return this; }
+        public TranspilerFactory Delete(string str) { Delete(Parser.ParseCodes(str)); return this; }
         /// <summary>
         /// Search the instructions list and delete it for certain times.
         /// </summary>
         /// <param name="str"></param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public TranspilerFactory Delete(string str, int num) { var codes = Parser.Parse(str); for (int i = 0; i < num; i++) Delete(codes); return this; }
+        public TranspilerFactory Delete(string str, int num) { var codes = Parser.ParseCodes(str); for (int i = 0; i < num; i++) Delete(codes); return this; }
         /// <summary>
         /// Delete certain number of instructions at current position.
         /// </summary>
@@ -468,7 +498,7 @@ namespace HarmonyLib
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public TranspilerFactory Replace(string from, string to) { Replace(Parser.Parse(from), Parser.Parse(to)); return this; }
+        public TranspilerFactory Replace(string from, string to) { Replace(Parser.ParseCodes(from), Parser.ParseCodes(to)); return this; }
         /// <summary>
         /// Search the first instructions list and replace with the second for certain times.
         /// </summary>
@@ -476,11 +506,15 @@ namespace HarmonyLib
         /// <param name="to"></param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public TranspilerFactory Replace(string from, string to, int num) { var from_ = Parser.Parse(from); var to_ = Parser.Parse(to); for (int i = 0; i < num; i++) Replace(from_, to_); return this; }
+        public TranspilerFactory Replace(string from, string to, int num) { var from_ = Parser.ParseCodes(from); var to_ = Parser.ParseCodes(to); for (int i = 0; i < num; i++) Replace(from_, to_); return this; }
+        public TranspilerFactory ClearAllTasks()
+        {
+            tasks.Clear();
+            remainingTasks = 0;
+            return this;
+        }
         public IEnumerable<CodeInstruction> Transpile(ILGenerator generator, IEnumerable<CodeInstruction> instr)
         {
-            if (tasks.Count == 0 || !(tasks[tasks.Count - 1] is EndingTranspiler)) tasks.Add(new EndingTranspiler());
-            TaskCount = tasks.Count - 1;
             Generator = generator;
             CodeEnumerator = instr.GetEnumerator();
             Locals = new List<LocalBuilder>();
@@ -492,25 +526,82 @@ namespace HarmonyLib
                     yield return code;
                 }
             }
-            if (throwOnNotCompleted && TaskCount > 0)
-                throw new Exception("TranspilerFactory did not complete the specified number of tasks. ");
+            while (CodeEnumerator.MoveNext())
+                yield return CodeEnumerator.Current;
+            if (throwOnNotCompleted && remainingTasks > 0)
+                throw new TaskNotCompleteException(ToString());
         }
-        public void PatchFor(Harmony instance, string method)
+        /// <summary>
+        /// Intuitive but time consuming stringify method
+        /// </summary>
+        public override string ToString()
         {
-            factory = this;
-            instance.Patch(Parser.ParseMethod(method), transpiler: GetHarmonyMethod());
-            factory = null;
+            string result = $"TranspilerFactory: {remainingTasks} remaining / {totalTasks} in total";
+            var accomplishedTasks_ = accomplishedTasks;
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                if (i < accomplishedTasks_) result += $"\n√ {i}. {tasks[i]}";
+                else result += $"\n{i}. {tasks[i]}";
+            }
+            return result;
         }
-        public void PatchFor(Harmony instance, MethodBase original)
+        /// <summary>
+        /// Intuitive but time consuming stringify method
+        /// </summary>
+        public TranspilerFactory ToString(out string str)
         {
-            factory = this;
-            instance.Patch(original, transpiler: GetHarmonyMethod());
-            factory = null;
+            str = ToString();
+            return this;
         }
+        /// <summary>
+        /// Intuitive but time consuming stringify method
+        /// </summary>
+        public TranspilerFactory ToString(Action<string> action)
+        {
+            action(ToString());
+            return this;
+        }
+        /// <summary>
+        /// Apply the generated Transpiler to some method
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="original"></param>
+        public TranspilerFactory PatchFor(Harmony instance, MethodBase original)
+        {
+            if (original == null)
+                throw new NullReferenceException("Null method for " + instance.Id);
+            factory = this;
+            var harmonymethod = GetHarmonyMethod();
+            var patchInfo = HarmonySharedState.GetPatchInfo(original) ?? new PatchInfo();
+            PatchFunctions.AddTranspiler(patchInfo, instance.Id, harmonymethod);
+            PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
+            HarmonySharedState.UpdatePatchInfo(original, patchInfo);
+            factory = null;
+            return this;
+        }
+        /// <summary>
+        /// Apply the generated Transpiler to some method
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        public TranspilerFactory PatchFor(Harmony instance, string method) => PatchFor(instance, Parser.ParseMethod(method));
+
         // Static
+
+        /// <summary>
+        /// default is true
+        /// </summary>
         public static bool throwOnNotCompleted = true;
+        /// <summary>
+        /// A reference to TranspilerFactory instance
+        /// </summary>
         public static TranspilerFactory factory;
-        static IEnumerable<CodeInstruction> Transpiler(ILGenerator generator, IEnumerable<CodeInstruction> instructions) => factory.Transpile(generator, instructions);
+        static IEnumerable<CodeInstruction> Transpiler(ILGenerator generator, IEnumerable<CodeInstruction> instructions)
+            => factory.Transpile(generator, instructions);
+        /// <summary>
+        /// can be passed to Harmony::Patch
+        /// </summary>
+        /// <returns></returns>
         public static HarmonyMethod GetHarmonyMethod() => new HarmonyMethod(((TranspilerDelegate)Transpiler).Method);
 
     }
