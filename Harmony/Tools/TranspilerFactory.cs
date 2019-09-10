@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -361,23 +362,69 @@ namespace HarmonyLib
         }
         public override string ToString() => $"Skip: {count}";
     }
-    /*    class EndingTranspiler : ITranspiler
+    /*
+        /// <summary>
+        /// The delegate type of transpiler used in TranspilerFactory
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="instructions"></param>
+        /// <returns></returns>
+        public delegate IEnumerable<CodeInstruction> TranspilerDelegate(ILGenerator generator, IEnumerable<CodeInstruction> instructions);
+
+        public class MethodInfoWithTarget : MethodInfo
         {
-            public EndingTranspiler() { }
-            public IEnumerable<CodeInstruction> TransMethod(TranspilerFactory factory)
+            MethodInfo _method;
+            object _target;
+            public MethodInfoWithTarget(TranspilerDelegate transpilerDelegate)
             {
-                var instructions = factory.CodeEnumerator;
-                while (instructions.MoveNext()) yield return instructions.Current;
+                _method = transpilerDelegate.Method;
+                _target = transpilerDelegate.Target;
             }
-            public override string ToString() => "Ending";
-        }*/
-    /// <summary>
-    /// The delegate type of transpiler used in TranspilerFactory
-    /// </summary>
-    /// <param name="generator"></param>
-    /// <param name="instructions"></param>
-    /// <returns></returns>
-    public delegate IEnumerable<CodeInstruction> TranspilerDelegate(ILGenerator generator, IEnumerable<CodeInstruction> instructions);
+            public override Type ReturnType => typeof(void);
+            public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw new NotImplementedException();
+
+            public override RuntimeMethodHandle MethodHandle => throw new NotImplementedException();
+
+            public override MethodAttributes Attributes => throw new NotImplementedException();
+
+            public override string Name => throw new NotImplementedException();
+
+            public override Type DeclaringType => throw new NotImplementedException();
+
+            public override Type ReflectedType => throw new NotImplementedException();
+
+            public override MethodInfo GetBaseDefinition()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override object[] GetCustomAttributes(bool inherit)
+            {
+                return new object[0];
+            }
+
+            public override object[] GetCustomAttributes(Type attributeType, bool inherit)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override MethodImplAttributes GetMethodImplementationFlags()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override ParameterInfo[] GetParameters()
+                => _method.GetParameters();
+
+            public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
+            => _method.Invoke(obj ?? _target, invokeAttr, binder, parameters, culture);
+
+            public override bool IsDefined(Type attributeType, bool inherit)
+            {
+                throw new NotImplementedException();
+            }
+        }
+        */
     public class TaskNotCompleteException : Exception
     {
         public TaskNotCompleteException(string message) : base(message) { }
@@ -391,19 +438,18 @@ namespace HarmonyLib
     /// </example>
     public class TranspilerFactory
     {
-
-        // Instance
-
         internal ILGenerator Generator;
         internal IEnumerator<CodeInstruction> CodeEnumerator;
         internal List<LocalBuilder> Locals;
         internal List<Label> Labels;
         List<ITranspiler> tasks = new List<ITranspiler>();
+        bool used;
         public int remainingTasks { get; internal set; }
         public int totalTasks { get => tasks.Count; }
         public int accomplishedTasks { get => tasks.Count - remainingTasks; }
         void AddTask(ITranspiler task)
         {
+            if (used) throw new Exception("can not add tasks to a used factory");
             remainingTasks++;
             tasks.Add(task);
         }
@@ -507,13 +553,9 @@ namespace HarmonyLib
         /// <param name="num"></param>
         /// <returns></returns>
         public TranspilerFactory Replace(string from, string to, int num) { var from_ = Parser.ParseCodes(from); var to_ = Parser.ParseCodes(to); for (int i = 0; i < num; i++) Replace(from_, to_); return this; }
-        public TranspilerFactory ClearAllTasks()
-        {
-            tasks.Clear();
-            remainingTasks = 0;
-            return this;
-        }
-        public IEnumerable<CodeInstruction> Transpile(ILGenerator generator, IEnumerable<CodeInstruction> instr)
+        public Action<TranspilerFactory> whenFinished;
+        public TranspilerFactory WhenFinished(Action<TranspilerFactory> action) { whenFinished = action; return this; }
+        public IEnumerable<CodeInstruction> Transpiler(ILGenerator generator, IEnumerable<CodeInstruction> instr)
         {
             Generator = generator;
             CodeEnumerator = instr.GetEnumerator();
@@ -530,6 +572,7 @@ namespace HarmonyLib
                 yield return CodeEnumerator.Current;
             if (throwOnNotCompleted && remainingTasks > 0)
                 throw new TaskNotCompleteException(ToString());
+            whenFinished?.Invoke(this);
         }
         /// <summary>
         /// Intuitive but time consuming stringify method
@@ -561,6 +604,17 @@ namespace HarmonyLib
             action(ToString());
             return this;
         }
+        /*
+        /// <summary>
+        /// will exhaust the factory. cannot add tasks anymore
+        /// </summary>
+        /// <returns></returns>
+        public HarmonyMethod GetHarmonyMethod()
+        {
+            used = true;
+            return new HarmonyMethod(new MethodInfoWithTarget(Transpiler));
+        }
+
         /// <summary>
         /// Apply the generated Transpiler to some method
         /// </summary>
@@ -570,13 +624,11 @@ namespace HarmonyLib
         {
             if (original == null)
                 throw new NullReferenceException("Null method for " + instance.Id);
-            factory = this;
             var harmonymethod = GetHarmonyMethod();
             var patchInfo = HarmonySharedState.GetPatchInfo(original) ?? new PatchInfo();
             PatchFunctions.AddTranspiler(patchInfo, instance.Id, harmonymethod);
             PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
             HarmonySharedState.UpdatePatchInfo(original, patchInfo);
-            factory = null;
             return this;
         }
         /// <summary>
@@ -585,42 +637,12 @@ namespace HarmonyLib
         /// <param name="instance"></param>
         /// <param name="method"></param>
         public TranspilerFactory PatchFor(Harmony instance, string method) => PatchFor(instance, Parser.ParseMethod(method));
-
+        */
         // Static
 
         /// <summary>
         /// default is true
         /// </summary>
         public static bool throwOnNotCompleted = true;
-        /// <summary>
-        /// A reference to TranspilerFactory instance
-        /// </summary>
-        public static TranspilerFactory factory;
-        static IEnumerable<CodeInstruction> Transpiler(ILGenerator generator, IEnumerable<CodeInstruction> instructions)
-            => factory.Transpile(generator, instructions);
-        /// <summary>
-        /// can be passed to Harmony::Patch
-        /// </summary>
-        /// <returns></returns>
-        public static HarmonyMethod GetHarmonyMethod() => new HarmonyMethod(((TranspilerDelegate)Transpiler).Method);
-
-    }
-    /// <summary>
-    /// A abstract version of TranspilerFactory
-    /// Inherent from this and initialize factory in function Prepare
-    /// Not recommended for multiple originalMethod (because Prepare will be called multiple times).
-    /// </summary>
-    /// <example>
-    /// [HarmonyPatch(typeof(someType), "someMethod")]
-    /// class MyPatch : TranspilerPatch
-    /// {
-    ///     static void Prepare() => factory.Replace(..., ...);
-    /// }
-    /// </example>
-    public abstract class TranspilerPatch
-    {
-        protected static TranspilerFactory factory = new TranspilerFactory();
-        protected static IEnumerable<CodeInstruction> Transpiler(ILGenerator generator, IEnumerable<CodeInstruction> instructions) => factory.Transpile(generator, instructions);
-        protected static void Cleanup() => factory = new TranspilerFactory();
     }
 }
