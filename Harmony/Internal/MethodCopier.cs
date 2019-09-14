@@ -63,16 +63,21 @@ namespace HarmonyLib
 			this.generator = generator;
 			this.method = method;
 			module = method.Module;
+			ilInstructions = new List<ILInstruction>();
 
 			var body = method.GetMethodBody();
-			if (body == null)
-				throw new ArgumentException("Method " + method.FullDescription() + " has no body");
-
-			var bytes = body.GetILAsByteArray();
-			if (bytes == null)
-				throw new ArgumentException("Can not get IL bytes of method " + method.FullDescription());
-			ilBytes = new ByteBuffer(bytes);
-			ilInstructions = new List<ILInstruction>((bytes.Length + 1) / 2);
+			if (body != null)
+			{
+				var bytes = body.GetILAsByteArray();
+				if(bytes == null)
+					throw new ArgumentException("Can not get IL bytes of method " + method.FullDescription());
+				ilBytes = new ByteBuffer(bytes);
+				ilInstructions.Capacity = (bytes.Length + 1) / 2;
+			}
+			else
+			{
+				ilBytes = new ByteBuffer(new byte[0]);
+			}
 
 			var type = method.DeclaringType;
 
@@ -92,8 +97,8 @@ namespace HarmonyLib
 				this_parameter = new ThisParameter(method);
 			parameters = method.GetParameters();
 
-			localVariables = body.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
-			exceptions = body.ExceptionHandlingClauses;
+			localVariables = body?.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
+			exceptions = body?.ExceptionHandlingClauses ?? new List<ExceptionHandlingClause>();
 		}
 
 		internal void ReadInstructions()
