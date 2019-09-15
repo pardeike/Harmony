@@ -195,8 +195,13 @@ namespace HarmonyLib
 		{
 			var type = transpiler.GetParameters()
 				  .Select(p => p.ParameterType)
-				  .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal));
-			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
+				  .FirstOrDefault(t => IsTranspliterInstructionsParam(t));
+			return ConvertInstructionsAndUnassignedValues(type ?? typeof(IEnumerable<CodeInstruction>), enumerable, out unassignedValues);
+		}
+
+		internal static bool IsTranspliterInstructionsParam(Type paramType)
+		{
+			return paramType.IsGenericType && paramType.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal);
 		}
 
 		internal static List<object> GetTranspilerCallParameters(ILGenerator generator, MethodInfo transpiler, MethodBase method, IEnumerable instructions)
@@ -208,7 +213,7 @@ namespace HarmonyLib
 					parameter.Add(generator);
 				else if (type.IsAssignableFrom(typeof(MethodBase)))
 					parameter.Add(method);
-				else
+				else if (IsTranspliterInstructionsParam(type))
 					parameter.Add(instructions);
 			});
 			return parameter;
