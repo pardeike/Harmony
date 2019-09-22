@@ -70,6 +70,7 @@ namespace HarmonyLib
 		internal static LocalBuilder DeclareLocalVariable(ILGenerator generator, Type type)
 		{
 			if (type.IsByRef) type = type.GetElementType();
+			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
 
 			if (AccessTools.IsClass(type))
 			{
@@ -92,7 +93,7 @@ namespace HarmonyLib
 					Emitter.Emit(generator, OpCodes.Ldc_R4, (float)0);
 				else if (type == typeof(double))
 					Emitter.Emit(generator, OpCodes.Ldc_R8, (double)0);
-				else if (type == typeof(long))
+				else if (type == typeof(long) || type == typeof(ulong))
 					Emitter.Emit(generator, OpCodes.Ldc_I8, (long)0);
 				else
 					Emitter.Emit(generator, OpCodes.Ldc_I4, 0);
