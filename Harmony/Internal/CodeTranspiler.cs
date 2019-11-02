@@ -194,8 +194,10 @@ namespace HarmonyLib
 		internal static IEnumerable ConvertToGeneralInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var type = transpiler.GetParameters()
-				  .Select(p => p.ParameterType)
-				  .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal));
+				.Select(p => p.ParameterType)
+				.FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name is var name &&
+					(name.StartsWith("IEnumerable", StringComparison.Ordinal) || name.StartsWith("ICollection", StringComparison.Ordinal) ||
+					name.StartsWith("IList", StringComparison.Ordinal) || name.StartsWith("List", StringComparison.Ordinal)));
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
 

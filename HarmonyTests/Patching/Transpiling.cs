@@ -21,8 +21,11 @@ namespace HarmonyLibTests.Patching
 		static readonly int codeLength = 61;
 #endif
 
-		[Test]
-		public void TestTranspilerException1()
+		[TestCase(nameof(TestTranspiler))]
+		[TestCase(nameof(TestTranspilerICollection))]
+		[TestCase(nameof(TestTranspilerIList))]
+		[TestCase(nameof(TestTranspilerList))]
+		public void TestTranspilerException1(string transpilerMethodName)
 		{
 			var test = new Class3();
 
@@ -32,7 +35,7 @@ namespace HarmonyLibTests.Patching
 			var original = AccessTools.Method(typeof(Class3), nameof(Class3.TestMethod));
 			Assert.IsNotNull(original);
 
-			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(Transpiling.TestTranspiler));
+			var transpiler = AccessTools.Method(typeof(Transpiling), transpilerMethodName);
 			Assert.IsNotNull(transpiler);
 
 			var instance = new Harmony("test-exception1");
@@ -42,6 +45,7 @@ namespace HarmonyLibTests.Patching
 
 			test.TestMethod("restart");
 			Assert.AreEqual(test.GetLog, "restart,test,patch,ex:DivideByZeroException,finally,end");
+			instance.UnpatchAll("test-exception1");
 		}
 
 		public static IEnumerable<CodeInstruction> TestTranspiler(IEnumerable<CodeInstruction> instructions)
@@ -70,5 +74,11 @@ namespace HarmonyLibTests.Patching
 				yield return instruction;
 			}
 		}
+
+		public static IEnumerable<CodeInstruction> TestTranspilerICollection(ICollection<CodeInstruction> instructions) => TestTranspiler(instructions);
+
+		public static IEnumerable<CodeInstruction> TestTranspilerIList(IList<CodeInstruction> instructions) => TestTranspiler(instructions);
+
+		public static IEnumerable<CodeInstruction> TestTranspilerList(List<CodeInstruction> instructions) => TestTranspiler(instructions);
 	}
 }
