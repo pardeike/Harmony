@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using HarmonyLib.Internal;
 
 namespace HarmonyLib
 {
@@ -216,10 +217,10 @@ namespace HarmonyLib
 		///
 		public void RemovePatch(MethodInfo patch)
 		{
-			prefixes = prefixes.Where(p => p.patch != patch).ToArray();
-			postfixes = postfixes.Where(p => p.patch != patch).ToArray();
-			transpilers = transpilers.Where(p => p.patch != patch).ToArray();
-			finalizers = finalizers.Where(p => p.patch != patch).ToArray();
+			prefixes = prefixes.Where(p => p.patch.MethodInfo != patch).ToArray();
+			postfixes = postfixes.Where(p => p.patch.MethodInfo != patch).ToArray();
+			transpilers = transpilers.Where(p => p.patch.MethodInfo != patch).ToArray();
+			finalizers = finalizers.Where(p => p.patch.MethodInfo != patch).ToArray();
 		}
 	}
 
@@ -239,7 +240,7 @@ namespace HarmonyLib
 		readonly public string[] after;
 
 		/// <summary>The patch method</summary>
-		readonly public MethodInfo patch;
+		readonly public MethodInfoWrapper patch;
 
 		/// <summary>Creates a patch</summary>
 		/// <param name="patch">The patch</param>
@@ -258,7 +259,7 @@ namespace HarmonyLib
 			this.priority = priority;
 			this.before = before;
 			this.after = after;
-			this.patch = patch;
+			this.patch = new MethodInfoWrapper(patch);
 		}
 
 		/// <summary>Gets the patch method</summary>
@@ -267,14 +268,14 @@ namespace HarmonyLib
 		///
 		public MethodInfo GetMethod(MethodBase original)
 		{
-			if (patch.ReturnType != typeof(DynamicMethod)) return patch;
-			if (patch.IsStatic == false) return patch;
-			var parameters = patch.GetParameters();
-			if (parameters.Count() != 1) return patch;
-			if (parameters[0].ParameterType != typeof(MethodBase)) return patch;
+			if (patch.MethodInfo.ReturnType != typeof(DynamicMethod)) return patch.MethodInfo;
+			if (patch.MethodInfo.IsStatic == false) return patch.MethodInfo;
+			var parameters = patch.MethodInfo.GetParameters();
+			if (parameters.Count() != 1) return patch.MethodInfo;
+			if (parameters[0].ParameterType != typeof(MethodBase)) return patch.MethodInfo;
 
 			// we have a DynamicMethod factory, let's use it
-			return patch.Invoke(null, new object[] { original }) as DynamicMethod;
+			return patch.MethodInfo.Invoke(null, new object[] { original }) as DynamicMethod;
 		}
 
 		/// <summary>Determines whether patches are equal</summary>

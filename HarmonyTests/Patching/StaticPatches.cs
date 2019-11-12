@@ -22,7 +22,7 @@ namespace HarmonyLibTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			var instance = new Harmony("test");
+			var instance = new HarmonyLib.Harmony("test");
 			Assert.IsNotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);

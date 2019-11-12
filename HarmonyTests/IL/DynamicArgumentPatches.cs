@@ -1,12 +1,12 @@
-using HarmonyLib;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using HarmonyLib;
+using NUnit.Framework;
 
-namespace HarmonyLibTests.IL
+namespace HarmonyTests.IL
 {
 	public struct Vec3
 	{
@@ -184,8 +184,8 @@ namespace HarmonyLibTests.IL
 		[Test]
 		public void SendingArguments()
 		{
-			Harmony.DEBUG = true;
-			var harmony = new Harmony("test");
+			HarmonyLib.Harmony.DEBUG = true;
+			var harmony = new HarmonyLib.Harmony("test");
 			methods.Do(m =>
 			{
 				harmony.Patch(m, transpiler: new HarmonyMethod(m_Transpiler));

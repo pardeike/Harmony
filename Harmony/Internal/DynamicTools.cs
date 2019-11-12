@@ -147,7 +147,8 @@ namespace HarmonyLib
 				try
 				{
 					// this can throw BadImageFormatException "An attempt was made to load a program with an incorrect format"
-					h__CompileMethod(null, new object[] { runtimeMethodInfo });
+					h__CompileMethod(null, new object[] { runtimeMethodInfo.GetType().GetFields()[0].GetValue(runtimeMethodInfo)});
+
 					return;
 				}
 #pragma warning disable RECS0022

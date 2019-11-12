@@ -106,7 +106,7 @@ namespace HarmonyLib
 						_waitingList[i].RemoveAfterDependency(afterNode);
 						if (Harmony.DEBUG)
 							FileLog.LogBuffered(
-								$"Breaking dependance between {afterNode.innerPatch.patch.FullDescription()} and {_waitingList[i].innerPatch.patch.FullDescription()}");
+								$"Breaking dependance between {afterNode.innerPatch.patch.MethodInfo.FullDescription()} and {_waitingList[i].innerPatch.patch.MethodInfo.FullDescription()}");
 						return;
 					}
 		}

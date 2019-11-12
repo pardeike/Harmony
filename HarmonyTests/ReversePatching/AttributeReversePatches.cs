@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
@@ -21,7 +22,16 @@ namespace HarmonyLibTests
 
 			var processor = instance.ProcessorForAnnotatedClass(typeof(Class1ReversePatch));
 			Assert.IsNotNull(processor);
-			Assert.AreEqual(1, processor.Patch().Count);
+			try
+			{
+				var count = processor.Patch().Count;
+				Assert.AreEqual(1, count);
+			}
+			catch (Exception e)
+			{
+				int c = 0;
+				c++;
+			}
 
 			var result2 = test.Method("Bar", 456);
 			Assert.AreEqual("PrefixedExtra456Bar", result2);
