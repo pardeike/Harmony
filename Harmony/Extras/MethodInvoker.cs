@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
-	// Based on https://www.codeproject.com/Articles/14593/A-General-Fast-Method-Invoker
+	// Based on https://github.com/MonoMod/MonoMod/blob/master/MonoMod.Utils/FastReflectionHelper.cs
 
 	/// <summary>A delegate to invoke a method</summary>
 	/// <param name="target">The instance</param>
@@ -23,7 +23,7 @@ namespace HarmonyLib
 		///
 		public static FastInvokeHandler GetHandler(DynamicMethod methodInfo, Module module)
 		{
-			return Handler(methodInfo, module);
+			return GetHandler(methodInfo, module);
 		}
 
 		/// <summary>Creates a fast invocation handler from a method and a module</summary>
@@ -32,10 +32,10 @@ namespace HarmonyLib
 		///
 		public static FastInvokeHandler GetHandler(MethodInfo methodInfo)
 		{
-			return Handler(methodInfo, methodInfo.DeclaringType.Module);
+			return GetHandler(methodInfo, methodInfo.DeclaringType.Module);
 		}
 
-		static FastInvokeHandler Handler(MethodInfo methodInfo, Module module, bool directBoxValueAccess = false)
+		public static FastInvokeHandler GetHandler(MethodInfo methodInfo, Module module, bool directBoxValueAccess = false)
 		{
 			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name + "_" + (directBoxValueAccess ? "direct" : "indirect"), typeof(object), new Type[] { typeof(object), typeof(object[]) }, module, true);
 			var il = dynamicMethod.GetILGenerator();
@@ -55,6 +55,22 @@ namespace HarmonyLib
 				if (argIsByRef)
 					argType = argType.GetElementType();
 				var argIsValueType = argType.IsValueType;
+
+				// START DEBUG
+				//LocalBuilder boxedVar = null, reboxedVar = null;
+				//if (argIsByRef && argIsValueType && !directBoxValueAccess)
+				//{
+				//	// make sure the pinned void* local is declared first so it has local index 0
+				//	if (generateLocalBoxValuePtr)
+				//	{
+				//		generateLocalBoxValuePtr = false;
+				//		// Yes, you're seeing this right - a pinned local of type void* to store the box value address!
+				//		il.DeclareLocal(typeof(void*), true);
+				//	}
+				//	boxedVar = il.DeclareLocal(typeof(object), false);
+				//	reboxedVar = il.DeclareLocal(typeof(object), false);
+				//}
+				// END DEBUG
 
 				if (argIsByRef && argIsValueType && !directBoxValueAccess)
 				{
@@ -77,26 +93,102 @@ namespace HarmonyLib
 					{
 						if (!argIsByRef || !directBoxValueAccess)
 						{
+							// START DEBUG
+							//if (argIsByRef)
+							//{
+							//	il.Emit(OpCodes.Dup);
+							//	il.Emit(OpCodes.Stloc, boxedVar);
+							//	il.Emit(OpCodes.Dup);
+							//	il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
+							//	il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] boxed value pointer address (a)");
+							//	il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+							//	il.Emit(OpCodes.Dup);
+							//	il.Emit(OpCodes.Unbox, argType);
+							//	il.Emit(OpCodes.Conv_I8);
+							//	il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unboxed value pointer address (a)");
+							//	il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+							//}
+							// END DEBUG
 							// if !directBoxValueAccess, create a new box if required
 							il.Emit(OpCodes.Unbox_Any, argType);
 							if (argIsByRef)
 							{
+								// the following ensures that any references to the boxed value still retain the same boxed value,
+								// and that only the boxed value within the parameters array can be changed
+								// this is done by "reboxing" the value and replacing the original boxed value in the parameters array with this reboxed value
+
 								// box back
 								il.Emit(OpCodes.Box, argType);
+
+								// START DEBUG
+								//il.Emit(OpCodes.Dup);
+								//il.Emit(OpCodes.Stloc_S, reboxedVar);
+								//il.Emit(OpCodes.Dup);
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (a)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								// END DEBUG
 
 								// store new box value address to local 0
 								il.Emit(OpCodes.Dup);
 								il.Emit(OpCodes.Unbox, argType);
+
+								// START DEBUG
+								//il.Emit(OpCodes.Dup);
+								//il.Emit(OpCodes.Conv_I8);
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address (a)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								// END DEBUG
+
 								if (generateLocalBoxValuePtr)
 								{
 									generateLocalBoxValuePtr = false;
-									// Yes, you're seeing this right - a local of type void* to store the box value address!
+									// Yes, you're seeing this right - a pinned local of type void* to store the box value address!
 									il.DeclareLocal(typeof(void*), true);
 								}
 								il.Emit(OpCodes.Stloc_0);
 
 								// arr and index set up already
 								il.Emit(OpCodes.Stelem_Ref);
+
+								// START DEBUG
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(TryMoveAddressesViaGC), AccessTools.all));
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] TryMoveAddressesViaGC");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(Out), AccessTools.all));
+								//il.Emit(OpCodes.Ldloc_S, boxedVar);
+								//il.Emit(OpCodes.Dup);
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] boxed value pointer address (b)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								//il.Emit(OpCodes.Unbox, argType);
+								//il.Emit(OpCodes.Conv_I8);
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unboxed value pointer address (b)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								//il.Emit(OpCodes.Ldarg_1);
+								//EmitFastInt(il, i);
+								//il.Emit(OpCodes.Ldelem_Ref);
+								//il.Emit(OpCodes.Dup);
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (b1)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								//il.Emit(OpCodes.Unbox, argType);
+								//il.Emit(OpCodes.Conv_I8);
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reunboxed value pointer address (b1)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								//il.Emit(OpCodes.Ldloc_S, reboxedVar);
+								//il.Emit(OpCodes.Dup);
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (b2)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								//il.Emit(OpCodes.Unbox, argType);
+								//il.Emit(OpCodes.Conv_I8);
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address (b2)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								//il.Emit(OpCodes.Ldloc_0);
+								//il.Emit(OpCodes.Conv_I8);
+								//il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address UNMANAGED (b)");
+								//il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
+								// END DEBUG
 
 								// load address back to stack
 								il.Emit(OpCodes.Ldloc_0);
@@ -127,6 +219,24 @@ namespace HarmonyLib
 
 			var invoder = (FastInvokeHandler)dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
 			return invoder;
+		}
+
+		unsafe static long AddressOf(object obj)
+		{
+			TypedReference tr = __makeref(obj);
+			return (long)**(IntPtr**)(&tr);
+		}
+
+		static void OutAddress(long address, string label) => Out($"{label}: {address:X}");
+
+		static void Out(string str) => Console.WriteLine(str);
+
+		static void TryMoveAddressesViaGC()
+		{
+			var memoryPressureBytesAllocated = 100000000;
+			GC.AddMemoryPressure(memoryPressureBytesAllocated);
+			GC.Collect();
+			GC.RemoveMemoryPressure(memoryPressureBytesAllocated);
 		}
 
 		/*static void EmitCastToReference(ILGenerator il, Type type)
