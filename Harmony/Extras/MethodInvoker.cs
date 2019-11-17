@@ -55,7 +55,7 @@ namespace HarmonyLib
 				EmitUnboxIfNeeded(il, methodInfo.DeclaringType);
 			}
 
-			var generateLocalBoxValuePtr = true;
+			var generateLocalBoxObject = true;
 			var ps = methodInfo.GetParameters();
 			for (var i = 0; i < ps.Length; i++)
 			{
@@ -66,18 +66,16 @@ namespace HarmonyLib
 				var argIsValueType = argType.IsValueType;
 
 #if TRACE
-				LocalBuilder boxedVar = null, reboxedVar = null;
+				LocalBuilder boxedVar = null;
 				if (argIsByRef && argIsValueType && !directBoxValueAccess)
 				{
-					// make sure the pinned void* local is declared first so it has local index 0
-					if (generateLocalBoxValuePtr)
+					// make sure the box object local is declared first so it has local index 0
+					if (generateLocalBoxObject)
 					{
-						generateLocalBoxValuePtr = false;
-						// Yes, you're seeing this right - a pinned local of type void* to store the box value address!
-						il.DeclareLocal(typeof(void*), true);
+						generateLocalBoxObject = false;
+						il.DeclareLocal(typeof(object), false);
 					}
 					boxedVar = il.DeclareLocal(typeof(object), false);
-					reboxedVar = il.DeclareLocal(typeof(object), false);
 				}
 #endif
 
@@ -132,29 +130,24 @@ namespace HarmonyLib
 
 #if TRACE
 								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Stloc_S, reboxedVar);
-								il.Emit(OpCodes.Dup);
 								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
 								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (a)");
 								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-#endif
-
-								// store new box value address to local 0
-								Emit(il, OpCodes.Dup);
-								Emit(il, OpCodes.Unbox, argType);
-
-#if TRACE
 								il.Emit(OpCodes.Dup);
+								il.Emit(OpCodes.Unbox, argType);
 								il.Emit(OpCodes.Conv_I8);
 								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address (a)");
 								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
 #endif
 
-								if (generateLocalBoxValuePtr)
+								// for later stelem.ref
+								Emit(il, OpCodes.Dup);
+
+								// store the "rebox" in an object local
+								if (generateLocalBoxObject)
 								{
-									generateLocalBoxValuePtr = false;
-									// Yes, you're seeing this right - a pinned local of type void* to store the box value address!
-									il.DeclareLocal(typeof(void*), true);
+									generateLocalBoxObject = false;
+									il.DeclareLocal(typeof(object), false);
 								}
 								Emit(il, OpCodes.Stloc_0);
 
@@ -182,7 +175,7 @@ namespace HarmonyLib
 								il.Emit(OpCodes.Conv_I8);
 								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reunboxed value pointer address (b1)");
 								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Ldloc_S, reboxedVar);
+								il.Emit(OpCodes.Ldloc_0);
 								il.Emit(OpCodes.Dup);
 								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
 								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (b2)");
@@ -191,14 +184,11 @@ namespace HarmonyLib
 								il.Emit(OpCodes.Conv_I8);
 								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address (b2)");
 								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Ldloc_0);
-								il.Emit(OpCodes.Conv_I8);
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address UNMANAGED (b)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
 #endif
 
-								// load address back to stack
+								// load the "rebox" and emit unbox (get unboxed value address)
 								Emit(il, OpCodes.Ldloc_0);
+								Emit(il, OpCodes.Unbox, argType);
 							}
 						}
 						else
