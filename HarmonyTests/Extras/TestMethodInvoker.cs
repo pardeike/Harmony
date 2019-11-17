@@ -1,3 +1,6 @@
+using System;
+using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
@@ -7,16 +10,16 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class TestMethodInvoker
 	{
-		[TestCase(false)]
-		[TestCase(true)]
-		public void TestMethodInvokerGeneral(bool directBoxValueAccess)
+		[Test]
+		public void TestMethodInvokerGeneral([Values(false, true)] bool directBoxValueAccess, [Values(false, true)] bool gcHell)
 		{
 			var type = typeof(MethodInvokerClass);
 			Assert.IsNotNull(type);
 			var method = type.GetMethod("Method1");
 			Assert.IsNotNull(method);
 
-			var handler = MethodInvoker.GetHandler(method, method.DeclaringType.Module, directBoxValueAccess);
+			var methodInvoker = gcHell ? new MethodInvokerGCHell(directBoxValueAccess) : new MethodInvoker(directBoxValueAccess);
+			var handler = methodInvoker.GetHandler(method, method.DeclaringType.Module);
 			Assert.IsNotNull(handler);
 
 			var testStruct = new TestMethodInvokerStruct();
@@ -56,6 +59,48 @@ namespace HarmonyLibTests
 			var args = new object[] { 2 };
 			handler(instance, args);
 			Assert.AreEqual(3, instance.Value);
+		}
+	}
+
+	class MethodInvokerGCHell : MethodInvoker
+	{
+		public MethodInvokerGCHell(bool directBoxValueAccess) : base(directBoxValueAccess)
+		{
+		}
+
+		static void TryMoveAddressesViaGC()
+		{
+			var memoryPressureBytesAllocated = 100000000;
+			GC.AddMemoryPressure(memoryPressureBytesAllocated);
+			GC.Collect();
+			GC.RemoveMemoryPressure(memoryPressureBytesAllocated);
+		}
+
+		static readonly MethodInfo tryMoveAddressesViaGCMethod = typeof(MethodInvokerGCHell).GetMethod(nameof(TryMoveAddressesViaGC), AccessTools.all);
+
+		protected override void Emit(ILGenerator il, OpCode opcode)
+		{
+			if (opcode.FlowControl == FlowControl.Next)
+				il.Emit(OpCodes.Call, tryMoveAddressesViaGCMethod);
+			base.Emit(il, opcode);
+		}
+
+		protected override void Emit(ILGenerator il, OpCode opcode, Type type)
+		{
+			il.Emit(OpCodes.Call, tryMoveAddressesViaGCMethod);
+			base.Emit(il, opcode, type);
+		}
+
+		protected override void EmitCall(ILGenerator il, OpCode opcode, MethodInfo methodInfo)
+		{
+			il.Emit(OpCodes.Call, tryMoveAddressesViaGCMethod);
+			base.EmitCall(il, opcode, methodInfo);
+		}
+
+		protected override void EmitFastInt(ILGenerator il, int value)
+		{
+			il.Emit(OpCodes.Call, tryMoveAddressesViaGCMethod);
+			base.EmitFastInt(il, value);
 		}
 	}
 }
