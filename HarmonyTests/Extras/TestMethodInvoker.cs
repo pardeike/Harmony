@@ -11,7 +11,7 @@ namespace HarmonyLibTests
 	public class TestMethodInvoker
 	{
 		[Test]
-		public void TestMethodInvokerGeneral([Values(false, true)] bool directBoxValueAccess, [Values(false, true)] bool gcHell)
+		public void TestMethodInvokerGeneral([Values(false, true)] bool directBoxValueAccess, [Values(false, true)] bool gcHell, [Values(100)] int iterations)
 		{
 			var type = typeof(MethodInvokerClass);
 			Assert.IsNotNull(type);
@@ -25,7 +25,7 @@ namespace HarmonyLibTests
 			var testStruct = new TestMethodInvokerStruct();
 			var boxedTestStruct = (object)testStruct;
 			var args = new object[] { 0, 0, 0, /*out*/ null, /*ref*/ boxedTestStruct };
-			for (var a = 0; a < 100; a++)
+			for (var a = 0; a < iterations; a++)
 			{
 				args[0] = a;
 				var b = (int)args[1];
@@ -74,6 +74,9 @@ namespace HarmonyLibTests
 			GC.AddMemoryPressure(memoryPressureBytesAllocated);
 			GC.Collect();
 			GC.RemoveMemoryPressure(memoryPressureBytesAllocated);
+#if TRACE
+			Console.WriteLine("TryMoveAddressesViaGC");
+#endif
 		}
 
 		static readonly MethodInfo tryMoveAddressesViaGCMethod = typeof(MethodInvokerGCHell).GetMethod(nameof(TryMoveAddressesViaGC), AccessTools.all);
