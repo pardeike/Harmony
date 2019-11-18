@@ -65,20 +65,6 @@ namespace HarmonyLib
 					argType = argType.GetElementType();
 				var argIsValueType = argType.IsValueType;
 
-#if TRACE
-				LocalBuilder boxedVar = null;
-				if (argIsByRef && argIsValueType && !directBoxValueAccess)
-				{
-					// make sure the box object local is declared first so it has local index 0
-					if (generateLocalBoxObject)
-					{
-						generateLocalBoxObject = false;
-						il.DeclareLocal(typeof(object), false);
-					}
-					boxedVar = il.DeclareLocal(typeof(object), false);
-				}
-#endif
-
 				if (argIsByRef && argIsValueType && !directBoxValueAccess)
 				{
 					// used later when storing back the reference to the new box in the array.
@@ -100,23 +86,6 @@ namespace HarmonyLib
 					{
 						if (!argIsByRef || !directBoxValueAccess)
 						{
-#if TRACE
-							if (argIsByRef)
-							{
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Stloc, boxedVar);
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] boxed value pointer address (a)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Unbox, argType);
-								il.Emit(OpCodes.Conv_I8);
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unboxed value pointer address (a)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-							}
-#endif
-
 							// if !directBoxValueAccess, create a new box if required
 							Emit(il, OpCodes.Unbox_Any, argType);
 							if (argIsByRef)
@@ -127,18 +96,6 @@ namespace HarmonyLib
 
 								// box back
 								Emit(il, OpCodes.Box, argType);
-
-#if TRACE
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (a)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Unbox, argType);
-								il.Emit(OpCodes.Conv_I8);
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address (a)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-#endif
 
 								// for later stelem.ref
 								Emit(il, OpCodes.Dup);
@@ -153,38 +110,6 @@ namespace HarmonyLib
 
 								// arr and index set up already
 								Emit(il, OpCodes.Stelem_Ref);
-
-#if TRACE
-								il.Emit(OpCodes.Ldloc_S, boxedVar);
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] boxed value pointer address (b)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Unbox, argType);
-								il.Emit(OpCodes.Conv_I8);
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unboxed value pointer address (b)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Ldarg_1);
-								il.Emit(OpCodes.Ldc_I4, i);
-								il.Emit(OpCodes.Ldelem_Ref);
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (b1)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Unbox, argType);
-								il.Emit(OpCodes.Conv_I8);
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reunboxed value pointer address (b1)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Ldloc_0);
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(AddressOf), AccessTools.all));
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] reboxed value pointer address (b2)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-								il.Emit(OpCodes.Unbox, argType);
-								il.Emit(OpCodes.Conv_I8);
-								il.Emit(OpCodes.Ldstr, $"[{i}:{ps[i].ParameterType}] unreboxed value pointer address (b2)");
-								il.Emit(OpCodes.Call, typeof(MethodInvoker).GetMethod(nameof(OutAddress), AccessTools.all));
-#endif
 
 								// load the "rebox" and emit unbox (get unboxed value address)
 								Emit(il, OpCodes.Ldloc_0);
@@ -215,14 +140,6 @@ namespace HarmonyLib
 			var invoder = (FastInvokeHandler)dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
 			return invoder;
 		}
-
-		unsafe static long AddressOf(object obj)
-		{
-			TypedReference tr = __makeref(obj);
-			return (long)**(IntPtr**)(&tr);
-		}
-
-		static void OutAddress(long address, string label) => Console.WriteLine($"{label}: {address:X}");
 
 		protected virtual void Emit(ILGenerator il, OpCode opcode) => il.Emit(opcode);
 

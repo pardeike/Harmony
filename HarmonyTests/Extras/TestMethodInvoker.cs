@@ -74,9 +74,6 @@ namespace HarmonyLibTests
 			GC.AddMemoryPressure(memoryPressureBytesAllocated);
 			GC.Collect();
 			GC.RemoveMemoryPressure(memoryPressureBytesAllocated);
-#if TRACE
-			Console.WriteLine("TryMoveAddressesViaGC");
-#endif
 		}
 
 		static readonly MethodInfo tryMoveAddressesViaGCMethod = typeof(MethodInvokerGCHell).GetMethod(nameof(TryMoveAddressesViaGC), AccessTools.all);
