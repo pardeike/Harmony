@@ -38,7 +38,7 @@ script:
 
 jobs:
   allow_failures:
-    # unit tests for netcoreapp3.0 currently fail
+    # TODO: Remove this when netcoreapp3.0 works and unit tests for it succeed.
     - env: netframework=netcoreapp3.0
   exclude:
     # dotnet test (specifically, .NET Core itself) currently doesn't work with .NET Framework 3.5, so have to use mono + nunit3-console.exe (see include below)

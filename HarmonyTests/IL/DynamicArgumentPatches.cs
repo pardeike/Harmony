@@ -181,6 +181,7 @@ namespace HarmonyLibTests.IL
 			SymbolExtensions.GetMethodInfo(() => TestMethods3.Test3(Vec3.Zero, null))
 		};
 
+		// TODO: Investigate why this is failing for CI linux/OSX builds - see error in https://github.com/pardeike/Harmony/pull/221
 		[Test]
 		public void SendingArguments()
 		{
