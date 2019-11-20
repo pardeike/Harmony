@@ -33,7 +33,6 @@ install:
 
 script:
   - dotnet build --framework ${netframework}
-  - mkdir ~/Desktop # some unit tests log to ~/Desktop/harmony.log.txt
   - dotnet test HarmonyTests --framework ${netframework}
 
 jobs:
@@ -64,7 +63,6 @@ jobs:
         - nuget install NUnit.Console -OutputDirectory testrunner
       script:
         - msbuild /p:Configuration=Release /p:TargetFrameworks=${netframework}
-        - mkdir ~/Desktop # some unit tests log to ~/Desktop/harmony.log.txt
         - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe HarmonyTests/bin/Release/${netframework}/HarmonyTests.dll --inprocess
     - os: osx
       env: netframework=net35
@@ -75,7 +73,6 @@ jobs:
         - nuget install NUnit.Console -OutputDirectory testrunner
       script:
         - msbuild /p:Configuration=Release /p:TargetFrameworks=${netframework}
-        - mkdir ~/Desktop # some unit tests log to ~/Desktop/harmony.log.txt
         - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe HarmonyTests/bin/Release/${netframework}/HarmonyTests.dll --inprocess
 
 notifications:
