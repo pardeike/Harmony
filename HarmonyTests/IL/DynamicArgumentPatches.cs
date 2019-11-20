@@ -107,7 +107,8 @@ namespace HarmonyLibTests.IL
 
 			yield return new CodeInstruction(OpCodes.Ldstr, original.DeclaringType.FullName);
 			yield return new CodeInstruction(OpCodes.Ldc_I4, original.MetadataToken);
-			yield return new CodeInstruction(original.IsStatic ? OpCodes.Ldc_I4_0 : OpCodes.Ldarg_0);
+			// Note: While some .NET runtimes allow representing 0 (via ldc.i*.0) as null, at least mono doesn't allow that - just use ldnull instead.
+			yield return new CodeInstruction(original.IsStatic ? OpCodes.Ldnull : OpCodes.Ldarg_0);
 
 			yield return new CodeInstruction(OpCodes.Ldc_I4, parameter.Length);
 			yield return new CodeInstruction(OpCodes.Newarr, typeof(object));
@@ -181,7 +182,6 @@ namespace HarmonyLibTests.IL
 			SymbolExtensions.GetMethodInfo(() => TestMethods3.Test3(Vec3.Zero, null))
 		};
 
-		// TODO: Investigate why this is failing for CI linux/OSX builds - see error in https://github.com/pardeike/Harmony/pull/221
 		[Test]
 		public void SendingArguments()
 		{
