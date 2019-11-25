@@ -1,12 +1,12 @@
+using HarmonyLib;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using HarmonyLib;
-using NUnit.Framework;
 
-namespace HarmonyTests.IL
+namespace HarmonyLibTests.IL
 {
 	public struct Vec3
 	{
@@ -107,8 +107,7 @@ namespace HarmonyTests.IL
 
 			yield return new CodeInstruction(OpCodes.Ldstr, original.DeclaringType.FullName);
 			yield return new CodeInstruction(OpCodes.Ldc_I4, original.MetadataToken);
-			// Note: While some .NET runtimes allow representing 0 (via ldc.i*.0) as null, at least mono doesn't allow that - just use ldnull instead.
-			yield return new CodeInstruction(original.IsStatic ? OpCodes.Ldnull : OpCodes.Ldarg_0);
+			yield return new CodeInstruction(original.IsStatic ? OpCodes.Ldc_I4_0 : OpCodes.Ldarg_0);
 
 			yield return new CodeInstruction(OpCodes.Ldc_I4, parameter.Length);
 			yield return new CodeInstruction(OpCodes.Newarr, typeof(object));
@@ -185,7 +184,7 @@ namespace HarmonyTests.IL
 		[Test]
 		public void SendingArguments()
 		{
-			//Harmony.DEBUG = true;
+			Harmony.DEBUG = true;
 			var harmony = new Harmony("test");
 			methods.Do(m =>
 			{

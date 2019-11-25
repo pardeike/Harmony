@@ -21,7 +21,7 @@ namespace HarmonyLibTests
 			var prefix = patchClass.GetMethod(nameof(Assets.Class11Patch.Prefix));
 			Assert.IsNotNull(prefix);
 
-			var harmonyInstance = new HarmonyLib.Harmony("test");
+			var harmonyInstance = new Harmony("test");
 			Assert.IsNotNull(harmonyInstance);
 
 			var patchResult = harmonyInstance.Patch(

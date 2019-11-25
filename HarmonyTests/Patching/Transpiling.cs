@@ -35,7 +35,7 @@ namespace HarmonyLibTests.Patching
 			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(Transpiling.TestTranspiler));
 			Assert.IsNotNull(transpiler);
 
-			var instance = new HarmonyLib.Harmony("test-exception1");
+			var instance = new Harmony("test-exception1");
 			instance.Patch(original, null, null, new HarmonyMethod(transpiler));
 			Assert.IsNotNull(savedInstructions);
 			Assert.AreEqual(savedInstructions.Length, codeLength);

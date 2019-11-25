@@ -25,7 +25,7 @@ namespace HarmonyLib
 
 		static FileLog()
 		{
-			logPath = /*Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar +*/ "harmony.log.txt";
+			logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + "harmony.log.txt";
 		}
 
 		static string IndentString()
