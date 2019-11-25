@@ -1,16 +1,44 @@
 version: 1.0.{build}
 
-#########################################################################
-### TODO: this fails because AppVeyor has no Visual Studio 2019 image yet
-#########################################################################
-
 max_jobs: 1
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 
+environment:
+  matrix:
+    - targetframework: net35
+    - targetframework: net45
+    - targetframework: net472
+    - targetframework: net48
+    - targetframework: netcoreapp3.0
+
 before_build:
-- nuget restore
+- dotnet --version
 - dotnet restore
+
+matrix:
+  allow_failures:
+    # TODO: Remove this when netcoreapp3.0 works and unit tests for it succeed.
+    - targetframework: netcoreapp3.0
+
+for:
+  -
+    # dotnet test currently doesn't work for .NET Framework 3.5, because Microsoft.NETFramework.ReferenceAssemblies
+    # doesn't have a build for it yet: https://github.com/dotnet/core-sdk/issues/2022
+    matrix:
+      only:
+        - targetframework: net35
+    test_script:
+      - cmd: nunit3-console.exe HarmonyTests/bin/Release/%targetframework%/HarmonyTests.dll --inprocess --result=results.xml;format=AppVeyor
+  -
+    matrix:
+      except:
+        - targetframework: net35
+    test_script:
+    - cmd: cd HarmonyTests
+    - cmd: nuget install Appveyor.TestLogger -Version 2.0.0
+    - cmd: cd ..
+    - cmd: dotnet test HarmonyTests --framework %targetframework% --test-adapter-path:. --logger:Appveyor
 
 artifacts:
 - path: 'Harmony\bin\Release\Lib.Harmony.*.nupkg'
