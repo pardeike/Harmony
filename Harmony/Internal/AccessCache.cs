@@ -19,7 +19,7 @@ namespace HarmonyLib
 			}
 			if (fieldsByType.TryGetValue(name, out var field) == false)
 			{
-				field = AccessTools.DeclaredField(type, name);
+				field = AccessTools.Field(type, name);
 				fieldsByType.Add(name, field);
 			}
 			return field;
@@ -34,7 +34,7 @@ namespace HarmonyLib
 			}
 			if (propertiesByType.TryGetValue(name, out var property) == false)
 			{
-				property = AccessTools.DeclaredProperty(type, name);
+				property = AccessTools.Property(type, name);
 				propertiesByType.Add(name, property);
 			}
 			return property;

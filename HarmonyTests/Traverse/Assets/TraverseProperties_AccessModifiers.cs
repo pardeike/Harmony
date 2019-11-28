@@ -19,7 +19,7 @@ namespace HarmonyLibTests.Assets
 		}
 
 		string _basePropertyField2;
-		protected virtual string BaseProperty2
+		protected string BaseProperty2
 		{
 			get => _basePropertyField2;
 			set => _basePropertyField2 = value;

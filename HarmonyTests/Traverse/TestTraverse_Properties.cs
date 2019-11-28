@@ -14,8 +14,11 @@ namespace HarmonyLibTests
 		{
 			var instance = new TraverseProperties_AccessModifiers(TraverseProperties.testStrings);
 
-			var trv = Traverse.Create(instance).Property(TraverseProperties.propertyNames[0]);
-			Assert.AreEqual(TraverseProperties.testStrings[0], trv.ToString());
+			for (var i = 0; i < TraverseProperties.testStrings.Length; i++)
+			{
+				var trv = Traverse.Create(instance).Property(TraverseProperties.propertyNames[i]);
+				Assert.AreEqual(TraverseProperties.testStrings[i], trv.ToString());
+			}
 		}
 
 		// Traverse.GetValue() should return the value of a traversed property
@@ -32,17 +35,8 @@ namespace HarmonyLibTests
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
 				Assert.IsNotNull(ptrv);
-				if (name == "BaseProperty2")
-				{
-					// BaseProperty2 is only defined in base class
-					Assert.IsNull(ptrv.GetValue());
-					Assert.IsNull(ptrv.GetValue<string>());
-				}
-				else
-				{
-					Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
-					Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
-				}
+				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue());
+				Assert.AreEqual(TraverseProperties.testStrings[i], ptrv.GetValue<string>());
 			}
 		}
 
@@ -68,19 +62,9 @@ namespace HarmonyLibTests
 				ptrv.SetValue(newValue);
 
 				// after
-				if (name == "BaseProperty2")
-				{
-					// BaseProperty2 is only defined in base class
-					Assert.AreEqual(TraverseProperties.testStrings[i], instance.GetTestProperty(i));
-					Assert.IsNull(ptrv.GetValue());
-					Assert.IsNull(ptrv.GetValue<string>());
-				}
-				else
-				{
-					Assert.AreEqual(newValue, instance.GetTestProperty(i));
-					Assert.AreEqual(newValue, ptrv.GetValue());
-					Assert.AreEqual(newValue, ptrv.GetValue<string>());
-				}
+				Assert.AreEqual(newValue, instance.GetTestProperty(i));
+				Assert.AreEqual(newValue, ptrv.GetValue());
+				Assert.AreEqual(newValue, ptrv.GetValue<string>());
 			}
 		}
 	}
