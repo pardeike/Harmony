@@ -561,7 +561,7 @@ namespace HarmonyLib
 							else
 							{
 								instruction.operand = lvi;
-								instruction.argument = variables[lvi.LocalIndex];
+								instruction.argument = variables?[lvi.LocalIndex] ?? lvi;
 							}
 						}
 						else
@@ -583,7 +583,7 @@ namespace HarmonyLib
 							else
 							{
 								instruction.operand = lvi;
-								instruction.argument = variables[lvi.LocalIndex];
+								instruction.argument = variables?[lvi.LocalIndex] ?? lvi;
 							}
 						}
 						else

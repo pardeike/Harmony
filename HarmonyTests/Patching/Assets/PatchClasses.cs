@@ -553,6 +553,30 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Class12
+	{
+		readonly int count;
+
+		public Class12(int count) => this.count = count;
+
+		public List<string> FizzBuzz()
+		{
+			var output = new List<string>(count);
+			for (var i = 1; i <= count; i++)
+			{
+				if (i % 15 == 0)
+					output.Add("FizzBuzz");
+				else if (i % 3 == 0)
+					output.Add("Fizz");
+				else if (i % 5 == 0)
+					output.Add("Buzz");
+				else
+					output.Add(i.ToString());
+			}
+			return output;
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter
