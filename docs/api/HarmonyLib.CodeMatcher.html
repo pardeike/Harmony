@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class CodeMatcher
    ">
-    <meta name="generator" content="docfx 2.42.3.0">
+    <meta name="generator" content="docfx 2.48.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -81,11 +81,35 @@
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">CodeMatcher</span></div>
   </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
   <h5 id="HarmonyLib_CodeMatcher_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class CodeMatcher : object</code></pre>
+    <pre><code class="lang-csharp hljs">public class CodeMatcher</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -107,13 +131,13 @@
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher__ctor_IEnumerable_HarmonyLib_CodeInstruction__ILGenerator_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.%23ctor(IEnumerable%7BHarmonyLib.CodeInstruction%7D%2CILGenerator)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher__ctor_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__System_Reflection_Emit_ILGenerator_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.%23ctor(System.Collections.Generic.IEnumerable%7BHarmonyLib.CodeInstruction%7D%2CSystem.Reflection.Emit.ILGenerator)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L178">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher__ctor_" data-uid="HarmonyLib.CodeMatcher.#ctor*"></a>
-  <h4 id="HarmonyLib_CodeMatcher__ctor_IEnumerable_HarmonyLib_CodeInstruction__ILGenerator_" data-uid="HarmonyLib.CodeMatcher.#ctor(IEnumerable{HarmonyLib.CodeInstruction},ILGenerator)">CodeMatcher(IEnumerable&lt;CodeInstruction&gt;, ILGenerator)</h4>
+  <h4 id="HarmonyLib_CodeMatcher__ctor_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__System_Reflection_Emit_ILGenerator_" data-uid="HarmonyLib.CodeMatcher.#ctor(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},System.Reflection.Emit.ILGenerator)">CodeMatcher(IEnumerable&lt;CodeInstruction&gt;, ILGenerator)</h4>
   <div class="markdown level1 summary"><p>Creates a code matcher from an enumeration of instructions</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -132,13 +156,13 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><span class="parametername">instructions</span></td>
         <td><p>The instructions (transpiler argument)</p>
 </td>
       </tr>
       <tr>
-        <td><span class="xref">ILGenerator</span></td>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
         <td><span class="parametername">generator</span></td>
         <td><p>An optional IL generator</p>
 </td>
@@ -173,7 +197,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
         <td><p>The blocks</p>
 </td>
       </tr>
@@ -301,7 +325,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<span class="xref">Label</span>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
         <td><p>The labels</p>
 </td>
       </tr>
@@ -365,7 +389,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">OpCode</span></td>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><p>The opcode</p>
 </td>
       </tr>
@@ -471,13 +495,13 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_AddLabels_IEnumerable_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.AddLabels(IEnumerable%7BLabel%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_AddLabels_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.AddLabels(System.Collections.Generic.IEnumerable%7BSystem.Reflection.Emit.Label%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L377">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_AddLabels_" data-uid="HarmonyLib.CodeMatcher.AddLabels*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_AddLabels_IEnumerable_Label__" data-uid="HarmonyLib.CodeMatcher.AddLabels(IEnumerable{Label})">AddLabels(IEnumerable&lt;Label&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_AddLabels_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.AddLabels(System.Collections.Generic.IEnumerable{System.Reflection.Emit.Label})">AddLabels(IEnumerable&lt;Label&gt;)</h4>
   <div class="markdown level1 summary"><p>Adds an enumeration of labels to current position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -496,7 +520,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">Label</span>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
         <td><span class="parametername">labels</span></td>
         <td><p>The labels</p>
 </td>
@@ -521,13 +545,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_AddLabelsAt_System_Int32_IEnumerable_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.AddLabelsAt(System.Int32%2CIEnumerable%7BLabel%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_AddLabelsAt_System_Int32_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.AddLabelsAt(System.Int32%2CSystem.Collections.Generic.IEnumerable%7BSystem.Reflection.Emit.Label%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L388">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_AddLabelsAt_" data-uid="HarmonyLib.CodeMatcher.AddLabelsAt*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_AddLabelsAt_System_Int32_IEnumerable_Label__" data-uid="HarmonyLib.CodeMatcher.AddLabelsAt(System.Int32,IEnumerable{Label})">AddLabelsAt(Int32, IEnumerable&lt;Label&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_AddLabelsAt_System_Int32_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.AddLabelsAt(System.Int32,System.Collections.Generic.IEnumerable{System.Reflection.Emit.Label})">AddLabelsAt(Int32, IEnumerable&lt;Label&gt;)</h4>
   <div class="markdown level1 summary"><p>Adds an enumeration of labels at a position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -552,7 +576,7 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">Label</span>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
         <td><span class="parametername">labels</span></td>
         <td><p>The labels</p>
 </td>
@@ -659,13 +683,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_CreateLabel_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.CreateLabel(Label%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_CreateLabel_System_Reflection_Emit_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.CreateLabel(System.Reflection.Emit.Label%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L354">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_CreateLabel_" data-uid="HarmonyLib.CodeMatcher.CreateLabel*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_CreateLabel_Label__" data-uid="HarmonyLib.CodeMatcher.CreateLabel(Label@)">CreateLabel(out Label)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_CreateLabel_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.CreateLabel(System.Reflection.Emit.Label@)">CreateLabel(out Label)</h4>
   <div class="markdown level1 summary"><p>Creates a label at current position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -684,7 +708,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Label</span></td>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
         <td><span class="parametername">label</span></td>
         <td><p>[out] The label</p>
 </td>
@@ -709,13 +733,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_CreateLabelAt_System_Int32_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.CreateLabelAt(System.Int32%2CLabel%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_CreateLabelAt_System_Int32_System_Reflection_Emit_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.CreateLabelAt(System.Int32%2CSystem.Reflection.Emit.Label%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L366">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_CreateLabelAt_" data-uid="HarmonyLib.CodeMatcher.CreateLabelAt*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_CreateLabelAt_System_Int32_Label__" data-uid="HarmonyLib.CodeMatcher.CreateLabelAt(System.Int32,Label@)">CreateLabelAt(Int32, out Label)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_CreateLabelAt_System_Int32_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.CreateLabelAt(System.Int32,System.Reflection.Emit.Label@)">CreateLabelAt(Int32, out Label)</h4>
   <div class="markdown level1 summary"><p>Creates a label at a position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -740,7 +764,7 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">Label</span></td>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
         <td><span class="parametername">label</span></td>
         <td><p>[out] The new label</p>
 </td>
@@ -765,13 +789,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_DistinctLabels_IEnumerable_HarmonyLib_CodeInstruction__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.DistinctLabels(IEnumerable%7BHarmonyLib.CodeInstruction%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_DistinctLabels_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable%7BHarmonyLib.CodeInstruction%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L265">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_DistinctLabels_" data-uid="HarmonyLib.CodeMatcher.DistinctLabels*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_DistinctLabels_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.DistinctLabels(IEnumerable{HarmonyLib.CodeInstruction})">DistinctLabels(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_DistinctLabels_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">DistinctLabels(IEnumerable&lt;CodeInstruction&gt;)</h4>
   <div class="markdown level1 summary"><p>Gets a list of all distinct labels</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -790,7 +814,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><span class="parametername">instructions</span></td>
         <td><p>The instructions (transpiler argument)</p>
 </td>
@@ -807,7 +831,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<span class="xref">Label</span>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
         <td><p>A list of Labels</p>
 </td>
       </tr>
@@ -897,13 +921,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_Insert_IEnumerable_HarmonyLib_CodeInstruction__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.Insert(IEnumerable%7BHarmonyLib.CodeInstruction%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_Insert_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.Insert(System.Collections.Generic.IEnumerable%7BHarmonyLib.CodeInstruction%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L421">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_Insert_" data-uid="HarmonyLib.CodeMatcher.Insert*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_Insert_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.Insert(IEnumerable{HarmonyLib.CodeInstruction})">Insert(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_Insert_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.Insert(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">Insert(IEnumerable&lt;CodeInstruction&gt;)</h4>
   <div class="markdown level1 summary"><p>Inserts an enumeration of instructions</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -922,7 +946,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><span class="parametername">instructions</span></td>
         <td><p>The instructions</p>
 </td>
@@ -997,13 +1021,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_InsertAndAdvance_IEnumerable_HarmonyLib_CodeInstruction__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.InsertAndAdvance(IEnumerable%7BHarmonyLib.CodeInstruction%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_InsertAndAdvance_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.InsertAndAdvance(System.Collections.Generic.IEnumerable%7BHarmonyLib.CodeInstruction%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L457">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_InsertAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertAndAdvance*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_InsertAndAdvance_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.InsertAndAdvance(IEnumerable{HarmonyLib.CodeInstruction})">InsertAndAdvance(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_InsertAndAdvance_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.InsertAndAdvance(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">InsertAndAdvance(IEnumerable&lt;CodeInstruction&gt;)</h4>
   <div class="markdown level1 summary"><p>Inserts an enumeration of instructions and advances the position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1022,7 +1046,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><span class="parametername">instructions</span></td>
         <td><p>The instructions</p>
 </td>
@@ -1047,13 +1071,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_InsertBranch_OpCode_System_Int32_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.InsertBranch(OpCode%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_InsertBranch_System_Reflection_Emit_OpCode_System_Int32_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.InsertBranch(System.Reflection.Emit.OpCode%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L432">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_InsertBranch_" data-uid="HarmonyLib.CodeMatcher.InsertBranch*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_InsertBranch_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranch(OpCode,System.Int32)">InsertBranch(OpCode, Int32)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_InsertBranch_System_Reflection_Emit_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranch(System.Reflection.Emit.OpCode,System.Int32)">InsertBranch(OpCode, Int32)</h4>
   <div class="markdown level1 summary"><p>Inserts a branch</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1072,7 +1096,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">OpCode</span></td>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
         <td><p>The branch opcode</p>
 </td>
@@ -1103,13 +1127,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_InsertBranchAndAdvance_OpCode_System_Int32_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.InsertBranchAndAdvance(OpCode%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_InsertBranchAndAdvance_System_Reflection_Emit_OpCode_System_Int32_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.InsertBranchAndAdvance(System.Reflection.Emit.OpCode%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L468">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_InsertBranchAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAndAdvance*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_InsertBranchAndAdvance_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAndAdvance(OpCode,System.Int32)">InsertBranchAndAdvance(OpCode, Int32)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_InsertBranchAndAdvance_System_Reflection_Emit_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAndAdvance(System.Reflection.Emit.OpCode,System.Int32)">InsertBranchAndAdvance(OpCode, Int32)</h4>
   <div class="markdown level1 summary"><p>Inserts a branch and advances the position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1128,7 +1152,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">OpCode</span></td>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
         <td><p>The branch opcode</p>
 </td>
@@ -1233,7 +1257,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><p>A list of instructions</p>
 </td>
       </tr>
@@ -1265,7 +1289,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><p>A list of instructions</p>
 </td>
       </tr>
@@ -1315,7 +1339,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><p>A list of instructions</p>
 </td>
       </tr>
@@ -1371,7 +1395,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><p>A list of instructions</p>
 </td>
       </tr>
@@ -1427,7 +1451,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
         <td><p>A list of instructions</p>
 </td>
       </tr>
@@ -1791,13 +1815,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_Repeat_Action_HarmonyLib_CodeMatcher__Action_System_String__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.Repeat(Action%7BHarmonyLib.CodeMatcher%7D%2CAction%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_Repeat_System_Action_HarmonyLib_CodeMatcher__System_Action_System_String__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.Repeat(System.Action%7BHarmonyLib.CodeMatcher%7D%2CSystem.Action%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L616">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_Repeat_" data-uid="HarmonyLib.CodeMatcher.Repeat*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_Repeat_Action_HarmonyLib_CodeMatcher__Action_System_String__" data-uid="HarmonyLib.CodeMatcher.Repeat(Action{HarmonyLib.CodeMatcher},Action{System.String})">Repeat(Action&lt;CodeMatcher&gt;, Action&lt;String&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_Repeat_System_Action_HarmonyLib_CodeMatcher__System_Action_System_String__" data-uid="HarmonyLib.CodeMatcher.Repeat(System.Action{HarmonyLib.CodeMatcher},System.Action{System.String})">Repeat(Action&lt;CodeMatcher&gt;, Action&lt;String&gt;)</h4>
   <div class="markdown level1 summary"><p>Repeats a match action until boundaries are met</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1816,13 +1840,13 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Action</span>&lt;<a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a>&gt;</td>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a>&gt;</td>
         <td><span class="parametername">matchAction</span></td>
         <td><p>The match action</p>
 </td>
       </tr>
       <tr>
-        <td><span class="xref">Action</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.String</span>&gt;</td>
         <td><span class="parametername">notFoundAction</span></td>
         <td><p>An optional action that is executed when no match is found</p>
 </td>
@@ -1847,13 +1871,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_ReportFailure_MethodBase_Action_System_String__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.ReportFailure(MethodBase%2CAction%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_ReportFailure_System_Reflection_MethodBase_System_Action_System_String__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.ReportFailure(System.Reflection.MethodBase%2CSystem.Action%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L275">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_ReportFailure_" data-uid="HarmonyLib.CodeMatcher.ReportFailure*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_ReportFailure_MethodBase_Action_System_String__" data-uid="HarmonyLib.CodeMatcher.ReportFailure(MethodBase,Action{System.String})">ReportFailure(MethodBase, Action&lt;String&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_ReportFailure_System_Reflection_MethodBase_System_Action_System_String__" data-uid="HarmonyLib.CodeMatcher.ReportFailure(System.Reflection.MethodBase,System.Action{System.String})">ReportFailure(MethodBase, Action&lt;String&gt;)</h4>
   <div class="markdown level1 summary"><p>Reports a failure</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1872,13 +1896,13 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">MethodBase</span></td>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
         <td><span class="parametername">method</span></td>
         <td><p>The method involved</p>
 </td>
       </tr>
       <tr>
-        <td><span class="xref">Action</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.String</span>&gt;</td>
         <td><span class="parametername">logger</span></td>
         <td><p>The logger</p>
 </td>
@@ -1903,13 +1927,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SearchBack_Func_HarmonyLib_CodeInstruction_System_Boolean__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SearchBack(Func%7BHarmonyLib.CodeInstruction%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SearchBack_System_Func_HarmonyLib_CodeInstruction_System_Boolean__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SearchBack(System.Func%7BHarmonyLib.CodeInstruction%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L559">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_SearchBack_" data-uid="HarmonyLib.CodeMatcher.SearchBack*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_SearchBack_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.SearchBack(Func{HarmonyLib.CodeInstruction,System.Boolean})">SearchBack(Func&lt;CodeInstruction, Boolean&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_SearchBack_System_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.SearchBack(System.Func{HarmonyLib.CodeInstruction,System.Boolean})">SearchBack(Func&lt;CodeInstruction, Boolean&gt;)</h4>
   <div class="markdown level1 summary"><p>Searches backwards with a predicate and reverses position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1928,7 +1952,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
         <td><span class="parametername">predicate</span></td>
         <td><p>The predicate</p>
 </td>
@@ -1953,13 +1977,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SearchForward_Func_HarmonyLib_CodeInstruction_System_Boolean__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SearchForward(Func%7BHarmonyLib.CodeInstruction%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SearchForward_System_Func_HarmonyLib_CodeInstruction_System_Boolean__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SearchForward(System.Func%7BHarmonyLib.CodeInstruction%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L550">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_SearchForward_" data-uid="HarmonyLib.CodeMatcher.SearchForward*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_SearchForward_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.SearchForward(Func{HarmonyLib.CodeInstruction,System.Boolean})">SearchForward(Func&lt;CodeInstruction, Boolean&gt;)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_SearchForward_System_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.SearchForward(System.Func{HarmonyLib.CodeInstruction,System.Boolean})">SearchForward(Func&lt;CodeInstruction, Boolean&gt;)</h4>
   <div class="markdown level1 summary"><p>Searches forward with a predicate and advances position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1978,7 +2002,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
         <td><span class="parametername">predicate</span></td>
         <td><p>The predicate</p>
 </td>
@@ -2003,13 +2027,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_Set_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.Set(OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_Set_System_Reflection_Emit_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.Set(System.Reflection.Emit.OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L309">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_Set_" data-uid="HarmonyLib.CodeMatcher.Set*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_Set_OpCode_System_Object_" data-uid="HarmonyLib.CodeMatcher.Set(OpCode,System.Object)">Set(OpCode, Object)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_Set_System_Reflection_Emit_OpCode_System_Object_" data-uid="HarmonyLib.CodeMatcher.Set(System.Reflection.Emit.OpCode,System.Object)">Set(OpCode, Object)</h4>
   <div class="markdown level1 summary"><p>Sets opcode and operand at current position</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -2028,7 +2052,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">OpCode</span></td>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
         <td><p>The opcode</p>
 </td>
@@ -2059,13 +2083,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SetAndAdvance_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SetAndAdvance(OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SetAndAdvance_System_Reflection_Emit_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SetAndAdvance(System.Reflection.Emit.OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L321">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_SetAndAdvance_" data-uid="HarmonyLib.CodeMatcher.SetAndAdvance*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_SetAndAdvance_OpCode_System_Object_" data-uid="HarmonyLib.CodeMatcher.SetAndAdvance(OpCode,System.Object)">SetAndAdvance(OpCode, Object)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_SetAndAdvance_System_Reflection_Emit_OpCode_System_Object_" data-uid="HarmonyLib.CodeMatcher.SetAndAdvance(System.Reflection.Emit.OpCode,System.Object)">SetAndAdvance(OpCode, Object)</h4>
   <div class="markdown level1 summary"><p>Sets opcode and operand at current position and advances</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -2084,7 +2108,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">OpCode</span></td>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
         <td><p>The opcode</p>
 </td>
@@ -2215,13 +2239,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SetJumpTo_OpCode_System_Int32_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SetJumpTo(OpCode%2CSystem.Int32%2CLabel%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SetJumpTo_System_Reflection_Emit_OpCode_System_Int32_System_Reflection_Emit_Label__.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SetJumpTo(System.Reflection.Emit.OpCode%2CSystem.Int32%2CSystem.Reflection.Emit.Label%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L400">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_SetJumpTo_" data-uid="HarmonyLib.CodeMatcher.SetJumpTo*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_SetJumpTo_OpCode_System_Int32_Label__" data-uid="HarmonyLib.CodeMatcher.SetJumpTo(OpCode,System.Int32,Label@)">SetJumpTo(OpCode, Int32, out Label)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_SetJumpTo_System_Reflection_Emit_OpCode_System_Int32_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.SetJumpTo(System.Reflection.Emit.OpCode,System.Int32,System.Reflection.Emit.Label@)">SetJumpTo(OpCode, Int32, out Label)</h4>
   <div class="markdown level1 summary"><p>Sets jump to</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -2240,7 +2264,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">OpCode</span></td>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
         <td><p>Branch instruction</p>
 </td>
@@ -2252,7 +2276,7 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">Label</span></td>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
         <td><span class="parametername">label</span></td>
         <td><p>[out] The created label</p>
 </td>
@@ -2277,13 +2301,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SetOpcodeAndAdvance_OpCode_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SetOpcodeAndAdvance(OpCode)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeMatcher_SetOpcodeAndAdvance_System_Reflection_Emit_OpCode_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeMatcher.SetOpcodeAndAdvance(System.Reflection.Emit.OpCode)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/CodeMatcher.cs/#L332">View Source</a>
   </span>
   <a id="HarmonyLib_CodeMatcher_SetOpcodeAndAdvance_" data-uid="HarmonyLib.CodeMatcher.SetOpcodeAndAdvance*"></a>
-  <h4 id="HarmonyLib_CodeMatcher_SetOpcodeAndAdvance_OpCode_" data-uid="HarmonyLib.CodeMatcher.SetOpcodeAndAdvance(OpCode)">SetOpcodeAndAdvance(OpCode)</h4>
+  <h4 id="HarmonyLib_CodeMatcher_SetOpcodeAndAdvance_System_Reflection_Emit_OpCode_" data-uid="HarmonyLib.CodeMatcher.SetOpcodeAndAdvance(System.Reflection.Emit.OpCode)">SetOpcodeAndAdvance(OpCode)</h4>
   <div class="markdown level1 summary"><p>Sets opcode at current position and advances</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -2302,7 +2326,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">OpCode</span></td>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
         <td><p>The opcode</p>
 </td>
