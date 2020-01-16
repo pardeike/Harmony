@@ -19,6 +19,7 @@
 	</a>
 </p>
 <p align="center">
+	<img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Update%20documentation" />
 	<img src="https://img.shields.io/travis/com/pardeike/Harmony/master.svg?logo=travis&label=travis:master" /> 
 	<img src="https://img.shields.io/appveyor/ci/pardeike/Harmony/master.svg?logo=appveyor&label=appveyor:master" /> 
 </p>
