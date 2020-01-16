@@ -29,7 +29,7 @@ namespace HarmonyLibTests.IL
 				AssertAreEqual(instrNoGen.operand, instrHasGen.operand, "operand", i, instrNoGen);
 				CollectionAssert.AreEqual(instrNoGen.labels, instrHasGen.labels, "labels @ {0}", i);
 				CollectionAssert.AreEqual(instrNoGen.blocks, instrHasGen.blocks, "blocks @ {0}", i);
-				AssertAreEqual(instrNoGen.operand, instrHasGen.operand, "argument", i, instrNoGen);
+				AssertAreEqual(instrNoGen.argument, instrHasGen.argument, "argument", i, instrNoGen);
 
 				// The only difference between w/o gen and w/ gen is this:
 				var operandType = instrNoGen.opcode.OperandType;
