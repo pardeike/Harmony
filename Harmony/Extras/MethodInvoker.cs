@@ -4,49 +4,87 @@ using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
-	// Based on https://www.codeproject.com/Articles/14593/A-General-Fast-Method-Invoker
+	// Based on https://github.com/MonoMod/MonoMod/blob/master/MonoMod.Utils/FastReflectionHelper.cs
 
 	/// <summary>A delegate to invoke a method</summary>
 	/// <param name="target">The instance</param>
 	/// <param name="parameters">The method parameters</param>
 	/// <returns>The method result</returns>
-	///
 	public delegate object FastInvokeHandler(object target, object[] parameters);
 
 	/// <summary>A helper class to invoke method with delegates</summary>
-	public static class MethodInvoker
+	public class MethodInvoker
 	{
 		/// <summary>Creates a fast invocation handler from a method and a module</summary>
 		/// <param name="methodInfo">The method to invoke</param>
 		/// <param name="module">The module context</param>
 		/// <returns>The fast invocation handler</returns>
-		///
-		public static FastInvokeHandler GetHandler(DynamicMethod methodInfo, Module module)
+		public static FastInvokeHandler GetHandler(MethodInfo methodInfo, Module module)
 		{
-			return Handler(methodInfo, module);
+			return defaultInstance.Handler(methodInfo, module);
+		}
+
+		/// <summary>Creates a fast invocation handler from a method and its declaring type's module</summary>
+		/// <param name="methodInfo">The method to invoke</param>
+		/// <returns>The fast invocation handler</returns>
+		public static FastInvokeHandler GetHandler(MethodInfo methodInfo)
+		{
+			return defaultInstance.Handler(methodInfo, methodInfo.DeclaringType.Module);
+		}
+
+		static readonly MethodInvoker defaultInstance = new MethodInvoker();
+
+		readonly bool directBoxValueAccess;
+
+		/// <summary>Creates a MethodInvoker that can create a fast invocation handler</summary>
+		/// <param name="directBoxValueAccess">
+		/// <para>
+		/// This option controls how value types passed by reference (e.g. ref int, out my_struct) are handled in the arguments array
+		/// passed to the fast invocation handler.
+		/// Since the arguments array is an object array, any value types contained within it are actually references to a boxed value object.
+		/// Like any other object, there can be other references to such boxed value objects, other than the reference within the arguments array.
+		/// <example>For example,
+		/// <code>
+		/// var val = 5;
+		/// var box = (object)val;
+		/// var arr = new object[] { box };
+		/// handler(arr); // for a method with parameter signature: ref/out/in int
+		/// </code>
+		/// </example>
+		/// </para>
+		/// <para>
+		/// If <c>directBoxValueAccess</c> is <c>true</c>, the boxed value object is accessed (and potentially updated) directly when the handler is called,
+		/// such that all references to the boxed object reflect the potentially updated value.
+		/// In the above example, if the method associated with the handler updates the passed (boxed) value to 10, both <c>box</c> and <c>arr[0]</c>
+		/// now reflect the value 10. Note that the original <c>val</c> is not updated, since boxing always copies the value into the new boxed value object.
+		/// </para>
+		/// <para>
+		/// If <c>directBoxValueAccess</c> is <c>false</c> (default), the boxed value object in the arguments array is replaced with a "reboxed" value object,
+		/// such that potential updates to the value are reflected only in the arguments array.
+		/// In the above example, if the method associated with the handler updates the passed (boxed) value to 10, only <c>arr[0]</c> now reflects the value 10.
+		/// </para>
+		/// </param>
+		public MethodInvoker(bool directBoxValueAccess = false)
+		{
+			this.directBoxValueAccess = directBoxValueAccess;
 		}
 
 		/// <summary>Creates a fast invocation handler from a method and a module</summary>
 		/// <param name="methodInfo">The method to invoke</param>
+		/// <param name="module">The module context</param>
 		/// <returns>The fast invocation handler</returns>
-		///
-		public static FastInvokeHandler GetHandler(MethodInfo methodInfo)
-		{
-			return Handler(methodInfo, methodInfo.DeclaringType.Module);
-		}
-
-		static FastInvokeHandler Handler(MethodInfo methodInfo, Module module, bool directBoxValueAccess = false)
+		public FastInvokeHandler Handler(MethodInfo methodInfo, Module module)
 		{
 			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name + "_" + (directBoxValueAccess ? "direct" : "indirect"), typeof(object), new Type[] { typeof(object), typeof(object[]) }, module, true);
 			var il = dynamicMethod.GetILGenerator();
 
 			if (!methodInfo.IsStatic)
 			{
-				il.Emit(OpCodes.Ldarg_0);
+				Emit(il, OpCodes.Ldarg_0);
 				EmitUnboxIfNeeded(il, methodInfo.DeclaringType);
 			}
 
-			var generateLocalBoxValuePtr = true;
+			var generateLocalBoxObject = true;
 			var ps = methodInfo.GetParameters();
 			for (var i = 0; i < ps.Length; i++)
 			{
@@ -59,97 +97,102 @@ namespace HarmonyLib
 				if (argIsByRef && argIsValueType && !directBoxValueAccess)
 				{
 					// used later when storing back the reference to the new box in the array.
-					il.Emit(OpCodes.Ldarg_1);
+					Emit(il, OpCodes.Ldarg_1);
 					EmitFastInt(il, i);
 				}
 
-				il.Emit(OpCodes.Ldarg_1);
+				Emit(il, OpCodes.Ldarg_1);
 				EmitFastInt(il, i);
 
 				if (argIsByRef && !argIsValueType)
 				{
-					il.Emit(OpCodes.Ldelema, typeof(object));
+					Emit(il, OpCodes.Ldelema, typeof(object));
 				}
 				else
 				{
-					il.Emit(OpCodes.Ldelem_Ref);
+					Emit(il, OpCodes.Ldelem_Ref);
 					if (argIsValueType)
 					{
 						if (!argIsByRef || !directBoxValueAccess)
 						{
 							// if !directBoxValueAccess, create a new box if required
-							il.Emit(OpCodes.Unbox_Any, argType);
+							Emit(il, OpCodes.Unbox_Any, argType);
 							if (argIsByRef)
 							{
-								// box back
-								il.Emit(OpCodes.Box, argType);
+								// the following ensures that any references to the boxed value still retain the same boxed value,
+								// and that only the boxed value within the parameters array can be changed
+								// this is done by "reboxing" the value and replacing the original boxed value in the parameters array with this reboxed value
 
-								// store new box value address to local 0
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Unbox, argType);
-								if (generateLocalBoxValuePtr)
+								// box back
+								Emit(il, OpCodes.Box, argType);
+
+								// for later stelem.ref
+								Emit(il, OpCodes.Dup);
+
+								// store the "rebox" in an object local
+								if (generateLocalBoxObject)
 								{
-									generateLocalBoxValuePtr = false;
-									// Yes, you're seeing this right - a local of type void* to store the box value address!
-									il.DeclareLocal(typeof(void*), true);
+									generateLocalBoxObject = false;
+									il.DeclareLocal(typeof(object), false);
 								}
-								il.Emit(OpCodes.Stloc_0);
+								Emit(il, OpCodes.Stloc_0);
 
 								// arr and index set up already
-								il.Emit(OpCodes.Stelem_Ref);
+								Emit(il, OpCodes.Stelem_Ref);
 
-								// load address back to stack
-								il.Emit(OpCodes.Ldloc_0);
+								// load the "rebox" and emit unbox (get unboxed value address)
+								Emit(il, OpCodes.Ldloc_0);
+								Emit(il, OpCodes.Unbox, argType);
 							}
 						}
 						else
 						{
 							// if directBoxValueAccess, emit unbox (get value address)
-							il.Emit(OpCodes.Unbox, argType);
+							Emit(il, OpCodes.Unbox, argType);
 						}
 					}
 				}
 			}
 
-#pragma warning disable XS0001
 			if (methodInfo.IsStatic)
-				il.EmitCall(OpCodes.Call, methodInfo, null);
+				EmitCall(il, OpCodes.Call, methodInfo);
 			else
-				il.EmitCall(OpCodes.Callvirt, methodInfo, null);
-#pragma warning restore XS0001
+				EmitCall(il, OpCodes.Callvirt, methodInfo);
 
 			if (methodInfo.ReturnType == typeof(void))
-				il.Emit(OpCodes.Ldnull);
+				Emit(il, OpCodes.Ldnull);
 			else
 				EmitBoxIfNeeded(il, methodInfo.ReturnType);
 
-			il.Emit(OpCodes.Ret);
+			Emit(il, OpCodes.Ret);
 
 			var invoder = (FastInvokeHandler)dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
 			return invoder;
 		}
 
-		/*static void EmitCastToReference(ILGenerator il, Type type)
-		{
-			if (type.IsValueType)
-				il.Emit(OpCodes.Unbox_Any, type);
-			else
-				il.Emit(OpCodes.Castclass, type);
-		}*/
+		/// protected for unit testing purposes only
+		protected virtual void Emit(ILGenerator il, OpCode opcode) => il.Emit(opcode);
 
-		static void EmitUnboxIfNeeded(ILGenerator il, Type type)
+		/// protected for unit testing purposes only
+		protected virtual void Emit(ILGenerator il, OpCode opcode, Type type) => il.Emit(opcode, type);
+
+		/// protected for unit testing purposes only
+		protected virtual void EmitCall(ILGenerator il, OpCode opcode, MethodInfo methodInfo) => il.EmitCall(opcode, methodInfo, null);
+
+		void EmitUnboxIfNeeded(ILGenerator il, Type type)
 		{
 			if (type.IsValueType)
-				il.Emit(OpCodes.Unbox_Any, type);
+				Emit(il, OpCodes.Unbox_Any, type);
 		}
 
-		static void EmitBoxIfNeeded(ILGenerator il, Type type)
+		void EmitBoxIfNeeded(ILGenerator il, Type type)
 		{
 			if (type.IsValueType)
-				il.Emit(OpCodes.Box, type);
+				Emit(il, OpCodes.Box, type);
 		}
 
-		static void EmitFastInt(ILGenerator il, int value)
+		/// protected for unit testing purposes only
+		protected virtual void EmitFastInt(ILGenerator il, int value)
 		{
 			switch (value)
 			{
