@@ -19,7 +19,9 @@ env:
   - netframework=net45
   - netframework=net472
   - netframework=net48
+  - netframework=netcoreapp2.0
   - netframework=netcoreapp3.0
+  - netframework=netcoreapp3.1
 
 mono:
 - latest
@@ -42,7 +44,7 @@ script:
 jobs:
   allow_failures:
     # TODO: Remove this when netcoreapp3.0 works and unit tests for it succeed.
-    - env: netframework=netcoreapp3.0
+    - env: netframework=netcoreapp2.0
   exclude:
     # dotnet test (specifically, .NET Core itself) currently doesn't work with .NET Framework 3.5, so have to use mono + nunit3-console.exe (see include below)
     - env: netframework=net35
@@ -55,7 +57,9 @@ jobs:
     - env: netframework=net48
       mono: none
     # nunit3-console.exe doesn't work with netcoreapp* target frameworks, so must use dotnet test
+    - env: netframework=netcoreapp2.0
     - env: netframework=netcoreapp3.0
+    - env: netframework=netcoreapp3.1
       mono: latest
   include:
     - os: linux

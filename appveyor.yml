@@ -10,16 +10,14 @@ environment:
     - targetframework: net45
     - targetframework: net472
     - targetframework: net48
+    - targetframework: netcoreapp2.0
+    - targetframework: netcoreapp2.1
     - targetframework: netcoreapp3.0
+    - targetframework: netcoreapp3.1
 
 before_build:
 - dotnet --version
 - dotnet restore
-
-matrix:
-  allow_failures:
-    # TODO: Remove this when netcoreapp3.0 works and unit tests for it succeed.
-    - targetframework: netcoreapp3.0
 
 for:
   -
