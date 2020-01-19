@@ -19,8 +19,7 @@ before_build:
 
 for:
   -
-    # dotnet test currently doesn't work for .NET Framework 3.5, because Microsoft.NETFramework.ReferenceAssemblies
-    # doesn't have a build for it yet: https://github.com/dotnet/core-sdk/issues/2022
+    # dotnet test currently doesn't work for .NET Framework 3.5 - see comment in .travis.yml.
     matrix:
       only:
         - targetframework: net35

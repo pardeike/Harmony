@@ -26,8 +26,8 @@ mono:
 - latest
 - none
 
-# "dotnet: 3.0" works fine for linux, but osx needs the exact version for some reason.
-dotnet: 3.0.100
+# "dotnet: 3.1" works fine for linux, but osx needs the exact version for some reason.
+dotnet: 3.1.101
 
 before_install:
   - if [ "$TRAVIS_COMMIT_MESSAGE" == "Update documentation" ]; then echo "Skipping documentation only commit" && exit; fi
