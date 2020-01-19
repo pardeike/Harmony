@@ -476,6 +476,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.GetTypes
   nameWithType: AccessTools.GetTypes
+- uid: HarmonyLib.AccessTools.GetTypesFromAssembly(System.Reflection.Assembly)
+  name: GetTypesFromAssembly(Assembly)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_GetTypesFromAssembly_System_Reflection_Assembly_
+  commentId: M:HarmonyLib.AccessTools.GetTypesFromAssembly(System.Reflection.Assembly)
+  fullName: HarmonyLib.AccessTools.GetTypesFromAssembly(System.Reflection.Assembly)
+  nameWithType: AccessTools.GetTypesFromAssembly(Assembly)
+- uid: HarmonyLib.AccessTools.GetTypesFromAssembly*
+  name: GetTypesFromAssembly
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_GetTypesFromAssembly_
+  commentId: Overload:HarmonyLib.AccessTools.GetTypesFromAssembly
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.GetTypesFromAssembly
+  nameWithType: AccessTools.GetTypesFromAssembly
 - uid: HarmonyLib.AccessTools.GetUnderlyingType(System.Reflection.MemberInfo)
   name: GetUnderlyingType(MemberInfo)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_GetUnderlyingType_System_Reflection_MemberInfo_
