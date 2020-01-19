@@ -100,8 +100,9 @@ namespace HarmonyLib
 				.Do(method => potentialMethodsToUpgrade.Add(MethodKey(method), method));
 
 			var otherHarmonyAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-					.Where(assembly => IsHarmonyAssembly(assembly) && assembly != ourAssembly)
-					.ToList();
+				.Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") == false)
+				.Where(assembly => IsHarmonyAssembly(assembly) && assembly != ourAssembly)
+				.ToList();
 
 			if (Harmony.DEBUG)
 			{

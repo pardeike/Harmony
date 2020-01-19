@@ -361,7 +361,7 @@ namespace HarmonyLib
 							var emitMethod = EmitMethodForType(operand.GetType());
 							if (emitMethod == null) throw new Exception("Unknown Emit argument type " + operand.GetType() + " in " + codeInstruction);
 							if (Harmony.DEBUG) FileLog.LogBuffered(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
-							emitMethod.Invoke(generator, new object[] { code, operand });
+							_ = emitMethod.Invoke(generator, new object[] { code, operand });
 							break;
 					}
 				}

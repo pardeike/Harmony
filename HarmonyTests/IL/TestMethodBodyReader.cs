@@ -35,7 +35,11 @@ namespace HarmonyLibTests.IL
 				var operandType = instrNoGen.opcode.OperandType;
 				if ((operandType == OperandType.ShortInlineVar || operandType == OperandType.InlineVar) && !(instrNoGen.argument is null))
 				{
-					Assert.AreEqual(typeof(LocalVariableInfo), instrNoGen.argument.GetType(), "w/o generator argument type @ {0} ({1})", i, instrNoGen);
+#if NETCOREAPP3_0 || NETCOREAPP3_1
+					Assert.AreEqual("System.Reflection.RuntimeLocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);
+#else
+					Assert.AreEqual("System.Reflection.LocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);
+#endif
 					Assert.AreEqual(typeof(LocalBuilder), instrHasGen.argument.GetType(), "w/ generator argument type @ {0} ({1})", i, instrNoGen);
 				}
 			}
@@ -62,7 +66,10 @@ namespace HarmonyLibTests.IL
 
 		struct ILInstructionOffsetComparer : IComparer
 		{
-			public int Compare(object x, object y) => ((ILInstruction)x).offset.CompareTo(((ILInstruction)y).offset);
+			public int Compare(object x, object y)
+			{
+				return ((ILInstruction)x).offset.CompareTo(((ILInstruction)y).offset);
+			}
 		}
 	}
 }

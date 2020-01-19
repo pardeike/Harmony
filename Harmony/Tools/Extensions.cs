@@ -89,8 +89,7 @@ namespace HarmonyLib
 		///
 		public static T GetValueSafe<S, T>(this Dictionary<S, T> dictionary, S key)
 		{
-			T result;
-			if (dictionary.TryGetValue(key, out result))
+			if (dictionary.TryGetValue(key, out var result))
 				return result;
 			return default;
 		}
@@ -103,8 +102,7 @@ namespace HarmonyLib
 		///
 		public static T GetTypedValue<T>(this Dictionary<string, object> dictionary, string key)
 		{
-			object result;
-			if (dictionary.TryGetValue(key, out result))
+			if (dictionary.TryGetValue(key, out var result))
 				if (result is T)
 					return (T)result;
 			return default;

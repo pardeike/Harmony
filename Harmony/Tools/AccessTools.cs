@@ -32,17 +32,30 @@ namespace HarmonyLib
 		public static Type TypeByName(string name)
 		{
 			var type = Type.GetType(name, false);
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") == false);
 			if (type == null)
-				type = AppDomain.CurrentDomain.GetAssemblies()
-					.SelectMany(x => x.GetTypes())
-					.FirstOrDefault(x => x.FullName == name);
+				type = assemblies
+					.SelectMany(a => GetTypesFromAssembly(a))
+					.FirstOrDefault(t => t.FullName == name);
 			if (type == null)
-				type = AppDomain.CurrentDomain.GetAssemblies()
-					.SelectMany(x => x.GetTypes())
-					.FirstOrDefault(x => x.Name == name);
+				type = assemblies
+					.SelectMany(a => GetTypesFromAssembly(a))
+					.FirstOrDefault(t => t.Name == name);
 			if (type == null && Harmony.DEBUG)
 				FileLog.Log("AccessTools.TypeByName: Could not find type named " + name);
 			return type;
+		}
+
+		/// <summary>Gets all type by name from a given assembly. This is a wrapper that respects different .NET versions</summary>
+		/// <param name="assembly">The assembly</param>
+		/// <returns>A Type array</returns>
+		public static Type[] GetTypesFromAssembly(Assembly assembly)
+		{
+#if NETCOREAPP3_0 || NETCOREAPP3_1
+			return assembly.DefinedTypes.ToArray();
+#else
+			return assembly.GetTypes();
+#endif
 		}
 
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non null result</summary>

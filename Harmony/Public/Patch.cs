@@ -42,7 +42,8 @@ namespace HarmonyLib
 #pragma warning disable XS0001
 			using (var streamMemory = new MemoryStream())
 			{
-				var formatter = new BinaryFormatter();
+				var surrogateSelector = PatchSurrogate.GetSelector();
+				var formatter = new BinaryFormatter() { SurrogateSelector = surrogateSelector };
 				formatter.Serialize(streamMemory, patchInfo);
 				return streamMemory.GetBuffer();
 			}
@@ -55,7 +56,8 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
-			var formatter = new BinaryFormatter { Binder = new Binder() };
+			var surrogateSelector = PatchSurrogate.GetSelector();
+			var formatter = new BinaryFormatter { SurrogateSelector = surrogateSelector, Binder = new Binder() };
 #pragma warning disable XS0001
 			var streamMemory = new MemoryStream(bytes);
 #pragma warning restore XS0001
@@ -227,19 +229,32 @@ namespace HarmonyLib
 	[Serializable]
 	public class Patch : IComparable
 	{
+		// NOTE: fields here are marked non-serialized because the class
+		// <PatchSurrogate> takes care of custom serialization
+
 		/// <summary>Zero-based index</summary>
+		[NonSerialized]
 		readonly public int index;
+
 		/// <summary>The owner (Harmony ID)</summary>
+		[NonSerialized]
 		readonly public string owner;
+
 		/// <summary>The priority</summary>
+		[NonSerialized]
 		readonly public int priority;
+
 		/// <summary>The before</summary>
+		[NonSerialized]
 		readonly public string[] before;
+
 		/// <summary>The after</summary>
+		[NonSerialized]
 		readonly public string[] after;
 
 		/// <summary>The patch method</summary>
-		readonly public MethodInfo patch;
+		[NonSerialized]
+		public MethodInfo patch;
 
 		/// <summary>Creates a patch</summary>
 		/// <param name="patch">The patch</param>

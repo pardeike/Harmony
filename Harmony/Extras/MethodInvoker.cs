@@ -133,7 +133,7 @@ namespace HarmonyLib
 								if (generateLocalBoxObject)
 								{
 									generateLocalBoxObject = false;
-									il.DeclareLocal(typeof(object), false);
+									_ = il.DeclareLocal(typeof(object), false);
 								}
 								Emit(il, OpCodes.Stloc_0);
 
@@ -171,13 +171,22 @@ namespace HarmonyLib
 		}
 
 		/// protected for unit testing purposes only
-		protected virtual void Emit(ILGenerator il, OpCode opcode) => il.Emit(opcode);
+		protected virtual void Emit(ILGenerator il, OpCode opcode)
+		{
+			il.Emit(opcode);
+		}
 
 		/// protected for unit testing purposes only
-		protected virtual void Emit(ILGenerator il, OpCode opcode, Type type) => il.Emit(opcode, type);
+		protected virtual void Emit(ILGenerator il, OpCode opcode, Type type)
+		{
+			il.Emit(opcode, type);
+		}
 
 		/// protected for unit testing purposes only
-		protected virtual void EmitCall(ILGenerator il, OpCode opcode, MethodInfo methodInfo) => il.EmitCall(opcode, methodInfo, null);
+		protected virtual void EmitCall(ILGenerator il, OpCode opcode, MethodInfo methodInfo)
+		{
+			il.EmitCall(opcode, methodInfo, null);
+		}
 
 		void EmitUnboxIfNeeded(ILGenerator il, Type type)
 		{

@@ -3,8 +3,29 @@ using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Assets
 {
-	public class OriginalException : Exception { }
-	public class ReplacedException : Exception { }
+	[Serializable]
+	public class OriginalException : Exception
+	{
+		public OriginalException() { }
+		public OriginalException(string message) : base(message) { }
+		public OriginalException(string message, Exception innerException) : base(message, innerException) { }
+		protected OriginalException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	[Serializable]
+	public class ReplacedException : Exception
+	{
+		public ReplacedException() { }
+		public ReplacedException(string message) : base(message) { }
+		public ReplacedException(string message, Exception innerException) : base(message, innerException) { }
+		protected ReplacedException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+		{
+			throw new NotImplementedException();
+		}
+	}
 
 	public class NoThrowingVoidMethod
 	{

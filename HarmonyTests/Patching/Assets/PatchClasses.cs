@@ -524,14 +524,22 @@ namespace HarmonyLibTests.Assets
 	{
 		public static bool prefixed = false;
 
+#if NETCOREAPP2_0
+		public static bool Prefix(ref string __result,  int dummy)
+		{
+			__result = "patched";
+			prefixed = true;
+			return false;
+		}
+#else
 		public static DynamicMethod Prefix(MethodBase method)
 		{
 			var dynamicMethod = new DynamicMethod(method.Name + "_Class11Patch_Prefix",
 				typeof(bool),
 				new[] { typeof(string).MakeByRefType(), typeof(int) });
 
-			dynamicMethod.DefineParameter(1, ParameterAttributes.None, "__result");
-			dynamicMethod.DefineParameter(2, ParameterAttributes.None, "dummy");
+			_ = dynamicMethod.DefineParameter(1, ParameterAttributes.None, "__result");
+			_ = dynamicMethod.DefineParameter(2, ParameterAttributes.None, "dummy");
 
 			var il = dynamicMethod.GetILGenerator();
 
@@ -551,13 +559,17 @@ namespace HarmonyLibTests.Assets
 
 			return dynamicMethod;
 		}
+#endif
 	}
 
 	public class Class12
 	{
 		readonly int count;
 
-		public Class12(int count) => this.count = count;
+		public Class12(int count)
+		{
+			this.count = count;
+		}
 
 		public List<string> FizzBuzz()
 		{

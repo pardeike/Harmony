@@ -292,11 +292,14 @@ namespace HarmonyLib
 			il.EmitCall(opcode, methodInfo, optionalParameterTypes);
 		}
 
+#if NETSTANDARD2_0 || NETCOREAPP2_0
+#else
 		internal static void EmitCalli(ILGenerator il, OpCode opcode, CallingConvention unmanagedCallConv, Type returnType, Type[] parameterTypes)
 		{
 			if (Harmony.DEBUG) FileLog.LogBuffered(string.Format("{0}Calli {1} {2} {3} {4}", CodePos(il), opcode, unmanagedCallConv, returnType, parameterTypes));
 			il.EmitCalli(opcode, unmanagedCallConv, returnType, parameterTypes);
 		}
+#endif
 
 		internal static void EmitCalli(ILGenerator il, OpCode opcode, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type[] optionalParameterTypes)
 		{

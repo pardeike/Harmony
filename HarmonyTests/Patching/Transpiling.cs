@@ -14,8 +14,8 @@ namespace HarmonyLibTests.Patching
 		static CodeInstruction[] savedInstructions = null;
 
 #if DEBUG
-		static OpCode insertLoc = OpCodes.Stloc_3;
-		static readonly int codeLength = 75;
+		static readonly OpCode insertLoc = OpCodes.Stloc_3;
+		const int codeLength = 75;
 #else
 		static readonly OpCode insertLoc = OpCodes.Stloc_1;
 		static readonly int codeLength = 61;
@@ -36,7 +36,7 @@ namespace HarmonyLibTests.Patching
 			Assert.IsNotNull(transpiler);
 
 			var instance = new Harmony("test-exception1");
-			instance.Patch(original, null, null, new HarmonyMethod(transpiler));
+			_ = instance.Patch(original, null, null, new HarmonyMethod(transpiler));
 			Assert.IsNotNull(savedInstructions);
 			Assert.AreEqual(savedInstructions.Length, codeLength);
 

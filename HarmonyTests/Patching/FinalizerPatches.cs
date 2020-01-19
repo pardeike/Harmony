@@ -192,14 +192,15 @@ namespace HarmonyLibTests
 			}
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
+			instance.Unpatch(originalMethod, HarmonyPatchType.All);
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddFinalizer(finalizer);
-			patcher.Patch();
+			_ = patcher.AddFinalizer(finalizer);
+			_ = patcher.Patch();
 
 			var trv = Traverse.Create(patchType);
-			trv.Field("finalized").SetValue(false);
-			trv.Field("exception").SetValue(new NullReferenceException("replace-me"));
+			_ = trv.Field("finalized").SetValue(false);
+			_ = trv.Field("exception").SetValue(new NullReferenceException("replace-me"));
 
 			var obj = Activator.CreateInstance(originalType);
 			var m_method = AccessTools.Method(originalType, "Method");
@@ -207,7 +208,7 @@ namespace HarmonyLibTests
 			try
 			{
 				if (m_method.ReturnType == typeof(void))
-					m_method.Invoke(obj, null);
+					_ = m_method.Invoke(obj, null);
 				else
 					info["result"] = m_method.Invoke(obj, null);
 				info["outerexception"] = null;

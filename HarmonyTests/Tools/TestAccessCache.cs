@@ -17,11 +17,10 @@ namespace HarmonyLibTests
 			Assert.IsNotNull(f_fields);
 			var fields = (Dictionary<Type, Dictionary<string, FieldInfo>>)f_fields.GetValue(cache);
 			Assert.IsNotNull(fields);
-			Dictionary<string, FieldInfo> infos;
-			fields.TryGetValue(typeof(AccessToolsClass), out infos);
+			_ = fields.TryGetValue(typeof(AccessToolsClass), out var infos);
 			Assert.IsNotNull(infos);
 
-			infos.Remove("field");
+			_ = infos.Remove("field");
 			infos.Add("field", typeof(AccessToolsClass).GetField("field2", AccessTools.all));
 		}
 
@@ -31,11 +30,10 @@ namespace HarmonyLibTests
 			Assert.IsNotNull(f_properties);
 			var properties = (Dictionary<Type, Dictionary<string, PropertyInfo>>)f_properties.GetValue(cache);
 			Assert.IsNotNull(properties);
-			Dictionary<string, PropertyInfo> infos;
-			properties.TryGetValue(typeof(AccessToolsClass), out infos);
+			_ = properties.TryGetValue(typeof(AccessToolsClass), out var infos);
 			Assert.IsNotNull(infos);
 
-			infos.Remove("Property");
+			_ = infos.Remove("Property");
 			infos.Add("Property", typeof(AccessToolsClass).GetProperty("Property2", AccessTools.all));
 		}
 
@@ -45,14 +43,12 @@ namespace HarmonyLibTests
 			Assert.IsNotNull(f_methods);
 			var methods = (Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>)f_methods.GetValue(cache);
 			Assert.IsNotNull(methods);
-			Dictionary<string, Dictionary<int, MethodBase>> dicts;
-			methods.TryGetValue(typeof(AccessToolsClass), out dicts);
+			_ = methods.TryGetValue(typeof(AccessToolsClass), out var dicts);
 			Assert.IsNotNull(dicts);
-			Dictionary<int, MethodBase> infos;
-			dicts.TryGetValue("Method", out infos);
+			_ = dicts.TryGetValue("Method", out var infos);
 			Assert.IsNotNull(dicts);
 			var argumentHash = infos.Keys.ToList().First();
-			infos.Remove(argumentHash);
+			_ = infos.Remove(argumentHash);
 			infos.Add(argumentHash, typeof(AccessToolsClass).GetMethod("Method2", AccessTools.all));
 		}
 

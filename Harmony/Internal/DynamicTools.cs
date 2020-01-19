@@ -52,9 +52,12 @@ namespace HarmonyLib
 				return null;
 			}
 
+#if NETSTANDARD2_0 || NETCOREAPP2_0
+#else
 			var offset = (original.IsStatic ? 0 : 1) + (firstArgIsReturnBuffer ? 1 : 0);
 			for (var i = 0; i < parameters.Length; i++)
-				method.DefineParameter(i + offset, parameters[i].Attributes, parameters[i].Name);
+				_ = method.DefineParameter(i + offset, parameters[i].Attributes, parameters[i].Name);
+#endif
 
 			return method;
 		}
@@ -114,7 +117,7 @@ namespace HarmonyLib
 			if (m_CreateDynMethod != null)
 			{
 				var h_CreateDynMethod = MethodInvoker.GetHandler(m_CreateDynMethod);
-				h_CreateDynMethod(method, new object[0]);
+				_ = h_CreateDynMethod(method, new object[0]);
 				return;
 			}
 
@@ -147,7 +150,7 @@ namespace HarmonyLib
 				try
 				{
 					// this can throw BadImageFormatException "An attempt was made to load a program with an incorrect format"
-					h__CompileMethod(null, new object[] { runtimeMethodInfo });
+					_ = h__CompileMethod(null, new object[] { runtimeMethodInfo });
 					return;
 				}
 #pragma warning disable RECS0022
@@ -161,7 +164,7 @@ namespace HarmonyLib
 			//
 			if (m__CompileMethod.GetParameters()[0].ParameterType.IsAssignableFrom(handle.Value.GetType()))
 			{
-				h__CompileMethod(null, new object[] { handle.Value });
+				_ = h__CompileMethod(null, new object[] { handle.Value });
 				return;
 			}
 
@@ -169,7 +172,7 @@ namespace HarmonyLib
 			//
 			if (m__CompileMethod.GetParameters()[0].ParameterType.IsAssignableFrom(handle.GetType()))
 			{
-				h__CompileMethod(null, new object[] { handle });
+				_ = h__CompileMethod(null, new object[] { handle });
 				return;
 			}
 		}

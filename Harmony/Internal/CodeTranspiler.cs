@@ -52,8 +52,7 @@ namespace HarmonyLib
 			if (originalIndex == -1)
 				return false; // no need, new instruction
 
-			Dictionary<string, object> unassigned = null;
-			if (unassignedValues.TryGetValue(op, out unassigned) == false)
+			if (unassignedValues.TryGetValue(op, out var unassigned) == false)
 				return false; // no need, no unassigned info
 
 			if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out var blocksObject) == false)
@@ -153,7 +152,8 @@ namespace HarmonyLib
 			var enumerableAssembly = type.GetGenericTypeDefinition().Assembly;
 			var genericListType = enumerableAssembly.GetType(typeof(List<>).FullName);
 			var elementType = type.GetGenericArguments()[0];
-			var listType = enumerableAssembly.GetType(genericListType.MakeGenericType(new Type[] { elementType }).FullName);
+			var genericListTypeWithElement = genericListType.MakeGenericType(new Type[] { elementType });
+			var listType = enumerableAssembly.GetType(genericListTypeWithElement.FullName);
 			var list = Activator.CreateInstance(listType);
 			var listAdd = list.GetType().GetMethod("Add");
 			unassignedValues = new Dictionary<object, Dictionary<string, object>>();
@@ -161,7 +161,7 @@ namespace HarmonyLib
 			{
 				var elementTo = ConvertInstruction(elementType, op, out var unassigned);
 				unassignedValues.Add(elementTo, unassigned);
-				listAdd.Invoke(list, new object[] { elementTo });
+				_ = listAdd.Invoke(list, new object[] { elementTo });
 				// cannot yield return 'elementTo' here because we have an out parameter in the method
 			}
 			return list as IEnumerable;
@@ -184,7 +184,7 @@ namespace HarmonyLib
 					foreach (var field in fields)
 					{
 						if (addExceptionInfo || field.Key != nameof(CodeInstruction.blocks))
-							trv.Field(field.Key).SetValue(field.Value);
+							_ = trv.Field(field.Key).SetValue(field.Value);
 					}
 				}
 				yield return elementTo;

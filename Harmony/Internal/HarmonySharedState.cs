@@ -25,19 +25,26 @@ namespace HarmonyLib
 					var typeBuilder = moduleBuilder.DefineType(name, typeAttributes);
 					typeBuilder.DefineField("state", typeof(Dictionary<MethodBase, byte[]>), FieldAttributes.Static | FieldAttributes.Public);
 					typeBuilder.DefineField("version", typeof(int), FieldAttributes.Static | FieldAttributes.Public).SetConstant(internalVersion);
+#if NETSTANDARD2_0
+					typeBuilder.CreateTypeInfo().AsType();
+#else
 					typeBuilder.CreateType();
+#endif
 
 					assembly = SharedStateAssembly();
 					if (assembly == null) throw new Exception("Cannot find or create harmony shared state");
 				}
 
-				var versionField = assembly.GetType(name).GetField("version");
+				var type = assembly.GetType(name);
+
+				var versionField = type.GetField("version");
 				if (versionField == null) throw new Exception("Cannot find harmony state version field");
 				actualVersion = (int)versionField.GetValue(null);
 
-				var stateField = assembly.GetType(name).GetField("state");
+				var stateField = type.GetField("state");
 				if (stateField == null) throw new Exception("Cannot find harmony state field");
 				if (stateField.GetValue(null) == null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
+
 				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 			}
 		}
@@ -45,6 +52,7 @@ namespace HarmonyLib
 		static Assembly SharedStateAssembly()
 		{
 			return AppDomain.CurrentDomain.GetAssemblies()
+				.Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") == false)
 				.FirstOrDefault(a => a.GetName().Name.Contains(name));
 		}
 

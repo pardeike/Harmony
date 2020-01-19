@@ -72,8 +72,8 @@ namespace HarmonyLibTests.IL
 			return true;
 		}
 
-		static MethodInfo m_General = SymbolExtensions.GetMethodInfo(() => General("", 0, null, new object[0]));
-		static MethodInfo m_Transpiler = SymbolExtensions.GetMethodInfo(() => Transpiler(null, null, null));
+		static readonly MethodInfo m_General = SymbolExtensions.GetMethodInfo(() => General("", 0, null, new object[0]));
+		static readonly MethodInfo m_Transpiler = SymbolExtensions.GetMethodInfo(() => Transpiler(null, null, null));
 		static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions, ILGenerator gen)
 		{
 			int idx;
@@ -175,7 +175,7 @@ namespace HarmonyLibTests.IL
 			}
 		}
 
-		static MethodInfo[] methods = new MethodInfo[]
+		static readonly MethodInfo[] methods = new MethodInfo[]
 		{
 			AccessTools.Method(typeof(TestMethods1), "Test1"),
 			SymbolExtensions.GetMethodInfo(() => new TestMethods2().Test2(0, "")),
@@ -189,12 +189,12 @@ namespace HarmonyLibTests.IL
 			var harmony = new Harmony("test");
 			methods.Do(m =>
 			{
-				harmony.Patch(m, transpiler: new HarmonyMethod(m_Transpiler));
+				_ = harmony.Patch(m, transpiler: new HarmonyMethod(m_Transpiler));
 			});
 
 			TestMethods1.Test1(out var s);
-			new TestMethods2().Test2(123, "hello");
-			TestMethods3.Test3(new Vec3(2, 4, 6), new[] { 100, 200, 300 }.ToList());
+			_ = new TestMethods2().Test2(123, "hello");
+			_ = TestMethods3.Test3(new Vec3(2, 4, 6), new[] { 100, 200, 300 }.ToList());
 
 			var n = 0;
 			Assert.AreEqual(11, log.Count);

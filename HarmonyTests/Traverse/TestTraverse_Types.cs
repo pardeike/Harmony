@@ -36,8 +36,7 @@ namespace HarmonyLibTests
 			var mixed = trv.Field("MixedField").GetValue<Dictionary<InnerClass, List<string>>>();
 			var key = trv.Field("key").GetValue<InnerClass>();
 
-			List<string> value;
-			mixed.TryGetValue(key, out value);
+			_ = mixed.TryGetValue(key, out var value);
 			Assert.AreEqual("world", value.First());
 
 			var trvEmpty = Traverse.Create(instance).Type("FooBar");

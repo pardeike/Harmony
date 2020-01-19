@@ -27,8 +27,8 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPostfix(postfix);
-			patcher.Patch();
+			_ = patcher.AddPostfix(postfix);
+			_ = patcher.Patch();
 
 			var result = new Class0().Method0();
 			Assert.AreEqual("patched", result);
@@ -57,12 +57,12 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPrefix(prefix);
-			patcher.AddPostfix(postfix);
-			patcher.AddTranspiler(transpiler);
+			_ = patcher.AddPrefix(prefix);
+			_ = patcher.AddPostfix(postfix);
+			_ = patcher.AddTranspiler(transpiler);
 
 			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out _);
-			patcher.Patch();
+			_ = patcher.Patch();
 			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out _);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
@@ -103,12 +103,12 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPrefix(prefix);
-			patcher.AddPostfix(postfix);
-			patcher.AddTranspiler(transpiler);
+			_ = patcher.AddPrefix(prefix);
+			_ = patcher.AddPostfix(postfix);
+			_ = patcher.AddTranspiler(transpiler);
 
 			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out _);
-			patcher.Patch();
+			_ = patcher.Patch();
 			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out _);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
@@ -145,10 +145,10 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPrefix(prefix);
+			_ = patcher.AddPrefix(prefix);
 
 			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out _);
-			patcher.Patch();
+			_ = patcher.Patch();
 			var originalMethodStartPost = Memory.GetMethodStart(originalMethod, out _);
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 			unsafe
@@ -187,9 +187,9 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPrefix(prefix);
-			patcher.AddPostfix(postfix);
-			patcher.Patch();
+			_ = patcher.AddPrefix(prefix);
+			_ = patcher.AddPostfix(postfix);
+			_ = patcher.Patch();
 
 			(new Class5()).Method5("foo");
 			Assert.IsTrue(Class5Patch.prefixed, "Prefix was not executed");
@@ -215,9 +215,9 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPrefix(prefix);
-			patcher.AddPostfix(postfix);
-			patcher.Patch();
+			_ = patcher.AddPrefix(prefix);
+			_ = patcher.AddPostfix(postfix);
+			_ = patcher.Patch();
 
 			var instanceB = new Harmony("test");
 			Assert.IsNotNull(instanceB);
@@ -245,7 +245,7 @@ namespace HarmonyLibTests
 
 			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
 			Assert.IsNotNull(patcher);
-			patcher.Patch();
+			_ = patcher.Patch();
 
 			(new AttributesClass()).Method("foo");
 			Assert.IsTrue(AttributesPatch.targeted, "TargetMethod was not executed");
@@ -270,10 +270,10 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPostfix(postfix);
-			patcher.Patch();
+			_ = patcher.AddPostfix(postfix);
+			_ = patcher.Patch();
 
-			new Class10().Method10();
+			_ = new Class10().Method10();
 			Assert.IsTrue(Class10Patch.postfixed);
 			Assert.IsTrue(Class10Patch.originalResult);
 		}
