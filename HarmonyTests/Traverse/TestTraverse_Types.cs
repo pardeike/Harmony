@@ -1,10 +1,8 @@
-using System;
-using System.Text;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using HarmonyLibTests.Assets;
-using HarmonyLib;
 
 namespace HarmonyLibTests
 {
@@ -50,7 +48,7 @@ namespace HarmonyLibTests
 
 			var trv1 = Traverse.Create(instance);
 			var field1 = trv1.Field("innerInstance").Field("inner2").Field("field");
-			field1.SetValue("somevalue");
+			_ = field1.SetValue("somevalue");
 
 			var trv2 = Traverse.Create(instance);
 			var field2 = trv2.Field("innerInstance").Field("inner2").Field("field");
@@ -62,13 +60,13 @@ namespace HarmonyLibTests
 		{
 			var trv1 = Traverse.Create(typeof(TraverseNestedTypes));
 			var field1 = trv1.Field("innerStatic").Field("inner2").Field("field");
-			field1.SetValue("somevalue1");
+			_ = field1.SetValue("somevalue1");
 
 			var trv2 = Traverse.Create(typeof(TraverseNestedTypes));
 			var field2 = trv2.Field("innerStatic").Field("inner2").Field("field");
 			Assert.AreEqual("somevalue1", field2.GetValue());
 
-			var _ = new TraverseNestedTypes("somevalue2");
+			_ = new TraverseNestedTypes("somevalue2");
 			var value = Traverse
 				.Create(typeof(TraverseNestedTypes))
 				.Type("InnerStaticClass1")

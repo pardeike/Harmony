@@ -151,7 +151,7 @@ namespace HarmonyLib
 			foreach (var exception in exceptions)
 			{
 				var try_start = exception.TryOffset;
-				var try_end = exception.TryOffset + exception.TryLength - 1;
+				// var try_end = exception.TryOffset + exception.TryLength - 1;
 
 				var handler_start = exception.HandlerOffset;
 				var handler_end = exception.HandlerOffset + exception.HandlerLength - 1;
@@ -220,34 +220,34 @@ namespace HarmonyLib
 				switch (ilInstruction.opcode.OperandType)
 				{
 					case OperandType.InlineSwitch:
+					{
+						var targets = ilInstruction.operand as ILInstruction[];
+						if (targets != null)
 						{
-							var targets = ilInstruction.operand as ILInstruction[];
-							if (targets != null)
-							{
-								var labels = new List<Label>();
-								foreach (var target in targets)
-								{
-									var label = generator.DefineLabel();
-									target.labels.Add(label);
-									labels.Add(label);
-								}
-								ilInstruction.argument = labels.ToArray();
-							}
-							break;
-						}
-
-					case OperandType.ShortInlineBrTarget:
-					case OperandType.InlineBrTarget:
-						{
-							var target = ilInstruction.operand as ILInstruction;
-							if (target != null)
+							var labels = new List<Label>();
+							foreach (var target in targets)
 							{
 								var label = generator.DefineLabel();
 								target.labels.Add(label);
-								ilInstruction.argument = label;
+								labels.Add(label);
 							}
-							break;
+							ilInstruction.argument = labels.ToArray();
 						}
+						break;
+					}
+
+					case OperandType.ShortInlineBrTarget:
+					case OperandType.InlineBrTarget:
+					{
+						var target = ilInstruction.operand as ILInstruction;
+						if (target != null)
+						{
+							var label = generator.DefineLabel();
+							target.labels.Add(label);
+							ilInstruction.argument = label;
+						}
+						break;
+					}
 				}
 			}
 
@@ -416,183 +416,183 @@ namespace HarmonyLib
 			switch (instruction.opcode.OperandType)
 			{
 				case OperandType.InlineNone:
-					{
-						instruction.argument = null;
-						break;
-					}
+				{
+					instruction.argument = null;
+					break;
+				}
 
 				case OperandType.InlineSwitch:
-					{
-						var length = ilBytes.ReadInt32();
-						var base_offset = ilBytes.position + (4 * length);
-						var branches = new int[length];
-						for (var i = 0; i < length; i++)
-							branches[i] = ilBytes.ReadInt32() + base_offset;
-						instruction.operand = branches;
-						break;
-					}
+				{
+					var length = ilBytes.ReadInt32();
+					var base_offset = ilBytes.position + (4 * length);
+					var branches = new int[length];
+					for (var i = 0; i < length; i++)
+						branches[i] = ilBytes.ReadInt32() + base_offset;
+					instruction.operand = branches;
+					break;
+				}
 
 				case OperandType.ShortInlineBrTarget:
-					{
-						var val = (sbyte)ilBytes.ReadByte();
-						instruction.operand = val + ilBytes.position;
-						break;
-					}
+				{
+					var val = (sbyte)ilBytes.ReadByte();
+					instruction.operand = val + ilBytes.position;
+					break;
+				}
 
 				case OperandType.InlineBrTarget:
-					{
-						var val = ilBytes.ReadInt32();
-						instruction.operand = val + ilBytes.position;
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					instruction.operand = val + ilBytes.position;
+					break;
+				}
 
 				case OperandType.ShortInlineI:
+				{
+					if (instruction.opcode == OpCodes.Ldc_I4_S)
 					{
-						if (instruction.opcode == OpCodes.Ldc_I4_S)
-						{
-							var sb = (sbyte)ilBytes.ReadByte();
-							instruction.operand = sb;
-							instruction.argument = (sbyte)instruction.operand;
-						}
-						else
-						{
-							var b = ilBytes.ReadByte();
-							instruction.operand = b;
-							instruction.argument = (byte)instruction.operand;
-						}
-						break;
+						var sb = (sbyte)ilBytes.ReadByte();
+						instruction.operand = sb;
+						instruction.argument = (sbyte)instruction.operand;
 					}
+					else
+					{
+						var b = ilBytes.ReadByte();
+						instruction.operand = b;
+						instruction.argument = (byte)instruction.operand;
+					}
+					break;
+				}
 
 				case OperandType.InlineI:
-					{
-						var val = ilBytes.ReadInt32();
-						instruction.operand = val;
-						instruction.argument = (int)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					instruction.operand = val;
+					instruction.argument = (int)instruction.operand;
+					break;
+				}
 
 				case OperandType.ShortInlineR:
-					{
-						var val = ilBytes.ReadSingle();
-						instruction.operand = val;
-						instruction.argument = (float)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadSingle();
+					instruction.operand = val;
+					instruction.argument = (float)instruction.operand;
+					break;
+				}
 
 				case OperandType.InlineR:
-					{
-						var val = ilBytes.ReadDouble();
-						instruction.operand = val;
-						instruction.argument = (double)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadDouble();
+					instruction.operand = val;
+					instruction.argument = (double)instruction.operand;
+					break;
+				}
 
 				case OperandType.InlineI8:
-					{
-						var val = ilBytes.ReadInt64();
-						instruction.operand = val;
-						instruction.argument = (long)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt64();
+					instruction.operand = val;
+					instruction.argument = (long)instruction.operand;
+					break;
+				}
 
 				case OperandType.InlineSig:
-					{
-						var val = ilBytes.ReadInt32();
-						var bytes = module.ResolveSignature(val);
-						instruction.operand = bytes;
-						instruction.argument = bytes;
-						Debugger.Log(0, "TEST", "METHOD " + method.FullDescription() + "\n");
-						Debugger.Log(0, "TEST", "Signature = " + bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b) + "\n");
-						Debugger.Break();
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					var bytes = module.ResolveSignature(val);
+					instruction.operand = bytes;
+					instruction.argument = bytes;
+					Debugger.Log(0, "TEST", "METHOD " + method.FullDescription() + "\n");
+					Debugger.Log(0, "TEST", "Signature = " + bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b) + "\n");
+					Debugger.Break();
+					break;
+				}
 
 				case OperandType.InlineString:
-					{
-						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveString(val);
-						instruction.argument = (string)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					instruction.operand = module.ResolveString(val);
+					instruction.argument = (string)instruction.operand;
+					break;
+				}
 
 				case OperandType.InlineTok:
-					{
-						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveMember(val, typeArguments, methodArguments);
-						GetMemberInfoValue((MemberInfo)instruction.operand, out instruction.argument);
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					instruction.operand = module.ResolveMember(val, typeArguments, methodArguments);
+					GetMemberInfoValue((MemberInfo)instruction.operand, out instruction.argument);
+					break;
+				}
 
 				case OperandType.InlineType:
-					{
-						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveType(val, typeArguments, methodArguments);
-						instruction.argument = (Type)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					instruction.operand = module.ResolveType(val, typeArguments, methodArguments);
+					instruction.argument = (Type)instruction.operand;
+					break;
+				}
 
 				case OperandType.InlineMethod:
-					{
-						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveMethod(val, typeArguments, methodArguments);
-						if (instruction.operand is ConstructorInfo)
-							instruction.argument = (ConstructorInfo)instruction.operand;
-						else
-							instruction.argument = (MethodInfo)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					instruction.operand = module.ResolveMethod(val, typeArguments, methodArguments);
+					if (instruction.operand is ConstructorInfo)
+						instruction.argument = (ConstructorInfo)instruction.operand;
+					else
+						instruction.argument = (MethodInfo)instruction.operand;
+					break;
+				}
 
 				case OperandType.InlineField:
-					{
-						var val = ilBytes.ReadInt32();
-						instruction.operand = module.ResolveField(val, typeArguments, methodArguments);
-						instruction.argument = (FieldInfo)instruction.operand;
-						break;
-					}
+				{
+					var val = ilBytes.ReadInt32();
+					instruction.operand = module.ResolveField(val, typeArguments, methodArguments);
+					instruction.argument = (FieldInfo)instruction.operand;
+					break;
+				}
 
 				case OperandType.ShortInlineVar:
+				{
+					var idx = ilBytes.ReadByte();
+					if (TargetsLocalVariable(instruction.opcode))
 					{
-						var idx = ilBytes.ReadByte();
-						if (TargetsLocalVariable(instruction.opcode))
-						{
-							var lvi = GetLocalVariable(idx);
-							if (lvi == null)
-								instruction.argument = idx;
-							else
-							{
-								instruction.operand = lvi;
-								instruction.argument = variables?[lvi.LocalIndex] ?? lvi;
-							}
-						}
+						var lvi = GetLocalVariable(idx);
+						if (lvi == null)
+							instruction.argument = idx;
 						else
 						{
-							instruction.operand = GetParameter(idx);
-							instruction.argument = idx;
+							instruction.operand = lvi;
+							instruction.argument = variables?[lvi.LocalIndex] ?? lvi;
 						}
-						break;
 					}
+					else
+					{
+						instruction.operand = GetParameter(idx);
+						instruction.argument = idx;
+					}
+					break;
+				}
 
 				case OperandType.InlineVar:
+				{
+					var idx = ilBytes.ReadInt16();
+					if (TargetsLocalVariable(instruction.opcode))
 					{
-						var idx = ilBytes.ReadInt16();
-						if (TargetsLocalVariable(instruction.opcode))
-						{
-							var lvi = GetLocalVariable(idx);
-							if (lvi == null)
-								instruction.argument = idx;
-							else
-							{
-								instruction.operand = lvi;
-								instruction.argument = variables?[lvi.LocalIndex] ?? lvi;
-							}
-						}
+						var lvi = GetLocalVariable(idx);
+						if (lvi == null)
+							instruction.argument = idx;
 						else
 						{
-							instruction.operand = GetParameter(idx);
-							instruction.argument = idx;
+							instruction.operand = lvi;
+							instruction.argument = variables?[lvi.LocalIndex] ?? lvi;
 						}
-						break;
 					}
+					else
+					{
+						instruction.operand = GetParameter(idx);
+						instruction.argument = idx;
+					}
+					break;
+				}
 
 				default:
 					throw new NotSupportedException();
@@ -658,7 +658,7 @@ namespace HarmonyLib
 				: two_bytes_opcodes[ilBytes.ReadByte()];
 		}
 
-		MethodInfo EmitMethodForType(Type type)
+		static MethodInfo EmitMethodForType(Type type)
 		{
 			foreach (var entry in emitMethods)
 				if (entry.Key == type) return entry.Value;

@@ -1,7 +1,3 @@
-using HarmonyLib;
-using HarmonyLibTests.Assets;
-using NUnit.Framework;
-
 namespace HarmonyLibTests
 {
 	public class TestExceptionFilterBlock

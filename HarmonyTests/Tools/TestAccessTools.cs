@@ -221,7 +221,7 @@ namespace HarmonyLibTests
 			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
 			// Call constructor to reset static field, just in case
-			new AccessToolsClass();
+			_ = new AccessToolsClass();
 			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>(fieldInfo);
 			ref var value = ref fieldRef();
 

@@ -1,6 +1,6 @@
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using System;
 
 namespace HarmonyLib
 {

@@ -262,7 +262,7 @@ namespace HarmonyLib
 		/// <param name="instructions">The instructions (transpiler argument)</param>
 		/// <returns>A list of Labels</returns>
 		///
-		public List<Label> DistinctLabels(IEnumerable<CodeInstruction> instructions)
+		public static List<Label> DistinctLabels(IEnumerable<CodeInstruction> instructions)
 		{
 			return instructions.SelectMany(instruction => instruction.labels).Distinct().ToList();
 		}
@@ -296,7 +296,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher SetInstructionAndAdvance(CodeInstruction instruction)
 		{
-			SetInstruction(instruction);
+			_ = SetInstruction(instruction);
 			Pos++;
 			return this;
 		}

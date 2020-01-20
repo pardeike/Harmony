@@ -18,7 +18,7 @@ namespace HarmonyLibTests.Patching
 		const int codeLength = 75;
 #else
 		static readonly OpCode insertLoc = OpCodes.Stloc_1;
-		static readonly int codeLength = 61;
+		const int codeLength = 61;
 #endif
 
 		[Test]

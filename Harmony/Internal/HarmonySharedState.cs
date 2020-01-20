@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
 	internal static class HarmonySharedState
 	{
-		static readonly string name = "HarmonySharedState";
-		internal static readonly int internalVersion = 100;
+		const string name = "HarmonySharedState";
+		internal const int internalVersion = 100;
 		internal static int actualVersion = -1;
 
 		static Dictionary<MethodBase, byte[]> GetState()

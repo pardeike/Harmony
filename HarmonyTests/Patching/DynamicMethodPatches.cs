@@ -38,5 +38,5 @@ namespace HarmonyLibTests
 
 			Assert.AreEqual("patched", result);
 		}
-   }
+	}
 }

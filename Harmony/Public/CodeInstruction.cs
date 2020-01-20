@@ -84,7 +84,7 @@ namespace HarmonyLib
 
 			var extras = list.Count > 0 ? " [" + string.Join(", ", list.ToArray()) + "]" : "";
 			var operandStr = Emitter.FormatArgument(operand);
-			if (operandStr != "") operandStr = " " + operandStr;
+			if (operandStr.Length > 0) operandStr = " " + operandStr;
 			return opcode + operandStr + extras;
 		}
 	}

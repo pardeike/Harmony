@@ -29,8 +29,8 @@ namespace HarmonyLibTests
 			Assert.IsNotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			patcher.AddPostfix(new HarmonyMethod(postfix));
-			patcher.Patch();
+			_ = patcher.AddPostfix(new HarmonyMethod(postfix));
+			_ = patcher.Patch();
 
 			var standin = patchClass.GetMethod("StringOperation");
 			Assert.IsNotNull(standin);

@@ -109,7 +109,7 @@ namespace HarmonyLib
 
 				if (hasFinalizers)
 				{
-					AddFinalizers(il, original, finalizers, privateVars, false);
+					_ = AddFinalizers(il, original, finalizers, privateVars, false);
 					Emitter.Emit(il, OpCodes.Ldc_I4_1);
 					Emitter.Emit(il, OpCodes.Stloc, finalizedVariable);
 					var noExceptionLabel1 = il.DefineLabel();

@@ -1,7 +1,7 @@
-using System.Linq;
-using System.Reflection;
 using HarmonyLib;
 using NUnit.Framework;
+using System.Linq;
+using System.Reflection;
 
 namespace HarmonyLibTests
 {

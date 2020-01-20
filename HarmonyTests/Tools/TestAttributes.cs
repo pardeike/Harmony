@@ -1,6 +1,6 @@
-using NUnit.Framework;
 using HarmonyLib;
 using HarmonyLibTests.Assets;
+using NUnit.Framework;
 
 namespace HarmonyLibTests.Tools
 {
@@ -40,7 +40,7 @@ namespace HarmonyLibTests.Tools
 			Assert.IsNotNull(type2);
 			try
 			{
-				instance2.ProcessorForAnnotatedClass(type2);
+				_ = instance2.ProcessorForAnnotatedClass(type2);
 			}
 			catch (System.ArgumentException ex)
 			{

@@ -34,10 +34,7 @@ namespace HarmonyLib
 			if (returnType == null || returnType.IsByRef)
 				return null;
 
-			DynamicMethod method;
-			try
-			{
-				method = new DynamicMethod(
+			var method = new DynamicMethod(
 				patchName,
 				MethodAttributes.Public | MethodAttributes.Static,
 				CallingConventions.Standard,
@@ -46,11 +43,6 @@ namespace HarmonyLib
 				original.DeclaringType,
 				true
 			);
-			}
-			catch (Exception)
-			{
-				return null;
-			}
 
 #if NETSTANDARD2_0 || NETCOREAPP2_0
 #else

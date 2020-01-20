@@ -65,7 +65,7 @@ namespace HarmonyLibTests
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
 				Assert.IsNotNull(ptrv);
-				ptrv.SetValue(newValue);
+				_ = ptrv.SetValue(newValue);
 
 				// after
 				if (name == "BaseProperty2")

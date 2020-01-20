@@ -735,39 +735,51 @@ namespace HarmonyLib
 
 		/// <summary>A read/writable reference to a field</summary>
 		/// <typeparam name="T">The class the field is defined in</typeparam>
-		/// <typeparam name="U">The type of the field</typeparam>
+		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="obj">The runtime instance to access the field (leave empty for static fields)</param>
 		/// <returns>The value of the field (or an assignable object)</returns>
 		///
-		public delegate ref U FieldRef<T, U>(T obj = default);
+		public delegate ref F FieldRef<T, F>(T obj = default);
 
 		/// <summary>Creates a field reference</summary>
 		/// <typeparam name="T">The class the field is defined in</typeparam>
-		/// <typeparam name="U">The type of the field</typeparam>
+		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A read and writable field reference</returns>
 		///
-		public static FieldRef<T, U> FieldRefAccess<T, U>(string fieldName)
+		public static FieldRef<T, F> FieldRefAccess<T, F>(string fieldName)
 		{
 			const BindingFlags bf = BindingFlags.NonPublic |
 											BindingFlags.Instance |
 											BindingFlags.DeclaredOnly;
 
 			var fi = typeof(T).GetField(fieldName, bf);
-			return FieldRefAccess<T, U>(fi);
+			return FieldRefAccess<T, F>(fi);
+		}
+
+		/// <summary>Creates a field reference for a specific instance</summary>
+		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <param name="instance">The instance</param>
+		/// <param name="fieldName">The name of the field</param>
+		/// <returns>A read and writable field reference</returns>
+		///
+		public static ref F FieldRefAccess<T, F>(T instance, string fieldName)
+		{
+			return ref FieldRefAccess<T, F>(fieldName)(instance);
 		}
 
 		/// <summary>Creates a field reference</summary>
 		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
-		/// <typeparam name="U">The type of the field</typeparam>
+		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldInfo">FieldInfo for the field</param>
 		/// <returns>A read and writable field reference</returns>
 		///
-		public static FieldRef<T, U> FieldRefAccess<T, U>(FieldInfo fieldInfo)
+		public static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo)
 		{
 			if (fieldInfo == null)
 				throw new ArgumentNullException(nameof(fieldInfo));
-			if (!typeof(U).IsAssignableFrom(fieldInfo.FieldType))
+			if (!typeof(F).IsAssignableFrom(fieldInfo.FieldType))
 				throw new ArgumentException("FieldInfo type does not match FieldRefAccess return type.");
 			if (typeof(T) != typeof(object))
 				if (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T)))
@@ -777,37 +789,70 @@ namespace HarmonyLib
 
 			// workaround for using ref-return with DynamicMethod:
 			// a.) initialize with dummy return value
-			var dm = new DynamicMethod(s_name, typeof(U), new[] { typeof(T) }, typeof(T), true);
+			var dm = new DynamicMethod(s_name, typeof(F), new[] { typeof(T) }, typeof(T), true);
 
 			// b.) replace with desired 'ByRef' return value
 			var trv = Traverse.Create(dm);
-			trv.Field("returnType").SetValue(typeof(U).MakeByRefType());
-			trv.Field("m_returnType").SetValue(typeof(U).MakeByRefType());
+			_ = trv.Field("returnType").SetValue(typeof(F).MakeByRefType());
+			_ = trv.Field("m_returnType").SetValue(typeof(F).MakeByRefType());
 
 			var il = dm.GetILGenerator();
-
-			if (fieldInfo.IsStatic)
-				il.Emit(OpCodes.Ldsflda, fieldInfo);
-			else
-			{
-				il.Emit(OpCodes.Ldarg_0);
-				il.Emit(OpCodes.Ldflda, fieldInfo);
-			}
-
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
-			return (FieldRef<T, U>)dm.CreateDelegate(typeof(FieldRef<T, U>));
+
+			return (FieldRef<T, F>)dm.CreateDelegate(typeof(FieldRef<T, F>));
 		}
 
-		/// <summary>Creates a field reference for a specific instance</summary>
+		/// <summary>A read/writable reference to a static field</summary>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <returns>The value of the field (or an assignable object)</returns>
+		///
+		public delegate ref F FieldRef<F>();
+
+		/// <summary>Creates a static field reference</summary>
 		/// <typeparam name="T">The class the field is defined in</typeparam>
-		/// <typeparam name="U">The type of the field</typeparam>
-		/// <param name="instance">The instance</param>
+		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A read and writable field reference</returns>
 		///
-		public static ref U FieldRefAccess<T, U>(T instance, string fieldName)
+		public static ref F StaticFieldRefAccess<T, F>(string fieldName)
 		{
-			return ref FieldRefAccess<T, U>(fieldName)(instance);
+			const BindingFlags bf = BindingFlags.NonPublic |
+											BindingFlags.Static |
+											BindingFlags.DeclaredOnly;
+
+			var fi = typeof(T).GetField(fieldName, bf);
+			return ref StaticFieldRefAccess<F>(fi)();
+		}
+
+		/// <summary>Creates a static field reference</summary>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <param name="fieldInfo">FieldInfo for the field</param>
+		/// <returns>A read and writable field reference</returns>
+		///
+		public static FieldRef<F> StaticFieldRefAccess<F>(FieldInfo fieldInfo)
+		{
+			if (fieldInfo == null)
+				throw new ArgumentNullException(nameof(fieldInfo));
+			var t = fieldInfo.DeclaringType;
+
+			var s_name = "__refget_" + t.Name + "_static_fi_" + fieldInfo.Name;
+
+			// workaround for using ref-return with DynamicMethod:
+			// a.) initialize with dummy return value
+			var dm = new DynamicMethod(s_name, typeof(F), new Type[0], t, true);
+
+			// b.) replace with desired 'ByRef' return value
+			var trv = Traverse.Create(dm);
+			_ = trv.Field("returnType").SetValue(typeof(F).MakeByRefType());
+			_ = trv.Field("m_returnType").SetValue(typeof(F).MakeByRefType());
+
+			var il = dm.GetILGenerator();
+			il.Emit(OpCodes.Ldsflda, fieldInfo);
+			il.Emit(OpCodes.Ret);
+
+			return (FieldRef<F>)dm.CreateDelegate(typeof(FieldRef<F>));
 		}
 
 		/// <summary>Returns who called the current method</summary>

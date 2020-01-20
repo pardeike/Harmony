@@ -56,7 +56,7 @@ namespace HarmonyLibTests
 
 				var name = TraverseFields.fieldNames[i];
 				var ftrv = trv.Field(name);
-				ftrv.SetValue(newValue);
+				_ = ftrv.SetValue(newValue);
 
 				// after
 				Assert.AreEqual(newValue, instance.GetTestField(i));

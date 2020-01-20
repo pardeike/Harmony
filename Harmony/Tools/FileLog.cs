@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,21 +11,16 @@ namespace HarmonyLib
 	public static class FileLog
 	{
 		/// <summary>Full pathname of the log file</summary>
-		public static string logPath;
+		public static string logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + "harmony.log.txt";
 
 		/// <summary>The indent character</summary>
 		public static char indentChar = '\t';
 
 		/// <summary>The indent level</summary>
-		public static int indentLevel;
+		public static int indentLevel = 0;
 
 		/// <summary>A buffer</summary>
 		static List<string> buffer = new List<string>();
-
-		static FileLog()
-		{
-			logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + "harmony.log.txt";
-		}
 
 		static string IndentString()
 		{
@@ -144,7 +138,7 @@ namespace HarmonyLib
 				var s = "";
 				for (var i = 1; i <= len; i++)
 				{
-					if (s == "") s = "#  ";
+					if (s.Length == 0) s = "#  ";
 					s = s + (*p).ToString("X2") + " ";
 					if (i > 1 || len == 1)
 					{

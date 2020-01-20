@@ -33,8 +33,9 @@ namespace HarmonyLibTests.Assets
 					return protectedField;
 				case 3:
 					return internalField;
+				default:
+					return null;
 			}
-			return null;
 		}
 
 		public override string ToString()

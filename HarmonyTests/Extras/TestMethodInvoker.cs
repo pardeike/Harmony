@@ -1,9 +1,9 @@
-using System;
-using System.Reflection;
-using System.Reflection.Emit;
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace HarmonyLibTests
 {
@@ -29,7 +29,7 @@ namespace HarmonyLibTests
 			{
 				args[0] = a;
 				var b = (int)args[1];
-				handler(null, args);
+				_ = handler(null, args);
 				Assert.AreEqual(a, args[0], "@a={0}", a);
 				Assert.AreEqual(b + 1, args[1], "@a={0}", a);
 				Assert.AreEqual((b + 1) * 2, args[2], "@a={0}", a);
@@ -57,7 +57,7 @@ namespace HarmonyLibTests
 			};
 
 			var args = new object[] { 2 };
-			handler(instance, args);
+			_ = handler(instance, args);
 			Assert.AreEqual(3, instance.Value);
 		}
 	}

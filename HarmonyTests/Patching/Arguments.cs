@@ -2,8 +2,6 @@ using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace HarmonyLibTests
 {
@@ -27,10 +25,10 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPrefix(prefix);
+			_ = patcher.AddPrefix(prefix);
 			Assert.IsNotNull(patcher);
 
-			patcher.Patch();
+			_ = patcher.Patch();
 
 			var instance6 = new Class6
 			{
@@ -61,9 +59,9 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPostfix(postfix);
+			_ = patcher.AddPostfix(postfix);
 
-			patcher.Patch();
+			_ = patcher.Patch();
 
 			Class7.state2 = "before";
 			var instance7 = new Class7();
@@ -92,10 +90,10 @@ namespace HarmonyLibTests
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
-			patcher.AddPostfix(postfix);
+			_ = patcher.AddPostfix(postfix);
 			Assert.IsNotNull(patcher);
 
-			patcher.Patch();
+			_ = patcher.Patch();
 
 			var result = Class8.Method8("patched");
 

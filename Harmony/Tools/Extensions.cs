@@ -18,7 +18,7 @@ namespace HarmonyLib
 		public static string Join<T>(this IEnumerable<T> enumeration, Func<T, string> converter = null, string delimiter = ", ")
 		{
 			if (converter == null) converter = t => t.ToString();
-			return enumeration.Aggregate("", (prev, curr) => prev + (prev != "" ? delimiter : "") + converter(curr));
+			return enumeration.Aggregate("", (prev, curr) => prev + (prev.Length > 0 ? delimiter : "") + converter(curr));
 		}
 
 		/// <summary>Converts an array of types (for example methods arguments) into a human readable form</summary>

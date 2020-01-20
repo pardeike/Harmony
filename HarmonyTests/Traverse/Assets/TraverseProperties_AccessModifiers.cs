@@ -99,8 +99,9 @@ namespace HarmonyLibTests.Assets
 					return BaseProperty3;
 				case 6:
 					return ImmediateProperty;
+				default:
+					return null;
 			}
-			return null;
 		}
 
 		public void SetTestProperty(int n, string value)

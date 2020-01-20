@@ -430,7 +430,7 @@ namespace HarmonyLib
 
 
 		/// <summary>A default field action that copies fields to fields</summary>
-		public static Action<Traverse, Traverse> CopyFields = (from, to) => { to.SetValue(from.GetValue()); };
+		public static Action<Traverse, Traverse> CopyFields = (from, to) => { _ = to.SetValue(from.GetValue()); };
 
 		/// <summary>Returns a string that represents the current traverse</summary>
 		/// <returns>A string representation</returns>

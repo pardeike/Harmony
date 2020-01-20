@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
@@ -49,7 +48,7 @@ namespace HarmonyLib
 			PatchFunctions.ReversePatch(standin, original, instance.Id, transpiler);
 		}
 
-		internal MethodInfo GetTranspiler(MethodInfo method)
+		internal static MethodInfo GetTranspiler(MethodInfo method)
 		{
 			var methodName = method.Name;
 			var type = method.DeclaringType;

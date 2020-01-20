@@ -1,6 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
-
 namespace HarmonyLibTests.Assets
 {
 	public class HttpWebRequestPatches

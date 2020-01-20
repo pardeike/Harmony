@@ -1,5 +1,4 @@
 using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -41,7 +40,7 @@ namespace HarmonyLibTests.Assets
 			}
 
 			// make compiler happy
-			Transpiler(null);
+			_ = Transpiler(null);
 			return original;
 		}
 
