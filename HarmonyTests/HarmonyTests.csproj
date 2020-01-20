@@ -4,7 +4,14 @@
 		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<IsPackable>false</IsPackable>
+		<AssemblyOriginatorKeyFile>..\keys\Harmony.Pair.snk</AssemblyOriginatorKeyFile>
+		<SignAssembly>true</SignAssembly>
+		<PublicSign>true</PublicSign>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Harmony\Harmony.csproj" />
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
 		<DefineConstants>NETCOREAPP2_0</DefineConstants>
@@ -54,10 +61,6 @@
 		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
 		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Harmony\Harmony.csproj" />
 	</ItemGroup>
 
 </Project>

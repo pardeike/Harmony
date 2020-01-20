@@ -10,7 +10,7 @@
 		<PackageId>Lib.Harmony</PackageId>
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
-		<SignAssembly>false</SignAssembly>
+		<SignAssembly>true</SignAssembly>
 		<Version>2.0.0</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
@@ -24,6 +24,9 @@
 		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>7.3</LangVersion>
+		<AssemblyOriginatorKeyFile>..\keys\Harmony.Pair.snk</AssemblyOriginatorKeyFile>
+		<SignAssembly>true</SignAssembly>
+		<PublicSign>true</PublicSign>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
