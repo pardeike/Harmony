@@ -173,15 +173,24 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.Field
   nameWithType: AccessTools.Field
+- uid: HarmonyLib.AccessTools.FieldRef`1
+  name: AccessTools.FieldRef<F>
+  href: api/HarmonyLib.AccessTools.FieldRef-1.html
+  commentId: T:HarmonyLib.AccessTools.FieldRef`1
+  name.vb: AccessTools.FieldRef(Of F)
+  fullName: HarmonyLib.AccessTools.FieldRef<F>
+  fullName.vb: HarmonyLib.AccessTools.FieldRef(Of F)
+  nameWithType: AccessTools.FieldRef<F>
+  nameWithType.vb: AccessTools.FieldRef(Of F)
 - uid: HarmonyLib.AccessTools.FieldRef`2
-  name: AccessTools.FieldRef<T, U>
+  name: AccessTools.FieldRef<T, F>
   href: api/HarmonyLib.AccessTools.FieldRef-2.html
   commentId: T:HarmonyLib.AccessTools.FieldRef`2
-  name.vb: AccessTools.FieldRef(Of T, U)
-  fullName: HarmonyLib.AccessTools.FieldRef<T, U>
-  fullName.vb: HarmonyLib.AccessTools.FieldRef(Of T, U)
-  nameWithType: AccessTools.FieldRef<T, U>
-  nameWithType.vb: AccessTools.FieldRef(Of T, U)
+  name.vb: AccessTools.FieldRef(Of T, F)
+  fullName: HarmonyLib.AccessTools.FieldRef<T, F>
+  fullName.vb: HarmonyLib.AccessTools.FieldRef(Of T, F)
+  nameWithType: AccessTools.FieldRef<T, F>
+  nameWithType.vb: AccessTools.FieldRef(Of T, F)
 - uid: HarmonyLib.AccessTools.FieldRefAccess*
   name: FieldRefAccess
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_FieldRefAccess_
@@ -190,32 +199,32 @@ references:
   fullName: HarmonyLib.AccessTools.FieldRefAccess
   nameWithType: AccessTools.FieldRefAccess
 - uid: HarmonyLib.AccessTools.FieldRefAccess``2(``0,System.String)
-  name: FieldRefAccess<T, U>(T, String)
+  name: FieldRefAccess<T, F>(T, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_FieldRefAccess__2___0_System_String_
   commentId: M:HarmonyLib.AccessTools.FieldRefAccess``2(``0,System.String)
-  name.vb: FieldRefAccess(Of T, U)(T, String)
-  fullName: HarmonyLib.AccessTools.FieldRefAccess<T, U>(T, System.String)
-  fullName.vb: HarmonyLib.AccessTools.FieldRefAccess(Of T, U)(T, System.String)
-  nameWithType: AccessTools.FieldRefAccess<T, U>(T, String)
-  nameWithType.vb: AccessTools.FieldRefAccess(Of T, U)(T, String)
+  name.vb: FieldRefAccess(Of T, F)(T, String)
+  fullName: HarmonyLib.AccessTools.FieldRefAccess<T, F>(T, System.String)
+  fullName.vb: HarmonyLib.AccessTools.FieldRefAccess(Of T, F)(T, System.String)
+  nameWithType: AccessTools.FieldRefAccess<T, F>(T, String)
+  nameWithType.vb: AccessTools.FieldRefAccess(Of T, F)(T, String)
 - uid: HarmonyLib.AccessTools.FieldRefAccess``2(System.Reflection.FieldInfo)
-  name: FieldRefAccess<T, U>(FieldInfo)
+  name: FieldRefAccess<T, F>(FieldInfo)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_FieldRefAccess__2_System_Reflection_FieldInfo_
   commentId: M:HarmonyLib.AccessTools.FieldRefAccess``2(System.Reflection.FieldInfo)
-  name.vb: FieldRefAccess(Of T, U)(FieldInfo)
-  fullName: HarmonyLib.AccessTools.FieldRefAccess<T, U>(System.Reflection.FieldInfo)
-  fullName.vb: HarmonyLib.AccessTools.FieldRefAccess(Of T, U)(System.Reflection.FieldInfo)
-  nameWithType: AccessTools.FieldRefAccess<T, U>(FieldInfo)
-  nameWithType.vb: AccessTools.FieldRefAccess(Of T, U)(FieldInfo)
+  name.vb: FieldRefAccess(Of T, F)(FieldInfo)
+  fullName: HarmonyLib.AccessTools.FieldRefAccess<T, F>(System.Reflection.FieldInfo)
+  fullName.vb: HarmonyLib.AccessTools.FieldRefAccess(Of T, F)(System.Reflection.FieldInfo)
+  nameWithType: AccessTools.FieldRefAccess<T, F>(FieldInfo)
+  nameWithType.vb: AccessTools.FieldRefAccess(Of T, F)(FieldInfo)
 - uid: HarmonyLib.AccessTools.FieldRefAccess``2(System.String)
-  name: FieldRefAccess<T, U>(String)
+  name: FieldRefAccess<T, F>(String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_FieldRefAccess__2_System_String_
   commentId: M:HarmonyLib.AccessTools.FieldRefAccess``2(System.String)
-  name.vb: FieldRefAccess(Of T, U)(String)
-  fullName: HarmonyLib.AccessTools.FieldRefAccess<T, U>(System.String)
-  fullName.vb: HarmonyLib.AccessTools.FieldRefAccess(Of T, U)(System.String)
-  nameWithType: AccessTools.FieldRefAccess<T, U>(String)
-  nameWithType.vb: AccessTools.FieldRefAccess(Of T, U)(String)
+  name.vb: FieldRefAccess(Of T, F)(String)
+  fullName: HarmonyLib.AccessTools.FieldRefAccess<T, F>(System.String)
+  fullName.vb: HarmonyLib.AccessTools.FieldRefAccess(Of T, F)(System.String)
+  nameWithType: AccessTools.FieldRefAccess<T, F>(String)
+  nameWithType.vb: AccessTools.FieldRefAccess(Of T, F)(String)
 - uid: HarmonyLib.AccessTools.FindIncludingBaseTypes*
   name: FindIncludingBaseTypes
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_FindIncludingBaseTypes_
@@ -681,6 +690,31 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.PropertySetter
   nameWithType: AccessTools.PropertySetter
+- uid: HarmonyLib.AccessTools.StaticFieldRefAccess*
+  name: StaticFieldRefAccess
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_StaticFieldRefAccess_
+  commentId: Overload:HarmonyLib.AccessTools.StaticFieldRefAccess
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.StaticFieldRefAccess
+  nameWithType: AccessTools.StaticFieldRefAccess
+- uid: HarmonyLib.AccessTools.StaticFieldRefAccess``1(System.Reflection.FieldInfo)
+  name: StaticFieldRefAccess<F>(FieldInfo)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_StaticFieldRefAccess__1_System_Reflection_FieldInfo_
+  commentId: M:HarmonyLib.AccessTools.StaticFieldRefAccess``1(System.Reflection.FieldInfo)
+  name.vb: StaticFieldRefAccess(Of F)(FieldInfo)
+  fullName: HarmonyLib.AccessTools.StaticFieldRefAccess<F>(System.Reflection.FieldInfo)
+  fullName.vb: HarmonyLib.AccessTools.StaticFieldRefAccess(Of F)(System.Reflection.FieldInfo)
+  nameWithType: AccessTools.StaticFieldRefAccess<F>(FieldInfo)
+  nameWithType.vb: AccessTools.StaticFieldRefAccess(Of F)(FieldInfo)
+- uid: HarmonyLib.AccessTools.StaticFieldRefAccess``2(System.String)
+  name: StaticFieldRefAccess<T, F>(String)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_StaticFieldRefAccess__2_System_String_
+  commentId: M:HarmonyLib.AccessTools.StaticFieldRefAccess``2(System.String)
+  name.vb: StaticFieldRefAccess(Of T, F)(String)
+  fullName: HarmonyLib.AccessTools.StaticFieldRefAccess<T, F>(System.String)
+  fullName.vb: HarmonyLib.AccessTools.StaticFieldRefAccess(Of T, F)(System.String)
+  nameWithType: AccessTools.StaticFieldRefAccess<T, F>(String)
+  nameWithType.vb: AccessTools.StaticFieldRefAccess(Of T, F)(String)
 - uid: HarmonyLib.AccessTools.ThrowMissingMemberException(System.Type,System.String[])
   name: ThrowMissingMemberException(Type, String[])
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_ThrowMissingMemberException_System_Type_System_String___
