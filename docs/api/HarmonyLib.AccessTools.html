@@ -806,7 +806,7 @@
   </span>
   <a id="HarmonyLib_AccessTools_FieldRefAccess_" data-uid="HarmonyLib.AccessTools.FieldRefAccess*"></a>
   <h4 id="HarmonyLib_AccessTools_FieldRefAccess__2___0_System_String_" data-uid="HarmonyLib.AccessTools.FieldRefAccess``2(``0,System.String)">FieldRefAccess&lt;T, F&gt;(T, String)</h4>
-  <div class="markdown level1 summary"><p>Creates a field reference for a specific instance</p>
+  <div class="markdown level1 summary"><p>Creates an instance field reference for a specific instance</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -848,7 +848,7 @@
     <tbody>
       <tr>
         <td><span class="xref">F</span></td>
-        <td><p>A read and writable field reference</p>
+        <td><p>An readable/assignable object representing the field</p>
 </td>
       </tr>
     </tbody>
@@ -864,7 +864,7 @@
     <tbody>
       <tr>
         <td><span class="parametername">T</span></td>
-        <td><p>The class the field is defined in</p>
+        <td><p>The class the field is defined in or &quot;object&quot; if type cannot be accessed at compile time</p>
 </td>
       </tr>
       <tr>
@@ -883,7 +883,7 @@
   </span>
   <a id="HarmonyLib_AccessTools_FieldRefAccess_" data-uid="HarmonyLib.AccessTools.FieldRefAccess*"></a>
   <h4 id="HarmonyLib_AccessTools_FieldRefAccess__2_System_Reflection_FieldInfo_" data-uid="HarmonyLib.AccessTools.FieldRefAccess``2(System.Reflection.FieldInfo)">FieldRefAccess&lt;T, F&gt;(FieldInfo)</h4>
-  <div class="markdown level1 summary"><p>Creates a field reference</p>
+  <div class="markdown level1 summary"><p>Creates an instance field reference delegate</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -919,7 +919,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.AccessTools.FieldRef-2.html">AccessTools.FieldRef</a>&lt;T, F&gt;</td>
-        <td><p>A read and writable field reference</p>
+        <td><p>A read and writable field reference delegate</p>
 </td>
       </tr>
     </tbody>
@@ -954,7 +954,7 @@
   </span>
   <a id="HarmonyLib_AccessTools_FieldRefAccess_" data-uid="HarmonyLib.AccessTools.FieldRefAccess*"></a>
   <h4 id="HarmonyLib_AccessTools_FieldRefAccess__2_System_String_" data-uid="HarmonyLib.AccessTools.FieldRefAccess``2(System.String)">FieldRefAccess&lt;T, F&gt;(String)</h4>
-  <div class="markdown level1 summary"><p>Creates a field reference</p>
+  <div class="markdown level1 summary"><p>Creates an instance field reference</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -990,7 +990,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.AccessTools.FieldRef-2.html">AccessTools.FieldRef</a>&lt;T, F&gt;</td>
-        <td><p>A read and writable field reference</p>
+        <td><p>A read and writable field reference delegate</p>
 </td>
       </tr>
     </tbody>
@@ -1006,7 +1006,7 @@
     <tbody>
       <tr>
         <td><span class="parametername">T</span></td>
-        <td><p>The class the field is defined in</p>
+        <td><p>The class the field is defined in or &quot;object&quot; if type cannot be accessed at compile time</p>
 </td>
       </tr>
       <tr>
@@ -3000,7 +3000,7 @@
   </span>
   <a id="HarmonyLib_AccessTools_StaticFieldRefAccess_" data-uid="HarmonyLib.AccessTools.StaticFieldRefAccess*"></a>
   <h4 id="HarmonyLib_AccessTools_StaticFieldRefAccess__1_System_Reflection_FieldInfo_" data-uid="HarmonyLib.AccessTools.StaticFieldRefAccess``1(System.Reflection.FieldInfo)">StaticFieldRefAccess&lt;F&gt;(FieldInfo)</h4>
-  <div class="markdown level1 summary"><p>Creates a static field reference</p>
+  <div class="markdown level1 summary"><p>Creates a static field reference delegate</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -3036,7 +3036,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.AccessTools.FieldRef-1.html">AccessTools.FieldRef</a>&lt;F&gt;</td>
-        <td><p>A read and writable field reference</p>
+        <td><p>A read and writable field reference delegate</p>
 </td>
       </tr>
     </tbody>
@@ -3102,7 +3102,7 @@
     <tbody>
       <tr>
         <td><span class="xref">F</span></td>
-        <td><p>A read and writable field reference</p>
+        <td><p>An readable/assignable object representing the static field</p>
 </td>
       </tr>
     </tbody>
@@ -3118,7 +3118,7 @@
     <tbody>
       <tr>
         <td><span class="parametername">T</span></td>
-        <td><p>The class the field is defined in</p>
+        <td><p>The class the field is defined in or &quot;object&quot; if type cannot be accessed at compile time</p>
 </td>
       </tr>
       <tr>

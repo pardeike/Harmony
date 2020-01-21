@@ -73,7 +73,7 @@
   
   <h1 id="HarmonyLib_AccessTools_FieldRef_2" data-uid="HarmonyLib.AccessTools.FieldRef`2" class="text-break">Delegate AccessTools.FieldRef&lt;T, F&gt;
   </h1>
-  <div class="markdown level0 summary"><p>A read/writable reference to a field</p>
+  <div class="markdown level0 summary"><p>A read/writable reference to an instance field</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
@@ -111,7 +111,7 @@
     <tbody>
       <tr>
         <td><span class="xref">F</span></td>
-        <td><p>The value of the field (or an assignable object)</p>
+        <td><p>An readable/assignable object representing the field</p>
 </td>
       </tr>
     </tbody>
@@ -127,7 +127,7 @@
     <tbody>
       <tr>
         <td><span class="parametername">T</span></td>
-        <td><p>The class the field is defined in</p>
+        <td><p>The class the field is defined in or &quot;object&quot; if type cannot be accessed at compile time</p>
 </td>
       </tr>
       <tr>
