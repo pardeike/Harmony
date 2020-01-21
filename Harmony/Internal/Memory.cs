@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -181,7 +182,13 @@ namespace HarmonyLib
 			var handle = GetRuntimeMethodHandle(method);
 			try
 			{
-				RuntimeHelpers.PrepareMethod(handle);
+				if (method.DeclaringType != null && method.DeclaringType.IsGenericType)
+				{
+					var genericTypeArguments = method.DeclaringType.GetGenericArguments().Select(type => type.TypeHandle).ToArray();
+					RuntimeHelpers.PrepareMethod(handle, genericTypeArguments);
+				}
+				else
+					RuntimeHelpers.PrepareMethod(handle);
 			}
 #pragma warning disable RECS0022
 			catch

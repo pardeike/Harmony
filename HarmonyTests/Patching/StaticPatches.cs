@@ -1,7 +1,6 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace HarmonyLibTests
 {
@@ -251,43 +250,5 @@ namespace HarmonyLibTests
 			Assert.IsTrue(Class10Patch.postfixed);
 			Assert.IsTrue(Class10Patch.originalResult);
 		}
-
-#if NETCOREAPP3_1
-		// TestMethod13 fails on Core 3.1
-#else
-		[Test]
-		public void TestMethod13()
-		{
-			var originalClass = typeof(List<>).MakeGenericType(typeof(int));
-			Assert.IsNotNull(originalClass);
-			var originalMethod = originalClass.GetMethod("GetEnumerator");
-			Assert.IsNotNull(originalMethod);
-
-			_ = Class13Patch.cachedResult;
-
-			var patchClass = typeof(Class13Patch);
-			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
-
-			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
-
-			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
-			_ = patcher.AddPostfix(postfix);
-			_ = patcher.Patch();
-
-			var list = new List<int>() { 1, 2, 3 };
-			var enumerator = list.GetEnumerator();
-			var result = new List<int>();
-			while (enumerator.MoveNext())
-				result.Add(enumerator.Current);
-
-			Assert.AreEqual(3, result.Count);
-			Assert.AreEqual(result[0], 100);
-			Assert.AreEqual(result[1], 200);
-			Assert.AreEqual(result[2], 300);
-		}
-#endif
 	}
 }
