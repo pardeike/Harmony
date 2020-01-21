@@ -3,7 +3,7 @@
 ## Postfix
 
 A postfix is a method that is executed after the original method. It is commonly used to:
- 
+
 - read or change the result of the original method
 - access the arguments of the original method
 - make sure your code is always executed
@@ -16,84 +16,90 @@ Since the postfix has access to the result of the original (or a prefix that has
 ```csharp
 public class OriginalCode
 {
-    public string GetName()
-    {
-        // ...
-    }
+	public string GetName()
+	{
+		// ...
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), "GetName")]
 class Patch
 {
-    static void Postfix(ref string __result)
-    {  
-        if (__result == "foo")
-            __result = "bar";
-    }
+	static void Postfix(ref string __result)
+	{
+		if (__result == "foo")
+			__result = "bar";
+	}
 }
 ```
 
 ### Pass through postfixes
 
-An alternative way to change the result of an original method is to use a **pass through** postfix. A pass through postfix has a non-void return type that matches the type of the first argument.
+An alternative way to change the result of an original method is to use a **pass through** postfix. A pass through postfix has a non-void return type that matches the type of the first argument (normal rules apply to the remaining arguments).
 
 Harmony will call the postfix with the result of the original and will use the result of the postfix to continue. Since this works for all types, it is especially useful for types like `IEnumerable<T>` that cannot be combined with `ref`. This allows for changing the result with `yield` operations.
 
 ```csharp
 public class OriginalCode
 {
-    public string GetName()
-    {
-        return "David";
-    }
+	public string GetName()
+	{
+		return "David";
+	}
 
-    public IEnumerable<int> GetNumbers()
-    {
-        yield return 1;
-        yield return 2;
-    }
+	public IEnumerable<int> GetNumbers()
+	{
+		yield return 1;
+		yield return 2;
+		yield return 3;
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), "GetName")]
 class Patch1
 {
-    static string Postfix(string name)
-    {  
-        return "Hello " + name;
-    }
+	static string Postfix(string name)
+	{
+		return "Hello " + name;
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), "GetNumbers")]
 class Patch2
 {
-    static IEnumerable<int> Postfix(IEnumerable<int> values)
-    {  
-        yield return 0;
-        foreach (var value in values)
-            yield return value;
-        yield return 99;
-    }
+	static IEnumerable<int> Postfix(IEnumerable<int> values)
+	{
+		yield return 0;
+		foreach (var value in values)
+			if (value > 1)
+				yield return value * 10;
+		yield return 99;
+	}
 }
+
+// will make GetNumbers() return [0, 20, 30, 99] instead of [1, 2, 3]
 ```
 
 ### Reading original arguments
 
+There are many ways to access original arguments and even private fields: by name convention and by attributes. You can read more about that in the [Injections](patching-injections.md) chapter. Here is a simple example:
+
 ```csharp
 public class OriginalCode
 {
-    public void Test(int counter)
-    {
-        // ...
-    }
+	public void Test(int counter)
+	{
+		// ...
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), "Test")]
 class Patch
 {
-    static void Prefix(int counter)
-    {  
-        FileLog.Log("counter = " + counter);
-    }
+	static void Prefix(int counter)
+	{
+		FileLog.Log("counter = " + counter);
+	}
 }
 ```
 

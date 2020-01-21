@@ -1,15 +1,15 @@
 # Priorities
 
-With Harmony, the order of patches is not linear. A plugin/mod that comes last can still execute first if necessary. For this to work, patches can be annotated with method annotations:
+With Harmony, the order of patches is not linear. A plugin/mod that comes last can still add patches that execute first. For this to work, patches need to be annotated with method annotations:
 
-* **[HarmonyPriority(int)]**  
-	Sets the priority of this Prefix/Postfix. Defaults to Priority.Normal (400)
+- **[HarmonyPriority(int)]**
+  Sets the priority of this Prefix/Postfix. Defaults to Priority.Normal (400)
 
-* **[HarmonyBefore(string[])]**  
-	Indicates that this Prefix/Postfix should be executed before any of the ID's given
+- **[HarmonyBefore(string[])]**
+  Indicates that this Prefix/Postfix should be executed before any of the ID's given
 
-* **[HarmonyAfter(string[])]**  
-	Indicates that this Prefix/Postfix should be executed after any of the ID's given
+- **[HarmonyAfter(string[])]**
+  Indicates that this Prefix/Postfix should be executed after any of the ID's given
 
 Example:
 

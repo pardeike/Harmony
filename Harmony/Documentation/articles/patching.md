@@ -4,9 +4,13 @@
 
 In order to provide your own code to Harmony, you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.
 
-#### Main types of patches
+#### Types of patches
 
-Two of them, **Prefix** and **Postfix** are high level and you can write them as simple static methods. The third, called **Transpiler**, is not a method that is executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.
+Two of them, the **Prefix** patch and the **Postfix** patch are easy to understand and you can write them as simple static methods.
+
+A **Transpiler** patch is not a method that is executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.
+
+Finally, a **Finalizer** patch is a static method that handles exceptions and can change them. It is the only patch type that is immune to exceptions thrown by the original method or by any applied patches. The other patch types are considered part of the original and may not get executed when an exception occurs.
 
 #### Patches need to be static
 
@@ -30,26 +34,26 @@ Harmony identifies your patch methods and their helper methods **by name**. If y
 [HarmonyPatch(...)]
 class Patch
 {
-    static void Prefix()
-    {
-        // this method uses the name "Prefix", no annotation necessary
-    }
+	static void Prefix()
+	{
+		// this method uses the name "Prefix", no annotation necessary
+	}
 
-    [HarmonyPostfix]
-    static void MyOwnName()
-    {
-        // this method is a Postfix as defined by the attribute
-    }
+	[HarmonyPostfix]
+	static void MyOwnName()
+	{
+		// this method is a Postfix as defined by the attribute
+	}
 }
 ```
 
 If you prefer manual patching, you can use any method name or class structure you want. You are responsible to retrieve the MethodInfo for the different patch methods and supply them to the Patch() method by wrapping them into HarmonyMethod objects.
 
-![note] Patch methods *must* be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.
+![note] Patch methods _must_ be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.
 
 ### Method names
 
-Manual patching knows only three main patch types: **Prefix**, **Postfix** and **Transpiler**. If you use attributes for patching, you can also use the helper methods: **Prepare**, **TargetMethod**, **TargetMethods** and **Cleanup** as explained below.
+Manual patching knows four main patch types: **Prefix**, **Postfix**, **Transpiler** and **Finalizer**. If you use attributes for patching, you can also use the helper methods: **Prepare**, **TargetMethod**, **TargetMethods** and **Cleanup** as explained below.
 
 Each of those names has a corresponding attribute starting with [Harmony...]. So instead of calling one of your methods "Prepare", you can call it anything and decorate it with a `[HarmonyPrepare]` attribute.
 
@@ -65,18 +69,26 @@ A prefix is a method that is executed before the original method. It is commonly
 - set the result of the original method
 - skip the original method
 - set custom state that can be recalled in the postfix
+- run a piece of code at the beginning that is guaranteed to be executed
 
 ### Postfix
 
 A postfix is a method that is executed after the original method. It is commonly used to:
- 
+
 - read or change the result of the original method
 - access the arguments of the original method
-- make sure your code is always executed
 - read custom state from the prefix
 
 ### Transpiler
 
 This method defines the transpiler that modifies the code of the original method. Use this in the advanced case where you want to modify the original methods IL codes.
+
+### Finalizer
+
+A finalizer is a method that is executed after all postfixes. It will wrap the original, all prefixes and postfixes in a try/catch logic and is either called with `null` (no exception) or with an exception if one occured. It is commonly used to:
+
+- run a piece of code at the end that is guaranteed to be executed
+- handle exceptions and suppress them
+- handle exceptions and alter them
 
 [note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png

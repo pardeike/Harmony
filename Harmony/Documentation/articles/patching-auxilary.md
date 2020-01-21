@@ -2,6 +2,8 @@
 
 ## Auxilary patch methods
 
+If you use manual patching, you are in full control of your state and the execution and handling of extra resources and logic. For annotation patching, Harmony offers you a number of methods you can implement on a patch class that allow you to execute code before and after patching on that class as well as methods that combine annotations with manually defining which methods that should be patched.
+
 ### Prepare
 
 Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called
@@ -13,7 +15,7 @@ static bool Prepare(Harmony instance)
 [HarmonyPrepare]
 static bool MyInitializer(...)
 ```
-	
+
 That method, if it exists, is expected to return a boolean that controls if patching will happen. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.
 
 ### TargetMethod
@@ -28,7 +30,7 @@ static MethodBase TargetMethod(Harmony instance)
 static MethodBase CalculateMethod()
 static MethodBase CalculateMethod(Harmony instance)
 ```
-	
+
 That method, if it exists, is expected to return a `MethodBase` of the method to be patched. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.
 
 ### TargetMethods
@@ -66,5 +68,5 @@ static void Cleanup(Harmony instance)
 [HarmonyCleanup]
 static void MyCleanup(...)
 ```
-	
+
 You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.

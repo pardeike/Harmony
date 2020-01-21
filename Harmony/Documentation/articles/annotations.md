@@ -1,15 +1,17 @@
 # Annotations
 
-When you use the **PatchAll(Assembly assembly)** call, Harmony will search through all classes and methods inside the given **assembly** looking for specific Harmony annotations.
+Instead of writing a lot of reflection code you can use annotations to define your original and patch methods in a declarative way. Harmony uses annotations in a hierarchical way on classes and methods in those classes to determine which original methods you want to patch with which patch methods and with which properties like priorities and such.
 
-### Example
+To simplify things, each original method you want to patch is usually represented by a "patch class", that is, a class that has at least one harmony patch annotation `[HarmonyPatch]`.
+
+When you call harmony.**PatchAll()**, Harmony will search through all classes and methods inside the given assembly looking for specific Harmony annotations.
 
 A typical patch consists of a class with annotations that looks like this:
 
 ```csharp
 [HarmonyPatch(typeof(SomeTypeHere))]
 [HarmonyPatch("SomeMethodName")]
-class MyPatchClass
+class MyPatches
 {
 	static void Postfix(...)
 	{
@@ -18,32 +20,87 @@ class MyPatchClass
 }
 ```
 
-This will annotate the class with enough information to identify the method to patch. Usually, you will have one class for each method that you want to patch. Inside that class, you define a combination of **Prefix**, **Postfix** or **Transpiler** methods. Harmony will find them by their name. If you annotate those methods you can even have different names.
+This example annotates the class with enough information to identify the method to patch. Inside that class, you define a combination of **Prefix**, **Postfix**, **Finalizer** or **Transpiler** methods. Harmony will find them by their name and if you annotate those methods you can even have different names.
 
-### Annotation types
+### Patch classes
 
-To indicate that a class contains patch methods it needs to be annotated with at lease one of the following class annotations:
-	
-* **[HarmonyPatch(Type, Type[])]**
-	Defines the type that contains the method to be patched (optional Type[] for generics)
+**Patch classes** can be public, private, static or not. **Patch methods** can be public or private but **must be static** since the patched original method does not have any reference to an instance of your patch class. If you use the manual way to specify the patch methods, your patch methods can even be DynamicMethod's.
 
-* **[HarmonyPatch(String)]**
-	Defines the method to be patched by name
+##### Limitations
 
-* **[HarmonyPatch(String, PropertyMethod)]**
-	Defines the property to be patched by name
+The only limitation is that annotations are not ordered (even if they appear so). At runtime, the order of methdos or multiple annotations on something is undefined. The consequence of this is that you cannot rely on order when you define multiple annotations that theoretically could overwrite each other like with normal inheritance. This normally isn't a problem unless you annotate multiple Prefix methods in a class and expect the order of the prefixes to be as in the source code (use priority annotations in this case).
 
-* **[HarmonyPatch(Type[])]**
-	Defines the parameters of the method to be patched (only necessary if multiple methods with the same name exist)
+### Annotation alternatives
 
-Additionally to repeating the basic annotations, the following shortcut can be used:
+To indicate that a class contains patch methods it needs to be annotated with at lease one annotations.
 
-* **[HarmonyPatch(Type, String, Type[])]**
-	Defines the type and method to be patched in a single annotation
+#### Basic annotations
 
-### Combining annotations
+Basic annotations need to be combined to define all aspects of your original method:
 
-The combination of those annotations defines the target method. Examples:
+**Empty annotation**
+
+```csharp
+// The empty annotation marks the class as a patch class. Harmony will consider the class and its methods.
+[HarmonyPatch]
+```
+
+**Class/Type annotation**
+
+```csharp
+// Use the type annotation to define the class/type that contains your original method/property/constructor
+[HarmonyPatch(Type declaringType)]
+```
+
+**Name annotation**
+
+```csharp
+// Use the string annotation to define the name of the method or property
+[HarmonyPatch(string methodName)]
+
+// or for methods with overloads add an optional argument type array:
+[HarmonyPatch(string methodName, params Type[] argumentTypes)]
+```
+
+**Method Type annotation**
+
+```csharp
+// Defines the type (Method, Getter, Setter, Constructor) to be patched
+[HarmonyPatch(MethodType methodType)]
+```
+
+**Arguments annotation**
+
+```csharp
+// For overloads this defines the argument types of the method/constructor
+[HarmonyPatch(Type[] argumentTypes)]
+
+// Since annotations cannot contain code and you cannot use .MakeByRefType(), the second
+// form allows for a ArgumentType array defining the type of each argument type
+// Normal, Ref, Out or Pointer. Both arrays need to have the same number of elements:
+[HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)]
+```
+
+#### Combination annotations
+
+Beside combining the basic annotations you can also pick from the many combination annotations to express things more compact:
+
+```csharp
+[HarmonyPatch(Type, string)]
+[HarmonyPatch(Type declaringType, Type[] argumentTypes)]
+[HarmonyPatch(Type declaringType, string methodName)]
+[HarmonyPatch(Type declaringType, string methodName, params Type[] argumentTypes)]
+[HarmonyPatch(Type declaringType, string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+[HarmonyPatch(Type declaringType, MethodType methodType)]
+[HarmonyPatch(Type declaringType, MethodType methodType, params Type[] argumentTypes)]
+[HarmonyPatch(Type declaringType, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+[HarmonyPatch(string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+[HarmonyPatch(string methodName, MethodType methodType)]
+[HarmonyPatch(MethodType methodType, params Type[] argumentTypes)]
+[HarmonyPatch(MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+```
+
+#### Examples
 
 To patch method **String.ToUpper()** :
 
@@ -71,17 +128,103 @@ To patch method **String.IndexOf(char, int)** :
 [HarmonyPatch(typeof(String), "IndexOf", new Type[] { typeof(char), typeof(int) })]
 ```
 
-Patch classes can be public or private, static or not. Patch methods can be public or private but must be static since the patched original method does not have any reference to an instance of your patch class. If you use the manual way to specify the patch methods, your patch methods can even be DynamicMethod's.
+#### Constructors
 
-### Constructors
+To patch constructors, you use the annotations that contain a `MethodType` argument and set it to `MethodType.Constructor`:
 
-To patch constructors, do not use the method name ".ctor". Instead, omit the method name completely and only specify the argument types. Example:
-
-```cshapr
+```csharp
+// default constructor:
+[HarmonyPatch(typeof(TestClass), MethodType.Constructor)]
+// or with an overload:
+[HarmonyPatch(typeof(TestClass), MethodType.Constructor, new Type[] { typeof(int) })]
+// same with multiple rows:
 [HarmonyPatch(typeof(TestClass))]
-[HarmonyPatch(new Type[] { })]
+[HarmonyPatch(MethodType.Constructor)]
+[HarmonyPatch(new Type[] { typeof(int) })]
 ```
 
-### Generic Methods
+#### Getters/Setters
 
-To patch methods with generic signatures, you need to patch specific versions of the method. It is not possible to patch an open generic method. Example: AddItem(**T** item) cannot be patched directly but you can define one patch for i.e. AddItem(**string** item) and one for AddItem(**int** item). Pro tip: to patch a large number of variations, create your patches dynamically.
+To patch constructors you use the annotations that contain a `MethodType` argument and set it to `MethodType.Getter` or `MethodType.Setter`:
+
+```csharp
+// in one row:
+[HarmonyPatch(typeof(TestClass), "GameInstance", MethodType.Getter)]
+// in two rows:
+[HarmonyPatch(typeof(TestClass))]
+[HarmonyPatch("GameInstance", MethodType.Getter)]
+```
+
+#### Generic Methods
+
+To patch methods with generic signatures, you need to patch specific versions of the method. It is not possible to patch an open generic method. Example: AddItem(**T** item) cannot be patched directly but you can define one patch for i.e. AddItem(**string** item) and one for AddItem(**int** item):
+
+```csharp
+[HarmonyPatch(typeof(TestClass<string>), "AddItem")]
+```
+
+#### Patching multiple methods
+
+To simplify multiple patches while still using annotations, you can combine annotations with `TargetMethod()` and `TargetMethods()`:
+
+```csharp
+[HarmonyPatch] // make sure Harmony inspects the class
+class MyPatches()
+{
+	IEnumerable<MethodBase> TargetMethods()
+	{
+		return AccessTools.GetTypesFromAssembly(someAssembly)
+			.SelectMany(type => type.GetDeclaredMethods())
+			.Where(method => method.ReturnType != typeof(void) && method.Name.StartsWith("Player"))
+			.Cast<MethodBase>();
+	}
+
+	// prefix all methods in someAssembly with a non-void return type and beginning with "Player"
+	static void Prefix(MethodBase __originalMethod)
+	{
+		// use __originalMethod to decide what to do
+	}
+}
+```
+
+### Combining annotations
+
+The combination of those annotations defines the target method. Annotations are **inherited** from class to method so you can use `[HarmonyPatch(Type)]` on the class and `[HarmonyPatch(String)]` on one of its methods to combine both.
+
+```csharp
+[HarmonyPatch(typeof(SomeType))]
+class MyPatches1
+{
+	[HarmonyPatch("SomeMethod1")]
+	static void Postfix() { }
+
+	[HarmonyPatch("SomeMethod2")]
+	static void Postfix() { }
+}
+
+[HarmonyPatch(typeof(TypeA))]
+class MyPatches2
+{
+	[HarmonyPatch("SomeMethod1")]
+	static void Prefix() { }
+
+	[HarmonyPatch("SomeMethod2")]
+	static void Prefix() { }
+
+	[HarmonyPatch(typeof(TypeB), "SomeMethod1")]
+	static void Postfix() { }
+}
+
+[HarmonyPatch]
+class MyPatches3
+{
+	[HarmonyPatch(typeof(TypeA), "SomeMethod1")]
+	static void Prefix() { }
+
+	[HarmonyPatch(typeof(TypeB), "SomeMethod2")]
+	static void Postfix() { }
+
+	[HarmonyPatch(typeof(TypeC), "SomeMethod3")]
+	static void Finalizer() { }
+}
+```

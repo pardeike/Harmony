@@ -1,12 +1,12 @@
 # Introduction
 
-*Harmony - a library for patching, replacing and decorating .NET methods during runtime.*
+_Harmony - a library for patching, replacing and decorating .NET methods during runtime._
 
 ## Prerequisites
 
-Harmony works with all languages that compile to [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), Microsofts intermediate byte code language. This is foremost the [.NET Framework](https://wikipedia.org/wiki/Portal:.NET_Framework) and of course [Mono](https://wikipedia.org/wiki/Mono_(software)) - used by the game engine Unity.
+Harmony works with all languages that compile to [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), Microsofts intermediate byte code language. This is foremost the [.NET Framework](https://wikipedia.org/wiki/Portal:.NET_Framework) and of course [Mono](<https://wikipedia.org/wiki/Mono_(software)>) - used by the game engine Unity.
 
-The exception is [.NET Core](https://wikipedia.org/wiki/.NET_Core), which does not provide the functionality to fully create methods on the fly at runtime. Chances are that .NET Core v3 might include everything to support Harmony [[See this Issue](https://github.com/dotnet/corefx/issues/29715)]
+The exception is probably [Unity .NET Standard profile](https://docs.unity3d.com/2019.1/Documentation/Manual/dotnetProfileSupport.html), which does not provide the functionality to fully create methods on the fly at runtime.
 
 ### Bootstrapping and Injection
 
@@ -29,8 +29,8 @@ It has no other dependencies and will most likely work in other environments too
 
 If you want to change how an exising C# application like a game works and you don't have the source code for that application, you have basically two options to do that:
 
-1) Alter dll files on disk  
-2) Re-point method implementations (hooking)
+1. Alter dll files on disk
+2. Re-point method implementations (hooking)
 
 Depending on the needs and situation, altering dll files is not always a desirable solution. For example
 
@@ -41,21 +41,21 @@ Depending on the needs and situation, altering dll files is not always a desirab
 
 Harmony focuces only on runtime changes that don't affect files on disk:
 
-- less conflicts with multiple mods  
-- supports existing mod loaders  
-- changes can be made dynamically/conditionally  
-- the patch order can be flexible  
-- other mods can be patched too  
-- less legal issues  
+- less conflicts with multiple mods
+- supports existing mod loaders
+- changes can be made dynamically/conditionally
+- the patch order can be flexible
+- other mods can be patched too
+- less legal issues
 
 ## How Harmony works
 
 Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:
 
-* A way to keep the original method intact
-* Execute your code before and/or after the original method
-* Modify the original with IL code processors
-* Multiple Harmony patches co-exist and don't conflict with each other
+- A way to keep the original method intact
+- Execute your code before and/or after the original method
+- Modify the original with IL code processors
+- Multiple Harmony patches co-exist and don't conflict with each other
 
 ![](https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/patch-logic.svg?sanitize=true)
 
@@ -70,6 +70,8 @@ Where other patch libraries simply allow you to replace the original method, Har
 - Methods that are too small might get [inlined](https://wikipedia.org/wiki/Inline_expansion) and your patches will not run.
 
 - You cannot add fields to classes and you cannot extend enums (they get compiled into ints).
+
+- Patching generic methods or methods in generic classes is difficult and might not work as you expect it to.
 
 ## Hello World Example
 
@@ -104,7 +106,7 @@ public class MyPatcher
 {
 	// make sure DoPatching() is called at start either by
 	// the mod loader or by your injector
-	
+
 	public static void DoPatching()
 	{
 		var harmony = new Harmony("com.example.patch");
@@ -116,7 +118,7 @@ public class MyPatcher
 [HarmonyPatch("DoSomething")]
 class Patch01
 {
-	static FieldRef<SomeGameClass,bool> isRunningRef = 
+	static FieldRef<SomeGameClass,bool> isRunningRef =
 		AccessTools.FieldRefAccess<SomeGameClass, bool>("isRunning");
 
 	static bool Prefix(SomeGameClass __instance, ref int ___counter)
@@ -147,24 +149,24 @@ public class MyPatcher
 {
 	// make sure DoPatching() is called at start either by
 	// the mod loader or by your injector
-	
+
 	public static void DoPatching()
 	{
 		var harmony = new Harmony("com.example.patch");
-		
+
 		var mOriginal = typeof(SomeGameClass).GetMethod("DoSomething", BindingFlags.Instance | BindingFlags.NonPublic);
 		var mPrefix = typeof(MyPatcher).GetMethod("MyPrefix", BindingFlags.Static | BindingFlags.Public);
 		var mPostfix = typeof(MyPatcher).GetMethod("MyPostfix", BindingFlags.Static | BindingFlags.Public);
 		// add null checks here
-		
+
 		harmony.Patch(mOriginal, new HarmonyMethod(mPrefix), new HarmonyMethod(mPostfix));
 	}
-	
+
 	public static void MyPrefix()
 	{
 		// ...
 	}
-	
+
 	public static void MyPostfix()
 	{
 		// ...
