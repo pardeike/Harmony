@@ -72,7 +72,7 @@
 <p><em>Harmony - a library for patching, replacing and decorating .NET methods during runtime.</em></p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>Harmony works with all languages that compile to <a href="https://wikipedia.org/wiki/Common_Intermediate_Language">CIL</a>, Microsofts intermediate byte code language. This is foremost the <a href="https://wikipedia.org/wiki/Portal:.NET_Framework">.NET Framework</a> and of course <a href="https://wikipedia.org/wiki/Mono_(software)">Mono</a> - used by the game engine Unity.</p>
-<p>The exception is <a href="https://wikipedia.org/wiki/.NET_Core">.NET Core</a>, which does not provide the functionality to fully create methods on the fly at runtime. Chances are that .NET Core v3 might include everything to support Harmony [<a href="https://github.com/dotnet/corefx/issues/29715">See this Issue</a>]</p>
+<p>The exception is probably <a href="https://docs.unity3d.com/2019.1/Documentation/Manual/dotnetProfileSupport.html">Unity .NET Standard profile</a>, which does not provide the functionality to fully create methods on the fly at runtime.</p>
 <h3 id="bootstrapping-and-injection">Bootstrapping and Injection</h3>
 <p>Harmony does not provide you with a way to run your own code within an application that is not designed to execute foreign code. You need a way to inject at least the few lines that start the Harmony patching and this is usually done with a loader. Here are some common examples of loaders (incomplete):</p>
 <ul>
@@ -128,6 +128,8 @@
 </li>
 <li><p>You cannot add fields to classes and you cannot extend enums (they get compiled into ints).</p>
 </li>
+<li><p>Patching generic methods or methods in generic classes is difficult and might not work as you expect it to.</p>
+</li>
 </ul>
 <h2 id="hello-world-example">Hello World Example</h2>
 <p>Original game code:</p>
@@ -156,7 +158,7 @@ public class MyPatcher
 {
 	// make sure DoPatching() is called at start either by
 	// the mod loader or by your injector
-	
+
 	public static void DoPatching()
 	{
 		var harmony = new Harmony(&quot;com.example.patch&quot;);
@@ -168,7 +170,7 @@ public class MyPatcher
 [HarmonyPatch(&quot;DoSomething&quot;)]
 class Patch01
 {
-	static FieldRef&lt;SomeGameClass,bool&gt; isRunningRef = 
+	static FieldRef&lt;SomeGameClass,bool&gt; isRunningRef =
 		AccessTools.FieldRefAccess&lt;SomeGameClass, bool&gt;(&quot;isRunning&quot;);
 
 	static bool Prefix(SomeGameClass __instance, ref int ___counter)
@@ -196,24 +198,24 @@ public class MyPatcher
 {
 	// make sure DoPatching() is called at start either by
 	// the mod loader or by your injector
-	
+
 	public static void DoPatching()
 	{
 		var harmony = new Harmony(&quot;com.example.patch&quot;);
-		
+
 		var mOriginal = typeof(SomeGameClass).GetMethod(&quot;DoSomething&quot;, BindingFlags.Instance | BindingFlags.NonPublic);
 		var mPrefix = typeof(MyPatcher).GetMethod(&quot;MyPrefix&quot;, BindingFlags.Static | BindingFlags.Public);
 		var mPostfix = typeof(MyPatcher).GetMethod(&quot;MyPostfix&quot;, BindingFlags.Static | BindingFlags.Public);
 		// add null checks here
-		
+
 		harmony.Patch(mOriginal, new HarmonyMethod(mPrefix), new HarmonyMethod(mPostfix));
 	}
-	
+
 	public static void MyPrefix()
 	{
 		// ...
 	}
-	
+
 	public static void MyPostfix()
 	{
 		// ...

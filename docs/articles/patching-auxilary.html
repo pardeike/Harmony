@@ -70,6 +70,7 @@
 <h1 id="patching">Patching</h1>
 
 <h2 id="auxilary-patch-methods">Auxilary patch methods</h2>
+<p>If you use manual patching, you are in full control of your state and the execution and handling of extra resources and logic. For annotation patching, Harmony offers you a number of methods you can implement on a patch class that allow you to execute code before and after patching on that class as well as methods that combine annotations with manually defining which methods that should be patched.</p>
 <h3 id="prepare">Prepare</h3>
 <p>Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static bool Prepare()

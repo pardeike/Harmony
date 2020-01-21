@@ -669,7 +669,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/annotations.html",
-          "hash": "eDoLBOi462oHgJmXM2iFGg=="
+          "hash": "EDj/+aJi0FE32DS1IZM7uQ=="
         }
       },
       "is_incremental": false,
@@ -705,7 +705,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "VNKo9+GbtxpKb15cFq+ldg=="
+          "hash": "eAWK2lVyw8nNhDrlTeYUfQ=="
         }
       },
       "is_incremental": false,
@@ -717,7 +717,19 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-auxilary.html",
-          "hash": "VLX9pU7xSYI54OzXF4rXWw=="
+          "hash": "eLZYPdc+dSz/XooDGuY7zw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/patching-finalizer.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-finalizer.html",
+          "hash": "aQ27P730cP2ZyJ/NCAFnfA=="
         }
       },
       "is_incremental": false,
@@ -729,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-injections.html",
-          "hash": "0pRxfveAyIFTuuk+hvldMw=="
+          "hash": "v0LWu8kIjHvzsaTvY2uxDg=="
         }
       },
       "is_incremental": false,
@@ -741,7 +753,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-postfix.html",
-          "hash": "V/JTJAl65ftrGyO5pSm5kA=="
+          "hash": "DVCor9Jr5c2+C6hgiIG26g=="
         }
       },
       "is_incremental": false,
@@ -753,7 +765,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-prefix.html",
-          "hash": "PzRku7XQ7zigEqAwaP4DfA=="
+          "hash": "nK3ppyt5nbvIqH/O905/ZQ=="
         }
       },
       "is_incremental": false,
@@ -765,7 +777,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-transpiler.html",
-          "hash": "SGRKwQwL3u1+VahCcZsbqA=="
+          "hash": "wfRI0nbEJQa2tDkV/duo9Q=="
         }
       },
       "is_incremental": false,
@@ -777,7 +789,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching.html",
-          "hash": "poqAibT7oy+gMgrX3U/tMg=="
+          "hash": "ENxHKpiEawU5RjXaPlumSQ=="
         }
       },
       "is_incremental": false,
@@ -789,7 +801,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/priorities.html",
-          "hash": "qZ5CD59FLuC320C/D+RLiQ=="
+          "hash": "OOefR1sLAdyFnq2pMNpnFQ=="
         }
       },
       "is_incremental": false,
@@ -801,7 +813,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "WWPFBFMbN0LcqwZRbDfldw=="
+          "hash": "lsWQ4H504DddjJkJOMzi4Q=="
         }
       },
       "is_incremental": false,
@@ -902,28 +914,28 @@
         "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 14,
-          "skipped_file_count": 0
-        },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 53,
           "skipped_file_count": 0
         },
-        "ResourceDocumentProcessor": {
+        "ConceptualDocumentProcessor": {
           "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
-          "total_file_count": 0,
+          "total_file_count": 15,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
           "total_file_count": 0,
           "skipped_file_count": 0

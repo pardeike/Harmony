@@ -74,101 +74,102 @@
 <ul>
 <li>access and edit the arguments of the original method</li>
 <li>set the result of the original method</li>
-<li>skip the original method</li>
+<li>skip the original method and prefixes that alter its input/result</li>
 <li>set custom state that can be recalled in the postfix</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> The first prefix that skips the original will skip all remaining prefixes too. Postfixes are not affected.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> The first prefix that returns false will skip all remaining prefixes unless they have no side effects (no return value, no ref arguments) and will skip the original too. Postfixes and Finalizers are not affected.</p>
 <h3 id="reading-and-changing-arguments">Reading and changing arguments</h3>
 <pre><code class="lang-csharp">public class OriginalCode
 {
-    public void Test(int counter, string name)
-    {
-        // ...
-    }
+	public void Test(int counter, string name)
+	{
+		// ...
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
 class Patch
 {
-    static void Prefix(int counter, ref string name)
-    {  
-        FileLog.Log(&quot;counter = &quot; + counter); // read
-        name = &quot;test&quot;; // write with ref keyword
-    }
+	static void Prefix(int counter, ref string name)
+	{
+		FileLog.Log(&quot;counter = &quot; + counter); // read
+		name = &quot;test&quot;; // write with ref keyword
+	}
 }
 </code></pre>
 <h3 id="changing-the-result-and-skipping-the-original">Changing the result and skipping the original</h3>
 <p>To change the result of the original, use <code>__result</code> as an argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.</p>
-<p>To skip the original, let the prefix return a <code>bool</code> and return <code>true</code> to let the original run after all prefixes or <code>false</code> to stop executing prefixes and skip the original. Postfixes will always be executed.</p>
+<p>To skip the original, let the prefix return a <code>bool</code> and return <code>true</code> to let the original run after all prefixes or <code>false</code> to stop executing prefixes and skip the original.</p>
 <p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> It is not recommended to skip the original unless you want to completely change the way it works. If you only want a small change or a side effect, using a postfix or a transpiler is always preferred since it allows for multiple users changing the original without each implementation fighting over how the original should behave.</p>
 <pre><code class="lang-csharp">public class OriginalCode
 {
-    public string GetName()
-    {
-        // ...
-    }
+	public string GetName()
+	{
+		// ...
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), &quot;GetName&quot;)]
 class Patch
 {
-    static bool Prefix(ref string __result)
-    {  
-        __result = &quot;test&quot;;
-        return true; // make sure you only skip if really necessary
-    }
+	static bool Prefix(ref string __result)
+	{
+		__result = &quot;test&quot;;
+		return true; // make sure you only skip if really necessary
+	}
 }
 </code></pre>
-<p>Some users have trouble understanding the disconnect between altering what the original method returns and what the Prefix returns. The following example is meant to illustrate that the boolean return value of the Prefix only determines if the original gets run or not.</p>
+<p>Here is another example showing the diference between what the original method returns and what the Prefix returns. it illustrate that the boolean return value of the Prefix only determines if the original gets executed or not.</p>
 <pre><code class="lang-csharp">public class OriginalCode
 {
-    public bool IsFullAfterTakingIn(int i)
-    {
-        // do expensive calculations
-    }
+	public bool IsFullAfterTakingIn(int i)
+	{
+		// do expensive calculations
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), &quot;IsFullAfterTakingIn&quot;)]
 class Patch
 {
-    static bool Prefix(ref bool __result, int i)
-    {  
-        if (i &gt; 5)
-        {
-            __result = true; // any call to IsFullAfterTakingIn(i) where i &gt; 5 now immediately returns true
-           return false; // skips the original and its expensive calculations
-        }
-        return true; // make sure you only skip if really necessary
-    }
+	static bool Prefix(ref bool __result, int i)
+	{
+		if (i &gt; 5)
+		{
+			__result = true; // any call to IsFullAfterTakingIn(i) where i &gt; 5 now immediately returns true
+			return false; // skips the original and its expensive calculations
+		}
+		return true; // make sure you only skip if really necessary
+	}
 }
 </code></pre>
 <h3 id="passing-state-between-prefix-and-postfix">Passing state between prefix and postfix</h3>
 <p>If you want to share state between your prefix and the corresponding postfix, you can use <code>__state</code> (with the <code>ref</code> or <code>out</code> keyword). If you need more than one value you can create your own type and pass it instead.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> This only works if Prefix and Postfix are defined in the same class since Harmony internally uses the declaring type as a key to store the information.</p>
 <pre><code class="lang-cs">public class OriginalCode
 {
-    public void Test(int counter, string name)
-    {
-        // ...
-    }
+	public void Test(int counter, string name)
+	{
+		// ...
+	}
 }
 
 [HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
 class Patch
 {
-    // this example uses a Stopwatch type to measure
-    // and share state between prefix and postfix
+	// this example uses a Stopwatch type to measure
+	// and share state between prefix and postfix
 
-    static void Prefix(out Stopwatch __state)
-    {  
-        __state = new Stopwatch(); // assign your own state
-        __state.Start();
-    }
+	static void Prefix(out Stopwatch __state)
+	{
+		__state = new Stopwatch(); // assign your own state
+		__state.Start();
+	}
 
-    static void Postfix(Stopwatch __state)
-    {  
-        __state.Stop();
-        FileLog.Log(__state.Elapsed);
-    }
+	static void Postfix(Stopwatch __state)
+	{
+		__state.Stop();
+		FileLog.Log(__state.Elapsed);
+	}
 }
 </code></pre>
 </article>

@@ -71,8 +71,10 @@
 
 <h2 id="concept">Concept</h2>
 <p>In order to provide your own code to Harmony, you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.</p>
-<h4 id="main-types-of-patches">Main types of patches</h4>
-<p>Two of them, <strong>Prefix</strong> and <strong>Postfix</strong> are high level and you can write them as simple static methods. The third, called <strong>Transpiler</strong>, is not a method that is executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.</p>
+<h4 id="types-of-patches">Types of patches</h4>
+<p>Two of them, the <strong>Prefix</strong> patch and the <strong>Postfix</strong> patch are easy to understand and you can write them as simple static methods.</p>
+<p>A <strong>Transpiler</strong> patch is not a method that is executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.</p>
+<p>Finally, a <strong>Finalizer</strong> patch is a static method that handles exceptions and can change them. It is the only patch type that is immune to exceptions thrown by the original method or by any applied patches. The other patch types are considered part of the original and may not get executed when an exception occurs.</p>
 <h4 id="patches-need-to-be-static">Patches need to be static</h4>
 <p>Patch methods need to be static because Harmony works with multiple users in different assemblies in mind. In order to guarantee the correct patching order, patches are always re-applied as soon as someone wants to change the original. Since it is hard to serialize data in a generic way across assemblies in .NET, Harmony only stores a method pointer to your patch methods so it can use and apply them at a later point again.</p>
 <p>If you need custom state in your patches, it is recommended to use a static variable and store all your patch state in there. Keep in mind that Transpilers are only executed to generate the method so they don't &quot;run&quot; when the original is executed.</p>
@@ -85,22 +87,22 @@
 <pre><code class="lang-csharp">[HarmonyPatch(...)]
 class Patch
 {
-    static void Prefix()
-    {
-        // this method uses the name &quot;Prefix&quot;, no annotation necessary
-    }
+	static void Prefix()
+	{
+		// this method uses the name &quot;Prefix&quot;, no annotation necessary
+	}
 
-    [HarmonyPostfix]
-    static void MyOwnName()
-    {
-        // this method is a Postfix as defined by the attribute
-    }
+	[HarmonyPostfix]
+	static void MyOwnName()
+	{
+		// this method is a Postfix as defined by the attribute
+	}
 }
 </code></pre>
 <p>If you prefer manual patching, you can use any method name or class structure you want. You are responsible to retrieve the MethodInfo for the different patch methods and supply them to the Patch() method by wrapping them into HarmonyMethod objects.</p>
 <p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> Patch methods <em>must</em> be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.</p>
 <h3 id="method-names">Method names</h3>
-<p>Manual patching knows only three main patch types: <strong>Prefix</strong>, <strong>Postfix</strong> and <strong>Transpiler</strong>. If you use attributes for patching, you can also use the helper methods: <strong>Prepare</strong>, <strong>TargetMethod</strong>, <strong>TargetMethods</strong> and <strong>Cleanup</strong> as explained below.</p>
+<p>Manual patching knows four main patch types: <strong>Prefix</strong>, <strong>Postfix</strong>, <strong>Transpiler</strong> and <strong>Finalizer</strong>. If you use attributes for patching, you can also use the helper methods: <strong>Prepare</strong>, <strong>TargetMethod</strong>, <strong>TargetMethods</strong> and <strong>Cleanup</strong> as explained below.</p>
 <p>Each of those names has a corresponding attribute starting with [Harmony...]. So instead of calling one of your methods &quot;Prepare&quot;, you can call it anything and decorate it with a <code>[HarmonyPrepare]</code> attribute.</p>
 <h2 id="patch-method-types">Patch method types</h2>
 <p>Both prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments.</p>
@@ -111,17 +113,24 @@ class Patch
 <li>set the result of the original method</li>
 <li>skip the original method</li>
 <li>set custom state that can be recalled in the postfix</li>
+<li>run a piece of code at the beginning that is guaranteed to be executed</li>
 </ul>
 <h3 id="postfix">Postfix</h3>
 <p>A postfix is a method that is executed after the original method. It is commonly used to:</p>
 <ul>
 <li>read or change the result of the original method</li>
 <li>access the arguments of the original method</li>
-<li>make sure your code is always executed</li>
 <li>read custom state from the prefix</li>
 </ul>
 <h3 id="transpiler">Transpiler</h3>
 <p>This method defines the transpiler that modifies the code of the original method. Use this in the advanced case where you want to modify the original methods IL codes.</p>
+<h3 id="finalizer">Finalizer</h3>
+<p>A finalizer is a method that is executed after all postfixes. It will wrap the original, all prefixes and postfixes in a try/catch logic and is either called with <code>null</code> (no exception) or with an exception if one occured. It is commonly used to:</p>
+<ul>
+<li>run a piece of code at the end that is guaranteed to be executed</li>
+<li>handle exceptions and suppress them</li>
+<li>handle exceptions and alter them</li>
+</ul>
 </article>
           </div>
           
