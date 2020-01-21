@@ -20,9 +20,17 @@ Patches can use an argument named `__state` to store information in the prefix m
 
 Argument names starting with three underscores, for example `___someField`, can be used to read and (with `ref`) write private fields on the instance that has the corresponding name (minus the underscores).
 
-### Argument types
+### Original Method Argument Matching
 
-Arguments from the original must use the exact same name and type as the original method but using `object` is ok too.
+In order for the original method arguments to be properly matched to the patched method, some restrictions are placed on the types and names of arguments in the patched method.
+
+#### Argument Types
+
+The type of a given argument (that is to be matched to the argument of the original method) must either: be the same type _or_ be the `object` type.
+
+#### Argument Names
+
+The name of a given argument (that is to be matched to the argument of the original method) must either: be the same name _or_ of the form `__X`, where `X` is the zero-based index of the argument in the orignal method.
 
 ### The original
 
