@@ -96,21 +96,22 @@ namespace HarmonyLib
 		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
 			var processor = new PatchProcessor(this, original);
-			processor.AddPrefix(prefix);
-			processor.AddPostfix(postfix);
-			processor.AddTranspiler(transpiler);
-			processor.AddFinalizer(finalizer);
+			_ = processor.AddPrefix(prefix);
+			_ = processor.AddPostfix(postfix);
+			_ = processor.AddTranspiler(transpiler);
+			_ = processor.AddFinalizer(finalizer);
 			return processor.Patch().FirstOrDefault();
 		}
 
 		/// <summary>Unpatches methods</summary>
 		/// <param name="harmonyID">The optional Harmony ID to restrict unpatching to a specific instance</param>
+		/// <remarks>This method could be static if it wasn't for the fact that unpatching creates a new replacement method that contains your harmony ID</remarks>
 		///
 		public void UnpatchAll(string harmonyID = null)
 		{
 			bool IDCheck(Patch patchInfo) => harmonyID == null || patchInfo.owner == harmonyID;
 
-			var originals = GetPatchedMethods().ToList();
+			var originals = GetAllPatchedMethods().ToList();
 			foreach (var original in originals)
 			{
 				var info = GetPatchInfo(original);
@@ -129,7 +130,7 @@ namespace HarmonyLib
 		public void Unpatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
 		{
 			var processor = new PatchProcessor(this, original);
-			processor.Unpatch(type, harmonyID);
+			_ = processor.Unpatch(type, harmonyID);
 		}
 
 		/// <summary>Unpatches a method</summary>
@@ -139,7 +140,7 @@ namespace HarmonyLib
 		public void Unpatch(MethodBase original, MethodInfo patch)
 		{
 			var processor = new PatchProcessor(this, original);
-			processor.Unpatch(patch);
+			_ = processor.Unpatch(patch);
 		}
 
 		/// <summary>Test for patches from a specific Harmony ID</summary>
