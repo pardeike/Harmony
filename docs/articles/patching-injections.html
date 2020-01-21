@@ -79,8 +79,12 @@
 <p>Patches can use an argument named <code>__state</code> to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix.</p>
 <h3 id="private-fields">(Private) Fields</h3>
 <p>Argument names starting with three underscores, for example <code>___someField</code>, can be used to read and (with <code>ref</code>) write private fields on the instance that has the corresponding name (minus the underscores).</p>
-<h3 id="argument-types">Argument types</h3>
-<p>Arguments from the original must use the exact same name and type as the original method but using <code>object</code> is ok too.</p>
+<h3 id="original-method-argument-matching">Original Method Argument Matching</h3>
+<p>In order for the original method arguments to be properly matched to the patched method, some restrictions are placed on the types and names of arguments in the patched method.</p>
+<h4 id="argument-types">Argument Types</h4>
+<p>The type of a given argument (that is to be matched to the argument of the original method) must either: be the same type <em>or</em> be the <code>object</code> type.</p>
+<h4 id="argument-names">Argument Names</h4>
+<p>The name of a given argument (that is to be matched to the argument of the original method) must either: be the same name <em>or</em> of the form <code>__X</code>, where <code>X</code> is the zero-based index of the argument in the orignal method.</p>
 <h3 id="the-original">The original</h3>
 <p>To allow patch reusing, one can inject the original method by using an argument named <code>__originalMethod</code>.</p>
 <h3 id="special-arguments">Special arguments</h3>
