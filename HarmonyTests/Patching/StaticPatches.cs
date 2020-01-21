@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace HarmonyLibTests
 {
@@ -166,7 +167,7 @@ namespace HarmonyLibTests
 
 			(new Class5()).Method5("foo");
 			Assert.IsTrue(Class5Patch.prefixed, "Prefix was not executed");
-			Assert.IsTrue(Class5Patch.postfixed, "Prefix was not executed");
+			Assert.IsTrue(Class5Patch.postfixed, "Postfix was not executed");
 		}
 
 		[Test]
@@ -223,7 +224,7 @@ namespace HarmonyLibTests
 			(new AttributesClass()).Method("foo");
 			Assert.IsTrue(AttributesPatch.targeted, "TargetMethod was not executed");
 			Assert.IsTrue(AttributesPatch.postfixed, "Prefix was not executed");
-			Assert.IsTrue(AttributesPatch.postfixed, "Prefix was not executed");
+			Assert.IsTrue(AttributesPatch.postfixed, "Postfix was not executed");
 		}
 
 		[Test]
@@ -249,6 +250,40 @@ namespace HarmonyLibTests
 			_ = new Class10().Method10();
 			Assert.IsTrue(Class10Patch.postfixed);
 			Assert.IsTrue(Class10Patch.originalResult);
+		}
+
+		[Test]
+		public void TestMethod13()
+		{
+			var originalClass = typeof(List<>).MakeGenericType(typeof(int));
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("GetEnumerator");
+			Assert.IsNotNull(originalMethod);
+
+			_ = Class13Patch.cachedResult;
+
+			var patchClass = typeof(Class13Patch);
+			var postfix = patchClass.GetMethod("Postfix");
+			Assert.IsNotNull(postfix);
+
+			var instance = new Harmony("test");
+			Assert.IsNotNull(instance);
+
+			var patcher = instance.CreateProcessor(originalMethod);
+			Assert.IsNotNull(patcher);
+			_ = patcher.AddPostfix(postfix);
+			_ = patcher.Patch();
+
+			var list = new List<int>() { 1, 2, 3 };
+			var enumerator = list.GetEnumerator();
+			var result = new List<int>();
+			while (enumerator.MoveNext())
+				result.Add(enumerator.Current);
+
+			Assert.AreEqual(3, result.Count);
+			Assert.AreEqual(result[0], 100);
+			Assert.AreEqual(result[1], 200);
+			Assert.AreEqual(result[2], 300);
 		}
 	}
 }

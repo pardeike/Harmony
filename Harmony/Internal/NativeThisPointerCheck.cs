@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace HarmonyLib
 {
@@ -12,13 +11,29 @@ namespace HarmonyLib
 	internal class NativeThisPointer
 	{
 		internal static MethodInfo m_ArgumentShiftTranspiler = SymbolExtensions.GetMethodInfo(() => ArgumentShiftTranspiler(null));
+		static readonly Dictionary<Type, int> sizes = new Dictionary<Type, int>();
+
+		static int SizeOf(Type type)
+		{
+			if (sizes.TryGetValue(type, out var size))
+				return size;
+
+			var dm = new DynamicMethod("SizeOfType", typeof(int), new Type[0]);
+			var il = dm.GetILGenerator();
+			il.Emit(OpCodes.Sizeof, type);
+			il.Emit(OpCodes.Ret);
+			size = (int)dm.Invoke(null, null);
+
+			sizes.Add(type, size);
+			return size;
+		}
 
 		internal static bool NeedsNativeThisPointerFix(MethodBase method)
 		{
 			if (method.IsStatic) return false;
 			var returnType = AccessTools.GetReturnedType(method);
 			if (AccessTools.IsStruct(returnType) == false) return false;
-			var size = Marshal.SizeOf(returnType);
+			var size = SizeOf(returnType);
 			if (size != 3 && size != 5 && size != 6 && size != 7 && size < 9) return false;
 			return HasNativeThis();
 		}
@@ -33,8 +48,8 @@ namespace HarmonyLib
 				var self = new NativeThisPointer();
 				var original = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStruct");
 				var replacement = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStructReplacement");
-				Memory.DetourMethod(original, replacement);
-				self.GetStruct(magicValue, magicValue);
+				_ = Memory.DetourMethod(original, replacement);
+				_ = self.GetStruct(magicValue, magicValue);
 				hasTestResult = true;
 			}
 			return hasNativeThis;

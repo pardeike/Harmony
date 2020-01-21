@@ -589,6 +589,16 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Class13Patch
+	{
+		public static List<int>.Enumerator cachedResult = new List<int>() { 100, 200, 300 }.GetEnumerator();
+
+		public static List<int>.Enumerator Postfix(List<int>.Enumerator input)
+		{
+			return cachedResult;
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter
