@@ -130,15 +130,29 @@ namespace HarmonyLib
 				runtimeMethodInfo = f_m_value.GetValue(handle);
 			else
 			{
-				var m_GetMethodInfo = handle.GetType().GetMethod("GetMethodInfo", nonPublicInstance);
-				if (m_GetMethodInfo != null)
+				var f_Value = handle.GetType().GetField("Value", nonPublicInstance);
+				if (f_Value != null)
+					runtimeMethodInfo = f_Value.GetValue(handle);
+				else
 				{
-					var h_GetMethodInfo = MethodInvoker.GetHandler(m_GetMethodInfo);
-					runtimeMethodInfo = h_GetMethodInfo(handle, new object[0]);
+					var m_GetMethodInfo = handle.GetType().GetMethod("GetMethodInfo", nonPublicInstance);
+					if (m_GetMethodInfo != null)
+					{
+						var h_GetMethodInfo = MethodInvoker.GetHandler(m_GetMethodInfo);
+						runtimeMethodInfo = h_GetMethodInfo(handle, new object[0]);
+					}
 				}
 			}
 			if (runtimeMethodInfo != null)
 			{
+				// Core 3.1 fails for certain methods in the try statement below
+				// The following extraction is wrong and stands here as a reminder that
+				// we need to fix that runtimeMethodInfo sometimes is a RuntimeMethodInfoStub
+				//
+				//f_m_value = runtimeMethodInfo.GetType().GetField("m_value");
+				//if (f_m_value != null)
+				//	runtimeMethodInfo = f_m_value.GetValue(runtimeMethodInfo);
+
 				try
 				{
 					// this can throw BadImageFormatException "An attempt was made to load a program with an incorrect format"
