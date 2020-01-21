@@ -6,13 +6,15 @@ namespace HarmonyLibTests.Assets
 		{
 		}
 
-		public const string field1Value = "hello";
-		public const string field2Value = "dummy";
-		public const string field3Value = "!";
+		public const string field1Value = "f1";
+		public const string field2Value = "f2";
+		public const string field3Value = "f3";
+		public const string field4Value = "f4";
 
-		private string field;
+		private string field1;
 		private readonly string field2;
 		private static string field3 = field3Value;
+		private readonly static string field4 = field4Value;
 
 		int _property;
 
@@ -31,14 +33,16 @@ namespace HarmonyLibTests.Assets
 
 		public AccessToolsClass()
 		{
-			field = field1Value;
+			field1 = field1Value;
 			field2 = field2Value;
 			field3 = field3Value;
+			// Does not work on Net Core 3.x
+			// _ = Traverse.Create<AccessToolsClass>().Field("field4").SetValue(field4Value);
 		}
 
-		public string Method()
+		public string Method1()
 		{
-			return field;
+			return field1;
 		}
 
 		public string Method2()
@@ -48,12 +52,17 @@ namespace HarmonyLibTests.Assets
 
 		public void SetField(string val)
 		{
-			field = val;
+			field1 = val;
 		}
 
 		public string Method3()
 		{
 			return field3;
+		}
+
+		public string Method4()
+		{
+			return field4;
 		}
 	}
 

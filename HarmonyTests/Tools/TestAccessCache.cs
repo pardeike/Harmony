@@ -20,8 +20,8 @@ namespace HarmonyLibTests
 			_ = fields.TryGetValue(typeof(AccessToolsClass), out var infos);
 			Assert.IsNotNull(infos);
 
-			_ = infos.Remove("field");
-			infos.Add("field", typeof(AccessToolsClass).GetField("field2", AccessTools.all));
+			_ = infos.Remove("field1");
+			infos.Add("field1", typeof(AccessToolsClass).GetField("field2", AccessTools.all));
 		}
 
 		void InjectProperty(AccessCache cache)
@@ -45,7 +45,7 @@ namespace HarmonyLibTests
 			Assert.IsNotNull(methods);
 			_ = methods.TryGetValue(typeof(AccessToolsClass), out var dicts);
 			Assert.IsNotNull(dicts);
-			_ = dicts.TryGetValue("Method", out var infos);
+			_ = dicts.TryGetValue("Method1", out var infos);
 			Assert.IsNotNull(dicts);
 			var argumentHash = infos.Keys.ToList().First();
 			_ = infos.Remove(argumentHash);
@@ -57,19 +57,19 @@ namespace HarmonyLibTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNotNull((new AccessCache()).GetFieldInfo(type, "field"));
+			Assert.IsNotNull((new AccessCache()).GetFieldInfo(type, "field1"));
 
 			var cache1 = new AccessCache();
-			var finfo1 = cache1.GetFieldInfo(type, "field");
+			var finfo1 = cache1.GetFieldInfo(type, "field1");
 			InjectField(cache1);
 			var cache2 = new AccessCache();
-			var finfo2 = cache2.GetFieldInfo(type, "field");
+			var finfo2 = cache2.GetFieldInfo(type, "field1");
 			Assert.AreSame(finfo1, finfo2);
 
 			var cache = new AccessCache();
-			var finfo3 = cache.GetFieldInfo(type, "field");
+			var finfo3 = cache.GetFieldInfo(type, "field1");
 			InjectField(cache);
-			var finfo4 = cache.GetFieldInfo(type, "field");
+			var finfo4 = cache.GetFieldInfo(type, "field1");
 			Assert.AreNotSame(finfo3, finfo4);
 		}
 
@@ -99,19 +99,19 @@ namespace HarmonyLibTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNotNull((new AccessCache()).GetMethodInfo(type, "Method", Type.EmptyTypes));
+			Assert.IsNotNull((new AccessCache()).GetMethodInfo(type, "Method1", Type.EmptyTypes));
 
 			var cache1 = new AccessCache();
-			var minfo1 = cache1.GetMethodInfo(type, "Method", Type.EmptyTypes);
+			var minfo1 = cache1.GetMethodInfo(type, "Method1", Type.EmptyTypes);
 			InjectMethod(cache1);
 			var cache2 = new AccessCache();
-			var minfo2 = cache2.GetMethodInfo(type, "Method", Type.EmptyTypes);
+			var minfo2 = cache2.GetMethodInfo(type, "Method1", Type.EmptyTypes);
 			Assert.AreSame(minfo1, minfo2);
 
 			var cache = new AccessCache();
-			var minfo3 = cache.GetMethodInfo(type, "Method", Type.EmptyTypes);
+			var minfo3 = cache.GetMethodInfo(type, "Method1", Type.EmptyTypes);
 			InjectMethod(cache);
-			var minfo4 = cache.GetMethodInfo(type, "Method", Type.EmptyTypes);
+			var minfo4 = cache.GetMethodInfo(type, "Method1", Type.EmptyTypes);
 			Assert.AreNotSame(minfo3, minfo4);
 		}
 	}

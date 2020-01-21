@@ -733,19 +733,19 @@ namespace HarmonyLib
 			}).ToArray();
 		}
 
-		/// <summary>A read/writable reference to a field</summary>
-		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <summary>A read/writable reference to an instance field</summary>
+		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="obj">The runtime instance to access the field (leave empty for static fields)</param>
-		/// <returns>The value of the field (or an assignable object)</returns>
+		/// <returns>An readable/assignable object representing the field</returns>
 		///
 		public delegate ref F FieldRef<T, F>(T obj = default);
 
-		/// <summary>Creates a field reference</summary>
-		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <summary>Creates an instance field reference</summary>
+		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>A read and writable field reference</returns>
+		/// <returns>A read and writable field reference delegate</returns>
 		///
 		public static FieldRef<T, F> FieldRefAccess<T, F>(string fieldName)
 		{
@@ -757,23 +757,23 @@ namespace HarmonyLib
 			return FieldRefAccess<T, F>(fi);
 		}
 
-		/// <summary>Creates a field reference for a specific instance</summary>
-		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <summary>Creates an instance field reference for a specific instance</summary>
+		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>A read and writable field reference</returns>
+		/// <returns>An readable/assignable object representing the field</returns>
 		///
 		public static ref F FieldRefAccess<T, F>(T instance, string fieldName)
 		{
 			return ref FieldRefAccess<T, F>(fieldName)(instance);
 		}
 
-		/// <summary>Creates a field reference</summary>
+		/// <summary>Creates an instance field reference delegate</summary>
 		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldInfo">FieldInfo for the field</param>
-		/// <returns>A read and writable field reference</returns>
+		/// <returns>A read and writable field reference delegate</returns>
 		///
 		public static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo)
 		{
@@ -804,17 +804,17 @@ namespace HarmonyLib
 			return (FieldRef<T, F>)dm.CreateDelegate(typeof(FieldRef<T, F>));
 		}
 
-		/// <summary>A read/writable reference to a static field</summary>
+		/// <summary>A read/writable reference delegate to a static field</summary>
 		/// <typeparam name="F">The type of the field</typeparam>
-		/// <returns>The value of the field (or an assignable object)</returns>
+		/// <returns>An readable/assignable object representing the static field</returns>
 		///
 		public delegate ref F FieldRef<F>();
 
 		/// <summary>Creates a static field reference</summary>
-		/// <typeparam name="T">The class the field is defined in</typeparam>
+		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>A read and writable field reference</returns>
+		/// <returns>An readable/assignable object representing the static field</returns>
 		///
 		public static ref F StaticFieldRefAccess<T, F>(string fieldName)
 		{
@@ -826,10 +826,10 @@ namespace HarmonyLib
 			return ref StaticFieldRefAccess<F>(fi)();
 		}
 
-		/// <summary>Creates a static field reference</summary>
+		/// <summary>Creates a static field reference delegate</summary>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldInfo">FieldInfo for the field</param>
-		/// <returns>A read and writable field reference</returns>
+		/// <returns>A read and writable field reference delegate</returns>
 		///
 		public static FieldRef<F> StaticFieldRefAccess<F>(FieldInfo fieldInfo)
 		{
