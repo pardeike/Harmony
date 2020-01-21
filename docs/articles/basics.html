@@ -92,13 +92,13 @@
 </code></pre>
 <h2 id="creating-a-harmony-instance">Creating a Harmony instance</h2>
 <p>Most patch operations require a Harmony instance. To instantiate Harmony, you simply call</p>
-<pre><code class="lang-csharp">var harmony = HarmonyInstance.Create(&quot;com.company.project.product&quot;);
+<pre><code class="lang-csharp">var harmony = new Harmony(&quot;com.company.project.product&quot;);
 </code></pre>
 <p>The id should be in reverse domain notation and must be unique. In order to understand and react on existing patches of others, all patches in Harmony are bound to that id. This allows other authors to execute their patches before or after a specific patch by referring to this id.</p>
 <h3 id="debug-log">Debug Log</h3>
 <p>If you want to know more about the patching or the IL code Harmony produces, you can enable the debug log. Harmony offers and uses a class called <code>FileLog</code> that will create a log file on your systems Desktop called &quot;harmony.log.txt&quot;.</p>
 <p>You can set Harmony's global DEBUG flag to true, which will make Harmony log out many details that can help you while debugging your usage of Harmony:</p>
-<pre><code class="lang-csharp">HarmonyInstance.DEBUG = true;
+<pre><code class="lang-csharp">Harmony.DEBUG = true;
 </code></pre>
 <p>You can also use Harmony's file logger in your own code:</p>
 <pre><code class="lang-csharp">FileLog.Log(&quot;something&quot;);
@@ -129,7 +129,7 @@ harmony.Patch(original, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 <p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a <code>null</code> value which when passed to HarmonyMethod will throw an error. You can use standard <code>System.Reflection</code> to get the MethodInfo of the original and your HarmonyMethods. See the Utilities section for the various ways Harmony can make Reflection easier.</p>
 <h3 id="checking-for-existing-patches">Checking for existing patches</h3>
 <p>To get a list of all patched methods in the current appdomain (yours and others), call GetAllPatchedMethods:</p>
-<pre><code class="lang-csharp">var originalMethods = HarmonyInstance.GetAllPatchedMethods();
+<pre><code class="lang-csharp">var originalMethods = Harmony.GetAllPatchedMethods();
 foreach (var method in originalMethods)
 {
 	//...
@@ -147,7 +147,7 @@ foreach (var method in myOriginalMethods)
 var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
 
 // retrieve all patches
-var patches = HarmonyInstance.GetPatchInfo(original);
+var patches = Harmony.GetPatchInfo(original);
 if (patches == null) return; // not patched
 
 // get a summary of all different Harmony ids involved
@@ -165,13 +165,13 @@ foreach (var patch in patches.Prefixes)
 }
 </code></pre>
 <p>Sometimes it is necessary to test if another mod is loaded. This is best done by resolving one of their types by name. However, if you want to know if a specific Harmony has applied any patches so far, you can use HasAnyPatches:</p>
-<pre><code class="lang-csharp">if(HarmonyInstance.HasAnyPatches(&quot;com.some.product&quot;))
+<pre><code class="lang-csharp">if(Harmony.HasAnyPatches(&quot;com.some.product&quot;))
 {
 	//...
 }
 </code></pre>
 <p>Finally, to retrieve an overview of which assemblies use which version of Harmony you can use (based on actice patches only)</p>
-<pre><code class="lang-csharp">var dict = HarmonyInstance.VersionInfo(out var myVersion);
+<pre><code class="lang-csharp">var dict = Harmony.VersionInfo(out var myVersion);
 FileLog.Log(&quot;My version: &quot; + myVersion);
 foreach (var entry in dict)
 {

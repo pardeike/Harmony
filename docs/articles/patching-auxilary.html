@@ -73,7 +73,7 @@
 <h3 id="prepare">Prepare</h3>
 <p>Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static bool Prepare()
-static bool Prepare(HarmonyInstance instance)
+static bool Prepare(Harmony instance)
 // or
 [HarmonyPrepare]
 static bool MyInitializer(...)
@@ -82,17 +82,39 @@ static bool MyInitializer(...)
 <h3 id="targetmethod">TargetMethod</h3>
 <p>Most of the times, you will use a combination of <code>HarmonyPatch()</code> annotations on the class to define the method you want to patch. Sometimes though, it is necessary to calculate the method with code. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static MethodBase TargetMethod()
-static MethodBase TargetMethod(HarmonyInstance instance)
+static MethodBase TargetMethod(Harmony instance)
 // or
 [HarmonyTargetMethod]
-// NOTE: not passing harmony instance with attributes is broken in 1.2.0.1
-static MethodBase CalculateMethod(HarmonyInstance instance)
+static MethodBase CalculateMethod()
+static MethodBase CalculateMethod(Harmony instance)
 </code></pre>
-<p>That method, if it exists, is expected to return a <code>MethodInfo</code> of the method to be patched. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
+<p>That method, if it exists, is expected to return a <code>MethodBase</code> of the method to be patched. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
 <h3 id="targetmethods">TargetMethods</h3>
-<p>+++</p>
+<p>If you want to patch multiple methods with the same patch, you can use <code>TargetMethods</code>. It has the same behaviour as <code>TargetMethod</code> except that it returns an enumeration of <code>MethodBase</code> instead of a single <code>MethodBase</code>:</p>
+<pre><code class="lang-csharp">static IEnumerable&lt;MethodBase&gt; TargetMethods()
+static IEnumerable&lt;MethodBase&gt; TargetMethods(Harmony instance)
+// or
+[HarmonyTargetMethod]
+static IEnumerable&lt;MethodBase&gt; CalculateMethods()
+static IEnumerable&lt;MethodBase&gt; CalculateMethods(Harmony instance)
+</code></pre>
+<p>A typical implementation would <code>yield</code> the results like this:</p>
+<pre><code class="lang-csharp">static IEnumerable&lt;MethodBase&gt; TargetMethods()
+{
+	yield return AccessTools.Method(typeof(Foo), &quot;Method1&quot;);
+	yield return AccessTools.Method(typeof(Bar), &quot;Method2&quot;);
+	// you could also iterate using reflections over many methods
+}
+</code></pre>
 <h3 id="cleanup">Cleanup</h3>
-<p>+++</p>
+<p>After patching, Harmony gives you a chance to clean up your state. For this, Harmony searches for a method called</p>
+<pre><code class="lang-csharp">static void Cleanup()
+static void Cleanup(Harmony instance)
+// or
+[HarmonyCleanup]
+static void MyCleanup(...)
+</code></pre>
+<p>You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.</p>
 </article>
           </div>
           

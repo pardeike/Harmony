@@ -681,7 +681,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/basics.html",
-          "hash": "99Bnvf8v0dJ+LV7TUX9Gbw=="
+          "hash": "Rqqbday6YiXOt5KOJvDeGg=="
         }
       },
       "is_incremental": false,
@@ -705,7 +705,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "A+Y2Q5d9J7R3uAuhTtiFlA=="
+          "hash": "VNKo9+GbtxpKb15cFq+ldg=="
         }
       },
       "is_incremental": false,
@@ -717,7 +717,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-auxilary.html",
-          "hash": "0KojZmNNJZQ/XLcSUcfmKg=="
+          "hash": "VLX9pU7xSYI54OzXF4rXWw=="
         }
       },
       "is_incremental": false,
@@ -789,7 +789,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/priorities.html",
-          "hash": "dtaRxDVNnOWR7tQAJF0H2A=="
+          "hash": "qZ5CD59FLuC320C/D+RLiQ=="
         }
       },
       "is_incremental": false,
@@ -909,16 +909,16 @@
           "total_file_count": 0,
           "skipped_file_count": 0
         },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 53,
-          "skipped_file_count": 0
-        },
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 14,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 53,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
