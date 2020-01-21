@@ -8,7 +8,7 @@ Before the patching, Harmony gives you a chance to prepare your state. For this,
 
 ```csharp
 static bool Prepare()
-static bool Prepare(HarmonyInstance instance)
+static bool Prepare(Harmony instance)
 // or
 [HarmonyPrepare]
 static bool MyInitializer(...)
@@ -22,19 +22,49 @@ Most of the times, you will use a combination of `HarmonyPatch()` annotations on
 
 ```csharp
 static MethodBase TargetMethod()
-static MethodBase TargetMethod(HarmonyInstance instance)
+static MethodBase TargetMethod(Harmony instance)
 // or
 [HarmonyTargetMethod]
-// NOTE: not passing harmony instance with attributes is broken in 1.2.0.1
-static MethodBase CalculateMethod(HarmonyInstance instance)
+static MethodBase CalculateMethod()
+static MethodBase CalculateMethod(Harmony instance)
 ```
 	
-That method, if it exists, is expected to return a `MethodInfo` of the method to be patched. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.
+That method, if it exists, is expected to return a `MethodBase` of the method to be patched. You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.
 
 ### TargetMethods
 
-+++
+If you want to patch multiple methods with the same patch, you can use `TargetMethods`. It has the same behaviour as `TargetMethod` except that it returns an enumeration of `MethodBase` instead of a single `MethodBase`:
+
+```csharp
+static IEnumerable<MethodBase> TargetMethods()
+static IEnumerable<MethodBase> TargetMethods(Harmony instance)
+// or
+[HarmonyTargetMethod]
+static IEnumerable<MethodBase> CalculateMethods()
+static IEnumerable<MethodBase> CalculateMethods(Harmony instance)
+```
+
+A typical implementation would `yield` the results like this:
+
+```csharp
+static IEnumerable<MethodBase> TargetMethods()
+{
+	yield return AccessTools.Method(typeof(Foo), "Method1");
+	yield return AccessTools.Method(typeof(Bar), "Method2");
+	// you could also iterate using reflections over many methods
+}
+```
 
 ### Cleanup
 
-+++
+After patching, Harmony gives you a chance to clean up your state. For this, Harmony searches for a method called
+
+```csharp
+static void Cleanup()
+static void Cleanup(Harmony instance)
+// or
+[HarmonyCleanup]
+static void MyCleanup(...)
+```
+	
+You can optionally receive the harmony instance if you want to run other Harmony methods inside your code.

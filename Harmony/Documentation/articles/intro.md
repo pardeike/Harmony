@@ -107,7 +107,7 @@ public class MyPatcher
 	
 	public static void DoPatching()
 	{
-		var harmony = HarmonyInstance.Create("com.example.patch");
+		var harmony = new Harmony("com.example.patch");
 		harmony.PatchAll();
 	}
 }
@@ -150,7 +150,7 @@ public class MyPatcher
 	
 	public static void DoPatching()
 	{
-		var harmony = HarmonyInstance.Create("com.example.patch");
+		var harmony = new Harmony("com.example.patch");
 		
 		var mOriginal = typeof(SomeGameClass).GetMethod("DoSomething", BindingFlags.Instance | BindingFlags.NonPublic);
 		var mPrefix = typeof(MyPatcher).GetMethod("MyPrefix", BindingFlags.Static | BindingFlags.Public);

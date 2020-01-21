@@ -28,7 +28,7 @@ class Foo
 and **Plugin 1**
 
 ```csharp
-var harmony = HarmonyInstance.Create("net.example.plugin1");
+var harmony = new Harmony("net.example.plugin1");
 harmony.PatchAll(Assembly.GetExecutingAssembly());
 
 [HarmonyPatch(typeof(Foo))]
@@ -45,7 +45,7 @@ class MyPatch
 and **Plugin 2**
 
 ```csharp
-var harmony = HarmonyInstance.Create("net.example.plugin2");
+var harmony = new Harmony("net.example.plugin2");
 harmony.PatchAll(Assembly.GetExecutingAssembly());
 
 [HarmonyPatch(typeof(Foo))]
@@ -62,7 +62,7 @@ class MyPatch
 a call to `Foo.Bar()` would return "new secret 2" because both plugins register their Postfix with the same priority and so the second Postfix overrides the result of the first one. As an author of Plugin 1, you could rewrite your code to
 
 ```csharp
-var harmony = HarmonyInstance.Create("net.example.plugin1");
+var harmony = new Harmony("net.example.plugin1");
 harmony.PatchAll(Assembly.GetExecutingAssembly());
 
 [HarmonyPatch(typeof(Foo))]
