@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using MonoMod.Utils;
 
 namespace HarmonyLib
 {
@@ -789,7 +790,7 @@ namespace HarmonyLib
 
 			// workaround for using ref-return with DynamicMethod:
 			// a.) initialize with dummy return value
-			var dm = new DynamicMethod(s_name, typeof(F), new[] { typeof(T) }, typeof(T), true);
+			var dm = new DynamicMethodDefinition(s_name, typeof(F), new[] { typeof(T) });
 
 			// b.) replace with desired 'ByRef' return value
 			var trv = Traverse.Create(dm);
@@ -801,7 +802,7 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ldflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
-			return (FieldRef<T, F>)dm.CreateDelegate(typeof(FieldRef<T, F>));
+			return (FieldRef<T, F>)dm.Generate().CreateDelegate(typeof(FieldRef<T, F>));
 		}
 
 		/// <summary>A read/writable reference delegate to a static field</summary>
@@ -841,7 +842,7 @@ namespace HarmonyLib
 
 			// workaround for using ref-return with DynamicMethod:
 			// a.) initialize with dummy return value
-			var dm = new DynamicMethod(s_name, typeof(F), new Type[0], t, true);
+			var dm = new DynamicMethodDefinition(s_name, typeof(F), new Type[0]);
 
 			// b.) replace with desired 'ByRef' return value
 			var trv = Traverse.Create(dm);
@@ -852,7 +853,7 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ldsflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
-			return (FieldRef<F>)dm.CreateDelegate(typeof(FieldRef<F>));
+			return (FieldRef<F>)dm.Generate().CreateDelegate(typeof(FieldRef<F>));
 		}
 
 		/// <summary>Returns who called the current method</summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using MonoMod.Utils;
 
 namespace HarmonyLib
 {
@@ -75,7 +76,7 @@ namespace HarmonyLib
 		/// <returns>The fast invocation handler</returns>
 		public FastInvokeHandler Handler(MethodInfo methodInfo, Module module)
 		{
-			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name + "_" + (directBoxValueAccess ? "direct" : "indirect"), typeof(object), new Type[] { typeof(object), typeof(object[]) }, module, true);
+			var dynamicMethod = new DynamicMethodDefinition("FastInvoke_" + methodInfo.Name + "_" + (directBoxValueAccess ? "direct" : "indirect"), typeof(object), new Type[] { typeof(object), typeof(object[]) });
 			var il = dynamicMethod.GetILGenerator();
 
 			if (!methodInfo.IsStatic)
@@ -166,7 +167,7 @@ namespace HarmonyLib
 
 			Emit(il, OpCodes.Ret);
 
-			var invoder = (FastInvokeHandler)dynamicMethod.CreateDelegate(typeof(FastInvokeHandler));
+			var invoder = (FastInvokeHandler)dynamicMethod.Generate().CreateDelegate(typeof(FastInvokeHandler));
 			return invoder;
 		}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using MonoMod.Utils;
 
 namespace HarmonyLib
 {
@@ -18,11 +19,11 @@ namespace HarmonyLib
 			if (sizes.TryGetValue(type, out var size))
 				return size;
 
-			var dm = new DynamicMethod("SizeOfType", typeof(int), new Type[0]);
+			var dm = new DynamicMethodDefinition("SizeOfType", typeof(int), new Type[0]);
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Sizeof, type);
 			il.Emit(OpCodes.Ret);
-			size = (int)dm.Invoke(null, null);
+			size = (int)dm.Generate().Invoke(null, null);
 
 			sizes.Add(type, size);
 			return size;

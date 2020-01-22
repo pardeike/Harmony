@@ -143,7 +143,7 @@ namespace HarmonyLib
 		/// <param name="instanceID">Harmony ID</param>
 		/// <returns>The newly created dynamic method</returns>
 		///
-		internal static DynamicMethod UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
+		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
 		{
 			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes);
 			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes);

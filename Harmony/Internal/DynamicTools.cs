@@ -3,13 +3,14 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using MonoMod.Utils;
 
 namespace HarmonyLib
 {
 	/// <summary>Creating dynamic methods</summary>
 	internal static class DynamicTools
 	{
-		internal static DynamicMethod CreateDynamicMethod(MethodBase original, string suffix)
+		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix)
 		{
 			if (original == null) throw new ArgumentNullException(nameof(original));
 			var patchName = original.Name + suffix;
@@ -34,21 +35,21 @@ namespace HarmonyLib
 			if (returnType == null || returnType.IsByRef)
 				return null;
 
-			var method = new DynamicMethod(
+			var method = new DynamicMethodDefinition(
 				patchName,
-				MethodAttributes.Public | MethodAttributes.Static,
-				CallingConventions.Standard,
 				returnType,
-				parameterTypes.ToArray(),
-				original.DeclaringType,
-				true
+				parameterTypes.ToArray()
 			);
 
 #if NETSTANDARD2_0 || NETCOREAPP2_0
 #else
 			var offset = (original.IsStatic ? 0 : 1) + (firstArgIsReturnBuffer ? 1 : 0);
 			for (var i = 0; i < parameters.Length; i++)
-				_ = method.DefineParameter(i + offset, parameters[i].Attributes, parameters[i].Name);
+			{
+				var param = method.Definition.Parameters[i + offset];
+				param.Attributes = (Mono.Cecil.ParameterAttributes)parameters[i].Attributes;
+				param.Name = parameters[i].Name;
+			}
 #endif
 
 			return method;

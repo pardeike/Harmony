@@ -182,11 +182,11 @@ namespace HarmonyLib
 		/// <summary>Applies the patch</summary>
 		/// <returns>A list of all created dynamic methods</returns>
 		///
-		public List<DynamicMethod> Patch()
+		public List<MethodInfo> Patch()
 		{
 			lock (locker)
 			{
-				var dynamicMethods = new List<DynamicMethod>();
+				var dynamicMethods = new List<MethodInfo>();
 				foreach (var original in originals)
 				{
 					if (original == null)

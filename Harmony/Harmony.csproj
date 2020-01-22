@@ -81,4 +81,22 @@
 		</Reference>
 	</ItemGroup>
 
+  <ItemGroup>
+    <!-- Import MonoMod.Common source and dependencies. -->
+    <Compile Include="..\MonoMod.Common\Shared\**\*.cs" />
+    <Compile Include="..\MonoMod.Common\Utils\**\*.cs" />
+    <Compile Include="..\MonoMod.Common\RuntimeDetour\**\*.cs" />
+		<PackageReference Include="Mono.Cecil" Version="0.10" Condition="'$(TargetFramework)'=='net35'" />
+		<PackageReference Include="Mono.Cecil" Version="0.11" Condition="'$(TargetFramework)'!='net35'" />
+  </ItemGroup>
+  
+	<PropertyGroup>
+    <DefineConstants>MONOMOD_INTERNAL;$(DefineConstants)</DefineConstants>
+    <!-- .NET Core doesn't define NETSTANDARD. -->
+    <DefineConstants Condition="$(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('netcoreapp'))">NETSTANDARD;$(DefineConstants)</DefineConstants>
+    <!-- Cecil 0.11 drops support for .NET Framework 3.5 while introducing breaking API changes. -->
+		<DefineConstants Condition="'$(TargetFramework)'=='net35'">CECIL0_10;$(DefineConstants)</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)'!='net35'">CECIL0_11;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
 </Project>

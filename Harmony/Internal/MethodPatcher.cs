@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 
 namespace HarmonyLib
 {
@@ -18,7 +20,7 @@ namespace HarmonyLib
 		public static string PARAM_INDEX_PREFIX = "__";
 		public static string INSTANCE_FIELD_PREFIX = "___";
 
-		public static DynamicMethod CreatePatchedMethod(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
+		public static MethodInfo CreatePatchedMethod(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
 		{
 			try
 			{
@@ -162,8 +164,7 @@ namespace HarmonyLib
 					FileLog.FlushBuffer();
 				}
 
-				DynamicTools.PrepareDynamicMethod(patch);
-				return patch;
+				return patch.Generate().Pin();
 			}
 			catch (Exception ex)
 			{
