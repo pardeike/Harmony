@@ -533,7 +533,7 @@ namespace HarmonyLibTests.Assets
 			return false;
 		}
 #else
-		public static DynamicMethodDefinition Prefix(MethodBase method)
+		public static MethodInfo Prefix(MethodBase method)
 		{
 			var dynamicMethod = new DynamicMethodDefinition(method.Name + "_Class11Patch_Prefix",
 				typeof(bool),
@@ -558,7 +558,7 @@ namespace HarmonyLibTests.Assets
 			il.Emit(OpCodes.Ldc_I4_0);
 			il.Emit(OpCodes.Ret);
 
-			return dynamicMethod;
+			return dynamicMethod.Generate();
 		}
 #endif
 	}
