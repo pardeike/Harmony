@@ -788,14 +788,7 @@ namespace HarmonyLib
 
 			var s_name = "__refget_" + typeof(T).Name + "_fi_" + fieldInfo.Name;
 
-			// workaround for using ref-return with DynamicMethod:
-			// a.) initialize with dummy return value
-			var dm = new DynamicMethodDefinition(s_name, typeof(F), new[] { typeof(T) });
-
-			// b.) replace with desired 'ByRef' return value
-			var trv = Traverse.Create(dm);
-			_ = trv.Field("returnType").SetValue(typeof(F).MakeByRefType());
-			_ = trv.Field("m_returnType").SetValue(typeof(F).MakeByRefType());
+			var dm = new DynamicMethodDefinition(s_name, typeof(F).MakeByRefType(), new[] { typeof(T) });
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
@@ -840,14 +833,7 @@ namespace HarmonyLib
 
 			var s_name = "__refget_" + t.Name + "_static_fi_" + fieldInfo.Name;
 
-			// workaround for using ref-return with DynamicMethod:
-			// a.) initialize with dummy return value
-			var dm = new DynamicMethodDefinition(s_name, typeof(F), new Type[0]);
-
-			// b.) replace with desired 'ByRef' return value
-			var trv = Traverse.Create(dm);
-			_ = trv.Field("returnType").SetValue(typeof(F).MakeByRefType());
-			_ = trv.Field("m_returnType").SetValue(typeof(F).MakeByRefType());
+			var dm = new DynamicMethodDefinition(s_name, typeof(F).MakeByRefType(), new Type[0]);
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldsflda, fieldInfo);
