@@ -14,6 +14,7 @@ environment:
     - targetframework: netcoreapp3.1
 
 before_build:
+- git submodule update --init --recursive
 - dotnet --version
 - dotnet restore
 
