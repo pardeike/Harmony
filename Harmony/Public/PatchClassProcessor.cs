@@ -69,7 +69,7 @@ namespace HarmonyLib
 		/// <summary>Applies the patches</summary>
 		/// <returns>A list of all created dynamic methods</returns>
 		///
-		public List<DynamicMethod> Patch()
+		public List<MethodInfo> Patch()
 		{
 			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);
 			if (mainPrepareResult == false)
@@ -91,9 +91,9 @@ namespace HarmonyLib
 			return replacements;
 		}
 
-		List<DynamicMethod> BulkPatch()
+		List<MethodInfo> BulkPatch()
 		{
-			var jobs = new PatchJobs<DynamicMethod>();
+			var jobs = new PatchJobs<MethodInfo>();
 			foreach (var original in bulkOriginals)
 			{
 				var job = jobs.GetJob(original);
@@ -118,9 +118,9 @@ namespace HarmonyLib
 			return jobs.GetReplacements();
 		}
 
-		List<DynamicMethod> PatchWithAttributes()
+		List<MethodInfo> PatchWithAttributes()
 		{
-			var jobs = new PatchJobs<DynamicMethod>();
+			var jobs = new PatchJobs<MethodInfo>();
 			foreach (var patchMethod in patchMethods)
 			{
 				if (patchMethod.info.declaringType == null)
@@ -140,9 +140,9 @@ namespace HarmonyLib
 			return jobs.GetReplacements();
 		}
 
-		void ProcessPatchJob(PatchJobs<DynamicMethod>.Job job)
+		void ProcessPatchJob(PatchJobs<MethodInfo>.Job job)
 		{
-			DynamicMethod replacement = default;
+			MethodInfo replacement = default;
 
 			var individualPrepareResult = RunMethod<HarmonyPrepare, bool>(true, job.original);
 			if (individualPrepareResult)
