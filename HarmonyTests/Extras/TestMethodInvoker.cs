@@ -11,33 +11,40 @@ namespace HarmonyLibTests
 	public class TestMethodInvoker
 	{
 		[Test]
-		public void TestMethodInvokerGeneral([Values(false, true)] bool directBoxValueAccess, [Values(false, true)] bool gcHell, [Values(100)] int iterations)
+		public void TestMethodInvokerGeneral()
 		{
-			var type = typeof(MethodInvokerClass);
-			Assert.IsNotNull(type);
-			var method = type.GetMethod("Method1");
-			Assert.IsNotNull(method);
+			for (var i = 0; i < 2; i++)
+				for (var j = 0; j < 2; j++)
+				{
+					var directBoxValueAccess = i == 0;
+					var gcHell = j == 0;
 
-			var methodInvoker = gcHell ? new MethodInvokerGCHell(directBoxValueAccess) : new MethodInvoker(directBoxValueAccess);
-			var handler = methodInvoker.Handler(method, method.DeclaringType.Module);
-			Assert.IsNotNull(handler);
+					var type = typeof(MethodInvokerClass);
+					Assert.IsNotNull(type);
+					var method = type.GetMethod("Method1");
+					Assert.IsNotNull(method);
 
-			var testStruct = new TestMethodInvokerStruct();
-			var boxedTestStruct = (object)testStruct;
-			var args = new object[] { 0, 0, 0, /*out*/ null, /*ref*/ boxedTestStruct };
-			for (var a = 0; a < iterations; a++)
-			{
-				args[0] = a;
-				var b = (int)args[1];
-				_ = handler(null, args);
-				Assert.AreEqual(a, args[0], "@a={0}", a);
-				Assert.AreEqual(b + 1, args[1], "@a={0}", a);
-				Assert.AreEqual((b + 1) * 2, args[2], "@a={0}", a);
-				Assert.AreEqual(a, ((TestMethodInvokerObject)args[3])?.Value, "@a={0}", a);
-				Assert.AreEqual(a, ((TestMethodInvokerStruct)args[4]).Value, "@a={0}", a);
-				Assert.AreEqual(0, testStruct.Value, "@a={0}", a);
-				Assert.AreEqual(directBoxValueAccess ? a : 0, ((TestMethodInvokerStruct)boxedTestStruct).Value, "@a={0}", a);
-			}
+					var methodInvoker = gcHell ? new MethodInvokerGCHell(directBoxValueAccess) : new MethodInvoker(directBoxValueAccess);
+					var handler = methodInvoker.Handler(method, method.DeclaringType.Module);
+					Assert.IsNotNull(handler);
+
+					var testStruct = new TestMethodInvokerStruct();
+					var boxedTestStruct = (object)testStruct;
+					var args = new object[] { 0, 0, 0, /*out*/ null, /*ref*/ boxedTestStruct };
+					for (var a = 0; a < 100; a++)
+					{
+						args[0] = a;
+						var b = (int)args[1];
+						_ = handler(null, args);
+						Assert.AreEqual(a, args[0], "@a={0}", a);
+						Assert.AreEqual(b + 1, args[1], "@a={0}", a);
+						Assert.AreEqual((b + 1) * 2, args[2], "@a={0}", a);
+						Assert.AreEqual(a, ((TestMethodInvokerObject)args[3])?.Value, "@a={0}", a);
+						Assert.AreEqual(a, ((TestMethodInvokerStruct)args[4]).Value, "@a={0}", a);
+						Assert.AreEqual(0, testStruct.Value, "@a={0}", a);
+						Assert.AreEqual(directBoxValueAccess ? a : 0, ((TestMethodInvokerStruct)boxedTestStruct).Value, "@a={0}", a);
+					}
+				}
 		}
 
 		[Test]
