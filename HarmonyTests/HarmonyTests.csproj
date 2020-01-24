@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
@@ -62,5 +62,11 @@
 		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
 	</ItemGroup>
+
+  <ItemGroup>
+    <!-- Cecil 0.11 drops support for .NET Framework 3.5 while introducing breaking API changes. -->
+    <PackageReference Include="Mono.Cecil" Version="0.10" Condition="'$(TargetFramework)'=='net35'" PrivateAssets="all" />
+    <PackageReference Include="Mono.Cecil" Version="0.11" Condition="'$(TargetFramework)'!='net35'" PrivateAssets="all" />
+  </ItemGroup>
 
 </Project>

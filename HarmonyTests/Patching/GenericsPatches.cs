@@ -99,7 +99,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class GenericsPatches
 	{
-		// [Test]
+		[Test]
 		public void TestGenericStructReturnTypes()
 		{
 			var originalClass = typeof(MyList<>).MakeGenericType(typeof(int));

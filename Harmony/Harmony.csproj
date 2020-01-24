@@ -100,6 +100,7 @@
 		<Compile Include="..\MonoMod.Common\Shared\**\*.cs" />
 		<Compile Include="..\MonoMod.Common\Utils\**\*.cs" />
 		<Compile Include="..\MonoMod.Common\RuntimeDetour\**\*.cs" />
+    <!-- Cecil 0.11 drops support for .NET Framework 3.5 while introducing breaking API changes. -->
     <PackageReference Include="Mono.Cecil" Version="0.10" Condition="'$(TargetFramework)'=='net35'">
 			<PrivateAssets Condition="!$(IsCoreOrStandard)">all</PrivateAssets>
     </PackageReference>
