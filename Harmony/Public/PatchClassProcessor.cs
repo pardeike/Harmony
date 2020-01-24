@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
@@ -67,15 +66,18 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Applies the patches</summary>
-		/// <returns>A list of all created dynamic methods</returns>
+		/// <returns>A list of all created dynamic methods or null if patch class is not annotated</returns>
 		///
 		public List<MethodInfo> Patch()
 		{
+			if (containerAttributes == null)
+				return null;
+
 			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);
 			if (mainPrepareResult == false)
 			{
 				RunMethod<HarmonyCleanup>();
-				return null;
+				return new List<MethodInfo>();
 			}
 
 			foreach (var reversePatchMethod in reversePatchMethods)
@@ -123,12 +125,7 @@ namespace HarmonyLib
 			var jobs = new PatchJobs<MethodInfo>();
 			foreach (var patchMethod in patchMethods)
 			{
-				if (patchMethod.info.declaringType == null)
-					throw new ArgumentException($"Undefined class for method for patch method {patchMethod.info.method.FullDescription()}");
-				if (patchMethod.info.methodName == null)
-					throw new ArgumentException($"Undefined method name for patch method {patchMethod.info.method.FullDescription()}");
-
-				var original = AccessTools.Method(patchMethod.info.declaringType, patchMethod.info.methodName, patchMethod.info.argumentTypes);
+				var original = patchMethod.info.GetOriginalMethod();
 				if (original == null)
 					throw new ArgumentException($"Undefined target method for patch method {patchMethod.info.method.FullDescription()}");
 
