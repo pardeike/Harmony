@@ -70,11 +70,14 @@ If you develop in C# and your code is loaded as a module/plugin into a host appl
 
 * Multiple Harmony patches co-exist and don't conflict with each other
 
+**Installation**  
 Installation is usually done by referencing the **0Harmony.dll** (from the zip file) from your project or by using the **[Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony)** nuget package.
 
-Please check out the documentation on the **[GitHub Wiki](../../wiki)** or join us at the official **[discord server](https://discord.gg/xXgghXR)**
+**Documentation**  
+Please check out the **[documentation](https://harmony.pardeike.net)** or join us at the official **[discord server](https://discord.gg/xXgghXR)**.
 
-Also, an introduction to Transpilers: **[Simple Harmony Transpiler Tutorial](https://gist.github.com/pardeike/c02e29f9e030e6a016422ca8a89eefc9)**
+**Contributions**  
+This project uses the fantastic library of 0x0ade [MonoMod.Common](https://github.com/MonoMod/MonoMod.Common). Without it, we would still be stuck with using dynamic methods!
 
 <hr>
 
