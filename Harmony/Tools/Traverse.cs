@@ -191,7 +191,7 @@ namespace HarmonyLib
 			if (_info is PropertyInfo)
 				((PropertyInfo)_info).SetValue(_root, value, AccessTools.all, null, _params, CultureInfo.CurrentCulture);
 			if (_method != null)
-				throw new Exception("cannot set value of method " + _method.FullDescription());
+				throw new Exception($"cannot set value of method {_method.FullDescription()}");
 			return this;
 		}
 

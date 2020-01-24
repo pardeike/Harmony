@@ -15,9 +15,9 @@ namespace HarmonyLib
 		public DelegateTypeFactory()
 		{
 			counter++;
-			var name = "HarmonyDTFAssembly" + counter;
+			var name = $"HarmonyDTFAssembly{counter}";
 			var assembly = PatchTools.DefineDynamicAssembly(name);
-			module = assembly.DefineDynamicModule("HarmonyDTFModule" + counter);
+			module = assembly.DefineDynamicModule($"HarmonyDTFModule{counter}");
 		}
 
 		/// <summary>Creates a delegate type for a method</summary>
@@ -27,7 +27,7 @@ namespace HarmonyLib
 		public Type CreateDelegateType(MethodInfo method)
 		{
 			var attr = TypeAttributes.Sealed | TypeAttributes.Public;
-			var typeBuilder = module.DefineType("HarmonyDTFType" + counter, attr, typeof(MulticastDelegate));
+			var typeBuilder = module.DefineType($"HarmonyDTFType{counter}", attr, typeof(MulticastDelegate));
 
 			var constructor = typeBuilder.DefineConstructor(
 				 MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public,

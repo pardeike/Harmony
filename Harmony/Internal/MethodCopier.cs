@@ -67,11 +67,11 @@ namespace HarmonyLib
 
 			var body = method.GetMethodBody();
 			if (body == null)
-				throw new ArgumentException("Method " + method.FullDescription() + " has no body");
+				throw new ArgumentException($"Method {method.FullDescription()} has no body");
 
 			var bytes = body.GetILAsByteArray();
 			if (bytes == null)
-				throw new ArgumentException("Can not get IL bytes of method " + method.FullDescription());
+				throw new ArgumentException($"Can not get IL bytes of method {method.FullDescription()}");
 			ilBytes = new ByteBuffer(bytes);
 			ilInstructions = new List<ILInstruction>((bytes.Length + 1) / 2);
 
@@ -339,8 +339,8 @@ namespace HarmonyLib
 							// TODO the following will fail because we do not convert the token (operand)
 							// All the decompilers can show the arguments correctly, we just need to find out how
 							//
-							if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
-							if ((operand is int) == false) throw new Exception("Wrong Emit argument type " + operand.GetType() + " in " + codeInstruction);
+							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
+							if ((operand is int) == false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
 							Emitter.Emit(generator, code, (int)operand);
 
 							/*
@@ -358,8 +358,8 @@ namespace HarmonyLib
 							break;
 
 						default:
-							if (operand == null) throw new Exception("Wrong null argument: " + codeInstruction);
-							if (Harmony.DEBUG) FileLog.LogBuffered(Emitter.CodePos(generator) + code + " " + Emitter.FormatArgument(operand));
+							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
+							if (Harmony.DEBUG) FileLog.LogBuffered($"{Emitter.CodePos(generator)}{code} {Emitter.FormatArgument(operand)}");
 							_ = generator.DynEmit(code, operand);
 							break;
 					}
@@ -500,8 +500,8 @@ namespace HarmonyLib
 					var bytes = module.ResolveSignature(val);
 					instruction.operand = bytes;
 					instruction.argument = bytes;
-					Debugger.Log(0, "TEST", "METHOD " + method.FullDescription() + "\n");
-					Debugger.Log(0, "TEST", "Signature = " + bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b) + "\n");
+					Debugger.Log(0, "TEST", $"METHOD {method.FullDescription()}\n");
+					Debugger.Log(0, "TEST", $"Signature = {bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b)}\n");
 					Debugger.Break();
 					break;
 				}
@@ -602,7 +602,7 @@ namespace HarmonyLib
 		{
 			var lastInstructionIndex = ilInstructions.Count - 1;
 			if (offset < 0 || offset > ilInstructions[lastInstructionIndex].offset)
-				throw new Exception("Instruction offset " + offset + " is outside valid range 0 - " + ilInstructions[lastInstructionIndex].offset);
+				throw new Exception($"Instruction offset {offset} is outside valid range 0 - {ilInstructions[lastInstructionIndex].offset}");
 
 			var min = 0;
 			var max = lastInstructionIndex;
@@ -628,7 +628,7 @@ namespace HarmonyLib
 					min = mid + 1;
 			}
 
-			throw new Exception("Cannot find instruction for " + offset.ToString("X4"));
+			throw new Exception($"Cannot find instruction for {offset.ToString("X4")}");
 		}
 
 		static bool TargetsLocalVariable(OpCode opcode)

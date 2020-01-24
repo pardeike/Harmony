@@ -91,17 +91,17 @@ namespace HarmonyLib
 			if (name != null)
 				result += name + ": ";
 			if (opcodes.Count > 0)
-				result += "opcodes=" + opcodes.Join() + " ";
+				result += $"opcodes={opcodes.Join()} ";
 			if (operands.Count > 0)
-				result += "operands=" + operands.Join() + " ";
+				result += $"operands={operands.Join()} ";
 			if (labels.Count > 0)
-				result += "labels=" + labels.Join() + " ";
+				result += $"labels={labels.Join()} ";
 			if (blocks.Count > 0)
-				result += "blocks=" + blocks.Join() + " ";
+				result += $"blocks={blocks.Join()} ";
 			if (jumpsFrom.Count > 0)
-				result += "jumpsFrom=" + jumpsFrom.Join() + " ";
+				result += $"jumpsFrom={jumpsFrom.Join()} ";
 			if (jumpsTo.Count > 0)
-				result += "jumpsTo=" + jumpsTo.Join() + " ";
+				result += $"jumpsTo={jumpsTo.Join()} ";
 			if (predicate != null)
 				result += "predicate=yes ";
 			return result.TrimEnd() + "]";
@@ -275,8 +275,7 @@ namespace HarmonyLib
 		public bool ReportFailure(MethodBase method, Action<string> logger)
 		{
 			if (IsValid) return false;
-			var err = lastError ?? "Unexpected code";
-			logger(err + " in " + method);
+			logger($"{lastError ?? "Unexpected code"} in {method}");
 			return true;
 		}
 
@@ -320,7 +319,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher SetAndAdvance(OpCode opcode, object operand)
 		{
-			Set(opcode, operand);
+			_ = Set(opcode, operand);
 			Pos++;
 			return this;
 		}
@@ -366,7 +365,7 @@ namespace HarmonyLib
 		public CodeMatcher CreateLabelAt(int position, out Label label)
 		{
 			label = generator.DefineLabel();
-			AddLabelsAt(position, new[] { label });
+			_ = AddLabelsAt(position, new[] { label });
 			return this;
 		}
 
@@ -399,8 +398,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher SetJumpTo(OpCode opcode, int destination, out Label label)
 		{
-			CreateLabelAt(destination, out label);
-			Set(opcode, label);
+			_ = CreateLabelAt(destination, out label);
+			_ = Set(opcode, label);
 			return this;
 		}
 
@@ -431,7 +430,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher InsertBranch(OpCode opcode, int destination)
 		{
-			CreateLabelAt(destination, out var label);
+			_ = CreateLabelAt(destination, out var label);
 			codes.Insert(Pos, new CodeInstruction(opcode, label));
 			return this;
 		}
@@ -444,7 +443,7 @@ namespace HarmonyLib
 		{
 			instructions.Do(instruction =>
 			{
-				Insert(instruction);
+				_ = Insert(instruction);
 				Pos++;
 			});
 			return this;
@@ -467,7 +466,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher InsertBranchAndAdvance(OpCode opcode, int destination)
 		{
-			InsertBranch(opcode, destination);
+			_ = InsertBranch(opcode, destination);
 			Pos++;
 			return this;
 		}
@@ -510,7 +509,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher RemoveInstructionsWithOffsets(int startOffset, int endOffset)
 		{
-			RemoveInstructionsInRange(Pos + startOffset, Pos + endOffset);
+			_ = RemoveInstructionsInRange(Pos + startOffset, Pos + endOffset);
 			return this;
 		}
 
@@ -622,7 +621,7 @@ namespace HarmonyLib
 			while (IsValid)
 			{
 				matchAction(this);
-				MatchForward(lastUseEnd, lastCodeMatches);
+				_ = MatchForward(lastUseEnd, lastCodeMatches);
 				count++;
 			}
 			lastCodeMatches = null;

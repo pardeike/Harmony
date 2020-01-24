@@ -31,7 +31,7 @@ namespace HarmonyLib
 
 				if (Harmony.DEBUG)
 				{
-					FileLog.LogBuffered("### Patch " + original.FullDescription());
+					FileLog.LogBuffered($"### Patch {original.FullDescription()}");
 					FileLog.FlushBuffer();
 				}
 
@@ -39,7 +39,7 @@ namespace HarmonyLib
 				var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 				var returnType = AccessTools.GetReturnedType(original);
 				var hasFinalizers = finalizers.Any();
-				var patch = DynamicTools.CreateDynamicMethod(original, "_Patch" + idx);
+				var patch = DynamicTools.CreateDynamicMethod(original, $"_Patch{idx}");
 				if (patch == null)
 					return null;
 
@@ -168,7 +168,7 @@ namespace HarmonyLib
 			}
 			catch (Exception ex)
 			{
-				var exceptionString = "Exception from HarmonyInstance \"" + harmonyInstanceID + "\" patching " + original.FullDescription() + ": " + ex;
+				var exceptionString = $"Exception from HarmonyInstance \"{harmonyInstanceID}\" patching {original.FullDescription()}: {ex}";
 				if (Harmony.DEBUG)
 				{
 					var savedIndentLevel = FileLog.indentLevel;
@@ -372,13 +372,13 @@ namespace HarmonyLib
 					{
 						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, int.Parse(fieldName));
 						if (fieldInfo == null)
-							throw new ArgumentException("No field found at given index in class " + original.DeclaringType.FullName, fieldName);
+							throw new ArgumentException($"No field found at given index in class {original.DeclaringType.FullName}", fieldName);
 					}
 					else
 					{
 						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, fieldName);
 						if (fieldInfo == null)
-							throw new ArgumentException("No such field defined in class " + original.DeclaringType.FullName, fieldName);
+							throw new ArgumentException($"No such field defined in class {original.DeclaringType.FullName}", fieldName);
 					}
 
 					if (fieldInfo.IsStatic)
@@ -407,12 +407,12 @@ namespace HarmonyLib
 				{
 					var returnType = AccessTools.GetReturnedType(original);
 					if (returnType == typeof(void))
-						throw new Exception("Cannot get result from void method " + original.FullDescription());
+						throw new Exception($"Cannot get result from void method {original.FullDescription()}");
 					var resultType = patchParam.ParameterType;
 					if (resultType.IsByRef)
 						resultType = resultType.GetElementType();
 					if (resultType.IsAssignableFrom(returnType) == false)
-						throw new Exception("Cannot assign method return type " + returnType.FullName + " to " + RESULT_VAR + " type " + resultType.FullName + " for method " + original.FullDescription());
+						throw new Exception($"Cannot assign method return type {returnType.FullName} to {RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					Emitter.Emit(il, ldlocCode, variables[RESULT_VAR]);
 					continue;
@@ -431,14 +431,14 @@ namespace HarmonyLib
 				{
 					var val = patchParam.Name.Substring(PARAM_INDEX_PREFIX.Length);
 					if (!int.TryParse(val, out idx))
-						throw new Exception("Parameter " + patchParam.Name + " does not contain a valid index");
+						throw new Exception($"Parameter {patchParam.Name} does not contain a valid index");
 					if (idx < 0 || idx >= originalParameters.Length)
-						throw new Exception("No parameter found at index " + idx);
+						throw new Exception($"No parameter found at index {idx}");
 				}
 				else
 				{
 					idx = GetArgumentIndex(patch, originalParameterNames, patchParam);
-					if (idx == -1) throw new Exception("Parameter \"" + patchParam.Name + "\" not found in method " + original.FullDescription());
+					if (idx == -1) throw new Exception($"Parameter \"{patchParam.Name}\" not found in method {original.FullDescription()}");
 				}
 
 				//   original -> patch     opcode
@@ -483,7 +483,7 @@ namespace HarmonyLib
 				if (fix.ReturnType != typeof(void))
 				{
 					if (fix.ReturnType != typeof(bool))
-						throw new Exception("Prefix patch " + fix + " has not \"bool\" or \"void\" return type: " + fix.ReturnType);
+						throw new Exception($"Prefix patch {fix} has not \"bool\" or \"void\" return type: {fix.ReturnType}");
 					Emitter.Emit(il, OpCodes.Brfalse, label);
 					canHaveJump = true;
 				}
@@ -507,9 +507,9 @@ namespace HarmonyLib
 						if (!hasPassThroughResultParam)
 						{
 							if (firstFixParam != null)
-								throw new Exception("Return type of pass through postfix " + fix + " does not match type of its first parameter");
+								throw new Exception($"Return type of pass through postfix {fix} does not match type of its first parameter");
 
-							throw new Exception("Postfix patch " + fix + " must have a \"void\" return type");
+							throw new Exception($"Postfix patch {fix} must have a \"void\" return type");
 						}
 					}
 				});

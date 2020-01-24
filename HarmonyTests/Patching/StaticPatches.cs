@@ -218,7 +218,7 @@ namespace HarmonyLibTests
 
 			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
 			Assert.IsNotNull(patcher);
-			_ = patcher.Patch();
+			Assert.IsNotNull(patcher.Patch());
 
 			(new AttributesClass()).Method("foo");
 			Assert.IsTrue(AttributesPatch.targeted, "TargetMethod was not executed");

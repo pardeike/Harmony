@@ -77,7 +77,7 @@ namespace HarmonyLib
 			var instruction = "";
 
 			AppendLabel(ref instruction, this);
-			instruction = instruction + ": " + opcode.Name;
+			instruction += $": {opcode.Name}";
 
 			if (operand == null)
 				return instruction;
@@ -103,7 +103,7 @@ namespace HarmonyLib
 					break;
 
 				case OperandType.InlineString:
-					instruction = instruction + "\"" + operand + "\"";
+					instruction += $"\"{operand}\"";
 					break;
 
 				default:
@@ -117,10 +117,7 @@ namespace HarmonyLib
 		static void AppendLabel(ref string str, object argument)
 		{
 			var instruction = argument as ILInstruction;
-			if (instruction != null)
-				str = str + "IL_" + instruction.offset.ToString("X4");
-			else
-				str = str + "IL_" + argument;
+			str += $"IL_{instruction?.offset.ToString("X4") ?? argument}";
 		}
 	}
 }

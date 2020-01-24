@@ -10,7 +10,7 @@ namespace HarmonyLibTests
 	{
 		public struct MyEnumerator : IEnumerator<T>, IEnumerator
 		{
-			private readonly List<T> list;
+			public List<T> list;
 			private int index;
 			public T Current { get; private set; }
 
@@ -22,6 +22,11 @@ namespace HarmonyLibTests
 						throw new IndexOutOfRangeException();
 					return Current;
 				}
+			}
+
+			internal void SetList(List<T> list)
+			{
+				this.list = list;
 			}
 
 			internal MyEnumerator(List<T> list)
@@ -37,7 +42,6 @@ namespace HarmonyLibTests
 
 			public bool MoveNext()
 			{
-				var list = this.list;
 				if ((uint)index < (uint)list.Count)
 				{
 					Current = list[index];
@@ -81,21 +85,10 @@ namespace HarmonyLibTests
 
 	public class TestGenericStructReturnTypes_Patch
 	{
-		public static MyList<int>.MyEnumerator CachedResult
-		{
-			get
-			{
-				var myList = new MyList<int>
-				{
-					list = new List<int>() { 100, 200, 300 }
-				};
-				return myList.GetEnumerator();
-			}
-		}
-
 		public static MyList<int>.MyEnumerator Postfix(MyList<int>.MyEnumerator input)
 		{
-			return CachedResult;
+			input.SetList(new List<int>() { 100, 200, 300 });
+			return input;
 		}
 	}
 

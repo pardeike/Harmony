@@ -19,15 +19,13 @@ namespace HarmonyLib
 		/// <summary>Set to false before instantiating Harmony to prevent Harmony from patching other older instances of itself</summary>
 		public static bool SELF_PATCHING = true;
 
-		static bool selfPatchingDone;
-
 		/// <summary>Creates a new Harmony instance</summary>
 		/// <param name="id">A unique identifier</param>
 		/// <returns>A Harmony instance</returns>
 		///
 		public Harmony(string id)
 		{
-			if (string.IsNullOrEmpty(id)) throw new ArgumentException(nameof(id) + " cannot be null or empty");
+			if (string.IsNullOrEmpty(id)) throw new ArgumentException($"{nameof(id)} cannot be null or empty");
 
 			if (DEBUG)
 			{
@@ -35,23 +33,16 @@ namespace HarmonyLib
 				var version = assembly.GetName().Version;
 				var location = assembly.Location;
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
-				FileLog.Log("### Harmony id=" + id + ", version=" + version + ", location=" + location);
+				FileLog.Log($"### Harmony id={id}, version={version}, location={location}");
 				var callingMethod = AccessTools.GetOutsideCaller();
 				var callingAssembly = callingMethod.DeclaringType.Assembly;
 				location = callingAssembly.Location;
 				if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
-				FileLog.Log("### Started from " + callingMethod.FullDescription() + ", location " + location);
-				FileLog.Log("### At " + DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss"));
+				FileLog.Log($"### Started from {callingMethod.FullDescription()}, location {location}");
+				FileLog.Log($"### At {DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss")}");
 			}
 
 			Id = id;
-
-			if (!selfPatchingDone)
-			{
-				selfPatchingDone = true;
-				if (SELF_PATCHING)
-					SelfPatching.PatchOldHarmonyMethods();
-			}
 		}
 
 		/// <summary>Searches current assembly for Harmony annotations and uses them to create patches</summary>
@@ -66,15 +57,9 @@ namespace HarmonyLib
 		/// <summary>Create a patch processor from an annotated class</summary>
 		/// <param name="type">The class</param>
 		/// 
-		public PatchProcessor ProcessorForAnnotatedClass(Type type)
+		public PatchClassProcessor ProcessorForAnnotatedClass(Type type)
 		{
-			var parentMethodInfos = HarmonyMethodExtensions.GetFromType(type);
-			if (parentMethodInfos != null && parentMethodInfos.Any())
-			{
-				var info = HarmonyMethod.Merge(parentMethodInfos);
-				return new PatchProcessor(this, type, info);
-			}
-			return null;
+			return new PatchClassProcessor(this, type);
 		}
 
 		/// <summary>Searches an assembly for Harmony annotations and uses them to create patches</summary>
@@ -82,7 +67,7 @@ namespace HarmonyLib
 		/// 
 		public void PatchAll(Assembly assembly)
 		{
-			assembly.GetTypes().Do(type => ProcessorForAnnotatedClass(type)?.Patch());
+			assembly.GetTypes().Do(type => ProcessorForAnnotatedClass(type).Patch());
 		}
 
 		/// <summary>Creates patches by manually specifying the methods</summary>
@@ -95,12 +80,12 @@ namespace HarmonyLib
 		///
 		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
-			var processor = new PatchProcessor(this, original);
+			var processor = this.CreateProcessor(original);
 			_ = processor.AddPrefix(prefix);
 			_ = processor.AddPostfix(postfix);
 			_ = processor.AddTranspiler(transpiler);
 			_ = processor.AddFinalizer(finalizer);
-			return processor.Patch().FirstOrDefault();
+			return processor.Patch();
 		}
 
 		/// <summary>Unpatches methods</summary>
@@ -129,7 +114,7 @@ namespace HarmonyLib
 		///
 		public void Unpatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
 		{
-			var processor = new PatchProcessor(this, original);
+			var processor = this.CreateProcessor(original);
 			_ = processor.Unpatch(type, harmonyID);
 		}
 
@@ -139,7 +124,7 @@ namespace HarmonyLib
 		///
 		public void Unpatch(MethodBase original, MethodInfo patch)
 		{
-			var processor = new PatchProcessor(this, original);
+			var processor = this.CreateProcessor(original);
 			_ = processor.Unpatch(patch);
 		}
 
@@ -172,12 +157,12 @@ namespace HarmonyLib
 				.Where(original => GetPatchInfo(original).Owners.Contains(Id));
 		}
 
-		/// <summary>Gets all patched methods in the appdomain</summary>
-		/// <returns>An enumeration of original methods</returns>
+		/// <summary>Gets all patched original methods in the appdomain</summary>
+		/// <returns>An enumeration of patched original methods</returns>
 		///
 		public static IEnumerable<MethodBase> GetAllPatchedMethods()
 		{
-			return HarmonySharedState.GetPatchedMethods();
+			return PatchProcessor.GetAllPatchedMethods();
 		}
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
@@ -186,25 +171,7 @@ namespace HarmonyLib
 		///
 		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{
-			currentVersion = typeof(Harmony).Assembly.GetName().Version;
-			var assemblies = new Dictionary<string, Assembly>();
-			GetAllPatchedMethods().Do(method =>
-			{
-				var info = HarmonySharedState.GetPatchInfo(method);
-				info.prefixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
-				info.postfixes.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
-				info.transpilers.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
-				info.finalizers.Do(fix => assemblies[fix.owner] = fix.patch.DeclaringType.Assembly);
-			});
-
-			var result = new Dictionary<string, Version>();
-			assemblies.Do(info =>
-			{
-				var assemblyName = info.Value.GetReferencedAssemblies().FirstOrDefault(a => a.FullName.StartsWith("0Harmony, Version", StringComparison.Ordinal));
-				if (assemblyName != null)
-					result[info.Key] = assemblyName.Version;
-			});
-			return result;
+			return PatchProcessor.VersionInfo(out currentVersion);
 		}
 	}
 }

@@ -151,11 +151,11 @@ namespace HarmonyLib
 			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers);
 
 			var replacement = MethodPatcher.CreatePatchedMethod(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
-			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + original.FullDescription());
+			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {original.FullDescription()}");
 
 			var errorString = Memory.DetourMethod(original, replacement);
 			if (errorString != null)
-				throw new FormatException("Method " + original.FullDescription() + " cannot be patched. Reason: " + errorString);
+				throw new FormatException($"Method {original.FullDescription()} cannot be patched. Reason: {errorString}");
 
 			PatchTools.RememberObject(original, replacement); // no gc for new value + release old value to gc
 
@@ -170,11 +170,11 @@ namespace HarmonyLib
 				transpilers.Add(transpiler);
 
 			var replacement = MethodPatcher.CreatePatchedMethod(standin, original, instanceID, emptyFixes, emptyFixes, transpilers, emptyFixes);
-			if (replacement == null) throw new MissingMethodException("Cannot create dynamic replacement for " + standin.FullDescription());
+			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {standin.FullDescription()}");
 
 			var errorString = Memory.DetourMethod(standin, replacement);
 			if (errorString != null)
-				throw new FormatException("Method " + standin.FullDescription() + " cannot be patched. Reason: " + errorString);
+				throw new FormatException($"Method {standin.FullDescription()} cannot be patched. Reason: {errorString}");
 
 			PatchTools.RememberObject(standin, replacement);
 		}

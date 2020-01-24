@@ -42,7 +42,7 @@ namespace HarmonyLib
 		public void Patch(HarmonyReversePatchType type = HarmonyReversePatchType.Original)
 		{
 			if (original == null)
-				throw new NullReferenceException("Null method for " + instance.Id);
+				throw new NullReferenceException($"Null method for {instance.Id}");
 
 			var transpiler = GetTranspiler(standin);
 			PatchFunctions.ReversePatch(standin, original, instance.Id, transpiler);
@@ -57,7 +57,7 @@ namespace HarmonyLib
 			return methods.FirstOrDefault(m =>
 			{
 				if (m.ReturnType != ici) return false;
-				return m.Name.StartsWith('<' + methodName + '>');
+				return m.Name.StartsWith($"<{methodName }>");
 			});
 		}
 	}

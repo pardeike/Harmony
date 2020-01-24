@@ -49,7 +49,7 @@ namespace HarmonyLib
 					typeof(T)));
 			}
 
-			var dynamicMethod = new DynamicMethodDefinition("InstantiateObject_" + typeof(T).Name, typeof(T), null);
+			var dynamicMethod = new DynamicMethodDefinition($"InstantiateObject_{typeof(T).Name}", typeof(T), null);
 			var generator = dynamicMethod.GetILGenerator();
 			generator.Emit(OpCodes.Newobj, constructorInfo);
 			generator.Emit(OpCodes.Ret);
@@ -158,12 +158,12 @@ namespace HarmonyLib
 
 		static DynamicMethodDefinition CreateGetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethodDefinition("DynamicGet_" + type.Name, typeof(S), new Type[] { typeof(T) });
+			return new DynamicMethodDefinition($"DynamicGet_{type.Name}", typeof(S), new Type[] { typeof(T) });
 		}
 
 		static DynamicMethodDefinition CreateSetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethodDefinition("DynamicSet_" + type.Name, typeof(void), new Type[] { typeof(T), typeof(S) });
+			return new DynamicMethodDefinition($"DynamicSet_{type.Name}", typeof(void), new Type[] { typeof(T), typeof(S) });
 		}
 	}
 }

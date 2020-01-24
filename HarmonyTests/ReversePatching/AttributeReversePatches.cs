@@ -21,7 +21,7 @@ namespace HarmonyLibTests
 
 			var processor = instance.ProcessorForAnnotatedClass(typeof(Class1ReversePatch));
 			Assert.IsNotNull(processor);
-			Assert.AreEqual(1, processor.Patch().Count);
+			Assert.IsNotNull(processor.Patch());
 
 			var result2 = test.Method("Bar", 456);
 			Assert.AreEqual("PrefixedExtra456Bar", result2);
