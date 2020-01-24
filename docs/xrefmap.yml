@@ -3219,12 +3219,6 @@ references:
   commentId: M:HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo)
   fullName: HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo)
   nameWithType: MethodInvoker.GetHandler(MethodInfo)
-- uid: HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo,System.Reflection.Module)
-  name: GetHandler(MethodInfo, Module)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_GetHandler_System_Reflection_MethodInfo_System_Reflection_Module_
-  commentId: M:HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo,System.Reflection.Module)
-  fullName: HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo, System.Reflection.Module)
-  nameWithType: MethodInvoker.GetHandler(MethodInfo, Module)
 - uid: HarmonyLib.MethodInvoker.GetHandler*
   name: GetHandler
   href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_GetHandler_
@@ -3232,12 +3226,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.MethodInvoker.GetHandler
   nameWithType: MethodInvoker.GetHandler
-- uid: HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo,System.Reflection.Module)
-  name: Handler(MethodInfo, Module)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Handler_System_Reflection_MethodInfo_System_Reflection_Module_
-  commentId: M:HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo,System.Reflection.Module)
-  fullName: HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo, System.Reflection.Module)
-  nameWithType: MethodInvoker.Handler(MethodInfo, Module)
+- uid: HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)
+  name: Handler(MethodInfo)
+  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Handler_System_Reflection_MethodInfo_
+  commentId: M:HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)
+  fullName: HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)
+  nameWithType: MethodInvoker.Handler(MethodInfo)
 - uid: HarmonyLib.MethodInvoker.Handler*
   name: Handler
   href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Handler_

@@ -422,7 +422,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -476,7 +476,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.Emit.DynamicMethod</span></td>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><p>The dynamic method that was created to patch the original method</p>
 </td>
       </tr>
