@@ -4354,6 +4354,19 @@ references:
   fullName.vb: HarmonyLib.Traverse.Property(Of T)(System.String, System.Object())
   nameWithType: Traverse.Property<T>(String, Object[])
   nameWithType.vb: Traverse.Property(Of T)(String, Object())
+- uid: HarmonyLib.Traverse.PropertyExists
+  name: PropertyExists()
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_PropertyExists
+  commentId: M:HarmonyLib.Traverse.PropertyExists
+  fullName: HarmonyLib.Traverse.PropertyExists()
+  nameWithType: Traverse.PropertyExists()
+- uid: HarmonyLib.Traverse.PropertyExists*
+  name: PropertyExists
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_PropertyExists_
+  commentId: Overload:HarmonyLib.Traverse.PropertyExists
+  isSpec: "True"
+  fullName: HarmonyLib.Traverse.PropertyExists
+  nameWithType: Traverse.PropertyExists
 - uid: HarmonyLib.Traverse.SetValue(System.Object)
   name: SetValue(Object)
   href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_SetValue_System_Object_
