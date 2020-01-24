@@ -127,7 +127,7 @@ namespace HarmonyLib
 		/// <summary>Applies the patch</summary>
 		/// <returns>A list of all created dynamic methods</returns>
 		///
-		public DynamicMethod Patch()
+		public MethodInfo Patch()
 		{
 			if (original == null)
 				throw new NullReferenceException($"Null method for {instance.Id}");

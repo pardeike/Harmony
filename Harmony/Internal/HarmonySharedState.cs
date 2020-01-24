@@ -1,3 +1,5 @@
+using Mono.Cecil;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,18 +20,7 @@ namespace HarmonyLib
 				var assembly = SharedStateAssembly();
 				if (assembly == null)
 				{
-					var assemblyBuilder = PatchTools.DefineDynamicAssembly(name);
-					var moduleBuilder = assemblyBuilder.DefineDynamicModule(name);
-					var typeAttributes = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Sealed | TypeAttributes.Abstract;
-					var typeBuilder = moduleBuilder.DefineType(name, typeAttributes);
-					typeBuilder.DefineField("state", typeof(Dictionary<MethodBase, byte[]>), FieldAttributes.Static | FieldAttributes.Public);
-					typeBuilder.DefineField("version", typeof(int), FieldAttributes.Static | FieldAttributes.Public).SetConstant(internalVersion);
-#if NETSTANDARD2_0
-					typeBuilder.CreateTypeInfo().AsType();
-#else
-					typeBuilder.CreateType();
-#endif
-
+					CreateModule();
 					assembly = SharedStateAssembly();
 					if (assembly == null) throw new Exception("Cannot find or create harmony shared state");
 				}
@@ -45,6 +36,37 @@ namespace HarmonyLib
 				if (stateField.GetValue(null) == null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
 
 				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
+			}
+		}
+
+		static void CreateModule()
+		{
+			var parameters = new ModuleParameters()
+			{
+				Kind = ModuleKind.Dll,
+				ReflectionImporterProvider = MMReflectionImporter.Provider
+			};
+			using (var module = ModuleDefinition.CreateModule(name, parameters))
+			{
+				var attr = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.Abstract | Mono.Cecil.TypeAttributes.Sealed | Mono.Cecil.TypeAttributes.Class;
+				var typedef = new TypeDefinition("", name, attr) { BaseType = module.TypeSystem.Object };
+				module.Types.Add(typedef);
+
+				typedef.Fields.Add(new FieldDefinition(
+					 "state",
+					 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+					 module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
+				));
+
+				var versionFieldDef = new FieldDefinition(
+					 "version",
+					 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+					 module.ImportReference(typeof(int))
+				)
+				{ Constant = internalVersion };
+				typedef.Fields.Add(versionFieldDef);
+
+				_ = ReflectionHelper.Load(module);
 			}
 		}
 

@@ -1,3 +1,4 @@
+using MonoMod.Utils.Cil;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -358,10 +359,8 @@ namespace HarmonyLib
 
 						default:
 							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
-							var emitMethod = EmitMethodForType(operand.GetType());
-							if (emitMethod == null) throw new Exception($"Unknown Emit argument type {operand.GetType()} in {codeInstruction}");
 							if (Harmony.DEBUG) FileLog.LogBuffered($"{Emitter.CodePos(generator)}{code} {Emitter.FormatArgument(operand)}");
-							_ = emitMethod.Invoke(generator, new object[] { code, operand });
+							_ = generator.DynEmit(code, operand);
 							break;
 					}
 				}
@@ -658,21 +657,10 @@ namespace HarmonyLib
 				: two_bytes_opcodes[ilBytes.ReadByte()];
 		}
 
-		static MethodInfo EmitMethodForType(Type type)
-		{
-			foreach (var entry in emitMethods)
-				if (entry.Key == type) return entry.Value;
-			foreach (var entry in emitMethods)
-				if (entry.Key.IsAssignableFrom(type)) return entry.Value;
-			return null;
-		}
-
 		// static initializer to prep opcodes
 
 		static readonly OpCode[] one_byte_opcodes;
 		static readonly OpCode[] two_bytes_opcodes;
-
-		static readonly Dictionary<Type, MethodInfo> emitMethods;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		static MethodBodyReader()
@@ -694,18 +682,6 @@ namespace HarmonyLib
 				else
 					two_bytes_opcodes[opcode.Value & 0xff] = opcode;
 			}
-
-			emitMethods = new Dictionary<Type, MethodInfo>();
-			typeof(ILGenerator).GetMethods().ToList()
-				.Do(method =>
-				{
-					if (method.Name != "Emit") return;
-					var pinfos = method.GetParameters();
-					if (pinfos.Length != 2) return;
-					var types = pinfos.Select(p => p.ParameterType).ToArray();
-					if (types[0] != typeof(OpCode)) return;
-					emitMethods[types[1]] = method;
-				});
 		}
 
 		// a custom this parameter

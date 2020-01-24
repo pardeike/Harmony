@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using MonoMod.Utils;
 
 namespace HarmonyLibTests.Assets
 {
@@ -532,14 +533,14 @@ namespace HarmonyLibTests.Assets
 			return false;
 		}
 #else
-		public static DynamicMethod Prefix(MethodBase method)
+		public static MethodInfo Prefix(MethodBase method)
 		{
-			var dynamicMethod = new DynamicMethod(method.Name + "_Class11Patch_Prefix",
+			var dynamicMethod = new DynamicMethodDefinition(method.Name + "_Class11Patch_Prefix",
 				typeof(bool),
 				new[] { typeof(string).MakeByRefType(), typeof(int) });
 
-			_ = dynamicMethod.DefineParameter(1, ParameterAttributes.None, "__result");
-			_ = dynamicMethod.DefineParameter(2, ParameterAttributes.None, "dummy");
+			dynamicMethod.Definition.Parameters[0].Name = "__result";
+			dynamicMethod.Definition.Parameters[1].Name = "dummy";
 
 			var il = dynamicMethod.GetILGenerator();
 
@@ -557,7 +558,7 @@ namespace HarmonyLibTests.Assets
 			il.Emit(OpCodes.Ldc_I4_0);
 			il.Emit(OpCodes.Ret);
 
-			return dynamicMethod;
+			return dynamicMethod.Generate();
 		}
 #endif
 	}

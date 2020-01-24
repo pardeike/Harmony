@@ -78,7 +78,7 @@ namespace HarmonyLib
 		/// <param name="finalizer">An optional finalizer method wrapped in a HarmonyMethod object</param>
 		/// <returns>The dynamic method that was created to patch the original method</returns>
 		///
-		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
+		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
 			var processor = this.CreateProcessor(original);
 			_ = processor.AddPrefix(prefix);

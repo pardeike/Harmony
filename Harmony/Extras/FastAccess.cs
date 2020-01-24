@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using MonoMod.Utils;
 
 namespace HarmonyLib
 {
@@ -48,13 +49,11 @@ namespace HarmonyLib
 					typeof(T)));
 			}
 
-			var dynamicMethod = new DynamicMethod($"InstantiateObject_{typeof(T).Name}",
-				MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(T), null, typeof(T),
-				true);
+			var dynamicMethod = new DynamicMethodDefinition($"InstantiateObject_{typeof(T).Name}", typeof(T), null);
 			var generator = dynamicMethod.GetILGenerator();
 			generator.Emit(OpCodes.Newobj, constructorInfo);
 			generator.Emit(OpCodes.Ret);
-			return (InstantiationHandler<T>)dynamicMethod.CreateDelegate(typeof(InstantiationHandler<T>));
+			return (InstantiationHandler<T>)dynamicMethod.Generate().CreateDelegate(typeof(InstantiationHandler<T>));
 		}
 
 		/// <summary>Creates an getter delegate for a property</summary>
@@ -73,7 +72,7 @@ namespace HarmonyLib
 			getGenerator.Emit(OpCodes.Call, getMethodInfo);
 			getGenerator.Emit(OpCodes.Ret);
 
-			return (GetterHandler<T, S>)dynamicGet.CreateDelegate(typeof(GetterHandler<T, S>));
+			return (GetterHandler<T, S>)dynamicGet.Generate().CreateDelegate(typeof(GetterHandler<T, S>));
 		}
 
 		/// <summary>Creates an getter delegate for a field</summary>
@@ -91,7 +90,7 @@ namespace HarmonyLib
 			getGenerator.Emit(OpCodes.Ldfld, fieldInfo);
 			getGenerator.Emit(OpCodes.Ret);
 
-			return (GetterHandler<T, S>)dynamicGet.CreateDelegate(typeof(GetterHandler<T, S>));
+			return (GetterHandler<T, S>)dynamicGet.Generate().CreateDelegate(typeof(GetterHandler<T, S>));
 		}
 
 		/// <summary>Creates an getter delegate for a field (with a list of possible field names)</summary>
@@ -133,7 +132,7 @@ namespace HarmonyLib
 			setGenerator.Emit(OpCodes.Call, setMethodInfo);
 			setGenerator.Emit(OpCodes.Ret);
 
-			return (SetterHandler<T, S>)dynamicSet.CreateDelegate(typeof(SetterHandler<T, S>));
+			return (SetterHandler<T, S>)dynamicSet.Generate().CreateDelegate(typeof(SetterHandler<T, S>));
 		}
 
 		/// <summary>Creates an setter delegate for a field</summary>
@@ -152,20 +151,19 @@ namespace HarmonyLib
 			setGenerator.Emit(OpCodes.Stfld, fieldInfo);
 			setGenerator.Emit(OpCodes.Ret);
 
-			return (SetterHandler<T, S>)dynamicSet.CreateDelegate(typeof(SetterHandler<T, S>));
+			return (SetterHandler<T, S>)dynamicSet.Generate().CreateDelegate(typeof(SetterHandler<T, S>));
 		}
 
 		//
 
-		static DynamicMethod CreateGetDynamicMethod<T, S>(Type type)
+		static DynamicMethodDefinition CreateGetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethod($"DynamicGet_{type.Name}", typeof(S), new Type[] { typeof(T) }, type, true);
+			return new DynamicMethodDefinition($"DynamicGet_{type.Name}", typeof(S), new Type[] { typeof(T) });
 		}
 
-		static DynamicMethod CreateSetDynamicMethod<T, S>(Type type)
+		static DynamicMethodDefinition CreateSetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethod($"DynamicSet_{type.Name}", typeof(void), new Type[] { typeof(T), typeof(S) }, type,
-				true);
+			return new DynamicMethodDefinition($"DynamicSet_{type.Name}", typeof(void), new Type[] { typeof(T), typeof(S) });
 		}
 	}
 }

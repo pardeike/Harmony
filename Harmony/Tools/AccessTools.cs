@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using MonoMod.Utils;
 
 namespace HarmonyLib
 {
@@ -821,21 +822,14 @@ namespace HarmonyLib
 
 			var s_name = $"__refget_{typeof(T).Name}_fi_{fieldInfo.Name}";
 
-			// workaround for using ref-return with DynamicMethod:
-			// a.) initialize with dummy return value
-			var dm = new DynamicMethod(s_name, typeof(F), new[] { typeof(T) }, typeof(T), true);
-
-			// b.) replace with desired 'ByRef' return value
-			var trv = Traverse.Create(dm);
-			_ = trv.Field("returnType").SetValue(typeof(F).MakeByRefType());
-			_ = trv.Field("m_returnType").SetValue(typeof(F).MakeByRefType());
+			var dm = new DynamicMethodDefinition(s_name, typeof(F).MakeByRefType(), new[] { typeof(T) });
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
-			return (FieldRef<T, F>)dm.CreateDelegate(typeof(FieldRef<T, F>));
+			return (FieldRef<T, F>)dm.Generate().CreateDelegate(typeof(FieldRef<T, F>));
 		}
 
 		/// <summary>A read/writable reference delegate to a static field</summary>
@@ -873,20 +867,13 @@ namespace HarmonyLib
 
 			var s_name = $"__refget_{t.Name}_static_fi_{fieldInfo.Name}";
 
-			// workaround for using ref-return with DynamicMethod:
-			// a.) initialize with dummy return value
-			var dm = new DynamicMethod(s_name, typeof(F), new Type[0], t, true);
-
-			// b.) replace with desired 'ByRef' return value
-			var trv = Traverse.Create(dm);
-			_ = trv.Field("returnType").SetValue(typeof(F).MakeByRefType());
-			_ = trv.Field("m_returnType").SetValue(typeof(F).MakeByRefType());
+			var dm = new DynamicMethodDefinition(s_name, typeof(F).MakeByRefType(), new Type[0]);
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldsflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
-			return (FieldRef<F>)dm.CreateDelegate(typeof(FieldRef<F>));
+			return (FieldRef<F>)dm.Generate().CreateDelegate(typeof(FieldRef<F>));
 		}
 
 		/// <summary>Returns who called the current method</summary>
