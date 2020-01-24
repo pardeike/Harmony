@@ -341,7 +341,15 @@ namespace HarmonyLib
 		///
 		public bool FieldExists()
 		{
-			return _info != null;
+			return _info != null && _info is FieldInfo;
+		}
+
+		/// <summary>Checks if the current traverse instance is for a property</summary>
+		/// <returns>True if its a property</returns>
+		///
+		public bool PropertyExists()
+		{
+			return _info != null && _info is PropertyInfo;
 		}
 
 		/// <summary>Checks if the current traverse instance is for a method</summary>
