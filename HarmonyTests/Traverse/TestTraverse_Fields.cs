@@ -38,6 +38,21 @@ namespace HarmonyLibTests
 			}
 		}
 
+		// Traverse.Property() should return the value of a traversed static field
+		//
+		[Test]
+		public void Traverse_Field_Static()
+		{
+			var instance = new TraverseProperties_BaseClass();
+
+			var trv1 = Traverse.Create(instance).Field("staticField");
+			Assert.AreEqual("test1", trv1.GetValue());
+
+
+			var trv2 = Traverse.Create(typeof(TraverseProperties_Static)).Field("staticField");
+			Assert.AreEqual("test2", trv2.GetValue());
+		}
+
 		// Traverse.SetValue() should set the value of a traversed field
 		// regardless of its access modifier
 		//

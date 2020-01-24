@@ -269,7 +269,7 @@ namespace HarmonyLib
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
-			if (resolved._root == null || resolved._type == null) return new Traverse();
+			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetPropertyInfo(resolved._type, name);
 			if (info == null) return new Traverse();
 			return new Traverse(resolved._root, info, index);

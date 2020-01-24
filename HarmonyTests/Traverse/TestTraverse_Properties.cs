@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -16,6 +16,21 @@ namespace HarmonyLibTests
 
 			var trv = Traverse.Create(instance).Property(TraverseProperties.propertyNames[0]);
 			Assert.AreEqual(TraverseProperties.testStrings[0], trv.ToString());
+		}
+
+		// Traverse.Property() should return static properties
+		//
+		[Test]
+		public void Traverse_Property_Static()
+		{
+			var instance = new TraverseProperties_BaseClass();
+
+			var trv1 = Traverse.Create(instance).Property("StaticProperty");
+			Assert.AreEqual("test1", trv1.GetValue());
+
+
+			var trv2 = Traverse.Create(typeof(TraverseProperties_Static)).Property("StaticProperty");
+			Assert.AreEqual("test2", trv2.GetValue());
 		}
 
 		// Traverse.GetValue() should return the value of a traversed property
