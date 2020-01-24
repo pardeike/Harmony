@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.html",
-          "hash": "KWjbaNUNkwMgW33hTAnpbQ=="
+          "hash": "kFseyKe/pIk/LcUHDtpsmA=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-2.html",
-          "hash": "XbHyWpoeo65ncNPTwzJqaA=="
+          "hash": "ZBN9PG2WZOc31D2fQvpXDQ=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.html",
-          "hash": "1YI0xmUtXGm0xgXBIrmzTw=="
+          "hash": "/YhDM9YUSJqZl7ltxAVklg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeMatcher.html",
-          "hash": "Cwu/s7SDQ1ANqDSiNUx4dg=="
+          "hash": "eoiyM8JQuqTdJgknXa9uQQ=="
         }
       },
       "is_incremental": false,
@@ -201,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Harmony.html",
-          "hash": "Vgjnq9SQIftB3cJaNN7mzQ=="
+          "hash": "pW0f+vaa0FSyZSvpNJPX2A=="
         }
       },
       "is_incremental": false,
@@ -297,7 +297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyMethodExtensions.html",
-          "hash": "khYHJ9p7TsaoX5THqmbc8A=="
+          "hash": "z1gzOAS90B2Edaiak2pv/w=="
         }
       },
       "is_incremental": false,
@@ -509,6 +509,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.PatchClassProcessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.PatchClassProcessor.html",
+          "hash": "G88Pt+imPaD8xr4D3omsKw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/HarmonyLib.PatchInfo.yml",
       "output": {
         ".html": {
@@ -525,7 +537,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchProcessor.html",
-          "hash": "/328Z6JYxl8rOhqBrpnmZQ=="
+          "hash": "HZvLF/RHGVUgmuWN8XyXkA=="
         }
       },
       "is_incremental": false,
@@ -633,7 +645,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.html",
-          "hash": "Ebhi5lQmBvWMBGHIbXdqDg=="
+          "hash": "don5P2qiG/YTw2liOtkcPg=="
         }
       },
       "is_incremental": false,
@@ -657,7 +669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "rlJUVch9ZgJoWKVda8c4ww=="
+          "hash": "9Z8sOSWLaUDpWhufrTKK9g=="
         }
       },
       "is_incremental": false,
@@ -914,10 +926,11 @@
         "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
-        "ManagedReferenceDocumentProcessor": {
+        "ResourceDocumentProcessor": {
           "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
-          "total_file_count": 53,
+          "total_file_count": 0,
           "skipped_file_count": 0
         },
         "ConceptualDocumentProcessor": {
@@ -933,11 +946,10 @@
           "total_file_count": 0,
           "skipped_file_count": 0
         },
-        "ResourceDocumentProcessor": {
+        "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
-          "total_file_count": 0,
+          "total_file_count": 54,
           "skipped_file_count": 0
         }
       }
