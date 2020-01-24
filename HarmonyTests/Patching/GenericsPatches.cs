@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests
 {
@@ -67,16 +68,19 @@ namespace HarmonyLibTests
 
 		public List<T> list = new List<T>();
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public MyEnumerator GetEnumerator()
 		{
 			return new MyEnumerator(list);
 		}
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		IEnumerator<T> IEnumerable<T>.GetEnumerator()
 		{
 			return new MyEnumerator(list);
 		}
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return new MyEnumerator(list);
