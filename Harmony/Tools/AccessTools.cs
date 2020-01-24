@@ -42,7 +42,7 @@ namespace HarmonyLib
 					.SelectMany(a => GetTypesFromAssembly(a))
 					.FirstOrDefault(t => t.Name == name);
 			if (type == null && Harmony.DEBUG)
-				FileLog.Log("AccessTools.TypeByName: Could not find type named " + name);
+				FileLog.Log($"AccessTools.TypeByName: Could not find type named {name}");
 			return type;
 		}
 
@@ -121,7 +121,7 @@ namespace HarmonyLib
 			}
 			var field = type.GetField(name, allDeclared);
 			if (field == null && Harmony.DEBUG)
-				FileLog.Log("AccessTools.DeclaredField: Could not find field for type " + type + " and name " + name);
+				FileLog.Log($"AccessTools.DeclaredField: Could not find field for type {type} and name {name}");
 			return field;
 		}
 
@@ -146,7 +146,7 @@ namespace HarmonyLib
 			}
 			var field = FindIncludingBaseTypes(type, t => t.GetField(name, all));
 			if (field == null && Harmony.DEBUG)
-				FileLog.Log("AccessTools.Field: Could not find field for type " + type + " and name " + name);
+				FileLog.Log($"AccessTools.Field: Could not find field for type {type} and name {name}");
 			return field;
 		}
 
@@ -165,7 +165,7 @@ namespace HarmonyLib
 			}
 			var field = GetDeclaredFields(type).ElementAtOrDefault(idx);
 			if (field == null && Harmony.DEBUG)
-				FileLog.Log("AccessTools.DeclaredField: Could not find field for type " + type + " and idx " + idx);
+				FileLog.Log($"AccessTools.DeclaredField: Could not find field for type {type} and idx {idx}");
 			return field;
 		}
 
@@ -190,7 +190,7 @@ namespace HarmonyLib
 			}
 			var property = type.GetProperty(name, allDeclared);
 			if (property == null && Harmony.DEBUG)
-				FileLog.Log("AccessTools.DeclaredProperty: Could not find property for type " + type + " and name " + name);
+				FileLog.Log($"AccessTools.DeclaredProperty: Could not find property for type {type} and name {name}");
 			return property;
 		}
 
@@ -235,7 +235,7 @@ namespace HarmonyLib
 			}
 			var property = FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
 			if (property == null && Harmony.DEBUG)
-				FileLog.Log("AccessTools.Property: Could not find property for type " + type + " and name " + name);
+				FileLog.Log($"AccessTools.Property: Could not find property for type {type} and name {name}");
 			return property;
 		}
 
@@ -291,7 +291,7 @@ namespace HarmonyLib
 			if (result == null)
 			{
 				if (Harmony.DEBUG)
-					FileLog.Log("AccessTools.DeclaredMethod: Could not find method for type " + type + " and name " + name + " and parameters " + parameters?.Description());
+					FileLog.Log($"AccessTools.DeclaredMethod: Could not find method for type {type} and name {name} and parameters {parameters?.Description()}");
 				return null;
 			}
 
@@ -344,7 +344,7 @@ namespace HarmonyLib
 			if (result == null)
 			{
 				if (Harmony.DEBUG)
-					FileLog.Log("AccessTools.Method: Could not find method for type " + type + " and name " + name + " and parameters " + parameters?.Description());
+					FileLog.Log($"AccessTools.Method: Could not find method for type {type} and name {name} and parameters {parameters?.Description()}");
 				return null;
 			}
 
@@ -465,7 +465,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the type of any member of a class</summary>
-		/// <param name="member">An EventInfo, FieldInfo, MethodInfo, or PropertyInfo</param>
+		/// <param name="member">An EventInfo, FieldInfo, MethodBase, PropertyInfo or TypeInfo</param>
 		/// <returns>The type that represents the output of this member</returns>
 		///
 		public static Type GetUnderlyingType(this MemberInfo member)
@@ -485,12 +485,39 @@ namespace HarmonyLib
 			}
 		}
 
+		/// <summary>Test if a class member is actually an concrete implementation</summary>
+		/// <param name="member">An EventInfo, FieldInfo, MethodBase, PropertyInfo or TypeInfo</param>
+		/// <returns>True if the member is a declared</returns>
+		///
+		public static bool IsDeclaredMember<T>(this T member) where T : MemberInfo
+		{
+			return member.DeclaringType == member.ReflectedType;
+		}
+
+		/// <summary>Gets the real implementation of a class member</summary>
+		/// <param name="member">An EventInfo, FieldInfo, MethodBase, PropertyInfo or TypeInfo</param>
+		/// <returns>The member itself if its declared. Otherwise the member that is actually implemented in some base type</returns>
+		///
+		public static T GetDeclaredMember<T>(this T member) where T : MemberInfo
+		{
+			if (member.IsDeclaredMember())
+				return member;
+
+			var metaToken = member.MetadataToken;
+			foreach (var other in member.DeclaringType.GetMembers(all))
+				if (other.MetadataToken == metaToken)
+					return (T)other;
+
+			return member;
+		}
+
 		/// <summary>Gets the reflection information for a directly declared constructor</summary>
 		/// <param name="type">The class where the constructor is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the constructor</param>
+		/// <param name="searchForStatic">Optional parameters to only consider static constructors</param>
 		/// <returns>A ConstructorInfo or null when type is null or when the constructor cannot be found</returns>
 		///
-		public static ConstructorInfo DeclaredConstructor(Type type, Type[] parameters = null)
+		public static ConstructorInfo DeclaredConstructor(Type type, Type[] parameters = null, bool searchForStatic = false)
 		{
 			if (type == null)
 			{
@@ -499,15 +526,17 @@ namespace HarmonyLib
 				return null;
 			}
 			if (parameters == null) parameters = new Type[0];
-			return type.GetConstructor(allDeclared, null, parameters, new ParameterModifier[] { });
+			var flags = searchForStatic ? allDeclared & ~BindingFlags.Instance : allDeclared & ~BindingFlags.Static;
+			return type.GetConstructor(flags, null, parameters, new ParameterModifier[] { });
 		}
 
 		/// <summary>Gets the reflection information for a constructor by searching the type and all its super types</summary>
 		/// <param name="type">The class where the constructor is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <param name="searchForStatic">Optional parameters to only consider static constructors</param>
 		/// <returns>A ConstructorInfo or null when type is null or when the method cannot be found</returns>
 		///
-		public static ConstructorInfo Constructor(Type type, Type[] parameters = null)
+		public static ConstructorInfo Constructor(Type type, Type[] parameters = null, bool searchForStatic = false)
 		{
 			if (type == null)
 			{
@@ -516,14 +545,16 @@ namespace HarmonyLib
 				return null;
 			}
 			if (parameters == null) parameters = new Type[0];
-			return FindIncludingBaseTypes(type, t => t.GetConstructor(all, null, parameters, new ParameterModifier[] { }));
+			var flags = searchForStatic ? all & ~BindingFlags.Instance : all & ~BindingFlags.Static;
+			return FindIncludingBaseTypes(type, t => t.GetConstructor(flags, null, parameters, new ParameterModifier[] { }));
 		}
 
 		/// <summary>Gets reflection information for all declared constructors</summary>
 		/// <param name="type">The class where the constructors are declared</param>
+		/// <param name="searchForStatic">Optional parameters to only consider static constructors</param>
 		/// <returns>A list of ConstructorInfo</returns>
 		///
-		public static List<ConstructorInfo> GetDeclaredConstructors(Type type)
+		public static List<ConstructorInfo> GetDeclaredConstructors(Type type, bool? searchForStatic = null)
 		{
 			if (type == null)
 			{
@@ -531,7 +562,10 @@ namespace HarmonyLib
 					FileLog.Log("AccessTools.GetDeclaredConstructors: type is null");
 				return null;
 			}
-			return type.GetConstructors(allDeclared).Where(method => method.DeclaringType == type).ToList();
+			var flags = allDeclared;
+			if (searchForStatic.HasValue)
+				flags = searchForStatic.Value ? flags & ~BindingFlags.Instance : flags & ~BindingFlags.Static;
+			return type.GetConstructors(flags).Where(method => method.DeclaringType == type).ToList();
 		}
 
 		/// <summary>Gets reflection information for all declared methods</summary>
@@ -785,7 +819,7 @@ namespace HarmonyLib
 				if (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T)))
 					throw new MissingFieldException(typeof(T).Name, fieldInfo.Name);
 
-			var s_name = "__refget_" + typeof(T).Name + "_fi_" + fieldInfo.Name;
+			var s_name = $"__refget_{typeof(T).Name}_fi_{fieldInfo.Name}";
 
 			// workaround for using ref-return with DynamicMethod:
 			// a.) initialize with dummy return value
@@ -837,7 +871,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldInfo));
 			var t = fieldInfo.DeclaringType;
 
-			var s_name = "__refget_" + t.Name + "_static_fi_" + fieldInfo.Name;
+			var s_name = $"__refget_{t.Name}_static_fi_{fieldInfo.Name}";
 
 			// workaround for using ref-return with DynamicMethod:
 			// a.) initialize with dummy return value
@@ -878,7 +912,7 @@ namespace HarmonyLib
 		{
 			var fields = string.Join(",", GetFieldNames(type).ToArray());
 			var properties = string.Join(",", GetPropertyNames(type).ToArray());
-			throw new MissingMemberException(string.Join(",", names) + "; available fields: " + fields + "; available properties: " + properties);
+			throw new MissingMemberException($"{string.Join(",", names)}; available fields: {fields}; available properties: {properties}");
 		}
 
 		/// <summary>Gets default value for a specific type</summary>
@@ -970,7 +1004,7 @@ namespace HarmonyLib
 						var iStr = (i++).ToString();
 						var path = pathRoot.Length > 0 ? pathRoot + "." + iStr : iStr;
 						var newElement = MakeDeepCopy(element, newElementType, processor, path);
-						addInvoker(addableResult, new object[] { newElement });
+						_ = addInvoker(addableResult, new object[] { newElement });
 					}
 					return addableResult;
 				}
@@ -1003,7 +1037,7 @@ namespace HarmonyLib
 			{
 				var path = pathRoot.Length > 0 ? pathRoot + "." + name : name;
 				var value = processor != null ? processor(path, src, dst) : src.GetValue();
-				dst.SetValue(MakeDeepCopy(value, dst.GetValueType(), processor, path));
+				_ = dst.SetValue(MakeDeepCopy(value, dst.GetValueType(), processor, path));
 			});
 			return result;
 		}

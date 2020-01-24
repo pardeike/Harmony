@@ -70,13 +70,13 @@ namespace HarmonyLib
 				return ((MethodInfo)argument).FullDescription();
 
 			if (type == typeof(string))
-				return "\"" + argument + "\"";
+				return $"\"{argument}\"";
 			if (type == typeof(Label))
-				return "Label" + ((Label)argument).GetHashCode();
+				return $"Label{((Label)argument).GetHashCode()}";
 			if (type == typeof(Label[]))
-				return "Labels" + string.Join(",", ((Label[])argument).Select(l => l.GetHashCode().ToString()).ToArray());
+				return $"Labels{string.Join(",", ((Label[])argument).Select(l => l.GetHashCode().ToString()).ToArray())}";
 			if (type == typeof(LocalBuilder))
-				return ((LocalBuilder)argument).LocalIndex + " (" + ((LocalBuilder)argument).LocalType + ")";
+				return $"{((LocalBuilder)argument).LocalIndex} ({((LocalBuilder)argument).LocalType})";
 
 			return argument.ToString().Trim();
 		}
@@ -111,7 +111,7 @@ namespace HarmonyLib
 						FileLog.ChangeIndent(-1);
 						FileLog.LogBuffered("} // end try");
 
-						FileLog.LogBuffered(".catch " + block.catchType);
+						FileLog.LogBuffered($".catch {block.catchType}");
 						FileLog.LogBuffered("{");
 						FileLog.ChangeIndent(1);
 					}

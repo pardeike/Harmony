@@ -64,7 +64,7 @@ namespace HarmonyLib
 		{
 			var result = AccessTools.Method(type, name, parameters);
 			if (result == null)
-				throw new ArgumentException("Cannot not find method for type " + type + " and name " + name + " and parameters " + parameters?.Description());
+				throw new ArgumentException($"Cannot not find method for type {type} and name {name} and parameters {parameters?.Description()}");
 			ImportMethod(result);
 		}
 
@@ -106,13 +106,24 @@ namespace HarmonyLib
 		///
 		public override string ToString()
 		{
-			var result = "HarmonyMethod[";
+			var result = "";
 			var trv = Traverse.Create(this);
 			HarmonyFields().ForEach(f =>
 			{
-				result += f + '=' + trv.Field(f).GetValue();
+				if (result.Length > 0) result += ", ";
+				result += $"{f}={trv.Field(f).GetValue()}";
 			});
-			return result + "]";
+			return $"HarmonyMethod[{result}]";
+		}
+
+		// used for error reporting
+		internal string Description()
+		{
+			var cName = declaringType != null ? declaringType.FullName : "undefined";
+			var mName = methodName ?? "undefined";
+			var tName = methodType.HasValue ? methodType.Value.ToString() : "undefined";
+			var aName = argumentTypes != null ? argumentTypes.Description() : "undefined";
+			return $"(class={cName}, methodname={mName}, type={tName}, args={aName})";
 		}
 	}
 
@@ -128,7 +139,7 @@ namespace HarmonyLib
 				var enumType = Nullable.GetUnderlyingType(fld.GetValueType());
 				val = Enum.ToObject(enumType, (int)val);
 			}
-			fld.SetValue(val);
+			_ = fld.SetValue(val);
 		}
 
 		/// <summary>Copies annotation information</summary>
@@ -184,7 +195,7 @@ namespace HarmonyLib
 		{
 			var f_info = attribute.GetType().GetField(nameof(HarmonyAttribute.info), AccessTools.all);
 			if (f_info == null) return null;
-			if (f_info.FieldType.Name != nameof(HarmonyMethod)) return null;
+			if (f_info.FieldType.FullName != typeof(HarmonyMethod).FullName) return null;
 			var info = f_info.GetValue(attribute);
 			return AccessTools.MakeDeepCopy<HarmonyMethod>(info);
 		}
@@ -201,6 +212,15 @@ namespace HarmonyLib
 						.ToList();
 		}
 
+		/// <summary>Gets all annotations on a class in merged form</summary>
+		/// <param name="type">The class</param>
+		/// <returns>The merged HarmonyMethod</returns>
+		///
+		public static HarmonyMethod GetMergedFromType(Type type)
+		{
+			return HarmonyMethod.Merge(GetFromType(type));
+		}
+
 		/// <summary>Gets all annotations on a method</summary>
 		/// <param name="method">The method</param>
 		/// <returns>All annotations</returns>
@@ -211,6 +231,15 @@ namespace HarmonyLib
 						.Select(attr => GetHarmonyMethodInfo(attr))
 						.Where(info => info != null)
 						.ToList();
+		}
+
+		/// <summary>Gets all annotations on a method in merged form</summary>
+		/// <param name="method">The method</param>
+		/// <returns>The merged HarmonyMethod</returns>
+		///
+		public static HarmonyMethod GetMergedFromMethod(MethodBase method)
+		{
+			return HarmonyMethod.Merge(GetFromMethod(method));
 		}
 	}
 }

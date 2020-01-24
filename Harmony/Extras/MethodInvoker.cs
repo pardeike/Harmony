@@ -75,7 +75,7 @@ namespace HarmonyLib
 		/// <returns>The fast invocation handler</returns>
 		public FastInvokeHandler Handler(MethodInfo methodInfo, Module module)
 		{
-			var dynamicMethod = new DynamicMethod("FastInvoke_" + methodInfo.Name + "_" + (directBoxValueAccess ? "direct" : "indirect"), typeof(object), new Type[] { typeof(object), typeof(object[]) }, module, true);
+			var dynamicMethod = new DynamicMethod($"FastInvoke_{methodInfo.Name}_{(directBoxValueAccess ? "direct" : "indirect")}", typeof(object), new Type[] { typeof(object), typeof(object[]) }, module, true);
 			var il = dynamicMethod.GetILGenerator();
 
 			if (!methodInfo.IsStatic)

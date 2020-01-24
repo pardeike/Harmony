@@ -11,7 +11,7 @@ namespace HarmonyLib
 	public static class FileLog
 	{
 		/// <summary>Full pathname of the log file</summary>
-		public static string logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + "harmony.log.txt";
+		public static string logPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}{Path.DirectorySeparatorChar}harmony.log.txt";
 
 		/// <summary>The indent character</summary>
 		public static char indentChar = '\t';
@@ -121,7 +121,7 @@ namespace HarmonyLib
 		{
 			lock (logPath)
 			{
-				var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + "harmony.log.txt";
+				var path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}{Path.DirectorySeparatorChar}harmony.log.txt";
 				File.Delete(path);
 			}
 		}
@@ -139,7 +139,7 @@ namespace HarmonyLib
 				for (var i = 1; i <= len; i++)
 				{
 					if (s.Length == 0) s = "#  ";
-					s = s + (*p).ToString("X2") + " ";
+					s += $"{(*p).ToString("X2")} ";
 					if (i > 1 || len == 1)
 					{
 						if (i % 8 == 0 || i == len)
@@ -161,8 +161,8 @@ namespace HarmonyLib
 				var sBuilder = new StringBuilder();
 #pragma warning restore XS0001
 				for (var i = 0; i < hash.Length; i++)
-					sBuilder.Append(hash[i].ToString("X2"));
-				Log("HASH: " + sBuilder);
+					_ = sBuilder.Append(hash[i].ToString("X2"));
+				Log($"HASH: {sBuilder}");
 			}
 		}
 	}
