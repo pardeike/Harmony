@@ -20,41 +20,7 @@ namespace HarmonyLib
 				var assembly = SharedStateAssembly();
 				if (assembly == null)
 				{
-					using (ModuleDefinition module = ModuleDefinition.CreateModule(
-						 name,
-						 new ModuleParameters()
-						 {
-							 Kind = ModuleKind.Dll,
-							 ReflectionImporterProvider = MMReflectionImporter.Provider
-						 }
-					))
-					{
-						TypeDefinition typedef = new TypeDefinition(
-							 "", name,
-							 Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.Abstract | Mono.Cecil.TypeAttributes.Sealed | Mono.Cecil.TypeAttributes.Class
-						)
-						{
-							BaseType = module.TypeSystem.Object
-						};
-						module.Types.Add(typedef);
-
-						typedef.Fields.Add(new FieldDefinition(
-							 "state",
-							 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
-							 module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
-						));
-
-						FieldDefinition versionFieldDef = new FieldDefinition(
-							 "version",
-							 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
-							 module.ImportReference(typeof(int))
-						);
-						versionFieldDef.Constant = internalVersion;
-						typedef.Fields.Add(versionFieldDef);
-
-						ReflectionHelper.Load(module);
-					}
-
+					CreateModule();
 					assembly = SharedStateAssembly();
 					if (assembly == null) throw new Exception("Cannot find or create harmony shared state");
 				}
@@ -70,6 +36,37 @@ namespace HarmonyLib
 				if (stateField.GetValue(null) == null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
 
 				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
+			}
+		}
+
+		static void CreateModule()
+		{
+			var parameters = new ModuleParameters()
+			{
+				Kind = ModuleKind.Dll,
+				ReflectionImporterProvider = MMReflectionImporter.Provider
+			};
+			using (var module = ModuleDefinition.CreateModule(name, parameters))
+			{
+				var attr = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.Abstract | Mono.Cecil.TypeAttributes.Sealed | Mono.Cecil.TypeAttributes.Class;
+				var typedef = new TypeDefinition("", name, attr) { BaseType = module.TypeSystem.Object };
+				module.Types.Add(typedef);
+
+				typedef.Fields.Add(new FieldDefinition(
+					 "state",
+					 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+					 module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
+				));
+
+				var versionFieldDef = new FieldDefinition(
+					 "version",
+					 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+					 module.ImportReference(typeof(int))
+				)
+				{ Constant = internalVersion };
+				typedef.Fields.Add(versionFieldDef);
+
+				_ = ReflectionHelper.Load(module);
 			}
 		}
 

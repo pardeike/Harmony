@@ -1,11 +1,7 @@
 using MonoMod.RuntimeDetour;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace HarmonyLib
 {
@@ -50,7 +46,7 @@ namespace HarmonyLib
 		///
 		public static string WriteJump(long memory, long destination)
 		{
-			NativeDetourData data = DetourHelper.Native.Create((IntPtr)memory, (IntPtr)destination);
+			var data = DetourHelper.Native.Create((IntPtr)memory, (IntPtr)destination);
 			DetourHelper.Native.MakeWritable(data);
 			DetourHelper.Native.Apply(data);
 			DetourHelper.Native.MakeExecutable(data);
