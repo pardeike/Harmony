@@ -31,6 +31,19 @@ namespace HarmonyLibTests.Assets
 			get => throw new Exception();
 			set => throw new Exception();
 		}
+
+		static string StaticProperty => "test1";
+#pragma warning disable CS0414
+		static readonly string staticField = "test1";
+#pragma warning restore CS0414
+	}
+
+	public static class TraverseProperties_Static
+	{
+		static string StaticProperty => "test2";
+#pragma warning disable CS0414
+		static readonly string staticField = "test2";
+#pragma warning restore CS0414
 	}
 
 	public class TraverseProperties_AccessModifiers : TraverseProperties_BaseClass

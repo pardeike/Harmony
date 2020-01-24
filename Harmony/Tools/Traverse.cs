@@ -269,7 +269,7 @@ namespace HarmonyLib
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
-			if (resolved._root == null || resolved._type == null) return new Traverse();
+			if (resolved._type == null) return new Traverse();
 			var info = Cache.GetPropertyInfo(resolved._type, name);
 			if (info == null) return new Traverse();
 			return new Traverse(resolved._root, info, index);
@@ -341,7 +341,15 @@ namespace HarmonyLib
 		///
 		public bool FieldExists()
 		{
-			return _info != null;
+			return _info != null && _info is FieldInfo;
+		}
+
+		/// <summary>Checks if the current traverse instance is for a property</summary>
+		/// <returns>True if its a property</returns>
+		///
+		public bool PropertyExists()
+		{
+			return _info != null && _info is PropertyInfo;
 		}
 
 		/// <summary>Checks if the current traverse instance is for a method</summary>
