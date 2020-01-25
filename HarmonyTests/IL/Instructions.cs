@@ -8,7 +8,7 @@ namespace HarmonyLibTests.IL
 	public class Instructions
 	{
 		[Test]
-		public void TestMalformedStringOperand()
+		public void Test_MalformedStringOperand()
 		{
 			var expectedOperand = "this should not fail {4}";
 			var inst = new CodeInstruction(OpCodes.Ldstr, expectedOperand);

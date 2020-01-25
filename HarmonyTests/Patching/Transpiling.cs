@@ -22,7 +22,7 @@ namespace HarmonyLibTests.Patching
 #endif
 
 		[Test]
-		public void TestTranspilerException1()
+		public void Test_TranspilerException1()
 		{
 			var test = new Class3();
 

@@ -7,7 +7,7 @@ namespace HarmonyLibTests
 	public class DynamicMethodPatches
 	{
 		[Test]
-		public void ByRefResultPrefix()
+		public void Test_ByRefResultPrefix()
 		{
 			var originalClass = typeof(Assets.Class11);
 			Assert.IsNotNull(originalClass);

@@ -8,7 +8,7 @@ namespace HarmonyLibTests
 	public class StaticPatches
 	{
 		[Test]
-		public void TestMethod0()
+		public void Test_Method0()
 		{
 			var originalClass = typeof(Class0);
 			Assert.IsNotNull(originalClass);
@@ -32,7 +32,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethod1()
+		public void Test_Method1()
 		{
 			var originalClass = typeof(Class1);
 			Assert.IsNotNull(originalClass);
@@ -70,7 +70,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethod2()
+		public void Test_Method2()
 		{
 			var originalClass = typeof(Class2);
 			Assert.IsNotNull(originalClass);
@@ -108,7 +108,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethod4()
+		public void Test_Method4()
 		{
 			var originalClass = typeof(Class4);
 			Assert.IsNotNull(originalClass);
@@ -140,7 +140,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethod5()
+		public void Test_Method5()
 		{
 			var originalClass = typeof(Class5);
 			Assert.IsNotNull(originalClass);
@@ -170,7 +170,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestPatchUnpatch()
+		public void Test_PatchUnpatch()
 		{
 			var originalClass = typeof(Class9);
 			Assert.IsNotNull(originalClass);
@@ -199,7 +199,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestAttributes()
+		public void Test_Attributes()
 		{
 			var originalClass = typeof(AttributesClass);
 			Assert.IsNotNull(originalClass);
@@ -227,7 +227,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethod10()
+		public void Test_Method10()
 		{
 			var originalClass = typeof(Class10);
 			Assert.IsNotNull(originalClass);

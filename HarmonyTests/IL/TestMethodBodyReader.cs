@@ -11,7 +11,7 @@ namespace HarmonyLibTests.IL
 	public class TestMethodBodyReader
 	{
 		[Test]
-		public void CanGetInstructionsWithNoILGenerator()
+		public void Test_CanGetInstructionsWithNoILGenerator()
 		{
 			var method = typeof(Class12).GetMethod(nameof(Class12.FizzBuzz));
 			var instrsNoGen = MethodBodyReader.GetInstructions(generator: null, method);

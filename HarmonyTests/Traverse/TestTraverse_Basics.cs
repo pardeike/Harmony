@@ -14,7 +14,7 @@ namespace HarmonyLibTests
 		// Basic integrity check for our test class and the field-testvalue relations
 		//
 		[Test]
-		public void Instantiate_TraverseFields_AccessModifiers()
+		public void Test_Instantiate_TraverseFields_AccessModifiers()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
 
@@ -23,7 +23,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void Traverse_Has_Expected_Internal_Fields()
+		public void Test_Traverse_Has_Expected_Internal_Fields()
 		{
 			foreach (var name in fieldNames)
 			{
@@ -113,7 +113,7 @@ namespace HarmonyLibTests
 		// Traverse.ToString() should return a meaningful string representation of its initial value
 		//
 		[Test]
-		public void Traverse_Create_Instance_ToString()
+		public void Test_Traverse_Create_Instance_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
 
@@ -124,7 +124,7 @@ namespace HarmonyLibTests
 		// Traverse.ToString() should return a meaningful string representation of its initial type
 		//
 		[Test]
-		public void Traverse_Create_Type_ToString()
+		public void Test_Traverse_Create_Type_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
 			Assert.NotNull(instance);

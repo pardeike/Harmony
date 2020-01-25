@@ -7,8 +7,8 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class ReverseTranspiling
 	{
-		[Test]
-		public void TestReverseTranspilerPatching()
+		//[Test]
+		public void Test_ReverseTranspilerPatching()
 		{
 			var class0 = new Class0Reverse();
 
@@ -32,11 +32,12 @@ namespace HarmonyLibTests
 			_ = patcher.AddPostfix(new HarmonyMethod(postfix));
 			_ = patcher.Patch();
 
-			var standin = patchClass.GetMethod("StringOperation");
+			var standin = new HarmonyMethod(patchClass.GetMethod("StringOperation"));
 			Assert.IsNotNull(standin);
+			Assert.IsNotNull(standin.method);
 
 			var reversePatcher = instance.CreateReversePatcher(originalMethod, standin);
-			reversePatcher.Patch();
+			_ = reversePatcher.Patch();
 
 			var result2 = class0.Method("al-gin-Ori", 456);
 			Assert.AreEqual("EpilogOriginal", result2);

@@ -11,7 +11,7 @@ namespace HarmonyLibTests
 	public class Test_AccessTools
 	{
 		[Test]
-		public void AccessTools_Field1()
+		public void Test_AccessTools_Field1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -27,7 +27,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_Field2()
+		public void Test_AccessTools_Field2()
 		{
 			var type = typeof(AccessToolsClass);
 			Assert.IsNotNull(AccessTools.Field(type, "field1"));
@@ -39,7 +39,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_Property1()
+		public void Test_AccessTools_Property1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -55,7 +55,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_Property2()
+		public void Test_AccessTools_Property2()
 		{
 			var type = typeof(AccessToolsClass);
 			Assert.IsNotNull(AccessTools.Property(type, "Property"));
@@ -67,7 +67,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_Method1()
+		public void Test_AccessTools_Method1()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -94,7 +94,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_Method2()
+		public void Test_AccessTools_Method2()
 		{
 			var type = typeof(AccessToolsSubClass);
 
@@ -106,7 +106,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_InnerClass()
+		public void Test_AccessTools_InnerClass()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -122,7 +122,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_GetTypes()
+		public void Test_AccessTools_GetTypes()
 		{
 			var empty = AccessTools.GetTypes(null);
 			Assert.IsNotNull(empty);
@@ -139,7 +139,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_GetDefaultValue()
+		public void Test_AccessTools_GetDefaultValue()
 		{
 			Assert.AreEqual(null, AccessTools.GetDefaultValue(null));
 			Assert.AreEqual((float)0, AccessTools.GetDefaultValue(typeof(float)));
@@ -150,14 +150,14 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_TypeExtension_Description()
+		public void Test_AccessTools_TypeExtension_Description()
 		{
 			var types = new Type[] { typeof(string), typeof(int), null, typeof(void), typeof(Test_AccessTools) };
 			Assert.AreEqual("(System.String, System.Int32, null, System.Void, HarmonyLibTests.Test_AccessTools)", types.Description());
 		}
 
 		[Test]
-		public void AccessTools_TypeExtension_Types()
+		public void Test_AccessTools_TypeExtension_Types()
 		{
 			// public static void Resize<T>(ref T[] array, int newSize);
 			var method = typeof(Array).GetMethod("Resize");
@@ -171,7 +171,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_FieldRefAccess_ByName()
+		public void Test_AccessTools_FieldRefAccess_ByName()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
@@ -186,7 +186,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_FieldRefAccess_ByFieldInfo()
+		public void Test_AccessTools_FieldRefAccess_ByFieldInfo()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
@@ -201,7 +201,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_FieldRefAccess_ByFieldInfo_Readonly()
+		public void Test_AccessTools_FieldRefAccess_ByFieldInfo_Readonly()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field2", BindingFlags.Instance | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
@@ -216,7 +216,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_StaticFieldRefAccess_ByName()
+		public void Test_AccessTools_StaticFieldRefAccess_ByName()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
@@ -230,7 +230,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_StaticFieldRefAccess_ByFieldInfo()
+		public void Test_AccessTools_StaticFieldRefAccess_ByFieldInfo()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
@@ -245,7 +245,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_StaticFieldRefAccess_ByFieldInfo_Readonly()
+		public void Test_AccessTools_StaticFieldRefAccess_ByFieldInfo_Readonly()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field4", BindingFlags.Static | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
@@ -260,7 +260,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_FieldRefAccess_ByFieldInfo_SubClass()
+		public void Test_AccessTools_FieldRefAccess_ByFieldInfo_SubClass()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);
@@ -275,7 +275,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessTools_FieldRefAccess_Anonymous()
+		public void Test_AccessTools_FieldRefAccess_Anonymous()
 		{
 			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
 			Assert.IsNotNull(fieldInfo);

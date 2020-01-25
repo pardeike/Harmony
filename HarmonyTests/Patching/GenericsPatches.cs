@@ -100,7 +100,7 @@ namespace HarmonyLibTests
 	public class GenericsPatches
 	{
 		[Test]
-		public void TestGenericStructReturnTypes()
+		public void Test_GenericStructReturnTypes()
 		{
 			var originalClass = typeof(MyList<>).MakeGenericType(typeof(int));
 			Assert.IsNotNull(originalClass);

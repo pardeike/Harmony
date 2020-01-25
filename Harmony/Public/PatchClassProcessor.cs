@@ -15,7 +15,6 @@ namespace HarmonyLib
 		readonly Dictionary<Type, MethodInfo> auxilaryMethods;
 
 		readonly List<AttributePatch> patchMethods;
-		readonly List<MethodInfo> reversePatchMethods;
 		List<MethodBase> bulkOriginals;
 
 		static readonly List<Type> auxilaryTypes = new List<Type>() {
@@ -61,8 +60,6 @@ namespace HarmonyLib
 				patchMethod.info = containerAttributes.Merge(patchMethod.info);
 				patchMethod.info.method = method;
 			}
-
-			reversePatchMethods = PatchTools.GetReversePatches(containerType);
 		}
 
 		/// <summary>Applies the patches</summary>
@@ -80,17 +77,22 @@ namespace HarmonyLib
 				return new List<MethodInfo>();
 			}
 
-			foreach (var reversePatchMethod in reversePatchMethods)
-			{
-				var originalMethod = GetReverseOriginal(reversePatchMethod);
-				var reversePatcher = instance.CreateReversePatcher(originalMethod, reversePatchMethod);
-				reversePatcher.Patch();
-			}
-
+			ReversePatch();
 			bulkOriginals = GetBulkMethods();
 			var replacements = bulkOriginals.Count > 0 ? BulkPatch() : PatchWithAttributes();
 			RunMethod<HarmonyCleanup>();
 			return replacements;
+		}
+
+		void ReversePatch()
+		{
+			patchMethods.DoIf(pm => pm.type == HarmonyPatchType.ReversePatch, patchMethod =>
+			{
+				var original = patchMethod.info.GetOriginalMethod();
+				var reversePatcher = instance.CreateReversePatcher(original, patchMethod.info);
+				lock (PatchProcessor.locker)
+					reversePatcher.Patch();
+			});
 		}
 
 		List<MethodInfo> BulkPatch()
@@ -193,39 +195,6 @@ namespace HarmonyLib
 			if (targetMethod != null)
 				result.Add(targetMethod);
 			return result;
-		}
-
-		MethodBase GetReverseOriginal(MethodInfo standin)
-		{
-			var attr = containerAttributes.Merge(new HarmonyMethod(standin));
-			if (attr.declaringType == null) return null;
-			switch (attr.methodType)
-			{
-				case MethodType.Normal:
-					if (attr.methodName == null)
-						return null;
-					return AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
-
-				case MethodType.Getter:
-					if (attr.methodName == null)
-						return null;
-					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod(true);
-
-				case MethodType.Setter:
-					if (attr.methodName == null)
-						return null;
-					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod(true);
-
-				case MethodType.Constructor:
-					return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes);
-
-				case MethodType.StaticConstructor:
-					return AccessTools.GetDeclaredConstructors(attr.declaringType)
-						.Where(c => c.IsStatic)
-						.FirstOrDefault();
-			}
-
-			return null;
 		}
 
 		T RunMethod<S, T>(T defaultIfNotExisting, params object[] parameters)

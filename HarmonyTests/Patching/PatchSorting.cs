@@ -21,7 +21,7 @@ namespace HarmonyLibTests
 #pragma warning restore IDE0051
 
 		[Test]
-		public void PatchOrder_SamePriorities()
+		public void Test_PatchOrder_SamePriorities()
 		{
 			var patches = new MethodInfo[3];
 			for (var i = 0; i < patches.Length; i++)
@@ -42,7 +42,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void PatchOrder_AllPriorities()
+		public void Test_PatchOrder_AllPriorities()
 		{
 			var patches = new MethodInfo[9];
 			for (var i = 0; i < patches.Length; i++)
@@ -69,7 +69,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void PatchOrder_BeforeAndPriorities()
+		public void Test_PatchOrder_BeforeAndPriorities()
 		{
 			var patches = new MethodInfo[5];
 			for (var i = 0; i < patches.Length; i++)
@@ -92,7 +92,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void PatchOrder_AfterAndPriorities()
+		public void Test_PatchOrder_AfterAndPriorities()
 		{
 			var patches = new MethodInfo[4];
 			for (var i = 0; i < patches.Length; i++)
@@ -114,7 +114,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void PatchOrder_BeforeAndAfterAndPriorities()
+		public void Test_PatchOrder_BeforeAndAfterAndPriorities()
 		{
 			var patches = new MethodInfo[5];
 			for (var i = 0; i < patches.Length; i++)
@@ -137,7 +137,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void PatchOrder_TransitiveBefore()
+		public void Test_PatchOrder_TransitiveBefore()
 		{
 			var patches = new MethodInfo[5];
 			for (var i = 0; i < patches.Length; i++)
@@ -160,7 +160,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void PatchOrder_TransitiveAfter()
+		public void Test_PatchOrder_TransitiveAfter()
 		{
 			var patches = new MethodInfo[5];
 			for (var i = 0; i < patches.Length; i++)
@@ -184,7 +184,7 @@ namespace HarmonyLibTests
 
 		// Test simple cyclic dependency breaking.
 		[Test]
-		public void PatchCycle0()
+		public void Test_PatchCycle0()
 		{
 			var patches = new MethodInfo[3];
 			for (var i = 0; i < patches.Length; i++)
@@ -206,7 +206,7 @@ namespace HarmonyLibTests
 
 		// Test simple cyclic dependency declared in reverse breaking.
 		[Test]
-		public void PatchCycle1()
+		public void Test_PatchCycle1()
 		{
 			var patches = new MethodInfo[3];
 			for (var i = 0; i < patches.Length; i++)
@@ -228,7 +228,7 @@ namespace HarmonyLibTests
 
 		// Test with 2 independent cyclic dependencies.
 		[Test]
-		public void PatchCycle2()
+		public void Test_PatchCycle2()
 		{
 			var patches = new MethodInfo[8];
 			for (var i = 0; i < patches.Length; i++)
@@ -255,7 +255,7 @@ namespace HarmonyLibTests
 
 		// Test with 2 crossdependant cyclic dependencies. Impossible to break any cycle with just 1 cut.
 		[Test]
-		public void PatchCycle3()
+		public void Test_PatchCycle3()
 		{
 			var patches = new MethodInfo[8];
 			for (var i = 0; i < patches.Length; i++)
@@ -282,7 +282,7 @@ namespace HarmonyLibTests
 
 		// Test with patches that depend on a missing patch.
 		[Test]
-		public void PatchMissing0()
+		public void Test_PatchMissing0()
 		{
 			var patches = new MethodInfo[3];
 			for (var i = 0; i < patches.Length; i++)
@@ -304,7 +304,7 @@ namespace HarmonyLibTests
 
 		// Test that sorter patch array compare detects all possible patch changes.
 		[Test]
-		public void PatchSorterCache0()
+		public void Test_PatchSorterCache0()
 		{
 			var patches = new MethodInfo[4];
 			for (var i = 0; i < patches.Length; i++)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
@@ -71,7 +70,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates patches by manually specifying the methods</summary>
-		/// <param name="original">The original method</param>
+		/// <param name="original">The original method/constructor</param>
 		/// <param name="prefix">An optional prefix method wrapped in a HarmonyMethod object</param>
 		/// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
 		/// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
@@ -86,6 +85,15 @@ namespace HarmonyLib
 			_ = processor.AddTranspiler(transpiler);
 			_ = processor.AddFinalizer(finalizer);
 			return processor.Patch();
+		}
+
+		/// <summary>Patches a foreign method onto a stub method of yours and optionally applies transpilers during the process</summary>
+		/// <param name="original">The original method/constructor you want to duplicate</param>
+		/// <param name="standin">Your stub method that will become the original. Needs to have the correct signature (either original or whatever your transpilers generates)</param>
+		/// <param name="transpiler">An optional transpiler that will be applied during the process</param>
+		public MethodInfo ReversePatch(MethodBase original, HarmonyMethod standin, MethodInfo transpiler = null)
+		{
+			return PatchFunctions.ReversePatch(standin, original, this, transpiler);
 		}
 
 		/// <summary>Unpatches methods</summary>

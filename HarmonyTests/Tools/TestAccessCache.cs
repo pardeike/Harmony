@@ -53,7 +53,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessCache_Field()
+		public void Test_AccessCache_Field()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -74,7 +74,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessCache_Property()
+		public void Test_AccessCache_Property()
 		{
 			var type = typeof(AccessToolsClass);
 
@@ -95,7 +95,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void AccessCache_Method()
+		public void Test_AccessCache_Method()
 		{
 			var type = typeof(AccessToolsClass);
 

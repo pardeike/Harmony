@@ -8,7 +8,7 @@ namespace HarmonyLibTests.Tools
 	public class Test_Attributes
 	{
 		[Test]
-		public void TestAttributes()
+		public void Test_SimpleAttributes()
 		{
 			var type = typeof(AllAttributesClass);
 			var infos = HarmonyMethodExtensions.GetFromType(type);
@@ -23,7 +23,7 @@ namespace HarmonyLibTests.Tools
 		}
 
 		[Test]
-		public void TestSubClassPatching()
+		public void Test_SubClassPatching()
 		{
 			var instance1 = new Harmony("test1");
 			Assert.IsNotNull(instance1);

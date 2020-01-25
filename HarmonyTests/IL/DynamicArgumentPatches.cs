@@ -183,7 +183,7 @@ namespace HarmonyLibTests.IL
 		};
 
 		[Test]
-		public void SendingArguments()
+		public void Test_SendingArguments()
 		{
 			//Harmony.DEBUG = true;
 			var harmony = new Harmony("test");

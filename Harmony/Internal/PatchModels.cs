@@ -76,7 +76,8 @@ namespace HarmonyLib
 			HarmonyPatchType.Prefix,
 			HarmonyPatchType.Postfix,
 			HarmonyPatchType.Transpiler,
-			HarmonyPatchType.Finalizer
+			HarmonyPatchType.Finalizer,
+			HarmonyPatchType.ReversePatch,
 		};
 
 		internal HarmonyMethod info;
@@ -87,30 +88,14 @@ namespace HarmonyLib
 			if (patch == null)
 				throw new NullReferenceException("Patch method cannot be null");
 
-			if (patch.IsStatic == false)
+			var allAttributes = patch.GetCustomAttributes(true);
+			var methodName = patch.Name;
+			var type = GetPatchType(methodName, allAttributes);
+
+			if (type != HarmonyPatchType.ReversePatch && patch.IsStatic == false)
 				throw new ArgumentException("Patch method " + patch.FullDescription() + " must be static");
 
 			var harmonyPatchName = typeof(HarmonyPatch).FullName;
-			var allAttributes = patch.GetCustomAttributes(true);
-			var methodName = patch.Name;
-
-			var typeAttributes = new HashSet<string>(allAttributes
-				.Select(attr => attr.GetType().FullName)
-				.Where(name => name.StartsWith("Harmony")));
-
-			HarmonyPatchType? type = null;
-			foreach (var patchType in allPatchTypes)
-			{
-				var name = patchType.ToString();
-				if (name == methodName || typeAttributes.Contains($"HarmonyLib.Harmony{name}"))
-				{
-					type = patchType;
-					break;
-				}
-			}
-			if (type == null)
-				return null;
-
 			var list = allAttributes
 				.Where(attr => attr.GetType().FullName == harmonyPatchName)
 				.Select(attr =>
@@ -124,6 +109,25 @@ namespace HarmonyLib
 			info.method = patch;
 
 			return new AttributePatch() { info = info, type = type };
+		}
+
+		static HarmonyPatchType? GetPatchType(string methodName, object[] allAttributes)
+		{
+			var harmonyAttributes = new HashSet<string>(allAttributes
+				.Select(attr => attr.GetType().FullName)
+				.Where(name => name.StartsWith("Harmony")));
+
+			HarmonyPatchType? type = null;
+			foreach (var patchType in allPatchTypes)
+			{
+				var name = patchType.ToString();
+				if (name == methodName || harmonyAttributes.Contains($"HarmonyLib.Harmony{name}"))
+				{
+					type = patchType;
+					break;
+				}
+			}
+			return type;
 		}
 	}
 }

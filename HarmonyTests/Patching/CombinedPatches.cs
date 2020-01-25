@@ -8,7 +8,7 @@ namespace HarmonyLibTests
 	public class CombinedPatches
 	{
 		[Test]
-		public void ManyPostfixes()
+		public void Test_ManyFinalizers()
 		{
 			var originalClass = typeof(Assets.CombinedPatchClass);
 			Assert.IsNotNull(originalClass);

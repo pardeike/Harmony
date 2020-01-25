@@ -47,14 +47,6 @@ namespace HarmonyLib
 				.ToList();
 		}
 
-		internal static List<MethodInfo> GetReversePatches(Type patchType)
-		{
-			var attr = typeof(HarmonyReversePatch).FullName;
-			return patchType.GetMethods(AccessTools.all)
-				.Where(m => m.GetCustomAttributes(true).Any(a => a.GetType().FullName == attr))
-				.ToList();
-		}
-
 		internal static MethodBase GetOriginalMethod(this HarmonyMethod attr)
 		{
 			switch (attr.methodType)

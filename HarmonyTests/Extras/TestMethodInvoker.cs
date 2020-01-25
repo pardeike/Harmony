@@ -11,7 +11,7 @@ namespace HarmonyLibTests
 	public class TestMethodInvoker
 	{
 		[Test]
-		public void TestMethodInvokerGeneral()
+		public void Test_MethodInvokerGeneral()
 		{
 			for (var i = 0; i < 2; i++)
 				for (var j = 0; j < 2; j++)
@@ -48,7 +48,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethodInvokerSelfObject()
+		public void Test_MethodInvokerSelfObject()
 		{
 			var type = typeof(TestMethodInvokerObject);
 			Assert.IsNotNull(type);

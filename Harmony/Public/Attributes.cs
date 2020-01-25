@@ -46,17 +46,19 @@ namespace HarmonyLib
 		/// <summary>A transpiler</summary>
 		Transpiler,
 		/// <summary>A finalizer</summary>
-		Finalizer
+		Finalizer,
+		/// <summary>A reverse patch</summary>
+		ReversePatch
 	}
 
 	/// <summary>Specifies the type of reverse patch</summary>
 	///
 	public enum HarmonyReversePatchType
 	{
-		/// <summary>Use the unmodified original method</summary>
+		/// <summary>Use the unmodified original method (directly from IL)</summary>
 		Original,
-		/// <summary>Patch your local method with a new method that calls the (possibly patched) original</summary>
-		Wrapped
+		/// <summary>Use the original as it is right now including previous patches but excluding future ones</summary>
+		Snapshot
 	}
 
 	/// <summary>The base class for all Harmony annotations (not meant to be used directly)</summary>

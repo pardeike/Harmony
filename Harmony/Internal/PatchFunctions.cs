@@ -153,30 +153,39 @@ namespace HarmonyLib
 			var replacement = MethodPatcher.CreatePatchedMethod(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
 			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {original.FullDescription()}");
 
-			var errorString = Memory.DetourMethod(original, replacement);
-			if (errorString != null)
-				throw new FormatException($"Method {original.FullDescription()} cannot be patched. Reason: {errorString}");
-
-			PatchTools.RememberObject(original, replacement); // no gc for new value + release old value to gc
-
+			Memory.DetourMethodAndPersist(original, replacement);
 			return replacement;
 		}
 
-		internal static void ReversePatch(MethodInfo standin, MethodBase original, string instanceID, MethodInfo transpiler)
+		internal static MethodInfo ReversePatch(HarmonyMethod standin, MethodBase original, Harmony instance, MethodInfo postTranspiler)
 		{
-			var emptyFixes = new List<MethodInfo>();
-			var transpilers = new List<MethodInfo>();
-			if (transpiler != null)
-				transpilers.Add(transpiler);
+			if (standin == null)
+				throw new ArgumentNullException(nameof(standin));
+			if (standin.method == null)
+				throw new ArgumentNullException($"{nameof(standin)}.{nameof(standin.method)}");
 
-			var replacement = MethodPatcher.CreatePatchedMethod(standin, original, instanceID, emptyFixes, emptyFixes, transpilers, emptyFixes);
-			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {standin.FullDescription()}");
+			var processor = instance.CreateProcessor(standin.method);
+			if (standin.reversePatchType == HarmonyReversePatchType.Snapshot)
+			{
+				var info = Harmony.GetPatchInfo(original);
+				foreach (var tr in info.Transpilers)
+				{
+					var transpiler = new HarmonyMethod(tr.GetMethod(original))
+					{
+						before = tr.before,
+						after = tr.after,
 
-			var errorString = Memory.DetourMethod(standin, replacement);
-			if (errorString != null)
-				throw new FormatException($"Method {standin.FullDescription()} cannot be patched. Reason: {errorString}");
-
-			PatchTools.RememberObject(standin, replacement);
+						priority = tr.priority
+					};
+					_ = processor.AddTranspiler(transpiler);
+				}
+			}
+			if (postTranspiler != null)
+			{
+				var transpiler = new HarmonyMethod(postTranspiler) { priority = int.MinValue };
+				_ = processor.AddTranspiler(transpiler);
+			}
+			return processor.Patch();
 		}
 	}
 }

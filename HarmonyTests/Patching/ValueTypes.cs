@@ -39,7 +39,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void StructInstanceByRef()
+		public void Test_StructInstanceByRef()
 		{
 			var originalClass = typeof(Assets.Struct2);
 			Assert.IsNotNull(originalClass);

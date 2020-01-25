@@ -9,7 +9,7 @@ namespace HarmonyLibTests
 	public class Arguments
 	{
 		[Test]
-		public void TestMethod6()
+		public void Test_Method6()
 		{
 			var originalClass = typeof(Class6);
 			Assert.IsNotNull(originalClass);
@@ -43,7 +43,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethod7()
+		public void Test_Method7()
 		{
 			var originalClass = typeof(Class7);
 			Assert.IsNotNull(originalClass);
@@ -74,7 +74,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void TestMethod8()
+		public void Test_Method8()
 		{
 			var originalClass = typeof(Class8);
 			Assert.IsNotNull(originalClass);

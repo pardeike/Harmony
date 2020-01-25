@@ -39,6 +39,14 @@ namespace HarmonyLib
 			return WriteJump(originalCodeStart, patchCodeStart);
 		}
 
+		internal static void DetourMethodAndPersist(MethodBase original, MethodBase replacement)
+		{
+			var errorString = DetourMethod(original, replacement);
+			if (errorString != null)
+				throw new FormatException($"Method {original.FullDescription()} cannot be patched. Reason: {errorString}");
+			PatchTools.RememberObject(original, replacement);
+		}
+
 		/// <summary>Writes a jump to memory</summary>
 		/// <param name="memory">The memory address</param>
 		/// <param name="destination">Jump destination</param>
