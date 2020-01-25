@@ -2360,6 +2360,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.ProcessorForAnnotatedClass
   nameWithType: Harmony.ProcessorForAnnotatedClass
+- uid: HarmonyLib.Harmony.ReversePatch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,System.Reflection.MethodInfo)
+  name: ReversePatch(MethodBase, HarmonyMethod, MethodInfo)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ReversePatch_System_Reflection_MethodBase_HarmonyLib_HarmonyMethod_System_Reflection_MethodInfo_
+  commentId: M:HarmonyLib.Harmony.ReversePatch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,System.Reflection.MethodInfo)
+  fullName: HarmonyLib.Harmony.ReversePatch(System.Reflection.MethodBase, HarmonyLib.HarmonyMethod, System.Reflection.MethodInfo)
+  nameWithType: Harmony.ReversePatch(MethodBase, HarmonyMethod, MethodInfo)
+- uid: HarmonyLib.Harmony.ReversePatch*
+  name: ReversePatch
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ReversePatch_
+  commentId: Overload:HarmonyLib.Harmony.ReversePatch
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.ReversePatch
+  nameWithType: Harmony.ReversePatch
 - uid: HarmonyLib.Harmony.SELF_PATCHING
   name: SELF_PATCHING
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_SELF_PATCHING
@@ -2981,6 +2994,12 @@ references:
   commentId: F:HarmonyLib.HarmonyPatchType.Prefix
   fullName: HarmonyLib.HarmonyPatchType.Prefix
   nameWithType: HarmonyPatchType.Prefix
+- uid: HarmonyLib.HarmonyPatchType.ReversePatch
+  name: ReversePatch
+  href: api/HarmonyLib.HarmonyPatchType.html#HarmonyLib_HarmonyPatchType_ReversePatch
+  commentId: F:HarmonyLib.HarmonyPatchType.ReversePatch
+  fullName: HarmonyLib.HarmonyPatchType.ReversePatch
+  nameWithType: HarmonyPatchType.ReversePatch
 - uid: HarmonyLib.HarmonyPatchType.Transpiler
   name: Transpiler
   href: api/HarmonyLib.HarmonyPatchType.html#HarmonyLib_HarmonyPatchType_Transpiler
@@ -3055,12 +3074,12 @@ references:
   commentId: F:HarmonyLib.HarmonyReversePatchType.Original
   fullName: HarmonyLib.HarmonyReversePatchType.Original
   nameWithType: HarmonyReversePatchType.Original
-- uid: HarmonyLib.HarmonyReversePatchType.Wrapped
-  name: Wrapped
-  href: api/HarmonyLib.HarmonyReversePatchType.html#HarmonyLib_HarmonyReversePatchType_Wrapped
-  commentId: F:HarmonyLib.HarmonyReversePatchType.Wrapped
-  fullName: HarmonyLib.HarmonyReversePatchType.Wrapped
-  nameWithType: HarmonyReversePatchType.Wrapped
+- uid: HarmonyLib.HarmonyReversePatchType.Snapshot
+  name: Snapshot
+  href: api/HarmonyLib.HarmonyReversePatchType.html#HarmonyLib_HarmonyReversePatchType_Snapshot
+  commentId: F:HarmonyLib.HarmonyReversePatchType.Snapshot
+  fullName: HarmonyLib.HarmonyReversePatchType.Snapshot
+  nameWithType: HarmonyReversePatchType.Snapshot
 - uid: HarmonyLib.HarmonyTargetMethod
   name: HarmonyTargetMethod
   href: api/HarmonyLib.HarmonyTargetMethod.html
@@ -3883,12 +3902,12 @@ references:
   commentId: T:HarmonyLib.ReversePatcher
   fullName: HarmonyLib.ReversePatcher
   nameWithType: ReversePatcher
-- uid: HarmonyLib.ReversePatcher.#ctor(HarmonyLib.Harmony,System.Reflection.MethodBase,System.Reflection.MethodInfo)
-  name: ReversePatcher(Harmony, MethodBase, MethodInfo)
-  href: api/HarmonyLib.ReversePatcher.html#HarmonyLib_ReversePatcher__ctor_HarmonyLib_Harmony_System_Reflection_MethodBase_System_Reflection_MethodInfo_
-  commentId: M:HarmonyLib.ReversePatcher.#ctor(HarmonyLib.Harmony,System.Reflection.MethodBase,System.Reflection.MethodInfo)
-  fullName: HarmonyLib.ReversePatcher.ReversePatcher(HarmonyLib.Harmony, System.Reflection.MethodBase, System.Reflection.MethodInfo)
-  nameWithType: ReversePatcher.ReversePatcher(Harmony, MethodBase, MethodInfo)
+- uid: HarmonyLib.ReversePatcher.#ctor(HarmonyLib.Harmony,System.Reflection.MethodBase,HarmonyLib.HarmonyMethod)
+  name: ReversePatcher(Harmony, MethodBase, HarmonyMethod)
+  href: api/HarmonyLib.ReversePatcher.html#HarmonyLib_ReversePatcher__ctor_HarmonyLib_Harmony_System_Reflection_MethodBase_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.ReversePatcher.#ctor(HarmonyLib.Harmony,System.Reflection.MethodBase,HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.ReversePatcher.ReversePatcher(HarmonyLib.Harmony, System.Reflection.MethodBase, HarmonyLib.HarmonyMethod)
+  nameWithType: ReversePatcher.ReversePatcher(Harmony, MethodBase, HarmonyMethod)
 - uid: HarmonyLib.ReversePatcher.#ctor*
   name: ReversePatcher
   href: api/HarmonyLib.ReversePatcher.html#HarmonyLib_ReversePatcher__ctor_
