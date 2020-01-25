@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
@@ -235,6 +236,18 @@ namespace HarmonyLib
 					result[info.Key] = assemblyName.Version;
 			});
 			return result;
+		}
+
+		/// <summary>Returns the methods unmodified list of CodeInstructions</summary>
+		/// <param name="original">The original method</param>
+		/// <param name="generator">The generator that now contains all local variables and labels contained in the result</param>
+		/// <returns>A list containing all the original CodeInstructions</returns>
+		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
+		{
+			var patch = DynamicTools.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}");
+			generator = patch.GetILGenerator();
+			var reader = MethodBodyReader.GetInstructions(generator, original);
+			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
 		}
 	}
 }

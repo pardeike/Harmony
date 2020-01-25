@@ -7,7 +7,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class AttributeReversePatches
 	{
-		//[Test]
+		[Test]
 		public void Test_ReversePatchingWithAttributes()
 		{
 			var test = new Class1Reverse();

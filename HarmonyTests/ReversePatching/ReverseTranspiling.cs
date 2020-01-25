@@ -7,7 +7,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class ReverseTranspiling
 	{
-		//[Test]
+		[Test]
 		public void Test_ReverseTranspilerPatching()
 		{
 			var class0 = new Class0Reverse();

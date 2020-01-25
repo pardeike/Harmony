@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -164,28 +165,24 @@ namespace HarmonyLib
 			if (standin.method == null)
 				throw new ArgumentNullException($"{nameof(standin)}.{nameof(standin.method)}");
 
-			var processor = instance.CreateProcessor(standin.method);
+			var transpilers = new List<MethodInfo>();
 			if (standin.reversePatchType == HarmonyReversePatchType.Snapshot)
 			{
 				var info = Harmony.GetPatchInfo(original);
-				foreach (var tr in info.Transpilers)
-				{
-					var transpiler = new HarmonyMethod(tr.GetMethod(original))
-					{
-						before = tr.before,
-						after = tr.after,
+				transpilers.AddRange(GetSortedPatchMethods(original, info.Transpilers.ToArray()));
+			}
+			if (postTranspiler != null) transpilers.Add(postTranspiler);
 
-						priority = tr.priority
-					};
-					_ = processor.AddTranspiler(transpiler);
-				}
-			}
-			if (postTranspiler != null)
-			{
-				var transpiler = new HarmonyMethod(postTranspiler) { priority = int.MinValue };
-				_ = processor.AddTranspiler(transpiler);
-			}
-			return processor.Patch();
+			var empty = new List<MethodInfo>();
+			var replacement = MethodPatcher.CreatePatchedMethod(standin.method, original, instance.Id, empty, empty, transpilers, empty);
+			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {standin.method.FullDescription()}");
+
+			var errorString = Memory.DetourMethod(standin.method, replacement);
+			if (errorString != null)
+				throw new FormatException($"Method {standin.method.FullDescription()} cannot be patched. Reason: {errorString}");
+
+			PatchTools.RememberObject(standin.method, replacement);
+			return replacement;
 		}
 	}
 }
