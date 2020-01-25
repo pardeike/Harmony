@@ -1,4 +1,5 @@
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -73,6 +74,11 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static string GetExtra(int n)
 		{
+			// this will be replaced by reverse patching
+
+			// using a fake while loop to force non-inlining
+			while (DateTime.Now.Ticks > 0)
+				throw new NotImplementedException();
 			return null;
 		}
 
