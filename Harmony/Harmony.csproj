@@ -77,7 +77,7 @@
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.0" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
-		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
+		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -107,7 +107,7 @@
 		<PackageReference Include="Mono.Cecil" Version="0.11" Condition="'$(TargetFramework)'!='net35'">
 			<PrivateAssets Condition="!$(IsCoreOrStandard)">all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="all" />
+		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18" PrivateAssets="all" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -143,6 +143,7 @@
 			DebugInfo="true"
 			Internalize="true"
 			Parallel="true"
+			XmlDocumentation="true"
 			InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)"
 			KeyFile="..\keys\Harmony.Pair.snk"
 			WorkingDirectory="$(WorkingDirectory)" />
