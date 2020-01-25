@@ -96,28 +96,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Import MonoMod.Common source and dependencies. -->
-		<Compile Include="..\MonoMod.Common\Shared\**\*.cs" />
-		<Compile Include="..\MonoMod.Common\Utils\**\*.cs" />
-		<Compile Include="..\MonoMod.Common\RuntimeDetour\**\*.cs" />
 		<!-- Cecil 0.11 drops support for .NET Framework 3.5 while introducing breaking API changes. -->
-		<PackageReference Include="Mono.Cecil" Version="0.10" Condition="'$(TargetFramework)'=='net35'">
-			<PrivateAssets Condition="!$(IsCoreOrStandard)">all</PrivateAssets>
+		<PackageReference Include="Mono.Cecil" Version="0.11.*" PrivateAssets="All">
+			<Version Condition="'$(TargetFramework)'=='net35'">0.10.*</Version>
 		</PackageReference>
-		<PackageReference Include="Mono.Cecil" Version="0.11" Condition="'$(TargetFramework)'!='net35'">
-			<PrivateAssets Condition="!$(IsCoreOrStandard)">all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18" PrivateAssets="all" />
-	</ItemGroup>
-
-	<PropertyGroup>
-		<DefineConstants>MONOMOD_INTERNAL;$(DefineConstants)</DefineConstants>
-		<!-- .NET Core doesn't define NETSTANDARD, needed for MonoMod.Common. -->
-		<DefineConstants Condition="$(IsCoreOrStandard)">NETSTANDARD;$(DefineConstants)</DefineConstants>
-		<!-- Cecil 0.11 drops support for .NET Framework 3.5 while introducing breaking API changes. -->
-		<DefineConstants Condition="'$(TargetFramework)'=='net35'">CECIL0_10;$(DefineConstants)</DefineConstants>
-		<DefineConstants Condition="'$(TargetFramework)'!='net35'">CECIL0_11;$(DefineConstants)</DefineConstants>
-	</PropertyGroup>
+    <PackageReference Include="MonoMod.Common" Version="20.1.25.7" PrivateAssets="All" />
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18" PrivateAssets="All" />
+  </ItemGroup>
 
 	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard)">
 		<!--
@@ -128,30 +113,12 @@
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
 		</PropertyGroup>
 		<ItemGroup>
-			<InputAssemblies Include="Mono.Cecil.dll" />
-			<InputAssemblies Include="Mono.Cecil.Mdb.dll" />
-			<InputAssemblies Include="Mono.Cecil.Pdb.dll" />
-			<InputAssemblies Include="Mono.Cecil.Rocks.dll" />
+			<InputAssemblies Include="Mono.Cecil*.dll;MonoMod.Common*.dll" />
 			<InternalizeExcludeAssemblies Include="Harmony" />
 		</ItemGroup>
 
-		<ILRepack
-			OutputType="$(OutputType)"
-			MainAssembly="$(AssemblyName).dll"
-			OutputAssembly="$(AssemblyName).dll"
-			InputAssemblies="@(InputAssemblies)"
-			DebugInfo="true"
-			Internalize="true"
-			Parallel="true"
-			XmlDocumentation="true"
-			InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)"
-			KeyFile="..\keys\Harmony.Pair.snk"
-			WorkingDirectory="$(WorkingDirectory)" />
+		<ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" DebugInfo="true" Internalize="true" Parallel="true" XmlDocumentation="true" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" KeyFile="..\keys\Harmony.Pair.snk" WorkingDirectory="$(WorkingDirectory)" />
 
-	</Target>
-
-	<Target Name="DeleteCecil" AfterTargets="Build">
-		<Delete Files=".\**\Mono.Cecil.*" />
 	</Target>
 
 </Project>
