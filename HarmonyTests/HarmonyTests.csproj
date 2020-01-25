@@ -64,11 +64,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Cecil 0.11 drops support for .NET Framework 3.5 while introducing breaking API changes. -->
-		<PackageReference Include="Mono.Cecil" Version="0.11.*" PrivateAssets="All">
-			<Version Condition="'$(TargetFramework)'=='net35'">0.10.*</Version>
-		</PackageReference>
 		<PackageReference Include="MonoMod.Common" Version="20.1.25.7" PrivateAssets="All" />
 	</ItemGroup>
+
+	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+		<ItemGroup>
+			<ReferencePath Condition="'%(FileName)'=='MonoMod.Common'">
+				<Aliases>mmc</Aliases>
+			</ReferencePath>
+		</ItemGroup>
+	</Target>
 
 </Project>
