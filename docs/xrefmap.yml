@@ -3775,6 +3775,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.GetAllPatchedMethods
   nameWithType: PatchProcessor.GetAllPatchedMethods
+- uid: HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@)
+  name: GetOriginalInstructions(MethodBase, out ILGenerator)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator__
+  commentId: M:HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@)
+  name.vb: GetOriginalInstructions(MethodBase, ByRef ILGenerator)
+  fullName: HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase, out System.Reflection.Emit.ILGenerator)
+  fullName.vb: HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase, ByRef System.Reflection.Emit.ILGenerator)
+  nameWithType: PatchProcessor.GetOriginalInstructions(MethodBase, out ILGenerator)
+  nameWithType.vb: PatchProcessor.GetOriginalInstructions(MethodBase, ByRef ILGenerator)
+- uid: HarmonyLib.PatchProcessor.GetOriginalInstructions*
+  name: GetOriginalInstructions
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetOriginalInstructions_
+  commentId: Overload:HarmonyLib.PatchProcessor.GetOriginalInstructions
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.GetOriginalInstructions
+  nameWithType: PatchProcessor.GetOriginalInstructions
 - uid: HarmonyLib.PatchProcessor.GetPatchInfo(System.Reflection.MethodBase)
   name: GetPatchInfo(MethodBase)
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetPatchInfo_System_Reflection_MethodBase_
