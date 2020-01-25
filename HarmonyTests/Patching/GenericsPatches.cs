@@ -1,4 +1,5 @@
 using HarmonyLib;
+using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -130,6 +131,39 @@ namespace HarmonyLibTests
 			Assert.AreEqual(result[0], 100);
 			Assert.AreEqual(result[1], 200);
 			Assert.AreEqual(result[2], 300);
+		}
+
+		[Test]
+		public void Test_GenericsOriginalMethod()
+		{
+			var originalMethod = typeof(List<int>).GetMethod(nameof(List<int>.Add));
+			Assert.IsNotNull(originalMethod);
+
+			var patchClass = typeof(Class13);
+			var prefix = patchClass.GetMethod("Prefix");
+			Assert.IsNotNull(prefix);
+
+			var list1 = new List<int> { 1, 2, 3 };
+			list1.Add(1000);
+			Assert.AreEqual(1000, list1[3]);
+
+			var instance = new Harmony("test");
+			Assert.IsNotNull(instance);
+
+			var patcher = instance.CreateProcessor(originalMethod);
+			Assert.IsNotNull(patcher);
+			_ = patcher.AddPrefix(prefix);
+			_ = patcher.Patch();
+
+			Class13.method = null;
+			Class13.result = 0;
+
+			var list2 = new List<int> { 1, 2, 3 };
+			list2.Add(1000);
+
+			Assert.AreEqual(1000, list2[3]);
+			Assert.AreEqual(1000, Class13.result);
+			Assert.AreEqual(originalMethod, Class13.method);
 		}
 	}
 }

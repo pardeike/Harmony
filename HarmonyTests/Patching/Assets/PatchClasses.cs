@@ -590,6 +590,18 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Class13
+	{
+		public static object method = null;
+		public static int result = 0;
+
+		public static void Prefix(object __originalMethod, int item)
+		{
+			method = __originalMethod;
+			result = item;
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

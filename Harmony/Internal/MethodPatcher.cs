@@ -303,7 +303,21 @@ namespace HarmonyLib
 			return -1;
 		}
 
-		static readonly MethodInfo getMethodMethod = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
+		static readonly MethodInfo m_GetMethodFromHandle1 = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
+		static readonly MethodInfo m_GetMethodFromHandle2 = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) });
+		static bool EmitOriginalBaseMethod(ILGenerator il, MethodBase original)
+		{
+			if (original is MethodInfo method)
+				Emitter.Emit(il, OpCodes.Ldtoken, method);
+			else if (original is ConstructorInfo constructor)
+				Emitter.Emit(il, OpCodes.Ldtoken, constructor);
+			else return false;
+
+			var type = original.ReflectedType;
+			if (type.IsGenericType) Emitter.Emit(il, OpCodes.Ldtoken, type);
+			Emitter.Emit(il, OpCodes.Call, type.IsGenericType ? m_GetMethodFromHandle2 : m_GetMethodFromHandle1);
+			return true;
+		}
 
 		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
@@ -321,19 +335,9 @@ namespace HarmonyLib
 			{
 				if (patchParam.Name == ORIGINAL_METHOD_PARAM)
 				{
-					if (original is ConstructorInfo constructorInfo)
-					{
-						Emitter.Emit(il, OpCodes.Ldtoken, constructorInfo);
-						Emitter.Emit(il, OpCodes.Call, getMethodMethod);
+					if (EmitOriginalBaseMethod(il, original))
 						continue;
-					}
 
-					if (original is MethodInfo methodInfo)
-					{
-						Emitter.Emit(il, OpCodes.Ldtoken, methodInfo);
-						Emitter.Emit(il, OpCodes.Call, getMethodMethod);
-						continue;
-					}
 					Emitter.Emit(il, OpCodes.Ldnull);
 					continue;
 				}
