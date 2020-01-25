@@ -136,16 +136,21 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_GenericsOriginalMethod()
 		{
-			var originalMethod = typeof(List<int>).GetMethod(nameof(List<int>.Add));
+			var originalMethod = typeof(Class13<int>).GetMethod(nameof(Class13<int>.Add));
 			Assert.IsNotNull(originalMethod);
 
-			var patchClass = typeof(Class13);
+			var patchClass = typeof(Class13Patch);
 			var prefix = patchClass.GetMethod("Prefix");
 			Assert.IsNotNull(prefix);
 
-			var list1 = new List<int> { 1, 2, 3 };
+			var list1 = new Class13<int> { 1, 2, 3 };
 			list1.Add(1000);
-			Assert.AreEqual(1000, list1[3]);
+			var e1 = list1.GetEnumerator();
+			_ = e1.MoveNext();
+			_ = e1.MoveNext();
+			_ = e1.MoveNext();
+			_ = e1.MoveNext();
+			Assert.AreEqual(1000, e1.Current);
 
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
@@ -155,15 +160,20 @@ namespace HarmonyLibTests
 			_ = patcher.AddPrefix(prefix);
 			_ = patcher.Patch();
 
-			Class13.method = null;
-			Class13.result = 0;
+			Class13Patch.method = null;
+			Class13Patch.result = 0;
 
-			var list2 = new List<int> { 1, 2, 3 };
+			var list2 = new Class13<int> { 1, 2, 3 };
 			list2.Add(1000);
+			var e2 = list2.GetEnumerator();
+			_ = e2.MoveNext();
+			_ = e2.MoveNext();
+			_ = e2.MoveNext();
+			_ = e2.MoveNext();
+			Assert.AreEqual(999, e2.Current);
 
-			Assert.AreEqual(1000, list2[3]);
-			Assert.AreEqual(1000, Class13.result);
-			Assert.AreEqual(originalMethod, Class13.method);
+			Assert.AreEqual(1000, Class13Patch.result);
+			Assert.AreEqual(originalMethod, Class13Patch.method);
 		}
 	}
 }

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using MonoMod.Utils;
+using System.Collections;
 
 namespace HarmonyLibTests.Assets
 {
@@ -590,15 +591,37 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public class Class13
+	public class Class13<T> : IEnumerable<T>
+	{
+		readonly List<T> store = new List<T>();
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Add(T item)
+		{
+			store.Add(item);
+		}
+
+		public IEnumerator<T> GetEnumerator()
+		{
+			return store.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return store.GetEnumerator();
+		}
+	}
+
+	public class Class13Patch
 	{
 		public static object method = null;
 		public static int result = 0;
 
-		public static void Prefix(object __originalMethod, int item)
+		public static void Prefix(object __originalMethod, ref int item)
 		{
 			method = __originalMethod;
 			result = item;
+			item = 999;
 		}
 	}
 
