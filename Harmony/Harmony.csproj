@@ -24,9 +24,6 @@
 		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>7.3</LangVersion>
-		<AssemblyOriginatorKeyFile>..\keys\Harmony.Pair.snk</AssemblyOriginatorKeyFile>
-		<SignAssembly>true</SignAssembly>
-		<PublicSign>true</PublicSign>
 	</PropertyGroup>
 
 	<Choose>
@@ -120,13 +117,6 @@
 			InputAssemblies="@(InputAssemblies)"
 			InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)"
 			WorkingDirectory="$(WorkingDirectory)" />
-
-		<GetFrameworkPath>
-			<Output TaskParameter="Path" PropertyName="FrameworkPath" />
-		</GetFrameworkPath>
-		<Exec Command="&quot;$(TargetFrameworkSDKToolsDirectory)ildasm&quot; /nobar /linenum &quot;$(WorkingDirectory)\0Harmony.dll&quot; &quot;/out:$(WorkingDirectory)\0Harmony.il&quot;" />
-		<Exec Command="&quot;$(FrameworkPath)\ilasm&quot; /nologo /quiet &quot;$(WorkingDirectory)\0Harmony.il&quot; /dll &quot;/key:..\keys\Harmony.Pair.snk&quot; &quot;/out:$(WorkingDirectory)\0Harmony.dll&quot;" />
-
 	</Target>
 
 </Project>

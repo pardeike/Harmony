@@ -4,9 +4,6 @@
 		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<IsPackable>false</IsPackable>
-		<AssemblyOriginatorKeyFile>..\keys\Harmony.Pair.snk</AssemblyOriginatorKeyFile>
-		<SignAssembly>true</SignAssembly>
-		<PublicSign>true</PublicSign>
 	</PropertyGroup>
 
 	<ItemGroup>
