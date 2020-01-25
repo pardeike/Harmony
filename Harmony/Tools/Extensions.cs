@@ -68,6 +68,7 @@ namespace HarmonyLib
 			if (method == null) return "null";
 			var parameters = method.GetParameters().Types();
 			var returnType = AccessTools.GetReturnedType(method);
+			if (method.DeclaringType == null) return $"{returnType.FullDescription()} {method.Name}{parameters.Description()}";
 			return $"{returnType.FullDescription()} {method.DeclaringType.FullDescription()}.{method.Name}{parameters.Description()}";
 		}
 

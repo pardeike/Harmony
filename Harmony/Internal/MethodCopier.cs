@@ -77,7 +77,7 @@ namespace HarmonyLib
 
 			var type = method.DeclaringType;
 
-			if (type.IsGenericType)
+			if (type != null && type.IsGenericType)
 			{
 				try { typeArguments = type.GetGenericArguments(); }
 				catch { typeArguments = null; }

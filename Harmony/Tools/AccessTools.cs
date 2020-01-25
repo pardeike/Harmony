@@ -501,7 +501,7 @@ namespace HarmonyLib
 		///
 		public static T GetDeclaredMember<T>(this T member) where T : MemberInfo
 		{
-			if (member.IsDeclaredMember())
+			if (member.DeclaringType == null || member.IsDeclaredMember())
 				return member;
 
 			var metaToken = member.MetadataToken;
@@ -863,9 +863,9 @@ namespace HarmonyLib
 		{
 			if (fieldInfo == null)
 				throw new ArgumentNullException(nameof(fieldInfo));
-			var t = fieldInfo.DeclaringType;
+			var type = fieldInfo.DeclaringType;
 
-			var s_name = $"__refget_{t.Name}_static_fi_{fieldInfo.Name}";
+			var s_name = $"__refget_{type?.Name ?? "null"}_static_fi_{fieldInfo.Name}";
 
 			var dm = new DynamicMethodDefinition(s_name, typeof(F).MakeByRefType(), new Type[0]);
 
@@ -885,7 +885,7 @@ namespace HarmonyLib
 			foreach (var frame in trace.GetFrames())
 			{
 				var method = frame.GetMethod();
-				if (method.DeclaringType.Namespace != typeof(Harmony).Namespace)
+				if (method.DeclaringType?.Namespace != typeof(Harmony).Namespace)
 					return method;
 			}
 			throw new Exception("Unexpected end of stack trace");

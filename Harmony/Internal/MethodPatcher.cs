@@ -348,7 +348,7 @@ namespace HarmonyLib
 						Emitter.Emit(il, OpCodes.Ldnull);
 					else
 					{
-						var instanceIsRef = AccessTools.IsStruct(original.DeclaringType);
+						var instanceIsRef = original.DeclaringType != null && AccessTools.IsStruct(original.DeclaringType);
 						var parameterIsRef = patchParam.ParameterType.IsByRef;
 						if (instanceIsRef == parameterIsRef)
 						{

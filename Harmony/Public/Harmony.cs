@@ -34,11 +34,14 @@ namespace HarmonyLib
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 				FileLog.Log($"### Harmony id={id}, version={version}, location={location}");
 				var callingMethod = AccessTools.GetOutsideCaller();
-				var callingAssembly = callingMethod.DeclaringType.Assembly;
-				location = callingAssembly.Location;
-				if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
-				FileLog.Log($"### Started from {callingMethod.FullDescription()}, location {location}");
-				FileLog.Log($"### At {DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss")}");
+				if (callingMethod.DeclaringType != null)
+				{
+					var callingAssembly = callingMethod.DeclaringType.Assembly;
+					location = callingAssembly.Location;
+					if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
+					FileLog.Log($"### Started from {callingMethod.FullDescription()}, location {location}");
+					FileLog.Log($"### At {DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss")}");
+				}
 			}
 
 			Id = id;
