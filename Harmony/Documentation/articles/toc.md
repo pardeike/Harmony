@@ -14,6 +14,8 @@
 
 ## [Injections](patching-injections.md)
 
+## [Reverse Patch](reverse-patching.md)
+
 ## [Auxilary methods](patching-auxilary.md)
 
 # [Annotations](annotations.md)

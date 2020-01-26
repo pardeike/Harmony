@@ -8,9 +8,11 @@ In order to provide your own code to Harmony, you need to define methods that ru
 
 Two of them, the **Prefix** patch and the **Postfix** patch are easy to understand and you can write them as simple static methods.
 
-A **Transpiler** patch is not a method that is executed together with the original but called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.
+**Transpiler** patches are not methods that are executed together with the original but instead are called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.
 
-Finally, a **Finalizer** patch is a static method that handles exceptions and can change them. It is the only patch type that is immune to exceptions thrown by the original method or by any applied patches. The other patch types are considered part of the original and may not get executed when an exception occurs.
+A **Finalizer** patch is a static method that handles exceptions and can change them. It is the only patch type that is immune to exceptions thrown by the original method or by any applied patches. The other patch types are considered part of the original and may not get executed when an exception occurs.
+
+Finally, there is the **Reverse Patch**. It is different from the previous types in that it patches your methods instead of foreign original methods. To use it, you define a stub that looks like the original in some way and patch the original onto your stub which you can easily call from your own code. You can even transpile the result during the process.
 
 #### Patches need to be static
 
@@ -20,10 +22,12 @@ If you need custom state in your patches, it is recommended to use a static vari
 
 ## Patch Class
 
-With manual patching, you can put your patches anywhere you like. Patching by annotations simplifies patching by assuming you create one class for each patched original and define your patch methods inside it. The name of the class can be arbitrary but a common way to name them is `OriginalClass_OriginalMethodName_Patch`.
+With manual patching, you can put your patches anywhere you like since you will refer to them yourself. Patching by annotations simplifies patching by assuming that you set up annotated classes and define your patch methods inside them.
 
-The class can be static or not, public or private, it doesn't matter. However, in order to make Harmony find it, it must have at least one `[HarmonyPatch]` attribute. Inside the class you can define as many methods as you want and some of them should be (static) patch methods.
+**Layout**
+The class can be static or not, public or private, it doesn't matter. However, in order to make Harmony find it, it must have at least one `[HarmonyPatch]` attribute. Inside the class you define patches as static methods that either have special names like Prefix or Transpiler or use attributes to define their type. Usually they also include annotations that define their target (the original method you want to patch). It also common to have fields and other helper methods in the class.
 
+**Attribute Inheritance**
 The attributes of the methods in the class inherit the attributes of the class.
 
 ## Patch methods
