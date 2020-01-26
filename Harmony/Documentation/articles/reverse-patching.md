@@ -54,7 +54,16 @@ class Main
 
 ### Types of reverse patches
 
-xxx
+The HarmonyReversePatch attribute comes in two alternatives:
+
+- `[HarmonyReversePatch(HarmonyReversePatchType.Original)]`
+- `[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]`
+
+The default is `Original` so you can simply write `[HarmonyReversePatch]`.
+
+**Original** gives you the unmodified original method as defined in the dll. No patches or transpilers have touched it.
+
+**Snapshot** gives you the version that has all **existing transpilers** applied to it. Currently patches (prefixes, postfixes or finalizers) are not applied. Since you get a snapshot, any future transpilers are only applied to the original and not to your stub.
 
 ### Changing the content of the original
 
