@@ -626,6 +626,59 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Class14
+	{
+		public static List<string> state = new List<string>();
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public bool Test(string s, KeyValuePair<string, int> p)
+		{
+			state.Add(s);
+			try { return true; }
+			finally { }
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public bool Test(string s, KeyValuePair<string, int> p1, KeyValuePair<string, int> p2)
+		{
+			state.Add(s);
+			try { return true; }
+			finally { }
+		}
+	}
+
+	[HarmonyPatch]
+	public static class Class14Patch
+	{
+		[HarmonyPatch(typeof(Class14), "Test", new Type[] { typeof(string), typeof(KeyValuePair<string, int>) })]
+		[HarmonyPrefix]
+		static bool Prefix0()
+		{
+			Class14.state.Add("Prefix0");
+			return true;
+		}
+		[HarmonyPatch(typeof(Class14), "Test", new Type[] { typeof(string), typeof(KeyValuePair<string, int>) })]
+		[HarmonyPostfix]
+		static void Postfix0()
+		{
+			Class14.state.Add("Postfix0");
+		}
+
+		[HarmonyPatch(typeof(Class14), "Test", new Type[] { typeof(string), typeof(KeyValuePair<string, int>), typeof(KeyValuePair<string, int>) })]
+		[HarmonyPrefix]
+		static bool Prefix1()
+		{
+			Class14.state.Add("Prefix1");
+			return true;
+		}
+		[HarmonyPatch(typeof(Class14), "Test", new Type[] { typeof(string), typeof(KeyValuePair<string, int>), typeof(KeyValuePair<string, int>) })]
+		[HarmonyPostfix]
+		static void Postfix1()
+		{
+			Class14.state.Add("Postfix1");
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter
