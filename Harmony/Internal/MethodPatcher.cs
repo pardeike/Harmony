@@ -480,6 +480,9 @@ namespace HarmonyLib
 			var canHaveJump = false;
 			prefixes.ForEach(fix =>
 			{
+				if (original.GetMethodBody() == null)
+					throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
+
 				EmitCallParameter(il, original, fix, variables, false);
 				Emitter.Emit(il, OpCodes.Call, fix);
 
@@ -500,6 +503,9 @@ namespace HarmonyLib
 				.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void)))
 				.Do(fix =>
 				{
+					if (original.GetMethodBody() == null)
+						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
+
 					EmitCallParameter(il, original, fix, variables, true);
 					Emitter.Emit(il, OpCodes.Call, fix);
 
@@ -524,6 +530,9 @@ namespace HarmonyLib
 			finalizers
 				.Do(fix =>
 				{
+					if (original.GetMethodBody() == null)
+						throw new Exception("Methods without body cannot have finalizers. Use a transpiler instead.");
+
 					if (catchExceptions)
 						Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 

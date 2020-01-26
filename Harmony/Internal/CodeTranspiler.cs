@@ -191,11 +191,16 @@ namespace HarmonyLib
 			}
 		}
 
+		static bool IsCodeInstructionsParameter(Type type)
+		{
+			return type.IsGenericType && type.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal);
+		}
+
 		internal static IEnumerable ConvertToGeneralInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var type = transpiler.GetParameters()
 				  .Select(p => p.ParameterType)
-				  .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal));
+				  .FirstOrDefault(t => IsCodeInstructionsParameter(t));
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
 
@@ -208,7 +213,7 @@ namespace HarmonyLib
 					parameter.Add(generator);
 				else if (type.IsAssignableFrom(typeof(MethodBase)))
 					parameter.Add(method);
-				else
+				else if (IsCodeInstructionsParameter(type))
 					parameter.Add(instructions);
 			});
 			return parameter;
