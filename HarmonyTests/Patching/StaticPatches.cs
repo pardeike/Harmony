@@ -261,7 +261,7 @@ namespace HarmonyLibTests
 
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
-			var patchClass = typeof(MultiplePatchesPatch);
+			var patchClass = typeof(MultiplePatches1Patch);
 			Assert.IsNotNull(patchClass);
 
 			MultiplePatches1.result = "before";
@@ -285,11 +285,11 @@ namespace HarmonyLibTests
 
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
-			var patchClass1 = typeof(MultiplePatchesPatch_Part1);
+			var patchClass1 = typeof(MultiplePatchesPatch2_Part1);
 			Assert.IsNotNull(patchClass1);
-			var patchClass2 = typeof(MultiplePatchesPatch_Part2);
+			var patchClass2 = typeof(MultiplePatchesPatch2_Part2);
 			Assert.IsNotNull(patchClass2);
-			var patchClass3 = typeof(MultiplePatchesPatch_Part3);
+			var patchClass3 = typeof(MultiplePatchesPatch2_Part3);
 			Assert.IsNotNull(patchClass3);
 
 			MultiplePatches2.result = "before";

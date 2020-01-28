@@ -744,29 +744,17 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public class MultiplePatches3
-	{
-		public static string result;
-
-		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string TestMethod(string val)
-		{
-			result = val;
-			return "ok";
-		}
-	}
-
 	[HarmonyPatch]
-	public class MultiplePatchesPatch
+	public class MultiplePatches1Patch
 	{
-		[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+		[HarmonyPatch(typeof(MultiplePatches1), "TestMethod")]
 		[HarmonyPrefix]
 		public static void Fix1(ref string val)
 		{
 			val += ",prefix1";
 		}
 
-		[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+		[HarmonyPatch(typeof(MultiplePatches1), "TestMethod")]
 		[HarmonyPrefix]
 		[HarmonyPriority(Priority.High)]
 		public static void Fix2(ref string val)
@@ -774,7 +762,7 @@ namespace HarmonyLibTests.Assets
 			val += ",prefix2";
 		}
 
-		[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+		[HarmonyPatch(typeof(MultiplePatches1), "TestMethod")]
 		[HarmonyPostfix]
 		public static void Fix3(ref string __result)
 		{
@@ -782,8 +770,8 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
-	public class MultiplePatchesPatch_Part1
+	[HarmonyPatch(typeof(MultiplePatches2), "TestMethod")]
+	public class MultiplePatchesPatch2_Part1
 	{
 		[HarmonyPriority(Priority.Low)]
 		public static void Prefix(ref string val)
@@ -792,8 +780,8 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
-	public class MultiplePatchesPatch_Part2
+	[HarmonyPatch(typeof(MultiplePatches2), "TestMethod")]
+	public class MultiplePatchesPatch2_Part2
 	{
 		public static void Prefix(ref string val)
 		{
@@ -801,8 +789,8 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
-	public class MultiplePatchesPatch_Part3
+	[HarmonyPatch(typeof(MultiplePatches2), "TestMethod")]
+	public class MultiplePatchesPatch2_Part3
 	{
 		public static void Postfix(ref string __result)
 		{
