@@ -1,4 +1,3 @@
-using MonoMod.Utils;
 using System;
 using System.IO;
 using System.Linq;
@@ -43,8 +42,7 @@ namespace HarmonyLib
 #pragma warning disable XS0001
 			using (var streamMemory = new MemoryStream())
 			{
-				var surrogateSelector = PatchSurrogate.GetSelector();
-				var formatter = new BinaryFormatter() { SurrogateSelector = surrogateSelector };
+				var formatter = new BinaryFormatter();
 				formatter.Serialize(streamMemory, patchInfo);
 				return streamMemory.GetBuffer();
 			}
@@ -57,8 +55,7 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
-			var surrogateSelector = PatchSurrogate.GetSelector();
-			var formatter = new BinaryFormatter { SurrogateSelector = surrogateSelector, Binder = new Binder() };
+			var formatter = new BinaryFormatter { Binder = new Binder() };
 #pragma warning disable XS0001
 			var streamMemory = new MemoryStream(bytes);
 #pragma warning restore XS0001
@@ -219,10 +216,10 @@ namespace HarmonyLib
 		///
 		public void RemovePatch(MethodInfo patch)
 		{
-			prefixes = prefixes.Where(p => p.patch != patch).ToArray();
-			postfixes = postfixes.Where(p => p.patch != patch).ToArray();
-			transpilers = transpilers.Where(p => p.patch != patch).ToArray();
-			finalizers = finalizers.Where(p => p.patch != patch).ToArray();
+			prefixes = prefixes.Where(p => p.PatchMethod != patch).ToArray();
+			postfixes = postfixes.Where(p => p.PatchMethod != patch).ToArray();
+			transpilers = transpilers.Where(p => p.PatchMethod != patch).ToArray();
+			finalizers = finalizers.Where(p => p.PatchMethod != patch).ToArray();
 		}
 	}
 
@@ -234,28 +231,54 @@ namespace HarmonyLib
 		// <PatchSurrogate> takes care of custom serialization
 
 		/// <summary>Zero-based index</summary>
-		[NonSerialized]
-		readonly public int index;
+		public readonly int index;
 
 		/// <summary>The owner (Harmony ID)</summary>
-		[NonSerialized]
-		readonly public string owner;
+#pragma warning disable CA2235
+		public readonly string owner;
+#pragma warning restore CA2235
 
 		/// <summary>The priority</summary>
-		[NonSerialized]
-		readonly public int priority;
+		public readonly int priority;
 
 		/// <summary>The before</summary>
-		[NonSerialized]
-		readonly public string[] before;
+#pragma warning disable CA2235
+		public readonly string[] before;
+#pragma warning restore CA2235
 
 		/// <summary>The after</summary>
-		[NonSerialized]
-		readonly public string[] after;
+#pragma warning disable CA2235
+		public readonly string[] after;
+#pragma warning restore CA2235
 
-		/// <summary>The patch method</summary>
 		[NonSerialized]
-		public MethodInfo patch;
+		private MethodInfo patchMethod;
+		private int token;
+#pragma warning disable CA2235
+		private string module;
+#pragma warning restore CA2235
+		/// <summary>The patch method</summary>
+		public MethodInfo PatchMethod
+		{
+			get
+			{
+				if (patchMethod == null)
+				{
+					var m = AppDomain.CurrentDomain.GetAssemblies()
+						.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
+						.SelectMany(a => a.GetLoadedModules())
+						.First(a => a.FullyQualifiedName == module);
+					patchMethod = (MethodInfo)m.ResolveMethod(token);
+				}
+				return patchMethod;
+			}
+			set
+			{
+				patchMethod = value;
+				token = patchMethod.MetadataToken;
+				module = patchMethod.Module.FullyQualifiedName;
+			}
+		}
 
 		/// <summary>Creates a patch</summary>
 		/// <param name="patch">The patch</param>
@@ -274,7 +297,7 @@ namespace HarmonyLib
 			this.priority = priority;
 			this.before = before;
 			this.after = after;
-			this.patch = patch;
+			PatchMethod = patch;
 		}
 
 		/// <summary>Gets the patch method</summary>
@@ -283,14 +306,14 @@ namespace HarmonyLib
 		///
 		public MethodInfo GetMethod(MethodBase original)
 		{
-			if (patch.ReturnType != typeof(DynamicMethod) && patch.ReturnType != typeof(MethodInfo)) return patch;
-			if (patch.IsStatic == false) return patch;
-			var parameters = patch.GetParameters();
-			if (parameters.Count() != 1) return patch;
-			if (parameters[0].ParameterType != typeof(MethodBase)) return patch;
+			if (PatchMethod.ReturnType != typeof(DynamicMethod) && PatchMethod.ReturnType != typeof(MethodInfo)) return PatchMethod;
+			if (PatchMethod.IsStatic == false) return PatchMethod;
+			var parameters = PatchMethod.GetParameters();
+			if (parameters.Count() != 1) return PatchMethod;
+			if (parameters[0].ParameterType != typeof(MethodBase)) return PatchMethod;
 
 			// we have a DynamicMethod factory, let's use it
-			var result = patch.Invoke(null, new object[] { original });
+			var result = PatchMethod.Invoke(null, new object[] { original });
 			return result as MethodInfo;
 		}
 
@@ -300,7 +323,7 @@ namespace HarmonyLib
 		///
 		public override bool Equals(object obj)
 		{
-			return ((obj != null) && (obj is Patch) && (patch == ((Patch)obj).patch));
+			return ((obj != null) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
 		}
 
 		/// <summary>Determines how patches sort</summary>
@@ -317,7 +340,7 @@ namespace HarmonyLib
 		///
 		public override int GetHashCode()
 		{
-			return patch.GetHashCode();
+			return PatchMethod.GetHashCode();
 		}
 	}
 }

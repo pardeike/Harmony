@@ -720,6 +720,96 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class MultiplePatches1
+	{
+		public static string result;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string TestMethod(string val)
+		{
+			result = val;
+			return "ok";
+		}
+	}
+
+	public class MultiplePatches2
+	{
+		public static string result;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string TestMethod(string val)
+		{
+			result = val;
+			return "ok";
+		}
+	}
+
+	public class MultiplePatches3
+	{
+		public static string result;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string TestMethod(string val)
+		{
+			result = val;
+			return "ok";
+		}
+	}
+
+	[HarmonyPatch]
+	public class MultiplePatchesPatch
+	{
+		[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+		[HarmonyPrefix]
+		public static void Fix1(ref string val)
+		{
+			val += ",prefix1";
+		}
+
+		[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+		[HarmonyPrefix]
+		[HarmonyPriority(Priority.High)]
+		public static void Fix2(ref string val)
+		{
+			val += ",prefix2";
+		}
+
+		[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+		[HarmonyPostfix]
+		public static void Fix3(ref string __result)
+		{
+			__result += ",postfix";
+		}
+	}
+
+	[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+	public class MultiplePatchesPatch_Part1
+	{
+		[HarmonyPriority(Priority.Low)]
+		public static void Prefix(ref string val)
+		{
+			val += ",prefix1";
+		}
+	}
+
+	[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+	public class MultiplePatchesPatch_Part2
+	{
+		public static void Prefix(ref string val)
+		{
+			val += ",prefix2";
+		}
+	}
+
+	[HarmonyPatch(typeof(MultiplePatches3), "TestMethod")]
+	public class MultiplePatchesPatch_Part3
+	{
+		public static void Postfix(ref string __result)
+		{
+			__result = "patched";
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

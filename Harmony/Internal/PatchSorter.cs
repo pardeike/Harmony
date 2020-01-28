@@ -86,7 +86,7 @@ namespace HarmonyLib
 		/// <returns>true if equal</returns>
 		internal bool ComparePatchLists(Patch[] patches)
 		{
-			if (sortedPatchArray == null) Sort(null);
+			if (sortedPatchArray == null) _ = Sort(null);
 			return patches != null && sortedPatchArray.Length == patches.Length &&
 					 sortedPatchArray.All(x => patches.Contains(x, new PatchDetailedComparer()));
 		}
@@ -106,7 +106,7 @@ namespace HarmonyLib
 						_waitingList[i].RemoveAfterDependency(afterNode);
 						if (Harmony.DEBUG)
 							FileLog.LogBuffered(
-								$"Breaking dependance between {afterNode.innerPatch.patch.FullDescription()} and {_waitingList[i].innerPatch.patch.FullDescription()}");
+								$"Breaking dependance between {afterNode.innerPatch.PatchMethod.FullDescription()} and {_waitingList[i].innerPatch.PatchMethod.FullDescription()}");
 						return;
 					}
 		}
@@ -126,7 +126,7 @@ namespace HarmonyLib
 				// All node dependencies are satisfied, ready for output.
 				if (node.after.All(_handledPatches.Contains))
 				{
-					_waitingList.Remove(node);
+					_ = _waitingList.Remove(node);
 					AddNodeToResult(node);
 					// Decrement the waiting list length and reset current position counter.
 					waitingListCount--;
@@ -142,7 +142,7 @@ namespace HarmonyLib
 		void AddNodeToResult(PatchSortingWrapper node)
 		{
 			_result.Add(node);
-			_handledPatches.Add(node);
+			_ = _handledPatches.Add(node);
 		}
 
 		/// <summary>Wrapper used over the Patch object to allow faster dependency access and
@@ -176,14 +176,14 @@ namespace HarmonyLib
 			/// <returns>true if equal</returns>
 			public override bool Equals(object obj)
 			{
-				return obj is PatchSortingWrapper wrapper && innerPatch.patch == wrapper.innerPatch.patch;
+				return obj is PatchSortingWrapper wrapper && innerPatch.PatchMethod == wrapper.innerPatch.PatchMethod;
 			}
 
 			/// <summary>Hash function</summary>
 			/// <returns>A hash code</returns>
 			public override int GetHashCode()
 			{
-				return innerPatch.patch.GetHashCode();
+				return innerPatch.PatchMethod.GetHashCode();
 			}
 
 			/// <summary>Bidirectionally registers Patches as after dependencies</summary>
@@ -192,8 +192,8 @@ namespace HarmonyLib
 			{
 				foreach (var i in dependencies)
 				{
-					before.Add(i);
-					i.after.Add(this);
+					_ = before.Add(i);
+					_ = i.after.Add(this);
 				}
 			}
 
@@ -203,8 +203,8 @@ namespace HarmonyLib
 			{
 				foreach (var i in dependencies)
 				{
-					after.Add(i);
-					i.before.Add(this);
+					_ = after.Add(i);
+					_ = i.before.Add(this);
 				}
 			}
 
@@ -212,16 +212,16 @@ namespace HarmonyLib
 			/// <param name="afterNode">Patch to remove</param>
 			internal void RemoveAfterDependency(PatchSortingWrapper afterNode)
 			{
-				after.Remove(afterNode);
-				afterNode.before.Remove(this);
+				_ = after.Remove(afterNode);
+				_ = afterNode.before.Remove(this);
 			}
 
 			/// <summary>Bidirectionally removes Patch from before dependencies</summary>
 			/// <param name="beforeNode">Patch to remove</param>
 			internal void RemoveBeforeDependency(PatchSortingWrapper beforeNode)
 			{
-				before.Remove(beforeNode);
-				beforeNode.after.Remove(this);
+				_ = before.Remove(beforeNode);
+				_ = beforeNode.after.Remove(this);
 			}
 		}
 
@@ -229,7 +229,7 @@ namespace HarmonyLib
 		{
 			public bool Equals(Patch x, Patch y)
 			{
-				return y != null && x != null && x.owner == y.owner && x.patch == y.patch && x.index == y.index &&
+				return y != null && x != null && x.owner == y.owner && x.PatchMethod == y.PatchMethod && x.index == y.index &&
 						 x.priority == y.priority
 						 && x.before.Length == y.before.Length && x.after.Length == y.after.Length &&
 #pragma warning disable RECS0030

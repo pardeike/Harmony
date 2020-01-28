@@ -95,9 +95,9 @@ namespace HarmonyLib
 			if (type != HarmonyPatchType.ReversePatch && patch.IsStatic == false)
 				throw new ArgumentException("Patch method " + patch.FullDescription() + " must be static");
 
-			var harmonyPatchName = typeof(HarmonyPatch).FullName;
+			var harmonyAttributeName = typeof(HarmonyAttribute).FullName;
 			var list = allAttributes
-				.Where(attr => attr.GetType().FullName == harmonyPatchName)
+				.Where(attr => attr.GetType().BaseType.FullName == harmonyAttributeName)
 				.Select(attr =>
 				{
 					var f_info = AccessTools.Field(attr.GetType(), nameof(HarmonyAttribute.info));

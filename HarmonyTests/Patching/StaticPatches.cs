@@ -250,5 +250,63 @@ namespace HarmonyLibTests
 			Assert.IsTrue(Class10Patch.postfixed);
 			Assert.IsTrue(Class10Patch.originalResult);
 		}
+
+		[Test]
+		public void Test_MultiplePatches_One_Class()
+		{
+			var originalClass = typeof(MultiplePatches1);
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("TestMethod");
+			Assert.IsNotNull(originalMethod);
+
+			var instance = new Harmony("test");
+			Assert.IsNotNull(instance);
+			var patchClass = typeof(MultiplePatchesPatch);
+			Assert.IsNotNull(patchClass);
+
+			MultiplePatches1.result = "before";
+
+			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			Assert.IsNotNull(patcher);
+			Assert.IsNotNull(patcher.Patch());
+
+			var result = (new MultiplePatches1()).TestMethod("after");
+			Assert.AreEqual("after,prefix2,prefix1", MultiplePatches1.result);
+			Assert.AreEqual("ok,postfix", result);
+		}
+
+		[Test]
+		public void Test_MultiplePatches_Multiple_Classes()
+		{
+			var originalClass = typeof(MultiplePatches2);
+			Assert.IsNotNull(originalClass);
+			var originalMethod = originalClass.GetMethod("TestMethod");
+			Assert.IsNotNull(originalMethod);
+
+			var instance = new Harmony("test");
+			Assert.IsNotNull(instance);
+			var patchClass1 = typeof(MultiplePatchesPatch_Part1);
+			Assert.IsNotNull(patchClass1);
+			var patchClass2 = typeof(MultiplePatchesPatch_Part2);
+			Assert.IsNotNull(patchClass2);
+			var patchClass3 = typeof(MultiplePatchesPatch_Part3);
+			Assert.IsNotNull(patchClass3);
+
+			MultiplePatches2.result = "before";
+
+			var patcher1 = instance.ProcessorForAnnotatedClass(patchClass1);
+			Assert.IsNotNull(patcher1);
+			Assert.IsNotNull(patcher1.Patch());
+			var patcher2 = instance.ProcessorForAnnotatedClass(patchClass2);
+			Assert.IsNotNull(patcher2);
+			Assert.IsNotNull(patcher2.Patch());
+			var patcher3 = instance.ProcessorForAnnotatedClass(patchClass3);
+			Assert.IsNotNull(patcher3);
+			Assert.IsNotNull(patcher3.Patch());
+
+			var result = (new MultiplePatches2()).TestMethod("hey");
+			Assert.AreEqual("hey,prefix2,prefix1", MultiplePatches2.result);
+			Assert.AreEqual("patched", result);
+		}
 	}
 }

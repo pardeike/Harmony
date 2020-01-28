@@ -111,10 +111,10 @@ namespace HarmonyLib
 			foreach (var original in originals)
 			{
 				var info = GetPatchInfo(original);
-				info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
-				info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
-				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
-				info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.patch));
+				info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+				info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+				info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 			}
 		}
 
