@@ -3775,6 +3775,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.GetAllPatchedMethods
   nameWithType: PatchProcessor.GetAllPatchedMethods
+- uid: HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)
+  name: GetOriginalInstructions(MethodBase, ILGenerator)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator_
+  commentId: M:HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)
+  fullName: HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase, System.Reflection.Emit.ILGenerator)
+  nameWithType: PatchProcessor.GetOriginalInstructions(MethodBase, ILGenerator)
 - uid: HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@)
   name: GetOriginalInstructions(MethodBase, out ILGenerator)
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator__
