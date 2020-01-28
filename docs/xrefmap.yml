@@ -3392,12 +3392,19 @@ references:
   commentId: F:HarmonyLib.Patch.owner
   fullName: HarmonyLib.Patch.owner
   nameWithType: Patch.owner
-- uid: HarmonyLib.Patch.patch
-  name: patch
-  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_patch
-  commentId: F:HarmonyLib.Patch.patch
-  fullName: HarmonyLib.Patch.patch
-  nameWithType: Patch.patch
+- uid: HarmonyLib.Patch.PatchMethod
+  name: PatchMethod
+  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_PatchMethod
+  commentId: P:HarmonyLib.Patch.PatchMethod
+  fullName: HarmonyLib.Patch.PatchMethod
+  nameWithType: Patch.PatchMethod
+- uid: HarmonyLib.Patch.PatchMethod*
+  name: PatchMethod
+  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_PatchMethod_
+  commentId: Overload:HarmonyLib.Patch.PatchMethod
+  isSpec: "True"
+  fullName: HarmonyLib.Patch.PatchMethod
+  nameWithType: Patch.PatchMethod
 - uid: HarmonyLib.Patch.priority
   name: priority
   href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_priority
