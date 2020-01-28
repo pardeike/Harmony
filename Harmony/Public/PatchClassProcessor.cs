@@ -91,7 +91,7 @@ namespace HarmonyLib
 				var original = patchMethod.info.GetOriginalMethod();
 				var reversePatcher = instance.CreateReversePatcher(original, patchMethod.info);
 				lock (PatchProcessor.locker)
-					reversePatcher.Patch();
+					_ = reversePatcher.Patch();
 			});
 		}
 
@@ -143,7 +143,7 @@ namespace HarmonyLib
 		{
 			MethodInfo replacement = default;
 
-			var individualPrepareResult = RunMethod<HarmonyPrepare, bool>(true, job.original);
+			var individualPrepareResult = RunMethod<HarmonyPrepare, bool>(true, null, job.original);
 			if (individualPrepareResult)
 			{
 				lock (PatchProcessor.locker)
@@ -186,18 +186,24 @@ namespace HarmonyLib
 				return list;
 			}
 
-			var targetMethods = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null);
+			string failOnResult(IEnumerable<MethodBase> res)
+			{
+				if (res == null) return "null";
+				if (res.Any(m => m == null)) return "some element was null";
+				return null;
+			}
+			var targetMethods = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null, failOnResult);
 			if (targetMethods != null)
-				return targetMethods.Where(method => method != null).ToList();
+				return targetMethods.ToList();
 
 			var result = new List<MethodBase>();
-			var targetMethod = RunMethod<HarmonyTargetMethod, MethodBase>(null);
+			var targetMethod = RunMethod<HarmonyTargetMethod, MethodBase>(null, method => method == null ? "null" : null);
 			if (targetMethod != null)
 				result.Add(targetMethod);
 			return result;
 		}
 
-		T RunMethod<S, T>(T defaultIfNotExisting, params object[] parameters)
+		T RunMethod<S, T>(T defaultIfNotExisting, Func<T, string> failOnResult = null, params object[] parameters)
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
@@ -205,10 +211,18 @@ namespace HarmonyLib
 				var actualParameters = AccessTools.ActualParameters(method, input);
 
 				if (typeof(T).IsAssignableFrom(method.ReturnType))
-					return (T)method.Invoke(null, actualParameters);
-
-				_ = method.Invoke(null, actualParameters);
-				return defaultIfNotExisting;
+				{
+					var result = (T)method.Invoke(null, actualParameters);
+					if (failOnResult != null)
+					{
+						var error = failOnResult(result);
+						if (error != null)
+							throw new Exception($"Method {method.FullDescription()} returned an unexpected result: {error}");
+					}
+					return result;
+				}
+				else
+					throw new Exception($"Method {method.FullDescription()} has wrong return type (should be assignable to {typeof(T).FullName})");
 			}
 
 			return defaultIfNotExisting;

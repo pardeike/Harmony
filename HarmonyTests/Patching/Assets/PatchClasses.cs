@@ -679,6 +679,47 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	[HarmonyPatch]
+	public static class Class15Patch
+	{
+		static MethodBase TargetMethod()
+		{
+			return null;
+		}
+
+		static void Postfix()
+		{
+		}
+	}
+
+	[HarmonyPatch]
+	public static class Class16Patch
+	{
+		static string TargetMethod()
+		{
+			return null;
+		}
+
+		static void Postfix()
+		{
+		}
+	}
+
+	[HarmonyPatch]
+	public static class Class17Patch
+	{
+		static IEnumerable<MethodBase> TargetMethods()
+		{
+			yield return AccessTools.Method(typeof(Class16Patch), "TargetMethods");
+			yield return AccessTools.Method(typeof(Class16Patch), "Dummy");
+			yield return AccessTools.Method(typeof(Class16Patch), "Postfix");
+		}
+
+		static void Postfix()
+		{
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

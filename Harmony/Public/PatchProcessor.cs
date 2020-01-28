@@ -240,7 +240,19 @@ namespace HarmonyLib
 
 		/// <summary>Returns the methods unmodified list of CodeInstructions</summary>
 		/// <param name="original">The original method</param>
-		/// <param name="generator">The generator that now contains all local variables and labels contained in the result</param>
+		/// <param name="generator">Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
+		/// <returns>A list containing all the original CodeInstructions</returns>
+		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
+		{
+			var patch = DynamicTools.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}");
+			generator = generator ?? patch.GetILGenerator();
+			var reader = MethodBodyReader.GetInstructions(generator, original);
+			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
+		}
+
+		/// <summary>Returns the methods unmodified list of CodeInstructions</summary>
+		/// <param name="original">The original method</param>
+		/// <param name="generator">A new generator that now contains all local variables and labels contained in the result</param>
 		/// <returns>A list containing all the original CodeInstructions</returns>
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
 		{
