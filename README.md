@@ -11,7 +11,7 @@
 	<a href="https://www.nuget.org/packages/lib.harmony">
 		<img src="https://img.shields.io/nuget/v/lib.harmony.svg?style=flat" />
 	</a>
-	<a href="../../wiki">
+	<a href="https://harmony.pardeike.net">
 		<img src="https://img.shields.io/badge/documentation-Wiki-yellow.svg?style=flat" />
 	</a>
 	<a href="../../blob/master/LICENSE">

@@ -114,7 +114,14 @@ class Main
 }
 </code></pre>
 <h3 id="types-of-reverse-patches">Types of reverse patches</h3>
-<p>xxx</p>
+<p>The HarmonyReversePatch attribute comes in two alternatives:</p>
+<ul>
+<li><code>[HarmonyReversePatch(HarmonyReversePatchType.Original)]</code></li>
+<li><code>[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]</code></li>
+</ul>
+<p>The default is <code>Original</code> so you can simply write <code>[HarmonyReversePatch]</code>.</p>
+<p><strong>Original</strong> gives you the unmodified original method as defined in the dll. No patches or transpilers have touched it.</p>
+<p><strong>Snapshot</strong> gives you the version that has all <strong>existing transpilers</strong> applied to it. Currently patches (prefixes, postfixes or finalizers) are not applied. Since you get a snapshot, any future transpilers are only applied to the original and not to your stub.</p>
 <h3 id="changing-the-content-of-the-original">Changing the content of the original</h3>
 <p>The real power of reverse patches comes to play when you use a <strong>reverse patch transpiler</strong>. It will allow you to change the original IL that is copied onto your stub method. As a result, you can extract parts of an foreign original method to a specific stub that you can easily call.</p>
 <p><strong>Example</strong>

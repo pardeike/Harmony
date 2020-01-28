@@ -1,21 +1,21 @@
 <p align="center"><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" /></p>
 
-# Harmony
+# Harmony 2.0
 
 ## Introduction
 
 Harmony gives you an elegant and high level way to **alter functionality** in applications written in C#. It does this at **runtime** by monkey patching methods unlike other solutions that change the content of dll files.
 
-This works great in Unity games and .NET applications and supports **Mono** and most **.NET Framework** versions except .NET Core. It is used in many mainstream Unity games.
+It supports **Mono** and **.NET** environments on Windows, Unix and macOS except when Unity uses the stripped down NetStandard profile (.NET 4.x profile works fine). Harmony is used in mainstream Unity games and many other applications.
 
-Designed to be used by multiple users (usually called Mods) that would otherwise override each others hooks, it was originally created for the game [RimWorld](https://rimworldgame.com) and its large modding community by its creator [Andreas Pardeike](https://www.patreon.com/pardeike).
+Designed to be used by multiple users (usually called Mods) that would otherwise override each others hooks, it was originally created for the game [RimWorld](https://rimworldgame.com) and its large modding community by [Andreas Pardeike](https://www.patreon.com/pardeike).
 
 Enjoy!  
 /Andreas Pardeike
 
 # Getting Started
 
-Installation is usually done by copying and referencing [0Harmony.dll](https://github.com/pardeike/Harmony/releases/latest) from your project or by using the [Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony) nuget package.
+Installation is usually done by copying and referencing [0Harmony.dll](https://github.com/pardeike/Harmony/releases) from your project or by using the [Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony) nuget package.
 
 # Documentation
 
