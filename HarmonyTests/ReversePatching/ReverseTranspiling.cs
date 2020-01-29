@@ -24,7 +24,6 @@ namespace HarmonyLibTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.IsNotNull(postfix);
 
-			//Harmony.DEBUG = true;
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 

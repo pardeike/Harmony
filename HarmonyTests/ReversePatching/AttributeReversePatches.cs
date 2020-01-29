@@ -15,7 +15,6 @@ namespace HarmonyLibTests
 			var result1 = test.Method("Foo", 123);
 			Assert.AreEqual("FooExtra123", result1);
 
-			//Harmony.DEBUG = true;
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 

@@ -185,7 +185,6 @@ namespace HarmonyLibTests.IL
 		[Test]
 		public void Test_SendingArguments()
 		{
-			//Harmony.DEBUG = true;
 			var harmony = new Harmony("test");
 			methods.Do(m =>
 			{
