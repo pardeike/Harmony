@@ -364,7 +364,7 @@ namespace HarmonyLib
 
 						default:
 							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
-							if (Harmony.DEBUG) FileLog.LogBuffered($"{emitter.CodePos()}{code} {Emitter.FormatArgument(operand)}");
+							emitter.LogIL(code, operand);
 							_ = generator.DynEmit(code, operand);
 							break;
 					}
