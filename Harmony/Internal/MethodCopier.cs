@@ -27,9 +27,9 @@ namespace HarmonyLib
 			transpilers.Add(transpiler);
 		}
 
-		internal void Finalize(List<Label> endLabels)
+		internal void Finalize(Emitter emitter, List<Label> endLabels)
 		{
-			reader.FinalizeILCodes(transpilers, endLabels);
+			reader.FinalizeILCodes(emitter, transpilers, endLabels);
 		}
 	}
 
@@ -215,7 +215,7 @@ namespace HarmonyLib
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
 
-		internal void FinalizeILCodes(List<MethodInfo> transpilers, List<Label> endLabels)
+		internal void FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels)
 		{
 			if (generator == null) return;
 
@@ -264,12 +264,12 @@ namespace HarmonyLib
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 
 			if (Harmony.DEBUG)
-				Emitter.LogComment(generator, "start original");
+				emitter.LogComment("start original");
 
 			// pass3 - log out all new local variables
 			//
 			var savedLog = FileLog.GetBuffer(true);
-			Emitter.AllLocalVariables(generator).Do(local => Emitter.LogLocalVariable(local));
+			emitter.AllLocalVariables().Do(local => Emitter.LogLocalVariable(local));
 			FileLog.LogBuffered(savedLog);
 
 			// pass4 - remove RET if it appears at the end
@@ -291,14 +291,14 @@ namespace HarmonyLib
 			codeInstructions.Do(codeInstruction =>
 			{
 				// mark all labels
-				codeInstruction.labels.Do(label => Emitter.MarkLabel(generator, label));
+				codeInstruction.labels.Do(label => emitter.MarkLabel(label));
 
 				// start all exception blocks
 				// TODO: we ignore the resulting label because we have no way to use it
 				//
 				codeInstruction.blocks.Do(block =>
 				{
-					Emitter.MarkBlockBefore(generator, block, out var label);
+					emitter.MarkBlockBefore(block, out var label);
 				});
 
 				var code = codeInstruction.opcode;
@@ -336,7 +336,7 @@ namespace HarmonyLib
 					switch (code.OperandType)
 					{
 						case OperandType.InlineNone:
-							Emitter.Emit(generator, code);
+							emitter.Emit(code);
 							break;
 
 						case OperandType.InlineSig:
@@ -346,7 +346,7 @@ namespace HarmonyLib
 							//
 							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
 							if ((operand is int) == false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
-							Emitter.Emit(generator, code, (int)operand);
+							emitter.Emit(code, (int)operand);
 
 							/*
 							// the following will only work if we can convert the original signature token to the required arguments
@@ -364,19 +364,19 @@ namespace HarmonyLib
 
 						default:
 							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
-							if (Harmony.DEBUG) FileLog.LogBuffered($"{Emitter.CodePos(generator)}{code} {Emitter.FormatArgument(operand)}");
+							if (Harmony.DEBUG) FileLog.LogBuffered($"{emitter.CodePos()}{code} {Emitter.FormatArgument(operand)}");
 							_ = generator.DynEmit(code, operand);
 							break;
 					}
 				}
 
-				codeInstruction.blocks.Do(block => Emitter.MarkBlockAfter(generator, block));
+				codeInstruction.blocks.Do(block => emitter.MarkBlockAfter(block));
 
 				idx++;
 			});
 
 			if (Harmony.DEBUG)
-				Emitter.LogComment(generator, "end original");
+				emitter.LogComment("end original");
 		}
 
 		// interpret member info value

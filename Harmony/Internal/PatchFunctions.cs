@@ -151,7 +151,8 @@ namespace HarmonyLib
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers);
 			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers);
 
-			var replacement = MethodPatcher.CreatePatchedMethod(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
+			var patcher = new MethodPatcher(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
+			var replacement = patcher.CreateReplacement();
 			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {original.FullDescription()}");
 
 			Memory.DetourMethodAndPersist(original, replacement);
@@ -174,7 +175,8 @@ namespace HarmonyLib
 			if (postTranspiler != null) transpilers.Add(postTranspiler);
 
 			var empty = new List<MethodInfo>();
-			var replacement = MethodPatcher.CreatePatchedMethod(standin.method, original, instance.Id, empty, empty, transpilers, empty);
+			var patcher = new MethodPatcher(standin.method, original, instance.Id, empty, empty, transpilers, empty);
+			var replacement = patcher.CreateReplacement();
 			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {standin.method.FullDescription()}");
 
 			var errorString = Memory.DetourMethod(standin.method, replacement);

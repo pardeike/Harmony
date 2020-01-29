@@ -1,4 +1,5 @@
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,50 +8,74 @@ using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
-	internal static class MethodPatcher
+	internal class MethodPatcher
 	{
 		/// special parameter names that can be used in prefix and postfix methods
 
-		public static string INSTANCE_PARAM = "__instance";
-		public static string ORIGINAL_METHOD_PARAM = "__originalMethod";
-		public static string RESULT_VAR = "__result";
-		public static string STATE_VAR = "__state";
-		public static string EXCEPTION_VAR = "__exception";
-		public static string PARAM_INDEX_PREFIX = "__";
-		public static string INSTANCE_FIELD_PREFIX = "___";
+		public const string INSTANCE_PARAM = "__instance";
+		public const string ORIGINAL_METHOD_PARAM = "__originalMethod";
+		public const string RESULT_VAR = "__result";
+		public const string STATE_VAR = "__state";
+		public const string EXCEPTION_VAR = "__exception";
+		public const string PARAM_INDEX_PREFIX = "__";
+		public const string INSTANCE_FIELD_PREFIX = "___";
 
-		internal static MethodInfo CreatePatchedMethod(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
+		readonly MethodBase original;
+		readonly MethodBase source;
+		readonly string harmonyInstanceID;
+		readonly List<MethodInfo> prefixes;
+		readonly List<MethodInfo> postfixes;
+		readonly List<MethodInfo> transpilers;
+		readonly List<MethodInfo> finalizers;
+		readonly int idx;
+		readonly bool firstArgIsReturnBuffer;
+		readonly Type returnType;
+		readonly DynamicMethodDefinition patch;
+		readonly ILGenerator il;
+		readonly Emitter emitter;
+
+		internal MethodPatcher(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
+		{
+			if (original == null)
+				throw new ArgumentNullException(nameof(original));
+
+			this.original = original;
+			this.source = source;
+			this.harmonyInstanceID = harmonyInstanceID;
+			this.prefixes = prefixes;
+			this.postfixes = postfixes;
+			this.transpilers = transpilers;
+			this.finalizers = finalizers;
+
+			Memory.MarkForNoInlining(original);
+
+			if (Harmony.DEBUG)
+			{
+				FileLog.LogBuffered($"### Patch {original.FullDescription()}");
+				FileLog.FlushBuffer();
+			}
+
+			idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
+			firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			returnType = AccessTools.GetReturnedType(original);
+			patch = CreateDynamicMethod(original, $"_Patch{idx}");
+			if (patch == null)
+				throw new Exception("Could not create dynamic method");
+
+			il = patch.GetILGenerator();
+			emitter = new Emitter(il);
+		}
+
+		internal MethodInfo CreateReplacement()
 		{
 			try
 			{
-				if (original == null)
-					throw new ArgumentNullException(nameof(original));
-
-				Memory.MarkForNoInlining(original);
-
-				if (Harmony.DEBUG)
-				{
-					FileLog.LogBuffered($"### Patch {original.FullDescription()}");
-					FileLog.FlushBuffer();
-				}
-
-				var idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
-				var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
-				var returnType = AccessTools.GetReturnedType(original);
-				var hasFinalizers = finalizers.Any();
-				var patch = DynamicTools.CreateDynamicMethod(original, $"_Patch{idx}");
-				if (patch == null)
-					return null;
-
-				var il = patch.GetILGenerator();
-
-				var originalVariables = DynamicTools.DeclareLocalVariables(source ?? original, il);
 				var privateVars = new Dictionary<string, LocalBuilder>();
 
 				LocalBuilder resultVariable = null;
 				if (idx > 0)
 				{
-					resultVariable = DynamicTools.DeclareLocalVariable(il, returnType);
+					resultVariable = DeclareLocalVariable(returnType);
 					privateVars[RESULT_VAR] = resultVariable;
 				}
 
@@ -62,29 +87,30 @@ namespace HarmonyLib
 						.Where(patchParam => patchParam.Name == STATE_VAR)
 						.Do(patchParam =>
 						{
-							var privateStateVariable = DynamicTools.DeclareLocalVariable(il, patchParam.ParameterType);
+							var privateStateVariable = DeclareLocalVariable(patchParam.ParameterType);
 							privateVars[fix.DeclaringType.FullName] = privateStateVariable;
 						});
 					}
 				});
 
 				LocalBuilder finalizedVariable = null;
-				if (hasFinalizers)
+				if (finalizers.Any())
 				{
-					finalizedVariable = DynamicTools.DeclareLocalVariable(il, typeof(bool));
+					finalizedVariable = DeclareLocalVariable(typeof(bool));
 
-					privateVars[EXCEPTION_VAR] = DynamicTools.DeclareLocalVariable(il, typeof(Exception));
+					privateVars[EXCEPTION_VAR] = DeclareLocalVariable(typeof(Exception));
 
 					// begin try
-					Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
+					emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
 				}
 
 				if (firstArgIsReturnBuffer)
-					Emitter.Emit(il, OpCodes.Ldarg_1); // load ref to return value
+					emitter.Emit(OpCodes.Ldarg_1); // load ref to return value
 
 				var skipOriginalLabel = il.DefineLabel();
-				var canHaveJump = AddPrefixes(il, original, prefixes, privateVars, skipOriginalLabel);
+				var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
 
+				var originalVariables = DeclareLocalVariables(source ?? original);
 				var copier = new MethodCopier(source ?? original, il, originalVariables);
 				foreach (var transpiler in transpilers)
 					copier.AddTranspiler(transpiler);
@@ -92,69 +118,69 @@ namespace HarmonyLib
 					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspiler);
 
 				var endLabels = new List<Label>();
-				copier.Finalize(endLabels);
+				copier.Finalize(emitter, endLabels);
 
 				foreach (var label in endLabels)
-					Emitter.MarkLabel(il, label);
+					emitter.MarkLabel(label);
 				if (resultVariable != null)
-					Emitter.Emit(il, OpCodes.Stloc, resultVariable);
+					emitter.Emit(OpCodes.Stloc, resultVariable);
 				if (canHaveJump)
-					Emitter.MarkLabel(il, skipOriginalLabel);
+					emitter.MarkLabel(skipOriginalLabel);
 
-				AddPostfixes(il, original, postfixes, privateVars, false);
+				AddPostfixes(privateVars, false);
 
 				if (resultVariable != null)
-					Emitter.Emit(il, OpCodes.Ldloc, resultVariable);
+					emitter.Emit(OpCodes.Ldloc, resultVariable);
 
-				AddPostfixes(il, original, postfixes, privateVars, true);
+				AddPostfixes(privateVars, true);
 
-				if (hasFinalizers)
+				if (finalizers.Any())
 				{
-					_ = AddFinalizers(il, original, finalizers, privateVars, false);
-					Emitter.Emit(il, OpCodes.Ldc_I4_1);
-					Emitter.Emit(il, OpCodes.Stloc, finalizedVariable);
+					_ = AddFinalizers(privateVars, false);
+					emitter.Emit(OpCodes.Ldc_I4_1);
+					emitter.Emit(OpCodes.Stloc, finalizedVariable);
 					var noExceptionLabel1 = il.DefineLabel();
-					Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-					Emitter.Emit(il, OpCodes.Brfalse, noExceptionLabel1);
-					Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-					Emitter.Emit(il, OpCodes.Throw);
-					Emitter.MarkLabel(il, noExceptionLabel1);
+					emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+					emitter.Emit(OpCodes.Brfalse, noExceptionLabel1);
+					emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+					emitter.Emit(OpCodes.Throw);
+					emitter.MarkLabel(noExceptionLabel1);
 
 					// end try, begin catch
-					Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
-					Emitter.Emit(il, OpCodes.Stloc, privateVars[EXCEPTION_VAR]);
+					emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
+					emitter.Emit(OpCodes.Stloc, privateVars[EXCEPTION_VAR]);
 
-					Emitter.Emit(il, OpCodes.Ldloc, finalizedVariable);
+					emitter.Emit(OpCodes.Ldloc, finalizedVariable);
 					var endFinalizerLabel = il.DefineLabel();
-					Emitter.Emit(il, OpCodes.Brtrue, endFinalizerLabel);
+					emitter.Emit(OpCodes.Brtrue, endFinalizerLabel);
 
-					var rethrowPossible = AddFinalizers(il, original, finalizers, privateVars, true);
+					var rethrowPossible = AddFinalizers(privateVars, true);
 
-					Emitter.MarkLabel(il, endFinalizerLabel);
+					emitter.MarkLabel(endFinalizerLabel);
 
 					var noExceptionLabel2 = il.DefineLabel();
-					Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-					Emitter.Emit(il, OpCodes.Brfalse, noExceptionLabel2);
+					emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+					emitter.Emit(OpCodes.Brfalse, noExceptionLabel2);
 					if (rethrowPossible)
-						Emitter.Emit(il, OpCodes.Rethrow);
+						emitter.Emit(OpCodes.Rethrow);
 					else
 					{
-						Emitter.Emit(il, OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-						Emitter.Emit(il, OpCodes.Throw);
+						emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+						emitter.Emit(OpCodes.Throw);
 					}
-					Emitter.MarkLabel(il, noExceptionLabel2);
+					emitter.MarkLabel(noExceptionLabel2);
 
 					// end catch
-					Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+					emitter.MarkBlockAfter(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
 
 					if (resultVariable != null)
-						Emitter.Emit(il, OpCodes.Ldloc, resultVariable);
+						emitter.Emit(OpCodes.Ldloc, resultVariable);
 				}
 
 				if (firstArgIsReturnBuffer)
-					Emitter.Emit(il, OpCodes.Stobj, returnType); // store result into ref
+					emitter.Emit(OpCodes.Stobj, returnType); // store result into ref
 
-				Emitter.Emit(il, OpCodes.Ret);
+				emitter.Emit(OpCodes.Ret);
 
 				if (Harmony.DEBUG)
 				{
@@ -185,6 +211,91 @@ namespace HarmonyLib
 			}
 		}
 
+		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix)
+		{
+			if (original == null) throw new ArgumentNullException(nameof(original));
+			var patchName = original.Name + suffix;
+			patchName = patchName.Replace("<>", "");
+
+			var parameters = original.GetParameters();
+			var parameterTypes = parameters.Types().ToList();
+			if (original.IsStatic == false)
+			{
+				if (AccessTools.IsStruct(original.DeclaringType))
+					parameterTypes.Insert(0, original.DeclaringType.MakeByRefType());
+				else
+					parameterTypes.Insert(0, original.DeclaringType);
+			}
+
+			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			if (firstArgIsReturnBuffer)
+				parameterTypes.Insert(0, typeof(IntPtr));
+			var returnType = firstArgIsReturnBuffer ? typeof(void) : AccessTools.GetReturnedType(original);
+
+			var method = new DynamicMethodDefinition(
+				patchName,
+				returnType,
+				parameterTypes.ToArray()
+			);
+
+#if NETSTANDARD2_0 || NETCOREAPP2_0
+#else
+			var offset = (original.IsStatic ? 0 : 1) + (firstArgIsReturnBuffer ? 1 : 0);
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				var param = method.Definition.Parameters[i + offset];
+				param.Attributes = (Mono.Cecil.ParameterAttributes)parameters[i].Attributes;
+				param.Name = parameters[i].Name;
+			}
+#endif
+
+			return method;
+		}
+
+		LocalBuilder[] DeclareLocalVariables(MethodBase member)
+		{
+			var vars = member.GetMethodBody()?.LocalVariables;
+			if (vars == null)
+				return new LocalBuilder[0];
+			return vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
+		}
+
+		LocalBuilder DeclareLocalVariable(Type type)
+		{
+			if (type.IsByRef) type = type.GetElementType();
+			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
+
+			if (AccessTools.IsClass(type))
+			{
+				var v = il.DeclareLocal(type);
+				emitter.Emit(OpCodes.Ldnull);
+				emitter.Emit(OpCodes.Stloc, v);
+				return v;
+			}
+			if (AccessTools.IsStruct(type))
+			{
+				var v = il.DeclareLocal(type);
+				emitter.Emit(OpCodes.Ldloca, v);
+				emitter.Emit(OpCodes.Initobj, type);
+				return v;
+			}
+			if (AccessTools.IsValue(type))
+			{
+				var v = il.DeclareLocal(type);
+				if (type == typeof(float))
+					emitter.Emit(OpCodes.Ldc_R4, (float)0);
+				else if (type == typeof(double))
+					emitter.Emit(OpCodes.Ldc_R8, (double)0);
+				else if (type == typeof(long) || type == typeof(ulong))
+					emitter.Emit(OpCodes.Ldc_I8, (long)0);
+				else
+					emitter.Emit(OpCodes.Ldc_I4, 0);
+				emitter.Emit(OpCodes.Stloc, v);
+				return v;
+			}
+			return null;
+		}
+
 		static OpCode LoadIndOpCodeFor(Type type)
 		{
 			if (type.IsEnum)
@@ -206,120 +317,23 @@ namespace HarmonyLib
 			return OpCodes.Ldind_Ref;
 		}
 
-		static HarmonyArgument[] AllHarmonyArguments(object[] attributes)
-		{
-			return attributes.Select(attr =>
-			{
-				if (attr.GetType().Name != nameof(HarmonyArgument)) return null;
-				return AccessTools.MakeDeepCopy<HarmonyArgument>(attr);
-			})
-			.Where(harg => harg != null)
-			.ToArray();
-		}
-
-		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
-		{
-			var attributes = parameter.GetCustomAttributes(false);
-			return AllHarmonyArguments(attributes).FirstOrDefault();
-		}
-
-		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
-		{
-			if (method == null || method is DynamicMethod)
-				return default;
-
-			var attributes = method.GetCustomAttributes(false);
-			return AllHarmonyArguments(attributes);
-		}
-
-		static HarmonyArgument[] GetArgumentAttributes(this Type type)
-		{
-			var attributes = type.GetCustomAttributes(false);
-			return AllHarmonyArguments(attributes);
-		}
-
-		static string GetOriginalArgumentName(this ParameterInfo parameter, string[] originalParameterNames)
-		{
-			var attribute = parameter.GetArgumentAttribute();
-
-			if (attribute == null)
-				return null;
-
-			if (string.IsNullOrEmpty(attribute.OriginalName) == false)
-				return attribute.OriginalName;
-
-			if (attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
-				return originalParameterNames[attribute.Index];
-
-			return null;
-		}
-
-		static string GetOriginalArgumentName(HarmonyArgument[] attributes, string name, string[] originalParameterNames)
-		{
-			if ((attributes?.Length ?? 0) <= 0)
-				return null;
-
-			var attribute = attributes.SingleOrDefault(p => p.NewName == name);
-			if (attribute == null)
-				return null;
-
-			if (string.IsNullOrEmpty(attribute.OriginalName) == false)
-				return attribute.OriginalName;
-
-			if (originalParameterNames != null && attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
-				return originalParameterNames[attribute.Index];
-
-			return null;
-		}
-
-		static string GetOriginalArgumentName(this MethodInfo method, string[] originalParameterNames, string name)
-		{
-			string argumentName;
-
-			argumentName = GetOriginalArgumentName(method?.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName != null)
-				return argumentName;
-
-			argumentName = GetOriginalArgumentName(method?.DeclaringType?.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName != null)
-				return argumentName;
-
-			return name;
-		}
-
-		static int GetArgumentIndex(MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam)
-		{
-			if (patch is DynamicMethod)
-				return Array.IndexOf(originalParameterNames, patchParam.Name);
-
-			var originalName = patchParam.GetOriginalArgumentName(originalParameterNames);
-			if (originalName != null)
-				return Array.IndexOf(originalParameterNames, originalName);
-
-			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParam.Name);
-			if (originalName != null)
-				return Array.IndexOf(originalParameterNames, originalName);
-
-			return -1;
-		}
-
 		static readonly MethodInfo m_GetMethodFromHandle1 = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 		static readonly MethodInfo m_GetMethodFromHandle2 = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) });
-		static bool EmitOriginalBaseMethod(ILGenerator il, MethodBase original)
+		bool EmitOriginalBaseMethod()
 		{
 			if (original is MethodInfo method)
-				Emitter.Emit(il, OpCodes.Ldtoken, method);
+				emitter.Emit(OpCodes.Ldtoken, method);
 			else if (original is ConstructorInfo constructor)
-				Emitter.Emit(il, OpCodes.Ldtoken, constructor);
+				emitter.Emit(OpCodes.Ldtoken, constructor);
 			else return false;
 
 			var type = original.ReflectedType;
-			if (type.IsGenericType) Emitter.Emit(il, OpCodes.Ldtoken, type);
-			Emitter.Emit(il, OpCodes.Call, type.IsGenericType ? m_GetMethodFromHandle2 : m_GetMethodFromHandle1);
+			if (type.IsGenericType) emitter.Emit(OpCodes.Ldtoken, type);
+			emitter.Emit(OpCodes.Call, type.IsGenericType ? m_GetMethodFromHandle2 : m_GetMethodFromHandle1);
 			return true;
 		}
 
-		static void EmitCallParameter(ILGenerator il, MethodBase original, MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
+		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
 			var isInstance = original.IsStatic == false;
 			var originalParameters = original.GetParameters();
@@ -335,33 +349,33 @@ namespace HarmonyLib
 			{
 				if (patchParam.Name == ORIGINAL_METHOD_PARAM)
 				{
-					if (EmitOriginalBaseMethod(il, original))
+					if (EmitOriginalBaseMethod())
 						continue;
 
-					Emitter.Emit(il, OpCodes.Ldnull);
+					emitter.Emit(OpCodes.Ldnull);
 					continue;
 				}
 
 				if (patchParam.Name == INSTANCE_PARAM)
 				{
 					if (original.IsStatic)
-						Emitter.Emit(il, OpCodes.Ldnull);
+						emitter.Emit(OpCodes.Ldnull);
 					else
 					{
 						var instanceIsRef = original.DeclaringType != null && AccessTools.IsStruct(original.DeclaringType);
 						var parameterIsRef = patchParam.ParameterType.IsByRef;
 						if (instanceIsRef == parameterIsRef)
 						{
-							Emitter.Emit(il, OpCodes.Ldarg_0);
+							emitter.Emit(OpCodes.Ldarg_0);
 						}
 						if (instanceIsRef && parameterIsRef == false)
 						{
-							Emitter.Emit(il, OpCodes.Ldarg_0);
-							Emitter.Emit(il, OpCodes.Ldobj, original.DeclaringType);
+							emitter.Emit(OpCodes.Ldarg_0);
+							emitter.Emit(OpCodes.Ldobj, original.DeclaringType);
 						}
 						if (instanceIsRef == false && parameterIsRef)
 						{
-							Emitter.Emit(il, OpCodes.Ldarga, 0);
+							emitter.Emit(OpCodes.Ldarga, 0);
 						}
 					}
 					continue;
@@ -385,11 +399,11 @@ namespace HarmonyLib
 					}
 
 					if (fieldInfo.IsStatic)
-						Emitter.Emit(il, patchParam.ParameterType.IsByRef ? OpCodes.Ldsflda : OpCodes.Ldsfld, fieldInfo);
+						emitter.Emit(patchParam.ParameterType.IsByRef ? OpCodes.Ldsflda : OpCodes.Ldsfld, fieldInfo);
 					else
 					{
-						Emitter.Emit(il, OpCodes.Ldarg_0);
-						Emitter.Emit(il, patchParam.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fieldInfo);
+						emitter.Emit(OpCodes.Ldarg_0);
+						emitter.Emit(patchParam.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fieldInfo);
 					}
 					continue;
 				}
@@ -399,9 +413,9 @@ namespace HarmonyLib
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					if (variables.TryGetValue(patch.DeclaringType.FullName, out var stateVar))
-						Emitter.Emit(il, ldlocCode, stateVar);
+						emitter.Emit(ldlocCode, stateVar);
 					else
-						Emitter.Emit(il, OpCodes.Ldnull);
+						emitter.Emit(OpCodes.Ldnull);
 					continue;
 				}
 
@@ -417,7 +431,7 @@ namespace HarmonyLib
 					if (resultType.IsAssignableFrom(returnType) == false)
 						throw new Exception($"Cannot assign method return type {returnType.FullName} to {RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					Emitter.Emit(il, ldlocCode, variables[RESULT_VAR]);
+					emitter.Emit(ldlocCode, variables[RESULT_VAR]);
 					continue;
 				}
 
@@ -425,7 +439,7 @@ namespace HarmonyLib
 				if (variables.TryGetValue(patchParam.Name, out var localBuilder))
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					Emitter.Emit(il, ldlocCode, localBuilder);
+					emitter.Emit(ldlocCode, localBuilder);
 					continue;
 				}
 
@@ -440,7 +454,7 @@ namespace HarmonyLib
 				}
 				else
 				{
-					idx = GetArgumentIndex(patch, originalParameterNames, patchParam);
+					idx = patch.GetArgumentIndex(originalParameterNames, patchParam);
 					if (idx == -1) throw new Exception($"Parameter \"{patchParam.Name}\" not found in method {original.FullDescription()}");
 				}
 
@@ -458,24 +472,24 @@ namespace HarmonyLib
 				// Case 1 + 4
 				if (originalIsNormal == patchIsNormal)
 				{
-					Emitter.Emit(il, OpCodes.Ldarg, patchArgIndex);
+					emitter.Emit(OpCodes.Ldarg, patchArgIndex);
 					continue;
 				}
 
 				// Case 2
 				if (originalIsNormal && patchIsNormal == false)
 				{
-					Emitter.Emit(il, OpCodes.Ldarga, patchArgIndex);
+					emitter.Emit(OpCodes.Ldarga, patchArgIndex);
 					continue;
 				}
 
 				// Case 3
-				Emitter.Emit(il, OpCodes.Ldarg, patchArgIndex);
-				Emitter.Emit(il, LoadIndOpCodeFor(originalParameters[idx].ParameterType));
+				emitter.Emit(OpCodes.Ldarg, patchArgIndex);
+				emitter.Emit(LoadIndOpCodeFor(originalParameters[idx].ParameterType));
 			}
 		}
 
-		static bool AddPrefixes(ILGenerator il, MethodBase original, List<MethodInfo> prefixes, Dictionary<string, LocalBuilder> variables, Label label)
+		bool AddPrefixes(Dictionary<string, LocalBuilder> variables, Label label)
 		{
 			var canHaveJump = false;
 			prefixes.ForEach(fix =>
@@ -483,21 +497,21 @@ namespace HarmonyLib
 				if (original.GetMethodBody() == null)
 					throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
 
-				EmitCallParameter(il, original, fix, variables, false);
-				Emitter.Emit(il, OpCodes.Call, fix);
+				EmitCallParameter(fix, variables, false);
+				emitter.Emit(OpCodes.Call, fix);
 
 				if (fix.ReturnType != typeof(void))
 				{
 					if (fix.ReturnType != typeof(bool))
 						throw new Exception($"Prefix patch {fix} has not \"bool\" or \"void\" return type: {fix.ReturnType}");
-					Emitter.Emit(il, OpCodes.Brfalse, label);
+					emitter.Emit(OpCodes.Brfalse, label);
 					canHaveJump = true;
 				}
 			});
 			return canHaveJump;
 		}
 
-		static void AddPostfixes(ILGenerator il, MethodBase original, List<MethodInfo> postfixes, Dictionary<string, LocalBuilder> variables, bool passthroughPatches)
+		void AddPostfixes(Dictionary<string, LocalBuilder> variables, bool passthroughPatches)
 		{
 			postfixes
 				.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void)))
@@ -506,8 +520,8 @@ namespace HarmonyLib
 					if (original.GetMethodBody() == null)
 						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
-					EmitCallParameter(il, original, fix, variables, true);
-					Emitter.Emit(il, OpCodes.Call, fix);
+					EmitCallParameter(fix, variables, true);
+					emitter.Emit(OpCodes.Call, fix);
 
 					if (fix.ReturnType != typeof(void))
 					{
@@ -524,7 +538,7 @@ namespace HarmonyLib
 				});
 		}
 
-		static bool AddFinalizers(ILGenerator il, MethodBase original, List<MethodInfo> finalizers, Dictionary<string, LocalBuilder> variables, bool catchExceptions)
+		bool AddFinalizers(Dictionary<string, LocalBuilder> variables, bool catchExceptions)
 		{
 			var rethrowPossible = true;
 			finalizers
@@ -534,23 +548,24 @@ namespace HarmonyLib
 						throw new Exception("Methods without body cannot have finalizers. Use a transpiler instead.");
 
 					if (catchExceptions)
-						Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
+						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 
-					EmitCallParameter(il, original, fix, variables, false);
-					Emitter.Emit(il, OpCodes.Call, fix);
+					EmitCallParameter(fix, variables, false);
+					emitter.Emit(OpCodes.Call, fix);
 					if (fix.ReturnType != typeof(void))
 					{
-						Emitter.Emit(il, OpCodes.Stloc, variables[EXCEPTION_VAR]);
+						emitter.Emit(OpCodes.Stloc, variables[EXCEPTION_VAR]);
 						rethrowPossible = false;
 					}
 
 					if (catchExceptions)
 					{
-						Emitter.MarkBlockBefore(il, new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out _);
-						Emitter.Emit(il, OpCodes.Pop);
-						Emitter.MarkBlockAfter(il, new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out _);
+						emitter.Emit(OpCodes.Pop);
+						emitter.MarkBlockAfter(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
 					}
 				});
+
 			return rethrowPossible;
 		}
 	}

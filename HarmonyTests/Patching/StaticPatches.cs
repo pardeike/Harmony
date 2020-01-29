@@ -259,6 +259,7 @@ namespace HarmonyLibTests
 			var originalMethod = originalClass.GetMethod("TestMethod");
 			Assert.IsNotNull(originalMethod);
 
+			Harmony.DEBUG = true;
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 			var patchClass = typeof(MultiplePatches1Patch);
