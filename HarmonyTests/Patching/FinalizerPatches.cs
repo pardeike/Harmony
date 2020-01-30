@@ -141,7 +141,7 @@ namespace HarmonyLibTests
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningNull()
 		{
 			AssertNoThrownException();
-			AssertGotResult(null);
+			AssertGotNullResult();
 		}
 
 		[Test]
@@ -225,41 +225,48 @@ namespace HarmonyLibTests
 
 		private void AssertGotResult(string str)
 		{
-			Assert.NotNull(str);
-			Assert.NotNull(info);
+			Assert.NotNull(str, "str should not be null");
+			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("result"), "Should return result");
 			Assert.AreEqual(str, info["result"]);
 		}
 
+		private void AssertGotNullResult()
+		{
+			Assert.NotNull(info, "info should not be null");
+			Assert.True(info.ContainsKey("result"), "Should return result");
+			Assert.IsNull(info["result"]);
+		}
+
 		private void AssertGotNoResult()
 		{
-			Assert.NotNull(info);
+			Assert.NotNull(info, "info should not be null");
 			Assert.False(info.ContainsKey("result"), "Should not return result");
 		}
 
 		private void AssertNoThrownException()
 		{
-			Assert.NotNull(info);
+			Assert.NotNull(info, "info should not be null");
 			Assert.IsNull(info["outerexception"], "Should not throw an exception");
 		}
 
 		private void AssertThrownException<E>()
 		{
-			Assert.NotNull(info);
+			Assert.NotNull(info, "info should not be null");
 			Assert.NotNull(info["outerexception"], "Should throw an exception");
 			Assert.IsInstanceOf(typeof(E), info["outerexception"]);
 		}
 
 		private void AssertNullExceptionInput()
 		{
-			Assert.NotNull(info);
+			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("exception"), "Finalizer should have an exception field");
 			Assert.IsNull(info["exception"], "Finalizer should get null exception input");
 		}
 
 		private void AssertExceptionInput<E>()
 		{
-			Assert.NotNull(info);
+			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("exception"), "Finalizer should have an exception field");
 			Assert.NotNull(info["exception"], "Finalizer should get an exception input");
 			Assert.IsInstanceOf(typeof(E), info["exception"]);
