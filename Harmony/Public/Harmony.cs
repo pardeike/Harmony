@@ -15,9 +15,6 @@ namespace HarmonyLib
 		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
 		public static bool DEBUG;
 
-		/// <summary>Set to false before instantiating Harmony to prevent Harmony from patching other older instances of itself</summary>
-		public static bool SELF_PATCHING = true;
-
 		/// <summary>Creates a new Harmony instance</summary>
 		/// <param name="id">A unique identifier</param>
 		/// <returns>A Harmony instance</returns>

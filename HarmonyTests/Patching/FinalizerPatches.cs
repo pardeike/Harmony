@@ -183,7 +183,6 @@ namespace HarmonyLibTests
 			var finalizer = patchType.GetMethod("Finalizer");
 			Assert.IsNotNull(finalizer);
 
-			Harmony.SELF_PATCHING = false;
 			if (Harmony.DEBUG)
 			{
 				FileLog.Reset();
@@ -226,34 +225,41 @@ namespace HarmonyLibTests
 
 		private void AssertGotResult(string str)
 		{
+			Assert.NotNull(str);
+			Assert.NotNull(info);
 			Assert.True(info.ContainsKey("result"), "Should return result");
 			Assert.AreEqual(str, info["result"]);
 		}
 
 		private void AssertGotNoResult()
 		{
+			Assert.NotNull(info);
 			Assert.False(info.ContainsKey("result"), "Should not return result");
 		}
 
 		private void AssertNoThrownException()
 		{
+			Assert.NotNull(info);
 			Assert.IsNull(info["outerexception"], "Should not throw an exception");
 		}
 
 		private void AssertThrownException<E>()
 		{
+			Assert.NotNull(info);
 			Assert.NotNull(info["outerexception"], "Should throw an exception");
 			Assert.IsInstanceOf(typeof(E), info["outerexception"]);
 		}
 
 		private void AssertNullExceptionInput()
 		{
+			Assert.NotNull(info);
 			Assert.True(info.ContainsKey("exception"), "Finalizer should have an exception field");
 			Assert.IsNull(info["exception"], "Finalizer should get null exception input");
 		}
 
 		private void AssertExceptionInput<E>()
 		{
+			Assert.NotNull(info);
 			Assert.True(info.ContainsKey("exception"), "Finalizer should have an exception field");
 			Assert.NotNull(info["exception"], "Finalizer should get an exception input");
 			Assert.IsInstanceOf(typeof(E), info["exception"]);
