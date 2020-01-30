@@ -2373,12 +2373,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.ReversePatch
   nameWithType: Harmony.ReversePatch
-- uid: HarmonyLib.Harmony.SELF_PATCHING
-  name: SELF_PATCHING
-  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_SELF_PATCHING
-  commentId: F:HarmonyLib.Harmony.SELF_PATCHING
-  fullName: HarmonyLib.Harmony.SELF_PATCHING
-  nameWithType: Harmony.SELF_PATCHING
 - uid: HarmonyLib.Harmony.Unpatch(System.Reflection.MethodBase,HarmonyLib.HarmonyPatchType,System.String)
   name: Unpatch(MethodBase, HarmonyPatchType, String)
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_Unpatch_System_Reflection_MethodBase_HarmonyLib_HarmonyPatchType_System_String_
