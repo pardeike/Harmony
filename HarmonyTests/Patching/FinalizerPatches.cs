@@ -235,7 +235,7 @@ namespace HarmonyLibTests
 		{
 			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("result"), "Should return result");
-			Assert.IsTrue(info["result"] == null, "Result should be null");
+			Assert.AreEqual(null, info["result"]?.ToString(), "Result should be null");
 		}
 
 		private void AssertGotNoResult()
