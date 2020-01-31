@@ -235,10 +235,7 @@ namespace HarmonyLibTests
 		{
 			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("result"), "Should return result");
-			// weird case where 'Assert.IsNull(info["result"])' fails on Travis-CI
-			// so we need an extra variable:
-			var result = info["result"];
-			Assert.IsNull(result);
+			Assert.IsTrue(info["result"] == null, "Result should be null");
 		}
 
 		private void AssertGotNoResult()
