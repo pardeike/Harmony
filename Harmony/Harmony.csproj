@@ -93,7 +93,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoMod.Common" Version="20.1.25.7" PrivateAssets="All" />
+		<PackageReference Include="MonoMod.Common" Version="20.2.1.1" PrivateAssets="All" />
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
 	</ItemGroup>
 
