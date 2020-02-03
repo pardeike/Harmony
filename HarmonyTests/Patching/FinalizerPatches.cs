@@ -209,7 +209,7 @@ namespace HarmonyLibTests
 				if (m_method.ReturnType == typeof(void))
 					_ = m_method.Invoke(obj, null);
 				else
-					info["result"] = m_method.Invoke(obj, null);
+					info["result"] = m_method.Invoke(obj, new object[0]);
 				info["outerexception"] = null;
 			}
 			catch (TargetInvocationException e)
@@ -234,10 +234,8 @@ namespace HarmonyLibTests
 		private void AssertGotNullResult()
 		{
 			Assert.NotNull(info, "info should not be null");
-			if (info.TryGetValue("result", out var value))
-				Assert.IsNull(value, "Result should be null");
-			else
-				Assert.Fail("Should return result");
+			Assert.True(info.ContainsKey("result"), "Should return result");
+			Assert.IsNull(info["result"], "Result should be null");
 		}
 
 		private void AssertGotNoResult()
