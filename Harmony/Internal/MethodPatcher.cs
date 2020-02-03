@@ -236,7 +236,10 @@ namespace HarmonyLib
 				patchName,
 				returnType,
 				parameterTypes.ToArray()
-			);
+			)
+			{
+				OwnerType = original.DeclaringType
+			};
 
 #if NETSTANDARD2_0 || NETCOREAPP2_0
 #else
