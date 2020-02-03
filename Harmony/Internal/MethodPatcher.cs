@@ -70,6 +70,7 @@ namespace HarmonyLib
 		{
 			try
 			{
+				var originalVariables = DeclareLocalVariables(source ?? original);
 				var privateVars = new Dictionary<string, LocalBuilder>();
 
 				LocalBuilder resultVariable = null;
@@ -110,7 +111,6 @@ namespace HarmonyLib
 				var skipOriginalLabel = il.DefineLabel();
 				var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
 
-				var originalVariables = DeclareLocalVariables(source ?? original);
 				var copier = new MethodCopier(source ?? original, il, originalVariables);
 				foreach (var transpiler in transpilers)
 					copier.AddTranspiler(transpiler);
