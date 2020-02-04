@@ -717,7 +717,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/basics.html",
-          "hash": "6UE8k0iQd2HCZRQ891N7Ag=="
+          "hash": "uXIHvSJi85RLX1K26FwgDQ=="
         }
       },
       "is_incremental": false,
@@ -741,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "eAWK2lVyw8nNhDrlTeYUfQ=="
+          "hash": "en1c8I9y9sprT7lwc9TrOQ=="
         }
       },
       "is_incremental": false,
@@ -962,16 +962,16 @@
         "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 16,
-          "skipped_file_count": 0
-        },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 56,
+          "skipped_file_count": 0
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 16,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
