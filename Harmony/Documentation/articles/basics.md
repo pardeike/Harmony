@@ -29,7 +29,7 @@ To add Harmony manually to your Visual Studio project, you right-click on `Refer
 Once you reference Harmony correctly, you should be able to import it by adding Harmony to your imports. That gives you code completion so you can discover the API:
 
 ```csharp
-using Harmony;
+using HarmonyLib;
 ```
 
 ## Creating a Harmony instance

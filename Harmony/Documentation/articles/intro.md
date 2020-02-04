@@ -100,7 +100,7 @@ Patching with Harmony annotations:
 // your code, most likely in your own dll
 
 using SomeGame;
-using Harmony;
+using HarmonyLib;
 
 public class MyPatcher
 {
@@ -143,7 +143,7 @@ Alternatively, manual patching with reflection:
 // your code, most likely in your own dll
 
 using SomeGame;
-using Harmony;
+using HarmonyLib;
 
 public class MyPatcher
 {
@@ -154,10 +154,11 @@ public class MyPatcher
 	{
 		var harmony = new Harmony("com.example.patch");
 
-		var mOriginal = typeof(SomeGameClass).GetMethod("DoSomething", BindingFlags.Instance | BindingFlags.NonPublic);
-		var mPrefix = typeof(MyPatcher).GetMethod("MyPrefix", BindingFlags.Static | BindingFlags.Public);
-		var mPostfix = typeof(MyPatcher).GetMethod("MyPostfix", BindingFlags.Static | BindingFlags.Public);
-		// add null checks here
+		//
+		var mOriginal = AccessTools.Method(typeof(SomeGameClass), "DoSomething");
+		var mPrefix = SymbolExtensions.GetMethodInfo(() => MyPrefix());
+		var mPostfix = SymbolExtensions.GetMethodInfo(() => MyPostfix());
+		// in general, add null checks here (new HarmonyMethod() does it for you too)
 
 		harmony.Patch(mOriginal, new HarmonyMethod(mPrefix), new HarmonyMethod(mPostfix));
 	}
