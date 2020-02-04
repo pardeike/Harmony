@@ -244,6 +244,10 @@ namespace HarmonyLib
 #if NETSTANDARD2_0 || NETCOREAPP2_0
 #else
 			var offset = (original.IsStatic ? 0 : 1) + (firstArgIsReturnBuffer ? 1 : 0);
+			if (firstArgIsReturnBuffer)
+				method.Definition.Parameters[0].Name = "retbuf";
+			if (!original.IsStatic)
+				method.Definition.Parameters[firstArgIsReturnBuffer ? 1 : 0].Name = "this";
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				var param = method.Definition.Parameters[i + offset];

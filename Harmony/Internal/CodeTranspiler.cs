@@ -201,6 +201,11 @@ namespace HarmonyLib
 			var type = transpiler.GetParameters()
 				  .Select(p => p.ParameterType)
 				  .FirstOrDefault(t => IsCodeInstructionsParameter(t));
+			if (type == typeof(IEnumerable<CodeInstruction>))
+			{
+				unassignedValues = null;
+				return enumerable;
+			}
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
 
@@ -237,7 +242,8 @@ namespace HarmonyLib
 				instructions = transpiler.Invoke(null, parameter.ToArray()) as IEnumerable;
 
 				// convert result back to 'our' CodeInstruction and re-assign otherwise lost fields
-				instructions = ConvertToOurInstructions(instructions, typeof(CodeInstruction), originalInstructions, unassignedValues);
+				if (unassignedValues != null)
+					instructions = ConvertToOurInstructions(instructions, typeof(CodeInstruction), originalInstructions, unassignedValues);
 			});
 			return instructions.Cast<CodeInstruction>().ToList();
 		}

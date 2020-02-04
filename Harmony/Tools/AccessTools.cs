@@ -1019,7 +1019,7 @@ namespace HarmonyLib
 			if (ns == "System" || (ns?.StartsWith("System.") ?? false))
 				return source;
 
-			var result = CreateInstance(resultType);
+			var result = CreateInstance(resultType == typeof(object) ? type : resultType);
 			Traverse.IterateFields(source, result, (name, src, dst) =>
 			{
 				var path = pathRoot.Length > 0 ? pathRoot + "." + name : name;

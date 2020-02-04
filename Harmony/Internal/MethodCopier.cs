@@ -1,3 +1,4 @@
+using MonoMod.Utils;
 using MonoMod.Utils.Cil;
 using System;
 using System.Collections.Generic;
@@ -340,26 +341,17 @@ namespace HarmonyLib
 							break;
 
 						case OperandType.InlineSig:
-
-							// TODO the following will fail because we do not convert the token (operand)
-							// All the decompilers can show the arguments correctly, we just need to find out how
-							//
+							var cecilGenerator = generator.GetProxiedShim<CecilILGenerator>();
+							if (cecilGenerator == null)
+							{
+								// Right now InlineSignatures can only be emitted using MonoMod.Common and its CecilILGenerator.
+								// That is because DynamicMethod's original ILGenerator is very restrictive about the calli opcode.
+								throw new NotSupportedException();
+							}
 							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
-							if ((operand is int) == false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
-							emitter.Emit(code, (int)operand);
-
-							/*
-							// the following will only work if we can convert the original signature token to the required arguments
-							//
-							var callingConvention = System.Runtime.InteropServices.CallingConvention.ThisCall;
-							var returnType = typeof(object);
-							var parameterTypes = new[] { typeof(object) };
-							Emitter.EmitCalli(generator, code, callingConvention, returnType, parameterTypes);
-
-							var callingConventions = System.Reflection.CallingConventions.Standard;
-							var optionalParameterTypes = new[] { typeof(object) };
-							Emitter.EmitCalli(generator, code, callingConventions, returnType, parameterTypes, optionalParameterTypes);
-							*/
+							if ((operand is ICallSiteGenerator) == false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
+							emitter.LogIL(code, operand);
+							cecilGenerator.Emit(code, (ICallSiteGenerator)operand);
 							break;
 
 						default:
@@ -503,10 +495,12 @@ namespace HarmonyLib
 				{
 					var val = ilBytes.ReadInt32();
 					var bytes = module.ResolveSignature(val);
-					instruction.operand = bytes;
-					instruction.argument = bytes;
+					var signature = InlineSignatureParser.ImportCallSite(module, bytes);
+					instruction.operand = signature;
+					instruction.argument = signature;
 					Debugger.Log(0, "TEST", $"METHOD {method.FullDescription()}\n");
-					Debugger.Log(0, "TEST", $"Signature = {bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b)}\n");
+					Debugger.Log(0, "TEST", $"Signature Blob = {bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b)}\n");
+					Debugger.Log(0, "TEST", $"Signature = {signature}\n");
 					Debugger.Break();
 					break;
 				}
