@@ -67,6 +67,7 @@ jobs:
       script:
         - msbuild /p:Configuration=Release /p:TargetFrameworks=${netframework}
         - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe HarmonyTests/bin/Release/${netframework}/HarmonyTests.dll --inprocess
+        - Harmony/Documentation/examples/test-all.sh
     - os: osx
       env: netframework=net35
       mono: latest

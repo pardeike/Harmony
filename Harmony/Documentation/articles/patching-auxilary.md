@@ -48,14 +48,7 @@ static IEnumerable<MethodBase> CalculateMethods(Harmony instance)
 
 A typical implementation would `yield` the results like this:
 
-```csharp
-static IEnumerable<MethodBase> TargetMethods()
-{
-	yield return AccessTools.Method(typeof(Foo), "Method1");
-	yield return AccessTools.Method(typeof(Bar), "Method2");
-	// you could also iterate using reflections over many methods
-}
-```
+[!code-csharp[example](../examples/patching-auxilary.cs?name=yield)]
 
 ### Cleanup
 
