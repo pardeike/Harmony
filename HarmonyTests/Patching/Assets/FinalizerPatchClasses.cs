@@ -55,16 +55,14 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-
 	public class ThrowingStringReturningMethod
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public string Method()
 		{
-			throw new OriginalException();
-#pragma warning disable CS0162
+			if (this != null) // make compiler happy
+				throw new OriginalException();
 			return "OriginalResult";
-#pragma warning restore CS0162
 		}
 	}
 
