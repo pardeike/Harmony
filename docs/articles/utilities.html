@@ -112,44 +112,47 @@ public static void IterateProperties(object source, Action&lt;Traverse&gt; actio
 public static void IterateProperties(object source, object target, Action&lt;Traverse, Traverse&gt; action)
 </code></pre>
 <p>Example:</p>
-<pre><code class="lang-csharp">class Foo
+<pre><code class="lang-csharp" name="example">class Foo
 {
-	struct Bar
-	{
-		static string secret = &quot;hello&quot;;
+    struct Bar
+    {
+        static string secret = &quot;hello&quot;;
 
-		public string ModifiedSecret()
-		{
-			return secret.ToUpper();
-		}
-	}
+        public string ModifiedSecret()
+        {
+            return secret.ToUpper();
+        }
+    }
 
-	Bar myBar
-	{
-		get
-		{
-			return new Bar();
-		}
-	}
+    Bar myBar
+    {
+        get
+        {
+            return new Bar();
+        }
+    }
 
-	public string GetSecret()
-	{
-		return myBar.ModifiedSecret();
-	}
+    public string GetSecret()
+    {
+        return myBar.ModifiedSecret();
+    }
 
-	Foo()
-	{
-	}
+    Foo()
+    {
+    }
 
-	static Foo MakeFoo()
-	{
-		return new Foo();
-	}
+    static Foo MakeFoo()
+    {
+        return new Foo();
+    }
 }
 
-var foo = Traverse.Create&lt;Foo&gt;().Method(&quot;MakeFoo&quot;).GetValue&lt;Foo&gt;();
-Traverse.Create(foo).Property(&quot;myBar&quot;).Field(&quot;secret&quot;).SetValue(&quot;world&quot;);
-Console.WriteLine(foo.GetSecret()); // outputs WORLD
+void Test()
+{
+    var foo = Traverse.Create&lt;Foo&gt;().Method(&quot;MakeFoo&quot;).GetValue&lt;Foo&gt;();
+    Traverse.Create(foo).Property(&quot;myBar&quot;).Field(&quot;secret&quot;).SetValue(&quot;world&quot;);
+    Console.WriteLine(foo.GetSecret()); // outputs WORLD
+}
 </code></pre>
 <p>Although most fields, properties and methods in that class hierarchy are private, Traverse can easily access anything. It has build-in null protection and propagates null as a result if any of the intermediates would encounter null. It works with static types and caches lookups which makes it pretty fast.</p>
 <h3 id="filelog">FileLog</h3>

@@ -83,37 +83,35 @@
 <p>Creating a reverse patch is easy. You add the <code>[HarmonyReversePatch]</code> attribute to a patch method. As you can see in the example below, you still need to point out the original method in futher annotations.</p>
 <p>The method signature must match the original. This includes static/non static but in the example, we use the fact that an instance method gets the instance in an extra argument at position 0.</p>
 <p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> While it is tempting to define a stub as an instance method, one has to be very careful with that. The IL code that is copied from the original expects <code>this</code> to be pointing to the original class type. This obviously won't work if your instance stub is in a class that is not the original.</p>
-<pre><code class="lang-csharp">private class OriginalCode
+<pre><code class="lang-csharp" name="example">private class OriginalCode
 {
-	private void Test(int counter, string name)
-	{
-		// ...
-	}
+    private void Test(int counter, string name)
+    {
+        // ...
+    }
 }
 
 [HarmonyPatch]
 public class Patch
 {
-	[HarmonyReversePatch]
-	[HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
-	public static void MyTest(object instance, int counter, ref string name)
-	{
-		// its a stub so it has no initial content
-		throw new NotImplementedException(&quot;It's a stub&quot;);
-	}
+    [HarmonyReversePatch]
+    [HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+    public static void MyTest(object instance, int counter, string name)
+    {
+        // its a stub so it has no initial content
+        throw new NotImplementedException(&quot;It's a stub&quot;);
+    }
 }
 
 class Main
 {
-	void Test()
-	{
-		// here we call OriginalCode.Test()
-		var originalInstance = ...
-		Patch.MyTest(originalInstance, 100, &quot;hello&quot;);
-	}
+    void Test()
+    {
+        // here we call OriginalCode.Test()
+        Patch.MyTest(originalInstance, 100, &quot;hello&quot;);
+    }
 }
-</code></pre>
-<h3 id="types-of-reverse-patches">Types of reverse patches</h3>
+</code></pre><h3 id="types-of-reverse-patches">Types of reverse patches</h3>
 <p>The HarmonyReversePatch attribute comes in two alternatives:</p>
 <ul>
 <li><code>[HarmonyReversePatch(HarmonyReversePatchType.Original)]</code></li>
@@ -128,55 +126,54 @@ class Main
 Lets say the original method is long and has some part where a checksum is calculated. Instead of copying that source code from a disassembler into a method of your own, you could reverse patch the method that contains it into a method you call <code>Checksum(...)</code>.</p>
 <p>Doing this requires knowledge of how CIL works and how you extract part of IL so its stack usage (the elements put onto it and the elements left on it). This will define the signature of your stub. So if your checksum part takes a string from the IL stack and leaves an int on it after being run, your signature would be <code>static int Checksum(string txt)</code>.</p>
 <p>To define a reverse patch transpiler, you simply put a transpiler <strong>into</strong> your stub:</p>
-<pre><code class="lang-csharp">private class OriginalClass
+<pre><code class="lang-csharp" name="example">private class OriginalClass
 {
-	private string SpecialCalculation(string original, int n)
-	{
-		var parts = original.Split('-').Reverse().ToArray();
-		var str = string.Join(&quot;&quot;, parts) + n;
-		return str + &quot;Prolog&quot;;
-	}
+    private string SpecialCalculation(string original, int n)
+    {
+        var parts = original.Split('-').Reverse().ToArray();
+        var str = string.Join(&quot;&quot;, parts) + n;
+        return str + &quot;Prolog&quot;;
+    }
 }
 
 [HarmonyPatch]
 public class Patch
 {
-	// When reverse patched, StringOperation will contain all the
-	// code from the original including the Join() but not the +n
-	//
-	// Basically
-	// var parts = original.Split('-').Reverse().ToArray();
-	// return string.Join(&quot;&quot;, parts)
-	//
-	[HarmonyReversePatch]
-	[HarmonyPatch(typeof(OriginalClass), &quot;SpecialCalculation&quot;)]
-	public static string StringOperation(string original)
-	{
-		// This inner transpiler will be applied to the original and
-		// the result will replace this method
-		//
-		// That will allow this method to have a different signature
-		// than the original and it must match the transpiled result
-		//
-		IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
-		{
-			var list = Transpilers.Manipulator(instructions,
-				item =&gt; item.opcode == OpCodes.Ldarg_1,
-				item =&gt; item.opcode = OpCodes.Ldarg_0
-			).ToList();
-			var mJoin = SymbolExtensions.GetMethodInfo(() =&gt; string.Join(null, null));
-			var idx = list.FindIndex(item =&gt; item.opcode == OpCodes.Call &amp;&amp; item.operand as MethodInfo == mJoin);
-			list.RemoveRange(idx + 1, list.Count - (idx + 1));
-			return list.AsEnumerable();
-		}
+    // When reverse patched, StringOperation will contain all the
+    // code from the original including the Join() but not the +n
+    //
+    // Basically
+    // var parts = original.Split('-').Reverse().ToArray();
+    // return string.Join(&quot;&quot;, parts)
+    //
+    [HarmonyReversePatch]
+    [HarmonyPatch(typeof(OriginalClass), &quot;SpecialCalculation&quot;)]
+    public static string StringOperation(string original)
+    {
+        // This inner transpiler will be applied to the original and
+        // the result will replace this method
+        //
+        // That will allow this method to have a different signature
+        // than the original and it must match the transpiled result
+        //
+        IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+        {
+            var list = Transpilers.Manipulator(instructions,
+                item =&gt; item.opcode == OpCodes.Ldarg_1,
+                item =&gt; item.opcode = OpCodes.Ldarg_0
+            ).ToList();
+            var mJoin = SymbolExtensions.GetMethodInfo(() =&gt; string.Join(null, null));
+            var idx = list.FindIndex(item =&gt; item.opcode == OpCodes.Call &amp;&amp; item.operand as MethodInfo == mJoin);
+            list.RemoveRange(idx + 1, list.Count - (idx + 1));
+            return list.AsEnumerable();
+        }
 
-		// make compiler happy
-		_ = Transpiler(null);
-		return original;
-	}
+        // make compiler happy
+        _ = Transpiler(null);
+        return original;
+    }
 }
-</code></pre>
-</article>
+</code></pre></article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

@@ -90,21 +90,21 @@
 }
 </code></pre>
 <h3 id="changing-and-rethrowing-exceptions">Changing and rethrowing exceptions</h3>
-<pre><code class="lang-csharp">[Serializable]
+<pre><code class="lang-csharp" name="example">[Serializable]
 public class MyException : Exception
 {
-	public MyException() { }
-	public MyException(string message) : base(message) { }
-	public MyException(string message, Exception innerException) : base(message, innerException) { }
-	protected MyException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-	{
-		throw new NotImplementedException();
-	}
+    public MyException() { }
+    public MyException(string message) : base(message) { }
+    public MyException(string message, Exception innerException) : base(message, innerException) { }
+    protected MyException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 static Exception Finalizer(Exception __exception)
 {
-	return new MyException(&quot;Oops&quot;, __exception);
+    return new MyException(&quot;Oops&quot;, __exception);
 }
 </code></pre>
 <p>Beside their handling of exceptions they can receive the same arguments as Postfixes.</p>
