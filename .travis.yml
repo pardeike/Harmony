@@ -39,6 +39,7 @@ install:
 script:
   - dotnet build --framework ${netframework}
   - dotnet test HarmonyTests --framework ${netframework}
+  - Harmony/Documentation/examples/test-all.sh
 
 jobs:
   exclude:
@@ -67,7 +68,6 @@ jobs:
       script:
         - msbuild /p:Configuration=Release /p:TargetFrameworks=${netframework}
         - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe HarmonyTests/bin/Release/${netframework}/HarmonyTests.dll --inprocess
-        - Harmony/Documentation/examples/test-all.sh
     - os: osx
       env: netframework=net35
       mono: latest

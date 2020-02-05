@@ -1,4 +1,4 @@
-// extra-arg: intro_somegame.cs
+// extra-file: intro_somegame.cs
 using System.Reflection;
 
 // <example>
