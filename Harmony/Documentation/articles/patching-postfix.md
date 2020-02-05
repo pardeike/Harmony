@@ -13,25 +13,7 @@ A postfix is a method that is executed after the original method. It is commonly
 
 Since the postfix has access to the result of the original (or a prefix that has skipped the original), it can read or alter the result by using the argument `__result`. It must match the return type of the original or be assignable from it.
 
-```csharp
-public class OriginalCode
-{
-	public string GetName()
-	{
-		// ...
-	}
-}
-
-[HarmonyPatch(typeof(OriginalCode), "GetName")]
-class Patch
-{
-	static void Postfix(ref string __result)
-	{
-		if (__result == "foo")
-			__result = "bar";
-	}
-}
-```
+[!code-csharp[example](../examples/patching-postfix.cs?name=result)]
 
 ### Pass through postfixes
 
@@ -39,69 +21,13 @@ An alternative way to change the result of an original method is to use a **pass
 
 Harmony will call the postfix with the result of the original and will use the result of the postfix to continue. Since this works for all types, it is especially useful for types like `IEnumerable<T>` that cannot be combined with `ref`. This allows for changing the result with `yield` operations.
 
-```csharp
-public class OriginalCode
-{
-	public string GetName()
-	{
-		return "David";
-	}
-
-	public IEnumerable<int> GetNumbers()
-	{
-		yield return 1;
-		yield return 2;
-		yield return 3;
-	}
-}
-
-[HarmonyPatch(typeof(OriginalCode), "GetName")]
-class Patch1
-{
-	static string Postfix(string name)
-	{
-		return "Hello " + name;
-	}
-}
-
-[HarmonyPatch(typeof(OriginalCode), "GetNumbers")]
-class Patch2
-{
-	static IEnumerable<int> Postfix(IEnumerable<int> values)
-	{
-		yield return 0;
-		foreach (var value in values)
-			if (value > 1)
-				yield return value * 10;
-		yield return 99;
-	}
-}
-
-// will make GetNumbers() return [0, 20, 30, 99] instead of [1, 2, 3]
-```
+[!code-csharp[example](../examples/patching-postfix.cs?name=passthrough)]
 
 ### Reading original arguments
 
 There are many ways to access original arguments and even private fields: by name convention and by attributes. You can read more about that in the [Injections](patching-injections.md) chapter. Here is a simple example:
 
-```csharp
-public class OriginalCode
-{
-	public void Test(int counter)
-	{
-		// ...
-	}
-}
-
-[HarmonyPatch(typeof(OriginalCode), "Test")]
-class Patch
-{
-	static void Prefix(int counter)
-	{
-		FileLog.Log("counter = " + counter);
-	}
-}
-```
+[!code-csharp[example](../examples/patching-postfix.cs?name=args)]
 
 ### Postfixes always run
 

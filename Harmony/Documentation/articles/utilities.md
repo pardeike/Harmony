@@ -53,46 +53,7 @@ public static void IterateProperties(object source, object target, Action<Traver
 
 Example:
 
-```csharp
-class Foo
-{
-	struct Bar
-	{
-		static string secret = "hello";
-
-		public string ModifiedSecret()
-		{
-			return secret.ToUpper();
-		}
-	}
-
-	Bar myBar
-	{
-		get
-		{
-			return new Bar();
-		}
-	}
-
-	public string GetSecret()
-	{
-		return myBar.ModifiedSecret();
-	}
-
-	Foo()
-	{
-	}
-
-	static Foo MakeFoo()
-	{
-		return new Foo();
-	}
-}
-
-var foo = Traverse.Create<Foo>().Method("MakeFoo").GetValue<Foo>();
-Traverse.Create(foo).Property("myBar").Field("secret").SetValue("world");
-Console.WriteLine(foo.GetSecret()); // outputs WORLD
-```
+[!code-csharp[example](../examples/utilities.cs?name=example)]
 
 Although most fields, properties and methods in that class hierarchy are private, Traverse can easily access anything. It has build-in null protection and propagates null as a result if any of the intermediates would encounter null. It works with static types and caches lookups which makes it pretty fast.
 

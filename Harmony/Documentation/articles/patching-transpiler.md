@@ -22,27 +22,7 @@ MethodBase original // [OPTIONAL]
 
 A typical transpiler looks like this:
 
-```csharp
-static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), "someField");
-static MethodInfo m_MyExtraMethod = SymbolExtensions.GetMethodInfo(() => Tools.MyExtraMethod());
-
-// looks for STDFLD someField and inserts CALL MyExtraMethod before it
-static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-{
-	var found = false;
-	foreach (var instruction in instructions)
-	{
-		if (instruction.opcode == OpCodes.Stfld && instruction.operand == f_someField)
-		{
-			yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
-			found = true;
-		}
-		yield return instruction;
-	}
-	if (found == false)
-		ReportError("Cannot find <Stdfld someField> in OriginalType.OriginalMethod");
-}
-```
+[!code-csharp[example](../examples/patching-transpiler.cs?name=typical)]
 
 A transpiler is executed only once before the original is run. It can therefore not have access to any runtime state. Harmony will run it once when you patch the method and _again_ every time someone else adds a transpiler for the same methods. Transpilers are chained to produce the final output.
 
@@ -265,59 +245,6 @@ Here, we have a few choices again. The simplest way would be to count the opcode
 
 Strategy: _Search for RET codes. For every code found, search until the next RET and look for the usage of the string "TooBigCaravanMassUsage". If found, continue to find the following RET and remove everything from right after the first RET to including the second RET_:
 
-```csharp
-[HarmonyPatch(typeof(Dialog_FormCaravan))]
-[HarmonyPatch("CheckForErrors")]
-public static class Dialog_FormCaravan_CheckForErrors_Patch
-{
-	static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-	{
-		var foundMassUsageMethod = false;
-		int startIndex = -1, endIndex = -1;
-
-		var codes = new List<CodeInstruction>(instructions);
-		for (int i = 0; i < codes.Count; i++)
-		{
-			if (codes[i].opcode == OpCodes.Ret)
-			{
-				if (foundMassUsageMethod)
-				{
-					Log.Error("END " + i);
-
-					endIndex = i; // include current 'ret'
-					break;
-				}
-				else
-				{
-					Log.Error("START " + (i + 1));
-
-					startIndex = i + 1; // exclude current 'ret'
-
-					for (int j = startIndex; j < codes.Count; j++)
-					{
-						if (codes[j].opcode == OpCodes.Ret)
-							break;
-						var strOperand = codes[j].operand as String;
-						if (strOperand == "TooBigCaravanMassUsage")
-						{
-							foundMassUsageMethod = true;
-							break;
-						}
-					}
-				}
-			}
-		}
-		if (startIndex > -1 && endIndex > -1)
-		{
-			// we cannot remove the first code of our range since some jump actually jumps to
-			// it, so we replace it with a no-op instead of fixing that jump (easier).
-			codes[startIndex].opcode = OpCodes.Nop;
-			codes.RemoveRange(startIndex + 1, endIndex - startIndex - 1);
-		}
-
-		return codes.AsEnumerable();
-	}
-}
-```
+[!code-csharp[example](../examples/patching-transpiler.cs?name=caravan)]
 
 There it is. Add this to your code and use the normal Harmony bootstrapping as described in the [Harmony Wiki](https://github.com/pardeike/Harmony/wiki) and you have just done your first Harmony Transpiler!

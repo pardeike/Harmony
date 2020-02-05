@@ -77,102 +77,14 @@ Where other patch libraries simply allow you to replace the original method, Har
 
 Original game code:
 
-```cs
-public class SomeGameClass
-{
-	private bool isRunning;
-	private int counter;
-
-	private int DoSomething()
-	{
-		if (isRunning)
-		{
-			counter++;
-			return counter * 10;
-		}
-	}
-}
-```
+[!code-csharp[example](../examples/intro_somegame.cs?name=example)]
 
 Patching with Harmony annotations:
 
-```cs
-// your code, most likely in your own dll
-
-using SomeGame;
-using HarmonyLib;
-
-public class MyPatcher
-{
-	// make sure DoPatching() is called at start either by
-	// the mod loader or by your injector
-
-	public static void DoPatching()
-	{
-		var harmony = new Harmony("com.example.patch");
-		harmony.PatchAll();
-	}
-}
-
-[HarmonyPatch(typeof(SomeGameClass))]
-[HarmonyPatch("DoSomething")]
-class Patch01
-{
-	static FieldRef<SomeGameClass,bool> isRunningRef =
-		AccessTools.FieldRefAccess<SomeGameClass, bool>("isRunning");
-
-	static bool Prefix(SomeGameClass __instance, ref int ___counter)
-	{
-		isRunningRef(__instance) = true;
-		if (___counter > 100)
-			return false;
-		___counter = 0;
-		return true;
-	}
-
-	static void Postfix(ref int __result)
-	{
-		__result *= 2;
-	}
-}
-```
+[!code-csharp[example](../examples/intro_annotations.cs?name=example)]
 
 Alternatively, manual patching with reflection:
 
-```cs
-// your code, most likely in your own dll
-
-using SomeGame;
-using HarmonyLib;
-
-public class MyPatcher
-{
-	// make sure DoPatching() is called at start either by
-	// the mod loader or by your injector
-
-	public static void DoPatching()
-	{
-		var harmony = new Harmony("com.example.patch");
-
-		//
-		var mOriginal = AccessTools.Method(typeof(SomeGameClass), "DoSomething");
-		var mPrefix = SymbolExtensions.GetMethodInfo(() => MyPrefix());
-		var mPostfix = SymbolExtensions.GetMethodInfo(() => MyPostfix());
-		// in general, add null checks here (new HarmonyMethod() does it for you too)
-
-		harmony.Patch(mOriginal, new HarmonyMethod(mPrefix), new HarmonyMethod(mPostfix));
-	}
-
-	public static void MyPrefix()
-	{
-		// ...
-	}
-
-	public static void MyPostfix()
-	{
-		// ...
-	}
-}
-```
+[!code-csharp[example](../examples/intro_manual.cs?name=example)]
 
 [note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
