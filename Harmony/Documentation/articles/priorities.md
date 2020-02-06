@@ -15,67 +15,19 @@ Example:
 
 Given the following method:
 
-```csharp
-class Foo
-{
-	static string Bar()
-	{
-		return "secret";
-	}
-}
-```
+[!code-csharp[example](../examples/priorities.cs?name=foo)]
 
 and **Plugin 1**
 
-```csharp
-var harmony = new Harmony("net.example.plugin1");
-harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-[HarmonyPatch(typeof(Foo))]
-[HarmonyPatch("Bar")]
-class MyPatch
-{
-	static void Postfix(ref result)
-	{
-		result = "new secret 1";
-	}
-}
-```
+[!code-csharp[example](../examples/priorities.cs?name=plugin1)]
 
 and **Plugin 2**
 
-```csharp
-var harmony = new Harmony("net.example.plugin2");
-harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-[HarmonyPatch(typeof(Foo))]
-[HarmonyPatch("Bar")]
-class MyPatch
-{
-	static void Postfix(ref result)
-	{
-		result = "new secret 2";
-	}
-}
-```
+[!code-csharp[example](../examples/priorities.cs?name=plugin2)]
 
 a call to `Foo.Bar()` would return "new secret 2" because both plugins register their Postfix with the same priority and so the second Postfix overrides the result of the first one. As an author of Plugin 1, you could rewrite your code to
 
-```csharp
-var harmony = new Harmony("net.example.plugin1");
-harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-[HarmonyPatch(typeof(Foo))]
-[HarmonyPatch("Bar")]
-class MyPatch
-{
-	[HarmonyAfter(new string[] { "net.example.plugin2" })]
-	static void Postfix(ref result)
-	{
-		result = "new secret 1";
-	}
-}
-```
+[!code-csharp[example](../examples/priorities.cs?name=plugin1b)]
 
 and would be executed after net.example.plugin2 which gives you (for a Postfix) the chance to change the result last. Alternatively, you could annotate with [HarmonyPriority(Priority.Low)] to come after plugin1.
 

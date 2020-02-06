@@ -88,28 +88,26 @@
 <p>To add Harmony manually to your Visual Studio project, you right-click on <code>References</code> in your solution explorer and choose <code>Manage NuGet Packages</code>, then search for &quot;Harmony Library&quot; and install it.</p>
 <h3 id="import">Import</h3>
 <p>Once you reference Harmony correctly, you should be able to import it by adding Harmony to your imports. That gives you code completion so you can discover the API:</p>
-<pre><code class="lang-csharp">using Harmony;
-</code></pre>
-<h2 id="creating-a-harmony-instance">Creating a Harmony instance</h2>
+<pre><code class="lang-csharp" name="example">using HarmonyLib;
+</code></pre><h2 id="creating-a-harmony-instance">Creating a Harmony instance</h2>
 <p>Most patch operations require a Harmony instance. To instantiate Harmony, you simply call</p>
-<pre><code class="lang-csharp">var harmony = new Harmony(&quot;com.company.project.product&quot;);
+<pre><code class="lang-csharp" name="example">var harmony = new Harmony(&quot;com.company.project.product&quot;);
 </code></pre>
 <p>The id should be in reverse domain notation and must be unique. In order to understand and react on existing patches of others, all patches in Harmony are bound to that id. This allows other authors to execute their patches before or after a specific patch by referring to this id.</p>
 <h3 id="debug-log">Debug Log</h3>
 <p>If you want to know more about the patching or the IL code Harmony produces, you can enable the debug log. Harmony offers and uses a class called <code>FileLog</code> that will create a log file on your systems Desktop called &quot;harmony.log.txt&quot;.</p>
 <p>You can set Harmony's global DEBUG flag to true, which will make Harmony log out many details that can help you while debugging your usage of Harmony:</p>
-<pre><code class="lang-csharp">Harmony.DEBUG = true;
+<pre><code class="lang-csharp" name="example">Harmony.DEBUG = true;
 </code></pre>
 <p>You can also use Harmony's file logger in your own code:</p>
-<pre><code class="lang-csharp">FileLog.Log(&quot;something&quot;);
+<pre><code class="lang-csharp" name="example">FileLog.Log(&quot;something&quot;);
 // or buffered:
 FileLog.LogBuffered(&quot;A&quot;);
 FileLog.LogBuffered(&quot;B&quot;);
 FileLog.FlushBuffer(); // don't forget to flush
-</code></pre>
-<h3 id="patching-using-annotations">Patching using annotations</h3>
+</code></pre><h3 id="patching-using-annotations">Patching using annotations</h3>
 <p>If you prefer annotations to organize your patches, you instruct Harmony to search for them by using <code>PatchAll()</code>:</p>
-<pre><code class="lang-csharp">var assembly = Assembly.GetExecutingAssembly();
+<pre><code class="lang-csharp" name="example">var assembly = Assembly.GetExecutingAssembly();
 harmony.PatchAll(assembly);
 
 // or implying current assembly:
@@ -118,7 +116,7 @@ harmony.PatchAll();
 <p>which will search the given assembly for all classes that are decorated with Harmony annotations. All patches are registered automatically and Harmony will do the rest.</p>
 <h3 id="manual-patching">Manual patching</h3>
 <p>For more control, you use <code>Patch()</code>. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to <code>Patch()</code> to skip one type of patch):</p>
-<pre><code class="lang-csharp">// add null checks to the following lines, they are omitted for clarity
+<pre><code class="lang-csharp" name="example">// add null checks to the following lines, they are omitted for clarity
 var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
 var prefix = typeof(MyPatchClass1).GetMethod(&quot;SomeMethod&quot;);
 var postfix = typeof(MyPatchClass2).GetMethod(&quot;SomeMethod&quot;);
@@ -130,24 +128,24 @@ harmony.Patch(original, postfix: new HarmonyMethod(postfix));
 harmony.Patch(original, prefix: new HarmonyMethod(prefix), transpiler: new HarmonyMethod(transpiler));
 </code></pre>
 <p>The use of an extra HarmonyMethod is to allow for you to define extra properties like priority and such together with the method pointer. HarmonyMethod is the common class shared by manual and annotation patching.</p>
-<pre><code class="lang-csharp">var harmonyPostfix = new HarmonyMethod(postfix)
+<pre><code class="lang-csharp" name="example">var harmonyPostfix = new HarmonyMethod(postfix)
 {
-	priority = Priority.Low,
-	before = new[] { &quot;that.other.harmony.user&quot; }
+    priority = Priority.Low,
+    before = new[] { &quot;that.other.harmony.user&quot; }
 };
 </code></pre>
 <p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a <code>null</code> value which when passed to HarmonyMethod will throw an error. You can use standard <code>System.Reflection</code> to get the MethodInfo of the original and your HarmonyMethods. See the Utilities section for the various ways Harmony can make Reflection easier.</p>
 <h3 id="checking-for-existing-patches">Checking for existing patches</h3>
 <p>To get a list of all patched methods in the current appdomain (yours and others), call GetAllPatchedMethods:</p>
-<pre><code class="lang-csharp">var originalMethods = Harmony.GetAllPatchedMethods();
+<pre><code class="lang-csharp" name="example">var originalMethods = Harmony.GetAllPatchedMethods();
 foreach (var method in originalMethods) { }
 </code></pre>
 <p>If you are only interested in your own patched methods, use GetPatchedMethods:</p>
-<pre><code class="lang-csharp">var myOriginalMethods = harmony.GetPatchedMethods();
+<pre><code class="lang-csharp" name="example">var myOriginalMethods = harmony.GetPatchedMethods();
 foreach (var method in myOriginalMethods) { }
 </code></pre>
 <p>If you want to know more about all existing patches (yours or others) on a specific original method, you can call GetPatchInfo:</p>
-<pre><code class="lang-csharp">// get the MethodBase of the original
+<pre><code class="lang-csharp" name="example">// get the MethodBase of the original
 var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
 
 // retrieve all patches
@@ -160,41 +158,39 @@ FileLog.Log(&quot;all owners: &quot; + patches.Owners);
 // get info about all Prefixes/Postfixes/Transpilers
 foreach (var patch in patches.Prefixes)
 {
-	FileLog.Log(&quot;index: &quot; + patch.index);
-	FileLog.Log(&quot;owner: &quot; + patch.owner);
-	FileLog.Log(&quot;patch method: &quot; + patch.patch);
-	FileLog.Log(&quot;priority: &quot; + patch.priority);
-	FileLog.Log(&quot;before: &quot; + patch.before);
-	FileLog.Log(&quot;after: &quot; + patch.after);
+    FileLog.Log(&quot;index: &quot; + patch.index);
+    FileLog.Log(&quot;owner: &quot; + patch.owner);
+    FileLog.Log(&quot;patch method: &quot; + patch.PatchMethod);
+    FileLog.Log(&quot;priority: &quot; + patch.priority);
+    FileLog.Log(&quot;before: &quot; + patch.before);
+    FileLog.Log(&quot;after: &quot; + patch.after);
 }
 </code></pre>
 <p>Sometimes it is necessary to test if another mod is loaded. This is best done by resolving one of their types by name. However, if you want to know if a specific Harmony has applied any patches so far, you can use HasAnyPatches:</p>
-<pre><code class="lang-csharp">if(Harmony.HasAnyPatches(&quot;their.harmony.id&quot;)) { }
+<pre><code class="lang-csharp" name="example">if(Harmony.HasAnyPatches(&quot;their.harmony.id&quot;)) { }
 </code></pre>
 <p>Finally, to retrieve an overview of which assemblies use which version of Harmony you can use (based on actice patches only)</p>
-<pre><code class="lang-csharp">var dict = Harmony.VersionInfo(out var myVersion);
+<pre><code class="lang-csharp" name="example">var dict = Harmony.VersionInfo(out var myVersion);
 FileLog.Log(&quot;My version: &quot; + myVersion);
 foreach (var entry in dict)
 {
-	var id = entry.Key;
-	var version = entry.Value;
-	FileLog.Log(&quot;Mod &quot; + id + &quot; uses Harmony version &quot; + version);
+    var id = entry.Key;
+    var version = entry.Value;
+    FileLog.Log(&quot;Mod &quot; + id + &quot; uses Harmony version &quot; + version);
 }
-</code></pre>
-<h3 id="unpatching">Unpatching</h3>
+</code></pre><h3 id="unpatching">Unpatching</h3>
 <p>Once a method is patched, the original method is destroyed and all future version will all come from Harmony (using the original IL code). In that sense, you cannot <em>unpatch</em> a method. You can only patch it with zero patches.</p>
 <p>At any time, a change of patches to a method will replay all existing patches. <code>Unpatch()</code> is just a synonym of &quot;remove all patches and excute patching&quot;.</p>
 <p>You can unpatch every patch from an existing harmony instance or even all harmony patches all together:</p>
-<pre><code class="lang-csharp">// every patch on every method ever patched (including others patches):
+<pre><code class="lang-csharp" name="example">// every patch on every method ever patched (including others patches):
 var harmony = new Harmony(&quot;my.harmony.id&quot;);
 harmony.UnpatchAll();
 
 // only the patches that one specific Harmony instance did:
-var harmony = new Harmony(&quot;my.harmony.id&quot;);
 harmony.UnpatchAll(&quot;their.harmony.id&quot;);
 </code></pre>
 <p>Besides that, you can unpatch specific patches too:</p>
-<pre><code class="lang-csharp">var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
+<pre><code class="lang-csharp" name="example">var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
 
 // all prefixes on the original method:
 harmony.Unpatch(original, HarmonyPatchType.Prefix);
@@ -208,8 +204,7 @@ harmony.Unpatch(original, HarmonyPatchType.All, &quot;their.harmony.id&quot;);
 // removing a specific patch:
 var patch = typeof(TheClass).GetMethod(&quot;SomePrefix&quot;);
 harmony.Unpatch(original, patch);
-</code></pre>
-</article>
+</code></pre></article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

@@ -73,14 +73,16 @@
 <p>To simplify things, each original method you want to patch is usually represented by a &quot;patch class&quot;, that is, a class that has at least one harmony patch annotation <code>[HarmonyPatch]</code>.</p>
 <p>When you call harmony.<strong>PatchAll()</strong>, Harmony will search through all classes and methods inside the given assembly looking for specific Harmony annotations.</p>
 <p>A typical patch consists of a class with annotations that looks like this:</p>
-<pre><code class="lang-csharp">[HarmonyPatch(typeof(SomeTypeHere))]
+<pre><code class="lang-csharp" name="example">using HarmonyLib;
+
+[HarmonyPatch(typeof(SomeTypeHere))]
 [HarmonyPatch(&quot;SomeMethodName&quot;)]
 class MyPatches
 {
-	static void Postfix(...)
-	{
-		//...
-	}
+    static void Postfix(/*...*/)
+    {
+        //...
+    }
 }
 </code></pre>
 <p>This example annotates the class with enough information to identify the method to patch. Inside that class, you define a combination of <strong>Prefix</strong>, <strong>Postfix</strong>, <strong>Finalizer</strong> or <strong>Transpiler</strong> methods. Harmony will find them by their name and if you annotate those methods you can even have different names.</p>
@@ -178,63 +180,67 @@ class MyPatches
 </code></pre>
 <h4 id="patching-multiple-methods">Patching multiple methods</h4>
 <p>To simplify multiple patches while still using annotations, you can combine annotations with <code>TargetMethod()</code> and <code>TargetMethods()</code>:</p>
-<pre><code class="lang-csharp">[HarmonyPatch] // make sure Harmony inspects the class
-class MyPatches()
+<pre><code class="lang-csharp" name="example">[HarmonyPatch] // make sure Harmony inspects the class
+class MyPatches
 {
-	IEnumerable&lt;MethodBase&gt; TargetMethods()
-	{
-		return AccessTools.GetTypesFromAssembly(someAssembly)
-			.SelectMany(type =&gt; type.GetDeclaredMethods())
-			.Where(method =&gt; method.ReturnType != typeof(void) &amp;&amp; method.Name.StartsWith(&quot;Player&quot;))
-			.Cast&lt;MethodBase&gt;();
-	}
+    IEnumerable&lt;MethodBase&gt; TargetMethods()
+    {
+        return AccessTools.GetTypesFromAssembly(someAssembly)
+            .SelectMany(type =&gt; type.GetMethods())
+            .Where(method =&gt; method.ReturnType != typeof(void) &amp;&amp; method.Name.StartsWith(&quot;Player&quot;))
+            .Cast&lt;MethodBase&gt;();
+    }
 
-	// prefix all methods in someAssembly with a non-void return type and beginning with &quot;Player&quot;
-	static void Prefix(MethodBase __originalMethod)
-	{
-		// use __originalMethod to decide what to do
-	}
+    // prefix all methods in someAssembly with a non-void return type and beginning with &quot;Player&quot;
+    static void Prefix(MethodBase __originalMethod)
+    {
+        // use __originalMethod to decide what to do
+    }
 }
-</code></pre>
-<h3 id="combining-annotations">Combining annotations</h3>
+</code></pre><h3 id="combining-annotations">Combining annotations</h3>
 <p>The combination of those annotations defines the target method. Annotations are <strong>inherited</strong> from class to method so you can use <code>[HarmonyPatch(Type)]</code> on the class and <code>[HarmonyPatch(String)]</code> on one of its methods to combine both.</p>
-<pre><code class="lang-csharp">[HarmonyPatch(typeof(SomeType))]
+<pre><code class="lang-csharp" name="example">using HarmonyLib;
+
+[HarmonyPatch(typeof(SomeType))]
 class MyPatches1
 {
-	[HarmonyPatch(&quot;SomeMethod1&quot;)]
-	static void Postfix() { }
+    [HarmonyPostfix]
+    [HarmonyPatch(&quot;SomeMethod1&quot;)]
+    static void Postfix1() { }
 
-	[HarmonyPatch(&quot;SomeMethod2&quot;)]
-	static void Postfix() { }
+    [HarmonyPostfix]
+    [HarmonyPatch(&quot;SomeMethod2&quot;)]
+    static void Postfix2() { }
 }
 
 [HarmonyPatch(typeof(TypeA))]
 class MyPatches2
 {
-	[HarmonyPatch(&quot;SomeMethod1&quot;)]
-	static void Prefix() { }
+    [HarmonyPrefix]
+    [HarmonyPatch(&quot;SomeMethod1&quot;)]
+    static void Prefix1() { }
 
-	[HarmonyPatch(&quot;SomeMethod2&quot;)]
-	static void Prefix() { }
+    [HarmonyPrefix]
+    [HarmonyPatch(&quot;SomeMethod2&quot;)]
+    static void Prefix2() { }
 
-	[HarmonyPatch(typeof(TypeB), &quot;SomeMethod1&quot;)]
-	static void Postfix() { }
+    [HarmonyPatch(typeof(TypeB), &quot;SomeMethod1&quot;)]
+    static void Postfix() { }
 }
 
 [HarmonyPatch]
 class MyPatches3
 {
-	[HarmonyPatch(typeof(TypeA), &quot;SomeMethod1&quot;)]
-	static void Prefix() { }
+    [HarmonyPatch(typeof(TypeA), &quot;SomeMethod1&quot;)]
+    static void Prefix() { }
 
-	[HarmonyPatch(typeof(TypeB), &quot;SomeMethod2&quot;)]
-	static void Postfix() { }
+    [HarmonyPatch(typeof(TypeB), &quot;SomeMethod2&quot;)]
+    static void Postfix() { }
 
-	[HarmonyPatch(typeof(TypeC), &quot;SomeMethod3&quot;)]
-	static void Finalizer() { }
+    [HarmonyPatch(typeof(TypeC), &quot;SomeMethod3&quot;)]
+    static void Finalizer() { }
 }
-</code></pre>
-</article>
+</code></pre></article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

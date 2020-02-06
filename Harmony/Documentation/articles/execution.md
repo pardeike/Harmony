@@ -22,45 +22,7 @@ Prefix methods that return `void` and have no `ref` arguments are considered sid
 
 Exceptions thrown in a Prefix, a Postfix or in the modified Original method will not be caught by default and will reach the caller of the Original method. If you want to handle exceptions, you need to use Finalizer patches.
 
-```csharp
-
-// while patching, the method ModifiedOriginal is created by chaining
-// all transpilers. This happens only once when you patch, not during runtime
-//
-// var codes = GetCodeFromOriginal(originalMethod);
-// codes = Transpiler1(codes);
-// codes = Transpiler2(codes);
-// codes = Transpiler3(codes);
-// static ModifiedOriginal = GenerateDynamicMethod(codes);
-
-static R ReplacementMethod(T optionalThisArgument, ...arguments)
-{
-	R result = default;
-	bool run = true;
-
-	// Harmony separates all Prefix patches into those that change the
-	// original methods result/execution and those who have no side efects
-	// Lets call all prefixes with no side effect "SimplePrefix" and add
-	// a number to them that indicates their sort order after applying
-	// priorities to them:
-
-	SimplePrefix1(arguments);
-	if (run) run = Prefix2();
-	SimplePrefix3(arguments);
-	SimplePrefix4(arguments);
-	if (run) Prefix5(ref someArgument, ref result);
-	// ...
-
-	if (run) result = ModifiedOriginal(arguments);
-
-	Postfix1(ref result)
-	result = Postfix2(result, ...arguments)
-	Postfix3()
-	// ...
-
-	return result
-}
-```
+[!code-csharp[example](../examples/execution_without.cs?name=example)]
 
 ##### With Finalizer patches
 
@@ -68,67 +30,4 @@ Normally, Harmony does not introduce the overhead of try/catch to the replacemen
 
 For simplicity, Prefix and Postfix patches can be considered part of the Original and are not shown here:
 
-```csharp
-static R ReplacementMethod(T optionalThisArgument, ...arguments)
-{
-	R result = default;
-	bool finalized = false;
-	Exception ex = null;
-
-	// All this code is generated dynamically, which means that
-	// Harmony can build it depending on
-	//
-	// - if there are any finalizers (otherwise, skip try-catch)
-	//
-	// - re-throwing can be dynamic too depending on if at least
-	//   one finalizer returns a non-void result
-
-	try
-	{
-		result = Original(arguments);
-
-		// finalizers get all the arguments a prefix could get too
-		// plus one new one: "Exception __exception"
-		// they SHOULD NOT edit the passed exception but instead
-		// signal to Harmony that they change it by returning it
-
-		// here finalizers are called without try-catch so they are
-		// allowed to throw exceptions. note, that it is perfectly
-		// fine to get null passed into the exception argument
-
-		SimpleFinalizer(ref result);
-		ex = EditFinalizer(ex, ref result);
-		finalized = true;
-
-		if (ex != null) throw ex;
-		return result;
-	}
-	catch(Exception e)
-	{
-		ex = e;
-
-		// finalizers will get another chance here, so they are
-		// guaranteed to run even if their first invocation threw
-		// an exception
-
-		if (!finalized)
-		{
-			try { SimpleFinalizer(ref result); } catch { }
-			try { ex = EditFinalizer(ex, ref result); } catch { }
-		}
-
-		// alternative 1: all finalizers are returning void
-		throw;
-
-		// alternative 2: at least one non-void finalizer
-		if (ex != null) throw ex;
-
-		return result;
-	}
-}
-
-// given the following signatures:
-public static String Original() { return "original"; }
-public static void SimpleFinalizer(ref string result) { }
-public static Exception EditFinalizer(Exception ex, ref string result) { return ex; }
-```
+[!code-csharp[example](../examples/execution_with.cs?name=example)]

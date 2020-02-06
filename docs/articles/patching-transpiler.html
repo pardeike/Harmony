@@ -84,24 +84,24 @@ ILGenerator generator // [OPTIONAL]
 MethodBase original // [OPTIONAL]
 </code></pre>
 <p>A typical transpiler looks like this:</p>
-<pre><code class="lang-csharp">static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), &quot;someField&quot;);
+<pre><code class="lang-csharp" name="example">static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), &quot;someField&quot;);
 static MethodInfo m_MyExtraMethod = SymbolExtensions.GetMethodInfo(() =&gt; Tools.MyExtraMethod());
 
 // looks for STDFLD someField and inserts CALL MyExtraMethod before it
 static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
 {
-	var found = false;
-	foreach (var instruction in instructions)
-	{
-		if (instruction.opcode == OpCodes.Stfld &amp;&amp; instruction.operand == f_someField)
-		{
-			yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
-			found = true;
-		}
-		yield return instruction;
-	}
-	if (found == false)
-		ReportError(&quot;Cannot find &lt;Stdfld someField&gt; in OriginalType.OriginalMethod&quot;);
+    var found = false;
+    foreach (var instruction in instructions)
+    {
+        if (instruction.opcode == OpCodes.Stfld &amp;&amp; instruction.operand == f_someField)
+        {
+            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+            found = true;
+        }
+        yield return instruction;
+    }
+    if (found == false)
+        ReportError(&quot;Cannot find &lt;Stdfld someField&gt; in OriginalType.OriginalMethod&quot;);
 }
 </code></pre>
 <p>A transpiler is executed only once before the original is run. It can therefore not have access to any runtime state. Harmony will run it once when you patch the method and <em>again</em> every time someone else adds a transpiler for the same methods. Transpilers are chained to produce the final output.</p>
@@ -258,57 +258,57 @@ IL_00ac: ...codes...
 <p>Here, we have a few choices again. The simplest way would be to count the opcodes from the start of the method and just when the count indicates we are at 0077 (those are not the number of opcodes but the actual byte count that operation starts). A better approach is to find a nice pattern and in fact, we have it. If you look at just the RET codes, you will see that they divide the whole code into sections. We could look for a section containing a call to get_MassUsage() and then remove it from the code. Let's do that.</p>
 <p><strong>11) The execution</strong></p>
 <p>Strategy: <em>Search for RET codes. For every code found, search until the next RET and look for the usage of the string &quot;TooBigCaravanMassUsage&quot;. If found, continue to find the following RET and remove everything from right after the first RET to including the second RET</em>:</p>
-<pre><code class="lang-csharp">[HarmonyPatch(typeof(Dialog_FormCaravan))]
+<pre><code class="lang-csharp" name="example">[HarmonyPatch(typeof(Dialog_FormCaravan))]
 [HarmonyPatch(&quot;CheckForErrors&quot;)]
 public static class Dialog_FormCaravan_CheckForErrors_Patch
 {
-	static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
-	{
-		var foundMassUsageMethod = false;
-		int startIndex = -1, endIndex = -1;
+    static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+    {
+        var foundMassUsageMethod = false;
+        int startIndex = -1, endIndex = -1;
 
-		var codes = new List&lt;CodeInstruction&gt;(instructions);
-		for (int i = 0; i &lt; codes.Count; i++)
-		{
-			if (codes[i].opcode == OpCodes.Ret)
-			{
-				if (foundMassUsageMethod)
-				{
-					Log.Error(&quot;END &quot; + i);
+        var codes = new List&lt;CodeInstruction&gt;(instructions);
+        for (int i = 0; i &lt; codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Ret)
+            {
+                if (foundMassUsageMethod)
+                {
+                    Log.Error(&quot;END &quot; + i);
 
-					endIndex = i; // include current 'ret'
-					break;
-				}
-				else
-				{
-					Log.Error(&quot;START &quot; + (i + 1));
+                    endIndex = i; // include current 'ret'
+                    break;
+                }
+                else
+                {
+                    Log.Error(&quot;START &quot; + (i + 1));
 
-					startIndex = i + 1; // exclude current 'ret'
+                    startIndex = i + 1; // exclude current 'ret'
 
-					for (int j = startIndex; j &lt; codes.Count; j++)
-					{
-						if (codes[j].opcode == OpCodes.Ret)
-							break;
-						var strOperand = codes[j].operand as String;
-						if (strOperand == &quot;TooBigCaravanMassUsage&quot;)
-						{
-							foundMassUsageMethod = true;
-							break;
-						}
-					}
-				}
-			}
-		}
-		if (startIndex &gt; -1 &amp;&amp; endIndex &gt; -1)
-		{
-			// we cannot remove the first code of our range since some jump actually jumps to
-			// it, so we replace it with a no-op instead of fixing that jump (easier).
-			codes[startIndex].opcode = OpCodes.Nop;
-			codes.RemoveRange(startIndex + 1, endIndex - startIndex - 1);
-		}
+                    for (int j = startIndex; j &lt; codes.Count; j++)
+                    {
+                        if (codes[j].opcode == OpCodes.Ret)
+                            break;
+                        var strOperand = codes[j].operand as String;
+                        if (strOperand == &quot;TooBigCaravanMassUsage&quot;)
+                        {
+                            foundMassUsageMethod = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (startIndex &gt; -1 &amp;&amp; endIndex &gt; -1)
+        {
+            // we cannot remove the first code of our range since some jump actually jumps to
+            // it, so we replace it with a no-op instead of fixing that jump (easier).
+            codes[startIndex].opcode = OpCodes.Nop;
+            codes.RemoveRange(startIndex + 1, endIndex - startIndex - 1);
+        }
 
-		return codes.AsEnumerable();
-	}
+        return codes.AsEnumerable();
+    }
 }
 </code></pre>
 <p>There it is. Add this to your code and use the normal Harmony bootstrapping as described in the <a href="https://github.com/pardeike/Harmony/wiki">Harmony Wiki</a> and you have just done your first Harmony Transpiler!</p>

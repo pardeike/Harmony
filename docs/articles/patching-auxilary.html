@@ -100,14 +100,13 @@ static IEnumerable&lt;MethodBase&gt; CalculateMethods()
 static IEnumerable&lt;MethodBase&gt; CalculateMethods(Harmony instance)
 </code></pre>
 <p>A typical implementation would <code>yield</code> the results like this:</p>
-<pre><code class="lang-csharp">static IEnumerable&lt;MethodBase&gt; TargetMethods()
+<pre><code class="lang-csharp" name="example">static IEnumerable&lt;MethodBase&gt; TargetMethods()
 {
-	yield return AccessTools.Method(typeof(Foo), &quot;Method1&quot;);
-	yield return AccessTools.Method(typeof(Bar), &quot;Method2&quot;);
-	// you could also iterate using reflections over many methods
+    yield return AccessTools.Method(typeof(Foo), &quot;Method1&quot;);
+    yield return AccessTools.Method(typeof(Bar), &quot;Method2&quot;);
+    // you could also iterate using reflections over many methods
 }
-</code></pre>
-<h3 id="cleanup">Cleanup</h3>
+</code></pre><h3 id="cleanup">Cleanup</h3>
 <p>After patching, Harmony gives you a chance to clean up your state. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static void Cleanup()
 static void Cleanup(Harmony instance)

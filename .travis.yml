@@ -39,6 +39,7 @@ install:
 script:
   - dotnet build --framework ${netframework}
   - dotnet test HarmonyTests --framework ${netframework}
+  - Harmony/Documentation/examples/test-all.sh
 
 jobs:
   exclude:

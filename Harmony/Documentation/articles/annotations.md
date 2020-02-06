@@ -8,17 +8,7 @@ When you call harmony.**PatchAll()**, Harmony will search through all classes an
 
 A typical patch consists of a class with annotations that looks like this:
 
-```csharp
-[HarmonyPatch(typeof(SomeTypeHere))]
-[HarmonyPatch("SomeMethodName")]
-class MyPatches
-{
-	static void Postfix(...)
-	{
-		//...
-	}
-}
-```
+[!code-csharp[example](../examples/annotations_basic.cs?name=example)]
 
 This example annotates the class with enough information to identify the method to patch. Inside that class, you define a combination of **Prefix**, **Postfix**, **Finalizer** or **Transpiler** methods. Harmony will find them by their name and if you annotate those methods you can even have different names.
 
@@ -167,64 +157,10 @@ To patch methods with generic signatures, you need to patch specific versions of
 
 To simplify multiple patches while still using annotations, you can combine annotations with `TargetMethod()` and `TargetMethods()`:
 
-```csharp
-[HarmonyPatch] // make sure Harmony inspects the class
-class MyPatches()
-{
-	IEnumerable<MethodBase> TargetMethods()
-	{
-		return AccessTools.GetTypesFromAssembly(someAssembly)
-			.SelectMany(type => type.GetDeclaredMethods())
-			.Where(method => method.ReturnType != typeof(void) && method.Name.StartsWith("Player"))
-			.Cast<MethodBase>();
-	}
-
-	// prefix all methods in someAssembly with a non-void return type and beginning with "Player"
-	static void Prefix(MethodBase __originalMethod)
-	{
-		// use __originalMethod to decide what to do
-	}
-}
-```
+[!code-csharp[example](../examples/annotations_multiple.cs?name=example)]
 
 ### Combining annotations
 
 The combination of those annotations defines the target method. Annotations are **inherited** from class to method so you can use `[HarmonyPatch(Type)]` on the class and `[HarmonyPatch(String)]` on one of its methods to combine both.
 
-```csharp
-[HarmonyPatch(typeof(SomeType))]
-class MyPatches1
-{
-	[HarmonyPatch("SomeMethod1")]
-	static void Postfix() { }
-
-	[HarmonyPatch("SomeMethod2")]
-	static void Postfix() { }
-}
-
-[HarmonyPatch(typeof(TypeA))]
-class MyPatches2
-{
-	[HarmonyPatch("SomeMethod1")]
-	static void Prefix() { }
-
-	[HarmonyPatch("SomeMethod2")]
-	static void Prefix() { }
-
-	[HarmonyPatch(typeof(TypeB), "SomeMethod1")]
-	static void Postfix() { }
-}
-
-[HarmonyPatch]
-class MyPatches3
-{
-	[HarmonyPatch(typeof(TypeA), "SomeMethod1")]
-	static void Prefix() { }
-
-	[HarmonyPatch(typeof(TypeB), "SomeMethod2")]
-	static void Postfix() { }
-
-	[HarmonyPatch(typeof(TypeC), "SomeMethod3")]
-	static void Finalizer() { }
-}
-```
+[!code-csharp[example](../examples/annotations_combining.cs?name=example)]

@@ -80,7 +80,7 @@
 <p>To skip the Original, a prefix can return <code>false</code> to skip the Original and all other Prefix methods that come after it and that have some effect on the Original.</p>
 <p>Prefix methods that return <code>void</code> and have no <code>ref</code> arguments are considered side effect free and are always run, regardless of their position. Postfix methods are always executed.</p>
 <p>Exceptions thrown in a Prefix, a Postfix or in the modified Original method will not be caught by default and will reach the caller of the Original method. If you want to handle exceptions, you need to use Finalizer patches.</p>
-<pre><code class="lang-csharp">
+<pre><code class="lang-csharp" name="example">
 // while patching, the method ModifiedOriginal is created by chaining
 // all transpilers. This happens only once when you patch, not during runtime
 //
@@ -90,101 +90,104 @@
 // codes = Transpiler3(codes);
 // static ModifiedOriginal = GenerateDynamicMethod(codes);
 
-static R ReplacementMethod(T optionalThisArgument, ...arguments)
+static R ReplacementMethod(T optionalThisArgument, params object[] arguments)
 {
-	R result = default;
-	bool run = true;
+    R result = default;
+    bool run = true;
 
-	// Harmony separates all Prefix patches into those that change the
-	// original methods result/execution and those who have no side efects
-	// Lets call all prefixes with no side effect &quot;SimplePrefix&quot; and add
-	// a number to them that indicates their sort order after applying
-	// priorities to them:
+    // Harmony separates all Prefix patches into those that change the
+    // original methods result/execution and those who have no side efects
+    // Lets call all prefixes with no side effect &quot;SimplePrefix&quot; and add
+    // a number to them that indicates their sort order after applying
+    // priorities to them:
 
-	SimplePrefix1(arguments);
-	if (run) run = Prefix2();
-	SimplePrefix3(arguments);
-	SimplePrefix4(arguments);
-	if (run) Prefix5(ref someArgument, ref result);
-	// ...
+    SimplePrefix1(arguments);
+    if (run) run = Prefix2();
+    SimplePrefix3(arguments);
+    SimplePrefix4(arguments);
+    if (run) Prefix5(ref someArgument, ref result);
+    // ...
 
-	if (run) result = ModifiedOriginal(arguments);
+    if (run) result = ModifiedOriginal(arguments);
 
-	Postfix1(ref result)
-	result = Postfix2(result, ...arguments)
-	Postfix3()
-	// ...
+    Postfix1(ref result);
+    result = Postfix2(result, arguments);
+    Postfix3();
+    // ...
 
-	return result
+    return result;
 }
-</code></pre>
-<h5 id="with-finalizer-patches">With Finalizer patches</h5>
+</code></pre><h5 id="with-finalizer-patches">With Finalizer patches</h5>
 <p>Normally, Harmony does not introduce the overhead of try/catch to the replacement method. When you start adding Finalizer patches the overall logic becomes a lot more complicated which is illustrated in the following pseudeo code example.</p>
 <p>For simplicity, Prefix and Postfix patches can be considered part of the Original and are not shown here:</p>
-<pre><code class="lang-csharp">static R ReplacementMethod(T optionalThisArgument, ...arguments)
+<pre><code class="lang-csharp" name="example">static R ReplacementMethod(T optionalThisArgument /*, ... arguments ... */ )
 {
-	R result = default;
-	bool finalized = false;
-	Exception ex = null;
+    R result = default;
+    bool finalized = false;
+    Exception ex = null;
 
-	// All this code is generated dynamically, which means that
-	// Harmony can build it depending on
-	//
-	// - if there are any finalizers (otherwise, skip try-catch)
-	//
-	// - re-throwing can be dynamic too depending on if at least
-	//   one finalizer returns a non-void result
+    // All this code is generated dynamically, which means that
+    // Harmony can build it depending on
+    //
+    // - if there are any finalizers (otherwise, skip try-catch)
+    //
+    // - re-throwing can be dynamic too depending on if at least
+    //   one finalizer returns a non-void result
 
-	try
-	{
-		result = Original(arguments);
+    try
+    {
+        result = Original(/* ... arguments ... */);
 
-		// finalizers get all the arguments a prefix could get too
-		// plus one new one: &quot;Exception __exception&quot;
-		// they SHOULD NOT edit the passed exception but instead
-		// signal to Harmony that they change it by returning it
+        // finalizers get all the arguments a prefix could get too
+        // plus one new one: &quot;Exception __exception&quot;
+        // they SHOULD NOT edit the passed exception but instead
+        // signal to Harmony that they change it by returning it
 
-		// here finalizers are called without try-catch so they are
-		// allowed to throw exceptions. note, that it is perfectly
-		// fine to get null passed into the exception argument
+        // here finalizers are called without try-catch so they are
+        // allowed to throw exceptions. note, that it is perfectly
+        // fine to get null passed into the exception argument
 
-		SimpleFinalizer(ref result);
-		ex = EditFinalizer(ex, ref result);
-		finalized = true;
+        SimpleFinalizer(ref result);
+        ex = EditFinalizer(ex, ref result);
+        finalized = true;
 
-		if (ex != null) throw ex;
-		return result;
-	}
-	catch(Exception e)
-	{
-		ex = e;
+        if (ex != null) throw ex;
+        return result;
+    }
+    catch(Exception e)
+    {
+        ex = e;
 
-		// finalizers will get another chance here, so they are
-		// guaranteed to run even if their first invocation threw
-		// an exception
+        // finalizers will get another chance here, so they are
+        // guaranteed to run even if their first invocation threw
+        // an exception
 
-		if (!finalized)
-		{
-			try { SimpleFinalizer(ref result); } catch { }
-			try { ex = EditFinalizer(ex, ref result); } catch { }
-		}
+        if (!finalized)
+        {
+            try { SimpleFinalizer(ref result); } catch { }
+            try { ex = EditFinalizer(ex, ref result); } catch { }
+        }
 
-		// alternative 1: all finalizers are returning void
-		throw;
+        if (allVoid)
+        {
+            // alternative 1: all finalizers are returning void
+            throw;
+        }
+        else
+        {
+             // alternative 2: at least one non-void finalizer
+            if (ex != null) throw ex;
+        }
 
-		// alternative 2: at least one non-void finalizer
-		if (ex != null) throw ex;
-
-		return result;
-	}
+        return result;
+    }
 }
 
 // given the following signatures:
-public static String Original() { return &quot;original&quot;; }
-public static void SimpleFinalizer(ref string result) { }
-public static Exception EditFinalizer(Exception ex, ref string result) { return ex; }
-</code></pre>
-</article>
+public static R Original() { return new R(&quot;original&quot;); }
+public static void SimpleFinalizer(ref R result) { }
+public static Exception EditFinalizer(Exception ex, ref R result) { return ex; }
+</code></pre></article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

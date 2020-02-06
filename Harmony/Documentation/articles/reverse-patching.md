@@ -20,37 +20,7 @@ The method signature must match the original. This includes static/non static bu
 
 ![note] While it is tempting to define a stub as an instance method, one has to be very careful with that. The IL code that is copied from the original expects `this` to be pointing to the original class type. This obviously won't work if your instance stub is in a class that is not the original.
 
-```csharp
-private class OriginalCode
-{
-	private void Test(int counter, string name)
-	{
-		// ...
-	}
-}
-
-[HarmonyPatch]
-public class Patch
-{
-	[HarmonyReversePatch]
-	[HarmonyPatch(typeof(OriginalCode), "Test")]
-	public static void MyTest(object instance, int counter, ref string name)
-	{
-		// its a stub so it has no initial content
-		throw new NotImplementedException("It's a stub");
-	}
-}
-
-class Main
-{
-	void Test()
-	{
-		// here we call OriginalCode.Test()
-		var originalInstance = ...
-		Patch.MyTest(originalInstance, 100, "hello");
-	}
-}
-```
+[!code-csharp[example](../examples/reverse-patching.cs?name=example)]
 
 ### Types of reverse patches
 
@@ -76,54 +46,6 @@ Doing this requires knowledge of how CIL works and how you extract part of IL so
 
 To define a reverse patch transpiler, you simply put a transpiler **into** your stub:
 
-```csharp
-private class OriginalClass
-{
-	private string SpecialCalculation(string original, int n)
-	{
-		var parts = original.Split('-').Reverse().ToArray();
-		var str = string.Join("", parts) + n;
-		return str + "Prolog";
-	}
-}
-
-[HarmonyPatch]
-public class Patch
-{
-	// When reverse patched, StringOperation will contain all the
-	// code from the original including the Join() but not the +n
-	//
-	// Basically
-	// var parts = original.Split('-').Reverse().ToArray();
-	// return string.Join("", parts)
-	//
-	[HarmonyReversePatch]
-	[HarmonyPatch(typeof(OriginalClass), "SpecialCalculation")]
-	public static string StringOperation(string original)
-	{
-		// This inner transpiler will be applied to the original and
-		// the result will replace this method
-		//
-		// That will allow this method to have a different signature
-		// than the original and it must match the transpiled result
-		//
-		IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
-			var list = Transpilers.Manipulator(instructions,
-				item => item.opcode == OpCodes.Ldarg_1,
-				item => item.opcode = OpCodes.Ldarg_0
-			).ToList();
-			var mJoin = SymbolExtensions.GetMethodInfo(() => string.Join(null, null));
-			var idx = list.FindIndex(item => item.opcode == OpCodes.Call && item.operand as MethodInfo == mJoin);
-			list.RemoveRange(idx + 1, list.Count - (idx + 1));
-			return list.AsEnumerable();
-		}
-
-		// make compiler happy
-		_ = Transpiler(null);
-		return original;
-	}
-}
-```
+[!code-csharp[example](../examples/reverse-patching.cs?name=transpiler)]
 
 [note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
