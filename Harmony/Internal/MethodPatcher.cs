@@ -394,13 +394,14 @@ namespace HarmonyLib
 					FieldInfo fieldInfo;
 					if (fieldName.All(char.IsDigit))
 					{
+						// field access by index only works for declared fields
 						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, int.Parse(fieldName));
 						if (fieldInfo == null)
 							throw new ArgumentException($"No field found at given index in class {original.DeclaringType.FullName}", fieldName);
 					}
 					else
 					{
-						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, fieldName);
+						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
 						if (fieldInfo == null)
 							throw new ArgumentException($"No such field defined in class {original.DeclaringType.FullName}", fieldName);
 					}

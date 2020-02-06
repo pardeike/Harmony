@@ -798,6 +798,37 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class InjectFieldBase
+	{
+		internal string testField;
+	}
+
+	public class InjectFieldSubClass : InjectFieldBase
+	{
+		public string TestValue => testField;
+
+		public void Method(string val)
+		{
+			try
+			{
+				testField = val;
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(InjectFieldSubClass), nameof(InjectFieldSubClass.Method))]
+	public class InjectFieldSubClass_Patch
+	{
+		public static void Postfix(ref string ___testField)
+		{
+			___testField = "patched";
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

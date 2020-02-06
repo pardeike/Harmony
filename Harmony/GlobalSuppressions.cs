@@ -8,3 +8,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:HarmonyLib.ReversePatcher.Patch(HarmonyLib.HarmonyReversePatchType)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "<Pending>", Scope = "type", Target = "~T:HarmonyLib.Patch")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "<Pending>", Scope = "type", Target = "~T:HarmonyLib.InlineSignature.ModifierType")]
