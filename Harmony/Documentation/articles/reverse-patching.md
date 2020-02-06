@@ -25,9 +25,10 @@ The method signature must match the original. This includes static/non static bu
 ### Types of reverse patches
 
 The HarmonyReversePatch attribute comes in two alternatives:
-
-- `[HarmonyReversePatch(HarmonyReversePatchType.Original)]`
-- `[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]`
+```cs
+[HarmonyReversePatch(HarmonyReversePatchType.Original)]
+[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+```
 
 The default is `Original` so you can simply write `[HarmonyReversePatch]`.
 
