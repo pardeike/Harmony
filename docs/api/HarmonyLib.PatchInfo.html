@@ -252,23 +252,56 @@ public class PatchInfo</code></pre>
       </tr>
     </tbody>
   </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_Debugging.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.Debugging%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L107">View Source</a>
+  </span>
+  <a id="HarmonyLib_PatchInfo_Debugging_" data-uid="HarmonyLib.PatchInfo.Debugging*"></a>
+  <h4 id="HarmonyLib_PatchInfo_Debugging" data-uid="HarmonyLib.PatchInfo.Debugging">Debugging</h4>
+  <div class="markdown level1 summary"><p>Returns if any of the patches wants debugging turned on</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Debugging { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddFinalizer_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddFinalizer_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L194">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L201">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_AddFinalizer_" data-uid="HarmonyLib.PatchInfo.AddFinalizer*"></a>
-  <h4 id="HarmonyLib_PatchInfo_AddFinalizer_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___" data-uid="HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])">AddFinalizer(MethodInfo, String, Int32, String[], String[])</h4>
+  <h4 id="HarmonyLib_PatchInfo_AddFinalizer_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_" data-uid="HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)">AddFinalizer(MethodInfo, String, Int32, String[], String[], Boolean)</h4>
   <div class="markdown level1 summary"><p>Adds a finalizer</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after)</code></pre>
+    <pre><code class="lang-csharp hljs">public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -301,32 +334,38 @@ public class PatchInfo</code></pre>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">before</span></td>
-        <td><p>The before parameter</p>
+        <td><p>The before order</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">after</span></td>
-        <td><p>The after parameter</p>
+        <td><p>The after order</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">debug</span></td>
+        <td><p>The debug flag</p>
 </td>
       </tr>
     </tbody>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddPostfix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddPostfix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L140">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L145">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_AddPostfix_" data-uid="HarmonyLib.PatchInfo.AddPostfix*"></a>
-  <h4 id="HarmonyLib_PatchInfo_AddPostfix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___" data-uid="HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])">AddPostfix(MethodInfo, String, Int32, String[], String[])</h4>
+  <h4 id="HarmonyLib_PatchInfo_AddPostfix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_" data-uid="HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)">AddPostfix(MethodInfo, String, Int32, String[], String[], Boolean)</h4>
   <div class="markdown level1 summary"><p>Adds a postfix</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after)</code></pre>
+    <pre><code class="lang-csharp hljs">public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -359,32 +398,38 @@ public class PatchInfo</code></pre>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">before</span></td>
-        <td><p>The before parameter</p>
+        <td><p>The before order</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">after</span></td>
-        <td><p>The after parameter</p>
+        <td><p>The after order</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">debug</span></td>
+        <td><p>The debug flag</p>
 </td>
       </tr>
     </tbody>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddPrefix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddPrefix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L113">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L117">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_AddPrefix_" data-uid="HarmonyLib.PatchInfo.AddPrefix*"></a>
-  <h4 id="HarmonyLib_PatchInfo_AddPrefix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___" data-uid="HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])">AddPrefix(MethodInfo, String, Int32, String[], String[])</h4>
+  <h4 id="HarmonyLib_PatchInfo_AddPrefix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_" data-uid="HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)">AddPrefix(MethodInfo, String, Int32, String[], String[], Boolean)</h4>
   <div class="markdown level1 summary"><p>Adds a prefix</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after)</code></pre>
+    <pre><code class="lang-csharp hljs">public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -417,32 +462,38 @@ public class PatchInfo</code></pre>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">before</span></td>
-        <td><p>The before parameter</p>
+        <td><p>The before order</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">after</span></td>
-        <td><p>The after parameter</p>
+        <td><p>The after order</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">debug</span></td>
+        <td><p>The debug flag</p>
 </td>
       </tr>
     </tbody>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddTranspiler_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_AddTranspiler_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo%2CSystem.String%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.String%5B%5D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L167">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L173">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_AddTranspiler_" data-uid="HarmonyLib.PatchInfo.AddTranspiler*"></a>
-  <h4 id="HarmonyLib_PatchInfo_AddTranspiler_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___" data-uid="HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])">AddTranspiler(MethodInfo, String, Int32, String[], String[])</h4>
+  <h4 id="HarmonyLib_PatchInfo_AddTranspiler_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_" data-uid="HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)">AddTranspiler(MethodInfo, String, Int32, String[], String[], Boolean)</h4>
   <div class="markdown level1 summary"><p>Adds a transpiler</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after)</code></pre>
+    <pre><code class="lang-csharp hljs">public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -475,13 +526,19 @@ public class PatchInfo</code></pre>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">before</span></td>
-        <td><p>The before parameter</p>
+        <td><p>The before order</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span>[]</td>
         <td><span class="parametername">after</span></td>
-        <td><p>The after parameter</p>
+        <td><p>The after order</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">debug</span></td>
+        <td><p>The debug flag</p>
 </td>
       </tr>
     </tbody>
@@ -491,7 +548,7 @@ public class PatchInfo</code></pre>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_RemoveFinalizer_System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.RemoveFinalizer(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L204">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L211">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_RemoveFinalizer_" data-uid="HarmonyLib.PatchInfo.RemoveFinalizer*"></a>
   <h4 id="HarmonyLib_PatchInfo_RemoveFinalizer_System_String_" data-uid="HarmonyLib.PatchInfo.RemoveFinalizer(System.String)">RemoveFinalizer(String)</h4>
@@ -525,7 +582,7 @@ public class PatchInfo</code></pre>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_RemovePatch_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.RemovePatch(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L217">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L224">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_RemovePatch_" data-uid="HarmonyLib.PatchInfo.RemovePatch*"></a>
   <h4 id="HarmonyLib_PatchInfo_RemovePatch_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchInfo.RemovePatch(System.Reflection.MethodInfo)">RemovePatch(MethodInfo)</h4>
@@ -559,7 +616,7 @@ public class PatchInfo</code></pre>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_RemovePostfix_System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.RemovePostfix(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L150">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L155">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_RemovePostfix_" data-uid="HarmonyLib.PatchInfo.RemovePostfix*"></a>
   <h4 id="HarmonyLib_PatchInfo_RemovePostfix_System_String_" data-uid="HarmonyLib.PatchInfo.RemovePostfix(System.String)">RemovePostfix(String)</h4>
@@ -593,7 +650,7 @@ public class PatchInfo</code></pre>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_RemovePrefix_System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.RemovePrefix(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L123">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L127">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_RemovePrefix_" data-uid="HarmonyLib.PatchInfo.RemovePrefix*"></a>
   <h4 id="HarmonyLib_PatchInfo_RemovePrefix_System_String_" data-uid="HarmonyLib.PatchInfo.RemovePrefix(System.String)">RemovePrefix(String)</h4>
@@ -627,7 +684,7 @@ public class PatchInfo</code></pre>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchInfo_RemoveTranspiler_System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchInfo.RemoveTranspiler(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L177">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patch.cs/#L183">View Source</a>
   </span>
   <a id="HarmonyLib_PatchInfo_RemoveTranspiler_" data-uid="HarmonyLib.PatchInfo.RemoveTranspiler*"></a>
   <h4 id="HarmonyLib_PatchInfo_RemoveTranspiler_System_String_" data-uid="HarmonyLib.PatchInfo.RemoveTranspiler(System.String)">RemoveTranspiler(String)</h4>

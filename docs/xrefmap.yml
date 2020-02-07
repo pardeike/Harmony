@@ -2559,6 +2559,25 @@ references:
   commentId: T:HarmonyLib.HarmonyCleanup
   fullName: HarmonyLib.HarmonyCleanup
   nameWithType: HarmonyCleanup
+- uid: HarmonyLib.HarmonyDebug
+  name: HarmonyDebug
+  href: api/HarmonyLib.HarmonyDebug.html
+  commentId: T:HarmonyLib.HarmonyDebug
+  fullName: HarmonyLib.HarmonyDebug
+  nameWithType: HarmonyDebug
+- uid: HarmonyLib.HarmonyDebug.#ctor
+  name: HarmonyDebug()
+  href: api/HarmonyLib.HarmonyDebug.html#HarmonyLib_HarmonyDebug__ctor
+  commentId: M:HarmonyLib.HarmonyDebug.#ctor
+  fullName: HarmonyLib.HarmonyDebug.HarmonyDebug()
+  nameWithType: HarmonyDebug.HarmonyDebug()
+- uid: HarmonyLib.HarmonyDebug.#ctor*
+  name: HarmonyDebug
+  href: api/HarmonyLib.HarmonyDebug.html#HarmonyLib_HarmonyDebug__ctor_
+  commentId: Overload:HarmonyLib.HarmonyDebug.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyDebug.HarmonyDebug
+  nameWithType: HarmonyDebug.HarmonyDebug
 - uid: HarmonyLib.HarmonyFinalizer
   name: HarmonyFinalizer
   href: api/HarmonyLib.HarmonyFinalizer.html
@@ -2583,6 +2602,15 @@ references:
   commentId: M:HarmonyLib.HarmonyMethod.#ctor(System.Reflection.MethodInfo)
   fullName: HarmonyLib.HarmonyMethod.HarmonyMethod(System.Reflection.MethodInfo)
   nameWithType: HarmonyMethod.HarmonyMethod(MethodInfo)
+- uid: HarmonyLib.HarmonyMethod.#ctor(System.Reflection.MethodInfo,System.Int32,System.String[],System.String[],System.Nullable{System.Boolean})
+  name: HarmonyMethod(MethodInfo, Int32, String[], String[], Nullable<Boolean>)
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod__ctor_System_Reflection_MethodInfo_System_Int32_System_String___System_String___System_Nullable_System_Boolean__
+  commentId: M:HarmonyLib.HarmonyMethod.#ctor(System.Reflection.MethodInfo,System.Int32,System.String[],System.String[],System.Nullable{System.Boolean})
+  name.vb: HarmonyMethod(MethodInfo, Int32, String(), String(), Nullable(Of Boolean))
+  fullName: HarmonyLib.HarmonyMethod.HarmonyMethod(System.Reflection.MethodInfo, System.Int32, System.String[], System.String[], System.Nullable<System.Boolean>)
+  fullName.vb: HarmonyLib.HarmonyMethod.HarmonyMethod(System.Reflection.MethodInfo, System.Int32, System.String(), System.String(), System.Nullable(Of System.Boolean))
+  nameWithType: HarmonyMethod.HarmonyMethod(MethodInfo, Int32, String[], String[], Nullable<Boolean>)
+  nameWithType.vb: HarmonyMethod.HarmonyMethod(MethodInfo, Int32, String(), String(), Nullable(Of Boolean))
 - uid: HarmonyLib.HarmonyMethod.#ctor(System.Type,System.String,System.Type[])
   name: HarmonyMethod(Type, String, Type[])
   href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod__ctor_System_Type_System_String_System_Type___
@@ -2617,6 +2645,12 @@ references:
   commentId: F:HarmonyLib.HarmonyMethod.before
   fullName: HarmonyLib.HarmonyMethod.before
   nameWithType: HarmonyMethod.before
+- uid: HarmonyLib.HarmonyMethod.debug
+  name: debug
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_debug
+  commentId: F:HarmonyLib.HarmonyMethod.debug
+  fullName: HarmonyLib.HarmonyMethod.debug
+  nameWithType: HarmonyMethod.debug
 - uid: HarmonyLib.HarmonyMethod.declaringType
   name: declaringType
   href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_declaringType
@@ -3415,15 +3449,15 @@ references:
   commentId: T:HarmonyLib.Patch
   fullName: HarmonyLib.Patch
   nameWithType: Patch
-- uid: HarmonyLib.Patch.#ctor(System.Reflection.MethodInfo,System.Int32,System.String,System.Int32,System.String[],System.String[])
-  name: Patch(MethodInfo, Int32, String, Int32, String[], String[])
-  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch__ctor_System_Reflection_MethodInfo_System_Int32_System_String_System_Int32_System_String___System_String___
-  commentId: M:HarmonyLib.Patch.#ctor(System.Reflection.MethodInfo,System.Int32,System.String,System.Int32,System.String[],System.String[])
-  name.vb: Patch(MethodInfo, Int32, String, Int32, String(), String())
-  fullName: HarmonyLib.Patch.Patch(System.Reflection.MethodInfo, System.Int32, System.String, System.Int32, System.String[], System.String[])
-  fullName.vb: HarmonyLib.Patch.Patch(System.Reflection.MethodInfo, System.Int32, System.String, System.Int32, System.String(), System.String())
-  nameWithType: Patch.Patch(MethodInfo, Int32, String, Int32, String[], String[])
-  nameWithType.vb: Patch.Patch(MethodInfo, Int32, String, Int32, String(), String())
+- uid: HarmonyLib.Patch.#ctor(System.Reflection.MethodInfo,System.Int32,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name: Patch(MethodInfo, Int32, String, Int32, String[], String[], Boolean)
+  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch__ctor_System_Reflection_MethodInfo_System_Int32_System_String_System_Int32_System_String___System_String___System_Boolean_
+  commentId: M:HarmonyLib.Patch.#ctor(System.Reflection.MethodInfo,System.Int32,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name.vb: Patch(MethodInfo, Int32, String, Int32, String(), String(), Boolean)
+  fullName: HarmonyLib.Patch.Patch(System.Reflection.MethodInfo, System.Int32, System.String, System.Int32, System.String[], System.String[], System.Boolean)
+  fullName.vb: HarmonyLib.Patch.Patch(System.Reflection.MethodInfo, System.Int32, System.String, System.Int32, System.String(), System.String(), System.Boolean)
+  nameWithType: Patch.Patch(MethodInfo, Int32, String, Int32, String[], String[], Boolean)
+  nameWithType.vb: Patch.Patch(MethodInfo, Int32, String, Int32, String(), String(), Boolean)
 - uid: HarmonyLib.Patch.#ctor*
   name: Patch
   href: api/HarmonyLib.Patch.html#HarmonyLib_Patch__ctor_
@@ -3456,6 +3490,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Patch.CompareTo
   nameWithType: Patch.CompareTo
+- uid: HarmonyLib.Patch.debug
+  name: debug
+  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_debug
+  commentId: F:HarmonyLib.Patch.debug
+  fullName: HarmonyLib.Patch.debug
+  nameWithType: Patch.debug
 - uid: HarmonyLib.Patch.Equals(System.Object)
   name: Equals(Object)
   href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_Equals_System_Object_
@@ -3636,15 +3676,15 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchInfo.PatchInfo
   nameWithType: PatchInfo.PatchInfo
-- uid: HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name: AddFinalizer(MethodInfo, String, Int32, String[], String[])
-  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddFinalizer_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___
-  commentId: M:HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name.vb: AddFinalizer(MethodInfo, String, Int32, String(), String())
-  fullName: HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[])
-  fullName.vb: HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String())
-  nameWithType: PatchInfo.AddFinalizer(MethodInfo, String, Int32, String[], String[])
-  nameWithType.vb: PatchInfo.AddFinalizer(MethodInfo, String, Int32, String(), String())
+- uid: HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name: AddFinalizer(MethodInfo, String, Int32, String[], String[], Boolean)
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddFinalizer_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_
+  commentId: M:HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name.vb: AddFinalizer(MethodInfo, String, Int32, String(), String(), Boolean)
+  fullName: HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[], System.Boolean)
+  fullName.vb: HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String(), System.Boolean)
+  nameWithType: PatchInfo.AddFinalizer(MethodInfo, String, Int32, String[], String[], Boolean)
+  nameWithType.vb: PatchInfo.AddFinalizer(MethodInfo, String, Int32, String(), String(), Boolean)
 - uid: HarmonyLib.PatchInfo.AddFinalizer*
   name: AddFinalizer
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddFinalizer_
@@ -3652,15 +3692,15 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchInfo.AddFinalizer
   nameWithType: PatchInfo.AddFinalizer
-- uid: HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name: AddPostfix(MethodInfo, String, Int32, String[], String[])
-  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddPostfix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___
-  commentId: M:HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name.vb: AddPostfix(MethodInfo, String, Int32, String(), String())
-  fullName: HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[])
-  fullName.vb: HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String())
-  nameWithType: PatchInfo.AddPostfix(MethodInfo, String, Int32, String[], String[])
-  nameWithType.vb: PatchInfo.AddPostfix(MethodInfo, String, Int32, String(), String())
+- uid: HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name: AddPostfix(MethodInfo, String, Int32, String[], String[], Boolean)
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddPostfix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_
+  commentId: M:HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name.vb: AddPostfix(MethodInfo, String, Int32, String(), String(), Boolean)
+  fullName: HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[], System.Boolean)
+  fullName.vb: HarmonyLib.PatchInfo.AddPostfix(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String(), System.Boolean)
+  nameWithType: PatchInfo.AddPostfix(MethodInfo, String, Int32, String[], String[], Boolean)
+  nameWithType.vb: PatchInfo.AddPostfix(MethodInfo, String, Int32, String(), String(), Boolean)
 - uid: HarmonyLib.PatchInfo.AddPostfix*
   name: AddPostfix
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddPostfix_
@@ -3668,15 +3708,15 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchInfo.AddPostfix
   nameWithType: PatchInfo.AddPostfix
-- uid: HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name: AddPrefix(MethodInfo, String, Int32, String[], String[])
-  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddPrefix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___
-  commentId: M:HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name.vb: AddPrefix(MethodInfo, String, Int32, String(), String())
-  fullName: HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[])
-  fullName.vb: HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String())
-  nameWithType: PatchInfo.AddPrefix(MethodInfo, String, Int32, String[], String[])
-  nameWithType.vb: PatchInfo.AddPrefix(MethodInfo, String, Int32, String(), String())
+- uid: HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name: AddPrefix(MethodInfo, String, Int32, String[], String[], Boolean)
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddPrefix_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_
+  commentId: M:HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name.vb: AddPrefix(MethodInfo, String, Int32, String(), String(), Boolean)
+  fullName: HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[], System.Boolean)
+  fullName.vb: HarmonyLib.PatchInfo.AddPrefix(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String(), System.Boolean)
+  nameWithType: PatchInfo.AddPrefix(MethodInfo, String, Int32, String[], String[], Boolean)
+  nameWithType.vb: PatchInfo.AddPrefix(MethodInfo, String, Int32, String(), String(), Boolean)
 - uid: HarmonyLib.PatchInfo.AddPrefix*
   name: AddPrefix
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddPrefix_
@@ -3684,15 +3724,15 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchInfo.AddPrefix
   nameWithType: PatchInfo.AddPrefix
-- uid: HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name: AddTranspiler(MethodInfo, String, Int32, String[], String[])
-  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddTranspiler_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___
-  commentId: M:HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[])
-  name.vb: AddTranspiler(MethodInfo, String, Int32, String(), String())
-  fullName: HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[])
-  fullName.vb: HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String())
-  nameWithType: PatchInfo.AddTranspiler(MethodInfo, String, Int32, String[], String[])
-  nameWithType.vb: PatchInfo.AddTranspiler(MethodInfo, String, Int32, String(), String())
+- uid: HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name: AddTranspiler(MethodInfo, String, Int32, String[], String[], Boolean)
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddTranspiler_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_
+  commentId: M:HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
+  name.vb: AddTranspiler(MethodInfo, String, Int32, String(), String(), Boolean)
+  fullName: HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo, System.String, System.Int32, System.String[], System.String[], System.Boolean)
+  fullName.vb: HarmonyLib.PatchInfo.AddTranspiler(System.Reflection.MethodInfo, System.String, System.Int32, System.String(), System.String(), System.Boolean)
+  nameWithType: PatchInfo.AddTranspiler(MethodInfo, String, Int32, String[], String[], Boolean)
+  nameWithType.vb: PatchInfo.AddTranspiler(MethodInfo, String, Int32, String(), String(), Boolean)
 - uid: HarmonyLib.PatchInfo.AddTranspiler*
   name: AddTranspiler
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddTranspiler_
@@ -3700,6 +3740,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchInfo.AddTranspiler
   nameWithType: PatchInfo.AddTranspiler
+- uid: HarmonyLib.PatchInfo.Debugging
+  name: Debugging
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_Debugging
+  commentId: P:HarmonyLib.PatchInfo.Debugging
+  fullName: HarmonyLib.PatchInfo.Debugging
+  nameWithType: PatchInfo.Debugging
+- uid: HarmonyLib.PatchInfo.Debugging*
+  name: Debugging
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_Debugging_
+  commentId: Overload:HarmonyLib.PatchInfo.Debugging
+  isSpec: "True"
+  fullName: HarmonyLib.PatchInfo.Debugging
+  nameWithType: PatchInfo.Debugging
 - uid: HarmonyLib.PatchInfo.finalizers
   name: finalizers
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_finalizers
