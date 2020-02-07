@@ -61,9 +61,17 @@ namespace HarmonyLibTests.Assets
 		public string Method()
 		{
 			throw new OriginalException();
+
+			/*
+			 * TODO: Mono chokes on patching methods with dead code. The following
+			 * will compile into "newobj Void .ctor(); throw" which under mono cannot
+			 * have IL code after it without compilation failure
+			 * 
+			throw new OriginalException();
 #pragma warning disable CS0162
 			return "OriginalResult";
 #pragma warning restore CS0162
+			*/
 		}
 	}
 
