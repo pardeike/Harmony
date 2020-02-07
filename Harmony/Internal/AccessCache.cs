@@ -58,13 +58,13 @@ namespace HarmonyLib
 
 		internal MethodBase GetMethodInfo(Type type, string name, Type[] arguments)
 		{
-			methods.TryGetValue(type, out var methodsByName);
+			_ = methods.TryGetValue(type, out var methodsByName);
 			if (methodsByName == null)
 			{
 				methodsByName = new Dictionary<string, Dictionary<int, MethodBase>>();
 				methods[type] = methodsByName;
 			}
-			methodsByName.TryGetValue(name, out var methodsByArguments);
+			_ = methodsByName.TryGetValue(name, out var methodsByArguments);
 			if (methodsByArguments == null)
 			{
 				methodsByArguments = new Dictionary<int, MethodBase>();
