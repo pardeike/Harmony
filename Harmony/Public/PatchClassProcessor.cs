@@ -3,6 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+/*
+Patch
+|
++- HarmonyPrepare
+|
++- try
+|  |
+|  +- ReversePatch
+|  |
+|  +- BulkPatch / PatchWithAttributes
+|  |  |
+|  |  +- ProcessPatchJob
+|  |     |
+|  |     +- HarmonyPrepare
+|  |     |
+|  |     +- try
+|  |     |  |
+|  |     |  +- UpdateWrapper
+|  |     |
+|  |     +- HarmonyCleanup
+|  
++- HarmonyCleanup
+*/
+
 namespace HarmonyLib
 {
 	/// <summary>A PatchClassProcessor handles patch annotation on a class</summary>
@@ -15,7 +39,6 @@ namespace HarmonyLib
 		readonly Dictionary<Type, MethodInfo> auxilaryMethods;
 
 		readonly List<AttributePatch> patchMethods;
-		List<MethodBase> bulkOriginals;
 
 		static readonly List<Type> auxilaryTypes = new List<Type>() {
 			typeof(HarmonyPrepare),
@@ -70,37 +93,56 @@ namespace HarmonyLib
 			if (containerAttributes == null)
 				return null;
 
-			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true);
+			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true, false);
 			if (mainPrepareResult == false)
 			{
-				RunMethod<HarmonyCleanup>();
+				_ = RunMethod<HarmonyCleanup>();
 				return new List<MethodInfo>();
 			}
 
-			ReversePatch();
-			bulkOriginals = GetBulkMethods();
-			var replacements = bulkOriginals.Count > 0 ? BulkPatch() : PatchWithAttributes();
-			RunMethod<HarmonyCleanup>();
+			Exception exception = null;
+			var replacements = new List<MethodInfo>();
+			MethodBase lastOriginal = null;
+			try
+			{
+				ReversePatch(ref lastOriginal);
+
+				var originals = GetBulkMethods();
+				replacements = originals.Count > 0 ? BulkPatch(originals, ref lastOriginal) : PatchWithAttributes(ref lastOriginal);
+			}
+			catch (Exception ex)
+			{
+				exception = ex;
+			}
+
+			var found = RunMethod<HarmonyCleanup>(exception);
+			if (!found && exception != null)
+				ReportException(exception, lastOriginal);
 			return replacements;
 		}
 
-		void ReversePatch()
+		void ReversePatch(ref MethodBase lastOriginal)
 		{
-			patchMethods.DoIf(pm => pm.type == HarmonyPatchType.ReversePatch, patchMethod =>
+			for (var i = 0; i < patchMethods.Count; i++)
 			{
-				var original = patchMethod.info.GetOriginalMethod();
-				var reversePatcher = instance.CreateReversePatcher(original, patchMethod.info);
-				lock (PatchProcessor.locker)
-					_ = reversePatcher.Patch();
-			});
+				var patchMethod = patchMethods[i];
+				if (patchMethod.type == HarmonyPatchType.ReversePatch)
+				{
+					lastOriginal = patchMethod.info.GetOriginalMethod();
+					var reversePatcher = instance.CreateReversePatcher(lastOriginal, patchMethod.info);
+					lock (PatchProcessor.locker)
+						_ = reversePatcher.Patch();
+				}
+			}
 		}
 
-		List<MethodInfo> BulkPatch()
+		List<MethodInfo> BulkPatch(List<MethodBase> originals, ref MethodBase lastOriginal)
 		{
 			var jobs = new PatchJobs<MethodInfo>();
-			foreach (var original in bulkOriginals)
+			for (var i = 0; i < originals.Count; i++)
 			{
-				var job = jobs.GetJob(original);
+				lastOriginal = originals[i];
+				var job = jobs.GetJob(lastOriginal);
 				foreach (var patchMethod in patchMethods)
 				{
 					var note = "You cannot combine TargetMethod, TargetMethods or PatchAll with individual annotations";
@@ -118,24 +160,30 @@ namespace HarmonyLib
 				}
 			}
 			foreach (var job in jobs.GetJobs())
+			{
+				lastOriginal = job.original;
 				ProcessPatchJob(job);
+			}
 			return jobs.GetReplacements();
 		}
 
-		List<MethodInfo> PatchWithAttributes()
+		List<MethodInfo> PatchWithAttributes(ref MethodBase lastOriginal)
 		{
 			var jobs = new PatchJobs<MethodInfo>();
 			foreach (var patchMethod in patchMethods)
 			{
-				var original = patchMethod.info.GetOriginalMethod();
-				if (original == null)
+				lastOriginal = patchMethod.info.GetOriginalMethod();
+				if (lastOriginal == null)
 					throw new ArgumentException($"Undefined target method for patch method {patchMethod.info.method.FullDescription()}");
 
-				var job = jobs.GetJob(original);
+				var job = jobs.GetJob(lastOriginal);
 				job.AddPatch(patchMethod);
 			}
 			foreach (var job in jobs.GetJobs())
+			{
+				lastOriginal = job.original;
 				ProcessPatchJob(job);
+			}
 			return jobs.GetReplacements();
 		}
 
@@ -143,28 +191,38 @@ namespace HarmonyLib
 		{
 			MethodInfo replacement = default;
 
-			var individualPrepareResult = RunMethod<HarmonyPrepare, bool>(true, null, job.original);
+			var individualPrepareResult = RunMethod<HarmonyPrepare, bool>(true, false, null, job.original);
+			Exception exception = null;
 			if (individualPrepareResult)
 			{
 				lock (PatchProcessor.locker)
 				{
-					var patchInfo = HarmonySharedState.GetPatchInfo(job.original);
-					if (patchInfo == null) patchInfo = new PatchInfo();
+					try
+					{
+						var patchInfo = HarmonySharedState.GetPatchInfo(job.original);
+						if (patchInfo == null) patchInfo = new PatchInfo();
 
-					foreach (var prefix in job.prefixes)
-						PatchFunctions.AddPrefix(patchInfo, instance.Id, prefix);
-					foreach (var postfix in job.postfixes)
-						PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
-					foreach (var transpiler in job.transpilers)
-						PatchFunctions.AddTranspiler(patchInfo, instance.Id, transpiler);
-					foreach (var finalizer in job.finalizers)
-						PatchFunctions.AddFinalizer(patchInfo, instance.Id, finalizer);
+						foreach (var prefix in job.prefixes)
+							PatchFunctions.AddPrefix(patchInfo, instance.Id, prefix);
+						foreach (var postfix in job.postfixes)
+							PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
+						foreach (var transpiler in job.transpilers)
+							PatchFunctions.AddTranspiler(patchInfo, instance.Id, transpiler);
+						foreach (var finalizer in job.finalizers)
+							PatchFunctions.AddFinalizer(patchInfo, instance.Id, finalizer);
 
-					replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo, instance.Id);
-					HarmonySharedState.UpdatePatchInfo(job.original, patchInfo);
+						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo, instance.Id);
+						HarmonySharedState.UpdatePatchInfo(job.original, patchInfo);
+					}
+					catch (Exception ex)
+					{
+						exception = ex;
+					}
 				}
 			}
-			RunMethod<HarmonyCleanup>(job.original);
+			var found = RunMethod<HarmonyCleanup>(job.original, exception);
+			if (!found && exception != null)
+				ReportException(exception, job.original);
 			job.replacement = replacement;
 		}
 
@@ -186,24 +244,39 @@ namespace HarmonyLib
 				return list;
 			}
 
-			string failOnResult(IEnumerable<MethodBase> res)
+			string FailOnResult(IEnumerable<MethodBase> res)
 			{
 				if (res == null) return "null";
 				if (res.Any(m => m == null)) return "some element was null";
 				return null;
 			}
-			var targetMethods = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null, failOnResult);
+			var targetMethods = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null, null, FailOnResult);
 			if (targetMethods != null)
 				return targetMethods.ToList();
 
 			var result = new List<MethodBase>();
-			var targetMethod = RunMethod<HarmonyTargetMethod, MethodBase>(null, method => method == null ? "null" : null);
+			var targetMethod = RunMethod<HarmonyTargetMethod, MethodBase>(null, null, method => method == null ? "null" : null);
 			if (targetMethod != null)
 				result.Add(targetMethod);
 			return result;
 		}
 
-		T RunMethod<S, T>(T defaultIfNotExisting, Func<T, string> failOnResult = null, params object[] parameters)
+		void ReportException(Exception exception, MethodBase original)
+		{
+			if ((containerAttributes.debug ?? false) || Harmony.DEBUG)
+			{
+				var originalInfo = original != null ? $" patching {original.FullDescription()}" : "";
+				var exceptionString = $"Exception from Harmony \"{instance.Id}\"{originalInfo} processing patch class {containerType.FullDescription()}: {exception}";
+
+				FileLog.indentLevel = 0;
+				FileLog.Log(exceptionString);
+				return;
+			}
+
+			throw exception;
+		}
+
+		T RunMethod<S, T>(T defaultIfNotExisting, T defaultIfFailing, Func<T, string> failOnResult = null, params object[] parameters)
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
@@ -212,12 +285,20 @@ namespace HarmonyLib
 
 				if (typeof(T).IsAssignableFrom(method.ReturnType))
 				{
-					var result = (T)method.Invoke(null, actualParameters);
-					if (failOnResult != null)
+					var result = defaultIfFailing;
+					try
 					{
-						var error = failOnResult(result);
-						if (error != null)
-							throw new Exception($"Method {method.FullDescription()} returned an unexpected result: {error}");
+						result = (T)method.Invoke(null, actualParameters);
+						if (failOnResult != null)
+						{
+							var error = failOnResult(result);
+							if (error != null)
+								throw new Exception($"Method {method.FullDescription()} returned an unexpected result: {error}");
+						}
+					}
+					catch (Exception ex)
+					{
+						ReportException(ex, method);
 					}
 					return result;
 				}
@@ -228,14 +309,23 @@ namespace HarmonyLib
 			return defaultIfNotExisting;
 		}
 
-		void RunMethod<S>(params object[] parameters)
+		bool RunMethod<S>(params object[] parameters)
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
 				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);
-				_ = method.Invoke(null, actualParameters);
+				try
+				{
+					_ = method.Invoke(null, actualParameters);
+				}
+				catch (Exception ex)
+				{
+					ReportException(ex, method);
+				}
+				return true;
 			}
+			return false;
 		}
 	}
 }

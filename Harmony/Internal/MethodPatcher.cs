@@ -22,7 +22,7 @@ namespace HarmonyLib
 
 		readonly MethodBase original;
 		readonly MethodBase source;
-		readonly string harmonyInstanceID;
+		readonly string harmonyID;
 		readonly List<MethodInfo> prefixes;
 		readonly List<MethodInfo> postfixes;
 		readonly List<MethodInfo> transpilers;
@@ -34,14 +34,14 @@ namespace HarmonyLib
 		readonly ILGenerator il;
 		readonly Emitter emitter;
 
-		internal MethodPatcher(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, bool debug)
+		internal MethodPatcher(MethodBase original, MethodBase source, string harmonyID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, bool debug)
 		{
 			if (original == null)
 				throw new ArgumentNullException(nameof(original));
 
 			this.original = original;
 			this.source = source;
-			this.harmonyInstanceID = harmonyInstanceID;
+			this.harmonyID = harmonyID;
 			this.prefixes = prefixes;
 			this.postfixes = postfixes;
 			this.transpilers = transpilers;
@@ -68,149 +68,128 @@ namespace HarmonyLib
 
 		internal MethodInfo CreateReplacement(bool debug)
 		{
-			try
+			var originalVariables = DeclareLocalVariables(source ?? original);
+			var privateVars = new Dictionary<string, LocalBuilder>();
+
+			LocalBuilder resultVariable = null;
+			if (idx > 0)
 			{
-				var originalVariables = DeclareLocalVariables(source ?? original);
-				var privateVars = new Dictionary<string, LocalBuilder>();
+				resultVariable = DeclareLocalVariable(returnType);
+				privateVars[RESULT_VAR] = resultVariable;
+			}
 
-				LocalBuilder resultVariable = null;
-				if (idx > 0)
+			prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
+			{
+				if (fix.DeclaringType != null && privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
 				{
-					resultVariable = DeclareLocalVariable(returnType);
-					privateVars[RESULT_VAR] = resultVariable;
-				}
-
-				prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
-				{
-					if (fix.DeclaringType != null && privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
+					fix.GetParameters()
+					.Where(patchParam => patchParam.Name == STATE_VAR)
+					.Do(patchParam =>
 					{
-						fix.GetParameters()
-						.Where(patchParam => patchParam.Name == STATE_VAR)
-						.Do(patchParam =>
-						{
-							var privateStateVariable = DeclareLocalVariable(patchParam.ParameterType);
-							privateVars[fix.DeclaringType.FullName] = privateStateVariable;
-						});
-					}
-				});
-
-				LocalBuilder finalizedVariable = null;
-				if (finalizers.Any())
-				{
-					finalizedVariable = DeclareLocalVariable(typeof(bool));
-
-					privateVars[EXCEPTION_VAR] = DeclareLocalVariable(typeof(Exception));
-
-					// begin try
-					emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
+						var privateStateVariable = DeclareLocalVariable(patchParam.ParameterType);
+						privateVars[fix.DeclaringType.FullName] = privateStateVariable;
+					});
 				}
+			});
 
-				if (firstArgIsReturnBuffer)
-					emitter.Emit(OpCodes.Ldarg_1); // load ref to return value
+			LocalBuilder finalizedVariable = null;
+			if (finalizers.Any())
+			{
+				finalizedVariable = DeclareLocalVariable(typeof(bool));
 
-				var skipOriginalLabel = il.DefineLabel();
-				var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
+				privateVars[EXCEPTION_VAR] = DeclareLocalVariable(typeof(Exception));
 
-				var copier = new MethodCopier(source ?? original, il, originalVariables);
-				foreach (var transpiler in transpilers)
-					copier.AddTranspiler(transpiler);
-				if (firstArgIsReturnBuffer)
-					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspiler);
+				// begin try
+				emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
+			}
 
-				var endLabels = new List<Label>();
-				copier.Finalize(emitter, endLabels, out var endingReturn);
+			if (firstArgIsReturnBuffer)
+				emitter.Emit(OpCodes.Ldarg_1); // load ref to return value
 
-				foreach (var label in endLabels)
-					emitter.MarkLabel(label);
-				if (resultVariable != null)
-					emitter.Emit(OpCodes.Stloc, resultVariable);
-				if (canHaveJump)
-					emitter.MarkLabel(skipOriginalLabel);
+			var skipOriginalLabel = il.DefineLabel();
+			var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
 
-				AddPostfixes(privateVars, false);
+			var copier = new MethodCopier(source ?? original, il, originalVariables);
+			foreach (var transpiler in transpilers)
+				copier.AddTranspiler(transpiler);
+			if (firstArgIsReturnBuffer)
+				copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspiler);
+
+			var endLabels = new List<Label>();
+			copier.Finalize(emitter, endLabels, out var endingReturn);
+
+			foreach (var label in endLabels)
+				emitter.MarkLabel(label);
+			if (resultVariable != null)
+				emitter.Emit(OpCodes.Stloc, resultVariable);
+			if (canHaveJump)
+				emitter.MarkLabel(skipOriginalLabel);
+
+			AddPostfixes(privateVars, false);
+
+			if (resultVariable != null)
+				emitter.Emit(OpCodes.Ldloc, resultVariable);
+
+			AddPostfixes(privateVars, true);
+
+			var hasFinalizers = finalizers.Any();
+			if (hasFinalizers)
+			{
+				_ = AddFinalizers(privateVars, false);
+				emitter.Emit(OpCodes.Ldc_I4_1);
+				emitter.Emit(OpCodes.Stloc, finalizedVariable);
+				var noExceptionLabel1 = il.DefineLabel();
+				emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+				emitter.Emit(OpCodes.Brfalse, noExceptionLabel1);
+				emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+				emitter.Emit(OpCodes.Throw);
+				emitter.MarkLabel(noExceptionLabel1);
+
+				// end try, begin catch
+				emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
+				emitter.Emit(OpCodes.Stloc, privateVars[EXCEPTION_VAR]);
+
+				emitter.Emit(OpCodes.Ldloc, finalizedVariable);
+				var endFinalizerLabel = il.DefineLabel();
+				emitter.Emit(OpCodes.Brtrue, endFinalizerLabel);
+
+				var rethrowPossible = AddFinalizers(privateVars, true);
+
+				emitter.MarkLabel(endFinalizerLabel);
+
+				var noExceptionLabel2 = il.DefineLabel();
+				emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+				emitter.Emit(OpCodes.Brfalse, noExceptionLabel2);
+				if (rethrowPossible)
+					emitter.Emit(OpCodes.Rethrow);
+				else
+				{
+					emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
+					emitter.Emit(OpCodes.Throw);
+				}
+				emitter.MarkLabel(noExceptionLabel2);
+
+				// end catch
+				emitter.MarkBlockAfter(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
 
 				if (resultVariable != null)
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
-
-				AddPostfixes(privateVars, true);
-
-				var hasFinalizers = finalizers.Any();
-				if (hasFinalizers)
-				{
-					_ = AddFinalizers(privateVars, false);
-					emitter.Emit(OpCodes.Ldc_I4_1);
-					emitter.Emit(OpCodes.Stloc, finalizedVariable);
-					var noExceptionLabel1 = il.DefineLabel();
-					emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-					emitter.Emit(OpCodes.Brfalse, noExceptionLabel1);
-					emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-					emitter.Emit(OpCodes.Throw);
-					emitter.MarkLabel(noExceptionLabel1);
-
-					// end try, begin catch
-					emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
-					emitter.Emit(OpCodes.Stloc, privateVars[EXCEPTION_VAR]);
-
-					emitter.Emit(OpCodes.Ldloc, finalizedVariable);
-					var endFinalizerLabel = il.DefineLabel();
-					emitter.Emit(OpCodes.Brtrue, endFinalizerLabel);
-
-					var rethrowPossible = AddFinalizers(privateVars, true);
-
-					emitter.MarkLabel(endFinalizerLabel);
-
-					var noExceptionLabel2 = il.DefineLabel();
-					emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-					emitter.Emit(OpCodes.Brfalse, noExceptionLabel2);
-					if (rethrowPossible)
-						emitter.Emit(OpCodes.Rethrow);
-					else
-					{
-						emitter.Emit(OpCodes.Ldloc, privateVars[EXCEPTION_VAR]);
-						emitter.Emit(OpCodes.Throw);
-					}
-					emitter.MarkLabel(noExceptionLabel2);
-
-					// end catch
-					emitter.MarkBlockAfter(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
-
-					if (resultVariable != null)
-						emitter.Emit(OpCodes.Ldloc, resultVariable);
-				}
-
-				if (firstArgIsReturnBuffer)
-					emitter.Emit(OpCodes.Stobj, returnType); // store result into ref
-
-				if (hasFinalizers || endingReturn)
-					emitter.Emit(OpCodes.Ret);
-
-				if (debug)
-				{
-					FileLog.LogBuffered("DONE");
-					FileLog.LogBuffered("");
-					FileLog.FlushBuffer();
-				}
-
-				return patch.Generate().Pin();
 			}
-			catch (Exception ex)
+
+			if (firstArgIsReturnBuffer)
+				emitter.Emit(OpCodes.Stobj, returnType); // store result into ref
+
+			if (hasFinalizers || endingReturn)
+				emitter.Emit(OpCodes.Ret);
+
+			if (debug)
 			{
-				var exceptionString = $"Exception from HarmonyInstance \"{harmonyInstanceID}\" patching {original.FullDescription()}: {ex}";
-				if (debug)
-				{
-					var savedIndentLevel = FileLog.indentLevel;
-					FileLog.indentLevel = 0;
-					FileLog.Log(exceptionString);
-					FileLog.indentLevel = savedIndentLevel;
-				}
+				FileLog.LogBuffered("DONE");
+				FileLog.LogBuffered("");
+				FileLog.FlushBuffer();
+			}
 
-				throw new Exception(exceptionString, ex);
-			}
-			finally
-			{
-				if (debug)
-					FileLog.FlushBuffer();
-			}
+			return patch.Generate().Pin();
 		}
 
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix)

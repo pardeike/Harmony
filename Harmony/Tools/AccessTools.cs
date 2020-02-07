@@ -758,10 +758,10 @@ namespace HarmonyLib
 		///
 		public static object[] ActualParameters(MethodBase method, object[] inputs)
 		{
-			var inputTypes = inputs.Select(obj => obj.GetType()).ToList();
+			var inputTypes = inputs.Select(obj => obj?.GetType()).ToList();
 			return method.GetParameters().Select(p => p.ParameterType).Select(pType =>
 			{
-				var index = inputTypes.FindIndex(inType => pType.IsAssignableFrom(inType));
+				var index = inputTypes.FindIndex(inType => inType != null && pType.IsAssignableFrom(inType));
 				if (index >= 0)
 					return inputs[index];
 				return GetDefaultValue(pType);
