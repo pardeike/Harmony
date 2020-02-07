@@ -12,7 +12,7 @@
 		<img src="https://img.shields.io/nuget/v/lib.harmony.svg?style=flat" />
 	</a>
 	<a href="https://harmony.pardeike.net">
-		<img src="https://img.shields.io/badge/documentation-Wiki-yellow.svg?style=flat" />
+		<img src="https://img.shields.io/badge/documentation-%F0%9F%94%8D-blue?style=flat" />
 	</a>
 	<a href="../../blob/master/LICENSE">
 		<img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" />
@@ -20,7 +20,7 @@
 </p>
 <p align="center">
 	<img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Update%20documentation" />
-	<img src="https://img.shields.io/travis/com/pardeike/Harmony/master.svg?logo=travis&label=travis:master" /> 
+	<img src="https://img.shields.io/travis/pardeike/Harmony/master.svg?logo=travis&label=travis:master" /> 
 	<img src="https://img.shields.io/appveyor/ci/pardeike/Harmony/master.svg?logo=appveyor&label=appveyor:master" /> 
 </p>
 <p align="center">
