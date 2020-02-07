@@ -10,12 +10,13 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class FinalizerPatches
 	{
-		readonly bool debug = false;
-		Dictionary<string, object> info;
+		static readonly bool debug = false;
+		static Dictionary<string, object> info;
 
 		[Test]
 		public void Test_NoThrowingVoidMethod_EmptyFinalizer()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertGotNoResult();
 		}
@@ -23,6 +24,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingVoidMethod_EmptyFinalizerWithExceptionArg()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertNullExceptionInput();
 			AssertGotNoResult();
@@ -31,6 +33,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingVoidMethod_FinalizerReturningNull()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertGotNoResult();
 		}
@@ -38,6 +41,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingVoidMethod_FinalizerReturningException()
 		{
+			Patch();
 			AssertThrownException<ReplacedException>();
 			AssertNullExceptionInput();
 			AssertGotNoResult();
@@ -48,6 +52,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingVoidMethod_EmptyFinalizer()
 		{
+			Patch();
 			AssertThrownException<OriginalException>();
 			AssertGotNoResult();
 		}
@@ -55,6 +60,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingVoidMethod_EmptyFinalizerWithExceptionArg()
 		{
+			Patch();
 			AssertThrownException<OriginalException>();
 			AssertExceptionInput<OriginalException>();
 			AssertGotNoResult();
@@ -63,6 +69,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingVoidMethod_FinalizerReturningNull()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertGotNoResult();
 		}
@@ -70,6 +77,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingVoidMethod_FinalizerReturningException()
 		{
+			Patch();
 			AssertThrownException<ReplacedException>();
 			AssertExceptionInput<OriginalException>();
 			AssertGotNoResult();
@@ -80,6 +88,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingStringReturningMethod_EmptyFinalizer()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertGotResult("OriginalResult");
 		}
@@ -87,6 +96,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingStringReturningMethod_EmptyFinalizerWithExceptionArg()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertNullExceptionInput();
 			AssertGotResult("OriginalResult");
@@ -95,6 +105,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningNull()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertGotResult("OriginalResult");
 		}
@@ -102,6 +113,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningException()
 		{
+			Patch();
 			AssertThrownException<ReplacedException>();
 			AssertNullExceptionInput();
 			AssertGotNoResult();
@@ -110,6 +122,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningNullAndChangingResult()
 		{
+			Patch();
 			AssertNoThrownException();
 			AssertGotResult("ReplacementResult");
 		}
@@ -117,6 +130,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningExceptionAndChangingResult()
 		{
+			Patch();
 			AssertThrownException<ReplacedException>();
 			AssertGotNoResult();
 		}
@@ -126,9 +140,8 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_EmptyFinalizer()
 		{
-			if (Type.GetType("Mono.Runtime") != null)
-				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
-
+			SkipIfMono();
+			Patch();
 			AssertThrownException<OriginalException>();
 			AssertGotNoResult();
 		}
@@ -136,9 +149,8 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_EmptyFinalizerWithExceptionArg()
 		{
-			if (Type.GetType("Mono.Runtime") != null)
-				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
-
+			SkipIfMono();
+			Patch();
 			AssertThrownException<OriginalException>();
 			AssertExceptionInput<OriginalException>();
 			AssertGotNoResult();
@@ -147,9 +159,8 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningNull()
 		{
-			if (Type.GetType("Mono.Runtime") != null)
-				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
-
+			SkipIfMono();
+			Patch();
 			AssertNoThrownException();
 			AssertGotNullResult();
 		}
@@ -157,9 +168,8 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningException()
 		{
-			if (Type.GetType("Mono.Runtime") != null)
-				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
-
+			SkipIfMono();
+			Patch();
 			AssertThrownException<ReplacedException>();
 			AssertExceptionInput<OriginalException>();
 			AssertGotNoResult();
@@ -168,9 +178,8 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningNullAndChangingResult()
 		{
-			if (Type.GetType("Mono.Runtime") != null)
-				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
-
+			SkipIfMono();
+			Patch();
 			AssertNoThrownException();
 			AssertGotResult("ReplacementResult");
 		}
@@ -178,17 +187,21 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningExceptionAndChangingResult()
 		{
-			if (Type.GetType("Mono.Runtime") != null)
-				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
-
+			SkipIfMono();
+			Patch();
 			AssertThrownException<ReplacedException>();
 			AssertGotNoResult();
 		}
 
 		//
 
-		[SetUp]
-		public void SetUp()
+		public static void SkipIfMono()
+		{
+			if (Type.GetType("Mono.Runtime") != null)
+				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
+		}
+
+		public static void Patch()
 		{
 			var testMethod = TestContext.CurrentContext.Test.Name;
 			var parts = testMethod.Split('_');
