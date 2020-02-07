@@ -60,9 +60,10 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public string Method()
 		{
-			if (this != null) // make compiler happy
-				throw new OriginalException();
+			throw new OriginalException();
+#pragma warning disable CS0162
 			return "OriginalResult";
+#pragma warning restore CS0162
 		}
 	}
 
