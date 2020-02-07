@@ -57,21 +57,15 @@ namespace HarmonyLibTests.Assets
 
 	public class ThrowingStringReturningMethod
 	{
+		// TODO: Mono chokes on patching methods with dead code. The following
+		// will compile into "newobj Void .ctor(); throw" which under mono cannot
+		// have IL code after it without compilation failure (Postfixes or Finalizers).
+		// So for now this is excluded on mono (except for NET Core 3.x where it works)
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public string Method()
 		{
 			throw new OriginalException();
-
-			/*
-			 * TODO: Mono chokes on patching methods with dead code. The following
-			 * will compile into "newobj Void .ctor(); throw" which under mono cannot
-			 * have IL code after it without compilation failure
-			 * 
-			throw new OriginalException();
-#pragma warning disable CS0162
-			return "OriginalResult";
-#pragma warning restore CS0162
-			*/
 		}
 	}
 

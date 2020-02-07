@@ -126,6 +126,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_EmptyFinalizer()
 		{
+			if (Type.GetType("Mono.Runtime") != null)
+				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
+
 			AssertThrownException<OriginalException>();
 			AssertGotNoResult();
 		}
@@ -133,6 +136,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_EmptyFinalizerWithExceptionArg()
 		{
+			if (Type.GetType("Mono.Runtime") != null)
+				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
+
 			AssertThrownException<OriginalException>();
 			AssertExceptionInput<OriginalException>();
 			AssertGotNoResult();
@@ -141,6 +147,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningNull()
 		{
+			if (Type.GetType("Mono.Runtime") != null)
+				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
+
 			AssertNoThrownException();
 			AssertGotNullResult();
 		}
@@ -148,6 +157,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningException()
 		{
+			if (Type.GetType("Mono.Runtime") != null)
+				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
+
 			AssertThrownException<ReplacedException>();
 			AssertExceptionInput<OriginalException>();
 			AssertGotNoResult();
@@ -156,6 +168,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningNullAndChangingResult()
 		{
+			if (Type.GetType("Mono.Runtime") != null)
+				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
+
 			AssertNoThrownException();
 			AssertGotResult("ReplacementResult");
 		}
@@ -163,6 +178,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningExceptionAndChangingResult()
 		{
+			if (Type.GetType("Mono.Runtime") != null)
+				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
+
 			AssertThrownException<ReplacedException>();
 			AssertGotNoResult();
 		}
