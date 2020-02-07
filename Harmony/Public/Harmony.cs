@@ -75,7 +75,7 @@ namespace HarmonyLib
 		/// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
 		/// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
 		/// <param name="finalizer">An optional finalizer method wrapped in a HarmonyMethod object</param>
-		/// <returns>The dynamic method that was created to patch the original method</returns>
+		/// <returns>The replacement method that was created to patch the original method</returns>
 		///
 		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{

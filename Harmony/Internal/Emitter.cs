@@ -28,11 +28,13 @@ namespace HarmonyLib
 		static readonly GetterHandler<ILGenerator, LocalBuilder[]> localsGetter = FastAccess.CreateFieldGetter<ILGenerator, LocalBuilder[]>("locals");
 
 		readonly ILGenerator il;
+		readonly bool debug;
 		int offset;
 
-		internal Emitter(ILGenerator il)
+		internal Emitter(ILGenerator il, bool debug)
 		{
 			this.il = il;
+			this.debug = debug;
 			offset = 0;
 		}
 
@@ -48,13 +50,16 @@ namespace HarmonyLib
 
 		internal void LogComment(string comment)
 		{
-			var str = string.Format("{0}// {1}", CodePos(), comment);
-			FileLog.LogBuffered(str);
+			if (debug)
+			{
+				var str = string.Format("{0}// {1}", CodePos(), comment);
+				FileLog.LogBuffered(str);
+			}
 		}
 
 		internal void LogIL(OpCode opcode)
 		{
-			if (Harmony.DEBUG)
+			if (debug)
 				FileLog.LogBuffered(string.Format("{0}{1}", CodePos(), opcode));
 
 			offset += opcode.SizeOffset();
@@ -62,7 +67,7 @@ namespace HarmonyLib
 
 		internal void LogIL(OpCode opcode, object arg, string extra = null)
 		{
-			if (Harmony.DEBUG)
+			if (debug)
 			{
 				var argStr = FormatArgument(arg, extra);
 				var space = argStr.Length > 0 ? " " : "";
@@ -114,9 +119,9 @@ namespace HarmonyLib
 			return localsGetter != null ? localsGetter(il) : new LocalBuilder[0];
 		}
 
-		internal static void LogLocalVariable(LocalBuilder variable)
+		internal void LogLocalVariable(LocalBuilder variable)
 		{
-			if (Harmony.DEBUG)
+			if (debug)
 			{
 				var str = string.Format("{0}Local var {1}: {2}{3}", CodePos(0), variable.LocalIndex, variable.LocalType.FullName, variable.IsPinned ? "(pinned)" : "");
 				FileLog.LogBuffered(str);
@@ -146,7 +151,7 @@ namespace HarmonyLib
 
 		internal void MarkLabel(Label label)
 		{
-			if (Harmony.DEBUG) FileLog.LogBuffered(CodePos() + FormatArgument(label));
+			if (debug) FileLog.LogBuffered(CodePos() + FormatArgument(label));
 			il.MarkLabel(label);
 		}
 
@@ -156,7 +161,7 @@ namespace HarmonyLib
 			switch (block.blockType)
 			{
 				case ExceptionBlockType.BeginExceptionBlock:
-					if (Harmony.DEBUG)
+					if (debug)
 					{
 						FileLog.LogBuffered(".try");
 						FileLog.LogBuffered("{");
@@ -166,7 +171,7 @@ namespace HarmonyLib
 					return;
 
 				case ExceptionBlockType.BeginCatchBlock:
-					if (Harmony.DEBUG)
+					if (debug)
 					{
 						// fake log a LEAVE code since BeginCatchBlock() does add it
 						LogIL(OpCodes.Leave, new LeaveTry());
@@ -182,7 +187,7 @@ namespace HarmonyLib
 					return;
 
 				case ExceptionBlockType.BeginExceptFilterBlock:
-					if (Harmony.DEBUG)
+					if (debug)
 					{
 						// fake log a LEAVE code since BeginCatchBlock() does add it
 						LogIL(OpCodes.Leave, new LeaveTry());
@@ -198,7 +203,7 @@ namespace HarmonyLib
 					return;
 
 				case ExceptionBlockType.BeginFaultBlock:
-					if (Harmony.DEBUG)
+					if (debug)
 					{
 						// fake log a LEAVE code since BeginCatchBlock() does add it
 						LogIL(OpCodes.Leave, new LeaveTry());
@@ -214,7 +219,7 @@ namespace HarmonyLib
 					return;
 
 				case ExceptionBlockType.BeginFinallyBlock:
-					if (Harmony.DEBUG)
+					if (debug)
 					{
 						// fake log a LEAVE code since BeginCatchBlock() does add it
 						LogIL(OpCodes.Leave, new LeaveTry());
@@ -235,7 +240,7 @@ namespace HarmonyLib
 		{
 			if (block.blockType == ExceptionBlockType.EndExceptionBlock)
 			{
-				if (Harmony.DEBUG)
+				if (debug)
 				{
 					// fake log a LEAVE code since BeginCatchBlock() does add it
 					LogIL(OpCodes.Leave, new LeaveTry());

@@ -10,7 +10,6 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class FinalizerPatches
 	{
-		static readonly bool debug = false;
 		static Dictionary<string, object> info;
 
 		[Test]
@@ -215,20 +214,13 @@ namespace HarmonyLibTests
 			var finalizer = patchType.GetMethod("Finalizer");
 			Assert.IsNotNull(finalizer);
 
-			if (debug)
-			{
-				FileLog.Log("### Original: " + parts[1]);
-				FileLog.Log("### Patching: " + parts[2]);
-			}
 			var instance = new Harmony("test");
 			Assert.IsNotNull(instance);
 			instance.UnpatchAll();
 			var patcher = instance.CreateProcessor(originalMethod);
 			Assert.IsNotNull(patcher);
 			_ = patcher.AddFinalizer(finalizer);
-			if (debug) Harmony.DEBUG = true;
 			_ = patcher.Patch();
-			Harmony.DEBUG = false;
 
 			var trv = Traverse.Create(patchType);
 			_ = trv.Field("finalized").SetValue(false);

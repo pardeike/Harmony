@@ -21,8 +21,9 @@ namespace HarmonyLib
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
+			var debug = info.debug ?? false;
 
-			patchInfo.AddPrefix(info.method, owner, priority, before, after);
+			patchInfo.AddPrefix(info.method, owner, priority, before, after, debug);
 		}
 
 		/// <summary>Removes a prefix</summary>
@@ -46,8 +47,9 @@ namespace HarmonyLib
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
+			var debug = info.debug ?? false;
 
-			patchInfo.AddPostfix(info.method, owner, priority, before, after);
+			patchInfo.AddPostfix(info.method, owner, priority, before, after, debug);
 		}
 
 		/// <summary>Removes a postfix</summary>
@@ -71,8 +73,9 @@ namespace HarmonyLib
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
+			var debug = info.debug ?? false;
 
-			patchInfo.AddTranspiler(info.method, owner, priority, before, after);
+			patchInfo.AddTranspiler(info.method, owner, priority, before, after, debug);
 		}
 
 		/// <summary>Removes a transpiler</summary>
@@ -96,8 +99,9 @@ namespace HarmonyLib
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
 			var after = info.after ?? new string[0];
+			var debug = info.debug ?? false;
 
-			patchInfo.AddFinalizer(info.method, owner, priority, before, after);
+			patchInfo.AddFinalizer(info.method, owner, priority, before, after, debug);
 		}
 
 		/// <summary>Removes a finalizer</summary>
@@ -131,29 +135,32 @@ namespace HarmonyLib
 		/// <summary>Gets sorted patch methods</summary>
 		/// <param name="original">The original method</param>
 		/// <param name="patches">Patches to sort</param>
+		/// <param name="debug">Use debug mode</param>
 		/// <returns>The sorted patch methods</returns>
 		///
-		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
+		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
 		{
-			return new PatchSorter(patches).Sort(original);
+			return new PatchSorter(patches, debug).Sort(original);
 		}
 
-		/// <summary>Creates new dynamic method with the latest patches and detours the original method</summary>
+		/// <summary>Creates new replacement method with the latest patches and detours the original method</summary>
 		/// <param name="original">The original method</param>
 		/// <param name="patchInfo">Information describing the patches</param>
 		/// <param name="instanceID">Harmony ID</param>
-		/// <returns>The newly created dynamic method</returns>
+		/// <returns>The newly created replacement method</returns>
 		///
 		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
 		{
-			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes);
-			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes);
-			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers);
-			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers);
+			var debug = patchInfo.Debugging || Harmony.DEBUG;
 
-			var patcher = new MethodPatcher(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers);
-			var replacement = patcher.CreateReplacement();
-			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {original.FullDescription()}");
+			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes, debug);
+			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes, debug);
+			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers, debug);
+			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers, debug);
+
+			var patcher = new MethodPatcher(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, debug);
+			var replacement = patcher.CreateReplacement(debug);
+			if (replacement == null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
 
 			Memory.DetourMethodAndPersist(original, replacement);
 			return replacement;
@@ -166,18 +173,20 @@ namespace HarmonyLib
 			if (standin.method == null)
 				throw new ArgumentNullException($"{nameof(standin)}.{nameof(standin.method)}");
 
+			var debug = (standin.debug ?? false) || Harmony.DEBUG;
+
 			var transpilers = new List<MethodInfo>();
 			if (standin.reversePatchType == HarmonyReversePatchType.Snapshot)
 			{
 				var info = Harmony.GetPatchInfo(original);
-				transpilers.AddRange(GetSortedPatchMethods(original, info.Transpilers.ToArray()));
+				transpilers.AddRange(GetSortedPatchMethods(original, info.Transpilers.ToArray(), debug));
 			}
 			if (postTranspiler != null) transpilers.Add(postTranspiler);
 
 			var empty = new List<MethodInfo>();
-			var patcher = new MethodPatcher(standin.method, original, instance.Id, empty, empty, transpilers, empty);
-			var replacement = patcher.CreateReplacement();
-			if (replacement == null) throw new MissingMethodException($"Cannot create dynamic replacement for {standin.method.FullDescription()}");
+			var patcher = new MethodPatcher(standin.method, original, instance.Id, empty, empty, transpilers, empty, debug);
+			var replacement = patcher.CreateReplacement(debug);
+			if (replacement == null) throw new MissingMethodException($"Cannot create replacement for {standin.method.FullDescription()}");
 
 			var errorString = Memory.DetourMethod(standin.method, replacement);
 			if (errorString != null)

@@ -124,8 +124,8 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Applies the patch</summary>
-		/// <returns>A list of all created dynamic methods</returns>
+		/// <summary>Applies the patch(es)</summary>
+		/// <returns>The generated replacement method</returns>
 		///
 		public MethodInfo Patch()
 		{
@@ -147,10 +147,10 @@ namespace HarmonyLib
 				PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
 				PatchFunctions.AddTranspiler(patchInfo, instance.Id, transpiler);
 				PatchFunctions.AddFinalizer(patchInfo, instance.Id, finalizer);
-				var dynamicMethod = PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
+				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
 
 				HarmonySharedState.UpdatePatchInfo(original, patchInfo);
-				return dynamicMethod;
+				return replacement;
 			}
 		}
 

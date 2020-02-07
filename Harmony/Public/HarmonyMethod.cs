@@ -12,22 +12,24 @@ namespace HarmonyLib
 		/// <summary>The original method</summary>
 		public MethodInfo method; // need to be called 'method'
 
-		/// <summary>Declaring class</summary>
+		/// <summary>Class/type declaring this patch</summary>
 		public Type declaringType;
-		/// <summary>Method name</summary>
+		/// <summary>Patch method name</summary>
 		public string methodName;
-		/// <summary>Method type</summary>
+		/// <summary>Patch method type</summary>
 		public MethodType? methodType;
-		/// <summary>Argument types</summary>
+		/// <summary>Argument types of the patch method</summary>
 		public Type[] argumentTypes;
-		/// <summary>Priority</summary>
+		/// <summary><see cref="Priority"/> of the patch</summary>
 		public int priority = -1;
-		/// <summary>Before parameter</summary>
+		/// <summary>Install this patch before patches with there Harmony IDs</summary>
 		public string[] before;
-		/// <summary>After parameter</summary>
+		/// <summary>Install this patch after patches with there Harmony IDs</summary>
 		public string[] after;
-		/// <summary>Reverse patch type</summary>
+		/// <summary>Reverse patch type, see <see cref="HarmonyReversePatchType"/></summary>
 		public HarmonyReversePatchType? reversePatchType;
+		/// <summary>Create debug output for this patch</summary>
+		public bool? debug;
 
 		/// <summary>Default constructor</summary>
 		public HarmonyMethod()
@@ -45,7 +47,7 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Creates an annotation from a method</summary>
+		/// <summary>Creates a patch from a given method</summary>
 		/// <param name="method">The original method</param>
 		///
 		public HarmonyMethod(MethodInfo method)
@@ -55,16 +57,34 @@ namespace HarmonyLib
 			ImportMethod(method);
 		}
 
-		/// <summary>Creates an annotation from a method.</summary>
-		/// <param name="type">The type</param>
-		/// <param name="name">The method name</param>
-		/// <param name="parameters">The optional argument types for overloaded methods</param>
+		/// <summary>Creates a patch from a given method</summary>
+		/// <param name="method">The original method</param>
+		/// <param name="priority">The patch priority</param>
+		/// <param name="before">A list of harmony IDs that should come after this patch</param>
+		/// <param name="after">A list of harmony IDs that should come before this patch</param>
+		/// <param name="debug">Set to true to generate debug output</param>
 		///
-		public HarmonyMethod(Type type, string name, Type[] parameters = null)
+		public HarmonyMethod(MethodInfo method, int priority = -1, string[] before = null, string[] after = null, bool? debug = null)
 		{
-			var result = AccessTools.Method(type, name, parameters);
+			if (method == null)
+				throw new ArgumentNullException(nameof(method));
+			ImportMethod(method);
+			this.priority = priority;
+			this.before = before;
+			this.after = after;
+			this.debug = debug;
+		}
+
+		/// <summary>Creates a patch from a given method</summary>
+		/// <param name="methodType">The patch method type</param>
+		/// <param name="methodName">The patch method name</param>
+		/// <param name="argumentTypes">The optional argument types of the patch method (for overloaded methods)</param>
+		///
+		public HarmonyMethod(Type methodType, string methodName, Type[] argumentTypes = null)
+		{
+			var result = AccessTools.Method(methodType, methodName, argumentTypes);
 			if (result == null)
-				throw new ArgumentException($"Cannot not find method for type {type} and name {name} and parameters {parameters?.Description()}");
+				throw new ArgumentException($"Cannot not find method for type {methodType} and name {methodName} and parameters {argumentTypes?.Description()}");
 			ImportMethod(result);
 		}
 

@@ -356,6 +356,18 @@ namespace HarmonyLib
 		}
 	}
 
+	/// <summary>A Harmony annotation</summary>
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	public class HarmonyDebug : HarmonyAttribute
+	{
+		/// <summary>A Harmony annotation to debug a patch (output uses <see cref="FileLog"/> to log to your Desktop)</summary>
+		///
+		public HarmonyDebug()
+		{
+			info.debug = true;
+		}
+	}
+
 	/// <summary>Specifies the Prepare function in a patch class</summary>
 	[AttributeUsage(AttributeTargets.Method)]
 	public class HarmonyPrepare : Attribute

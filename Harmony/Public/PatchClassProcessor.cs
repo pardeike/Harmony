@@ -63,7 +63,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Applies the patches</summary>
-		/// <returns>A list of all created dynamic methods or null if patch class is not annotated</returns>
+		/// <returns>A list of all created replacement methods or null if patch class is not annotated</returns>
 		///
 		public List<MethodInfo> Patch()
 		{

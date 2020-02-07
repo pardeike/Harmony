@@ -7,27 +7,31 @@ namespace HarmonyLib
 {
 	internal class PatchSorter
 	{
-		List<PatchSortingWrapper> _patches;
-		HashSet<PatchSortingWrapper> _handledPatches;
-		List<PatchSortingWrapper> _result;
-		List<PatchSortingWrapper> _waitingList;
+		List<PatchSortingWrapper> patches;
+		HashSet<PatchSortingWrapper> handledPatches;
+		List<PatchSortingWrapper> result;
+		List<PatchSortingWrapper> waitingList;
 		internal Patch[] sortedPatchArray;
+		readonly bool debug;
 
 		/// <summary>Creates a patch sorter</summary>
 		/// <param name="patches">Array of patches that will be sorted</param>
-		internal PatchSorter(Patch[] patches)
+		/// <param name="debug">Use debugging</param>
+		internal PatchSorter(Patch[] patches, bool debug)
 		{
 			// Build the list of all patches first to be able to create dependency relationships.
-			_patches = patches.Select(x => new PatchSortingWrapper(x)).ToList();
+			this.patches = patches.Select(x => new PatchSortingWrapper(x)).ToList();
+			this.debug = debug;
+
 			// For each node find and bidirectionally register all it's dependencies.
-			foreach (var node in _patches)
+			foreach (var node in this.patches)
 			{
-				node.AddBeforeDependency(_patches.Where(x => node.innerPatch.before.Contains(x.innerPatch.owner)));
-				node.AddAfterDependency(_patches.Where(x => node.innerPatch.after.Contains(x.innerPatch.owner)));
+				node.AddBeforeDependency(this.patches.Where(x => node.innerPatch.before.Contains(x.innerPatch.owner)));
+				node.AddAfterDependency(this.patches.Where(x => node.innerPatch.after.Contains(x.innerPatch.owner)));
 			}
 
 			// Sort list based on priority/index. This order will be maintain throughout the rest of the sorting process.
-			_patches.Sort();
+			this.patches.Sort();
 		}
 
 		/// <summary>Sorts internal PatchSortingWrapper collection and caches the results.
@@ -40,10 +44,10 @@ namespace HarmonyLib
 			if (sortedPatchArray != null) return sortedPatchArray.Select(x => x.GetMethod(original)).ToList();
 
 			// Initialize internal structures used for sorting.
-			_handledPatches = new HashSet<PatchSortingWrapper>();
-			_waitingList = new List<PatchSortingWrapper>();
-			_result = new List<PatchSortingWrapper>(_patches.Count);
-			var queue = new Queue<PatchSortingWrapper>(_patches);
+			handledPatches = new HashSet<PatchSortingWrapper>();
+			waitingList = new List<PatchSortingWrapper>();
+			result = new List<PatchSortingWrapper>(patches.Count);
+			var queue = new Queue<PatchSortingWrapper>(patches);
 
 			// Sorting is performed by reading patches one-by-one from the queue and outputting them if
 			// they have no unresolved dependencies.
@@ -54,7 +58,7 @@ namespace HarmonyLib
 			{
 				foreach (var node in queue)
 					// Patch does not have any unresolved dependencies and can be moved to output.
-					if (node.after.All(x => _handledPatches.Contains(x)))
+					if (node.after.All(x => handledPatches.Contains(x)))
 					{
 						AddNodeToResult(node);
 						// If patch had some before dependencies we need to check waiting list because they may have had higher priority.
@@ -62,21 +66,21 @@ namespace HarmonyLib
 						ProcessWaitingList();
 					}
 					else
-						_waitingList.Add(node);
+						waitingList.Add(node);
 
 				// If at this point waiting list is not empty then that means there is are cyclic dependencies and we
 				// need to remove on of them.
 				CullDependency();
 				// Try to sort the rest of the patches again.
-				queue = new Queue<PatchSortingWrapper>(_waitingList);
-				_waitingList.Clear();
+				queue = new Queue<PatchSortingWrapper>(waitingList);
+				waitingList.Clear();
 			}
 
 			// Build cache and release all other internal structures for GC.
-			sortedPatchArray = _result.Select(x => x.innerPatch).ToArray();
-			_handledPatches = null;
-			_waitingList = null;
-			_patches = null;
+			sortedPatchArray = result.Select(x => x.innerPatch).ToArray();
+			handledPatches = null;
+			waitingList = null;
+			patches = null;
 			return sortedPatchArray.Select(x => x.GetMethod(original)).ToList();
 		}
 
@@ -98,15 +102,18 @@ namespace HarmonyLib
 			// It should always be the last element, otherwise it would not be on the waiting list because
 			// it should have been removed by the ProcessWaitingList().
 			// But if for some reason it is on the list we will just find the next target.
-			for (var i = _waitingList.Count - 1; i >= 0; i--)
+			for (var i = waitingList.Count - 1; i >= 0; i--)
 				// Find first unresolved dependency and remove it.
-				foreach (var afterNode in _waitingList[i].after)
-					if (!_handledPatches.Contains(afterNode))
+				foreach (var afterNode in waitingList[i].after)
+					if (!handledPatches.Contains(afterNode))
 					{
-						_waitingList[i].RemoveAfterDependency(afterNode);
-						if (Harmony.DEBUG)
-							FileLog.LogBuffered(
-								$"Breaking dependance between {afterNode.innerPatch.PatchMethod.FullDescription()} and {_waitingList[i].innerPatch.PatchMethod.FullDescription()}");
+						waitingList[i].RemoveAfterDependency(afterNode);
+						if (debug)
+						{
+							var part1 = afterNode.innerPatch.PatchMethod.FullDescription();
+							var part2 = waitingList[i].innerPatch.PatchMethod.FullDescription();
+							FileLog.LogBuffered($"Breaking dependance between {part1} and {part2}");
+						}
 						return;
 					}
 		}
@@ -115,18 +122,18 @@ namespace HarmonyLib
 		void ProcessWaitingList()
 		{
 			// Need to change loop limit as patches are removed from the waiting list.
-			var waitingListCount = _waitingList.Count;
+			var waitingListCount = waitingList.Count;
 			// Counter for the loop is handled internally because we want to restart after each patch that is removed.
 			// Waiting list preserves the original sorted order so after each patch output new higher priority patches
 			// may become unblocked and as such have to be outputted first.
 			// Processing ends when there are no more unblocked patches in the waiting list.
 			for (var i = 0; i < waitingListCount;)
 			{
-				var node = _waitingList[i];
+				var node = waitingList[i];
 				// All node dependencies are satisfied, ready for output.
-				if (node.after.All(_handledPatches.Contains))
+				if (node.after.All(handledPatches.Contains))
 				{
-					_ = _waitingList.Remove(node);
+					_ = waitingList.Remove(node);
 					AddNodeToResult(node);
 					// Decrement the waiting list length and reset current position counter.
 					waitingListCount--;
@@ -141,8 +148,8 @@ namespace HarmonyLib
 		/// <param name="node">Patch to add</param>
 		void AddNodeToResult(PatchSortingWrapper node)
 		{
-			_result.Add(node);
-			_ = _handledPatches.Add(node);
+			result.Add(node);
+			_ = handledPatches.Add(node);
 		}
 
 		/// <summary>Wrapper used over the Patch object to allow faster dependency access and

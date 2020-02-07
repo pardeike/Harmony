@@ -103,17 +103,21 @@ namespace HarmonyLib
 			finalizers = new Patch[0];
 		}
 
+		/// <summary>Returns if any of the patches wants debugging turned on</summary>
+		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug);
+
 		/// <summary>Adds a prefix</summary>
 		/// <param name="patch">The patch</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="priority">The priority</param>
-		/// <param name="before">The before parameter</param>
-		/// <param name="after">The after parameter</param>
+		/// <param name="before">The before order</param>
+		/// <param name="after">The after order</param>
+		/// <param name="debug">The debug flag</param>
 		///
-		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after)
+		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
 			var l = prefixes.ToList();
-			l.Add(new Patch(patch, prefixes.Count() + 1, owner, priority, before, after));
+			l.Add(new Patch(patch, prefixes.Count() + 1, owner, priority, before, after, debug));
 			prefixes = l.ToArray();
 		}
 
@@ -134,13 +138,14 @@ namespace HarmonyLib
 		/// <param name="patch">The patch</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="priority">The priority</param>
-		/// <param name="before">The before parameter</param>
-		/// <param name="after">The after parameter</param>
+		/// <param name="before">The before order</param>
+		/// <param name="after">The after order</param>
+		/// <param name="debug">The debug flag</param>
 		///
-		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after)
+		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
 			var l = postfixes.ToList();
-			l.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after));
+			l.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after, debug));
 			postfixes = l.ToArray();
 		}
 
@@ -161,13 +166,14 @@ namespace HarmonyLib
 		/// <param name="patch">The patch</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="priority">The priority</param>
-		/// <param name="before">The before parameter</param>
-		/// <param name="after">The after parameter</param>
+		/// <param name="before">The before order</param>
+		/// <param name="after">The after order</param>
+		/// <param name="debug">The debug flag</param>
 		///
-		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after)
+		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
 			var l = transpilers.ToList();
-			l.Add(new Patch(patch, transpilers.Count() + 1, owner, priority, before, after));
+			l.Add(new Patch(patch, transpilers.Count() + 1, owner, priority, before, after, debug));
 			transpilers = l.ToArray();
 		}
 
@@ -188,13 +194,14 @@ namespace HarmonyLib
 		/// <param name="patch">The patch</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="priority">The priority</param>
-		/// <param name="before">The before parameter</param>
-		/// <param name="after">The after parameter</param>
+		/// <param name="before">The before order</param>
+		/// <param name="after">The after order</param>
+		/// <param name="debug">The debug flag</param>
 		///
-		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after)
+		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
 			var l = finalizers.ToList();
-			l.Add(new Patch(patch, finalizers.Count() + 1, owner, priority, before, after));
+			l.Add(new Patch(patch, finalizers.Count() + 1, owner, priority, before, after, debug));
 			finalizers = l.ToArray();
 		}
 
@@ -241,14 +248,19 @@ namespace HarmonyLib
 		/// <summary>The priority</summary>
 		public readonly int priority;
 
-		/// <summary>The before</summary>
+		/// <summary>The before order</summary>
 #pragma warning disable CA2235
 		public readonly string[] before;
 #pragma warning restore CA2235
 
-		/// <summary>The after</summary>
+		/// <summary>The after order</summary>
 #pragma warning disable CA2235
 		public readonly string[] after;
+#pragma warning restore CA2235
+
+		/// <summary>The debug flag</summary>
+#pragma warning disable CA2235
+		public readonly bool debug;
 #pragma warning restore CA2235
 
 		[NonSerialized]
@@ -285,10 +297,11 @@ namespace HarmonyLib
 		/// <param name="index">Zero-based index</param>
 		/// <param name="owner">The owner (Harmony ID)</param>
 		/// <param name="priority">The priority</param>
-		/// <param name="before">The before parameter</param>
-		/// <param name="after">The after parameter</param>
+		/// <param name="before">The before order</param>
+		/// <param name="after">The after order</param>
+		/// <param name="debug">The debug flag</param>
 		///
-		public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after)
+		public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after, bool debug)
 		{
 			if (patch is DynamicMethod) throw new Exception($"Cannot directly reference dynamic method \"{patch.FullDescription()}\" in Harmony. Use a factory method instead that will return the dynamic method.");
 
@@ -297,6 +310,7 @@ namespace HarmonyLib
 			this.priority = priority;
 			this.before = before;
 			this.after = after;
+			this.debug = debug;
 			PatchMethod = patch;
 		}
 

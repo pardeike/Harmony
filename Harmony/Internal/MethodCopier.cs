@@ -265,13 +265,12 @@ namespace HarmonyLib
 			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 
-			if (Harmony.DEBUG)
-				emitter.LogComment("start original");
+			emitter.LogComment("start original");
 
 			// pass3 - log out all new local variables
 			//
 			var savedLog = FileLog.GetBuffer(true);
-			emitter.AllLocalVariables().Do(local => Emitter.LogLocalVariable(local));
+			emitter.AllLocalVariables().Do(local => emitter.LogLocalVariable(local));
 			FileLog.LogBuffered(savedLog);
 
 			// pass4 - remove RET if it appears at the end
@@ -352,8 +351,7 @@ namespace HarmonyLib
 				idx++;
 			});
 
-			if (Harmony.DEBUG)
-				emitter.LogComment("end original");
+			emitter.LogComment("end original");
 		}
 
 		// interpret member info value

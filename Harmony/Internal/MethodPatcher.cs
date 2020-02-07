@@ -34,7 +34,7 @@ namespace HarmonyLib
 		readonly ILGenerator il;
 		readonly Emitter emitter;
 
-		internal MethodPatcher(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers)
+		internal MethodPatcher(MethodBase original, MethodBase source, string harmonyInstanceID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, bool debug)
 		{
 			if (original == null)
 				throw new ArgumentNullException(nameof(original));
@@ -49,7 +49,7 @@ namespace HarmonyLib
 
 			Memory.MarkForNoInlining(original);
 
-			if (Harmony.DEBUG)
+			if (debug)
 			{
 				FileLog.LogBuffered($"### Patch {original.FullDescription()}");
 				FileLog.FlushBuffer();
@@ -60,13 +60,13 @@ namespace HarmonyLib
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}");
 			if (patch == null)
-				throw new Exception("Could not create dynamic method");
+				throw new Exception("Could not create replacement method");
 
 			il = patch.GetILGenerator();
-			emitter = new Emitter(il);
+			emitter = new Emitter(il, debug);
 		}
 
-		internal MethodInfo CreateReplacement()
+		internal MethodInfo CreateReplacement(bool debug)
 		{
 			try
 			{
@@ -184,7 +184,7 @@ namespace HarmonyLib
 				if (hasFinalizers || endingReturn)
 					emitter.Emit(OpCodes.Ret);
 
-				if (Harmony.DEBUG)
+				if (debug)
 				{
 					FileLog.LogBuffered("DONE");
 					FileLog.LogBuffered("");
@@ -196,7 +196,7 @@ namespace HarmonyLib
 			catch (Exception ex)
 			{
 				var exceptionString = $"Exception from HarmonyInstance \"{harmonyInstanceID}\" patching {original.FullDescription()}: {ex}";
-				if (Harmony.DEBUG)
+				if (debug)
 				{
 					var savedIndentLevel = FileLog.indentLevel;
 					FileLog.indentLevel = 0;
@@ -208,7 +208,7 @@ namespace HarmonyLib
 			}
 			finally
 			{
-				if (Harmony.DEBUG)
+				if (debug)
 					FileLog.FlushBuffer();
 			}
 		}
