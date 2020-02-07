@@ -2,10 +2,7 @@ using Mono.Cecil;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace HarmonyLib
 {
@@ -14,7 +11,6 @@ namespace HarmonyLib
 	/// Used by the calli instruction, can be used by transpilers
 	/// </summary>
 	///
-	[Serializable]
 	public class InlineSignature : ICallSiteGenerator
 	{
 		/// <summary>See <see cref="System.Reflection.CallingConventions.HasThis"/></summary>
@@ -95,7 +91,6 @@ namespace HarmonyLib
 		/// similar to Mono.Cecil's OptionalModifierType / RequiredModifierType and C#'s modopt / modreq
 		/// </summary>
 		/// 
-		[Serializable]
 		public class ModifierType
 		{
 			/// <summary>Whether this is a modopt (optional modifier type) or a modreq (required modifier type)</summary>
