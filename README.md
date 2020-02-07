@@ -19,9 +19,15 @@
 	</a>
 </p>
 <p align="center">
-	<img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Update%20documentation" />
-	<img src="https://img.shields.io/travis/pardeike/Harmony/master.svg?logo=travis&label=travis:master" /> 
-	<img src="https://img.shields.io/appveyor/ci/pardeike/Harmony/master.svg?logo=appveyor&label=appveyor:master" /> 
+	<a href="https://dev.azure.com/pardeike/Harmony/_build">
+		<img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Build%20and%20test" />
+	</a>
+	<a href="https://travis-ci.org/pardeike/Harmony">
+		<img src="https://img.shields.io/travis/pardeike/Harmony/master.svg?logo=travis&label=travis:master" /> 
+	</a>
+	<a href="https://ci.appveyor.com/project/pardeike/harmony">
+		<img src="https://img.shields.io/appveyor/ci/pardeike/Harmony/master.svg?logo=appveyor&label=appveyor:master" /> 
+	</a>
 </p>
 <p align="center">
 	<a href="mailto:andreas@pardeike.net">
