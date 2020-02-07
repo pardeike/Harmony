@@ -118,7 +118,7 @@ namespace HarmonyLib
 					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspiler);
 
 				var endLabels = new List<Label>();
-				copier.Finalize(emitter, endLabels);
+				copier.Finalize(emitter, endLabels, out var endingReturn);
 
 				foreach (var label in endLabels)
 					emitter.MarkLabel(label);
@@ -134,7 +134,8 @@ namespace HarmonyLib
 
 				AddPostfixes(privateVars, true);
 
-				if (finalizers.Any())
+				var hasFinalizers = finalizers.Any();
+				if (hasFinalizers)
 				{
 					_ = AddFinalizers(privateVars, false);
 					emitter.Emit(OpCodes.Ldc_I4_1);
@@ -180,7 +181,8 @@ namespace HarmonyLib
 				if (firstArgIsReturnBuffer)
 					emitter.Emit(OpCodes.Stobj, returnType); // store result into ref
 
-				emitter.Emit(OpCodes.Ret);
+				if (hasFinalizers || endingReturn)
+					emitter.Emit(OpCodes.Ret);
 
 				if (Harmony.DEBUG)
 				{

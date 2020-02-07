@@ -28,9 +28,9 @@ namespace HarmonyLib
 			transpilers.Add(transpiler);
 		}
 
-		internal void Finalize(Emitter emitter, List<Label> endLabels)
+		internal void Finalize(Emitter emitter, List<Label> endLabels, out bool endingReturn)
 		{
-			reader.FinalizeILCodes(emitter, transpilers, endLabels);
+			reader.FinalizeILCodes(emitter, transpilers, endLabels, out endingReturn);
 		}
 	}
 
@@ -216,8 +216,9 @@ namespace HarmonyLib
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
 
-		internal void FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels)
+		internal void FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool endingReturn)
 		{
+			endingReturn = false;
 			if (generator == null) return;
 
 			// pass1 - define labels and add them to instructions that are target of a jump
@@ -284,6 +285,7 @@ namespace HarmonyLib
 				endLabels.AddRange(lastInstruction.labels);
 
 				codeInstructions.RemoveAt(codeInstructions.Count - 1);
+				endingReturn = true;
 			}
 
 			// pass5 - mark labels and exceptions and emit codes
@@ -318,48 +320,31 @@ namespace HarmonyLib
 				if (shortJumps.TryGetValue(code, out var longJump))
 					code = longJump;
 
-				var emitCode = true;
-
-				//if (code == OpCodes.Leave || code == OpCodes.Leave_S)
-				//{
-				//	// skip LEAVE on EndExceptionBlock
-				//	if (codeInstruction.blocks.Any(block => block.blockType == ExceptionBlockType.EndExceptionBlock))
-				//		emitCode = false;
-
-				//	// skip LEAVE on next instruction starts a new exception handler and we are already in 
-				//	if (idx < instructions.Length - 1)
-				//		if (instructions[idx + 1].blocks.Any(block => block.blockType != ExceptionBlockType.EndExceptionBlock))
-				//			emitCode = false;
-				//}
-
-				if (emitCode)
+				switch (code.OperandType)
 				{
-					switch (code.OperandType)
-					{
-						case OperandType.InlineNone:
-							emitter.Emit(code);
-							break;
+					case OperandType.InlineNone:
+						emitter.Emit(code);
+						break;
 
-						case OperandType.InlineSig:
-							var cecilGenerator = generator.GetProxiedShim<CecilILGenerator>();
-							if (cecilGenerator == null)
-							{
-								// Right now InlineSignatures can only be emitted using MonoMod.Common and its CecilILGenerator.
-								// That is because DynamicMethod's original ILGenerator is very restrictive about the calli opcode.
-								throw new NotSupportedException();
-							}
-							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
-							if ((operand is ICallSiteGenerator) == false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
-							emitter.LogIL(code, operand);
-							cecilGenerator.Emit(code, (ICallSiteGenerator)operand);
-							break;
+					case OperandType.InlineSig:
+						var cecilGenerator = generator.GetProxiedShim<CecilILGenerator>();
+						if (cecilGenerator == null)
+						{
+							// Right now InlineSignatures can only be emitted using MonoMod.Common and its CecilILGenerator.
+							// That is because DynamicMethod's original ILGenerator is very restrictive about the calli opcode.
+							throw new NotSupportedException();
+						}
+						if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
+						if ((operand is ICallSiteGenerator) == false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
+						emitter.LogIL(code, operand);
+						cecilGenerator.Emit(code, (ICallSiteGenerator)operand);
+						break;
 
-						default:
-							if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
-							emitter.LogIL(code, operand);
-							_ = generator.DynEmit(code, operand);
-							break;
-					}
+					default:
+						if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
+						emitter.LogIL(code, operand);
+						_ = generator.DynEmit(code, operand);
+						break;
 				}
 
 				codeInstruction.blocks.Do(block => emitter.MarkBlockAfter(block));
