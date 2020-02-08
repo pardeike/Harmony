@@ -2578,6 +2578,77 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.HarmonyDebug.HarmonyDebug
   nameWithType: HarmonyDebug.HarmonyDebug
+- uid: HarmonyLib.HarmonyException
+  name: HarmonyException
+  href: api/HarmonyLib.HarmonyException.html
+  commentId: T:HarmonyLib.HarmonyException
+  fullName: HarmonyLib.HarmonyException
+  nameWithType: HarmonyException
+- uid: HarmonyLib.HarmonyException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  name: HarmonyException(SerializationInfo, StreamingContext)
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_
+  commentId: M:HarmonyLib.HarmonyException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  fullName: HarmonyLib.HarmonyException.HarmonyException(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  nameWithType: HarmonyException.HarmonyException(SerializationInfo, StreamingContext)
+- uid: HarmonyLib.HarmonyException.#ctor*
+  name: HarmonyException
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException__ctor_
+  commentId: Overload:HarmonyLib.HarmonyException.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyException.HarmonyException
+  nameWithType: HarmonyException.HarmonyException
+- uid: HarmonyLib.HarmonyException.GetErrorIndex
+  name: GetErrorIndex()
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetErrorIndex
+  commentId: M:HarmonyLib.HarmonyException.GetErrorIndex
+  fullName: HarmonyLib.HarmonyException.GetErrorIndex()
+  nameWithType: HarmonyException.GetErrorIndex()
+- uid: HarmonyLib.HarmonyException.GetErrorIndex*
+  name: GetErrorIndex
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetErrorIndex_
+  commentId: Overload:HarmonyLib.HarmonyException.GetErrorIndex
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyException.GetErrorIndex
+  nameWithType: HarmonyException.GetErrorIndex
+- uid: HarmonyLib.HarmonyException.GetErrorOffset
+  name: GetErrorOffset()
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetErrorOffset
+  commentId: M:HarmonyLib.HarmonyException.GetErrorOffset
+  fullName: HarmonyLib.HarmonyException.GetErrorOffset()
+  nameWithType: HarmonyException.GetErrorOffset()
+- uid: HarmonyLib.HarmonyException.GetErrorOffset*
+  name: GetErrorOffset
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetErrorOffset_
+  commentId: Overload:HarmonyLib.HarmonyException.GetErrorOffset
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyException.GetErrorOffset
+  nameWithType: HarmonyException.GetErrorOffset
+- uid: HarmonyLib.HarmonyException.GetInstructions
+  name: GetInstructions()
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetInstructions
+  commentId: M:HarmonyLib.HarmonyException.GetInstructions
+  fullName: HarmonyLib.HarmonyException.GetInstructions()
+  nameWithType: HarmonyException.GetInstructions()
+- uid: HarmonyLib.HarmonyException.GetInstructions*
+  name: GetInstructions
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetInstructions_
+  commentId: Overload:HarmonyLib.HarmonyException.GetInstructions
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyException.GetInstructions
+  nameWithType: HarmonyException.GetInstructions
+- uid: HarmonyLib.HarmonyException.GetInstructionsWithOffsets
+  name: GetInstructionsWithOffsets()
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetInstructionsWithOffsets
+  commentId: M:HarmonyLib.HarmonyException.GetInstructionsWithOffsets
+  fullName: HarmonyLib.HarmonyException.GetInstructionsWithOffsets()
+  nameWithType: HarmonyException.GetInstructionsWithOffsets()
+- uid: HarmonyLib.HarmonyException.GetInstructionsWithOffsets*
+  name: GetInstructionsWithOffsets
+  href: api/HarmonyLib.HarmonyException.html#HarmonyLib_HarmonyException_GetInstructionsWithOffsets_
+  commentId: Overload:HarmonyLib.HarmonyException.GetInstructionsWithOffsets
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyException.GetInstructionsWithOffsets
+  nameWithType: HarmonyException.GetInstructionsWithOffsets
 - uid: HarmonyLib.HarmonyFinalizer
   name: HarmonyFinalizer
   href: api/HarmonyLib.HarmonyFinalizer.html
