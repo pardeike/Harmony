@@ -147,7 +147,7 @@ namespace HarmonyLib
 				PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
 				PatchFunctions.AddTranspiler(patchInfo, instance.Id, transpiler);
 				PatchFunctions.AddFinalizer(patchInfo, instance.Id, finalizer);
-				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
+				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
 
 				HarmonySharedState.UpdatePatchInfo(original, patchInfo);
 				return replacement;
@@ -173,7 +173,7 @@ namespace HarmonyLib
 					PatchFunctions.RemoveTranspiler(patchInfo, harmonyID);
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.Finalizer)
 					PatchFunctions.RemoveFinalizer(patchInfo, harmonyID);
-				_ = PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
+				_ = PatchFunctions.UpdateWrapper(original, patchInfo);
 
 				HarmonySharedState.UpdatePatchInfo(original, patchInfo);
 				return this;
@@ -191,7 +191,7 @@ namespace HarmonyLib
 				if (patchInfo == null) patchInfo = new PatchInfo();
 
 				PatchFunctions.RemovePatch(patchInfo, patch);
-				_ = PatchFunctions.UpdateWrapper(original, patchInfo, instance.Id);
+				_ = PatchFunctions.UpdateWrapper(original, patchInfo);
 
 				HarmonySharedState.UpdatePatchInfo(original, patchInfo);
 				return this;

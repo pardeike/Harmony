@@ -3,30 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-/*
-Patch
-|
-+- HarmonyPrepare
-|
-+- try
-|  |
-|  +- ReversePatch
-|  |
-|  +- BulkPatch / PatchWithAttributes
-|  |  |
-|  |  +- ProcessPatchJob
-|  |     |
-|  |     +- HarmonyPrepare
-|  |     |
-|  |     +- try
-|  |     |  |
-|  |     |  +- UpdateWrapper
-|  |     |
-|  |     +- HarmonyCleanup
-|  
-+- HarmonyCleanup
-*/
-
 namespace HarmonyLib
 {
 	/// <summary>A PatchClassProcessor handles patch annotation on a class</summary>
@@ -93,14 +69,17 @@ namespace HarmonyLib
 			if (containerAttributes == null)
 				return null;
 
+			Exception exception = null;
+
 			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true, false);
 			if (mainPrepareResult == false)
 			{
-				_ = RunMethod<HarmonyCleanup>();
+				RunMethod<HarmonyCleanup>(ref exception);
+				if (exception != null)
+					ReportException(exception, null);
 				return new List<MethodInfo>();
 			}
 
-			Exception exception = null;
 			var replacements = new List<MethodInfo>();
 			MethodBase lastOriginal = null;
 			try
@@ -115,8 +94,8 @@ namespace HarmonyLib
 				exception = ex;
 			}
 
-			var found = RunMethod<HarmonyCleanup>(exception);
-			if (!found && exception != null)
+			RunMethod<HarmonyCleanup>(ref exception, exception);
+			if (exception != null)
 				ReportException(exception, lastOriginal);
 			return replacements;
 		}
@@ -211,7 +190,7 @@ namespace HarmonyLib
 						foreach (var finalizer in job.finalizers)
 							PatchFunctions.AddFinalizer(patchInfo, instance.Id, finalizer);
 
-						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo, instance.Id);
+						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo);
 						HarmonySharedState.UpdatePatchInfo(job.original, patchInfo);
 					}
 					catch (Exception ex)
@@ -220,8 +199,8 @@ namespace HarmonyLib
 					}
 				}
 			}
-			var found = RunMethod<HarmonyCleanup>(job.original, exception);
-			if (!found && exception != null)
+			RunMethod<HarmonyCleanup>(ref exception, job.original, exception);
+			if (exception != null)
 				ReportException(exception, job.original);
 			job.replacement = replacement;
 		}
@@ -309,7 +288,7 @@ namespace HarmonyLib
 			return defaultIfNotExisting;
 		}
 
-		bool RunMethod<S>(params object[] parameters)
+		void RunMethod<S>(ref Exception exception, params object[] parameters)
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
@@ -317,15 +296,15 @@ namespace HarmonyLib
 				var actualParameters = AccessTools.ActualParameters(method, input);
 				try
 				{
-					_ = method.Invoke(null, actualParameters);
+					var result = method.Invoke(null, actualParameters);
+					if (method.ReturnType == typeof(Exception))
+						exception = result as Exception;
 				}
 				catch (Exception ex)
 				{
 					ReportException(ex, method);
 				}
-				return true;
 			}
-			return false;
 		}
 	}
 }

@@ -22,7 +22,6 @@ namespace HarmonyLib
 
 		readonly MethodBase original;
 		readonly MethodBase source;
-		readonly string harmonyID;
 		readonly List<MethodInfo> prefixes;
 		readonly List<MethodInfo> postfixes;
 		readonly List<MethodInfo> transpilers;
@@ -34,14 +33,13 @@ namespace HarmonyLib
 		readonly ILGenerator il;
 		readonly Emitter emitter;
 
-		internal MethodPatcher(MethodBase original, MethodBase source, string harmonyID, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, bool debug)
+		internal MethodPatcher(MethodBase original, MethodBase source, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, bool debug)
 		{
 			if (original == null)
 				throw new ArgumentNullException(nameof(original));
 
 			this.original = original;
 			this.source = source;
-			this.harmonyID = harmonyID;
 			this.prefixes = prefixes;
 			this.postfixes = postfixes;
 			this.transpilers = transpilers;
@@ -66,7 +64,7 @@ namespace HarmonyLib
 			emitter = new Emitter(il, debug);
 		}
 
-		internal MethodInfo CreateReplacement(bool debug)
+		internal MethodInfo CreateReplacement(bool debug, out Dictionary<int, CodeInstruction> finalInstructions)
 		{
 			var originalVariables = DeclareLocalVariables(source ?? original);
 			var privateVars = new Dictionary<string, LocalBuilder>();
@@ -181,6 +179,8 @@ namespace HarmonyLib
 
 			if (hasFinalizers || endingReturn)
 				emitter.Emit(OpCodes.Ret);
+
+			finalInstructions = emitter.GetInstructions();
 
 			if (debug)
 			{

@@ -91,9 +91,9 @@ namespace HarmonyLib
 		/// <param name="original">The original method/constructor you want to duplicate</param>
 		/// <param name="standin">Your stub method that will become the original. Needs to have the correct signature (either original or whatever your transpilers generates)</param>
 		/// <param name="transpiler">An optional transpiler that will be applied during the process</param>
-		public MethodInfo ReversePatch(MethodBase original, HarmonyMethod standin, MethodInfo transpiler = null)
+		public static MethodInfo ReversePatch(MethodBase original, HarmonyMethod standin, MethodInfo transpiler = null)
 		{
-			return PatchFunctions.ReversePatch(standin, original, this, transpiler);
+			return PatchFunctions.ReversePatch(standin, original, transpiler);
 		}
 
 		/// <summary>Unpatches methods</summary>

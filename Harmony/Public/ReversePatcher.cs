@@ -45,7 +45,7 @@ namespace HarmonyLib
 				throw new NullReferenceException($"Null method for {instance.Id}");
 
 			var transpiler = GetTranspiler(standin.method);
-			return PatchFunctions.ReversePatch(standin, original, instance, transpiler);
+			return PatchFunctions.ReversePatch(standin, original, transpiler);
 		}
 
 		internal static MethodInfo GetTranspiler(MethodInfo method)

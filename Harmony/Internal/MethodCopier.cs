@@ -335,12 +335,14 @@ namespace HarmonyLib
 						}
 						if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
 						if ((operand is ICallSiteGenerator) == false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
+						emitter.AddInstruction(code, operand);
 						emitter.LogIL(code, operand);
 						cecilGenerator.Emit(code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
 						if (operand == null) throw new Exception($"Wrong null argument: {codeInstruction}");
+						emitter.AddInstruction(code, operand);
 						emitter.LogIL(code, operand);
 						_ = generator.DynEmit(code, operand);
 						break;

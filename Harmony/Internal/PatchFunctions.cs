@@ -146,10 +146,9 @@ namespace HarmonyLib
 		/// <summary>Creates new replacement method with the latest patches and detours the original method</summary>
 		/// <param name="original">The original method</param>
 		/// <param name="patchInfo">Information describing the patches</param>
-		/// <param name="instanceID">Harmony ID</param>
 		/// <returns>The newly created replacement method</returns>
 		///
-		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo, string instanceID)
+		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo)
 		{
 			var debug = patchInfo.Debugging || Harmony.DEBUG;
 
@@ -158,15 +157,22 @@ namespace HarmonyLib
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers, debug);
 			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers, debug);
 
-			var patcher = new MethodPatcher(original, null, instanceID, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, debug);
-			var replacement = patcher.CreateReplacement(debug);
+			var patcher = new MethodPatcher(original, null, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, debug);
+			var replacement = patcher.CreateReplacement(debug, out var finalInstructions);
 			if (replacement == null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
 
-			Memory.DetourMethodAndPersist(original, replacement);
+			try
+			{
+				Memory.DetourMethodAndPersist(original, replacement);
+			}
+			catch (Exception ex)
+			{
+				throw HarmonyException.Create(ex, finalInstructions);
+			}
 			return replacement;
 		}
 
-		internal static MethodInfo ReversePatch(HarmonyMethod standin, MethodBase original, Harmony instance, MethodInfo postTranspiler)
+		internal static MethodInfo ReversePatch(HarmonyMethod standin, MethodBase original, MethodInfo postTranspiler)
 		{
 			if (standin == null)
 				throw new ArgumentNullException(nameof(standin));
@@ -184,13 +190,20 @@ namespace HarmonyLib
 			if (postTranspiler != null) transpilers.Add(postTranspiler);
 
 			var empty = new List<MethodInfo>();
-			var patcher = new MethodPatcher(standin.method, original, instance.Id, empty, empty, transpilers, empty, debug);
-			var replacement = patcher.CreateReplacement(debug);
+			var patcher = new MethodPatcher(standin.method, original, empty, empty, transpilers, empty, debug);
+			var replacement = patcher.CreateReplacement(debug, out var finalInstructions);
 			if (replacement == null) throw new MissingMethodException($"Cannot create replacement for {standin.method.FullDescription()}");
 
-			var errorString = Memory.DetourMethod(standin.method, replacement);
-			if (errorString != null)
-				throw new FormatException($"Method {standin.method.FullDescription()} cannot be patched. Reason: {errorString}");
+			try
+			{
+				var errorString = Memory.DetourMethod(standin.method, replacement);
+				if (errorString != null)
+					throw new FormatException($"Method {standin.method.FullDescription()} cannot be patched. Reason: {errorString}");
+			}
+			catch (Exception ex)
+			{
+				throw HarmonyException.Create(ex, finalInstructions);
+			}
 
 			PatchTools.RememberObject(standin.method, replacement);
 			return replacement;
