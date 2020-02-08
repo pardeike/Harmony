@@ -41,6 +41,22 @@ references:
   commentId: F:HarmonyLib.AccessTools.allDeclared
   fullName: HarmonyLib.AccessTools.allDeclared
   nameWithType: AccessTools.allDeclared
+- uid: HarmonyLib.AccessTools.CombinedHashCode(System.Collections.Generic.IEnumerable{System.Object})
+  name: CombinedHashCode(IEnumerable<Object>)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CombinedHashCode_System_Collections_Generic_IEnumerable_System_Object__
+  commentId: M:HarmonyLib.AccessTools.CombinedHashCode(System.Collections.Generic.IEnumerable{System.Object})
+  name.vb: CombinedHashCode(IEnumerable(Of Object))
+  fullName: HarmonyLib.AccessTools.CombinedHashCode(System.Collections.Generic.IEnumerable<System.Object>)
+  fullName.vb: HarmonyLib.AccessTools.CombinedHashCode(System.Collections.Generic.IEnumerable(Of System.Object))
+  nameWithType: AccessTools.CombinedHashCode(IEnumerable<Object>)
+  nameWithType.vb: AccessTools.CombinedHashCode(IEnumerable(Of Object))
+- uid: HarmonyLib.AccessTools.CombinedHashCode*
+  name: CombinedHashCode
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CombinedHashCode_
+  commentId: Overload:HarmonyLib.AccessTools.CombinedHashCode
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.CombinedHashCode
+  nameWithType: AccessTools.CombinedHashCode
 - uid: HarmonyLib.AccessTools.Constructor(System.Type,System.Type[],System.Boolean)
   name: Constructor(Type, Type[], Boolean)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Constructor_System_Type_System_Type___System_Boolean_
