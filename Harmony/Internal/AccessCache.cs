@@ -6,77 +6,87 @@ namespace HarmonyLib
 {
 	internal class AccessCache
 	{
-		readonly Dictionary<Type, Dictionary<string, FieldInfo>> fields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
-		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> properties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
-		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> methods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
-
-		internal FieldInfo GetFieldInfo(Type type, string name)
+		internal enum MemberType
 		{
-			if (fields.TryGetValue(type, out var fieldsByType) == false)
-			{
-				fieldsByType = new Dictionary<string, FieldInfo>();
-				fields.Add(type, fieldsByType);
-			}
-			if (fieldsByType.TryGetValue(name, out var field) == false)
-			{
-				field = AccessTools.DeclaredField(type, name);
-				fieldsByType.Add(name, field);
-			}
-			return field;
+			Any,
+			Static,
+			Instance
 		}
 
-		internal PropertyInfo GetPropertyInfo(Type type, string name)
+		const BindingFlags BasicFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField | BindingFlags.GetProperty | BindingFlags.SetProperty;
+		readonly static Dictionary<MemberType, BindingFlags> declaredOnlyBindingFlags = new Dictionary<MemberType, BindingFlags>()
 		{
-			if (properties.TryGetValue(type, out var propertiesByType) == false)
+			{ MemberType.Any, BasicFlags | BindingFlags.Instance | BindingFlags.Static },
+			{ MemberType.Instance, BasicFlags | BindingFlags.Instance },
+			{ MemberType.Static, BasicFlags | BindingFlags.Static }
+		};
+
+		readonly Dictionary<Type, Dictionary<string, FieldInfo>> declaredFields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
+		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> declaredProperties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
+		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> declaredMethods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
+
+		readonly Dictionary<Type, Dictionary<string, FieldInfo>> inheritedFields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
+		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> inheritedProperties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
+		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> inheritedMethods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
+
+		static T Get<T>(Dictionary<Type, Dictionary<string, T>> dict, Type type, string name, Func<T> fetcher)
+		{
+			if (dict.TryGetValue(type, out var valuesByName) == false)
 			{
-				propertiesByType = new Dictionary<string, PropertyInfo>();
-				properties.Add(type, propertiesByType);
+				valuesByName = new Dictionary<string, T>();
+				dict[type] = valuesByName;
 			}
-			if (propertiesByType.TryGetValue(name, out var property) == false)
+			if (valuesByName.TryGetValue(name, out var value) == false)
 			{
-				property = AccessTools.DeclaredProperty(type, name);
-				propertiesByType.Add(name, property);
+				value = fetcher();
+				valuesByName[name] = value;
 			}
-			return property;
+			return value;
 		}
 
-		static int CombinedHashCode(IEnumerable<object> objects)
+		static T Get<T>(Dictionary<Type, Dictionary<string, Dictionary<int, T>>> dict, Type type, string name, Type[] arguments, Func<T> fetcher)
 		{
-			var hash1 = (5381 << 16) + 5381;
-			var hash2 = hash1;
-			var i = 0;
-			foreach (var obj in objects)
+			if (dict.TryGetValue(type, out var valuesByName) == false)
 			{
-				if (i % 2 == 0)
-					hash1 = ((hash1 << 5) + hash1 + (hash1 >> 27)) ^ obj.GetHashCode();
-				else
-					hash2 = ((hash2 << 5) + hash2 + (hash2 >> 27)) ^ obj.GetHashCode();
-				++i;
+				valuesByName = new Dictionary<string, Dictionary<int, T>>();
+				dict[type] = valuesByName;
 			}
-			return hash1 + (hash2 * 1566083941);
+			if (valuesByName.TryGetValue(name, out var valuesByArgument) == false)
+			{
+				valuesByArgument = new Dictionary<int, T>();
+				valuesByName[name] = valuesByArgument;
+			}
+			var argumentsHash = AccessTools.CombinedHashCode(arguments);
+			if (valuesByArgument.TryGetValue(argumentsHash, out var value) == false)
+			{
+				value = fetcher();
+				valuesByArgument[argumentsHash] = value;
+			}
+			return value;
 		}
 
-		internal MethodBase GetMethodInfo(Type type, string name, Type[] arguments)
+		internal FieldInfo GetFieldInfo(Type type, string name, MemberType memberType = MemberType.Any, bool declaredOnly = false)
 		{
-			_ = methods.TryGetValue(type, out var methodsByName);
-			if (methodsByName == null)
-			{
-				methodsByName = new Dictionary<string, Dictionary<int, MethodBase>>();
-				methods[type] = methodsByName;
-			}
-			_ = methodsByName.TryGetValue(name, out var methodsByArguments);
-			if (methodsByArguments == null)
-			{
-				methodsByArguments = new Dictionary<int, MethodBase>();
-				methodsByName[name] = methodsByArguments;
-			}
-			var argumentsHash = CombinedHashCode(arguments);
-			if (methodsByArguments.TryGetValue(argumentsHash, out var method) == false)
-			{
-				method = AccessTools.Method(type, name, arguments);
-				methodsByArguments.Add(argumentsHash, method);
-			}
-			return method;
+			var value = Get(declaredFields, type, name, () => type.GetField(name, declaredOnlyBindingFlags[memberType]));
+			if (value == null && declaredOnly == false)
+				value = Get(inheritedFields, type, name, () => AccessTools.FindIncludingBaseTypes(type, t => t.GetField(name, AccessTools.all)));
+			return value;
+		}
+
+		internal PropertyInfo GetPropertyInfo(Type type, string name, MemberType memberType = MemberType.Any, bool declaredOnly = false)
+		{
+			var value = Get(declaredProperties, type, name, () => type.GetProperty(name, declaredOnlyBindingFlags[memberType]));
+			if (value == null && declaredOnly == false)
+				value = Get(inheritedProperties, type, name, () => AccessTools.FindIncludingBaseTypes(type, t => t.GetProperty(name, AccessTools.all)));
+			return value;
+		}
+
+		internal MethodBase GetMethodInfo(Type type, string name, Type[] arguments, MemberType memberType = MemberType.Any, bool declaredOnly = false)
+		{
+			var value = Get(declaredMethods, type, name, arguments, () => type.GetMethod(name, declaredOnlyBindingFlags[memberType]));
+			if (value == null && declaredOnly == false)
+				value = Get(inheritedMethods, type, name, arguments, () => AccessTools.Method(type, name, arguments));
+			return value;
 		}
 	}
 }

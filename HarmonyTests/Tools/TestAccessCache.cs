@@ -13,7 +13,7 @@ namespace HarmonyLibTests
 	{
 		void InjectField(AccessCache cache)
 		{
-			var f_fields = cache.GetType().GetField("fields", AccessTools.all);
+			var f_fields = cache.GetType().GetField("declaredFields", AccessTools.all);
 			Assert.NotNull(f_fields);
 			var fields = (Dictionary<Type, Dictionary<string, FieldInfo>>)f_fields.GetValue(cache);
 			Assert.NotNull(fields);
@@ -24,9 +24,9 @@ namespace HarmonyLibTests
 			infos.Add("field1", typeof(AccessToolsClass).GetField("field2", AccessTools.all));
 		}
 
-		void InjectProperty(AccessCache cache)
+		void InjectProperty(AccessCache cache, bool declaredOnly = false)
 		{
-			var f_properties = cache.GetType().GetField("properties", AccessTools.all);
+			var f_properties = cache.GetType().GetField("declaredProperties", AccessTools.all);
 			Assert.NotNull(f_properties);
 			var properties = (Dictionary<Type, Dictionary<string, PropertyInfo>>)f_properties.GetValue(cache);
 			Assert.NotNull(properties);
@@ -37,9 +37,9 @@ namespace HarmonyLibTests
 			infos.Add("Property", typeof(AccessToolsClass).GetProperty("Property2", AccessTools.all));
 		}
 
-		void InjectMethod(AccessCache cache)
+		void InjectMethod(AccessCache cache, bool declaredOnly = false)
 		{
-			var f_methods = cache.GetType().GetField("methods", AccessTools.all);
+			var f_methods = cache.GetType().GetField("declaredMethods", AccessTools.all);
 			Assert.NotNull(f_methods);
 			var methods = (Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>)f_methods.GetValue(cache);
 			Assert.NotNull(methods);

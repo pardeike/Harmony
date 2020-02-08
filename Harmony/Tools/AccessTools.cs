@@ -1076,5 +1076,25 @@ namespace HarmonyLib
 		{
 			return Nullable.GetUnderlyingType(typeof(T)) != null;
 		}
+
+		/// <summary>Calculates a combined hash code for an enumeration of objects</summary>
+		/// <param name="objects">The objects</param>
+		/// <returns>The hash code</returns>
+		///
+		public static int CombinedHashCode(IEnumerable<object> objects)
+		{
+			var hash1 = (5381 << 16) + 5381;
+			var hash2 = hash1;
+			var i = 0;
+			foreach (var obj in objects)
+			{
+				if (i % 2 == 0)
+					hash1 = ((hash1 << 5) + hash1 + (hash1 >> 27)) ^ obj.GetHashCode();
+				else
+					hash2 = ((hash2 << 5) + hash2 + (hash2 >> 27)) ^ obj.GetHashCode();
+				++i;
+			}
+			return hash1 + (hash2 * 1566083941);
+		}
 	}
 }

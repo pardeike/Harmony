@@ -32,9 +32,13 @@ namespace HarmonyLibTests.Assets
 			set => throw new Exception();
 		}
 
-		static string StaticProperty => "test1";
 #pragma warning disable CS0414
+		static string StaticProperty => "test1";
 		static readonly string staticField = "test1";
+
+		private string BaseProperty => "base-property";
+		private readonly string baseField = "base-field";
+		private string BaseMethod() { return "base-method"; }
 #pragma warning restore CS0414
 	}
 
@@ -149,5 +153,9 @@ namespace HarmonyLibTests.Assets
 		{
 			return "TraverseProperties_AccessModifiers";
 		}
+	}
+
+	public class TraverseProperties_SubClass : TraverseProperties_BaseClass
+	{
 	}
 }
