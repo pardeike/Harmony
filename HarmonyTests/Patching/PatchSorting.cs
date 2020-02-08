@@ -320,19 +320,19 @@ namespace HarmonyLibTests
 
 			var sorter = new PatchSorter(patchInstances, false);
 
-			Assert.IsTrue(sorter.ComparePatchLists(patchInstances), "Same array");
-			Assert.IsTrue(sorter.ComparePatchLists(patchInstances.Reverse().ToArray()), "Patch array reversed");
-			Assert.IsFalse(sorter.ComparePatchLists(patchInstances.Take(2).ToArray()), "Sub-array of the original");
+			Assert.True(sorter.ComparePatchLists(patchInstances), "Same array");
+			Assert.True(sorter.ComparePatchLists(patchInstances.Reverse().ToArray()), "Patch array reversed");
+			Assert.False(sorter.ComparePatchLists(patchInstances.Take(2).ToArray()), "Sub-array of the original");
 			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.High, new[] { "owner A" }, new[] { "owner C" }, false);
-			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Priority of patch changed");
+			Assert.False(sorter.ComparePatchLists(patchInstances), "Priority of patch changed");
 			patchInstances[1] = new Patch(patches[1], 2, "owner B", Priority.Normal, new[] { "owner A" }, new[] { "owner C" }, false);
-			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Index of patch changed");
+			Assert.False(sorter.ComparePatchLists(patchInstances), "Index of patch changed");
 			patchInstances[1] = new Patch(patches[1], 1, "owner D", Priority.Normal, new[] { "owner A" }, new[] { "owner C" }, false);
-			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Owner of patch changed");
+			Assert.False(sorter.ComparePatchLists(patchInstances), "Owner of patch changed");
 			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.Normal, new[] { "owner D" }, new[] { "owner C" }, false);
-			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "Before of patch changed");
+			Assert.False(sorter.ComparePatchLists(patchInstances), "Before of patch changed");
 			patchInstances[1] = new Patch(patches[1], 1, "owner B", Priority.Normal, new[] { "owner A" }, new[] { "owner D" }, false);
-			Assert.IsFalse(sorter.ComparePatchLists(patchInstances), "After of patch changed");
+			Assert.False(sorter.ComparePatchLists(patchInstances), "After of patch changed");
 		}
 	}
 }

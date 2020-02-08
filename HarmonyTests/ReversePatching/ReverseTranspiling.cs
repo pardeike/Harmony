@@ -16,24 +16,24 @@ namespace HarmonyLibTests
 			Assert.AreEqual("Original123Prolog", result1);
 
 			var originalClass = typeof(Class0Reverse);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class0ReversePatch);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
 			_ = patcher.AddPostfix(new HarmonyMethod(postfix));
 			_ = patcher.Patch();
 
 			var standin = new HarmonyMethod(patchClass.GetMethod("StringOperation"));
-			Assert.IsNotNull(standin);
-			Assert.IsNotNull(standin.method);
+			Assert.NotNull(standin);
+			Assert.NotNull(standin.method);
 
 			var reversePatcher = instance.CreateReversePatcher(originalMethod, standin);
 			_ = reversePatcher.Patch();

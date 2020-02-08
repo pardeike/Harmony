@@ -104,19 +104,19 @@ namespace HarmonyLibTests
 		public void Test_GenericStructReturnTypes()
 		{
 			var originalClass = typeof(MyList<>).MakeGenericType(typeof(int));
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("GetEnumerator");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(TestGenericStructReturnTypes_Patch);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.Patch();
 
@@ -137,11 +137,11 @@ namespace HarmonyLibTests
 		public void Test_GenericsOriginalMethod()
 		{
 			var originalMethod = typeof(Class13<int>).GetMethod(nameof(Class13<int>.Add));
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class13Patch);
 			var prefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(prefix);
+			Assert.NotNull(prefix);
 
 			var list1 = new Class13<int> { 1, 2, 3 };
 			list1.Add(1000);
@@ -153,10 +153,10 @@ namespace HarmonyLibTests
 			Assert.AreEqual(1000, e1.Current);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPrefix(prefix);
 			_ = patcher.Patch();
 

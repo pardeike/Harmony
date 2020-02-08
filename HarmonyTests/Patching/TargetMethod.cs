@@ -12,75 +12,75 @@ namespace HarmonyLibTests
 		public void Test_TargetMethod_Returns_Null()
 		{
 			var patchClass = typeof(Class15Patch);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var processor = harmonyInstance.ProcessorForAnnotatedClass(patchClass);
-			Assert.IsNotNull(processor);
+			Assert.NotNull(processor);
 
 			Exception exception = null;
 			try
 			{
-				Assert.IsNotNull(processor.Patch());
+				Assert.NotNull(processor.Patch());
 			}
 			catch (Exception ex)
 			{
 				exception = ex;
 			}
-			Assert.IsNotNull(exception);
-			Assert.IsTrue(exception.Message.Contains("returned an unexpected result: null"));
+			Assert.NotNull(exception);
+			Assert.True(exception.Message.Contains("returned an unexpected result: null"));
 		}
 
 		[Test]
 		public void Test_TargetMethod_Returns_Wrong_Type()
 		{
 			var patchClass = typeof(Class16Patch);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var processor = harmonyInstance.ProcessorForAnnotatedClass(patchClass);
-			Assert.IsNotNull(processor);
+			Assert.NotNull(processor);
 
 			Exception exception = null;
 			try
 			{
-				Assert.IsNotNull(processor.Patch());
+				Assert.NotNull(processor.Patch());
 			}
 			catch (Exception ex)
 			{
 				exception = ex;
 			}
-			Assert.IsNotNull(exception);
-			Assert.IsTrue(exception.Message.Contains("has wrong return type"));
+			Assert.NotNull(exception);
+			Assert.True(exception.Message.Contains("has wrong return type"));
 		}
 
 		[Test]
 		public void Test_TargetMethods_Returns_Null()
 		{
 			var patchClass = typeof(Class17Patch);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var processor = harmonyInstance.ProcessorForAnnotatedClass(patchClass);
-			Assert.IsNotNull(processor);
+			Assert.NotNull(processor);
 
 			Exception exception = null;
 			try
 			{
-				Assert.IsNotNull(processor.Patch());
+				Assert.NotNull(processor.Patch());
 			}
 			catch (Exception ex)
 			{
 				exception = ex;
 			}
-			Assert.IsNotNull(exception);
-			Assert.IsTrue(exception.Message.Contains("returned an unexpected result: some element was null"));
+			Assert.NotNull(exception);
+			Assert.True(exception.Message.Contains("returned an unexpected result: some element was null"));
 		}
 	}
 }

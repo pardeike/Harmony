@@ -11,15 +11,15 @@ namespace HarmonyLibTests
 		public void TestPlainMethodExceptions()
 		{
 			var originalClass = typeof(ClassExceptionFilter);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = new PatchProcessor(instance, originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			patcher.Patch();
 
 			var result = ClassExceptionFilter.Method(null);

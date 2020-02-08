@@ -12,16 +12,16 @@ namespace HarmonyLibTests
 		public void Test_ManyFinalizers()
 		{
 			var originalClass = typeof(Assets.CombinedPatchClass);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var patchClass = typeof(Assets.CombinedPatchClass_Patch_1);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var processor = harmonyInstance.ProcessorForAnnotatedClass(patchClass);
-			Assert.IsNotNull(processor);
-			Assert.IsNotNull(processor.Patch());
+			Assert.NotNull(processor);
+			Assert.NotNull(processor.Patch());
 
 			CombinedPatchClass_Patch_1.counter = 0;
 			var instance = new CombinedPatchClass();
@@ -35,16 +35,16 @@ namespace HarmonyLibTests
 		public static void Test_Method11()
 		{
 			var originalClass = typeof(Class14);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var patchClass = typeof(Class14Patch);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var processor = harmonyInstance.ProcessorForAnnotatedClass(patchClass);
-			Assert.IsNotNull(processor);
-			Assert.IsNotNull(processor.Patch());
+			Assert.NotNull(processor);
+			Assert.NotNull(processor.Patch());
 
 			_ = new Class14().Test("Test1", new KeyValuePair<string, int>("1", 1));
 			_ = new Class14().Test("Test2", new KeyValuePair<string, int>("1", 1), new KeyValuePair<string, int>("2", 2));

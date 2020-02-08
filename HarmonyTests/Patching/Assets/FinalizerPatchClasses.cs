@@ -32,7 +32,13 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method()
 		{
-			Console.WriteLine("Method");
+			try
+			{
+				_ = DateTime.Now;
+			}
+			finally
+			{
+			}
 		}
 	}
 
@@ -50,7 +56,7 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public string Method()
 		{
-			Console.WriteLine("Method");
+			_ = DateTime.Now;
 			return "OriginalResult";
 		}
 	}

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -46,12 +46,12 @@ namespace HarmonyLibTests
 			{
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
-				Assert.IsNotNull(ptrv);
+				Assert.NotNull(ptrv);
 				if (name == "BaseProperty2")
 				{
 					// BaseProperty2 is only defined in base class
-					Assert.IsNull(ptrv.GetValue());
-					Assert.IsNull(ptrv.GetValue<string>());
+					Assert.Null(ptrv.GetValue());
+					Assert.Null(ptrv.GetValue<string>());
 				}
 				else
 				{
@@ -79,7 +79,7 @@ namespace HarmonyLibTests
 
 				var name = TraverseProperties.propertyNames[i];
 				var ptrv = trv.Property(name);
-				Assert.IsNotNull(ptrv);
+				Assert.NotNull(ptrv);
 				_ = ptrv.SetValue(newValue);
 
 				// after
@@ -87,8 +87,8 @@ namespace HarmonyLibTests
 				{
 					// BaseProperty2 is only defined in base class
 					Assert.AreEqual(TraverseProperties.testStrings[i], instance.GetTestProperty(i));
-					Assert.IsNull(ptrv.GetValue());
-					Assert.IsNull(ptrv.GetValue<string>());
+					Assert.Null(ptrv.GetValue());
+					Assert.Null(ptrv.GetValue<string>());
 				}
 				else
 				{

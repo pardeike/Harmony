@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.IL
 {
@@ -31,28 +32,46 @@ namespace HarmonyLibTests.IL
 
 	public static class TestMethods1
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static void Test1(out string s)
 		{
-			Console.WriteLine("Test1");
-			s = "Test1";
+			try
+			{
+				s = "Test1";
+			}
+			finally
+			{
+			}
 		}
 	}
 
 	public class TestMethods2
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public string Test2(int n, string s)
 		{
-			Console.WriteLine("Test2");
-			return s;
+			try
+			{
+				return s;
+			}
+			finally
+			{
+			}
 		}
 	}
 
 	public class TestMethods3
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static List<int> Test3(Vec3 v, List<int> list)
 		{
-			Console.WriteLine("Test3");
-			return new List<int>();
+			try
+			{
+				return new List<int>();
+			}
+			finally
+			{
+			}
 		}
 	}
 

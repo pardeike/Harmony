@@ -10,31 +10,31 @@ namespace HarmonyLibTests
 		public void Test_ByRefResultPrefix()
 		{
 			var originalClass = typeof(Assets.Class11);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 
 			var originalMethod = originalClass.GetMethod(nameof(Assets.Class11.TestMethod));
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Assets.Class11Patch);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			var prefix = patchClass.GetMethod(nameof(Assets.Class11Patch.Prefix));
-			Assert.IsNotNull(prefix);
+			Assert.NotNull(prefix);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var patchResult = harmonyInstance.Patch(
 				original: originalMethod,
 				prefix: new HarmonyMethod(prefix));
 
-			Assert.IsNotNull(patchResult);
+			Assert.NotNull(patchResult);
 
 			var instance = new Assets.Class11();
 			var result = instance.TestMethod(0);
 
-			Assert.IsFalse(instance.originalMethodRan);
-			Assert.IsTrue(Assets.Class11Patch.prefixed);
+			Assert.False(instance.originalMethodRan);
+			Assert.True(Assets.Class11Patch.prefixed);
 
 			Assert.AreEqual("patched", result);
 		}

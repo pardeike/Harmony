@@ -14,11 +14,11 @@ namespace HarmonyLibTests
 		void InjectField(AccessCache cache)
 		{
 			var f_fields = cache.GetType().GetField("fields", AccessTools.all);
-			Assert.IsNotNull(f_fields);
+			Assert.NotNull(f_fields);
 			var fields = (Dictionary<Type, Dictionary<string, FieldInfo>>)f_fields.GetValue(cache);
-			Assert.IsNotNull(fields);
+			Assert.NotNull(fields);
 			_ = fields.TryGetValue(typeof(AccessToolsClass), out var infos);
-			Assert.IsNotNull(infos);
+			Assert.NotNull(infos);
 
 			_ = infos.Remove("field1");
 			infos.Add("field1", typeof(AccessToolsClass).GetField("field2", AccessTools.all));
@@ -27,11 +27,11 @@ namespace HarmonyLibTests
 		void InjectProperty(AccessCache cache)
 		{
 			var f_properties = cache.GetType().GetField("properties", AccessTools.all);
-			Assert.IsNotNull(f_properties);
+			Assert.NotNull(f_properties);
 			var properties = (Dictionary<Type, Dictionary<string, PropertyInfo>>)f_properties.GetValue(cache);
-			Assert.IsNotNull(properties);
+			Assert.NotNull(properties);
 			_ = properties.TryGetValue(typeof(AccessToolsClass), out var infos);
-			Assert.IsNotNull(infos);
+			Assert.NotNull(infos);
 
 			_ = infos.Remove("Property");
 			infos.Add("Property", typeof(AccessToolsClass).GetProperty("Property2", AccessTools.all));
@@ -40,13 +40,13 @@ namespace HarmonyLibTests
 		void InjectMethod(AccessCache cache)
 		{
 			var f_methods = cache.GetType().GetField("methods", AccessTools.all);
-			Assert.IsNotNull(f_methods);
+			Assert.NotNull(f_methods);
 			var methods = (Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>)f_methods.GetValue(cache);
-			Assert.IsNotNull(methods);
+			Assert.NotNull(methods);
 			_ = methods.TryGetValue(typeof(AccessToolsClass), out var dicts);
-			Assert.IsNotNull(dicts);
+			Assert.NotNull(dicts);
 			_ = dicts.TryGetValue("Method1", out var infos);
-			Assert.IsNotNull(dicts);
+			Assert.NotNull(dicts);
 			var argumentHash = infos.Keys.ToList().First();
 			_ = infos.Remove(argumentHash);
 			infos.Add(argumentHash, typeof(AccessToolsClass).GetMethod("Method2", AccessTools.all));
@@ -57,7 +57,7 @@ namespace HarmonyLibTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNotNull((new AccessCache()).GetFieldInfo(type, "field1"));
+			Assert.NotNull((new AccessCache()).GetFieldInfo(type, "field1"));
 
 			var cache1 = new AccessCache();
 			var finfo1 = cache1.GetFieldInfo(type, "field1");
@@ -78,7 +78,7 @@ namespace HarmonyLibTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNotNull((new AccessCache()).GetPropertyInfo(type, "Property"));
+			Assert.NotNull((new AccessCache()).GetPropertyInfo(type, "Property"));
 
 			var cache1 = new AccessCache();
 			var pinfo1 = cache1.GetPropertyInfo(type, "Property");
@@ -99,7 +99,7 @@ namespace HarmonyLibTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.IsNotNull((new AccessCache()).GetMethodInfo(type, "Method1", Type.EmptyTypes));
+			Assert.NotNull((new AccessCache()).GetMethodInfo(type, "Method1", Type.EmptyTypes));
 
 			var cache1 = new AccessCache();
 			var minfo1 = cache1.GetMethodInfo(type, "Method1", Type.EmptyTypes);

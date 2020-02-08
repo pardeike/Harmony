@@ -207,18 +207,18 @@ namespace HarmonyLibTests
 			var originalType = AccessTools.TypeByName("HarmonyLibTests.Assets." + parts[1]);
 			var patchType = AccessTools.TypeByName("HarmonyLibTests.Assets." + parts[2]);
 
-			Assert.IsNotNull(originalType);
+			Assert.NotNull(originalType);
 			var originalMethod = originalType.GetMethod("Method");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var finalizer = patchType.GetMethod("Finalizer");
-			Assert.IsNotNull(finalizer);
+			Assert.NotNull(finalizer);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 			instance.UnpatchAll();
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddFinalizer(finalizer);
 			_ = patcher.Patch();
 
@@ -242,7 +242,7 @@ namespace HarmonyLibTests
 				info["outerexception"] = e.InnerException;
 			}
 			trv.Fields().ForEach(name => info[name] = trv.Field(name).GetValue());
-			Assert.IsTrue((bool)info["finalized"], "Finalizer not called");
+			Assert.True((bool)info["finalized"], "Finalizer not called");
 		}
 
 		private void AssertGotResult(string str)
@@ -257,7 +257,7 @@ namespace HarmonyLibTests
 		{
 			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("result"), "Should return result");
-			Assert.IsNull(info["result"], "Result should be null");
+			Assert.Null(info["result"], "Result should be null");
 		}
 
 		private void AssertGotNoResult()
@@ -269,7 +269,7 @@ namespace HarmonyLibTests
 		private void AssertNoThrownException()
 		{
 			Assert.NotNull(info, "info should not be null");
-			Assert.IsNull(info["outerexception"], "Should not throw an exception");
+			Assert.Null(info["outerexception"], "Should not throw an exception");
 		}
 
 		private void AssertThrownException<E>()
@@ -283,7 +283,7 @@ namespace HarmonyLibTests
 		{
 			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("exception"), "Finalizer should have an exception field");
-			Assert.IsNull(info["exception"], "Finalizer should get null exception input");
+			Assert.Null(info["exception"], "Finalizer should get null exception input");
 		}
 
 		private void AssertExceptionInput<E>()

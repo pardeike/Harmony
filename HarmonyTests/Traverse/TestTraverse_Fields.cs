@@ -31,7 +31,7 @@ namespace HarmonyLibTests
 			{
 				var name = TraverseFields.fieldNames[i];
 				var ftrv = trv.Field(name);
-				Assert.IsNotNull(ftrv);
+				Assert.NotNull(ftrv);
 
 				Assert.AreEqual(TraverseFields.testStrings[i], ftrv.GetValue());
 				Assert.AreEqual(TraverseFields.testStrings[i], ftrv.GetValue<string>());

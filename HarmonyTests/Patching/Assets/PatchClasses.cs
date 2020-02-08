@@ -29,13 +29,16 @@ namespace HarmonyLibTests.Assets
 
 	public class Class1
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static void Method1()
 		{
-			Class1Patch.originalExecuted = true;
-			// some useless work to prevent inlining when testing Release builds
-			for (var i = 0; i < "abcd".Length; i++)
-				if (i > 4)
-					Console.WriteLine("");
+			try
+			{
+				Class1Patch.originalExecuted = true;
+			}
+			finally
+			{
+			}
 		}
 	}
 
@@ -76,13 +79,16 @@ namespace HarmonyLibTests.Assets
 
 	public class Class2
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method2()
 		{
-			Class2Patch.originalExecuted = true;
-			// some useless work to prevent inlining when testing Release builds
-			for (var i = 0; i < "abcd".Length; i++)
-				if (i > 4)
-					Console.WriteLine("");
+			try
+			{
+				Class2Patch.originalExecuted = true;
+			}
+			finally
+			{
+			}
 		}
 	}
 
@@ -154,10 +160,11 @@ namespace HarmonyLibTests.Assets
 	public class Class4
 	{
 #pragma warning disable IDE0060
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method4(object sender)
 #pragma warning restore IDE0060
 		{
-			Console.WriteLine("In Class4.Method4");
+			_ = DateTime.Now;
 			Class4Patch.originalExecuted = true;
 		}
 	}
@@ -172,7 +179,6 @@ namespace HarmonyLibTests.Assets
 		public static bool Prefix(Class4 __instance, object sender)
 #pragma warning restore IDE0060
 		{
-			Console.Write("In Class4Patch.Prefix");
 			prefixed = true;
 			senderValue = sender;
 			return true;
@@ -189,10 +195,11 @@ namespace HarmonyLibTests.Assets
 	public class Class5
 	{
 #pragma warning disable IDE0060
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method5(object xxxyyy)
 #pragma warning restore IDE0060
 		{
-			Console.WriteLine("In Class5.Method5");
+			_ = DateTime.Now;
 		}
 	}
 
@@ -206,7 +213,6 @@ namespace HarmonyLibTests.Assets
 		public static void Prefix(object bar)
 #pragma warning restore IDE0060
 		{
-			Console.Write("In Class5Patch.Prefix");
 			prefixed = true;
 		}
 
@@ -216,7 +222,6 @@ namespace HarmonyLibTests.Assets
 #pragma warning restore IDE0060
 		)
 		{
-			Console.Write("In Class5Patch.Prefix");
 			postfixed = true;
 		}
 
@@ -240,9 +245,10 @@ namespace HarmonyLibTests.Assets
 		public string someString;
 		public Class6Struct someStruct;
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public List<object> Method6()
 		{
-			Console.WriteLine("In Class6.Method6");
+			_ = DateTime.Now;
 			return new List<object>() { someFloat, someString, someStruct };
 		}
 	}
@@ -251,7 +257,6 @@ namespace HarmonyLibTests.Assets
 	{
 		public static void Prefix(ref float ___someFloat, ref string ___someString, ref Class6Struct ___someStruct)
 		{
-			Console.Write("In Class6Patch.Prefix");
 			___someFloat = 123;
 			___someString = "patched";
 			___someStruct = new Class6Struct()
@@ -272,11 +277,10 @@ namespace HarmonyLibTests.Assets
 	public class Class7
 	{
 		public object state1 = "-";
-		public static object state2;
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public TestStruct Method7(string test)
 		{
-			Console.WriteLine("Method7: " + test);
 			state1 = test;
 			return new TestStruct() { a = 333, b = 666 };
 		}
@@ -286,7 +290,6 @@ namespace HarmonyLibTests.Assets
 	{
 		public static void Postfix(ref TestStruct __result)
 		{
-			Console.WriteLine("Class8Patch Postfix");
 			__result = new TestStruct() { a = 10, b = 20 };
 		}
 
@@ -344,9 +347,9 @@ namespace HarmonyLibTests.Assets
 	{
 		public static bool mainRun = false;
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static TestStruct Method8(string test)
 		{
-			Console.WriteLine("Method8: " + test);
 			mainRun = true;
 			return new TestStruct() { a = 1, b = 2 };
 		}
@@ -356,7 +359,6 @@ namespace HarmonyLibTests.Assets
 	{
 		public static void Postfix(ref TestStruct __result)
 		{
-			Console.WriteLine("Class8Patch Postfix");
 			__result = new TestStruct() { a = 10, b = 20 };
 		}
 	}
@@ -446,9 +448,10 @@ namespace HarmonyLibTests.Assets
 
 	public class AttributesClass
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method(string foo)
 		{
-			Console.WriteLine("foo=" + foo);
+			_ = DateTime.Now;
 		}
 	}
 
@@ -469,14 +472,12 @@ namespace HarmonyLibTests.Assets
 		[HarmonyPrefix]
 		public static void Patch1()
 		{
-			Console.WriteLine("prefix");
 			prefixed = true;
 		}
 
 		[HarmonyPostfix]
 		public static void Patch2()
 		{
-			Console.WriteLine("postfix");
 			postfixed = true;
 		}
 
@@ -493,7 +494,7 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public bool Method10()
 		{
-			Console.WriteLine("Method10");
+			_ = DateTime.Now;
 			return true;
 		}
 	}
@@ -505,7 +506,6 @@ namespace HarmonyLibTests.Assets
 
 		public static void Postfix(bool __result)
 		{
-			Console.WriteLine("Method10 Patch result: " + __result);
 			originalResult = __result;
 			postfixed = true;
 		}

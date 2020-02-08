@@ -30,14 +30,14 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(test.GetLog, "start,test,ex:DivideByZeroException,finally,end");
 
 			var original = AccessTools.Method(typeof(Class3), nameof(Class3.TestMethod));
-			Assert.IsNotNull(original);
+			Assert.NotNull(original);
 
 			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(Transpiling.TestTranspiler));
-			Assert.IsNotNull(transpiler);
+			Assert.NotNull(transpiler);
 
 			var instance = new Harmony("test-exception1");
 			_ = instance.Patch(original, null, null, new HarmonyMethod(transpiler));
-			Assert.IsNotNull(savedInstructions);
+			Assert.NotNull(savedInstructions);
 			Assert.AreEqual(savedInstructions.Length, codeLength);
 
 			test.TestMethod("restart");

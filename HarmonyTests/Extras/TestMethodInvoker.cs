@@ -20,13 +20,13 @@ namespace HarmonyLibTests
 					var gcHell = j == 0;
 
 					var type = typeof(MethodInvokerClass);
-					Assert.IsNotNull(type);
+					Assert.NotNull(type);
 					var method = type.GetMethod("Method1");
-					Assert.IsNotNull(method);
+					Assert.NotNull(method);
 
 					var methodInvoker = gcHell ? new MethodInvokerGCHell(directBoxValueAccess) : new MethodInvoker(directBoxValueAccess);
 					var handler = methodInvoker.Handler(method);
-					Assert.IsNotNull(handler);
+					Assert.NotNull(handler);
 
 					var testStruct = new TestMethodInvokerStruct();
 					var boxedTestStruct = (object)testStruct;
@@ -51,12 +51,12 @@ namespace HarmonyLibTests
 		public void Test_MethodInvokerSelfObject()
 		{
 			var type = typeof(TestMethodInvokerObject);
-			Assert.IsNotNull(type);
+			Assert.NotNull(type);
 			var method = type.GetMethod("Method1");
-			Assert.IsNotNull(method);
+			Assert.NotNull(method);
 
 			var handler = MethodInvoker.GetHandler(method);
-			Assert.IsNotNull(handler);
+			Assert.NotNull(handler);
 
 			var instance = new TestMethodInvokerObject
 			{

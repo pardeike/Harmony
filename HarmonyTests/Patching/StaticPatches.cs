@@ -11,19 +11,19 @@ namespace HarmonyLibTests
 		public void Test_Method0()
 		{
 			var originalClass = typeof(Class0);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method0");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class0Patch);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.Patch();
 
@@ -35,25 +35,25 @@ namespace HarmonyLibTests
 		public void Test_Method1()
 		{
 			var originalClass = typeof(Class1);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method1");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class1Patch);
 			var prefix = patchClass.GetMethod("Prefix");
 			var postfix = patchClass.GetMethod("Postfix");
 			var transpiler = patchClass.GetMethod("Transpiler");
-			Assert.IsNotNull(prefix);
-			Assert.IsNotNull(postfix);
-			Assert.IsNotNull(transpiler);
+			Assert.NotNull(prefix);
+			Assert.NotNull(postfix);
+			Assert.NotNull(transpiler);
 
 			Class1Patch.ResetTest();
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPrefix(prefix);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.AddTranspiler(transpiler);
@@ -64,34 +64,34 @@ namespace HarmonyLibTests
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 
 			Class1.Method1();
-			Assert.IsTrue(Class1Patch.prefixed, "Prefix was not executed");
-			Assert.IsTrue(Class1Patch.originalExecuted, "Original was not executed");
-			Assert.IsTrue(Class1Patch.postfixed, "Postfix was not executed");
+			Assert.True(Class1Patch.prefixed, "Prefix was not executed");
+			Assert.True(Class1Patch.originalExecuted, "Original was not executed");
+			Assert.True(Class1Patch.postfixed, "Postfix was not executed");
 		}
 
 		[Test]
 		public void Test_Method2()
 		{
 			var originalClass = typeof(Class2);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method2");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class2Patch);
 			var prefix = patchClass.GetMethod("Prefix");
 			var postfix = patchClass.GetMethod("Postfix");
 			var transpiler = patchClass.GetMethod("Transpiler");
-			Assert.IsNotNull(prefix);
-			Assert.IsNotNull(postfix);
-			Assert.IsNotNull(transpiler);
+			Assert.NotNull(prefix);
+			Assert.NotNull(postfix);
+			Assert.NotNull(transpiler);
 
 			Class2Patch.ResetTest();
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPrefix(prefix);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.AddTranspiler(transpiler);
@@ -102,30 +102,30 @@ namespace HarmonyLibTests
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 
 			new Class2().Method2();
-			Assert.IsTrue(Class2Patch.prefixed, "Prefix was not executed");
-			Assert.IsTrue(Class2Patch.originalExecuted, "Original was not executed");
-			Assert.IsTrue(Class2Patch.postfixed, "Postfix was not executed");
+			Assert.True(Class2Patch.prefixed, "Prefix was not executed");
+			Assert.True(Class2Patch.originalExecuted, "Original was not executed");
+			Assert.True(Class2Patch.postfixed, "Postfix was not executed");
 		}
 
 		[Test]
 		public void Test_Method4()
 		{
 			var originalClass = typeof(Class4);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method4");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class4Patch);
 			var prefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(prefix);
+			Assert.NotNull(prefix);
 
 			Class4Patch.ResetTest();
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPrefix(prefix);
 
 			var originalMethodStartPre = Memory.GetMethodStart(originalMethod, out _);
@@ -134,8 +134,8 @@ namespace HarmonyLibTests
 			Assert.AreEqual(originalMethodStartPre, originalMethodStartPost);
 
 			(new Class4()).Method4("foo");
-			Assert.IsTrue(Class4Patch.prefixed, "Prefix was not executed");
-			Assert.IsTrue(Class4Patch.originalExecuted, "Original was not executed");
+			Assert.True(Class4Patch.prefixed, "Prefix was not executed");
+			Assert.True(Class4Patch.originalExecuted, "Original was not executed");
 			Assert.AreEqual(Class4Patch.senderValue, "foo");
 		}
 
@@ -143,57 +143,57 @@ namespace HarmonyLibTests
 		public void Test_Method5()
 		{
 			var originalClass = typeof(Class5);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method5");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class5Patch);
 			var prefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(prefix);
+			Assert.NotNull(prefix);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			Class5Patch.ResetTest();
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPrefix(prefix);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.Patch();
 
 			(new Class5()).Method5("foo");
-			Assert.IsTrue(Class5Patch.prefixed, "Prefix was not executed");
-			Assert.IsTrue(Class5Patch.postfixed, "Postfix was not executed");
+			Assert.True(Class5Patch.prefixed, "Prefix was not executed");
+			Assert.True(Class5Patch.postfixed, "Postfix was not executed");
 		}
 
 		[Test]
 		public void Test_PatchUnpatch()
 		{
 			var originalClass = typeof(Class9);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("ToString");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class9Patch);
 			var prefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(prefix);
+			Assert.NotNull(prefix);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPrefix(prefix);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.Patch();
 
 			var instanceB = new Harmony("test");
-			Assert.IsNotNull(instanceB);
+			Assert.NotNull(instanceB);
 
 			instanceB.UnpatchAll("test");
 		}
@@ -202,73 +202,73 @@ namespace HarmonyLibTests
 		public void Test_Attributes()
 		{
 			var originalClass = typeof(AttributesClass);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 
 			var originalMethod = originalClass.GetMethod("Method");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 			Assert.AreEqual(originalMethod, AttributesPatch.Patch0());
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patchClass = typeof(AttributesPatch);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			AttributesPatch.ResetTest();
 
 			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
-			Assert.IsNotNull(patcher);
-			Assert.IsNotNull(patcher.Patch());
+			Assert.NotNull(patcher);
+			Assert.NotNull(patcher.Patch());
 
 			(new AttributesClass()).Method("foo");
-			Assert.IsTrue(AttributesPatch.targeted, "TargetMethod was not executed");
-			Assert.IsTrue(AttributesPatch.postfixed, "Prefix was not executed");
-			Assert.IsTrue(AttributesPatch.postfixed, "Postfix was not executed");
+			Assert.True(AttributesPatch.targeted, "TargetMethod was not executed");
+			Assert.True(AttributesPatch.postfixed, "Prefix was not executed");
+			Assert.True(AttributesPatch.postfixed, "Postfix was not executed");
 		}
 
 		[Test]
 		public void Test_Method10()
 		{
 			var originalClass = typeof(Class10);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("Method10");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class10Patch);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.IsNotNull(patcher);
+			Assert.NotNull(patcher);
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.Patch();
 
 			_ = new Class10().Method10();
-			Assert.IsTrue(Class10Patch.postfixed);
-			Assert.IsTrue(Class10Patch.originalResult);
+			Assert.True(Class10Patch.postfixed);
+			Assert.True(Class10Patch.originalResult);
 		}
 
 		[Test]
 		public void Test_MultiplePatches_One_Class()
 		{
 			var originalClass = typeof(MultiplePatches1);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("TestMethod");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 			var patchClass = typeof(MultiplePatches1Patch);
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 
 			MultiplePatches1.result = "before";
 
 			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
-			Assert.IsNotNull(patcher);
-			Assert.IsNotNull(patcher.Patch());
+			Assert.NotNull(patcher);
+			Assert.NotNull(patcher.Patch());
 
 			var result = (new MultiplePatches1()).TestMethod("after");
 			Assert.AreEqual("after,prefix2,prefix1", MultiplePatches1.result);
@@ -279,30 +279,30 @@ namespace HarmonyLibTests
 		public void Test_MultiplePatches_Multiple_Classes()
 		{
 			var originalClass = typeof(MultiplePatches2);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("TestMethod");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var instance = new Harmony("test");
-			Assert.IsNotNull(instance);
+			Assert.NotNull(instance);
 			var patchClass1 = typeof(MultiplePatchesPatch2_Part1);
-			Assert.IsNotNull(patchClass1);
+			Assert.NotNull(patchClass1);
 			var patchClass2 = typeof(MultiplePatchesPatch2_Part2);
-			Assert.IsNotNull(patchClass2);
+			Assert.NotNull(patchClass2);
 			var patchClass3 = typeof(MultiplePatchesPatch2_Part3);
-			Assert.IsNotNull(patchClass3);
+			Assert.NotNull(patchClass3);
 
 			MultiplePatches2.result = "before";
 
 			var patcher1 = instance.ProcessorForAnnotatedClass(patchClass1);
-			Assert.IsNotNull(patcher1);
-			Assert.IsNotNull(patcher1.Patch());
+			Assert.NotNull(patcher1);
+			Assert.NotNull(patcher1.Patch());
 			var patcher2 = instance.ProcessorForAnnotatedClass(patchClass2);
-			Assert.IsNotNull(patcher2);
-			Assert.IsNotNull(patcher2.Patch());
+			Assert.NotNull(patcher2);
+			Assert.NotNull(patcher2.Patch());
 			var patcher3 = instance.ProcessorForAnnotatedClass(patchClass3);
-			Assert.IsNotNull(patcher3);
-			Assert.IsNotNull(patcher3.Patch());
+			Assert.NotNull(patcher3);
+			Assert.NotNull(patcher3.Patch());
 
 			var result = (new MultiplePatches2()).TestMethod("hey");
 			Assert.AreEqual("hey,prefix2,prefix1", MultiplePatches2.result);

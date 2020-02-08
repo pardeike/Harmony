@@ -10,27 +10,27 @@ namespace HarmonyLibTests
 		public void ValueTypeInstance()
 		{
 			var originalClass = typeof(Assets.Struct1);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("TestMethod");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Assets.Struct1Patch);
 
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 			var prefix = patchClass.GetMethod("Prefix");
-			Assert.IsNotNull(prefix);
+			Assert.NotNull(prefix);
 
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			var instance = new Assets.Struct1() { s = "before", n = 1 };
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var result = harmonyInstance.Patch(originalMethod, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
-			Assert.IsNotNull(result);
+			Assert.NotNull(result);
 
 			Assets.Struct1.Reset();
 			instance.TestMethod("new");
@@ -42,21 +42,21 @@ namespace HarmonyLibTests
 		public void Test_StructInstanceByRef()
 		{
 			var originalClass = typeof(Assets.Struct2);
-			Assert.IsNotNull(originalClass);
+			Assert.NotNull(originalClass);
 			var originalMethod = originalClass.GetMethod("TestMethod");
-			Assert.IsNotNull(originalMethod);
+			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Assets.Struct2Patch);
 
-			Assert.IsNotNull(patchClass);
+			Assert.NotNull(patchClass);
 			var postfix = patchClass.GetMethod("Postfix");
-			Assert.IsNotNull(postfix);
+			Assert.NotNull(postfix);
 
 			var harmonyInstance = new Harmony("test");
-			Assert.IsNotNull(harmonyInstance);
+			Assert.NotNull(harmonyInstance);
 
 			var result = harmonyInstance.Patch(originalMethod, null, new HarmonyMethod(postfix));
-			Assert.IsNotNull(result);
+			Assert.NotNull(result);
 
 			var instance = new Assets.Struct2() { s = "before" };
 			instance.TestMethod("original");

@@ -28,7 +28,7 @@ namespace HarmonyLibTests
 			foreach (var name in fieldNames)
 			{
 				var fInfo = AccessTools.DeclaredField(typeof(Traverse), name);
-				Assert.IsNotNull(fInfo);
+				Assert.NotNull(fInfo);
 			}
 		}
 
@@ -76,36 +76,36 @@ namespace HarmonyLibTests
 		{
 			var trv = Traverse.Create(null);
 
-			Assert.IsNotNull(trv);
-			Assert.IsNull(trv.ToString());
+			Assert.NotNull(trv);
+			Assert.Null(trv.ToString());
 
 			// field access
 
 			var ftrv = trv.Field("foo");
-			Assert.IsNotNull(ftrv);
+			Assert.NotNull(ftrv);
 
-			Assert.IsNull(ftrv.GetValue());
-			Assert.IsNull(ftrv.ToString());
+			Assert.Null(ftrv.GetValue());
+			Assert.Null(ftrv.ToString());
 			Assert.AreEqual(0, ftrv.GetValue<int>());
 			Assert.AreSame(ftrv, ftrv.SetValue(123));
 
 			// property access
 
 			var ptrv = trv.Property("foo");
-			Assert.IsNotNull(ptrv);
+			Assert.NotNull(ptrv);
 
-			Assert.IsNull(ptrv.GetValue());
-			Assert.IsNull(ptrv.ToString());
-			Assert.IsNull(ptrv.GetValue<string>());
+			Assert.Null(ptrv.GetValue());
+			Assert.Null(ptrv.ToString());
+			Assert.Null(ptrv.GetValue<string>());
 			Assert.AreSame(ptrv, ptrv.SetValue("test"));
 
 			// method access
 
 			var mtrv = trv.Method("zee");
-			Assert.IsNotNull(mtrv);
+			Assert.NotNull(mtrv);
 
-			Assert.IsNull(mtrv.GetValue());
-			Assert.IsNull(mtrv.ToString());
+			Assert.Null(mtrv.GetValue());
+			Assert.Null(mtrv.ToString());
 			Assert.AreEqual(0, mtrv.GetValue<float>());
 			Assert.AreSame(mtrv, mtrv.SetValue(null));
 		}
