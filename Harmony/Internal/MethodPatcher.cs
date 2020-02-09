@@ -20,6 +20,7 @@ namespace HarmonyLib
 		public const string PARAM_INDEX_PREFIX = "__";
 		public const string INSTANCE_FIELD_PREFIX = "___";
 
+		readonly bool debug;
 		readonly MethodBase original;
 		readonly MethodBase source;
 		readonly List<MethodInfo> prefixes;
@@ -28,6 +29,7 @@ namespace HarmonyLib
 		readonly List<MethodInfo> finalizers;
 		readonly int idx;
 		readonly bool firstArgIsReturnBuffer;
+		readonly OpCode Ldarg_instance;
 		readonly Type returnType;
 		readonly DynamicMethodDefinition patch;
 		readonly ILGenerator il;
@@ -38,6 +40,7 @@ namespace HarmonyLib
 			if (original == null)
 				throw new ArgumentNullException(nameof(original));
 
+			this.debug = debug;
 			this.original = original;
 			this.source = source;
 			this.prefixes = prefixes;
@@ -55,6 +58,8 @@ namespace HarmonyLib
 
 			idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
 			firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			Ldarg_instance = firstArgIsReturnBuffer ? OpCodes.Ldarg_1 : OpCodes.Ldarg_0;
+			if (debug && firstArgIsReturnBuffer) FileLog.Log($"### Special case: Ldarg.0 is return buffer, not instance!");
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}");
 			if (patch == null)
@@ -64,7 +69,7 @@ namespace HarmonyLib
 			emitter = new Emitter(il, debug);
 		}
 
-		internal MethodInfo CreateReplacement(bool debug, out Dictionary<int, CodeInstruction> finalInstructions)
+		internal MethodInfo CreateReplacement(out Dictionary<int, CodeInstruction> finalInstructions)
 		{
 			var originalVariables = DeclareLocalVariables(source ?? original);
 			var privateVars = new Dictionary<string, LocalBuilder>();
@@ -354,11 +359,11 @@ namespace HarmonyLib
 						var parameterIsRef = patchParam.ParameterType.IsByRef;
 						if (instanceIsRef == parameterIsRef)
 						{
-							emitter.Emit(OpCodes.Ldarg_0);
+							emitter.Emit(Ldarg_instance);
 						}
 						if (instanceIsRef && parameterIsRef == false)
 						{
-							emitter.Emit(OpCodes.Ldarg_0);
+							emitter.Emit(Ldarg_instance);
 							emitter.Emit(OpCodes.Ldobj, original.DeclaringType);
 						}
 						if (instanceIsRef == false && parameterIsRef)
@@ -391,7 +396,7 @@ namespace HarmonyLib
 						emitter.Emit(patchParam.ParameterType.IsByRef ? OpCodes.Ldsflda : OpCodes.Ldsfld, fieldInfo);
 					else
 					{
-						emitter.Emit(OpCodes.Ldarg_0);
+						emitter.Emit(Ldarg_instance);
 						emitter.Emit(patchParam.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fieldInfo);
 					}
 					continue;

@@ -116,6 +116,13 @@ namespace HarmonyLib
 					continue;
 				}
 
+				if (instruction.opcode == OpCodes.Ldarg_0)
+				{
+					instruction.opcode = OpCodes.Ldarg_1;
+					yield return instruction;
+					continue;
+				}
+
 				if (instruction.opcode == OpCodes.Ldarg
 					|| instruction.opcode == OpCodes.Ldarga
 					|| instruction.opcode == OpCodes.Ldarga_S
@@ -123,12 +130,9 @@ namespace HarmonyLib
 					|| instruction.opcode == OpCodes.Starg_S)
 				{
 					var n = (int)instruction.operand;
-					if (n > 0)
-					{
-						instruction.operand = n + 1;
-						yield return instruction;
-						continue;
-					}
+					instruction.operand = n + 1;
+					yield return instruction;
+					continue;
 				}
 
 				yield return instruction;
