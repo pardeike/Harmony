@@ -244,7 +244,7 @@ namespace HarmonyLib
 		/// <returns>A list containing all the original CodeInstructions</returns>
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
 		{
-			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}");
+			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}", Harmony.DEBUG);
 			generator = generator ?? patch.GetILGenerator();
 			var reader = MethodBodyReader.GetInstructions(generator, original);
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
@@ -256,7 +256,7 @@ namespace HarmonyLib
 		/// <returns>A list containing all the original CodeInstructions</returns>
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
 		{
-			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}");
+			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}", Harmony.DEBUG);
 			generator = patch.GetILGenerator();
 			var reader = MethodBodyReader.GetInstructions(generator, original);
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();

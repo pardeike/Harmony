@@ -9,3 +9,8 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1813:Avoid unsealed attributes")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1810:Initialize reference type static fields inline")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~F:HarmonyLib.Sandbox.SomeStruct.b1")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~F:HarmonyLib.Sandbox.SomeStruct.b2")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~F:HarmonyLib.Sandbox.SomeStruct.b3")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:HarmonyLib.Sandbox.GetStruct(System.IntPtr,System.IntPtr)~HarmonyLib.Sandbox.SomeStruct")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:HarmonyLib.Sandbox.GetStructReplacement(HarmonyLib.Sandbox,System.IntPtr,System.IntPtr,System.IntPtr)")]

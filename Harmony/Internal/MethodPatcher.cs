@@ -29,7 +29,6 @@ namespace HarmonyLib
 		readonly List<MethodInfo> finalizers;
 		readonly int idx;
 		readonly bool firstArgIsReturnBuffer;
-		readonly OpCode Ldarg_instance;
 		readonly Type returnType;
 		readonly DynamicMethodDefinition patch;
 		readonly ILGenerator il;
@@ -58,10 +57,9 @@ namespace HarmonyLib
 
 			idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
 			firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
-			Ldarg_instance = firstArgIsReturnBuffer ? OpCodes.Ldarg_1 : OpCodes.Ldarg_0;
-			if (debug && firstArgIsReturnBuffer) FileLog.Log($"### Special case: Ldarg.0 is return buffer, not instance!");
+			if (debug && firstArgIsReturnBuffer) FileLog.Log($"### Special case: extra argument after 'this' is pointer to valuetype (simulate return value)");
 			returnType = AccessTools.GetReturnedType(original);
-			patch = CreateDynamicMethod(original, $"_Patch{idx}");
+			patch = CreateDynamicMethod(original, $"_Patch{idx}", debug);
 			if (patch == null)
 				throw new Exception("Could not create replacement method");
 
@@ -107,7 +105,7 @@ namespace HarmonyLib
 			}
 
 			if (firstArgIsReturnBuffer)
-				emitter.Emit(OpCodes.Ldarg_1); // load ref to return value
+				emitter.Emit(original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1); // load ref to return value
 
 			var skipOriginalLabel = il.DefineLabel();
 			var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
@@ -116,7 +114,12 @@ namespace HarmonyLib
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);
 			if (firstArgIsReturnBuffer)
-				copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspiler);
+			{
+				if (original.IsStatic)
+					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspilerStatic);
+				else
+					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspilerInstance);
+			}
 
 			var endLabels = new List<Label>();
 			copier.Finalize(emitter, endLabels, out var endingReturn);
@@ -197,7 +200,7 @@ namespace HarmonyLib
 			return patch.Generate().Pin();
 		}
 
-		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix)
+		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
 		{
 			if (original == null) throw new ArgumentNullException(nameof(original));
 			var patchName = original.Name + suffix;
@@ -205,6 +208,11 @@ namespace HarmonyLib
 
 			var parameters = original.GetParameters();
 			var parameterTypes = parameters.Types().ToList();
+
+			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			if (firstArgIsReturnBuffer)
+				parameterTypes.Insert(0, typeof(IntPtr));
+
 			if (original.IsStatic == false)
 			{
 				if (AccessTools.IsStruct(original.DeclaringType))
@@ -213,9 +221,6 @@ namespace HarmonyLib
 					parameterTypes.Insert(0, original.DeclaringType);
 			}
 
-			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
-			if (firstArgIsReturnBuffer)
-				parameterTypes.Insert(0, typeof(IntPtr));
 			var returnType = firstArgIsReturnBuffer ? typeof(void) : AccessTools.GetReturnedType(original);
 
 			var method = new DynamicMethodDefinition(
@@ -231,9 +236,9 @@ namespace HarmonyLib
 #else
 			var offset = (original.IsStatic ? 0 : 1) + (firstArgIsReturnBuffer ? 1 : 0);
 			if (firstArgIsReturnBuffer)
-				method.Definition.Parameters[0].Name = "retbuf";
+				method.Definition.Parameters[original.IsStatic ? 0 : 1].Name = "retbuf";
 			if (!original.IsStatic)
-				method.Definition.Parameters[firstArgIsReturnBuffer ? 1 : 0].Name = "this";
+				method.Definition.Parameters[0].Name = "this";
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				var param = method.Definition.Parameters[i + offset];
@@ -331,7 +336,6 @@ namespace HarmonyLib
 			var isInstance = original.IsStatic == false;
 			var originalParameters = original.GetParameters();
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
-			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
 
 			// check for passthrough using first parameter (which must have same type as return type)
 			var parameters = patch.GetParameters().ToList();
@@ -359,11 +363,11 @@ namespace HarmonyLib
 						var parameterIsRef = patchParam.ParameterType.IsByRef;
 						if (instanceIsRef == parameterIsRef)
 						{
-							emitter.Emit(Ldarg_instance);
+							emitter.Emit(OpCodes.Ldarg_0);
 						}
 						if (instanceIsRef && parameterIsRef == false)
 						{
-							emitter.Emit(Ldarg_instance);
+							emitter.Emit(OpCodes.Ldarg_0);
 							emitter.Emit(OpCodes.Ldobj, original.DeclaringType);
 						}
 						if (instanceIsRef == false && parameterIsRef)
@@ -396,7 +400,7 @@ namespace HarmonyLib
 						emitter.Emit(patchParam.ParameterType.IsByRef ? OpCodes.Ldsflda : OpCodes.Ldsfld, fieldInfo);
 					else
 					{
-						emitter.Emit(Ldarg_instance);
+						emitter.Emit(OpCodes.Ldarg_0);
 						emitter.Emit(patchParam.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fieldInfo);
 					}
 					continue;

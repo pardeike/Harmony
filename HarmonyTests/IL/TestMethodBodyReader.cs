@@ -16,7 +16,7 @@ namespace HarmonyLibTests.IL
 			var method = typeof(Class12).GetMethod(nameof(Class12.FizzBuzz));
 			var instrsNoGen = MethodBodyReader.GetInstructions(generator: null, method);
 
-			var dynamicMethod = MethodPatcher.CreateDynamicMethod(method, "_Patch");
+			var dynamicMethod = MethodPatcher.CreateDynamicMethod(method, "_Patch", false);
 			var instrsHasGen = MethodBodyReader.GetInstructions(dynamicMethod.GetILGenerator(), method);
 
 			Assert.AreEqual(instrsNoGen.Count, instrsHasGen.Count);

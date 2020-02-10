@@ -8,10 +8,43 @@ using System.Runtime.CompilerServices;
 namespace HarmonyLib
 {
 	// A test for https://github.com/dotnet/coreclr/blob/master/Documentation/botr/clr-abi.md
-	//
+
+	internal class Sandbox
+	{
+		internal static bool hasNativeThis;
+		internal static readonly IntPtr magicValue = (IntPtr)0x12345678;
+
+		internal struct SomeStruct
+		{
+#pragma warning disable CS0169
+			readonly byte b1;
+			readonly byte b2;
+			readonly byte b3;
+#pragma warning restore CS0169
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		internal SomeStruct GetStruct(IntPtr x, IntPtr y)
+		{
+			throw new Exception("This method should've been detoured!");
+		}
+
+		internal static void GetStructReplacement(Sandbox self, IntPtr ptr, IntPtr a, IntPtr b)
+		{
+			// Normal argument order:
+			// this, a, b
+
+			// If we have a native return buffer pointer, the order is:
+			// this, ptr, a, b
+
+			hasNativeThis = a == magicValue && b == magicValue;
+		}
+	}
+
 	internal class NativeThisPointer
 	{
-		internal static MethodInfo m_ArgumentShiftTranspiler = SymbolExtensions.GetMethodInfo(() => ArgumentShiftTranspiler(null));
+		internal static MethodInfo m_ArgumentShiftTranspilerStatic = SymbolExtensions.GetMethodInfo(() => ArgumentShiftTranspiler_Static(null));
+		internal static MethodInfo m_ArgumentShiftTranspilerInstance = SymbolExtensions.GetMethodInfo(() => ArgumentShiftTranspiler_Instance(null));
 		static readonly Dictionary<Type, int> sizes = new Dictionary<Type, int>();
 
 		static int SizeOf(Type type)
@@ -39,59 +72,48 @@ namespace HarmonyLib
 			return HasNativeThis();
 		}
 
-		static readonly IntPtr magicValue = (IntPtr)0x12345678;
-		static bool hasTestResult, hasNativeThis;
+		internal static bool hasTestResult;
 		static bool HasNativeThis()
 		{
 			if (hasTestResult == false)
 			{
-				hasNativeThis = false;
+				Sandbox.hasNativeThis = false;
 				var self = new NativeThisPointer();
-				var original = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStruct");
-				var replacement = AccessTools.DeclaredMethod(typeof(NativeThisPointer), "GetStructReplacement");
+				var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct));
+				var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement));
 				_ = Memory.DetourMethod(original, replacement);
-				_ = self.GetStruct(magicValue, magicValue);
+				_ = new Sandbox().GetStruct(Sandbox.magicValue, Sandbox.magicValue);
 				hasTestResult = true;
 			}
-			return hasNativeThis;
+			return Sandbox.hasNativeThis;
 		}
 
-		struct SomeStruct
+		private static IEnumerable<CodeInstruction> ArgumentShiftTranspiler_Static(IEnumerable<CodeInstruction> instructions)
 		{
-#pragma warning disable IDE0051
-#pragma warning disable CS0169
-			readonly byte b1;
-			readonly byte b2;
-			readonly byte b3;
-#pragma warning restore CS0169
-#pragma warning restore IDE0051
+			return ArgumentShifter(instructions, true);
 		}
 
-		[MethodImpl(MethodImplOptions.NoInlining)]
-#pragma warning disable IDE0060
-		SomeStruct GetStruct(IntPtr x, IntPtr y)
-#pragma warning restore IDE0060
+		private static IEnumerable<CodeInstruction> ArgumentShiftTranspiler_Instance(IEnumerable<CodeInstruction> instructions)
 		{
-			throw new Exception("This method should've been detoured!");
+			return ArgumentShifter(instructions, false);
 		}
 
-#pragma warning disable IDE0060
-#pragma warning disable IDE0051
-		static void GetStructReplacement(NativeThisPointer self, IntPtr ptr, IntPtr a, IntPtr b)
-#pragma warning restore IDE0051
-#pragma warning restore IDE0060
+		private static IEnumerable<CodeInstruction> ArgumentShifter(IEnumerable<CodeInstruction> instructions, bool methodIsStatic)
 		{
-			// Normal argument order:
-			// this, a, b
+			// We have two cases:
+			//
+			// Case A: instance method
+			// THIS , IntPtr , arg0 , arg1 , arg2 ...
+			//
+			// So we make space at index 1 by moving all Ldarg_[n] to Ldarg_[n+1]
+			// except Ldarg_0 which stays at positon #0
+			//
+			// Case B: static method
+			// IntPtr , arg0 , arg1 , arg2 ...
+			//
+			// So we make space at index 0 by moving all Ldarg_[n] to Ldarg_[n+1]
+			// including Ldarg_0
 
-			// If we have a native return buffer pointer, the order is:
-			// this, ptr, a, b
-
-			hasNativeThis = a == magicValue && b == magicValue;
-		}
-
-		private static IEnumerable<CodeInstruction> ArgumentShiftTranspiler(IEnumerable<CodeInstruction> instructions)
-		{
 			foreach (var instruction in instructions)
 			{
 				if (instruction.opcode == OpCodes.Ldarg_3)
@@ -116,11 +138,14 @@ namespace HarmonyLib
 					continue;
 				}
 
-				if (instruction.opcode == OpCodes.Ldarg_0)
+				if (methodIsStatic)
 				{
-					instruction.opcode = OpCodes.Ldarg_1;
-					yield return instruction;
-					continue;
+					if (instruction.opcode == OpCodes.Ldarg_0)
+					{
+						instruction.opcode = OpCodes.Ldarg_1;
+						yield return instruction;
+						continue;
+					}
 				}
 
 				if (instruction.opcode == OpCodes.Ldarg
@@ -130,9 +155,12 @@ namespace HarmonyLib
 					|| instruction.opcode == OpCodes.Starg_S)
 				{
 					var n = (int)instruction.operand;
-					instruction.operand = n + 1;
-					yield return instruction;
-					continue;
+					if (n > 0 || methodIsStatic)
+					{
+						instruction.operand = n + 1;
+						yield return instruction;
+						continue;
+					}
 				}
 
 				yield return instruction;
