@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -97,16 +96,6 @@ namespace HarmonyLib
 			return default;
 		}
 
-		/// <summary>Simplifies comparing an object to a typed value that supports equality</summary>
-		/// <typeparam name="T">The value type</typeparam>
-		/// <param name="obj">The object</param>
-		/// <param name="value">The value</param>
-		/// <returns>True if object has the same type as value and is equal</returns>
-		public static bool EqualsTypedValue<T>(this object obj, T value) where T : class
-		{
-			return obj is T t && t == value;
-		}
-
 		/// <summary>A helper to access a value via key from a dictionary with extra casting</summary>
 		/// <typeparam name="T">The value type</typeparam>
 		/// <param name="dictionary">The dictionary</param>
@@ -125,15 +114,42 @@ namespace HarmonyLib
 	/// <summary>Extensions for <see cref="CodeInstruction"/></summary>
 	public static class CodeInstructionExtensions
 	{
+		static readonly HashSet<OpCode> loadVarCodes = new HashSet<OpCode>
+		{
+			OpCodes.Ldloc_0, OpCodes.Ldloc_1, OpCodes.Ldloc_2, OpCodes.Ldloc_3,
+			OpCodes.Ldloc, OpCodes.Ldloca, OpCodes.Ldloc_S, OpCodes.Ldloca_S
+		};
+
+		static readonly HashSet<OpCode> storeVarCodes = new HashSet<OpCode>
+		{
+			OpCodes.Stloc_0, OpCodes.Stloc_1, OpCodes.Stloc_2, OpCodes.Stloc_3,
+			OpCodes.Stloc, OpCodes.Stloc_S
+		};
+
+		static readonly HashSet<OpCode> branchCodes = new HashSet<OpCode>
+		{
+			OpCodes.Br_S, OpCodes.Brfalse_S, OpCodes.Brtrue_S, OpCodes.Beq_S, OpCodes.Bge_S, OpCodes.Bgt_S,
+			OpCodes.Ble_S, OpCodes.Blt_S, OpCodes.Bne_Un_S, OpCodes.Bge_Un_S, OpCodes.Bgt_Un_S, OpCodes.Ble_Un_S,
+			OpCodes.Blt_Un_S, OpCodes.Br, OpCodes.Brfalse, OpCodes.Brtrue, OpCodes.Beq, OpCodes.Bge, OpCodes.Bgt,
+			OpCodes.Ble, OpCodes.Blt, OpCodes.Bne_Un, OpCodes.Bge_Un, OpCodes.Bgt_Un, OpCodes.Ble_Un, OpCodes.Blt_Un
+		};
+
+		static readonly HashSet<OpCode> constantLoadingCodes = new HashSet<OpCode>
+		{
+			OpCodes.Ldc_I4_M1, OpCodes.Ldc_I4_0, OpCodes.Ldc_I4_1, OpCodes.Ldc_I4_2, OpCodes.Ldc_I4_3,
+			OpCodes.Ldc_I4_4, OpCodes.Ldc_I4_5, OpCodes.Ldc_I4_6, OpCodes.Ldc_I4_7, OpCodes.Ldc_I4_8,
+			OpCodes.Ldc_I4, OpCodes.Ldc_I4_S, OpCodes.Ldc_I8, OpCodes.Ldc_R4, OpCodes.Ldc_R8
+		};
+
 		/// <summary>Shortcut for testing if the operand is equal to a non-null typed value</summary>
 		/// <typeparam name="T">The type of the value</typeparam>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="value">The value</param>
 		/// <returns>True if the operand has the same type and is equal to the value</returns>
-		public static bool OperandIs<T>(this CodeInstruction code, T value) where T : class
+		public static bool OperandIs<T>(this CodeInstruction code, T value)
 		{
-			if (value == null) throw new ArgumentNullException(nameof(value));
-			return code.operand.EqualsTypedValue(value);
+			if (Equals(value, null)) throw new ArgumentNullException(nameof(value));
+			return Equals(code.operand, value);
 		}
 
 		/// <summary>Tests for any form of Ldarg*</summary>
@@ -170,13 +186,25 @@ namespace HarmonyLib
 			return n.HasValue == false || n.Value == ((int)code.operand);
 		}
 
-		static readonly HashSet<OpCode> branchCodes = new HashSet<OpCode>
+		/// <summary>Tests for any form of Ldloc*</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="variable">The (optional) LocalVariableInfo</param>
+		/// <returns>True if it matches one of the variations</returns>
+		public static bool IsLdloc(this CodeInstruction code, LocalVariableInfo variable = null)
 		{
-			OpCodes.Br_S, OpCodes.Brfalse_S, OpCodes.Brtrue_S, OpCodes.Beq_S, OpCodes.Bge_S, OpCodes.Bgt_S,
-			OpCodes.Ble_S, OpCodes.Blt_S, OpCodes.Bne_Un_S, OpCodes.Bge_Un_S, OpCodes.Bgt_Un_S, OpCodes.Ble_Un_S,
-			OpCodes.Blt_Un_S, OpCodes.Br, OpCodes.Brfalse, OpCodes.Brtrue, OpCodes.Beq, OpCodes.Bge, OpCodes.Bgt,
-			OpCodes.Ble, OpCodes.Blt, OpCodes.Bne_Un, OpCodes.Bge_Un, OpCodes.Bgt_Un, OpCodes.Ble_Un, OpCodes.Blt_Un
-		};
+			if (loadVarCodes.Contains(code.opcode) == false) return false;
+			return variable == null || Equals(variable, code.operand);
+		}
+
+		/// <summary>Tests for any form of Stloc*</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="variable">The (optional) LocalVariableInfo</param>
+		/// <returns>True if it matches one of the variations</returns>
+		public static bool IsStloc(this CodeInstruction code, LocalVariableInfo variable = null)
+		{
+			if (storeVarCodes.Contains(code.opcode) == false) return false;
+			return variable == null || Equals(variable, code.operand);
+		}
 
 		/// <summary>Tests if the code instruction branches</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -197,19 +225,12 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="method">The method or constructor</param>
 		/// <returns>True if the instruction calls the method or constructor</returns>
-		public static bool Calls(this CodeInstruction code, MethodBase method)
+		public static bool Calls(this CodeInstruction code, MethodInfo method)
 		{
 			if (method == null) throw new ArgumentNullException(nameof(method));
 			if (code.opcode != OpCodes.Call && code.opcode != OpCodes.Callvirt) return false;
-			return code.operand.EqualsTypedValue(method);
+			return Equals(code.operand, method);
 		}
-
-		static readonly HashSet<OpCode> constantLoadingCodes = new HashSet<OpCode>
-		{
-			OpCodes.Ldc_I4_M1, OpCodes.Ldc_I4_0, OpCodes.Ldc_I4_1, OpCodes.Ldc_I4_2, OpCodes.Ldc_I4_3,
-			OpCodes.Ldc_I4_4, OpCodes.Ldc_I4_5, OpCodes.Ldc_I4_6, OpCodes.Ldc_I4_7, OpCodes.Ldc_I4_8,
-			OpCodes.Ldc_I4, OpCodes.Ldc_I4_S, OpCodes.Ldc_I8, OpCodes.Ldc_R4, OpCodes.Ldc_R8
-		};
 
 		/// <summary>Tests if the code instruction loads a constant</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -219,45 +240,38 @@ namespace HarmonyLib
 			return constantLoadingCodes.Contains(code.opcode);
 		}
 
-		/// <summary>Tests if the code instruction loads a constant</summary>
+		/// <summary>Tests if the code instruction loads an integer constant</summary>
 		/// <typeparam name="T">The type of the constant</typeparam>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="number">The constant</param>
+		/// <param name="number">The integer constant</param>
 		/// <returns>True if the instruction loads the constant</returns>
-		public static bool LoadsConstant<T>(this CodeInstruction code, T number) where T : IConvertible
+		public static bool LoadsConstant(this CodeInstruction code, long number)
 		{
-			var type = typeof(T);
-			if (type == typeof(int) || type == typeof(long))
-			{
-				var op = code.opcode;
-				var n = number.ToInt64(NumberFormatInfo.CurrentInfo);
-				if (n == -1 && op == OpCodes.Ldc_I4_M1) return true;
-				if (n == 0 && op == OpCodes.Ldc_I4_0) return true;
-				if (n == 1 && op == OpCodes.Ldc_I4_1) return true;
-				if (n == 2 && op == OpCodes.Ldc_I4_2) return true;
-				if (n == 3 && op == OpCodes.Ldc_I4_3) return true;
-				if (n == 4 && op == OpCodes.Ldc_I4_4) return true;
-				if (n == 5 && op == OpCodes.Ldc_I4_5) return true;
-				if (n == 6 && op == OpCodes.Ldc_I4_6) return true;
-				if (n == 7 && op == OpCodes.Ldc_I4_7) return true;
-				if (n == 8 && op == OpCodes.Ldc_I4_8) return true;
-				if (op != OpCodes.Ldc_I4 && op != OpCodes.Ldc_I4_S && op != OpCodes.Ldc_I8) return false;
-				return Convert.ToInt64(code.operand) == n;
-			}
-			if (type == typeof(float) || type == typeof(double))
-			{
-				if (code.opcode == OpCodes.Ldc_R4)
-				{
-					var val = Convert.ToDouble(code.operand);
-					return val == number.ToDouble(NumberFormatInfo.CurrentInfo);
-				}
-				if (code.opcode == OpCodes.Ldc_R8)
-				{
-					var val = Convert.ToDouble(code.operand);
-					return val == number.ToDouble(NumberFormatInfo.CurrentInfo);
-				}
-			}
-			throw new ArgumentException($"Unsupported argument type {type}");
+			var op = code.opcode;
+			if (number == -1 && op == OpCodes.Ldc_I4_M1) return true;
+			if (number == 0 && op == OpCodes.Ldc_I4_0) return true;
+			if (number == 1 && op == OpCodes.Ldc_I4_1) return true;
+			if (number == 2 && op == OpCodes.Ldc_I4_2) return true;
+			if (number == 3 && op == OpCodes.Ldc_I4_3) return true;
+			if (number == 4 && op == OpCodes.Ldc_I4_4) return true;
+			if (number == 5 && op == OpCodes.Ldc_I4_5) return true;
+			if (number == 6 && op == OpCodes.Ldc_I4_6) return true;
+			if (number == 7 && op == OpCodes.Ldc_I4_7) return true;
+			if (number == 8 && op == OpCodes.Ldc_I4_8) return true;
+			if (op != OpCodes.Ldc_I4 && op != OpCodes.Ldc_I4_S && op != OpCodes.Ldc_I8) return false;
+			return Convert.ToInt64(code.operand) == number;
+		}
+
+		/// <summary>Tests if the code instruction loads a floating point constant</summary>
+		/// <typeparam name="T">The type of the constant</typeparam>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="number">The floating point constant</param>
+		/// <returns>True if the instruction loads the constant</returns>
+		public static bool LoadsConstant(this CodeInstruction code, double number)
+		{
+			if (code.opcode != OpCodes.Ldc_R4 && code.opcode != OpCodes.Ldc_R8) return false;
+			var val = Convert.ToDouble(code.operand);
+			return val == number;
 		}
 
 		/// <summary>Tests if the code instruction loads a field</summary>
@@ -269,9 +283,9 @@ namespace HarmonyLib
 		{
 			if (field == null) throw new ArgumentNullException(nameof(field));
 			var ldfldCode = field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld;
-			if (byAddress == false && code.opcode == ldfldCode && code.operand.EqualsTypedValue(field)) return true;
+			if (byAddress == false && code.opcode == ldfldCode && Equals(code.operand, field)) return true;
 			var ldfldaCode = field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda;
-			if (byAddress == true && code.opcode == ldfldaCode && code.operand.EqualsTypedValue(field)) return true;
+			if (byAddress == true && code.opcode == ldfldaCode && Equals(code.operand, field)) return true;
 			return false;
 		}
 
@@ -283,7 +297,7 @@ namespace HarmonyLib
 		{
 			if (field == null) throw new ArgumentNullException(nameof(field));
 			var stfldCode = field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld;
-			return code.opcode == stfldCode && code.operand.EqualsTypedValue(field);
+			return code.opcode == stfldCode && Equals(code.operand, field);
 		}
 	}
 
