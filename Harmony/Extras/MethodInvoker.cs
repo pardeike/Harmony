@@ -17,8 +17,8 @@ namespace HarmonyLib
 	public class MethodInvoker
 	{
 		/// <summary>Creates a fast invocation handler from a method</summary>
-		/// <param name="methodInfo">The method to invoke</param>
-		/// <returns>The fast invocation handler</returns>
+		/// <param name="methodInfo">The <see cref="MethodInfo"/> to invoke</param>
+		/// <returns>The <see cref="FastInvokeHandler"/></returns>
 		public static FastInvokeHandler GetHandler(MethodInfo methodInfo)
 		{
 			return defaultInstance.Handler(methodInfo);
@@ -29,7 +29,8 @@ namespace HarmonyLib
 		readonly bool directBoxValueAccess;
 
 		/// <summary>Creates a MethodInvoker that can create a fast invocation handler</summary>
-		/// <param name="directBoxValueAccess">
+		/// <param name="directBoxValueAccess">Controls if boxed value object is accessed/updated directly</param>
+		/// <remarks>
 		/// <para>
 		/// This option controls how value types passed by reference (e.g. ref int, out my_struct) are handled in the arguments array
 		/// passed to the fast invocation handler.
@@ -55,14 +56,14 @@ namespace HarmonyLib
 		/// such that potential updates to the value are reflected only in the arguments array.
 		/// In the above example, if the method associated with the handler updates the passed (boxed) value to 10, only <c>arr[0]</c> now reflects the value 10.
 		/// </para>
-		/// </param>
+		/// </remarks>
 		public MethodInvoker(bool directBoxValueAccess = false)
 		{
 			this.directBoxValueAccess = directBoxValueAccess;
 		}
 
 		/// <summary>Creates a fast invocation handler from a method and a module</summary>
-		/// <param name="methodInfo">The method to invoke</param>
+		/// <param name="methodInfo">The <see cref="MethodInfo"/> to invoke</param>
 		/// <returns>The fast invocation handler</returns>
 		public FastInvokeHandler Handler(MethodInfo methodInfo)
 		{
