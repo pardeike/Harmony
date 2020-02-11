@@ -118,7 +118,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodInvoker__ctor_System_Boolean_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodInvoker.%23ctor(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L59">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L60">View Source</a>
   </span>
   <a id="HarmonyLib_MethodInvoker__ctor_" data-uid="HarmonyLib.MethodInvoker.#ctor*"></a>
   <h4 id="HarmonyLib_MethodInvoker__ctor_System_Boolean_" data-uid="HarmonyLib.MethodInvoker.#ctor(System.Boolean)">MethodInvoker(Boolean)</h4>
@@ -142,7 +142,13 @@
       <tr>
         <td><span class="xref">System.Boolean</span></td>
         <td><span class="parametername">directBoxValueAccess</span></td>
-        <td><p>
+        <td><p>Controls if boxed value object is accessed/updated directly</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_MethodInvoker__ctor_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>
 This option controls how value types passed by reference (e.g. ref int, out my_struct) are handled in the arguments array
 passed to the fast invocation handler.
 Since the arguments array is an object array, any value types contained within it are actually references to a boxed value object.
@@ -165,10 +171,7 @@ If <code>directBoxValueAccess</code> is <code>false</code> (default), the boxed 
 such that potential updates to the value are reflected only in the arguments array.
 In the above example, if the method associated with the handler updates the passed (boxed) value to 10, only <code>arr[0]</code> now reflects the value 10.
 </p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
@@ -176,7 +179,7 @@ In the above example, if the method associated with the handler updates the pass
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodInvoker_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator%2CSystem.Reflection.Emit.OpCode)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L165">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L166">View Source</a>
   </span>
   <a id="HarmonyLib_MethodInvoker_Emit_" data-uid="HarmonyLib.MethodInvoker.Emit*"></a>
   <h4 id="HarmonyLib_MethodInvoker_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_" data-uid="HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode)">Emit(ILGenerator, OpCode)</h4>
@@ -213,7 +216,7 @@ In the above example, if the method associated with the handler updates the pass
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodInvoker_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator%2CSystem.Reflection.Emit.OpCode%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L171">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L172">View Source</a>
   </span>
   <a id="HarmonyLib_MethodInvoker_Emit_" data-uid="HarmonyLib.MethodInvoker.Emit*"></a>
   <h4 id="HarmonyLib_MethodInvoker_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Type_" data-uid="HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Type)">Emit(ILGenerator, OpCode, Type)</h4>
@@ -255,7 +258,7 @@ In the above example, if the method associated with the handler updates the pass
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodInvoker_EmitCall_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodInvoker.EmitCall(System.Reflection.Emit.ILGenerator%2CSystem.Reflection.Emit.OpCode%2CSystem.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L177">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L178">View Source</a>
   </span>
   <a id="HarmonyLib_MethodInvoker_EmitCall_" data-uid="HarmonyLib.MethodInvoker.EmitCall*"></a>
   <h4 id="HarmonyLib_MethodInvoker_EmitCall_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_MethodInfo_" data-uid="HarmonyLib.MethodInvoker.EmitCall(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.MethodInfo)">EmitCall(ILGenerator, OpCode, MethodInfo)</h4>
@@ -297,7 +300,7 @@ In the above example, if the method associated with the handler updates the pass
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodInvoker_EmitFastInt_System_Reflection_Emit_ILGenerator_System_Int32_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodInvoker.EmitFastInt(System.Reflection.Emit.ILGenerator%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L195">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L196">View Source</a>
   </span>
   <a id="HarmonyLib_MethodInvoker_EmitFastInt_" data-uid="HarmonyLib.MethodInvoker.EmitFastInt*"></a>
   <h4 id="HarmonyLib_MethodInvoker_EmitFastInt_System_Reflection_Emit_ILGenerator_System_Int32_" data-uid="HarmonyLib.MethodInvoker.EmitFastInt(System.Reflection.Emit.ILGenerator,System.Int32)">EmitFastInt(ILGenerator, Int32)</h4>
@@ -358,7 +361,7 @@ In the above example, if the method associated with the handler updates the pass
       <tr>
         <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><span class="parametername">methodInfo</span></td>
-        <td><p>The method to invoke</p>
+        <td><p>The <span class="xref">System.Reflection.MethodInfo</span> to invoke</p>
 </td>
       </tr>
     </tbody>
@@ -374,7 +377,7 @@ In the above example, if the method associated with the handler updates the pass
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.FastInvokeHandler.html">FastInvokeHandler</a></td>
-        <td><p>The fast invocation handler</p>
+        <td><p>The <a class="xref" href="HarmonyLib.FastInvokeHandler.html">FastInvokeHandler</a></p>
 </td>
       </tr>
     </tbody>
@@ -384,7 +387,7 @@ In the above example, if the method associated with the handler updates the pass
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodInvoker_Handler_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L67">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/MethodInvoker.cs/#L68">View Source</a>
   </span>
   <a id="HarmonyLib_MethodInvoker_Handler_" data-uid="HarmonyLib.MethodInvoker.Handler*"></a>
   <h4 id="HarmonyLib_MethodInvoker_Handler_System_Reflection_MethodInfo_" data-uid="HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)">Handler(MethodInfo)</h4>
@@ -408,7 +411,7 @@ In the above example, if the method associated with the handler updates the pass
       <tr>
         <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><span class="parametername">methodInfo</span></td>
-        <td><p>The method to invoke</p>
+        <td><p>The <span class="xref">System.Reflection.MethodInfo</span> to invoke</p>
 </td>
       </tr>
     </tbody>
