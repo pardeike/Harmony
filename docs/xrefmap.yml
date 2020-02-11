@@ -1018,12 +1018,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.IsLdarga
   nameWithType: CodeInstructionExtensions.IsLdarga
-- uid: HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
-  name: IsLdloc(CodeInstruction, LocalVariableInfo)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsLdloc_HarmonyLib_CodeInstruction_System_Reflection_LocalVariableInfo_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
-  fullName: HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction, System.Reflection.LocalVariableInfo)
-  nameWithType: CodeInstructionExtensions.IsLdloc(CodeInstruction, LocalVariableInfo)
+- uid: HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction,System.Reflection.Emit.LocalBuilder)
+  name: IsLdloc(CodeInstruction, LocalBuilder)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsLdloc_HarmonyLib_CodeInstruction_System_Reflection_Emit_LocalBuilder_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction,System.Reflection.Emit.LocalBuilder)
+  fullName: HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction, System.Reflection.Emit.LocalBuilder)
+  nameWithType: CodeInstructionExtensions.IsLdloc(CodeInstruction, LocalBuilder)
 - uid: HarmonyLib.CodeInstructionExtensions.IsLdloc*
   name: IsLdloc
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsLdloc_
@@ -1047,12 +1047,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.IsStarg
   nameWithType: CodeInstructionExtensions.IsStarg
-- uid: HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
-  name: IsStloc(CodeInstruction, LocalVariableInfo)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsStloc_HarmonyLib_CodeInstruction_System_Reflection_LocalVariableInfo_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
-  fullName: HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction, System.Reflection.LocalVariableInfo)
-  nameWithType: CodeInstructionExtensions.IsStloc(CodeInstruction, LocalVariableInfo)
+- uid: HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction,System.Reflection.Emit.LocalBuilder)
+  name: IsStloc(CodeInstruction, LocalBuilder)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsStloc_HarmonyLib_CodeInstruction_System_Reflection_Emit_LocalBuilder_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction,System.Reflection.Emit.LocalBuilder)
+  fullName: HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction, System.Reflection.Emit.LocalBuilder)
+  nameWithType: CodeInstructionExtensions.IsStloc(CodeInstruction, LocalBuilder)
 - uid: HarmonyLib.CodeInstructionExtensions.IsStloc*
   name: IsStloc
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsStloc_
