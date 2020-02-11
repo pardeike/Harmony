@@ -195,9 +195,9 @@ namespace HarmonyLib
 
 		/// <summary>Tests for any form of Ldloc*</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="variable">The (optional) LocalVariableInfo</param>
+		/// <param name="variable">The (optional) <see cref="LocalBuilder"/></param>
 		/// <returns>True if it matches one of the variations</returns>
-		public static bool IsLdloc(this CodeInstruction code, LocalVariableInfo variable = null)
+		public static bool IsLdloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
 			if (loadVarCodes.Contains(code.opcode) == false) return false;
 			return variable == null || Equals(variable, code.operand);
@@ -205,9 +205,9 @@ namespace HarmonyLib
 
 		/// <summary>Tests for any form of Stloc*</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="variable">The (optional) LocalVariableInfo</param>
+		/// <param name="variable">The (optional) <see cref="LocalBuilder"/> </param>
 		/// <returns>True if it matches one of the variations</returns>
-		public static bool IsStloc(this CodeInstruction code, LocalVariableInfo variable = null)
+		public static bool IsStloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
 			if (storeVarCodes.Contains(code.opcode) == false) return false;
 			return variable == null || Equals(variable, code.operand);
