@@ -1056,6 +1056,53 @@ namespace HarmonyLib
 			return type.IsPrimitive || type.IsEnum;
 		}
 
+		/// <summary>Tests if a type is an integer type</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type represents some integer</returns>
+		public static bool IsInteger(Type type)
+		{
+			switch (Type.GetTypeCode(type))
+			{
+				case TypeCode.Byte:
+				case TypeCode.SByte:
+				case TypeCode.UInt16:
+				case TypeCode.UInt32:
+				case TypeCode.UInt64:
+				case TypeCode.Int16:
+				case TypeCode.Int32:
+				case TypeCode.Int64:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>Tests if a type is a floating point type</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type represents some floating point</returns>
+		/// 
+		public static bool IsFloatingPoint(Type type)
+		{
+			switch (Type.GetTypeCode(type))
+			{
+				case TypeCode.Decimal:
+				case TypeCode.Double:
+				case TypeCode.Single:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>Tests if a type is a numerical type</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type represents some number</returns>
+		///
+		public static bool IsNumber(Type type)
+		{
+			return IsInteger(type) || IsFloatingPoint(type);
+		}
+
 		/// <summary>Tests if a type is void</summary>
 		/// <param name="type">The type</param>
 		/// <returns>True if the type is void</returns>

@@ -146,9 +146,16 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="value">The value</param>
 		/// <returns>True if the operand has the same type and is equal to the value</returns>
-		public static bool OperandIs<T>(this CodeInstruction code, T value)
+		public static bool OperandIs(this CodeInstruction code, object value)
 		{
-			if (Equals(value, null)) throw new ArgumentNullException(nameof(value));
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			if (code.operand == null) return false;
+			var type = value.GetType();
+			var operandType = code.operand.GetType();
+			if (AccessTools.IsInteger(type) && AccessTools.IsNumber(operandType))
+				return Convert.ToInt64(code.operand) == Convert.ToInt64(value);
+			if (AccessTools.IsFloatingPoint(type) && AccessTools.IsNumber(operandType))
+				return Convert.ToDouble(code.operand) == Convert.ToDouble(value);
 			return Equals(code.operand, value);
 		}
 
@@ -272,6 +279,16 @@ namespace HarmonyLib
 			if (code.opcode != OpCodes.Ldc_R4 && code.opcode != OpCodes.Ldc_R8) return false;
 			var val = Convert.ToDouble(code.operand);
 			return val == number;
+		}
+
+		/// <summary>Tests if the code instruction loads an enum constant</summary>
+		/// <typeparam name="T">The type of the constant</typeparam>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="e">The enum</param>
+		/// <returns>True if the instruction loads the constant</returns>
+		public static bool LoadsConstant(this CodeInstruction code, Enum e)
+		{
+			return code.LoadsConstant(Convert.ToInt64(e));
 		}
 
 		/// <summary>Tests if the code instruction loads a field</summary>
