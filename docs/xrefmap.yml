@@ -588,6 +588,45 @@ references:
   fullName.vb: HarmonyLib.AccessTools.IsDeclaredMember(Of T)(T)
   nameWithType: AccessTools.IsDeclaredMember<T>(T)
   nameWithType.vb: AccessTools.IsDeclaredMember(Of T)(T)
+- uid: HarmonyLib.AccessTools.IsFloatingPoint(System.Type)
+  name: IsFloatingPoint(Type)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsFloatingPoint_System_Type_
+  commentId: M:HarmonyLib.AccessTools.IsFloatingPoint(System.Type)
+  fullName: HarmonyLib.AccessTools.IsFloatingPoint(System.Type)
+  nameWithType: AccessTools.IsFloatingPoint(Type)
+- uid: HarmonyLib.AccessTools.IsFloatingPoint*
+  name: IsFloatingPoint
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsFloatingPoint_
+  commentId: Overload:HarmonyLib.AccessTools.IsFloatingPoint
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsFloatingPoint
+  nameWithType: AccessTools.IsFloatingPoint
+- uid: HarmonyLib.AccessTools.IsInteger(System.Type)
+  name: IsInteger(Type)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsInteger_System_Type_
+  commentId: M:HarmonyLib.AccessTools.IsInteger(System.Type)
+  fullName: HarmonyLib.AccessTools.IsInteger(System.Type)
+  nameWithType: AccessTools.IsInteger(Type)
+- uid: HarmonyLib.AccessTools.IsInteger*
+  name: IsInteger
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsInteger_
+  commentId: Overload:HarmonyLib.AccessTools.IsInteger
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsInteger
+  nameWithType: AccessTools.IsInteger
+- uid: HarmonyLib.AccessTools.IsNumber(System.Type)
+  name: IsNumber(Type)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNumber_System_Type_
+  commentId: M:HarmonyLib.AccessTools.IsNumber(System.Type)
+  fullName: HarmonyLib.AccessTools.IsNumber(System.Type)
+  nameWithType: AccessTools.IsNumber(Type)
+- uid: HarmonyLib.AccessTools.IsNumber*
+  name: IsNumber
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNumber_
+  commentId: Overload:HarmonyLib.AccessTools.IsNumber
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsNumber
+  nameWithType: AccessTools.IsNumber
 - uid: HarmonyLib.AccessTools.IsOfNullableType*
   name: IsOfNullableType
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsOfNullableType_
@@ -1033,6 +1072,12 @@ references:
   commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Double)
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction, System.Double)
   nameWithType: CodeInstructionExtensions.LoadsConstant(CodeInstruction, Double)
+- uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Enum)
+  name: LoadsConstant(CodeInstruction, Enum)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_Enum_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Enum)
+  fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction, System.Enum)
+  nameWithType: CodeInstructionExtensions.LoadsConstant(CodeInstruction, Enum)
 - uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Int64)
   name: LoadsConstant(CodeInstruction, Int64)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_Int64_
@@ -1059,6 +1104,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsField
   nameWithType: CodeInstructionExtensions.LoadsField
+- uid: HarmonyLib.CodeInstructionExtensions.OperandIs(HarmonyLib.CodeInstruction,System.Object)
+  name: OperandIs(CodeInstruction, Object)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_OperandIs_HarmonyLib_CodeInstruction_System_Object_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.OperandIs(HarmonyLib.CodeInstruction,System.Object)
+  fullName: HarmonyLib.CodeInstructionExtensions.OperandIs(HarmonyLib.CodeInstruction, System.Object)
+  nameWithType: CodeInstructionExtensions.OperandIs(CodeInstruction, Object)
 - uid: HarmonyLib.CodeInstructionExtensions.OperandIs*
   name: OperandIs
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_OperandIs_
@@ -1066,15 +1117,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.OperandIs
   nameWithType: CodeInstructionExtensions.OperandIs
-- uid: HarmonyLib.CodeInstructionExtensions.OperandIs``1(HarmonyLib.CodeInstruction,``0)
-  name: OperandIs<T>(CodeInstruction, T)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_OperandIs__1_HarmonyLib_CodeInstruction___0_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.OperandIs``1(HarmonyLib.CodeInstruction,``0)
-  name.vb: OperandIs(Of T)(CodeInstruction, T)
-  fullName: HarmonyLib.CodeInstructionExtensions.OperandIs<T>(HarmonyLib.CodeInstruction, T)
-  fullName.vb: HarmonyLib.CodeInstructionExtensions.OperandIs(Of T)(HarmonyLib.CodeInstruction, T)
-  nameWithType: CodeInstructionExtensions.OperandIs<T>(CodeInstruction, T)
-  nameWithType.vb: CodeInstructionExtensions.OperandIs(Of T)(CodeInstruction, T)
 - uid: HarmonyLib.CodeInstructionExtensions.StoresField(HarmonyLib.CodeInstruction,System.Reflection.FieldInfo)
   name: StoresField(CodeInstruction, FieldInfo)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_StoresField_HarmonyLib_CodeInstruction_System_Reflection_FieldInfo_
