@@ -934,12 +934,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.Branches
   nameWithType: CodeInstructionExtensions.Branches
-- uid: HarmonyLib.CodeInstructionExtensions.Calls(HarmonyLib.CodeInstruction,System.Reflection.MethodBase)
-  name: Calls(CodeInstruction, MethodBase)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Calls_HarmonyLib_CodeInstruction_System_Reflection_MethodBase_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.Calls(HarmonyLib.CodeInstruction,System.Reflection.MethodBase)
-  fullName: HarmonyLib.CodeInstructionExtensions.Calls(HarmonyLib.CodeInstruction, System.Reflection.MethodBase)
-  nameWithType: CodeInstructionExtensions.Calls(CodeInstruction, MethodBase)
+- uid: HarmonyLib.CodeInstructionExtensions.Calls(HarmonyLib.CodeInstruction,System.Reflection.MethodInfo)
+  name: Calls(CodeInstruction, MethodInfo)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Calls_HarmonyLib_CodeInstruction_System_Reflection_MethodInfo_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.Calls(HarmonyLib.CodeInstruction,System.Reflection.MethodInfo)
+  fullName: HarmonyLib.CodeInstructionExtensions.Calls(HarmonyLib.CodeInstruction, System.Reflection.MethodInfo)
+  nameWithType: CodeInstructionExtensions.Calls(CodeInstruction, MethodInfo)
 - uid: HarmonyLib.CodeInstructionExtensions.Calls*
   name: Calls
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Calls_
@@ -979,6 +979,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.IsLdarga
   nameWithType: CodeInstructionExtensions.IsLdarga
+- uid: HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
+  name: IsLdloc(CodeInstruction, LocalVariableInfo)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsLdloc_HarmonyLib_CodeInstruction_System_Reflection_LocalVariableInfo_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
+  fullName: HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction, System.Reflection.LocalVariableInfo)
+  nameWithType: CodeInstructionExtensions.IsLdloc(CodeInstruction, LocalVariableInfo)
+- uid: HarmonyLib.CodeInstructionExtensions.IsLdloc*
+  name: IsLdloc
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsLdloc_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.IsLdloc
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.IsLdloc
+  nameWithType: CodeInstructionExtensions.IsLdloc
 - uid: HarmonyLib.CodeInstructionExtensions.IsStarg(HarmonyLib.CodeInstruction,System.Nullable{System.Int32})
   name: IsStarg(CodeInstruction, Nullable<Int32>)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsStarg_HarmonyLib_CodeInstruction_System_Nullable_System_Int32__
@@ -995,12 +1008,37 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.IsStarg
   nameWithType: CodeInstructionExtensions.IsStarg
+- uid: HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
+  name: IsStloc(CodeInstruction, LocalVariableInfo)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsStloc_HarmonyLib_CodeInstruction_System_Reflection_LocalVariableInfo_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction,System.Reflection.LocalVariableInfo)
+  fullName: HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction, System.Reflection.LocalVariableInfo)
+  nameWithType: CodeInstructionExtensions.IsStloc(CodeInstruction, LocalVariableInfo)
+- uid: HarmonyLib.CodeInstructionExtensions.IsStloc*
+  name: IsStloc
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsStloc_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.IsStloc
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.IsStloc
+  nameWithType: CodeInstructionExtensions.IsStloc
 - uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction)
   name: LoadsConstant(CodeInstruction)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_
   commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction)
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction)
   nameWithType: CodeInstructionExtensions.LoadsConstant(CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Double)
+  name: LoadsConstant(CodeInstruction, Double)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_Double_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Double)
+  fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction, System.Double)
+  nameWithType: CodeInstructionExtensions.LoadsConstant(CodeInstruction, Double)
+- uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Int64)
+  name: LoadsConstant(CodeInstruction, Int64)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_Int64_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Int64)
+  fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction, System.Int64)
+  nameWithType: CodeInstructionExtensions.LoadsConstant(CodeInstruction, Int64)
 - uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant*
   name: LoadsConstant
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_
@@ -1008,15 +1046,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant
   nameWithType: CodeInstructionExtensions.LoadsConstant
-- uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant``1(HarmonyLib.CodeInstruction,``0)
-  name: LoadsConstant<T>(CodeInstruction, T)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant__1_HarmonyLib_CodeInstruction___0_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant``1(HarmonyLib.CodeInstruction,``0)
-  name.vb: LoadsConstant(Of T)(CodeInstruction, T)
-  fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant<T>(HarmonyLib.CodeInstruction, T)
-  fullName.vb: HarmonyLib.CodeInstructionExtensions.LoadsConstant(Of T)(HarmonyLib.CodeInstruction, T)
-  nameWithType: CodeInstructionExtensions.LoadsConstant<T>(CodeInstruction, T)
-  nameWithType.vb: CodeInstructionExtensions.LoadsConstant(Of T)(CodeInstruction, T)
 - uid: HarmonyLib.CodeInstructionExtensions.LoadsField(HarmonyLib.CodeInstruction,System.Reflection.FieldInfo,System.Boolean)
   name: LoadsField(CodeInstruction, FieldInfo, Boolean)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsField_HarmonyLib_CodeInstruction_System_Reflection_FieldInfo_System_Boolean_
@@ -1506,22 +1535,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.GeneralExtensions.Description
   nameWithType: GeneralExtensions.Description
-- uid: HarmonyLib.GeneralExtensions.EqualsTypedValue*
-  name: EqualsTypedValue
-  href: api/HarmonyLib.GeneralExtensions.html#HarmonyLib_GeneralExtensions_EqualsTypedValue_
-  commentId: Overload:HarmonyLib.GeneralExtensions.EqualsTypedValue
-  isSpec: "True"
-  fullName: HarmonyLib.GeneralExtensions.EqualsTypedValue
-  nameWithType: GeneralExtensions.EqualsTypedValue
-- uid: HarmonyLib.GeneralExtensions.EqualsTypedValue``1(System.Object,``0)
-  name: EqualsTypedValue<T>(Object, T)
-  href: api/HarmonyLib.GeneralExtensions.html#HarmonyLib_GeneralExtensions_EqualsTypedValue__1_System_Object___0_
-  commentId: M:HarmonyLib.GeneralExtensions.EqualsTypedValue``1(System.Object,``0)
-  name.vb: EqualsTypedValue(Of T)(Object, T)
-  fullName: HarmonyLib.GeneralExtensions.EqualsTypedValue<T>(System.Object, T)
-  fullName.vb: HarmonyLib.GeneralExtensions.EqualsTypedValue(Of T)(System.Object, T)
-  nameWithType: GeneralExtensions.EqualsTypedValue<T>(Object, T)
-  nameWithType.vb: GeneralExtensions.EqualsTypedValue(Of T)(Object, T)
 - uid: HarmonyLib.GeneralExtensions.FullDescription(System.Reflection.MethodBase)
   name: FullDescription(MethodBase)
   href: api/HarmonyLib.GeneralExtensions.html#HarmonyLib_GeneralExtensions_FullDescription_System_Reflection_MethodBase_
