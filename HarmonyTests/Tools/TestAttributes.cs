@@ -29,7 +29,7 @@ namespace HarmonyLibTests.Tools
 			Assert.NotNull(instance1);
 			var type1 = typeof(MainClassPatch);
 			Assert.NotNull(type1);
-			var processor1 = instance1.ProcessorForAnnotatedClass(type1);
+			var processor1 = instance1.CreateClassProcessor(type1);
 			Assert.NotNull(processor1);
 			Assert.NotNull(processor1.Patch());
 
@@ -39,7 +39,7 @@ namespace HarmonyLibTests.Tools
 			Assert.NotNull(type2);
 			try
 			{
-				_ = instance2.ProcessorForAnnotatedClass(type2);
+				_ = instance2.CreateClassProcessor(type2);
 			}
 			catch (System.ArgumentException ex)
 			{

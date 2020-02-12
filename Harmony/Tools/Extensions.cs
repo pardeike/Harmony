@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 namespace HarmonyLib
 {
 	/// <summary>General extensions for common cases</summary>
+	/// 
 	public static class GeneralExtensions
 	{
 		/// <summary>Joins an enumeration with a value converter and a delimiter to a string</summary>
@@ -23,7 +24,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Converts an array of types (for example methods arguments) into a human readable form</summary>
-		/// <param name="parameters">The array of types</param>
+		/// <param name="parameters">The array of <see cref="Type"/></param>
 		/// <returns>A human readable description including brackets</returns>
 		///
 		public static string Description(this Type[] parameters)
@@ -33,7 +34,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>A full description of a type</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>A human readable description</returns>
 		///
 		public static string FullDescription(this Type type)
@@ -61,7 +62,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>A a full description of a method or a constructor without assembly details but with generics</summary>
-		/// <param name="method">The method or constructor</param>
+		/// <param name="method">The <see cref="MethodBase"/> of the method or constructor</param>
 		/// <returns>A human readable description</returns>
 		///
 		public static string FullDescription(this MethodBase method)
@@ -74,8 +75,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>A helper converting parameter infos to types</summary>
-		/// <param name="pinfo">The array of ParameterInfo</param>
-		/// <returns>The parameter types</returns>
+		/// <param name="pinfo">The array of <see cref="ParameterInfo"/></param>
+		/// <returns>An array of <see cref="Type"/></returns>
 		///
 		public static Type[] Types(this ParameterInfo[] pinfo)
 		{
@@ -112,6 +113,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Extensions for <see cref="CodeInstruction"/></summary>
+	/// 
 	public static class CodeInstructionExtensions
 	{
 		static readonly HashSet<OpCode> loadVarCodes = new HashSet<OpCode>
@@ -145,6 +147,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="value">The value</param>
 		/// <returns>True if the operand has the same type and is equal to the value</returns>
+		/// 
 		public static bool OperandIs(this CodeInstruction code, object value)
 		{
 			if (value == null) throw new ArgumentNullException(nameof(value));
@@ -162,6 +165,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="n">The (optional) index</param>
 		/// <returns>True if it matches one of the variations</returns>
+		/// 
 		public static bool IsLdarg(this CodeInstruction code, int? n = null)
 		{
 			if ((n.HasValue == false || n.Value == 0) && code.opcode == OpCodes.Ldarg_0) return true;
@@ -176,6 +180,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="n">The (optional) index</param>
 		/// <returns>True if it matches one of the variations</returns>
+		/// 
 		public static bool IsLdarga(this CodeInstruction code, int? n = null)
 		{
 			if (code.opcode != OpCodes.Ldarga && code.opcode != OpCodes.Ldarga_S) return false;
@@ -186,6 +191,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="n">The (optional) index</param>
 		/// <returns>True if it matches one of the variations</returns>
+		/// 
 		public static bool IsStarg(this CodeInstruction code, int? n = null)
 		{
 			if (code.opcode != OpCodes.Starg && code.opcode != OpCodes.Starg_S) return false;
@@ -196,6 +202,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="variable">The (optional) <see cref="LocalBuilder"/></param>
 		/// <returns>True if it matches one of the variations</returns>
+		/// 
 		public static bool IsLdloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
 			if (loadVarCodes.Contains(code.opcode) == false) return false;
@@ -206,6 +213,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="variable">The (optional) <see cref="LocalBuilder"/> </param>
 		/// <returns>True if it matches one of the variations</returns>
+		/// 
 		public static bool IsStloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
 			if (storeVarCodes.Contains(code.opcode) == false) return false;
@@ -216,6 +224,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="label">The label if the instruction is a branch operation or <see langword="null"/> if not</param>
 		/// <returns>True if the instruction branches</returns>
+		/// 
 		public static bool Branches(this CodeInstruction code, out Label? label)
 		{
 			if (branchCodes.Contains(code.opcode))
@@ -231,6 +240,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="method">The method or constructor</param>
 		/// <returns>True if the instruction calls the method or constructor</returns>
+		/// 
 		public static bool Calls(this CodeInstruction code, MethodInfo method)
 		{
 			if (method == null) throw new ArgumentNullException(nameof(method));
@@ -241,6 +251,7 @@ namespace HarmonyLib
 		/// <summary>Tests if the code instruction loads a constant</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <returns>True if the instruction loads a constant</returns>
+		/// 
 		public static bool LoadsConstant(this CodeInstruction code)
 		{
 			return constantLoadingCodes.Contains(code.opcode);
@@ -250,6 +261,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="number">The integer constant</param>
 		/// <returns>True if the instruction loads the constant</returns>
+		/// 
 		public static bool LoadsConstant(this CodeInstruction code, long number)
 		{
 			var op = code.opcode;
@@ -271,6 +283,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="number">The floating point constant</param>
 		/// <returns>True if the instruction loads the constant</returns>
+		/// 
 		public static bool LoadsConstant(this CodeInstruction code, double number)
 		{
 			if (code.opcode != OpCodes.Ldc_R4 && code.opcode != OpCodes.Ldc_R8) return false;
@@ -282,6 +295,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="e">The enum</param>
 		/// <returns>True if the instruction loads the constant</returns>
+		/// 
 		public static bool LoadsConstant(this CodeInstruction code, Enum e)
 		{
 			return code.LoadsConstant(Convert.ToInt64(e));
@@ -292,6 +306,7 @@ namespace HarmonyLib
 		/// <param name="field">The field</param>
 		/// <param name="byAddress">Set to true if the address of the field is loaded</param>
 		/// <returns>True if the instruction loads the field</returns>
+		/// 
 		public static bool LoadsField(this CodeInstruction code, FieldInfo field, bool byAddress = false)
 		{
 			if (field == null) throw new ArgumentNullException(nameof(field));
@@ -306,6 +321,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="field">The field</param>
 		/// <returns>True if the instruction stores this field</returns>
+		/// 
 		public static bool StoresField(this CodeInstruction code, FieldInfo field)
 		{
 			if (field == null) throw new ArgumentNullException(nameof(field));
@@ -315,6 +331,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>General extensions for collections</summary>
+	/// 
 	public static class CollectionExtensions
 	{
 		/// <summary>A simple way to execute code for every element in a collection</summary>
@@ -345,9 +362,6 @@ namespace HarmonyLib
 		/// <param name="sequence">The collection</param>
 		/// <param name="item">The item to add</param>
 		/// <returns>The collection containing the item</returns>
-		/// 
-		/// Note: this was called 'Add' before but that led to unwanted side effect
-		///       See https://github.com/pardeike/Harmony/issues/147
 		///
 		public static IEnumerable<T> AddItem<T>(this IEnumerable<T> sequence, T item)
 		{

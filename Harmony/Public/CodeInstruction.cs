@@ -5,19 +5,27 @@ using System.Reflection.Emit;
 namespace HarmonyLib
 {
 	/// <summary>An abstract wrapper around OpCode and their operands. Used by transpilers</summary>
+	///
 	public class CodeInstruction
 	{
 		/// <summary>The opcode</summary>
+		/// 
 		public OpCode opcode;
+
 		/// <summary>The operand</summary>
+		///
 		public object operand;
+
 		/// <summary>All labels defined on this instruction</summary>
+		/// 
 		public List<Label> labels = new List<Label>();
+
 		/// <summary>All exception block boundaries defined on this instruction</summary>
+		/// 
 		public List<ExceptionBlock> blocks = new List<ExceptionBlock>();
 
 		/// <summary>Creates a new CodeInstruction with a given opcode and optional operand</summary>
-		/// <param name="opcode">The code</param>
+		/// <param name="opcode">The <see cref="OpCode"/></param>
 		/// <param name="operand">The operand</param>
 		///
 		public CodeInstruction(OpCode opcode, object operand = null)
@@ -27,7 +35,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Create a full copy (including labels and exception blocks) of a CodeInstruction</summary>
-		/// <param name="instruction">The instruction to copy</param>
+		/// <param name="instruction">The <see cref="CodeInstruction"/> to copy</param>
 		///
 		public CodeInstruction(CodeInstruction instruction)
 		{
@@ -50,7 +58,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Clones a CodeInstruction, resets labels and exception blocks and sets its opcode</summary>
-		/// <param name="opcode">The opcode</param>
+		/// <param name="opcode">The <see cref="OpCode"/></param>
 		/// <returns>A copy of this CodeInstruction with a new opcode</returns>
 		///
 		public CodeInstruction Clone(OpCode opcode)
@@ -61,7 +69,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Clones a CodeInstruction, resets labels and exception blocks and sets its operand</summary>
-		/// <param name="operand">The opcode</param>
+		/// <param name="operand">The operand</param>
 		/// <returns>A copy of this CodeInstruction with a new operand</returns>
 		///
 		public CodeInstruction Clone(object operand)

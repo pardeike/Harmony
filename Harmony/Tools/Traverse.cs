@@ -18,7 +18,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a traverse instance from an existing instance</summary>
-		/// <param name="traverse">The original</param>
+		/// <param name="traverse">The existing <see cref="Traverse"/> instance</param>
 		///
 		public Traverse(Traverse traverse)
 		{
@@ -36,6 +36,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>A reflection helper to read and write private elements</summary>
+	/// 
 	public class Traverse
 	{
 		static readonly AccessCache Cache;
@@ -53,9 +54,9 @@ namespace HarmonyLib
 				Cache = new AccessCache();
 		}
 
-		/// <summary>Creates a new traverse instance from a class</summary>
-		/// <param name="type">The class</param>
-		/// <returns>A traverse instance</returns>
+		/// <summary>Creates a new traverse instance from a class/type</summary>
+		/// <param name="type">The <see cref="Type"/></param>
+		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
 		public static Traverse Create(Type type)
 		{
@@ -64,7 +65,7 @@ namespace HarmonyLib
 
 		/// <summary>Creates a new traverse instance from a class T</summary>
 		/// <typeparam name="T">The class</typeparam>
-		/// <returns>A traverse instance</returns>
+		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
 		public static Traverse Create<T>()
 		{
@@ -73,7 +74,7 @@ namespace HarmonyLib
 
 		/// <summary>Creates a new traverse instance from an instance</summary>
 		/// <param name="root">The object</param>
-		/// <returns>A traverse instance</returns>
+		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
 		public static Traverse Create(object root)
 		{
@@ -81,8 +82,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a new traverse instance from a named type</summary>
-		/// <param name="name">The type name</param>
-		/// <returns>A traverse instance</returns>
+		/// <param name="name">The type name, for format see <see cref="AccessTools.TypeByName"/></param>
+		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
 		public static Traverse CreateWithType(string name)
 		{
@@ -90,15 +91,13 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a new and empty traverse instance</summary>
-		/// <returns>A traverse instance</returns>
 		///
 		Traverse()
 		{
 		}
 
-		/// <summary>Creates a new traverse instance from a class</summary>
-		/// <param name="type">The class</param>
-		/// <returns>A traverse instance</returns>
+		/// <summary>Creates a new traverse instance from a class/type</summary>
+		/// <param name="type">The <see cref="Type"/></param>
 		///
 		public Traverse(Type type)
 		{
@@ -107,7 +106,6 @@ namespace HarmonyLib
 
 		/// <summary>Creates a new traverse instance from an instance</summary>
 		/// <param name="root">The object</param>
-		/// <returns>A traverse instance</returns>
 		///
 		public Traverse(object root)
 		{
@@ -370,7 +368,7 @@ namespace HarmonyLib
 
 		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>
 		/// <param name="source">Original object</param>
-		/// <param name="action">The action receiving a traverse for each field</param>
+		/// <param name="action">The action receiving a <see cref="Traverse"/> instance for each field</param>
 		///
 		public static void IterateFields(object source, Action<Traverse> action)
 		{
@@ -381,7 +379,7 @@ namespace HarmonyLib
 		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>
 		/// <param name="source">Original object</param>
 		/// <param name="target">Target object</param>
-		/// <param name="action">The action receiving a traverse for each field traverse pair</param>
+		/// <param name="action">The action receiving a pair of <see cref="Traverse"/> instances for each field pair</param>
 		///
 		public static void IterateFields(object source, object target, Action<Traverse, Traverse> action)
 		{
@@ -393,7 +391,7 @@ namespace HarmonyLib
 		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>
 		/// <param name="source">Original object</param>
 		/// <param name="target">Target object</param>
-		/// <param name="action">The action receiving a field dot path and a field pair</param>
+		/// <param name="action">The action receiving a dot path representing the field pair and the <see cref="Traverse"/> instances</param>
 		///
 		public static void IterateFields(object source, object target, Action<string, Traverse, Traverse> action)
 		{
@@ -404,7 +402,7 @@ namespace HarmonyLib
 
 		/// <summary>Iterates over all properties of the current type and executes a traverse action</summary>
 		/// <param name="source">Original object</param>
-		/// <param name="action">The action receiving a traverse for each property</param>
+		/// <param name="action">The action receiving a <see cref="Traverse"/> instance for each property</param>
 		///
 		public static void IterateProperties(object source, Action<Traverse> action)
 		{
@@ -415,7 +413,7 @@ namespace HarmonyLib
 		/// <summary>Iterates over all properties of the current type and executes a traverse action</summary>
 		/// <param name="source">Original object</param>
 		/// <param name="target">Target object</param>
-		/// <param name="action">The action receiving a traverse for each property traverse pair</param>
+		/// <param name="action">The action receiving a pair of <see cref="Traverse"/> instances for each property pair</param>
 		///
 		public static void IterateProperties(object source, object target, Action<Traverse, Traverse> action)
 		{
@@ -427,7 +425,7 @@ namespace HarmonyLib
 		/// <summary>Iterates over all properties of the current type and executes a traverse action</summary>
 		/// <param name="source">Original object</param>
 		/// <param name="target">Target object</param>
-		/// <param name="action">The action receiving a property dot path and a property pair</param>
+		/// <param name="action">The action receiving a dot path representing the property pair and the <see cref="Traverse"/> instances</param>
 		///
 		public static void IterateProperties(object source, object target, Action<string, Traverse, Traverse> action)
 		{
@@ -436,8 +434,8 @@ namespace HarmonyLib
 			AccessTools.GetPropertyNames(source).ForEach(f => action(f, sourceTrv.Property(f), targetTrv.Property(f)));
 		}
 
-
 		/// <summary>A default field action that copies fields to fields</summary>
+		/// 
 		public static Action<Traverse, Traverse> CopyFields = (from, to) => { _ = to.SetValue(from.GetValue()); };
 
 		/// <summary>Returns a string that represents the current traverse</summary>

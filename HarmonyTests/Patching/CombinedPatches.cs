@@ -19,7 +19,7 @@ namespace HarmonyLibTests
 			var harmonyInstance = new Harmony("test");
 			Assert.NotNull(harmonyInstance);
 
-			var processor = harmonyInstance.ProcessorForAnnotatedClass(patchClass);
+			var processor = harmonyInstance.CreateClassProcessor(patchClass);
 			Assert.NotNull(processor);
 			Assert.NotNull(processor.Patch());
 
@@ -42,7 +42,7 @@ namespace HarmonyLibTests
 			var harmonyInstance = new Harmony("test");
 			Assert.NotNull(harmonyInstance);
 
-			var processor = harmonyInstance.ProcessorForAnnotatedClass(patchClass);
+			var processor = harmonyInstance.CreateClassProcessor(patchClass);
 			Assert.NotNull(processor);
 			Assert.NotNull(processor.Patch());
 

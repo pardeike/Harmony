@@ -18,7 +18,7 @@ namespace HarmonyLibTests
 			var instance = new Harmony("test");
 			Assert.NotNull(instance);
 
-			var processor = instance.ProcessorForAnnotatedClass(typeof(Class1ReversePatch));
+			var processor = instance.CreateClassProcessor(typeof(Class1ReversePatch));
 			Assert.NotNull(processor);
 			Assert.NotNull(processor.Patch());
 

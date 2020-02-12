@@ -5,30 +5,18 @@ using System.Reflection;
 
 namespace HarmonyLib
 {
-	static class ReversePatcherExtensions
-	{
-		/// <summary>Creates an empty reverse patcher</summary>
-		/// <param name="instance">The Harmony instance</param>
-		/// <param name="original">The original method</param>
-		/// <param name="standin">The stand-in method</param>
-		///
-		public static ReversePatcher CreateReversePatcher(this Harmony instance, MethodBase original, HarmonyMethod standin)
-		{
-			return new ReversePatcher(instance, original, standin);
-		}
-	}
-
 	/// <summary>A reverse patcher</summary>
+	/// 
 	public class ReversePatcher
 	{
 		readonly Harmony instance;
 		readonly MethodBase original;
 		readonly HarmonyMethod standin;
 
-		/// <summary>Creates an empty reverse patcher</summary>
+		/// <summary>Creates a reverse patcher</summary>
 		/// <param name="instance">The Harmony instance</param>
-		/// <param name="original">The original method</param>
-		/// <param name="standin">The stand-in method</param>
+		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <param name="standin">Your stand-in stub method as <see cref="HarmonyMethod"/></param>
 		///
 		public ReversePatcher(Harmony instance, MethodBase original, HarmonyMethod standin)
 		{
@@ -38,6 +26,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Applies the patch</summary>
+		/// <param name="type">The type of patch, see <see cref="HarmonyReversePatchType"/></param>
+		/// <returns>The generated replacement method</returns>
 		///
 		public MethodInfo Patch(HarmonyReversePatchType type = HarmonyReversePatchType.Original)
 		{

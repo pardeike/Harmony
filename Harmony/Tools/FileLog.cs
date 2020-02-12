@@ -8,18 +8,21 @@ using System.Text;
 namespace HarmonyLib
 {
 	/// <summary>A file log for debugging</summary>
+	/// 
 	public static class FileLog
 	{
-		/// <summary>Full pathname of the log file</summary>
+		/// <summary>Full pathname of the log file, defaults to a file called <c>harmony.log.txt</c> on your Desktop</summary>
+		/// 
 		public static string logPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}{Path.DirectorySeparatorChar}harmony.log.txt";
 
-		/// <summary>The indent character</summary>
+		/// <summary>The indent character. The default is <c>tab</c></summary>
+		/// 
 		public static char indentChar = '\t';
 
-		/// <summary>The indent level</summary>
+		/// <summary>The current indent level</summary>
+		/// 
 		public static int indentLevel = 0;
 
-		/// <summary>A buffer</summary>
 		static List<string> buffer = new List<string>();
 
 		static string IndentString()
@@ -27,8 +30,8 @@ namespace HarmonyLib
 			return new string(indentChar, indentLevel);
 		}
 
-		/// <summary>Changes indent depth</summary>
-		/// <param name="delta">The value to add to the indent level</param>
+		/// <summary>Changes the indentation level</summary>
+		/// <param name="delta">The value to add to the indentation level</param>
 		///
 		public static void ChangeIndent(int delta)
 		{
@@ -49,7 +52,7 @@ namespace HarmonyLib
 
 		/// <summary>Logs a list of string in a buffered way. Use this method only if you are sure that FlushBuffer will be called
 		/// or else logging information is incomplete in case of a crash</summary>
-		/// <param name="strings">The strings to log (they will not be re-indented)</param>
+		/// <param name="strings">A list of strings to log (they will not be re-indented)</param>
 		///
 		public static void LogBuffered(List<string> strings)
 		{
@@ -86,6 +89,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Flushes the log buffer to disk (use in combination with LogBuffered)</summary>
+		/// 
 		public static void FlushBuffer()
 		{
 			lock (logPath)
@@ -117,6 +121,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Resets and deletes the log</summary>
+		/// 
 		public static void Reset()
 		{
 			lock (logPath)

@@ -5,15 +5,23 @@ using System.Linq;
 namespace HarmonyLib
 {
 	/// <summary>A group of patches</summary>
+	/// 
 	public class Patches
 	{
-		/// <summary>The prefixes</summary>
+		/// <summary>A collection of prefix <see cref="Patch"/></summary>
+		/// 
 		public readonly ReadOnlyCollection<Patch> Prefixes;
-		/// <summary>The postfixes</summary>
+
+		/// <summary>A collection of postfix <see cref="Patch"/></summary>
+		/// 
 		public readonly ReadOnlyCollection<Patch> Postfixes;
-		/// <summary>The transpilers</summary>
+
+		/// <summary>A collection of transpiler <see cref="Patch"/></summary>
+		/// 
 		public readonly ReadOnlyCollection<Patch> Transpilers;
-		/// <summary>The finalizers</summary>
+
+		/// <summary>A collection of finalizer <see cref="Patch"/></summary>
+		/// 
 		public readonly ReadOnlyCollection<Patch> Finalizers;
 
 		/// <summary>Gets all owners (Harmony IDs) or all known patches</summary>
@@ -33,10 +41,10 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a group of patches</summary>
-		/// <param name="prefixes">The prefixes</param>
-		/// <param name="postfixes">The postfixes</param>
-		/// <param name="transpilers">The transpilers</param>
-		/// <param name="finalizers">The transpilers</param>
+		/// <param name="prefixes">An array of prefixes as <see cref="Patch"/></param>
+		/// <param name="postfixes">An array of postfixes as <see cref="Patch"/></param>
+		/// <param name="transpilers">An array of transpileres as <see cref="Patch"/></param>
+		/// <param name="finalizers">An array of finalizeres as <see cref="Patch"/></param>
 		///
 		public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finalizers)
 		{

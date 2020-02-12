@@ -216,7 +216,7 @@ namespace HarmonyLibTests
 
 			AttributesPatch.ResetTest();
 
-			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			var patcher = instance.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher);
 			Assert.NotNull(patcher.Patch());
 
@@ -266,7 +266,7 @@ namespace HarmonyLibTests
 
 			MultiplePatches1.result = "before";
 
-			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			var patcher = instance.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher);
 			Assert.NotNull(patcher.Patch());
 
@@ -294,13 +294,13 @@ namespace HarmonyLibTests
 
 			MultiplePatches2.result = "before";
 
-			var patcher1 = instance.ProcessorForAnnotatedClass(patchClass1);
+			var patcher1 = instance.CreateClassProcessor(patchClass1);
 			Assert.NotNull(patcher1);
 			Assert.NotNull(patcher1.Patch());
-			var patcher2 = instance.ProcessorForAnnotatedClass(patchClass2);
+			var patcher2 = instance.CreateClassProcessor(patchClass2);
 			Assert.NotNull(patcher2);
 			Assert.NotNull(patcher2.Patch());
-			var patcher3 = instance.ProcessorForAnnotatedClass(patchClass3);
+			var patcher3 = instance.CreateClassProcessor(patchClass3);
 			Assert.NotNull(patcher3);
 			Assert.NotNull(patcher3.Patch());
 

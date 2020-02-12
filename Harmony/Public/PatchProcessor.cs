@@ -6,19 +6,8 @@ using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
-	static class PatchProcessorExtensions
-	{
-		/// <summary>Creates an empty patch processor</summary>
-		/// <param name="instance">The Harmony instance</param>
-		/// <param name="original">An optional original method</param>
-		///
-		public static PatchProcessor CreateProcessor(this Harmony instance, MethodBase original)
-		{
-			return new PatchProcessor(instance, original);
-		}
-	}
-
 	/// <summary>A PatchProcessor handles patches on a method/constructor</summary>
+	/// 
 	public class PatchProcessor
 	{
 		readonly Harmony instance;
@@ -33,7 +22,7 @@ namespace HarmonyLib
 
 		/// <summary>Creates an empty patch processor</summary>
 		/// <param name="instance">The Harmony instance</param>
-		/// <param name="original">An optional original method</param>
+		/// <param name="original">The original methods <see cref="MethodBase"/></param>
 		///
 		public PatchProcessor(Harmony instance, MethodBase original)
 		{
@@ -41,8 +30,9 @@ namespace HarmonyLib
 			this.original = original;
 		}
 
-		/// <summary>Add a prefix</summary>
-		/// <param name="prefix">The prefix.</param>
+		/// <summary>Adds a prefix</summary>
+		/// <param name="prefix">The prefix as a <see cref="HarmonyMethod"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddPrefix(HarmonyMethod prefix)
 		{
@@ -50,8 +40,9 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Add a prefix</summary>
-		/// <param name="fixMethod">The method.</param>
+		/// <summary>Adds a prefix</summary>
+		/// <param name="fixMethod">The prefix as a <see cref="MethodInfo"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddPrefix(MethodInfo fixMethod)
 		{
@@ -59,8 +50,9 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Add a postfix</summary>
-		/// <param name="postfix">The postfix.</param>
+		/// <summary>Adds a postfix</summary>
+		/// <param name="postfix">The postfix as a <see cref="HarmonyMethod"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddPostfix(HarmonyMethod postfix)
 		{
@@ -68,8 +60,9 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Add a postfix</summary>
-		/// <param name="fixMethod">The method.</param>
+		/// <summary>Adds a postfix</summary>
+		/// <param name="fixMethod">The postfix as a <see cref="MethodInfo"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddPostfix(MethodInfo fixMethod)
 		{
@@ -77,8 +70,9 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Add a transpiler</summary>
-		/// <param name="transpiler">The transpiler.</param>
+		/// <summary>Adds a transpiler</summary>
+		/// <param name="transpiler">The transpiler as a <see cref="HarmonyMethod"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddTranspiler(HarmonyMethod transpiler)
 		{
@@ -86,8 +80,9 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Add a transpiler</summary>
-		/// <param name="fixMethod">The method.</param>
+		/// <summary>Adds a transpiler</summary>
+		/// <param name="fixMethod">The transpiler as a <see cref="MethodInfo"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddTranspiler(MethodInfo fixMethod)
 		{
@@ -95,8 +90,9 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Add a finalizer</summary>
-		/// <param name="finalizer">The finalizer.</param>
+		/// <summary>Adds a finalizer</summary>
+		/// <param name="finalizer">The finalizer as a <see cref="HarmonyMethod"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddFinalizer(HarmonyMethod finalizer)
 		{
@@ -104,8 +100,9 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Add a finalizer</summary>
-		/// <param name="fixMethod">The method.</param>
+		/// <summary>Adds a finalizer</summary>
+		/// <param name="fixMethod">The finalizer as a <see cref="MethodInfo"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddFinalizer(MethodInfo fixMethod)
 		{
@@ -114,7 +111,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all patched original methods in the appdomain</summary>
-		/// <returns>An enumeration of patched original methods</returns>
+		/// <returns>An enumeration of patched <see cref="MethodBase"/></returns>
 		///
 		public static IEnumerable<MethodBase> GetAllPatchedMethods()
 		{
@@ -124,7 +121,7 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Applies the patch(es)</summary>
+		/// <summary>Applies all registered patches</summary>
 		/// <returns>The generated replacement method</returns>
 		///
 		public MethodInfo Patch()
@@ -155,8 +152,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Unpatches patches of a given type and/or Harmony ID</summary>
-		/// <param name="type">The patch type</param>
-		/// <param name="harmonyID">Harmony ID or (*) for any</param>
+		/// <param name="type">The <see cref="HarmonyPatchType"/> patch type</param>
+		/// <param name="harmonyID">Harmony ID or <c>*</c> for any</param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor Unpatch(HarmonyPatchType type, string harmonyID)
 		{
@@ -180,8 +178,9 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Unpatches the given patch</summary>
-		/// <param name="patch">The patch</param>
+		/// <summary>Unpatches a specific patch</summary>
+		/// <param name="patch">The <see cref="MethodInfo"/> of the patch</param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor Unpatch(MethodInfo patch)
 		{
@@ -198,9 +197,9 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Gets patch information</summary>
-		/// <param name="method">The original method</param>
-		/// <returns>The patch information</returns>
+		/// <summary>Gets patch information on an original</summary>
+		/// <param name="method">The original method as <see cref="MethodBase"/></param>
+		/// <returns>The patch information as <see cref="Patches"/></returns>
 		///
 		public static Patches GetPatchInfo(MethodBase method)
 		{
@@ -212,7 +211,7 @@ namespace HarmonyLib
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
 		/// <param name="currentVersion">[out] The current Harmony version</param>
-		/// <returns>A dictionary containing assembly versions keyed by Harmony IDs</returns>
+		/// <returns>A <see cref="Dictionary{String,Version}"/> containing assembly <see cref="Version"/> keyed by Harmony ID</returns>
 		///
 		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{
@@ -238,10 +237,11 @@ namespace HarmonyLib
 			return result;
 		}
 
-		/// <summary>Returns the methods unmodified list of CodeInstructions</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="generator">Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
-		/// <returns>A list containing all the original CodeInstructions</returns>
+		/// <summary>Returns the methods unmodified list of code instructions</summary>
+		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <param name="generator">Optionally an existing <see cref="ILGenerator"/> that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
+		/// <returns>A list containing all the original <see cref="CodeInstruction"/></returns>
+		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
 		{
 			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}", Harmony.DEBUG);
@@ -250,10 +250,11 @@ namespace HarmonyLib
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
 		}
 
-		/// <summary>Returns the methods unmodified list of CodeInstructions</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="generator">A new generator that now contains all local variables and labels contained in the result</param>
-		/// <returns>A list containing all the original CodeInstructions</returns>
+		/// <summary>Returns the methods unmodified list of code instructions</summary>
+		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <param name="generator">A new <see cref="ILGenerator"/> that now contains all local variables and labels contained in the result</param>
+		/// <returns>A list containing all the original <see cref="CodeInstruction"/></returns>
+		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
 		{
 			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}", Harmony.DEBUG);

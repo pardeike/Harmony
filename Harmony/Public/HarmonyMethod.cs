@@ -7,31 +7,51 @@ namespace HarmonyLib
 {
 
 	/// <summary>A wrapper around a method to use it as a patch (for example a Prefix)</summary>
+	/// 
 	public class HarmonyMethod
 	{
-		/// <summary>The original method</summary>
+		/// <summary>The original <see cref="MethodInfo"/></summary>
+		/// 
 		public MethodInfo method; // need to be called 'method'
 
-		/// <summary>Class/type declaring this patch</summary>
+		/// <summary><see cref="Type"/> declaring this patch</summary>
+		/// 
 		public Type declaringType;
+
 		/// <summary>Patch method name</summary>
+		/// 
 		public string methodName;
-		/// <summary>Patch method type</summary>
+
+		/// <summary>Optional patch <see cref="MethodType"/></summary>
+		/// 
 		public MethodType? methodType;
-		/// <summary>Argument types of the patch method</summary>
+
+		/// <summary>Array of argument <see cref="Type"/>[] of the patch method</summary>
+		/// 
 		public Type[] argumentTypes;
+
 		/// <summary><see cref="Priority"/> of the patch</summary>
+		/// 
 		public int priority = -1;
+
 		/// <summary>Install this patch before patches with there Harmony IDs</summary>
+		/// 
 		public string[] before;
+
 		/// <summary>Install this patch after patches with there Harmony IDs</summary>
+		/// 
 		public string[] after;
+
 		/// <summary>Reverse patch type, see <see cref="HarmonyReversePatchType"/></summary>
+		/// 
 		public HarmonyReversePatchType? reversePatchType;
+
 		/// <summary>Create debug output for this patch</summary>
+		/// 
 		public bool? debug;
 
 		/// <summary>Default constructor</summary>
+		/// 
 		public HarmonyMethod()
 		{
 		}
@@ -48,7 +68,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a patch from a given method</summary>
-		/// <param name="method">The original method</param>
+		/// <param name="method">The original <see cref="MethodInfo"/></param>
 		///
 		public HarmonyMethod(MethodInfo method)
 		{
@@ -58,8 +78,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a patch from a given method</summary>
-		/// <param name="method">The original method</param>
-		/// <param name="priority">The patch priority</param>
+		/// <param name="method">The original <see cref="MethodInfo"/></param>
+		/// <param name="priority">The patch <see cref="Priority"/></param>
 		/// <param name="before">A list of harmony IDs that should come after this patch</param>
 		/// <param name="after">A list of harmony IDs that should come before this patch</param>
 		/// <param name="debug">Set to true to generate debug output</param>
@@ -76,9 +96,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a patch from a given method</summary>
-		/// <param name="methodType">The patch method type</param>
+		/// <param name="methodType">The patch method <see cref="Type"/></param>
 		/// <param name="methodName">The patch method name</param>
-		/// <param name="argumentTypes">The optional argument types of the patch method (for overloaded methods)</param>
+		/// <param name="argumentTypes">The optional argument <see cref="Type"/> of the patch method (for overloaded methods)</param>
 		///
 		public HarmonyMethod(Type methodType, string methodName, Type[] argumentTypes = null)
 		{
@@ -100,8 +120,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Merges annotations</summary>
-		/// <param name="attributes">The annotations</param>
-		/// <returns>A merged annotation</returns>
+		/// <param name="attributes">The list of <see cref="HarmonyMethod"/> to merge</param>
+		/// <returns>The merged <see cref="HarmonyMethod"/></returns>
 		///
 		public static HarmonyMethod Merge(List<HarmonyMethod> attributes)
 		{
@@ -148,6 +168,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Annotation extensions</summary>
+	/// 
 	public static class HarmonyMethodExtensions
 	{
 		internal static void SetValue(Traverse trv, string name, object val)
@@ -163,8 +184,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Copies annotation information</summary>
-		/// <param name="from">from</param>
-		/// <param name="to">to</param>
+		/// <param name="from">The source <see cref="HarmonyMethod"/></param>
+		/// <param name="to">The destination <see cref="HarmonyMethod"/></param>
 		///
 		public static void CopyTo(this HarmonyMethod from, HarmonyMethod to)
 		{
@@ -180,8 +201,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Clones an annotation</summary>
-		/// <param name="original">The annotation to clone</param>
-		/// <returns>A copy of the annotation</returns>
+		/// <param name="original">The <see cref="HarmonyMethod"/> to clone</param>
+		/// <returns>A copied <see cref="HarmonyMethod"/></returns>
 		///
 		public static HarmonyMethod Clone(this HarmonyMethod original)
 		{
@@ -191,9 +212,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Merges annotations</summary>
-		/// <param name="master">The master</param>
-		/// <param name="detail">The detail</param>
-		/// <returns>A new, merged copy</returns>
+		/// <param name="master">The master <see cref="HarmonyMethod"/></param>
+		/// <param name="detail">The detail <see cref="HarmonyMethod"/></param>
+		/// <returns>A new, merged <see cref="HarmonyMethod"/></returns>
 		///
 		public static HarmonyMethod Merge(this HarmonyMethod master, HarmonyMethod detail)
 		{
@@ -221,8 +242,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all annotations on a class</summary>
-		/// <param name="type">The class</param>
-		/// <returns>All annotations</returns>
+		/// <param name="type">The <see cref="Type"/></param>
+		/// <returns>A list of all <see cref="HarmonyMethod"/></returns>
 		///
 		public static List<HarmonyMethod> GetFromType(Type type)
 		{
@@ -233,8 +254,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all annotations on a class in merged form</summary>
-		/// <param name="type">The class</param>
-		/// <returns>The merged HarmonyMethod</returns>
+		/// <param name="type">The <see cref="Type"/></param>
+		/// <returns>The merged <see cref="HarmonyMethod"/></returns>
 		///
 		public static HarmonyMethod GetMergedFromType(Type type)
 		{
@@ -242,8 +263,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all annotations on a method</summary>
-		/// <param name="method">The method</param>
-		/// <returns>All annotations</returns>
+		/// <param name="method">The <see cref="MethodBase"/></param>
+		/// <returns>A list of <see cref="HarmonyMethod"/></returns>
 		///
 		public static List<HarmonyMethod> GetFromMethod(MethodBase method)
 		{
@@ -254,8 +275,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all annotations on a method in merged form</summary>
-		/// <param name="method">The method</param>
-		/// <returns>The merged HarmonyMethod</returns>
+		/// <param name="method">The <see cref="MethodBase"/></param>
+		/// <returns>The merged <see cref="HarmonyMethod"/></returns>
 		///
 		public static HarmonyMethod GetMergedFromMethod(MethodBase method)
 		{

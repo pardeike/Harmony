@@ -16,15 +16,19 @@ namespace HarmonyLib
 		/// <summary>See <see cref="System.Reflection.CallingConventions.HasThis"/></summary>
 		///
 		public bool HasThis { get; set; } = false;
+
 		/// <summary>See <see cref="System.Reflection.CallingConventions.ExplicitThis"/></summary>
 		///
 		public bool ExplicitThis { get; set; } = false;
+
 		/// <summary>See <see cref="System.Runtime.InteropServices.CallingConvention"/></summary>
 		///
 		public CallingConvention CallingConvention { get; set; } = CallingConvention.Winapi;
+
 		/// <summary>The list of all parameter types or function pointer signatures received by the call site</summary>
 		///
 		public List<object> Parameters { get; set; } = new List<object>();
+
 		/// <summary>The return type or function pointer signature returned by the call site</summary>
 		///
 		public object ReturnType { get; set; } = typeof(void);

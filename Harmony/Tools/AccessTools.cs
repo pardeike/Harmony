@@ -11,9 +11,11 @@ using MonoMod.Utils;
 namespace HarmonyLib
 {
 	/// <summary>A helper class for reflection related functions</summary>
+	/// 
 	public static class AccessTools
 	{
-		/// <summary>Shortcut to simplify the use of reflections and make it work for any access level</summary>
+		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level</summary>
+		/// 
 		public static BindingFlags all = BindingFlags.Public
 			| BindingFlags.NonPublic
 			| BindingFlags.Instance
@@ -23,12 +25,13 @@ namespace HarmonyLib
 			| BindingFlags.GetProperty
 			| BindingFlags.SetProperty;
 
-		/// <summary>Shortcut to simplify the use of reflections and make it work for any access level but only within the current type</summary>
+		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level but only within the current type</summary>
+		/// 
 		public static BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
 
 		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
 		/// <param name="name">The name</param>
-		/// <returns>A Type</returns>
+		/// <returns>A <see cref="Type"/></returns>
 		///
 		public static Type TypeByName(string name)
 		{
@@ -48,8 +51,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all type by name from a given assembly. This is a wrapper that respects different .NET versions</summary>
-		/// <param name="assembly">The assembly</param>
-		/// <returns>A Type array</returns>
+		/// <param name="assembly">The <see cref="Assembly"/></param>
+		/// <returns>A <see cref="Type"/> array</returns>
+		/// 
 		public static Type[] GetTypesFromAssembly(Assembly assembly)
 		{
 #if NETCOREAPP3_0 || NETCOREAPP3_1
@@ -61,9 +65,9 @@ namespace HarmonyLib
 
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non null result</summary>
 		/// <typeparam name="T">Result type of func()</typeparam>
-		/// <param name="type">The type to start with</param>
+		/// <param name="type">The <see cref="Type"/> to start with</param>
 		/// <param name="func">The evaluation function returning T</param>
-		/// <returns>Returns the first non null result or default(T) when reaching the top level type object</returns>
+		/// <returns>Returns the first non null result or <c>default(T)</c> when reaching the top level type object</returns>
 		///
 		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
@@ -80,7 +84,7 @@ namespace HarmonyLib
 
 		/// <summary>Applies a function going into inner types and stops at the first non null result</summary>
 		/// <typeparam name="T">Generic type parameter</typeparam>
-		/// <param name="type">The type to start with</param>
+		/// <param name="type">The <see cref="Type"/> to start with</param>
 		/// <param name="func">The evaluation function returning T</param>
 		/// <returns>Returns the first non null result or null with no match</returns>
 		///
@@ -102,9 +106,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a directly declared field</summary>
-		/// <param name="type">The class where the field is defined</param>
+		/// <param name="type">The <see cref="Type"/> where the field is defined</param>
 		/// <param name="name">The name of the field</param>
-		/// <returns>A FieldInfo or null when type/name is null or when the field cannot be found</returns>
+		/// <returns>A <see cref="FieldInfo"/> or null when type/name is null or when the field cannot be found</returns>
 		///
 		public static FieldInfo DeclaredField(Type type, string name)
 		{
@@ -127,9 +131,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a field by searching the type and all its super types</summary>
-		/// <param name="type">The class where the field is defined</param>
+		/// <param name="type">The <see cref="Type"/> where the field is defined</param>
 		/// <param name="name">The name of the field (case sensitive)</param>
-		/// <returns>A FieldInfo or null when type/name is null or when the field cannot be found</returns>
+		/// <returns>A <see cref="FieldInfo"/> or null when type/name is null or when the field cannot be found</returns>
 		///
 		public static FieldInfo Field(Type type, string name)
 		{
@@ -152,9 +156,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a field</summary>
-		/// <param name="type">The class where the field is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the field is declared</param>
 		/// <param name="idx">The zero-based index of the field inside the class definition</param>
-		/// <returns>A FieldInfo or null when type is null or when the field cannot be found</returns>
+		/// <returns>A <see cref="FieldInfo"/> or null when type is null or when the field cannot be found</returns>
 		///
 		public static FieldInfo DeclaredField(Type type, int idx)
 		{
@@ -171,9 +175,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a directly declared property</summary>
-		/// <param name="type">The class where the property is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
-		/// <returns>A PropertyInfo or null when type/name is null or when the property cannot be found</returns>
+		/// <returns>A <see cref="PropertyInfo"/> or null when type/name is null or when the property cannot be found</returns>
 		///
 		public static PropertyInfo DeclaredProperty(Type type, string name)
 		{
@@ -196,9 +200,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for the getter method of a directly declared property</summary>
-		/// <param name="type">The class where the property is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
-		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		/// <returns>A <see cref="MethodInfo"/> or null when type/name is null or when the property cannot be found</returns>
 		///
 		public static MethodInfo DeclaredPropertyGetter(Type type, string name)
 		{
@@ -206,9 +210,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for the setter method of a directly declared property</summary>
-		/// <param name="type">The class where the property is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
-		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		/// <returns>A <see cref="MethodInfo"/> or null when type/name is null or when the property cannot be found</returns>
 		///
 		public static MethodInfo DeclaredPropertySetter(Type type, string name)
 		{
@@ -216,9 +220,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a property by searching the type and all its super types</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <param name="name">The name</param>
-		/// <returns>A PropertyInfo or null when type/name is null or when the property cannot be found</returns>
+		/// <returns>A <see cref="PropertyInfo"/> or null when type/name is null or when the property cannot be found</returns>
 		///
 		public static PropertyInfo Property(Type type, string name)
 		{
@@ -241,9 +245,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for the getter method of a property by searching the type and all its super types</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <param name="name">The name</param>
-		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		/// <returns>A <see cref="MethodInfo"/> or null when type/name is null or when the property cannot be found</returns>
 		///
 		public static MethodInfo PropertyGetter(Type type, string name)
 		{
@@ -251,9 +255,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for the setter method of a property by searching the type and all its super types</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <param name="name">The name</param>
-		/// <returns>A MethodInfo or null when type/name is null or when the property cannot be found</returns>
+		/// <returns>A <see cref="MethodInfo"/> or null when type/name is null or when the property cannot be found</returns>
 		///
 		public static MethodInfo PropertySetter(Type type, string name)
 		{
@@ -261,11 +265,11 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a directly declared method</summary>
-		/// <param name="type">The class where the method is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the method is declared</param>
 		/// <param name="name">The name of the method (case sensitive)</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
 		/// <param name="generics">Optional list of types that define the generic version of the method</param>
-		/// <returns>A MethodInfo or null when type/name is null or when the method cannot be found</returns>
+		/// <returns>A <see cref="MethodInfo"/> or null when type/name is null or when the method cannot be found</returns>
 		///
 		public static MethodInfo DeclaredMethod(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
@@ -301,11 +305,11 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
-		/// <param name="type">The class where the method is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the method is declared</param>
 		/// <param name="name">The name of the method (case sensitive)</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
 		/// <param name="generics">Optional list of types that define the generic version of the method</param>
-		/// <returns>A MethodInfo or null when type/name is null or when the method cannot be found</returns>
+		/// <returns>A <see cref="MethodInfo"/> or null when type/name is null or when the method cannot be found</returns>
 		///
 		public static MethodInfo Method(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
@@ -354,10 +358,10 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
-		/// <param name="typeColonMethodname">The full name (Namespace.Type1.Type2:MethodName) of the type where the method is declared</param>
+		/// <param name="typeColonMethodname">The full name like <c>Namespace.Type1.Type2:MethodName</c> of the type where the method is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
 		/// <param name="generics">Optional list of types that define the generic version of the method</param>
-		/// <returns>A MethodInfo or null when type/name is null or when the method cannot be found</returns>
+		/// <returns>A <see cref="MethodInfo"/> or null when type/name is null or when the method cannot be found</returns>
 		///
 		public static MethodInfo Method(string typeColonMethodname, Type[] parameters = null, Type[] generics = null)
 		{
@@ -376,7 +380,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the names of all method that are declared in a type</summary>
-		/// <param name="type">The declaring type</param>
+		/// <param name="type">The declaring <see cref="Type"/></param>
 		/// <returns>A list of method names</returns>
 		///
 		public static List<string> GetMethodNames(Type type)
@@ -406,7 +410,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the names of all fields that are declared in a type</summary>
-		/// <param name="type">The declaring type</param>
+		/// <param name="type">The declaring <see cref="Type"/></param>
 		/// <returns>A list of field names</returns>
 		///
 		public static List<string> GetFieldNames(Type type)
@@ -436,7 +440,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the names of all properties that are declared in a type</summary>
-		/// <param name="type">The declaring type</param>
+		/// <param name="type">The declaring <see cref="Type"/></param>
 		/// <returns>A list of property names</returns>
 		///
 		public static List<string> GetPropertyNames(Type type)
@@ -465,9 +469,9 @@ namespace HarmonyLib
 			return GetPropertyNames(instance.GetType());
 		}
 
-		/// <summary>Gets the type of any member of a class</summary>
-		/// <param name="member">An EventInfo, FieldInfo, MethodBase, PropertyInfo or TypeInfo</param>
-		/// <returns>The type that represents the output of this member</returns>
+		/// <summary>Gets the type of any class member of</summary>
+		/// <param name="member">A <see cref="MemberInfo"/> of the member</param>
+		/// <returns>The <see cref="Type"/> of this member</returns>
 		///
 		public static Type GetUnderlyingType(this MemberInfo member)
 		{
@@ -487,7 +491,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Test if a class member is actually an concrete implementation</summary>
-		/// <param name="member">An EventInfo, FieldInfo, MethodBase, PropertyInfo or TypeInfo</param>
+		/// <param name="member">A <see cref="MemberInfo"/></param>
 		/// <returns>True if the member is a declared</returns>
 		///
 		public static bool IsDeclaredMember<T>(this T member) where T : MemberInfo
@@ -496,7 +500,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the real implementation of a class member</summary>
-		/// <param name="member">An EventInfo, FieldInfo, MethodBase, PropertyInfo or TypeInfo</param>
+		/// <param name="member">A <see cref="MemberInfo"/></param>
 		/// <returns>The member itself if its declared. Otherwise the member that is actually implemented in some base type</returns>
 		///
 		public static T GetDeclaredMember<T>(this T member) where T : MemberInfo
@@ -513,10 +517,10 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a directly declared constructor</summary>
-		/// <param name="type">The class where the constructor is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the constructor is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the constructor</param>
 		/// <param name="searchForStatic">Optional parameters to only consider static constructors</param>
-		/// <returns>A ConstructorInfo or null when type is null or when the constructor cannot be found</returns>
+		/// <returns>A <see cref="ConstructorInfo"/> or null when type is null or when the constructor cannot be found</returns>
 		///
 		public static ConstructorInfo DeclaredConstructor(Type type, Type[] parameters = null, bool searchForStatic = false)
 		{
@@ -532,10 +536,10 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a constructor by searching the type and all its super types</summary>
-		/// <param name="type">The class where the constructor is declared</param>
+		/// <param name="type">The <see cref="Type"/> where the constructor is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
 		/// <param name="searchForStatic">Optional parameters to only consider static constructors</param>
-		/// <returns>A ConstructorInfo or null when type is null or when the method cannot be found</returns>
+		/// <returns>A <see cref="ConstructorInfo"/> or null when type is null or when the method cannot be found</returns>
 		///
 		public static ConstructorInfo Constructor(Type type, Type[] parameters = null, bool searchForStatic = false)
 		{
@@ -551,9 +555,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets reflection information for all declared constructors</summary>
-		/// <param name="type">The class where the constructors are declared</param>
+		/// <param name="type">The <see cref="Type"/> where the constructors are declared</param>
 		/// <param name="searchForStatic">Optional parameters to only consider static constructors</param>
-		/// <returns>A list of ConstructorInfo</returns>
+		/// <returns>A list of <see cref="ConstructorInfo"/></returns>
 		///
 		public static List<ConstructorInfo> GetDeclaredConstructors(Type type, bool? searchForStatic = null)
 		{
@@ -570,8 +574,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets reflection information for all declared methods</summary>
-		/// <param name="type">The class where the methods are declared</param>
-		/// <returns>A list of MethodInfo</returns>
+		/// <param name="type">The <see cref="Type"/> where the methods are declared</param>
+		/// <returns>A list of <see cref="MethodInfo"/></returns>
 		///
 		public static List<MethodInfo> GetDeclaredMethods(Type type)
 		{
@@ -585,8 +589,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets reflection information for all declared properties</summary>
-		/// <param name="type">The class where the properties are declared</param>
-		/// <returns>A list of PropertyInfo</returns>
+		/// <param name="type">The <see cref="Type"/> where the properties are declared</param>
+		/// <returns>A list of <see cref="PropertyInfo"/></returns>
 		///
 		public static List<PropertyInfo> GetDeclaredProperties(Type type)
 		{
@@ -600,8 +604,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets reflection information for all declared fields</summary>
-		/// <param name="type">The class where the fields are declared</param>
-		/// <returns>A list of FieldInfo</returns>
+		/// <param name="type">The <see cref="Type"/> where the fields are declared</param>
+		/// <returns>A list of <see cref="FieldInfo"/></returns>
 		///
 		public static List<FieldInfo> GetDeclaredFields(Type type)
 		{
@@ -615,8 +619,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the return type of a method or constructor</summary>
-		/// <param name="methodOrConstructor">The method or constructor</param>
-		/// <returns>The return type of the method</returns>
+		/// <param name="methodOrConstructor">The <see cref="MethodBase"/></param>
+		/// <returns>The return <see cref="Type"/> of the method</returns>
 		///
 		public static Type GetReturnedType(MethodBase methodOrConstructor)
 		{
@@ -632,9 +636,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a type, returns the first inner type matching a recursive search by name</summary>
-		/// <param name="type">The type to start searching at</param>
+		/// <param name="type">The <see cref="Type"/> to start searching at</param>
 		/// <param name="name">The name of the inner type (case sensitive)</param>
-		/// <returns>The inner type or null if type/name is null or if a type with that name cannot be found</returns>
+		/// <returns>The inner <see cref="Type"/> or null if type/name is null or if a type with that name cannot be found</returns>
 		///
 		public static Type Inner(Type type, string name)
 		{
@@ -654,9 +658,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a type, returns the first inner type matching a recursive search with a predicate</summary>
-		/// <param name="type">The type to start searching at</param>
+		/// <param name="type">The <see cref="Type"/> to start searching at</param>
 		/// <param name="predicate">The predicate to search with</param>
-		/// <returns>The inner type or null if type/predicate is null or if a type with that name cannot be found</returns>
+		/// <returns>The inner <see cref="Type"/> or null if type/predicate is null or if a type with that name cannot be found</returns>
 		///
 		public static Type FirstInner(Type type, Func<Type, bool> predicate)
 		{
@@ -676,9 +680,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a type, returns the first method matching a predicate</summary>
-		/// <param name="type">The type to start searching at</param>
+		/// <param name="type">The <see cref="Type"/> to start searching at</param>
 		/// <param name="predicate">The predicate to search with</param>
-		/// <returns>The MethodInfo or null if type/predicate is null or if a type with that name cannot be found</returns>
+		/// <returns>The <see cref="MethodInfo"/> or null if type/predicate is null or if a type with that name cannot be found</returns>
 		///
 		public static MethodInfo FirstMethod(Type type, Func<MethodInfo, bool> predicate)
 		{
@@ -698,9 +702,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a type, returns the first constructor matching a predicate</summary>
-		/// <param name="type">The type to start searching at</param>
+		/// <param name="type">The <see cref="Type"/> to start searching at</param>
 		/// <param name="predicate">The predicate to search with</param>
-		/// <returns>The ConstructorInfo or null if type/predicate is null or if a type with that name cannot be found</returns>
+		/// <returns>The <see cref="ConstructorInfo"/> or null if type/predicate is null or if a type with that name cannot be found</returns>
 		///
 		public static ConstructorInfo FirstConstructor(Type type, Func<ConstructorInfo, bool> predicate)
 		{
@@ -720,9 +724,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a type, returns the first property matching a predicate</summary>
-		/// <param name="type">The type to start searching at</param>
+		/// <param name="type">The <see cref="Type"/> to start searching at</param>
 		/// <param name="predicate">The predicate to search with</param>
-		/// <returns>The PropertyInfo or null if type/predicate is null or if a type with that name cannot be found</returns>
+		/// <returns>The <see cref="PropertyInfo"/> or null if type/predicate is null or if a type with that name cannot be found</returns>
 		///
 		public static PropertyInfo FirstProperty(Type type, Func<PropertyInfo, bool> predicate)
 		{
@@ -743,7 +747,7 @@ namespace HarmonyLib
 
 		/// <summary>Returns an array containing the type of each object in the given array</summary>
 		/// <param name="parameters">An array of objects</param>
-		/// <returns>An array of types or an empty array if parameters is null (if an object is null, the type for it will be object)</returns>
+		/// <returns>An array of <see cref="Type"/> or an empty array if parameters is null (if an object is null, the type for it will be object)</returns>
 		///
 		public static Type[] GetTypes(object[] parameters)
 		{
@@ -752,7 +756,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates an array of input parameters for a given method and a given set of potential inputs</summary>
-		/// <param name="method">The method you are planing to call</param>
+		/// <param name="method">The <see cref="MethodBase"/> you are planing to call</param>
 		/// <param name="inputs"> The possible input parameters in any order</param>
 		/// <returns>An object array matching the method signature</returns>
 		///
@@ -807,8 +811,8 @@ namespace HarmonyLib
 		/// <summary>Creates an instance field reference delegate</summary>
 		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
-		/// <param name="fieldInfo">FieldInfo for the field</param>
-		/// <returns>A read and writable field reference delegate</returns>
+		/// <param name="fieldInfo">The <see cref="FieldInfo"/> of the field</param>
+		/// <returns>A read and writable <see cref="FieldRef{T,F}"/> delegate</returns>
 		///
 		public static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo)
 		{
@@ -833,7 +837,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>A read/writable reference delegate to a static field</summary>
-		/// <typeparam name="F">The type of the field</typeparam>
+		/// <typeparam name="F">The <see cref="Type"/> of the field</typeparam>
 		/// <returns>An readable/assignable object representing the static field</returns>
 		///
 		public delegate ref F FieldRef<F>();
@@ -856,8 +860,8 @@ namespace HarmonyLib
 
 		/// <summary>Creates a static field reference delegate</summary>
 		/// <typeparam name="F">The type of the field</typeparam>
-		/// <param name="fieldInfo">FieldInfo for the field</param>
-		/// <returns>A read and writable field reference delegate</returns>
+		/// <param name="fieldInfo"><see cref="FieldInfo"/> for the field</param>
+		/// <returns>A read and writable <see cref="FieldRef{F}"/> delegate</returns>
 		///
 		public static FieldRef<F> StaticFieldRefAccess<F>(FieldInfo fieldInfo)
 		{
@@ -877,7 +881,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Returns who called the current method</summary>
-		/// <returns>The calling method (excluding the current method)</returns>
+		/// <returns>The calling method (excluding the current method) as <see cref="MethodBase"/></returns>
 		///
 		public static MethodBase GetOutsideCaller()
 		{
@@ -892,7 +896,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Throws a missing member runtime exception</summary>
-		/// <param name="type">The class that is involved</param>
+		/// <param name="type">The <see cref="Type"/> that is involved</param>
 		/// <param name="names">A list of names</param>
 		///
 		public static void ThrowMissingMemberException(Type type, params string[] names)
@@ -903,7 +907,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets default value for a specific type</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>The default value</returns>
 		///
 		public static object GetDefaultValue(Type type)
@@ -921,7 +925,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates an (possibly uninitialized) instance of a given type</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>The new instance</returns>
 		///
 		public static object CreateInstance(Type type)
@@ -948,7 +952,7 @@ namespace HarmonyLib
 		/// <typeparam name="T">The type of the instance that should be created</typeparam>
 		/// <param name="source">The original object</param>
 		/// <param name="result">[out] The copy of the original object</param>
-		/// <param name="processor">Optional value transformation function (taking a field name and src/dst traverse objects)</param>
+		/// <param name="processor">Optional value transformation function (taking a field name and src/dst <see cref="Traverse"/> instances)</param>
 		/// <param name="pathRoot">The optional path root to start with</param>
 		///
 		public static void MakeDeepCopy<T>(object source, out T result, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
@@ -958,8 +962,8 @@ namespace HarmonyLib
 
 		/// <summary>Makes a deep copy of any object</summary>
 		/// <param name="source">The original object</param>
-		/// <param name="resultType">The type of the instance that should be created</param>
-		/// <param name="processor">Optional value transformation function (taking a field name and src/dst traverse objects)</param>
+		/// <param name="resultType">The <see cref="Type"/> of the instance that should be created</param>
+		/// <param name="processor">Optional value transformation function (taking a field name and src/dst <see cref="Traverse"/> instances)</param>
 		/// <param name="pathRoot">The optional path root to start with</param>
 		/// <returns>The copy of the original object</returns>
 		///
@@ -1030,7 +1034,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if a type is a struct</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>True if the type is a struct</returns>
 		///
 		public static bool IsStruct(Type type)
@@ -1039,7 +1043,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if a type is a class</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>True if the type is a class</returns>
 		///
 		public static bool IsClass(Type type)
@@ -1048,7 +1052,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if a type is a value type</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>True if the type is a value type</returns>
 		///
 		public static bool IsValue(Type type)
@@ -1057,8 +1061,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if a type is an integer type</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>True if the type represents some integer</returns>
+		/// 
 		public static bool IsInteger(Type type)
 		{
 			switch (Type.GetTypeCode(type))
@@ -1078,7 +1083,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if a type is a floating point type</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>True if the type represents some floating point</returns>
 		/// 
 		public static bool IsFloatingPoint(Type type)
@@ -1095,7 +1100,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if a type is a numerical type</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>True if the type represents some number</returns>
 		///
 		public static bool IsNumber(Type type)
@@ -1104,7 +1109,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if a type is void</summary>
-		/// <param name="type">The type</param>
+		/// <param name="type">The <see cref="Type"/></param>
 		/// <returns>True if the type is void</returns>
 		///
 		public static bool IsVoid(Type type)

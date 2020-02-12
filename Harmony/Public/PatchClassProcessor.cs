@@ -5,7 +5,8 @@ using System.Reflection;
 
 namespace HarmonyLib
 {
-	/// <summary>A PatchClassProcessor handles patch annotation on a class</summary>
+	/// <summary>A PatchClassProcessor used to turn <see cref="HarmonyAttribute"/> on a class/type into patches</summary>
+	/// 
 	public class PatchClassProcessor
 	{
 		readonly Harmony instance;
@@ -62,7 +63,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Applies the patches</summary>
-		/// <returns>A list of all created replacement methods or null if patch class is not annotated</returns>
+		/// <returns>A list of all created replacement methods as <see cref="MethodInfo"/> or null if patch class is not annotated</returns>
 		///
 		public List<MethodInfo> Patch()
 		{

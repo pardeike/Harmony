@@ -7,16 +7,20 @@ using System.Reflection;
 namespace HarmonyLib
 {
 	/// <summary>The Harmony instance is the main entry to Harmony. After creating one with an unique identifier, it is used to patch and query the current application domain</summary>
+	/// 
 	public class Harmony
 	{
 		/// <summary>The unique identifier</summary>
+		/// 
 		public string Id { get; private set; }
 
 		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
+		/// <remarks>This is for full debugging. To debug only specific patches, use the <see cref="HarmonyDebug"/> attribute</remarks>
+		/// 
 		public static bool DEBUG;
 
 		/// <summary>Creates a new Harmony instance</summary>
-		/// <param name="id">A unique identifier</param>
+		/// <param name="id">A unique identifier (you choose your own)</param>
 		/// <returns>A Harmony instance</returns>
 		///
 		public Harmony(string id)
@@ -44,7 +48,7 @@ namespace HarmonyLib
 			Id = id;
 		}
 
-		/// <summary>Searches current assembly for Harmony annotations and uses them to create patches</summary>
+		/// <summary>Searches the current assembly for Harmony annotations and uses them to create patches</summary>
 		/// 
 		public void PatchAll()
 		{
@@ -53,33 +57,53 @@ namespace HarmonyLib
 			PatchAll(assembly);
 		}
 
-		/// <summary>Create a patch processor from an annotated class</summary>
-		/// <param name="type">The class</param>
+		/// <summary>Creates a empty patch processor for an original method</summary>
+		/// <param name="original">The original as <see cref="MethodBase"/></param>
+		/// <returns>A new <see cref="PatchProcessor"/> instance</returns>
+		///
+		public PatchProcessor CreateProcessor(MethodBase original)
+		{
+			return new PatchProcessor(this, original);
+		}
+
+		/// <summary>Creates a patch class processor from an annotated class</summary>
+		/// <param name="type">The class as <see cref="Type"/></param>
+		/// <returns>A new <see cref="PatchClassProcessor"/> instance</returns>
 		/// 
-		public PatchClassProcessor ProcessorForAnnotatedClass(Type type)
+		public PatchClassProcessor CreateClassProcessor(Type type)
 		{
 			return new PatchClassProcessor(this, type);
 		}
 
+		/// <summary>Creates a reverse patcher for one of your stub methods</summary>
+		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <param name="standin">The stand-in stub method as <see cref="HarmonyMethod"/></param>
+		/// <returns>A new <see cref="ReversePatcher"/> instance</returns>
+		///
+		public ReversePatcher CreateReversePatcher(MethodBase original, HarmonyMethod standin)
+		{
+			return new ReversePatcher(this, original, standin);
+		}
+
 		/// <summary>Searches an assembly for Harmony annotations and uses them to create patches</summary>
-		/// <param name="assembly">The assembly</param>
+		/// <param name="assembly">The <see cref="Assembly"/></param>
 		/// 
 		public void PatchAll(Assembly assembly)
 		{
-			assembly.GetTypes().Do(type => ProcessorForAnnotatedClass(type).Patch());
+			assembly.GetTypes().Do(type => CreateClassProcessor(type).Patch());
 		}
 
 		/// <summary>Creates patches by manually specifying the methods</summary>
-		/// <param name="original">The original method/constructor</param>
-		/// <param name="prefix">An optional prefix method wrapped in a HarmonyMethod object</param>
-		/// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
-		/// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
-		/// <param name="finalizer">An optional finalizer method wrapped in a HarmonyMethod object</param>
-		/// <returns>The replacement method that was created to patch the original method</returns>
+		/// <param name="original">The original method/constructor as <see cref="MethodBase"/></param>
+		/// <param name="prefix">An optional prefix method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="postfix">An optional postfix method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="transpiler">An optional transpiler method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="finalizer">An optional finalizer method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <returns>The replacement <see cref="MethodInfo"/> that was created to patch the original method</returns>
 		///
 		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
 		{
-			var processor = this.CreateProcessor(original);
+			var processor = CreateProcessor(original);
 			_ = processor.AddPrefix(prefix);
 			_ = processor.AddPostfix(postfix);
 			_ = processor.AddTranspiler(transpiler);
@@ -88,9 +112,11 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Patches a foreign method onto a stub method of yours and optionally applies transpilers during the process</summary>
-		/// <param name="original">The original method/constructor you want to duplicate</param>
-		/// <param name="standin">Your stub method that will become the original. Needs to have the correct signature (either original or whatever your transpilers generates)</param>
-		/// <param name="transpiler">An optional transpiler that will be applied during the process</param>
+		/// <param name="original">The original method/constructor as <see cref="MethodBase"/> you want to duplicate</param>
+		/// <param name="standin">Your stub method as <see cref="HarmonyMethod"/> that will become the original. Needs to have the correct signature (either original or whatever your transpilers generates)</param>
+		/// <param name="transpiler">An optional transpiler as <see cref="MethodInfo"/> that will be applied during the process</param>
+		/// <returns>The replacement <see cref="MethodInfo"/> that was created to patch the stub method</returns>
+		/// 
 		public static MethodInfo ReversePatch(MethodBase original, HarmonyMethod standin, MethodInfo transpiler = null)
 		{
 			return PatchFunctions.ReversePatch(standin, original, transpiler);
@@ -116,23 +142,23 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Unpatches a method</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="type">The patch type</param>
+		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <param name="type">The <see cref="HarmonyPatchType"/></param>
 		/// <param name="harmonyID">The optional Harmony ID to restrict unpatching to a specific instance</param>
 		///
 		public void Unpatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
 		{
-			var processor = this.CreateProcessor(original);
+			var processor = CreateProcessor(original);
 			_ = processor.Unpatch(type, harmonyID);
 		}
 
 		/// <summary>Unpatches a method</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="patch">The patch method to remove</param>
+		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <param name="patch">The patch method as <see cref="MethodInfo"/> to remove</param>
 		///
 		public void Unpatch(MethodBase original, MethodInfo patch)
 		{
-			var processor = this.CreateProcessor(original);
+			var processor = CreateProcessor(original);
 			_ = processor.Unpatch(patch);
 		}
 
@@ -148,8 +174,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets patch information for a given original method</summary>
-		/// <param name="method">The original method</param>
-		/// <returns>The patch information</returns>
+		/// <param name="method">The original method as <see cref="MethodBase"/></param>
+		/// <returns>The patch information as <see cref="Patches"/></returns>
 		///
 		public static Patches GetPatchInfo(MethodBase method)
 		{
@@ -157,7 +183,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the methods this instance has patched</summary>
-		/// <returns>An enumeration of original methods</returns>
+		/// <returns>An enumeration of original <see cref="MethodBase"/></returns>
 		///
 		public IEnumerable<MethodBase> GetPatchedMethods()
 		{
@@ -166,7 +192,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all patched original methods in the appdomain</summary>
-		/// <returns>An enumeration of patched original methods</returns>
+		/// <returns>An enumeration of patched original <see cref="MethodBase"/></returns>
 		///
 		public static IEnumerable<MethodBase> GetAllPatchedMethods()
 		{
@@ -174,8 +200,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
-		/// <param name="currentVersion">[out] The current Harmony version</param>
-		/// <returns>A dictionary containing assembly versions keyed by Harmony IDs</returns>
+		/// <param name="currentVersion">[out] The current Harmony <see cref="Version"/></param>
+		/// <returns>A <see cref="Dictionary{String, Version}"/> containing assembly versions keyed by Harmony IDs</returns>
 		///
 		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{

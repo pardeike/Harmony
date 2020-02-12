@@ -5,11 +5,12 @@ using System.Reflection;
 namespace HarmonyLib
 {
 	/// <summary>A helper class to retrieve reflection info for non-private methods</summary>
+	/// 
 	public static class SymbolExtensions
 	{
 		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
 		/// <param name="expression">The lambda expression using the method</param>
-		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		/// <returns>The <see cref="MethodInfo"/> for the method in the lambda expression</returns>
 		///
 		public static MethodInfo GetMethodInfo(Expression<Action> expression)
 		{
@@ -17,9 +18,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
-		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="T">The generic type</typeparam>
 		/// <param name="expression">The lambda expression using the method</param>
-		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		/// <returns>The <see cref="MethodInfo"/> for the method in the lambda expression</returns>
 		///
 		public static MethodInfo GetMethodInfo<T>(Expression<Action<T>> expression)
 		{
@@ -27,10 +28,10 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
-		/// <typeparam name="T"></typeparam>
-		/// <typeparam name="TResult"></typeparam>
+		/// <typeparam name="T">The generic type</typeparam>
+		/// <typeparam name="TResult">The generic result type</typeparam>
 		/// <param name="expression">The lambda expression using the method</param>
-		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		/// <returns>The <see cref="MethodInfo"/> for the method in the lambda expression</returns>
 		///
 		public static MethodInfo GetMethodInfo<T, TResult>(Expression<Func<T, TResult>> expression)
 		{
@@ -38,8 +39,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
-		/// <param name="expression">The lambda expression using the method</param>
-		/// <returns>The MethodInfo for the method in the lambda expression</returns>
+		/// <param name="expression">The <see cref="LambdaExpression"/> using the method</param>
+		/// <returns>The <see cref="MethodInfo"/> for the method in the lambda expression</returns>
 		///
 		public static MethodInfo GetMethodInfo(LambdaExpression expression)
 		{

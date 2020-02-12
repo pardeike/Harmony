@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace HarmonyLib
 {
 	/// <summary>Patch serialization</summary>
+	/// 
 	internal static class PatchInfoSerialization
 	{
 		class Binder : SerializationBinder
@@ -34,8 +35,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Serializes a patch info</summary>
-		/// <param name="patchInfo">The patch info</param>
-		/// <returns>A byte array</returns>
+		/// <param name="patchInfo">The <see cref="PatchInfo"/></param>
+		/// <returns>The serialized data</returns>
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
@@ -50,8 +51,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Deserialize a patch info</summary>
-		/// <param name="bytes">The byte array</param>
-		/// <returns>A patch info</returns>
+		/// <param name="bytes">The serialized data</param>
+		/// <returns>A <see cref="PatchInfo"/></returns>
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
@@ -82,19 +83,28 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Serializable patch information</summary>
+	/// 
 	[Serializable]
 	public class PatchInfo
 	{
-		/// <summary>The prefixes</summary>
+		/// <summary>Prefixes as an array of <see cref="Patch"/></summary>
+		/// 
 		public Patch[] prefixes;
-		/// <summary>The postfixes</summary>
+
+		/// <summary>Postfixes as an array of <see cref="Patch"/></summary>
+		/// 
 		public Patch[] postfixes;
-		/// <summary>The transpilers</summary>
+
+		/// <summary>Transpilers as an array of <see cref="Patch"/></summary>
+		/// 
 		public Patch[] transpilers;
-		/// <summary>The finalizers</summary>
+
+		/// <summary>Finalizers as an array of <see cref="Patch"/></summary>
+		/// 
 		public Patch[] finalizers;
 
 		/// <summary>Default constructor</summary>
+		/// 
 		public PatchInfo()
 		{
 			prefixes = new Patch[0];
@@ -104,15 +114,17 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Returns if any of the patches wants debugging turned on</summary>
+		/// 
 		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug);
 
 		/// <summary>Adds a prefix</summary>
-		/// <param name="patch">The patch</param>
-		/// <param name="owner">The owner (Harmony ID)</param>
-		/// <param name="priority">The priority</param>
-		/// <param name="before">The before order</param>
-		/// <param name="after">The after order</param>
-		/// <param name="debug">The debug flag</param>
+		/// 
+		/// <param name="patch">The <see cref="MethodInfo"/> of the prefix method</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="priority">The priority, see <see cref="Priority"/></param>
+		/// <param name="before">A list of Harmony IDs for prefixes that should run after this prefix</param>
+		/// <param name="after">A list of Harmony IDs for prefixes that should run before this prefix</param>
+		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this prefix is used to build the replacement, even in the future</param>
 		///
 		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
@@ -121,8 +133,8 @@ namespace HarmonyLib
 			prefixes = l.ToArray();
 		}
 
-		/// <summary>Removes a prefix</summary>
-		/// <param name="owner">The owner or (*) for any</param>
+		/// <summary>Removes prefixes</summary>
+		/// <param name="owner">The owner of the prefix or <c>*</c> for any prefix</param>
 		///
 		public void RemovePrefix(string owner)
 		{
@@ -135,12 +147,12 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a postfix</summary>
-		/// <param name="patch">The patch</param>
-		/// <param name="owner">The owner (Harmony ID)</param>
-		/// <param name="priority">The priority</param>
-		/// <param name="before">The before order</param>
-		/// <param name="after">The after order</param>
-		/// <param name="debug">The debug flag</param>
+		/// <param name="patch">The <see cref="MethodInfo"/> of the postfix method</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="priority">The priority, see <see cref="Priority"/></param>
+		/// <param name="before">A list of Harmony IDs for postfixes that should run after this postfix</param>
+		/// <param name="after">A list of Harmony IDs for postfixes that should run before this postfix</param>
+		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this postfix is used to build the replacement, even in the future</param>
 		///
 		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
@@ -149,8 +161,8 @@ namespace HarmonyLib
 			postfixes = l.ToArray();
 		}
 
-		/// <summary>Removes a postfix</summary>
-		/// <param name="owner">The owner or (*) for any</param>
+		/// <summary>Removes postfixes</summary>
+		/// <param name="owner">The owner of the postfix or <c>*</c> for any postfix</param>
 		///
 		public void RemovePostfix(string owner)
 		{
@@ -163,12 +175,12 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a transpiler</summary>
-		/// <param name="patch">The patch</param>
-		/// <param name="owner">The owner (Harmony ID)</param>
-		/// <param name="priority">The priority</param>
-		/// <param name="before">The before order</param>
-		/// <param name="after">The after order</param>
-		/// <param name="debug">The debug flag</param>
+		/// <param name="patch">The <see cref="MethodInfo"/> of the transpiler method</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="priority">The priority, see <see cref="Priority"/></param>
+		/// <param name="before">A list of Harmony IDs for transpilers that should run after this transpiler</param>
+		/// <param name="after">A list of Harmony IDs for transpilers that should run before this transpiler</param>
+		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</param>
 		///
 		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
@@ -177,8 +189,8 @@ namespace HarmonyLib
 			transpilers = l.ToArray();
 		}
 
-		/// <summary>Removes a transpiler</summary>
-		/// <param name="owner">The owner or (*) for any</param>
+		/// <summary>Removes transpilers</summary>
+		/// <param name="owner">The owner of the transpiler or <c>*</c> for any transpiler</param>
 		///
 		public void RemoveTranspiler(string owner)
 		{
@@ -191,12 +203,12 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a finalizer</summary>
-		/// <param name="patch">The patch</param>
-		/// <param name="owner">The owner (Harmony ID)</param>
-		/// <param name="priority">The priority</param>
-		/// <param name="before">The before order</param>
-		/// <param name="after">The after order</param>
-		/// <param name="debug">The debug flag</param>
+		/// <param name="patch">The <see cref="MethodInfo"/> of the finalizer method</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="priority">The priority, see <see cref="Priority"/></param>
+		/// <param name="before">A list of Harmony IDs for finalizers that should run after this finalizer</param>
+		/// <param name="after">A list of Harmony IDs for finalizers that should run before this finalizer</param>
+		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</param>
 		///
 		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
 		{
@@ -205,8 +217,8 @@ namespace HarmonyLib
 			finalizers = l.ToArray();
 		}
 
-		/// <summary>Removes a finalizer</summary>
-		/// <param name="owner">The owner or (*) for any</param>
+		/// <summary>Removes finalizers</summary>
+		/// <param name="owner">The owner of the finalizer or <c>*</c> for any finalizer</param>
 		///
 		public void RemoveFinalizer(string owner)
 		{
@@ -218,8 +230,8 @@ namespace HarmonyLib
 			finalizers = finalizers.Where(patch => patch.owner != owner).ToArray();
 		}
 
-		/// <summary>Removes a patch</summary>
-		/// <param name="patch">The patch method</param>
+		/// <summary>Removes a patch using its method</summary>
+		/// <param name="patch">The <see cref="MethodInfo"/> of the patch to remove</param>
 		///
 		public void RemovePatch(MethodInfo patch)
 		{
@@ -231,34 +243,38 @@ namespace HarmonyLib
 	}
 
 	/// <summary>A serializable patch</summary>
+	/// 
 	[Serializable]
 	public class Patch : IComparable
 	{
-		// NOTE: fields here are marked non-serialized because the class
-		// <PatchSurrogate> takes care of custom serialization
-
 		/// <summary>Zero-based index</summary>
+		/// 
 		public readonly int index;
 
 		/// <summary>The owner (Harmony ID)</summary>
+		/// 
 #pragma warning disable CA2235
 		public readonly string owner;
 #pragma warning restore CA2235
 
-		/// <summary>The priority</summary>
+		/// <summary>The priority, see <see cref="Priority"/></summary>
+		/// 
 		public readonly int priority;
 
-		/// <summary>The before order</summary>
+		/// <summary>Keep this patch before the patches indicated in the list of Harmony IDs</summary>
+		/// 
 #pragma warning disable CA2235
 		public readonly string[] before;
 #pragma warning restore CA2235
 
-		/// <summary>The after order</summary>
+		/// <summary>Keep this patch after the patches indicated in the list of Harmony IDs</summary>
+		/// 
 #pragma warning disable CA2235
 		public readonly string[] after;
 #pragma warning restore CA2235
 
-		/// <summary>The debug flag</summary>
+		/// <summary>A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</summary>
+		/// 
 #pragma warning disable CA2235
 		public readonly bool debug;
 #pragma warning restore CA2235
@@ -269,7 +285,9 @@ namespace HarmonyLib
 #pragma warning disable CA2235
 		private string module;
 #pragma warning restore CA2235
-		/// <summary>The patch method</summary>
+
+		/// <summary>The <see cref="MethodInfo"/> of the static patch method</summary>
+		/// 
 		public MethodInfo PatchMethod
 		{
 			get
@@ -293,13 +311,13 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a patch</summary>
-		/// <param name="patch">The patch</param>
+		/// <param name="patch">The <see cref="MethodInfo"/> of the patch method</param>
 		/// <param name="index">Zero-based index</param>
-		/// <param name="owner">The owner (Harmony ID)</param>
-		/// <param name="priority">The priority</param>
-		/// <param name="before">The before order</param>
-		/// <param name="after">The after order</param>
-		/// <param name="debug">The debug flag</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="priority">The priority, see <see cref="Priority"/></param>
+		/// <param name="before">A list of Harmony IDs for patches that should run after this patch</param>
+		/// <param name="after">A list of Harmony IDs for patches that should run before this patch</param>
+		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</param>
 		///
 		public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after, bool debug)
 		{
@@ -314,21 +332,21 @@ namespace HarmonyLib
 			PatchMethod = patch;
 		}
 
-		/// <summary>Gets the patch method</summary>
-		/// <param name="original">The original method</param>
-		/// <returns>The patch method</returns>
+		/// <summary>Get the patch method or a <see cref="DynamicMethod"/> if original patch method is a patch factory</summary>
+		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <returns>The <see cref="MethodInfo"/> of the patch</returns>
 		///
 		public MethodInfo GetMethod(MethodBase original)
 		{
-			if (PatchMethod.ReturnType != typeof(DynamicMethod) && PatchMethod.ReturnType != typeof(MethodInfo)) return PatchMethod;
-			if (PatchMethod.IsStatic == false) return PatchMethod;
-			var parameters = PatchMethod.GetParameters();
-			if (parameters.Count() != 1) return PatchMethod;
-			if (parameters[0].ParameterType != typeof(MethodBase)) return PatchMethod;
+			var method = PatchMethod;
+			if (method.ReturnType != typeof(DynamicMethod) && method.ReturnType != typeof(MethodInfo)) return method;
+			if (method.IsStatic == false) return method;
+			var parameters = method.GetParameters();
+			if (parameters.Count() != 1) return method;
+			if (parameters[0].ParameterType != typeof(MethodBase)) return method;
 
 			// we have a DynamicMethod factory, let's use it
-			var result = PatchMethod.Invoke(null, new object[] { original });
-			return result as MethodInfo;
+			return method.Invoke(null, new object[] { original }) as MethodInfo;
 		}
 
 		/// <summary>Determines whether patches are equal</summary>

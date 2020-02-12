@@ -48,7 +48,7 @@ namespace HarmonyLibTests
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance);
-			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			var patcher = instance.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher);
 
 			Exception exception = null;
@@ -77,7 +77,7 @@ namespace HarmonyLibTests
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			var patcher = instance.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher, "Patch processor");
 			try
 			{
@@ -116,7 +116,7 @@ namespace HarmonyLibTests
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			var patcher = instance.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher, "Patch processor");
 			try
 			{
@@ -141,7 +141,7 @@ namespace HarmonyLibTests
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.ProcessorForAnnotatedClass(patchClass);
+			var patcher = instance.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher, "Patch processor");
 			_ = patcher.Patch();
 		}
