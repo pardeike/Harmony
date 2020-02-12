@@ -2838,70 +2838,12 @@ references:
   commentId: T:HarmonyLib.MethodInvoker
   fullName: HarmonyLib.MethodInvoker
   nameWithType: MethodInvoker
-- uid: HarmonyLib.MethodInvoker.#ctor(System.Boolean)
-  name: MethodInvoker(Boolean)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker__ctor_System_Boolean_
-  commentId: M:HarmonyLib.MethodInvoker.#ctor(System.Boolean)
-  fullName: HarmonyLib.MethodInvoker.MethodInvoker(System.Boolean)
-  nameWithType: MethodInvoker.MethodInvoker(Boolean)
-- uid: HarmonyLib.MethodInvoker.#ctor*
-  name: MethodInvoker
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker__ctor_
-  commentId: Overload:HarmonyLib.MethodInvoker.#ctor
-  isSpec: "True"
-  fullName: HarmonyLib.MethodInvoker.MethodInvoker
-  nameWithType: MethodInvoker.MethodInvoker
-- uid: HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode)
-  name: Emit(ILGenerator, OpCode)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_
-  commentId: M:HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode)
-  fullName: HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode)
-  nameWithType: MethodInvoker.Emit(ILGenerator, OpCode)
-- uid: HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Type)
-  name: Emit(ILGenerator, OpCode, Type)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Emit_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Type_
-  commentId: M:HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Type)
-  fullName: HarmonyLib.MethodInvoker.Emit(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Type)
-  nameWithType: MethodInvoker.Emit(ILGenerator, OpCode, Type)
-- uid: HarmonyLib.MethodInvoker.Emit*
-  name: Emit
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Emit_
-  commentId: Overload:HarmonyLib.MethodInvoker.Emit
-  isSpec: "True"
-  fullName: HarmonyLib.MethodInvoker.Emit
-  nameWithType: MethodInvoker.Emit
-- uid: HarmonyLib.MethodInvoker.EmitCall(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.MethodInfo)
-  name: EmitCall(ILGenerator, OpCode, MethodInfo)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_EmitCall_System_Reflection_Emit_ILGenerator_System_Reflection_Emit_OpCode_System_Reflection_MethodInfo_
-  commentId: M:HarmonyLib.MethodInvoker.EmitCall(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Reflection.MethodInfo)
-  fullName: HarmonyLib.MethodInvoker.EmitCall(System.Reflection.Emit.ILGenerator, System.Reflection.Emit.OpCode, System.Reflection.MethodInfo)
-  nameWithType: MethodInvoker.EmitCall(ILGenerator, OpCode, MethodInfo)
-- uid: HarmonyLib.MethodInvoker.EmitCall*
-  name: EmitCall
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_EmitCall_
-  commentId: Overload:HarmonyLib.MethodInvoker.EmitCall
-  isSpec: "True"
-  fullName: HarmonyLib.MethodInvoker.EmitCall
-  nameWithType: MethodInvoker.EmitCall
-- uid: HarmonyLib.MethodInvoker.EmitFastInt(System.Reflection.Emit.ILGenerator,System.Int32)
-  name: EmitFastInt(ILGenerator, Int32)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_EmitFastInt_System_Reflection_Emit_ILGenerator_System_Int32_
-  commentId: M:HarmonyLib.MethodInvoker.EmitFastInt(System.Reflection.Emit.ILGenerator,System.Int32)
-  fullName: HarmonyLib.MethodInvoker.EmitFastInt(System.Reflection.Emit.ILGenerator, System.Int32)
-  nameWithType: MethodInvoker.EmitFastInt(ILGenerator, Int32)
-- uid: HarmonyLib.MethodInvoker.EmitFastInt*
-  name: EmitFastInt
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_EmitFastInt_
-  commentId: Overload:HarmonyLib.MethodInvoker.EmitFastInt
-  isSpec: "True"
-  fullName: HarmonyLib.MethodInvoker.EmitFastInt
-  nameWithType: MethodInvoker.EmitFastInt
-- uid: HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo)
-  name: GetHandler(MethodInfo)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_GetHandler_System_Reflection_MethodInfo_
-  commentId: M:HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo)
-  fullName: HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo)
-  nameWithType: MethodInvoker.GetHandler(MethodInfo)
+- uid: HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo,System.Boolean)
+  name: GetHandler(MethodInfo, Boolean)
+  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_GetHandler_System_Reflection_MethodInfo_System_Boolean_
+  commentId: M:HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo,System.Boolean)
+  fullName: HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo, System.Boolean)
+  nameWithType: MethodInvoker.GetHandler(MethodInfo, Boolean)
 - uid: HarmonyLib.MethodInvoker.GetHandler*
   name: GetHandler
   href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_GetHandler_
@@ -2909,19 +2851,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.MethodInvoker.GetHandler
   nameWithType: MethodInvoker.GetHandler
-- uid: HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)
-  name: Handler(MethodInfo)
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Handler_System_Reflection_MethodInfo_
-  commentId: M:HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)
-  fullName: HarmonyLib.MethodInvoker.Handler(System.Reflection.MethodInfo)
-  nameWithType: MethodInvoker.Handler(MethodInfo)
-- uid: HarmonyLib.MethodInvoker.Handler*
-  name: Handler
-  href: api/HarmonyLib.MethodInvoker.html#HarmonyLib_MethodInvoker_Handler_
-  commentId: Overload:HarmonyLib.MethodInvoker.Handler
-  isSpec: "True"
-  fullName: HarmonyLib.MethodInvoker.Handler
-  nameWithType: MethodInvoker.Handler
 - uid: HarmonyLib.MethodType
   name: MethodType
   href: api/HarmonyLib.MethodType.html
