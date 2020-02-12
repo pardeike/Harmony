@@ -154,7 +154,7 @@ namespace HarmonyLib
 
 		/// <summary>Wrapper used over the Patch object to allow faster dependency access and
 		/// dependency removal in case of cyclic dependencies</summary>
-		private class PatchSortingWrapper : IComparable
+		class PatchSortingWrapper : IComparable
 		{
 			internal readonly HashSet<PatchSortingWrapper> after;
 			internal readonly HashSet<PatchSortingWrapper> before;

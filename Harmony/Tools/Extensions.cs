@@ -142,7 +142,6 @@ namespace HarmonyLib
 		};
 
 		/// <summary>Shortcut for testing if the operand is equal to a non-null typed value</summary>
-		/// <typeparam name="T">The type of the value</typeparam>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="value">The value</param>
 		/// <returns>True if the operand has the same type and is equal to the value</returns>
@@ -248,7 +247,6 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if the code instruction loads an integer constant</summary>
-		/// <typeparam name="T">The type of the constant</typeparam>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="number">The integer constant</param>
 		/// <returns>True if the instruction loads the constant</returns>
@@ -270,7 +268,6 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if the code instruction loads a floating point constant</summary>
-		/// <typeparam name="T">The type of the constant</typeparam>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="number">The floating point constant</param>
 		/// <returns>True if the instruction loads the constant</returns>
@@ -282,7 +279,6 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests if the code instruction loads an enum constant</summary>
-		/// <typeparam name="T">The type of the constant</typeparam>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="e">The enum</param>
 		/// <returns>True if the instruction loads the constant</returns>

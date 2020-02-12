@@ -8,12 +8,10 @@ namespace HarmonyLib
 	/// <summary>A low level memory helper</summary>
 	public static class Memory
 	{
-		/// <summary>Mark method for no inlining</summary>
-		/// <param name="method">The method to change</param>
+		/// <summary>Mark method for no inlining (currently only works on Mono)</summary>
+		/// <param name="method">The <see cref="MethodBase"/> to change</param>
 		unsafe public static void MarkForNoInlining(MethodBase method)
 		{
-			//var methodDef = method.MetadataToken;
-
 			// TODO for now, this only works on mono
 			if (Type.GetType("Mono.Runtime") != null)
 			{
@@ -23,8 +21,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Detours a method</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="replacement">The replacement method</param>
+		/// <param name="original">The original <see cref="MethodBase"/></param>
+		/// <param name="replacement">The replacement <see cref="MethodBase"/></param>
 		/// <returns>An error string</returns>
 		///
 		public static string DetourMethod(MethodBase original, MethodBase replacement)
@@ -64,8 +62,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the start of a method in memory</summary>
-		/// <param name="method">The method</param>
-		/// <param name="exception">[out] Details of the exception</param>
+		/// <param name="method">The <see cref="MethodBase"/></param>
+		/// <param name="exception">[out] Details of the <see cref="Exception"/></param>
 		/// <returns>The method start address</returns>
 		///
 		public static long GetMethodStart(MethodBase method, out Exception exception)

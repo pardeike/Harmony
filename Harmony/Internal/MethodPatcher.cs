@@ -12,13 +12,13 @@ namespace HarmonyLib
 	{
 		/// special parameter names that can be used in prefix and postfix methods
 
-		public const string INSTANCE_PARAM = "__instance";
-		public const string ORIGINAL_METHOD_PARAM = "__originalMethod";
-		public const string RESULT_VAR = "__result";
-		public const string STATE_VAR = "__state";
-		public const string EXCEPTION_VAR = "__exception";
-		public const string PARAM_INDEX_PREFIX = "__";
-		public const string INSTANCE_FIELD_PREFIX = "___";
+		const string INSTANCE_PARAM = "__instance";
+		const string ORIGINAL_METHOD_PARAM = "__originalMethod";
+		const string RESULT_VAR = "__result";
+		const string STATE_VAR = "__state";
+		const string EXCEPTION_VAR = "__exception";
+		const string PARAM_INDEX_PREFIX = "__";
+		const string INSTANCE_FIELD_PREFIX = "___";
 
 		readonly bool debug;
 		readonly MethodBase original;
