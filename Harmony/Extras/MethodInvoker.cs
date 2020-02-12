@@ -14,25 +14,15 @@ namespace HarmonyLib
 	public delegate object FastInvokeHandler(object target, object[] parameters);
 
 	/// <summary>A helper class to invoke method with delegates</summary>
-	public class MethodInvoker
+	public static class MethodInvoker
 	{
 		/// <summary>Creates a fast invocation handler from a method</summary>
 		/// <param name="methodInfo">The <see cref="MethodInfo"/> to invoke</param>
-		/// <returns>The <see cref="FastInvokeHandler"/></returns>
-		public static FastInvokeHandler GetHandler(MethodInfo methodInfo)
-		{
-			return defaultInstance.Handler(methodInfo);
-		}
-
-		static readonly MethodInvoker defaultInstance = new MethodInvoker();
-
-		readonly bool directBoxValueAccess;
-
-		/// <summary>Creates a MethodInvoker that can create a fast invocation handler</summary>
 		/// <param name="directBoxValueAccess">Controls if boxed value object is accessed/updated directly</param>
+		/// <returns>The <see cref="FastInvokeHandler"/></returns>
 		/// <remarks>
 		/// <para>
-		/// This option controls how value types passed by reference (e.g. ref int, out my_struct) are handled in the arguments array
+		/// The <c>directBoxValueAccess</c> option controls how value types passed by reference (e.g. ref int, out my_struct) are handled in the arguments array
 		/// passed to the fast invocation handler.
 		/// Since the arguments array is an object array, any value types contained within it are actually references to a boxed value object.
 		/// Like any other object, there can be other references to such boxed value objects, other than the reference within the arguments array.
@@ -57,15 +47,7 @@ namespace HarmonyLib
 		/// In the above example, if the method associated with the handler updates the passed (boxed) value to 10, only <c>arr[0]</c> now reflects the value 10.
 		/// </para>
 		/// </remarks>
-		public MethodInvoker(bool directBoxValueAccess = false)
-		{
-			this.directBoxValueAccess = directBoxValueAccess;
-		}
-
-		/// <summary>Creates a fast invocation handler from a method and a module</summary>
-		/// <param name="methodInfo">The <see cref="MethodInfo"/> to invoke</param>
-		/// <returns>The fast invocation handler</returns>
-		public FastInvokeHandler Handler(MethodInfo methodInfo)
+		public static FastInvokeHandler GetHandler(MethodInfo methodInfo, bool directBoxValueAccess = false)
 		{
 			var dynamicMethod = new DynamicMethodDefinition($"FastInvoke_{methodInfo.Name}_{(directBoxValueAccess ? "direct" : "indirect")}", typeof(object), new Type[] { typeof(object), typeof(object[]) });
 			var il = dynamicMethod.GetILGenerator();
@@ -162,38 +144,34 @@ namespace HarmonyLib
 			return invoder;
 		}
 
-		/// protected for unit testing purposes only
-		protected virtual void Emit(ILGenerator il, OpCode opcode)
+		internal static void Emit(ILGenerator il, OpCode opcode)
 		{
 			il.Emit(opcode);
 		}
 
-		/// protected for unit testing purposes only
-		protected virtual void Emit(ILGenerator il, OpCode opcode, Type type)
+		internal static void Emit(ILGenerator il, OpCode opcode, Type type)
 		{
 			il.Emit(opcode, type);
 		}
 
-		/// protected for unit testing purposes only
-		protected virtual void EmitCall(ILGenerator il, OpCode opcode, MethodInfo methodInfo)
+		internal static void EmitCall(ILGenerator il, OpCode opcode, MethodInfo methodInfo)
 		{
 			il.EmitCall(opcode, methodInfo, null);
 		}
 
-		void EmitUnboxIfNeeded(ILGenerator il, Type type)
+		static void EmitUnboxIfNeeded(ILGenerator il, Type type)
 		{
 			if (type.IsValueType)
 				Emit(il, OpCodes.Unbox_Any, type);
 		}
 
-		void EmitBoxIfNeeded(ILGenerator il, Type type)
+		static void EmitBoxIfNeeded(ILGenerator il, Type type)
 		{
 			if (type.IsValueType)
 				Emit(il, OpCodes.Box, type);
 		}
 
-		/// protected for unit testing purposes only
-		protected virtual void EmitFastInt(ILGenerator il, int value)
+		internal static void EmitFastInt(ILGenerator il, int value)
 		{
 			switch (value)
 			{
