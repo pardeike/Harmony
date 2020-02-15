@@ -30,7 +30,8 @@ namespace HarmonyLibTests
 				exception = ex;
 			}
 			Assert.NotNull(exception);
-			Assert.True(exception.Message.Contains("returned an unexpected result: null"));
+			Assert.NotNull(exception.InnerException);
+			Assert.True(exception.InnerException.Message.Contains("returned an unexpected result: null"));
 		}
 
 		[Test]
@@ -55,7 +56,8 @@ namespace HarmonyLibTests
 				exception = ex;
 			}
 			Assert.NotNull(exception);
-			Assert.True(exception.Message.Contains("has wrong return type"));
+			Assert.NotNull(exception.InnerException);
+			Assert.True(exception.InnerException.Message.Contains("has wrong return type"));
 		}
 
 		[Test]
@@ -80,7 +82,8 @@ namespace HarmonyLibTests
 				exception = ex;
 			}
 			Assert.NotNull(exception);
-			Assert.True(exception.Message.Contains("returned an unexpected result: some element was null"));
+			Assert.NotNull(exception.InnerException);
+			Assert.True(exception.InnerException.Message.Contains("returned an unexpected result: some element was null"));
 		}
 	}
 }
