@@ -119,7 +119,7 @@ namespace HarmonyLib
 
 		/// <summary>Adds a prefix</summary>
 		/// 
-		/// <param name="patch">The <see cref="MethodInfo"/> of the prefix method</param>
+		/// <param name="patch">The prefix method</param>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="priority">The priority, see <see cref="Priority"/></param>
 		/// <param name="before">A list of Harmony IDs for prefixes that should run after this prefix</param>
@@ -147,7 +147,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a postfix</summary>
-		/// <param name="patch">The <see cref="MethodInfo"/> of the postfix method</param>
+		/// <param name="patch">The postfix method</param>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="priority">The priority, see <see cref="Priority"/></param>
 		/// <param name="before">A list of Harmony IDs for postfixes that should run after this postfix</param>
@@ -175,7 +175,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a transpiler</summary>
-		/// <param name="patch">The <see cref="MethodInfo"/> of the transpiler method</param>
+		/// <param name="patch">The transpiler method</param>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="priority">The priority, see <see cref="Priority"/></param>
 		/// <param name="before">A list of Harmony IDs for transpilers that should run after this transpiler</param>
@@ -203,7 +203,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a finalizer</summary>
-		/// <param name="patch">The <see cref="MethodInfo"/> of the finalizer method</param>
+		/// <param name="patch">The finalizer method</param>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="priority">The priority, see <see cref="Priority"/></param>
 		/// <param name="before">A list of Harmony IDs for finalizers that should run after this finalizer</param>
@@ -231,7 +231,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Removes a patch using its method</summary>
-		/// <param name="patch">The <see cref="MethodInfo"/> of the patch to remove</param>
+		/// <param name="patch">The method of the patch to remove</param>
 		///
 		public void RemovePatch(MethodInfo patch)
 		{
@@ -286,7 +286,7 @@ namespace HarmonyLib
 		private string module;
 #pragma warning restore CA2235
 
-		/// <summary>The <see cref="MethodInfo"/> of the static patch method</summary>
+		/// <summary>The method of the static patch method</summary>
 		/// 
 		public MethodInfo PatchMethod
 		{
@@ -311,7 +311,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a patch</summary>
-		/// <param name="patch">The <see cref="MethodInfo"/> of the patch method</param>
+		/// <param name="patch">The method of the patch</param>
 		/// <param name="index">Zero-based index</param>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="priority">The priority, see <see cref="Priority"/></param>
@@ -332,9 +332,9 @@ namespace HarmonyLib
 			PatchMethod = patch;
 		}
 
-		/// <summary>Get the patch method or a <see cref="DynamicMethod"/> if original patch method is a patch factory</summary>
-		/// <param name="original">The original method as <see cref="MethodBase"/></param>
-		/// <returns>The <see cref="MethodInfo"/> of the patch</returns>
+		/// <summary>Get the patch method or a DynamicMethod if original patch method is a patch factory</summary>
+		/// <param name="original">The original method/constructor</param>
+		/// <returns>The method of the patch</returns>
 		///
 		public MethodInfo GetMethod(MethodBase original)
 		{

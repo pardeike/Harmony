@@ -55,7 +55,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a new traverse instance from a class/type</summary>
-		/// <param name="type">The <see cref="Type"/></param>
+		/// <param name="type">The class/type</param>
 		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
 		public static Traverse Create(Type type)
@@ -97,7 +97,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a new traverse instance from a class/type</summary>
-		/// <param name="type">The <see cref="Type"/></param>
+		/// <param name="type">The class/type</param>
 		///
 		public Traverse(Type type)
 		{

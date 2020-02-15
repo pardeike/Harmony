@@ -81,7 +81,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a class to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		///
 		public HarmonyPatch(Type declaringType)
 		{
@@ -89,7 +89,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="argumentTypes">The argument types of the method or constructor to patch</param>
 		///
 		public HarmonyPatch(Type declaringType, Type[] argumentTypes)
@@ -99,7 +99,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
 		///
 		public HarmonyPatch(Type declaringType, string methodName)
@@ -109,7 +109,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
@@ -121,7 +121,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
@@ -134,7 +134,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
 		///
 		public HarmonyPatch(Type declaringType, MethodType methodType)
@@ -144,9 +144,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
-		/// <param name="argumentTypes">An array of argument <see cref="Type"/> to target overloads</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
 		public HarmonyPatch(Type declaringType, MethodType methodType, params Type[] argumentTypes)
 		{
@@ -156,9 +156,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
-		/// <param name="argumentTypes">An array of argument <see cref="Type"/> to target overloads</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
 		///
 		public HarmonyPatch(Type declaringType, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
@@ -169,7 +169,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="declaringType">The declaring <see cref="Type"/></param>
+		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
 		///
@@ -190,7 +190,7 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
-		/// <param name="argumentTypes">An array of argument <see cref="Type"/> to target overloads</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
 		public HarmonyPatch(string methodName, params Type[] argumentTypes)
 		{
@@ -229,7 +229,7 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
-		/// <param name="argumentTypes">An array of argument <see cref="Type"/> to target overloads</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
 		public HarmonyPatch(MethodType methodType, params Type[] argumentTypes)
 		{
@@ -239,7 +239,7 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
-		/// <param name="argumentTypes">An array of argument <see cref="Type"/> to target overloads</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
 		///
 		public HarmonyPatch(MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)

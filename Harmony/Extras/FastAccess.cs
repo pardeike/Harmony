@@ -59,7 +59,7 @@ namespace HarmonyLib
 		/// <summary>Creates an getter delegate for a property</summary>
 		/// <typeparam name="T">Type that getter reads property from</typeparam>
 		/// <typeparam name="S">Type of the property that gets accessed</typeparam>
-		/// <param name="propertyInfo">The <see cref="PropertyInfo"/>property</param>
+		/// <param name="propertyInfo">The property</param>
 		/// <returns>The new getter delegate</returns>
 		///
 		public static GetterHandler<T, S> CreateGetterHandler<T, S>(PropertyInfo propertyInfo)
@@ -78,7 +78,7 @@ namespace HarmonyLib
 		/// <summary>Creates an getter delegate for a field</summary>
 		/// <typeparam name="T">Type that getter reads field from</typeparam>
 		/// <typeparam name="S">Type of the field that gets accessed</typeparam>
-		/// <param name="fieldInfo">The <see cref="FieldInfo"/></param>
+		/// <param name="fieldInfo">The field</param>
 		/// <returns>The new getter delegate</returns>
 		///
 		public static GetterHandler<T, S> CreateGetterHandler<T, S>(FieldInfo fieldInfo)
@@ -118,7 +118,7 @@ namespace HarmonyLib
 		/// <summary>Creates an setter delegate</summary>
 		/// <typeparam name="T">Type that setter assigns property value to</typeparam>
 		/// <typeparam name="S">Type of the property that gets assigned</typeparam>
-		/// <param name="propertyInfo">The <see cref="PropertyInfo"/></param>
+		/// <param name="propertyInfo">The property</param>
 		/// <returns>The new setter delegate</returns>
 		///
 		public static SetterHandler<T, S> CreateSetterHandler<T, S>(PropertyInfo propertyInfo)
@@ -138,7 +138,7 @@ namespace HarmonyLib
 		/// <summary>Creates an setter delegate for a field</summary>
 		/// <typeparam name="T">Type that setter assigns field value to</typeparam>
 		/// <typeparam name="S">Type of the field that gets assigned</typeparam>
-		/// <param name="fieldInfo">The <see cref="FieldInfo"/></param>
+		/// <param name="fieldInfo">The field</param>
 		/// <returns>The new getter delegate</returns>
 		///
 		public static SetterHandler<T, S> CreateSetterHandler<T, S>(FieldInfo fieldInfo)

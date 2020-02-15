@@ -17,7 +17,7 @@ namespace HarmonyLib
 	public static class MethodInvoker
 	{
 		/// <summary>Creates a fast invocation handler from a method</summary>
-		/// <param name="methodInfo">The <see cref="MethodInfo"/> to invoke</param>
+		/// <param name="methodInfo">The method to invoke</param>
 		/// <param name="directBoxValueAccess">Controls if boxed value object is accessed/updated directly</param>
 		/// <returns>The <see cref="FastInvokeHandler"/></returns>
 		/// <remarks>

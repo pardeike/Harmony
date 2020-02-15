@@ -25,7 +25,7 @@ namespace HarmonyLib
 		public List<ExceptionBlock> blocks = new List<ExceptionBlock>();
 
 		/// <summary>Creates a new CodeInstruction with a given opcode and optional operand</summary>
-		/// <param name="opcode">The <see cref="OpCode"/></param>
+		/// <param name="opcode">The opcode</param>
 		/// <param name="operand">The operand</param>
 		///
 		public CodeInstruction(OpCode opcode, object operand = null)
@@ -58,7 +58,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Clones a CodeInstruction, resets labels and exception blocks and sets its opcode</summary>
-		/// <param name="opcode">The <see cref="OpCode"/></param>
+		/// <param name="opcode">The opcode</param>
 		/// <returns>A copy of this CodeInstruction with a new opcode</returns>
 		///
 		public CodeInstruction Clone(OpCode opcode)

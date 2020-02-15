@@ -24,7 +24,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Converts an array of types (for example methods arguments) into a human readable form</summary>
-		/// <param name="parameters">The array of <see cref="Type"/></param>
+		/// <param name="parameters">The array of types</param>
 		/// <returns>A human readable description including brackets</returns>
 		///
 		public static string Description(this Type[] parameters)
@@ -34,7 +34,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>A full description of a type</summary>
-		/// <param name="type">The <see cref="Type"/></param>
+		/// <param name="type">The type</param>
 		/// <returns>A human readable description</returns>
 		///
 		public static string FullDescription(this Type type)
@@ -62,21 +62,21 @@ namespace HarmonyLib
 		}
 
 		/// <summary>A a full description of a method or a constructor without assembly details but with generics</summary>
-		/// <param name="method">The <see cref="MethodBase"/> of the method or constructor</param>
+		/// <param name="member">The method/constructor</param>
 		/// <returns>A human readable description</returns>
 		///
-		public static string FullDescription(this MethodBase method)
+		public static string FullDescription(this MethodBase member)
 		{
-			if (method == null) return "null";
-			var parameters = method.GetParameters().Types();
-			var returnType = AccessTools.GetReturnedType(method);
-			if (method.DeclaringType == null) return $"{returnType.FullDescription()} {method.Name}{parameters.Description()}";
-			return $"{returnType.FullDescription()} {method.DeclaringType.FullDescription()}.{method.Name}{parameters.Description()}";
+			if (member == null) return "null";
+			var parameters = member.GetParameters().Types();
+			var returnType = AccessTools.GetReturnedType(member);
+			if (member.DeclaringType == null) return $"{returnType.FullDescription()} {member.Name}{parameters.Description()}";
+			return $"{returnType.FullDescription()} {member.DeclaringType.FullDescription()}.{member.Name}{parameters.Description()}";
 		}
 
 		/// <summary>A helper converting parameter infos to types</summary>
-		/// <param name="pinfo">The array of <see cref="ParameterInfo"/></param>
-		/// <returns>An array of <see cref="Type"/></returns>
+		/// <param name="pinfo">The array of parameter infos</param>
+		/// <returns>An array of types</returns>
 		///
 		public static Type[] Types(this ParameterInfo[] pinfo)
 		{
@@ -200,7 +200,7 @@ namespace HarmonyLib
 
 		/// <summary>Tests for any form of Ldloc*</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="variable">The (optional) <see cref="LocalBuilder"/></param>
+		/// <param name="variable">The optional local variable</param>
 		/// <returns>True if it matches one of the variations</returns>
 		/// 
 		public static bool IsLdloc(this CodeInstruction code, LocalBuilder variable = null)
@@ -211,7 +211,7 @@ namespace HarmonyLib
 
 		/// <summary>Tests for any form of Stloc*</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="variable">The (optional) <see cref="LocalBuilder"/> </param>
+		/// <param name="variable">The optional local variable</param>
 		/// <returns>True if it matches one of the variations</returns>
 		/// 
 		public static bool IsStloc(this CodeInstruction code, LocalBuilder variable = null)
@@ -238,7 +238,7 @@ namespace HarmonyLib
 
 		/// <summary>Tests if the code instruction calls the method/constructor</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="method">The method or constructor</param>
+		/// <param name="method">The method</param>
 		/// <returns>True if the instruction calls the method or constructor</returns>
 		/// 
 		public static bool Calls(this CodeInstruction code, MethodInfo method)

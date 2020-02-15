@@ -9,7 +9,7 @@ namespace HarmonyLib
 	public static class Memory
 	{
 		/// <summary>Mark method for no inlining (currently only works on Mono)</summary>
-		/// <param name="method">The <see cref="MethodBase"/> to change</param>
+		/// <param name="method">The method/constructor to change</param>
 		unsafe public static void MarkForNoInlining(MethodBase method)
 		{
 			// TODO for now, this only works on mono
@@ -21,8 +21,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Detours a method</summary>
-		/// <param name="original">The original <see cref="MethodBase"/></param>
-		/// <param name="replacement">The replacement <see cref="MethodBase"/></param>
+		/// <param name="original">The original method/constructor</param>
+		/// <param name="replacement">The replacement method/constructor</param>
 		/// <returns>An error string</returns>
 		///
 		public static string DetourMethod(MethodBase original, MethodBase replacement)
@@ -62,8 +62,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the start of a method in memory</summary>
-		/// <param name="method">The <see cref="MethodBase"/></param>
-		/// <param name="exception">[out] Details of the <see cref="Exception"/></param>
+		/// <param name="method">The method/constructor</param>
+		/// <param name="exception">[out] Details of the exception</param>
 		/// <returns>The method start address</returns>
 		///
 		public static long GetMethodStart(MethodBase method, out Exception exception)

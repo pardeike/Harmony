@@ -22,7 +22,7 @@ namespace HarmonyLib
 
 		/// <summary>Creates an empty patch processor</summary>
 		/// <param name="instance">The Harmony instance</param>
-		/// <param name="original">The original methods <see cref="MethodBase"/></param>
+		/// <param name="original">The original method/constructor</param>
 		///
 		public PatchProcessor(Harmony instance, MethodBase original)
 		{
@@ -41,7 +41,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a prefix</summary>
-		/// <param name="fixMethod">The prefix as a <see cref="MethodInfo"/></param>
+		/// <param name="fixMethod">The prefix method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddPrefix(MethodInfo fixMethod)
@@ -61,7 +61,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a postfix</summary>
-		/// <param name="fixMethod">The postfix as a <see cref="MethodInfo"/></param>
+		/// <param name="fixMethod">The postfix method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddPostfix(MethodInfo fixMethod)
@@ -81,7 +81,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a transpiler</summary>
-		/// <param name="fixMethod">The transpiler as a <see cref="MethodInfo"/></param>
+		/// <param name="fixMethod">The transpiler method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddTranspiler(MethodInfo fixMethod)
@@ -101,7 +101,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Adds a finalizer</summary>
-		/// <param name="fixMethod">The finalizer as a <see cref="MethodInfo"/></param>
+		/// <param name="fixMethod">The finalizer method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddFinalizer(MethodInfo fixMethod)
@@ -111,7 +111,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets all patched original methods in the appdomain</summary>
-		/// <returns>An enumeration of patched <see cref="MethodBase"/></returns>
+		/// <returns>An enumeration of patched method/constructor</returns>
 		///
 		public static IEnumerable<MethodBase> GetAllPatchedMethods()
 		{
@@ -179,7 +179,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Unpatches a specific patch</summary>
-		/// <param name="patch">The <see cref="MethodInfo"/> of the patch</param>
+		/// <param name="patch">The method of the patch</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor Unpatch(MethodInfo patch)
@@ -198,7 +198,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets patch information on an original</summary>
-		/// <param name="method">The original method as <see cref="MethodBase"/></param>
+		/// <param name="method">The original method/constructor</param>
 		/// <returns>The patch information as <see cref="Patches"/></returns>
 		///
 		public static Patches GetPatchInfo(MethodBase method)
@@ -211,7 +211,7 @@ namespace HarmonyLib
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
 		/// <param name="currentVersion">[out] The current Harmony version</param>
-		/// <returns>A <see cref="Dictionary{String,Version}"/> containing assembly <see cref="Version"/> keyed by Harmony ID</returns>
+		/// <returns>A dictionary containing assembly version keyed by Harmony ID</returns>
 		///
 		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
 		{
@@ -238,8 +238,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Returns the methods unmodified list of code instructions</summary>
-		/// <param name="original">The original method as <see cref="MethodBase"/></param>
-		/// <param name="generator">Optionally an existing <see cref="ILGenerator"/> that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
+		/// <param name="original">The original method/constructor</param>
+		/// <param name="generator">Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
 		/// <returns>A list containing all the original <see cref="CodeInstruction"/></returns>
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
@@ -251,8 +251,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Returns the methods unmodified list of code instructions</summary>
-		/// <param name="original">The original method as <see cref="MethodBase"/></param>
-		/// <param name="generator">A new <see cref="ILGenerator"/> that now contains all local variables and labels contained in the result</param>
+		/// <param name="original">The original method/constructor</param>
+		/// <param name="generator">A new generator that now contains all local variables and labels contained in the result</param>
 		/// <returns>A list containing all the original <see cref="CodeInstruction"/></returns>
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)

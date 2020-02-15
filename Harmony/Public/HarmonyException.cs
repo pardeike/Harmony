@@ -43,7 +43,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Get a list of IL instructions in pairs of offset+code</summary>
-		/// <returns>A list of <see cref="KeyValuePair{Int,CodeInstruction}"/> which represent an offset and the code at that offset</returns>
+		/// <returns>A list of key/value pairs which represent an offset and the code at that offset</returns>
 		/// 
 		public List<KeyValuePair<int, CodeInstruction>> GetInstructionsWithOffsets()
 		{
@@ -51,7 +51,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Get a list of IL instructions without offsets</summary>
-		/// <returns>A <see cref="List{CodeInstruction}"/></returns>
+		/// <returns>A list of <see cref="CodeInstruction"/></returns>
 		/// 
 		public List<CodeInstruction> GetInstructions()
 		{

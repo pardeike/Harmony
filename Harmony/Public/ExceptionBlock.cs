@@ -45,7 +45,7 @@ namespace HarmonyLib
 
 		/// <summary>Creates an exception block</summary>
 		/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
-		/// <param name="catchType">The catch <see cref="Type"/></param>
+		/// <param name="catchType">The catch type</param>
 		///
 		public ExceptionBlock(ExceptionBlockType blockType, Type catchType = null)
 		{

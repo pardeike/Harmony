@@ -15,7 +15,7 @@ namespace HarmonyLib
 
 		/// <summary>Creates a reverse patcher</summary>
 		/// <param name="instance">The Harmony instance</param>
-		/// <param name="original">The original method as <see cref="MethodBase"/></param>
+		/// <param name="original">The original method/constructor</param>
 		/// <param name="standin">Your stand-in stub method as <see cref="HarmonyMethod"/></param>
 		///
 		public ReversePatcher(Harmony instance, MethodBase original, HarmonyMethod standin)
