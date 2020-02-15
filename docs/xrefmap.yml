@@ -1688,6 +1688,45 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.Harmony
   nameWithType: Harmony.Harmony
+- uid: HarmonyLib.Harmony.CreateClassProcessor(System.Type)
+  name: CreateClassProcessor(Type)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_CreateClassProcessor_System_Type_
+  commentId: M:HarmonyLib.Harmony.CreateClassProcessor(System.Type)
+  fullName: HarmonyLib.Harmony.CreateClassProcessor(System.Type)
+  nameWithType: Harmony.CreateClassProcessor(Type)
+- uid: HarmonyLib.Harmony.CreateClassProcessor*
+  name: CreateClassProcessor
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_CreateClassProcessor_
+  commentId: Overload:HarmonyLib.Harmony.CreateClassProcessor
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.CreateClassProcessor
+  nameWithType: Harmony.CreateClassProcessor
+- uid: HarmonyLib.Harmony.CreateProcessor(System.Reflection.MethodBase)
+  name: CreateProcessor(MethodBase)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_CreateProcessor_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.Harmony.CreateProcessor(System.Reflection.MethodBase)
+  fullName: HarmonyLib.Harmony.CreateProcessor(System.Reflection.MethodBase)
+  nameWithType: Harmony.CreateProcessor(MethodBase)
+- uid: HarmonyLib.Harmony.CreateProcessor*
+  name: CreateProcessor
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_CreateProcessor_
+  commentId: Overload:HarmonyLib.Harmony.CreateProcessor
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.CreateProcessor
+  nameWithType: Harmony.CreateProcessor
+- uid: HarmonyLib.Harmony.CreateReversePatcher(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod)
+  name: CreateReversePatcher(MethodBase, HarmonyMethod)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_CreateReversePatcher_System_Reflection_MethodBase_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.Harmony.CreateReversePatcher(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.Harmony.CreateReversePatcher(System.Reflection.MethodBase, HarmonyLib.HarmonyMethod)
+  nameWithType: Harmony.CreateReversePatcher(MethodBase, HarmonyMethod)
+- uid: HarmonyLib.Harmony.CreateReversePatcher*
+  name: CreateReversePatcher
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_CreateReversePatcher_
+  commentId: Overload:HarmonyLib.Harmony.CreateReversePatcher
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.CreateReversePatcher
+  nameWithType: Harmony.CreateReversePatcher
 - uid: HarmonyLib.Harmony.DEBUG
   name: DEBUG
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_DEBUG
@@ -1791,19 +1830,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.PatchAll
   nameWithType: Harmony.PatchAll
-- uid: HarmonyLib.Harmony.ProcessorForAnnotatedClass(System.Type)
-  name: ProcessorForAnnotatedClass(Type)
-  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ProcessorForAnnotatedClass_System_Type_
-  commentId: M:HarmonyLib.Harmony.ProcessorForAnnotatedClass(System.Type)
-  fullName: HarmonyLib.Harmony.ProcessorForAnnotatedClass(System.Type)
-  nameWithType: Harmony.ProcessorForAnnotatedClass(Type)
-- uid: HarmonyLib.Harmony.ProcessorForAnnotatedClass*
-  name: ProcessorForAnnotatedClass
-  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ProcessorForAnnotatedClass_
-  commentId: Overload:HarmonyLib.Harmony.ProcessorForAnnotatedClass
-  isSpec: "True"
-  fullName: HarmonyLib.Harmony.ProcessorForAnnotatedClass
-  nameWithType: Harmony.ProcessorForAnnotatedClass
 - uid: HarmonyLib.Harmony.ReversePatch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,System.Reflection.MethodInfo)
   name: ReversePatch(MethodBase, HarmonyMethod, MethodInfo)
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ReversePatch_System_Reflection_MethodBase_HarmonyLib_HarmonyMethod_System_Reflection_MethodInfo_

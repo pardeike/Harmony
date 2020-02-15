@@ -118,7 +118,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor__ctor_HarmonyLib_Harmony_System_Reflection_MethodBase_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.%23ctor(HarmonyLib.Harmony%2CSystem.Reflection.MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L38">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L27">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor__ctor_" data-uid="HarmonyLib.PatchProcessor.#ctor*"></a>
   <h4 id="HarmonyLib_PatchProcessor__ctor_HarmonyLib_Harmony_System_Reflection_MethodBase_" data-uid="HarmonyLib.PatchProcessor.#ctor(HarmonyLib.Harmony,System.Reflection.MethodBase)">PatchProcessor(Harmony, MethodBase)</h4>
@@ -148,7 +148,7 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodBase</span></td>
         <td><span class="parametername">original</span></td>
-        <td><p>An optional original method</p>
+        <td><p>The original methods <span class="xref">System.Reflection.MethodBase</span></p>
 </td>
       </tr>
     </tbody>
@@ -160,11 +160,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddFinalizer_HarmonyLib_HarmonyMethod_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddFinalizer(HarmonyLib.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L101">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L97">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddFinalizer_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddFinalizer_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer(HarmonyLib.HarmonyMethod)">AddFinalizer(HarmonyMethod)</h4>
-  <div class="markdown level1 summary"><p>Add a finalizer</p>
+  <div class="markdown level1 summary"><p>Adds a finalizer</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -184,7 +184,7 @@
       <tr>
         <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
         <td><span class="parametername">finalizer</span></td>
-        <td><p>The finalizer.</p>
+        <td><p>The finalizer as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
 </td>
       </tr>
     </tbody>
@@ -200,7 +200,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -209,11 +210,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddFinalizer_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddFinalizer(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L110">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L107">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddFinalizer_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddFinalizer_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer(System.Reflection.MethodInfo)">AddFinalizer(MethodInfo)</h4>
-  <div class="markdown level1 summary"><p>Add a finalizer</p>
+  <div class="markdown level1 summary"><p>Adds a finalizer</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -233,7 +234,7 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><span class="parametername">fixMethod</span></td>
-        <td><p>The method.</p>
+        <td><p>The finalizer as a <span class="xref">System.Reflection.MethodInfo</span></p>
 </td>
       </tr>
     </tbody>
@@ -249,7 +250,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -258,11 +260,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddPostfix_HarmonyLib_HarmonyMethod_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddPostfix(HarmonyLib.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L65">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L57">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddPostfix_" data-uid="HarmonyLib.PatchProcessor.AddPostfix*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddPostfix_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddPostfix(HarmonyLib.HarmonyMethod)">AddPostfix(HarmonyMethod)</h4>
-  <div class="markdown level1 summary"><p>Add a postfix</p>
+  <div class="markdown level1 summary"><p>Adds a postfix</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -282,7 +284,7 @@
       <tr>
         <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
         <td><span class="parametername">postfix</span></td>
-        <td><p>The postfix.</p>
+        <td><p>The postfix as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
 </td>
       </tr>
     </tbody>
@@ -298,7 +300,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -307,11 +310,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddPostfix_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddPostfix(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L74">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L67">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddPostfix_" data-uid="HarmonyLib.PatchProcessor.AddPostfix*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddPostfix_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddPostfix(System.Reflection.MethodInfo)">AddPostfix(MethodInfo)</h4>
-  <div class="markdown level1 summary"><p>Add a postfix</p>
+  <div class="markdown level1 summary"><p>Adds a postfix</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -331,7 +334,7 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><span class="parametername">fixMethod</span></td>
-        <td><p>The method.</p>
+        <td><p>The postfix as a <span class="xref">System.Reflection.MethodInfo</span></p>
 </td>
       </tr>
     </tbody>
@@ -347,7 +350,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -356,11 +360,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddPrefix_HarmonyLib_HarmonyMethod_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddPrefix(HarmonyLib.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L47">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L37">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddPrefix_" data-uid="HarmonyLib.PatchProcessor.AddPrefix*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddPrefix_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddPrefix(HarmonyLib.HarmonyMethod)">AddPrefix(HarmonyMethod)</h4>
-  <div class="markdown level1 summary"><p>Add a prefix</p>
+  <div class="markdown level1 summary"><p>Adds a prefix</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -380,7 +384,7 @@
       <tr>
         <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
         <td><span class="parametername">prefix</span></td>
-        <td><p>The prefix.</p>
+        <td><p>The prefix as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
 </td>
       </tr>
     </tbody>
@@ -396,7 +400,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -405,11 +410,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddPrefix_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddPrefix(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L56">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L47">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddPrefix_" data-uid="HarmonyLib.PatchProcessor.AddPrefix*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddPrefix_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddPrefix(System.Reflection.MethodInfo)">AddPrefix(MethodInfo)</h4>
-  <div class="markdown level1 summary"><p>Add a prefix</p>
+  <div class="markdown level1 summary"><p>Adds a prefix</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -429,7 +434,7 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><span class="parametername">fixMethod</span></td>
-        <td><p>The method.</p>
+        <td><p>The prefix as a <span class="xref">System.Reflection.MethodInfo</span></p>
 </td>
       </tr>
     </tbody>
@@ -445,7 +450,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -454,11 +460,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddTranspiler_HarmonyLib_HarmonyMethod_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddTranspiler(HarmonyLib.HarmonyMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L83">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L77">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddTranspiler_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddTranspiler_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler(HarmonyLib.HarmonyMethod)">AddTranspiler(HarmonyMethod)</h4>
-  <div class="markdown level1 summary"><p>Add a transpiler</p>
+  <div class="markdown level1 summary"><p>Adds a transpiler</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -478,7 +484,7 @@
       <tr>
         <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
         <td><span class="parametername">transpiler</span></td>
-        <td><p>The transpiler.</p>
+        <td><p>The transpiler as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
 </td>
       </tr>
     </tbody>
@@ -494,7 +500,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -503,11 +510,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_AddTranspiler_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.AddTranspiler(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L92">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L87">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_AddTranspiler_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler*"></a>
   <h4 id="HarmonyLib_PatchProcessor_AddTranspiler_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler(System.Reflection.MethodInfo)">AddTranspiler(MethodInfo)</h4>
-  <div class="markdown level1 summary"><p>Add a transpiler</p>
+  <div class="markdown level1 summary"><p>Adds a transpiler</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -527,7 +534,7 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><span class="parametername">fixMethod</span></td>
-        <td><p>The method.</p>
+        <td><p>The transpiler as a <span class="xref">System.Reflection.MethodInfo</span></p>
 </td>
       </tr>
     </tbody>
@@ -543,7 +550,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -552,7 +560,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_GetAllPatchedMethods.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.GetAllPatchedMethods%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L119">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L116">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_GetAllPatchedMethods_" data-uid="HarmonyLib.PatchProcessor.GetAllPatchedMethods*"></a>
   <h4 id="HarmonyLib_PatchProcessor_GetAllPatchedMethods" data-uid="HarmonyLib.PatchProcessor.GetAllPatchedMethods">GetAllPatchedMethods()</h4>
@@ -574,7 +582,7 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.MethodBase</span>&gt;</td>
-        <td><p>An enumeration of patched original methods</p>
+        <td><p>An enumeration of patched <span class="xref">System.Reflection.MethodBase</span></p>
 </td>
       </tr>
     </tbody>
@@ -588,7 +596,7 @@
   </span>
   <a id="HarmonyLib_PatchProcessor_GetOriginalInstructions_" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions*"></a>
   <h4 id="HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator_" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)">GetOriginalInstructions(MethodBase, ILGenerator)</h4>
-  <div class="markdown level1 summary"><p>Returns the methods unmodified list of CodeInstructions</p>
+  <div class="markdown level1 summary"><p>Returns the methods unmodified list of code instructions</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -608,13 +616,13 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodBase</span></td>
         <td><span class="parametername">original</span></td>
-        <td><p>The original method</p>
+        <td><p>The original method as <span class="xref">System.Reflection.MethodBase</span></p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
         <td><span class="parametername">generator</span></td>
-        <td><p>Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</p>
+        <td><p>Optionally an existing <span class="xref">System.Reflection.Emit.ILGenerator</span> that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</p>
 </td>
       </tr>
     </tbody>
@@ -630,7 +638,7 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
-        <td><p>A list containing all the original CodeInstructions</p>
+        <td><p>A list containing all the original <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
 </td>
       </tr>
     </tbody>
@@ -640,11 +648,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator__.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase%2CSystem.Reflection.Emit.ILGenerator%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L257">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L258">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_GetOriginalInstructions_" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions*"></a>
   <h4 id="HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator__" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@)">GetOriginalInstructions(MethodBase, out ILGenerator)</h4>
-  <div class="markdown level1 summary"><p>Returns the methods unmodified list of CodeInstructions</p>
+  <div class="markdown level1 summary"><p>Returns the methods unmodified list of code instructions</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -664,13 +672,13 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodBase</span></td>
         <td><span class="parametername">original</span></td>
-        <td><p>The original method</p>
+        <td><p>The original method as <span class="xref">System.Reflection.MethodBase</span></p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
         <td><span class="parametername">generator</span></td>
-        <td><p>A new generator that now contains all local variables and labels contained in the result</p>
+        <td><p>A new <span class="xref">System.Reflection.Emit.ILGenerator</span> that now contains all local variables and labels contained in the result</p>
 </td>
       </tr>
     </tbody>
@@ -686,7 +694,7 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
-        <td><p>A list containing all the original CodeInstructions</p>
+        <td><p>A list containing all the original <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
 </td>
       </tr>
     </tbody>
@@ -696,11 +704,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_GetPatchInfo_System_Reflection_MethodBase_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.GetPatchInfo(System.Reflection.MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L205">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L204">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_GetPatchInfo_" data-uid="HarmonyLib.PatchProcessor.GetPatchInfo*"></a>
   <h4 id="HarmonyLib_PatchProcessor_GetPatchInfo_System_Reflection_MethodBase_" data-uid="HarmonyLib.PatchProcessor.GetPatchInfo(System.Reflection.MethodBase)">GetPatchInfo(MethodBase)</h4>
-  <div class="markdown level1 summary"><p>Gets patch information</p>
+  <div class="markdown level1 summary"><p>Gets patch information on an original</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -720,7 +728,7 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodBase</span></td>
         <td><span class="parametername">method</span></td>
-        <td><p>The original method</p>
+        <td><p>The original method as <span class="xref">System.Reflection.MethodBase</span></p>
 </td>
       </tr>
     </tbody>
@@ -736,7 +744,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.Patches.html">Patches</a></td>
-        <td><p>The patch information</p>
+        <td><p>The patch information as <a class="xref" href="HarmonyLib.Patches.html">Patches</a></p>
 </td>
       </tr>
     </tbody>
@@ -746,11 +754,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_Patch.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.Patch%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L130">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L127">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_Patch_" data-uid="HarmonyLib.PatchProcessor.Patch*"></a>
   <h4 id="HarmonyLib_PatchProcessor_Patch" data-uid="HarmonyLib.PatchProcessor.Patch">Patch()</h4>
-  <div class="markdown level1 summary"><p>Applies the patch(es)</p>
+  <div class="markdown level1 summary"><p>Applies all registered patches</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -778,7 +786,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_Unpatch_HarmonyLib_HarmonyPatchType_System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.Unpatch(HarmonyLib.HarmonyPatchType%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L161">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L159">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_Unpatch_" data-uid="HarmonyLib.PatchProcessor.Unpatch*"></a>
   <h4 id="HarmonyLib_PatchProcessor_Unpatch_HarmonyLib_HarmonyPatchType_System_String_" data-uid="HarmonyLib.PatchProcessor.Unpatch(HarmonyLib.HarmonyPatchType,System.String)">Unpatch(HarmonyPatchType, String)</h4>
@@ -802,13 +810,13 @@
       <tr>
         <td><a class="xref" href="HarmonyLib.HarmonyPatchType.html">HarmonyPatchType</a></td>
         <td><span class="parametername">type</span></td>
-        <td><p>The patch type</p>
+        <td><p>The <a class="xref" href="HarmonyLib.HarmonyPatchType.html">HarmonyPatchType</a> patch type</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">harmonyID</span></td>
-        <td><p>Harmony ID or (*) for any</p>
+        <td><p>Harmony ID or <code>*</code> for any</p>
 </td>
       </tr>
     </tbody>
@@ -824,7 +832,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -833,11 +842,11 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_Unpatch_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.Unpatch(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L186">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L185">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_Unpatch_" data-uid="HarmonyLib.PatchProcessor.Unpatch*"></a>
   <h4 id="HarmonyLib_PatchProcessor_Unpatch_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.Unpatch(System.Reflection.MethodInfo)">Unpatch(MethodInfo)</h4>
-  <div class="markdown level1 summary"><p>Unpatches the given patch</p>
+  <div class="markdown level1 summary"><p>Unpatches a specific patch</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -857,7 +866,7 @@
       <tr>
         <td><span class="xref">System.Reflection.MethodInfo</span></td>
         <td><span class="parametername">patch</span></td>
-        <td><p>The patch</p>
+        <td><p>The <span class="xref">System.Reflection.MethodInfo</span> of the patch</p>
 </td>
       </tr>
     </tbody>
@@ -873,7 +882,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
-        <td></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -882,7 +892,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor_VersionInfo_System_Version__.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor.VersionInfo(System.Version%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L217">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L216">View Source</a>
   </span>
   <a id="HarmonyLib_PatchProcessor_VersionInfo_" data-uid="HarmonyLib.PatchProcessor.VersionInfo*"></a>
   <h4 id="HarmonyLib_PatchProcessor_VersionInfo_System_Version__" data-uid="HarmonyLib.PatchProcessor.VersionInfo(System.Version@)">VersionInfo(out Version)</h4>
@@ -922,7 +932,7 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.Dictionary</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Version</span>&gt;</td>
-        <td><p>A dictionary containing assembly versions keyed by Harmony IDs</p>
+        <td><p>A <span class="xref">System.Collections.Generic.Dictionary&lt;TKey, TValue&gt;</span> containing assembly <span class="xref">System.Version</span> keyed by Harmony ID</p>
 </td>
       </tr>
     </tbody>
@@ -938,7 +948,7 @@
                     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_PatchProcessor.md&amp;value=---%0Auid%3A%20HarmonyLib.PatchProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L22" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/PatchProcessor.cs/#L11" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

@@ -73,7 +73,7 @@
   
   <h1 id="HarmonyLib_HarmonyException" data-uid="HarmonyLib.HarmonyException" class="text-break">Class HarmonyException
   </h1>
-  <div class="markdown level0 summary"><p>HarmonyException wraps IL compile errors (only mono) containing detailed information about the failure</p>
+  <div class="markdown level0 summary"><p>Under Mono, HarmonyException wraps IL compile errors with detailed information about the failure</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
@@ -155,7 +155,7 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyException__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyException.%23ctor(System.Runtime.Serialization.SerializationInfo%2CSystem.Runtime.Serialization.StreamingContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L22">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L24">View Source</a>
   </span>
   <a id="HarmonyLib_HarmonyException__ctor_" data-uid="HarmonyLib.HarmonyException.#ctor*"></a>
   <h4 id="HarmonyLib_HarmonyException__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_" data-uid="HarmonyLib.HarmonyException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">HarmonyException(SerializationInfo, StreamingContext)</h4>
@@ -197,7 +197,7 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyException_GetErrorIndex.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyException.GetErrorIndex%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L66">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L72">View Source</a>
   </span>
   <a id="HarmonyLib_HarmonyException_GetErrorIndex_" data-uid="HarmonyLib.HarmonyException.GetErrorIndex*"></a>
   <h4 id="HarmonyLib_HarmonyException_GetErrorIndex" data-uid="HarmonyLib.HarmonyException.GetErrorIndex">GetErrorIndex()</h4>
@@ -229,7 +229,7 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyException_GetErrorOffset.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyException.GetErrorOffset%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L59">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L64">View Source</a>
   </span>
   <a id="HarmonyLib_HarmonyException_GetErrorOffset_" data-uid="HarmonyLib.HarmonyException.GetErrorOffset*"></a>
   <h4 id="HarmonyLib_HarmonyException_GetErrorOffset" data-uid="HarmonyLib.HarmonyException.GetErrorOffset">GetErrorOffset()</h4>
@@ -261,7 +261,7 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyException_GetInstructions.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyException.GetInstructions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L52">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L56">View Source</a>
   </span>
   <a id="HarmonyLib_HarmonyException_GetInstructions_" data-uid="HarmonyLib.HarmonyException.GetInstructions*"></a>
   <h4 id="HarmonyLib_HarmonyException_GetInstructions" data-uid="HarmonyLib.HarmonyException.GetInstructions">GetInstructions()</h4>
@@ -283,7 +283,8 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
-        <td></td>
+        <td><p>A <span class="xref">System.Collections.Generic.List&lt;T&gt;</span></p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -292,7 +293,7 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyException_GetInstructionsWithOffsets.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyException.GetInstructionsWithOffsets%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L45">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L48">View Source</a>
   </span>
   <a id="HarmonyLib_HarmonyException_GetInstructionsWithOffsets_" data-uid="HarmonyLib.HarmonyException.GetInstructionsWithOffsets*"></a>
   <h4 id="HarmonyLib_HarmonyException_GetInstructionsWithOffsets" data-uid="HarmonyLib.HarmonyException.GetInstructionsWithOffsets">GetInstructionsWithOffsets()</h4>
@@ -314,7 +315,8 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Collections.Generic.KeyValuePair</span>&lt;<span class="xref">System.Int32</span>, <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;&gt;</td>
-        <td></td>
+        <td><p>A list of <span class="xref">System.Collections.Generic.KeyValuePair`2</span> which represent an offset and the code at that offset</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -336,7 +338,7 @@ public class HarmonyException : Exception, ISerializable, _Exception</code></pre
                     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_HarmonyException.md&amp;value=---%0Auid%3A%20HarmonyLib.HarmonyException%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L9" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/HarmonyException.cs/#L10" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
