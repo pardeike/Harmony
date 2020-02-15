@@ -76,8 +76,7 @@ namespace HarmonyLib
 			if (mainPrepareResult == false)
 			{
 				RunMethod<HarmonyCleanup>(ref exception);
-				if (exception != null)
-					ReportException(exception, null);
+				ReportException(exception, null);
 				return new List<MethodInfo>();
 			}
 
@@ -96,8 +95,7 @@ namespace HarmonyLib
 			}
 
 			RunMethod<HarmonyCleanup>(ref exception, exception);
-			if (exception != null)
-				ReportException(exception, lastOriginal);
+			ReportException(exception, lastOriginal);
 			return replacements;
 		}
 
@@ -201,8 +199,7 @@ namespace HarmonyLib
 				}
 			}
 			RunMethod<HarmonyCleanup>(ref exception, job.original, exception);
-			if (exception != null)
-				ReportException(exception, job.original);
+			ReportException(exception, job.original);
 			job.replacement = replacement;
 		}
 
@@ -243,6 +240,7 @@ namespace HarmonyLib
 
 		void ReportException(Exception exception, MethodBase original)
 		{
+			if (exception == null) return;
 			if ((containerAttributes.debug ?? false) || Harmony.DEBUG)
 			{
 				var originalInfo = original != null ? $" patching {original.FullDescription()}" : "";
@@ -252,8 +250,8 @@ namespace HarmonyLib
 				FileLog.Log(exceptionString);
 				return;
 			}
-
-			throw exception;
+			if (exception is HarmonyException) throw exception;
+			throw new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
 		}
 
 		T RunMethod<S, T>(T defaultIfNotExisting, T defaultIfFailing, Func<T, string> failOnResult = null, params object[] parameters)

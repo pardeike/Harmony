@@ -49,30 +49,37 @@ namespace HarmonyLib
 
 		internal static MethodBase GetOriginalMethod(this HarmonyMethod attr)
 		{
-			switch (attr.methodType)
+			try
 			{
-				case MethodType.Normal:
-					if (attr.methodName == null)
-						return null;
-					return AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
+				switch (attr.methodType)
+				{
+					case MethodType.Normal:
+						if (attr.methodName == null)
+							return null;
+						return AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
 
-				case MethodType.Getter:
-					if (attr.methodName == null)
-						return null;
-					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod(true);
+					case MethodType.Getter:
+						if (attr.methodName == null)
+							return null;
+						return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod(true);
 
-				case MethodType.Setter:
-					if (attr.methodName == null)
-						return null;
-					return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod(true);
+					case MethodType.Setter:
+						if (attr.methodName == null)
+							return null;
+						return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod(true);
 
-				case MethodType.Constructor:
-					return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes);
+					case MethodType.Constructor:
+						return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes);
 
-				case MethodType.StaticConstructor:
-					return AccessTools.GetDeclaredConstructors(attr.declaringType)
-						.Where(c => c.IsStatic)
-						.FirstOrDefault();
+					case MethodType.StaticConstructor:
+						return AccessTools.GetDeclaredConstructors(attr.declaringType)
+							.Where(c => c.IsStatic)
+							.FirstOrDefault();
+				}
+			}
+			catch (AmbiguousMatchException ex)
+			{
+				throw new HarmonyException($"Ambiguous match for HarmonyMethod[{attr.Description()}]", ex.InnerException ?? ex);
 			}
 
 			return null;
