@@ -122,7 +122,7 @@ namespace HarmonyLib
 			}
 
 			var endLabels = new List<Label>();
-			copier.Finalize(emitter, endLabels, out var endingReturn);
+			copier.Finalize(emitter, endLabels, out var hasReturnCode);
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
@@ -185,7 +185,7 @@ namespace HarmonyLib
 			if (firstArgIsReturnBuffer)
 				emitter.Emit(OpCodes.Stobj, returnType); // store result into ref
 
-			if (hasFinalizers || endingReturn)
+			if (hasFinalizers || hasReturnCode)
 				emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();

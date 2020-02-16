@@ -28,9 +28,9 @@ namespace HarmonyLib
 			transpilers.Add(transpiler);
 		}
 
-		internal void Finalize(Emitter emitter, List<Label> endLabels, out bool endingReturn)
+		internal void Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode)
 		{
-			reader.FinalizeILCodes(emitter, transpilers, endLabels, out endingReturn);
+			reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode);
 		}
 	}
 
@@ -216,9 +216,9 @@ namespace HarmonyLib
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
 
-		internal void FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool endingReturn)
+		internal void FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode)
 		{
-			endingReturn = false;
+			hasReturnCode = false;
 			if (generator == null) return;
 
 			// pass1 - define labels and add them to instructions that are target of a jump
@@ -273,7 +273,11 @@ namespace HarmonyLib
 			emitter.AllLocalVariables().Do(local => emitter.LogLocalVariable(local));
 			FileLog.LogBuffered(savedLog);
 
-			// pass4 - remove RET if it appears at the end
+			// pass4 - check for any RET
+			//
+			hasReturnCode = codeInstructions.Any(code => code.opcode == OpCodes.Ret);
+
+			// pass5 - remove RET if it appears at the end
 			//
 			while (true)
 			{
@@ -284,10 +288,9 @@ namespace HarmonyLib
 				endLabels.AddRange(lastInstruction.labels);
 
 				codeInstructions.RemoveAt(codeInstructions.Count - 1);
-				endingReturn = true;
 			}
 
-			// pass5 - mark labels and exceptions and emit codes
+			// pass6 - mark labels and exceptions and emit codes
 			//
 			var idx = 0;
 			codeInstructions.Do(codeInstruction =>
