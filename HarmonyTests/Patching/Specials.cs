@@ -122,9 +122,11 @@ namespace HarmonyLibTests
 			{
 				_ = patcher.Patch();
 			}
-			catch (ArgumentException ex)
+			catch (HarmonyException ex)
 			{
-				Assert.AreEqual("Test", ex.Message);
+				Assert.NotNull(ex.InnerException);
+				Assert.IsInstanceOf(typeof(ArgumentException), ex.InnerException);
+				Assert.AreEqual("Test", ex.InnerException.Message);
 				return;
 			}
 			Assert.Fail("Patch should throw ArgumentException");
