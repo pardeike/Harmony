@@ -761,6 +761,18 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/new.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/new.html",
+          "hash": "NhRlZOggJldlzvFTBH8/cg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/patching-auxilary.md",
       "output": {
         ".html": {
@@ -873,7 +885,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "skspRLGg1bcR7HE4euHKew=="
+          "hash": "1gwNpRMHnm6LfoisyGtUpg=="
         }
       },
       "is_incremental": false,
@@ -974,17 +986,10 @@
         "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 16,
+          "total_file_count": 17,
           "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
@@ -996,6 +1001,13 @@
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build",
           "total_file_count": 0,
           "skipped_file_count": 0

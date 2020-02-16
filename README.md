@@ -1,8 +1,49 @@
 <p align="center">
-	<img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" />
+	<img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" /><br>
+	<b>Version 2</b><br>
+	A library for patching, replacing and decorating<br>
+	.NET and Mono methods during runtime.
 </p>
 
-<hr>
+### About
+
+Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is well established in titles like **7 Days To Die**, **BattleTech**, **Besiege**, **Cities:Skylines**, **Kerbal Space Program**, **Oxygen Not Included**, Ravenfield, **Rimworld**, Sheltered, **Stardew Valley**, Staxel, **Subnautica**, The Ultimate Nerd Game, Total Miner, Unturned and many more.
+
+It is also used in unit testing WFP controls and in many other areas.
+
+### How it works
+
+If you develop in C# and your code is loaded as a module/plugin into a host application, you can use Harmony to alter the functionality of all the available assemblies of that application. Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:
+
+• A way to keep the original method intact  
+• Execute your code before and/or after the original method  
+• Modify the original with IL code processors  
+• Multiple Harmony patches co-exist and don't conflict with each other  
+• Works at runtime and does not touch any files
+
+### Installation
+
+Installation is done by using [0Harmony.dll](https://github.com/pardeike/Harmony/releases) in your project or by using the [Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony) nuget package.
+
+### Documentation
+
+Please check out the [documentation](https://harmony.pardeike.net) and join the official [discord server](https://discord.gg/xXgghXR).
+
+### Contribute
+
+I put thousands of hours into this project and this support. So every little action helps:
+
+• Upvote this stackoverflow [answer](https://stackoverflow.com/questions/7299097/dynamically-replace-the-contents-of-a-c-sharp-method/42043003#42043003)  
+• Spread the word in your developer communities  
+• Become a [GitHub sponsor](https://github.com/sponsors/pardeike) or a [Patreon](https://www.patreon.com/pardeike)
+
+This project uses the great [MonoMod.Common](https://github.com/MonoMod/MonoMod.Common) library by [0x0ade](https://github.com/orgs/MonoMod/people/0x0ade).
+
+### Harmony 1.2
+
+Harmony 1.2 is not under active development. It is stable and contains only minor bugs so keep using it if you are in an environment that is homogeneously uses Harmony 1.2. Currently 1.2 and 2.0 are **NOT COMPATIBLE** with each other and **SHOULD NOT BE MIXED**. The old documentation can still be found at the [Wiki](https://github.com/pardeike/Harmony/wiki).
+
+<br>&nbsp;
 
 <p align="center">
 	<a href="../../releases/latest">
@@ -40,55 +81,3 @@
 		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat&logo=discord&label=discord" />
 	</a>
 </p>
-
-<p align="center">
-	A library for patching, replacing and decorating .NET and Mono methods during runtime.
-</p>
-
-<hr>
-
-Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is in fact well established in games like  
-- Rimworld
-- BattleTech
-- Oxygen Not Included
-- Subnautica
-- 7 Days To Die
-- Cities: Skylines
-- Kerbal Space Program
-- Besiege
-- Sheltered
-- Stardew Valley
-- Staxel
-- Total Miner
-- Ravenfield
-- The Ultimate Nerd Game
-- Unturned
-
-It is also used in unit testing Windows Presentation Foundation controls and in many other areas.
-
-If you develop in C# and your code is loaded as a module/plugin into a host application, you can use Harmony to alter the functionality of all the available assemblies of that application. Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:
-
-* A way to keep the original method intact
-
-* Execute your code before and/or after the original method
-
-* Modify the original with IL code processors
-
-* Multiple Harmony patches co-exist and don't conflict with each other
-
-**Installation**  
-Installation is usually done by referencing the **0Harmony.dll** (from the zip file) from your project or by using the **[Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony)** nuget package.
-
-**Documentation**  
-Please check out the **[documentation](https://harmony.pardeike.net)** or join us at the official **[discord server](https://discord.gg/xXgghXR)**.
-
-**Contributions**  
-This project uses the fantastic library of 0x0ade [MonoMod.Common](https://github.com/MonoMod/MonoMod.Common). Without it, we would still be stuck with using dynamic methods!
-
-<hr>
-
-**Help by promoting this library** so other developers can find it. One way is to upvote **[this stackoverflow answer](https://stackoverflow.com/questions/7299097/dynamically-replace-the-contents-of-a-c-sharp-method/42043003#42043003)**. Or spread the word in your developer communities. Thank you!
-
-For more information from me and my other open source projects, follow me on twitter: @pardeike
-
-Hope you enjoy Harmony!

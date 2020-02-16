@@ -1,5 +1,7 @@
 # [Introduction](intro.md)
 
+# [What's New](new.md)
+
 # [Basics](basics.md)
 
 # [Patching](patching.md)
