@@ -261,27 +261,32 @@ namespace HarmonyLib
 				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);
 
-				if (typeof(T).IsAssignableFrom(method.ReturnType))
-				{
-					var result = defaultIfFailing;
-					try
-					{
-						result = (T)method.Invoke(null, actualParameters);
-						if (failOnResult != null)
-						{
-							var error = failOnResult(result);
-							if (error != null)
-								throw new Exception($"Method {method.FullDescription()} returned an unexpected result: {error}");
-						}
-					}
-					catch (Exception ex)
-					{
-						ReportException(ex, method);
-					}
-					return result;
-				}
-				else
+				if (method.ReturnType != typeof(void) && typeof(T).IsAssignableFrom(method.ReturnType) == false)
 					throw new Exception($"Method {method.FullDescription()} has wrong return type (should be assignable to {typeof(T).FullName})");
+
+				var result = defaultIfFailing;
+				try
+				{
+					if (method.ReturnType == typeof(void))
+					{
+						_ = method.Invoke(null, actualParameters);
+						result = defaultIfNotExisting;
+					}
+					else
+						result = (T)method.Invoke(null, actualParameters);
+
+					if (failOnResult != null)
+					{
+						var error = failOnResult(result);
+						if (error != null)
+							throw new Exception($"Method {method.FullDescription()} returned an unexpected result: {error}");
+					}
+				}
+				catch (Exception ex)
+				{
+					ReportException(ex, method);
+				}
+				return result;
 			}
 
 			return defaultIfNotExisting;
