@@ -3468,6 +3468,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.Patch
   nameWithType: PatchProcessor.Patch
+- uid: HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase)
+  name: ReadMethodBody(MethodBase)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_ReadMethodBody_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase)
+  fullName: HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase)
+  nameWithType: PatchProcessor.ReadMethodBody(MethodBase)
+- uid: HarmonyLib.PatchProcessor.ReadMethodBody*
+  name: ReadMethodBody
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_ReadMethodBody_
+  commentId: Overload:HarmonyLib.PatchProcessor.ReadMethodBody
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.ReadMethodBody
+  nameWithType: PatchProcessor.ReadMethodBody
 - uid: HarmonyLib.PatchProcessor.Unpatch(HarmonyLib.HarmonyPatchType,System.String)
   name: Unpatch(HarmonyPatchType, String)
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_Unpatch_HarmonyLib_HarmonyPatchType_System_String_
