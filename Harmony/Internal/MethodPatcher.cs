@@ -28,7 +28,7 @@ namespace HarmonyLib
 		readonly List<MethodInfo> transpilers;
 		readonly List<MethodInfo> finalizers;
 		readonly int idx;
-		readonly bool firstArgIsReturnBuffer;
+		readonly bool useStructReturnBuffer;
 		readonly Type returnType;
 		readonly DynamicMethodDefinition patch;
 		readonly ILGenerator il;
@@ -51,13 +51,13 @@ namespace HarmonyLib
 
 			if (debug)
 			{
-				FileLog.LogBuffered($"### Patch {original.FullDescription()}");
+				FileLog.LogBuffered($"### Patch: {original.FullDescription()}");
 				FileLog.FlushBuffer();
 			}
 
 			idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
-			firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
-			if (debug && firstArgIsReturnBuffer) FileLog.Log($"### Special case: extra argument after 'this' is pointer to valuetype (simulate return value)");
+			useStructReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			if (debug && useStructReturnBuffer) FileLog.Log($"### Note: A buffer for the returned struct is used. That requires an extra IntPtr argument before the first real argument");
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}", debug);
 			if (patch == null)
@@ -104,16 +104,13 @@ namespace HarmonyLib
 				emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
 			}
 
-			if (firstArgIsReturnBuffer)
-				emitter.Emit(original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1); // load ref to return value
-
 			var skipOriginalLabel = il.DefineLabel();
 			var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);
-			if (firstArgIsReturnBuffer)
+			if (useStructReturnBuffer)
 			{
 				if (original.IsStatic)
 					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspilerStatic);
@@ -182,8 +179,14 @@ namespace HarmonyLib
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			if (firstArgIsReturnBuffer)
+			if (useStructReturnBuffer)
+			{
+				var tmpVar = DeclareLocalVariable(returnType);
+				emitter.Emit(OpCodes.Stloc, tmpVar);
+				emitter.Emit(original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
+				emitter.Emit(OpCodes.Ldloc, tmpVar);
 				emitter.Emit(OpCodes.Stobj, returnType); // store result into ref
+			}
 
 			if (hasFinalizers || hasReturnCode)
 				emitter.Emit(OpCodes.Ret);
@@ -209,8 +212,8 @@ namespace HarmonyLib
 			var parameters = original.GetParameters();
 			var parameterTypes = parameters.Types().ToList();
 
-			var firstArgIsReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
-			if (firstArgIsReturnBuffer)
+			var useStructReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			if (useStructReturnBuffer)
 				parameterTypes.Insert(0, typeof(IntPtr));
 
 			if (original.IsStatic == false)
@@ -221,7 +224,7 @@ namespace HarmonyLib
 					parameterTypes.Insert(0, original.DeclaringType);
 			}
 
-			var returnType = firstArgIsReturnBuffer ? typeof(void) : AccessTools.GetReturnedType(original);
+			var returnType = useStructReturnBuffer ? typeof(void) : AccessTools.GetReturnedType(original);
 
 			var method = new DynamicMethodDefinition(
 				patchName,
@@ -234,8 +237,8 @@ namespace HarmonyLib
 
 #if NETSTANDARD2_0 || NETCOREAPP2_0
 #else
-			var offset = (original.IsStatic ? 0 : 1) + (firstArgIsReturnBuffer ? 1 : 0);
-			if (firstArgIsReturnBuffer)
+			var offset = (original.IsStatic ? 0 : 1) + (useStructReturnBuffer ? 1 : 0);
+			if (useStructReturnBuffer)
 				method.Definition.Parameters[original.IsStatic ? 0 : 1].Name = "retbuf";
 			if (!original.IsStatic)
 				method.Definition.Parameters[0].Name = "this";
@@ -246,6 +249,8 @@ namespace HarmonyLib
 				param.Name = parameters[i].Name;
 			}
 #endif
+
+			FileLog.LogBuffered($"### Replacement: static {returnType.FullDescription()} {original.DeclaringType.FullName}::{patchName}{parameterTypes.ToArray().Description()}");
 
 			return method;
 		}
@@ -465,7 +470,7 @@ namespace HarmonyLib
 				//
 				var originalIsNormal = originalParameters[idx].IsOut == false && originalParameters[idx].ParameterType.IsByRef == false;
 				var patchIsNormal = patchParam.IsOut == false && patchParam.ParameterType.IsByRef == false;
-				var patchArgIndex = idx + (isInstance ? 1 : 0) + (firstArgIsReturnBuffer ? 1 : 0);
+				var patchArgIndex = idx + (isInstance ? 1 : 0) + (useStructReturnBuffer ? 1 : 0);
 
 				// Case 1 + 4
 				if (originalIsNormal == patchIsNormal)

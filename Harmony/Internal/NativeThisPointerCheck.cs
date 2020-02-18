@@ -64,7 +64,6 @@ namespace HarmonyLib
 
 		internal static bool NeedsNativeThisPointerFix(MethodBase method)
 		{
-			if (method.IsStatic) return false;
 			var returnType = AccessTools.GetReturnedType(method);
 			if (AccessTools.IsStruct(returnType) == false) return false;
 			var size = SizeOf(returnType);

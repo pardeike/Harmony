@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
@@ -120,16 +119,6 @@ namespace HarmonyLib
 		internal static void RemovePatch(PatchInfo patchInfo, MethodInfo patch)
 		{
 			patchInfo.RemovePatch(patch);
-		}
-
-		/// <summary>Gets all instructions from a method</summary>
-		/// <param name="generator">The generator (for defining labels)</param>
-		/// <param name="method">The original method</param>
-		/// <returns>The instructions</returns>
-		///
-		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
-		{
-			return MethodBodyReader.GetInstructions(generator, method);
 		}
 
 		/// <summary>Gets sorted patch methods</summary>

@@ -1,3 +1,4 @@
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -244,8 +245,11 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
 		{
-			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}", Harmony.DEBUG);
-			generator = generator ?? patch.GetILGenerator();
+			if (generator == null)
+			{
+				var method = new DynamicMethodDefinition($"{original.Name}_Copy{Guid.NewGuid()}", typeof(void), new Type[0]);
+				generator = method.GetILGenerator();
+			}
 			var reader = MethodBodyReader.GetInstructions(generator, original);
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
 		}
@@ -257,10 +261,21 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
 		{
-			var patch = MethodPatcher.CreateDynamicMethod(original, $"_Copy{Guid.NewGuid()}", Harmony.DEBUG);
-			generator = patch.GetILGenerator();
+			var method = new DynamicMethodDefinition($"{original.Name}_Dummy{Guid.NewGuid()}", typeof(void), new Type[0]);
+			generator = method.GetILGenerator();
 			var reader = MethodBodyReader.GetInstructions(generator, original);
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
+		}
+
+		/// <summary>A low level way to read the body of a method. Used for quick searching in methods</summary>
+		/// <param name="method">The original method</param>
+		/// <returns>All instructions as opcode/operand pairs</returns>
+		///
+		public static IEnumerable<KeyValuePair<OpCode, object>> ReadMethodBody(MethodBase method)
+		{
+			var dummyMethod = new DynamicMethodDefinition($"{method.Name}_Dummy{Guid.NewGuid()}", typeof(void), new Type[0]);
+			return MethodBodyReader.GetInstructions(dummyMethod.GetILGenerator(), method)
+				.Select(instr => new KeyValuePair<OpCode, object>(instr.opcode, instr.operand));
 		}
 	}
 }
