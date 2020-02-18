@@ -10,6 +10,13 @@ using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
+	internal enum ArgumentShift
+	{
+		None,
+		Static,
+		Instance
+	}
+
 	internal class MethodCopier
 	{
 		readonly MethodBodyReader reader;
@@ -21,6 +28,11 @@ namespace HarmonyLib
 			reader = new MethodBodyReader(fromMethod, toILGenerator);
 			reader.DeclareVariables(existingVariables);
 			reader.ReadInstructions();
+		}
+
+		internal void SetArgumentShift(bool useShift, bool isStatic)
+		{
+			reader.SetArgumentShift(useShift, isStatic);
 		}
 
 		internal void AddTranspiler(MethodInfo transpiler)
@@ -37,8 +49,9 @@ namespace HarmonyLib
 	internal class MethodBodyReader
 	{
 		readonly ILGenerator generator;
-
 		readonly MethodBase method;
+		ArgumentShift argumentShift = ArgumentShift.None;
+
 		readonly Module module;
 		readonly Type[] typeArguments;
 		readonly Type[] methodArguments;
@@ -101,6 +114,14 @@ namespace HarmonyLib
 
 			localVariables = body?.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
 			exceptions = body?.ExceptionHandlingClauses ?? new List<ExceptionHandlingClause>();
+		}
+
+		internal void SetArgumentShift(bool useShift, bool isStatic)
+		{
+			if (useShift)
+				argumentShift = isStatic ? ArgumentShift.Static : ArgumentShift.Instance;
+			else
+				argumentShift = ArgumentShift.None;
 		}
 
 		internal void ReadInstructions()
@@ -261,7 +282,7 @@ namespace HarmonyLib
 
 			// pass2 - filter through all processors
 			//
-			var codeTranspiler = new CodeTranspiler(ilInstructions);
+			var codeTranspiler = new CodeTranspiler(ilInstructions, argumentShift);
 			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 

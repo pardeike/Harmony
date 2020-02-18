@@ -43,8 +43,6 @@ namespace HarmonyLib
 
 	internal class NativeThisPointer
 	{
-		internal static MethodInfo m_ArgumentShiftTranspilerStatic = SymbolExtensions.GetMethodInfo(() => ArgumentShiftTranspiler_Static(null));
-		internal static MethodInfo m_ArgumentShiftTranspilerInstance = SymbolExtensions.GetMethodInfo(() => ArgumentShiftTranspiler_Instance(null));
 		static readonly Dictionary<Type, int> sizes = new Dictionary<Type, int>();
 
 		static int SizeOf(Type type)
@@ -87,17 +85,7 @@ namespace HarmonyLib
 			return Sandbox.hasNativeThis;
 		}
 
-		private static IEnumerable<CodeInstruction> ArgumentShiftTranspiler_Static(IEnumerable<CodeInstruction> instructions)
-		{
-			return ArgumentShifter(instructions, true);
-		}
-
-		private static IEnumerable<CodeInstruction> ArgumentShiftTranspiler_Instance(IEnumerable<CodeInstruction> instructions)
-		{
-			return ArgumentShifter(instructions, false);
-		}
-
-		private static IEnumerable<CodeInstruction> ArgumentShifter(IEnumerable<CodeInstruction> instructions, bool methodIsStatic)
+		internal static void ArgumentShifter(List<CodeInstruction> instructions, bool methodIsStatic)
 		{
 			// We have two cases:
 			//
@@ -119,21 +107,18 @@ namespace HarmonyLib
 				{
 					instruction.opcode = OpCodes.Ldarg;
 					instruction.operand = 4;
-					yield return instruction;
 					continue;
 				}
 
 				if (instruction.opcode == OpCodes.Ldarg_2)
 				{
 					instruction.opcode = OpCodes.Ldarg_3;
-					yield return instruction;
 					continue;
 				}
 
 				if (instruction.opcode == OpCodes.Ldarg_1)
 				{
 					instruction.opcode = OpCodes.Ldarg_2;
-					yield return instruction;
 					continue;
 				}
 
@@ -142,7 +127,6 @@ namespace HarmonyLib
 					if (instruction.opcode == OpCodes.Ldarg_0)
 					{
 						instruction.opcode = OpCodes.Ldarg_1;
-						yield return instruction;
 						continue;
 					}
 				}
@@ -153,16 +137,13 @@ namespace HarmonyLib
 					|| instruction.opcode == OpCodes.Starg
 					|| instruction.opcode == OpCodes.Starg_S)
 				{
-					var n = (int)instruction.operand;
+					var n = Convert.ToInt16(instruction.operand);
 					if (n > 0 || methodIsStatic)
 					{
 						instruction.operand = n + 1;
-						yield return instruction;
 						continue;
 					}
 				}
-
-				yield return instruction;
 			}
 		}
 	}

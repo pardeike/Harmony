@@ -108,15 +108,10 @@ namespace HarmonyLib
 			var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
+			copier.SetArgumentShift(useStructReturnBuffer, original.IsStatic);
+
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);
-			if (useStructReturnBuffer)
-			{
-				if (original.IsStatic)
-					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspilerStatic);
-				else
-					copier.AddTranspiler(NativeThisPointer.m_ArgumentShiftTranspilerInstance);
-			}
 
 			var endLabels = new List<Label>();
 			copier.Finalize(emitter, endLabels, out var hasReturnCode);
