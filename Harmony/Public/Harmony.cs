@@ -14,7 +14,7 @@ namespace HarmonyLib
 		/// 
 		public string Id { get; private set; }
 
-		/// <summary>Set to true before instantiating Harmony to debug Harmony</summary>
+		/// <summary>Set to true before instantiating Harmony to debug Harmony or use an environment variable to set HARMONY_DEBUG to '1' like this: cmd /C "set HARMONY_DEBUG=1 &amp;&amp; game.exe"</summary>
 		/// <remarks>This is for full debugging. To debug only specific patches, use the <see cref="HarmonyDebug"/> attribute</remarks>
 		/// 
 		public static bool DEBUG;
@@ -26,6 +26,19 @@ namespace HarmonyLib
 		public Harmony(string id)
 		{
 			if (string.IsNullOrEmpty(id)) throw new ArgumentException($"{nameof(id)} cannot be null or empty");
+
+			try
+			{
+				var envDebug = Environment.GetEnvironmentVariable("HARMONY_DEBUG");
+				if (envDebug != null && envDebug.Length > 0)
+				{
+					envDebug = envDebug.Trim();
+					DEBUG = envDebug == "1" || bool.Parse(envDebug);
+				}
+			}
+			catch
+			{
+			}
 
 			if (DEBUG)
 			{
