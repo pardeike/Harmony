@@ -10,10 +10,10 @@ namespace HarmonyLib
 	internal class CodeTranspiler
 	{
 		readonly IEnumerable<CodeInstruction> codeInstructions;
-		readonly ArgumentShift argumentShift;
+		readonly bool argumentShift;
 		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
 
-		internal CodeTranspiler(List<ILInstruction> ilInstructions, ArgumentShift argumentShift)
+		internal CodeTranspiler(List<ILInstruction> ilInstructions, bool argumentShift)
 		{
 			this.argumentShift = argumentShift;
 			codeInstructions = ilInstructions
@@ -249,8 +249,8 @@ namespace HarmonyLib
 			});
 
 			var result = instructions.Cast<CodeInstruction>().ToList();
-			if (argumentShift != ArgumentShift.None)
-				NativeThisPointer.ArgumentShifter(result, argumentShift == ArgumentShift.Static);
+			if (argumentShift)
+				StructReturnBuffer.ArgumentShifter(result);
 			return result;
 		}
 

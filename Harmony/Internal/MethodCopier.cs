@@ -10,13 +10,6 @@ using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
-	internal enum ArgumentShift
-	{
-		None,
-		Static,
-		Instance
-	}
-
 	internal class MethodCopier
 	{
 		readonly MethodBodyReader reader;
@@ -30,9 +23,9 @@ namespace HarmonyLib
 			reader.ReadInstructions();
 		}
 
-		internal void SetArgumentShift(bool useShift, bool isStatic)
+		internal void SetArgumentShift(bool useShift)
 		{
-			reader.SetArgumentShift(useShift, isStatic);
+			reader.SetArgumentShift(useShift);
 		}
 
 		internal void AddTranspiler(MethodInfo transpiler)
@@ -50,7 +43,7 @@ namespace HarmonyLib
 	{
 		readonly ILGenerator generator;
 		readonly MethodBase method;
-		ArgumentShift argumentShift = ArgumentShift.None;
+		bool argumentShift = false;
 
 		readonly Module module;
 		readonly Type[] typeArguments;
@@ -116,12 +109,9 @@ namespace HarmonyLib
 			exceptions = body?.ExceptionHandlingClauses ?? new List<ExceptionHandlingClause>();
 		}
 
-		internal void SetArgumentShift(bool useShift, bool isStatic)
+		internal void SetArgumentShift(bool argumentShift)
 		{
-			if (useShift)
-				argumentShift = isStatic ? ArgumentShift.Static : ArgumentShift.Instance;
-			else
-				argumentShift = ArgumentShift.None;
+			this.argumentShift = argumentShift;
 		}
 
 		internal void ReadInstructions()

@@ -7,11 +7,11 @@ using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
-	// A test for https://github.com/dotnet/coreclr/blob/master/Documentation/botr/clr-abi.md
+	// A test for "Return buffers" in https://github.com/dotnet/coreclr/blob/master/Documentation/botr/clr-abi.md
 
 	internal class Sandbox
 	{
-		internal static bool hasNativeThis;
+		internal static bool hasStructReturnBuffer;
 		internal static readonly IntPtr magicValue = (IntPtr)0x12345678;
 
 		internal struct SomeStruct
@@ -37,11 +37,11 @@ namespace HarmonyLib
 			// If we have a native return buffer pointer, the order is:
 			// this, ptr, a, b
 
-			hasNativeThis = a == magicValue && b == magicValue;
+			hasStructReturnBuffer = a == magicValue && b == magicValue;
 		}
 	}
 
-	internal class NativeThisPointer
+	internal class StructReturnBuffer
 	{
 		static readonly Dictionary<Type, int> sizes = new Dictionary<Type, int>();
 
@@ -60,46 +60,40 @@ namespace HarmonyLib
 			return size;
 		}
 
-		internal static bool NeedsNativeThisPointerFix(MethodBase method)
+		internal static bool NeedsFix(MethodBase method)
 		{
+			if (method.IsStatic) return false;
 			var returnType = AccessTools.GetReturnedType(method);
 			if (AccessTools.IsStruct(returnType) == false) return false;
 			var size = SizeOf(returnType);
 			if (size != 3 && size != 5 && size != 6 && size != 7 && size < 9) return false;
-			return HasNativeThis();
+			return HasStructReturnBuffer();
 		}
 
 		internal static bool hasTestResult;
-		static bool HasNativeThis()
+		static bool HasStructReturnBuffer()
 		{
 			if (hasTestResult == false)
 			{
-				Sandbox.hasNativeThis = false;
-				var self = new NativeThisPointer();
+				Sandbox.hasStructReturnBuffer = false;
+				var self = new StructReturnBuffer();
 				var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct));
 				var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement));
 				_ = Memory.DetourMethod(original, replacement);
 				_ = new Sandbox().GetStruct(Sandbox.magicValue, Sandbox.magicValue);
 				hasTestResult = true;
 			}
-			return Sandbox.hasNativeThis;
+			return Sandbox.hasStructReturnBuffer;
 		}
 
-		internal static void ArgumentShifter(List<CodeInstruction> instructions, bool methodIsStatic)
+		internal static void ArgumentShifter(List<CodeInstruction> instructions)
 		{
-			// We have two cases:
+			// Only for non-static methods:
 			//
-			// Case A: instance method
 			// THIS , IntPtr , arg0 , arg1 , arg2 ...
 			//
 			// So we make space at index 1 by moving all Ldarg_[n] to Ldarg_[n+1]
 			// except Ldarg_0 which stays at positon #0
-			//
-			// Case B: static method
-			// IntPtr , arg0 , arg1 , arg2 ...
-			//
-			// So we make space at index 0 by moving all Ldarg_[n] to Ldarg_[n+1]
-			// including Ldarg_0
 
 			foreach (var instruction in instructions)
 			{
@@ -122,14 +116,7 @@ namespace HarmonyLib
 					continue;
 				}
 
-				if (methodIsStatic)
-				{
-					if (instruction.opcode == OpCodes.Ldarg_0)
-					{
-						instruction.opcode = OpCodes.Ldarg_1;
-						continue;
-					}
-				}
+				// no Ldarg_0 check
 
 				if (instruction.opcode == OpCodes.Ldarg
 					|| instruction.opcode == OpCodes.Ldarga
@@ -138,7 +125,7 @@ namespace HarmonyLib
 					|| instruction.opcode == OpCodes.Starg_S)
 				{
 					var n = Convert.ToInt16(instruction.operand);
-					if (n > 0 || methodIsStatic)
+					if (n > 0)
 					{
 						instruction.operand = n + 1;
 						continue;

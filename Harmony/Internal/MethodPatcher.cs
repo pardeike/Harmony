@@ -56,7 +56,7 @@ namespace HarmonyLib
 			}
 
 			idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
-			useStructReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 			if (debug && useStructReturnBuffer) FileLog.Log($"### Note: A buffer for the returned struct is used. That requires an extra IntPtr argument before the first real argument");
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}", debug);
@@ -108,7 +108,7 @@ namespace HarmonyLib
 			var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
-			copier.SetArgumentShift(useStructReturnBuffer, original.IsStatic);
+			copier.SetArgumentShift(useStructReturnBuffer);
 
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);
@@ -207,7 +207,7 @@ namespace HarmonyLib
 			var parameters = original.GetParameters();
 			var parameterTypes = parameters.Types().ToList();
 
-			var useStructReturnBuffer = NativeThisPointer.NeedsNativeThisPointerFix(original);
+			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 			if (useStructReturnBuffer)
 				parameterTypes.Insert(0, typeof(IntPtr));
 
