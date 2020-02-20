@@ -1,6 +1,8 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System;
+using System.Linq;
 
 namespace HarmonyLibTests
 {
@@ -307,6 +309,53 @@ namespace HarmonyLibTests
 			var result = (new MultiplePatches2()).TestMethod("hey");
 			Assert.AreEqual("hey,prefix2,prefix1", MultiplePatches2.result);
 			Assert.AreEqual("patched", result);
+		}
+
+		[Test]
+		public void Test_Finalizer_Patch_Order()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+			var processor = instance.CreateClassProcessor(typeof(Finalizer_Patch_Order_Patch));
+			Assert.NotNull(processor, "processor");
+
+			var methods = processor.Patch();
+			Assert.NotNull(methods, "methods");
+			Assert.AreEqual(1, methods.Count);
+
+			Finalizer_Patch_Order_Patch.ResetTest();
+			var test = new Finalizer_Patch_Order_Class();
+			Assert.NotNull(test, "test");
+			var values = test.Method().ToList();
+
+			Console.WriteLine(Finalizer_Patch_Order_Patch.GetEvents().Join(null, "\n"));
+
+			Assert.NotNull(values, "values");
+			Assert.AreEqual(3, values.Count);
+			Assert.AreEqual(11, values[0]);
+			Assert.AreEqual(21, values[1]);
+			Assert.AreEqual(31, values[2]);
+
+			// note that since passthrough postfixes are async, they run AFTER any finalizer
+			//
+			var actualEvents = Finalizer_Patch_Order_Patch.GetEvents();
+			var correctEvents = new string[] {
+				"Bool_Prefix",
+				"Void_Prefix",
+				"Simple_Postfix",
+				"NonModifying_Finalizer",
+				"ClearException_Finalizer",
+				"Void_Finalizer",
+				"Passthrough_Postfix2 start",
+				"Passthrough_Postfix1 start",
+				"Yield 10 [old=1]", "Yield 11 [old=10]",
+				"Yield 20 [old=2]", "Yield 21 [old=20]",
+				"Yield 30 [old=3]", "Yield 31 [old=30]",
+				"Passthrough_Postfix1 end",
+				"Passthrough_Postfix2 end"
+			};
+
+			Assert.True(actualEvents.SequenceEqual(correctEvents), "events");
 		}
 	}
 }
