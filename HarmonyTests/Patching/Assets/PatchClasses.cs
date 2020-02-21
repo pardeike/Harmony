@@ -829,6 +829,111 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Finalizer_Patch_Order_Class
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public IEnumerable<int> Method()
+		{
+			yield return 1;
+			yield return 2;
+			yield return 3;
+		}
+	}
+
+	[HarmonyPatch(typeof(Finalizer_Patch_Order_Class))]
+	[HarmonyPatch(nameof(Finalizer_Patch_Order_Class.Method))]
+	public class Finalizer_Patch_Order_Patch
+	{
+		public static List<string> events = new List<string>();
+
+		public static List<string> GetEvents()
+		{
+			return events;
+		}
+
+		public static void ResetTest()
+		{
+			events = new List<string>();
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPriority(200)]
+		public static bool Bool_Prefix()
+		{
+			events.Add(nameof(Bool_Prefix));
+			return true;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPriority(100)]
+		public static void Void_Prefix()
+		{
+			events.Add(nameof(Void_Prefix));
+		}
+
+		[HarmonyPostfix]
+		[HarmonyPriority(200)]
+		public static void Simple_Postfix()
+		{
+			events.Add(nameof(Simple_Postfix));
+		}
+
+		[HarmonyPostfix]
+		[HarmonyPriority(200)]
+		public static IEnumerable<int> Passthrough_Postfix1(IEnumerable<int> items)
+		{
+			events.Add($"{nameof(Passthrough_Postfix1)} start");
+			var e = items.GetEnumerator();
+			while (e.MoveNext())
+			{
+				var oldValue = e.Current;
+				var newValue = oldValue * 10;
+				events.Add($"Yield {newValue} [old={oldValue}]");
+				yield return newValue;
+			}
+			events.Add($"{nameof(Passthrough_Postfix1)} end");
+		}
+
+		[HarmonyPostfix]
+		[HarmonyPriority(100)]
+		public static IEnumerable<int> Passthrough_Postfix2(IEnumerable<int> items)
+		{
+			events.Add($"{nameof(Passthrough_Postfix2)} start");
+			var e = items.GetEnumerator();
+			while (e.MoveNext())
+			{
+				var oldValue = e.Current;
+				var newValue = oldValue + 1;
+				events.Add($"Yield {newValue} [old={oldValue}]");
+				yield return newValue;
+			}
+			events.Add($"{nameof(Passthrough_Postfix2)} end");
+		}
+
+		[HarmonyFinalizer]
+		[HarmonyPriority(300)]
+		public static Exception NonModifying_Finalizer(Exception __exception)
+		{
+			events.Add(nameof(NonModifying_Finalizer));
+			return __exception;
+		}
+
+		[HarmonyFinalizer]
+		[HarmonyPriority(200)]
+		public static Exception ClearException_Finalizer()
+		{
+			events.Add(nameof(ClearException_Finalizer));
+			return null;
+		}
+
+		[HarmonyFinalizer]
+		[HarmonyPriority(100)]
+		public static void Void_Finalizer(Exception __exception)
+		{
+			events.Add(nameof(Void_Finalizer));
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

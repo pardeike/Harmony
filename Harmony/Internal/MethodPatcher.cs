@@ -123,16 +123,22 @@ namespace HarmonyLib
 			if (canHaveJump)
 				emitter.MarkLabel(skipOriginalLabel);
 
-			AddPostfixes(privateVars, false);
+			_ = AddPostfixes(privateVars, false);
 
 			if (resultVariable != null)
 				emitter.Emit(OpCodes.Ldloc, resultVariable);
 
-			AddPostfixes(privateVars, true);
+			var needsToStorePassthroughResult = AddPostfixes(privateVars, true);
 
 			var hasFinalizers = finalizers.Any();
 			if (hasFinalizers)
 			{
+				if (needsToStorePassthroughResult)
+				{
+					emitter.Emit(OpCodes.Stloc, resultVariable);
+					emitter.Emit(OpCodes.Ldloc, resultVariable);
+				}
+
 				_ = AddFinalizers(privateVars, false);
 				emitter.Emit(OpCodes.Ldc_I4_1);
 				emitter.Emit(OpCodes.Stloc, finalizedVariable);
@@ -510,8 +516,9 @@ namespace HarmonyLib
 			return canHaveJump;
 		}
 
-		void AddPostfixes(Dictionary<string, LocalBuilder> variables, bool passthroughPatches)
+		bool AddPostfixes(Dictionary<string, LocalBuilder> variables, bool passthroughPatches)
 		{
+			var result = false;
 			postfixes
 				.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void)))
 				.Do(fix =>
@@ -526,7 +533,9 @@ namespace HarmonyLib
 					{
 						var firstFixParam = fix.GetParameters().FirstOrDefault();
 						var hasPassThroughResultParam = firstFixParam != null && fix.ReturnType == firstFixParam.ParameterType;
-						if (!hasPassThroughResultParam)
+						if (hasPassThroughResultParam)
+							result = true;
+						else
 						{
 							if (firstFixParam != null)
 								throw new Exception($"Return type of pass through postfix {fix} does not match type of its first parameter");
@@ -535,6 +544,7 @@ namespace HarmonyLib
 						}
 					}
 				});
+			return result;
 		}
 
 		bool AddFinalizers(Dictionary<string, LocalBuilder> variables, bool catchExceptions)
