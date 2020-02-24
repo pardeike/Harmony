@@ -62,7 +62,8 @@ namespace HarmonyLib
 
 		internal static bool NeedsFix(MethodBase method)
 		{
-			if (method.IsStatic && !AccessTools.IsMonoRuntime) return false;
+			if (method.IsStatic) return false;
+			if (method.IsVirtual) return false;
 			var returnType = AccessTools.GetReturnedType(method);
 			if (AccessTools.IsStruct(returnType) == false) return false;
 			var size = SizeOf(returnType);

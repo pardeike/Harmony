@@ -106,4 +106,71 @@ namespace HarmonyLibTests.Assets
 			return null;
 		}
 	}
+
+	public struct SomeStruct
+	{
+		public string reasonTextInt;
+		public bool acceptedInt;
+		public string Reason => reasonTextInt;
+		public bool Accepted => acceptedInt;
+
+		public static SomeStruct WasAccepted
+		{
+			get
+			{
+				var result = new SomeStruct
+				{
+					acceptedInt = true
+				};
+				return result;
+			}
+		}
+
+		public static implicit operator SomeStruct(bool value)
+		{
+			if (value)
+			{
+				return WasAccepted;
+			}
+			return WasAccepted;
+		}
+
+		public static implicit operator SomeStruct(string value)
+		{
+			return new SomeStruct();
+		}
+	}
+
+	public struct AnotherStruct
+	{
+		public int x;
+		public int y;
+		public int z;
+	}
+
+	public abstract class AbstractClass
+	{
+		public virtual SomeStruct Method(string checkingDef, AnotherStruct loc)
+		{
+			return SomeStruct.WasAccepted;
+		}
+	}
+
+	public class ConcreteClass : AbstractClass
+	{
+		public override SomeStruct Method(string def, AnotherStruct loc)
+		{
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(ConcreteClass))]
+	[HarmonyPatch(nameof(ConcreteClass.Method))]
+	public static class ConcreteClass_Patch
+	{
+		static void Prefix(ConcreteClass __instance, string def, AnotherStruct loc)
+		{
+			Console.WriteLine("ConcreteClass_Patch.Prefix");
+		}
+	}
 }

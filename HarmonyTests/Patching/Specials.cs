@@ -1,6 +1,5 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
-using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
 
@@ -40,6 +39,22 @@ namespace HarmonyLibTests
 			Assert.True(HttpWebRequestPatches.postfixCalled, "Postfix not called");
 		}
 		*/
+
+		/*[Test]
+		public void Test_Special_Case1()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+			var processor = instance.CreateClassProcessor(typeof(ConcreteClass_Patch));
+			Assert.NotNull(processor, "processor");
+
+			var replacements = processor.Patch();
+			Assert.NotNull(replacements, "replacements");
+			Assert.AreEqual(1, replacements.Count);
+
+			var someStruct = new ConcreteClass().Method("test", new AnotherStruct());
+			Assert.True(someStruct.acceptedInt);
+		}
 
 		[Test]
 		public void Test_Returning_Structs()
@@ -103,7 +118,7 @@ namespace HarmonyLibTests
 					}
 				}
 			}
-		}
+		}*/
 
 		[Test]
 		public void Test_PatchException()
