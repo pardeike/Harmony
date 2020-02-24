@@ -614,6 +614,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.IsInteger
   nameWithType: AccessTools.IsInteger
+- uid: HarmonyLib.AccessTools.IsMonoRuntime
+  name: IsMonoRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsMonoRuntime
+  commentId: P:HarmonyLib.AccessTools.IsMonoRuntime
+  fullName: HarmonyLib.AccessTools.IsMonoRuntime
+  nameWithType: AccessTools.IsMonoRuntime
+- uid: HarmonyLib.AccessTools.IsMonoRuntime*
+  name: IsMonoRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsMonoRuntime_
+  commentId: Overload:HarmonyLib.AccessTools.IsMonoRuntime
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsMonoRuntime
+  nameWithType: AccessTools.IsMonoRuntime
 - uid: HarmonyLib.AccessTools.IsNumber(System.Type)
   name: IsNumber(Type)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNumber_System_Type_
