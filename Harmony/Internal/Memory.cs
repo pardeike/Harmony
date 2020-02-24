@@ -13,7 +13,7 @@ namespace HarmonyLib
 		unsafe public static void MarkForNoInlining(MethodBase method)
 		{
 			// TODO for now, this only works on mono
-			if (Type.GetType("Mono.Runtime") != null)
+			if (AccessTools.IsMonoRuntime)
 			{
 				var iflags = (ushort*)(method.MethodHandle.Value) + 1;
 				*iflags |= (ushort)MethodImplOptions.NoInlining;

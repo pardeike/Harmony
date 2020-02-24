@@ -895,6 +895,11 @@ namespace HarmonyLib
 			throw new Exception("Unexpected end of stack trace");
 		}
 
+		/// <summary>Tells you if the current runtime is based on Mono</summary>
+		/// <returns>True if we are running under Mono, false otherwise (.NET)</returns>
+		///
+		public static bool IsMonoRuntime { get; } = Type.GetType("Mono.Runtime") != null;
+
 		/// <summary>Throws a missing member runtime exception</summary>
 		/// <param name="type">The type that is involved</param>
 		/// <param name="names">A list of names</param>

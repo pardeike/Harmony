@@ -172,8 +172,8 @@ namespace HarmonyLib
 			if ((n.HasValue == false || n.Value == 1) && code.opcode == OpCodes.Ldarg_1) return true;
 			if ((n.HasValue == false || n.Value == 2) && code.opcode == OpCodes.Ldarg_2) return true;
 			if ((n.HasValue == false || n.Value == 3) && code.opcode == OpCodes.Ldarg_3) return true;
-			if (code.opcode == OpCodes.Ldarg && (n.HasValue == false || n.Value == ((int)code.operand))) return true;
-			if (code.opcode == OpCodes.Ldarg_S && (n.HasValue == false || n.Value == ((Byte)code.operand))) return true;
+			if (code.opcode == OpCodes.Ldarg && (n.HasValue == false || n.Value == Convert.ToInt32(code.operand))) return true;
+			if (code.opcode == OpCodes.Ldarg_S && (n.HasValue == false || n.Value == Convert.ToInt32(code.operand))) return true;
 			return false;
 		}
 
@@ -185,7 +185,7 @@ namespace HarmonyLib
 		public static bool IsLdarga(this CodeInstruction code, int? n = null)
 		{
 			if (code.opcode != OpCodes.Ldarga && code.opcode != OpCodes.Ldarga_S) return false;
-			return n.HasValue == false || n.Value == ((int)code.operand);
+			return n.HasValue == false || n.Value == Convert.ToInt32(code.operand);
 		}
 
 		/// <summary>Tests for Starg/Starg_S</summary>
@@ -196,7 +196,7 @@ namespace HarmonyLib
 		public static bool IsStarg(this CodeInstruction code, int? n = null)
 		{
 			if (code.opcode != OpCodes.Starg && code.opcode != OpCodes.Starg_S) return false;
-			return n.HasValue == false || n.Value == ((int)code.operand);
+			return n.HasValue == false || n.Value == Convert.ToInt32(code.operand);
 		}
 
 		/// <summary>Tests for any form of Ldloc*</summary>
