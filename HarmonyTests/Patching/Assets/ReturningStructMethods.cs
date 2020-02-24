@@ -9,7 +9,6 @@ namespace HarmonyLibTests.Assets.Methods
 	[HarmonyPatch]
 	public static class ReturningStructs_Patch
 	{
-		[HarmonyDebug]
 		static void Prefix(string s)
 		{
 			if (s != "test") throw new ArgumentException("First argument corrupt");
