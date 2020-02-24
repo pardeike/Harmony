@@ -172,8 +172,9 @@ namespace HarmonyLib
 			if ((n.HasValue == false || n.Value == 1) && code.opcode == OpCodes.Ldarg_1) return true;
 			if ((n.HasValue == false || n.Value == 2) && code.opcode == OpCodes.Ldarg_2) return true;
 			if ((n.HasValue == false || n.Value == 3) && code.opcode == OpCodes.Ldarg_3) return true;
-			if (code.opcode != OpCodes.Ldarg && code.opcode != OpCodes.Ldarg_S) return false;
-			return n.HasValue == false || n.Value == ((int)code.operand);
+			if (code.opcode == OpCodes.Ldarg && (n.HasValue == false || n.Value == ((int)code.operand))) return true;
+			if (code.opcode == OpCodes.Ldarg_S && (n.HasValue == false || n.Value == ((Byte)code.operand))) return true;
+			return false;
 		}
 
 		/// <summary>Tests for Ldarga/Ldarga_S</summary>
