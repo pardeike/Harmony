@@ -49,15 +49,35 @@ namespace HarmonyLibTests
 			var patchClass = typeof(ReturningStructs_Patch);
 			Assert.NotNull(patchClass);
 
+			var prefix = SymbolExtensions.GetMethodInfo(() => ReturningStructs_Patch.Prefix(null));
+			Assert.NotNull(prefix);
+
 			var instance = new Harmony("test");
 			Assert.NotNull(instance);
-			var patcher = instance.CreateClassProcessor(patchClass);
-			Assert.NotNull(patcher);
-			var replacements = patcher.Patch();
-			Assert.NotNull(replacements);
-			Assert.AreEqual(2 * count, replacements.Count, "replacements.Count");
 
 			var cls = typeof(ReturningStructs);
+			foreach (var useStatic in new bool[] { false, true })
+			{
+				for (var n = 1; n <= 20; n++)
+				{
+					var name = $"{(useStatic ? "S" : "I")}M{n.ToString("D2")}";
+					var method = AccessTools.DeclaredMethod(cls, name);
+					Assert.NotNull(method, "method");
+
+					Console.WriteLine($"Patching {name} started");
+					try
+					{
+						var replacement = instance.Patch(method, new HarmonyMethod(prefix));
+						Assert.NotNull(replacement, "replacement");
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine($"Patching {name} exception: {ex}");
+					}
+					Console.WriteLine($"Patching {name} done");
+				}
+			}
+
 			var clsInstance = new ReturningStructs();
 			foreach (var useStatic in new bool[] { false, true })
 			{
@@ -67,6 +87,9 @@ namespace HarmonyLibTests
 					{
 						var sn = n.ToString("D2");
 						var name = $"{(useStatic ? "S" : "I")}M{sn}";
+
+						Console.WriteLine($"Running patched {name}");
+
 						var original = AccessTools.DeclaredMethod(cls, name);
 						Assert.NotNull(original, $"{name}: original");
 						var result = original.Invoke(useStatic ? null : clsInstance, new object[] { "test" });
@@ -74,8 +97,9 @@ namespace HarmonyLibTests
 						var resultType = result.GetType();
 						Assert.AreEqual($"St{sn}", resultType.Name);
 					}
-					catch
+					catch (Exception ex)
 					{
+						Console.WriteLine($"Running exception: {ex}");
 					}
 				}
 			}

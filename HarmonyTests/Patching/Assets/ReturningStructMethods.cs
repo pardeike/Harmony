@@ -1,30 +1,13 @@
-using HarmonyLib;
 using HarmonyLibTests.Assets.Structs;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace HarmonyLibTests.Assets.Methods
 {
-	[HarmonyPatch]
 	public static class ReturningStructs_Patch
 	{
-		static void Prefix(string s)
+		public static void Prefix(string s)
 		{
 			if (s != "test") throw new ArgumentException("First argument corrupt");
-		}
-
-		static IEnumerable<MethodBase> TargetMethods()
-		{
-			var cls = typeof(ReturningStructs);
-			foreach (var useStatic in new bool[] { false, true })
-			{
-				for (var n = 1; n <= 20; n++)
-				{
-					var name = $"{(useStatic ? "S" : "I")}M{n.ToString("D2")}";
-					yield return AccessTools.DeclaredMethod(cls, name);
-				}
-			}
 		}
 	}
 
