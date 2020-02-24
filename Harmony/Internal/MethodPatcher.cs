@@ -79,6 +79,17 @@ namespace HarmonyLib
 				privateVars[RESULT_VAR] = resultVariable;
 			}
 
+			Label? skipOriginalLabel = null;
+			LocalBuilder runOriginalVariable = null;
+			if (prefixes.Any(fix => PrefixAffectsOriginal(fix)))
+			{
+				runOriginalVariable = DeclareLocalVariable(typeof(bool));
+				emitter.Emit(OpCodes.Ldc_I4_1);
+				emitter.Emit(OpCodes.Stloc, runOriginalVariable);
+
+				skipOriginalLabel = il.DefineLabel();
+			}
+
 			prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
 			{
 				if (fix.DeclaringType != null && privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
@@ -104,8 +115,12 @@ namespace HarmonyLib
 				emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
 			}
 
-			var skipOriginalLabel = il.DefineLabel();
-			var canHaveJump = AddPrefixes(privateVars, skipOriginalLabel);
+			AddPrefixes(privateVars, runOriginalVariable);
+			if (skipOriginalLabel.HasValue)
+			{
+				emitter.Emit(OpCodes.Ldloc, runOriginalVariable);
+				emitter.Emit(OpCodes.Brfalse, skipOriginalLabel.Value);
+			}
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
 			copier.SetArgumentShift(useStructReturnBuffer);
@@ -120,8 +135,8 @@ namespace HarmonyLib
 				emitter.MarkLabel(label);
 			if (resultVariable != null)
 				emitter.Emit(OpCodes.Stloc, resultVariable);
-			if (canHaveJump)
-				emitter.MarkLabel(skipOriginalLabel);
+			if (skipOriginalLabel.HasValue)
+				emitter.MarkLabel(skipOriginalLabel.Value);
 
 			_ = AddPostfixes(privateVars, false);
 
@@ -494,26 +509,60 @@ namespace HarmonyLib
 			}
 		}
 
-		bool AddPrefixes(Dictionary<string, LocalBuilder> variables, Label label)
+		static bool PrefixAffectsOriginal(MethodInfo fix)
 		{
-			var canHaveJump = false;
-			prefixes.ForEach(fix =>
+			if (fix.ReturnType == typeof(bool))
+				return true;
+
+			return fix.GetParameters().Any(p =>
 			{
-				if (original.GetMethodBody() == null)
-					throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
+				var name = p.Name;
+				var type = p.ParameterType;
 
-				EmitCallParameter(fix, variables, false);
-				emitter.Emit(OpCodes.Call, fix);
+				if (name == INSTANCE_PARAM) return false;
+				if (name == ORIGINAL_METHOD_PARAM) return false;
+				if (name == STATE_VAR) return false;
 
-				if (fix.ReturnType != typeof(void))
-				{
-					if (fix.ReturnType != typeof(bool))
-						throw new Exception($"Prefix patch {fix} has not \"bool\" or \"void\" return type: {fix.ReturnType}");
-					emitter.Emit(OpCodes.Brfalse, label);
-					canHaveJump = true;
-				}
+				if (p.IsOut) return true;
+				if (type.IsByRef) return true;
+				if (AccessTools.IsValue(type) == false && AccessTools.IsStruct(type) == false) return true;
+
+				return false;
 			});
-			return canHaveJump;
+		}
+
+		void AddPrefixes(Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable)
+		{
+			if (original.GetMethodBody() == null)
+				throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
+
+			prefixes
+				.Do(fix =>
+				{
+					var skipLabel = PrefixAffectsOriginal(fix) ? il.DefineLabel() : (Label?)null;
+					if (skipLabel.HasValue)
+					{
+						emitter.Emit(OpCodes.Ldloc, runOriginalVariable);
+						emitter.Emit(OpCodes.Brfalse_S, skipLabel.Value);
+					}
+
+					EmitCallParameter(fix, variables, false);
+					emitter.Emit(OpCodes.Call, fix);
+
+					var returnType = fix.ReturnType;
+					if (returnType != typeof(void))
+					{
+						if (returnType != typeof(bool))
+							throw new Exception($"Prefix patch {fix} has not \"bool\" or \"void\" return type: {fix.ReturnType}");
+						emitter.Emit(OpCodes.Stloc, runOriginalVariable);
+					}
+
+					if (skipLabel.HasValue)
+					{
+						il.MarkLabel(skipLabel.Value);
+						emitter.Emit(OpCodes.Nop);
+					}
+				});
 		}
 
 		bool AddPostfixes(Dictionary<string, LocalBuilder> variables, bool passthroughPatches)

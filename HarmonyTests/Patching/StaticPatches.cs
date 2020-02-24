@@ -328,8 +328,6 @@ namespace HarmonyLibTests
 			Assert.NotNull(test, "test");
 			var values = test.Method().ToList();
 
-			Console.WriteLine(Finalizer_Patch_Order_Patch.GetEvents().Join(null, "\n"));
-
 			Assert.NotNull(values, "values");
 			Assert.AreEqual(3, values.Count);
 			Assert.AreEqual(11, values[0]);
@@ -356,6 +354,35 @@ namespace HarmonyLibTests
 			};
 
 			Assert.True(actualEvents.SequenceEqual(correctEvents), "events");
+		}
+
+		[Test]
+		public void Test_Affecting_Original_Prefixes()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+			var processor = instance.CreateClassProcessor(typeof(Affecting_Original_Prefixes_Patch));
+			Assert.NotNull(processor, "processor");
+
+			var methods = processor.Patch();
+			Assert.NotNull(methods, "methods");
+			Assert.AreEqual(1, methods.Count);
+
+			Affecting_Original_Prefixes_Patch.ResetTest();
+			var test = new Affecting_Original_Prefixes_Class();
+			Assert.NotNull(test, "test");
+			var value = test.Method(100);
+
+			Assert.AreEqual("patched", value);
+
+			// note that since passthrough postfixes are async, they run AFTER any finalizer
+			//
+			var events = Affecting_Original_Prefixes_Patch.GetEvents();
+			Assert.AreEqual(4, events.Count, "event count");
+			Assert.AreEqual("Prefix1", events[0]);
+			Assert.AreEqual("Prefix2", events[1]);
+			Assert.AreEqual("Prefix3", events[2]);
+			Assert.AreEqual("Prefix5", events[3]);
 		}
 	}
 }
