@@ -338,7 +338,15 @@ namespace HarmonyLib
 					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, new Type[0], modifiers));
 
 					if (result == null)
-						throw new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}." + ex);
+					{
+						var exception = new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}." + ex);
+#if NET3_0
+						PreserveStackTrace(exception);
+						throw exception;
+#else
+						System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
+#endif
+					}
 				}
 			}
 			else
@@ -893,6 +901,27 @@ namespace HarmonyLib
 					return method;
 			}
 			throw new Exception("Unexpected end of stack trace");
+		}
+
+		static readonly MethodInfo m_PrepForRemoting = AccessTools.Method(typeof(Exception), "PrepForRemoting");
+		static readonly FastInvokeHandler PrepForRemoting = MethodInvoker.GetHandler(m_PrepForRemoting);
+
+		/// <summary>Call this on an exception that you want to rethrow to keep the stacktrace intact</summary>
+		/// <param name="exception">The exception to manipulate</param>
+		///
+		public static void PreserveStackTrace(Exception exception)
+		{
+			_ = PrepForRemoting(exception, new object[0]);
+
+			/* this code does not work for non-serializable exceptions
+			 * 
+			var ctx = new StreamingContext(StreamingContextStates.CrossAppDomain);
+			var mgr = new ObjectManager(null, ctx);
+			var si = new SerializationInfo(exception.GetType(), new FormatterConverter());
+			exception.GetObjectData(si, ctx);
+			mgr.RegisterObject(exception, 1, si);
+			mgr.DoFixups();
+			*/
 		}
 
 		/// <summary>Tells you if the current runtime is based on Mono</summary>

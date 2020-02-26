@@ -250,7 +250,7 @@ namespace HarmonyLib
 
 			var result = instructions.Cast<CodeInstruction>().ToList();
 			if (argumentShift)
-				StructReturnBuffer.ArgumentShifter(result);
+				StructReturnBuffer.ArgumentShifter(result, method.IsStatic && AccessTools.IsMonoRuntime);
 			return result;
 		}
 

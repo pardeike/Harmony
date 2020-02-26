@@ -222,16 +222,17 @@ namespace HarmonyLib
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
 		{
 			if (original == null) throw new ArgumentNullException(nameof(original));
+			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
+
 			var patchName = original.Name + suffix;
 			patchName = patchName.Replace("<>", "");
 
 			var parameters = original.GetParameters();
-			var parameterTypes = parameters.Types().ToList();
+			var parameterTypes = new List<Type>();
 
-			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
+			parameterTypes.AddRange(parameters.Types());
 			if (useStructReturnBuffer)
 				parameterTypes.Insert(0, typeof(IntPtr));
-
 			if (original.IsStatic == false)
 			{
 				if (AccessTools.IsStruct(original.DeclaringType))

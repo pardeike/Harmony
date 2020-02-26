@@ -199,7 +199,15 @@ namespace HarmonyLib
 				}
 			}
 			RunMethod<HarmonyCleanup>(ref exception, job.original, exception);
-			ReportException(exception, job.original);
+			if (exception != null)
+			{
+#if NET3_0
+				AccessTools.PreserveStackTrace(exception);
+				throw exception;
+#else
+				System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
+#endif
+			}
 			job.replacement = replacement;
 		}
 
@@ -243,15 +251,35 @@ namespace HarmonyLib
 			if (exception == null) return;
 			if ((containerAttributes.debug ?? false) || Harmony.DEBUG)
 			{
-				var originalInfo = original != null ? $" patching {original.FullDescription()}" : "";
-				var exceptionString = $"Exception from Harmony \"{instance.Id}\"{originalInfo} processing patch class {containerType.FullDescription()}: {exception}";
+				_ = Harmony.VersionInfo(out var currentVersion);
 
 				FileLog.indentLevel = 0;
-				FileLog.Log(exceptionString);
-				return;
+				FileLog.Log($"### Exception from user \"{instance.Id}\", Harmony v{currentVersion}");
+				FileLog.Log($"### Original: {(original?.FullDescription() ?? "NULL")}");
+				FileLog.Log($"### Patch class: {containerType.FullDescription()}");
+				var logException = exception;
+				if (logException is HarmonyException hEx) logException = hEx.InnerException;
+#if NET3_0
+				AccessTools.PreserveStackTrace(logException);
+#else
+			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception);
+#endif
+				var exStr = logException.ToString();
+				while (exStr.Contains("\n\n"))
+					exStr = exStr.Replace("\n\n", "\n");
+				exStr = exStr.Split('\n').Join(line => $"### {line}", "\n");
+				FileLog.Log(exStr.Trim());
 			}
-			if (exception is HarmonyException) throw exception;
-			throw new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
+
+			if ((exception is HarmonyException) == false)
+				exception = new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
+
+#if NET3_0
+			AccessTools.PreserveStackTrace(exception);
+			throw exception;
+#else
+			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
+#endif
 		}
 
 		T RunMethod<S, T>(T defaultIfNotExisting, T defaultIfFailing, Func<T, string> failOnResult = null, params object[] parameters)

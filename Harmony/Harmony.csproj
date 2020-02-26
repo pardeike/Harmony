@@ -41,6 +41,10 @@
 		</Otherwise>
 	</Choose>
 
+	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+		<DefineConstants>NET3_0</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<DefineConstants>NETSTANDARD2_0</DefineConstants>
 	</PropertyGroup>
