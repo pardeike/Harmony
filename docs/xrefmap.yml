@@ -754,6 +754,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.Method
   nameWithType: AccessTools.Method
+- uid: HarmonyLib.AccessTools.PreserveStackTrace(System.Exception)
+  name: PreserveStackTrace(Exception)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_PreserveStackTrace_System_Exception_
+  commentId: M:HarmonyLib.AccessTools.PreserveStackTrace(System.Exception)
+  fullName: HarmonyLib.AccessTools.PreserveStackTrace(System.Exception)
+  nameWithType: AccessTools.PreserveStackTrace(Exception)
+- uid: HarmonyLib.AccessTools.PreserveStackTrace*
+  name: PreserveStackTrace
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_PreserveStackTrace_
+  commentId: Overload:HarmonyLib.AccessTools.PreserveStackTrace
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.PreserveStackTrace
+  nameWithType: AccessTools.PreserveStackTrace
 - uid: HarmonyLib.AccessTools.Property(System.Type,System.String)
   name: Property(Type, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Property_System_Type_System_String_
