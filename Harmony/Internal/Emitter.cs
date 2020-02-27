@@ -76,7 +76,7 @@ namespace HarmonyLib
 				var argStr = FormatArgument(arg, extra);
 				var space = argStr.Length > 0 ? " " : "";
 				var opcodeName = opcode.ToString();
-				if (opcodeName.StartsWith("br") && opcodeName != "break") opcodeName += " =>";
+				if (opcode.FlowControl == FlowControl.Branch || opcode.FlowControl == FlowControl.Cond_Branch) opcodeName += " =>";
 				opcodeName = opcodeName.PadRight(10);
 				FileLog.LogBuffered(string.Format("{0}{1}{2}{3}", CodePos(), opcodeName, space, argStr));
 			}
