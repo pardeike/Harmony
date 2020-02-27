@@ -79,13 +79,7 @@ namespace HarmonyLib
 			}
 			catch (AmbiguousMatchException ex)
 			{
-				var exception = new HarmonyException($"Ambiguous match for HarmonyMethod[{attr.Description()}]", ex.InnerException ?? ex);
-#if NET3_0
-				AccessTools.PreserveStackTrace(exception);
-				throw exception;
-#else
-				System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
-#endif
+				throw new HarmonyException($"Ambiguous match for HarmonyMethod[{attr.Description()}]", ex.InnerException ?? ex);
 			}
 
 			return null;

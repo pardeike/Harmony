@@ -41,22 +41,6 @@
 		</Otherwise>
 	</Choose>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
-		<DefineConstants>NET3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<DefineConstants>NETSTANDARD2_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-		<DefineConstants>NETCOREAPP3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<DefineConstants>NETCOREAPP3_1</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<None Include="..\LICENSE" Pack="true" PackagePath="" />
 		<None Include="..\HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
