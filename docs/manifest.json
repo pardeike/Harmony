@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeInstructionExtensions.html",
-          "hash": "iP6KEdOpLuNv2UuL84mk8w=="
+          "hash": "jPpuAKZb3fuxeMF3a7xoKw=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CollectionExtensions.html",
-          "hash": "EtnGmtAWfy+vkmLJ+hm4zA=="
+          "hash": "vH6yVGeKf1szcndboayZLg=="
         }
       },
       "is_incremental": false,
@@ -165,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.GeneralExtensions.html",
-          "hash": "GVKPZF/exLsDfujGybz0vw=="
+          "hash": "geYh3F1/ajUguE5mNoXPxQ=="
         }
       },
       "is_incremental": false,
@@ -986,6 +986,13 @@
         "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
@@ -996,13 +1003,6 @@
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 17,
-          "skipped_file_count": 0
-        },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
