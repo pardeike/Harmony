@@ -1,4 +1,3 @@
-using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,7 +110,7 @@ namespace HarmonyLib
 				return ((MethodInfo)argument).FullDescription() + (extra != null ? " " + extra : "");
 
 			if (type == typeof(string))
-				return $"\"{argument}\"";
+				return argument.ToString().ToLiteral();
 			if (type == typeof(Label))
 				return $"Label{((Label)argument).GetHashCode()}";
 			if (type == typeof(Label[]))

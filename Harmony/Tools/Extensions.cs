@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 
 namespace HarmonyLib
 {
@@ -119,6 +120,45 @@ namespace HarmonyLib
 				if (result is T)
 					return (T)result;
 			return default;
+		}
+
+		/// <summary>Escapes Unicode and ASCII non printable characters</summary>
+		/// <param name="input">The string to convert</param>
+		/// <param name="quoteChar">The string to convert</param>
+		/// <returns>A string literal surrounded by <paramref name="quoteChar"/></returns>
+		///
+		public static string ToLiteral(this string input, string quoteChar = "\"")
+		{
+			var literal = new StringBuilder(input.Length + 2);
+			_ = literal.Append(quoteChar);
+			foreach (var c in input)
+			{
+				switch (c)
+				{
+					case '\'': _ = literal.Append(@"\'"); break;
+					case '\"': _ = literal.Append("\\\""); break;
+					case '\\': _ = literal.Append(@"\\"); break;
+					case '\0': _ = literal.Append(@"\0"); break;
+					case '\a': _ = literal.Append(@"\a"); break;
+					case '\b': _ = literal.Append(@"\b"); break;
+					case '\f': _ = literal.Append(@"\f"); break;
+					case '\n': _ = literal.Append(@"\n"); break;
+					case '\r': _ = literal.Append(@"\r"); break;
+					case '\t': _ = literal.Append(@"\t"); break;
+					case '\v': _ = literal.Append(@"\v"); break;
+					default:
+						if (c >= 0x20 && c <= 0x7e)
+							_ = literal.Append(c);
+						else
+						{
+							_ = literal.Append(@"\u");
+							_ = literal.Append(((int)c).ToString("x4"));
+						}
+						break;
+				}
+			}
+			_ = literal.Append(quoteChar);
+			return literal.ToString();
 		}
 	}
 
