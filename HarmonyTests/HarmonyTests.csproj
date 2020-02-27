@@ -23,22 +23,6 @@
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
-		<DefineConstants>NET3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
-		<DefineConstants>NETCOREAPP2_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-		<DefineConstants>NETCOREAPP3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<DefineConstants>NETCOREAPP3_1</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
 		<PackageReference Include="NUnit" Version="3.12.0" />

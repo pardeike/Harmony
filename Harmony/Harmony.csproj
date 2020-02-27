@@ -59,22 +59,6 @@
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
-		<DefineConstants>NET3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<DefineConstants>NETSTANDARD2_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-		<DefineConstants>NETCOREAPP3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<DefineConstants>NETCOREAPP3_1</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
