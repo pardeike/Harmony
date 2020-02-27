@@ -89,6 +89,16 @@
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
 	</ItemGroup>
 
+	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
+		<PropertyGroup>
+			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)</WorkingDirectory>
+		</PropertyGroup>
+		<ItemGroup>
+			<OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg"  Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
+		</ItemGroup>
+		<Delete Files="@(OldNugetPackages)" />
+	</Target>
+
 	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
 		<!-- Merge all dependencies into Harmony whenever it makes sense and whenever possible. -->
 		<PropertyGroup>
@@ -103,6 +113,35 @@
 		</ItemGroup>
 
 		<ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" WorkingDirectory="$(WorkingDirectory)" />
+	</Target>
+
+	<Target Name="RemoveUnnecessaryDependencyFiles" AfterTargets="ILRepack;PostBuildEvent">
+		<PropertyGroup>
+			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
+		</PropertyGroup>
+		<ItemGroup>
+			<UnnecessaryDependencyFiles Include="$(WorkingDirectory)\*" Exclude="$(WorkingDirectory)\$(AssemblyName).*"/>
+		</ItemGroup>
+		<Delete Files="@(UnnecessaryDependencyFiles)" />
+	</Target>
+
+	<UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyName="Microsoft.Build.Tasks.v12.0">
+		<ParameterGroup>
+			<InputDirectory ParameterType="System.String" Required="true" />
+			<TempFile ParameterType="System.String" Required="true" />
+			<OutputFilename ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="System.IO.Compression.FileSystem" />
+			<Code>
+				System.IO.Compression.ZipFile.CreateFromDirectory(InputDirectory, TempFile);
+				System.IO.File.Move(TempFile, OutputFilename);
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<Target Name="Zip" AfterTargets="Pack" Condition="'$(Configuration)'=='Release'">
+		<Zip InputDirectory="$(MSBuildThisFileDirectory)bin" TempFile="$(MSBuildThisFileDirectory)Harmony.zip" OutputFilename="$(MSBuildThisFileDirectory)bin\Harmony.$(Version).zip" />
 	</Target>
 
 </Project>
