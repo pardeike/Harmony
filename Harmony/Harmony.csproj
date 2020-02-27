@@ -85,7 +85,7 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.2.2.1" PrivateAssets="All" />
+		<PackageReference Include="MonoMod.Common" Version="20.2.24.2" PrivateAssets="All" />
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
 	</ItemGroup>
 
@@ -134,8 +134,13 @@
 		<Task>
 			<Reference Include="System.IO.Compression.FileSystem" />
 			<Code>
+				try {
+				System.IO.File.Delete(TempFile);
+				} catch {}
+				try {
 				System.IO.Compression.ZipFile.CreateFromDirectory(InputDirectory, TempFile);
 				System.IO.File.Move(TempFile, OutputFilename);
+				} catch {}
 			</Code>
 		</Task>
 	</UsingTask>
