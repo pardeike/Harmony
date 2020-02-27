@@ -754,19 +754,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.Method
   nameWithType: AccessTools.Method
-- uid: HarmonyLib.AccessTools.PreserveStackTrace(System.Exception)
-  name: PreserveStackTrace(Exception)
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_PreserveStackTrace_System_Exception_
-  commentId: M:HarmonyLib.AccessTools.PreserveStackTrace(System.Exception)
-  fullName: HarmonyLib.AccessTools.PreserveStackTrace(System.Exception)
-  nameWithType: AccessTools.PreserveStackTrace(Exception)
-- uid: HarmonyLib.AccessTools.PreserveStackTrace*
-  name: PreserveStackTrace
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_PreserveStackTrace_
-  commentId: Overload:HarmonyLib.AccessTools.PreserveStackTrace
-  isSpec: "True"
-  fullName: HarmonyLib.AccessTools.PreserveStackTrace
-  nameWithType: AccessTools.PreserveStackTrace
 - uid: HarmonyLib.AccessTools.Property(System.Type,System.String)
   name: Property(Type, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Property_System_Type_System_String_
@@ -806,6 +793,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.PropertySetter
   nameWithType: AccessTools.PropertySetter
+- uid: HarmonyLib.AccessTools.RethrowException(System.Exception)
+  name: RethrowException(Exception)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_RethrowException_System_Exception_
+  commentId: M:HarmonyLib.AccessTools.RethrowException(System.Exception)
+  fullName: HarmonyLib.AccessTools.RethrowException(System.Exception)
+  nameWithType: AccessTools.RethrowException(Exception)
+- uid: HarmonyLib.AccessTools.RethrowException*
+  name: RethrowException
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_RethrowException_
+  commentId: Overload:HarmonyLib.AccessTools.RethrowException
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.RethrowException
+  nameWithType: AccessTools.RethrowException
 - uid: HarmonyLib.AccessTools.StaticFieldRefAccess*
   name: StaticFieldRefAccess
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_StaticFieldRefAccess_
@@ -1012,6 +1012,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.Calls
   nameWithType: CodeInstructionExtensions.Calls
+- uid: HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction,System.Reflection.Emit.OpCode,System.Object)
+  name: Is(CodeInstruction, OpCode, Object)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Object_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction,System.Reflection.Emit.OpCode,System.Object)
+  fullName: HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction, System.Reflection.Emit.OpCode, System.Object)
+  nameWithType: CodeInstructionExtensions.Is(CodeInstruction, OpCode, Object)
+- uid: HarmonyLib.CodeInstructionExtensions.Is*
+  name: Is
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Is_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.Is
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.Is
+  nameWithType: CodeInstructionExtensions.Is
 - uid: HarmonyLib.CodeInstructionExtensions.IsLdarg(HarmonyLib.CodeInstruction,System.Nullable{System.Int32})
   name: IsLdarg(CodeInstruction, Nullable<Int32>)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsLdarg_HarmonyLib_CodeInstruction_System_Nullable_System_Int32__
