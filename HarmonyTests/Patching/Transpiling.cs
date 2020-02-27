@@ -83,10 +83,10 @@ namespace HarmonyLibTests.Patching
 			var instance = new Harmony("test-lazytranspiler");
 			// Add the transpiler twice.
 			LazyTranspilerRunsOnce_Class.counter = 0;
-			instance.Patch(original, transpiler: new HarmonyMethod(transpiler) { debug = true });
+			instance.Patch(original, transpiler: new HarmonyMethod(transpiler));
 			Assert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 1);
 			LazyTranspilerRunsOnce_Class.counter = 0;
-			instance.Patch(original, transpiler: new HarmonyMethod(transpiler) { debug = true });
+			instance.Patch(original, transpiler: new HarmonyMethod(transpiler));
 			Assert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 2);
 		}
 
@@ -95,6 +95,7 @@ namespace HarmonyLibTests.Patching
 			LazyTranspilerRunsOnce_Class.counter++;
 			foreach (var instruction in instructions)
 				yield return instruction;
+			instructions.ToList(); // just to iterate the instructions again
 		}
 	}
 }

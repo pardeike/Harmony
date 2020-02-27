@@ -206,7 +206,7 @@ namespace HarmonyLib
 			if (type == typeof(IEnumerable<CodeInstruction>))
 			{
 				unassignedValues = null;
-				return enumerable;
+				return enumerable as IList<CodeInstruction> ?? (enumerable as IEnumerable<CodeInstruction> ?? enumerable.Cast<CodeInstruction>()).ToList();
 			}
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
@@ -249,7 +249,7 @@ namespace HarmonyLib
 					instructions = ConvertToOurInstructions(instructions, typeof(CodeInstruction), originalInstructions, unassignedValues);
 			});
 
-			var result = instructions.Cast<CodeInstruction>().ToList();
+			var result = instructions as List<CodeInstruction> ?? instructions.Cast<CodeInstruction>().ToList();
 			if (argumentShift)
 				StructReturnBuffer.ArgumentShifter(result, method.IsStatic && AccessTools.IsMonoRuntime);
 			return result;
