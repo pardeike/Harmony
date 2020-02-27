@@ -70,5 +70,31 @@ namespace HarmonyLibTests.Patching
 				yield return instruction;
 			}
 		}
+
+		[Test]
+		public void Test_LazyTranspilerOnlyRunsOncePerPatch()
+		{
+			var original = AccessTools.Method(typeof(LazyTranspilerRunsOnce_Class), nameof(LazyTranspilerRunsOnce_Class.Method));
+			Assert.NotNull(original);
+
+			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(LazyTranspiler));
+			Assert.NotNull(transpiler);
+
+			var instance = new Harmony("test-lazytranspiler");
+			// Add the transpiler twice.
+			LazyTranspilerRunsOnce_Class.counter = 0;
+			instance.Patch(original, transpiler: new HarmonyMethod(transpiler) { debug = true });
+			Assert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 1);
+			LazyTranspilerRunsOnce_Class.counter = 0;
+			instance.Patch(original, transpiler: new HarmonyMethod(transpiler) { debug = true });
+			Assert.AreEqual(LazyTranspilerRunsOnce_Class.counter, 2);
+		}
+
+		public static IEnumerable<CodeInstruction> LazyTranspiler(IEnumerable<CodeInstruction> instructions)
+		{
+			LazyTranspilerRunsOnce_Class.counter++;
+			foreach (var instruction in instructions)
+				yield return instruction;
+		}
 	}
 }

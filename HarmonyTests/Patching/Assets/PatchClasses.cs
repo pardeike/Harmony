@@ -998,6 +998,16 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public static class LazyTranspilerRunsOnce_Class
+	{
+		public static int counter = 0;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static void Method()
+		{
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

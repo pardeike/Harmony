@@ -41,8 +41,8 @@ namespace HarmonyLib
 		{
 			opcode = instruction.opcode;
 			operand = instruction.operand;
-			labels = instruction.labels.ToArray().ToList();
-			blocks = instruction.blocks.ToArray().ToList();
+			labels = instruction.labels.ToList();
+			blocks = instruction.blocks.ToList();
 		}
 
 		/// <summary>Clones a CodeInstruction and resets its labels and exception blocks</summary>

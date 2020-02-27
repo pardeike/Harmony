@@ -236,8 +236,9 @@ namespace HarmonyLib
 				instructions = ConvertToGeneralInstructions(transpiler, instructions, out var unassignedValues);
 
 				// remember the order of the original input (for detection of dupped code instructions)
-				var originalInstructions = new List<object>();
-				originalInstructions.AddRange(instructions.Cast<object>());
+				List<object> originalInstructions = null;
+				if (unassignedValues != null)
+					originalInstructions = instructions.Cast<object>().ToList();
 
 				// call the transpiler
 				var parameter = GetTranspilerCallParameters(generator, transpiler, method, instructions);
