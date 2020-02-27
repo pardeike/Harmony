@@ -70,8 +70,17 @@ namespace HarmonyLib
 			if (member == null) return "null";
 			var parameters = member.GetParameters().Types();
 			var returnType = AccessTools.GetReturnedType(member);
-			if (member.DeclaringType == null) return $"{returnType.FullDescription()} {member.Name}{parameters.Description()}";
-			return $"{returnType.FullDescription()} {member.DeclaringType.FullDescription()}.{member.Name}{parameters.Description()}";
+
+			var strings = new List<string>();
+			if (member.IsStatic) strings.Add("static");
+			if (member.IsAbstract) strings.Add("abstract");
+			if (member.IsVirtual) strings.Add("virtual");
+			strings.Add(returnType.FullDescription());
+			if (member.DeclaringType != null)
+				strings.Add(member.DeclaringType.FullDescription());
+			strings.Add($"{member.Name}{parameters.Description()}");
+
+			return strings.ToArray().Join(null, " ");
 		}
 
 		/// <summary>A helper converting parameter infos to types</summary>

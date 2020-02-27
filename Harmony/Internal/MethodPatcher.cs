@@ -268,7 +268,7 @@ namespace HarmonyLib
 #endif
 
 			if (debug)
-				FileLog.LogBuffered($"### Replacement: static {returnType.FullDescription()} {original.DeclaringType.FullName}::{patchName}{parameterTypes.ToArray().Description()}");
+				FileLog.Log($"### Replacement: static {returnType.FullDescription()} {original.DeclaringType.FullName}::{patchName}{parameterTypes.ToArray().Description()}");
 
 			return method;
 		}

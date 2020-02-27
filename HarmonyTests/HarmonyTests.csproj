@@ -10,18 +10,6 @@
 		<ProjectReference Include="..\Harmony\Harmony.csproj" />
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
-		<DefineConstants>NETCOREAPP2_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-		<DefineConstants>NETCOREAPP3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<DefineConstants>NETCOREAPP3_1</DefineConstants>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<Optimize>false</Optimize>
 		<DebugType>full</DebugType>
@@ -33,6 +21,22 @@
 		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+		<DefineConstants>NET3_0</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
+		<DefineConstants>NETCOREAPP2_0</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
+		<DefineConstants>NETCOREAPP3_0</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+		<DefineConstants>NETCOREAPP3_1</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
