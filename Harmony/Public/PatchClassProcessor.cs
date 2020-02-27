@@ -199,15 +199,7 @@ namespace HarmonyLib
 				}
 			}
 			RunMethod<HarmonyCleanup>(ref exception, job.original, exception);
-			if (exception != null)
-			{
-#if NET3_0
-				AccessTools.PreserveStackTrace(exception);
-				throw exception;
-#else
-				System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
-#endif
-			}
+			ReportException(exception, job.original);
 			job.replacement = replacement;
 		}
 
@@ -259,11 +251,6 @@ namespace HarmonyLib
 				FileLog.Log($"### Patch class: {containerType.FullDescription()}");
 				var logException = exception;
 				if (logException is HarmonyException hEx) logException = hEx.InnerException;
-#if NET3_0
-				AccessTools.PreserveStackTrace(logException);
-#else
-			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception);
-#endif
 				var exStr = logException.ToString();
 				while (exStr.Contains("\n\n"))
 					exStr = exStr.Replace("\n\n", "\n");
@@ -271,15 +258,8 @@ namespace HarmonyLib
 				FileLog.Log(exStr.Trim());
 			}
 
-			if ((exception is HarmonyException) == false)
-				exception = new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
-
-#if NET3_0
-			AccessTools.PreserveStackTrace(exception);
-			throw exception;
-#else
-			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
-#endif
+			if (exception is HarmonyException) throw exception; // assume HarmonyException already wraps the actual exception
+			throw new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
 		}
 
 		T RunMethod<S, T>(T defaultIfNotExisting, T defaultIfFailing, Func<T, string> failOnResult = null, params object[] parameters)

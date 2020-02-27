@@ -339,13 +339,7 @@ namespace HarmonyLib
 
 					if (result == null)
 					{
-						var exception = new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}." + ex);
-#if NET3_0
-						PreserveStackTrace(exception);
-						throw exception;
-#else
-						System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
-#endif
+						throw new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}." + ex);
 					}
 				}
 			}
@@ -903,25 +897,24 @@ namespace HarmonyLib
 			throw new Exception("Unexpected end of stack trace");
 		}
 
-		static readonly MethodInfo m_PrepForRemoting = AccessTools.Method(typeof(Exception), "PrepForRemoting");
+#if NET35
+		static readonly MethodInfo m_PrepForRemoting = Method(typeof(Exception), "PrepForRemoting") // MS .NET
+			?? Method(typeof(Exception), "FixRemotingException"); // mono .NET
 		static readonly FastInvokeHandler PrepForRemoting = MethodInvoker.GetHandler(m_PrepForRemoting);
+#endif
 
-		/// <summary>Call this on an exception that you want to rethrow to keep the stacktrace intact</summary>
-		/// <param name="exception">The exception to manipulate</param>
+		/// <summary>Rethrows an exception while preserving its stack trace (throw statement typically clobbers existing stack traces)</summary>
+		/// <param name="exception">The exception to rethrow</param>
 		///
-		public static void PreserveStackTrace(Exception exception)
+		public static void RethrowException(Exception exception)
 		{
+#if NET35
 			_ = PrepForRemoting(exception, new object[0]);
-
-			/* this code does not work for non-serializable exceptions
-			 * 
-			var ctx = new StreamingContext(StreamingContextStates.CrossAppDomain);
-			var mgr = new ObjectManager(null, ctx);
-			var si = new SerializationInfo(exception.GetType(), new FormatterConverter());
-			exception.GetObjectData(si, ctx);
-			mgr.RegisterObject(exception, 1, si);
-			mgr.DoFixups();
-			*/
+#else
+			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
+#endif
+			// For the sake of any static code analyzer, always throw exception, even if ExceptionDispatchInfo.Throw above was called.
+			throw exception;
 		}
 
 		/// <summary>Tells you if the current runtime is based on Mono</summary>

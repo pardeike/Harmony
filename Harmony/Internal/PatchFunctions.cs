@@ -156,13 +156,7 @@ namespace HarmonyLib
 			}
 			catch (Exception ex)
 			{
-				var exception = HarmonyException.Create(ex, finalInstructions);
-#if NET3_0
-				AccessTools.PreserveStackTrace(exception);
-				throw exception;
-#else
-				System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
-#endif
+				throw HarmonyException.Create(ex, finalInstructions);
 			}
 			return replacement;
 		}
@@ -197,13 +191,7 @@ namespace HarmonyLib
 			}
 			catch (Exception ex)
 			{
-				var exception = HarmonyException.Create(ex, finalInstructions);
-#if NET3_0
-				AccessTools.PreserveStackTrace(exception);
-				throw exception;
-#else
-				System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
-#endif
+				throw HarmonyException.Create(ex, finalInstructions);
 			}
 
 			PatchTools.RememberObject(standin.method, replacement);
