@@ -75,8 +75,16 @@
 		<PackageReference Include="MonoMod.Common" Version="20.2.24.2" PrivateAssets="All" />
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
 	</ItemGroup>
-
-	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Release'">
+    <Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
+        <PropertyGroup>
+            <WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)</WorkingDirectory>
+        </PropertyGroup>
+        <ItemGroup>
+            <OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg"  Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
+        </ItemGroup>
+        <Delete Files="@(OldNugetPackages)" />
+    </Target>
+	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="'$(MSBuildRuntimeType)' == 'Core'">
 		<!-- Merge all dependencies into Harmony whenever it makes sense and whenever possible. -->
 		<PropertyGroup>
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
@@ -102,7 +110,7 @@
 		<Delete Files="@(UnnecessaryDependencyFiles)" />
 	</Target>
 
-	<UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyName="Microsoft.Build.Tasks.v12.0" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+	<UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyName="Microsoft.Build.Tasks.v12.0">
 		<ParameterGroup>
 			<InputDirectory ParameterType="System.String" Required="true" />
 			<TempFile ParameterType="System.String" Required="true" />
