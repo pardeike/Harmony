@@ -338,7 +338,9 @@ namespace HarmonyLib
 					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, new Type[0], modifiers));
 
 					if (result == null)
+					{
 						throw new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}." + ex);
+					}
 				}
 			}
 			else
@@ -894,6 +896,31 @@ namespace HarmonyLib
 			}
 			throw new Exception("Unexpected end of stack trace");
 		}
+
+#if NET35
+		static readonly MethodInfo m_PrepForRemoting = Method(typeof(Exception), "PrepForRemoting") // MS .NET
+			?? Method(typeof(Exception), "FixRemotingException"); // mono .NET
+		static readonly FastInvokeHandler PrepForRemoting = MethodInvoker.GetHandler(m_PrepForRemoting);
+#endif
+
+		/// <summary>Rethrows an exception while preserving its stack trace (throw statement typically clobbers existing stack traces)</summary>
+		/// <param name="exception">The exception to rethrow</param>
+		///
+		public static void RethrowException(Exception exception)
+		{
+#if NET35
+			_ = PrepForRemoting(exception, new object[0]);
+#else
+			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
+#endif
+			// For the sake of any static code analyzer, always throw exception, even if ExceptionDispatchInfo.Throw above was called.
+			throw exception;
+		}
+
+		/// <summary>Tells you if the current runtime is based on Mono</summary>
+		/// <returns>True if we are running under Mono, false otherwise (.NET)</returns>
+		///
+		public static bool IsMonoRuntime { get; } = Type.GetType("Mono.Runtime") != null;
 
 		/// <summary>Throws a missing member runtime exception</summary>
 		/// <param name="type">The type that is involved</param>

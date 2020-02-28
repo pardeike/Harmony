@@ -243,14 +243,22 @@ namespace HarmonyLib
 			if (exception == null) return;
 			if ((containerAttributes.debug ?? false) || Harmony.DEBUG)
 			{
-				var originalInfo = original != null ? $" patching {original.FullDescription()}" : "";
-				var exceptionString = $"Exception from Harmony \"{instance.Id}\"{originalInfo} processing patch class {containerType.FullDescription()}: {exception}";
+				_ = Harmony.VersionInfo(out var currentVersion);
 
 				FileLog.indentLevel = 0;
-				FileLog.Log(exceptionString);
-				return;
+				FileLog.Log($"### Exception from user \"{instance.Id}\", Harmony v{currentVersion}");
+				FileLog.Log($"### Original: {(original?.FullDescription() ?? "NULL")}");
+				FileLog.Log($"### Patch class: {containerType.FullDescription()}");
+				var logException = exception;
+				if (logException is HarmonyException hEx) logException = hEx.InnerException;
+				var exStr = logException.ToString();
+				while (exStr.Contains("\n\n"))
+					exStr = exStr.Replace("\n\n", "\n");
+				exStr = exStr.Split('\n').Join(line => $"### {line}", "\n");
+				FileLog.Log(exStr.Trim());
 			}
-			if (exception is HarmonyException) throw exception;
+
+			if (exception is HarmonyException) throw exception; // assume HarmonyException already wraps the actual exception
 			throw new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
 		}
 

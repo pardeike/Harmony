@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 
 namespace HarmonyLib
 {
 	/// <summary>General extensions for common cases</summary>
-	/// 
+	///
 	public static class GeneralExtensions
 	{
 		/// <summary>Joins an enumeration with a value converter and a delimiter to a string</summary>
@@ -70,8 +72,17 @@ namespace HarmonyLib
 			if (member == null) return "null";
 			var parameters = member.GetParameters().Types();
 			var returnType = AccessTools.GetReturnedType(member);
-			if (member.DeclaringType == null) return $"{returnType.FullDescription()} {member.Name}{parameters.Description()}";
-			return $"{returnType.FullDescription()} {member.DeclaringType.FullDescription()}.{member.Name}{parameters.Description()}";
+
+			var strings = new List<string>();
+			if (member.IsStatic) strings.Add("static");
+			if (member.IsAbstract) strings.Add("abstract");
+			if (member.IsVirtual) strings.Add("virtual");
+			strings.Add(returnType.FullDescription());
+			if (member.DeclaringType != null)
+				strings.Add(member.DeclaringType.FullDescription());
+			strings.Add($"{member.Name}{parameters.Description()}");
+
+			return strings.ToArray().Join(null, " ");
 		}
 
 		/// <summary>A helper converting parameter infos to types</summary>
@@ -110,10 +121,49 @@ namespace HarmonyLib
 					return (T)result;
 			return default;
 		}
+
+		/// <summary>Escapes Unicode and ASCII non printable characters</summary>
+		/// <param name="input">The string to convert</param>
+		/// <param name="quoteChar">The string to convert</param>
+		/// <returns>A string literal surrounded by <paramref name="quoteChar"/></returns>
+		///
+		public static string ToLiteral(this string input, string quoteChar = "\"")
+		{
+			var literal = new StringBuilder(input.Length + 2);
+			_ = literal.Append(quoteChar);
+			foreach (var c in input)
+			{
+				switch (c)
+				{
+					case '\'': _ = literal.Append(@"\'"); break;
+					case '\"': _ = literal.Append("\\\""); break;
+					case '\\': _ = literal.Append(@"\\"); break;
+					case '\0': _ = literal.Append(@"\0"); break;
+					case '\a': _ = literal.Append(@"\a"); break;
+					case '\b': _ = literal.Append(@"\b"); break;
+					case '\f': _ = literal.Append(@"\f"); break;
+					case '\n': _ = literal.Append(@"\n"); break;
+					case '\r': _ = literal.Append(@"\r"); break;
+					case '\t': _ = literal.Append(@"\t"); break;
+					case '\v': _ = literal.Append(@"\v"); break;
+					default:
+						if (c >= 0x20 && c <= 0x7e)
+							_ = literal.Append(c);
+						else
+						{
+							_ = literal.Append(@"\u");
+							_ = literal.Append(((int)c).ToString("x4"));
+						}
+						break;
+				}
+			}
+			_ = literal.Append(quoteChar);
+			return literal.ToString();
+		}
 	}
 
 	/// <summary>Extensions for <see cref="CodeInstruction"/></summary>
-	/// 
+	///
 	public static class CodeInstructionExtensions
 	{
 		static readonly HashSet<OpCode> loadVarCodes = new HashSet<OpCode>
@@ -143,11 +193,11 @@ namespace HarmonyLib
 			OpCodes.Ldc_I4, OpCodes.Ldc_I4_S, OpCodes.Ldc_I8, OpCodes.Ldc_R4, OpCodes.Ldc_R8
 		};
 
-		/// <summary>Shortcut for testing if the operand is equal to a non-null typed value</summary>
+		/// <summary>Shortcut for testing whether the operand is equal to a non-null value</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="value">The value</param>
 		/// <returns>True if the operand has the same type and is equal to the value</returns>
-		/// 
+		///
 		public static bool OperandIs(this CodeInstruction code, object value)
 		{
 			if (value == null) throw new ArgumentNullException(nameof(value));
@@ -161,48 +211,86 @@ namespace HarmonyLib
 			return Equals(code.operand, value);
 		}
 
+		/// <summary>Shortcut for testing whether the operand is equal to a non-null value</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="value">The <see cref="MemberInfo"/> value</param>
+		/// <returns>True if the operand is equal to the value</returns>
+		/// <remarks>This is an optimized version of <see cref="OperandIs(CodeInstruction, object)"/> for <see cref="MemberInfo"/></remarks>
+		///
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static bool OperandIs(this CodeInstruction code, MemberInfo value)
+		{
+			if (value == null) throw new ArgumentNullException(nameof(value));
+			return Equals(code.operand, value);
+		}
+
+		/// <summary>Shortcut for <code>code.opcode == opcode &amp;&amp; code.OperandIs(operand)</code></summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="opcode">The <see cref="OpCode"/></param>
+		/// <param name="operand">The operand value</param>
+		/// <returns>True if the opcode is equal to the given opcode and the operand has the same type and is equal to the given operand</returns>
+		///
+		public static bool Is(this CodeInstruction code, OpCode opcode, object operand)
+		{
+			return code.opcode == opcode && code.OperandIs(operand);
+		}
+
+		/// <summary>Shortcut for <code>code.opcode == opcode &amp;&amp; code.OperandIs(operand)</code></summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="opcode">The <see cref="OpCode"/></param>
+		/// <param name="operand">The <see cref="MemberInfo"/> operand value</param>
+		/// <returns>True if the opcode is equal to the given opcode and the operand is equal to the given operand</returns>
+		/// <remarks>This is an optimized version of <see cref="Is(CodeInstruction, OpCode, object)"/> for <see cref="MemberInfo"/></remarks>
+		///
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static bool Is(this CodeInstruction code, OpCode opcode, MemberInfo operand)
+		{
+			return code.opcode == opcode && code.OperandIs(operand);
+		}
+
 		/// <summary>Tests for any form of Ldarg*</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="n">The (optional) index</param>
 		/// <returns>True if it matches one of the variations</returns>
-		/// 
+		///
 		public static bool IsLdarg(this CodeInstruction code, int? n = null)
 		{
 			if ((n.HasValue == false || n.Value == 0) && code.opcode == OpCodes.Ldarg_0) return true;
 			if ((n.HasValue == false || n.Value == 1) && code.opcode == OpCodes.Ldarg_1) return true;
 			if ((n.HasValue == false || n.Value == 2) && code.opcode == OpCodes.Ldarg_2) return true;
 			if ((n.HasValue == false || n.Value == 3) && code.opcode == OpCodes.Ldarg_3) return true;
-			if (code.opcode != OpCodes.Ldarg && code.opcode != OpCodes.Ldarg_S) return false;
-			return n.HasValue == false || n.Value == ((int)code.operand);
+			if (code.opcode == OpCodes.Ldarg && (n.HasValue == false || n.Value == Convert.ToInt32(code.operand))) return true;
+			if (code.opcode == OpCodes.Ldarg_S && (n.HasValue == false || n.Value == Convert.ToInt32(code.operand))) return true;
+			return false;
 		}
 
 		/// <summary>Tests for Ldarga/Ldarga_S</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="n">The (optional) index</param>
 		/// <returns>True if it matches one of the variations</returns>
-		/// 
+		///
 		public static bool IsLdarga(this CodeInstruction code, int? n = null)
 		{
 			if (code.opcode != OpCodes.Ldarga && code.opcode != OpCodes.Ldarga_S) return false;
-			return n.HasValue == false || n.Value == ((int)code.operand);
+			return n.HasValue == false || n.Value == Convert.ToInt32(code.operand);
 		}
 
 		/// <summary>Tests for Starg/Starg_S</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="n">The (optional) index</param>
 		/// <returns>True if it matches one of the variations</returns>
-		/// 
+		///
 		public static bool IsStarg(this CodeInstruction code, int? n = null)
 		{
 			if (code.opcode != OpCodes.Starg && code.opcode != OpCodes.Starg_S) return false;
-			return n.HasValue == false || n.Value == ((int)code.operand);
+			return n.HasValue == false || n.Value == Convert.ToInt32(code.operand);
 		}
 
 		/// <summary>Tests for any form of Ldloc*</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="variable">The optional local variable</param>
 		/// <returns>True if it matches one of the variations</returns>
-		/// 
+		///
 		public static bool IsLdloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
 			if (loadVarCodes.Contains(code.opcode) == false) return false;
@@ -213,7 +301,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="variable">The optional local variable</param>
 		/// <returns>True if it matches one of the variations</returns>
-		/// 
+		///
 		public static bool IsStloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
 			if (storeVarCodes.Contains(code.opcode) == false) return false;
@@ -224,7 +312,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="label">The label if the instruction is a branch operation or <see langword="null"/> if not</param>
 		/// <returns>True if the instruction branches</returns>
-		/// 
+		///
 		public static bool Branches(this CodeInstruction code, out Label? label)
 		{
 			if (branchCodes.Contains(code.opcode))
@@ -240,7 +328,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="method">The method</param>
 		/// <returns>True if the instruction calls the method or constructor</returns>
-		/// 
+		///
 		public static bool Calls(this CodeInstruction code, MethodInfo method)
 		{
 			if (method == null) throw new ArgumentNullException(nameof(method));
@@ -251,7 +339,7 @@ namespace HarmonyLib
 		/// <summary>Tests if the code instruction loads a constant</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <returns>True if the instruction loads a constant</returns>
-		/// 
+		///
 		public static bool LoadsConstant(this CodeInstruction code)
 		{
 			return constantLoadingCodes.Contains(code.opcode);
@@ -261,7 +349,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="number">The integer constant</param>
 		/// <returns>True if the instruction loads the constant</returns>
-		/// 
+		///
 		public static bool LoadsConstant(this CodeInstruction code, long number)
 		{
 			var op = code.opcode;
@@ -283,7 +371,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="number">The floating point constant</param>
 		/// <returns>True if the instruction loads the constant</returns>
-		/// 
+		///
 		public static bool LoadsConstant(this CodeInstruction code, double number)
 		{
 			if (code.opcode != OpCodes.Ldc_R4 && code.opcode != OpCodes.Ldc_R8) return false;
@@ -295,7 +383,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="e">The enum</param>
 		/// <returns>True if the instruction loads the constant</returns>
-		/// 
+		///
 		public static bool LoadsConstant(this CodeInstruction code, Enum e)
 		{
 			return code.LoadsConstant(Convert.ToInt64(e));
@@ -306,7 +394,7 @@ namespace HarmonyLib
 		/// <param name="field">The field</param>
 		/// <param name="byAddress">Set to true if the address of the field is loaded</param>
 		/// <returns>True if the instruction loads the field</returns>
-		/// 
+		///
 		public static bool LoadsField(this CodeInstruction code, FieldInfo field, bool byAddress = false)
 		{
 			if (field == null) throw new ArgumentNullException(nameof(field));
@@ -321,7 +409,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="field">The field</param>
 		/// <returns>True if the instruction stores this field</returns>
-		/// 
+		///
 		public static bool StoresField(this CodeInstruction code, FieldInfo field)
 		{
 			if (field == null) throw new ArgumentNullException(nameof(field));

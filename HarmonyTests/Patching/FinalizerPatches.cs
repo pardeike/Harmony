@@ -196,7 +196,7 @@ namespace HarmonyLibTests
 
 		public static void SkipIfMono()
 		{
-			if (Type.GetType("Mono.Runtime") != null)
+			if (AccessTools.IsMonoRuntime)
 				Assert.Ignore("Mono runtime cannot handle invalid IL in dead code. Test ignored.");
 		}
 

@@ -614,6 +614,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.IsInteger
   nameWithType: AccessTools.IsInteger
+- uid: HarmonyLib.AccessTools.IsMonoRuntime
+  name: IsMonoRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsMonoRuntime
+  commentId: P:HarmonyLib.AccessTools.IsMonoRuntime
+  fullName: HarmonyLib.AccessTools.IsMonoRuntime
+  nameWithType: AccessTools.IsMonoRuntime
+- uid: HarmonyLib.AccessTools.IsMonoRuntime*
+  name: IsMonoRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsMonoRuntime_
+  commentId: Overload:HarmonyLib.AccessTools.IsMonoRuntime
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsMonoRuntime
+  nameWithType: AccessTools.IsMonoRuntime
 - uid: HarmonyLib.AccessTools.IsNumber(System.Type)
   name: IsNumber(Type)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNumber_System_Type_
@@ -780,6 +793,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.PropertySetter
   nameWithType: AccessTools.PropertySetter
+- uid: HarmonyLib.AccessTools.RethrowException(System.Exception)
+  name: RethrowException(Exception)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_RethrowException_System_Exception_
+  commentId: M:HarmonyLib.AccessTools.RethrowException(System.Exception)
+  fullName: HarmonyLib.AccessTools.RethrowException(System.Exception)
+  nameWithType: AccessTools.RethrowException(Exception)
+- uid: HarmonyLib.AccessTools.RethrowException*
+  name: RethrowException
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_RethrowException_
+  commentId: Overload:HarmonyLib.AccessTools.RethrowException
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.RethrowException
+  nameWithType: AccessTools.RethrowException
 - uid: HarmonyLib.AccessTools.StaticFieldRefAccess*
   name: StaticFieldRefAccess
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_StaticFieldRefAccess_
@@ -986,6 +1012,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.Calls
   nameWithType: CodeInstructionExtensions.Calls
+- uid: HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction,System.Reflection.Emit.OpCode,System.Object)
+  name: Is(CodeInstruction, OpCode, Object)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Object_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction,System.Reflection.Emit.OpCode,System.Object)
+  fullName: HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction, System.Reflection.Emit.OpCode, System.Object)
+  nameWithType: CodeInstructionExtensions.Is(CodeInstruction, OpCode, Object)
+- uid: HarmonyLib.CodeInstructionExtensions.Is*
+  name: Is
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Is_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.Is
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.Is
+  nameWithType: CodeInstructionExtensions.Is
 - uid: HarmonyLib.CodeInstructionExtensions.IsLdarg(HarmonyLib.CodeInstruction,System.Nullable{System.Int32})
   name: IsLdarg(CodeInstruction, Nullable<Int32>)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_IsLdarg_HarmonyLib_CodeInstruction_System_Nullable_System_Int32__
@@ -1644,6 +1683,19 @@ references:
   fullName.vb: HarmonyLib.GeneralExtensions.Join(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Func(Of T, System.String), System.String)
   nameWithType: GeneralExtensions.Join<T>(IEnumerable<T>, Func<T, String>, String)
   nameWithType.vb: GeneralExtensions.Join(Of T)(IEnumerable(Of T), Func(Of T, String), String)
+- uid: HarmonyLib.GeneralExtensions.ToLiteral(System.String,System.String)
+  name: ToLiteral(String, String)
+  href: api/HarmonyLib.GeneralExtensions.html#HarmonyLib_GeneralExtensions_ToLiteral_System_String_System_String_
+  commentId: M:HarmonyLib.GeneralExtensions.ToLiteral(System.String,System.String)
+  fullName: HarmonyLib.GeneralExtensions.ToLiteral(System.String, System.String)
+  nameWithType: GeneralExtensions.ToLiteral(String, String)
+- uid: HarmonyLib.GeneralExtensions.ToLiteral*
+  name: ToLiteral
+  href: api/HarmonyLib.GeneralExtensions.html#HarmonyLib_GeneralExtensions_ToLiteral_
+  commentId: Overload:HarmonyLib.GeneralExtensions.ToLiteral
+  isSpec: "True"
+  fullName: HarmonyLib.GeneralExtensions.ToLiteral
+  nameWithType: GeneralExtensions.ToLiteral
 - uid: HarmonyLib.GeneralExtensions.Types(System.Reflection.ParameterInfo[])
   name: Types(ParameterInfo[])
   href: api/HarmonyLib.GeneralExtensions.html#HarmonyLib_GeneralExtensions_Types_System_Reflection_ParameterInfo___

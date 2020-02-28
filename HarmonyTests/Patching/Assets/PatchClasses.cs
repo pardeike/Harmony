@@ -934,6 +934,80 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Affecting_Original_Prefixes_Class
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string Method(int n)
+		{
+			return $"{n}";
+		}
+	}
+
+	[HarmonyPatch(typeof(Affecting_Original_Prefixes_Class))]
+	[HarmonyPatch(nameof(Affecting_Original_Prefixes_Class.Method))]
+	public class Affecting_Original_Prefixes_Patch
+	{
+		public static List<string> events = new List<string>();
+
+		public static List<string> GetEvents()
+		{
+			return events;
+		}
+
+		public static void ResetTest()
+		{
+			events = new List<string>();
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPriority(500)]
+		public static bool Prefix1(ref string __result)
+		{
+			events.Add(nameof(Prefix1));
+			__result = "patched";
+			return true;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPriority(400)]
+		public static void Prefix2()
+		{
+			events.Add(nameof(Prefix2));
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPriority(300)]
+		public static bool Prefix3()
+		{
+			events.Add(nameof(Prefix3));
+			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPriority(200)]
+		public static void Prefix4(ref string __result)
+		{
+			events.Add(nameof(Prefix4));
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPriority(100)]
+		public static void Prefix5()
+		{
+			events.Add(nameof(Prefix5));
+		}
+	}
+
+	public static class LazyTranspilerRunsOnce_Class
+	{
+		public static int counter = 0;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static void Method()
+		{
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

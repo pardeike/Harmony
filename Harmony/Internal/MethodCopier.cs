@@ -281,7 +281,7 @@ namespace HarmonyLib
 			// pass3 - log out all new local variables
 			//
 			var savedLog = FileLog.GetBuffer(true);
-			emitter.AllLocalVariables().Do(local => emitter.LogLocalVariable(local));
+			emitter.LogAllLocalVariables();
 			FileLog.LogBuffered(savedLog);
 
 			// pass4 - check for any RET

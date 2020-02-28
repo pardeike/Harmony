@@ -10,8 +10,8 @@ namespace HarmonyLib
 	[Serializable]
 	public class HarmonyException : Exception
 	{
-		readonly Dictionary<int, CodeInstruction> instructions;
-		readonly int errorOffset;
+		Dictionary<int, CodeInstruction> instructions;
+		int errorOffset;
 
 		internal HarmonyException() { }
 		internal HarmonyException(string message) : base(message) { }
@@ -39,6 +39,12 @@ namespace HarmonyLib
 
 			var offset = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.HexNumber);
 			_ = Regex.Replace(match.Groups[2].Value, " {2,}", " ");
+			if (ex is HarmonyException hEx)
+			{
+				hEx.instructions = finalInstructions;
+				hEx.errorOffset = offset;
+				return hEx;
+			}
 			return new HarmonyException(ex, finalInstructions, offset);
 		}
 

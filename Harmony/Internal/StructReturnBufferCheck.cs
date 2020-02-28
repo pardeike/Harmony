@@ -60,13 +60,15 @@ namespace HarmonyLib
 			return size;
 		}
 
+		static readonly HashSet<int> specialSizes = new HashSet<int> { 1, 2, 4, 8 };
 		internal static bool NeedsFix(MethodBase method)
 		{
-			if (method.IsStatic) return false;
 			var returnType = AccessTools.GetReturnedType(method);
 			if (AccessTools.IsStruct(returnType) == false) return false;
+			if (AccessTools.IsMonoRuntime == false && method.IsStatic) return false;
+
 			var size = SizeOf(returnType);
-			if (size != 3 && size != 5 && size != 6 && size != 7 && size < 9) return false;
+			if (specialSizes.Contains(size)) return false;
 			return HasStructReturnBuffer();
 		}
 
@@ -86,14 +88,26 @@ namespace HarmonyLib
 			return Sandbox.hasStructReturnBuffer;
 		}
 
-		internal static void ArgumentShifter(List<CodeInstruction> instructions)
+		internal static void ArgumentShifter(List<CodeInstruction> instructions, bool shiftArgZero)
 		{
-			// Only for non-static methods:
+			// Non-static methods:
 			//
+			//        insert
+			//          |
+			//          V 
 			// THIS , IntPtr , arg0 , arg1 , arg2 ...
 			//
 			// So we make space at index 1 by moving all Ldarg_[n] to Ldarg_[n+1]
 			// except Ldarg_0 which stays at positon #0
+
+			// Static methods:
+			//
+			//  insert
+			//    |
+			//    V 
+			// +IntPtr , arg0 , arg1 , arg2 ...
+			//
+			// So we make space at index 0 by moving all Ldarg_[n] to Ldarg_[n+1]
 
 			foreach (var instruction in instructions)
 			{
@@ -116,16 +130,21 @@ namespace HarmonyLib
 					continue;
 				}
 
-				// no Ldarg_0 check
+				if (shiftArgZero && instruction.opcode == OpCodes.Ldarg_0)
+				{
+					instruction.opcode = OpCodes.Ldarg_1;
+					continue;
+				}
 
 				if (instruction.opcode == OpCodes.Ldarg
+					|| instruction.opcode == OpCodes.Ldarg_S
 					|| instruction.opcode == OpCodes.Ldarga
 					|| instruction.opcode == OpCodes.Ldarga_S
 					|| instruction.opcode == OpCodes.Starg
 					|| instruction.opcode == OpCodes.Starg_S)
 				{
 					var n = Convert.ToInt16(instruction.operand);
-					if (n > 0)
+					if (n > 0 || shiftArgZero)
 					{
 						instruction.operand = n + 1;
 						continue;

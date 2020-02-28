@@ -12,13 +12,13 @@
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>true</SignAssembly>
-		<Version>2.0.0.5</Version>
+		<Version>2.0.0.7</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
-		<AssemblyVersion>2.0.0.5</AssemblyVersion>
-		<FileVersion>2.0.0.5</FileVersion>
+		<AssemblyVersion>2.0.0.7</AssemblyVersion>
+		<FileVersion>2.0.0.7</FileVersion>
 		<PackageIcon>HarmonyLogo.png</PackageIcon>
 		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -26,18 +26,6 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>7.3</LangVersion>
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<DefineConstants>NETSTANDARD2_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-		<DefineConstants>NETCOREAPP3_0</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<DefineConstants>NETCOREAPP3_1</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -84,7 +72,7 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.2.2.1" PrivateAssets="All" />
+		<PackageReference Include="MonoMod.Common" Version="20.2.24.2" PrivateAssets="All" />
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
 	</ItemGroup>
 
@@ -102,6 +90,40 @@
 		</ItemGroup>
 
 		<ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" WorkingDirectory="$(WorkingDirectory)" />
+	</Target>
+
+	<Target Name="RemoveUnnecessaryDependencyFiles" AfterTargets="ILRepack;PostBuildEvent">
+		<PropertyGroup>
+			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
+		</PropertyGroup>
+		<ItemGroup>
+			<UnnecessaryDependencyFiles Include="$(WorkingDirectory)\*" Exclude="$(WorkingDirectory)\$(AssemblyName).*"/>
+		</ItemGroup>
+		<Delete Files="@(UnnecessaryDependencyFiles)" />
+	</Target>
+
+	<UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyName="Microsoft.Build.Tasks.v12.0" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+		<ParameterGroup>
+			<InputDirectory ParameterType="System.String" Required="true" />
+			<TempFile ParameterType="System.String" Required="true" />
+			<OutputFilename ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="System.IO.Compression.FileSystem" />
+			<Code>
+				try {
+				System.IO.File.Delete(TempFile);
+				} catch {}
+				try {
+				System.IO.Compression.ZipFile.CreateFromDirectory(InputDirectory, TempFile);
+				System.IO.File.Move(TempFile, OutputFilename);
+				} catch {}
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<Target Name="Zip" AfterTargets="Pack" Condition="'$(Configuration)'=='Release' AND '$(TargetFrameworkIdentifier)' == '.NETFramework'">
+		<Zip InputDirectory="$(MSBuildThisFileDirectory)bin" TempFile="$(MSBuildThisFileDirectory)Harmony.zip" OutputFilename="$(MSBuildThisFileDirectory)bin\Harmony.$(Version).zip" />
 	</Target>
 
 </Project>

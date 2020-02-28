@@ -40,6 +40,86 @@ namespace HarmonyLibTests
 		}
 		*/
 
+		/*[Test]
+		public void Test_Special_Case1()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+			var processor = instance.CreateClassProcessor(typeof(ConcreteClass_Patch));
+			Assert.NotNull(processor, "processor");
+
+			var replacements = processor.Patch();
+			Assert.NotNull(replacements, "replacements");
+			Assert.AreEqual(1, replacements.Count);
+
+			var someStruct = new ConcreteClass().Method("test", new AnotherStruct());
+			Assert.True(someStruct.acceptedInt);
+		}
+
+		[Test]
+		public void Test_Returning_Structs()
+		{
+			var count = 20;
+
+			var patchClass = typeof(ReturningStructs_Patch);
+			Assert.NotNull(patchClass);
+
+			var prefix = SymbolExtensions.GetMethodInfo(() => ReturningStructs_Patch.Prefix(null));
+			Assert.NotNull(prefix);
+
+			var instance = new Harmony("test");
+			Assert.NotNull(instance);
+
+			var cls = typeof(ReturningStructs);
+			foreach (var useStatic in new bool[] { false, true })
+			{
+				for (var n = 1; n <= 20; n++)
+				{
+					var name = $"{(useStatic ? "S" : "I")}M{n.ToString("D2")}";
+					var method = AccessTools.DeclaredMethod(cls, name);
+					Assert.NotNull(method, "method");
+
+					Console.WriteLine($"Patching {name} started");
+					try
+					{
+						var replacement = instance.Patch(method, new HarmonyMethod(prefix));
+						Assert.NotNull(replacement, "replacement");
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine($"Patching {name} exception: {ex}");
+					}
+					Console.WriteLine($"Patching {name} done");
+				}
+			}
+
+			var clsInstance = new ReturningStructs();
+			foreach (var useStatic in new bool[] { false, true })
+			{
+				for (var n = 1; n <= count; n++)
+				{
+					try
+					{
+						var sn = n.ToString("D2");
+						var name = $"{(useStatic ? "S" : "I")}M{sn}";
+
+						Console.WriteLine($"Running patched {name}");
+
+						var original = AccessTools.DeclaredMethod(cls, name);
+						Assert.NotNull(original, $"{name}: original");
+						var result = original.Invoke(useStatic ? null : clsInstance, new object[] { "test" });
+						Assert.NotNull(result, $"{name}: result");
+						var resultType = result.GetType();
+						Assert.AreEqual($"St{sn}", resultType.Name);
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine($"Running exception: {ex}");
+					}
+				}
+			}
+		}*/
+
 		[Test]
 		public void Test_PatchException()
 		{
@@ -66,7 +146,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_PatchExceptionWithCleanup1()
 		{
-			if (Type.GetType("Mono.Runtime") == null)
+			if (AccessTools.IsMonoRuntime == false)
 				return; // Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
 
 			var patchClass = typeof(DeadEndCode_Patch2);
@@ -108,7 +188,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_PatchExceptionWithCleanup2()
 		{
-			if (Type.GetType("Mono.Runtime") == null)
+			if (AccessTools.IsMonoRuntime == false)
 				return; // Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
 
 			var patchClass = typeof(DeadEndCode_Patch3);
@@ -135,7 +215,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_PatchExceptionWithCleanup3()
 		{
-			if (Type.GetType("Mono.Runtime") == null)
+			if (AccessTools.IsMonoRuntime == false)
 				return; // Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
 
 			var patchClass = typeof(DeadEndCode_Patch4);
