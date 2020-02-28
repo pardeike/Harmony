@@ -85,7 +85,8 @@
 		</ItemGroup>
 		<Delete Files="@(OldNugetPackages)" />
 	</Target>
-	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="'$(MSBuildRuntimeType)' == 'Core'">
+
+	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="'$(MSBuildRuntimeType)' == 'Core' AND '$(Configuration)'=='Release'">
 		<!-- Merge all dependencies into Harmony whenever it makes sense and whenever possible. -->
 		<PropertyGroup>
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
