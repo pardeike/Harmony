@@ -75,15 +75,16 @@
 		<PackageReference Include="MonoMod.Common" Version="20.2.24.2" PrivateAssets="All" />
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
 	</ItemGroup>
-    <Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
-        <PropertyGroup>
-            <WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)</WorkingDirectory>
-        </PropertyGroup>
-        <ItemGroup>
-            <OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg"  Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
-        </ItemGroup>
-        <Delete Files="@(OldNugetPackages)" />
-    </Target>
+	
+	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
+		<PropertyGroup>
+			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)</WorkingDirectory>
+		</PropertyGroup>
+		<ItemGroup>
+			<OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg"  Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
+		</ItemGroup>
+		<Delete Files="@(OldNugetPackages)" />
+	</Target>
 	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="'$(MSBuildRuntimeType)' == 'Core'">
 		<!-- Merge all dependencies into Harmony whenever it makes sense and whenever possible. -->
 		<PropertyGroup>
