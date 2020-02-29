@@ -1,3 +1,4 @@
+using MonoMod.Utils.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,13 @@ namespace HarmonyLib
 
 	internal class Emitter
 	{
-		readonly MonoMod.Utils.Cil.CecilILGenerator il;
+		readonly CecilILGenerator il;
 		readonly Dictionary<int, CodeInstruction> instructions = new Dictionary<int, CodeInstruction>();
 		readonly bool debug;
 
 		internal Emitter(ILGenerator il, bool debug)
 		{
-			this.il = Traverse.Create(il).Field("Target").GetValue<MonoMod.Utils.Cil.CecilILGenerator>();
+			this.il = il.GetProxiedShim<CecilILGenerator>();
 			this.debug = debug;
 		}
 
@@ -39,8 +40,7 @@ namespace HarmonyLib
 
 		internal int CurrentPos()
 		{
-			var cilInstructions = Traverse.Create(il).Field("IL").Field("instructions").GetValue<Mono.Collections.Generic.Collection<Mono.Cecil.Cil.Instruction>>();
-			return cilInstructions.Sum(instr => instr.GetSize());
+			return il.ILOffset;
 		}
 
 		internal static string CodePos(int offset)
@@ -86,8 +86,7 @@ namespace HarmonyLib
 			if (debug == false)
 				return;
 
-			var variables = Traverse.Create(il).Field("IL").Field("body").Field("variables").GetValue<Mono.Collections.Generic.Collection<Mono.Cecil.Cil.VariableDefinition>>();
-			variables.Do(v =>
+			il.IL.Body.Variables.Do(v =>
 			{
 				var str = string.Format("{0}Local var {1}: {2}{3}", CodePos(0), v.Index, v.VariableType.FullName, v.IsPinned ? "(pinned)" : "");
 				FileLog.LogBuffered(str);
