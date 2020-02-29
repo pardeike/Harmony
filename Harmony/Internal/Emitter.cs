@@ -83,6 +83,9 @@ namespace HarmonyLib
 
 		internal void LogAllLocalVariables()
 		{
+			if (debug == false)
+				return;
+
 			var variables = Traverse.Create(il).Field("IL").Field("body").Field("variables").GetValue<Mono.Collections.Generic.Collection<Mono.Cecil.Cil.VariableDefinition>>();
 			variables.Do(v =>
 			{
@@ -91,32 +94,28 @@ namespace HarmonyLib
 			});
 		}
 
-		internal void LogLocalVariable(LocalBuilder variable)
-		{
-			if (debug)
-			{
-				var str = string.Format("{0}Local var {1}: {2}{3}", CodePos(0), variable.LocalIndex, variable.LocalType.FullName, variable.IsPinned ? "(pinned)" : "");
-				FileLog.LogBuffered(str);
-			}
-		}
-
 		internal static string FormatArgument(object argument, string extra = null)
 		{
 			if (argument == null) return "NULL";
 			var type = argument.GetType();
 
-			var method = argument as MethodInfo;
-			if (method != null)
-				return ((MethodInfo)argument).FullDescription() + (extra != null ? " " + extra : "");
+			if (argument is MethodBase method)
+				return method.FullDescription() + (extra != null ? " " + extra : "");
+
+			if (argument is FieldInfo field)
+				return $"{field.FieldType.FullDescription()} {field.DeclaringType.FullDescription()}::{field.Name}";
+
+			if (type == typeof(Label))
+				return $"Label{((Label)argument).GetHashCode()}";
+
+			if (type == typeof(Label[]))
+				return $"Labels{string.Join(",", ((Label[])argument).Select(l => l.GetHashCode().ToString()).ToArray())}";
+
+			if (type == typeof(LocalBuilder))
+				return $"{((LocalBuilder)argument).LocalIndex} ({((LocalBuilder)argument).LocalType})";
 
 			if (type == typeof(string))
 				return argument.ToString().ToLiteral();
-			if (type == typeof(Label))
-				return $"Label{((Label)argument).GetHashCode()}";
-			if (type == typeof(Label[]))
-				return $"Labels{string.Join(",", ((Label[])argument).Select(l => l.GetHashCode().ToString()).ToArray())}";
-			if (type == typeof(LocalBuilder))
-				return $"{((LocalBuilder)argument).LocalIndex} ({((LocalBuilder)argument).LocalType})";
 
 			return argument.ToString().Trim();
 		}

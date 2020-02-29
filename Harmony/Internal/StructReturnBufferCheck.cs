@@ -37,12 +37,16 @@ namespace HarmonyLib
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		internal SomeStruct_Net GetStruct_Net(IntPtr x, IntPtr y)
 		{
+			_ = x;
+			_ = y;
 			throw new Exception("This method should've been detoured!");
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		internal SomeStruct_Mono GetStruct_Mono(IntPtr x, IntPtr y)
 		{
+			_ = x;
+			_ = y;
 			throw new Exception("This method should've been detoured!");
 		}
 

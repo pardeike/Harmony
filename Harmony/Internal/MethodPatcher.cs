@@ -252,8 +252,6 @@ namespace HarmonyLib
 				OwnerType = original.DeclaringType
 			};
 
-#if NETSTANDARD2_0 || NETCOREAPP2_0
-#else
 			var offset = (original.IsStatic ? 0 : 1) + (useStructReturnBuffer ? 1 : 0);
 			if (useStructReturnBuffer)
 				method.Definition.Parameters[original.IsStatic ? 0 : 1].Name = "retbuf";
@@ -265,10 +263,15 @@ namespace HarmonyLib
 				param.Attributes = (Mono.Cecil.ParameterAttributes)parameters[i].Attributes;
 				param.Name = parameters[i].Name;
 			}
-#endif
 
 			if (debug)
-				FileLog.Log($"### Replacement: static {returnType.FullDescription()} {original.DeclaringType.FullName}::{patchName}{parameterTypes.ToArray().Description()}");
+			{
+				var parameterStrings = parameterTypes.Select(p => p.FullDescription()).ToList();
+				if (parameterTypes.Count == method.Definition.Parameters.Count)
+					for (var i = 0; i < parameterTypes.Count; i++)
+						parameterStrings[i] += $" {method.Definition.Parameters[i].Name}";
+				FileLog.Log($"### Replacement: static {returnType.FullDescription()} {original.DeclaringType.FullName}::{patchName}({parameterStrings.Join()})");
+			}
 
 			return method;
 		}

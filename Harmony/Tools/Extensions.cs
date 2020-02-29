@@ -70,19 +70,18 @@ namespace HarmonyLib
 		public static string FullDescription(this MethodBase member)
 		{
 			if (member == null) return "null";
-			var parameters = member.GetParameters().Types();
 			var returnType = AccessTools.GetReturnedType(member);
 
-			var strings = new List<string>();
-			if (member.IsStatic) strings.Add("static");
-			if (member.IsAbstract) strings.Add("abstract");
-			if (member.IsVirtual) strings.Add("virtual");
-			strings.Add(returnType.FullDescription());
+			var result = new StringBuilder();
+			if (member.IsStatic) _ = result.Append("static ");
+			if (member.IsAbstract) _ = result.Append("abstract ");
+			if (member.IsVirtual) _ = result.Append("virtual ");
+			_ = result.Append($"{returnType.FullDescription()} ");
 			if (member.DeclaringType != null)
-				strings.Add(member.DeclaringType.FullDescription());
-			strings.Add($"{member.Name}{parameters.Description()}");
-
-			return strings.ToArray().Join(null, " ");
+				_ = result.Append($"{member.DeclaringType.FullDescription()}::");
+			var parameterString = member.GetParameters().Join(p => $"{p.ParameterType.FullDescription()} {p.Name}");
+			_ = result.Append($"{member.Name}({parameterString})");
+			return result.ToString();
 		}
 
 		/// <summary>A helper converting parameter infos to types</summary>
