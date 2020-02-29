@@ -85,7 +85,9 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.2.24.2" PrivateAssets="All" />
+		<PackageReference Include="MonoMod.Common" Version="20.2.27.1">
+			<PrivateAssets Condition="!$(IsCoreOrStandard)">All</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
 	</ItemGroup>
 
