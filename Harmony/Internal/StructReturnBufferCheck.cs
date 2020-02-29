@@ -11,10 +11,11 @@ namespace HarmonyLib
 
 	internal class Sandbox
 	{
-		internal static bool hasStructReturnBuffer;
+		internal static bool hasStructReturnBuffer_Net;
+		internal static bool hasStructReturnBuffer_Mono;
 		internal static readonly IntPtr magicValue = (IntPtr)0x12345678;
 
-		internal struct SomeStruct
+		internal struct SomeStruct_Net
 		{
 #pragma warning disable CS0169
 			readonly byte b1;
@@ -23,21 +24,54 @@ namespace HarmonyLib
 #pragma warning restore CS0169
 		}
 
+		internal struct SomeStruct_Mono
+		{
+#pragma warning disable CS0169
+			readonly byte b1;
+			readonly byte b2;
+			readonly byte b3;
+			readonly byte b4;
+#pragma warning restore CS0169
+		}
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		internal SomeStruct GetStruct(IntPtr x, IntPtr y)
+		internal SomeStruct_Net GetStruct_Net(IntPtr x, IntPtr y)
 		{
 			throw new Exception("This method should've been detoured!");
 		}
 
-		internal static void GetStructReplacement(Sandbox self, IntPtr ptr, IntPtr a, IntPtr b)
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		internal SomeStruct_Mono GetStruct_Mono(IntPtr x, IntPtr y)
 		{
+			throw new Exception("This method should've been detoured!");
+		}
+
+		internal static void GetStructReplacement_Net(Sandbox self, IntPtr ptr, IntPtr a, IntPtr b)
+		{
+			_ = self;
+			_ = ptr;
+
 			// Normal argument order:
 			// this, a, b
 
 			// If we have a native return buffer pointer, the order is:
 			// this, ptr, a, b
 
-			hasStructReturnBuffer = a == magicValue && b == magicValue;
+			hasStructReturnBuffer_Net = a == magicValue && b == magicValue;
+		}
+
+		internal static void GetStructReplacement_Mono(Sandbox self, IntPtr ptr, IntPtr a, IntPtr b)
+		{
+			_ = self;
+			_ = ptr;
+
+			// Normal argument order:
+			// this, a, b
+
+			// If we have a native return buffer pointer, the order is:
+			// this, ptr, a, b
+
+			hasStructReturnBuffer_Mono = a == magicValue && b == magicValue;
 		}
 	}
 
@@ -68,24 +102,41 @@ namespace HarmonyLib
 			if (AccessTools.IsMonoRuntime == false && method.IsStatic) return false;
 
 			var size = SizeOf(returnType);
-			if (specialSizes.Contains(size)) return false;
+			if (specialSizes.Contains(size))
+				return false;
 			return HasStructReturnBuffer();
 		}
 
-		internal static bool hasTestResult;
+		internal static bool hasTestResult_Net;
+		internal static bool hasTestResult_Mono;
 		static bool HasStructReturnBuffer()
 		{
-			if (hasTestResult == false)
+			if (AccessTools.IsMonoRuntime)
 			{
-				Sandbox.hasStructReturnBuffer = false;
-				var self = new StructReturnBuffer();
-				var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct));
-				var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement));
-				_ = Memory.DetourMethod(original, replacement);
-				_ = new Sandbox().GetStruct(Sandbox.magicValue, Sandbox.magicValue);
-				hasTestResult = true;
+				if (hasTestResult_Mono == false)
+				{
+					Sandbox.hasStructReturnBuffer_Mono = false;
+					var self = new StructReturnBuffer();
+					var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Mono));
+					var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Mono));
+					_ = Memory.DetourMethod(original, replacement);
+					_ = new Sandbox().GetStruct_Mono(Sandbox.magicValue, Sandbox.magicValue);
+					hasTestResult_Mono = true;
+				}
+				return Sandbox.hasStructReturnBuffer_Mono;
 			}
-			return Sandbox.hasStructReturnBuffer;
+
+			if (hasTestResult_Net == false)
+			{
+				Sandbox.hasStructReturnBuffer_Net = false;
+				var self = new StructReturnBuffer();
+				var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Net));
+				var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Net));
+				_ = Memory.DetourMethod(original, replacement);
+				_ = new Sandbox().GetStruct_Net(Sandbox.magicValue, Sandbox.magicValue);
+				hasTestResult_Net = true;
+			}
+			return Sandbox.hasStructReturnBuffer_Net;
 		}
 
 		internal static void ArgumentShifter(List<CodeInstruction> instructions, bool shiftArgZero)
