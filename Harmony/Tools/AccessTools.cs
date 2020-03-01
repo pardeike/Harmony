@@ -794,8 +794,15 @@ namespace HarmonyLib
 											BindingFlags.Instance |
 											BindingFlags.DeclaredOnly;
 
-			var fi = typeof(T).GetField(fieldName, bf);
-			return FieldRefAccess<T, F>(fi);
+			try
+			{
+				var fi = typeof(T).GetField(fieldName, bf);
+				return FieldRefAccess<T, F>(fi);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"FieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldName} caused an exception", ex);
+			}
 		}
 
 		/// <summary>Creates an instance field reference for a specific instance</summary>
@@ -855,9 +862,16 @@ namespace HarmonyLib
 			const BindingFlags bf = BindingFlags.NonPublic |
 											BindingFlags.Static |
 											BindingFlags.DeclaredOnly;
-
-			var fi = typeof(T).GetField(fieldName, bf);
-			return ref StaticFieldRefAccess<F>(fi)();
+			try
+			{
+				var fi = typeof(T).GetField(fieldName, bf);
+				return ref StaticFieldRefAccess<F>(fi)();
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"StaticFieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldName} caused an exception", ex);
+				throw;
+			}
 		}
 
 		/// <summary>Creates a static field reference delegate</summary>
