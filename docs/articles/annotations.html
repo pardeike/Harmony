@@ -8,7 +8,7 @@
     <title>Annotations </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Annotations ">
-    <meta name="generator" content="docfx 2.49.0.0">
+    <meta name="generator" content="docfx 2.50.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -144,7 +144,7 @@ class MyPatches
 </code></pre>
 <p>To patch the setter for a property <strong>Account</strong> in class <strong>MyClass</strong> :</p>
 <pre><code class="lang-csharp">[HarmonyPatch(typeof(MyClass))]
-[HarmonyPatch(&quot;Account&quot;, PropertyMethod.Setter)]
+[HarmonyPatch(&quot;Account&quot;, MethodType.Setter)]
 </code></pre>
 <p>To patch method <strong>String.IndexOf(char, int)</strong> :</p>
 <pre><code class="lang-csharp">[HarmonyPatch(typeof(String))]
