@@ -103,7 +103,7 @@ To patch the setter for a property **Account** in class **MyClass** :
 
 ```csharp
 [HarmonyPatch(typeof(MyClass))]
-[HarmonyPatch("Account", PropertyMethod.Setter)]
+[HarmonyPatch("Account", MethodType.Setter)]
 ```
 
 To patch method **String.IndexOf(char, int)** :
