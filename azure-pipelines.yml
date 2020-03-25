@@ -18,6 +18,13 @@ steps:
 - checkout: self 
   submodules: recursive
 
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 3.0.100
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 - task: NuGetToolInstaller@0
 
 - task: NuGetCommand@2
