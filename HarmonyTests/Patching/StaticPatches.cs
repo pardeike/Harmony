@@ -184,7 +184,7 @@ namespace HarmonyLibTests
 			var postfix = patchClass.GetMethod("Postfix");
 			Assert.NotNull(postfix);
 
-			var instance = new Harmony("test");
+			var instance = new Harmony("unpatch-all-test");
 			Assert.NotNull(instance);
 
 			var patcher = instance.CreateProcessor(originalMethod);
@@ -196,7 +196,7 @@ namespace HarmonyLibTests
 			var instanceB = new Harmony("test");
 			Assert.NotNull(instanceB);
 
-			instanceB.UnpatchAll("test");
+			instanceB.UnpatchAll("unpatch-all-test");
 		}
 
 		[Test]
