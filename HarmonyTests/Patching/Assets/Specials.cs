@@ -173,4 +173,14 @@ namespace HarmonyLibTests.Assets
 			Console.WriteLine("ConcreteClass_Patch.Prefix");
 		}
 	}
+
+	[HarmonyPatch(typeof(AppDomain), nameof(AppDomain.GetData))]
+	public class ExternalMethod_Patch
+	{
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			yield return new CodeInstruction(OpCodes.Ldnull);
+			yield return new CodeInstruction(OpCodes.Ret);
+		}
+	}
 }

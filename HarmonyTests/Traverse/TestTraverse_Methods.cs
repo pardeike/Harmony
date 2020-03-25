@@ -69,5 +69,16 @@ namespace HarmonyLibTests
 			Assert.AreEqual("ok", mtrv1.GetValue<string>());
 			Assert.AreEqual("hello", parameters[0]);
 		}
+
+		[Test]
+		public void Traverse_Method_Overloads()
+		{
+			var instance = new TraverseMethods_Overloads();
+			var trv = Traverse.Create(instance);
+
+			var mtrv1 = trv.Method("SomeMethod", new Type[] { typeof(string), typeof(bool) });
+			Assert.AreEqual(true, mtrv1.GetValue<bool>("test", false));
+			Assert.AreEqual(false, mtrv1.GetValue<bool>("test", true));
+		}
 	}
 }

@@ -227,5 +227,18 @@ namespace HarmonyLibTests
 			Assert.NotNull(patcher, "Patch processor");
 			_ = patcher.Patch();
 		}
+
+		[Test]
+		public void Test_PatchExternalMethod()
+		{
+			var patchClass = typeof(ExternalMethod_Patch);
+			Assert.NotNull(patchClass);
+
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "Harmony instance");
+			var patcher = instance.CreateClassProcessor(patchClass);
+			Assert.NotNull(patcher, "Patch processor");
+			_ = patcher.Patch();
+		}
 	}
 }

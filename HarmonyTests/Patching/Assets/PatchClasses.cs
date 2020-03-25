@@ -1008,6 +1008,42 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public struct UnityColor
+	{
+		public float r;
+		public float g;
+		public float b;
+		public float a;
+	}
+
+	public class APIUser
+	{
+	}
+
+	public class Class18
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static UnityColor GetDefaultNameplateColor(APIUser user)
+		{
+			return new UnityColor() { r = 0, g = 0, b = 0, a = 0 };
+		}
+	}
+
+	[HarmonyPatch(typeof(Class18))]
+	[HarmonyPatch(nameof(Class18.GetDefaultNameplateColor))]
+	public static class Class18Patch
+	{
+		public static bool prefixExecuted = false;
+
+		public static bool Prefix(APIUser __0, ref UnityColor __result)
+		{
+			_ = __0;
+			prefixExecuted = true;
+			__result = new UnityColor() { r = 1, g = 1, b = 1, a = 1 };
+			return false;
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

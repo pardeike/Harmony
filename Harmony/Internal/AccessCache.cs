@@ -83,7 +83,7 @@ namespace HarmonyLib
 
 		internal MethodBase GetMethodInfo(Type type, string name, Type[] arguments, MemberType memberType = MemberType.Any, bool declaredOnly = false)
 		{
-			var value = Get(declaredMethods, type, name, arguments, () => type.GetMethod(name, declaredOnlyBindingFlags[memberType]));
+			var value = Get(declaredMethods, type, name, arguments, () => type.GetMethod(name, declaredOnlyBindingFlags[memberType], null, arguments, null));
 			if (value == null && declaredOnly == false)
 				value = Get(inheritedMethods, type, name, arguments, () => AccessTools.Method(type, name, arguments));
 			return value;

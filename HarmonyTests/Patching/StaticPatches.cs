@@ -383,5 +383,24 @@ namespace HarmonyLibTests
 			Assert.AreEqual("Prefix3", events[2]);
 			Assert.AreEqual("Prefix5", events[3]);
 		}
+
+		[Test]
+		public void Test_Class18()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+			var processor = instance.CreateClassProcessor(typeof(Class18Patch));
+			Assert.NotNull(processor, "processor");
+
+			var methods = processor.Patch();
+			Assert.NotNull(methods, "methods");
+			Assert.AreEqual(1, methods.Count);
+
+			Class18Patch.prefixExecuted = false;
+			var color = Class18.GetDefaultNameplateColor(new APIUser());
+
+			Assert.IsTrue(Class18Patch.prefixExecuted, "prefixExecuted");
+			Assert.AreEqual((float)1, color.r);
+		}
 	}
 }

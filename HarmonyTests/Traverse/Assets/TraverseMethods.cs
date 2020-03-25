@@ -69,4 +69,17 @@ namespace HarmonyLibTests.Assets
 		}
 #pragma warning restore IDE0051
 	}
+
+	public class TraverseMethods_Overloads
+	{
+		public bool SomeMethod(string p1, bool p2 = true)
+		{
+			return !p2;
+		}
+
+		public int SomeMethod(string p1, int p2, bool p3 = true)
+		{
+			return 0;
+		}
+	}
 }

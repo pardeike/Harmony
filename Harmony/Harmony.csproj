@@ -11,13 +11,13 @@
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>true</SignAssembly>
-		<Version>2.0.0.8</Version>
+		<Version>2.0.0.9</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
-		<AssemblyVersion>2.0.0.8</AssemblyVersion>
-		<FileVersion>2.0.0.8</FileVersion>
+		<AssemblyVersion>2.0.0.9</AssemblyVersion>
+		<FileVersion>2.0.0.9</FileVersion>
 		<PackageIcon>HarmonyLogo.png</PackageIcon>
 		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -85,7 +85,7 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.2.27.1">
+		<PackageReference Include="MonoMod.Common" Version="20.3.25.2">
 			<PrivateAssets Condition="!$(IsCoreOrStandard)">All</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
@@ -96,7 +96,7 @@
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)</WorkingDirectory>
 		</PropertyGroup>
 		<ItemGroup>
-			<OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg"  Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
+			<OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg" Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
 		</ItemGroup>
 		<Delete Files="@(OldNugetPackages)" />
 	</Target>
