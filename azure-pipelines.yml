@@ -19,17 +19,17 @@ steps:
   submodules: recursive
 
 - task: UseDotNet@2
-  displayName: 'Install .NET Core 3.0 SDK'
+  displayName: 'Install latest .NET Core 3.0'
   inputs:
     packageType: sdk
-    version: 3.0.103
+    version: 3.0.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: UseDotNet@2
-  displayName: 'Install .NET Core 3.1 SDK'
+  displayName: 'Install latest .NET Core 3.1'
   inputs:
     packageType: sdk
-    version: 3.1.201
+    version: 3.1.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: NuGetToolInstaller@0
