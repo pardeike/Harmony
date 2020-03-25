@@ -143,7 +143,8 @@ namespace HarmonyLib
 		{
 			bool IDCheck(Patch patchInfo) => harmonyID == null || patchInfo.owner == harmonyID;
 
-			foreach (var original in GetAllPatchedMethods())
+			var originals = GetAllPatchedMethods(); // keep this out of the loop to avoid "Collection was modified"
+			foreach (var original in originals)
 			{
 				var hasBody = original.GetMethodBody() != null;
 				var info = GetPatchInfo(original);
