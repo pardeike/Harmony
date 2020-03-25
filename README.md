@@ -31,17 +31,17 @@ Please check out the [documentation](https://harmony.pardeike.net) and join the 
 
 ### Contribute
 
-I put thousands of hours into this project and this support. So every little action helps:
+I put thousands of hours into this project and its support. So every little action helps:
 
-• Upvote this stackoverflow [answer](https://stackoverflow.com/questions/7299097/dynamically-replace-the-contents-of-a-c-sharp-method/42043003#42043003)  
+• Upvote this [stackoverflow answer](https://stackoverflow.com/questions/7299097/dynamically-replace-the-contents-of-a-c-sharp-method/42043003#42043003)  
 • Spread the word in your developer communities  
 • Become a [GitHub sponsor](https://github.com/sponsors/pardeike) or a [Patreon](https://www.patreon.com/pardeike)
 
 This project uses the great [MonoMod.Common](https://github.com/MonoMod/MonoMod.Common) library by [0x0ade](https://github.com/orgs/MonoMod/people/0x0ade).
 
-### Harmony 1.2
+### Harmony 1
 
-Harmony 1.2 is not under active development. It is stable and contains only minor bugs so keep using it if you are in an environment that is homogeneously uses Harmony 1.2. Currently 1.2 and 2.0 are **NOT COMPATIBLE** with each other and **SHOULD NOT BE MIXED**. The old documentation can still be found at the [Wiki](https://github.com/pardeike/Harmony/wiki).
+Harmony 1 is deprecated and not under active development anymore. The latest version of it (v1.2.0.1) is stable and contains only minor bugs. Keep using it if you are in an environment that exclusively uses Harmony 1. Currently Harmony 1.x and 2.x are **NOT COMPATIBLE** with each other and **SHOULD NOT BE MIXED**. The old documentation can still be found at the [Wiki](https://github.com/pardeike/Harmony/wiki).
 
 <br>&nbsp;
 
