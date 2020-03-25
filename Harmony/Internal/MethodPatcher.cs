@@ -537,12 +537,12 @@ namespace HarmonyLib
 
 		void AddPrefixes(Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable)
 		{
-			if (original.GetMethodBody() == null)
-				throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
-
 			prefixes
 				.Do(fix =>
 				{
+					if (original.GetMethodBody() == null)
+						throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
+
 					var skipLabel = PrefixAffectsOriginal(fix) ? il.DefineLabel() : (Label?)null;
 					if (skipLabel.HasValue)
 					{
