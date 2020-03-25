@@ -143,14 +143,18 @@ namespace HarmonyLib
 		{
 			bool IDCheck(Patch patchInfo) => harmonyID == null || patchInfo.owner == harmonyID;
 
-			var originals = GetAllPatchedMethods().ToList();
-			foreach (var original in originals)
+			foreach (var original in GetAllPatchedMethods())
 			{
+				var hasBody = original.GetMethodBody() != null;
 				var info = GetPatchInfo(original);
-				info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
-				info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+				if (hasBody)
+				{
+					info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+					info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+				}
 				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
-				info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+				if (hasBody)
+					info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 			}
 		}
 
