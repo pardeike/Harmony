@@ -6,6 +6,14 @@ using System;
 
 namespace HarmonyLibTests
 {
+	public static class TestLog
+	{
+		public static void Log(string str)
+		{
+			TestContext.Progress.WriteLine(str);
+		}
+	}
+
 	[TestFixture]
 	public class Specials
 	{
@@ -41,26 +49,73 @@ namespace HarmonyLibTests
 		}
 		*/
 
-		[Test]
+		// TODO: this test might crash in certain environments
+		[Test, Order(1000)]
 		public void Test_Special_Case1()
 		{
-			var instance = new Harmony("test");
+			TestLog.Log($"Test_Special_Case1 started");
+
+			var instance = new Harmony("special-case-1");
 			Assert.NotNull(instance, "instance");
 			var processor = instance.CreateClassProcessor(typeof(ConcreteClass_Patch));
 			Assert.NotNull(processor, "processor");
 
+			TestLog.Log($"Patching ConcreteClass_Patch started");
 			var replacements = processor.Patch();
 			Assert.NotNull(replacements, "replacements");
 			Assert.AreEqual(1, replacements.Count);
+			TestLog.Log($"Patching ConcreteClass_Patch done");
 
+			TestLog.Log($"Running patched ConcreteClass_Patch");
 			var someStruct = new ConcreteClass().Method("test", new AnotherStruct());
 			Assert.True(someStruct.acceptedInt);
+			TestLog.Log($"Running patched ConcreteClass_Patch done");
 		}
 
-		[Test]
-		public void Test_Returning_Structs()
+		// TODO: this test might crash in certain environments
+		[Test, Order(1001)] public void Test_Returning_Structs_01_I() { Returning_Structs(01, false); }
+		[Test, Order(1002)] public void Test_Returning_Structs_02_I() { Returning_Structs(02, false); }
+		[Test, Order(1003)] public void Test_Returning_Structs_03_I() { Returning_Structs(03, false); }
+		[Test, Order(1004)] public void Test_Returning_Structs_04_I() { Returning_Structs(04, false); }
+		[Test, Order(1005)] public void Test_Returning_Structs_05_I() { Returning_Structs(05, false); }
+		[Test, Order(1006)] public void Test_Returning_Structs_06_I() { Returning_Structs(06, false); }
+		[Test, Order(1007)] public void Test_Returning_Structs_07_I() { Returning_Structs(07, false); }
+		[Test, Order(1008)] public void Test_Returning_Structs_08_I() { Returning_Structs(08, false); }
+		[Test, Order(1009)] public void Test_Returning_Structs_09_I() { Returning_Structs(09, false); }
+		[Test, Order(1010)] public void Test_Returning_Structs_10_I() { Returning_Structs(10, false); }
+		[Test, Order(1011)] public void Test_Returning_Structs_11_I() { Returning_Structs(11, false); }
+		[Test, Order(1012)] public void Test_Returning_Structs_12_I() { Returning_Structs(12, false); }
+		[Test, Order(1013)] public void Test_Returning_Structs_13_I() { Returning_Structs(13, false); }
+		[Test, Order(1014)] public void Test_Returning_Structs_14_I() { Returning_Structs(14, false); }
+		[Test, Order(1015)] public void Test_Returning_Structs_15_I() { Returning_Structs(15, false); }
+		[Test, Order(1016)] public void Test_Returning_Structs_16_I() { Returning_Structs(16, false); }
+		[Test, Order(1017)] public void Test_Returning_Structs_17_I() { Returning_Structs(17, false); }
+		[Test, Order(1018)] public void Test_Returning_Structs_18_I() { Returning_Structs(18, false); }
+		[Test, Order(1019)] public void Test_Returning_Structs_19_I() { Returning_Structs(19, false); }
+		[Test, Order(1020)] public void Test_Returning_Structs_20_I() { Returning_Structs(20, false); }
+		[Test, Order(1021)] public void Test_Returning_Structs_01_S() { Returning_Structs(01, true); }
+		[Test, Order(1022)] public void Test_Returning_Structs_02_S() { Returning_Structs(02, true); }
+		[Test, Order(1023)] public void Test_Returning_Structs_03_S() { Returning_Structs(03, true); }
+		[Test, Order(1024)] public void Test_Returning_Structs_04_S() { Returning_Structs(04, true); }
+		[Test, Order(1025)] public void Test_Returning_Structs_05_S() { Returning_Structs(05, true); }
+		[Test, Order(1026)] public void Test_Returning_Structs_06_S() { Returning_Structs(06, true); }
+		[Test, Order(1027)] public void Test_Returning_Structs_07_S() { Returning_Structs(07, true); }
+		[Test, Order(1028)] public void Test_Returning_Structs_08_S() { Returning_Structs(08, true); }
+		[Test, Order(1029)] public void Test_Returning_Structs_09_S() { Returning_Structs(09, true); }
+		[Test, Order(1030)] public void Test_Returning_Structs_10_S() { Returning_Structs(10, true); }
+		[Test, Order(1031)] public void Test_Returning_Structs_11_S() { Returning_Structs(11, true); }
+		[Test, Order(1032)] public void Test_Returning_Structs_12_S() { Returning_Structs(12, true); }
+		[Test, Order(1033)] public void Test_Returning_Structs_13_S() { Returning_Structs(13, true); }
+		[Test, Order(1034)] public void Test_Returning_Structs_14_S() { Returning_Structs(14, true); }
+		[Test, Order(1035)] public void Test_Returning_Structs_15_S() { Returning_Structs(15, true); }
+		[Test, Order(1036)] public void Test_Returning_Structs_16_S() { Returning_Structs(16, true); }
+		[Test, Order(1037)] public void Test_Returning_Structs_17_S() { Returning_Structs(17, true); }
+		[Test, Order(1038)] public void Test_Returning_Structs_18_S() { Returning_Structs(18, true); }
+		[Test, Order(1039)] public void Test_Returning_Structs_19_S() { Returning_Structs(19, true); }
+		[Test, Order(1040)] public void Test_Returning_Structs_20_S() { Returning_Structs(20, true); }
+		public void Returning_Structs(int n, bool useStatic)
 		{
-			var count = 20;
+			TestLog.Log($"Test_Returning_Structs{n} started");
 
 			var patchClass = typeof(ReturningStructs_Patch);
 			Assert.NotNull(patchClass);
@@ -72,52 +127,40 @@ namespace HarmonyLibTests
 			Assert.NotNull(instance);
 
 			var cls = typeof(ReturningStructs);
-			foreach (var useStatic in new bool[] { false, true })
-			{
-				for (var n = 1; n <= 20; n++)
-				{
-					var name = $"{(useStatic ? "S" : "I")}M{n.ToString("D2")}";
-					var method = AccessTools.DeclaredMethod(cls, name);
-					Assert.NotNull(method, "method");
+			var name = $"{(useStatic ? "S" : "I")}M{n.ToString("D2")}";
+			var method = AccessTools.DeclaredMethod(cls, name);
+			Assert.NotNull(method, "method");
 
-					Console.WriteLine($"Patching {name} started");
-					try
-					{
-						var replacement = instance.Patch(method, new HarmonyMethod(prefix));
-						Assert.NotNull(replacement, "replacement");
-					}
-					catch (Exception ex)
-					{
-						Console.WriteLine($"Patching {name} exception: {ex}");
-					}
-					Console.WriteLine($"Patching {name} done");
-				}
+			TestLog.Log($"Test_Returning_Structs{n}, patching {name} started");
+			try
+			{
+				var replacement = instance.Patch(method, new HarmonyMethod(prefix));
+				Assert.NotNull(replacement, "replacement");
 			}
+			catch (Exception ex)
+			{
+				TestLog.Log($"Test_Returning_Structs{n}, patching {name} exception: {ex}");
+			}
+			TestLog.Log($"Test_Returning_Structs{n}, patching {name} done");
 
 			var clsInstance = new ReturningStructs();
-			foreach (var useStatic in new bool[] { false, true })
+			try
 			{
-				for (var n = 1; n <= count; n++)
-				{
-					try
-					{
-						var sn = n.ToString("D2");
-						var name = $"{(useStatic ? "S" : "I")}M{sn}";
+				var sn = n.ToString("D2");
+				name = $"{(useStatic ? "S" : "I")}M{sn}";
 
-						Console.WriteLine($"Running patched {name}");
+				TestLog.Log($"Test_Returning_Structs{n}, running patched {name}");
 
-						var original = AccessTools.DeclaredMethod(cls, name);
-						Assert.NotNull(original, $"{name}: original");
-						var result = original.Invoke(useStatic ? null : clsInstance, new object[] { "test" });
-						Assert.NotNull(result, $"{name}: result");
-						var resultType = result.GetType();
-						Assert.AreEqual($"St{sn}", resultType.Name);
-					}
-					catch (Exception ex)
-					{
-						Console.WriteLine($"Running exception: {ex}");
-					}
-				}
+				var original = AccessTools.DeclaredMethod(cls, name);
+				Assert.NotNull(original, $"{name}: original");
+				var result = original.Invoke(useStatic ? null : clsInstance, new object[] { "test" });
+				Assert.NotNull(result, $"{name}: result");
+				var resultType = result.GetType();
+				Assert.AreEqual($"St{sn}", resultType.Name);
+			}
+			catch (Exception ex)
+			{
+				TestLog.Log($"Test_Returning_Structs{n}, running exception: {ex}");
 			}
 		}
 
