@@ -196,3 +196,4 @@ ModelManifest.xml
 .paket/paket.exe
 # FAKE - F# Make
 .fake/
+/Harmony/Harmony.zip
