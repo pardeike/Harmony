@@ -88,11 +88,7 @@ namespace HarmonyLib
 			if (sizes.TryGetValue(type, out var size))
 				return size;
 
-			var dm = new DynamicMethodDefinition("SizeOfType", typeof(int), new Type[0]);
-			var il = dm.GetILGenerator();
-			il.Emit(OpCodes.Sizeof, type);
-			il.Emit(OpCodes.Ret);
-			size = (int)dm.Generate().Invoke(null, null);
+			size = type.GetManagedSize();
 
 			sizes.Add(type, size);
 			return size;
