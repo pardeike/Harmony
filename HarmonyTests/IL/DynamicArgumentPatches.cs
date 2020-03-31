@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -201,7 +201,7 @@ namespace HarmonyLibTests.IL
 			SymbolExtensions.GetMethodInfo(() => TestMethods3.Test3(Vec3.Zero, null))
 		};
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_SendingArguments()
 		{
 			var harmony = new Harmony("test");

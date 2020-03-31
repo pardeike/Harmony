@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class CombinedPatches : TestLogger
 	{
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_ManyFinalizers()
 		{
 			var originalClass = typeof(Assets.CombinedPatchClass);
@@ -31,7 +31,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(4, CombinedPatchClass_Patch_1.counter);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public static void Test_Method11()
 		{
 			var originalClass = typeof(Class14);

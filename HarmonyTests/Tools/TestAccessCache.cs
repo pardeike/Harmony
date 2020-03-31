@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -52,7 +52,7 @@ namespace HarmonyLibTests
 			infos.Add(argumentHash, typeof(AccessToolsClass).GetMethod("Method2", AccessTools.all));
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_AccessCache_Field()
 		{
 			var type = typeof(AccessToolsClass);
@@ -73,7 +73,7 @@ namespace HarmonyLibTests
 			Assert.AreNotSame(finfo3, finfo4);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_AccessCache_Property()
 		{
 			var type = typeof(AccessToolsClass);
@@ -94,7 +94,7 @@ namespace HarmonyLibTests
 			Assert.AreNotSame(pinfo3, pinfo4);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_AccessCache_Method()
 		{
 			var type = typeof(AccessToolsClass);

@@ -7,7 +7,7 @@
 		// catch (Exception e) when (e.Message == "test") { }
 
 		/*
-		[Test, NonParallelizable]
+		[Test]
 		public void TestPlainMethodExceptions()
 		{
 			var originalClass = typeof(ClassExceptionFilter);

@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -13,7 +13,7 @@ namespace HarmonyLibTests
 
 		// Basic integrity check for our test class and the field-testvalue relations
 		//
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_Instantiate_TraverseFields_AccessModifiers()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -22,7 +22,7 @@ namespace HarmonyLibTests
 				Assert.AreEqual(TraverseFields.testStrings[i], instance.GetTestField(i));
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_Traverse_Has_Expected_Internal_Fields()
 		{
 			foreach (var name in fieldNames)
@@ -49,7 +49,7 @@ namespace HarmonyLibTests
 
 		// Traverse should default to an empty instance to avoid errors
 		//
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_SilentFailures()
 		{
 			var trv1 = new Traverse(null);
@@ -71,7 +71,7 @@ namespace HarmonyLibTests
 
 		// Traverse should handle basic null values
 		//
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Create_With_Null()
 		{
 			var trv = Traverse.Create(null);
@@ -112,7 +112,7 @@ namespace HarmonyLibTests
 
 		// Traverse.ToString() should return a meaningful string representation of its initial value
 		//
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_Traverse_Create_Instance_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -123,7 +123,7 @@ namespace HarmonyLibTests
 
 		// Traverse.ToString() should return a meaningful string representation of its initial type
 		//
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_Traverse_Create_Type_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);

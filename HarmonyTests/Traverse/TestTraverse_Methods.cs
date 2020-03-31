@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -8,7 +8,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class TestTraverse_Methods : TestLogger
 	{
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Method_Instance()
 		{
 			var instance = new TraverseMethods_Instance();
@@ -23,7 +23,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("argarg", mtrv2.GetValue());
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Method_Static()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_Static));
@@ -31,7 +31,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(42, mtrv.GetValue<int>());
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Method_VariableArguments()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_VarArgs));
@@ -44,7 +44,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(6000, trv.Method("Test3", 100, new int[] { 10, 20, 30 }).GetValue<int>());
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Method_RefParameters()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_Parameter));
@@ -57,7 +57,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("hello", parameters[0]);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Method_OutParameters()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_Parameter));
@@ -70,7 +70,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("hello", parameters[0]);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Method_Overloads()
 		{
 			var instance = new TraverseMethods_Overloads();

@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -7,7 +7,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class TestMethodInvoker : TestLogger
 	{
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_MethodInvokerGeneral()
 		{
 			for (var i = 0; i < 2; i++)
@@ -41,7 +41,7 @@ namespace HarmonyLibTests
 			}
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_MethodInvokerSelfObject()
 		{
 			var type = typeof(TestMethodInvokerObject);

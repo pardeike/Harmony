@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -10,7 +10,7 @@ namespace HarmonyLibTests.IL
 	[TestFixture]
 	public class TestMethodBodyReader : TestLogger
 	{
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_CanGetInstructionsWithNoILGenerator()
 		{
 			var method = typeof(Class12).GetMethod(nameof(Class12.FizzBuzz));

@@ -11,7 +11,7 @@ namespace HarmonyLibTests
 	{
 		/* TODO - patching HttpWebRequest.GetResponse does not work
 		 * 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_HttpWebRequestGetResponse()
 		{
 			Assert.Ignore("Someone patching HttpWebRequest does not work");
@@ -42,7 +42,7 @@ namespace HarmonyLibTests
 		*/
 
 		// TODO: this test might crash in certain environments
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_Patch_ConcreteClass()
 		{
 			var instance = new Harmony("special-case-1");
@@ -115,7 +115,7 @@ namespace HarmonyLibTests
 			}
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_PatchException()
 		{
 			var patchClass = typeof(DeadEndCode_Patch1);
@@ -138,7 +138,7 @@ namespace HarmonyLibTests
 			Assert.NotNull(exception);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_PatchExceptionWithCleanup1()
 		{
 			if (AccessTools.IsMonoRuntime == false)
@@ -180,7 +180,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(50, errorOffset);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_PatchExceptionWithCleanup2()
 		{
 			if (AccessTools.IsMonoRuntime == false)
@@ -207,7 +207,7 @@ namespace HarmonyLibTests
 			Assert.Fail("Patch should throw HarmonyException");
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_PatchExceptionWithCleanup3()
 		{
 			if (AccessTools.IsMonoRuntime == false)
@@ -223,7 +223,7 @@ namespace HarmonyLibTests
 			_ = patcher.Patch();
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_PatchExternalMethod()
 		{
 			var patchClass = typeof(ExternalMethod_Patch);

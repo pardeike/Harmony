@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -7,7 +7,7 @@ namespace HarmonyLibTests.Tools
 	[TestFixture]
 	public class Test_Attributes : TestLogger
 	{
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_SimpleAttributes()
 		{
 			var type = typeof(AllAttributesClass);
@@ -22,7 +22,7 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual(typeof(string), info.argumentTypes[1]);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_SubClassPatching()
 		{
 			var instance1 = new Harmony("test1");

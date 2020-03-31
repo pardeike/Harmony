@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace HarmonyLibTests
 	{
 		class InnerClass { }
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_Types()
 		{
 			var instance = new Assets.TraverseTypes<InnerClass>();
@@ -41,7 +41,7 @@ namespace HarmonyLibTests
 			TestTraverse_Basics.AssertIsEmpty(trvEmpty);
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_InnerInstance()
 		{
 			var instance = new TraverseNestedTypes(null);
@@ -55,7 +55,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("somevalue", field2.GetValue());
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Traverse_InnerStatic()
 		{
 			var trv1 = Traverse.Create(typeof(TraverseNestedTypes));

@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -7,7 +7,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class ReverseTranspiling : TestLogger
 	{
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_ReverseTranspilerPatching()
 		{
 			var class0 = new Class0Reverse();

@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 
 namespace HarmonyLibTests
@@ -6,7 +6,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class DynamicMethodPatches : TestLogger
 	{
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_ByRefResultPrefix()
 		{
 			var originalClass = typeof(Assets.Class11);
