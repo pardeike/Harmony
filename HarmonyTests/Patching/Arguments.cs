@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -7,7 +7,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class Arguments
 	{
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method6()
 		{
 			var originalClass = typeof(Class6);
@@ -41,7 +41,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(((Class6Struct)res[2]).d1, 10.0);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method7()
 		{
 			var originalClass = typeof(Class7);
@@ -70,7 +70,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(20, result.b);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method8()
 		{
 			var originalClass = typeof(Class8);
@@ -99,7 +99,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(20, result.b);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_InjectingBaseClassField()
 		{
 			var testInstance = new InjectFieldSubClass();

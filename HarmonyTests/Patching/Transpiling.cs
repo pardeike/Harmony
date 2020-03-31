@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -21,7 +21,7 @@ namespace HarmonyLibTests.Patching
 		const int codeLength = 61;
 #endif
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_TranspilerException1()
 		{
 			var test = new Class3();
@@ -71,7 +71,7 @@ namespace HarmonyLibTests.Patching
 			}
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_LazyTranspilerOnlyRunsOncePerPatch()
 		{
 			var original = AccessTools.Method(typeof(LazyTranspilerRunsOnce_Class), nameof(LazyTranspilerRunsOnce_Class.Method));

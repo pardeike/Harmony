@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 using System.Linq;
 using System.Reflection;
@@ -20,7 +20,7 @@ namespace HarmonyLibTests
 		void Patch9() { }
 #pragma warning restore IDE0051
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchOrder_SamePriorities()
 		{
 			var patches = new MethodInfo[3];
@@ -41,7 +41,7 @@ namespace HarmonyLibTests
 					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchOrder_AllPriorities()
 		{
 			var patches = new MethodInfo[9];
@@ -68,7 +68,7 @@ namespace HarmonyLibTests
 					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchOrder_BeforeAndPriorities()
 		{
 			var patches = new MethodInfo[5];
@@ -91,7 +91,7 @@ namespace HarmonyLibTests
 					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchOrder_AfterAndPriorities()
 		{
 			var patches = new MethodInfo[4];
@@ -113,7 +113,7 @@ namespace HarmonyLibTests
 					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchOrder_BeforeAndAfterAndPriorities()
 		{
 			var patches = new MethodInfo[5];
@@ -136,7 +136,7 @@ namespace HarmonyLibTests
 					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchOrder_TransitiveBefore()
 		{
 			var patches = new MethodInfo[5];
@@ -159,7 +159,7 @@ namespace HarmonyLibTests
 					$"#{i} Expected: {patches[expectedOrder[i]].FullDescription()}, Got: {methods[i].FullDescription()}");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchOrder_TransitiveAfter()
 		{
 			var patches = new MethodInfo[5];
@@ -183,7 +183,7 @@ namespace HarmonyLibTests
 		}
 
 		// Test simple cyclic dependency breaking.
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchCycle0()
 		{
 			var patches = new MethodInfo[3];
@@ -205,7 +205,7 @@ namespace HarmonyLibTests
 		}
 
 		// Test simple cyclic dependency declared in reverse breaking.
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchCycle1()
 		{
 			var patches = new MethodInfo[3];
@@ -227,7 +227,7 @@ namespace HarmonyLibTests
 		}
 
 		// Test with 2 independent cyclic dependencies.
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchCycle2()
 		{
 			var patches = new MethodInfo[8];
@@ -254,7 +254,7 @@ namespace HarmonyLibTests
 		}
 
 		// Test with 2 crossdependant cyclic dependencies. Impossible to break any cycle with just 1 cut.
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchCycle3()
 		{
 			var patches = new MethodInfo[8];
@@ -281,7 +281,7 @@ namespace HarmonyLibTests
 		}
 
 		// Test with patches that depend on a missing patch.
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchMissing0()
 		{
 			var patches = new MethodInfo[3];
@@ -303,7 +303,7 @@ namespace HarmonyLibTests
 		}
 
 		// Test that sorter patch array compare detects all possible patch changes.
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchSorterCache0()
 		{
 			var patches = new MethodInfo[4];

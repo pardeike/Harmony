@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -100,7 +100,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class GenericsPatches
 	{
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_GenericStructReturnTypes()
 		{
 			var originalClass = typeof(MyList<>).MakeGenericType(typeof(int));
@@ -133,7 +133,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(result[2], 300);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_GenericsOriginalMethod()
 		{
 			var originalMethod = typeof(Class13<int>).GetMethod(nameof(Class13<int>.Add));

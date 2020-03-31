@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -9,7 +9,7 @@ namespace HarmonyLibTests
 	{
 		// Traverse.ToString() should return the value of a traversed field
 		//
-		[Test]
+		[Test, NonParallelizable]
 		public void Traverse_Field_ToString()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -21,7 +21,7 @@ namespace HarmonyLibTests
 		// Traverse.GetValue() should return the value of a traversed field
 		// regardless of its access modifier
 		//
-		[Test]
+		[Test, NonParallelizable]
 		public void Traverse_Field_GetValue()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);
@@ -40,7 +40,7 @@ namespace HarmonyLibTests
 
 		// Traverse.Property() should return the value of a traversed static field
 		//
-		[Test]
+		[Test, NonParallelizable]
 		public void Traverse_Field_Static()
 		{
 			var instance = new TraverseProperties_BaseClass();
@@ -56,7 +56,7 @@ namespace HarmonyLibTests
 		// Traverse.SetValue() should set the value of a traversed field
 		// regardless of its access modifier
 		//
-		[Test]
+		[Test, NonParallelizable]
 		public void Traverse_Field_SetValue()
 		{
 			var instance = new TraverseFields_AccessModifiers(TraverseFields.testStrings);

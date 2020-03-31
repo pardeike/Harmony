@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class StaticPatches
 	{
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method0()
 		{
 			var originalClass = typeof(Class0);
@@ -32,7 +32,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("patched", result);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method1()
 		{
 			var originalClass = typeof(Class1);
@@ -70,7 +70,7 @@ namespace HarmonyLibTests
 			Assert.True(Class1Patch.postfixed, "Postfix was not executed");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method2()
 		{
 			var originalClass = typeof(Class2);
@@ -108,7 +108,7 @@ namespace HarmonyLibTests
 			Assert.True(Class2Patch.postfixed, "Postfix was not executed");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method4()
 		{
 			var originalClass = typeof(Class4);
@@ -140,7 +140,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(Class4Patch.senderValue, "foo");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method5()
 		{
 			var originalClass = typeof(Class5);
@@ -170,7 +170,7 @@ namespace HarmonyLibTests
 			Assert.True(Class5Patch.postfixed, "Postfix was not executed");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_PatchUnpatch()
 		{
 			var originalClass = typeof(Class9);
@@ -199,7 +199,7 @@ namespace HarmonyLibTests
 			instanceB.UnpatchAll("unpatch-all-test");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Attributes()
 		{
 			var originalClass = typeof(AttributesClass);
@@ -227,7 +227,7 @@ namespace HarmonyLibTests
 			Assert.True(AttributesPatch.postfixed, "Postfix was not executed");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Method10()
 		{
 			var originalClass = typeof(Class10);
@@ -252,7 +252,7 @@ namespace HarmonyLibTests
 			Assert.True(Class10Patch.originalResult);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_MultiplePatches_One_Class()
 		{
 			var originalClass = typeof(MultiplePatches1);
@@ -276,7 +276,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("ok,postfix", result);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_MultiplePatches_Multiple_Classes()
 		{
 			var originalClass = typeof(MultiplePatches2);
@@ -310,7 +310,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("patched", result);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Finalizer_Patch_Order()
 		{
 			var instance = new Harmony("test");
@@ -355,7 +355,7 @@ namespace HarmonyLibTests
 			Assert.True(actualEvents.SequenceEqual(correctEvents), "events");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Affecting_Original_Prefixes()
 		{
 			var instance = new Harmony("test");
@@ -384,7 +384,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("Prefix5", events[3]);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_Class18()
 		{
 			var instance = new Harmony("test");

@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -8,7 +8,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class TargetMethod
 	{
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_TargetMethod_Returns_Null()
 		{
 			var patchClass = typeof(Class15Patch);
@@ -34,7 +34,7 @@ namespace HarmonyLibTests
 			Assert.True(exception.InnerException.Message.Contains("returned an unexpected result: null"));
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_TargetMethod_Returns_Wrong_Type()
 		{
 			var patchClass = typeof(Class16Patch);
@@ -60,7 +60,7 @@ namespace HarmonyLibTests
 			Assert.True(exception.InnerException.Message.Contains("has wrong return type"));
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_TargetMethods_Returns_Null()
 		{
 			var patchClass = typeof(Class17Patch);

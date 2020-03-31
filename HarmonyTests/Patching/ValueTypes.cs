@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 
 namespace HarmonyLibTests
@@ -6,7 +6,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class ValueTypes
 	{
-		[Test]
+		[Test, NonParallelizable]
 		public void ValueTypeInstance()
 		{
 			var originalClass = typeof(Assets.Struct1);
@@ -38,7 +38,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual("new", instance.s);
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_StructInstanceByRef()
 		{
 			var originalClass = typeof(Assets.Struct2);

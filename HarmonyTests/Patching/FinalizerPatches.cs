@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -12,7 +12,7 @@ namespace HarmonyLibTests
 	{
 		static Dictionary<string, object> info;
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingVoidMethod_EmptyFinalizer()
 		{
 			Patch();
@@ -20,7 +20,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingVoidMethod_EmptyFinalizerWithExceptionArg()
 		{
 			Patch();
@@ -29,7 +29,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingVoidMethod_FinalizerReturningNull()
 		{
 			Patch();
@@ -37,7 +37,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingVoidMethod_FinalizerReturningException()
 		{
 			Patch();
@@ -48,7 +48,7 @@ namespace HarmonyLibTests
 
 		//
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingVoidMethod_EmptyFinalizer()
 		{
 			Patch();
@@ -56,7 +56,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingVoidMethod_EmptyFinalizerWithExceptionArg()
 		{
 			Patch();
@@ -65,7 +65,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingVoidMethod_FinalizerReturningNull()
 		{
 			Patch();
@@ -73,7 +73,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingVoidMethod_FinalizerReturningException()
 		{
 			Patch();
@@ -84,7 +84,7 @@ namespace HarmonyLibTests
 
 		//
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingStringReturningMethod_EmptyFinalizer()
 		{
 			Patch();
@@ -92,7 +92,7 @@ namespace HarmonyLibTests
 			AssertGotResult("OriginalResult");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingStringReturningMethod_EmptyFinalizerWithExceptionArg()
 		{
 			Patch();
@@ -101,7 +101,7 @@ namespace HarmonyLibTests
 			AssertGotResult("OriginalResult");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningNull()
 		{
 			Patch();
@@ -109,7 +109,7 @@ namespace HarmonyLibTests
 			AssertGotResult("OriginalResult");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningException()
 		{
 			Patch();
@@ -118,7 +118,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningNullAndChangingResult()
 		{
 			Patch();
@@ -126,7 +126,7 @@ namespace HarmonyLibTests
 			AssertGotResult("ReplacementResult");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_NoThrowingStringReturningMethod_FinalizerReturningExceptionAndChangingResult()
 		{
 			Patch();
@@ -136,7 +136,7 @@ namespace HarmonyLibTests
 
 		//
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingStringReturningMethod_EmptyFinalizer()
 		{
 			SkipIfMono();
@@ -145,7 +145,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingStringReturningMethod_EmptyFinalizerWithExceptionArg()
 		{
 			SkipIfMono();
@@ -155,7 +155,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningNull()
 		{
 			SkipIfMono();
@@ -164,7 +164,7 @@ namespace HarmonyLibTests
 			AssertGotNullResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningException()
 		{
 			SkipIfMono();
@@ -174,7 +174,7 @@ namespace HarmonyLibTests
 			AssertGotNoResult();
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningNullAndChangingResult()
 		{
 			SkipIfMono();
@@ -183,7 +183,7 @@ namespace HarmonyLibTests
 			AssertGotResult("ReplacementResult");
 		}
 
-		[Test]
+		[Test, NonParallelizable]
 		public void Test_ThrowingStringReturningMethod_FinalizerReturningExceptionAndChangingResult()
 		{
 			SkipIfMono();

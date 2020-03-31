@@ -1,4 +1,4 @@
-namespace HarmonyLibTests
+﻿namespace HarmonyLibTests
 {
 	public class TestExceptionFilterBlock
 	{
@@ -7,7 +7,7 @@ namespace HarmonyLibTests
 		// catch (Exception e) when (e.Message == "test") { }
 
 		/*
-		[Test]
+		[Test, NonParallelizable]
 		public void TestPlainMethodExceptions()
 		{
 			var originalClass = typeof(ClassExceptionFilter);
