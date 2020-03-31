@@ -1,5 +1,6 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
+using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
 
@@ -40,7 +41,7 @@ namespace HarmonyLibTests
 		}
 		*/
 
-		/*[Test]
+		[Test]
 		public void Test_Special_Case1()
 		{
 			var instance = new Harmony("test");
@@ -67,7 +68,7 @@ namespace HarmonyLibTests
 			var prefix = SymbolExtensions.GetMethodInfo(() => ReturningStructs_Patch.Prefix(null));
 			Assert.NotNull(prefix);
 
-			var instance = new Harmony("test");
+			var instance = new Harmony("returning-structs");
 			Assert.NotNull(instance);
 
 			var cls = typeof(ReturningStructs);
@@ -118,7 +119,7 @@ namespace HarmonyLibTests
 					}
 				}
 			}
-		}*/
+		}
 
 		[Test]
 		public void Test_PatchException()
