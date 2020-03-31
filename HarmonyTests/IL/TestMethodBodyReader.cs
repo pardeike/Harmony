@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace HarmonyLibTests.IL
 {
 	[TestFixture]
-	public class TestMethodBodyReader
+	public class TestMethodBodyReader : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_CanGetInstructionsWithNoILGenerator()

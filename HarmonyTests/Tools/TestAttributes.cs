@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
 namespace HarmonyLibTests.Tools
 {
 	[TestFixture]
-	public class Test_Attributes
+	public class Test_Attributes : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_SimpleAttributes()

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Linq;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class StaticPatches
+	public class StaticPatches : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_Method0()

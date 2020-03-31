@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -76,7 +76,7 @@ namespace HarmonyLibTests.IL
 	}
 
 	[TestFixture]
-	public class DynamicArgumentPatches
+	public class DynamicArgumentPatches : TestLogger
 	{
 		static readonly List<string> log = new List<string>();
 

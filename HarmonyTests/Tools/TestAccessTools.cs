@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -8,7 +8,7 @@ using System.Reflection;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class Test_AccessTools
+	public class Test_AccessTools : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_AccessTools_Field1()

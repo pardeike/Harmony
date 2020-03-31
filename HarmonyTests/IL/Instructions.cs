@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 using System.Reflection.Emit;
 
 namespace HarmonyLibTests.IL
 {
 	[TestFixture]
-	public class Instructions
+	public class Instructions : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_MalformedStringOperand()

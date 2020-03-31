@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class CombinedPatches
+	public class CombinedPatches : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_ManyFinalizers()

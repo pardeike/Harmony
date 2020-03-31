@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -9,7 +9,7 @@ using System.Reflection.Emit;
 namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
-	public class Transpiling
+	public class Transpiling : TestLogger
 	{
 		static CodeInstruction[] savedInstructions = null;
 

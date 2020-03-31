@@ -1,10 +1,10 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class ValueTypes
+	public class ValueTypes : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void ValueTypeInstance()

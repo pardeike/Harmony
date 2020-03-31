@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -8,7 +8,7 @@ using System.Reflection;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class FinalizerPatches
+	public class FinalizerPatches : TestLogger
 	{
 		static Dictionary<string, object> info;
 

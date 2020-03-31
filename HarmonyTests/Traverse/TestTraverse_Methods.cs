@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -6,7 +6,7 @@ using System;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class TestTraverse_Methods
+	public class TestTraverse_Methods : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Traverse_Method_Instance()

@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class TestTraverse_Fields
+	public class TestTraverse_Fields : TestLogger
 	{
 		// Traverse.ToString() should return the value of a traversed field
 		//

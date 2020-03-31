@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class TestTraverse_Types
+	public class TestTraverse_Types : TestLogger
 	{
 		class InnerClass { }
 

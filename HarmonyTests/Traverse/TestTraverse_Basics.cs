@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class TestTraverse_Basics
+	public class TestTraverse_Basics : TestLogger
 	{
 		static readonly List<string> fieldNames = new List<string> { "_root", "_type", "_info", "_method", "_params" };
 

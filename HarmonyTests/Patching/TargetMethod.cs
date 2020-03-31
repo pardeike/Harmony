@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -6,7 +6,7 @@ using System;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class TargetMethod
+	public class TargetMethod : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_TargetMethod_Returns_Null()

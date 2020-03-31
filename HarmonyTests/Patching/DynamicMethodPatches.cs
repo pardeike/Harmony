@@ -1,10 +1,10 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class DynamicMethodPatches
+	public class DynamicMethodPatches : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_ByRefResultPrefix()

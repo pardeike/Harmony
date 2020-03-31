@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 using System.Linq;
 using System.Reflection;
@@ -6,7 +6,7 @@ using System.Reflection;
 namespace HarmonyLibTests
 {
 	[TestFixture]
-	public class PatchSorting
+	public class PatchSorting : TestLogger
 	{
 #pragma warning disable IDE0051
 		void Patch1() { }

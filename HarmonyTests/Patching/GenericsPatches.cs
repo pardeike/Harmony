@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -98,7 +98,7 @@ namespace HarmonyLibTests
 	}
 
 	[TestFixture]
-	public class GenericsPatches
+	public class GenericsPatches : TestLogger
 	{
 		[Test, NonParallelizable]
 		public void Test_GenericStructReturnTypes()

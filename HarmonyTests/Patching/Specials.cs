@@ -6,16 +6,8 @@ using System;
 
 namespace HarmonyLibTests
 {
-	public static class TestLog
-	{
-		public static void Log(string str)
-		{
-			TestContext.Progress.WriteLine(str);
-		}
-	}
-
 	[TestFixture]
-	public class Specials
+	public class Specials : TestLogger
 	{
 		/* TODO - patching HttpWebRequest.GetResponse does not work
 		 * 
@@ -50,30 +42,31 @@ namespace HarmonyLibTests
 		*/
 
 		// TODO: this test might crash in certain environments
-		[Test, Order(1000), NonParallelizable]
+		[Test, NonParallelizable]
 		public void Test_Patch_ConcreteClass()
 		{
-			TestLog.Log($"Test_Special_Case1 started");
-
 			var instance = new Harmony("special-case-1");
 			Assert.NotNull(instance, "instance");
 			var processor = instance.CreateClassProcessor(typeof(ConcreteClass_Patch));
 			Assert.NotNull(processor, "processor");
 
-			TestLog.Log($"Patching ConcreteClass_Patch started");
+			var someStruct1 = new ConcreteClass().Method("test", new AnotherStruct());
+			Assert.True(someStruct1.accepted, "someStruct1.accepted");
+
+			TestTools.Log($"Patching ConcreteClass_Patch start");
 			var replacements = processor.Patch();
 			Assert.NotNull(replacements, "replacements");
 			Assert.AreEqual(1, replacements.Count);
-			TestLog.Log($"Patching ConcreteClass_Patch done");
+			TestTools.Log($"Patching ConcreteClass_Patch done");
 
-			TestLog.Log($"Running patched ConcreteClass_Patch");
-			var someStruct = new ConcreteClass().Method("test", new AnotherStruct());
-			Assert.True(someStruct.acceptedInt);
-			TestLog.Log($"Running patched ConcreteClass_Patch done");
+			TestTools.Log($"Running patched ConcreteClass_Patch start");
+			var someStruct2 = new ConcreteClass().Method("test", new AnotherStruct());
+			Assert.True(someStruct2.accepted, "someStruct2.accepted");
+			TestTools.Log($"Running patched ConcreteClass_Patch done");
 		}
 
 		// TODO: this test might crash in certain environments
-		[Test, Order(1001), NonParallelizable]
+		[Test, NonParallelizable]
 		public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
 		{
 			var name = $"{type}M{n:D2}";
@@ -91,7 +84,7 @@ namespace HarmonyLibTests
 			var method = AccessTools.DeclaredMethod(cls, name);
 			Assert.NotNull(method, "method");
 
-			TestLog.Log($"Test_Returning_Structs: patching {name} started");
+			TestTools.Log($"Test_Returning_Structs: patching {name} start");
 			try
 			{
 				var replacement = instance.Patch(method, new HarmonyMethod(prefix));
@@ -99,24 +92,26 @@ namespace HarmonyLibTests
 			}
 			catch (Exception ex)
 			{
-				TestLog.Log($"Test_Returning_Structs: patching {name} exception: {ex}");
+				TestTools.Log($"Test_Returning_Structs: patching {name} exception: {ex}");
 			}
-			TestLog.Log($"Test_Returning_Structs: patching {name} done");
+			TestTools.Log($"Test_Returning_Structs: patching {name} done");
 
 			var clsInstance = new ReturningStructs();
 			try
 			{
-				TestLog.Log($"Test_Returning_Structs: running patched {name}");
+				TestTools.Log($"Test_Returning_Structs: running patched {name}");
 
 				var original = AccessTools.DeclaredMethod(cls, name);
 				Assert.NotNull(original, $"{name}: original");
 				var result = original.Invoke(type == "S" ? null : clsInstance, new object[] { "test" });
 				Assert.NotNull(result, $"{name}: result");
 				Assert.AreEqual($"St{n:D2}", result.GetType().Name);
+
+				TestTools.Log($"Test_Returning_Structs: running patched {name} done");
 			}
 			catch (Exception ex)
 			{
-				TestLog.Log($"Test_Returning_Structs: running {name} exception: {ex}");
+				TestTools.Log($"Test_Returning_Structs: running {name} exception: {ex}");
 			}
 		}
 

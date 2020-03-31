@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Assets
 {
@@ -109,30 +110,14 @@ namespace HarmonyLibTests.Assets
 
 	public struct SomeStruct
 	{
-		public string reasonTextInt;
-		public bool acceptedInt;
-		public string Reason => reasonTextInt;
-		public bool Accepted => acceptedInt;
+		public bool accepted;
 
-		public static SomeStruct WasAccepted
-		{
-			get
-			{
-				var result = new SomeStruct
-				{
-					acceptedInt = true
-				};
-				return result;
-			}
-		}
+		public static SomeStruct WasAccepted => new SomeStruct { accepted = true };
+		public static SomeStruct WasNotAccepted => new SomeStruct { accepted = false };
 
 		public static implicit operator SomeStruct(bool value)
 		{
-			if (value)
-			{
-				return WasAccepted;
-			}
-			return WasAccepted;
+			return value ? WasAccepted : WasNotAccepted;
 		}
 
 		public static implicit operator SomeStruct(string value)
@@ -150,7 +135,7 @@ namespace HarmonyLibTests.Assets
 
 	public abstract class AbstractClass
 	{
-		public virtual SomeStruct Method(string checkingDef, AnotherStruct loc)
+		public virtual SomeStruct Method(string originalDef, AnotherStruct loc)
 		{
 			return SomeStruct.WasAccepted;
 		}
@@ -158,6 +143,7 @@ namespace HarmonyLibTests.Assets
 
 	public class ConcreteClass : AbstractClass
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public override SomeStruct Method(string def, AnotherStruct loc)
 		{
 			return true;
@@ -170,7 +156,7 @@ namespace HarmonyLibTests.Assets
 	{
 		static void Prefix(ConcreteClass __instance, string def, AnotherStruct loc)
 		{
-			Console.WriteLine("ConcreteClass_Patch.Prefix");
+			TestTools.Log("ConcreteClass_Patch.Method.Prefix");
 		}
 	}
 
