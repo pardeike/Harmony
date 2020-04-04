@@ -103,9 +103,17 @@ namespace HarmonyLibTests
 
 				var original = AccessTools.DeclaredMethod(cls, name);
 				Assert.NotNull(original, $"{name}: original");
+
 				var result = original.Invoke(type == "S" ? null : clsInstance, new object[] { "test" });
 				Assert.NotNull(result, $"{name}: result");
 				Assert.AreEqual($"St{n:D2}", result.GetType().Name);
+
+				var resultField = result.GetType().GetField("b1");
+				Assert.NotNull(resultField, $"{name}: result.b1 field");
+				Assert.AreEqual(typeof(byte), resultField.FieldType);
+
+				var resultFieldValue = (byte)resultField.GetValue(result);
+				Assert.AreEqual(ReturningStructs.MagicNumber, resultFieldValue);
 
 				TestTools.Log($"Test_Returning_Structs: running patched {name} done");
 			}
