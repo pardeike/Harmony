@@ -71,6 +71,14 @@ h6 mark {
     margin-left: 5em;
 }
 
+.level0.summary {
+  margin: 2em 0 2em 0;
+}
+
+.level1.summary {
+  margin: 1em 0 1em 0;
+}
+
 span.parametername,
 span.paramref,
 span.typeparamref {
@@ -194,7 +202,9 @@ article h1, article h2, article h3, article h4{
 }
 
 article h4{
-  border-bottom: 1px solid #ccc;
+  border: 0;
+  font-weight: bold;
+  margin-top: 2em;
 }
 
 article span.small.pull-right{
@@ -843,6 +853,33 @@ footer {
   }
 }
 
+/* Code snippet */
+code {
+  color: #717374;
+  background-color: #f1f2f3;
+}
+
+a code {
+  color: #337ab7;
+  background-color: #f1f2f3;
+}
+
+a code:hover {
+  text-decoration: underline;
+}
+
+.hljs-keyword {
+  color: rgb(86,156,214);
+}
+
+.hljs-string {
+  color: rgb(214, 157, 133);
+}
+
+pre {
+  border: 0;
+}
+
 /* For code snippet line highlight */
 pre > code .line-highlight {
   background-color: #ffffcc;
@@ -960,3 +997,16 @@ div.embeddedvideo iframe {
 
 .mainContainer[dir='rtl'] main ul[role="tablist"] {
   margin: 0; }
+
+/* Color theme */
+
+/* These are not important, tune down **/
+.decalaration, .fieldValue, .parameters, .returns {
+  color: #a2a2a2;
+}
+
+/* Major sections, increase visibility **/
+#fields, #properties, #methods, #events {
+    font-weight: bold;
+    margin-top: 2em;
+}

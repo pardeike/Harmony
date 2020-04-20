@@ -2910,6 +2910,25 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Memory.WriteJump
   nameWithType: Memory.WriteJump
+- uid: HarmonyLib.MethodBaseExtensions
+  name: MethodBaseExtensions
+  href: api/HarmonyLib.MethodBaseExtensions.html
+  commentId: T:HarmonyLib.MethodBaseExtensions
+  fullName: HarmonyLib.MethodBaseExtensions
+  nameWithType: MethodBaseExtensions
+- uid: HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)
+  name: HasMethodBody(MethodBase)
+  href: api/HarmonyLib.MethodBaseExtensions.html#HarmonyLib_MethodBaseExtensions_HasMethodBody_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)
+  fullName: HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)
+  nameWithType: MethodBaseExtensions.HasMethodBody(MethodBase)
+- uid: HarmonyLib.MethodBaseExtensions.HasMethodBody*
+  name: HasMethodBody
+  href: api/HarmonyLib.MethodBaseExtensions.html#HarmonyLib_MethodBaseExtensions_HasMethodBody_
+  commentId: Overload:HarmonyLib.MethodBaseExtensions.HasMethodBody
+  isSpec: "True"
+  fullName: HarmonyLib.MethodBaseExtensions.HasMethodBody
+  nameWithType: MethodBaseExtensions.HasMethodBody
 - uid: HarmonyLib.MethodInvoker
   name: MethodInvoker
   href: api/HarmonyLib.MethodInvoker.html
@@ -3459,6 +3478,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.AddTranspiler
   nameWithType: PatchProcessor.AddTranspiler
+- uid: HarmonyLib.PatchProcessor.CreateILGenerator
+  name: CreateILGenerator()
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_CreateILGenerator
+  commentId: M:HarmonyLib.PatchProcessor.CreateILGenerator
+  fullName: HarmonyLib.PatchProcessor.CreateILGenerator()
+  nameWithType: PatchProcessor.CreateILGenerator()
+- uid: HarmonyLib.PatchProcessor.CreateILGenerator*
+  name: CreateILGenerator
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_CreateILGenerator_
+  commentId: Overload:HarmonyLib.PatchProcessor.CreateILGenerator
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.CreateILGenerator
+  nameWithType: PatchProcessor.CreateILGenerator
 - uid: HarmonyLib.PatchProcessor.GetAllPatchedMethods
   name: GetAllPatchedMethods()
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetAllPatchedMethods
@@ -3526,6 +3558,12 @@ references:
   commentId: M:HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase)
   fullName: HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase)
   nameWithType: PatchProcessor.ReadMethodBody(MethodBase)
+- uid: HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)
+  name: ReadMethodBody(MethodBase, ILGenerator)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_ReadMethodBody_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator_
+  commentId: M:HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)
+  fullName: HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase, System.Reflection.Emit.ILGenerator)
+  nameWithType: PatchProcessor.ReadMethodBody(MethodBase, ILGenerator)
 - uid: HarmonyLib.PatchProcessor.ReadMethodBody*
   name: ReadMethodBody
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_ReadMethodBody_

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Delegate SetterHandler&lt;T, S&gt;
+    <title>Class MethodBaseExtensions
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Delegate SetterHandler&lt;T, S&gt;
+    <meta name="title" content="Class MethodBaseExtensions
    ">
     <meta name="generator" content="docfx 2.52.0.0">
     
@@ -68,19 +68,66 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.SetterHandler`2">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.MethodBaseExtensions">
   
   
-  <h1 id="HarmonyLib_SetterHandler_2" data-uid="HarmonyLib.SetterHandler`2" class="text-break">Delegate SetterHandler&lt;T, S&gt;
+  <h1 id="HarmonyLib_MethodBaseExtensions" data-uid="HarmonyLib.MethodBaseExtensions" class="text-break">Class MethodBaseExtensions
   </h1>
-  <div class="markdown level0 summary"><p>A setter delegate type</p>
+  <div class="markdown level0 summary"><p>General extensions for collections</p>
 </div>
   <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">MethodBaseExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_SetterHandler_2_syntax">Syntax</h5>
+  <h5 id="HarmonyLib_MethodBaseExtensions_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public delegate void SetterHandler&lt;in T, in S&gt;(T source, S value);</code></pre>
+    <pre><code class="lang-csharp hljs">public static class MethodBaseExtensions</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodBaseExtensions_HasMethodBody_System_Reflection_MethodBase_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L488">View Source</a>
+  </span>
+  <a id="HarmonyLib_MethodBaseExtensions_HasMethodBody_" data-uid="HarmonyLib.MethodBaseExtensions.HasMethodBody*"></a>
+  <h4 id="HarmonyLib_MethodBaseExtensions_HasMethodBody_System_Reflection_MethodBase_" data-uid="HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)">HasMethodBody(MethodBase)</h4>
+  <div class="markdown level1 summary"><p>Tests a class member if it has an IL method body (external methods for example don't have a body)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool HasMethodBody(this MethodBase member)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -93,36 +140,25 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">T</span></td>
-        <td><span class="parametername">source</span></td>
-        <td><p>The instance the setter uses</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">S</span></td>
-        <td><span class="parametername">value</span></td>
-        <td><p>The value the setter uses</p>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">member</span></td>
+        <td><p>The member to test</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 class="typeParameters">Type Parameters</h5>
+  <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Type</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>Type that setter sets field/property value for</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="parametername">S</span></td>
-        <td><p>Type of the value that setter sets</p>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>Returns true if the member has an IL body or false if not</p>
 </td>
       </tr>
     </tbody>
@@ -135,10 +171,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_SetterHandler_2.md&amp;value=---%0Auid%3A%20HarmonyLib.SetterHandler%602%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodBaseExtensions.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodBaseExtensions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Extras/FastAccess.cs/#L25" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L483" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
