@@ -238,6 +238,15 @@ namespace HarmonyLib
 			return result;
 		}
 
+		/// <summary>Creates a new <see cref="ILGenerator">generator</see> to use when reading method bodies</summary>
+		/// <returns>A new <see cref="ILGenerator"/></returns>
+		/// 
+		public static ILGenerator CreateILGenerator()
+		{
+			var method = new DynamicMethodDefinition($"ILGenerator_{Guid.NewGuid()}", typeof(void), new Type[0]);
+			return method.GetILGenerator();
+		}
+
 		/// <summary>Returns the methods unmodified list of code instructions</summary>
 		/// <param name="original">The original method/constructor</param>
 		/// <param name="generator">Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
@@ -245,12 +254,7 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
 		{
-			if (generator == null)
-			{
-				var method = new DynamicMethodDefinition($"{original.Name}_Copy{Guid.NewGuid()}", typeof(void), new Type[0]);
-				generator = method.GetILGenerator();
-			}
-			var reader = MethodBodyReader.GetInstructions(generator, original);
+			var reader = MethodBodyReader.GetInstructions(generator ?? CreateILGenerator(), original);
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
 		}
 
@@ -261,8 +265,7 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
 		{
-			var method = new DynamicMethodDefinition($"{original.Name}_Dummy{Guid.NewGuid()}", typeof(void), new Type[0]);
-			generator = method.GetILGenerator();
+			generator = CreateILGenerator();
 			var reader = MethodBodyReader.GetInstructions(generator, original);
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
 		}
@@ -273,8 +276,18 @@ namespace HarmonyLib
 		///
 		public static IEnumerable<KeyValuePair<OpCode, object>> ReadMethodBody(MethodBase method)
 		{
-			var dummyMethod = new DynamicMethodDefinition($"{method.Name}_Dummy{Guid.NewGuid()}", typeof(void), new Type[0]);
-			return MethodBodyReader.GetInstructions(dummyMethod.GetILGenerator(), method)
+			return MethodBodyReader.GetInstructions(CreateILGenerator(), method)
+				.Select(instr => new KeyValuePair<OpCode, object>(instr.opcode, instr.operand));
+		}
+
+		/// <summary>A low level way to read the body of a method. Used for quick searching in methods</summary>
+		/// <param name="method">The original method</param>
+		/// <param name="generator">An existing generator that will be used to create all local variables and labels contained in the result</param>
+		/// <returns>All instructions as opcode/operand pairs</returns>
+		///
+		public static IEnumerable<KeyValuePair<OpCode, object>> ReadMethodBody(MethodBase method, ILGenerator generator)
+		{
+			return MethodBodyReader.GetInstructions(generator, method)
 				.Select(instr => new KeyValuePair<OpCode, object>(instr.opcode, instr.operand));
 		}
 	}

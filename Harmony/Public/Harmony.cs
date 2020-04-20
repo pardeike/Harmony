@@ -146,7 +146,7 @@ namespace HarmonyLib
 			var originals = GetAllPatchedMethods().ToList(); // keep as is to avoid "Collection was modified"
 			foreach (var original in originals)
 			{
-				var hasBody = original.GetMethodBody() != null;
+				var hasBody = original.HasMethodBody();
 				var info = GetPatchInfo(original);
 				if (hasBody)
 				{

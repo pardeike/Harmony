@@ -73,7 +73,7 @@ namespace HarmonyLib
 			module = method.Module;
 
 			var body = method.GetMethodBody();
-			if (body == null)
+			if (body?.GetILAsByteArray()?.Length < 2)
 			{
 				ilBytes = new ByteBuffer(new byte[0]);
 				ilInstructions = new List<ILInstruction>();

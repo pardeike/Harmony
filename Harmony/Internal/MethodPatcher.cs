@@ -540,7 +540,7 @@ namespace HarmonyLib
 			prefixes
 				.Do(fix =>
 				{
-					if (original.GetMethodBody() == null)
+					if (original.HasMethodBody() == false)
 						throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
 
 					var skipLabel = PrefixAffectsOriginal(fix) ? il.DefineLabel() : (Label?)null;
@@ -576,7 +576,7 @@ namespace HarmonyLib
 				.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void)))
 				.Do(fix =>
 				{
-					if (original.GetMethodBody() == null)
+					if (original.HasMethodBody() == false)
 						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
 					EmitCallParameter(fix, variables, true);
@@ -606,7 +606,7 @@ namespace HarmonyLib
 			finalizers
 				.Do(fix =>
 				{
-					if (original.GetMethodBody() == null)
+					if (original.HasMethodBody() == false)
 						throw new Exception("Methods without body cannot have finalizers. Use a transpiler instead.");
 
 					if (catchExceptions)
