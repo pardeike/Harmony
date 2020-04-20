@@ -783,7 +783,7 @@ namespace HarmonyLib
 		public delegate ref F FieldRef<T, F>(T obj = default);
 
 		/// <summary>Creates an instance field reference</summary>
-		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
+		/// <typeparam name="T">The class the field is defined in</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A read and writable field reference delegate</returns>
@@ -806,7 +806,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates an instance field reference for a specific instance</summary>
-		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
+		/// <typeparam name="T">The class the field is defined in</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldName">The name of the field</param>
@@ -817,7 +817,18 @@ namespace HarmonyLib
 			return ref FieldRefAccess<T, F>(fieldName)(instance);
 		}
 
-		/// <summary>Creates an instance field reference delegate</summary>
+		/// <summary>Creates an instance field reference delegate for a private type</summary>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <param name="type">The class/type</param>
+		/// <param name="fieldName">The name of the field</param>
+		/// <returns>A read and writable <see cref="FieldRef{T,F}"/> delegate</returns>
+		///
+		public static FieldRef<object, F> FieldRefAccess<F>(Type type, string fieldName)
+		{
+			return FieldRefAccess<object, F>(Field(type, fieldName));
+		}
+
+		/// <summary>Creates an instance field reference delegate for a fieldinfo</summary>
 		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
 		/// <param name="fieldInfo">The field of the field</param>
@@ -845,12 +856,6 @@ namespace HarmonyLib
 			return (FieldRef<T, F>)dm.Generate().CreateDelegate(typeof(FieldRef<T, F>));
 		}
 
-		/// <summary>A read/writable reference delegate to a static field</summary>
-		/// <typeparam name="F">The type of the field</typeparam>
-		/// <returns>An readable/assignable object representing the static field</returns>
-		///
-		public delegate ref F FieldRef<F>();
-
 		/// <summary>Creates a static field reference</summary>
 		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
 		/// <typeparam name="F">The type of the field</typeparam>
@@ -859,20 +864,56 @@ namespace HarmonyLib
 		///
 		public static ref F StaticFieldRefAccess<T, F>(string fieldName)
 		{
+			return ref StaticFieldRefAccess<F>(typeof(T), fieldName);
+		}
+
+		/// <summary>Creates a static field reference</summary>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <param name="type">The class/type</param>
+		/// <param name="fieldName">The name of the field</param>
+		/// <returns>An readable/assignable object representing the static field</returns>
+		///
+		public static ref F StaticFieldRefAccess<F>(Type type, string fieldName)
+		{
 			const BindingFlags bf = BindingFlags.NonPublic |
 											BindingFlags.Static |
 											BindingFlags.DeclaredOnly;
 			try
 			{
-				var fi = typeof(T).GetField(fieldName, bf);
+				var fi = type.GetField(fieldName, bf);
 				return ref StaticFieldRefAccess<F>(fi)();
 			}
 			catch (Exception ex)
 			{
-				throw new ArgumentException($"StaticFieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldName} caused an exception", ex);
+				throw new ArgumentException($"StaticFieldRefAccess<{typeof(F)}> for {type}, {fieldName} caused an exception", ex);
 				throw;
 			}
 		}
+
+		/// <summary>Creates a static field reference</summary>
+		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <param name="fieldInfo">The field</param>
+		/// <returns>An readable/assignable object representing the static field</returns>
+		///
+		public static ref F StaticFieldRefAccess<T, F>(FieldInfo fieldInfo)
+		{
+			try
+			{
+				return ref StaticFieldRefAccess<F>(fieldInfo)();
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"StaticFieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldInfo} caused an exception", ex);
+				throw;
+			}
+		}
+
+		/// <summary>A read/writable reference delegate to a static field</summary>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <returns>An readable/assignable object representing the static field</returns>
+		///
+		public delegate ref F FieldRef<F>();
 
 		/// <summary>Creates a static field reference delegate</summary>
 		/// <typeparam name="F">The type of the field</typeparam>
