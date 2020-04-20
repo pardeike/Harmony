@@ -487,7 +487,7 @@ namespace HarmonyLib
 		/// <returns>Returns true if the member has an IL body or false if not</returns>
 		public static bool HasMethodBody(this MethodBase member)
 		{
-			return member.GetMethodBody()?.GetILAsByteArray()?.Length > 1;
+			return (member.GetMethodBody()?.GetILAsByteArray()?.Length ?? 0) > 0;
 		}
 	}
 }
