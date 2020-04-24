@@ -527,14 +527,6 @@ namespace HarmonyLibTests.Assets
 	{
 		public static bool prefixed = false;
 
-#if NETCOREAPP2_0
-		public static bool Prefix(ref string __result,  int dummy)
-		{
-			__result = "patched";
-			prefixed = true;
-			return false;
-		}
-#else
 		public static MethodInfo Prefix(MethodBase method)
 		{
 			var dynamicMethod = new mmc::MonoMod.Utils.DynamicMethodDefinition(method.Name + "_Class11Patch_Prefix",
@@ -562,7 +554,6 @@ namespace HarmonyLibTests.Assets
 
 			return dynamicMethod.Generate();
 		}
-#endif
 	}
 
 	public class Class12

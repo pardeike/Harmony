@@ -11,11 +11,11 @@ using MonoMod.Utils;
 namespace HarmonyLib
 {
 	/// <summary>A helper class for reflection related functions</summary>
-	/// 
+	///
 	public static class AccessTools
 	{
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level</summary>
-		/// 
+		///
 		public static BindingFlags all = BindingFlags.Public
 			| BindingFlags.NonPublic
 			| BindingFlags.Instance
@@ -26,7 +26,7 @@ namespace HarmonyLib
 			| BindingFlags.SetProperty;
 
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level but only within the current type</summary>
-		/// 
+		///
 		public static BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
 
 		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
@@ -53,14 +53,10 @@ namespace HarmonyLib
 		/// <summary>Gets all type by name from a given assembly. This is a wrapper that respects different .NET versions</summary>
 		/// <param name="assembly">The assembly</param>
 		/// <returns>An array of types</returns>
-		/// 
+		///
 		public static Type[] GetTypesFromAssembly(Assembly assembly)
 		{
-#if NETCOREAPP3_0 || NETCOREAPP3_1
-			return assembly.DefinedTypes.ToArray();
-#else
 			return assembly.GetTypes();
-#endif
 		}
 
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non null result</summary>
@@ -1145,7 +1141,7 @@ namespace HarmonyLib
 		/// <summary>Tests if a type is an integer type</summary>
 		/// <param name="type">The type</param>
 		/// <returns>True if the type represents some integer</returns>
-		/// 
+		///
 		public static bool IsInteger(Type type)
 		{
 			switch (Type.GetTypeCode(type))
@@ -1167,7 +1163,7 @@ namespace HarmonyLib
 		/// <summary>Tests if a type is a floating point type</summary>
 		/// <param name="type">The type</param>
 		/// <returns>True if the type represents some floating point</returns>
-		/// 
+		///
 		public static bool IsFloatingPoint(Type type)
 		{
 			switch (Type.GetTypeCode(type))

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -35,7 +35,7 @@ namespace HarmonyLibTests.IL
 				var operandType = instrNoGen.opcode.OperandType;
 				if ((operandType == OperandType.ShortInlineVar || operandType == OperandType.InlineVar) && !(instrNoGen.argument is null))
 				{
-#if NETCOREAPP3_0 || NETCOREAPP3_1
+#if NETCOREAPP3_1
 					Assert.AreEqual("System.Reflection.RuntimeLocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);
 #else
 					Assert.AreEqual("System.Reflection.LocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);

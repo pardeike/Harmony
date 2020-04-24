@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net35;net45;netcoreapp2.1</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Product>Harmony</Product>
 		<Company>Andreas Pardeike</Company>
@@ -28,7 +28,7 @@
 	</PropertyGroup>
 
 	<Choose>
-		<When Condition="$(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('netcoreapp'))">
+		<When Condition="$(TargetFramework.StartsWith('netcoreapp'))">
 			<PropertyGroup>
 				<IsCoreOrStandard>true</IsCoreOrStandard>
 			</PropertyGroup>
@@ -66,21 +66,6 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<Reference Include="System.Reflection.Emit">
-			<HintPath>..\libs\System.Reflection.Emit.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
-		<Reference Include="System.Reflection.Emit.ILGeneration">
-			<HintPath>..\libs\System.Reflection.Emit.ILGeneration.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
-		<Reference Include="System.Reflection.Emit.Lightweight">
-			<HintPath>..\libs\System.Reflection.Emit.Lightweight.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
