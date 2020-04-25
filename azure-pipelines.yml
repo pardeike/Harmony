@@ -15,14 +15,14 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- checkout: self 
+- checkout: self
   submodules: recursive
 
 - task: UseDotNet@2
-  displayName: 'Install latest .NET Core 3.0'
+  displayName: 'Install latest .NET Core 2.1'
   inputs:
     packageType: sdk
-    version: 3.0.x
+    version: 2.1.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: UseDotNet@2

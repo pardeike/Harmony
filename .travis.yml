@@ -17,10 +17,7 @@ os:
 env:
   - netframework=net35
   - netframework=net45
-  - netframework=net472
-  - netframework=net48
-  - netframework=netcoreapp3.0
-  - netframework=netcoreapp3.1
+  - netframework=netcoreapp2.1
 
 mono:
 - latest
@@ -49,13 +46,8 @@ jobs:
     # (otherwise, dotnet (vs)test outputs this error: Could not find 'mono' host. Make sure that 'mono' is installed on the machine and is available in PATH environment variable.)
     - env: netframework=net45
       mono: none
-    - env: netframework=net472
-      mono: none
-    - env: netframework=net48
-      mono: none
     # nunit3-console.exe doesn't work with netcoreapp* target frameworks, so must use dotnet test
-    - env: netframework=netcoreapp3.0
-    - env: netframework=netcoreapp3.1
+    - env: netframework=netcoreapp2.1
       mono: latest
   include:
     - os: linux

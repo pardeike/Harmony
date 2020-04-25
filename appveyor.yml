@@ -11,10 +11,7 @@ environment:
   matrix:
     - targetframework: net35
     - targetframework: net45
-    - targetframework: net472
-    - targetframework: net48
-    - targetframework: netcoreapp3.0
-    - targetframework: netcoreapp3.1
+    - targetframework: netcoreapp2.1
 
 before_build:
   - git submodule update --init --recursive
