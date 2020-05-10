@@ -242,7 +242,9 @@ namespace HarmonyLib
 
 				// call the transpiler
 				var parameter = GetTranspilerCallParameters(generator, transpiler, method, instructions);
-				instructions = transpiler.Invoke(null, parameter.ToArray()) as IEnumerable;
+				var newInstructions = transpiler.Invoke(null, parameter.ToArray()) as IEnumerable;
+				if (newInstructions != null)
+					instructions = newInstructions;
 
 				// convert result back to 'our' CodeInstruction and re-assign otherwise lost fields
 				if (unassignedValues != null)

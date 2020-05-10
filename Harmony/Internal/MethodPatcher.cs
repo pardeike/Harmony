@@ -69,7 +69,7 @@ namespace HarmonyLib
 
 		internal MethodInfo CreateReplacement(out Dictionary<int, CodeInstruction> finalInstructions)
 		{
-			var originalVariables = DeclareLocalVariables(source ?? original);
+			var originalVariables = DeclareLocalVariables(il, source ?? original);
 			var privateVars = new Dictionary<string, LocalBuilder>();
 
 			LocalBuilder resultVariable = null;
@@ -276,7 +276,7 @@ namespace HarmonyLib
 			return method;
 		}
 
-		LocalBuilder[] DeclareLocalVariables(MethodBase member)
+		internal static LocalBuilder[] DeclareLocalVariables(ILGenerator il, MethodBase member)
 		{
 			var vars = member.GetMethodBody()?.LocalVariables;
 			if (vars == null)

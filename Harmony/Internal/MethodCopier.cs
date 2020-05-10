@@ -37,6 +37,32 @@ namespace HarmonyLib
 		{
 			reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode);
 		}
+
+		internal static List<CodeInstruction> GetInstructions(ILGenerator generator, MethodBase method, int maxTranspilers)
+		{
+			if (generator == null)
+				throw new ArgumentNullException(nameof(generator));
+			if (method == null)
+				throw new ArgumentNullException(nameof(method));
+
+			var originalVariables = MethodPatcher.DeclareLocalVariables(generator, method);
+			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(method);
+			var copier = new MethodCopier(method, generator, originalVariables);
+			copier.SetArgumentShift(useStructReturnBuffer);
+
+			var info = Harmony.GetPatchInfo(method);
+			if (info != null)
+			{
+				var sortedTranspilers = PatchFunctions.GetSortedPatchMethods(method, info.Transpilers.ToArray(), false);
+				for (var i = 0; i < maxTranspilers && i < sortedTranspilers.Count; i++)
+					copier.AddTranspiler(sortedTranspilers[i]);
+			}
+
+			var endLabels = new List<Label>();
+			var emitter = new Emitter(generator, false);
+			copier.Finalize(emitter, endLabels, out var hasReturnCode);
+			return emitter.GetInstructions().OrderBy(pair => pair.Key).Select(pair => pair.Value).ToList();
+		}
 	}
 
 	internal class MethodBodyReader

@@ -270,6 +270,29 @@ namespace HarmonyLib
 			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
 		}
 
+		/// <summary>Returns the methods current list of code instructions after all existing transpilers have been applied</summary>
+		/// <param name="original">The original method/constructor</param>
+		/// <param name="maxTranspilers">Apply only the first count of transpilers</param>
+		/// <param name="generator">Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
+		/// <returns>A list of <see cref="CodeInstruction"/></returns>
+		/// 
+		public static List<CodeInstruction> GetCurrentInstructions(MethodBase original, int maxTranspilers = int.MaxValue, ILGenerator generator = null)
+		{
+			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(), original, maxTranspilers);
+		}
+
+		/// <summary>Returns the methods current list of code instructions after all existing transpilers have been applied</summary>
+		/// <param name="original">The original method/constructor</param>
+		/// <param name="generator">A new generator that now contains all local variables and labels contained in the result</param>
+		/// <param name="maxTranspilers">Apply only the first count of transpilers</param>
+		/// <returns>A list of <see cref="CodeInstruction"/></returns>
+		/// 
+		public static List<CodeInstruction> GetCurrentInstructions(MethodBase original, out ILGenerator generator, int maxTranspilers = int.MaxValue)
+		{
+			generator = CreateILGenerator();
+			return MethodCopier.GetInstructions(generator, original, maxTranspilers);
+		}
+
 		/// <summary>A low level way to read the body of a method. Used for quick searching in methods</summary>
 		/// <param name="method">The original method</param>
 		/// <returns>All instructions as opcode/operand pairs</returns>
