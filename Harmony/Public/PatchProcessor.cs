@@ -210,6 +210,16 @@ namespace HarmonyLib
 			return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers);
 		}
 
+		/// <summary>Sort patch methods by their priority rules</summary>
+		/// <param name="original">The original method</param>
+		/// <param name="patches">Patches to sort</param>
+		/// <returns>The sorted patch methods</returns>
+		///
+		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
+		{
+			return PatchFunctions.GetSortedPatchMethods(original, patches, false);
+		}
+
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
 		/// <param name="currentVersion">[out] The current Harmony version</param>
 		/// <returns>A dictionary containing assembly version keyed by Harmony ID</returns>

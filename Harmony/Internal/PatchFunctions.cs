@@ -127,7 +127,7 @@ namespace HarmonyLib
 		/// <param name="debug">Use debug mode</param>
 		/// <returns>The sorted patch methods</returns>
 		///
-		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
+		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
 		{
 			return new PatchSorter(patches, debug).Sort(original);
 		}
