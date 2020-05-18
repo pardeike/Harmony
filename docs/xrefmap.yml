@@ -3531,6 +3531,28 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.GetAllPatchedMethods
   nameWithType: PatchProcessor.GetAllPatchedMethods
+- uid: HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase,System.Int32,System.Reflection.Emit.ILGenerator)
+  name: GetCurrentInstructions(MethodBase, Int32, ILGenerator)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetCurrentInstructions_System_Reflection_MethodBase_System_Int32_System_Reflection_Emit_ILGenerator_
+  commentId: M:HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase,System.Int32,System.Reflection.Emit.ILGenerator)
+  fullName: HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase, System.Int32, System.Reflection.Emit.ILGenerator)
+  nameWithType: PatchProcessor.GetCurrentInstructions(MethodBase, Int32, ILGenerator)
+- uid: HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@,System.Int32)
+  name: GetCurrentInstructions(MethodBase, out ILGenerator, Int32)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetCurrentInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator__System_Int32_
+  commentId: M:HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@,System.Int32)
+  name.vb: GetCurrentInstructions(MethodBase, ByRef ILGenerator, Int32)
+  fullName: HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase, out System.Reflection.Emit.ILGenerator, System.Int32)
+  fullName.vb: HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase, ByRef System.Reflection.Emit.ILGenerator, System.Int32)
+  nameWithType: PatchProcessor.GetCurrentInstructions(MethodBase, out ILGenerator, Int32)
+  nameWithType.vb: PatchProcessor.GetCurrentInstructions(MethodBase, ByRef ILGenerator, Int32)
+- uid: HarmonyLib.PatchProcessor.GetCurrentInstructions*
+  name: GetCurrentInstructions
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetCurrentInstructions_
+  commentId: Overload:HarmonyLib.PatchProcessor.GetCurrentInstructions
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.GetCurrentInstructions
+  nameWithType: PatchProcessor.GetCurrentInstructions
 - uid: HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)
   name: GetOriginalInstructions(MethodBase, ILGenerator)
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator_
@@ -3566,6 +3588,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.GetPatchInfo
   nameWithType: PatchProcessor.GetPatchInfo
+- uid: HarmonyLib.PatchProcessor.GetSortedPatchMethods(System.Reflection.MethodBase,HarmonyLib.Patch[])
+  name: GetSortedPatchMethods(MethodBase, Patch[])
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetSortedPatchMethods_System_Reflection_MethodBase_HarmonyLib_Patch___
+  commentId: M:HarmonyLib.PatchProcessor.GetSortedPatchMethods(System.Reflection.MethodBase,HarmonyLib.Patch[])
+  name.vb: GetSortedPatchMethods(MethodBase, Patch())
+  fullName: HarmonyLib.PatchProcessor.GetSortedPatchMethods(System.Reflection.MethodBase, HarmonyLib.Patch[])
+  fullName.vb: HarmonyLib.PatchProcessor.GetSortedPatchMethods(System.Reflection.MethodBase, HarmonyLib.Patch())
+  nameWithType: PatchProcessor.GetSortedPatchMethods(MethodBase, Patch[])
+  nameWithType.vb: PatchProcessor.GetSortedPatchMethods(MethodBase, Patch())
+- uid: HarmonyLib.PatchProcessor.GetSortedPatchMethods*
+  name: GetSortedPatchMethods
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_GetSortedPatchMethods_
+  commentId: Overload:HarmonyLib.PatchProcessor.GetSortedPatchMethods
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.GetSortedPatchMethods
+  nameWithType: PatchProcessor.GetSortedPatchMethods
 - uid: HarmonyLib.PatchProcessor.Patch
   name: Patch()
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_Patch

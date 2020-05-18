@@ -27,6 +27,8 @@ If you find a factual error or if you have feedback about the documentation you 
 - file a documentation Issue on the repo
 - or write about it on the official discord
 
+**New to modding and C#?** Beside the basic language features you need at least a good overview of **Reflection** in C#. Read this short and useful [introduction](https://dotnetcademy.net/Learn/4/Pages/1). 
+
 ## Community
 
 If you feel stuck or have questions that this site does not answer, feel free to join the official [Discord Server](https://discord.gg/xXgghXR) or file a [GitHub Issue](https://github.com/pardeike/Harmony/issues).
