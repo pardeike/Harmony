@@ -281,10 +281,8 @@ namespace HarmonyLib
 
 		[NonSerialized]
 		private MethodInfo patchMethod;
-		private int token;
-#pragma warning disable CA2235
-		private string module;
-#pragma warning restore CA2235
+		private int methodToken;
+		private string moduleGUID;
 
 		/// <summary>The method of the static patch method</summary>
 		/// 
@@ -294,19 +292,19 @@ namespace HarmonyLib
 			{
 				if (patchMethod == null)
 				{
-					var m = AppDomain.CurrentDomain.GetAssemblies()
+					var mdl = AppDomain.CurrentDomain.GetAssemblies()
 						.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
 						.SelectMany(a => a.GetLoadedModules())
-						.First(a => a.FullyQualifiedName == module);
-					patchMethod = (MethodInfo)m.ResolveMethod(token);
+						.First(m => m.ModuleVersionId.ToString() == moduleGUID);
+					patchMethod = (MethodInfo)mdl.ResolveMethod(methodToken);
 				}
 				return patchMethod;
 			}
 			set
 			{
 				patchMethod = value;
-				token = patchMethod.MetadataToken;
-				module = patchMethod.Module.FullyQualifiedName;
+				methodToken = patchMethod.MetadataToken;
+				moduleGUID = patchMethod.Module.ModuleVersionId.ToString();
 			}
 		}
 

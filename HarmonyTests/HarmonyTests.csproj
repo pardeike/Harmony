@@ -49,7 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoMod.Common" Version="20.5.7.1" />
+		<PackageReference Include="MonoMod.Common" Version="20.5.11.1" />
 	</ItemGroup>
 
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
