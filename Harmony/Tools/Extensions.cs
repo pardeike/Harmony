@@ -415,6 +415,36 @@ namespace HarmonyLib
 			var stfldCode = field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld;
 			return code.opcode == stfldCode && Equals(code.operand, field);
 		}
+
+		/// <summary>Add a label to a code instruction and return it</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="label">The <see cref="Label"/></param>
+		/// <returns>The same code instruction</returns>
+		public static CodeInstruction WithLabel(this CodeInstruction code, Label label)
+		{
+			code.labels.Add(label);
+			return code;
+		}
+
+		/// <summary>Add an ExceptionBlock to a code instruction and return it</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="block">The <see cref="ExceptionBlock"/></param>
+		/// <returns>The same code instruction</returns>
+		public static CodeInstruction WithBlock(this CodeInstruction code, ExceptionBlock block)
+		{
+			code.blocks.Add(block);
+			return code;
+		}
+
+		/// <summary>Extracts all labels from a code instruction and returns them</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <returns>A list of <see cref="Label"/></returns>
+		public static List<Label> ExtractLabels(this CodeInstruction code)
+		{
+			var labels = new List<Label>(code.labels);
+			code.labels.Clear();
+			return labels;
+		}
 	}
 
 	/// <summary>General extensions for collections</summary>
