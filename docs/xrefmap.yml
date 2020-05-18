@@ -1039,6 +1039,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.Calls
   nameWithType: CodeInstructionExtensions.Calls
+- uid: HarmonyLib.CodeInstructionExtensions.ExtractLabels(HarmonyLib.CodeInstruction)
+  name: ExtractLabels(CodeInstruction)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ExtractLabels_HarmonyLib_CodeInstruction_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.ExtractLabels(HarmonyLib.CodeInstruction)
+  fullName: HarmonyLib.CodeInstructionExtensions.ExtractLabels(HarmonyLib.CodeInstruction)
+  nameWithType: CodeInstructionExtensions.ExtractLabels(CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.ExtractLabels*
+  name: ExtractLabels
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ExtractLabels_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.ExtractLabels
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.ExtractLabels
+  nameWithType: CodeInstructionExtensions.ExtractLabels
 - uid: HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction,System.Reflection.Emit.OpCode,System.Object)
   name: Is(CodeInstruction, OpCode, Object)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Object_
@@ -1196,6 +1209,32 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.StoresField
   nameWithType: CodeInstructionExtensions.StoresField
+- uid: HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock)
+  name: WithBlock(CodeInstruction, ExceptionBlock)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithBlock_HarmonyLib_CodeInstruction_HarmonyLib_ExceptionBlock_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock)
+  fullName: HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction, HarmonyLib.ExceptionBlock)
+  nameWithType: CodeInstructionExtensions.WithBlock(CodeInstruction, ExceptionBlock)
+- uid: HarmonyLib.CodeInstructionExtensions.WithBlock*
+  name: WithBlock
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithBlock_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.WithBlock
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.WithBlock
+  nameWithType: CodeInstructionExtensions.WithBlock
+- uid: HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label)
+  name: WithLabel(CodeInstruction, Label)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabel_HarmonyLib_CodeInstruction_System_Reflection_Emit_Label_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label)
+  fullName: HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction, System.Reflection.Emit.Label)
+  nameWithType: CodeInstructionExtensions.WithLabel(CodeInstruction, Label)
+- uid: HarmonyLib.CodeInstructionExtensions.WithLabel*
+  name: WithLabel
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabel_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.WithLabel
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.WithLabel
+  nameWithType: CodeInstructionExtensions.WithLabel
 - uid: HarmonyLib.CollectionExtensions
   name: CollectionExtensions
   href: api/HarmonyLib.CollectionExtensions.html

@@ -227,6 +227,56 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionExtensions_ExtractLabels_HarmonyLib_CodeInstruction_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionExtensions.ExtractLabels(HarmonyLib.CodeInstruction)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L442">View Source</a>
+  </span>
+  <a id="HarmonyLib_CodeInstructionExtensions_ExtractLabels_" data-uid="HarmonyLib.CodeInstructionExtensions.ExtractLabels*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_ExtractLabels_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.ExtractLabels(HarmonyLib.CodeInstruction)">ExtractLabels(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Extracts all labels from a code instruction and returns them</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;Label&gt; ExtractLabels(this CodeInstruction code)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><p>A list of <span class="xref">System.Reflection.Emit.Label</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction%2CSystem.Reflection.Emit.OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -955,6 +1005,118 @@
       <tr>
         <td><span class="xref">System.Boolean</span></td>
         <td><p>True if the instruction stores this field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionExtensions_WithBlock_HarmonyLib_CodeInstruction_HarmonyLib_ExceptionBlock_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction%2CHarmonyLib.ExceptionBlock)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L433">View Source</a>
+  </span>
+  <a id="HarmonyLib_CodeInstructionExtensions_WithBlock_" data-uid="HarmonyLib.CodeInstructionExtensions.WithBlock*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_WithBlock_HarmonyLib_CodeInstruction_HarmonyLib_ExceptionBlock_" data-uid="HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock)">WithBlock(CodeInstruction, ExceptionBlock)</h4>
+  <div class="markdown level1 summary"><p>Add an ExceptionBlock to a code instruction and return it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction WithBlock(this CodeInstruction code, ExceptionBlock block)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></td>
+        <td><span class="parametername">block</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The same code instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionExtensions_WithLabel_HarmonyLib_CodeInstruction_System_Reflection_Emit_Label_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction%2CSystem.Reflection.Emit.Label)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L423">View Source</a>
+  </span>
+  <a id="HarmonyLib_CodeInstructionExtensions_WithLabel_" data-uid="HarmonyLib.CodeInstructionExtensions.WithLabel*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_WithLabel_HarmonyLib_CodeInstruction_System_Reflection_Emit_Label_" data-uid="HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label)">WithLabel(CodeInstruction, Label)</h4>
+  <div class="markdown level1 summary"><p>Add a label to a code instruction and return it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction WithLabel(this CodeInstruction code, Label label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
+        <td><span class="parametername">label</span></td>
+        <td><p>The <span class="xref">System.Reflection.Emit.Label</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The same code instruction</p>
 </td>
       </tr>
     </tbody>
