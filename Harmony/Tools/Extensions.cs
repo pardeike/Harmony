@@ -416,9 +416,9 @@ namespace HarmonyLib
 			return code.opcode == stfldCode && Equals(code.operand, field);
 		}
 
-		/// <summary>Add a label to a code instruction and return it</summary>
+		/// <summary>Add labels to a code instruction and return it</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="labels">One ore several <see cref="Label"/> to add</param>
+		/// <param name="labels">One or several <see cref="Label"/> to add</param>
 		/// <returns>The same code instruction</returns>
 		public static CodeInstruction WithLabels(this CodeInstruction code, params Label[] labels)
 		{
@@ -426,7 +426,7 @@ namespace HarmonyLib
 			return code;
 		}
 
-		/// <summary>Add a label to a code instruction and return it</summary>
+		/// <summary>Add labels to a code instruction and return it</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="labels">An enumeration of <see cref="Label"/></param>
 		/// <returns>The same code instruction</returns>
@@ -455,7 +455,7 @@ namespace HarmonyLib
 			return other.WithLabels(code.ExtractLabels());
 		}
 
-		/// <summary>Add an ExceptionBlock to a code instruction and return it</summary>
+		/// <summary>Add ExceptionBlocks to a code instruction and return it</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="blocks">One or several <see cref="ExceptionBlock"/> to add</param>
 		/// <returns>The same code instruction</returns>
@@ -465,7 +465,7 @@ namespace HarmonyLib
 			return code;
 		}
 
-		/// <summary>Add an ExceptionBlock to a code instruction and return it</summary>
+		/// <summary>Add ExceptionBlocks to a code instruction and return it</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="blocks">An enumeration of <see cref="ExceptionBlock"/></param>
 		/// <returns>The same code instruction</returns>
