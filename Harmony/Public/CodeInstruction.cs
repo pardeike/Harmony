@@ -85,7 +85,7 @@ namespace HarmonyLib
 
 		// --- CALLING
 
-		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
 		/// <param name="type">The class/type where the method is declared</param>
 		/// <param name="name">The name of the method (case sensitive)</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
@@ -99,7 +99,7 @@ namespace HarmonyLib
 			return new CodeInstruction(OpCodes.Call, method);
 		}
 
-		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
 		/// <param name="typeColonMethodname">The full name like <c>Namespace.Type1.Type2:MethodName</c> of the type where the method is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
 		/// <param name="generics">Optional list of types that define the generic version of the method</param>
@@ -112,7 +112,7 @@ namespace HarmonyLib
 			return new CodeInstruction(OpCodes.Call, method);
 		}
 
-		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns></returns>
 		///
@@ -121,7 +121,7 @@ namespace HarmonyLib
 			return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
 		}
 
-		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns></returns>
 		///
@@ -130,7 +130,7 @@ namespace HarmonyLib
 			return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
 		}
 
-		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns></returns>
 		///
@@ -139,7 +139,7 @@ namespace HarmonyLib
 			return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
 		}
 
-		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns></returns>
 		///
@@ -150,27 +150,29 @@ namespace HarmonyLib
 
 		// --- FIELDS
 
-		/// <summary>Create a CodeInstruction loading a field (LDFLD/LDFLDA)</summary>
+		/// <summary>Creates a CodeInstruction loading a field (LD[S]FLD[A])</summary>
 		/// <param name="type">The class/type where the field is defined</param>
 		/// <param name="name">The name of the field (case sensitive)</param>
+		/// <param name="isStatic">Use static field form</param>
 		/// <param name="useAddress">Use address of field</param>
 		/// <returns></returns>
-		public static CodeInstruction LoadField(Type type, string name, bool useAddress = false)
+		public static CodeInstruction LoadField(Type type, string name, bool isStatic = false, bool useAddress = false)
 		{
 			var field = AccessTools.Field(type, name);
 			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
-			return new CodeInstruction(useAddress ? OpCodes.Ldflda : OpCodes.Ldfld, field);
+			return new CodeInstruction(useAddress ? (isStatic ? OpCodes.Ldsflda : OpCodes.Ldflda) : (isStatic ? OpCodes.Ldsfld : OpCodes.Ldfld), field);
 		}
 
-		/// <summary>Create a CodeInstruction storing to a field (STFLD)</summary>
+		/// <summary>Creates a CodeInstruction storing to a field (ST[S]FLD)</summary>
 		/// <param name="type">The class/type where the field is defined</param>
 		/// <param name="name">The name of the field (case sensitive)</param>
+		/// <param name="isStatic">Use static field form</param>
 		/// <returns></returns>
-		public static CodeInstruction StoreField(Type type, string name)
+		public static CodeInstruction StoreField(Type type, string name, bool isStatic = false)
 		{
 			var field = AccessTools.Field(type, name);
 			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
-			return new CodeInstruction(OpCodes.Stfld, field);
+			return new CodeInstruction(isStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
 		}
 
 		// --- TOSTRING
