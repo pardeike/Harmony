@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Emit;
 
 namespace HarmonyLib
@@ -45,6 +47,8 @@ namespace HarmonyLib
 			blocks = instruction.blocks.ToList();
 		}
 
+		// --- CLONING
+
 		/// <summary>Clones a CodeInstruction and resets its labels and exception blocks</summary>
 		/// <returns>A lightweight copy of this code instruction</returns>
 		///
@@ -78,6 +82,98 @@ namespace HarmonyLib
 			instruction.operand = operand;
 			return instruction;
 		}
+
+		// --- CALLING
+
+		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <param name="type">The class/type where the method is declared</param>
+		/// <param name="name">The name of the method (case sensitive)</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <param name="generics">Optional list of types that define the generic version of the method</param>
+		/// <returns>A code instruction that calls the method matching the arguments</returns>
+		///
+		public static CodeInstruction Call(Type type, string name, Type[] parameters = null, Type[] generics = null)
+		{
+			var method = AccessTools.Method(type, name, parameters, generics);
+			if (method == null) throw new ArgumentException($"No method found for type={type}, name={name}, parameters={parameters.Description()}, generics={generics.Description()}");
+			return new CodeInstruction(OpCodes.Call, method);
+		}
+
+		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <param name="typeColonMethodname">The full name like <c>Namespace.Type1.Type2:MethodName</c> of the type where the method is declared</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <param name="generics">Optional list of types that define the generic version of the method</param>
+		/// <returns>A code instruction that calls the method matching the arguments</returns>
+		///
+		public static CodeInstruction Call(string typeColonMethodname, Type[] parameters = null, Type[] generics = null)
+		{
+			var method = AccessTools.Method(typeColonMethodname, parameters, generics);
+			if (method == null) throw new ArgumentException($"No method found for {typeColonMethodname}, parameters={parameters.Description()}, generics={generics.Description()}");
+			return new CodeInstruction(OpCodes.Call, method);
+		}
+
+		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns></returns>
+		///
+		public static CodeInstruction Call(Expression<Action> expression)
+		{
+			return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
+		}
+
+		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns></returns>
+		///
+		public static CodeInstruction Call<T>(Expression<Action<T>> expression)
+		{
+			return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
+		}
+
+		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns></returns>
+		///
+		public static CodeInstruction Call<T, TResult>(Expression<Func<T, TResult>> expression)
+		{
+			return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
+		}
+
+		/// <summary>Create a CodeInstruction calling a method (CALL)</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns></returns>
+		///
+		public static CodeInstruction Call(LambdaExpression expression)
+		{
+			return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
+		}
+
+		// --- FIELDS
+
+		/// <summary>Create a CodeInstruction loading a field (LDFLD/LDFLDA)</summary>
+		/// <param name="type">The class/type where the field is defined</param>
+		/// <param name="name">The name of the field (case sensitive)</param>
+		/// <param name="useAddress">Use address of field</param>
+		/// <returns></returns>
+		public static CodeInstruction LoadField(Type type, string name, bool useAddress = false)
+		{
+			var field = AccessTools.Field(type, name);
+			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
+			return new CodeInstruction(useAddress ? OpCodes.Ldflda : OpCodes.Ldfld, field);
+		}
+
+		/// <summary>Create a CodeInstruction storing to a field (STFLD)</summary>
+		/// <param name="type">The class/type where the field is defined</param>
+		/// <param name="name">The name of the field (case sensitive)</param>
+		/// <returns></returns>
+		public static CodeInstruction StoreField(Type type, string name)
+		{
+			var field = AccessTools.Field(type, name);
+			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
+			return new CodeInstruction(OpCodes.Stfld, field);
+		}
+
+		// --- TOSTRING
 
 		/// <summary>Returns a string representation of the code instruction</summary>
 		/// <returns>A string representation of the code instruction</returns>
