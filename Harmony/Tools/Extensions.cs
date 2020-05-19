@@ -449,7 +449,7 @@ namespace HarmonyLib
 		/// <summary>Moves all labels from the code instruction to a different one</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the labels from</param>
 		/// <param name="other">The <see cref="CodeInstruction"/> to move the labels to</param>
-		/// <returns>The same code instruction</returns>
+		/// <returns>The code instruction labels were moved from (now empty)</returns>
 		public static CodeInstruction MoveLabelsTo(this CodeInstruction code, CodeInstruction other)
 		{
 			_ = other.WithLabels(code.ExtractLabels());
@@ -459,7 +459,7 @@ namespace HarmonyLib
 		/// <summary>Moves all labels from a different code instruction to the current one</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the labels from</param>
 		/// <param name="other">The <see cref="CodeInstruction"/> to move the labels to</param>
-		/// <returns>The same code instruction</returns>
+		/// <returns>The code instruction that received the labels</returns>
 		public static CodeInstruction MoveLabelsFrom(this CodeInstruction code, CodeInstruction other)
 		{
 			return code.WithLabels(other.ExtractLabels());
@@ -498,7 +498,7 @@ namespace HarmonyLib
 		/// <summary>Moves all ExceptionBlocks from the code instruction to a different one</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the ExceptionBlocks from</param>
 		/// <param name="other">The <see cref="CodeInstruction"/> to move the ExceptionBlocks to</param>
-		/// <returns>The same code instruction</returns>
+		/// <returns>The code instruction blocks were moved from (now empty)</returns>
 		public static CodeInstruction MoveBlocksTo(this CodeInstruction code, CodeInstruction other)
 		{
 			_ = other.WithBlocks(code.ExtractBlocks());
@@ -508,8 +508,8 @@ namespace HarmonyLib
 		/// <summary>Moves all ExceptionBlocks from a different code instruction to the current one</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the ExceptionBlocks from</param>
 		/// <param name="other">The <see cref="CodeInstruction"/> to move the ExceptionBlocks to</param>
-		/// <returns>The same code instruction</returns>
-		public static CodeInstruction MoveBLocksFrom(this CodeInstruction code, CodeInstruction other)
+		/// <returns>The code instruction that received the blocks</returns>
+		public static CodeInstruction MoveBlocksFrom(this CodeInstruction code, CodeInstruction other)
 		{
 			return code.WithBlocks(other.ExtractBlocks());
 		}

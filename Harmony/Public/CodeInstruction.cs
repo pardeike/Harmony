@@ -153,26 +153,24 @@ namespace HarmonyLib
 		/// <summary>Creates a CodeInstruction loading a field (LD[S]FLD[A])</summary>
 		/// <param name="type">The class/type where the field is defined</param>
 		/// <param name="name">The name of the field (case sensitive)</param>
-		/// <param name="isStatic">Use static field form</param>
 		/// <param name="useAddress">Use address of field</param>
 		/// <returns></returns>
-		public static CodeInstruction LoadField(Type type, string name, bool isStatic = false, bool useAddress = false)
+		public static CodeInstruction LoadField(Type type, string name, bool useAddress = false)
 		{
 			var field = AccessTools.Field(type, name);
 			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
-			return new CodeInstruction(useAddress ? (isStatic ? OpCodes.Ldsflda : OpCodes.Ldflda) : (isStatic ? OpCodes.Ldsfld : OpCodes.Ldfld), field);
+			return new CodeInstruction(useAddress ? (field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda) : (field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld), field);
 		}
 
 		/// <summary>Creates a CodeInstruction storing to a field (ST[S]FLD)</summary>
 		/// <param name="type">The class/type where the field is defined</param>
 		/// <param name="name">The name of the field (case sensitive)</param>
-		/// <param name="isStatic">Use static field form</param>
 		/// <returns></returns>
-		public static CodeInstruction StoreField(Type type, string name, bool isStatic = false)
+		public static CodeInstruction StoreField(Type type, string name)
 		{
 			var field = AccessTools.Field(type, name);
 			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
-			return new CodeInstruction(isStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
+			return new CodeInstruction(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
 		}
 
 		// --- TOSTRING
