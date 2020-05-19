@@ -948,6 +948,64 @@ references:
   commentId: F:HarmonyLib.CodeInstruction.blocks
   fullName: HarmonyLib.CodeInstruction.blocks
   nameWithType: CodeInstruction.blocks
+- uid: HarmonyLib.CodeInstruction.Call(System.Linq.Expressions.Expression{System.Action})
+  name: Call(Expression<Action>)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Call_System_Linq_Expressions_Expression_System_Action__
+  commentId: M:HarmonyLib.CodeInstruction.Call(System.Linq.Expressions.Expression{System.Action})
+  name.vb: Call(Expression(Of Action))
+  fullName: HarmonyLib.CodeInstruction.Call(System.Linq.Expressions.Expression<System.Action>)
+  fullName.vb: HarmonyLib.CodeInstruction.Call(System.Linq.Expressions.Expression(Of System.Action))
+  nameWithType: CodeInstruction.Call(Expression<Action>)
+  nameWithType.vb: CodeInstruction.Call(Expression(Of Action))
+- uid: HarmonyLib.CodeInstruction.Call(System.Linq.Expressions.LambdaExpression)
+  name: Call(LambdaExpression)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Call_System_Linq_Expressions_LambdaExpression_
+  commentId: M:HarmonyLib.CodeInstruction.Call(System.Linq.Expressions.LambdaExpression)
+  fullName: HarmonyLib.CodeInstruction.Call(System.Linq.Expressions.LambdaExpression)
+  nameWithType: CodeInstruction.Call(LambdaExpression)
+- uid: HarmonyLib.CodeInstruction.Call(System.String,System.Type[],System.Type[])
+  name: Call(String, Type[], Type[])
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Call_System_String_System_Type___System_Type___
+  commentId: M:HarmonyLib.CodeInstruction.Call(System.String,System.Type[],System.Type[])
+  name.vb: Call(String, Type(), Type())
+  fullName: HarmonyLib.CodeInstruction.Call(System.String, System.Type[], System.Type[])
+  fullName.vb: HarmonyLib.CodeInstruction.Call(System.String, System.Type(), System.Type())
+  nameWithType: CodeInstruction.Call(String, Type[], Type[])
+  nameWithType.vb: CodeInstruction.Call(String, Type(), Type())
+- uid: HarmonyLib.CodeInstruction.Call(System.Type,System.String,System.Type[],System.Type[])
+  name: Call(Type, String, Type[], Type[])
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Call_System_Type_System_String_System_Type___System_Type___
+  commentId: M:HarmonyLib.CodeInstruction.Call(System.Type,System.String,System.Type[],System.Type[])
+  name.vb: Call(Type, String, Type(), Type())
+  fullName: HarmonyLib.CodeInstruction.Call(System.Type, System.String, System.Type[], System.Type[])
+  fullName.vb: HarmonyLib.CodeInstruction.Call(System.Type, System.String, System.Type(), System.Type())
+  nameWithType: CodeInstruction.Call(Type, String, Type[], Type[])
+  nameWithType.vb: CodeInstruction.Call(Type, String, Type(), Type())
+- uid: HarmonyLib.CodeInstruction.Call*
+  name: Call
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Call_
+  commentId: Overload:HarmonyLib.CodeInstruction.Call
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.Call
+  nameWithType: CodeInstruction.Call
+- uid: HarmonyLib.CodeInstruction.Call``1(System.Linq.Expressions.Expression{System.Action{``0}})
+  name: Call<T>(Expression<Action<T>>)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Call__1_System_Linq_Expressions_Expression_System_Action___0___
+  commentId: M:HarmonyLib.CodeInstruction.Call``1(System.Linq.Expressions.Expression{System.Action{``0}})
+  name.vb: Call(Of T)(Expression(Of Action(Of T)))
+  fullName: HarmonyLib.CodeInstruction.Call<T>(System.Linq.Expressions.Expression<System.Action<T>>)
+  fullName.vb: HarmonyLib.CodeInstruction.Call(Of T)(System.Linq.Expressions.Expression(Of System.Action(Of T)))
+  nameWithType: CodeInstruction.Call<T>(Expression<Action<T>>)
+  nameWithType.vb: CodeInstruction.Call(Of T)(Expression(Of Action(Of T)))
+- uid: HarmonyLib.CodeInstruction.Call``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})
+  name: Call<T, TResult>(Expression<Func<T, TResult>>)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Call__2_System_Linq_Expressions_Expression_System_Func___0___1___
+  commentId: M:HarmonyLib.CodeInstruction.Call``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})
+  name.vb: Call(Of T, TResult)(Expression(Of Func(Of T, TResult)))
+  fullName: HarmonyLib.CodeInstruction.Call<T, TResult>(System.Linq.Expressions.Expression<System.Func<T, TResult>>)
+  fullName.vb: HarmonyLib.CodeInstruction.Call(Of T, TResult)(System.Linq.Expressions.Expression(Of System.Func(Of T, TResult)))
+  nameWithType: CodeInstruction.Call<T, TResult>(Expression<Func<T, TResult>>)
+  nameWithType.vb: CodeInstruction.Call(Of T, TResult)(Expression(Of Func(Of T, TResult)))
 - uid: HarmonyLib.CodeInstruction.Clone
   name: Clone()
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Clone
@@ -979,6 +1037,19 @@ references:
   commentId: F:HarmonyLib.CodeInstruction.labels
   fullName: HarmonyLib.CodeInstruction.labels
   nameWithType: CodeInstruction.labels
+- uid: HarmonyLib.CodeInstruction.LoadField(System.Type,System.String,System.Boolean)
+  name: LoadField(Type, String, Boolean)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadField_System_Type_System_String_System_Boolean_
+  commentId: M:HarmonyLib.CodeInstruction.LoadField(System.Type,System.String,System.Boolean)
+  fullName: HarmonyLib.CodeInstruction.LoadField(System.Type, System.String, System.Boolean)
+  nameWithType: CodeInstruction.LoadField(Type, String, Boolean)
+- uid: HarmonyLib.CodeInstruction.LoadField*
+  name: LoadField
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadField_
+  commentId: Overload:HarmonyLib.CodeInstruction.LoadField
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.LoadField
+  nameWithType: CodeInstruction.LoadField
 - uid: HarmonyLib.CodeInstruction.opcode
   name: opcode
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_opcode
@@ -991,6 +1062,19 @@ references:
   commentId: F:HarmonyLib.CodeInstruction.operand
   fullName: HarmonyLib.CodeInstruction.operand
   nameWithType: CodeInstruction.operand
+- uid: HarmonyLib.CodeInstruction.StoreField(System.Type,System.String)
+  name: StoreField(Type, String)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreField_System_Type_System_String_
+  commentId: M:HarmonyLib.CodeInstruction.StoreField(System.Type,System.String)
+  fullName: HarmonyLib.CodeInstruction.StoreField(System.Type, System.String)
+  nameWithType: CodeInstruction.StoreField(Type, String)
+- uid: HarmonyLib.CodeInstruction.StoreField*
+  name: StoreField
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreField_
+  commentId: Overload:HarmonyLib.CodeInstruction.StoreField
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.StoreField
+  nameWithType: CodeInstruction.StoreField
 - uid: HarmonyLib.CodeInstruction.ToString
   name: ToString()
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_ToString
@@ -1039,6 +1123,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.Calls
   nameWithType: CodeInstructionExtensions.Calls
+- uid: HarmonyLib.CodeInstructionExtensions.ExtractBlocks(HarmonyLib.CodeInstruction)
+  name: ExtractBlocks(CodeInstruction)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ExtractBlocks_HarmonyLib_CodeInstruction_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.ExtractBlocks(HarmonyLib.CodeInstruction)
+  fullName: HarmonyLib.CodeInstructionExtensions.ExtractBlocks(HarmonyLib.CodeInstruction)
+  nameWithType: CodeInstructionExtensions.ExtractBlocks(CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.ExtractBlocks*
+  name: ExtractBlocks
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ExtractBlocks_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.ExtractBlocks
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.ExtractBlocks
+  nameWithType: CodeInstructionExtensions.ExtractBlocks
 - uid: HarmonyLib.CodeInstructionExtensions.ExtractLabels(HarmonyLib.CodeInstruction)
   name: ExtractLabels(CodeInstruction)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ExtractLabels_HarmonyLib_CodeInstruction_
@@ -1183,6 +1280,32 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsField
   nameWithType: CodeInstructionExtensions.LoadsField
+- uid: HarmonyLib.CodeInstructionExtensions.MoveBlocksTo(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
+  name: MoveBlocksTo(CodeInstruction, CodeInstruction)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBlocksTo_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.MoveBlocksTo(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
+  fullName: HarmonyLib.CodeInstructionExtensions.MoveBlocksTo(HarmonyLib.CodeInstruction, HarmonyLib.CodeInstruction)
+  nameWithType: CodeInstructionExtensions.MoveBlocksTo(CodeInstruction, CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.MoveBlocksTo*
+  name: MoveBlocksTo
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBlocksTo_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.MoveBlocksTo
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.MoveBlocksTo
+  nameWithType: CodeInstructionExtensions.MoveBlocksTo
+- uid: HarmonyLib.CodeInstructionExtensions.MoveLabelsTo(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
+  name: MoveLabelsTo(CodeInstruction, CodeInstruction)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveLabelsTo_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.MoveLabelsTo(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
+  fullName: HarmonyLib.CodeInstructionExtensions.MoveLabelsTo(HarmonyLib.CodeInstruction, HarmonyLib.CodeInstruction)
+  nameWithType: CodeInstructionExtensions.MoveLabelsTo(CodeInstruction, CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.MoveLabelsTo*
+  name: MoveLabelsTo
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveLabelsTo_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.MoveLabelsTo
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.MoveLabelsTo
+  nameWithType: CodeInstructionExtensions.MoveLabelsTo
 - uid: HarmonyLib.CodeInstructionExtensions.OperandIs(HarmonyLib.CodeInstruction,System.Object)
   name: OperandIs(CodeInstruction, Object)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_OperandIs_HarmonyLib_CodeInstruction_System_Object_
@@ -1209,32 +1332,56 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.StoresField
   nameWithType: CodeInstructionExtensions.StoresField
-- uid: HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock)
-  name: WithBlock(CodeInstruction, ExceptionBlock)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithBlock_HarmonyLib_CodeInstruction_HarmonyLib_ExceptionBlock_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock)
-  fullName: HarmonyLib.CodeInstructionExtensions.WithBlock(HarmonyLib.CodeInstruction, HarmonyLib.ExceptionBlock)
-  nameWithType: CodeInstructionExtensions.WithBlock(CodeInstruction, ExceptionBlock)
-- uid: HarmonyLib.CodeInstructionExtensions.WithBlock*
-  name: WithBlock
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithBlock_
-  commentId: Overload:HarmonyLib.CodeInstructionExtensions.WithBlock
+- uid: HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock[])
+  name: WithBlocks(CodeInstruction, ExceptionBlock[])
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithBlocks_HarmonyLib_CodeInstruction_HarmonyLib_ExceptionBlock___
+  commentId: M:HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock[])
+  name.vb: WithBlocks(CodeInstruction, ExceptionBlock())
+  fullName: HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction, HarmonyLib.ExceptionBlock[])
+  fullName.vb: HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction, HarmonyLib.ExceptionBlock())
+  nameWithType: CodeInstructionExtensions.WithBlocks(CodeInstruction, ExceptionBlock[])
+  nameWithType.vb: CodeInstructionExtensions.WithBlocks(CodeInstruction, ExceptionBlock())
+- uid: HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction,System.Collections.Generic.IEnumerable{HarmonyLib.ExceptionBlock})
+  name: WithBlocks(CodeInstruction, IEnumerable<ExceptionBlock>)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithBlocks_HarmonyLib_CodeInstruction_System_Collections_Generic_IEnumerable_HarmonyLib_ExceptionBlock__
+  commentId: M:HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction,System.Collections.Generic.IEnumerable{HarmonyLib.ExceptionBlock})
+  name.vb: WithBlocks(CodeInstruction, IEnumerable(Of ExceptionBlock))
+  fullName: HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction, System.Collections.Generic.IEnumerable<HarmonyLib.ExceptionBlock>)
+  fullName.vb: HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction, System.Collections.Generic.IEnumerable(Of HarmonyLib.ExceptionBlock))
+  nameWithType: CodeInstructionExtensions.WithBlocks(CodeInstruction, IEnumerable<ExceptionBlock>)
+  nameWithType.vb: CodeInstructionExtensions.WithBlocks(CodeInstruction, IEnumerable(Of ExceptionBlock))
+- uid: HarmonyLib.CodeInstructionExtensions.WithBlocks*
+  name: WithBlocks
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithBlocks_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.WithBlocks
   isSpec: "True"
-  fullName: HarmonyLib.CodeInstructionExtensions.WithBlock
-  nameWithType: CodeInstructionExtensions.WithBlock
-- uid: HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label)
-  name: WithLabel(CodeInstruction, Label)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabel_HarmonyLib_CodeInstruction_System_Reflection_Emit_Label_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label)
-  fullName: HarmonyLib.CodeInstructionExtensions.WithLabel(HarmonyLib.CodeInstruction, System.Reflection.Emit.Label)
-  nameWithType: CodeInstructionExtensions.WithLabel(CodeInstruction, Label)
-- uid: HarmonyLib.CodeInstructionExtensions.WithLabel*
-  name: WithLabel
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabel_
-  commentId: Overload:HarmonyLib.CodeInstructionExtensions.WithLabel
+  fullName: HarmonyLib.CodeInstructionExtensions.WithBlocks
+  nameWithType: CodeInstructionExtensions.WithBlocks
+- uid: HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction,System.Collections.Generic.IEnumerable{System.Reflection.Emit.Label})
+  name: WithLabels(CodeInstruction, IEnumerable<Label>)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabels_HarmonyLib_CodeInstruction_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__
+  commentId: M:HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction,System.Collections.Generic.IEnumerable{System.Reflection.Emit.Label})
+  name.vb: WithLabels(CodeInstruction, IEnumerable(Of Label))
+  fullName: HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction, System.Collections.Generic.IEnumerable<System.Reflection.Emit.Label>)
+  fullName.vb: HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction, System.Collections.Generic.IEnumerable(Of System.Reflection.Emit.Label))
+  nameWithType: CodeInstructionExtensions.WithLabels(CodeInstruction, IEnumerable<Label>)
+  nameWithType.vb: CodeInstructionExtensions.WithLabels(CodeInstruction, IEnumerable(Of Label))
+- uid: HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label[])
+  name: WithLabels(CodeInstruction, Label[])
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabels_HarmonyLib_CodeInstruction_System_Reflection_Emit_Label___
+  commentId: M:HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label[])
+  name.vb: WithLabels(CodeInstruction, Label())
+  fullName: HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction, System.Reflection.Emit.Label[])
+  fullName.vb: HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction, System.Reflection.Emit.Label())
+  nameWithType: CodeInstructionExtensions.WithLabels(CodeInstruction, Label[])
+  nameWithType.vb: CodeInstructionExtensions.WithLabels(CodeInstruction, Label())
+- uid: HarmonyLib.CodeInstructionExtensions.WithLabels*
+  name: WithLabels
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabels_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.WithLabels
   isSpec: "True"
-  fullName: HarmonyLib.CodeInstructionExtensions.WithLabel
-  nameWithType: CodeInstructionExtensions.WithLabel
+  fullName: HarmonyLib.CodeInstructionExtensions.WithLabels
+  nameWithType: CodeInstructionExtensions.WithLabels
 - uid: HarmonyLib.CollectionExtensions
   name: CollectionExtensions
   href: api/HarmonyLib.CollectionExtensions.html
