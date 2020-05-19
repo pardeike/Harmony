@@ -1037,12 +1037,12 @@ references:
   commentId: F:HarmonyLib.CodeInstruction.labels
   fullName: HarmonyLib.CodeInstruction.labels
   nameWithType: CodeInstruction.labels
-- uid: HarmonyLib.CodeInstruction.LoadField(System.Type,System.String,System.Boolean,System.Boolean)
-  name: LoadField(Type, String, Boolean, Boolean)
-  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadField_System_Type_System_String_System_Boolean_System_Boolean_
-  commentId: M:HarmonyLib.CodeInstruction.LoadField(System.Type,System.String,System.Boolean,System.Boolean)
-  fullName: HarmonyLib.CodeInstruction.LoadField(System.Type, System.String, System.Boolean, System.Boolean)
-  nameWithType: CodeInstruction.LoadField(Type, String, Boolean, Boolean)
+- uid: HarmonyLib.CodeInstruction.LoadField(System.Type,System.String,System.Boolean)
+  name: LoadField(Type, String, Boolean)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadField_System_Type_System_String_System_Boolean_
+  commentId: M:HarmonyLib.CodeInstruction.LoadField(System.Type,System.String,System.Boolean)
+  fullName: HarmonyLib.CodeInstruction.LoadField(System.Type, System.String, System.Boolean)
+  nameWithType: CodeInstruction.LoadField(Type, String, Boolean)
 - uid: HarmonyLib.CodeInstruction.LoadField*
   name: LoadField
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadField_
@@ -1062,12 +1062,12 @@ references:
   commentId: F:HarmonyLib.CodeInstruction.operand
   fullName: HarmonyLib.CodeInstruction.operand
   nameWithType: CodeInstruction.operand
-- uid: HarmonyLib.CodeInstruction.StoreField(System.Type,System.String,System.Boolean)
-  name: StoreField(Type, String, Boolean)
-  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreField_System_Type_System_String_System_Boolean_
-  commentId: M:HarmonyLib.CodeInstruction.StoreField(System.Type,System.String,System.Boolean)
-  fullName: HarmonyLib.CodeInstruction.StoreField(System.Type, System.String, System.Boolean)
-  nameWithType: CodeInstruction.StoreField(Type, String, Boolean)
+- uid: HarmonyLib.CodeInstruction.StoreField(System.Type,System.String)
+  name: StoreField(Type, String)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreField_System_Type_System_String_
+  commentId: M:HarmonyLib.CodeInstruction.StoreField(System.Type,System.String)
+  fullName: HarmonyLib.CodeInstruction.StoreField(System.Type, System.String)
+  nameWithType: CodeInstruction.StoreField(Type, String)
 - uid: HarmonyLib.CodeInstruction.StoreField*
   name: StoreField
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreField_
@@ -1280,19 +1280,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsField
   nameWithType: CodeInstructionExtensions.LoadsField
-- uid: HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
-  name: MoveBLocksFrom(CodeInstruction, CodeInstruction)
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBLocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_
-  commentId: M:HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
-  fullName: HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom(HarmonyLib.CodeInstruction, HarmonyLib.CodeInstruction)
-  nameWithType: CodeInstructionExtensions.MoveBLocksFrom(CodeInstruction, CodeInstruction)
-- uid: HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom*
-  name: MoveBLocksFrom
-  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBLocksFrom_
-  commentId: Overload:HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom
+- uid: HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
+  name: MoveBlocksFrom(CodeInstruction, CodeInstruction)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
+  fullName: HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom(HarmonyLib.CodeInstruction, HarmonyLib.CodeInstruction)
+  nameWithType: CodeInstructionExtensions.MoveBlocksFrom(CodeInstruction, CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom*
+  name: MoveBlocksFrom
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom
   isSpec: "True"
-  fullName: HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom
-  nameWithType: CodeInstructionExtensions.MoveBLocksFrom
+  fullName: HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom
+  nameWithType: CodeInstructionExtensions.MoveBlocksFrom
 - uid: HarmonyLib.CodeInstructionExtensions.MoveBlocksTo(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
   name: MoveBlocksTo(CodeInstruction, CodeInstruction)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBlocksTo_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_
