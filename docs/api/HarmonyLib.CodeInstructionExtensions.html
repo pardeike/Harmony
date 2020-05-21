@@ -949,19 +949,19 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionExtensions_MoveBLocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom(HarmonyLib.CodeInstruction%2CHarmonyLib.CodeInstruction)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom(HarmonyLib.CodeInstruction%2CHarmonyLib.CodeInstruction)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L512">View Source</a>
   </span>
-  <a id="HarmonyLib_CodeInstructionExtensions_MoveBLocksFrom_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom*"></a>
-  <h4 id="HarmonyLib_CodeInstructionExtensions_MoveBLocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBLocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)">MoveBLocksFrom(CodeInstruction, CodeInstruction)</h4>
+  <a id="HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)">MoveBlocksFrom(CodeInstruction, CodeInstruction)</h4>
   <div class="markdown level1 summary"><p>Moves all ExceptionBlocks from a different code instruction to the current one</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeInstruction MoveBLocksFrom(this CodeInstruction code, CodeInstruction other)</code></pre>
+    <pre><code class="lang-csharp hljs">public static CodeInstruction MoveBlocksFrom(this CodeInstruction code, CodeInstruction other)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -998,7 +998,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
-        <td><p>The same code instruction</p>
+        <td><p>The code instruction that received the blocks</p>
 </td>
       </tr>
     </tbody>
@@ -1054,7 +1054,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
-        <td><p>The same code instruction</p>
+        <td><p>The code instruction blocks were moved from (now empty)</p>
 </td>
       </tr>
     </tbody>
@@ -1110,7 +1110,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
-        <td><p>The same code instruction</p>
+        <td><p>The code instruction that received the labels</p>
 </td>
       </tr>
     </tbody>
@@ -1166,7 +1166,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
-        <td><p>The same code instruction</p>
+        <td><p>The code instruction labels were moved from (now empty)</p>
 </td>
       </tr>
     </tbody>
