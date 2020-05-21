@@ -61,7 +61,7 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.5.11.1">
+		<PackageReference Include="MonoMod.Common" Version="20.5.21.1">
 			<PrivateAssets Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">All</PrivateAssets>
 		</PackageReference>
 
