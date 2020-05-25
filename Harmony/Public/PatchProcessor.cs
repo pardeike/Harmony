@@ -266,7 +266,7 @@ namespace HarmonyLib
 			var returnType = original is MethodInfo m ? m.ReturnType : typeof(void);
 			var parameterTypes = original.GetParameters().Select(pi => pi.ParameterType).ToList();
 			if (original.IsStatic == false) parameterTypes.Insert(0, original.DeclaringType);
-			var method = new DynamicMethodDefinition(original.Name, returnType, parameterTypes.ToArray());
+			var method = new DynamicMethodDefinition($"ILGenerator_{original.Name}", returnType, parameterTypes.ToArray());
 			return method.GetILGenerator();
 		}
 
