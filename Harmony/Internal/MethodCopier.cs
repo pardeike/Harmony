@@ -33,9 +33,9 @@ namespace HarmonyLib
 			transpilers.Add(transpiler);
 		}
 
-		internal void Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode)
+		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode)
 		{
-			reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode);
+			return reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode);
 		}
 
 		internal static List<CodeInstruction> GetInstructions(ILGenerator generator, MethodBase method, int maxTranspilers)
@@ -58,10 +58,7 @@ namespace HarmonyLib
 					copier.AddTranspiler(sortedTranspilers[i]);
 			}
 
-			var endLabels = new List<Label>();
-			var emitter = new Emitter(generator, false);
-			copier.Finalize(emitter, endLabels, out var hasReturnCode);
-			return emitter.GetInstructions().OrderBy(pair => pair.Key).Select(pair => pair.Value).ToList();
+			return copier.Finalize(null, null, out var _);
 		}
 	}
 
@@ -253,10 +250,10 @@ namespace HarmonyLib
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
 
-		internal void FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode)
+		internal List<CodeInstruction> FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode)
 		{
 			hasReturnCode = false;
-			if (generator == null) return;
+			if (generator == null) return null;
 
 			// pass1 - define labels and add them to instructions that are target of a jump
 			//
@@ -301,6 +298,9 @@ namespace HarmonyLib
 			var codeTranspiler = new CodeTranspiler(ilInstructions, argumentShift);
 			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
+
+			if (emitter == null)
+				return codeInstructions;
 
 			emitter.LogComment("start original");
 
@@ -391,6 +391,7 @@ namespace HarmonyLib
 			});
 
 			emitter.LogComment("end original");
+			return codeInstructions;
 		}
 
 		// interpret member info value

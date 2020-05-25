@@ -129,7 +129,7 @@ namespace HarmonyLib
 				copier.AddTranspiler(transpiler);
 
 			var endLabels = new List<Label>();
-			copier.Finalize(emitter, endLabels, out var hasReturnCode);
+			_ = copier.Finalize(emitter, endLabels, out var hasReturnCode);
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
