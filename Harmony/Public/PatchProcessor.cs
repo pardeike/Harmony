@@ -264,8 +264,7 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
 		{
-			var reader = MethodBodyReader.GetInstructions(generator ?? CreateILGenerator(), original);
-			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
+			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(), original, 0);
 		}
 
 		/// <summary>Returns the methods unmodified list of code instructions</summary>
@@ -276,8 +275,7 @@ namespace HarmonyLib
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
 		{
 			generator = CreateILGenerator();
-			var reader = MethodBodyReader.GetInstructions(generator, original);
-			return reader.Select(ins => ins.GetCodeInstruction()).ToList();
+			return MethodCopier.GetInstructions(generator, original, 0);
 		}
 
 		/// <summary>Returns the methods current list of code instructions after all existing transpilers have been applied</summary>

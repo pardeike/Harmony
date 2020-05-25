@@ -61,13 +61,13 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.5.21.1">
+		<PackageReference Include="MonoMod.Common" Version="20.5.24.1">
 			<PrivateAssets Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">All</PrivateAssets>
 		</PackageReference>
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="all" Condition="'$(TargetFramework)'=='net35'">
+		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 
@@ -99,7 +99,7 @@
 		<Delete Files="@(OldNugetPackages)" />
 	</Target>
 
-	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
+	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard)">
 		<!-- Merge all dependencies into Harmony whenever it makes sense and whenever possible. -->
 		<PropertyGroup>
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>

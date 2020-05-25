@@ -329,7 +329,6 @@ namespace HarmonyLib
 
 			// pass6 - mark labels and exceptions and emit codes
 			//
-			var idx = 0;
 			codeInstructions.Do(codeInstruction =>
 			{
 				// mark all labels
@@ -389,8 +388,6 @@ namespace HarmonyLib
 				}
 
 				codeInstruction.blocks.Do(block => emitter.MarkBlockAfter(block));
-
-				idx++;
 			});
 
 			emitter.LogComment("end original");
@@ -652,7 +649,7 @@ namespace HarmonyLib
 					min = mid + 1;
 			}
 
-			throw new Exception($"Cannot find instruction for {offset.ToString("X4")}");
+			throw new Exception($"Cannot find instruction for {offset:X4}");
 		}
 
 		static bool TargetsLocalVariable(OpCode opcode)
