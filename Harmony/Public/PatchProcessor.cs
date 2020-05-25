@@ -248,12 +248,24 @@ namespace HarmonyLib
 			return result;
 		}
 
-		/// <summary>Creates a new <see cref="ILGenerator">generator</see> to use when reading method bodies</summary>
+		/// <summary>Creates a new empty <see cref="ILGenerator">generator</see> to use when reading method bodies</summary>
 		/// <returns>A new <see cref="ILGenerator"/></returns>
 		/// 
 		public static ILGenerator CreateILGenerator()
 		{
 			var method = new DynamicMethodDefinition($"ILGenerator_{Guid.NewGuid()}", typeof(void), new Type[0]);
+			return method.GetILGenerator();
+		}
+
+		/// <summary>Creates a new <see cref="ILGenerator">generator</see> matching the method/constructor to use when reading method bodies</summary>
+		/// <param name="original">The original method/constructor to copy method information from</param>
+		/// <returns>A new <see cref="ILGenerator"/></returns>
+		/// 
+		public static ILGenerator CreateILGenerator(MethodBase original)
+		{
+			var returnType = original is MethodInfo m ? m.ReturnType : typeof(void);
+			var parameterTypes = original.GetParameters().Types();
+			var method = new DynamicMethodDefinition(original.Name, returnType, parameterTypes);
 			return method.GetILGenerator();
 		}
 
@@ -264,7 +276,7 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
 		{
-			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(), original, 0);
+			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(original), original, 0);
 		}
 
 		/// <summary>Returns the methods unmodified list of code instructions</summary>
@@ -274,7 +286,7 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, out ILGenerator generator)
 		{
-			generator = CreateILGenerator();
+			generator = CreateILGenerator(original);
 			return MethodCopier.GetInstructions(generator, original, 0);
 		}
 
@@ -286,7 +298,7 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetCurrentInstructions(MethodBase original, int maxTranspilers = int.MaxValue, ILGenerator generator = null)
 		{
-			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(), original, maxTranspilers);
+			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(original), original, maxTranspilers);
 		}
 
 		/// <summary>Returns the methods current list of code instructions after all existing transpilers have been applied</summary>
@@ -297,7 +309,7 @@ namespace HarmonyLib
 		/// 
 		public static List<CodeInstruction> GetCurrentInstructions(MethodBase original, out ILGenerator generator, int maxTranspilers = int.MaxValue)
 		{
-			generator = CreateILGenerator();
+			generator = CreateILGenerator(original);
 			return MethodCopier.GetInstructions(generator, original, maxTranspilers);
 		}
 
@@ -307,7 +319,7 @@ namespace HarmonyLib
 		///
 		public static IEnumerable<KeyValuePair<OpCode, object>> ReadMethodBody(MethodBase method)
 		{
-			return MethodBodyReader.GetInstructions(CreateILGenerator(), method)
+			return MethodBodyReader.GetInstructions(CreateILGenerator(method), method)
 				.Select(instr => new KeyValuePair<OpCode, object>(instr.opcode, instr.operand));
 		}
 

@@ -67,7 +67,7 @@
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'">
+		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="all" Condition="'$(TargetFramework)'=='net35'">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 
@@ -99,7 +99,7 @@
 		<Delete Files="@(OldNugetPackages)" />
 	</Target>
 
-	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard)">
+	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
 		<!-- Merge all dependencies into Harmony whenever it makes sense and whenever possible. -->
 		<PropertyGroup>
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
@@ -115,7 +115,7 @@
 		<ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" WorkingDirectory="$(WorkingDirectory)" />
 	</Target>
 
-	<Target Name="RemoveUnnecessaryDependencyFiles" AfterTargets="ILRepack;PostBuildEvent">
+	<Target Name="RemoveUnnecessaryDependencyFiles" AfterTargets="ILRepack;PostBuildEvent" Condition="'$(Configuration)'=='Release'">
 		<PropertyGroup>
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
 		</PropertyGroup>
