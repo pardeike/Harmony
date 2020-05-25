@@ -3723,6 +3723,12 @@ references:
   commentId: M:HarmonyLib.PatchProcessor.CreateILGenerator
   fullName: HarmonyLib.PatchProcessor.CreateILGenerator()
   nameWithType: PatchProcessor.CreateILGenerator()
+- uid: HarmonyLib.PatchProcessor.CreateILGenerator(System.Reflection.MethodBase)
+  name: CreateILGenerator(MethodBase)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_CreateILGenerator_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.PatchProcessor.CreateILGenerator(System.Reflection.MethodBase)
+  fullName: HarmonyLib.PatchProcessor.CreateILGenerator(System.Reflection.MethodBase)
+  nameWithType: PatchProcessor.CreateILGenerator(MethodBase)
 - uid: HarmonyLib.PatchProcessor.CreateILGenerator*
   name: CreateILGenerator
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_CreateILGenerator_
