@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.html",
-          "hash": "RTuvaMo65djQ0S90s/F7pA=="
+          "hash": "Hvvlv5YKsczMJ9F4/jCodA=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-2.html",
-          "hash": "i7EvcdLJSgKpIiIEOtRNNg=="
+          "hash": "of6H3n6i8HMhjMi700iJJA=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.html",
-          "hash": "011HIhhUCW16jKE+cDjpnw=="
+          "hash": "O+UCGbOSEnJRLgSGHkN0bw=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.ArgumentType.html",
-          "hash": "obvIr53WqpCaG8ZaZvOajg=="
+          "hash": "4d8qHaEZxcxW/MJ+IxfgTg=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeInstruction.html",
-          "hash": "QgHlEr1v1mB7dkz7EPxRwQ=="
+          "hash": "YNzeuPkQZOYZ5t/fs2BBjA=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeInstructionExtensions.html",
-          "hash": "VZf+QkH3HsM+OMNTbK88+A=="
+          "hash": "dJ06t6xXuRq3flWBDXVfrQ=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CollectionExtensions.html",
-          "hash": "zBwa+qI4NKIRNa+MVcWQ2w=="
+          "hash": "LrjpSo/hKhtiwvjUi3l9rA=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.DelegateTypeFactory.html",
-          "hash": "0lFk6qVzNXzVAcuuMwptTg=="
+          "hash": "1e7/d60k3CN7t/aBYbh6Yg=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.ExceptionBlock.html",
-          "hash": "JuRHgk5lXw0ZM97Z93oAAg=="
+          "hash": "Sv0qizBjImDNmuxd0ki3pQ=="
         }
       },
       "is_incremental": false,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.ExceptionBlockType.html",
-          "hash": "uQjQG/rw5CooBIrRd+4rIg=="
+          "hash": "DefO6elsv8toxoSKdXJ7Pg=="
         }
       },
       "is_incremental": false,
@@ -129,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.FastAccess.html",
-          "hash": "vBw9Q9IeusbQpBEFFv5knw=="
+          "hash": "jlEhRKcUT47jUDOdMHVheA=="
         }
       },
       "is_incremental": false,
@@ -141,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.FastInvokeHandler.html",
-          "hash": "oM9Cwy1sgQLRkymypLlvCw=="
+          "hash": "I02OWP27NojW+LbFMJpLMw=="
         }
       },
       "is_incremental": false,
@@ -153,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.FileLog.html",
-          "hash": "bZJdgQT0UMonG0Cl1SwmYg=="
+          "hash": "6vbjt3+wJWYkNTlohzhFcA=="
         }
       },
       "is_incremental": false,
@@ -165,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.GeneralExtensions.html",
-          "hash": "bKloUc/oWFfgzMf642C/CA=="
+          "hash": "pqpbvyuqc3sUDCPPunmKUg=="
         }
       },
       "is_incremental": false,
@@ -177,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.GetterHandler-2.html",
-          "hash": "Us4/7mELOzl6a8EKbLJZZw=="
+          "hash": "HToPptg7JaCSzFdAczjUDQ=="
         }
       },
       "is_incremental": false,
@@ -189,7 +189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Harmony.html",
-          "hash": "zxno+94lejeigndygggPHA=="
+          "hash": "X0GOSX/TAAcQMetiqxCbvw=="
         }
       },
       "is_incremental": false,
@@ -201,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyAfter.html",
-          "hash": "Qw3ZoSW3vkKvVv/eHxeblA=="
+          "hash": "QCJNRAENw4Bnmxi6WshEhw=="
         }
       },
       "is_incremental": false,
@@ -213,7 +213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyArgument.html",
-          "hash": "Q9UWxNwYCEkIEOhBfNPEWg=="
+          "hash": "8YIcB7l0OH4833Au/OSHRA=="
         }
       },
       "is_incremental": false,
@@ -225,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyAttribute.html",
-          "hash": "Peans7k4jTb7mZGRk2kYlg=="
+          "hash": "r/qMq/HcmwjJBUvx5iyD/Q=="
         }
       },
       "is_incremental": false,
@@ -237,7 +237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyBefore.html",
-          "hash": "ExUosofGUqjbtFN5kcJ+Hg=="
+          "hash": "jGue7o11gpIqODvATvukUg=="
         }
       },
       "is_incremental": false,
@@ -249,7 +249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyCleanup.html",
-          "hash": "b6UX7rG3bDtChAe9JjlvAA=="
+          "hash": "RE5KgLhpmfMN9gZi8cPagA=="
         }
       },
       "is_incremental": false,
@@ -261,7 +261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyDebug.html",
-          "hash": "Fgija44FZQs+tiuywumSjQ=="
+          "hash": "lrKMen3HxWjXmW/cESgCJQ=="
         }
       },
       "is_incremental": false,
@@ -273,7 +273,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyException.html",
-          "hash": "Fi8lxehs5LBKrA3CWaKeKg=="
+          "hash": "+w+AxkVLDlGJTtUckvqj+A=="
         }
       },
       "is_incremental": false,
@@ -285,7 +285,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyFinalizer.html",
-          "hash": "DLGyis4HeHf824iJkovQnQ=="
+          "hash": "U2igpq527jpzYJaUa9yXnw=="
         }
       },
       "is_incremental": false,
@@ -297,7 +297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyMethod.html",
-          "hash": "U8y9+APQTkn19/JXNYvHAw=="
+          "hash": "6MVsbBmTilAhzy7Zbr6GKA=="
         }
       },
       "is_incremental": false,
@@ -309,7 +309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyMethodExtensions.html",
-          "hash": "Ca0GmPznjJLbI1WLVTYS2A=="
+          "hash": "5O5NdIhwkeRvVBDwBx+x8A=="
         }
       },
       "is_incremental": false,
@@ -321,7 +321,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyPatch.html",
-          "hash": "7JRISPC1jhA3jHQVOMzXKA=="
+          "hash": "V9s/8LcvmMUHhMKzFBScfQ=="
         }
       },
       "is_incremental": false,
@@ -333,7 +333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyPatchAll.html",
-          "hash": "1ITJ0BThlKagndf4f3OoQA=="
+          "hash": "nXzpM8QPWtQq6uMocuoxqA=="
         }
       },
       "is_incremental": false,
@@ -345,7 +345,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyPatchType.html",
-          "hash": "Q9vGEulAmaeP/rgx7R+N2w=="
+          "hash": "iqMU2ja3i7J7M7Yna/i4AQ=="
         }
       },
       "is_incremental": false,
@@ -357,7 +357,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyPostfix.html",
-          "hash": "5H94OIakF4yZQzhAYww0UA=="
+          "hash": "BLw9O/CsM/TS67/A2RnYGA=="
         }
       },
       "is_incremental": false,
@@ -369,7 +369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyPrefix.html",
-          "hash": "oUw+8J+szbLXu0INhmS67A=="
+          "hash": "8WSqSyoxzMjZfDAobJrEog=="
         }
       },
       "is_incremental": false,
@@ -381,7 +381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyPrepare.html",
-          "hash": "YPmZJPej7cMZiGSWRIXx/w=="
+          "hash": "zRz2r18fVewRyWtZKlPciQ=="
         }
       },
       "is_incremental": false,
@@ -393,7 +393,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyPriority.html",
-          "hash": "woJhgzNHU1WV5C+bmHaWFA=="
+          "hash": "+4ENI6cpctZem7gp1aiTMw=="
         }
       },
       "is_incremental": false,
@@ -405,7 +405,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyReversePatch.html",
-          "hash": "Qp65e+nkgsOcGEfUn78c9Q=="
+          "hash": "QNyvTU6g0x3GLUkEEnsV/w=="
         }
       },
       "is_incremental": false,
@@ -417,7 +417,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyReversePatchType.html",
-          "hash": "RkuTgDKQWFYkOkqlq/7HhA=="
+          "hash": "LLABa3wW4nb3TwqcglDB2A=="
         }
       },
       "is_incremental": false,
@@ -429,7 +429,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyTargetMethod.html",
-          "hash": "YT+iYGG1tmyv+q41xb1H+w=="
+          "hash": "p0lT9LlO9PttAXYGgNXXzw=="
         }
       },
       "is_incremental": false,
@@ -441,7 +441,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyTargetMethods.html",
-          "hash": "bQKIpfO8IlO0XVsi5lndyQ=="
+          "hash": "tPvgIRrfsOOAZZs6JmoYXA=="
         }
       },
       "is_incremental": false,
@@ -453,7 +453,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyTranspiler.html",
-          "hash": "pjPtYbEcoz+jnOvQls4dzQ=="
+          "hash": "xDw5eOgogfvZLLjAT4UGtw=="
         }
       },
       "is_incremental": false,
@@ -465,7 +465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.InlineSignature.ModifierType.html",
-          "hash": "u1KRG11oflSbxSbttRl0gQ=="
+          "hash": "B0NedwiG4q6L+7sFVVAA3A=="
         }
       },
       "is_incremental": false,
@@ -477,7 +477,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.InlineSignature.html",
-          "hash": "DrYgEclZRNSRqWdl5y1uSw=="
+          "hash": "6/KWl5LJcKjh/gI8iqNJKA=="
         }
       },
       "is_incremental": false,
@@ -489,7 +489,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.InstantiationHandler-1.html",
-          "hash": "+hLG1r74s/QamIAaujr6eA=="
+          "hash": "Hu/RdcVjBI1eSVbfXQHutw=="
         }
       },
       "is_incremental": false,
@@ -501,7 +501,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Memory.html",
-          "hash": "phE6YNJvA+Q03zG3NmK/GA=="
+          "hash": "BHgS6ufs0a2rrGcZEr4R0w=="
         }
       },
       "is_incremental": false,
@@ -513,7 +513,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.MethodBaseExtensions.html",
-          "hash": "FULOqfO8XBoOP0dDFl5RMA=="
+          "hash": "/fbttGq7EGE/AgS8oTWqbw=="
         }
       },
       "is_incremental": false,
@@ -525,7 +525,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.MethodInvoker.html",
-          "hash": "/7Xth/vjsqdz3WRguPXkyQ=="
+          "hash": "XUeEOwS1zyAXB1HzakE+cQ=="
         }
       },
       "is_incremental": false,
@@ -537,7 +537,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.MethodType.html",
-          "hash": "/W5RBs3b5toUWMZX3kKy8w=="
+          "hash": "usa0aTAztHX7JABS6eXjeg=="
         }
       },
       "is_incremental": false,
@@ -549,7 +549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Patch.html",
-          "hash": "Bd7RThdZ/538GTMOuGoxkw=="
+          "hash": "ANANxqXkwFtVZd3UuLFG3Q=="
         }
       },
       "is_incremental": false,
@@ -561,7 +561,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchClassProcessor.html",
-          "hash": "PUxkn3ppPrZdTP4HTxGc4g=="
+          "hash": "WwqsKzSC73gaJEB6ynKzFQ=="
         }
       },
       "is_incremental": false,
@@ -573,7 +573,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchInfo.html",
-          "hash": "C+4DodFwFk8azWHi8jfpJg=="
+          "hash": "FrIrRnVOJeYrLztKPuJk1w=="
         }
       },
       "is_incremental": false,
@@ -585,7 +585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchProcessor.html",
-          "hash": "pugeamcUWsOTEP/jphmDng=="
+          "hash": "RGmOYEmPanRBL40fLPYH4g=="
         }
       },
       "is_incremental": false,
@@ -597,7 +597,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Patches.html",
-          "hash": "g6Fh1kyK6nuZv+2KaCOM9w=="
+          "hash": "7I4F1mu62L5QhZCrnR4Ffw=="
         }
       },
       "is_incremental": false,
@@ -609,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Priority.html",
-          "hash": "u3+Q20d8Ys1eUQftPlV/kQ=="
+          "hash": "nxX+JA3pXOuH+D4Es/C+bg=="
         }
       },
       "is_incremental": false,
@@ -621,7 +621,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.ReversePatcher.html",
-          "hash": "cAaIch66mlqzxW+a2yxrhg=="
+          "hash": "hmFTG5NHnbfRFjMpqXBPQA=="
         }
       },
       "is_incremental": false,
@@ -633,7 +633,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.SetterHandler-2.html",
-          "hash": "ls1Q8b/KWnk8N/m46ZZcmQ=="
+          "hash": "la7g+U6d9vXl8an0fIx3LA=="
         }
       },
       "is_incremental": false,
@@ -645,7 +645,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.SymbolExtensions.html",
-          "hash": "e33ffg2f41gDgP8aeE9WSQ=="
+          "hash": "6yVXFGQiCNWwaOxT8FGHew=="
         }
       },
       "is_incremental": false,
@@ -657,7 +657,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Transpilers.html",
-          "hash": "6exqNkJAE6nl3OVjx8l1Og=="
+          "hash": "+Oq2iCCvcnKy6fqS4oXGtw=="
         }
       },
       "is_incremental": false,
@@ -669,7 +669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Traverse-1.html",
-          "hash": "8u15nas39+cSODDF6fBrag=="
+          "hash": "GBGASq1sU77fEgCErVEAEA=="
         }
       },
       "is_incremental": false,
@@ -681,7 +681,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Traverse.html",
-          "hash": "fR8iNcMsYveR93TMOPyIrA=="
+          "hash": "DixVRQpFicGIa45KELxQbg=="
         }
       },
       "is_incremental": false,
@@ -693,7 +693,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.html",
-          "hash": "7Li7fCaVBmISzwDe7i5aFA=="
+          "hash": "wd//kF2UZJ/H/3PAwvu1eQ=="
         }
       },
       "is_incremental": false,
@@ -705,7 +705,7 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "6frNmpqts07vc2BUeXkn6A=="
+          "hash": "U8q9Q1Ad8o/gRQ0dRKxpxQ=="
         }
       },
       "is_incremental": false,
@@ -729,7 +729,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/annotations.html",
-          "hash": "R50C/WU4hAqvU4I+JKdvaQ=="
+          "hash": "ttC++PzCoNNUK6mawOy9TA=="
         }
       },
       "is_incremental": false,
@@ -741,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/basics.html",
-          "hash": "57lHBKvA5N9ud76UB+8s3g=="
+          "hash": "/m6XZJ883TfNXKH8IO5TjA=="
         }
       },
       "is_incremental": false,
@@ -753,7 +753,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/execution.html",
-          "hash": "5BAqaQhrg3Xkd5Gc+fseow=="
+          "hash": "ai02aQgHODob9YgZFm+KSg=="
         }
       },
       "is_incremental": false,
@@ -765,7 +765,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "a5YjFpYH3u06Ld2wXzaQWQ=="
+          "hash": "J7Uwl8f+3uwDA6ISaKP/2w=="
         }
       },
       "is_incremental": false,
@@ -777,7 +777,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/new.html",
-          "hash": "NxVZMbsHU0RV5EuILhHQ1Q=="
+          "hash": "kAUDTYuB4bMeCpxeBitwzA=="
         }
       },
       "is_incremental": false,
@@ -789,7 +789,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-auxilary.html",
-          "hash": "0T3yfALkdr32fq/h5SMw4w=="
+          "hash": "rs9QVT3C82K1AA1jTg/faQ=="
         }
       },
       "is_incremental": false,
@@ -801,7 +801,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-finalizer.html",
-          "hash": "Lq/yy/fnWIWZFqjK0CVJzQ=="
+          "hash": "m4pek+fkFZ0PI/PAiEVONw=="
         }
       },
       "is_incremental": false,
@@ -813,7 +813,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-injections.html",
-          "hash": "dF7xRyw3ATPu4sJ+yBP7Hg=="
+          "hash": "NAmDdacEKHeihQLjdAZtjQ=="
         }
       },
       "is_incremental": false,
@@ -825,7 +825,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-postfix.html",
-          "hash": "dfsWqzxDqLBH62QBbf4piw=="
+          "hash": "75dyzitd7Rh5bdD/lgXrQg=="
         }
       },
       "is_incremental": false,
@@ -837,7 +837,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-prefix.html",
-          "hash": "0jgeIIRuwasNCSgjv/yqVw=="
+          "hash": "LMgRs3Q6umX5j27sVuBbUA=="
         }
       },
       "is_incremental": false,
@@ -849,7 +849,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-transpiler.html",
-          "hash": "U9iL46GNKVX+TJrDuB90MQ=="
+          "hash": "zJmjyL687Y26fYqIr5kc7w=="
         }
       },
       "is_incremental": false,
@@ -861,7 +861,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching.html",
-          "hash": "p08VHtyktctcgkhjE5VoOg=="
+          "hash": "5fdBn9iGOFZvt/gheUNoZg=="
         }
       },
       "is_incremental": false,
@@ -873,7 +873,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/priorities.html",
-          "hash": "CVcB5EvzVsifndqLZPJAtA=="
+          "hash": "OY4SBwyKnEWPFiVMNCq2xQ=="
         }
       },
       "is_incremental": false,
@@ -885,7 +885,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/reverse-patching.html",
-          "hash": "vOc2SBvGuvlJQK5SDRl23A=="
+          "hash": "JxPaTiwZDoJ63un7JyLxcw=="
         }
       },
       "is_incremental": false,
@@ -909,7 +909,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/utilities.html",
-          "hash": "i+dmV1QBJz7rJxrCSlfsfA=="
+          "hash": "IU52BHlAcD1i/Dy9ZCEXew=="
         }
       },
       "is_incremental": false,
@@ -968,7 +968,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "jkJRIU+kxfgu7VdvkfQwWg=="
+          "hash": "TsCzrqUuxH0vcfJd//i7mg=="
         }
       },
       "is_incremental": false,
