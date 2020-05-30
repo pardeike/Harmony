@@ -100,7 +100,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
-		/// <param name="typeColonMethodname">The full name like <c>Namespace.Type1.Type2:MethodName</c> of the type where the method is declared</param>
+		/// <param name="typeColonMethodname">The target method in the form <c>TypeFullName:MethodName</c>, where the type name matches a form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
 		/// <param name="generics">Optional list of types that define the generic version of the method</param>
 		/// <returns>A code instruction that calls the method matching the arguments</returns>
