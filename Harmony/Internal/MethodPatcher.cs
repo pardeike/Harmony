@@ -224,7 +224,7 @@ namespace HarmonyLib
 			if (original == null) throw new ArgumentNullException(nameof(original));
 			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 
-			var patchName = original.Name + suffix;
+			var patchName = $"{original.DeclaringType?.FullName}.{original.Name}{suffix}";
 			patchName = patchName.Replace("<>", "");
 
 			var parameters = original.GetParameters();
