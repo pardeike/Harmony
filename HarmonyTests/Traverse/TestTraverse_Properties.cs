@@ -23,7 +23,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Traverse_Property_Static()
 		{
-			var instance = new TraverseProperties_BaseClass();
+			var instance = new Traverse_BaseClass();
 
 			var trv1 = Traverse.Create(instance).Property("StaticProperty");
 			Assert.AreEqual("test1", trv1.GetValue());

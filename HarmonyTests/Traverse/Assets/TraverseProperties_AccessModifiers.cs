@@ -3,13 +3,27 @@ using System.Linq;
 
 namespace HarmonyLibTests.Assets
 {
+#pragma warning disable CS0414
+#pragma warning disable IDE0052
+
 	public class TraverseProperties
 	{
 		public static string[] testStrings = new string[] { "test01", "test02", "test03", "test04", "test05", "test06", "test07" };
 		public static string[] propertyNames = new string[] { "PublicProperty", "PublicPrivateProperty", "AutoProperty", "BaseProperty1", "BaseProperty2", "BaseProperty3", "ImmediateProperty" };
 	}
 
-	public class TraverseProperties_BaseClass
+	public class Traverse_ExtraClass
+	{
+		public readonly string someString = "-";
+		public readonly Traverse_BaseClass baseClass = new Traverse_BaseClass();
+
+		public Traverse_ExtraClass(string val)
+		{
+			someString = val;
+		}
+	}
+
+	public class Traverse_BaseClass
 	{
 		string _basePropertyField1;
 		protected virtual string BaseProperty1
@@ -32,25 +46,27 @@ namespace HarmonyLibTests.Assets
 			set => throw new Exception();
 		}
 
-#pragma warning disable CS0414
-		static string StaticProperty => "test1";
 		static readonly string staticField = "test1";
-
-		private string BaseProperty => "base-property";
 		private readonly string baseField = "base-field";
+
+		static string StaticProperty => "test1";
+		private string BaseProperty => "base-property";
+
 		private string BaseMethod() { return "base-method"; }
-#pragma warning restore CS0414
+	}
+
+	public static class TraverseFields_Static
+	{
+		static readonly string staticField = "test2";
+		public static readonly Traverse_ExtraClass extraClassInstance = new Traverse_ExtraClass("test2");
 	}
 
 	public static class TraverseProperties_Static
 	{
 		static string StaticProperty => "test2";
-#pragma warning disable CS0414
-		static readonly string staticField = "test2";
-#pragma warning restore CS0414
 	}
 
-	public class TraverseProperties_AccessModifiers : TraverseProperties_BaseClass
+	public class TraverseProperties_AccessModifiers : Traverse_BaseClass
 	{
 		string _publicPropertyField;
 		public string PublicProperty
@@ -155,7 +171,10 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public class TraverseProperties_SubClass : TraverseProperties_BaseClass
+	public class TraverseProperties_SubClass : Traverse_BaseClass
 	{
 	}
+
+#pragma warning restore IDE0052
+#pragma warning restore CS0414
 }

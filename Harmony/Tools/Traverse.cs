@@ -207,7 +207,18 @@ namespace HarmonyLib
 
 		Traverse Resolve()
 		{
-			if (_root == null && _type != null) return this;
+			if (_root == null)
+			{
+				if (_info is FieldInfo fieldInfo && fieldInfo.IsStatic)
+					return new Traverse(GetValue());
+				if (_info is PropertyInfo propertyInfo && propertyInfo.GetGetMethod().IsStatic)
+					return new Traverse(GetValue());
+				if (_method != null && _method.IsStatic)
+					return new Traverse(GetValue());
+
+				if (_type != null)
+					return this;
+			}
 			return new Traverse(GetValue());
 		}
 

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -38,19 +38,58 @@ namespace HarmonyLibTests
 			}
 		}
 
-		// Traverse.Property() should return the value of a traversed static field
+		// Traverse.Field() should return the value of a traversed static field
 		//
 		[Test]
 		public void Traverse_Field_Static()
 		{
-			var instance = new TraverseProperties_BaseClass();
+			var instance = new Traverse_BaseClass();
 
 			var trv1 = Traverse.Create(instance).Field("staticField");
 			Assert.AreEqual("test1", trv1.GetValue());
 
 
-			var trv2 = Traverse.Create(typeof(TraverseProperties_Static)).Field("staticField");
+			var trv2 = Traverse.Create(typeof(TraverseFields_Static)).Field("staticField");
 			Assert.AreEqual("test2", trv2.GetValue());
+		}
+
+		// Traverse.Field().Field() should continue the traverse chain for static and non-static fields
+		//
+		[Test]
+		public void Traverse_Static_Field_Instance_Field()
+		{
+			var extra = new Traverse_ExtraClass("test1");
+			Assert.AreEqual("test1", Traverse.Create(extra).Field("someString").GetValue());
+
+			Assert.AreEqual("test2", TraverseFields_Static.extraClassInstance.someString, "direct");
+
+			var trv = Traverse.Create(typeof(TraverseFields_Static));
+			var trv2 = trv.Field("extraClassInstance");
+			Assert.AreEqual(typeof(Traverse_ExtraClass), trv2.GetValue().GetType());
+			Assert.AreEqual("test2", trv2.Field("someString").GetValue(), "traverse");
+		}
+
+		// Traverse.Field().Field() should continue the traverse chain for static and non-static fields
+		//
+		[Test]
+		public void Traverse_Instance_Field_Static_Field()
+		{
+			var instance = new Traverse_ExtraClass("test3");
+			Assert.AreEqual(typeof(Traverse_BaseClass), instance.baseClass.GetType());
+
+			var trv1 = Traverse.Create(instance);
+			Assert.NotNull(trv1, "trv1");
+
+			var trv2 = trv1.Field("baseClass");
+			Assert.NotNull(trv2, "trv2");
+
+			var val = trv2.GetValue();
+			Assert.NotNull(val, "val");
+			Assert.AreEqual(typeof(Traverse_BaseClass), val.GetType());
+
+			var trv3 = trv2.Field("baseField");
+			Assert.NotNull(trv3, "trv3");
+			Assert.AreEqual("base-field", trv3.GetValue());
 		}
 
 		// Traverse.SetValue() should set the value of a traversed field
