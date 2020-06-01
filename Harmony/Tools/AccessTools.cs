@@ -964,7 +964,7 @@ namespace HarmonyLib
 		public static void RethrowException(Exception exception)
 		{
 #if NET35
-			_ = PrepForRemoting(exception, new object[0]);
+			_ = PrepForRemoting(exception);
 #else
 			System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
 #endif
