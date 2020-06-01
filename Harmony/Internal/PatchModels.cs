@@ -91,6 +91,8 @@ namespace HarmonyLib
 			var allAttributes = patch.GetCustomAttributes(true);
 			var methodName = patch.Name;
 			var type = GetPatchType(methodName, allAttributes);
+			if (type == null)
+				return null;
 
 			if (type != HarmonyPatchType.ReversePatch && patch.IsStatic == false)
 				throw new ArgumentException("Patch method " + patch.FullDescription() + " must be static");
