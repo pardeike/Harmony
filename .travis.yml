@@ -8,7 +8,7 @@
 # Also, builds that use mono are currently very slow due to https://github.com/travis-ci/travis-ci/issues/4571
 
 language: csharp
-solution: Harmony.sln
+solution: HarmonyTests/HarmonyTests.csproj
 
 os:
   - linux
