@@ -5,7 +5,7 @@ image: Visual Studio 2019
 configuration: Release
 
 build:
-  project: Harmony\Harmony.csproj
+  project: Harmony\HarmonyTests.csproj
 
 skip_commits:
   author: pardeike-bot
