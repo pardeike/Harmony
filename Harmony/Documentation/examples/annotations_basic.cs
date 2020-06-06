@@ -1,15 +1,18 @@
-// <example>
-using HarmonyLib;
-
-[HarmonyPatch(typeof(SomeTypeHere))]
-[HarmonyPatch("SomeMethodName")]
-class MyPatches
+namespace Annotations_Basics
 {
-	static void Postfix(/*...*/)
-	{
-		//...
-	}
-}
-// </example>
+	// <example>
+	using HarmonyLib;
 
-class SomeTypeHere {}
+	[HarmonyPatch(typeof(SomeTypeHere))]
+	[HarmonyPatch("SomeMethodName")]
+	class MyPatches
+	{
+		static void Postfix(/*...*/)
+		{
+			//...
+		}
+	}
+	// </example>
+
+	class SomeTypeHere { }
+}

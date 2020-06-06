@@ -1,76 +1,79 @@
-using HarmonyLib;
-using System.Reflection;
-
-// <foo>
-class Foo
+namespace Priorities
 {
-	static string Bar()
-	{
-		return "secret";
-	}
-}
-// </foo>
+	using HarmonyLib;
+	using System.Reflection;
 
-class Plugin1
-{
-	// <plugin1>
-	void Main()
+	// <foo>
+	class Foo
 	{
-		var harmony = new Harmony("net.example.plugin1");
-		harmony.PatchAll(Assembly.GetExecutingAssembly());
-	}
-
-	[HarmonyPatch(typeof(Foo))]
-	[HarmonyPatch("Bar")]
-	class MyPatch
-	{
-		static void Postfix(ref string result)
+		static string Bar()
 		{
-			result = "new secret 1";
+			return "secret";
 		}
 	}
-	// </plugin1>
-}
+	// </foo>
 
-class Plugin1b
-{
-	// <plugin1b>
-	void Main()
+	class Plugin1
 	{
-		var harmony = new Harmony("net.example.plugin1");
-		harmony.PatchAll(Assembly.GetExecutingAssembly());
-	}
-
-	[HarmonyPatch(typeof(Foo))]
-	[HarmonyPatch("Bar")]
-	class MyPatch
-	{
-		[HarmonyAfter(new string[] { "net.example.plugin2" })]
-		static void Postfix(ref string result)
+		// <plugin1>
+		void Main()
 		{
-			result = "new secret 1";
+			var harmony = new Harmony("net.example.plugin1");
+			harmony.PatchAll(Assembly.GetExecutingAssembly());
 		}
-	}
-	// </plugin1b>
-}
 
-class Plugin2
-{
-	// <plugin2>
-	void Main()
-	{
-		var harmony = new Harmony("net.example.plugin2");
-		harmony.PatchAll(Assembly.GetExecutingAssembly());
-	}
-
-	[HarmonyPatch(typeof(Foo))]
-	[HarmonyPatch("Bar")]
-	class MyPatch
-	{
-		static void Postfix(ref string result)
+		[HarmonyPatch(typeof(Foo))]
+		[HarmonyPatch("Bar")]
+		class MyPatch
 		{
-			result = "new secret 2";
+			static void Postfix(ref string result)
+			{
+				result = "new secret 1";
+			}
 		}
+		// </plugin1>
 	}
-	// </plugin2>
+
+	class Plugin1b
+	{
+		// <plugin1b>
+		void Main()
+		{
+			var harmony = new Harmony("net.example.plugin1");
+			harmony.PatchAll(Assembly.GetExecutingAssembly());
+		}
+
+		[HarmonyPatch(typeof(Foo))]
+		[HarmonyPatch("Bar")]
+		class MyPatch
+		{
+			[HarmonyAfter(new string[] { "net.example.plugin2" })]
+			static void Postfix(ref string result)
+			{
+				result = "new secret 1";
+			}
+		}
+		// </plugin1b>
+	}
+
+	class Plugin2
+	{
+		// <plugin2>
+		void Main()
+		{
+			var harmony = new Harmony("net.example.plugin2");
+			harmony.PatchAll(Assembly.GetExecutingAssembly());
+		}
+
+		[HarmonyPatch(typeof(Foo))]
+		[HarmonyPatch("Bar")]
+		class MyPatch
+		{
+			static void Postfix(ref string result)
+			{
+				result = "new secret 2";
+			}
+		}
+		// </plugin2>
+	}
 }

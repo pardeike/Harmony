@@ -197,3 +197,8 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /Harmony/Harmony.zip
+# Documentation
+/Harmony/Documentation/api/.manifest
+/Harmony/Documentation/api/*.html
+/Harmony/Documentation/api/toc.yml
+/Harmony/Documentation/Documentation.dll

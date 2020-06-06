@@ -1,29 +1,30 @@
-using System;
-using System.Reflection;
-using System.Runtime.Serialization;
-using HarmonyLib;
+namespace Patching_Finalizer
+{
+	using System;
+	using System.Runtime.Serialization;
 
-class Foo {}
-class Bar {}
+	class Foo { }
+	class Bar { }
 
-class Example
-{	
-	// <rethrow>
-	[Serializable]
-	public class MyException : Exception
+	class Example
 	{
-		public MyException() { }
-		public MyException(string message) : base(message) { }
-		public MyException(string message, Exception innerException) : base(message, innerException) { }
-		protected MyException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+		// <rethrow>
+		[Serializable]
+		public class MyException : Exception
 		{
-			throw new NotImplementedException();
+			public MyException() { }
+			public MyException(string message) : base(message) { }
+			public MyException(string message, Exception innerException) : base(message, innerException) { }
+			protected MyException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+			{
+				throw new NotImplementedException();
+			}
 		}
-	}
 
-	static Exception Finalizer(Exception __exception)
-	{
-		return new MyException("Oops", __exception);
+		static Exception Finalizer(Exception __exception)
+		{
+			return new MyException("Oops", __exception);
+		}
+		// </rethrow>
 	}
-	// </rethrow>
 }

@@ -27,7 +27,7 @@ It has no other dependencies and will most likely work in other environments too
 
 ## Altering functionality (Patching)
 
-If you want to change how an exising C# application like a game works and you don't have the source code for that application, you have basically two options to do that:
+In general, if you want to change how an exising C# application like a game works and you don't have the source code for that application, you have basically two principles to do that:
 
 1. Alter dll files on disk
 2. Re-point method implementations (hooking)
@@ -39,7 +39,7 @@ Depending on the needs and situation, altering dll files is not always a desirab
 - it does not coordinate nicely with multiple concurrent changes
 - it has to be done before and outside the original application
 
-Harmony focuces only on runtime changes that don't affect files on disk:
+Harmony uses a variation of hooking and focuces only on runtime changes that don't affect files on disk:
 
 - less conflicts with multiple mods
 - supports existing mod loaders
@@ -71,7 +71,7 @@ Where other patch libraries simply allow you to replace the original method, Har
 
 - You cannot add fields to classes and you cannot extend enums (they get compiled into ints).
 
-- Patching generic methods or methods in generic classes is difficult and might not work as you expect it to.
+- Patching generic methods or methods in generic classes is tricky and might not work as expected.
 
 ## Hello World Example
 

@@ -1,30 +1,33 @@
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using HarmonyLib;
-
-public class Example
+namespace Annotations_Multiple
 {
-	// <example>
-	[HarmonyPatch] // make sure Harmony inspects the class
-	class MyPatches
+	using HarmonyLib;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Reflection;
+
+	public class Example
 	{
-		IEnumerable<MethodBase> TargetMethods()
+		// <example>
+		[HarmonyPatch] // make sure Harmony inspects the class
+		class MyPatches
 		{
-			return AccessTools.GetTypesFromAssembly(someAssembly)
-				.SelectMany(type => type.GetMethods())
-				.Where(method => method.ReturnType != typeof(void) && method.Name.StartsWith("Player"))
-				.Cast<MethodBase>();
-		}
+			IEnumerable<MethodBase> TargetMethods()
+			{
+				return AccessTools.GetTypesFromAssembly(someAssembly)
+					.SelectMany(type => type.GetMethods())
+					.Where(method => method.ReturnType != typeof(void) && method.Name.StartsWith("Player"))
+					.Cast<MethodBase>();
+			}
 
-		// prefix all methods in someAssembly with a non-void return type and beginning with "Player"
-		static void Prefix(MethodBase __originalMethod)
-		{
-			// use __originalMethod to decide what to do
+			// prefix all methods in someAssembly with a non-void return type and beginning with "Player"
+			static void Prefix(MethodBase __originalMethod)
+			{
+				// use __originalMethod to decide what to do
+			}
 		}
+		// </example>
+
+		class MyCode { }
+		public static Assembly someAssembly;
 	}
-	// </example>
-
-	class MyCode {}
-	public static Assembly someAssembly;
 }

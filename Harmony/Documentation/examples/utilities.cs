@@ -1,49 +1,52 @@
-using System;
-using HarmonyLib;
-
-class Example
+namespace Utilities
 {
-	// <example>
-	class Foo
-	{
-		struct Bar
-		{
-			static string secret = "hello";
+	using HarmonyLib;
+	using System;
 
-			public string ModifiedSecret()
+	class Example
+	{
+		// <example>
+		class Foo
+		{
+			struct Bar
 			{
-				return secret.ToUpper();
+				static string secret = "hello";
+
+				public string ModifiedSecret()
+				{
+					return secret.ToUpper();
+				}
+			}
+
+			Bar MyBar
+			{
+				get
+				{
+					return new Bar();
+				}
+			}
+
+			public string GetSecret()
+			{
+				return MyBar.ModifiedSecret();
+			}
+
+			Foo()
+			{
+			}
+
+			static Foo MakeFoo()
+			{
+				return new Foo();
 			}
 		}
 
-		Bar myBar
+		void Test()
 		{
-			get
-			{
-				return new Bar();
-			}
+			var foo = Traverse.Create<Foo>().Method("MakeFoo").GetValue<Foo>();
+			Traverse.Create(foo).Property("MyBar").Field("secret").SetValue("world");
+			Console.WriteLine(foo.GetSecret()); // outputs WORLD
 		}
-
-		public string GetSecret()
-		{
-			return myBar.ModifiedSecret();
-		}
-
-		Foo()
-		{
-		}
-
-		static Foo MakeFoo()
-		{
-			return new Foo();
-		}
+		// </example>
 	}
-
-	void Test()
-	{
-		var foo = Traverse.Create<Foo>().Method("MakeFoo").GetValue<Foo>();
-		Traverse.Create(foo).Property("myBar").Field("secret").SetValue("world");
-		Console.WriteLine(foo.GetSecret()); // outputs WORLD
-	}
-	// </example>
 }
