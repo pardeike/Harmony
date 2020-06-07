@@ -789,7 +789,19 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-auxilary.html",
-          "hash": "rs9QVT3C82K1AA1jTg/faQ=="
+          "hash": "FwwmtO7KlrurbtITBpH2cQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/patching-edgecases.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-edgecases.html",
+          "hash": "GKAW2k0NT4r55NwIyzt3zQ=="
         }
       },
       "is_incremental": false,
@@ -897,7 +909,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "1gwNpRMHnm6LfoisyGtUpg=="
+          "hash": "djgcc8WmarXNNtgvTunm5w=="
         }
       },
       "is_incremental": false,
@@ -1001,7 +1013,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 17,
+          "total_file_count": 18,
           "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
