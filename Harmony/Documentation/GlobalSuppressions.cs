@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0025:Use expression body for properties")]
 [assembly: SuppressMessage("Style", "IDE0060:Remove unused parameter")]
 [assembly: SuppressMessage("Style", "IDE0044:Add readonly modifier")]
+[assembly: SuppressMessage("Style", "IDE0062:")]
 
 [assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
 

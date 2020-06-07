@@ -16,7 +16,7 @@ namespace Priorities
 	class Plugin1
 	{
 		// <plugin1>
-		void Main()
+		void Main_Plugin1()
 		{
 			var harmony = new Harmony("net.example.plugin1");
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -37,7 +37,7 @@ namespace Priorities
 	class Plugin1b
 	{
 		// <plugin1b>
-		void Main()
+		void Main_Plugin1b()
 		{
 			var harmony = new Harmony("net.example.plugin1");
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -59,7 +59,7 @@ namespace Priorities
 	class Plugin2
 	{
 		// <plugin2>
-		void Main()
+		void Main_Plugin2()
 		{
 			var harmony = new Harmony("net.example.plugin2");
 			harmony.PatchAll(Assembly.GetExecutingAssembly());

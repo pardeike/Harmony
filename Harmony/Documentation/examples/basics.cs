@@ -8,7 +8,7 @@ namespace Basics
 
 	public class Example
 	{
-		static void Main()
+		static void Main_Example()
 		{
 			// <create>
 			var harmony = new Harmony("com.company.project.product");
