@@ -92,7 +92,7 @@ Indicates that this Prefix/Postfix should be executed after any of the ID's give
 }
 </code></pre>
 <p>and <strong>Plugin 1</strong></p>
-<pre><code class="lang-csharp" name="example">void Main()
+<pre><code class="lang-csharp" name="example">void Main_Plugin1()
 {
     var harmony = new Harmony(&quot;net.example.plugin1&quot;);
     harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -109,7 +109,7 @@ class MyPatch
 }
 </code></pre>
 <p>and <strong>Plugin 2</strong></p>
-<pre><code class="lang-csharp" name="example">void Main()
+<pre><code class="lang-csharp" name="example">void Main_Plugin2()
 {
     var harmony = new Harmony(&quot;net.example.plugin2&quot;);
     harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -126,7 +126,7 @@ class MyPatch
 }
 </code></pre>
 <p>a call to <code>Foo.Bar()</code> would return &quot;new secret 2&quot; because both plugins register their Postfix with the same priority and so the second Postfix overrides the result of the first one. As an author of Plugin 1, you could rewrite your code to</p>
-<pre><code class="lang-csharp" name="example">void Main()
+<pre><code class="lang-csharp" name="example">void Main_Plugin1b()
 {
     var harmony = new Harmony(&quot;net.example.plugin1&quot;);
     harmony.PatchAll(Assembly.GetExecutingAssembly());
