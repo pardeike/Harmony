@@ -20,6 +20,8 @@
 
 ## [Auxilary methods](patching-auxilary.md)
 
+## [Edge Cases](patching-edgecases.md)
+
 # [Annotations](annotations.md)
 
 # [Execution Flow](execution.md)
