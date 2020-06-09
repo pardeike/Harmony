@@ -135,7 +135,7 @@ To patch constructors, you use the annotations that contain a `MethodType` argum
 
 #### Getters/Setters
 
-To patch constructors you use the annotations that contain a `MethodType` argument and set it to `MethodType.Getter` or `MethodType.Setter`:
+To patch a property you use the annotations that contain a `MethodType` argument and set it to `MethodType.Getter` or `MethodType.Setter`:
 
 ```csharp
 // in one row:
