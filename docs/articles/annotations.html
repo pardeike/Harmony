@@ -167,7 +167,7 @@ class MyPatches
 [HarmonyPatch(new Type[] { typeof(int) })]
 </code></pre>
 <h4 id="getterssetters">Getters/Setters</h4>
-<p>To patch constructors you use the annotations that contain a <code>MethodType</code> argument and set it to <code>MethodType.Getter</code> or <code>MethodType.Setter</code>:</p>
+<p>To patch a property you use the annotations that contain a <code>MethodType</code> argument and set it to <code>MethodType.Getter</code> or <code>MethodType.Setter</code>:</p>
 <pre><code class="lang-csharp">// in one row:
 [HarmonyPatch(typeof(TestClass), &quot;GameInstance&quot;, MethodType.Getter)]
 // in two rows:
