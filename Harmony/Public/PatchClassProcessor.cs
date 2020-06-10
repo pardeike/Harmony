@@ -24,9 +24,9 @@ namespace HarmonyLib
 			typeof(HarmonyTargetMethods)
 		};
 
-		/// <summary>Creates an empty patch class processor</summary>
+		/// <summary>Creates a patch class processor by pointing out a class. Similar to PatchAll() but without searching through all classes.</summary>
 		/// <param name="instance">The Harmony instance</param>
-		/// <param name="type">The class to process</param>
+		/// <param name="type">The class to process (need to have at least a [HarmonyPatch] attribute)</param>
 		///
 		public PatchClassProcessor(Harmony instance, Type type)
 		{
