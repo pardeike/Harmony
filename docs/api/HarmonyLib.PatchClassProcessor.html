@@ -122,7 +122,7 @@
   </span>
   <a id="HarmonyLib_PatchClassProcessor__ctor_" data-uid="HarmonyLib.PatchClassProcessor.#ctor*"></a>
   <h4 id="HarmonyLib_PatchClassProcessor__ctor_HarmonyLib_Harmony_System_Type_" data-uid="HarmonyLib.PatchClassProcessor.#ctor(HarmonyLib.Harmony,System.Type)">PatchClassProcessor(Harmony, Type)</h4>
-  <div class="markdown level1 summary"><p>Creates an empty patch class processor</p>
+  <div class="markdown level1 summary"><p>Creates a patch class processor by pointing out a class. Similar to PatchAll() but without searching through all classes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -148,7 +148,7 @@
       <tr>
         <td><span class="xref">System.Type</span></td>
         <td><span class="parametername">type</span></td>
-        <td><p>The class to process</p>
+        <td><p>The class to process (need to have at least a [HarmonyPatch] attribute)</p>
 </td>
       </tr>
     </tbody>
