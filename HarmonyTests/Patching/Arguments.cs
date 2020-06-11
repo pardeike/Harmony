@@ -130,11 +130,11 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void Test_InjectDelegate()
+		public void Test_InjectDelegateForClass()
 		{
-			var instance = new InjectDelegateClass();
+			var instance = new InjectDelegateClass() { pre = "{", post = "}" };
 			instance.Method(123);
-			Assert.AreEqual("[test+:123]", instance.result);
+			Assert.AreEqual("[{test:123}]", instance.result);
 
 			var harmony = new Harmony("test");
 			var processor = new PatchClassProcessor(harmony, typeof(InjectDelegateClassPatch));
@@ -143,7 +143,34 @@ namespace HarmonyLibTests
 			Assert.AreEqual(1, patches.Count);
 
 			instance.Method(123);
-			Assert.AreEqual("patch+:456", InjectDelegateClassPatch.result);
+			Assert.AreEqual("{patch:456}", InjectDelegateClassPatch.result);
+		}
+
+		[Test]
+		public void Test_InjectDelegateForStaticClass()
+		{
+			Assert.AreEqual("[1999]", InjectDelegateStaticClass.Method(999));
+
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(InjectDelegateStaticClassPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+			Assert.AreEqual("[123]/[456]", InjectDelegateStaticClass.Method(4444));
+		}
+
+		[Test]
+		public void Test_InjectDelegateForValueType()
+		{
+			var instance = new InjectDelegateStruct() { pre = "{", post = "}" };
+			Assert.AreEqual("{1999}", instance.Method(999));
+
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(InjectDelegateStructPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+			Assert.AreEqual("{123}/{456}", instance.Method(4444));
 		}
 	}
 }

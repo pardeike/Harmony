@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Collections;
+using NUnit.Framework.Internal;
 
 namespace HarmonyLibTests.Assets
 {
@@ -1046,10 +1047,12 @@ namespace HarmonyLibTests.Assets
 
 	public class InjectDelegateBaseClass
 	{
+		public string pre;
+		public string post;
+
 		internal virtual string SomeMethod(ref string s, int n)
 		{
-			s += "+";
-			return $"{s}:{n}";
+			return pre + s + ":" + n + post;
 		}
 	}
 
@@ -1062,6 +1065,7 @@ namespace HarmonyLibTests.Assets
 			return $"[{base.SomeMethod(ref s, n)}]";
 		}
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method(int n)
 		{
 			var s = "test";
@@ -1072,7 +1076,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(typeof(InjectDelegateClass), "Method")]
 	public class InjectDelegateClassPatch
 	{
-		[HarmonyPatch(typeof(InjectDelegateBaseClass), "SomeMethod")]
+		[HarmonyDelegate(typeof(InjectDelegateBaseClass), "SomeMethod")]
 		public delegate string TestDelegate(ref string s, int n);
 
 		public static string result = "";
@@ -1082,6 +1086,63 @@ namespace HarmonyLibTests.Assets
 			n = 456;
 			var s = "patch";
 			result = baseSomeMethod(ref s, n);
+			return false;
+		}
+	}
+
+	public static class InjectDelegateStaticClass
+	{
+		internal static string SomeMethod(int n)
+		{
+			return $"[{n}]";
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static string Method(int n)
+		{
+			return SomeMethod(n + 1000);
+		}
+	}
+
+	[HarmonyPatch(typeof(InjectDelegateStaticClass), "Method")]
+	public class InjectDelegateStaticClassPatch
+	{
+		[HarmonyDelegate(typeof(InjectDelegateStaticClass), "SomeMethod")]
+		public delegate string TestDelegate(int n);
+
+		public static bool Prefix(TestDelegate someMethod, ref string __result)
+		{
+			__result = someMethod(123) + "/" + someMethod(456);
+			return false;
+		}
+	}
+
+	public struct InjectDelegateStruct
+	{
+		public string pre;
+		public string post;
+
+		internal string SomeMethod(int n)
+		{
+			return pre + n + post;
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string Method(int n)
+		{
+			return SomeMethod(n + 1000);
+		}
+	}
+
+	[HarmonyPatch(typeof(InjectDelegateStruct), "Method")]
+	public class InjectDelegateStructPatch
+	{
+		[HarmonyDelegate(typeof(InjectDelegateStruct), "SomeMethod")]
+		public delegate string TestDelegate(int n);
+
+		public static bool Prefix(TestDelegate someMethod, ref string __result)
+		{
+			__result = someMethod(123) + "/" + someMethod(456);
 			return false;
 		}
 	}

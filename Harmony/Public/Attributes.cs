@@ -298,6 +298,143 @@ namespace HarmonyLib
 		}
 	}
 
+	/// <summary>Annotation to define the original method for delegate injection</summary>
+	///
+	[AttributeUsage(AttributeTargets.Delegate, AllowMultiple = true)]
+	public class HarmonyDelegate : HarmonyPatch
+	{
+		/// <summary>An annotation that specifies a class to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		///
+		public HarmonyDelegate(Type declaringType)
+			: base(declaringType) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="argumentTypes">The argument types of the method or constructor to patch</param>
+		///
+		public HarmonyDelegate(Type declaringType, Type[] argumentTypes)
+			: base(declaringType, argumentTypes) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		///
+		public HarmonyDelegate(Type declaringType, string methodName)
+			: base(declaringType, methodName) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		///
+		public HarmonyDelegate(Type declaringType, string methodName, params Type[] argumentTypes)
+			: base(declaringType, methodName, argumentTypes) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
+		///
+		public HarmonyDelegate(Type declaringType, string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)
+			: base(declaringType, methodName, argumentTypes, argumentVariations) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		///
+		public HarmonyDelegate(Type declaringType, MethodType methodType)
+			: base(declaringType, methodType) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		///
+		public HarmonyDelegate(Type declaringType, MethodType methodType, params Type[] argumentTypes)
+			: base(declaringType, methodType, argumentTypes) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
+		///
+		public HarmonyDelegate(Type declaringType, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
+			: base(declaringType, methodType, argumentTypes, argumentVariations) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="declaringType">The declaring class/type</param>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		///
+		public HarmonyDelegate(Type declaringType, string methodName, MethodType methodType)
+			: base(declaringType, methodName, methodType) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		///
+		public HarmonyDelegate(string methodName)
+			: base(methodName) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		///
+		public HarmonyDelegate(string methodName, params Type[] argumentTypes)
+			: base(methodName, argumentTypes) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
+		///
+		public HarmonyDelegate(string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)
+			: base(methodName, argumentTypes, argumentVariations) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		///
+		public HarmonyDelegate(string methodName, MethodType methodType)
+			: base(methodName, methodType) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		///
+		public HarmonyDelegate(MethodType methodType)
+			: base(methodType) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		///
+		public HarmonyDelegate(MethodType methodType, params Type[] argumentTypes)
+			: base(methodType, argumentTypes) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
+		///
+		public HarmonyDelegate(MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
+			: base(methodType, argumentTypes, argumentVariations) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		///
+		public HarmonyDelegate(Type[] argumentTypes)
+			: base(argumentTypes) { }
+
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="argumentTypes">An array of argument types to target overloads</param>
+		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
+		///
+		public HarmonyDelegate(Type[] argumentTypes, ArgumentType[] argumentVariations)
+			: base(argumentTypes, argumentVariations) { }
+	}
+
 	/// <summary>Annotation to define your standin methods for reverse patching</summary>
 	///
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]

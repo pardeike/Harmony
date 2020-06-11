@@ -1028,7 +1028,7 @@ namespace HarmonyLib
 			if (!method.DeclaringType.IsInstanceOfType(instance))
 			{
 				// Following should throw the ArgumentException with the proper message string.
-				Delegate.CreateDelegate(typeof(DelegateType), instance, method);
+				_ = Delegate.CreateDelegate(typeof(DelegateType), instance, method);
 				// But in case it doesn't...
 				throw new ArgumentException("Invalid delegate type");
 			}

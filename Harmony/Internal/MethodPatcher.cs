@@ -467,22 +467,6 @@ namespace HarmonyLib
 					continue;
 				}
 
-				var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(patchParam.ParameterType);
-				if (harmonyMethod.methodType == null) // MethodType default is Normal
-					harmonyMethod.methodType = MethodType.Normal;
-				var delegateOriginal = harmonyMethod.GetOriginalMethod();
-				if (delegateOriginal is MethodInfo methodInfo)
-				{
-					if (original.DeclaringType.IsValueType)
-						emitter.Emit(OpCodes.Ldarga_S, 0);
-					else
-						emitter.Emit(OpCodes.Ldarg_0);
-					emitter.Emit(OpCodes.Ldftn, methodInfo);
-					var constructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
-					emitter.Emit(OpCodes.Newobj, constructor);
-					continue;
-				}
-
 				int idx;
 				if (patchParam.Name.StartsWith(PARAM_INDEX_PREFIX, StringComparison.Ordinal))
 				{
@@ -495,7 +479,40 @@ namespace HarmonyLib
 				else
 				{
 					idx = patch.GetArgumentIndex(originalParameterNames, patchParam);
-					if (idx == -1) throw new Exception($"Parameter \"{patchParam.Name}\" not found in method {original.FullDescription()}");
+					if (idx == -1)
+					{
+						var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(patchParam.ParameterType);
+						if (harmonyMethod.methodType == null) // MethodType default is Normal
+							harmonyMethod.methodType = MethodType.Normal;
+						var delegateOriginal = harmonyMethod.GetOriginalMethod();
+						if (delegateOriginal is MethodBase methodBase)
+						{
+							// delegate constructor
+							var constructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+							if (constructor != null)
+							{
+								var originalType = original.DeclaringType;
+								if (originalType.IsAbstract && originalType.IsSealed)
+									emitter.Emit(OpCodes.Ldnull);
+								else
+								{
+									emitter.Emit(OpCodes.Ldarg_0);
+									if (original.DeclaringType.IsValueType)
+										emitter.Emit(OpCodes.Box, originalType);
+								}
+
+								if (methodBase is MethodInfo methodInfo)
+									emitter.Emit(OpCodes.Ldftn, methodInfo);
+								else if (methodBase is ConstructorInfo constructorInfo)
+									emitter.Emit(OpCodes.Ldftn, constructorInfo);
+
+								emitter.Emit(OpCodes.Newobj, constructor);
+								continue;
+							}
+						}
+
+						throw new Exception($"Parameter \"{patchParam.Name}\" not found in method {original.FullDescription()}");
+					}
 				}
 
 				//   original -> patch     opcode
