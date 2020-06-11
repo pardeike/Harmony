@@ -492,13 +492,16 @@ namespace HarmonyLib
 							if (constructor != null)
 							{
 								var originalType = original.DeclaringType;
-								if (originalType.IsAbstract && originalType.IsSealed)
+								if (methodBase.IsStatic)
 									emitter.Emit(OpCodes.Ldnull);
 								else
 								{
 									emitter.Emit(OpCodes.Ldarg_0);
-									if (original.DeclaringType.IsValueType)
+									if (originalType.IsValueType)
+									{
+										emitter.Emit(OpCodes.Ldobj, originalType);
 										emitter.Emit(OpCodes.Box, originalType);
+									}
 								}
 
 								if (methodBase is MethodInfo methodInfo)
