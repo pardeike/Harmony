@@ -69,4 +69,32 @@ namespace HarmonyLibTests.Assets
 	public class AccessToolsSubClass : AccessToolsClass
 	{
 	}
+
+	public static class AccessToolsMethodDelegate
+	{
+		public interface Interface
+		{
+			string Test(int n, ref float f);
+		}
+
+		public class Base : Interface
+		{
+			public int x;
+			public virtual string Test(int n, ref float f) => $"base test {n} {++f} {++x}";
+		}
+
+		public class Derived : Base
+		{
+			public override string Test(int n, ref float f) => $"derived test {n} {++f} {++x}";
+		}
+
+		public struct Struct : Interface
+		{
+			public int x;
+			public string Test(int n, ref float f) => $"struct result {n} {++f} {++x}";
+		}
+
+		public static int x;
+		public static string Test(int n, ref float f) => $"static test {n} {++f} {++x}";
+	}
 }

@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
 
 namespace HarmonyLibTests
 {
@@ -288,5 +289,97 @@ namespace HarmonyLibTests
 			value = newValue;
 			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
 		}
+
+		[Test]
+		public void Test_AccessTools_MethodDelegate()
+		{
+			var f = 789f;
+			var baseTest = typeof(Base).GetMethod("Test");
+			var derivedTest = typeof(Derived).GetMethod("Test");
+			var structTest = typeof(Struct).GetMethod("Test");
+			var staticTest = typeof(AccessToolsMethodDelegate).GetMethod("Test");
+
+			// Closed instance method delegates
+			Assert.AreEqual("base test 456 790 1",
+				AccessTools.MethodDelegate<MethodDel>(baseTest, new Base())(456, ref f));
+			Assert.AreEqual("base test 456 791 1",
+				AccessTools.MethodDelegate<MethodDel>(baseTest, new Base(), virtualCall: false)(456, ref f));
+			Assert.AreEqual("derived test 456 792 1",
+				AccessTools.MethodDelegate<MethodDel>(baseTest, new Derived())(456, ref f));
+			Assert.AreEqual("base test 456 793 1",
+				AccessTools.MethodDelegate<MethodDel>(baseTest, new Derived(), virtualCall: false)(456, ref f));
+			Assert.AreEqual("base test 456 794 1", // derivedTest => baseTest automatically for virtual calls
+				AccessTools.MethodDelegate<MethodDel>(derivedTest, new Base())(456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<MethodDel>(derivedTest, new Base(), virtualCall: false)(456, ref f));
+			Assert.AreEqual("derived test 456 795 1",
+				AccessTools.MethodDelegate<MethodDel>(derivedTest, new Derived())(456, ref f));
+			Assert.AreEqual("derived test 456 796 1",
+				AccessTools.MethodDelegate<MethodDel>(derivedTest, new Derived(), virtualCall: false)(456, ref f));
+			Assert.AreEqual("struct result 456 797 1",
+				AccessTools.MethodDelegate<MethodDel>(structTest, new Struct())(456, ref f));
+			Assert.AreEqual("struct result 456 798 1",
+				AccessTools.MethodDelegate<MethodDel>(structTest, new Struct(), virtualCall: false)(456, ref f));
+
+			// Open instance method delegates
+			Assert.AreEqual("base test 456 799 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest)(new Base(), 456, ref f));
+			Assert.AreEqual("base test 456 800 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: false)(new Base(), 456, ref f));
+			Assert.AreEqual("derived test 456 801 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest)(new Derived(), 456, ref f));
+			Assert.AreEqual("base test 456 802 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(baseTest, virtualCall: false)(new Derived(), 456, ref f));
+			Assert.AreEqual("base test 456 803 1", // derivedTest => baseTest automatically for virtual calls
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest)(new Base(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () => // must use OpenMethodDel<Derived>
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: false)(new Base(), 456, ref f));
+			Assert.AreEqual("derived test 456 804 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest)(new Derived(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () => // must use OpenMethodDel<Derived>
+				AccessTools.MethodDelegate<OpenMethodDel<Base>>(derivedTest, virtualCall: false)(new Derived(), 456, ref f));
+			//AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest)(new Base(), 456, ref f); // expected compile error
+			//AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest, virtualCall: false)(new Base(), 456, ref f); // expected compile error
+			Assert.AreEqual("derived test 456 805 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest)(new Derived(), 456, ref f));
+			Assert.AreEqual("derived test 456 806 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Derived>>(derivedTest, virtualCall: false)(new Derived(), 456, ref f));
+			Assert.AreEqual("struct result 456 807 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Struct>>(structTest)(new Struct(), 456, ref f));
+			Assert.AreEqual("struct result 456 808 1",
+				AccessTools.MethodDelegate<OpenMethodDel<Struct>>(structTest, virtualCall: false)(new Struct(), 456, ref f));
+
+			// Open instance method delegates where delegate instance type is an interface is not currently supported
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(baseTest)(new Base(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(baseTest, virtualCall: false)(new Base(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(baseTest)(new Derived(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(baseTest, virtualCall: false)(new Derived(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(derivedTest)(new Base(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(derivedTest, virtualCall: false)(new Base(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(derivedTest)(new Derived(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(derivedTest, virtualCall: false)(new Derived(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(structTest)(new Struct(), 456, ref f));
+			Assert.Throws(typeof(ArgumentException), () =>
+				AccessTools.MethodDelegate<OpenMethodDel<Interface>>(structTest, virtualCall: false)(new Struct(), 456, ref f));
+
+			// Static method delegates
+			Assert.AreEqual("static test 456 809 1",
+				AccessTools.MethodDelegate<MethodDel>(staticTest)(456, ref f));
+			Assert.AreEqual("static test 456 810 2",
+				AccessTools.MethodDelegate<MethodDel>(staticTest, new Base(), virtualCall: false)(456, ref f)); // instance and virtualCall args are ignored
+		}
+
+		delegate string MethodDel(int n, ref float f);
+
+		delegate string OpenMethodDel<T>(T instance, int n, ref float f);
 	}
 }
