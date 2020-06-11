@@ -968,13 +968,18 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(method));
 
 			var delegateType = typeof(DelegateType);
+
+			// Static method delegate
 			if (method.IsStatic)
 			{
 				return (DelegateType)Delegate.CreateDelegate(delegateType, method);
 			}
-			else if (instance is null)
+
+			// Open instance method delegate ...
+			if (instance is null)
 			{
 				var declaringType = method.DeclaringType;
+				// ... that virtually calls
 				// Note: struct instance methods actually have their internal instance parameter passed by ref,
 				// and thus are incompatible with typical delegates
 				// (delegate type must be: delegate <return type> MyStructDelegate(ref MyStruct instance, ...)),
@@ -984,53 +989,50 @@ namespace HarmonyLib
 				{
 					return (DelegateType)Delegate.CreateDelegate(delegateType, method.GetBaseDefinition());
 				}
-				else
+
+				// ... that non-virtually calls
+				var parameters = method.GetParameters();
+				var numParameters = parameters.Length;
+				var parameterTypes = new Type[numParameters + 1];
+				parameterTypes[0] = declaringType;
+				for (var i = 0; i < numParameters; i++)
+					parameterTypes[i + 1] = parameters[i].ParameterType;
+				var dmd = new DynamicMethodDefinition(
+					"OpenInstanceDelegate_" + method.Name,
+					method.ReturnType,
+					parameterTypes)
 				{
-					var parameters = method.GetParameters();
-					var numParameters = parameters.Length;
-					var parameterTypes = new Type[numParameters + 1];
-					parameterTypes[0] = declaringType;
-					for (var i = 0; i < numParameters; i++)
-						parameterTypes[i + 1] = parameters[i].ParameterType;
-					var dmd = new DynamicMethodDefinition(
-						"OpenInstanceDelegate_" + method.Name,
-						method.ReturnType,
-						parameterTypes)
-					{
-						OwnerType = declaringType
-					};
-					var ilGen = dmd.GetILGenerator();
-					if (declaringType.IsValueType)
-						ilGen.Emit(OpCodes.Ldarga_S, 0);
-					else
-						ilGen.Emit(OpCodes.Ldarg_0);
-					for (var i = 1; i < parameterTypes.Length; i++)
-						ilGen.Emit(OpCodes.Ldarg, i);
-					ilGen.Emit(OpCodes.Call, method);
-					ilGen.Emit(OpCodes.Ret);
-					return (DelegateType)dmd.Generate().CreateDelegate(delegateType);
-				}
+					OwnerType = declaringType
+				};
+				var ilGen = dmd.GetILGenerator();
+				if (declaringType.IsValueType)
+					ilGen.Emit(OpCodes.Ldarga_S, 0);
+				else
+					ilGen.Emit(OpCodes.Ldarg_0);
+				for (var i = 1; i < parameterTypes.Length; i++)
+					ilGen.Emit(OpCodes.Ldarg, i);
+				ilGen.Emit(OpCodes.Call, method);
+				ilGen.Emit(OpCodes.Ret);
+				return (DelegateType)dmd.Generate().CreateDelegate(delegateType);
 			}
-			else
+
+			// Closed instance method delegate that virtually calls
+			if (virtualCall)
 			{
-				if (virtualCall)
-				{
-					return (DelegateType)Delegate.CreateDelegate(delegateType, instance, method.GetBaseDefinition());
-				}
-				else
-				{
-					// It's possible to create a delegate to a derived class method bound to a base class object,
-					// but this has undefined behavior, so disallow it.
-					if (!method.DeclaringType.IsInstanceOfType(instance))
-					{
-						// Following should throw the ArgumentException with the proper message string.
-						Delegate.CreateDelegate(typeof(DelegateType), instance, method);
-						// But in case it doesn't...
-						throw new ArgumentException("Invalid delegate type");
-					}
-					return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
-				}
+				return (DelegateType)Delegate.CreateDelegate(delegateType, instance, method.GetBaseDefinition());
 			}
+
+			// Closed instance method delegate that non-virtually calls
+			// It's possible to create a delegate to a derived class method bound to a base class object,
+			// but this has undefined behavior, so disallow it.
+			if (!method.DeclaringType.IsInstanceOfType(instance))
+			{
+				// Following should throw the ArgumentException with the proper message string.
+				Delegate.CreateDelegate(typeof(DelegateType), instance, method);
+				// But in case it doesn't...
+				throw new ArgumentException("Invalid delegate type");
+			}
+			return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
 		}
 
 		/// <summary>Returns who called the current method</summary>
