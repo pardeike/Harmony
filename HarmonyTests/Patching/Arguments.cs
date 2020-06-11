@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
@@ -127,6 +127,23 @@ namespace HarmonyLibTests
 
 			testInstance.Method("bar");
 			Assert.AreEqual("patched", testInstance.TestValue);
+		}
+
+		[Test]
+		public void Test_InjectDelegate()
+		{
+			var instance = new InjectDelegateClass();
+			instance.Method(123);
+			Assert.AreEqual("[test+:123]", instance.result);
+
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(InjectDelegateClassPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			instance.Method(123);
+			Assert.AreEqual("patch+:456", InjectDelegateClassPatch.result);
 		}
 	}
 }

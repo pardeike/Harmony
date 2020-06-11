@@ -1044,6 +1044,48 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class InjectDelegateBaseClass
+	{
+		internal virtual string SomeMethod(ref string s, int n)
+		{
+			s += "+";
+			return $"{s}:{n}";
+		}
+	}
+
+	public class InjectDelegateClass : InjectDelegateBaseClass
+	{
+		public string result = "";
+
+		internal override string SomeMethod(ref string s, int n)
+		{
+			return $"[{base.SomeMethod(ref s, n)}]";
+		}
+
+		public void Method(int n)
+		{
+			var s = "test";
+			result = SomeMethod(ref s, 123);
+		}
+	}
+
+	[HarmonyPatch(typeof(InjectDelegateClass), "Method")]
+	public class InjectDelegateClassPatch
+	{
+		[HarmonyPatch(typeof(InjectDelegateBaseClass), "SomeMethod")]
+		public delegate string TestDelegate(ref string s, int n);
+
+		public static string result = "";
+
+		public static bool Prefix(TestDelegate baseSomeMethod, ref int n)
+		{
+			n = 456;
+			var s = "patch";
+			result = baseSomeMethod(ref s, n);
+			return false;
+		}
+	}
+
 	// disabled - see test case
 	/*
 	public class ClassExceptionFilter

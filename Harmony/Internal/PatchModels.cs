@@ -83,6 +83,7 @@ namespace HarmonyLib
 		internal HarmonyMethod info;
 		internal HarmonyPatchType? type;
 
+		static readonly string harmonyAttributeName = typeof(HarmonyAttribute).FullName;
 		internal static AttributePatch Create(MethodInfo patch)
 		{
 			if (patch == null)
@@ -97,7 +98,6 @@ namespace HarmonyLib
 			if (type != HarmonyPatchType.ReversePatch && patch.IsStatic == false)
 				throw new ArgumentException("Patch method " + patch.FullDescription() + " must be static");
 
-			var harmonyAttributeName = typeof(HarmonyAttribute).FullName;
 			var list = allAttributes
 				.Where(attr => attr.GetType().BaseType.FullName == harmonyAttributeName)
 				.Select(attr =>

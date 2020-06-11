@@ -71,7 +71,7 @@ namespace HarmonyLib
 
 	/// <summary>Annotation to define your Harmony patch methods</summary>
 	///
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Delegate | AttributeTargets.Method, AllowMultiple = true)]
 	public class HarmonyPatch : HarmonyAttribute
 	{
 		/// <summary>An empty annotation can be used together with TargetMethod(s)</summary>

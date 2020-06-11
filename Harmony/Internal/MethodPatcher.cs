@@ -467,6 +467,22 @@ namespace HarmonyLib
 					continue;
 				}
 
+				var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(patchParam.ParameterType);
+				if (harmonyMethod.methodType == null) // MethodType default is Normal
+					harmonyMethod.methodType = MethodType.Normal;
+				var delegateOriginal = harmonyMethod.GetOriginalMethod();
+				if (delegateOriginal is MethodInfo methodInfo)
+				{
+					if (original.DeclaringType.IsValueType)
+						emitter.Emit(OpCodes.Ldarga_S, 0);
+					else
+						emitter.Emit(OpCodes.Ldarg_0);
+					emitter.Emit(OpCodes.Ldftn, methodInfo);
+					var constructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+					emitter.Emit(OpCodes.Newobj, constructor);
+					continue;
+				}
+
 				int idx;
 				if (patchParam.Name.StartsWith(PARAM_INDEX_PREFIX, StringComparison.Ordinal))
 				{
