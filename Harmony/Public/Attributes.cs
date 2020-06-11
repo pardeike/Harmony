@@ -61,6 +61,16 @@ namespace HarmonyLib
 		Snapshot
 	}
 
+	/// <summary>Specifies the type of method</summary>
+	///
+	public enum MethodInheritance
+	{
+		/// <summary>Call the method using dynamic dispatching like with oridinary virtual/override mechanics</summary>
+		Virtual,
+		/// <summary>Call the specified method only, do not dispatch dynamically</summary>
+		None
+	}
+
 	/// <summary>The base class for all Harmony annotations (not meant to be used directly)</summary>
 	///
 	public class HarmonyAttribute : Attribute
@@ -342,35 +352,47 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodType methodType)
-			: base(declaringType, methodType) { }
+		public HarmonyDelegate(Type declaringType, MethodInheritance methodInheritance)
+			: base(declaringType, MethodType.Normal)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodType methodType, params Type[] argumentTypes)
-			: base(declaringType, methodType, argumentTypes) { }
+		public HarmonyDelegate(Type declaringType, MethodInheritance methodInheritance, params Type[] argumentTypes)
+			: base(declaringType, MethodType.Normal, argumentTypes)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
-			: base(declaringType, methodType, argumentTypes, argumentVariations) { }
+		public HarmonyDelegate(Type declaringType, MethodInheritance methodInheritance, Type[] argumentTypes, ArgumentType[] argumentVariations)
+			: base(declaringType, MethodType.Normal, argumentTypes, argumentVariations)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, string methodName, MethodType methodType)
-			: base(declaringType, methodName, methodType) { }
+		public HarmonyDelegate(Type declaringType, string methodName, MethodInheritance methodInheritance)
+			: base(declaringType, methodName, MethodType.Normal)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
@@ -395,31 +417,42 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
 		///
-		public HarmonyDelegate(string methodName, MethodType methodType)
-			: base(methodName, methodType) { }
+		public HarmonyDelegate(string methodName, MethodInheritance methodInheritance)
+			: base(methodName, MethodType.Normal)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
+
+		/// <summary>An annotation that specifies call dispatching mechanics for the delegate</summary>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		///
+		public HarmonyDelegate(MethodInheritance methodInheritance)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
-		///
-		public HarmonyDelegate(MethodType methodType)
-			: base(methodType) { }
-
-		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
-		public HarmonyDelegate(MethodType methodType, params Type[] argumentTypes)
-			: base(methodType, argumentTypes) { }
+		public HarmonyDelegate(MethodInheritance methodInheritance, params Type[] argumentTypes)
+			: base(MethodType.Normal, argumentTypes)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="methodType">The <see cref="MethodType"/></param>
+		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
 		///
-		public HarmonyDelegate(MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)
-			: base(methodType, argumentTypes, argumentVariations) { }
+		public HarmonyDelegate(MethodInheritance methodInheritance, Type[] argumentTypes, ArgumentType[] argumentVariations)
+			: base(MethodType.Normal, argumentTypes, argumentVariations)
+		{
+			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>

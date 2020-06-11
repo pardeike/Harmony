@@ -1,3 +1,5 @@
+using HarmonyLib;
+
 namespace HarmonyLibTests.Assets
 {
 	public class AccessToolsClass
@@ -70,31 +72,57 @@ namespace HarmonyLibTests.Assets
 	{
 	}
 
-	public static class AccessToolsMethodDelegate
+	public static class AccessToolsCreateDelegate
 	{
-		public interface Interface
+		public interface IInterface
 		{
 			string Test(int n, ref float f);
 		}
 
-		public class Base : Interface
+		public class Base : IInterface
 		{
 			public int x;
-			public virtual string Test(int n, ref float f) => $"base test {n} {++f} {++x}";
+			public virtual string Test(int n, ref float f)
+			{
+				return $"base test {n} {++f} {++x}";
+			}
 		}
 
 		public class Derived : Base
 		{
-			public override string Test(int n, ref float f) => $"derived test {n} {++f} {++x}";
+			public override string Test(int n, ref float f)
+			{
+				return $"derived test {n} {++f} {++x}";
+			}
 		}
 
-		public struct Struct : Interface
+		public struct Struct : IInterface
 		{
 			public int x;
-			public string Test(int n, ref float f) => $"struct result {n} {++f} {++x}";
+			public string Test(int n, ref float f)
+			{
+				return $"struct result {n} {++f} {++x}";
+			}
 		}
 
 		public static int x;
-		public static string Test(int n, ref float f) => $"static test {n} {++f} {++x}";
+		public static string Test(int n, ref float f)
+		{
+			return $"static test {n} {++f} {++x}";
+		}
+	}
+
+	public static class AccessToolsCreateHarmonyDelegate
+	{
+		public class Foo
+		{
+			private string SomeMethod(string s)
+			{
+				return $"[{s}]";
+			}
+		}
+
+		[HarmonyDelegate(typeof(Foo), "SomeMethod")]
+		public delegate string FooSomeMethod(Foo foo, string s);
 	}
 }

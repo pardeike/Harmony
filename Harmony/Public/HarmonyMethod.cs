@@ -50,6 +50,10 @@ namespace HarmonyLib
 		/// 
 		public bool? debug;
 
+		/// <summary>Use inheritance for harmony delegates</summary>
+		/// 
+		public bool? virtualDelegate;
+
 		/// <summary>Default constructor</summary>
 		/// 
 		public HarmonyMethod()

@@ -485,14 +485,13 @@ namespace HarmonyLib
 						if (harmonyMethod.methodType == null) // MethodType default is Normal
 							harmonyMethod.methodType = MethodType.Normal;
 						var delegateOriginal = harmonyMethod.GetOriginalMethod();
-						if (delegateOriginal is MethodBase methodBase)
+						if (delegateOriginal is MethodInfo methodInfo)
 						{
-							// delegate constructor
-							var constructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
-							if (constructor != null)
+							var delegateConstructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+							if (delegateConstructor != null)
 							{
 								var originalType = original.DeclaringType;
-								if (methodBase.IsStatic)
+								if (methodInfo.IsStatic)
 									emitter.Emit(OpCodes.Ldnull);
 								else
 								{
@@ -504,12 +503,8 @@ namespace HarmonyLib
 									}
 								}
 
-								if (methodBase is MethodInfo methodInfo)
-									emitter.Emit(OpCodes.Ldftn, methodInfo);
-								else if (methodBase is ConstructorInfo constructorInfo)
-									emitter.Emit(OpCodes.Ldftn, constructorInfo);
-
-								emitter.Emit(OpCodes.Newobj, constructor);
+								emitter.Emit(OpCodes.Ldftn, methodInfo);
+								emitter.Emit(OpCodes.Newobj, delegateConstructor);
 								continue;
 							}
 						}

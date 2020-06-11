@@ -946,8 +946,8 @@ namespace HarmonyLib
 		/// instance delegate where the delegate invocation always applies to the given <paramref name="instance"/>.
 		/// </param>
 		/// <param name="virtualCall">
-		/// Only applies for instance methods. If <c>true</c> (default), invocation of the delegate calls the instance method virtually;
-		/// else, invocation of the delegate calls the exact instance method (this is useful for calling base class methods).
+		/// Only applies for instance methods. If <c>false</c> (default), invocation of the delegate calls the exact instance method (this is useful for calling base class methods);
+		/// else, invocation of the delegate calls the instance method virtually (with inheritance and overriding).
 		/// </param>
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
 		/// <remarks>
@@ -961,8 +961,8 @@ namespace HarmonyLib
 		/// are not supported.
 		/// </para>
 		/// </remarks>
-		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true)
-			where DelegateType : Delegate
+		/// 
+		public static DelegateType CreateDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = false) where DelegateType : Delegate
 		{
 			if (method is null)
 				throw new ArgumentNullException(nameof(method));
@@ -1033,6 +1033,26 @@ namespace HarmonyLib
 				throw new ArgumentException("Invalid delegate type");
 			}
 			return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
+		}
+
+		/// <summary>Creates a unbound (open) delegate for a give delegate definition, annotated with [<see cref="HarmonyDelegate">HarmonyDelegate</see>] attributes</summary>
+		/// <typeparam name="DelegateType"></typeparam>
+		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to the method specified in the attributes of the delegate declaration/></returns>
+		/// <remarks>
+		/// <para>
+		/// For non-static original methods, your delegate will receive the instance in the first argument. See <seealso cref="CreateDelegate{DelegateType}(MethodInfo, object, bool)"/> with instance set to null for more information. 
+		/// </para>
+		/// </remarks>
+		/// 
+		public static DelegateType CreateHarmonyDelegate<DelegateType>() where DelegateType : Delegate
+		{
+			var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(typeof(DelegateType));
+			if (harmonyMethod.methodType == null) // MethodType default is Normal
+				harmonyMethod.methodType = MethodType.Normal;
+			var method = harmonyMethod.GetOriginalMethod() as MethodInfo;
+			if (method == null)
+				throw new NullReferenceException($"Delegate {typeof(DelegateType)} has no defined original method");
+			return CreateDelegate<DelegateType>(method, null, harmonyMethod.virtualDelegate ?? false);
 		}
 
 		/// <summary>Returns who called the current method</summary>
