@@ -763,6 +763,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.Method
   nameWithType: AccessTools.Method
+- uid: HarmonyLib.AccessTools.MethodDelegate*
+  name: MethodDelegate
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_MethodDelegate_
+  commentId: Overload:HarmonyLib.AccessTools.MethodDelegate
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.MethodDelegate
+  nameWithType: AccessTools.MethodDelegate
+- uid: HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
+  name: MethodDelegate<DelegateType>(MethodInfo, Object, Boolean)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_MethodDelegate__1_System_Reflection_MethodInfo_System_Object_System_Boolean_
+  commentId: M:HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
+  name.vb: MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
+  fullName: HarmonyLib.AccessTools.MethodDelegate<DelegateType>(System.Reflection.MethodInfo, System.Object, System.Boolean)
+  fullName.vb: HarmonyLib.AccessTools.MethodDelegate(Of DelegateType)(System.Reflection.MethodInfo, System.Object, System.Boolean)
+  nameWithType: AccessTools.MethodDelegate<DelegateType>(MethodInfo, Object, Boolean)
+  nameWithType.vb: AccessTools.MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
 - uid: HarmonyLib.AccessTools.Property(System.Type,System.String)
   name: Property(Type, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Property_System_Type_System_String_
