@@ -946,8 +946,10 @@ namespace HarmonyLib
 		/// instance delegate where the delegate invocation always applies to the given <paramref name="instance"/>.
 		/// </param>
 		/// <param name="virtualCall">
-		/// Only applies for instance methods. If <c>false</c> (default), invocation of the delegate calls the exact instance method (this is useful for calling base class methods);
-		/// else, invocation of the delegate calls the instance method virtually (with inheritance and overriding).
+		/// Only applies for instance methods. If <c>false</c> (default), invocation of the delegate calls the exact instance method
+		/// (this is useful for calling base class methods); else, invocation of the delegate calls the instance method virtually
+		/// (if method is virtual, the instance type's most-derived/overriden implementation of the method is called).
+		/// Note: if <c>false</c> and <paramref name="method"/> is an interface method, an ArgumentException is thrown.
 		/// </param>
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
 		/// <remarks>
@@ -957,8 +959,7 @@ namespace HarmonyLib
 		/// </para>
 		/// <para>
 		/// Works for both type of static and instance methods, both open and closed (a.k.a. unbound and bound) instance methods,
-		/// and both class and struct methods. Currently, open instance methods where the delegate type specifies an interface instance type
-		/// are not supported.
+		/// and both class and struct methods.
 		/// </para>
 		/// </remarks>
 		/// 
@@ -976,19 +977,59 @@ namespace HarmonyLib
 			}
 
 			var declaringType = method.DeclaringType;
+			if (declaringType.IsInterface && !virtualCall)
+			{
+				throw new ArgumentException("Interface methods must be called virtually");
+			}
 
 			// Open instance method delegate ...
 			if (instance is null)
 			{
-				// ... that virtually calls
-				// Note: struct instance methods actually have their internal instance parameter passed by ref,
-				// and thus are incompatible with typical delegates
-				// (delegate type must be: delegate <return type> MyStructDelegate(ref MyStruct instance, ...)),
-				// so for struct instance methods, instead always use DynamicMethodDefinition approach,
-				// so that typical non-ref-instance delegates work.
-				if (virtualCall && !declaringType.IsValueType)
+				var delegateParameters = delegateType.GetMethod("Invoke").GetParameters();
+				if (delegateParameters.Length == 0)
 				{
-					return (DelegateType)Delegate.CreateDelegate(delegateType, method.GetBaseDefinition());
+					// Following should throw the ArgumentException with the proper message string.
+					_ = Delegate.CreateDelegate(typeof(DelegateType), method);
+					// But in case it doesn't...
+					throw new ArgumentException("Invalid delegate type");
+				}
+				var delegateInstanceType = delegateParameters[0].ParameterType;
+				// Exceptional case: delegate struct instance type cannot be created from an interface method.
+				// This case is handled in the "non-virtual call" case, using the struct method and the matching delegate instance type.
+				if (declaringType.IsInterface && delegateInstanceType.IsValueType)
+				{
+					var interfaceMapping = delegateInstanceType.GetInterfaceMap(declaringType);
+					method = interfaceMapping.TargetMethods[Array.IndexOf(interfaceMapping.InterfaceMethods, method)];
+					declaringType = delegateInstanceType;
+				}
+
+				// ... that virtually calls ...
+				if (virtualCall)
+				{
+					// ... an interface method
+					// If method is already an interface method, just create a delegate from it directly.
+					if (declaringType.IsInterface)
+					{
+						return (DelegateType)Delegate.CreateDelegate(delegateType, method);
+					}
+					// delegate interface instance type requires interface method.
+					if (delegateInstanceType.IsInterface)
+					{
+						var interfaceMapping = declaringType.GetInterfaceMap(delegateInstanceType);
+						var interfaceMethod = interfaceMapping.InterfaceMethods[Array.IndexOf(interfaceMapping.TargetMethods, method)];
+						return (DelegateType)Delegate.CreateDelegate(delegateType, interfaceMethod);
+					}
+
+					// ... a class instance method
+					// Exceptional case: struct instance methods actually have their internal instance parameter passed by ref,
+					// and thus are incompatible with typical non-ref-instance delegates
+					// (delegate type must be: delegate <return type> MyStructDelegate(ref MyStruct instance, ...)),
+					// so for struct instance methods, instead always use DynamicMethodDefinition approach,
+					// so that typical non-ref-instance delegates work.
+					if (!declaringType.IsValueType)
+					{
+						return (DelegateType)Delegate.CreateDelegate(delegateType, method.GetBaseDefinition());
+					}
 				}
 
 				// ... that non-virtually calls
@@ -1040,7 +1081,10 @@ namespace HarmonyLib
 				var dmd = new DynamicMethodDefinition(
 					"LdftnDelegate_" + method.Name,
 					delegateType,
-					new[] { typeof(object) });
+					new[] { typeof(object) })
+				{
+					OwnerType = delegateType
+				};
 				var ilGen = dmd.GetILGenerator();
 				ilGen.Emit(OpCodes.Ldarg_0);
 				ilGen.Emit(OpCodes.Ldftn, method);
