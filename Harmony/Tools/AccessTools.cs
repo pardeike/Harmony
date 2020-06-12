@@ -975,10 +975,11 @@ namespace HarmonyLib
 				return (DelegateType)Delegate.CreateDelegate(delegateType, method);
 			}
 
+			var declaringType = method.DeclaringType;
+
 			// Open instance method delegate ...
 			if (instance is null)
 			{
-				var declaringType = method.DeclaringType;
 				// ... that virtually calls
 				// Note: struct instance methods actually have their internal instance parameter passed by ref,
 				// and thus are incompatible with typical delegates
@@ -1025,12 +1026,27 @@ namespace HarmonyLib
 			// Closed instance method delegate that non-virtually calls
 			// It's possible to create a delegate to a derived class method bound to a base class object,
 			// but this has undefined behavior, so disallow it.
-			if (!method.DeclaringType.IsInstanceOfType(instance))
+			if (!declaringType.IsInstanceOfType(instance))
 			{
 				// Following should throw the ArgumentException with the proper message string.
 				_ = Delegate.CreateDelegate(typeof(DelegateType), instance, method);
 				// But in case it doesn't...
 				throw new ArgumentException("Invalid delegate type");
+			}
+			// Mono seems to internally use the equivalent of ldvirtftn when calling delegate constructor on a method pointer,
+			// so instead, manually create a dynamic method to create the delegate using ldftn rather than ldvirtftn.
+			if (IsMonoRuntime)
+			{
+				var dmd = new DynamicMethodDefinition(
+					"LdftnDelegate_" + method.Name,
+					delegateType,
+					new[] { typeof(object) });
+				var ilGen = dmd.GetILGenerator();
+				ilGen.Emit(OpCodes.Ldarg_0);
+				ilGen.Emit(OpCodes.Ldftn, method);
+				ilGen.Emit(OpCodes.Newobj, delegateType.GetConstructor(new[] { typeof(object), typeof(IntPtr) }));
+				ilGen.Emit(OpCodes.Ret);
+				return (DelegateType)dmd.Generate().Invoke(null, new object[] { instance });
 			}
 			return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
 		}
