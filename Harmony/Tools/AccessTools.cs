@@ -988,7 +988,7 @@ namespace HarmonyLib
 				var delegateParameters = delegateType.GetMethod("Invoke").GetParameters();
 				if (delegateParameters.Length == 0)
 				{
-					// Following should throw the ArgumentException with the proper message string.
+					// Following should throw an ArgumentException with the proper message string.
 					_ = Delegate.CreateDelegate(typeof(DelegateType), method);
 					// But in case it doesn't...
 					throw new ArgumentException("Invalid delegate type");
@@ -1069,7 +1069,7 @@ namespace HarmonyLib
 			// but this has undefined behavior, so disallow it.
 			if (!declaringType.IsInstanceOfType(instance))
 			{
-				// Following should throw the ArgumentException with the proper message string.
+				// Following should throw an ArgumentException with the proper message string.
 				_ = Delegate.CreateDelegate(typeof(DelegateType), instance, method);
 				// But in case it doesn't...
 				throw new ArgumentException("Invalid delegate type");
