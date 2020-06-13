@@ -503,7 +503,13 @@ namespace HarmonyLib
 									}
 								}
 
-								emitter.Emit(OpCodes.Ldftn, methodInfo);
+								if (!methodInfo.IsStatic && (harmonyMethod.virtualDelegate ?? true))
+								{
+									emitter.Emit(OpCodes.Dup);
+									emitter.Emit(OpCodes.Ldvirtftn, methodInfo);
+								}
+								else
+									emitter.Emit(OpCodes.Ldftn, methodInfo);
 								emitter.Emit(OpCodes.Newobj, delegateConstructor);
 								continue;
 							}

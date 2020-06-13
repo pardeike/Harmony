@@ -72,7 +72,7 @@ namespace HarmonyLibTests.Assets
 	{
 	}
 
-	public static class AccessToolsCreateDelegate
+	public static class AccessToolsMethodDelegate
 	{
 		public interface IInterface
 		{
@@ -115,7 +115,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public static class AccessToolsCreateHarmonyDelegate
+	public static class AccessToolsHarmonyDelegate
 	{
 		public class Foo
 		{
