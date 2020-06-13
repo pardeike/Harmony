@@ -73,38 +73,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.Constructor
   nameWithType: AccessTools.Constructor
-- uid: HarmonyLib.AccessTools.CreateDelegate*
-  name: CreateDelegate
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CreateDelegate_
-  commentId: Overload:HarmonyLib.AccessTools.CreateDelegate
-  isSpec: "True"
-  fullName: HarmonyLib.AccessTools.CreateDelegate
-  nameWithType: AccessTools.CreateDelegate
-- uid: HarmonyLib.AccessTools.CreateDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
-  name: CreateDelegate<DelegateType>(MethodInfo, Object, Boolean)
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CreateDelegate__1_System_Reflection_MethodInfo_System_Object_System_Boolean_
-  commentId: M:HarmonyLib.AccessTools.CreateDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
-  name.vb: CreateDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
-  fullName: HarmonyLib.AccessTools.CreateDelegate<DelegateType>(System.Reflection.MethodInfo, System.Object, System.Boolean)
-  fullName.vb: HarmonyLib.AccessTools.CreateDelegate(Of DelegateType)(System.Reflection.MethodInfo, System.Object, System.Boolean)
-  nameWithType: AccessTools.CreateDelegate<DelegateType>(MethodInfo, Object, Boolean)
-  nameWithType.vb: AccessTools.CreateDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
-- uid: HarmonyLib.AccessTools.CreateHarmonyDelegate*
-  name: CreateHarmonyDelegate
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CreateHarmonyDelegate_
-  commentId: Overload:HarmonyLib.AccessTools.CreateHarmonyDelegate
-  isSpec: "True"
-  fullName: HarmonyLib.AccessTools.CreateHarmonyDelegate
-  nameWithType: AccessTools.CreateHarmonyDelegate
-- uid: HarmonyLib.AccessTools.CreateHarmonyDelegate``1
-  name: CreateHarmonyDelegate<DelegateType>()
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CreateHarmonyDelegate__1
-  commentId: M:HarmonyLib.AccessTools.CreateHarmonyDelegate``1
-  name.vb: CreateHarmonyDelegate(Of DelegateType)()
-  fullName: HarmonyLib.AccessTools.CreateHarmonyDelegate<DelegateType>()
-  fullName.vb: HarmonyLib.AccessTools.CreateHarmonyDelegate(Of DelegateType)()
-  nameWithType: AccessTools.CreateHarmonyDelegate<DelegateType>()
-  nameWithType.vb: AccessTools.CreateHarmonyDelegate(Of DelegateType)()
 - uid: HarmonyLib.AccessTools.CreateInstance(System.Type)
   name: CreateInstance(Type)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CreateInstance_System_Type_
@@ -587,6 +555,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.GetUnderlyingType
   nameWithType: AccessTools.GetUnderlyingType
+- uid: HarmonyLib.AccessTools.HarmonyDelegate*
+  name: HarmonyDelegate
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_HarmonyDelegate_
+  commentId: Overload:HarmonyLib.AccessTools.HarmonyDelegate
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.HarmonyDelegate
+  nameWithType: AccessTools.HarmonyDelegate
+- uid: HarmonyLib.AccessTools.HarmonyDelegate``1(System.Object)
+  name: HarmonyDelegate<DelegateType>(Object)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_HarmonyDelegate__1_System_Object_
+  commentId: M:HarmonyLib.AccessTools.HarmonyDelegate``1(System.Object)
+  name.vb: HarmonyDelegate(Of DelegateType)(Object)
+  fullName: HarmonyLib.AccessTools.HarmonyDelegate<DelegateType>(System.Object)
+  fullName.vb: HarmonyLib.AccessTools.HarmonyDelegate(Of DelegateType)(System.Object)
+  nameWithType: AccessTools.HarmonyDelegate<DelegateType>(Object)
+  nameWithType.vb: AccessTools.HarmonyDelegate(Of DelegateType)(Object)
 - uid: HarmonyLib.AccessTools.Inner(System.Type,System.String)
   name: Inner(Type, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Inner_System_Type_System_String_
@@ -795,6 +779,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.Method
   nameWithType: AccessTools.Method
+- uid: HarmonyLib.AccessTools.MethodDelegate*
+  name: MethodDelegate
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_MethodDelegate_
+  commentId: Overload:HarmonyLib.AccessTools.MethodDelegate
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.MethodDelegate
+  nameWithType: AccessTools.MethodDelegate
+- uid: HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
+  name: MethodDelegate<DelegateType>(MethodInfo, Object, Boolean)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_MethodDelegate__1_System_Reflection_MethodInfo_System_Object_System_Boolean_
+  commentId: M:HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
+  name.vb: MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
+  fullName: HarmonyLib.AccessTools.MethodDelegate<DelegateType>(System.Reflection.MethodInfo, System.Object, System.Boolean)
+  fullName.vb: HarmonyLib.AccessTools.MethodDelegate(Of DelegateType)(System.Reflection.MethodInfo, System.Object, System.Boolean)
+  nameWithType: AccessTools.MethodDelegate<DelegateType>(MethodInfo, Object, Boolean)
+  nameWithType.vb: AccessTools.MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
 - uid: HarmonyLib.AccessTools.Property(System.Type,System.String)
   name: Property(Type, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Property_System_Type_System_String_
@@ -2377,42 +2377,42 @@ references:
   commentId: T:HarmonyLib.HarmonyDelegate
   fullName: HarmonyLib.HarmonyDelegate
   nameWithType: HarmonyDelegate
-- uid: HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodInheritance)
-  name: HarmonyDelegate(MethodInheritance)
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodInheritance_
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodInheritance)
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodInheritance)
-  nameWithType: HarmonyDelegate.HarmonyDelegate(MethodInheritance)
-- uid: HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodInheritance,System.Type[])
-  name: HarmonyDelegate(MethodInheritance, Type[])
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodInheritance_System_Type___
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodInheritance,System.Type[])
-  name.vb: HarmonyDelegate(MethodInheritance, Type())
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodInheritance, System.Type[])
-  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodInheritance, System.Type())
-  nameWithType: HarmonyDelegate.HarmonyDelegate(MethodInheritance, Type[])
-  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(MethodInheritance, Type())
-- uid: HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodInheritance,System.Type[],HarmonyLib.ArgumentType[])
-  name: HarmonyDelegate(MethodInheritance, Type[], ArgumentType[])
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodInheritance_System_Type___HarmonyLib_ArgumentType___
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodInheritance,System.Type[],HarmonyLib.ArgumentType[])
-  name.vb: HarmonyDelegate(MethodInheritance, Type(), ArgumentType())
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodInheritance, System.Type[], HarmonyLib.ArgumentType[])
-  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodInheritance, System.Type(), HarmonyLib.ArgumentType())
-  nameWithType: HarmonyDelegate.HarmonyDelegate(MethodInheritance, Type[], ArgumentType[])
-  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(MethodInheritance, Type(), ArgumentType())
+- uid: HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodBinding)
+  name: HarmonyDelegate(MethodBinding)
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodBinding_
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodBinding)
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodBinding)
+  nameWithType: HarmonyDelegate.HarmonyDelegate(MethodBinding)
+- uid: HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodBinding,System.Type[])
+  name: HarmonyDelegate(MethodBinding, Type[])
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodBinding_System_Type___
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodBinding,System.Type[])
+  name.vb: HarmonyDelegate(MethodBinding, Type())
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodBinding, System.Type[])
+  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodBinding, System.Type())
+  nameWithType: HarmonyDelegate.HarmonyDelegate(MethodBinding, Type[])
+  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(MethodBinding, Type())
+- uid: HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodBinding,System.Type[],HarmonyLib.ArgumentType[])
+  name: HarmonyDelegate(MethodBinding, Type[], ArgumentType[])
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodBinding_System_Type___HarmonyLib_ArgumentType___
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodBinding,System.Type[],HarmonyLib.ArgumentType[])
+  name.vb: HarmonyDelegate(MethodBinding, Type(), ArgumentType())
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodBinding, System.Type[], HarmonyLib.ArgumentType[])
+  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(HarmonyLib.MethodBinding, System.Type(), HarmonyLib.ArgumentType())
+  nameWithType: HarmonyDelegate.HarmonyDelegate(MethodBinding, Type[], ArgumentType[])
+  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(MethodBinding, Type(), ArgumentType())
 - uid: HarmonyLib.HarmonyDelegate.#ctor(System.String)
   name: HarmonyDelegate(String)
   href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_String_
   commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.String)
   fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.String)
   nameWithType: HarmonyDelegate.HarmonyDelegate(String)
-- uid: HarmonyLib.HarmonyDelegate.#ctor(System.String,HarmonyLib.MethodInheritance)
-  name: HarmonyDelegate(String, MethodInheritance)
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_String_HarmonyLib_MethodInheritance_
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.String,HarmonyLib.MethodInheritance)
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.String, HarmonyLib.MethodInheritance)
-  nameWithType: HarmonyDelegate.HarmonyDelegate(String, MethodInheritance)
+- uid: HarmonyLib.HarmonyDelegate.#ctor(System.String,HarmonyLib.MethodBinding)
+  name: HarmonyDelegate(String, MethodBinding)
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_String_HarmonyLib_MethodBinding_
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.String,HarmonyLib.MethodBinding)
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.String, HarmonyLib.MethodBinding)
+  nameWithType: HarmonyDelegate.HarmonyDelegate(String, MethodBinding)
 - uid: HarmonyLib.HarmonyDelegate.#ctor(System.String,System.Type[])
   name: HarmonyDelegate(String, Type[])
   href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_String_System_Type___
@@ -2437,42 +2437,42 @@ references:
   commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type)
   fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type)
   nameWithType: HarmonyDelegate.HarmonyDelegate(Type)
-- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodInheritance)
-  name: HarmonyDelegate(Type, MethodInheritance)
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodInheritance_
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodInheritance)
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodInheritance)
-  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, MethodInheritance)
-- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodInheritance,System.Type[])
-  name: HarmonyDelegate(Type, MethodInheritance, Type[])
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodInheritance_System_Type___
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodInheritance,System.Type[])
-  name.vb: HarmonyDelegate(Type, MethodInheritance, Type())
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodInheritance, System.Type[])
-  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodInheritance, System.Type())
-  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, MethodInheritance, Type[])
-  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(Type, MethodInheritance, Type())
-- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodInheritance,System.Type[],HarmonyLib.ArgumentType[])
-  name: HarmonyDelegate(Type, MethodInheritance, Type[], ArgumentType[])
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodInheritance_System_Type___HarmonyLib_ArgumentType___
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodInheritance,System.Type[],HarmonyLib.ArgumentType[])
-  name.vb: HarmonyDelegate(Type, MethodInheritance, Type(), ArgumentType())
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodInheritance, System.Type[], HarmonyLib.ArgumentType[])
-  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodInheritance, System.Type(), HarmonyLib.ArgumentType())
-  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, MethodInheritance, Type[], ArgumentType[])
-  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(Type, MethodInheritance, Type(), ArgumentType())
+- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodBinding)
+  name: HarmonyDelegate(Type, MethodBinding)
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodBinding_
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodBinding)
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodBinding)
+  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, MethodBinding)
+- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodBinding,System.Type[])
+  name: HarmonyDelegate(Type, MethodBinding, Type[])
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodBinding_System_Type___
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodBinding,System.Type[])
+  name.vb: HarmonyDelegate(Type, MethodBinding, Type())
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodBinding, System.Type[])
+  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodBinding, System.Type())
+  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, MethodBinding, Type[])
+  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(Type, MethodBinding, Type())
+- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodBinding,System.Type[],HarmonyLib.ArgumentType[])
+  name: HarmonyDelegate(Type, MethodBinding, Type[], ArgumentType[])
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodBinding_System_Type___HarmonyLib_ArgumentType___
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodBinding,System.Type[],HarmonyLib.ArgumentType[])
+  name.vb: HarmonyDelegate(Type, MethodBinding, Type(), ArgumentType())
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodBinding, System.Type[], HarmonyLib.ArgumentType[])
+  fullName.vb: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, HarmonyLib.MethodBinding, System.Type(), HarmonyLib.ArgumentType())
+  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, MethodBinding, Type[], ArgumentType[])
+  nameWithType.vb: HarmonyDelegate.HarmonyDelegate(Type, MethodBinding, Type(), ArgumentType())
 - uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String)
   name: HarmonyDelegate(Type, String)
   href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_
   commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String)
   fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, System.String)
   nameWithType: HarmonyDelegate.HarmonyDelegate(Type, String)
-- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,HarmonyLib.MethodInheritance)
-  name: HarmonyDelegate(Type, String, MethodInheritance)
-  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_HarmonyLib_MethodInheritance_
-  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,HarmonyLib.MethodInheritance)
-  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, System.String, HarmonyLib.MethodInheritance)
-  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, String, MethodInheritance)
+- uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,HarmonyLib.MethodBinding)
+  name: HarmonyDelegate(Type, String, MethodBinding)
+  href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_HarmonyLib_MethodBinding_
+  commentId: M:HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,HarmonyLib.MethodBinding)
+  fullName: HarmonyLib.HarmonyDelegate.HarmonyDelegate(System.Type, System.String, HarmonyLib.MethodBinding)
+  nameWithType: HarmonyDelegate.HarmonyDelegate(Type, String, MethodBinding)
 - uid: HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,System.Type[])
   name: HarmonyDelegate(Type, String, Type[])
   href: api/HarmonyLib.HarmonyDelegate.html#HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_System_Type___
@@ -3360,24 +3360,24 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.MethodBaseExtensions.HasMethodBody
   nameWithType: MethodBaseExtensions.HasMethodBody
-- uid: HarmonyLib.MethodInheritance
-  name: MethodInheritance
-  href: api/HarmonyLib.MethodInheritance.html
-  commentId: T:HarmonyLib.MethodInheritance
-  fullName: HarmonyLib.MethodInheritance
-  nameWithType: MethodInheritance
-- uid: HarmonyLib.MethodInheritance.None
-  name: None
-  href: api/HarmonyLib.MethodInheritance.html#HarmonyLib_MethodInheritance_None
-  commentId: F:HarmonyLib.MethodInheritance.None
-  fullName: HarmonyLib.MethodInheritance.None
-  nameWithType: MethodInheritance.None
-- uid: HarmonyLib.MethodInheritance.Virtual
-  name: Virtual
-  href: api/HarmonyLib.MethodInheritance.html#HarmonyLib_MethodInheritance_Virtual
-  commentId: F:HarmonyLib.MethodInheritance.Virtual
-  fullName: HarmonyLib.MethodInheritance.Virtual
-  nameWithType: MethodInheritance.Virtual
+- uid: HarmonyLib.MethodBinding
+  name: MethodBinding
+  href: api/HarmonyLib.MethodBinding.html
+  commentId: T:HarmonyLib.MethodBinding
+  fullName: HarmonyLib.MethodBinding
+  nameWithType: MethodBinding
+- uid: HarmonyLib.MethodBinding.Call
+  name: Call
+  href: api/HarmonyLib.MethodBinding.html#HarmonyLib_MethodBinding_Call
+  commentId: F:HarmonyLib.MethodBinding.Call
+  fullName: HarmonyLib.MethodBinding.Call
+  nameWithType: MethodBinding.Call
+- uid: HarmonyLib.MethodBinding.CallVirtually
+  name: CallVirtually
+  href: api/HarmonyLib.MethodBinding.html#HarmonyLib_MethodBinding_CallVirtually
+  commentId: F:HarmonyLib.MethodBinding.CallVirtually
+  fullName: HarmonyLib.MethodBinding.CallVirtually
+  nameWithType: MethodBinding.CallVirtually
 - uid: HarmonyLib.MethodInvoker
   name: MethodInvoker
   href: api/HarmonyLib.MethodInvoker.html
