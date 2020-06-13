@@ -130,7 +130,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void Test_InjectDelegateForClass()
+		public void Test_InjectBaseDelegateForClass()
 		{
 			var instance = new InjectDelegateClass() { pre = "{", post = "}" };
 			instance.Method(123);
@@ -143,7 +143,7 @@ namespace HarmonyLibTests
 			Assert.AreEqual(1, patches.Count);
 
 			instance.Method(123);
-			Assert.AreEqual("{patch:456}", InjectDelegateClassPatch.result);
+			Assert.AreEqual("{patch:456} | [{patch:456}]", InjectDelegateClassPatch.result);
 		}
 
 		[Test]

@@ -61,14 +61,31 @@ namespace HarmonyLib
 		Snapshot
 	}
 
-	/// <summary>Specifies the type of method</summary>
+	/// <summary>Specifies the type of method binding used during a method call (method call dispatching mechanics)</summary>
 	///
-	public enum MethodInheritance
+	public enum MethodBinding
 	{
-		/// <summary>Call the method using dynamic dispatching like with oridinary virtual/override mechanics</summary>
-		Virtual,
+		/// <summary>Call the method using dynamic dispatching like with ordinary virtual/override mechanics</summary>
+		/// <remarks>
+		/// <para>
+		/// a.k.a. late binding or dynamic binding, this directly corresponds with the <see cref="System.Reflection.Emit.OpCodes.Callvirt"/> instruction.
+		/// </para>
+		/// <para>
+		/// For virtual methods (including overriden methods), the instance type's most-derived/overriden implementation of the method is called.
+		/// For non-virtual methods, same behavior as <see cref="Call"/>: the exact specified method implementation is called.
+		/// </para>
+		/// </remarks>
+		CallVirtually,
 		/// <summary>Call the specified method only, do not dispatch dynamically</summary>
-		None
+		/// <remarks>
+		/// <para>
+		/// a.k.a. early binding or static binding, this directly corresponds with the <see cref="System.Reflection.Emit.OpCodes.Call"/> instruction.
+		/// </para>
+		/// <para>
+		/// For both virtual and non-virtual methods, the exact specified method implementation is called.
+		/// </para>
+		/// </remarks>
+		Call
 	}
 
 	/// <summary>The base class for all Harmony annotations (not meant to be used directly)</summary>
@@ -352,46 +369,46 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodInheritance methodInheritance)
+		public HarmonyDelegate(Type declaringType, MethodBinding methodBinding)
 			: base(declaringType, MethodType.Normal)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodInheritance methodInheritance, params Type[] argumentTypes)
+		public HarmonyDelegate(Type declaringType, MethodBinding methodBinding, params Type[] argumentTypes)
 			: base(declaringType, MethodType.Normal, argumentTypes)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodInheritance methodInheritance, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		public HarmonyDelegate(Type declaringType, MethodBinding methodBinding, Type[] argumentTypes, ArgumentType[] argumentVariations)
 			: base(declaringType, MethodType.Normal, argumentTypes, argumentVariations)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, string methodName, MethodInheritance methodInheritance)
+		public HarmonyDelegate(Type declaringType, string methodName, MethodBinding methodBinding)
 			: base(declaringType, methodName, MethodType.Normal)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -417,41 +434,41 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		///
-		public HarmonyDelegate(string methodName, MethodInheritance methodInheritance)
+		public HarmonyDelegate(string methodName, MethodBinding methodBinding)
 			: base(methodName, MethodType.Normal)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies call dispatching mechanics for the delegate</summary>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		///
-		public HarmonyDelegate(MethodInheritance methodInheritance)
+		public HarmonyDelegate(MethodBinding methodBinding)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
-		public HarmonyDelegate(MethodInheritance methodInheritance, params Type[] argumentTypes)
+		public HarmonyDelegate(MethodBinding methodBinding, params Type[] argumentTypes)
 			: base(MethodType.Normal, argumentTypes)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="methodInheritance">The <see cref="MethodInheritance"/></param>
+		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
 		///
-		public HarmonyDelegate(MethodInheritance methodInheritance, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		public HarmonyDelegate(MethodBinding methodBinding, Type[] argumentTypes, ArgumentType[] argumentVariations)
 			: base(MethodType.Normal, argumentTypes, argumentVariations)
 		{
-			info.virtualDelegate = methodInheritance == MethodInheritance.Virtual;
+			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>

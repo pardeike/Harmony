@@ -72,7 +72,7 @@ namespace HarmonyLibTests.Assets
 	{
 	}
 
-	public static class AccessToolsCreateDelegate
+	public static class AccessToolsMethodDelegate
 	{
 		public interface IInterface
 		{
@@ -82,6 +82,7 @@ namespace HarmonyLibTests.Assets
 		public class Base : IInterface
 		{
 			public int x;
+
 			public virtual string Test(int n, ref float f)
 			{
 				return $"base test {n} {++f} {++x}";
@@ -99,6 +100,7 @@ namespace HarmonyLibTests.Assets
 		public struct Struct : IInterface
 		{
 			public int x;
+
 			public string Test(int n, ref float f)
 			{
 				return $"struct result {n} {++f} {++x}";
@@ -106,13 +108,14 @@ namespace HarmonyLibTests.Assets
 		}
 
 		public static int x;
+
 		public static string Test(int n, ref float f)
 		{
 			return $"static test {n} {++f} {++x}";
 		}
 	}
 
-	public static class AccessToolsCreateHarmonyDelegate
+	public static class AccessToolsHarmonyDelegate
 	{
 		public class Foo
 		{
