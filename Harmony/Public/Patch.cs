@@ -85,7 +85,7 @@ namespace HarmonyLib
 	/// <summary>Serializable patch information</summary>
 	/// 
 	[Serializable]
-	public class PatchInfo
+	internal class PatchInfo
 	{
 		/// <summary>Prefixes as an array of <see cref="Patch"/></summary>
 		/// 

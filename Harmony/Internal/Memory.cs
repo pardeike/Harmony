@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace HarmonyLib
 {
 	/// <summary>A low level memory helper</summary>
-	public static class Memory
+	internal static class Memory
 	{
 		/// <summary>Mark method for no inlining (currently only works on Mono)</summary>
 		/// <param name="method">The method/constructor to change</param>
