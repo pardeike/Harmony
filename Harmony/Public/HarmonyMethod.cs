@@ -50,9 +50,9 @@ namespace HarmonyLib
 		/// 
 		public bool? debug;
 
-		/// <summary>Use inheritance for harmony delegates</summary>
+		/// <summary>Use <see cref="MethodDispatchType.VirtualCall"/> mechanics for <see cref="HarmonyDelegate"/>-attributed delegate; defaults to <c>true</c></summary>
 		/// 
-		public bool? virtualDelegate;
+		public bool virtualDelegate = true;
 
 		/// <summary>Default constructor</summary>
 		/// 
