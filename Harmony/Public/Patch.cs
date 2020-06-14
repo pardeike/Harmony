@@ -87,145 +87,90 @@ namespace HarmonyLib
 	{
 		/// <summary>Prefixes as an array of <see cref="Patch"/></summary>
 		/// 
-		public Patch[] prefixes;
+		public Patch[] prefixes = new Patch[0];
 
 		/// <summary>Postfixes as an array of <see cref="Patch"/></summary>
 		/// 
-		public Patch[] postfixes;
+		public Patch[] postfixes = new Patch[0];
 
 		/// <summary>Transpilers as an array of <see cref="Patch"/></summary>
 		/// 
-		public Patch[] transpilers;
+		public Patch[] transpilers = new Patch[0];
 
 		/// <summary>Finalizers as an array of <see cref="Patch"/></summary>
 		/// 
-		public Patch[] finalizers;
-
-		/// <summary>Default constructor</summary>
-		/// 
-		public PatchInfo()
-		{
-			prefixes = new Patch[0];
-			postfixes = new Patch[0];
-			transpilers = new Patch[0];
-			finalizers = new Patch[0];
-		}
+		public Patch[] finalizers = new Patch[0];
 
 		/// <summary>Returns if any of the patches wants debugging turned on</summary>
 		/// 
 		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug);
 
-		/// <summary>Adds a prefix</summary>
-		/// 
-		/// <param name="patch">The prefix method</param>
+		/// <summary>Adds prefixes</summary>
 		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="priority">The priority, see <see cref="Priority"/></param>
-		/// <param name="before">A list of Harmony IDs for prefixes that should run after this prefix</param>
-		/// <param name="after">A list of Harmony IDs for prefixes that should run before this prefix</param>
-		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this prefix is used to build the replacement, even in the future</param>
+		/// <param name="methods">The patch methods</param>
 		///
-		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		internal void AddPrefixes(string owner, params HarmonyMethod[] methods)
 		{
-			var l = prefixes.ToList();
-			l.Add(new Patch(patch, prefixes.Count() + 1, owner, priority, before, after, debug));
-			prefixes = l.ToArray();
+			prefixes = Add(owner, methods, prefixes);
 		}
 
 		/// <summary>Removes prefixes</summary>
-		/// <param name="owner">The owner of the prefix or <c>*</c> for any prefix</param>
+		/// <param name="owner">The owner of the prefixes, or <c>*</c> for all</param>
 		///
 		public void RemovePrefix(string owner)
 		{
-			if (owner == "*")
-			{
-				prefixes = new Patch[0];
-				return;
-			}
-			prefixes = prefixes.Where(patch => patch.owner != owner).ToArray();
+			prefixes = Remove(owner, prefixes);
 		}
 
-		/// <summary>Adds a postfix</summary>
-		/// <param name="patch">The postfix method</param>
+		/// <summary>Adds postfixes</summary>
 		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="priority">The priority, see <see cref="Priority"/></param>
-		/// <param name="before">A list of Harmony IDs for postfixes that should run after this postfix</param>
-		/// <param name="after">A list of Harmony IDs for postfixes that should run before this postfix</param>
-		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this postfix is used to build the replacement, even in the future</param>
+		/// <param name="methods">The patch methods</param>
 		///
-		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		internal void AddPostfixes(string owner, params HarmonyMethod[] methods)
 		{
-			var l = postfixes.ToList();
-			l.Add(new Patch(patch, postfixes.Count() + 1, owner, priority, before, after, debug));
-			postfixes = l.ToArray();
+			postfixes = Add(owner, methods, postfixes);
 		}
 
 		/// <summary>Removes postfixes</summary>
-		/// <param name="owner">The owner of the postfix or <c>*</c> for any postfix</param>
+		/// <param name="owner">The owner of the postfixes, or <c>*</c> for all</param>
 		///
 		public void RemovePostfix(string owner)
 		{
-			if (owner == "*")
-			{
-				postfixes = new Patch[0];
-				return;
-			}
-			postfixes = postfixes.Where(patch => patch.owner != owner).ToArray();
+			postfixes = Remove(owner, postfixes);
 		}
 
-		/// <summary>Adds a transpiler</summary>
-		/// <param name="patch">The transpiler method</param>
+		/// <summary>Adds transpilers</summary>
 		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="priority">The priority, see <see cref="Priority"/></param>
-		/// <param name="before">A list of Harmony IDs for transpilers that should run after this transpiler</param>
-		/// <param name="after">A list of Harmony IDs for transpilers that should run before this transpiler</param>
-		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</param>
+		/// <param name="methods">The patch methods</param>
 		///
-		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		internal void AddTranspilers(string owner, params HarmonyMethod[] methods)
 		{
-			var l = transpilers.ToList();
-			l.Add(new Patch(patch, transpilers.Count() + 1, owner, priority, before, after, debug));
-			transpilers = l.ToArray();
+			transpilers = Add(owner, methods, transpilers);
 		}
 
 		/// <summary>Removes transpilers</summary>
-		/// <param name="owner">The owner of the transpiler or <c>*</c> for any transpiler</param>
+		/// <param name="owner">The owner of the transpilers, or <c>*</c> for all</param>
 		///
 		public void RemoveTranspiler(string owner)
 		{
-			if (owner == "*")
-			{
-				transpilers = new Patch[0];
-				return;
-			}
-			transpilers = transpilers.Where(patch => patch.owner != owner).ToArray();
+			transpilers = Remove(owner, transpilers);
 		}
 
-		/// <summary>Adds a finalizer</summary>
-		/// <param name="patch">The finalizer method</param>
+		/// <summary>Adds finalizers</summary>
 		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="priority">The priority, see <see cref="Priority"/></param>
-		/// <param name="before">A list of Harmony IDs for finalizers that should run after this finalizer</param>
-		/// <param name="after">A list of Harmony IDs for finalizers that should run before this finalizer</param>
-		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</param>
+		/// <param name="methods">The patch methods</param>
 		///
-		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		internal void AddFinalizers(string owner, params HarmonyMethod[] methods)
 		{
-			var l = finalizers.ToList();
-			l.Add(new Patch(patch, finalizers.Count() + 1, owner, priority, before, after, debug));
-			finalizers = l.ToArray();
+			finalizers = Add(owner, methods, finalizers);
 		}
 
 		/// <summary>Removes finalizers</summary>
-		/// <param name="owner">The owner of the finalizer or <c>*</c> for any finalizer</param>
+		/// <param name="owner">The owner of the finalizers, or <c>*</c> for all</param>
 		///
 		public void RemoveFinalizer(string owner)
 		{
-			if (owner == "*")
-			{
-				finalizers = new Patch[0];
-				return;
-			}
-			finalizers = finalizers.Where(patch => patch.owner != owner).ToArray();
+			finalizers = Remove(owner, finalizers);
 		}
 
 		/// <summary>Removes a patch using its method</summary>
@@ -237,6 +182,55 @@ namespace HarmonyLib
 			postfixes = postfixes.Where(p => p.PatchMethod != patch).ToArray();
 			transpilers = transpilers.Where(p => p.PatchMethod != patch).ToArray();
 			finalizers = finalizers.Where(p => p.PatchMethod != patch).ToArray();
+		}
+
+		/// <summary>Adds a prefix</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddPrefixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
+
+		/// <summary>Adds a postfix</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddPostfixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
+
+		/// <summary>Adds a transpiler</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddTranspilers(owner, new HarmonyMethod(patch, priority, before, after, debug));
+
+		/// <summary>Adds a finalizer</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddFinalizers(owner, new HarmonyMethod(patch, priority, before, after, debug));
+
+		/// <summary>Gets a concatenated list of patches</summary>
+		/// <param name="owner">The Harmony instance ID adding the new patches</param>
+		/// <param name="add">The patches to add</param>
+		/// <param name="current">The current patches</param>
+		///
+		private static Patch[] Add(string owner, HarmonyMethod[] add, Patch[] current)
+		{
+			// avoid copy if no patch added
+			if (add.Length == 0 || (add.Length == 1 && add[0] == null))
+				return current;
+
+			// concat lists
+			int index = current.Length;
+			return current
+				.Concat(
+					from method in add
+					where method != null
+					select new Patch(method, ++index, owner)
+				)
+				.ToArray();
+		}
+
+		/// <summary>Gets a list of patches with any from the given owner removed</summary>
+		/// <param name="owner">The owner of the methods, or <c>*</c> for all</param>
+		/// <param name="current">The current patches</param>
+		///
+		private static Patch[] Remove(string owner, Patch[] current)
+		{
+			return owner == "*"
+				? new Patch[0]
+				: current.Where(patch => patch.owner != owner).ToArray();
 		}
 	}
 
@@ -323,12 +317,19 @@ namespace HarmonyLib
 
 			this.index = index;
 			this.owner = owner;
-			this.priority = priority;
-			this.before = before;
-			this.after = after;
+			this.priority = priority == -1 ? Priority.Normal : priority;
+			this.before = before ?? new string[0];
+			this.after = after ?? new string[0];
 			this.debug = debug;
 			PatchMethod = patch;
 		}
+
+		/// <summary>Creates a patch</summary>
+		/// <param name="method">The method of the patch</param>
+		/// <param name="index">Zero-based index</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		public Patch(HarmonyMethod method, int index, string owner)
+			: this(method.method, index, owner, method.priority, method.before, method.after, method.debug ?? false) { }
 
 		/// <summary>Get the patch method or a DynamicMethod if original patch method is a patch factory</summary>
 		/// <param name="original">The original method/constructor</param>
