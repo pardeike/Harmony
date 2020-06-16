@@ -3398,8 +3398,8 @@ instance delegate where the delegate invocation always applies to the given <cod
       <tr>
         <td><span class="xref">System.Boolean</span></td>
         <td><span class="parametername">virtualCall</span></td>
-        <td><p>Only applies for instance methods. If <code>true</code> (default), invocation of the delegate calls the instance method virtually
-(if <code data-dev-comment-type="paramref" class="paramref">method</code> is virtual, the instance type's most-derived/overriden implementation of the method is called);
+        <td><p>Only applies for instance methods. If <code>true</code> (default) and <code data-dev-comment-type="paramref" class="paramref">method</code> is virtual, invocation of the delegate
+calls the instance method virtually (the instance type's most-derived/overriden implementation of the method is called);
 else, invocation of the delegate calls the exact specified <code data-dev-comment-type="paramref" class="paramref">method</code> (this is useful for calling base class methods)
 Note: if <code>false</code> and <code data-dev-comment-type="paramref" class="paramref">method</code> is an interface method, an ArgumentException is thrown.</p>
 </td>
