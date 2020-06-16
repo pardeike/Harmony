@@ -382,7 +382,7 @@ namespace HarmonyLib
 		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType)
 			: base(declaringType, MethodType.Normal)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -393,7 +393,7 @@ namespace HarmonyLib
 		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, params Type[] argumentTypes)
 			: base(declaringType, MethodType.Normal, argumentTypes)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -405,7 +405,7 @@ namespace HarmonyLib
 		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)
 			: base(declaringType, MethodType.Normal, argumentTypes, argumentVariations)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -416,7 +416,7 @@ namespace HarmonyLib
 		public HarmonyDelegate(Type declaringType, string methodName, MethodDispatchType methodDispatchType)
 			: base(declaringType, methodName, MethodType.Normal)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -447,7 +447,7 @@ namespace HarmonyLib
 		public HarmonyDelegate(string methodName, MethodDispatchType methodDispatchType)
 			: base(methodName, MethodType.Normal)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies call dispatching mechanics for the delegate</summary>
@@ -455,7 +455,7 @@ namespace HarmonyLib
 		///
 		public HarmonyDelegate(MethodDispatchType methodDispatchType)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -465,7 +465,7 @@ namespace HarmonyLib
 		public HarmonyDelegate(MethodDispatchType methodDispatchType, params Type[] argumentTypes)
 			: base(MethodType.Normal, argumentTypes)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -476,7 +476,7 @@ namespace HarmonyLib
 		public HarmonyDelegate(MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)
 			: base(MethodType.Normal, argumentTypes, argumentVariations)
 		{
-			info.virtualDelegate = methodDispatchType == MethodDispatchType.VirtualCall;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>

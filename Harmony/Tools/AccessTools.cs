@@ -1118,7 +1118,7 @@ namespace HarmonyLib
 			var method = harmonyMethod.GetOriginalMethod() as MethodInfo;
 			if (method == null)
 				throw new NullReferenceException($"Delegate {typeof(DelegateType)} has no defined original method");
-			return MethodDelegate<DelegateType>(method, instance, harmonyMethod.virtualDelegate);
+			return MethodDelegate<DelegateType>(method, instance, harmonyMethod.nonVirtualDelegate == false);
 		}
 
 		/// <summary>Returns who called the current method</summary>
