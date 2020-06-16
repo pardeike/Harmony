@@ -1076,10 +1076,10 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(typeof(InjectDelegateClass), "Method")]
 	public class InjectDelegateClassPatch
 	{
-		[HarmonyDelegate(typeof(InjectDelegateBaseClass), "SomeMethod", MethodBinding.Call)]
+		[HarmonyDelegate(typeof(InjectDelegateBaseClass), "SomeMethod", MethodDispatchType.Call)]
 		public delegate string TestDelegate(ref string s, int n);
 
-		[HarmonyDelegate(typeof(InjectDelegateBaseClass), "SomeMethod", MethodBinding.CallVirtually)]
+		[HarmonyDelegate(typeof(InjectDelegateBaseClass), "SomeMethod", MethodDispatchType.VirtualCall)]
 		public delegate string TestVirtualDelegate(ref string s, int n);
 
 		public static string result = "";

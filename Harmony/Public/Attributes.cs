@@ -61,28 +61,36 @@ namespace HarmonyLib
 		Snapshot
 	}
 
-	/// <summary>Specifies the type of method binding used during a method call (method call dispatching mechanics)</summary>
+	/// <summary>Specifies the type of method call dispatching mechanics</summary>
 	///
-	public enum MethodBinding
+	public enum MethodDispatchType
 	{
-		/// <summary>Call the method using dynamic dispatching like with ordinary virtual/override mechanics</summary>
+		/// <summary>Call the method using dynamic dispatching if method is virtual (including overriden)</summary>
 		/// <remarks>
 		/// <para>
-		/// a.k.a. late binding or dynamic binding, this directly corresponds with the <see cref="System.Reflection.Emit.OpCodes.Callvirt"/> instruction.
+		/// This is the built-in form of late binding (a.k.a. dynamic binding) and is the default dispatching mechanic in C#.
+		/// This directly corresponds with the <see cref="System.Reflection.Emit.OpCodes.Callvirt"/> instruction.
 		/// </para>
 		/// <para>
-		/// For virtual methods (including overriden methods), the instance type's most-derived/overriden implementation of the method is called.
-		/// For non-virtual methods, same behavior as <see cref="Call"/>: the exact specified method implementation is called.
+		/// For virtual (including overriden) methods, the instance type's most-derived/overriden implementation of the method is called.
+		/// For non-virtual (including static) methods, same behavior as <see cref="Call"/>: the exact specified method implementation is called.
+		/// </para>
+		/// <para>
+		/// Note: This is not a fully dynamic dispatch, since non-virtual (including static) methods are still called non-virtually.
+		/// A fully dynamic dispatch in C# involves using
+		/// the <see href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/reference-types#the-dynamic-type"><c>dynamic</c> type</see>
+		/// (actually a fully dynamic binding, since even the name and overload resolution happens at runtime), which <see cref="MethodDispatchType"/> does not support.
 		/// </para>
 		/// </remarks>
-		CallVirtually,
-		/// <summary>Call the specified method only, do not dispatch dynamically</summary>
+		VirtualCall,
+		/// <summary>Call the method using static dispatching, regardless of whether method is virtual (including overriden) or non-virtual (including static)</summary>
 		/// <remarks>
 		/// <para>
-		/// a.k.a. early binding or static binding, this directly corresponds with the <see cref="System.Reflection.Emit.OpCodes.Call"/> instruction.
+		/// a.k.a. non-virtual dispatching, early binding, or static binding.
+		/// This directly corresponds with the <see cref="System.Reflection.Emit.OpCodes.Call"/> instruction.
 		/// </para>
 		/// <para>
-		/// For both virtual and non-virtual methods, the exact specified method implementation is called.
+		/// For both virtual (including overriden) and non-virtual (including static) methods, the exact specified method implementation is called, without virtual/override mechanics.
 		/// </para>
 		/// </remarks>
 		Call
@@ -369,46 +377,46 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodBinding methodBinding)
+		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType)
 			: base(declaringType, MethodType.Normal)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodBinding methodBinding, params Type[] argumentTypes)
+		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, params Type[] argumentTypes)
 			: base(declaringType, MethodType.Normal, argumentTypes)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, MethodBinding methodBinding, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)
 			: base(declaringType, MethodType.Normal, argumentTypes, argumentVariations)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
-		public HarmonyDelegate(Type declaringType, string methodName, MethodBinding methodBinding)
+		public HarmonyDelegate(Type declaringType, string methodName, MethodDispatchType methodDispatchType)
 			: base(declaringType, methodName, MethodType.Normal)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
@@ -434,41 +442,41 @@ namespace HarmonyLib
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
-		public HarmonyDelegate(string methodName, MethodBinding methodBinding)
+		public HarmonyDelegate(string methodName, MethodDispatchType methodDispatchType)
 			: base(methodName, MethodType.Normal)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies call dispatching mechanics for the delegate</summary>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
-		public HarmonyDelegate(MethodBinding methodBinding)
+		public HarmonyDelegate(MethodDispatchType methodDispatchType)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
-		public HarmonyDelegate(MethodBinding methodBinding, params Type[] argumentTypes)
+		public HarmonyDelegate(MethodDispatchType methodDispatchType, params Type[] argumentTypes)
 			: base(MethodType.Normal, argumentTypes)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
-		/// <param name="methodBinding">The <see cref="MethodBinding"/></param>
+		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
 		///
-		public HarmonyDelegate(MethodBinding methodBinding, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		public HarmonyDelegate(MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)
 			: base(MethodType.Normal, argumentTypes, argumentVariations)
 		{
-			info.virtualDelegate = methodBinding == MethodBinding.CallVirtually;
+			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 		}
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>

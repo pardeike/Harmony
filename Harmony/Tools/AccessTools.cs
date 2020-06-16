@@ -946,8 +946,8 @@ namespace HarmonyLib
 		/// instance delegate where the delegate invocation always applies to the given <paramref name="instance"/>.
 		/// </param>
 		/// <param name="virtualCall">
-		/// Only applies for instance methods. If <c>true</c> (default), invocation of the delegate calls the instance method virtually
-		/// (if <paramref name="method"/> is virtual, the instance type's most-derived/overriden implementation of the method is called);
+		/// Only applies for instance methods. If <c>true</c> (default) and <paramref name="method"/> is virtual, invocation of the delegate
+		/// calls the instance method virtually (the instance type's most-derived/overriden implementation of the method is called);
 		/// else, invocation of the delegate calls the exact specified <paramref name="method"/> (this is useful for calling base class methods)
 		/// Note: if <c>false</c> and <paramref name="method"/> is an interface method, an ArgumentException is thrown.
 		/// </param>
@@ -1118,7 +1118,7 @@ namespace HarmonyLib
 			var method = harmonyMethod.GetOriginalMethod() as MethodInfo;
 			if (method == null)
 				throw new NullReferenceException($"Delegate {typeof(DelegateType)} has no defined original method");
-			return MethodDelegate<DelegateType>(method, instance, harmonyMethod.virtualDelegate ?? true);
+			return MethodDelegate<DelegateType>(method, instance, harmonyMethod.nonVirtualDelegate == false);
 		}
 
 		/// <summary>Returns who called the current method</summary>
