@@ -27,9 +27,9 @@ namespace HarmonyLibTests
 			var postfix = t_HttpWebRequestPatches.GetMethod("Postfix");
 			Assert.NotNull(postfix);
 
-			var instance = new Harmony("test");
-			Assert.NotNull(instance);
-			_ = instance.Patch(original, new HarmonyMethod(prefix, debug: true), new HarmonyMethod(postfix, debug: true));
+			var harmony = new Harmony("test");
+			Assert.NotNull(harmony);
+			_ = harmony.Patch(original, new HarmonyMethod(prefix, debug: true), new HarmonyMethod(postfix, debug: true));
 
 			HttpWebRequestPatches.ResetTest();
 			var request = WebRequest.Create("http://google.com");
@@ -45,9 +45,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_Patch_ConcreteClass()
 		{
-			var instance = new Harmony("special-case-1");
-			Assert.NotNull(instance, "instance");
-			var processor = instance.CreateClassProcessor(typeof(ConcreteClass_Patch));
+			var harmony = new Harmony("special-case-1");
+			Assert.NotNull(harmony, "instance");
+			var processor = harmony.CreateClassProcessor(typeof(ConcreteClass_Patch));
 			Assert.NotNull(processor, "processor");
 
 			var someStruct1 = new ConcreteClass().Method("test", new AnotherStruct());
@@ -77,8 +77,8 @@ namespace HarmonyLibTests
 			var prefix = SymbolExtensions.GetMethodInfo(() => ReturningStructs_Patch.Prefix(null));
 			Assert.NotNull(prefix);
 
-			var instance = new Harmony("returning-structs");
-			Assert.NotNull(instance);
+			var harmony = new Harmony("returning-structs");
+			Assert.NotNull(harmony);
 
 			var cls = typeof(ReturningStructs);
 			var method = AccessTools.DeclaredMethod(cls, name);
@@ -87,7 +87,7 @@ namespace HarmonyLibTests
 			TestTools.Log($"Test_Returning_Structs: patching {name} start");
 			try
 			{
-				var replacement = instance.Patch(method, new HarmonyMethod(prefix));
+				var replacement = harmony.Patch(method, new HarmonyMethod(prefix));
 				Assert.NotNull(replacement, "replacement");
 			}
 			catch (Exception ex)
@@ -121,9 +121,9 @@ namespace HarmonyLibTests
 			var patchClass = typeof(DeadEndCode_Patch1);
 			Assert.NotNull(patchClass);
 
-			var instance = new Harmony("test");
-			Assert.NotNull(instance);
-			var patcher = instance.CreateClassProcessor(patchClass);
+			var harmony = new Harmony("test");
+			Assert.NotNull(harmony);
+			var patcher = harmony.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher);
 
 			Exception exception = null;
@@ -150,9 +150,9 @@ namespace HarmonyLibTests
 			DeadEndCode_Patch2.original = null;
 			DeadEndCode_Patch2.exception = null;
 
-			var instance = new Harmony("test");
-			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.CreateClassProcessor(patchClass);
+			var harmony = new Harmony("test");
+			Assert.NotNull(harmony, "Harmony instance");
+			var patcher = harmony.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher, "Patch processor");
 			try
 			{
@@ -189,9 +189,9 @@ namespace HarmonyLibTests
 			var patchClass = typeof(DeadEndCode_Patch3);
 			Assert.NotNull(patchClass);
 
-			var instance = new Harmony("test");
-			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.CreateClassProcessor(patchClass);
+			var harmony = new Harmony("test");
+			Assert.NotNull(harmony, "Harmony instance");
+			var patcher = harmony.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher, "Patch processor");
 			try
 			{
@@ -216,9 +216,9 @@ namespace HarmonyLibTests
 			var patchClass = typeof(DeadEndCode_Patch4);
 			Assert.NotNull(patchClass);
 
-			var instance = new Harmony("test");
-			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.CreateClassProcessor(patchClass);
+			var harmony = new Harmony("test");
+			Assert.NotNull(harmony, "Harmony instance");
+			var patcher = harmony.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher, "Patch processor");
 			_ = patcher.Patch();
 		}
@@ -229,11 +229,32 @@ namespace HarmonyLibTests
 			var patchClass = typeof(ExternalMethod_Patch);
 			Assert.NotNull(patchClass);
 
-			var instance = new Harmony("test");
-			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.CreateClassProcessor(patchClass);
+			var harmony = new Harmony("test");
+			Assert.NotNull(harmony, "Harmony instance");
+			var patcher = harmony.CreateClassProcessor(patchClass);
 			Assert.NotNull(patcher, "Patch processor");
 			_ = patcher.Patch();
+		}
+
+		// There were reports of random crashes when calling patched empty virtual methods on Unity Mono especially on macOS and Linux,
+		// although I'm unable to reproduce it locally with Mono 6.8.0 on an Ubuntu 18.04 VM (on any configuration/platform).
+		[Test]
+		public void Test_PatchEmptyVirtualMethod()
+		{
+			var patchClass = typeof(EmptyVirtualMethodClass_Patch);
+			Assert.NotNull(patchClass);
+
+			var harmony = new Harmony("test");
+			Assert.NotNull(harmony, "Harmony instance");
+			var patcher = harmony.CreateClassProcessor(patchClass);
+			Assert.NotNull(patcher, "Patch processor");
+			_ = patcher.Patch();
+
+			var instance = new EmptyVirtualMethodSubclass();
+			Assert.AreEqual("init", instance.x);
+
+			instance.Method("patch");
+			Assert.AreEqual("patch", instance.x);
 		}
 	}
 }

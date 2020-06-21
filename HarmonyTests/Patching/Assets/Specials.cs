@@ -169,4 +169,25 @@ namespace HarmonyLibTests.Assets
 			yield return new CodeInstruction(OpCodes.Ret);
 		}
 	}
+
+	public class EmptyVirtualMethodClass
+	{
+		public string x = "init";
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public virtual void Method(string y) { }
+	}
+
+	public class EmptyVirtualMethodSubclass : EmptyVirtualMethodClass
+	{
+	}
+
+	[HarmonyPatch(typeof(EmptyVirtualMethodClass), nameof(EmptyVirtualMethodClass.Method))]
+	public class EmptyVirtualMethodClass_Patch
+	{
+		static void Postfix(ref EmptyVirtualMethodClass __instance, string y)
+		{
+			__instance.x = y;
+		}
+	}
 }
