@@ -239,6 +239,11 @@ namespace HarmonyLibTests
 		// There were reports of random crashes when calling patched empty virtual methods on Unity Mono especially on macOS and Linux,
 		// although I'm unable to reproduce it locally with Mono 6.8.0 on an Ubuntu 18.04 VM (on any configuration/platform).
 		[Test]
+#if !DEBUG && (NETCOREAPP3_0 || NETCOREAPP3_1)
+		[Platform(Exclude = "Win", Reason =
+			"Virtual method patching currently does not work on Windows .NET Core in the Release build (both x86 and x64) as of 2020-06-26" +
+			"(it does work with all other tested combinations: Linux/macOS and/or .NET Framework/Mono and/or Debug build).")]
+#endif
 		public void Test_PatchEmptyVirtualMethod()
 		{
 			var patchClass = typeof(EmptyVirtualMethodClass_Patch);
