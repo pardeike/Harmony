@@ -2,25 +2,25 @@ using HarmonyLib;
 
 namespace HarmonyLibTests.Assets
 {
+#pragma warning disable CS0169, CS0414, IDE0051, IDE0052
 	public class AccessToolsClass
 	{
 		class Inner
 		{
 		}
 
-		public const string field1Value = "f1";
-		public const string field2Value = "f2";
-		public const string field3Value = "f3";
-		public const string field4Value = "f4";
-
-		private string field1;
-		private readonly string field2;
-		private static string field3 = field3Value;
-		private readonly static string field4 = field4Value;
+		private string field1 = "field1orig";
+		public readonly string field2 = "field2orig";
+		public static string field3 = "field3orig";
+		// Note: static readonly fields cannot be set by reflection since .NET Core 3+:
+		// https://docs.microsoft.com/en-us/dotnet/core/compatibility/corefx#fieldinfosetvalue-throws-exception-for-static-init-only-fields
+		// As of .NET Core 3.1, the FieldRef delegates can change static readonly fields, so all resetting happens in the unit tests themselves.
+		private static readonly string field4 = "field4orig";
+		public int field5 = -111;
+		private readonly int field6 = -999;
 
 		int _property;
 
-#pragma warning disable IDE0051
 		int Property
 		{
 			get => _property;
@@ -31,16 +31,11 @@ namespace HarmonyLibTests.Assets
 			get => _property;
 			set => _property = value;
 		}
-#pragma warning restore IDE0051
 
-		public AccessToolsClass()
-		{
-			field1 = field1Value;
-			field2 = field2Value;
-			field3 = field3Value;
-			// Does not work on Net Core 3.x
-			// _ = Traverse.Create<AccessToolsClass>().Field("field4").SetValue(field4Value);
-		}
+		// Workaround for structs incapable of having a default constructor:
+		// use a dummy non-default constructor for all involved asset types.
+		// Class instance fields already have inlined defaults above.
+		public AccessToolsClass(object _) { }
 
 		public string Method1()
 		{
@@ -70,7 +65,25 @@ namespace HarmonyLibTests.Assets
 
 	public class AccessToolsSubClass : AccessToolsClass
 	{
+		public AccessToolsSubClass(object _) : base(_) { }
 	}
+
+	public struct AccessToolsStruct
+	{
+		public string structField1;
+		private readonly int structField2;
+		private static int structField3 = -123;
+		public static readonly string structField4 = "structField4orig";
+
+		// Structs don't allow default constructor, but we need to assign some values to instance fields
+		// that aren't simply the default value for their types (so that ref value can be checked against orig value).
+		public AccessToolsStruct(object _)
+		{
+			structField1 = "structField1orig";
+			structField2 = -666;
+		}
+	}
+#pragma warning restore CS0169, CS0414, IDE0051, IDE0052
 
 	public static class AccessToolsMethodDelegate
 	{
