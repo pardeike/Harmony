@@ -1074,8 +1074,9 @@ namespace HarmonyLib
 				// But in case it doesn't...
 				throw new ArgumentException("Invalid delegate type");
 			}
-			// Mono seems to internally use the equivalent of ldvirtftn when calling delegate constructor on a method pointer,
-			// so instead, manually create a dynamic method to create the delegate using ldftn rather than ldvirtftn.
+			// Mono had a bug where it internally uses the equivalent of ldvirtftn when calling delegate constructor on a method pointer,
+			// so as a workaround, manually create a dynamic method to create the delegate using ldftn rather than ldvirtftn.
+			// See https://github.com/mono/mono/issues/19964
 			if (IsMonoRuntime)
 			{
 				var dmd = new DynamicMethodDefinition(
@@ -1393,6 +1394,58 @@ namespace HarmonyLib
 #pragma warning restore IDE0060
 		{
 			return Nullable.GetUnderlyingType(typeof(T)) != null;
+		}
+
+		/// <summary>Tests whether a type or member is static, as defined in C#</summary>
+		/// <param name="member">type or member</param>
+		/// <returns>True if the type or member is static</returns>
+		///
+		public static bool IsStatic(MemberInfo member)
+		{
+			switch (member.MemberType)
+			{
+				case MemberTypes.Constructor:
+				case MemberTypes.Method:
+					return ((MethodBase)member).IsStatic;
+				case MemberTypes.Event:
+					return IsStatic((EventInfo)member);
+				case MemberTypes.Field:
+					return ((FieldInfo)member).IsStatic;
+				case MemberTypes.Property:
+					return IsStatic((PropertyInfo)member);
+				case MemberTypes.TypeInfo:
+				case MemberTypes.NestedType:
+					return IsStatic((Type)member);
+				default:
+					throw new ArgumentException($"Unknown member type: {member.MemberType}");
+			}
+		}
+
+		/// <summary>Tests whether a type is static, as defined in C#</summary>
+		/// <param name="type">type</param>
+		/// <returns>True if the type is static</returns>
+		///
+		public static bool IsStatic(Type type)
+		{
+			return type.IsAbstract && type.IsSealed;
+		}
+
+		/// <summary>Tests whether a property is static, as defined in C#</summary>
+		/// <param name="property">property</param>
+		/// <returns>True if the property is static</returns>
+		///
+		public static bool IsStatic(PropertyInfo property)
+		{
+			return property.GetAccessors(true)[0].IsStatic;
+		}
+
+		/// <summary>Tests whether an event is static, as defined in C#</summary>
+		/// <param name="event">event</param>
+		/// <returns>True if the event is static</returns>
+		///
+		public static bool IsStatic(EventInfo @event)
+		{
+			return @event.GetAddMethod(true).IsStatic;
 		}
 
 		/// <summary>Calculates a combined hash code for an enumeration of objects</summary>

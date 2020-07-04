@@ -183,15 +183,6 @@ namespace HarmonyLibTests
 				});
 			}
 
-			private static bool IsStatic(MemberInfo member)
-			{
-				if (member is FieldInfo field)
-					return field.IsStatic;
-				if (member is PropertyInfo property)
-					return property.GetAccessors(true)[0].IsStatic;
-				throw new ArgumentException($"Unhandled member type: {member.MemberType}");
-			}
-
 			private static F GetValue(MemberInfo member, T instance)
 			{
 				if (member is FieldInfo field)
@@ -219,7 +210,7 @@ namespace HarmonyLibTests
 
 				// Workaround for structs incapable of having a default constructor:
 				// use a dummy non-default constructor for all involved asset types.
-				var instance = IsStatic(member) ? default : (T)Activator.CreateInstance(instanceType, new object[] { null });
+				var instance = AccessTools.IsStatic(member) ? default : (T)Activator.CreateInstance(instanceType, new object[] { null });
 				var origValue = GetValue(member, instance);
 				if (resolvedConstraint is ThrowsNothingConstraint)
 				{
