@@ -8,7 +8,7 @@ namespace HarmonyLibTests
 	{
 		public static void Log(string str)
 		{
-			TestContext.WriteLine($"    {str}");
+			TestContext.WriteLine($"    {str?.Replace("\n", "\n    ") ?? "null"}");
 		}
 
 		// Workaround for [Explicit] attribute not working in Visual Studio: https://github.com/nunit/nunit3-vs-adapter/issues/658
@@ -17,7 +17,6 @@ namespace HarmonyLibTests
 			if (System.Diagnostics.Process.GetCurrentProcess().ProcessName is "testhost")
 				Assert.Ignore();
 		}
-
 	}
 
 	public class TestLogger

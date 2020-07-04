@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -33,8 +33,8 @@ namespace HarmonyLibTests
 			_ = properties.TryGetValue(typeof(AccessToolsClass), out var infos);
 			Assert.NotNull(infos);
 
-			_ = infos.Remove("Property");
-			infos.Add("Property", typeof(AccessToolsClass).GetProperty("Property2", AccessTools.all));
+			_ = infos.Remove("Property1");
+			infos.Add("Property1", typeof(AccessToolsClass).GetProperty("Property1b", AccessTools.all));
 		}
 
 		void InjectMethod(AccessCache cache, bool declaredOnly = false)
@@ -78,19 +78,19 @@ namespace HarmonyLibTests
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.NotNull((new AccessCache()).GetPropertyInfo(type, "Property"));
+			Assert.NotNull((new AccessCache()).GetPropertyInfo(type, "Property1"));
 
 			var cache1 = new AccessCache();
-			var pinfo1 = cache1.GetPropertyInfo(type, "Property");
+			var pinfo1 = cache1.GetPropertyInfo(type, "Property1");
 			InjectProperty(cache1);
 			var cache2 = new AccessCache();
-			var pinfo2 = cache2.GetPropertyInfo(type, "Property");
+			var pinfo2 = cache2.GetPropertyInfo(type, "Property1");
 			Assert.AreSame(pinfo1, pinfo2);
 
 			var cache = new AccessCache();
-			var pinfo3 = cache.GetPropertyInfo(type, "Property");
+			var pinfo3 = cache.GetPropertyInfo(type, "Property1");
 			InjectProperty(cache);
-			var pinfo4 = cache.GetPropertyInfo(type, "Property");
+			var pinfo4 = cache.GetPropertyInfo(type, "Property1");
 			Assert.AreNotSame(pinfo3, pinfo4);
 		}
 

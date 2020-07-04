@@ -16,26 +16,35 @@ namespace HarmonyLibTests.Assets
 		// https://docs.microsoft.com/en-us/dotnet/core/compatibility/corefx#fieldinfosetvalue-throws-exception-for-static-init-only-fields
 		// As of .NET Core 3.1, the FieldRef delegates can change static readonly fields, so all resetting happens in the unit tests themselves.
 		private static readonly string field4 = "field4orig";
-		public int field5 = -111;
-		private readonly int field6 = -999;
+		internal int field5 = -111;
+		protected readonly int field6 = -999;
 
-		int _property;
+		private int _property = 314159;
 
-		int Property
+		private int Property1
 		{
 			get => _property;
 			set => _property = value;
 		}
-		int Property2
+
+		private int Property1b
 		{
 			get => _property;
 			set => _property = value;
 		}
+
+		protected string Property2 { get; } = "3.14159";
+
+		public static string Property3 { get; set; } = "2.71828";
+
+		private static double Property4 { get; } = 2.71828;
 
 		// Workaround for structs incapable of having a default constructor:
 		// use a dummy non-default constructor for all involved asset types.
-		// Class instance fields already have inlined defaults above.
-		public AccessToolsClass(object _) { }
+		public AccessToolsClass(object _)
+		{
+			// Class instance fields and properties already have inlined defaults above.
+		}
 
 		public string Method1()
 		{
@@ -75,12 +84,22 @@ namespace HarmonyLibTests.Assets
 		private static int structField3 = -123;
 		public static readonly string structField4 = "structField4orig";
 
+		private string StructProperty1 { get; set; }
+
+		public double StructProperty2 { get; }
+
+		public static int StructProperty3 { get; set; } = 299792458;
+
+		private static string StructProperty4 { get; } = "299,792,458";
+
 		// Structs don't allow default constructor, but we need to assign some values to instance fields
 		// that aren't simply the default value for their types (so that ref value can be checked against orig value).
 		public AccessToolsStruct(object _)
 		{
 			structField1 = "structField1orig";
 			structField2 = -666;
+			StructProperty1 = "1.61803";
+			StructProperty2 = 1.61803;
 		}
 	}
 #pragma warning restore CS0169, CS0414, IDE0051, IDE0052

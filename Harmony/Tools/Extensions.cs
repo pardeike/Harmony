@@ -574,6 +574,37 @@ namespace HarmonyLib
 		{
 			return (sequence ?? Enumerable.Empty<T>()).Concat(items).ToArray();
 		}
+
+		// TODO: Should these be made public?
+		// These extension methods may collide with extension methods from other libraries users may be using,
+		// just due to their general nature and naming commonality.
+		// This is also a concern for the existing public extension methods in this file,
+		// but it's too late to make such extension method internal like these.
+
+		// Returns a new dictionary with entries merged from given dictionaries.
+		// For key collisions, latter dictionary values are favored.
+		// None of the given dictionaries are mutated.
+		internal static Dictionary<K, V> Merge<K, V>(this IEnumerable<KeyValuePair<K, V>> firstDict, params IEnumerable<KeyValuePair<K, V>>[] otherDicts)
+		{
+			var dict = new Dictionary<K, V>();
+			foreach (var pair in firstDict)
+				dict[pair.Key] = pair.Value;
+			foreach (var otherDict in otherDicts)
+			{
+				foreach (var pair in otherDict)
+					dict[pair.Key] = pair.Value;
+			}
+			return dict;
+		}
+
+		// Returns a new dictionary copied from given dictionary with keys run through a transform function.
+		internal static Dictionary<K, V> TransformKeys<K, V>(this Dictionary<K, V> origDict, Func<K, K> transform)
+		{
+			var dict = new Dictionary<K, V>();
+			foreach (var pair in origDict)
+				dict.Add(transform(pair.Key), pair.Value);
+			return dict;
+		}
 	}
 
 	/// <summary>General extensions for collections</summary>
