@@ -39,6 +39,12 @@ namespace HarmonyLibTests.Assets
 
 		private static double Property4 { get; } = 2.71828;
 
+		public string this[string key]
+		{
+			get => key;
+			set { }
+		}
+
 		// Workaround for structs incapable of having a default constructor:
 		// use a dummy non-default constructor for all involved asset types.
 		public AccessToolsClass(object _)
@@ -91,6 +97,8 @@ namespace HarmonyLibTests.Assets
 		public static int StructProperty3 { get; set; } = 299792458;
 
 		private static string StructProperty4 { get; } = "299,792,458";
+
+		public string this[string key] => key;
 
 		// Structs don't allow default constructor, but we need to assign some values to instance fields
 		// that aren't simply the default value for their types (so that ref value can be checked against orig value).

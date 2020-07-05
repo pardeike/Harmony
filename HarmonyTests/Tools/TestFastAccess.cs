@@ -188,11 +188,7 @@ namespace HarmonyLibTests
 				if (member is FieldInfo field)
 					return (F)field.GetValue(instance);
 				if (member is PropertyInfo property)
-				{
-					// Assume non-indexer property.
-					// Note: .NET Framework 3.5 lacks the PropertyInfo.GetValue(object) overload.
-					return (F)property.GetValue(instance, null);
-				}
+					return (F)property.GetValue(instance, new object[property.GetIndexParameters().Length]);
 				throw new ArgumentException($"Unhandled member type: {member.MemberType}");
 			}
 
@@ -670,9 +666,11 @@ namespace HarmonyLibTests
 				["CreateGetterHandler<T, object>(field)+CreateSetterHandler<T, object>(field)"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
 			});
 
-		// TODO: This shouldn't need to exist.
-		private static IResolveConstraint MonoThrowsInvalidProgramException =>
-			AccessTools.IsMonoRuntime ? (IResolveConstraint)Throws.TypeOf<InvalidProgramException>() : Throws.Nothing;
+		// TODO: These shouldn't need to exist.
+		private static IResolveConstraint MonoThrowsInvalidProgramException => AccessTools.IsMonoRuntime ?
+			(IResolveConstraint)Throws.TypeOf<InvalidProgramException>() : Throws.Nothing;
+		private static IResolveConstraint MonoOrDotNetThrowsInvalidProgramException => (AccessTools.IsMonoRuntime || AccessTools.IsNetCoreRuntime) ?
+			(IResolveConstraint)Throws.TypeOf<InvalidProgramException>() : SkipTest("known to fail, should be throwing an exception");
 
 		private static readonly Dictionary<string, IResolveConstraint> expectedCaseToConstraint_Field_StructStatic =
 			ReusableConstraints(new Dictionary<string, IResolveConstraint>(expectedCaseToConstraint_Field_Common)
@@ -761,11 +759,11 @@ namespace HarmonyLibTests
 			GeneratePropertyGetterOnlyTestCases(isReadonlyProperty,
 				ReusableConstraints(new Dictionary<string, IResolveConstraint>(expectedCaseToConstraint_Property_Common)
 				{
-					["CreateFieldGetter<T, F>(propertyName)+CreateSetterHandler<T, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
-					["CreateFieldGetter<T, object>(propertyName)+CreateSetterHandler<T, object>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
-					["CreateGetterHandler<T, F>(property)+CreateSetterHandler<T, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
+					["CreateFieldGetter<T, F>(propertyName)+CreateSetterHandler<T, F>(property)"] = MonoOrDotNetThrowsInvalidProgramException, // TODO: should throw ArgumentException
+					["CreateFieldGetter<T, object>(propertyName)+CreateSetterHandler<T, object>(property)"] = MonoOrDotNetThrowsInvalidProgramException, // TODO: should throw ArgumentException
+					["CreateGetterHandler<T, F>(property)+CreateSetterHandler<T, F>(property)"] = MonoOrDotNetThrowsInvalidProgramException, // TODO: should throw ArgumentException
 					["CreateGetterHandler<object, F>(property)+CreateSetterHandler<object, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
-					["CreateGetterHandler<T, object>(property)+CreateSetterHandler<T, object>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
+					["CreateGetterHandler<T, object>(property)+CreateSetterHandler<T, object>(property)"] = MonoOrDotNetThrowsInvalidProgramException, // TODO: should throw ArgumentException
 				}));
 
 		private static Dictionary<string, IResolveConstraint> ExpectedCaseToConstraint_Property_StructStatic(bool isReadonlyProperty) =>
@@ -777,6 +775,17 @@ namespace HarmonyLibTests
 					["CreateGetterHandler<T, F>(property)+CreateSetterHandler<T, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: shouldn't throw
 					["CreateGetterHandler<object, F>(property)+CreateSetterHandler<object, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: shouldn't throw
 					["CreateGetterHandler<T, object>(property)+CreateSetterHandler<T, object>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: shouldn't throw
+				}));
+
+		private static Dictionary<string, IResolveConstraint> ExpectedCaseToConstraint_Indexer(bool isReadonlyProperty) =>
+			GeneratePropertyGetterOnlyTestCases(isReadonlyProperty,
+				ReusableConstraints(new Dictionary<string, IResolveConstraint>(expectedCaseToConstraint_Property_Common)
+				{
+					["CreateFieldGetter<T, F>(propertyName)+CreateSetterHandler<T, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
+					["CreateFieldGetter<T, object>(propertyName)+CreateSetterHandler<T, object>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
+					["CreateGetterHandler<T, F>(property)+CreateSetterHandler<T, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
+					["CreateGetterHandler<object, F>(property)+CreateSetterHandler<object, F>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
+					["CreateGetterHandler<T, object>(property)+CreateSetterHandler<T, object>(property)"] = Throws.TypeOf<InvalidProgramException>(), // TODO: should throw ArgumentException
 				}));
 
 		[Test]
@@ -975,6 +984,28 @@ namespace HarmonyLibTests
 		{
 			TestSuite_StructProperty<AccessToolsStruct, string>(
 				"StructProperty4", "StructProperty4test", ExpectedCaseToConstraint_Property_StructStatic(isReadonlyProperty: true));
+		}
+
+		[Test]
+		public void Test_Indexer_Class()
+		{
+			Assert.Multiple(() =>
+			{
+				var expectedCaseToConstraint = ExpectedCaseToConstraint_Indexer(isReadonlyProperty: false);
+				TestSuite_ClassProperty<AccessToolsClass, AccessToolsClass, string>(
+					"Item", "should always throw", expectedCaseToConstraint);
+				TestSuite_ClassProperty<AccessToolsSubClass, AccessToolsSubClass, string>(
+					"Item", "should always throw", MemberInheritedBySubClass(expectedCaseToConstraint));
+				TestSuite_ClassProperty<AccessToolsClass, AccessToolsSubClass, string>(
+					"Item", "should always throw", expectedCaseToConstraint);
+			});
+		}
+
+		[Test]
+		public void Test_Indexer_Struct()
+		{
+			TestSuite_StructProperty<AccessToolsStruct, string>(
+				"Item", "should aways throw", ExpectedCaseToConstraint_Indexer(isReadonlyProperty: true));
 		}
 
 		// TODO: Fix FieldRefAccess to consistently throw ArgumentException for struct instance fields,

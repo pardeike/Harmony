@@ -1157,10 +1157,21 @@ namespace HarmonyLib
 			throw exception;
 		}
 
-		/// <summary>Tells you if the current runtime is based on Mono</summary>
-		/// <returns>True if we are running under Mono, false otherwise (.NET)</returns>
+		/// <summary>True if the current runtime is based on Mono, false otherwise (.NET)</summary>
 		///
 		public static bool IsMonoRuntime { get; } = Type.GetType("Mono.Runtime") != null;
+
+		/// <summary>True if the current runtime is .NET Framework, false otherwise (.NET Core or Mono, although latter isn't guaranteed)</summary>
+		///
+		public static bool IsNetFrameworkRuntime { get; } =
+			TypeByName("System.Runtime.InteropServices.RuntimeInformation")?.GetProperty("FrameworkDescription")
+			.GetValue(null, null).ToString().StartsWith(".NET Framework") ?? true;
+
+		/// <summary>True if the current runtime is .NET Core, false otherwise (Mono or .NET Framework)</summary>
+		///
+		public static bool IsNetCoreRuntime { get; } =
+			TypeByName("System.Runtime.InteropServices.RuntimeInformation")?.GetProperty("FrameworkDescription")
+			.GetValue(null, null).ToString().StartsWith(".NET Core") ?? false;
 
 		/// <summary>Throws a missing member runtime exception</summary>
 		/// <param name="type">The type that is involved</param>
