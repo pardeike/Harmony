@@ -30,13 +30,27 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_AccessTools_Field2()
 		{
-			var type = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Field(type, "field1"));
-			Assert.NotNull(AccessTools.DeclaredField(type, "field1"));
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Field(classType, "field1"));
+			Assert.NotNull(AccessTools.DeclaredField(classType, "field1"));
+			Assert.Null(AccessTools.Field(classType, "unknown"));
+			Assert.Null(AccessTools.DeclaredField(classType, "unknown"));
 
-			var subtype = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Field(subtype, "field1"));
-			Assert.Null(AccessTools.DeclaredField(subtype, "field1"));
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Field(subclassType, "field1"));
+			Assert.Null(AccessTools.DeclaredField(subclassType, "field1"));
+			Assert.Null(AccessTools.Field(subclassType, "unknown"));
+			Assert.Null(AccessTools.DeclaredField(subclassType, "unknown"));
+
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Field(structType, "structField1"));
+			Assert.NotNull(AccessTools.DeclaredField(structType, "structField1"));
+			Assert.Null(AccessTools.Field(structType, "unknown"));
+			Assert.Null(AccessTools.DeclaredField(structType, "unknown"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Field(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.DeclaredField(interfaceType, "unknown"));
 		}
 
 		[Test]
@@ -58,13 +72,49 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_AccessTools_Property2()
 		{
-			var type = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Property(type, "Property1"));
-			Assert.NotNull(AccessTools.DeclaredProperty(type, "Property1"));
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Property(classType, "Property1"));
+			Assert.NotNull(AccessTools.DeclaredProperty(classType, "Property1"));
+			Assert.Null(AccessTools.Property(classType, "unknown"));
+			Assert.Null(AccessTools.DeclaredProperty(classType, "unknown"));
 
-			var subtype = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Property(subtype, "Property1"));
-			Assert.Null(AccessTools.DeclaredProperty(subtype, "Property1"));
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Property(subclassType, "Property1"));
+			Assert.Null(AccessTools.DeclaredProperty(subclassType, "Property1"));
+			Assert.Null(AccessTools.Property(subclassType, "unknown"));
+			Assert.Null(AccessTools.DeclaredProperty(subclassType, "unknown"));
+
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Property(structType, "Property1"));
+			Assert.NotNull(AccessTools.DeclaredProperty(structType, "Property1"));
+			Assert.Null(AccessTools.Property(structType, "unknown"));
+			Assert.Null(AccessTools.DeclaredProperty(structType, "unknown"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.NotNull(AccessTools.Property(interfaceType, "Property1"));
+			Assert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Property1"));
+			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Property(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.DeclaredProperty(interfaceType, "unknown"));
+		}
+
+		[Test]
+		public void Test_AccessTools_PropertyIndexer()
+		{
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Property(classType, "Item"));
+			Assert.NotNull(AccessTools.DeclaredProperty(classType, "Item"));
+
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Property(subclassType, "Item"));
+			Assert.Null(AccessTools.DeclaredProperty(subclassType, "Item"));
+
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Property(structType, "Item"));
+			Assert.NotNull(AccessTools.DeclaredProperty(structType, "Item"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.NotNull(AccessTools.Property(interfaceType, "Item"));
+			Assert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Item"));
 		}
 
 		[Test]
@@ -97,13 +147,29 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_AccessTools_Method2()
 		{
-			var type = typeof(AccessToolsSubClass);
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Method(classType, "Method1"));
+			Assert.NotNull(AccessTools.DeclaredMethod(classType, "Method1"));
+			Assert.Null(AccessTools.Method(classType, "unknown"));
+			Assert.Null(AccessTools.DeclaredMethod(classType, "unknown"));
 
-			var m1 = AccessTools.Method(type, "Method1");
-			Assert.NotNull(m1);
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Method(subclassType, "Method1"));
+			Assert.Null(AccessTools.DeclaredMethod(subclassType, "Method1"));
+			Assert.Null(AccessTools.Method(subclassType, "unknown"));
+			Assert.Null(AccessTools.DeclaredMethod(subclassType, "unknown"));
 
-			var m2 = AccessTools.DeclaredMethod(type, "Method1");
-			Assert.Null(m2);
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Method(structType, "Method1"));
+			Assert.NotNull(AccessTools.DeclaredMethod(structType, "Method1"));
+			Assert.Null(AccessTools.Method(structType, "unknown"));
+			Assert.Null(AccessTools.DeclaredMethod(structType, "unknown"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.NotNull(AccessTools.Method(interfaceType, "Method1"));
+			Assert.NotNull(AccessTools.DeclaredMethod(interfaceType, "Method1"));
+			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Method(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.DeclaredMethod(interfaceType, "unknown"));
 		}
 
 		[Test]

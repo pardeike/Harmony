@@ -4,6 +4,11 @@ namespace HarmonyLibTests.Assets
 {
 	public interface IAccessToolsType
 	{
+		int Property1 { get; }
+
+		string this[string key] { get; }
+
+		string Method1();
 	}
 
 #pragma warning disable CS0169, CS0414, IDE0044, IDE0051, IDE0052
@@ -23,7 +28,7 @@ namespace HarmonyLibTests.Assets
 
 		private int _property = 314159;
 
-		private int Property1
+		public int Property1
 		{
 			get => _property;
 			set => _property = value;
@@ -86,13 +91,13 @@ namespace HarmonyLibTests.Assets
 		private static int structField3 = -123;
 		public static readonly string structField4 = "structField4orig";
 
-		private string StructProperty1 { get; set; }
+		public int Property1 { get; set; }
 
-		public double StructProperty2 { get; }
+		private string Property2 { get; }
 
-		public static int StructProperty3 { get; set; } = 299792458;
+		public static int Property3 { get; set; } = 299792458;
 
-		private static string StructProperty4 { get; } = "299,792,458";
+		private static string Property4 { get; } = "299,792,458";
 
 		public string this[string key] => key;
 
@@ -103,8 +108,13 @@ namespace HarmonyLibTests.Assets
 		{
 			structField1 = "structField1orig";
 			structField2 = -666;
-			StructProperty1 = "1.61803";
-			StructProperty2 = 1.61803;
+			Property1 = 161803;
+			Property2 = "1.61803";
+		}
+
+		public string Method1()
+		{
+			return structField1;
 		}
 	}
 #pragma warning restore CS0169, CS0414, IDE0044, IDE0051, IDE0052
