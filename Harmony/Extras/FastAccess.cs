@@ -13,6 +13,7 @@ namespace HarmonyLib
 	/// <param name="source">The instance get getter uses</param>
 	/// <returns>An delegate</returns>
 	///
+	[Obsolete("Use AccessTools.FieldRefAccess<T, S> for fields and AccessTools.MethodDelegate<Func<T, S>> for property getters")]
 	public delegate S GetterHandler<in T, out S>(T source);
 
 	/// <summary>A setter delegate type</summary>
@@ -22,6 +23,7 @@ namespace HarmonyLib
 	/// <param name="value">The value the setter uses</param>
 	/// <returns>An delegate</returns>
 	///
+	[Obsolete("Use AccessTools.FieldRefAccess<T, S> for fields and AccessTools.MethodDelegate<Action<T, S>> for property setters")]
 	public delegate void SetterHandler<in T, in S>(T source, S value);
 
 	/// <summary>A constructor delegate type</summary>
@@ -62,6 +64,7 @@ namespace HarmonyLib
 		/// <param name="propertyInfo">The property</param>
 		/// <returns>The new getter delegate</returns>
 		///
+		[Obsolete("Use AccessTools.MethodDelegate<Func<T, S>>(PropertyInfo.GetGetMethod(true))")]
 		public static GetterHandler<T, S> CreateGetterHandler<T, S>(PropertyInfo propertyInfo)
 		{
 			var getMethodInfo = propertyInfo.GetGetMethod(true);
@@ -81,6 +84,7 @@ namespace HarmonyLib
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>The new getter delegate</returns>
 		///
+		[Obsolete("Use AccessTools.FieldRefAccess<T, S>(fieldInfo)")]
 		public static GetterHandler<T, S> CreateGetterHandler<T, S>(FieldInfo fieldInfo)
 		{
 			var dynamicGet = CreateGetDynamicMethod<T, S>(fieldInfo.DeclaringType);
@@ -99,6 +103,8 @@ namespace HarmonyLib
 		/// <param name="names">A list of possible field names</param>
 		/// <returns>The new getter delegate</returns>
 		///
+		[Obsolete("Use AccessTools.FieldRefAccess<T, S>(name) for fields and " +
+			"AccessTools.MethodDelegate<Func<T, S>>(AccessTools.PropertyGetter(typeof(T), name)) for properties")]
 		public static GetterHandler<T, S> CreateFieldGetter<T, S>(params string[] names)
 		{
 			foreach (var name in names)
@@ -121,6 +127,7 @@ namespace HarmonyLib
 		/// <param name="propertyInfo">The property</param>
 		/// <returns>The new setter delegate</returns>
 		///
+		[Obsolete("Use AccessTools.MethodDelegate<Action<T, S>>(PropertyInfo.GetSetMethod(true))")]
 		public static SetterHandler<T, S> CreateSetterHandler<T, S>(PropertyInfo propertyInfo)
 		{
 			var setMethodInfo = propertyInfo.GetSetMethod(true);
@@ -141,6 +148,7 @@ namespace HarmonyLib
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>The new getter delegate</returns>
 		///
+		[Obsolete("Use AccessTools.FieldRefAccess<T, S>(fieldInfo)")]
 		public static SetterHandler<T, S> CreateSetterHandler<T, S>(FieldInfo fieldInfo)
 		{
 			var dynamicSet = CreateSetDynamicMethod<T, S>(fieldInfo.DeclaringType);
@@ -154,14 +162,12 @@ namespace HarmonyLib
 			return (SetterHandler<T, S>)dynamicSet.Generate().CreateDelegate(typeof(SetterHandler<T, S>));
 		}
 
-		//
-
-		static DynamicMethodDefinition CreateGetDynamicMethod<T, S>(Type type)
+		private static DynamicMethodDefinition CreateGetDynamicMethod<T, S>(Type type)
 		{
 			return new DynamicMethodDefinition($"DynamicGet_{type.Name}", typeof(S), new Type[] { typeof(T) });
 		}
 
-		static DynamicMethodDefinition CreateSetDynamicMethod<T, S>(Type type)
+		private static DynamicMethodDefinition CreateSetDynamicMethod<T, S>(Type type)
 		{
 			return new DynamicMethodDefinition($"DynamicSet_{type.Name}", typeof(void), new Type[] { typeof(T), typeof(S) });
 		}
