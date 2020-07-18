@@ -12,7 +12,7 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class TestFieldRefAccess : TestLogger
 	{
-		// The "A" here is to distinguish from NUNit's own TestCase, though the "ATestCase" naming is a neat side effect.
+		// The "A" here is to distinguish from NUnit's own TestCase, though the "ATestCase" naming is a neat side effect.
 		private interface IATestCase<T, F>
 		{
 			F Get(ref T instance);
@@ -53,13 +53,31 @@ namespace HarmonyLibTests
 			public void Set(ref T instance, F value) => fieldRef() = value;
 		}
 
-		// Marker constraint that ATestSuite uses to skip tests.
+		// Marker constraint that ATestSuite uses to skip tests that can crash.
 		private static SkipTestConstraint SkipTest(string reason) => new SkipTestConstraint(reason);
+
 		private class SkipTestConstraint : Constraint
 		{
 			public SkipTestConstraint(string reason) : base(reason) { }
 
 			public override ConstraintResult ApplyTo<TActual>(TActual actual) => throw new InvalidOperationException(ToString());
+		}
+
+		private static readonly Dictionary<Type, object> instancePrototypes = new Dictionary<Type, object>
+		{
+			[typeof(AccessToolsClass)] = new AccessToolsClass(),
+			[typeof(AccessToolsSubClass)] = new AccessToolsSubClass(),
+			[typeof(AccessToolsStruct)] = new AccessToolsStruct(null),
+			[typeof(string)] = "a string instance", // sample "invalid" class instance
+			[typeof(int)] = -123, // sample "invalid" struct instance
+		};
+
+		private static T CloneInstancePrototype<T>(Type instanceType)
+		{
+			var instance = instancePrototypes[instanceType];
+			if (instance is ICloneable cloneable)
+				return (T)cloneable.Clone();
+			return (T)AccessTools.Method(instance.GetType(), "MemberwiseClone").Invoke(instance, new object[0]);
 		}
 
 		// Like ATestCase naming above, the "A" here is to distinguish from NUnit's own TestSuite.
@@ -75,74 +93,73 @@ namespace HarmonyLibTests
 				Dictionary<string, ReusableConstraint> expectedCaseToConstraint,
 				Dictionary<string, IATestCase<T, F>> availableTestCases)
 			{
-				Assert.NotNull(field);
-				Assert.That(expectedCaseToConstraint.Keys, Is.EquivalentTo(availableTestCases.Keys),
-					"expectedCaseToConstraint and availableTestCases must have same test cases");
+				TestTools.AssertImmediate(() =>
+				{
+					Assert.That(expectedCaseToConstraint.Keys, Is.EquivalentTo(availableTestCases.Keys),
+						"expectedCaseToConstraint and availableTestCases must have same test cases");
+					Assert.That(instancePrototypes, Contains.Key(instanceType));
+					Assert.IsTrue(typeof(T).IsAssignableFrom(instanceType), "{0} must be assignable from {1}", typeof(T), instanceType);
+				});
 				this.instanceType = instanceType;
 				this.field = field;
 				this.testValue = testValue;
-				this.expectedCaseToConstraint = expectedCaseToConstraint.ToDictionary(pair => pair.Key, pair => (ReusableConstraint)pair.Value);
+				this.expectedCaseToConstraint = expectedCaseToConstraint;
 				this.availableTestCases = availableTestCases;
 			}
 
 			public void Run()
 			{
+				var testSuiteLabel = $"field={field.Name}, T={typeof(T).Name}, I={instanceType.Name}, F={typeof(F).Name}";
+				Log(testSuiteLabel + ":", indent: "");
 				Assert.Multiple(() =>
 				{
 					foreach (var pair in availableTestCases)
-						Run(pair.Key, pair.Value, expectedCaseToConstraint[pair.Key]);
+						Run(testSuiteLabel, pair.Key, pair.Value, expectedCaseToConstraint[pair.Key]);
 				});
 			}
 
-			// Note: Not casting to F to avoid potential invalid cast exceptions (and to see how test cases handle invalid types).
-			private static object GetValue(FieldInfo field, object instance)
+			private static object GetOrigValue(FieldInfo field)
 			{
-				return field.GetValue(instance);
+				// Not using cloned instance of given instance type since it may be (intentionally) incompatible with the field's declaring type.
+				// Also not casting to F to avoid potential invalid cast exceptions (and to see how test cases handle incompatible types).
+				return field.GetValue(instancePrototypes[field.DeclaringType]);
 			}
 
-			private void Run(string testCaseName, IATestCase<T, F> testCase, ReusableConstraint expectedConstraint)
+			private void Run(string testSuiteLabel, string testCaseName, IATestCase<T, F> testCase, ReusableConstraint expectedConstraint)
 			{
-				var testCaseLabel = $"field={field.Name}, T={typeof(T).Name}, I={instanceType.Name}, F={typeof(F).Name}, {testCaseName}";
+				var testCaseLabel = $"{testSuiteLabel}, testCase={testCaseName}";
 
 				var resolvedConstraint = expectedConstraint.Resolve();
 				if (resolvedConstraint is SkipTestConstraint)
 				{
-					TestTools.Log($"{testCaseLabel}: {resolvedConstraint}");
+					Log($"{testCaseName}: {resolvedConstraint}");
 					return;
 				}
 
-				// Workaround for structs incapable of having a default constructor:
-				// use a dummy non-default constructor for all involved asset types.
-				var instance = AccessTools.IsStatic(field) ? default : (T)Activator.CreateInstance(instanceType, new object[] { null });
-				var origValue = GetValue(field, instance);
+				var instance = field.IsStatic ? default : CloneInstancePrototype<T>(instanceType);
+				var origValue = GetOrigValue(field);
 				if (resolvedConstraint is ThrowsNothingConstraint)
 				{
-					try
+					var constraintResult = TestTools.AssertThat(() =>
 					{
 						Assert.AreNotEqual(origValue, testValue,
-							"{0}: expected !Equals(origValue, testValue) (indicates value didn't get reset properly)", testCaseLabel);
-						Assert.DoesNotThrow(() => testCase.Get(ref instance)?.ToString(), "{0}", testCaseLabel);
+							"{0}: expected !Equals(origValue, testValue) (indicates static field didn't get reset properly)", testCaseLabel);
 						var value = testCase.Get(ref instance);
+						// The ?.ToString() is a trick to ensure that value is fully evaluated from the ref value.
+						value?.ToString();
 						Assert.AreEqual(origValue, value, "{0}: expected Equals(origValue, value)", testCaseLabel);
-						Assert.DoesNotThrow(() => testCase.Set(ref instance, value), "{0}", testCaseLabel);
 						testCase.Set(ref instance, testValue);
-						Assert.AreEqual(testValue, GetValue(field, instance),
-							"{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
-						TestTools.Log($"{testCaseLabel}: {field.Name}: {origValue} => {testCase.Get(ref instance)}");
+						var newValue = field.GetValue(instance);
+						Assert.AreEqual(testValue, newValue, "{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
+						Log($"{testCaseName}: {field.Name}: {origValue} => {testCase.Get(ref instance)}");
 						testCase.Set(ref instance, value);
-					}
-					catch (Exception ex)
-					{
-						// Note: Since this method is called within an Assert.Multiple delegate, then above won't throw AssertionExceptions.
-						// In particular, if Assert.DoesNotThrow fails, it records the unexpected exception and allows execution to continue,
-						// and when subsequent code throws the "same" exception that Assert.DoesNotThrow tested for, that exception needs to be
-						// caught to avoid terminating the Assert.Multiple prematurely.
-						TestTools.Log($"{testCaseLabel}: UNEXPECTED exception: {ex}");
-					}
+					}, Throws.Nothing, testCaseLabel);
+					if (constraintResult.ActualValue is Exception ex)
+						Log($"{testCaseName}: UNEXPECTED {ex} (expected no exception)");
 				}
 				else
 				{
-					bool test()
+					var constraintResult = TestTools.AssertThat(() =>
 					{
 						var value = testCase.Get(ref instance);
 						// The ?.ToString() is a trick to ensure that value is fully evaluated from the ref value.
@@ -151,27 +168,28 @@ namespace HarmonyLibTests
 						// undefined behavior. Depending on the environment, sometimes an exception (typically an InvalidProgramException) is thrown,
 						// while sometimes an exception isn't thrown but the test case's get/set doesn't work correctly. In the latter case we can try
 						// validating that value from the test case's get value matches the value from reflection GetValue.
-						// TODO: Fix FieldRefAccess exception handling to always throw ArgumentException instead and remove this testing hack.
+						// TODO: Fix FieldRefAccess exception handling to always throw ArgumentException (or InvalidCastException when calling FieldRef
+						// delegate with an incompatible instance) instead and remove this testing hack.
 						if (ThrowsConstraintExceptionType(resolvedConstraint) == typeof(Exception) && !Equals(origValue, value))
 							throw new Exception("expected !Equals(origValue, value) (indicates invalid value)");
 						testCase.Set(ref instance, value);
-						return true; // dummy just to ensure this function gets wrapped as an ActualValueDelegate<bool>
-					}
-					Assert.That(test, expectedConstraint, "{0}", testCaseLabel);
-					// Note: Since this method is called within an Assert.Multiple delegate, above won't throw AssertionException,
-					// so have to handle cases where the assertion doesn't fail.
-					// Workaround for Assert.That not returning a thrown exception.
-					var constraintResult = resolvedConstraint.ApplyTo(test);
+					}, expectedConstraint, testCaseLabel);
 					if (constraintResult.ActualValue is Exception ex)
 					{
 						if (constraintResult.IsSuccess)
-							TestTools.Log($"{testCaseLabel}: expected exception: {ExceptionToString(ex)} (expected {resolvedConstraint})");
+							Log($"{testCaseName}: expected {ExceptionToString(ex)} (expected {resolvedConstraint})");
 						else
-							TestTools.Log($"{testCaseLabel}: UNEXPECTED exception: {ExceptionToString(ex)} (expected {resolvedConstraint})\n{ex.StackTrace}");
+							Log($"{testCaseName}: UNEXPECTED {ExceptionToString(ex)} (expected {resolvedConstraint})\n{ex.StackTrace}");
 					}
 					else
-						TestTools.Log($"{testCaseLabel}: UNEXPECTED no exception (expected {resolvedConstraint})");
+						Log($"{testCaseName}: UNEXPECTED no exception (expected {resolvedConstraint})");
 				}
+			}
+
+			private static void Log(string message, string indent = "    ")
+			{
+				//Console.Error.WriteLine(indent + message); // uncomment to help diagnose crashes
+				TestTools.Log(message, indent);
 			}
 
 			private static string ExceptionToString(Exception ex)
@@ -204,9 +222,7 @@ namespace HarmonyLibTests
 			return new Dictionary<string, IATestCase<T, F>>
 			{
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(fieldName)(instance)),
-				["FieldRefAccess<object, F>(fieldName)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(fieldName)(instance)),
 				["FieldRefAccess<T, F>(instance, fieldName)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(instance, fieldName)),
-				["FieldRefAccess<object, F>(instance, fieldName)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(instance, fieldName)),
 				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<F>(typeof(T), fieldName)(instance)),
 				["FieldRefAccess<F>(typeof(T), fieldName)()"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<F>(typeof(T), fieldName)()),
 			};
@@ -219,10 +235,7 @@ namespace HarmonyLibTests
 			{
 				["FieldRefAccess<T, F>(field)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(field)(instance)),
 				["FieldRefAccess<T, F>(field)()"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(field)()),
-				["FieldRefAccess<object, F>(field)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(field)(instance)),
-				["FieldRefAccess<object, F>(field)()"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(field)()),
-				// TODO: Implement this overload
-				//["FieldRefAccess<T, F>(instance, field)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(instance, field)),
+				//["FieldRefAccess<T, F>(instance, field)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(instance, field)), // TODO: implement this overload
 			};
 		}
 
@@ -233,9 +246,7 @@ namespace HarmonyLibTests
 			return new Dictionary<string, IATestCase<T, F>>
 			{
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(fieldName)(instance)),
-				["FieldRefAccess<object, F>(fieldName)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(fieldName)(instance)),
 				["FieldRefAccess<T, F>(instance, fieldName)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(instance, fieldName)),
-				["FieldRefAccess<object, F>(instance, fieldName)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(instance, fieldName)),
 				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<F>(typeof(T), fieldName)(instance)),
 				["FieldRefAccess<F>(typeof(T), fieldName)()"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<F>(typeof(T), fieldName)()),
 			};
@@ -249,8 +260,6 @@ namespace HarmonyLibTests
 			{
 				["FieldRefAccess<T, F>(field)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(field)(instance)),
 				["FieldRefAccess<T, F>(field)()"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<T, F>(field)()),
-				["FieldRefAccess<object, F>(field)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(field)(instance)),
-				["FieldRefAccess<object, F>(field)()"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<object, F>(field)()),
 			};
 		}
 
@@ -272,7 +281,6 @@ namespace HarmonyLibTests
 			return new Dictionary<string, IATestCase<T, F>>
 			{
 				["StaticFieldRefAccess<T, F>(fieldName)"] = ATestCase<T, F>(() => ref AccessTools.StaticFieldRefAccess<T, F>(fieldName)),
-				["StaticFieldRefAccess<object, F>(fieldName)"] = ATestCase<T, F>(() => ref AccessTools.StaticFieldRefAccess<object, F>(fieldName)),
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = ATestCase<T, F>(() => ref AccessTools.StaticFieldRefAccess<F>(typeof(T), fieldName)),
 			};
 		}
@@ -283,31 +291,30 @@ namespace HarmonyLibTests
 			{
 				["StaticFieldRefAccess<F>(field)()"] = ATestCase<T, F>(() => ref AccessTools.StaticFieldRefAccess<F>(field)()),
 				["StaticFieldRefAccess<T, F>(field)"] = ATestCase<T, F>(() => ref AccessTools.StaticFieldRefAccess<T, F>(field)),
-				["StaticFieldRefAccess<object, F>(field)"] = ATestCase<T, F>(() => ref AccessTools.StaticFieldRefAccess<object, F>(field)),
 			};
 		}
 
-		private static void TestSuite_ClassField<T, I, F>(string fieldName, F testValue,
+		private static void TestSuite_Class<T, I, F>(FieldInfo field, F testValue,
 			Dictionary<string, ReusableConstraint> expectedCaseToConstraint) where T : class
 		{
-			var field = AccessTools.Field(typeof(T), fieldName);
+			TestTools.AssertImmediate(() => Assert.NotNull(field));
 			var availableTestCases = Merge(
-				AvailableTestCases_FieldRefAccess_Class_ByName<T, F>(fieldName),
+				AvailableTestCases_FieldRefAccess_Class_ByName<T, F>(field.Name),
 				AvailableTestCases_FieldRefAccess_Class_ByFieldInfo<T, F>(field),
-				AvailableTestCases_StaticFieldRefAccess_ByName<T, F>(fieldName),
+				AvailableTestCases_StaticFieldRefAccess_ByName<T, F>(field.Name),
 				AvailableTestCases_StaticFieldRefAccess_ByFieldInfo<T, F>(field));
 			new ATestSuite<T, F>(typeof(I), field, testValue, expectedCaseToConstraint, availableTestCases).Run();
 		}
 
-		private static void TestSuite_StructField<T, F>(string fieldName, F testValue,
+		private static void TestSuite_Struct<T, F>(FieldInfo field, F testValue,
 			Dictionary<string, ReusableConstraint> expectedCaseToConstraint) where T : struct
 		{
-			var field = AccessTools.Field(typeof(T), fieldName);
+			TestTools.AssertImmediate(() => Assert.NotNull(field));
 			var availableTestCases = Merge(
-				AvailableTestCases_StructFieldRefAccess<T, F>(field, fieldName),
-				AvailableTestCases_FieldRefAccess_Struct_ByName<T, F>(fieldName),
+				AvailableTestCases_StructFieldRefAccess<T, F>(field, field.Name),
+				AvailableTestCases_FieldRefAccess_Struct_ByName<T, F>(field.Name),
 				AvailableTestCases_FieldRefAccess_Struct_ByFieldInfo<T, F>(field),
-				AvailableTestCases_StaticFieldRefAccess_ByName<T, F>(fieldName),
+				AvailableTestCases_StaticFieldRefAccess_ByName<T, F>(field.Name),
 				AvailableTestCases_StaticFieldRefAccess_ByFieldInfo<T, F>(field));
 			new ATestSuite<T, F>(typeof(T), field, testValue, expectedCaseToConstraint, availableTestCases).Run();
 		}
@@ -332,7 +339,6 @@ namespace HarmonyLibTests
 		{
 			return expectedCaseToConstraint.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
-				// Note: *FieldRefAccess<object, F>(fieldName*) should already throw ArgumentException.
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
@@ -340,13 +346,79 @@ namespace HarmonyLibTests
 			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
 		}
 
+		// TODO: This shouldn't exist - AccessTools.Field/FindIncludingBaseTypes should be fixed to not NRE on interfaces,
+		// and FieldRefAccess's T=object special-casing should be generalized to handle any type assignable from field's declaring type.
+		// Only FieldMissingOnTypeT should be used when T is an interface type.
+		private static Dictionary<string, ReusableConstraint> InterfaceT(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
+		{
+			return expectedCaseToConstraint.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			{
+				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = Throws.TypeOf<NullReferenceException>(),
+				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.TypeOf<NullReferenceException>(),
+				["FieldRefAccess<T, F>(field)(instance)"] = Throws.Exception,
+				["FieldRefAccess<T, F>(field)()"] = Throws.Exception,
+			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
+		}
+
+		private static Dictionary<string, ReusableConstraint> FieldMissingOnTypeT(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
+		{
+			return expectedCaseToConstraint.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			{
+				// TODO: StructFieldRefAccess
+				//["StructFieldRefAccess<T, F>(fieldName)(ref instance)"] = Throws.InstanceOf<ArgumentException>(),
+				//["StructFieldRefAccess<T, F>(ref instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.InstanceOf<ArgumentException>(),
+				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
+				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.InstanceOf<ArgumentException>(),
+			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
+		}
+
+		private static Dictionary<string, ReusableConstraint> IncompatibleInstanceType(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
+		{
+			// Given that type T must be assignable from instance type, and that instance type is incompatible with field's declaring type,
+			// assume that the field cannot be found on type T.
+			return FieldMissingOnTypeT(expectedCaseToConstraint).Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			{
+				// TODO: StructFieldRefAccess
+				//["StructFieldRefAccess<T, F>(field)(ref instance)"] = Throws.InstanceOf<ArgumentException>(),
+				//["StructFieldRefAccess<T, F>(ref instance, field)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(field)(instance)"] = SkipTest("incompatible instance type can cause crash"), // TODO: should be InvalidCastException if not already another Throws constraint
+				//["FieldRefAccess<T, F>(instance, field)"] = Throws.InstanceOf<ArgumentException>(), // TODO: implement this overload
+			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
+		}
+
+		private static Dictionary<string, ReusableConstraint> IncompatibleTypeT(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
+		{
+			// Given that type T is incompatible with field's declaring type, and instance type must be assignable to type T,
+			// instance type must also be incompatible with field's declaring type.
+			// Also assume that the field cannot be found on type T (already assumed in IncompatibleInstanceType).
+			return IncompatibleInstanceType(expectedCaseToConstraint).Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			{
+				["FieldRefAccess<T, F>(field)(instance)"] = Throws.Exception, // TODO: should be ArgumentException
+				["FieldRefAccess<T, F>(field)()"] = Throws.Exception, // TODO: should be ArgumentException
+			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
+		}
+
+		// TODO: This shouldn't exist - FieldRefAccess should ignore T for static fields.
+		private static Dictionary<string, ReusableConstraint> StaticIncompatibleTypeT(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
+		{
+			return expectedCaseToConstraint.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			{
+				["FieldRefAccess<T, F>(field)(instance)"] = Throws.Exception,
+				["FieldRefAccess<T, F>(field)()"] = Throws.Exception,
+			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
+		}
+
+		// TODO: This shouldn't exist - FieldRefAccess should be using AccessTools.Field for field search.
 		// For static and non-protected / public / internal-and-same-assembly instance fields declared in parent classes.
 		private static Dictionary<string, ReusableConstraint> FieldNotInheritedBySubClass(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
 		{
 			return expectedCaseToConstraint.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
-				// Note: *FieldRefAccess<object, F>(fieldName*) should already throw ArgumentException.
-				// Following search for only declared fields (excludes all fields from parents)
+				// Following search for only declared fields (excludes all fields from parents).
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
@@ -354,13 +426,14 @@ namespace HarmonyLibTests
 			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
 		}
 
+		// TODO: This shouldn't exist - FieldRefAccess should be using AccessTools.Field for field search.
 		// For public / protected / internal-and-same-assembly instance fields declared in parent classes.
 		private static Dictionary<string, ReusableConstraint> FieldInheritedBySubClass(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
 		{
 			return expectedCaseToConstraint.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
-				// Note: *FieldRefAccess<object, F>(fieldName*) should already throw ArgumentException.
-				// Following search for only declared fields (excludes all fields from parents)
+				// Following search for only declared fields (excludes all fields from parents).
+				// This doesn't include StaticFieldRefAccess since FieldNotInheritedBySubClass should always be used instead for such fields.
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
@@ -375,26 +448,17 @@ namespace HarmonyLibTests
 				var expectedConstraint = pair.Value.Resolve();
 				if (expectedConstraint is SkipTestConstraint)
 					continue;
-				if (testCaseName.StartsWith("FieldRefAccess"))
-				{
-					if (expectedConstraint is ThrowsNothingConstraint || ThrowsConstraintExceptionType(expectedConstraint) == typeof(NullReferenceException))
-						newExpectedCaseToConstraint[testCaseName] = new ReusableConstraint(Throws.InstanceOf<ArgumentException>());
-				}
+				// TODO: Remove following condition - should also apply to StaticFieldRefAccess.
+				if (testCaseName.StartsWith("StaticFieldRefAccess"))
+					continue;
+				if (expectedConstraint is ThrowsNothingConstraint || ThrowsConstraintExceptionType(expectedConstraint) == typeof(NullReferenceException))
+					newExpectedCaseToConstraint[testCaseName] = new ReusableConstraint(Throws.InstanceOf<ArgumentException>());
 			}
 			return newExpectedCaseToConstraint;
 		}
 
-		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_Common =
-			ReusableConstraints(new Dictionary<string, IResolveConstraint>
-			{
-				// Following all search T=object for fieldName, and the object type itself has no fields.
-				["FieldRefAccess<object, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
-				["FieldRefAccess<object, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
-				["StaticFieldRefAccess<object, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
-			});
-
 		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_ClassInstance =
-			expectedCaseToConstraint_Common.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.Nothing,
 				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.Nothing,
@@ -402,39 +466,31 @@ namespace HarmonyLibTests
 				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.TypeOf<NullReferenceException>(),
 				["FieldRefAccess<T, F>(field)(instance)"] = Throws.Nothing,
 				["FieldRefAccess<T, F>(field)()"] = Throws.TypeOf<NullReferenceException>(),
-				["FieldRefAccess<object, F>(field)(instance)"] = Throws.Nothing,
-				["FieldRefAccess<object, F>(field)()"] = Throws.TypeOf<NullReferenceException>(),
-				// TODO: Implement this overload
-				//["FieldRefAccess<T, F>(instance, field)"] = Throws.Nothing,
+				//["FieldRefAccess<T, F>(instance, field)"] = Throws.Nothing, // TODO: implement this overload
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<F>(field)()"] = Throws.Exception, // TODO: should be ArgumentException
 				["StaticFieldRefAccess<T, F>(field)"] = Throws.Exception, // TODO: should be ArgumentException
-				["StaticFieldRefAccess<object, F>(field)"] = Throws.Exception, // TODO: should be ArgumentException
-			}));
+			});
 
 		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_ClassStatic =
-			expectedCaseToConstraint_Common.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = Throws.Nothing,
 				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.Nothing,
-				["FieldRefAccess<T, F>(field)(instance)"] = Throws.Nothing,
-				["FieldRefAccess<T, F>(field)()"] = Throws.Nothing,
-				["FieldRefAccess<object, F>(field)(instance)"] = Throws.Nothing,
-				["FieldRefAccess<object, F>(field)()"] = Throws.Nothing,
-				// TODO: Implement this overload
-				//["FieldRefAccess<T, F>(instance, field)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(field)(instance)"] = Throws.Nothing, // T is ignored
+				["FieldRefAccess<T, F>(field)()"] = Throws.Nothing, // T is ignored
+				//["FieldRefAccess<T, F>(instance, field)"] = Throws.InstanceOf<ArgumentException>(), // TODO: implement this overload
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.Nothing,
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.Nothing,
 				["StaticFieldRefAccess<F>(field)()"] = Throws.Nothing,
-				["StaticFieldRefAccess<T, F>(field)"] = Throws.Nothing,
-				["StaticFieldRefAccess<object, F>(field)"] = Throws.Nothing,
-			}));
+				["StaticFieldRefAccess<T, F>(field)"] = Throws.Nothing, // T is ignored
+			});
 
 		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_StructInstance =
-			expectedCaseToConstraint_Common.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
 				// TODO: StructFieldRefAccess
 				//["StructFieldRefAccess<T, F>(fieldName)(ref instance)"] = Throws.Nothing,
@@ -444,26 +500,21 @@ namespace HarmonyLibTests
 				["FieldRefAccess<T, F>(fieldName)(instance)"] = SkipTest("struct instance can cause crash"), // TODO: will be non-compilable due to class constraint
 				["FieldRefAccess<T, F>(instance, fieldName)"] = SkipTest("struct instance can cause crash"), // TODO: will be non-compilable due to class constraint
 				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
-				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.Exception, // TODO: should be ArgumentException
+				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.TypeOf<NullReferenceException>(), // TODO: should be ArgumentException
 				["FieldRefAccess<T, F>(field)(instance)"] = SkipTest("struct instance can cause crash"), // TODO: will be non-compilable due to class constraint
 				["FieldRefAccess<T, F>(field)()"] = SkipTest("struct instance can cause crash"), // TODO: will be non-compilable due to class constraint
-				["FieldRefAccess<object, F>(field)(instance)"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
-				["FieldRefAccess<object, F>(field)()"] = Throws.Exception, // TODO: should be ArgumentException
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<F>(field)()"] = Throws.Exception, // TODO: should be ArgumentException
 				["StaticFieldRefAccess<T, F>(field)"] = Throws.Exception, // TODO: should be ArgumentException
-				["StaticFieldRefAccess<object, F>(field)"] = Throws.Exception, // TODO: should be ArgumentException
-			}));
+			});
 
-		// TODO: These shouldn't need to exist.
+		// TODO: This shouldn't need to exist.
 		private static IResolveConstraint MonoThrowsException => AccessTools.IsMonoRuntime ?
 			(IResolveConstraint)Throws.Exception : Throws.Nothing;
-		private static IResolveConstraint MonoOrDotNetThrowsException => (AccessTools.IsMonoRuntime || AccessTools.IsNetCoreRuntime) ?
-			(IResolveConstraint)Throws.Exception : SkipTest("known to fail, should be throwing an exception");
 
 		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_StructStatic =
-			expectedCaseToConstraint_Common.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
 				// TODO: StructFieldRefAccess
 				//["StructFieldRefAccess<T, F>(fieldName)(ref instance)"] = Throws.InstanceOf<ArgumentException>(),
@@ -476,77 +527,139 @@ namespace HarmonyLibTests
 				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.Nothing,
 				["FieldRefAccess<T, F>(field)(instance)"] = MonoThrowsException, // TODO: will be non-compilable due to class constraint
 				["FieldRefAccess<T, F>(field)()"] = MonoThrowsException, // TODO: will be non-compilable due to class constraint
-				["FieldRefAccess<object, F>(field)(instance)"] = Throws.Nothing,
-				["FieldRefAccess<object, F>(field)()"] = Throws.Nothing,
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.Nothing,
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.Nothing,
 				["StaticFieldRefAccess<F>(field)()"] = Throws.Nothing,
-				["StaticFieldRefAccess<T, F>(field)"] = Throws.Nothing,
-				["StaticFieldRefAccess<object, F>(field)"] = Throws.Nothing,
+				["StaticFieldRefAccess<T, F>(field)"] = Throws.Nothing, // T is ignored
+			});
+
+		// AccessToolsClass/AccessToolsSubClass are incompatible with all value types (including structs), so using IncompatibleTypeT here.
+		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_ClassInstance_StructT =
+			IncompatibleTypeT(expectedCaseToConstraint_StructInstance);
+
+		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_ClassStatic_StructT =
+			StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraint_StructStatic));
+
+		// AccessToolsStruct is compatible with object/ValueType/IAccessToolsType reference types (classes/interfaces), so NOT using IncompatibleTypeT here.
+		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_StructInstance_ClassT =
+			FieldMissingOnTypeT(expectedCaseToConstraint_ClassInstance).Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
+			{
+				["FieldRefAccess<T, F>(field)(instance)"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
+				["FieldRefAccess<T, F>(field)()"] = Throws.TypeOf<NullReferenceException>(), // TODO: should be ArgumentException
+				//["FieldRefAccess<T, F>(instance, field)"] = Throws.InstanceOf<ArgumentException>(), // TODO: implement this overload
 			}));
 
+		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_StructStatic_ClassT =
+			FieldMissingOnTypeT(expectedCaseToConstraint_ClassStatic);
+
 		[Test]
-		public void Test_ClassInstance_PrivateString()
+		public void Test_ClassInstance_ProtectedString()
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field1");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, string>(
-					"field1", "field1test1", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, string>(
-					"field1", "field1test2", FieldNotInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, string>(
-					"field1", "field1test3", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, object>(
-					"field1", "field1test4", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, object>(
-					"field1", "field1test5", FieldNotInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, IComparable>(
-					"field1", "field1test6", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, string[]>(
-					"field1", new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, string>(
+					field, "field1test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, string>(
+					field, "field1test", FieldInheritedBySubClass(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsSubClass, string>(
+					field, "field1test", expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsClass, string>(
+					field, "field1test", InterfaceT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Class<object, AccessToolsClass, string>(
+					field, "field1test", FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, string>(
+					field, "field1test", IncompatibleInstanceType(expectedCaseToConstraint));
+				TestSuite_Class<string, string, string>(
+					field, "field1test", IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<int, string>(
+					field, "field1test", expectedCaseToConstraint_ClassInstance_StructT);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+					field, "field1test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
+					field, "field1test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
+					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
+				// Fix StaticFieldRefAccess to consistently throw ArgumentException when field type is incompatible with F.
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+				//	field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
 		[Test]
-		public void Test_ClassInstance_PublicReadonlyString()
+		public void Test_ClassInstance_PublicReadonlyFloat()
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field2");
 				var expectedCaseToConstraint = PublicField(expectedCaseToConstraint_ClassInstance);
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, string>(
-					"field2", "field2test1", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, string>(
-					"field2", "field2test2", FieldInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, string>(
-					"field2", "field2test3", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, IComparable>(
-					"field2", "field2test4", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, object>(
-					"field2", "field2test5", FieldInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, object>(
-					"field2", "field2test6", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, IEnumerable<string>>(
-					"field2", new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, float>(
+					field, 314f, expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, float>(
+					field, 314f, FieldInheritedBySubClass(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsSubClass, float>(
+					field, 314f, expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsClass, float>(
+					field, 314f, InterfaceT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Class<object, AccessToolsClass, float>(
+					field, 314f, FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, float>(
+					field, 314f, IncompatibleInstanceType(expectedCaseToConstraint));
+				TestSuite_Class<string, string, float>(
+					field, 314f, IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<int, float>(
+					field, 314f, expectedCaseToConstraint_ClassInstance_StructT);
+				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
+				// Fix *FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type.
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+				//	field, 314f, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, ValueType>(
+				//	field, 314f, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, float?>(
+				//	field, 314f, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
+				//	field, 314f, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, double>(
+				//	field, 314f, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
 		[Test]
-		public void Test_ClassStatic_PublicString()
+		public void Test_ClassStatic_PublicLong()
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field3");
 				var expectedCaseToConstraint = PublicField(expectedCaseToConstraint_ClassStatic);
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, string>(
-					"field3", "field3test1", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, string>(
-					"field3", "field3test2", FieldNotInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, object>(
-					"field3", "field3test3", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, IComparable>(
-					"field3", "field3test4", FieldNotInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, Exception>(
-					"field3", new Exception("should always throw"), IncompatibleFieldType(expectedCaseToConstraint));
+				// Note: As this is as static field, instance type is ignored, so IncompatibleInstanceType is never needed.
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, long>(
+					field, 314L, expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, long>(
+					field, 314L, FieldNotInheritedBySubClass(expectedCaseToConstraint));
+				TestSuite_Class<IAccessToolsType, AccessToolsClass, long>(
+					field, 314L, InterfaceT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Class<object, AccessToolsClass, long>(
+					field, 314L, FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, long>(
+					field, 314L, FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<string, string, long>(
+					field, 314L, StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Struct<int, long>(
+					field, 314L, PublicField(expectedCaseToConstraint_ClassStatic_StructT));
+				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
+				// Fix *FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type.
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+				//	field, 314L, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, ValueType>(
+				//	field, 314L, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, long?>(
+				//	field, 314L, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
+				//	field, 314L, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, double>(
+				//	field, 314L, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
@@ -555,69 +668,106 @@ namespace HarmonyLibTests
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field4");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassStatic;
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, string>(
-					"field4", "field4test1", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, string>(
-					"field4", "field4test2", FieldNotInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, IComparable>(
-					"field4", "field4test3", expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, object>(
-					"field4", "field4test4", FieldNotInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, Type>(
-					"field4", typeof(string), IncompatibleFieldType(expectedCaseToConstraint));
+				// Note: As this is as static field, instance type is ignored, so IncompatibleInstanceType is never needed.
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, string>(
+					field, "field4test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, string>(
+					field, "field4test", FieldNotInheritedBySubClass(expectedCaseToConstraint));
+				TestSuite_Class<IAccessToolsType, AccessToolsClass, string>(
+					field, "field4test", InterfaceT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Class<object, AccessToolsClass, string>(
+					field, "field4test", FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, string>(
+					field, "field4test", FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<string, string, string>(
+					field, "field4test", StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Struct<int, string>(
+					field, "field4test", expectedCaseToConstraint_ClassStatic_StructT);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+					field, "field4test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
+					field, "field4test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IEnumerable<string>>(
+					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
+				// Fix StaticFieldRefAccess to consistently throw ArgumentException when field type is incompatible with F.
+				//TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+				//	field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
 		[Test]
-		public void Test_ClassInstance_InternalInt()
+		public void Test_SubClassInstance_PrivateString()
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsSubClass), "subclassField1");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, int>(
-					"field5", 123, expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, int>(
-					"field5", 456, FieldInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, int>(
-					"field5", 789, expectedCaseToConstraint);
-				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
-				// Fix *FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type.
-				//TestSuite_ClassField<AccessToolsClass, AccessToolsClass, object>(
-				//	"field5", 1231, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, ValueType>(
-				//	"field5", 4564, FieldInheritedBySubClass(expectedCaseToConstraint)); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, int?>(
-				//	"field5", 7897, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, IComparable>(
-				//	"field5", -1231, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_ClassField<AccessToolsClass, AccessToolsClass, long>(
-				//	"field5", -4564, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, string>( // TODO: should be IncompatibleInstanceType once T=object special-casing is generalized
+					field, "subclassField1test", IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, string>(
+					field, "subclassField1test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsSubClass, string>( // TODO: should be FieldMissingOnTypeT once T=object special-casing is generalized
+					field, "subclassField1test", IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Class<IAccessToolsType, AccessToolsSubClass, string>(
+					field, "subclassField1test", InterfaceT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Class<object, AccessToolsSubClass, string>(
+					field, "subclassField1test", FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, AccessToolsClass, string>(
+					field, "subclassField1test", IncompatibleInstanceType(expectedCaseToConstraint));
+				TestSuite_Class<object, string, string>(
+					field, "subclassField1test", IncompatibleInstanceType(expectedCaseToConstraint));
+				TestSuite_Class<string, string, string>(
+					field, "subclassField1test", IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<int, string>(
+					field, "subclassField1test", expectedCaseToConstraint_ClassInstance_StructT);
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, object>(
+					field, "subclassField1test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, IComparable>(
+					field, "subclassField1test", expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, Exception>(
+					field, new Exception("should always throw"), IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
 		[Test]
-		public void Test_ClassInstance_ProtectedReadonlyInt()
+		public void Test_SubClassStatic_InternalInt()
 		{
 			Assert.Multiple(() =>
 			{
-				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
-				TestSuite_ClassField<AccessToolsClass, AccessToolsClass, int>(
-					"field6", 321, expectedCaseToConstraint);
-				TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, int>(
-					"field6", 654, FieldInheritedBySubClass(expectedCaseToConstraint));
-				TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, int>(
-					"field6", 987, expectedCaseToConstraint);
+				var field = AccessTools.Field(typeof(AccessToolsSubClass), "subclassField2");
+				var expectedCaseToConstraint = expectedCaseToConstraint_ClassStatic;
+				// Note: As this is as static field, instance type is ignored, so IncompatibleInstanceType is never needed.
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+					field, 123, StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, int>(
+					field, 123, expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsSubClass, int>(
+					field, 123, InterfaceT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Class<object, AccessToolsSubClass, int>(
+					field, 123, FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, AccessToolsClass, int>(
+					field, 123, FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, int>(
+					field, 123, FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<string, string, int>(
+					field, 123, StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Struct<int, int>(
+					field, 123, expectedCaseToConstraint_ClassStatic_StructT);
 				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
 				// Fix *FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type.
-				//TestSuite_ClassField<AccessToolsClass, AccessToolsClass, int?>(
-				//	"field6", 3213, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_ClassField<AccessToolsSubClass, AccessToolsSubClass, object>(
-				//	"field6", 6546, FieldInheritedBySubClass(expectedCaseToConstraint)); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_ClassField<AccessToolsClass, AccessToolsSubClass, ValueType>(
-				//	"field6", 9879, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_ClassField<AccessToolsClass, AccessToolsClass, long>(
-				//	"field6", 9999, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, object>(
+				//	field, 123, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, ValueType>(
+				//	field, 123, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, int?>(
+				//	field, 123, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, IComparable>(
+				//	field, 123, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Class<AccessToolsSubClass, AccessToolsSubClass, double>(
+				//	field, 123, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
@@ -626,15 +776,27 @@ namespace HarmonyLibTests
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsStruct), "structField1");
 				var expectedCaseToConstraint = PublicField(expectedCaseToConstraint_StructInstance);
-				TestSuite_StructField<AccessToolsStruct, string>(
-					"structField1", "structField1test1", expectedCaseToConstraint);
-				TestSuite_StructField<AccessToolsStruct, object>(
-					"structField1", "structField1test2", expectedCaseToConstraint);
-				TestSuite_StructField<AccessToolsStruct, IComparable>(
-					"structField1", "structField1test3", expectedCaseToConstraint);
-				TestSuite_StructField<AccessToolsStruct, List<string>>(
-					"structField1", new List<string> { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				var expectedCaseToConstraintClassT = expectedCaseToConstraint_StructInstance_ClassT;
+				TestSuite_Struct<AccessToolsStruct, string>(
+					field, "structField1test", expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsStruct, string>(
+					field, "structField1test", InterfaceT(expectedCaseToConstraintClassT));
+				TestSuite_Class<object, AccessToolsStruct, string>(
+					field, "structField1test", expectedCaseToConstraintClassT);
+				TestSuite_Class<object, string, string>(
+					field, "structField1test", IncompatibleInstanceType(expectedCaseToConstraintClassT));
+				TestSuite_Class<string, string, string>(
+					field, "structField1test", IncompatibleTypeT(expectedCaseToConstraintClassT));
+				TestSuite_Struct<int, string>(
+					field, "structField1test", IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, object>(
+					field, "structField1test", expectedCaseToConstraint);
+				TestSuite_Struct<AccessToolsStruct, IComparable>(
+					field, "structField1test", expectedCaseToConstraint);
+				TestSuite_Struct<AccessToolsStruct, List<string>>(
+					field, new List<string> { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
@@ -643,21 +805,33 @@ namespace HarmonyLibTests
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsStruct), "structField2");
 				var expectedCaseToConstraint = expectedCaseToConstraint_StructInstance;
-				TestSuite_StructField<AccessToolsStruct, int>(
-					"structField2", 1234, expectedCaseToConstraint);
+				var expectedCaseToConstraintClassT = expectedCaseToConstraint_StructInstance_ClassT;
+				TestSuite_Struct<AccessToolsStruct, int>(
+					field, 1234, expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsStruct, int>(
+					field, 1234, InterfaceT(expectedCaseToConstraintClassT));
+				TestSuite_Class<object, AccessToolsStruct, int>(
+					field, 1234, expectedCaseToConstraintClassT);
+				TestSuite_Class<object, string, int>(
+					field, 1234, IncompatibleInstanceType(expectedCaseToConstraintClassT));
+				TestSuite_Class<string, string, int>(
+					field, 1234, IncompatibleTypeT(expectedCaseToConstraintClassT));
+				TestSuite_Struct<int, int>(
+					field, 1234, IncompatibleTypeT(expectedCaseToConstraint));
 				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
 				// Fix *FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type.
-				//TestSuite_StructField<AccessToolsStruct, object>(
-				//	"structField2", 12341, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, ValueType>(
-				//	"structField2", 12342, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, int?>(
-				//	"structField2", 12343, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, IComparable>(
-				//	"structField2", 12344, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, long>(
-				//	"structField2", 12345, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, object>(
+				//	field, 1234, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, ValueType>(
+				//	field, 1234, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, int?>(
+				//	field, 1234, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, IComparable>(
+				//	field, 1234, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, long>(
+				//	field, 1234, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
@@ -666,21 +840,34 @@ namespace HarmonyLibTests
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsStruct), "structField3");
 				var expectedCaseToConstraint = expectedCaseToConstraint_StructStatic;
-				TestSuite_StructField<AccessToolsStruct, int>(
-					"structField3", 4321, expectedCaseToConstraint);
+				var expectedCaseToConstraintClassT = expectedCaseToConstraint_StructStatic_ClassT;
+				// Note: As this is as static field, instance type is ignored, so IncompatibleInstanceType is never needed.
+				TestSuite_Struct<AccessToolsStruct, int>(
+					field, 4321, expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsStruct, int>(
+					field, 4321, InterfaceT(expectedCaseToConstraintClassT));
+				TestSuite_Class<object, AccessToolsStruct, int>(
+					field, 4321, expectedCaseToConstraintClassT);
+				TestSuite_Class<object, string, int>(
+					field, 4321, expectedCaseToConstraintClassT);
+				TestSuite_Class<string, string, int>(
+					field, 4321, StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraintClassT)));
+				TestSuite_Struct<int, int>(
+					field, 4321, StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraint)));
 				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
-				// Fix *FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type.
-				//TestSuite_StructField<AccessToolsStruct, object>(
-				//	"structField3", 43214, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, ValueType>(
-				//	"structField3", 43213, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, int?>(
-				//	"structField3", 43212, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, IComparable>(
-				//	"structField3", 43211, expectedCaseToConstraint); // all *FieldRefAccess should throw ArgumentException
-				//TestSuite_StructField<AccessToolsStruct, long>(
-				//	"structField3", 43210, IncompatibleFieldType(expectedCaseToConstraint));
+				// Fix StaticFieldRefAccess to consistently throw ArgumentException when field type is incompatible with F.
+				//TestSuite_Struct<AccessToolsStruct, object>(
+				//	field, 4321, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, ValueType>(
+				//	field, 4321, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, int?>(
+				//	field, 4321, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, IComparable>(
+				//	field, 4321, IncompatibleFieldType(expectedCaseToConstraint));
+				//TestSuite_Struct<AccessToolsStruct, long>(
+				//	field, 4321, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
@@ -689,45 +876,72 @@ namespace HarmonyLibTests
 		{
 			Assert.Multiple(() =>
 			{
+				var field = AccessTools.Field(typeof(AccessToolsStruct), "structField4");
 				var expectedCaseToConstraint = PublicField(expectedCaseToConstraint_StructStatic);
-				TestSuite_StructField<AccessToolsStruct, string>(
-					"structField4", "structField4test1", expectedCaseToConstraint);
-				TestSuite_StructField<AccessToolsStruct, object>(
-					"structField4", "structField4test2", expectedCaseToConstraint);
-				TestSuite_StructField<AccessToolsStruct, IComparable>(
-					"structField4", "structField4test3", expectedCaseToConstraint);
-				TestSuite_StructField<AccessToolsStruct, Func<string>>(
-					"structField4", () => "should always throw", IncompatibleFieldType(expectedCaseToConstraint));
+				var expectedCaseToConstraintClassT = PublicField(expectedCaseToConstraint_StructStatic_ClassT);
+				// Note: As this is as static field, instance type is ignored, so IncompatibleInstanceType is never needed.
+				TestSuite_Struct<AccessToolsStruct, string>(
+					field, "structField4test", expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsStruct, string>(
+					field, "structField4test", InterfaceT(expectedCaseToConstraintClassT));
+				TestSuite_Class<object, AccessToolsStruct, string>(
+					field, "structField4test", expectedCaseToConstraintClassT);
+				TestSuite_Class<object, string, string>(
+					field, "structField4test", expectedCaseToConstraintClassT);
+				TestSuite_Class<string, string, string>(
+					field, "structField4test", StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraintClassT)));
+				TestSuite_Struct<int, string>(
+					field, "structField4test", StaticIncompatibleTypeT(FieldMissingOnTypeT(expectedCaseToConstraint)));
+				TestSuite_Struct<AccessToolsStruct, object>(
+					field, "structField4test", expectedCaseToConstraint);
+				TestSuite_Struct<AccessToolsStruct, IComparable>(
+					field, "structField4test", expectedCaseToConstraint);
+				// TODO: Following tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error.
+				// Fix StaticFieldRefAccess to consistently throw ArgumentException when field type is incompatible with F.
+				//TestSuite_Struct<AccessToolsStruct, int>(
+				//	field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 
 		// TODO: Fix FieldRefAccess to consistently throw ArgumentException for struct instance fields,
 		// removing the need for these separate explicit tests.
-		private static void Test_StructInstance_CanCrash<T, F>(string fieldName, F testValue, string testCaseName) where T : struct
+		private static void TestCase_StructInstance_CanCrash<T, F>(string fieldName, F testValue, string testCaseName) where T : struct
 		{
 			var field = AccessTools.Field(typeof(T), fieldName);
 			// Superset of problematic test cases
 			var availableTestCases = Merge(
 				AvailableTestCases_FieldRefAccess_Struct_ByName<T, F>(fieldName),
 				AvailableTestCases_FieldRefAccess_Struct_ByFieldInfo<T, F>(field));
-			Test_CanCrash(testValue, testCaseName, field, availableTestCases);
+			TestCase_CanCrash(testValue, testCaseName, field, availableTestCases);
 		}
 
-		// TODO: Fix *FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type,
+		// TODO: Fix FieldRefAccess to consistently throw ArgumentException when field type is a value type and F is a different type,
 		// removing the need for these separate explicit tests.
-		private static void Test_ClassInstance_ValueTypeField_DifferentF_CanCrash<T, F>(string fieldName, F testValue,
+		private static void TestCase_ClassInstance_ValueTypeField_DifferentF_CanCrash<T, F>(string fieldName, F testValue,
 			string testCaseName) where T : class
 		{
 			var field = AccessTools.Field(typeof(T), fieldName);
 			// Superset of problematic test cases
 			var availableTestCases = AvailableTestCases_FieldRefAccess_Class_ByFieldInfo<T, F>(field);
-			Test_CanCrash(testValue, testCaseName, field, availableTestCases);
+			TestCase_CanCrash(testValue, testCaseName, field, availableTestCases);
 		}
 
-		private static void Test_CanCrash<T, F>(F testValue, string testCaseName, FieldInfo field,
+		// TODO: Fix StaticFieldRefAccess to consistently throw ArgumentException when field type is incompatible with F,
+		// (specifically: if field type is reference type, any value type F; if field type is value type, any different F)
+		// removing the need for these separate explicit tests.
+		private static void TestCase_Static_IncompatibleF_CanCrash<T, F>(string fieldName, F testValue,
+			string testCaseName)
+		{
+			var field = AccessTools.Field(typeof(T), fieldName);
+			// Superset of problematic test cases
+			var availableTestCases = AvailableTestCases_StaticFieldRefAccess_ByFieldInfo<T, F>(field);
+			TestCase_CanCrash(testValue, testCaseName, field, availableTestCases);
+		}
+
+		private static void TestCase_CanCrash<T, F>(F testValue, string testCaseName, FieldInfo field,
 			Dictionary<string, IATestCase<T, F>> availableTestCases)
 		{
-			var instance = (T)Activator.CreateInstance(typeof(T), new object[] { null });
+			var instance = CloneInstancePrototype<T>(typeof(T));
 			try
 			{
 				var origValue = field.GetValue(instance);
@@ -737,56 +951,49 @@ namespace HarmonyLibTests
 				testCase.Set(ref instance, testValue);
 				var currentValue = field.GetValue(instance);
 				Assert.AreNotEqual(testValue, currentValue, "expected !Equals(testValue, field.GetValue(instance)) (after set)");
-				TestTools.Log($"Test failed as expected: origValue={origValue}, testValue={testValue}, currentValue={currentValue}");
+				Console.Error.WriteLine($"Test failed as expected: origValue={origValue}, testValue={testValue}, currentValue={currentValue}");
 			}
 			catch (Exception ex) when (ex is InvalidProgramException || ex is NullReferenceException || ex is AccessViolationException)
 			{
 				// If an assertion failure or fatal crash hasn't happened yet, any of the above exceptions could be thrown,
 				// depending on the environment.
-				TestTools.Log("Test is known to sometimes throw:\n" + ex);
+				Console.Error.WriteLine("Test is known to sometimes throw:\n" + ex);
 			}
 		}
 
 		[Test, Explicit("These tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
-		[TestCase("FieldRefAccess<T, F>(field)(instance)")]
-		[TestCase("FieldRefAccess<F>(typeof(T), fieldName)(instance)")]
-		public void Test_StructInstance_PublicString_CanCrash(string testCaseName)
+		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "FieldRefAccess<T, F>(field)(instance)")]
+		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "FieldRefAccess<F>(typeof(T), fieldName)(instance)")]
+		[TestCase(typeof(AccessToolsStruct), typeof(int), "structField2", 1234, "FieldRefAccess<T, F>(field)(instance)")]
+		[TestCase(typeof(AccessToolsStruct), typeof(int), "structField2", 1234, "FieldRefAccess<F>(typeof(T), fieldName)(instance)")]
+		public void Test_StructInstance_CanCrash(Type typeT, Type typeF, string fieldName, object testValue, string testCaseName)
 		{
 			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
-			Test_StructInstance_CanCrash<AccessToolsStruct, string>("structField1", "structField1testcrash", testCaseName);
-		}
-
-		[Test, Explicit("These tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
-		[TestCase("FieldRefAccess<T, F>(field)(instance)")]
-		[TestCase("FieldRefAccess<F>(typeof(T), fieldName)(instance)")]
-		public void Test_StructInstance_PrivateReadonlyInt_CanCrash(string testCaseName)
-		{
-			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
-			Test_StructInstance_CanCrash<AccessToolsStruct, int>("structField2", 1234, testCaseName);
+			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_StructInstance_CanCrash));
+			method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 
 		[Test, Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
-		[TestCase("FieldRefAccess<T, F>(field)(instance)")]
-		public void Test_ClassInstance_InternalInt_ObjectF_CanCrash(string testCaseName)
+		[TestCase(typeof(AccessToolsClass), typeof(object), "field2", 123f, "FieldRefAccess<T, F>(field)(instance)")] // field2 is non-static float
+		[TestCase(typeof(AccessToolsClass), typeof(float?), "field2", 123f, "FieldRefAccess<T, F>(field)(instance)")]
+		[TestCase(typeof(AccessToolsClass), typeof(IComparable), "field2", 123f, "FieldRefAccess<T, F>(field)(instance)")]
+		public void Test_ClassInstance_ValueTypeField_DifferentF_CanCrash(Type typeT, Type typeF, string fieldName, object testValue, string testCaseName)
 		{
 			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
-			Test_ClassInstance_ValueTypeField_DifferentF_CanCrash<AccessToolsClass, object>("field5", 135, testCaseName);
+			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_ClassInstance_ValueTypeField_DifferentF_CanCrash));
+			method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 
 		[Test, Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
-		[TestCase("FieldRefAccess<T, F>(field)(instance)")]
-		public void Test_ClassInstance_InternalInt_NullableIntF_CanCrash(string testCaseName)
+		[TestCase(typeof(AccessToolsClass), typeof(int), "field4", 321, "StaticFieldRefAccess<F>(field)()")] // field4 is static string
+		[TestCase(typeof(AccessToolsStruct), typeof(object), "structField3", 456, "StaticFieldRefAccess<F>(field)()")] // structField3 is static int
+		[TestCase(typeof(AccessToolsStruct), typeof(int?), "structField3", 456, "StaticFieldRefAccess<F>(field)()")]
+		[TestCase(typeof(AccessToolsStruct), typeof(IComparable), "structField3", 456, "StaticFieldRefAccess<F>(field)()")]
+		public void Test_Static_IncompatibleF_CanCrash(Type typeT, Type typeF, string fieldName, object testValue, string testCaseName)
 		{
 			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
-			Test_ClassInstance_ValueTypeField_DifferentF_CanCrash<AccessToolsClass, int?>("field5", 791, testCaseName);
-		}
-
-		[Test, Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
-		[TestCase("FieldRefAccess<T, F>(field)(instance)")]
-		public void Test_ClassInstance_InternalInt_InterfaceF_CanCrash(string testCaseName)
-		{
-			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
-			Test_ClassInstance_ValueTypeField_DifferentF_CanCrash<AccessToolsClass, IComparable>("field5", 791, testCaseName);
+			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_Static_IncompatibleF_CanCrash));
+			method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 	}
 }
