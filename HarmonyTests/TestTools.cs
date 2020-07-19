@@ -3,15 +3,24 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using NUnit.Framework.Internal;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace HarmonyLibTests
 {
 	public static class TestTools
 	{
-		public static void Log(string str, string indent = "    ")
+		// Change this from TestContext.Out to TestContext.Error for immediate output to stderr to help diagnose crashes.
+		// Note: Must be a property rather than a field, since the specific TestContext streams can change between tests.
+		private static TextWriter LogWriter => TestContext.Out;
+
+		public static void Log(object obj, int indentLevel = 1, bool writeLine = true)
 		{
-			TestContext.WriteLine($"{indent}{str?.Replace("\n", "\n" + indent) ?? "null"}");
+			var text = $"{new string('\t', indentLevel)}{obj?.ToString().Replace("\n", "\n" + new string('\t', indentLevel + 1)) ?? "null"}";
+			if (writeLine)
+				LogWriter.WriteLine(text);
+			else
+				LogWriter.Write(text);
 		}
 
 		// Workaround for [Explicit] attribute not working in Visual Studio: https://github.com/nunit/nunit3-vs-adapter/issues/658
@@ -38,8 +47,8 @@ namespace HarmonyLibTests
 			}
 		}
 
-		// AssertThat overloads below are a Workaround for inability to capture and expose ConstraintResult (which contains IsSuccess and ActualValue)
-		// when using Assert in Assert.Multiple mode.
+		// AssertThat overloads below are a workaround for the inability to capture and expose ConstraintResult
+		// (which contains IsSuccess and ActualValue) when using Assert in Assert.Multiple mode.
 		// Especially useful when using Assert.That with a Throws constraint and you need to capture any caught exception.
 		// Also includes a workaround for Throws constraints reporting failed assertions within the test delegate as an unexpected
 		// AssertionException rather than just reporting the assertion failure message itself.
@@ -142,6 +151,22 @@ namespace HarmonyLibTests
 				return this;
 			}
 		}
+
+		// Returns the exception Type of a Throws constraint.
+		public static Type ThrowsConstraintExceptionType(IConstraint resolvedConstraint)
+		{
+			switch (resolvedConstraint)
+			{
+				case ThrowsNothingConstraint _:
+					return null;
+				case ThrowsExceptionConstraint _:
+					return typeof(Exception);
+				case ThrowsConstraint _ when resolvedConstraint.Arguments[0] is TypeConstraint typeConstraint:
+					return (Type)typeConstraint.Arguments[0];
+				default:
+					throw new ArgumentException("unrecognized Throws constraint");
+			}
+		}
 	}
 
 	public class TestLogger
@@ -151,13 +176,13 @@ namespace HarmonyLibTests
 		{
 			var args = TestContext.CurrentContext.Test.Arguments.Select(a => a.ToString()).ToArray().Join();
 			if (args.Length > 0) args = $"({args})";
-			TestContext.WriteLine($"### {TestContext.CurrentContext.Test.MethodName}({args})");
+			TestTools.Log($"### {TestContext.CurrentContext.Test.MethodName}({args})", indentLevel: 0);
 		}
 
 		[TearDown]
 		public void BaseTearDown()
 		{
-			TestContext.WriteLine($"--- {TestContext.CurrentContext.Test.MethodName} ");
+			TestTools.Log($"--- {TestContext.CurrentContext.Test.MethodName}", indentLevel: 0);
 		}
 	}
 }

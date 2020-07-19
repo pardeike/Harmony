@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -63,6 +64,13 @@ namespace HarmonyLibTests
 			public override ConstraintResult ApplyTo<TActual>(TActual actual) => throw new InvalidOperationException(ToString());
 		}
 
+		// As a final check during a test case, ATestSuite checks that field.FieldType.IsInstanceOfType(field.GetValue(instance)),
+		// and throws this specific exception if that check fails.
+		private class IncompatibleFieldTypeException : Exception
+		{
+			public IncompatibleFieldTypeException(string message) : base(message) { }
+		}
+
 		private static readonly Dictionary<Type, object> instancePrototypes = new Dictionary<Type, object>
 		{
 			[typeof(AccessToolsClass)] = new AccessToolsClass(),
@@ -110,7 +118,7 @@ namespace HarmonyLibTests
 			public void Run()
 			{
 				var testSuiteLabel = $"field={field.Name}, T={typeof(T).Name}, I={instanceType.Name}, F={typeof(F).Name}";
-				Log(testSuiteLabel + ":", indent: "");
+				TestTools.Log(testSuiteLabel + ":", indentLevel: 0);
 				Assert.Multiple(() =>
 				{
 					foreach (var pair in availableTestCases)
@@ -127,20 +135,24 @@ namespace HarmonyLibTests
 
 			private void Run(string testSuiteLabel, string testCaseName, IATestCase<T, F> testCase, ReusableConstraint expectedConstraint)
 			{
+				TestTools.Log(testCaseName + ":", writeLine: false);
 				var testCaseLabel = $"{testSuiteLabel}, testCase={testCaseName}";
 
 				var resolvedConstraint = expectedConstraint.Resolve();
 				if (resolvedConstraint is SkipTestConstraint)
 				{
-					Log($"{testCaseName}: {resolvedConstraint}");
+					TestTools.Log(resolvedConstraint);
 					return;
 				}
 
 				var instance = field.IsStatic ? default : CloneInstancePrototype<T>(instanceType);
 				var origValue = GetOrigValue(field);
-				if (resolvedConstraint is ThrowsNothingConstraint)
+				var expectedExceptionType = TestTools.ThrowsConstraintExceptionType(resolvedConstraint);
+
+				ConstraintResult constraintResult;
+				if (expectedExceptionType is null || expectedExceptionType == typeof(IncompatibleFieldTypeException))
 				{
-					var constraintResult = TestTools.AssertThat(() =>
+					constraintResult = TestTools.AssertThat(() =>
 					{
 						Assert.AreNotEqual(origValue, testValue,
 							"{0}: expected !Equals(origValue, testValue) (indicates static field didn't get reset properly)", testCaseLabel);
@@ -151,15 +163,16 @@ namespace HarmonyLibTests
 						testCase.Set(ref instance, testValue);
 						var newValue = field.GetValue(instance);
 						Assert.AreEqual(testValue, newValue, "{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
-						Log($"{testCaseName}: {field.Name}: {origValue} => {testCase.Get(ref instance)}");
-						testCase.Set(ref instance, value);
-					}, Throws.Nothing, testCaseLabel);
-					if (constraintResult.ActualValue is Exception ex)
-						Log($"{testCaseName}: UNEXPECTED {ex} (expected no exception)");
+						TestTools.Log($"{field.Name}: {origValue} => {testCase.Get(ref instance)}");
+						testCase.Set(ref instance, value); // reset field value
+						if (field.FieldType.IsInstanceOfType(newValue) is false)
+							throw new IncompatibleFieldTypeException($"expected field.GetValue(instance) is {field.FieldType.Name} " +
+								"(runtime sometimes allows setting fields to values of incompatible types without any above checks failing/throwing)");
+					}, expectedConstraint, testCaseLabel);
 				}
 				else
 				{
-					var constraintResult = TestTools.AssertThat(() =>
+					constraintResult = TestTools.AssertThat(() =>
 					{
 						var value = testCase.Get(ref instance);
 						// The ?.ToString() is a trick to ensure that value is fully evaluated from the ref value.
@@ -170,26 +183,29 @@ namespace HarmonyLibTests
 						// validating that value from the test case's get value matches the value from reflection GetValue.
 						// TODO: Fix FieldRefAccess exception handling to always throw ArgumentException (or InvalidCastException when calling FieldRef
 						// delegate with an incompatible instance) instead and remove this testing hack.
-						if (ThrowsConstraintExceptionType(resolvedConstraint) == typeof(Exception) && !Equals(origValue, value))
+						if (TestTools.ThrowsConstraintExceptionType(resolvedConstraint) == typeof(Exception) && !Equals(origValue, value))
 							throw new Exception("expected !Equals(origValue, value) (indicates invalid value)");
 						testCase.Set(ref instance, value);
 					}, expectedConstraint, testCaseLabel);
+				}
+
+				if (expectedExceptionType is null)
+				{
+					if (constraintResult.ActualValue is Exception ex)
+						TestTools.Log($"UNEXPECTED {ExceptionToString(ex)} (expected no exception)\n{ex.StackTrace}");
+				}
+				else
+				{
 					if (constraintResult.ActualValue is Exception ex)
 					{
 						if (constraintResult.IsSuccess)
-							Log($"{testCaseName}: expected {ExceptionToString(ex)} (expected {resolvedConstraint})");
+							TestTools.Log($"expected {ExceptionToString(ex)} (expected {resolvedConstraint})");
 						else
-							Log($"{testCaseName}: UNEXPECTED {ExceptionToString(ex)} (expected {resolvedConstraint})\n{ex.StackTrace}");
+							TestTools.Log($"UNEXPECTED {ExceptionToString(ex)} (expected {resolvedConstraint})\n{ex.StackTrace}");
 					}
 					else
-						Log($"{testCaseName}: UNEXPECTED no exception (expected {resolvedConstraint})");
+						TestTools.Log($"UNEXPECTED no exception (expected {resolvedConstraint})");
 				}
-			}
-
-			private static void Log(string message, string indent = "    ")
-			{
-				//Console.Error.WriteLine(indent + message); // uncomment to help diagnose crashes
-				TestTools.Log(message, indent);
 			}
 
 			private static string ExceptionToString(Exception ex)
@@ -199,15 +215,6 @@ namespace HarmonyLibTests
 					message += $" [{ExceptionToString(innerException)}]";
 				return message;
 			}
-		}
-
-		private static Type ThrowsConstraintExceptionType(IConstraint constraint)
-		{
-			if (constraint is ThrowsExceptionConstraint)
-				return typeof(Exception);
-			if (constraint is ThrowsConstraint && constraint.Arguments[0] is TypeConstraint typeConstraint)
-				return (Type)typeConstraint.Arguments[0];
-			return null;
 		}
 
 		// This helps avoid ambiguous reference between 'HarmonyLib.CollectionExtensions' and 'System.Collections.Generic.CollectionExtensions'.
@@ -448,11 +455,13 @@ namespace HarmonyLibTests
 				var expectedConstraint = pair.Value.Resolve();
 				if (expectedConstraint is SkipTestConstraint)
 					continue;
-				// TODO: Remove following condition - should also apply to StaticFieldRefAccess.
-				if (testCaseName.StartsWith("StaticFieldRefAccess"))
-					continue;
-				if (expectedConstraint is ThrowsNothingConstraint || ThrowsConstraintExceptionType(expectedConstraint) == typeof(NullReferenceException))
-					newExpectedCaseToConstraint[testCaseName] = new ReusableConstraint(Throws.InstanceOf<ArgumentException>());
+				var expectedExceptionType = TestTools.ThrowsConstraintExceptionType(expectedConstraint);
+				if (expectedExceptionType is null || expectedExceptionType == typeof(NullReferenceException))
+				{
+					// TODO: StaticFieldRefAccess should throw ArgumentException just like FieldRefAccess.
+					newExpectedCaseToConstraint[testCaseName] = new ReusableConstraint(Throws.InstanceOf(
+						testCaseName.StartsWith("StaticFieldRefAccess") ? typeof(IncompatibleFieldTypeException) : typeof(ArgumentException)));
+				}
 			}
 			return newExpectedCaseToConstraint;
 		}
