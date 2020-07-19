@@ -416,15 +416,12 @@ namespace HarmonyLibTests
 			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));
 		}
 
-		// TODO: This shouldn't exist - AccessTools.Field/FindIncludingBaseTypes should be fixed to not NRE on interfaces,
-		// and FieldRefAccess's T=object special-casing should be generalized to handle any type assignable from field's declaring type.
+		// TODO: This shouldn't exist - FieldRefAccess's T=object special-casing should be generalized to handle any type assignable from field's declaring type.
 		// Only FieldMissingOnTypeT should be used when T is an interface type.
 		static Dictionary<string, ReusableConstraint> InterfaceT(Dictionary<string, ReusableConstraint> expectedCaseToConstraint)
 		{
 			return expectedCaseToConstraint.Merge(ReusableConstraints(new Dictionary<string, IResolveConstraint>
 			{
-				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = Throws.TypeOf<NullReferenceException>(),
-				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.TypeOf<NullReferenceException>(),
 				["FieldRefAccess<T, F>(field)(instance)"] = Throws.Exception,
 				["FieldRefAccess<T, F>(field)()"] = Throws.Exception,
 			}).Where(pair => expectedCaseToConstraint.ContainsKey(pair.Key)));

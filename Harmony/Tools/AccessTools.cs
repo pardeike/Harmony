@@ -73,44 +73,43 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Applies a function going up the type hierarchy and stops at the first non null result</summary>
+		/// <summary>Applies a function going up the type hierarchy and stops at the first non-<c>null</c> result</summary>
 		/// <typeparam name="T">Result type of func()</typeparam>
 		/// <param name="type">The class/type to start with</param>
 		/// <param name="func">The evaluation function returning T</param>
-		/// <returns>Returns the first non null result or <c>default(T)</c> when reaching the top level type object</returns>
+		/// <returns>The first non-<c>null</c> result, or <c>null</c> if no match</returns>
+		/// <remarks>
+		/// The type hierarchy of a class or value type (including struct) does NOT include implemented interfaces,
+		/// and the type hierarchy of an interface is only itself (regardless of whether that interface implements other interfaces).
+		/// The top-most type in the type hierarchy of all non-interface types (including value types) is <see cref="object"/>.
+		/// </remarks>
 		///
 		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
 			while (true)
 			{
 				var result = func(type);
-#pragma warning disable RECS0017
 				if (result != null) return result;
-#pragma warning restore RECS0017
-				if (type == typeof(object)) return default;
 				type = type.BaseType;
+				if (type is null) return null;
 			}
 		}
 
-		/// <summary>Applies a function going into inner types and stops at the first non null result</summary>
+		/// <summary>Applies a function going into inner types and stops at the first non-<c>null</c> result</summary>
 		/// <typeparam name="T">Generic type parameter</typeparam>
 		/// <param name="type">The class/type to start with</param>
 		/// <param name="func">The evaluation function returning T</param>
-		/// <returns>Returns the first non null result or null with no match</returns>
+		/// <returns>The first non-<c>null</c> result, or <c>null</c> if no match</returns>
 		///
 		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
 			var result = func(type);
-#pragma warning disable RECS0017
 			if (result != null) return result;
-#pragma warning restore RECS0017
 			foreach (var subType in type.GetNestedTypes(all))
 			{
 				result = FindIncludingInnerTypes(subType, func);
-#pragma warning disable RECS0017
 				if (result != null)
 					break;
-#pragma warning restore RECS0017
 			}
 			return result;
 		}
