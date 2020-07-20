@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -514,8 +513,8 @@ namespace HarmonyLibTests
 				["FieldRefAccess<T, F>(field)()"] = SkipTest("struct instance can cause crash"), // TODO: will be non-compilable due to class constraint
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.InstanceOf<ArgumentException>(),
-				["StaticFieldRefAccess<F>(field)()"] = Throws.Exception, // TODO: should be ArgumentException
-				["StaticFieldRefAccess<T, F>(field)"] = Throws.Exception, // TODO: should be ArgumentException
+				["StaticFieldRefAccess<F>(field)()"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
+				["StaticFieldRefAccess<T, F>(field)"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
 			});
 
 		// TODO: This shouldn't need to exist.
@@ -556,6 +555,8 @@ namespace HarmonyLibTests
 				["FieldRefAccess<T, F>(field)(instance)"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
 				["FieldRefAccess<T, F>(field)()"] = Throws.TypeOf<NullReferenceException>(), // TODO: should be ArgumentException
 				//["FieldRefAccess<T, F>(instance, field)"] = Throws.InstanceOf<ArgumentException>(), // TODO: implement this overload
+				["StaticFieldRefAccess<F>(field)()"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
+				["StaticFieldRefAccess<T, F>(field)"] = SkipTest("struct instance can cause crash"), // TODO: should be ArgumentException
 			}));
 
 		private static readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint_StructStatic_ClassT =
@@ -920,7 +921,8 @@ namespace HarmonyLibTests
 			// Superset of problematic test cases
 			var availableTestCases = Merge(
 				AvailableTestCases_FieldRefAccess_Struct_ByName<T, F>(fieldName),
-				AvailableTestCases_FieldRefAccess_Struct_ByFieldInfo<T, F>(field));
+				AvailableTestCases_FieldRefAccess_Struct_ByFieldInfo<T, F>(field),
+				AvailableTestCases_StaticFieldRefAccess_ByFieldInfo<T, F>(field));
 			TestCase_CanCrash(testValue, testCaseName, field, availableTestCases);
 		}
 
@@ -973,8 +975,10 @@ namespace HarmonyLibTests
 		[Test, Explicit("These tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
 		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "FieldRefAccess<T, F>(field)(instance)")]
 		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "FieldRefAccess<F>(typeof(T), fieldName)(instance)")]
+		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "StaticFieldRefAccess<F>(field)()")]
 		[TestCase(typeof(AccessToolsStruct), typeof(int), "structField2", 1234, "FieldRefAccess<T, F>(field)(instance)")]
 		[TestCase(typeof(AccessToolsStruct), typeof(int), "structField2", 1234, "FieldRefAccess<F>(typeof(T), fieldName)(instance)")]
+		[TestCase(typeof(AccessToolsStruct), typeof(int), "structField2", 1234, "StaticFieldRefAccess<F>(field)()")]
 		public void Test_StructInstance_CanCrash(Type typeT, Type typeF, string fieldName, object testValue, string testCaseName)
 		{
 			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
