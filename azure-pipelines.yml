@@ -10,8 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+  project: 'HarmonyTests'
   buildConfiguration: 'Release'
 
 steps:
@@ -32,19 +31,24 @@ steps:
     version: 3.1.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- task: NuGetToolInstaller@0
-
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
+  displayName: 'Restore and build'
   inputs:
-    restoreSolution: '$(solution)'
+    command: 'build' # this automatically runs 'dotnet restore' as well
+    projects: '$(project)'
+    arguments: '--configuration $(buildConfiguration)'
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
+  displayName: 'Test on non-net35 target frameworks'
+  continueOnError: true
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'test'
+    projects: '$(project)'
+    arguments: '--configuration $(buildConfiguration) --logger console;verbosity=detailed'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: 'Test on net35 target framework in CLR 4.0 "compatibility mode"'
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'test'
+    projects: '$(project)/bin/$(buildConfiguration)/net35/$(project).dll'
+    arguments: '--configuration $(buildConfiguration) --framework net35 --logger console;verbosity=detailed'
