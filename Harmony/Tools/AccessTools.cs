@@ -56,6 +56,14 @@ namespace HarmonyLib
 		/// 
 		public static Type[] GetTypesFromAssembly(Assembly assembly)
 		{
+			// TODO: Catch and eat ReflectionTypeLoadException potentially thrown by GetTypes() (indicating an invalid assembly), to avoid TypeByName()
+			// from throwing a ReflectionTypeLoadException during its assembly search for a type that's potentially unrelated to such an invalid assembly,
+			// which is very unexpected behavior to users.
+			// Open question: should it catch any exception, or just ReflectionTypeLoadException?
+			// Open question: should it return an empty array in this case, or should it return ReflectionTypeLoadException.Types,
+			// filtered for non-null Types, if possible?
+			// TODO: .NET Core supports Assembly.GetTypes(), DefinedTypes internally calls GetTypes(), and ToArray() is an unnecessary expense,
+			// so remove this unnecessary special casing for .NET Core?
 #if NETCOREAPP3_0 || NETCOREAPP3_1
 			return assembly.DefinedTypes.ToArray();
 #else
