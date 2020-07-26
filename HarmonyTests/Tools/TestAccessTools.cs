@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
-#if NETCOREAPP
-using System.Runtime.CompilerServices;
-using System.Runtime.Loader;
-#endif
 using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
 
 namespace HarmonyLibTests
@@ -16,6 +14,81 @@ namespace HarmonyLibTests
 	[TestFixture]
 	public class Test_AccessTools : TestLogger
 	{
+		[OneTimeSetUp]
+		public void CreateAndUnloadTestDummyAssemblies()
+		{
+			TestTools.RunInIsolationContext(CreateTestDummyAssemblies);
+		}
+
+		// Comment out following attribute if you want to keep the dummy assembly files after the test runs.
+		[OneTimeTearDown]
+		public void DeleteTestDummyAssemblies()
+		{
+			foreach (var dummyAssemblyFileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "HarmonyTestsDummyAssembly*"))
+			{
+				try
+				{
+					File.Delete(dummyAssemblyFileName);
+				}
+				catch (Exception ex)
+				{
+					Console.Error.WriteLine($"Could not delete {dummyAssemblyFileName} during {nameof(DeleteTestDummyAssemblies)} due to {ex}");
+				}
+			}
+		}
+
+		private static void CreateTestDummyAssemblies(ITestIsolationContext context)
+		{
+			var dummyAssemblyA = DefineAssembly("HarmonyTestsDummyAssemblyA",
+				moduleBuilder => moduleBuilder.DefineType("HarmonyTestsDummyAssemblyA.Class1", TypeAttributes.Public));
+			// Explicitly NOT saving HarmonyTestsDummyAssemblyA.
+			var dummyAssemblyB = DefineAssembly("HarmonyTestsDummyAssemblyB",
+				moduleBuilder => moduleBuilder.DefineType("HarmonyTestsDummyAssemblyB.Class1", TypeAttributes.Public,
+					parent: dummyAssemblyA.GetType("HarmonyTestsDummyAssemblyA.Class1")),
+				moduleBuilder => moduleBuilder.DefineType("HarmonyTestsDummyAssemblyB.Class2", TypeAttributes.Public));
+			// HarmonyTestsDummyAssemblyB, if loaded, becomes an invalid assembly due to missing HarmonyTestsDummyAssemblyA.
+			SaveAssembly(dummyAssemblyB);
+			// HarmonyTestsDummyAssemblyC is just another (valid) assembly to be loaded after HarmonyTestsDummyAssemblyB.
+			var dummyAssemblyC = DefineAssembly("HarmonyTestsDummyAssemblyC",
+				moduleBuilder => moduleBuilder.DefineType("HarmonyTestsDummyAssemblyC.Class1", TypeAttributes.Public));
+			SaveAssembly(dummyAssemblyC);
+		}
+
+		private static AssemblyBuilder DefineAssembly(string assemblyName, params Func<ModuleBuilder, TypeBuilder>[] defineTypeFuncs)
+		{
+#if NETCOREAPP
+			var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.RunAndCollect);
+			var moduleBuilder = assemblyBuilder.DefineDynamicModule("module");
+#else
+			var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Save,
+				AppDomain.CurrentDomain.BaseDirectory);
+			var moduleBuilder = assemblyBuilder.DefineDynamicModule("module", assemblyName + ".dll");
+#endif
+			foreach (var defineTypeFunc in defineTypeFuncs)
+				_ = defineTypeFunc(moduleBuilder)?.CreateType();
+			return assemblyBuilder;
+		}
+
+		private static void SaveAssembly(AssemblyBuilder assemblyBuilder)
+		{
+			var assemblyFileName = assemblyBuilder.GetName().Name + ".dll";
+#if NETCOREAPP
+			// For some reason, ILPack requires referenced dynamic assemblies to be passed in rather than looking them up itself.
+			var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+			var referencedDynamicAssemblies = assemblyBuilder.GetReferencedAssemblies()
+				.Select(referencedAssemblyName => currentAssemblies.FirstOrDefault(assembly => assembly.FullName == referencedAssemblyName.FullName))
+				.Where(referencedAssembly => referencedAssembly != null && referencedAssembly.IsDynamic)
+				.ToArray();
+			// ILPack currently has an issue where the dynamic assembly has an assembly reference to the runtime assembly (System.Private.CoreLib)
+			// rather than reference assembly (System.Runtime). This causes issues for decompilers, but is fine for loading via Assembly.Load et all,
+			// since the .NET Core runtime assemblies are definitely already accessible and loaded.
+			new Lokad.ILPack.AssemblyGenerator().GenerateAssembly(assemblyBuilder, referencedDynamicAssemblies,
+				Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyFileName));
+#else
+			assemblyBuilder.Save(assemblyFileName);
+#endif
+		}
+
 		[Test, NonParallelizable]
 		public void Test_AccessTools_TypeByName_CurrentAssemblies()
 		{
@@ -28,194 +101,56 @@ namespace HarmonyLibTests
 			Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
 
-#if NETCOREAPP
-		// .NET Core does not support multiple AppDomains, but it does support unloading assemblies via AssemblyLoadContext.
-		// Based off sample code in https://docs.microsoft.com/en-us/dotnet/standard/assembly/unloadability
-
 		[Test, NonParallelizable]
 		public void Test_AccessTools_TypeByName_InvalidAssembly()
 		{
-			var alcWeakRef = TestAssemblyLoadContext.TestTypeByNameWithInvalidAssembly();
-			// Ensure test assembly load context is unloaded before ending this test.
-			for (var i = 0; alcWeakRef.IsAlive && i < 10; i++)
-			{
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
-			}
-			// Sanity check that TypeByName works as if the test assembly load context never existed.
+			TestTools.RunInIsolationContext(TestTypeByNameWithInvalidAssembly);
+			// Sanity check that TypeByName works as if the test dummy assemblies never existed.
 			Test_AccessTools_TypeByName_CurrentAssemblies();
 		}
 
 		[Test, NonParallelizable]
 		public void Test_AccessTools_TypeByName_NoInvalidAssembly()
 		{
-			var alcWeakRef = TestAssemblyLoadContext.TestTypeByNameWithInvalidAssembly();
-			// Ensure test assembly load context is unloaded before ending this test.
-			for (var i = 0; alcWeakRef.IsAlive && i < 10; i++)
-			{
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
-			}
-			// Sanity check that TypeByName works as if the test assembly load context never existed.
+			TestTools.RunInIsolationContext(TestTypeByNameWithNoInvalidAssembly);
+			// Sanity check that TypeByName works as if the test dummy assemblies never existed.
 			Test_AccessTools_TypeByName_CurrentAssemblies();
 		}
 
-		private class TestAssemblyLoadContext : AssemblyLoadContext
+		private static void TestTypeByNameWithInvalidAssembly(ITestIsolationContext context)
 		{
-			private readonly AssemblyDependencyResolver resolver = new AssemblyDependencyResolver(Assembly.GetExecutingAssembly().Location);
-
-			public TestAssemblyLoadContext() : base(isCollectible: true) { }
-
-			protected override Assembly Load(AssemblyName name)
-			{
-				if (resolver.ResolveAssemblyToPath(name) is string assemblyPath)
-					return LoadFromAssemblyPath(assemblyPath);
-				// Defer loading of assembly's dependencies to parent (AssemblyLoadContext.Default) assembly load context.
-				return null;
-			}
-
-			// These must be separate non-inlined methods from the unit test method so that the TestAssemblyLoadContext it creates
-			// can be Unload()-ed and GC-ed (which is required for the unloading to finish).
-
-			[MethodImpl(MethodImplOptions.NoInlining)]
-			public static WeakReference TestTypeByNameWithInvalidAssembly()
-			{
-				var alc = new TestAssemblyLoadContext();
-				var alcWeakRef = new WeakReference(alc, trackResurrection: true);
-				// HarmonyTestsDummyAssemblyB has a dependency on HarmonyTestsDummyAssemblyA, but the csproj has ensure that
-				// HarmonyTestsDummyAssemblyA.dll is NOT available (i.e. not in HarmonyTests output dir).
-				alc.LoadFromAssemblyName(new AssemblyName("HarmonyTestsDummyAssemblyB"));
-				alc.LoadFromAssemblyName(new AssemblyName("HarmonyTestsDummyAssemblyC"));
-				// Even if 0Harmony.dll isn't loaded yet and thus would be automatically loaded after the invalid assemblies,
-				// TypeByName tries Type.GetType first, which always works for a type in the executing assembly (0Harmony.dll).
-				Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
-				// The current executing assembly (HarmonyTests.dll) was definitely already loaded before assembly load context loads.
-				Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
-				// HarmonyTestsDummyAssemblyA is explicitly missing, so it's the same as the unknown type case - see below.
-				Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
-				// HarmonyTestsDummyAssemblyB.GetTypes() should throw ReflectionTypeLoadException due to missing HarmonyTestsDummyAssemblyA.
-				Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
-				// Even for a type in HarmonyTestsDummyAssemblyB that doesn't depend on HarmonyTestsDummyAssemblyA.
-				Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
-				// TypeByName's search should find HarmonyTestsDummyAssemblyB before HarmonyTestsDummyAssemblyC.
-				Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
-				// TypeByName's search for an unknown type should always find HarmonyTestsDummyAssemblyB first, again resulting in an exception.
-				Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
-				alc.Unload();
-				return alcWeakRef;
-			}
-
-			[MethodImpl(MethodImplOptions.NoInlining)]
-			public static WeakReference TestTypeByNameWithNoInvalidAssembly()
-			{
-				var alc = new TestAssemblyLoadContext();
-				var alcWeakRef = new WeakReference(alc, trackResurrection: true);
-				alc.LoadFromAssemblyName(new AssemblyName("HarmonyTestsDummyAssemblyC"));
-				Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
-				Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
-				Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
-				Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
-				Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
-				Assert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
-				Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
-				alc.Unload();
-				return alcWeakRef;
-			}
-		}
-#else
-		// .NET Framework does support multiple AppDomains, so TypeByName tests can be done in a separate AppDomain that's unloaded afterwards.
-
-		[Test, NonParallelizable]
-		public void Test_AccessTools_TypeByName_InvalidAssembly()
-		{
-			var appBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-			var testDomain = AppDomain.CreateDomain("TestDomain", AppDomain.CurrentDomain.Evidence, new AppDomainSetup()
-			{
-				ApplicationBase = appBase,
-			});
-			var proxy = (TestDomainProxy)testDomain.CreateInstanceAndUnwrap(GetType().Assembly.FullName, typeof(TestDomainProxy).FullName);
-			proxy.AssemblyLoad("HarmonyTestsDummyAssemblyB");
-			proxy.AssemblyLoad("HarmonyTestsDummyAssemblyC");
-			var expectedReflectionTypeLoadExceptionLoadedTypeNames = new[] { "HarmonyTestsDummyAssemblyB.Class2" };
+			// HarmonyTestsDummyAssemblyB has a dependency on HarmonyTestsDummyAssemblyA, but we've ensured that
+			// HarmonyTestsDummyAssemblyA.dll is NOT available (i.e. not in HarmonyTests output dir).
+			context.AssemblyLoad("HarmonyTestsDummyAssemblyB");
+			context.AssemblyLoad("HarmonyTestsDummyAssemblyC");
 			// Even if 0Harmony.dll isn't loaded yet and thus would be automatically loaded after the invalid assemblies,
 			// TypeByName tries Type.GetType first, which always works for a type in the executing assembly (0Harmony.dll).
-			proxy.AssertNonNull_AccessToolsTypeByName(typeof(Harmony).FullName);
+			Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
 			// The current executing assembly (HarmonyTests.dll) was definitely already loaded before above loads.
-			proxy.AssertNonNull_AccessToolsTypeByName(typeof(Test_AccessTools).FullName);
+			Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
 			// HarmonyTestsDummyAssemblyA is explicitly missing, so it's the same as the unknown type case - see below.
-			proxy.AssertThrowsReflectionTypeLoadException_AccessToolsTypeByName("HarmonyTestsDummyAssemblyA.Class1",
-				expectedReflectionTypeLoadExceptionLoadedTypeNames);
+			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
 			// HarmonyTestsDummyAssemblyB.GetTypes() should throw ReflectionTypeLoadException due to missing HarmonyTestsDummyAssemblyA.
-			proxy.AssertThrowsReflectionTypeLoadException_AccessToolsTypeByName("HarmonyTestsDummyAssemblyB.Class1",
-				expectedReflectionTypeLoadExceptionLoadedTypeNames);
+			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
 			// Even for a type in HarmonyTestsDummyAssemblyB that doesn't depend on HarmonyTestsDummyAssemblyA.
-			proxy.AssertThrowsReflectionTypeLoadException_AccessToolsTypeByName("HarmonyTestsDummyAssemblyB.Class2",
-				expectedReflectionTypeLoadExceptionLoadedTypeNames);
+			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
 			// TypeByName's search should find HarmonyTestsDummyAssemblyB before HarmonyTestsDummyAssemblyC.
-			proxy.AssertThrowsReflectionTypeLoadException_AccessToolsTypeByName("HarmonyTestsDummyAssemblyC.Class1",
-				expectedReflectionTypeLoadExceptionLoadedTypeNames);
+			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
 			// TypeByName's search for an unknown type should always find HarmonyTestsDummyAssemblyB first, again resulting in an exception.
-			proxy.AssertThrowsReflectionTypeLoadException_AccessToolsTypeByName("IAmALittleTeaPot.ShortAndStout",
-				expectedReflectionTypeLoadExceptionLoadedTypeNames);
-			AppDomain.Unload(testDomain);
-			// Sanity check that TypeByName works as if the test domain never existed.
-			Test_AccessTools_TypeByName_CurrentAssemblies();
+			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
 
-		[Test, NonParallelizable]
-		public void Test_AccessTools_TypeByName_NoInvalidAssembly()
+		private static void TestTypeByNameWithNoInvalidAssembly(ITestIsolationContext context)
 		{
-			var appBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-			var testDomain = AppDomain.CreateDomain("TestDomain", AppDomain.CurrentDomain.Evidence, new AppDomainSetup()
-			{
-				ApplicationBase = appBase,
-			});
-			var proxy = (TestDomainProxy)testDomain.CreateInstanceAndUnwrap(GetType().Assembly.FullName, typeof(TestDomainProxy).FullName);
-			proxy.AssemblyLoad("HarmonyTestsDummyAssemblyC");
-			proxy.AssertNonNull_AccessToolsTypeByName(typeof(Harmony).FullName);
-			proxy.AssertNonNull_AccessToolsTypeByName(typeof(Test_AccessTools).FullName);
-			proxy.AssertNull_AccessToolsTypeByName("HarmonyTestsDummyAssemblyA.Class1");
-			proxy.AssertNull_AccessToolsTypeByName("HarmonyTestsDummyAssemblyB.Class1");
-			proxy.AssertNull_AccessToolsTypeByName("HarmonyTestsDummyAssemblyB.Class2");
-			proxy.AssertNonNull_AccessToolsTypeByName("HarmonyTestsDummyAssemblyC.Class1");
-			proxy.AssertNull_AccessToolsTypeByName("IAmALittleTeaPot.ShortAndStout");
-			AppDomain.Unload(testDomain);
-			// Sanity check that TypeByName works as if the test domain never existed.
-			Test_AccessTools_TypeByName_CurrentAssemblies();
+			context.AssemblyLoad("HarmonyTestsDummyAssemblyC");
+			Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));
+			Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
+			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
+			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
+			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
+			Assert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
+			Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
-
-		// For an instance created via appDomain.CreateInstanceAndUnwrap, all calls to that instance's methods are executed in that appDomain.
-		// Note: Not doing the whole test here, since certain functionality like Console access won't work in the test domain.
-		private class TestDomainProxy : MarshalByRefObject
-		{
-			public void AssemblyLoad(string assemblyName)
-			{
-				Assembly.Load(assemblyName);
-			}
-
-			// NOT returning the Type directly nor exposing any thrown ReflectionTypeLoadException (which can contain loaded Types),
-			// so that when Unload is called on the test domain, the main domain won't have references to any Type and
-			// thus any assembly loaded from this proxy. Instead, doing the asserts within the proxy.
-
-			public void AssertNonNull_AccessToolsTypeByName(string name)
-			{
-				Assert.DoesNotThrow(() => AccessTools.TypeByName(name));
-				Assert.NotNull(AccessTools.TypeByName(name));
-			}
-
-			public void AssertNull_AccessToolsTypeByName(string name)
-			{
-				Assert.DoesNotThrow(() => AccessTools.TypeByName(name));
-				Assert.Null(AccessTools.TypeByName(name));
-			}
-
-			public void AssertThrowsReflectionTypeLoadException_AccessToolsTypeByName(string name, string[] expectedLoadTypeNames)
-			{
-				var exception = (ReflectionTypeLoadException)Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName(name));
-				Assert.That(exception.Types.Where(type => type != null).Select(type => type.FullName), Is.EquivalentTo(expectedLoadTypeNames));
-			}
-		}
-#endif
 
 		[Test]
 		public void Test_AccessTools_Field1()

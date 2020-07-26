@@ -6,18 +6,8 @@
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<DefaultItemExcludes>$(DefaultItemExcludes);DummyAssembly*\**</DefaultItemExcludes>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Harmony\Harmony.csproj" />
-		<!-- Following ProjectReferences are for the AccessTools.TypeByName invalid assembly unit test.
-			ExcludeAssets="all" on this ProjectReference to HarmonyTestsDummyAssemblyB along with
-			Private="all" on HarmonyTestsDummyAssemblyB's ProjectReference to HarmonyTestsDummyAssemblyA
-			ensures that only HarmonyTestsDummyAssemblyB.dll and NOT HarmonyTestsDummyAssemblyA.dll is copied to output dir. -->
-		<ProjectReference Include="DummyAssemblyB\HarmonyTestsDummyAssemblyB.csproj" ExcludeAssets="all" />
-		<ProjectReference Include="DummyAssemblyC\HarmonyTestsDummyAssemblyC.csproj" ExcludeAssets="all" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -60,6 +50,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="MonoMod.Common" Version="20.5.31.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
+		<PackageReference Include="Lokad.ILPack" Version="0.1.4" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
