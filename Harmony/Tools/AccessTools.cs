@@ -1074,8 +1074,9 @@ namespace HarmonyLib
 				// But in case it doesn't...
 				throw new ArgumentException("Invalid delegate type");
 			}
-			// Mono seems to internally use the equivalent of ldvirtftn when calling delegate constructor on a method pointer,
-			// so instead, manually create a dynamic method to create the delegate using ldftn rather than ldvirtftn.
+			// Mono had a bug where it internally uses the equivalent of ldvirtftn when calling delegate constructor on a method pointer,
+			// so as a workaround, manually create a dynamic method to create the delegate using ldftn rather than ldvirtftn.
+			// See https://github.com/mono/mono/issues/19964
 			if (IsMonoRuntime)
 			{
 				var dmd = new DynamicMethodDefinition(
@@ -1156,10 +1157,21 @@ namespace HarmonyLib
 			throw exception;
 		}
 
-		/// <summary>Tells you if the current runtime is based on Mono</summary>
-		/// <returns>True if we are running under Mono, false otherwise (.NET)</returns>
+		/// <summary>True if the current runtime is based on Mono, false otherwise (.NET)</summary>
 		///
 		public static bool IsMonoRuntime { get; } = Type.GetType("Mono.Runtime") != null;
+
+		/// <summary>True if the current runtime is .NET Framework, false otherwise (.NET Core or Mono, although latter isn't guaranteed)</summary>
+		///
+		public static bool IsNetFrameworkRuntime { get; } =
+			TypeByName("System.Runtime.InteropServices.RuntimeInformation")?.GetProperty("FrameworkDescription")
+			.GetValue(null, null).ToString().StartsWith(".NET Framework") ?? IsMonoRuntime is false;
+
+		/// <summary>True if the current runtime is .NET Core, false otherwise (Mono or .NET Framework)</summary>
+		///
+		public static bool IsNetCoreRuntime { get; } =
+			TypeByName("System.Runtime.InteropServices.RuntimeInformation")?.GetProperty("FrameworkDescription")
+			.GetValue(null, null).ToString().StartsWith(".NET Core") ?? false;
 
 		/// <summary>Throws a missing member runtime exception</summary>
 		/// <param name="type">The type that is involved</param>
@@ -1393,6 +1405,66 @@ namespace HarmonyLib
 #pragma warning restore IDE0060
 		{
 			return Nullable.GetUnderlyingType(typeof(T)) != null;
+		}
+
+		/// <summary>Tests whether a type or member is static, as defined in C#</summary>
+		/// <param name="member">The type or member</param>
+		/// <returns>True if the type or member is static</returns>
+		///
+		public static bool IsStatic(MemberInfo member)
+		{
+			if (member is null)
+				throw new ArgumentNullException(nameof(member));
+			switch (member.MemberType)
+			{
+				case MemberTypes.Constructor:
+				case MemberTypes.Method:
+					return ((MethodBase)member).IsStatic;
+				case MemberTypes.Event:
+					return IsStatic((EventInfo)member);
+				case MemberTypes.Field:
+					return ((FieldInfo)member).IsStatic;
+				case MemberTypes.Property:
+					return IsStatic((PropertyInfo)member);
+				case MemberTypes.TypeInfo:
+				case MemberTypes.NestedType:
+					return IsStatic((Type)member);
+				default:
+					throw new ArgumentException($"Unknown member type: {member.MemberType}");
+			}
+		}
+
+		/// <summary>Tests whether a type is static, as defined in C#</summary>
+		/// <param name="type">The type</param>
+		/// <returns>True if the type is static</returns>
+		///
+		public static bool IsStatic(Type type)
+		{
+			if (type is null)
+				throw new ArgumentNullException(nameof(type));
+			return type.IsAbstract && type.IsSealed;
+		}
+
+		/// <summary>Tests whether a property is static, as defined in C#</summary>
+		/// <param name="propertyInfo">The property</param>
+		/// <returns>True if the property is static</returns>
+		///
+		public static bool IsStatic(PropertyInfo propertyInfo)
+		{
+			if (propertyInfo is null)
+				throw new ArgumentNullException(nameof(propertyInfo));
+			return propertyInfo.GetAccessors(true)[0].IsStatic;
+		}
+
+		/// <summary>Tests whether an event is static, as defined in C#</summary>
+		/// <param name="eventInfo">The event</param>
+		/// <returns>True if the event is static</returns>
+		///
+		public static bool IsStatic(EventInfo eventInfo)
+		{
+			if (eventInfo is null)
+				throw new ArgumentNullException(nameof(eventInfo));
+			return eventInfo.GetAddMethod(true).IsStatic;
 		}
 
 		/// <summary>Calculates a combined hash code for an enumeration of objects</summary>

@@ -1,9 +1,9 @@
-using HarmonyLib;
-using HarmonyLibTests.Assets;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using HarmonyLib;
+using HarmonyLibTests.Assets;
+using NUnit.Framework;
 using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
 
 namespace HarmonyLibTests
@@ -30,13 +30,27 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_AccessTools_Field2()
 		{
-			var type = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Field(type, "field1"));
-			Assert.NotNull(AccessTools.DeclaredField(type, "field1"));
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Field(classType, "field1"));
+			Assert.NotNull(AccessTools.DeclaredField(classType, "field1"));
+			Assert.Null(AccessTools.Field(classType, "unknown"));
+			Assert.Null(AccessTools.DeclaredField(classType, "unknown"));
 
-			var subtype = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Field(subtype, "field1"));
-			Assert.Null(AccessTools.DeclaredField(subtype, "field1"));
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Field(subclassType, "field1"));
+			Assert.Null(AccessTools.DeclaredField(subclassType, "field1"));
+			Assert.Null(AccessTools.Field(subclassType, "unknown"));
+			Assert.Null(AccessTools.DeclaredField(subclassType, "unknown"));
+
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Field(structType, "structField1"));
+			Assert.NotNull(AccessTools.DeclaredField(structType, "structField1"));
+			Assert.Null(AccessTools.Field(structType, "unknown"));
+			Assert.Null(AccessTools.DeclaredField(structType, "unknown"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Field(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.DeclaredField(interfaceType, "unknown"));
 		}
 
 		[Test]
@@ -46,25 +60,61 @@ namespace HarmonyLibTests
 
 			Assert.Null(AccessTools.Property(null, null));
 			Assert.Null(AccessTools.Property(type, null));
-			Assert.Null(AccessTools.Property(null, "Property"));
+			Assert.Null(AccessTools.Property(null, "Property1"));
 			Assert.Null(AccessTools.Property(type, "unknown"));
 
-			var prop = AccessTools.Property(type, "Property");
+			var prop = AccessTools.Property(type, "Property1");
 			Assert.NotNull(prop);
 			Assert.AreEqual(type, prop.DeclaringType);
-			Assert.AreEqual("Property", prop.Name);
+			Assert.AreEqual("Property1", prop.Name);
 		}
 
 		[Test]
 		public void Test_AccessTools_Property2()
 		{
-			var type = typeof(AccessToolsClass);
-			Assert.NotNull(AccessTools.Property(type, "Property"));
-			Assert.NotNull(AccessTools.DeclaredProperty(type, "Property"));
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Property(classType, "Property1"));
+			Assert.NotNull(AccessTools.DeclaredProperty(classType, "Property1"));
+			Assert.Null(AccessTools.Property(classType, "unknown"));
+			Assert.Null(AccessTools.DeclaredProperty(classType, "unknown"));
 
-			var subtype = typeof(AccessToolsSubClass);
-			Assert.NotNull(AccessTools.Property(subtype, "Property"));
-			Assert.Null(AccessTools.DeclaredProperty(subtype, "Property"));
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Property(subclassType, "Property1"));
+			Assert.Null(AccessTools.DeclaredProperty(subclassType, "Property1"));
+			Assert.Null(AccessTools.Property(subclassType, "unknown"));
+			Assert.Null(AccessTools.DeclaredProperty(subclassType, "unknown"));
+
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Property(structType, "Property1"));
+			Assert.NotNull(AccessTools.DeclaredProperty(structType, "Property1"));
+			Assert.Null(AccessTools.Property(structType, "unknown"));
+			Assert.Null(AccessTools.DeclaredProperty(structType, "unknown"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.NotNull(AccessTools.Property(interfaceType, "Property1"));
+			Assert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Property1"));
+			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Property(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.DeclaredProperty(interfaceType, "unknown"));
+		}
+
+		[Test]
+		public void Test_AccessTools_PropertyIndexer()
+		{
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Property(classType, "Item"));
+			Assert.NotNull(AccessTools.DeclaredProperty(classType, "Item"));
+
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Property(subclassType, "Item"));
+			Assert.Null(AccessTools.DeclaredProperty(subclassType, "Item"));
+
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Property(structType, "Item"));
+			Assert.NotNull(AccessTools.DeclaredProperty(structType, "Item"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.NotNull(AccessTools.Property(interfaceType, "Item"));
+			Assert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Item"));
 		}
 
 		[Test]
@@ -97,13 +147,29 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_AccessTools_Method2()
 		{
-			var type = typeof(AccessToolsSubClass);
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.Method(classType, "Method1"));
+			Assert.NotNull(AccessTools.DeclaredMethod(classType, "Method1"));
+			Assert.Null(AccessTools.Method(classType, "unknown"));
+			Assert.Null(AccessTools.DeclaredMethod(classType, "unknown"));
 
-			var m1 = AccessTools.Method(type, "Method1");
-			Assert.NotNull(m1);
+			var subclassType = typeof(AccessToolsSubClass);
+			Assert.NotNull(AccessTools.Method(subclassType, "Method1"));
+			Assert.Null(AccessTools.DeclaredMethod(subclassType, "Method1"));
+			Assert.Null(AccessTools.Method(subclassType, "unknown"));
+			Assert.Null(AccessTools.DeclaredMethod(subclassType, "unknown"));
 
-			var m2 = AccessTools.DeclaredMethod(type, "Method1");
-			Assert.Null(m2);
+			var structType = typeof(AccessToolsStruct);
+			Assert.NotNull(AccessTools.Method(structType, "Method1"));
+			Assert.NotNull(AccessTools.DeclaredMethod(structType, "Method1"));
+			Assert.Null(AccessTools.Method(structType, "unknown"));
+			Assert.Null(AccessTools.DeclaredMethod(structType, "unknown"));
+
+			var interfaceType = typeof(IAccessToolsType);
+			Assert.NotNull(AccessTools.Method(interfaceType, "Method1"));
+			Assert.NotNull(AccessTools.DeclaredMethod(interfaceType, "Method1"));
+			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Method(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.DeclaredMethod(interfaceType, "unknown"));
 		}
 
 		[Test]
@@ -171,130 +237,11 @@ namespace HarmonyLibTests
 			Assert.AreEqual(pinfo[1].ParameterType, types[1]);
 		}
 
-		[Test]
-		public void Test_AccessTools_FieldRefAccess_ByName()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsClass();
-			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>("field1");
-			ref var value = ref fieldRef(instance);
-
-			Assert.AreEqual(AccessToolsClass.field1Value, value);
-			var newValue = AccessToolsClass.field1Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		[Test]
-		public void Test_AccessTools_FieldRefAccess_ByFieldInfo()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsClass();
-			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>(fieldInfo);
-			ref var value = ref fieldRef(instance);
-
-			Assert.AreEqual(AccessToolsClass.field1Value, value);
-			var newValue = AccessToolsClass.field1Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		[Test]
-		public void Test_AccessTools_FieldRefAccess_ByFieldInfo_Readonly()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field2", BindingFlags.Instance | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsClass();
-			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>(fieldInfo);
-			ref var value = ref fieldRef(instance);
-
-			Assert.AreEqual(AccessToolsClass.field2Value, value);
-			var newValue = AccessToolsClass.field2Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		[Test]
-		public void Test_AccessTools_StaticFieldRefAccess_ByName()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsClass();
-			ref var value = ref AccessTools.StaticFieldRefAccess<AccessToolsClass, string>("field3");
-
-			Assert.AreEqual(AccessToolsClass.field3Value, value);
-			var newValue = AccessToolsClass.field3Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		[Test]
-		public void Test_AccessTools_StaticFieldRefAccess_ByFieldInfo()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field3", BindingFlags.Static | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsClass();
-			var fieldRef = AccessTools.StaticFieldRefAccess<string>(fieldInfo);
-			ref var value = ref fieldRef();
-
-			Assert.AreEqual(AccessToolsClass.field3Value, value);
-			var newValue = AccessToolsClass.field3Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		[Test]
-		public void Test_AccessTools_StaticFieldRefAccess_ByFieldInfo_Readonly()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field4", BindingFlags.Static | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsClass();
-			var fieldRef = AccessTools.FieldRefAccess<AccessToolsClass, string>(fieldInfo);
-			ref var value = ref fieldRef(instance);
-
-			Assert.AreEqual(AccessToolsClass.field4Value, value);
-			var newValue = AccessToolsClass.field4Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		[Test]
-		public void Test_AccessTools_FieldRefAccess_ByFieldInfo_SubClass()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsSubClass();
-			var fieldRef = AccessTools.FieldRefAccess<AccessToolsSubClass, string>(fieldInfo);
-			ref var value = ref fieldRef(instance);
-
-			Assert.AreEqual(AccessToolsClass.field1Value, value);
-			var newValue = AccessToolsClass.field1Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		[Test]
-		public void Test_AccessTools_FieldRefAccess_Anonymous()
-		{
-			var fieldInfo = typeof(AccessToolsClass).GetField("field1", BindingFlags.Instance | BindingFlags.NonPublic);
-			Assert.NotNull(fieldInfo);
-			var instance = new AccessToolsClass();
-			var fieldRef = AccessTools.FieldRefAccess<object, string>(fieldInfo);
-			ref var value = ref fieldRef(instance);
-
-			Assert.AreEqual(AccessToolsClass.field1Value, value);
-			var newValue = AccessToolsClass.field1Value + "1";
-			value = newValue;
-			Assert.AreEqual(newValue, fieldInfo.GetValue(instance));
-		}
-
-		private static readonly MethodInfo interfaceTest = typeof(IInterface).GetMethod("Test");
-		private static readonly MethodInfo baseTest = typeof(Base).GetMethod("Test");
-		private static readonly MethodInfo derivedTest = typeof(Derived).GetMethod("Test");
-		private static readonly MethodInfo structTest = typeof(Struct).GetMethod("Test");
-		private static readonly MethodInfo staticTest = typeof(AccessToolsMethodDelegate).GetMethod("Test");
+		static readonly MethodInfo interfaceTest = typeof(IInterface).GetMethod("Test");
+		static readonly MethodInfo baseTest = typeof(Base).GetMethod("Test");
+		static readonly MethodInfo derivedTest = typeof(Derived).GetMethod("Test");
+		static readonly MethodInfo structTest = typeof(Struct).GetMethod("Test");
+		static readonly MethodInfo staticTest = typeof(AccessToolsMethodDelegate).GetMethod("Test");
 
 		[Test]
 		public void Test_AccessTools_MethodDelegate_ClosedInstanceDelegates()
