@@ -50,25 +50,27 @@ namespace HarmonyLib
 			return type;
 		}
 
-		/// <summary>Gets all type by name from a given assembly. This is a wrapper that respects different .NET versions</summary>
+		/// <summary>Gets all successfully loaded types from a given assembly</summary>
 		/// <param name="assembly">The assembly</param>
 		/// <returns>An array of types</returns>
+		/// <remarks>
+		/// This calls and returns <see cref="Assembly.GetTypes"/>, while catching any thrown <see cref="ReflectionTypeLoadException"/>.
+		/// If such an exception is thrown, returns the successfully loaded types (<see cref="ReflectionTypeLoadException.Types"/>,
+		/// filtered for non-null values).
+		/// </remarks>
 		/// 
 		public static Type[] GetTypesFromAssembly(Assembly assembly)
 		{
-			// TODO: Catch and eat ReflectionTypeLoadException potentially thrown by GetTypes() (indicating an invalid assembly), to avoid TypeByName()
-			// from throwing a ReflectionTypeLoadException during its assembly search for a type that's potentially unrelated to such an invalid assembly,
-			// which is very unexpected behavior to users.
-			// Open question: should it catch any exception, or just ReflectionTypeLoadException?
-			// Open question: should it return an empty array in this case, or should it return ReflectionTypeLoadException.Types,
-			// filtered for non-null Types, if possible?
-			// TODO: .NET Core supports Assembly.GetTypes(), DefinedTypes internally calls GetTypes(), and ToArray() is an unnecessary expense,
-			// so remove this unnecessary special casing for .NET Core?
-#if NETCOREAPP3_0 || NETCOREAPP3_1
-			return assembly.DefinedTypes.ToArray();
-#else
-			return assembly.GetTypes();
-#endif
+			try
+			{
+				return assembly.GetTypes();
+			}
+			catch (ReflectionTypeLoadException ex)
+			{
+				if (Harmony.DEBUG)
+					FileLog.Log($"AccessTools.GetTypesFromAssembly: assembly {assembly} => {ex}");
+				return ex.Types.Where(type => !(type is null)).ToArray();
+			}
 		}
 
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non null result</summary>
