@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class AccessTools
    ">
-    <meta name="generator" content="docfx 2.56.1.0">
+    <meta name="generator" content="docfx 2.56.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -184,7 +184,7 @@
   </span>
   <a id="HarmonyLib_AccessTools_IsMonoRuntime_" data-uid="HarmonyLib.AccessTools.IsMonoRuntime*"></a>
   <h4 id="HarmonyLib_AccessTools_IsMonoRuntime" data-uid="HarmonyLib.AccessTools.IsMonoRuntime">IsMonoRuntime</h4>
-  <div class="markdown level1 summary"><p>Tells you if the current runtime is based on Mono</p>
+  <div class="markdown level1 summary"><p>True if the current runtime is based on Mono, false otherwise (.NET)</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -202,8 +202,69 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td><p>True if we are running under Mono, false otherwise (.NET)</p>
-</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsNetCoreRuntime.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsNetCoreRuntime%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1172">View Source</a>
+  </span>
+  <a id="HarmonyLib_AccessTools_IsNetCoreRuntime_" data-uid="HarmonyLib.AccessTools.IsNetCoreRuntime*"></a>
+  <h4 id="HarmonyLib_AccessTools_IsNetCoreRuntime" data-uid="HarmonyLib.AccessTools.IsNetCoreRuntime">IsNetCoreRuntime</h4>
+  <div class="markdown level1 summary"><p>True if the current runtime is .NET Core, false otherwise (Mono or .NET Framework)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNetCoreRuntime { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsNetFrameworkRuntime.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsNetFrameworkRuntime%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1166">View Source</a>
+  </span>
+  <a id="HarmonyLib_AccessTools_IsNetFrameworkRuntime_" data-uid="HarmonyLib.AccessTools.IsNetFrameworkRuntime*"></a>
+  <h4 id="HarmonyLib_AccessTools_IsNetFrameworkRuntime" data-uid="HarmonyLib.AccessTools.IsNetFrameworkRuntime">IsNetFrameworkRuntime</h4>
+  <div class="markdown level1 summary"><p>True if the current runtime is .NET Framework, false otherwise (.NET Core or Mono, although latter isn't guaranteed)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNetFrameworkRuntime { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -270,7 +331,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_CombinedHashCode_System_Collections_Generic_IEnumerable_System_Object__.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.CombinedHashCode(System.Collections.Generic.IEnumerable%7BSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1402">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1474">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_CombinedHashCode_" data-uid="HarmonyLib.AccessTools.CombinedHashCode*"></a>
   <h4 id="HarmonyLib_AccessTools_CombinedHashCode_System_Collections_Generic_IEnumerable_System_Object__" data-uid="HarmonyLib.AccessTools.CombinedHashCode(System.Collections.Generic.IEnumerable{System.Object})">CombinedHashCode(IEnumerable&lt;Object&gt;)</h4>
@@ -382,7 +443,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_CreateInstance_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.CreateInstance(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1197">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1209">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_CreateInstance_" data-uid="HarmonyLib.AccessTools.CreateInstance*"></a>
   <h4 id="HarmonyLib_AccessTools_CreateInstance_System_Type_" data-uid="HarmonyLib.AccessTools.CreateInstance(System.Type)">CreateInstance(Type)</h4>
@@ -1831,7 +1892,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_GetDefaultValue_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.GetDefaultValue(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1179">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1191">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_GetDefaultValue_" data-uid="HarmonyLib.AccessTools.GetDefaultValue*"></a>
   <h4 id="HarmonyLib_AccessTools_GetDefaultValue_System_Type_" data-uid="HarmonyLib.AccessTools.GetDefaultValue(System.Type)">GetDefaultValue(Type)</h4>
@@ -2081,7 +2142,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_GetOutsideCaller.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.GetOutsideCaller%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1127">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1128">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_GetOutsideCaller_" data-uid="HarmonyLib.AccessTools.GetOutsideCaller*"></a>
   <h4 id="HarmonyLib_AccessTools_GetOutsideCaller" data-uid="HarmonyLib.AccessTools.GetOutsideCaller">GetOutsideCaller()</h4>
@@ -2413,7 +2474,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_HarmonyDelegate__1_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.HarmonyDelegate%60%601(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1113">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1114">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_HarmonyDelegate_" data-uid="HarmonyLib.AccessTools.HarmonyDelegate*"></a>
   <h4 id="HarmonyLib_AccessTools_HarmonyDelegate__1_System_Object_" data-uid="HarmonyLib.AccessTools.HarmonyDelegate``1(System.Object)">HarmonyDelegate&lt;DelegateType&gt;(Object)</h4>
@@ -2544,7 +2605,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsClass_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsClass(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1315">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1327">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsClass_" data-uid="HarmonyLib.AccessTools.IsClass*"></a>
   <h4 id="HarmonyLib_AccessTools_IsClass_System_Type_" data-uid="HarmonyLib.AccessTools.IsClass(System.Type)">IsClass(Type)</h4>
@@ -2660,7 +2721,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsFloatingPoint_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsFloatingPoint(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1355">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1367">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsFloatingPoint_" data-uid="HarmonyLib.AccessTools.IsFloatingPoint*"></a>
   <h4 id="HarmonyLib_AccessTools_IsFloatingPoint_System_Type_" data-uid="HarmonyLib.AccessTools.IsFloatingPoint(System.Type)">IsFloatingPoint(Type)</h4>
@@ -2710,7 +2771,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsInteger_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsInteger(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1333">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1345">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsInteger_" data-uid="HarmonyLib.AccessTools.IsInteger*"></a>
   <h4 id="HarmonyLib_AccessTools_IsInteger_System_Type_" data-uid="HarmonyLib.AccessTools.IsInteger(System.Type)">IsInteger(Type)</h4>
@@ -2760,7 +2821,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsNumber_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsNumber(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1372">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1384">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsNumber_" data-uid="HarmonyLib.AccessTools.IsNumber*"></a>
   <h4 id="HarmonyLib_AccessTools_IsNumber_System_Type_" data-uid="HarmonyLib.AccessTools.IsNumber(System.Type)">IsNumber(Type)</h4>
@@ -2810,7 +2871,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsOfNullableType__1___0_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsOfNullableType%60%601(%60%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1392">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1404">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsOfNullableType_" data-uid="HarmonyLib.AccessTools.IsOfNullableType*"></a>
   <h4 id="HarmonyLib_AccessTools_IsOfNullableType__1___0_" data-uid="HarmonyLib.AccessTools.IsOfNullableType``1(``0)">IsOfNullableType&lt;T&gt;(T)</h4>
@@ -2873,10 +2934,210 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsStatic_System_Reflection_EventInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1463">View Source</a>
+  </span>
+  <a id="HarmonyLib_AccessTools_IsStatic_" data-uid="HarmonyLib.AccessTools.IsStatic*"></a>
+  <h4 id="HarmonyLib_AccessTools_IsStatic_System_Reflection_EventInfo_" data-uid="HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)">IsStatic(EventInfo)</h4>
+  <div class="markdown level1 summary"><p>Tests whether an event is static, as defined in C#</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStatic(EventInfo eventInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.EventInfo</span></td>
+        <td><span class="parametername">eventInfo</span></td>
+        <td><p>The event</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the event is static</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsStatic_System_Reflection_MemberInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1414">View Source</a>
+  </span>
+  <a id="HarmonyLib_AccessTools_IsStatic_" data-uid="HarmonyLib.AccessTools.IsStatic*"></a>
+  <h4 id="HarmonyLib_AccessTools_IsStatic_System_Reflection_MemberInfo_" data-uid="HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)">IsStatic(MemberInfo)</h4>
+  <div class="markdown level1 summary"><p>Tests whether a type or member is static, as defined in C#</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStatic(MemberInfo member)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MemberInfo</span></td>
+        <td><span class="parametername">member</span></td>
+        <td><p>The type or member</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type or member is static</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsStatic_System_Reflection_PropertyInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1452">View Source</a>
+  </span>
+  <a id="HarmonyLib_AccessTools_IsStatic_" data-uid="HarmonyLib.AccessTools.IsStatic*"></a>
+  <h4 id="HarmonyLib_AccessTools_IsStatic_System_Reflection_PropertyInfo_" data-uid="HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)">IsStatic(PropertyInfo)</h4>
+  <div class="markdown level1 summary"><p>Tests whether a property is static, as defined in C#</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStatic(PropertyInfo propertyInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.PropertyInfo</span></td>
+        <td><span class="parametername">propertyInfo</span></td>
+        <td><p>The property</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the property is static</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsStatic_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsStatic(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1441">View Source</a>
+  </span>
+  <a id="HarmonyLib_AccessTools_IsStatic_" data-uid="HarmonyLib.AccessTools.IsStatic*"></a>
+  <h4 id="HarmonyLib_AccessTools_IsStatic_System_Type_" data-uid="HarmonyLib.AccessTools.IsStatic(System.Type)">IsStatic(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests whether a type is static, as defined in C#</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStatic(Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type is static</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsStruct_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsStruct(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1306">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1318">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsStruct_" data-uid="HarmonyLib.AccessTools.IsStruct*"></a>
   <h4 id="HarmonyLib_AccessTools_IsStruct_System_Type_" data-uid="HarmonyLib.AccessTools.IsStruct(System.Type)">IsStruct(Type)</h4>
@@ -2926,7 +3187,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsValue_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsValue(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1324">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1336">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsValue_" data-uid="HarmonyLib.AccessTools.IsValue*"></a>
   <h4 id="HarmonyLib_AccessTools_IsValue_System_Type_" data-uid="HarmonyLib.AccessTools.IsValue(System.Type)">IsValue(Type)</h4>
@@ -2976,7 +3237,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_IsVoid_System_Type_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.IsVoid(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1381">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1393">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_IsVoid_" data-uid="HarmonyLib.AccessTools.IsVoid*"></a>
   <h4 id="HarmonyLib_AccessTools_IsVoid_System_Type_" data-uid="HarmonyLib.AccessTools.IsVoid(System.Type)">IsVoid(Type)</h4>
@@ -3026,7 +3287,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_MakeDeepCopy_System_Object_System_Type_System_Func_System_String_HarmonyLib_Traverse_HarmonyLib_Traverse_System_Object__System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.MakeDeepCopy(System.Object%2CSystem.Type%2CSystem.Func%7BSystem.String%2CHarmonyLib.Traverse%2CHarmonyLib.Traverse%2CSystem.Object%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1236">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1248">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_MakeDeepCopy_" data-uid="HarmonyLib.AccessTools.MakeDeepCopy*"></a>
   <h4 id="HarmonyLib_AccessTools_MakeDeepCopy_System_Object_System_Type_System_Func_System_String_HarmonyLib_Traverse_HarmonyLib_Traverse_System_Object__System_String_" data-uid="HarmonyLib.AccessTools.MakeDeepCopy(System.Object,System.Type,System.Func{System.String,HarmonyLib.Traverse,HarmonyLib.Traverse,System.Object},System.String)">MakeDeepCopy(Object, Type, Func&lt;String, Traverse, Traverse, Object&gt;, String)</h4>
@@ -3094,7 +3355,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_MakeDeepCopy__1_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.MakeDeepCopy%60%601(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1212">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1224">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_MakeDeepCopy_" data-uid="HarmonyLib.AccessTools.MakeDeepCopy*"></a>
   <h4 id="HarmonyLib_AccessTools_MakeDeepCopy__1_System_Object_" data-uid="HarmonyLib.AccessTools.MakeDeepCopy``1(System.Object)">MakeDeepCopy&lt;T&gt;(Object)</h4>
@@ -3161,7 +3422,7 @@ and the given <code data-dev-comment-type="paramref" class="paramref">instance</
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_MakeDeepCopy__1_System_Object___0__System_Func_System_String_HarmonyLib_Traverse_HarmonyLib_Traverse_System_Object__System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.MakeDeepCopy%60%601(System.Object%2C%60%600%40%2CSystem.Func%7BSystem.String%2CHarmonyLib.Traverse%2CHarmonyLib.Traverse%2CSystem.Object%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1224">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1236">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_MakeDeepCopy_" data-uid="HarmonyLib.AccessTools.MakeDeepCopy*"></a>
   <h4 id="HarmonyLib_AccessTools_MakeDeepCopy__1_System_Object___0__System_Func_System_String_HarmonyLib_Traverse_HarmonyLib_Traverse_System_Object__System_String_" data-uid="HarmonyLib.AccessTools.MakeDeepCopy``1(System.Object,``0@,System.Func{System.String,HarmonyLib.Traverse,HarmonyLib.Traverse,System.Object},System.String)">MakeDeepCopy&lt;T&gt;(Object, out T, Func&lt;String, Traverse, Traverse, Object&gt;, String)</h4>
@@ -3621,7 +3882,7 @@ and both class and struct methods.
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_RethrowException_System_Exception_.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.RethrowException(System.Exception)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1148">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1149">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_RethrowException_" data-uid="HarmonyLib.AccessTools.RethrowException*"></a>
   <h4 id="HarmonyLib_AccessTools_RethrowException_System_Exception_" data-uid="HarmonyLib.AccessTools.RethrowException(System.Exception)">RethrowException(Exception)</h4>
@@ -3935,7 +4196,7 @@ and both class and struct methods.
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_ThrowMissingMemberException_System_Type_System_String___.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.ThrowMissingMemberException(System.Type%2CSystem.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1168">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1180">View Source</a>
   </span>
   <a id="HarmonyLib_AccessTools_ThrowMissingMemberException_" data-uid="HarmonyLib.AccessTools.ThrowMissingMemberException*"></a>
   <h4 id="HarmonyLib_AccessTools_ThrowMissingMemberException_System_Type_System_String___" data-uid="HarmonyLib.AccessTools.ThrowMissingMemberException(System.Type,System.String[])">ThrowMissingMemberException(Type, String[])</h4>

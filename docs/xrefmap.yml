@@ -652,6 +652,32 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.IsMonoRuntime
   nameWithType: AccessTools.IsMonoRuntime
+- uid: HarmonyLib.AccessTools.IsNetCoreRuntime
+  name: IsNetCoreRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNetCoreRuntime
+  commentId: P:HarmonyLib.AccessTools.IsNetCoreRuntime
+  fullName: HarmonyLib.AccessTools.IsNetCoreRuntime
+  nameWithType: AccessTools.IsNetCoreRuntime
+- uid: HarmonyLib.AccessTools.IsNetCoreRuntime*
+  name: IsNetCoreRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNetCoreRuntime_
+  commentId: Overload:HarmonyLib.AccessTools.IsNetCoreRuntime
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsNetCoreRuntime
+  nameWithType: AccessTools.IsNetCoreRuntime
+- uid: HarmonyLib.AccessTools.IsNetFrameworkRuntime
+  name: IsNetFrameworkRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNetFrameworkRuntime
+  commentId: P:HarmonyLib.AccessTools.IsNetFrameworkRuntime
+  fullName: HarmonyLib.AccessTools.IsNetFrameworkRuntime
+  nameWithType: AccessTools.IsNetFrameworkRuntime
+- uid: HarmonyLib.AccessTools.IsNetFrameworkRuntime*
+  name: IsNetFrameworkRuntime
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNetFrameworkRuntime_
+  commentId: Overload:HarmonyLib.AccessTools.IsNetFrameworkRuntime
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsNetFrameworkRuntime
+  nameWithType: AccessTools.IsNetFrameworkRuntime
 - uid: HarmonyLib.AccessTools.IsNumber(System.Type)
   name: IsNumber(Type)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsNumber_System_Type_
@@ -681,6 +707,37 @@ references:
   fullName.vb: HarmonyLib.AccessTools.IsOfNullableType(Of T)(T)
   nameWithType: AccessTools.IsOfNullableType<T>(T)
   nameWithType.vb: AccessTools.IsOfNullableType(Of T)(T)
+- uid: HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)
+  name: IsStatic(EventInfo)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Reflection_EventInfo_
+  commentId: M:HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)
+  fullName: HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)
+  nameWithType: AccessTools.IsStatic(EventInfo)
+- uid: HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)
+  name: IsStatic(MemberInfo)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Reflection_MemberInfo_
+  commentId: M:HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)
+  fullName: HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)
+  nameWithType: AccessTools.IsStatic(MemberInfo)
+- uid: HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)
+  name: IsStatic(PropertyInfo)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Reflection_PropertyInfo_
+  commentId: M:HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)
+  fullName: HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)
+  nameWithType: AccessTools.IsStatic(PropertyInfo)
+- uid: HarmonyLib.AccessTools.IsStatic(System.Type)
+  name: IsStatic(Type)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Type_
+  commentId: M:HarmonyLib.AccessTools.IsStatic(System.Type)
+  fullName: HarmonyLib.AccessTools.IsStatic(System.Type)
+  nameWithType: AccessTools.IsStatic(Type)
+- uid: HarmonyLib.AccessTools.IsStatic*
+  name: IsStatic
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_
+  commentId: Overload:HarmonyLib.AccessTools.IsStatic
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IsStatic
+  nameWithType: AccessTools.IsStatic
 - uid: HarmonyLib.AccessTools.IsStruct(System.Type)
   name: IsStruct(Type)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStruct_System_Type_
