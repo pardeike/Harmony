@@ -52,6 +52,10 @@
 		<PackageReference Include="MonoMod.Common" Version="20.5.31.1" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
+		<PackageReference Include="Lokad.ILPack" Version="0.1.4" PrivateAssets="All" />
+	</ItemGroup>
+
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
 		<ItemGroup>
 			<ReferencePath Condition="'%(FileName)'=='MonoMod.Common'">
