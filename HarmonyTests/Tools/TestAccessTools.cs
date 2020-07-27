@@ -129,15 +129,17 @@ namespace HarmonyLibTests
 			// The current executing assembly (HarmonyTests.dll) was definitely already loaded before above loads.
 			Assert.NotNull(AccessTools.TypeByName(typeof(Test_AccessTools).FullName));
 			// HarmonyTestsDummyAssemblyA is explicitly missing, so it's the same as the unknown type case - see below.
-			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
-			// HarmonyTestsDummyAssemblyB.GetTypes() should throw ReflectionTypeLoadException due to missing HarmonyTestsDummyAssemblyA.
-			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
-			// Even for a type in HarmonyTestsDummyAssemblyB that doesn't depend on HarmonyTestsDummyAssemblyA.
-			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
-			// TypeByName's search should find HarmonyTestsDummyAssemblyB before HarmonyTestsDummyAssemblyC.
-			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
-			// TypeByName's search for an unknown type should always find HarmonyTestsDummyAssemblyB first, again resulting in an exception.
-			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
+			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyA.Class1"));
+			// HarmonyTestsDummyAssemblyB.GetTypes() should throw ReflectionTypeLoadException due to missing HarmonyTestsDummyAssemblyA,
+			// but this is caught and returns successfully loaded types.
+			// HarmonyTestsDummyAssemblyB.Class1 depends on HarmonyTestsDummyAssemblyA, so it's not loaded successfully.
+			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class1"));
+			// HarmonyTestsDummyAssemblyB.Class2 doesn't depend on HarmonyTestsDummyAssemblyA, so it's loaded successfully.
+			Assert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
+			// TypeByName's search should find HarmonyTestsDummyAssemblyB before HarmonyTestsDummyAssemblyC, but this is fine.
+			Assert.NotNull(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
+			// TypeByName's search for an unknown type should always find HarmonyTestsDummyAssemblyB first, which is again fine.
+			Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
 
 		static void TestTypeByNameWithNoInvalidAssembly(ITestIsolationContext context)

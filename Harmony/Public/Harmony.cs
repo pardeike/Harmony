@@ -103,17 +103,7 @@ namespace HarmonyLib
 		/// 
 		public void PatchAll(Assembly assembly)
 		{
-			Type[] types;
-			try
-			{
-				types = assembly.GetTypes();
-			}
-			catch (ReflectionTypeLoadException ex)
-			{
-				types = ex.Types.Where(tp => tp != null).ToArray();
-			}
-
-			types.Do(type => CreateClassProcessor(type).Patch());
+			AccessTools.GetTypesFromAssembly(assembly).Do(type => CreateClassProcessor(type).Patch());
 		}
 
 		/// <summary>Creates patches by manually specifying the methods</summary>
