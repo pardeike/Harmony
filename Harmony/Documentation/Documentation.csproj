@@ -36,7 +36,7 @@
 	<ItemGroup>
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.0" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
+		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
