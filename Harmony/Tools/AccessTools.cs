@@ -1165,7 +1165,7 @@ namespace HarmonyLib
 		///
 		public static bool IsNetFrameworkRuntime { get; } =
 			TypeByName("System.Runtime.InteropServices.RuntimeInformation")?.GetProperty("FrameworkDescription")
-			.GetValue(null, null).ToString().StartsWith(".NET Framework") ?? true;
+			.GetValue(null, null).ToString().StartsWith(".NET Framework") ?? IsMonoRuntime is false;
 
 		/// <summary>True if the current runtime is .NET Core, false otherwise (Mono or .NET Framework)</summary>
 		///
@@ -1408,11 +1408,13 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests whether a type or member is static, as defined in C#</summary>
-		/// <param name="member">type or member</param>
+		/// <param name="member">The type or member</param>
 		/// <returns>True if the type or member is static</returns>
 		///
 		public static bool IsStatic(MemberInfo member)
 		{
+			if (member is null)
+				throw new ArgumentNullException(nameof(member));
 			switch (member.MemberType)
 			{
 				case MemberTypes.Constructor:
@@ -1433,30 +1435,36 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Tests whether a type is static, as defined in C#</summary>
-		/// <param name="type">type</param>
+		/// <param name="type">The type</param>
 		/// <returns>True if the type is static</returns>
 		///
 		public static bool IsStatic(Type type)
 		{
+			if (type is null)
+				throw new ArgumentNullException(nameof(type));
 			return type.IsAbstract && type.IsSealed;
 		}
 
 		/// <summary>Tests whether a property is static, as defined in C#</summary>
-		/// <param name="property">property</param>
+		/// <param name="propertyInfo">The property</param>
 		/// <returns>True if the property is static</returns>
 		///
-		public static bool IsStatic(PropertyInfo property)
+		public static bool IsStatic(PropertyInfo propertyInfo)
 		{
-			return property.GetAccessors(true)[0].IsStatic;
+			if (propertyInfo is null)
+				throw new ArgumentNullException(nameof(propertyInfo));
+			return propertyInfo.GetAccessors(true)[0].IsStatic;
 		}
 
 		/// <summary>Tests whether an event is static, as defined in C#</summary>
-		/// <param name="event">event</param>
+		/// <param name="eventInfo">The event</param>
 		/// <returns>True if the event is static</returns>
 		///
-		public static bool IsStatic(EventInfo @event)
+		public static bool IsStatic(EventInfo eventInfo)
 		{
-			return @event.GetAddMethod(true).IsStatic;
+			if (eventInfo is null)
+				throw new ArgumentNullException(nameof(eventInfo));
+			return eventInfo.GetAddMethod(true).IsStatic;
 		}
 
 		/// <summary>Calculates a combined hash code for an enumeration of objects</summary>

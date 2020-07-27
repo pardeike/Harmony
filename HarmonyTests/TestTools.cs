@@ -12,7 +12,7 @@ namespace HarmonyLibTests
 	{
 		// Change this from TestContext.Out to TestContext.Error for immediate output to stderr to help diagnose crashes.
 		// Note: Must be a property rather than a field, since the specific TestContext streams can change between tests.
-		private static TextWriter LogWriter => TestContext.Out;
+		static TextWriter LogWriter => TestContext.Out;
 
 		public static void Log(object obj, int indentLevel = 1, bool writeLine = true)
 		{
@@ -95,10 +95,10 @@ namespace HarmonyLibTests
 			return capture.capturedResult;
 		}
 
-		private class CaptureResultConstraint : IConstraint
+		class CaptureResultConstraint : IConstraint
 		{
-			private readonly IResolveConstraint parent;
-			private IConstraint resolvedParent;
+			readonly IResolveConstraint parent;
+			IConstraint resolvedParent;
 			public ConstraintResult capturedResult;
 
 			public string DisplayName => throw new NotImplementedException();
@@ -116,7 +116,7 @@ namespace HarmonyLibTests
 				this.parent = parent;
 			}
 
-			private ConstraintResult CaptureResult(ConstraintResult result)
+			ConstraintResult CaptureResult(ConstraintResult result)
 			{
 				capturedResult = result;
 				// If failure result is due to an AssertionException, report that assertion failure directly,

@@ -162,12 +162,12 @@ namespace HarmonyLib
 			return (SetterHandler<T, S>)dynamicSet.Generate().CreateDelegate(typeof(SetterHandler<T, S>));
 		}
 
-		private static DynamicMethodDefinition CreateGetDynamicMethod<T, S>(Type type)
+		static DynamicMethodDefinition CreateGetDynamicMethod<T, S>(Type type)
 		{
 			return new DynamicMethodDefinition($"DynamicGet_{type.Name}", typeof(S), new Type[] { typeof(T) });
 		}
 
-		private static DynamicMethodDefinition CreateSetDynamicMethod<T, S>(Type type)
+		static DynamicMethodDefinition CreateSetDynamicMethod<T, S>(Type type)
 		{
 			return new DynamicMethodDefinition($"DynamicSet_{type.Name}", typeof(void), new Type[] { typeof(T), typeof(S) });
 		}

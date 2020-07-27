@@ -237,11 +237,11 @@ namespace HarmonyLibTests
 			Assert.AreEqual(pinfo[1].ParameterType, types[1]);
 		}
 
-		private static readonly MethodInfo interfaceTest = typeof(IInterface).GetMethod("Test");
-		private static readonly MethodInfo baseTest = typeof(Base).GetMethod("Test");
-		private static readonly MethodInfo derivedTest = typeof(Derived).GetMethod("Test");
-		private static readonly MethodInfo structTest = typeof(Struct).GetMethod("Test");
-		private static readonly MethodInfo staticTest = typeof(AccessToolsMethodDelegate).GetMethod("Test");
+		static readonly MethodInfo interfaceTest = typeof(IInterface).GetMethod("Test");
+		static readonly MethodInfo baseTest = typeof(Base).GetMethod("Test");
+		static readonly MethodInfo derivedTest = typeof(Derived).GetMethod("Test");
+		static readonly MethodInfo structTest = typeof(Struct).GetMethod("Test");
+		static readonly MethodInfo staticTest = typeof(AccessToolsMethodDelegate).GetMethod("Test");
 
 		[Test]
 		public void Test_AccessTools_MethodDelegate_ClosedInstanceDelegates()
