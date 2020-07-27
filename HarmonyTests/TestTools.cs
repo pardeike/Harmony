@@ -193,7 +193,7 @@ namespace HarmonyLibTests
 #if NETCOREAPP
 		// .NET Core does not support multiple AppDomains, but it does support unloading assemblies via AssemblyLoadContext.
 		// Based off sample code in https://docs.microsoft.com/en-us/dotnet/standard/assembly/unloadability
-		private class TestAssemblyLoadContext : AssemblyLoadContext, ITestIsolationContext
+		class TestAssemblyLoadContext : AssemblyLoadContext, ITestIsolationContext
 		{
 			// Run an action in "isolation" (collectible AssemblyLoadContext that's unloaded afterwards).
 			public static void RunInIsolationContext(Action<ITestIsolationContext> action)
@@ -210,7 +210,7 @@ namespace HarmonyLibTests
 			// These must be a separate non-inlined method so that the TestAssemblyLoadContext it creates can be Unload()-ed and GC-ed
 			// (which is required for the unloading to finish).
 			[MethodImpl(MethodImplOptions.NoInlining)]
-			private static WeakReference RunInAssemblyLoadContext(Action<ITestIsolationContext> action)
+			static WeakReference RunInAssemblyLoadContext(Action<ITestIsolationContext> action)
 			{
 				var alc = new TestAssemblyLoadContext();
 				var alcWeakRef = new WeakReference(alc, trackResurrection: true);
@@ -242,9 +242,9 @@ namespace HarmonyLibTests
 		// For .NET Framework and its multiple AppDomain support, need a MarshalByRefObject, so that for an instance created
 		// via appDomain.CreateInstanceAndUnwrap, all calls to that instance's methods are executed in that appDomain.
 
-		private class TestDomainProxy : MarshalByRefObject, ITestIsolationContext
+		class TestDomainProxy : MarshalByRefObject, ITestIsolationContext
 		{
-			private readonly AppDomain parentDomain;
+			readonly AppDomain parentDomain;
 
 			// Run an action in "isolation" (seperate AppDomain that's unloaded afterwards).
 			// This a static method and thus is run in the AppDomain of the caller (the main AppDomain).
@@ -277,7 +277,7 @@ namespace HarmonyLibTests
 			// 2) always catch exceptions that may contain loaded Types (or instances of those Types) directly.
 			// As long as there is no such leakage, AppDomain.Unload will fully unload the domain and all its assemblies.
 
-			private void Run(Action<ITestIsolationContext> action)
+			void Run(Action<ITestIsolationContext> action)
 			{
 				action(this);
 			}
@@ -290,10 +290,10 @@ namespace HarmonyLibTests
 
 			// Delegates used for DoCallback must be serializable.
 			[Serializable]
-			private class ActionTCallback<T>
+			class ActionTCallback<T>
 			{
-				private readonly Action<T> action;
-				private readonly T arg;
+				readonly Action<T> action;
+				readonly T arg;
 
 				public ActionTCallback(Action<T> action, T arg)
 				{

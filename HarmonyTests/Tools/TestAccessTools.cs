@@ -37,7 +37,7 @@ namespace HarmonyLibTests
 			}
 		}
 
-		private static void CreateTestDummyAssemblies(ITestIsolationContext context)
+		static void CreateTestDummyAssemblies(ITestIsolationContext context)
 		{
 			var dummyAssemblyA = DefineAssembly("HarmonyTestsDummyAssemblyA",
 				moduleBuilder => moduleBuilder.DefineType("HarmonyTestsDummyAssemblyA.Class1", TypeAttributes.Public));
@@ -54,7 +54,7 @@ namespace HarmonyLibTests
 			SaveAssembly(dummyAssemblyC);
 		}
 
-		private static AssemblyBuilder DefineAssembly(string assemblyName, params Func<ModuleBuilder, TypeBuilder>[] defineTypeFuncs)
+		static AssemblyBuilder DefineAssembly(string assemblyName, params Func<ModuleBuilder, TypeBuilder>[] defineTypeFuncs)
 		{
 #if NETCOREAPP
 			var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.RunAndCollect);
@@ -69,7 +69,7 @@ namespace HarmonyLibTests
 			return assemblyBuilder;
 		}
 
-		private static void SaveAssembly(AssemblyBuilder assemblyBuilder)
+		static void SaveAssembly(AssemblyBuilder assemblyBuilder)
 		{
 			var assemblyFileName = assemblyBuilder.GetName().Name + ".dll";
 #if NETCOREAPP
@@ -117,7 +117,7 @@ namespace HarmonyLibTests
 			Test_AccessTools_TypeByName_CurrentAssemblies();
 		}
 
-		private static void TestTypeByNameWithInvalidAssembly(ITestIsolationContext context)
+		static void TestTypeByNameWithInvalidAssembly(ITestIsolationContext context)
 		{
 			// HarmonyTestsDummyAssemblyB has a dependency on HarmonyTestsDummyAssemblyA, but we've ensured that
 			// HarmonyTestsDummyAssemblyA.dll is NOT available (i.e. not in HarmonyTests output dir).
@@ -140,7 +140,7 @@ namespace HarmonyLibTests
 			Assert.Throws(typeof(ReflectionTypeLoadException), () => AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
 		}
 
-		private static void TestTypeByNameWithNoInvalidAssembly(ITestIsolationContext context)
+		static void TestTypeByNameWithNoInvalidAssembly(ITestIsolationContext context)
 		{
 			context.AssemblyLoad("HarmonyTestsDummyAssemblyC");
 			Assert.NotNull(AccessTools.TypeByName(typeof(Harmony).FullName));

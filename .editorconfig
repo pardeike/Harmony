@@ -5,15 +5,15 @@ charset = utf-8
 insert_final_newline = false
 end_of_line = crlf
 
+# Matches the exact files appveyor.yml and .travis.yml
+[{appveyor.yml,.travis.yml}]
+indent_style = space
+indent_size = 2
+
 [*.cs]
 indent_style = tab
 indent_size = 3
 trim_trailing_whitespace = true
-
-# Matches the exact files .travis.yml
-[{appveyor.yml,.travis.yml}]
-indent_style = space
-indent_size = 2
 
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
@@ -40,6 +40,8 @@ csharp_style_pattern_matching_over_as_with_null_check = false:suggestion
 csharp_style_inlined_variable_declaration = false:suggestion
 csharp_prefer_simple_default_expression = true:suggestion
 csharp_style_throw_expression = false:suggestion
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion
 csharp_style_conditional_delegate_call = false:suggestion
 csharp_prefer_braces = false:suggestion
 

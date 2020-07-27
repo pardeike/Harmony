@@ -32,51 +32,104 @@ namespace HarmonyLibTests
 
 		// AccessTools.FieldRefAccess
 		// Note: This can't have generic class constraint since there are some FieldRefAccess methods that work with struct static fields.
-		static IATestCase<T, F> ATestCase<T, F>(AccessTools.FieldRef<T, F> fieldRef) =>
-			new ClassFieldRefTestCase<T, F>(fieldRef);
+		static IATestCase<T, F> ATestCase<T, F>(AccessTools.FieldRef<T, F> fieldRef)
+		{
+			return new ClassFieldRefTestCase<T, F>(fieldRef);
+		}
+
 		class ClassFieldRefTestCase<T, F> : IATestCase<T, F>
 		{
 			readonly AccessTools.FieldRef<T, F> fieldRef;
-			public ClassFieldRefTestCase(AccessTools.FieldRef<T, F> fieldRef) => this.fieldRef = fieldRef;
-			public F Get(ref T instance) => fieldRef(instance);
-			public void Set(ref T instance, F value) => fieldRef(instance) = value;
+
+			public ClassFieldRefTestCase(AccessTools.FieldRef<T, F> fieldRef)
+			{
+				this.fieldRef = fieldRef;
+			}
+
+			public F Get(ref T instance)
+			{
+				return fieldRef(instance);
+			}
+
+			public void Set(ref T instance, F value)
+			{
+				fieldRef(instance) = value;
+			}
 		}
 
 		// TODO: AccessTools.StructFieldRefAccess
-		//static IATestCase<T, F> ATestCase<T, F>(AccessTools.StructFieldRef<T, F> fieldRef) where T : struct =>
-		//	new StructFieldRefTestCase<T, F>(fieldRef);
+		//static IATestCase<T, F> ATestCase<T, F>(AccessTools.StructFieldRef<T, F> fieldRef) where T : struct
+		//{
+		//	return new StructFieldRefTestCase<T, F>(fieldRef);
+		//}
+
 		//class StructFieldRefTestCase<T, F> : IATestCase<T, F> where T : struct
 		//{
 		//	readonly AccessTools.StructFieldRef<T, F> fieldRef;
-		//	public StructFieldRefTestCase(AccessTools.StructFieldRef<T, F> fieldRef) => this.fieldRef = fieldRef;
-		//	public F Get(ref T instance) => fieldRef(ref instance);
-		//	public void Set(ref T instance, F value) => fieldRef(ref instance) = value;
+
+		//	public StructFieldRefTestCase(AccessTools.StructFieldRef<T, F> fieldRef)
+		//	{
+		//		this.fieldRef = fieldRef;
+		//	}
+
+		//	public F Get(ref T instance)
+		//	{
+		//		return fieldRef(ref instance);
+		//	}
+
+		//	public void Set(ref T instance, F value)
+		//	{
+		//		fieldRef(ref instance) = value;
+		//	}
 		//}
 
 		// AccessTools.StaticFieldRefAccess
-		static IATestCase<T, F> ATestCase<T, F>(AccessTools.FieldRef<F> fieldRef) =>
-			new StaticFieldRefTestCase<T, F>(fieldRef);
+		static IATestCase<T, F> ATestCase<T, F>(AccessTools.FieldRef<F> fieldRef)
+		{
+			return new StaticFieldRefTestCase<T, F>(fieldRef);
+		}
+
 		class StaticFieldRefTestCase<T, F> : IATestCase<T, F>
 		{
 			readonly AccessTools.FieldRef<F> fieldRef;
-			public StaticFieldRefTestCase(AccessTools.FieldRef<F> fieldRef) => this.fieldRef = fieldRef;
-			public F Get(ref T instance) => fieldRef();
-			public void Set(ref T instance, F value) => fieldRef() = value;
+
+			public StaticFieldRefTestCase(AccessTools.FieldRef<F> fieldRef)
+			{
+				this.fieldRef = fieldRef;
+			}
+
+			public F Get(ref T instance)
+			{
+				return fieldRef();
+			}
+
+			public void Set(ref T instance, F value)
+			{
+				fieldRef() = value;
+			}
 		}
 
 		// Marker constraint that ATestSuite uses to skip tests that can crash.
-		static SkipTestConstraint SkipTest(string reason) => new SkipTestConstraint(reason);
+		static SkipTestConstraint SkipTest(string reason)
+		{
+			return new SkipTestConstraint(reason);
+		}
 
 		class SkipTestConstraint : Constraint
 		{
 			public SkipTestConstraint(string reason) : base(reason) { }
 
-			public override ConstraintResult ApplyTo<TActual>(TActual actual) => throw new InvalidOperationException(ToString());
+			public override ConstraintResult ApplyTo<TActual>(TActual actual)
+			{
+				throw new InvalidOperationException(ToString());
+			}
 		}
 
 		// As a final check during a test case, ATestSuite checks that field.FieldType.IsInstanceOfType(field.GetValue(instance)),
 		// and throws this specific exception if that check fails.
+#pragma warning disable CA1032 // Implement standard exception constructors
 		class IncompatibleFieldTypeException : Exception
+#pragma warning restore CA1032 // Implement standard exception constructors
 		{
 			public IncompatibleFieldTypeException(string message) : base(message) { }
 		}
@@ -168,7 +221,7 @@ namespace HarmonyLibTests
 							"{0}: expected !Equals(origValue, testValue) (indicates static field didn't get reset properly)", testCaseLabel);
 						var value = testCase.Get(ref instance);
 						// The ?.ToString() is a trick to ensure that value is fully evaluated from the ref value.
-						value?.ToString();
+						_ = value?.ToString();
 						Assert.AreEqual(origValue, value, "{0}: expected Equals(origValue, value)", testCaseLabel);
 						testCase.Set(ref instance, testValue);
 						var newValue = field.GetValue(instance);
@@ -186,7 +239,7 @@ namespace HarmonyLibTests
 					{
 						var value = testCase.Get(ref instance);
 						// The ?.ToString() is a trick to ensure that value is fully evaluated from the ref value.
-						value?.ToString();
+						_ = value?.ToString();
 						// If the constraint is just Throws.Exception (rather than Throws.InstanceOf<ArgumentException), it means we expect potentially
 						// undefined behavior. Depending on the environment, sometimes an exception (typically an InvalidProgramException) is thrown,
 						// while sometimes an exception isn't thrown but the test case's get/set doesn't work correctly. In the latter case we can try
@@ -994,7 +1047,7 @@ namespace HarmonyLibTests
 		{
 			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
 			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_StructInstance_CanCrash));
-			method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
+			_ = method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 
 		[Test, Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
@@ -1005,7 +1058,7 @@ namespace HarmonyLibTests
 		{
 			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
 			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_ClassInstance_ValueTypeField_DifferentF_CanCrash));
-			method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
+			_ = method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 
 		[Test, Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
@@ -1017,7 +1070,7 @@ namespace HarmonyLibTests
 		{
 			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
 			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_Static_IncompatibleF_CanCrash));
-			method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
+			_ = method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 	}
 }
