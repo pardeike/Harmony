@@ -3,7 +3,7 @@
 # 1) Microsoft.NETFramework.ReferenceAssemblies doesn't have a build for it yet: https://github.com/dotnet/core-sdk/issues/2022
 #    (this has been addressed using workaround mentioned in that issue).
 # 2) dotnet test doesn't recognize .NET Framework 3.5 as a valid test project (does not set IsTestProject property for it).
-# 3) Even if the above are worked around, dotnet test shows:
+# 3) Even if the above are worked around by specifying the net35 HarmonyTests.dll and --framework net35, dotnet test shows:
 #    Framework35 is not supported. For projects targeting .Net Framework 3.5, test will run in CLR 4.0 "compatibility mode".
 # Also, builds that use mono are currently very slow due to https://github.com/travis-ci/travis-ci/issues/4571
 
@@ -37,8 +37,8 @@ install:
   - dotnet restore
 
 script:
-  - dotnet build --framework ${netframework}
-  - dotnet test HarmonyTests --framework ${netframework} --logger='console;verbosity=detailed'
+  - dotnet build --configuration Release --framework ${netframework}
+  - dotnet test HarmonyTests --configuration Release --framework ${netframework} --logger='console;verbosity=detailed'
 
 jobs:
   exclude:

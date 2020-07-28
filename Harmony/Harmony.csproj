@@ -110,28 +110,36 @@
 		<Delete Files="@(UnnecessaryDependencyFiles)" />
 	</Target>
 
-	<UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyName="Microsoft.Build.Tasks.v12.0">
+	<UsingTask TaskName="Zip" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<InputDirectory ParameterType="System.String" Required="true" />
-			<TempFile ParameterType="System.String" Required="true" />
-			<OutputFilename ParameterType="System.String" Required="true" />
+			<OutputFile ParameterType="System.String" Required="true" />
 		</ParameterGroup>
 		<Task>
-			<Reference Include="System.IO.Compression.FileSystem" />
+			<Using Namespace="System.IO"/>
+			<Using Namespace="System.IO.Compression"/>
 			<Code>
-				try {
-				System.IO.File.Delete(TempFile);
-				} catch {}
-				try {
-				System.IO.Compression.ZipFile.CreateFromDirectory(InputDirectory, TempFile);
-				System.IO.File.Move(TempFile, OutputFilename);
-				} catch {}
+				<![CDATA[
+				try
+				{
+					ZipFile.CreateFromDirectory(InputDirectory, OutputFile, CompressionLevel.Optimal, includeBaseDirectory: true);
+				} catch (Exception ex) {
+					Log.LogError(ex.ToString()); // eat and log any exception
+				}
+				]]>
 			</Code>
 		</Task>
 	</UsingTask>
 
-	<Target Name="Zip" AfterTargets="Pack" Condition="'$(Configuration)'=='Release'">
-		<Zip InputDirectory="$(MSBuildThisFileDirectory)bin" TempFile="$(MSBuildThisFileDirectory)Harmony.zip" OutputFilename="$(MSBuildThisFileDirectory)bin\Harmony.$(Version).zip" />
+	<Target Name="Zip" AfterTargets="Pack" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
+		<Zip InputDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" OutputFile="$(MSBuildThisFileDirectory)bin\Harmony.$(Version).zip" />
+	</Target>
+
+	<Target Name="CleanZip" AfterTargets="Clean">
+		<ItemGroup>
+			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\*.zip" />
+		</ItemGroup>
+		<Delete Files="@(OldZipFiles)" />
 	</Target>
 
 </Project>
