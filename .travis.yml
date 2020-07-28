@@ -1,11 +1,13 @@
-# Note: Even though dotnet test works in .NET Framework 4+, it apparently still requires mono.
-# dotnet test currently doesn't work for .NET Framework 3.5, because:
-# 1) Microsoft.NETFramework.ReferenceAssemblies doesn't have a build for it yet: https://github.com/dotnet/core-sdk/issues/2022
-#    (this has been addressed using workaround mentioned in that issue).
-# 2) dotnet test doesn't recognize .NET Framework 3.5 as a valid test project (does not set IsTestProject property for it).
-# 3) Even if the above are worked around by specifying the net35 HarmonyTests.dll and --framework net35, dotnet test shows:
-#    Framework35 is not supported. For projects targeting .Net Framework 3.5, test will run in CLR 4.0 "compatibility mode".
-# Also, builds that use mono are currently very slow due to https://github.com/travis-ci/travis-ci/issues/4571
+# Notes:
+# - `dotnet test` does work for .NET Framework targets, but they still require mono on non-Windows.
+#   `dotnet test` for .NET Core targets do not require mono (.NET Core is cross-platform).
+# - `dotnet test HarmonyTests` won't run .NET Framework 3.5 tests, and `dotnet test HarmonyTests --framework net35` fails.
+#   Both the dll and `--framework net35` must be specified: `dotnet test path/to/net35/HarmonyTests.dll --framework net35`.
+#   Specifying both the dll and --framework also works for other .NET Framework/Core targets; it's only required for net35.
+# - Even with the above workaround for running .NET Framework 3.5 tests, there is no CLR 2.0 runtime (or mono equivalent) available to properly test it.
+#   Both `dotnet test path/to/net35/HarmonyTests.dll --framework net35` and `mono path/to/nunit3-console.exe path/to/net35/HarmonyTests.dll`
+#   run the tests in 'CLR 4.0 "compatibility mode"' (or the mono equivalent of this).
+# - Builds that use mono are currently very slow due to https://github.com/travis-ci/travis-ci/issues/4571
 
 language: csharp
 solution: HarmonyTests/HarmonyTests.csproj
@@ -23,8 +25,8 @@ env:
   - netframework=netcoreapp3.1
 
 mono:
-- latest
-- none
+  - latest
+  - none
 
 # "dotnet: 3.1" works fine for linux, but osx needs the exact version for some reason.
 dotnet: 3.1.302
@@ -38,45 +40,26 @@ install:
 
 script:
   - dotnet build --configuration Release --framework ${netframework}
-  - dotnet test HarmonyTests --configuration Release --framework ${netframework} --logger='console;verbosity=detailed'
+  # Need to specify both dll and --framework for net35 target, so might as well do it for all targets (netframework).
+  - dotnet test HarmonyTests/bin/Release/${netframework}/HarmonyTests.dll --framework ${netframework} --logger 'console;verbosity=detailed'
 
 jobs:
   exclude:
-    # dotnet test (specifically, .NET Core itself) currently doesn't work with .NET Framework 3.5, so have to use mono + nunit3-console.exe (see include below)
-    - env: netframework=net35
-    # We can use dotnet test with .NET Framework 4+, but it apparently still requires mono on non-Windows machines
+    # .NET Framework targets require mono on non-Windows machines, so exclude non-mono permutations
     # (otherwise, dotnet (vs)test outputs this error: Could not find 'mono' host. Make sure that 'mono' is installed on the machine and is available in PATH environment variable.)
+    - env: netframework=net35
+      mono: none
     - env: netframework=net45
       mono: none
     - env: netframework=net472
       mono: none
     - env: netframework=net48
       mono: none
-    # nunit3-console.exe doesn't work with netcoreapp* target frameworks, so must use dotnet test
+    # .NET Core targets don't require mono, so exclude mono permutations
     - env: netframework=netcoreapp3.0
+      mono: latest
     - env: netframework=netcoreapp3.1
       mono: latest
-  include:
-    - os: linux
-      env: netframework=net35
-      mono: latest
-      install:
-        - dotnet --version
-        - dotnet restore
-        - nuget install NUnit.Console -OutputDirectory testrunner
-      script:
-        - msbuild /p:Configuration=Release /p:TargetFrameworks=${netframework}
-        - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe HarmonyTests/bin/Release/${netframework}/HarmonyTests.dll --inprocess
-    - os: osx
-      env: netframework=net35
-      mono: latest
-      install:
-        - dotnet --version
-        - dotnet restore
-        - nuget install NUnit.Console -OutputDirectory testrunner
-      script:
-        - msbuild /p:Configuration=Release /p:TargetFrameworks=${netframework}
-        - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe HarmonyTests/bin/Release/${netframework}/HarmonyTests.dll --inprocess
 
 notifications:
   email: false
