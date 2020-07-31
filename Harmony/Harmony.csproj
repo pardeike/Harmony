@@ -28,7 +28,9 @@
 	</PropertyGroup>
 
 	<Choose>
-		<When Condition="$(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('netcoreapp'))">
+		<!-- Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
+			so instead, relying on the fact that all .NET Core and .NET 5.0+ (and .NET Standard) have a period in their TFMs. -->
+		<When Condition="$(TargetFramework.Contains('.'))">
 			<PropertyGroup>
 				<IsCoreOrStandard>true</IsCoreOrStandard>
 			</PropertyGroup>
@@ -70,21 +72,6 @@
 		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
 
 		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<Reference Include="System.Reflection.Emit">
-			<HintPath>..\libs\System.Reflection.Emit.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
-		<Reference Include="System.Reflection.Emit.ILGeneration">
-			<HintPath>..\libs\System.Reflection.Emit.ILGeneration.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
-		<Reference Include="System.Reflection.Emit.Lightweight">
-			<HintPath>..\libs\System.Reflection.Emit.Lightweight.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
 	</ItemGroup>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">

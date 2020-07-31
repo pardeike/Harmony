@@ -26,26 +26,16 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
 		<PackageReference Include="NUnit" Version="3.12.0" />
-		<PackageReference Include="NUnit3TestAdapter" Version="3.16.1" Condition="'$(TargetFramework)'!='netcoreapp2.0'">
+		<PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<!--<PackageReference Include="NUnitTestAdapter" Version="2.2.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>-->
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
-		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
-		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
-		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>
