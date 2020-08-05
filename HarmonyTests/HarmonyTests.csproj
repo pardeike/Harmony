@@ -23,6 +23,11 @@
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
+	<!-- Workaround for `dotnet test HarmonyTests -f net35` not running tests - Microsoft.NET.Test.Sdk only sets IsTestProject property for net40+. -->
+	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
 		<PackageReference Include="NUnit" Version="3.12.0" />

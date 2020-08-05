@@ -3,52 +3,73 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
+parameters:
+- name: publishRawTestResults
+  displayName: 'Toggle on to upload raw test results as build artifacts (useful for diagnosing crashes)'
+  type: boolean
+  default: false
+
 trigger:
 - master
+pr:
+- master
 
-pool:
-  vmImage: 'windows-latest'
+jobs:
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: windows
+    buildPlatform: x64
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    publishBuild: true
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
-variables:
-  project: 'HarmonyTests'
-  buildConfiguration: 'Release'
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: windows
+    buildPlatform: x86
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
-steps:
-- checkout: self 
-  submodules: recursive
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: windows
+    buildPlatform: x64
+    runtimeType: mono
+    frameworks: [net35, net45, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
-- task: UseDotNet@2
-  displayName: 'Install latest .NET Core 3.0'
-  inputs:
-    packageType: sdk
-    version: 3.0.x
-    installationPath: $(Agent.ToolsDirectory)/dotnet
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: windows
+    buildPlatform: x86
+    runtimeType: mono
+    frameworks: [net35, net45, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
-- task: UseDotNet@2
-  displayName: 'Install latest .NET Core 3.1'
-  inputs:
-    packageType: sdk
-    version: 3.1.x
-    installationPath: $(Agent.ToolsDirectory)/dotnet
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: ubuntu
+    buildPlatform: x64
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore and build'
-  inputs:
-    command: 'build' # this automatically runs 'dotnet restore' as well
-    projects: '$(project)'
-    arguments: '--configuration $(buildConfiguration)'
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: ubuntu
+    buildPlatform: x86
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
-- task: DotNetCoreCLI@2
-  displayName: 'Test on non-net35 target frameworks'
-  continueOnError: true
-  inputs:
-    command: 'test'
-    projects: '$(project)'
-    arguments: '--configuration $(buildConfiguration) --logger console;verbosity=detailed'
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: macOS
+    buildPlatform: x64
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
-- task: DotNetCoreCLI@2
-  displayName: 'Test on net35 target framework in CLR 4.0 "compatibility mode"'
-  inputs:
-    command: 'test'
-    projects: '$(project)/bin/$(buildConfiguration)/net35/$(project).dll'
-    arguments: '--configuration $(buildConfiguration) --framework net35 --logger console;verbosity=detailed'
+- template: azure-pipelines-job-template.yml
+  parameters:
+    osPlatform: macOS
+    buildPlatform: x86
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    publishRawTestResults: ${{parameters.publishRawTestResults}}
