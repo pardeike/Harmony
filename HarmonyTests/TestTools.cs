@@ -29,9 +29,11 @@ namespace HarmonyLibTests
 		// Note: Must be a property rather than a field, since the specific TestContext streams can change between tests.
 		static TextWriter LogWriter => TestContext.Out;
 
-		public static void Log(object obj, int indentLevel = 1, bool writeLine = true)
+		public static void Log(object obj, int indentLevel = 1, int? indentLevelAfterNewLine = null, bool writeLine = true)
 		{
-			var text = $"{new string('\t', indentLevel)}{obj?.ToString().Replace("\n", "\n" + new string('\t', indentLevel + 1)) ?? "null"}";
+			var indentBeforeNewLine = new string('\t', indentLevel);
+			var indentAfterNewLine = new string('\t', indentLevelAfterNewLine ?? indentLevel + 1);
+			var text = $"{indentBeforeNewLine}{obj?.ToString().Replace("\n", "\n" + indentAfterNewLine) ?? "null"}";
 			if (writeLine)
 				LogWriter.WriteLine(text);
 			else
