@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 #if NETCOREAPP
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
@@ -315,49 +314,6 @@ namespace HarmonyLibTests
 
 	public class TestLogger
 	{
-		static readonly PropertyInfo listenerProperty = AccessTools.Property(typeof(TestExecutionContext), "Listener");
-
-		// .NET Framework 3.5 doesn't have Lazy, so using the singleton lazy instantiation workaround.
-		class StartDateTimeSingleton
-		{
-			public static DateTime value = DateTime.Now;
-		}
-
-		class RecordingListener : ITestListener
-		{
-			public readonly ITestListener origListener;
-			readonly TextWriter stringWriter;
-			public readonly StringBuilder stringBuilder;
-
-			public RecordingListener(ITestListener origListener)
-			{
-				this.origListener = origListener;
-				stringBuilder = new StringBuilder();
-				stringWriter = TextWriter.Synchronized(new StringWriter(stringBuilder));
-			}
-
-			public void SendMessage(TestMessage message)
-			{
-				origListener.SendMessage(message);
-			}
-
-			public void TestFinished(ITestResult result)
-			{
-				origListener.TestFinished(result);
-			}
-
-			public void TestOutput(TestOutput output)
-			{
-				origListener.TestOutput(output);
-				stringWriter.Write(output.Text);
-			}
-
-			public void TestStarted(ITest test)
-			{
-				origListener.TestStarted(test);
-			}
-		}
-
 #pragma warning disable CA1032 // Implement standard exception constructors
 		class ExplicitException : ResultStateException
 #pragma warning restore CA1032 // Implement standard exception constructors
@@ -370,22 +326,9 @@ namespace HarmonyLibTests
 		[SetUp]
 		public void BaseSetUp()
 		{
-			var context = TestExecutionContext.CurrentContext;
-			TestTools.Log($"### {context.CurrentResult.FullName}", indentLevel: 0);
+			TestTools.Log($"### {TestExecutionContext.CurrentContext.CurrentResult.FullName}", indentLevel: 0);
 
 			SkipExplicitTestIfVSTest();
-
-			// Azure Pipelines doesn't upload stdout/stderr for non-failed tests, we need to write out test stdout/stderr to files and attach them.
-			if (Environment.GetEnvironmentVariable("AGENT_TEMPDIRECTORY") != null)
-			{
-				// Console.Out is already redirected to TestExecutionContext.CurrentContext.CurrentResult.OutWriter,
-				// from which the standard output can be extracted.
-				// Console.Error/TestContext.Error/TestContext.Progress are all redirected to EventListenerTextWriter,
-				// which calls TestExecutionContext.Listener.TestOutput, so we temporarily redirect TestExecutionContext.Listener
-				// to a custom ITestListener than passes through to the original Listener, while recording the output to a StringWriter.
-				var errorListener = (ITestListener)listenerProperty.GetValue(context, null);
-				listenerProperty.SetValue(context, new RecordingListener(errorListener), null);
-			}
 		}
 
 		// Workaround for [Explicit] attribute sometimes not working in the NUnit3 VS Test Adapter, which applies to both Visual Studio and
@@ -423,46 +366,8 @@ namespace HarmonyLibTests
 		[TearDown]
 		public void BaseTearDown()
 		{
-			var context = TestExecutionContext.CurrentContext;
-			var recordingListener = listenerProperty.GetValue(context, null) as RecordingListener;
-			if (recordingListener != null)
-				listenerProperty.SetValue(context, recordingListener.origListener, null);
-
-			var result = context.CurrentResult;
+			var result = TestExecutionContext.CurrentContext.CurrentResult;
 			TestTools.Log($"--- {result.FullName} => {result.ResultState}", indentLevel: 0);
-
-			// Azure Pipelines doesn't upload stdout/stderr for non-failed tests, we need to write out test stdout/stderr to files and attach them.
-			var resultStatus = result.ResultState.Status;
-			if (resultStatus != TestStatus.Failed && resultStatus != TestStatus.Skipped &&
-				Environment.GetEnvironmentVariable("AGENT_TEMPDIRECTORY") is string agentTempDirName)
-			{
-				// Dirname based off the to-be-generated trx filename (not necessary but useful for manually finding files).
-				var attachmentDirName = PathCombine(agentTempDirName,
-					$"{Environment.UserName}_{Environment.MachineName}_{StartDateTimeSingleton.value:yyyy-MM-dd_HH_mm_ss}.trxinput",
-					Path.GetRandomFileName());
-				_ = Directory.CreateDirectory(attachmentDirName);
-
-				var stdoutFileName = PathCombine(attachmentDirName, "Standard_Console_Output.log");
-				File.WriteAllText(stdoutFileName, result.Output);
-				TestContext.AddTestAttachment(stdoutFileName);
-
-				var errorOutput = recordingListener.stringBuilder.ToString();
-				if (errorOutput.Length > 0)
-				{
-					var stderrFileName = PathCombine(attachmentDirName, "Standard_Error_Output.log");
-					File.WriteAllText(stderrFileName, errorOutput);
-					TestContext.AddTestAttachment(stderrFileName);
-				}
-			}
-		}
-
-		static string PathCombine(params string[] paths)
-		{
-#if NET35
-			return paths.Aggregate("", Path.Combine);
-#else
-			return Path.Combine(paths);
-#endif
 		}
 	}
 }
