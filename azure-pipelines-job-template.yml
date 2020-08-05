@@ -17,9 +17,6 @@ parameters:
 - name: publishBuild
   type: boolean
   default: false
-- name: publishRawTestResults
-  type: boolean
-  default: false
 
 jobs:
 - job: ${{parameters.osPlatform}}_${{parameters.runtimeType}}_${{parameters.buildPlatform}}
@@ -133,31 +130,6 @@ jobs:
           testResultsFiles: '**/*.trx'
           searchFolder: $(Agent.TempDirectory)
           testRunTitle: "${{framework}} (${{parameters.osPlatform}} mono ${{parameters.buildPlatform}})"
-
-    - ${{ if parameters.publishRawTestResults }}:
-      - bash: |
-          shopt -s failglob
-          set -x
-          # Move over test results to build artifact staging directory for the followup PublishBuildArtifacts task.
-          artifactDir="$(Build.ArtifactStagingDirectory)/${{framework}}"
-          mkdir -p "$artifactDir"
-          # The bash version on macOS doesn't support globstar, so using find command + read loop workaround instead.
-          find "$(Agent.TempDirectory)" -name '*.trx' -print0 | while IFS= read -r -d '' testResultFile; do
-            mv "$testResultFile" "$artifactDir"
-            testResultDir="${testResultFile%.trx}"
-            if [ -e "$testResultDir" ]; then
-              mv "$testResultDir" "$artifactDir"
-            fi
-          done
-        displayName: "Stage ${{framework}} raw test results for build artifact publishing"
-        condition: succeededOrFailed()
-        continueOnError: true
-
-  - ${{ if parameters.publishRawTestResults }}:
-    - publish: $(Build.ArtifactStagingDirectory)
-      displayName: 'Publish all raw test results (TRX) as build artifact'
-      condition: succeededOrFailed()
-      artifact: "TRX (raw test results) for $(System.JobDisplayName)"
 
   - ${{ if parameters.publishBuild }}:
     # publish task doesn't support globbing, so have to find the file and output it as a variable. Yes, this is clunky.

@@ -3,12 +3,6 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
-parameters:
-- name: publishRawTestResults
-  displayName: 'Toggle on to upload raw test results as build artifacts (useful for diagnosing crashes)'
-  type: boolean
-  default: false
-
 trigger:
 - master
 pr:
@@ -21,14 +15,12 @@ jobs:
     buildPlatform: x64
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
     publishBuild: true
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
 - template: azure-pipelines-job-template.yml
   parameters:
     osPlatform: windows
     buildPlatform: x86
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
 - template: azure-pipelines-job-template.yml
   parameters:
@@ -36,7 +28,6 @@ jobs:
     buildPlatform: x64
     runtimeType: mono
     frameworks: [net35, net45, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
 - template: azure-pipelines-job-template.yml
   parameters:
@@ -44,32 +35,27 @@ jobs:
     buildPlatform: x86
     runtimeType: mono
     frameworks: [net35, net45, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
 - template: azure-pipelines-job-template.yml
   parameters:
     osPlatform: ubuntu
     buildPlatform: x64
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
 - template: azure-pipelines-job-template.yml
   parameters:
     osPlatform: ubuntu
     buildPlatform: x86
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
 - template: azure-pipelines-job-template.yml
   parameters:
     osPlatform: macOS
     buildPlatform: x64
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
 
 - template: azure-pipelines-job-template.yml
   parameters:
     osPlatform: macOS
     buildPlatform: x86
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
-    publishRawTestResults: ${{parameters.publishRawTestResults}}
