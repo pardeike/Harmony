@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,13 +36,6 @@ namespace HarmonyLibTests
 				LogWriter.WriteLine(text);
 			else
 				LogWriter.Write(text);
-		}
-
-		// Workaround for [Explicit] attribute not working in Visual Studio: https://github.com/nunit/nunit3-vs-adapter/issues/658
-		public static void AssertIgnoreIfVSTest()
-		{
-			if (System.Diagnostics.Process.GetCurrentProcess().ProcessName is "testhost")
-				Assert.Ignore();
 		}
 
 		// Guarantees that assertion failures throw AssertionException, regardless of whether in Assert.Multiple mode.
@@ -231,7 +225,7 @@ namespace HarmonyLibTests
 
 			public void AssemblyLoad(string name)
 			{
-				LoadFromAssemblyPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
+				_ = LoadFromAssemblyPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
 			}
 
 			// There's no separate AppDomain, so this is just an alias for callback(arg).
@@ -311,7 +305,7 @@ namespace HarmonyLibTests
 
 			public void AssemblyLoad(string assemblyName)
 			{
-				Assembly.Load(assemblyName);
+				_ = Assembly.Load(assemblyName);
 			}
 		}
 #endif
@@ -362,11 +356,22 @@ namespace HarmonyLibTests
 			}
 		}
 
+#pragma warning disable CA1032 // Implement standard exception constructors
+		class ExplicitException : ResultStateException
+#pragma warning restore CA1032 // Implement standard exception constructors
+		{
+			public ExplicitException(string message) : base(message) { }
+
+			public override ResultState ResultState => ResultState.Explicit;
+		}
+
 		[SetUp]
 		public void BaseSetUp()
 		{
 			var context = TestExecutionContext.CurrentContext;
 			TestTools.Log($"### {context.CurrentResult.FullName}", indentLevel: 0);
+
+			SkipExplicitTestIfVSTest();
 
 			// Azure Pipelines doesn't upload stdout/stderr for non-failed tests, we need to write out test stdout/stderr to files and attach them.
 			if (Environment.GetEnvironmentVariable("AGENT_TEMPDIRECTORY") != null)
@@ -379,6 +384,38 @@ namespace HarmonyLibTests
 				var errorListener = (ITestListener)listenerProperty.GetValue(context, null);
 				listenerProperty.SetValue(context, new RecordingListener(errorListener), null);
 			}
+		}
+
+		// Workaround for [Explicit] attribute sometimes not working in the NUnit3 VS Test Adapter, which applies to both Visual Studio and
+		// vstest.console (bug: https://github.com/nunit/nunit3-vs-adapter/issues/658). It does apparently work with `dotnet test` as long
+		// as the test dll isn't specified (which delegates to vstest.console).
+		// So always skip [Explicit] tests when NUnit3 VS Test Adapter is used - the [Explicit] attribute needs to be commented out to run the test.
+		static void SkipExplicitTestIfVSTest()
+		{
+			var test = TestExecutionContext.CurrentContext.CurrentTest;
+			if (test.Method?.IsDefined<ExplicitAttribute>(true) ?? test.TypeInfo?.IsDefined<ExplicitAttribute>(true) ?? false)
+			{
+				// Due to the way the NUnit3 VS Test Adapter creates separate AppDomains for tests and the difficulty with getting process
+				// command line arguments in a cross-platform way, there's no direct way to determine whether the adapter is being used.
+				// Indirect ways to determine whether the adapter is used in various ways:
+				// 1) process name starts with "testhost" (e.g. testhost.x86)
+				// 2) process name starts with "vstest" (e.g. vstest.console)
+				var process = Process.GetCurrentProcess();
+				if (process.ProcessName.StartsWith("testhost") || process.ProcessName.StartsWith("vstest"))
+					throw GetExplicitException(test);
+				// 3) process modules include a *VisualStudio* dll
+				// This case is needed when run under mono, since process name is just "mono(.exe)" then.
+				if (process.Modules.Cast<ProcessModule>().Any(module => module.ModuleName.StartsWith("Microsoft.VisualStudio")))
+					throw GetExplicitException(test);
+			}
+		}
+
+		static ExplicitException GetExplicitException(Test test)
+		{
+			// This is the least fragile way to get the explicit reason message.
+			var explicitAttribute = test.GetCustomAttributes<ExplicitAttribute>(true).First();
+			explicitAttribute.ApplyToTest(test);
+			return new ExplicitException((string)test.Properties.Get(PropertyNames.SkipReason) ?? "");
 		}
 
 		[TearDown]

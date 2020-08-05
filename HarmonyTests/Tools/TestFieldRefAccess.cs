@@ -1036,7 +1036,8 @@ namespace HarmonyLibTests
 			}
 		}
 
-		[Test, Explicit("These tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
+		[Test]
+		[Explicit("These tests will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
 		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "FieldRefAccess<T, F>(field)(instance)")]
 		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "FieldRefAccess<F>(typeof(T), fieldName)(instance)")]
 		[TestCase(typeof(AccessToolsStruct), typeof(string), "structField1", "structField1testcrash", "StaticFieldRefAccess<F>(field)()")]
@@ -1045,30 +1046,29 @@ namespace HarmonyLibTests
 		[TestCase(typeof(AccessToolsStruct), typeof(int), "structField2", 1234, "StaticFieldRefAccess<F>(field)()")]
 		public void Test_StructInstance_CanCrash(Type typeT, Type typeF, string fieldName, object testValue, string testCaseName)
 		{
-			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
 			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_StructInstance_CanCrash));
 			_ = method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 
-		[Test, Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
+		[Test]
+		[Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
 		[TestCase(typeof(AccessToolsClass), typeof(object), "field2", 123f, "FieldRefAccess<T, F>(field)(instance)")] // field2 is non-static float
 		[TestCase(typeof(AccessToolsClass), typeof(float?), "field2", 123f, "FieldRefAccess<T, F>(field)(instance)")]
 		[TestCase(typeof(AccessToolsClass), typeof(IComparable), "field2", 123f, "FieldRefAccess<T, F>(field)(instance)")]
 		public void Test_ClassInstance_ValueTypeField_DifferentF_CanCrash(Type typeT, Type typeF, string fieldName, object testValue, string testCaseName)
 		{
-			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
 			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_ClassInstance_ValueTypeField_DifferentF_CanCrash));
 			_ = method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}
 
-		[Test, Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
+		[Test]
+		[Explicit("This test will either fail to get/set correctly or crash the runtime due to invalid IL code causing some fatal error")]
 		[TestCase(typeof(AccessToolsClass), typeof(int), "field4", 321, "StaticFieldRefAccess<F>(field)()")] // field4 is static string
 		[TestCase(typeof(AccessToolsStruct), typeof(object), "structField3", 456, "StaticFieldRefAccess<F>(field)()")] // structField3 is static int
 		[TestCase(typeof(AccessToolsStruct), typeof(int?), "structField3", 456, "StaticFieldRefAccess<F>(field)()")]
 		[TestCase(typeof(AccessToolsStruct), typeof(IComparable), "structField3", 456, "StaticFieldRefAccess<F>(field)()")]
 		public void Test_Static_IncompatibleF_CanCrash(Type typeT, Type typeF, string fieldName, object testValue, string testCaseName)
 		{
-			TestTools.AssertIgnoreIfVSTest(); // uncomment this to actually run the test in Visual Studio
 			var method = AccessTools.Method(typeof(TestFieldRefAccess), nameof(TestCase_Static_IncompatibleF_CanCrash));
 			_ = method.MakeGenericMethod(typeT, typeF).Invoke(this, new object[] { fieldName, testValue, testCaseName });
 		}

@@ -207,18 +207,18 @@ namespace HarmonyLibTests
 			var originalType = AccessTools.TypeByName("HarmonyLibTests.Assets." + parts[1]);
 			var patchType = AccessTools.TypeByName("HarmonyLibTests.Assets." + parts[2]);
 
-			Assert.NotNull(originalType);
+			Assert.NotNull(originalType, nameof(originalType));
 			var originalMethod = originalType.GetMethod("Method");
-			Assert.NotNull(originalMethod);
+			Assert.NotNull(originalMethod, nameof(originalMethod));
 
+			Assert.NotNull(patchType, nameof(patchType));
 			var finalizer = patchType.GetMethod("Finalizer");
-			Assert.NotNull(finalizer);
+			Assert.NotNull(finalizer, nameof(finalizer));
 
 			var instance = new Harmony("finalizer-test");
-			Assert.NotNull(instance);
 			instance.UnpatchAll("finalizer-test");
 			var patcher = instance.CreateProcessor(originalMethod);
-			Assert.NotNull(patcher);
+			Assert.NotNull(patcher, nameof(patcher));
 			_ = patcher.AddFinalizer(finalizer);
 			_ = patcher.Patch();
 
@@ -228,6 +228,7 @@ namespace HarmonyLibTests
 
 			var obj = Activator.CreateInstance(originalType);
 			var m_method = AccessTools.Method(originalType, "Method");
+			Assert.NotNull(m_method, nameof(m_method));
 			info = new Dictionary<string, object>();
 			try
 			{
