@@ -23,7 +23,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<LangVersion>7.3</LangVersion>
+		<LangVersion>8.0</LangVersion>
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
 	</PropertyGroup>
 

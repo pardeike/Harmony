@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>8.0</LangVersion>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 

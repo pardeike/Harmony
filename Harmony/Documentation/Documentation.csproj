@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+		<LangVersion>8.0</LangVersion>
 		<IsPackable>false</IsPackable>
 		<IntermediateOutputPath>obj</IntermediateOutputPath>
 		<OutputPath>obj</OutputPath>
