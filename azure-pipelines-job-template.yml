@@ -1,12 +1,12 @@
 parameters:
-- name: osPlatform
+- name: os
   type: string
   values: [windows, ubuntu, macOS]
 - name: runtimeType
   type: string
   values: [dotnet, mono]
   default: dotnet
-- name: buildPlatform
+- name: architecture
   type: string
   values: [x86, x64]
 - name: frameworks
@@ -19,11 +19,11 @@ parameters:
   default: false
 
 jobs:
-- job: ${{parameters.osPlatform}}_${{parameters.runtimeType}}_${{parameters.buildPlatform}}
-  displayName: ${{replace(format('{0} {1} {2}', parameters.osPlatform, replace(parameters.runtimeType, 'dotnet', ''), parameters.buildPlatform), '  ', ' ')}}
+- job: ${{parameters.os}}_${{parameters.runtimeType}}_${{parameters.architecture}}
+  displayName: ${{replace(format('{0} {1} {2}', parameters.os, replace(parameters.runtimeType, 'dotnet', ''), parameters.architecture), '  ', ' ')}}
 
   pool:
-    vmImage: ${{parameters.osPlatform}}-latest
+    vmImage: ${{parameters.os}}-latest
 
   # "variables" is misleading here - these are actually constants.
   # These must be declared here, since templates don't allow combining a root jobs (or steps) section and a root variables section.
@@ -32,7 +32,7 @@ jobs:
     # it only shows "methodname" rather than the fully qualified name (something do with more than 2 periods in the test name).
     # Workaround is to use the format: "namespace.classname:methodname(args)" (note the colon)
     # Also, Azure Pipelines command line argument parser tends to treat single quotes within argument strings literally, so using double quotes instead.
-    runSettingsArgs: "NUnit.DefaultTestNamePattern=\"{C}:{m}{a}\" RunConfiguration.TargetPlatform=${{parameters.buildPlatform}}"
+    runSettingsArgs: "NUnit.DefaultTestNamePattern=\"{C}:{m}{a}\" RunConfiguration.TargetPlatform=${{parameters.architecture}}"
     # Blame mode helps isolate tests that cause crashes (https://github.com/Microsoft/vstest-docs/blob/master/docs/extensions/blame-datacollector.md),
     # although it somewhat ironically also makes such unstable tests crash less often, and makes the test suite run slightly slower.
     blameArg: --blame
@@ -44,15 +44,22 @@ jobs:
   # For each .NET Core (and .NET 5+) version, ensure corresponding `dotnet` is installed.
   # Relies on all .NET Core (and .NET 5+) framework having a dot in their TFM.
   # Assumes that .NET Standard is never used.
-  # Also assumes that the last .NET Core version listed in frameworks has the highest version among the listed frameworks.
   - ${{ each framework in parameters.frameworks }}:
     - ${{ if contains(framework, '.') }}:
-      - task: UseDotNet@2
-        displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}}"
-        inputs:
-          packageType: sdk
-          version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
-          installationPath: $(Agent.ToolsDirectory)/dotnet
+      # Assume x64 agents lack installed x86 .NET Core runtimes (which is the case for MS-hosted agents), so install them as needed.
+      # However, such x86 runtimes can't be installed via the UseDotNet task, so we need to use the official dotnet-install.ps1 script.
+      - ${{ if and(eq(parameters.architecture, 'x86'), eq(parameters.os, 'windows')) }}:
+        - pwsh: |
+            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1
+            .\dotnet-install.ps1 -Channel ${{replace(replace(framework, 'coreapp', ''), 'net', '')}} -Architecture ${{parameters.architecture}} -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+          displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}} ${{parameters.architecture}} Runtime"
+
+      - ${{ if or(ne(parameters.architecture, 'x86'), ne(parameters.os, 'windows')) }}: # currently no `else` construct in Azure Pipelines
+        - task: UseDotNet@2
+          displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}} Runtime"
+          inputs:
+            version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
+            packageType: runtime
 
   - task: DotNetCoreCLI@2
     displayName: 'Build'
@@ -64,7 +71,7 @@ jobs:
   # For some reason, if mono is installed, above solution restore/build fails when restoring nugets (doesn't fail when only building a project).
   # Since mono is only needed for running tests in 'mono' runtimeType mode, only install mono after the restore/build.
   - ${{ if eq(parameters.runtimeType, 'mono') }}:
-    - bash: "choco install mono --yes --no-progress --${{parameters.buildPlatform}}"
+    - bash: "choco install mono --yes --no-progress --${{parameters.architecture}}"
       displayName: 'Install Mono'
 
   # 'dotnet' runtimeType means using `dotnet test`.
@@ -89,10 +96,10 @@ jobs:
           arguments: "--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --logger \"console;verbosity=normal\" $(blameArg) -- $(runSettingsArgs)"
           publishTestResults: true
           # .NET Framework on non-Windows implicitly always uses mono.
-          ${{ if and(ne(parameters.osPlatform, 'windows'), not(contains(framework, '.'))) }}:
-            testRunTitle: "${{framework}} (${{parameters.osPlatform}} mono ${{parameters.buildPlatform}})"
-          ${{ if or(eq(parameters.osPlatform, 'windows'), contains(framework, '.')) }}: # currently no `else` construct in Azure Pipelines
-            testRunTitle: "${{framework}} (${{parameters.osPlatform}} ${{parameters.buildPlatform}})"
+          ${{ if and(ne(parameters.os, 'windows'), not(contains(framework, '.'))) }}:
+            testRunTitle: "${{framework}} (${{parameters.os}} mono ${{parameters.architecture}})"
+          ${{ if or(eq(parameters.os, 'windows'), contains(framework, '.')) }}: # currently no `else` construct in Azure Pipelines
+            testRunTitle: "${{framework}} (${{parameters.os}} ${{parameters.architecture}})"
 
     # 'mono' runtimeType is for running .NET Framework tests on Windows (non-Windows will always run .NET Framework tests on mono even via `dotnet test`).
     - ${{ if eq(parameters.runtimeType, 'mono') }}:
@@ -113,23 +120,28 @@ jobs:
             fi
           done
           # Execute the tests via mono + vstest.console.
-          mono="$PROGRAMFILES${{replace(replace(parameters.buildPlatform, 'x64', ''), 'x86', ' (x86)')}}/Mono/bin/mono.exe"
+          mono="$(eval $programFilesCmd)/Mono/bin/mono.exe"
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
           "$mono" "$vstest" "HarmonyTests/bin/${{parameters.buildConfiguration}}/${{framework}}/HarmonyTests.dll" --Framework:${{framework}} --logger:trx --ResultsDirectory:"$(Agent.TempDirectory)" $(blameArg) -- $(runSettingsArgs)
         displayName: "Test ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
         condition: succeededOrFailed()
+        env:
+          ${{ if eq(parameters.architecture, 'x86') }}:
+            programFilesCmd: "cmd //c 'echo %ProgramFiles(x86)%'" # no direct way to access ProgramFiles(x86) env var from within bash
+          ${{ if ne(parameters.architecture, 'x86') }}: # currently no `else` construct in Azure Pipelines
+            programFilesCmd: "echo $PROGRAMFILES"
 
     - ${{ if eq(parameters.runtimeType, 'mono') }}:
       - task: PublishTestResults@2
         displayName: "Publish ${{framework}} test results"
         condition: succeededOrFailed()
         inputs:
-          buildPlatform: ${{parameters.buildPlatform}}
+          buildPlatform: ${{parameters.architecture}}
           buildConfiguration: ${{parameters.buildConfiguration}}
           testResultsFormat: VSTest
           testResultsFiles: '**/*.trx'
           searchFolder: $(Agent.TempDirectory)
-          testRunTitle: "${{framework}} (${{parameters.osPlatform}} mono ${{parameters.buildPlatform}})"
+          testRunTitle: "${{framework}} (${{parameters.os}} mono ${{parameters.architecture}})"
 
   - ${{ if parameters.publishBuild }}:
     # publish task doesn't support globbing, so have to find the file and output it as a variable. Yes, this is clunky.

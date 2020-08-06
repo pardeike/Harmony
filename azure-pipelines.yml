@@ -11,51 +11,53 @@ pr:
 jobs:
 - template: azure-pipelines-job-template.yml
   parameters:
-    osPlatform: windows
-    buildPlatform: x64
+    os: windows
+    architecture: x64
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
     publishBuild: true
 
 - template: azure-pipelines-job-template.yml
   parameters:
-    osPlatform: windows
-    buildPlatform: x86
+    os: windows
+    architecture: x86
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
 
 - template: azure-pipelines-job-template.yml
   parameters:
-    osPlatform: windows
-    buildPlatform: x64
+    os: windows
+    architecture: x64
     runtimeType: mono
     frameworks: [net35, net45, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
 
 - template: azure-pipelines-job-template.yml
   parameters:
-    osPlatform: windows
-    buildPlatform: x86
+    os: windows
+    architecture: x86
     runtimeType: mono
     frameworks: [net35, net45, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
 
 - template: azure-pipelines-job-template.yml
   parameters:
-    osPlatform: ubuntu
-    buildPlatform: x64
+    os: ubuntu
+    architecture: x64
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+
+# Without an x86 ubuntu agent and with mono's packaging not multi-arch-safe (can't install x86 mono on x64 ubuntu), we can't test on x86 ubuntu.
+#- template: azure-pipelines-job-template.yml
+#  parameters:
+#    os: ubuntu
+#    architecture: x86
+#    frameworks: [net35, net45, net472, net48] # .NET Core x86 is unavailable for non-Windows
 
 - template: azure-pipelines-job-template.yml
   parameters:
-    osPlatform: ubuntu
-    buildPlatform: x86
+    os: macOS
+    architecture: x64
     frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
 
-- template: azure-pipelines-job-template.yml
-  parameters:
-    osPlatform: macOS
-    buildPlatform: x64
-    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
-
-- template: azure-pipelines-job-template.yml
-  parameters:
-    osPlatform: macOS
-    buildPlatform: x86
-    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+# x86 ubuntu woes apply to x86 macOS as well.
+#- template: azure-pipelines-job-template.yml
+#  parameters:
+#    os: macOS
+#    architecture: x86
+#    frameworks: [net35, net45, net472, net48] # .NET Core x86 is unavailable for non-Windows
