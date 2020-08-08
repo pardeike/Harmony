@@ -802,7 +802,7 @@ namespace HarmonyLib
 		/// <para>
 		/// This delegate cannot be used for instance fields of structs, since a struct instance passed to the delegate would be passed by
 		/// value and thus would be a copy that only exists within the delegate's invocation. This is fine for a readonly reference,
-		/// but makes assigning to the reference an exercise in futility. Use <see cref="StructFieldRef{T, F}"/> instead.
+		/// but makes assignment futile. Use <see cref="StructFieldRef{T, F}"/> instead.
 		/// </para>
 		/// <para>
 		/// Note that <typeparamref name="T"/> is not required to be the field's declaring type. It can be a parent class (including <see cref="object"/>),
@@ -861,6 +861,13 @@ namespace HarmonyLib
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="FieldRefAccess{T, F}(string)"/> instead.
+		/// <c>FieldRefAccess&lt;T, F&gt;(instance, fieldName)</c> is functionally equivalent to <c>FieldRefAccess&lt;T, F&gt;(fieldName)(instance)</c>.
+		/// </para>
+		/// </remarks>
 		///
 		public static ref F FieldRefAccess<T, F>(T instance, string fieldName) where T : class
 		{
@@ -892,8 +899,14 @@ namespace HarmonyLib
 		/// (for static fields, the <c>instance</c> delegate parameter is ignored)
 		/// </returns>
 		/// <remarks>
+		/// <para>
+		/// This method is meant for cases where the given type is only known at runtime and thus can't be used as a type parameter <c>T</c>
+		/// in e.g. <see cref="FieldRefAccess{T, F}(string)"/>.
+		/// </para>
+		/// <para>
 		/// This method supports static fields, even those defined in structs, for legacy reasons.
 		/// Consider using <see cref="StaticFieldRefAccess{F}(Type, string)"/> (and other overloads) instead for static fields.
+		/// </para>
 		/// </remarks>
 		///
 		public static FieldRef<object, F> FieldRefAccess<F>(Type type, string fieldName)
@@ -936,6 +949,10 @@ namespace HarmonyLib
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>A readable/assignable <see cref="FieldRef{T,F}"/> delegate</returns>
 		/// <remarks>
+		/// <para>
+		/// This method is meant for cases where the field has already been obtained, avoiding the field searching cost in
+		/// e.g. <see cref="FieldRefAccess{T, F}(string)"/>.
+		/// </para>
 		/// <para>
 		/// This method supports static fields, even those defined in structs, for legacy reasons.
 		/// For such static fields, <typeparamref name="T"/> is effectively ignored.
@@ -980,6 +997,13 @@ namespace HarmonyLib
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance and where the field has already been obtained.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="FieldRefAccess{T, F}(FieldInfo)"/> instead.
+		/// <c>FieldRefAccess&lt;T, F&gt;(instance, fieldInfo)</c> is functionally equivalent to <c>FieldRefAccess&lt;T, F&gt;(fieldInfo)(instance)</c>.
+		/// </para>
+		/// </remarks>
 		///
 		public static ref F FieldRefAccess<T, F>(T instance, FieldInfo fieldInfo) where T : class
 		{
@@ -1006,19 +1030,6 @@ namespace HarmonyLib
 			{
 				throw new ArgumentException($"FieldRefAccess<{typeof(T)}, {typeof(F)}> for {instance}, {fieldInfo} caused an exception", ex);
 			}
-		}
-
-		static bool FieldRefNeedsClasscast(Type delegateInstanceType, Type declaringType)
-		{
-			var needCastclass = false;
-			if (delegateInstanceType != declaringType)
-			{
-				needCastclass = delegateInstanceType.IsAssignableFrom(declaringType);
-				if (needCastclass is false && declaringType.IsAssignableFrom(delegateInstanceType) is false)
-					throw new ArgumentException("FieldDeclaringType must be assignable from or to T (FieldRefAccess instance type) - " +
-						"\"instanceOfT is FieldDeclaringType\" must be possible");
-			}
-			return needCastclass;
 		}
 
 		static FieldRef<T, F> FieldRefAccessInternal<T, F>(FieldInfo fieldInfo, bool needCastclass) where T : class
@@ -1096,6 +1107,13 @@ namespace HarmonyLib
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="StructFieldRefAccess{T, F}(string)"/> instead.
+		/// <c>StructFieldRefAccess&lt;T, F&gt;(ref instance, fieldName)</c> is functionally equivalent to <c>StructFieldRefAccess&lt;T, F&gt;(fieldName)(ref instance)</c>.
+		/// </para>
+		/// </remarks>
 		///
 		public static ref F StructFieldRefAccess<T, F>(ref T instance, string fieldName) where T : struct
 		{
@@ -1119,6 +1137,13 @@ namespace HarmonyLib
 		/// </typeparam>
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>A readable/assignable <see cref="StructFieldRef{T,F}"/> delegate</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for cases where the field has already been obtained, avoiding the field searching cost in
+		/// e.g. <see cref="StructFieldRefAccess{T, F}(string)"/>.
+		/// </para>
+		/// </remarks>
+		///
 		public static StructFieldRef<T, F> StructFieldRefAccess<T, F>(FieldInfo fieldInfo) where T : struct
 		{
 			if (fieldInfo is null)
@@ -1143,6 +1168,13 @@ namespace HarmonyLib
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldInfo">The field</param>
 		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance and where the field has already been obtained.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="StructFieldRefAccess{T, F}(FieldInfo)"/> instead.
+		/// <c>StructFieldRefAccess&lt;T, F&gt;(ref instance, fieldInfo)</c> is functionally equivalent to <c>StructFieldRefAccess&lt;T, F&gt;(fieldInfo)(ref instance)</c>.
+		/// </para>
+		/// </remarks>
 		///
 		public static ref F StructFieldRefAccess<T, F>(ref T instance, FieldInfo fieldInfo) where T : struct
 		{
@@ -1159,14 +1191,6 @@ namespace HarmonyLib
 			}
 		}
 
-		static void ValidateStructField<T, F>(FieldInfo fieldInfo) where T : struct
-		{
-			if (fieldInfo.IsStatic)
-				throw new ArgumentException("Field must not be static");
-			if (fieldInfo.DeclaringType != typeof(T))
-				throw new ArgumentException("FieldDeclaringType must be T (StructFieldRefAccess instance type)");
-		}
-
 		static StructFieldRef<T, F> StructFieldRefAccessInternal<T, F>(FieldInfo fieldInfo) where T : struct
 		{
 			ValidateFieldType<F>(fieldInfo);
@@ -1180,16 +1204,6 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ret);
 
 			return (StructFieldRef<T, F>)dm.Generate().CreateDelegate(typeof(StructFieldRef<T, F>));
-		}
-
-		static FieldInfo GetInstanceField(Type type, string fieldName)
-		{
-			var fieldInfo = Field(type, fieldName);
-			if (fieldInfo is null)
-				throw new MissingFieldException(type.Name, fieldName);
-			if (fieldInfo.IsStatic)
-				throw new ArgumentException("Field must not be static");
-			return fieldInfo;
 		}
 
 		/// <summary>A readable/assignable reference delegate to a static field</summary>
@@ -1302,6 +1316,37 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ret);
 
 			return (FieldRef<F>)dm.Generate().CreateDelegate(typeof(FieldRef<F>));
+		}
+
+		static FieldInfo GetInstanceField(Type type, string fieldName)
+		{
+			var fieldInfo = Field(type, fieldName);
+			if (fieldInfo is null)
+				throw new MissingFieldException(type.Name, fieldName);
+			if (fieldInfo.IsStatic)
+				throw new ArgumentException("Field must not be static");
+			return fieldInfo;
+		}
+
+		static bool FieldRefNeedsClasscast(Type delegateInstanceType, Type declaringType)
+		{
+			var needCastclass = false;
+			if (delegateInstanceType != declaringType)
+			{
+				needCastclass = delegateInstanceType.IsAssignableFrom(declaringType);
+				if (needCastclass is false && declaringType.IsAssignableFrom(delegateInstanceType) is false)
+					throw new ArgumentException("FieldDeclaringType must be assignable from or to T (FieldRefAccess instance type) - " +
+						"\"instanceOfT is FieldDeclaringType\" must be possible");
+			}
+			return needCastclass;
+		}
+
+		static void ValidateStructField<T, F>(FieldInfo fieldInfo) where T : struct
+		{
+			if (fieldInfo.IsStatic)
+				throw new ArgumentException("Field must not be static");
+			if (fieldInfo.DeclaringType != typeof(T))
+				throw new ArgumentException("FieldDeclaringType must be T (StructFieldRefAccess instance type)");
 		}
 
 		static void ValidateFieldType<F>(FieldInfo fieldInfo)
