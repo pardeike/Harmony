@@ -4,7 +4,7 @@ using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
 	public class Specials : TestLogger

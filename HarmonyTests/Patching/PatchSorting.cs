@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 using System.Linq;
 using System.Reflection;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
 	public class PatchSorting : TestLogger

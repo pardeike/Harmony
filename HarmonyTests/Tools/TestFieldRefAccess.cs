@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	// This is a comprehensive set of tests for AccessTools.*FieldRefAccess methods.
 	// Fields of test asset types are each subjected to suites of compatible test cases, where each test case follows the form of:

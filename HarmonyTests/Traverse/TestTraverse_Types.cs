@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	[TestFixture]
 	public class TestTraverse_Types : TestLogger

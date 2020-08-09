@@ -3,7 +3,7 @@ using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
 	public class CombinedPatches : TestLogger

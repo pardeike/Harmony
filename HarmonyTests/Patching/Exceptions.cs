@@ -1,4 +1,4 @@
-﻿namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	public class TestExceptionFilterBlock
 	{

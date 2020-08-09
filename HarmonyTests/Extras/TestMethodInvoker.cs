@@ -1,8 +1,8 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Extras
 {
 	[TestFixture]
 	public class TestMethodInvoker : TestLogger

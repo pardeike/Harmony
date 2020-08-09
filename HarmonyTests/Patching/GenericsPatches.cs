@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	public class MyList<T> : IEnumerable<T>, IEnumerable
 	{
