@@ -20,9 +20,12 @@ The reason for this is that the resolution of `base.SomeMethod()` happens in you
 
 ### Generics
 
-Methods that contains generics like `Add` in `List<T>.Add(...)` or methods defined in classes that are generic can be patched but you might get unexpected results. Usually you need to patch specific implementations separately, patching each type of T on its own.
+Generics can be difficult to patch. In general, expect generic methods and methods of generic classes to be shared between different types of `T` during runtime. This means that by patching one method, the method will be patched for all types of `T`. Depending on the type of generic and your .NET runtime, this can be worked around in a few ways:
 
-Other times, patching such a method can make the runtime call your patch for types of T that you do not expect. The solution for that is to inject `__instance` and check its type and run your patch code conditionally.
+*  If the generic includes a value type, such as `int`, in most (but not all) cases, the method will not be shared. Patching a method which uses a value type parameter will patch only that specific method. Conversely, patching a generic with an object type will _not_ patch the value type method, so both may have to be patched.
+*  If the method is a non-generic non-static method of a generic class, you can check the generic type using `__instance` (such as `__instance.GetType().DeclaringType.GenericTypeArguments`), and adjust your code's behavior depending on the type.
+*  If the method is a generic method of a non-generic class, you may be able to examine the method's arguments, if any argument contains `T`. Also, generic type data will be lost (if `Method<T>` is patched using `Method<string>`, `Method<object>` will become `Method<string>`)
+*  If the method is a static non-generic method of a generic class, generic type data will be lost (see above).
 
 ### Static Constructors
 
@@ -32,7 +35,7 @@ As a result, you cannot patch static constructors unless you plan to run them ag
 
 ### Native (External) Methods
 
-A method that has only an external implementation (like a native Unity method) can normally not be patched. Harmony requires access to the original IL code to build the replacement. Thus adding Prefix or Postfix to it does not work. This leaves only one possibility: using a transpiler to create your own implementation. 
+A method that has only an external implementation (like a native Unity method) can normally not be patched. Harmony requires access to the original IL code to build the replacement. Thus adding Prefix or Postfix to it does not work. This leaves only one possibility: using a transpiler to create your own implementation.
 
 As a result, you can patch native methods with a transpiler-only patch that ignores the (empty) input and returns a new implementation that will replace the original. **Beware:** after patching, the original implemenation is lost and you cannot call it anymore, making this approach less useful.
 
