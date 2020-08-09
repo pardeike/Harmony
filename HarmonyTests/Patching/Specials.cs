@@ -67,6 +67,11 @@ namespace HarmonyLibTests
 
 		// TODO: this test might crash in certain environments
 		[Test, NonParallelizable]
+#if NETFRAMEWORK && !NET35
+		// Following attributes allows exception handling to try catching any CSEs that can cause crashes in .NET Framework 4.0+.
+		// Note: This doesn't do anything in .NET Core, and .NET Framework 3.5 already tries catching such CSEs by default.
+		[System.Runtime.ExceptionServices.HandleProcessCorruptedStateExceptions, System.Security.SecurityCritical]
+#endif
 		public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
 		{
 			var name = $"{type}M{n:D2}";
