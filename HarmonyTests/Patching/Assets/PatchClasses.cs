@@ -153,7 +153,7 @@ namespace HarmonyLibTests.Assets
 			}
 			log += ",end";
 			return;
-		ending:
+			ending:
 			log += ",fail";
 		}
 	}
@@ -529,7 +529,7 @@ namespace HarmonyLibTests.Assets
 		public static bool prefixed = false;
 
 #if NETCOREAPP2_0
-		public static bool Prefix(ref string __result,  int dummy)
+		public static bool Prefix(ref string __result, int dummy)
 		{
 			__result = "patched";
 			prefixed = true;

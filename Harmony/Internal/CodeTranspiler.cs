@@ -201,8 +201,8 @@ namespace HarmonyLib
 		internal static IEnumerable ConvertToGeneralInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
 			var type = transpiler.GetParameters()
-				  .Select(p => p.ParameterType)
-				  .FirstOrDefault(t => IsCodeInstructionsParameter(t));
+				.Select(p => p.ParameterType)
+				.FirstOrDefault(t => IsCodeInstructionsParameter(t));
 			if (type == typeof(IEnumerable<CodeInstruction>))
 			{
 				unassignedValues = null;
