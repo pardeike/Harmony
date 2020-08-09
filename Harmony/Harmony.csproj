@@ -25,6 +25,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>7.3</LangVersion>
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	</PropertyGroup>
 
 	<Choose>
@@ -48,22 +49,23 @@
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<Optimize>false</Optimize>
-		<DebugType>full</DebugType>
+		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<DefineConstants>DEBUG</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<Optimize>true</Optimize>
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
+	  <DefineConstants>TRACE;DEBUG</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.5.31.1">
-			<PrivateAssets Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">All</PrivateAssets>
-		</PackageReference>
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
@@ -87,6 +89,24 @@
 			<HintPath>..\libs\System.Reflection.Emit.Lightweight.dll</HintPath>
 			<Private>true</Private>
 		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="Mono.Cecil">
+	    <HintPath>..\..\MonoMod\MonoMod.Common\bin\Debug\net40\Mono.Cecil.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Mono.Cecil.Mdb">
+	    <HintPath>..\..\MonoMod\MonoMod.Common\bin\Debug\net40\Mono.Cecil.Mdb.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Mono.Cecil.Pdb">
+	    <HintPath>..\..\MonoMod\MonoMod.Common\bin\Debug\net40\Mono.Cecil.Pdb.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Mono.Cecil.Rocks">
+	    <HintPath>..\..\MonoMod\MonoMod.Common\bin\Debug\net40\Mono.Cecil.Rocks.dll</HintPath>
+	  </Reference>
+	  <Reference Include="MonoMod.Common">
+	    <HintPath>..\..\MonoMod\MonoMod.Common\bin\Debug\net40\MonoMod.Common.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
@@ -120,7 +140,7 @@
 			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
 		</PropertyGroup>
 		<ItemGroup>
-			<UnnecessaryDependencyFiles Include="$(WorkingDirectory)\*" Exclude="$(WorkingDirectory)\$(AssemblyName).*"/>
+			<UnnecessaryDependencyFiles Include="$(WorkingDirectory)\*" Exclude="$(WorkingDirectory)\$(AssemblyName).*" />
 		</ItemGroup>
 		<Delete Files="@(UnnecessaryDependencyFiles)" />
 	</Target>

@@ -95,6 +95,7 @@ namespace HarmonyLib
 
 		internal static string FormatArgument(object argument, string extra = null)
 		{
+			return argument.ToString().Trim();
 			if (argument == null) return "NULL";
 			var type = argument.GetType();
 

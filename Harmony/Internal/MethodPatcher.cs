@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using Mono.Cecil;
 
 namespace HarmonyLib
 {
@@ -115,7 +116,7 @@ namespace HarmonyLib
 				emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out _);
 			}
 
-			AddPrefixes(privateVars, runOriginalVariable);
+			AddPrefixes(privateVars, runOriginalVariable, original, source);
 			if (skipOriginalLabel.HasValue)
 			{
 				emitter.Emit(OpCodes.Ldloc, runOriginalVariable);
@@ -216,7 +217,16 @@ namespace HarmonyLib
 				FileLog.FlushBuffer();
 			}
 
-			return patch.Generate().Pin();
+			var generated = patch.Generate();
+
+			if (generated.IsGenericMethodDefinition)
+			{
+				return generated.MakeGenericMethod(typeof(object), typeof(object)).Pin();
+			}
+			else
+			{
+				return generated.Pin();
+			}
 		}
 
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
@@ -246,10 +256,12 @@ namespace HarmonyLib
 			var method = new DynamicMethodDefinition(
 				patchName,
 				returnType,
+				original.GetGenericArguments(),
 				parameterTypes.ToArray()
 			)
 			{
-				OwnerType = original.DeclaringType
+				OwnerType = original.DeclaringType,
+				Debug = true
 			};
 
 			var offset = (original.IsStatic ? 0 : 1) + (useStructReturnBuffer ? 1 : 0);
@@ -572,7 +584,7 @@ namespace HarmonyLib
 			});
 		}
 
-		void AddPrefixes(Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable)
+		void AddPrefixes(Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable, MethodBase original, MethodBase source)
 		{
 			prefixes
 				.Do(fix =>
@@ -588,7 +600,15 @@ namespace HarmonyLib
 					}
 
 					EmitCallParameter(fix, variables, false);
-					emitter.Emit(OpCodes.Call, fix);
+
+					if (fix.IsGenericMethodDefinition)
+					{
+						emitter.Emit(OpCodes.Call, fix.MakeGenericMethod((source ?? original).GetGenericArguments()));
+					}
+					else
+					{
+						emitter.Emit(OpCodes.Call, fix);
+					}
 
 					var returnType = fix.ReturnType;
 					if (returnType != typeof(void))

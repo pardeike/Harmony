@@ -152,7 +152,14 @@ namespace HarmonyLib
 
 			try
 			{
-				Memory.DetourMethodAndPersist(original, replacement);
+				if (original.IsGenericMethodDefinition)
+				{
+					Memory.DetourMethodAndPersist(((MethodInfo)original).MakeGenericMethod(typeof(object), typeof(object)), replacement);
+				}
+				else
+				{
+					Memory.DetourMethodAndPersist(original, replacement);
+				}
 			}
 			catch (Exception ex)
 			{
