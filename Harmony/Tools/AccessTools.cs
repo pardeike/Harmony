@@ -2,6 +2,7 @@ using MonoMod.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -1861,6 +1862,7 @@ namespace HarmonyLib
 		/// <param name="type">The type</param>
 		/// <returns>True if the type is static</returns>
 		///
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsStatic(Type type)
 		{
 			if (type is null)
@@ -1872,6 +1874,7 @@ namespace HarmonyLib
 		/// <param name="propertyInfo">The property</param>
 		/// <returns>True if the property is static</returns>
 		///
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsStatic(PropertyInfo propertyInfo)
 		{
 			if (propertyInfo is null)
@@ -1883,6 +1886,7 @@ namespace HarmonyLib
 		/// <param name="eventInfo">The event</param>
 		/// <returns>True if the event is static</returns>
 		///
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsStatic(EventInfo eventInfo)
 		{
 			if (eventInfo is null)
