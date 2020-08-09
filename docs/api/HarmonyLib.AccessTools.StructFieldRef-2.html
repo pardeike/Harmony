@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Delegate AccessTools.FieldRef&lt;F&gt;
+    <title>Delegate AccessTools.StructFieldRef&lt;T, F&gt;
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Delegate AccessTools.FieldRef&lt;F&gt;
+    <meta name="title" content="Delegate AccessTools.StructFieldRef&lt;T, F&gt;
    ">
     <meta name="generator" content="docfx 2.56.2.0">
     
@@ -68,20 +68,39 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.AccessTools.FieldRef`1">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.AccessTools.StructFieldRef`2">
   
   
-  <h1 id="HarmonyLib_AccessTools_FieldRef_1" data-uid="HarmonyLib.AccessTools.FieldRef`1" class="text-break">Delegate AccessTools.FieldRef&lt;F&gt;
+  <h1 id="HarmonyLib_AccessTools_StructFieldRef_2" data-uid="HarmonyLib.AccessTools.StructFieldRef`2" class="text-break">Delegate AccessTools.StructFieldRef&lt;T, F&gt;
   </h1>
-  <div class="markdown level0 summary"><p>A readable/assignable reference delegate to a static field</p>
+  <div class="markdown level0 summary"><p>A readable/assignable reference delegate to an instance field of a struct</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_AccessTools_FieldRef_1_syntax">Syntax</h5>
+  <h5 id="HarmonyLib_AccessTools_StructFieldRef_2_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public delegate F FieldRef&lt;F&gt;();</code></pre>
+    <pre><code class="lang-csharp hljs">public delegate F StructFieldRef&lt;T, F&gt;(ref T instance)
+    where T : struct;</code></pre>
   </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td><span class="parametername">instance</span></td>
+        <td><p>A reference to the runtime instance to access the field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
@@ -108,6 +127,11 @@
     </thead>
     <tbody>
       <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The struct that defines the instance field</p>
+</td>
+      </tr>
+      <tr>
         <td><span class="parametername">F</span></td>
         <td><p>The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
 a type that <span class="xref">System.Type.IsAssignableFrom(System.Type)</span> the field's type</p>
@@ -123,10 +147,10 @@ a type that <span class="xref">System.Type.IsAssignableFrom(System.Type)</span> 
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_FieldRef_1.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.FieldRef%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_StructFieldRef_2.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.StructFieldRef%602%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1216" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1076" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

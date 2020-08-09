@@ -192,7 +192,7 @@ namespace HarmonyLibTests
 			Assert.Null(AccessTools.DeclaredField(structType, "unknown"));
 
 			var interfaceType = typeof(IAccessToolsType);
-			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Field(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.Field(interfaceType, "unknown"));
 			Assert.Null(AccessTools.DeclaredField(interfaceType, "unknown"));
 		}
 
@@ -236,7 +236,7 @@ namespace HarmonyLibTests
 			var interfaceType = typeof(IAccessToolsType);
 			Assert.NotNull(AccessTools.Property(interfaceType, "Property1"));
 			Assert.NotNull(AccessTools.DeclaredProperty(interfaceType, "Property1"));
-			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Property(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.Property(interfaceType, "unknown"));
 			Assert.Null(AccessTools.DeclaredProperty(interfaceType, "unknown"));
 		}
 
@@ -311,7 +311,7 @@ namespace HarmonyLibTests
 			var interfaceType = typeof(IAccessToolsType);
 			Assert.NotNull(AccessTools.Method(interfaceType, "Method1"));
 			Assert.NotNull(AccessTools.DeclaredMethod(interfaceType, "Method1"));
-			Assert.Throws(typeof(NullReferenceException), () => AccessTools.Method(interfaceType, "unknown")); // TODO: should return null, not throw NRE
+			Assert.Null(AccessTools.Method(interfaceType, "unknown"));
 			Assert.Null(AccessTools.DeclaredMethod(interfaceType, "unknown"));
 		}
 

@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.html",
-          "hash": "P6lnYwXj5yNQixt99At04A=="
+          "hash": "fA0gIJ8tKyhn59NnFnwqJw=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,19 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-2.html",
-          "hash": "2YsWvP4VMl8/LrVwvPxFMw=="
+          "hash": "QYMlQ1KiNJgmBpo7bq06aw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.AccessTools.StructFieldRef-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.AccessTools.StructFieldRef-2.html",
+          "hash": "jcCLaurs7sDHcpMcBTQLqw=="
         }
       },
       "is_incremental": false,
@@ -33,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.html",
-          "hash": "rkWb+W5qwhFO/AvlzExVcw=="
+          "hash": "J459Gz45tZdqoB1NzKZoVQ=="
         }
       },
       "is_incremental": false,
@@ -717,7 +729,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.html",
-          "hash": "By8NlcFNxDXkKBTzIDWOHg=="
+          "hash": "SFhpDnTidYWw60+t2rZpTA=="
         }
       },
       "is_incremental": false,
@@ -741,7 +753,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "kJmGe2yY83ka34zL7PkMmg=="
+          "hash": "HwdvN9Jgn3A3U0Wko+prZA=="
         }
       },
       "is_incremental": false,
@@ -1043,7 +1055,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 60,
+          "total_file_count": 61,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

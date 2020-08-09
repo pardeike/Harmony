@@ -243,10 +243,13 @@ similar to Mono.Cecil's OptionalModifierType / RequiredModifierType and C#'s mod
     <h3 id="delegates">Delegates
   </h3>
       <h4><a class="xref" href="HarmonyLib.AccessTools.FieldRef-1.html">AccessTools.FieldRef&lt;F&gt;</a></h4>
-      <section><p>A read/writable reference delegate to a static field</p>
+      <section><p>A readable/assignable reference delegate to a static field</p>
 </section>
       <h4><a class="xref" href="HarmonyLib.AccessTools.FieldRef-2.html">AccessTools.FieldRef&lt;T, F&gt;</a></h4>
-      <section><p>A read/writable reference to an instance field</p>
+      <section><p>A readable/assignable reference delegate to an instance field of a class or static field (NOT an instance field of a struct)</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.AccessTools.StructFieldRef-2.html">AccessTools.StructFieldRef&lt;T, F&gt;</a></h4>
+      <section><p>A readable/assignable reference delegate to an instance field of a struct</p>
 </section>
       <h4><a class="xref" href="HarmonyLib.FastInvokeHandler.html">FastInvokeHandler</a></h4>
       <section><p>A delegate to invoke a method</p>
