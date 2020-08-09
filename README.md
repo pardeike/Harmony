@@ -55,19 +55,16 @@ Harmony 1 is deprecated and not under active development anymore. The latest ver
 	<a href="https://harmony.pardeike.net">
 		<img src="https://img.shields.io/badge/documentation-%F0%9F%94%8D-blue?style=flat" />
 	</a>
-	<a href="../../blob/master/LICENSE">
-		<img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" />
-	</a>
 </p>
 <p align="center">
 	<a href="https://dev.azure.com/pardeike/Harmony/_build">
 		<img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Build%20and%20test" />
 	</a>
-	<a href="https://travis-ci.org/pardeike/Harmony">
-		<img src="https://img.shields.io/travis/pardeike/Harmony/master.svg?logo=travis&label=travis:master" /> 
+	<a href="https://discord.gg/xXgghXR">
+		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat&logo=discord&label=discord" />
 	</a>
-	<a href="https://ci.appveyor.com/project/pardeike/harmony">
-		<img src="https://img.shields.io/appveyor/ci/pardeike/Harmony/master.svg?logo=appveyor&label=appveyor:master" /> 
+	<a href="../../blob/master/LICENSE">
+		<img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" />
 	</a>
 </p>
 <p align="center">
@@ -76,8 +73,5 @@ Harmony 1 is deprecated and not under active development anymore. The latest ver
 	</a>
 	<a href="https://twitter.com/pardeike">
 		<img src="https://img.shields.io/badge/twitter-@pardeike-blue.svg?style=flat&logo=twitter" />
-	</a>
-	<a href="https://discord.gg/xXgghXR">
-		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat&logo=discord&label=discord" />
 	</a>
 </p>
