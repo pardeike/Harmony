@@ -23,7 +23,7 @@ namespace Basics
 			// or buffered:
 			FileLog.LogBuffered("A");
 			FileLog.LogBuffered("B");
-			FileLog.FlushBuffer(); // don't forget to flush
+			FileLog.FlushBuffer(); /* don't forget to flush */
 			// </log>
 
 			// <patch_annotation>

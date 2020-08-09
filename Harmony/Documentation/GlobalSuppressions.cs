@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0060:Remove unused parameter")]
 [assembly: SuppressMessage("Style", "IDE0044:Add readonly modifier")]
 [assembly: SuppressMessage("Style", "IDE0062:")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value")]
 
 [assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
 

@@ -104,7 +104,7 @@
 // or buffered:
 FileLog.LogBuffered(&quot;A&quot;);
 FileLog.LogBuffered(&quot;B&quot;);
-FileLog.FlushBuffer(); // don't forget to flush
+FileLog.FlushBuffer(); /* don't forget to flush */
 </code></pre><h3 id="patching-using-annotations">Patching using annotations</h3>
 <p>If you prefer annotations to organize your patches, you instruct Harmony to search for them by using <code>PatchAll()</code>:</p>
 <pre><code class="lang-csharp" name="example">var assembly = Assembly.GetExecutingAssembly();

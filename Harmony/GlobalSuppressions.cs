@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Scope = "member", Target = "~M:HarmonyLib.HarmonySharedState.GetState~System.Collections.Generic.Dictionary{System.Reflection.MethodBase,System.Byte[]}")]
 [assembly: SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:HarmonyLib.ReversePatcher.Patch(HarmonyLib.HarmonyReversePatchType)")]
 [assembly: SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "<Pending>", Scope = "type", Target = "~T:HarmonyLib.Patch")]
 [assembly: SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "<Pending>", Scope = "type", Target = "~T:HarmonyLib.InlineSignature.ModifierType")]
