@@ -65,12 +65,12 @@ namespace HarmonyLib
 
 				if ((first & 0x40) == 0)
 					return ((uint)(first & ~0x80) << 8)
-						 | reader.ReadByte();
+						| reader.ReadByte();
 
 				return ((uint)(first & ~0xc0) << 24)
-					 | (uint)reader.ReadByte() << 16
-					 | (uint)reader.ReadByte() << 8
-					 | reader.ReadByte();
+					| (uint)reader.ReadByte() << 16
+					| (uint)reader.ReadByte() << 8
+					| reader.ReadByte();
 			}
 
 

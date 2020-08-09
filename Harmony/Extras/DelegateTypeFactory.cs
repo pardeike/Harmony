@@ -30,15 +30,15 @@ namespace HarmonyLib
 			var typeBuilder = module.DefineType($"HarmonyDTFType{counter}", attr, typeof(MulticastDelegate));
 
 			var constructor = typeBuilder.DefineConstructor(
-				 MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public,
-				 CallingConventions.Standard, new[] { typeof(object), typeof(IntPtr) });
+				MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public,
+				CallingConventions.Standard, new[] { typeof(object), typeof(IntPtr) });
 			constructor.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
 			var parameters = method.GetParameters();
 
 			var invokeMethod = typeBuilder.DefineMethod(
-				 "Invoke", MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Public,
-				 method.ReturnType, parameters.Types());
+				"Invoke", MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Public,
+				method.ReturnType, parameters.Types());
 			invokeMethod.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
 			for (var i = 0; i < parameters.Length; i++)

@@ -52,15 +52,15 @@ namespace HarmonyLib
 			module.Types.Add(typedef);
 
 			typedef.Fields.Add(new FieldDefinition(
-				 "state",
-				 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
-				 module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
+				"state",
+				Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+				module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
 			));
 
 			var versionFieldDef = new FieldDefinition(
-				 "version",
-				 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
-				 module.ImportReference(typeof(int))
+				"version",
+				Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+				module.ImportReference(typeof(int))
 			)
 			{ Constant = internalVersion };
 			typedef.Fields.Add(versionFieldDef);
