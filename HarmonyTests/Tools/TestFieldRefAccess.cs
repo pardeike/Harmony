@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -656,6 +657,150 @@ namespace HarmonyLibTests
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
 					field, "field4test", expectedCaseToConstraint);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IEnumerable<string>>(
+					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
+			});
+		}
+
+
+		[Test]
+		public void Test_ClassInstance_PrivateClassFieldType()
+		{
+			Assert.Multiple(() =>
+			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field5");
+				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
+				// Type of field is AccessToolsClass.Inner, which is a private class.
+				IInner TestValue()
+				{
+					return AccessToolsClass.NewInner(987);
+				}
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IInner>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsClass, IInner>(
+					field, TestValue(), FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, AccessToolsClass, IInner>(
+					field, TestValue(), FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, IInner>(
+					field, TestValue(), IncompatibleInstanceType(expectedCaseToConstraint));
+				TestSuite_Class<string, string, IInner>(
+					field, TestValue(), IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<int, IInner>(
+					field, TestValue(), expectedCaseToConstraint_ClassInstance_StructT);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
+					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
+			});
+		}
+
+		[Test]
+		public void Test_ClassInstance_ArrayOfPrivateClassFieldType()
+		{
+			Assert.Multiple(() =>
+			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field6");
+				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
+				// Type of field is AccessToolsClass.Inner[], the element type of which is a private class.
+				IList TestValue()
+				{
+					// IInner[] can't be cast to AccessTools.Inner[], so must create an actual AccessTools.Inner[].
+					var array = (IList)Array.CreateInstance(AccessTools.Inner(typeof(AccessToolsClass), "Inner"), 2);
+					array[0] = AccessToolsClass.NewInner(123);
+					array[1] = AccessToolsClass.NewInner(456);
+					return array;
+				}
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IList>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsClass, IList>(
+					field, TestValue(), FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, AccessToolsClass, IList>(
+					field, TestValue(), FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, IList>(
+					field, TestValue(), IncompatibleInstanceType(expectedCaseToConstraint));
+				TestSuite_Class<string, string, IList>(
+					field, TestValue(), IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<int, IList>(
+					field, TestValue(), expectedCaseToConstraint_ClassInstance_StructT);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IInner[]>(
+					field, (IInner[])TestValue(), expectedCaseToConstraint); // AccessTools.Inner[] can be cast to IInner[]
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IList>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
+					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
+			});
+		}
+
+		[Test]
+		public void Test_ClassInstance_PrivateStructFieldType()
+		{
+			Assert.Multiple(() =>
+			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field7");
+				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
+				// Type of field is AccessToolsClass.InnerStruct, which is a private struct.
+				// As it's a value type and references cannot be made to boxed value type instances, FieldRefValue will never work. 
+				IInner TestValue()
+				{
+					return AccessToolsClass.NewInnerStruct(-987);
+				}
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IInner>(
+					field, TestValue(), IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<int, IInner>(
+					field, TestValue(), expectedCaseToConstraint_ClassInstance_StructT);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+					field, TestValue(), IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, ValueType>(
+					field, (ValueType)TestValue(), IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
+			});
+		}
+
+		[Test]
+		public void Test_ClassInstance_ListOfPrivateStructFieldType()
+		{
+			Assert.Multiple(() =>
+			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field8");
+				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
+				// Type of field is List<AccessToolsClass.Inner>, the element type of which is a private struct.
+				// Although AccessToolsClass.Inner is a value type, List is not, so FieldRefValue works normally.
+				IList TestValue()
+				{
+					// List<IInner> can't be cast to List<AccessTools.Inner>, so must create an actual List<AccessTools.Inner>.
+					var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AccessTools.Inner(typeof(AccessToolsClass), "InnerStruct")));
+					_ = list.Add(AccessToolsClass.NewInnerStruct(-123));
+					_ = list.Add(AccessToolsClass.NewInnerStruct(-456));
+					return list;
+				}
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IList>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsClass, IList>(
+					field, TestValue(), FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, AccessToolsClass, IList>(
+					field, TestValue(), FieldMissingOnTypeT(expectedCaseToConstraint));
+				TestSuite_Class<object, string, IList>(
+					field, TestValue(), IncompatibleInstanceType(expectedCaseToConstraint));
+				TestSuite_Class<string, string, IList>(
+					field, TestValue(), IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<int, IList>(
+					field, TestValue(), expectedCaseToConstraint_ClassInstance_StructT);
+				// List<T> is invariant - List<AccessTools.Inner> cannot be cast to List<IInner> nor vice versa,
+				// so can't do TestSuite_Class<AccessToolsClass, AccessToolsClass, List<IInner>(...).
+				Assert.That(TestValue(), Is.Not.InstanceOf(typeof(List<IInner>)));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IList>(
+					field, TestValue(), expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
 					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
 					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));

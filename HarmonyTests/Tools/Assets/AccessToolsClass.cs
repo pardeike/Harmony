@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HarmonyLib;
 
 namespace HarmonyLibTests.Assets
@@ -11,11 +12,39 @@ namespace HarmonyLibTests.Assets
 		string Method1();
 	}
 
+	public interface IInner { }
+
 #pragma warning disable CS0169, CS0414, IDE0044, IDE0051, IDE0052
 	public class AccessToolsClass : IAccessToolsType
 	{
-		class Inner
+		private class Inner : IInner
 		{
+			public int x;
+
+			public override string ToString()
+			{
+				return x.ToString();
+			}
+		}
+
+		public static IInner NewInner(int x)
+		{
+			return new Inner { x = x };
+		}
+
+		private struct InnerStruct : IInner
+		{
+			public int x;
+
+			public override string ToString()
+			{
+				return x.ToString();
+			}
+		}
+
+		public static IInner NewInnerStruct(int x)
+		{
+			return new InnerStruct { x = x };
 		}
 
 		protected string field1 = "field1orig";
@@ -25,6 +54,10 @@ namespace HarmonyLibTests.Assets
 		// https://docs.microsoft.com/en-us/dotnet/core/compatibility/corefx#fieldinfosetvalue-throws-exception-for-static-init-only-fields
 		// As of .NET Core 3.1, the FieldRef delegates can change static readonly fields, so all resetting happens in the unit tests themselves.
 		private static readonly string field4 = "field4orig";
+		private Inner field5 = new Inner { x = 999 };
+		private Inner[] field6 = new Inner[] { new Inner { x = 11 }, new Inner { x = 22 } };
+		private InnerStruct field7 = new InnerStruct { x = 999 };
+		private List<InnerStruct> field8 = new List<InnerStruct> { new InnerStruct { x = 11 }, new InnerStruct { x = 22 } };
 
 		private int _property = 314159;
 
