@@ -73,44 +73,43 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Applies a function going up the type hierarchy and stops at the first non null result</summary>
+		/// <summary>Applies a function going up the type hierarchy and stops at the first non-<c>null</c> result</summary>
 		/// <typeparam name="T">Result type of func()</typeparam>
 		/// <param name="type">The class/type to start with</param>
 		/// <param name="func">The evaluation function returning T</param>
-		/// <returns>Returns the first non null result or <c>default(T)</c> when reaching the top level type object</returns>
+		/// <returns>The first non-<c>null</c> result, or <c>null</c> if no match</returns>
+		/// <remarks>
+		/// The type hierarchy of a class or value type (including struct) does NOT include implemented interfaces,
+		/// and the type hierarchy of an interface is only itself (regardless of whether that interface implements other interfaces).
+		/// The top-most type in the type hierarchy of all non-interface types (including value types) is <see cref="object"/>.
+		/// </remarks>
 		///
 		public static T FindIncludingBaseTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
 			while (true)
 			{
 				var result = func(type);
-#pragma warning disable RECS0017
 				if (result != null) return result;
-#pragma warning restore RECS0017
-				if (type == typeof(object)) return default;
 				type = type.BaseType;
+				if (type is null) return null;
 			}
 		}
 
-		/// <summary>Applies a function going into inner types and stops at the first non null result</summary>
+		/// <summary>Applies a function going into inner types and stops at the first non-<c>null</c> result</summary>
 		/// <typeparam name="T">Generic type parameter</typeparam>
 		/// <param name="type">The class/type to start with</param>
 		/// <param name="func">The evaluation function returning T</param>
-		/// <returns>Returns the first non null result or null with no match</returns>
+		/// <returns>The first non-<c>null</c> result, or <c>null</c> if no match</returns>
 		///
 		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
 			var result = func(type);
-#pragma warning disable RECS0017
 			if (result != null) return result;
-#pragma warning restore RECS0017
 			foreach (var subType in type.GetNestedTypes(all))
 			{
 				result = FindIncludingInnerTypes(subType, func);
-#pragma warning disable RECS0017
 				if (result != null)
 					break;
-#pragma warning restore RECS0017
 			}
 			return result;
 		}
@@ -134,10 +133,10 @@ namespace HarmonyLib
 					FileLog.Log("AccessTools.DeclaredField: name is null");
 				return null;
 			}
-			var field = type.GetField(name, allDeclared);
-			if (field == null && Harmony.DEBUG)
+			var fieldInfo = type.GetField(name, allDeclared);
+			if (fieldInfo == null && Harmony.DEBUG)
 				FileLog.Log($"AccessTools.DeclaredField: Could not find field for type {type} and name {name}");
-			return field;
+			return fieldInfo;
 		}
 
 		/// <summary>Gets the reflection information for a field by searching the type and all its super types</summary>
@@ -159,10 +158,10 @@ namespace HarmonyLib
 					FileLog.Log("AccessTools.Field: name is null");
 				return null;
 			}
-			var field = FindIncludingBaseTypes(type, t => t.GetField(name, all));
-			if (field == null && Harmony.DEBUG)
+			var fieldInfo = FindIncludingBaseTypes(type, t => t.GetField(name, all));
+			if (fieldInfo == null && Harmony.DEBUG)
 				FileLog.Log($"AccessTools.Field: Could not find field for type {type} and name {name}");
-			return field;
+			return fieldInfo;
 		}
 
 		/// <summary>Gets the reflection information for a field</summary>
@@ -178,10 +177,10 @@ namespace HarmonyLib
 					FileLog.Log("AccessTools.DeclaredField: type is null");
 				return null;
 			}
-			var field = GetDeclaredFields(type).ElementAtOrDefault(idx);
-			if (field == null && Harmony.DEBUG)
+			var fieldInfo = GetDeclaredFields(type).ElementAtOrDefault(idx);
+			if (fieldInfo == null && Harmony.DEBUG)
 				FileLog.Log($"AccessTools.DeclaredField: Could not find field for type {type} and idx {idx}");
-			return field;
+			return fieldInfo;
 		}
 
 		/// <summary>Gets the reflection information for a directly declared property</summary>
@@ -346,10 +345,9 @@ namespace HarmonyLib
 				catch (AmbiguousMatchException ex)
 				{
 					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, new Type[0], modifiers));
-
 					if (result == null)
 					{
-						throw new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}." + ex);
+						throw new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}", ex);
 					}
 				}
 			}
@@ -784,30 +782,69 @@ namespace HarmonyLib
 			}).ToArray();
 		}
 
-		/// <summary>A read/writable reference to an instance field</summary>
-		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
-		/// <typeparam name="F">The type of the field</typeparam>
-		/// <param name="obj">The runtime instance to access the field (leave empty for static fields)</param>
-		/// <returns>An readable/assignable object representing the field</returns>
+		/// <summary>A readable/assignable reference delegate to an instance field of a class or static field (NOT an instance field of a struct)</summary>
+		/// <typeparam name="T">
+		/// An arbitrary type if the field is static; otherwise the class that defines the field, or a parent class (including <see cref="object"/>),
+		/// implemented interface, or derived class of this type
+		/// </typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="instance">The runtime instance to access the field (ignored and can be omitted for static fields)</param>
+		/// <returns>A readable/assignable reference to the field</returns>
+		/// <exception cref="NullReferenceException">Null instance passed to a non-static field ref delegate</exception>
+		/// <exception cref="InvalidCastException">
+		/// Instance of invalid type passed to a non-static field ref delegate
+		/// (this can happen if <typeparamref name="T"/> is a parent class or interface of the field's declaring type)
+		/// </exception>
+		/// <remarks>
+		/// <para>
+		/// This delegate cannot be used for instance fields of structs, since a struct instance passed to the delegate would be passed by
+		/// value and thus would be a copy that only exists within the delegate's invocation. This is fine for a readonly reference,
+		/// but makes assignment futile. Use <see cref="StructFieldRef{T, F}"/> instead.
+		/// </para>
+		/// <para>
+		/// Note that <typeparamref name="T"/> is not required to be the field's declaring type. It can be a parent class (including <see cref="object"/>),
+		/// implemented interface, or a derived class of the field's declaring type ("<c>instanceOfT is FieldDeclaringType</c>" must be possible).
+		/// Specifically, <typeparamref name="F"/> must be <see cref="Type.IsAssignableFrom(Type)">assignable from</see> OR to the field's declaring type.
+		/// Technically, this allows <c>Nullable</c>, although <c>Nullable</c> is only relevant for structs, and since only static fields of structs
+		/// are allowed for this delegate, and the instance passed to such a delegate is ignored, this hardly matters.
+		/// </para>
+		/// <para>
+		/// Similarly, <typeparamref name="F"/> is not required to be the field's field type, unless that type is a value type.
+		/// It can be a parent class (including <c>object</c>) or implemented interface of the field's field type. It cannot be a derived class.
+		/// This variance is not allowed for value types, since that would require boxing/unboxing, which is not allowed for ref values.
+		/// Specifically, for reference types, <typeparamref name="F"/> must be <see cref="Type.IsAssignableFrom(Type)">assignable from</see>
+		/// the field's field type; and for value types, <typeparamref name="F"/> must be exactly the field's field type.
+		/// </para>
+		/// <para>
+		/// This delegate supports static fields, even those defined in structs, for legacy reasons.
+		/// For such static fields, <typeparamref name="T"/> is effectively ignored.
+		/// This is also the reason that this delegate lacks a generic class constraint (it was added to certain <c>FieldRefAccess</c> methods,
+		/// but such a constraint cannot be added to this delegate without breaking binary compatibility).
+		/// Consider using <see cref="FieldRef{F}"/> (and <c>StaticFieldRefAccess</c> methods that return it) instead for static fields.
+		/// </para>
+		/// </remarks>
 		///
-		public delegate ref F FieldRef<T, F>(T obj = default);
+		public delegate ref F FieldRef<T, F>(T instance = default);
 
-		/// <summary>Creates an instance field reference</summary>
-		/// <typeparam name="T">The class the field is defined in</typeparam>
-		/// <typeparam name="F">The type of the field</typeparam>
+		/// <summary>Creates a field reference delegate for an instance field of a class</summary>
+		/// <typeparam name="T">The class that defines the instance field, or derived class of this type</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>A read and writable field reference delegate</returns>
+		/// <returns>A readable/assignable <see cref="FieldRef{T,F}"/> delegate</returns>
 		///
-		public static FieldRef<T, F> FieldRefAccess<T, F>(string fieldName)
+		public static FieldRef<T, F> FieldRefAccess<T, F>(string fieldName) where T : class
 		{
-			const BindingFlags bf = BindingFlags.NonPublic |
-											BindingFlags.Instance |
-											BindingFlags.DeclaredOnly;
-
+			if (fieldName is null)
+				throw new ArgumentNullException(nameof(fieldName));
 			try
 			{
-				var fi = typeof(T).GetField(fieldName, bf);
-				return FieldRefAccess<T, F>(fi);
+				return FieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName), needCastclass: false);
 			}
 			catch (Exception ex)
 			{
@@ -815,62 +852,377 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Creates an instance field reference for a specific instance</summary>
-		/// <typeparam name="T">The class the field is defined in</typeparam>
-		/// <typeparam name="F">The type of the field</typeparam>
+		/// <summary>Creates an instance field reference for a specific instance of a class</summary>
+		/// <typeparam name="T">The class that defines the instance field, or derived class of this type</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>An readable/assignable object representing the field</returns>
+		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="FieldRefAccess{T, F}(string)"/> instead.
+		/// <c>FieldRefAccess&lt;T, F&gt;(instance, fieldName)</c> is functionally equivalent to <c>FieldRefAccess&lt;T, F&gt;(fieldName)(instance)</c>.
+		/// </para>
+		/// </remarks>
 		///
-		public static ref F FieldRefAccess<T, F>(T instance, string fieldName)
+		public static ref F FieldRefAccess<T, F>(T instance, string fieldName) where T : class
 		{
-			return ref FieldRefAccess<T, F>(fieldName)(instance);
+			if (instance is null)
+				throw new ArgumentNullException(nameof(instance));
+			if (fieldName is null)
+				throw new ArgumentNullException(nameof(fieldName));
+			try
+			{
+				return ref FieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName), needCastclass: false)(instance);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"FieldRefAccess<{typeof(T)}, {typeof(F)}> for {instance}, {fieldName} caused an exception", ex);
+			}
 		}
 
-		/// <summary>Creates an instance field reference delegate for a private type</summary>
-		/// <typeparam name="F">The type of the field</typeparam>
-		/// <param name="type">The class/type</param>
+		/// <summary>Creates a field reference delegate for an instance field of a class or static field (NOT an instance field of a struct)</summary>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="type">
+		/// The type that defines the field, or derived class of this type; must not be a struct type unless the field is static
+		/// </param>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>A read and writable <see cref="FieldRef{T,F}"/> delegate</returns>
+		/// <returns>
+		/// A readable/assignable <see cref="FieldRef{T,F}"/> delegate with <c>T=object</c>
+		/// (for static fields, the <c>instance</c> delegate parameter is ignored)
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for cases where the given type is only known at runtime and thus can't be used as a type parameter <c>T</c>
+		/// in e.g. <see cref="FieldRefAccess{T, F}(string)"/>.
+		/// </para>
+		/// <para>
+		/// This method supports static fields, even those defined in structs, for legacy reasons.
+		/// Consider using <see cref="StaticFieldRefAccess{F}(Type, string)"/> (and other overloads) instead for static fields.
+		/// </para>
+		/// </remarks>
 		///
 		public static FieldRef<object, F> FieldRefAccess<F>(Type type, string fieldName)
 		{
-			return FieldRefAccess<object, F>(Field(type, fieldName));
+			if (type is null)
+				throw new ArgumentNullException(nameof(type));
+			if (fieldName is null)
+				throw new ArgumentNullException(nameof(fieldName));
+			try
+			{
+				var fieldInfo = Field(type, fieldName);
+				if (fieldInfo is null)
+					throw new MissingFieldException(type.Name, fieldName);
+				// Backwards compatibility: This supports static fields, even those defined in structs. For static fields, T is effectively ignored.
+				if (fieldInfo.IsStatic is false && fieldInfo.DeclaringType is Type declaringType)
+				{
+					// When fieldInfo is passed to FieldRefAccess methods, the T generic class constraint is insufficient to ensure that
+					// the field is not a struct instance field, since T could be object, ValueType, or an interface that the struct implements.
+					if (declaringType.IsValueType)
+						throw new ArgumentException("Either FieldDeclaringType must be a class or field must be static");
+				}
+				// Field's declaring type cannot be object, since object has no fields, so always need a castclass for T=object.
+				return FieldRefAccessInternal<object, F>(fieldInfo, needCastclass: true);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"FieldRefAccess<{typeof(F)}> for {type}, {fieldName} caused an exception", ex);
+			}
 		}
 
-		/// <summary>Creates an instance field reference delegate for a fieldinfo</summary>
-		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
-		/// <typeparam name="F">The type of the field</typeparam>
-		/// <param name="fieldInfo">The field of the field</param>
-		/// <returns>A read and writable <see cref="FieldRef{T,F}"/> delegate</returns>
+		/// <summary>Creates a field reference delegate for an instance field of a class or static field (NOT an instance field of a struct)</summary>
+		/// <typeparam name="T">
+		/// An arbitrary type if the field is static; otherwise the class that defines the field, or a parent class (including <see cref="object"/>),
+		/// implemented interface, or derived class of this type ("<c>instanceOfT is FieldDeclaringType</c>" must be possible)
+		/// </typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="fieldInfo">The field</param>
+		/// <returns>A readable/assignable <see cref="FieldRef{T,F}"/> delegate</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for cases where the field has already been obtained, avoiding the field searching cost in
+		/// e.g. <see cref="FieldRefAccess{T, F}(string)"/>.
+		/// </para>
+		/// <para>
+		/// This method supports static fields, even those defined in structs, for legacy reasons.
+		/// For such static fields, <typeparamref name="T"/> is effectively ignored.
+		/// Consider using <see cref="StaticFieldRefAccess{T, F}(FieldInfo)"/> (and other overloads) instead for static fields.
+		/// </para>
+		/// </remarks>
 		///
-		public static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo)
+		public static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo) where T : class
 		{
-			if (fieldInfo == null)
+			if (fieldInfo is null)
 				throw new ArgumentNullException(nameof(fieldInfo));
-			if (!typeof(F).IsAssignableFrom(fieldInfo.FieldType))
-				throw new ArgumentException("FieldInfo type does not match FieldRefAccess return type.");
-			if (typeof(T) != typeof(object))
-				if (fieldInfo.DeclaringType == null || !fieldInfo.DeclaringType.IsAssignableFrom(typeof(T)))
-					throw new MissingFieldException(typeof(T).Name, fieldInfo.Name);
+			try
+			{
+				var needCastclass = false;
+				// Backwards compatibility: FieldRefAccess<F>(Type type, string fieldName) used to delegate to this method,
+				// and thus this method must support the same cases - namely, static fields. For static fields, T is effectively ignored.
+				if (fieldInfo.IsStatic is false && fieldInfo.DeclaringType is Type declaringType)
+				{
+					// When fieldInfo is passed to FieldRefAccess methods, the T generic class constraint is insufficient to ensure that
+					// the field is not a struct instance field, since T could be object, ValueType, or an interface that the struct implements.
+					if (declaringType.IsValueType)
+						throw new ArgumentException("Either FieldDeclaringType must be a class or field must be static");
+					needCastclass = FieldRefNeedsClasscast(typeof(T), declaringType);
+				}
+				return FieldRefAccessInternal<T, F>(fieldInfo, needCastclass);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"FieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldInfo} caused an exception", ex);
+			}
+		}
 
-			var s_name = $"__refget_{typeof(T).Name}_fi_{fieldInfo.Name}";
+		/// <summary>Creates a field reference for an instance field of a class</summary>
+		/// <typeparam name="T">
+		/// The type that defines the field; or a parent class (including <see cref="object"/>), implemented interface, or derived class of this type
+		/// ("<c>instanceOfT is FieldDeclaringType</c>" must be possible)
+		/// </typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="instance">The instance</param>
+		/// <param name="fieldInfo">The field</param>
+		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance and where the field has already been obtained.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="FieldRefAccess{T, F}(FieldInfo)"/> instead.
+		/// <c>FieldRefAccess&lt;T, F&gt;(instance, fieldInfo)</c> is functionally equivalent to <c>FieldRefAccess&lt;T, F&gt;(fieldInfo)(instance)</c>.
+		/// </para>
+		/// </remarks>
+		///
+		public static ref F FieldRefAccess<T, F>(T instance, FieldInfo fieldInfo) where T : class
+		{
+			if (instance is null)
+				throw new ArgumentNullException(nameof(instance));
+			if (fieldInfo is null)
+				throw new ArgumentNullException(nameof(fieldInfo));
+			try
+			{
+				if (fieldInfo.IsStatic)
+					throw new ArgumentException("Field must not be static");
+				var needCastclass = false;
+				if (fieldInfo.DeclaringType is Type declaringType)
+				{
+					// When fieldInfo is passed to FieldRefAccess methods, the T generic class constraint is insufficient to ensure that
+					// the field is not a struct instance field, since T could be object, ValueType, or an interface that the struct implements.
+					if (declaringType.IsValueType)
+						throw new ArgumentException("FieldDeclaringType must be a class");
+					needCastclass = FieldRefNeedsClasscast(typeof(T), declaringType);
+				}
+				return ref FieldRefAccessInternal<T, F>(fieldInfo, needCastclass)(instance);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"FieldRefAccess<{typeof(T)}, {typeof(F)}> for {instance}, {fieldInfo} caused an exception", ex);
+			}
+		}
 
-			var dm = new DynamicMethodDefinition(s_name, typeof(F).MakeByRefType(), new[] { typeof(T) });
+		static FieldRef<T, F> FieldRefAccessInternal<T, F>(FieldInfo fieldInfo, bool needCastclass) where T : class
+		{
+			ValidateFieldType<F>(fieldInfo);
+			var delegateInstanceType = typeof(T);
+			var declaringType = fieldInfo.DeclaringType;
+
+			var dm = new DynamicMethodDefinition($"__refget_{delegateInstanceType.Name}_fi_{fieldInfo.Name}",
+				typeof(F).MakeByRefType(), new[] { delegateInstanceType });
+
+			var il = dm.GetILGenerator();
+			// Backwards compatibility: This supports static fields, even those defined in structs.
+			if (fieldInfo.IsStatic)
+			{
+				// ldarg.0 + ldflda actually works for static fields, but the potential castclass (and InvalidCastException) below must be avoided
+				// so might as well use the singular ldsflda for static fields.
+				il.Emit(OpCodes.Ldsflda, fieldInfo);
+			}
+			else
+			{
+				il.Emit(OpCodes.Ldarg_0);
+				// The castclass is needed when T is a parent class or interface of declaring type (e.g. if T is object),
+				// since there's no guarantee the instance passed to the delegate is actually of the declaring type.
+				// In such a situation, the castclass will throw an InvalidCastException and thus prevent undefined behavior.
+				if (needCastclass)
+					il.Emit(OpCodes.Castclass, declaringType);
+				il.Emit(OpCodes.Ldflda, fieldInfo);
+			}
+			il.Emit(OpCodes.Ret);
+
+			return (FieldRef<T, F>)dm.Generate().CreateDelegate(typeof(FieldRef<T, F>));
+		}
+
+		/// <summary>A readable/assignable reference delegate to an instance field of a struct</summary>
+		/// <typeparam name="T">The struct that defines the instance field</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="instance">A reference to the runtime instance to access the field</param>
+		/// <returns>A readable/assignable reference to the field</returns>
+		///
+		public delegate ref F StructFieldRef<T, F>(ref T instance) where T : struct;
+
+		/// <summary>Creates a field reference delegate for an instance field of a struct</summary>
+		/// <typeparam name="T">The struct that defines the instance field</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="fieldName">The name of the field</param>
+		/// <returns>A readable/assignable <see cref="StructFieldRef{T,F}"/> delegate</returns>
+		///
+		public static StructFieldRef<T, F> StructFieldRefAccess<T, F>(string fieldName) where T : struct
+		{
+			if (fieldName is null)
+				throw new ArgumentNullException(nameof(fieldName));
+			try
+			{
+				return StructFieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName));
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"StructFieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldName} caused an exception", ex);
+			}
+		}
+
+		/// <summary>Creates an instance field reference for a specific instance of a struct</summary>
+		/// <typeparam name="T">The struct that defines the instance field</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="instance">The instance</param>
+		/// <param name="fieldName">The name of the field</param>
+		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="StructFieldRefAccess{T, F}(string)"/> instead.
+		/// <c>StructFieldRefAccess&lt;T, F&gt;(ref instance, fieldName)</c> is functionally equivalent to <c>StructFieldRefAccess&lt;T, F&gt;(fieldName)(ref instance)</c>.
+		/// </para>
+		/// </remarks>
+		///
+		public static ref F StructFieldRefAccess<T, F>(ref T instance, string fieldName) where T : struct
+		{
+			if (fieldName is null)
+				throw new ArgumentNullException(nameof(fieldName));
+			try
+			{
+				return ref StructFieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName))(ref instance);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"StructFieldRefAccess<{typeof(T)}, {typeof(F)}> for {instance}, {fieldName} caused an exception", ex);
+			}
+		}
+
+		/// <summary>Creates a field reference delegate for an instance field of a struct</summary>
+		/// <typeparam name="T">The struct that defines the instance field</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="fieldInfo">The field</param>
+		/// <returns>A readable/assignable <see cref="StructFieldRef{T,F}"/> delegate</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for cases where the field has already been obtained, avoiding the field searching cost in
+		/// e.g. <see cref="StructFieldRefAccess{T, F}(string)"/>.
+		/// </para>
+		/// </remarks>
+		///
+		public static StructFieldRef<T, F> StructFieldRefAccess<T, F>(FieldInfo fieldInfo) where T : struct
+		{
+			if (fieldInfo is null)
+				throw new ArgumentNullException(nameof(fieldInfo));
+			try
+			{
+				ValidateStructField<T, F>(fieldInfo);
+				return StructFieldRefAccessInternal<T, F>(fieldInfo);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"StructFieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldInfo} caused an exception", ex);
+			}
+		}
+
+		/// <summary>Creates a field reference for an instance field of a struct</summary>
+		/// <typeparam name="T">The struct that defines the instance field</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="instance">The instance</param>
+		/// <param name="fieldInfo">The field</param>
+		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// <para>
+		/// This method is meant for one-off access to a field's value for a single instance and where the field has already been obtained.
+		/// If you need to access a field's value for potentially multiple instances, use <see cref="StructFieldRefAccess{T, F}(FieldInfo)"/> instead.
+		/// <c>StructFieldRefAccess&lt;T, F&gt;(ref instance, fieldInfo)</c> is functionally equivalent to <c>StructFieldRefAccess&lt;T, F&gt;(fieldInfo)(ref instance)</c>.
+		/// </para>
+		/// </remarks>
+		///
+		public static ref F StructFieldRefAccess<T, F>(ref T instance, FieldInfo fieldInfo) where T : struct
+		{
+			if (fieldInfo is null)
+				throw new ArgumentNullException(nameof(fieldInfo));
+			try
+			{
+				ValidateStructField<T, F>(fieldInfo);
+				return ref StructFieldRefAccessInternal<T, F>(fieldInfo)(ref instance);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"StructFieldRefAccess<{typeof(T)}, {typeof(F)}> for {instance}, {fieldInfo} caused an exception", ex);
+			}
+		}
+
+		static StructFieldRef<T, F> StructFieldRefAccessInternal<T, F>(FieldInfo fieldInfo) where T : struct
+		{
+			ValidateFieldType<F>(fieldInfo);
+
+			var dm = new DynamicMethodDefinition($"__refget_{typeof(T).Name}_struct_fi_{fieldInfo.Name}",
+				typeof(F).MakeByRefType(), new[] { typeof(T).MakeByRefType() });
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
-			return (FieldRef<T, F>)dm.Generate().CreateDelegate(typeof(FieldRef<T, F>));
+			return (StructFieldRef<T, F>)dm.Generate().CreateDelegate(typeof(StructFieldRef<T, F>));
 		}
 
+		/// <summary>A readable/assignable reference delegate to a static field</summary>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <returns>A readable/assignable reference to the field</returns>
+		///
+		public delegate ref F FieldRef<F>();
+
 		/// <summary>Creates a static field reference</summary>
-		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
-		/// <typeparam name="F">The type of the field</typeparam>
+		/// <typeparam name="T">The type (can be class or struct) the field is defined in</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>An readable/assignable object representing the static field</returns>
+		/// <returns>A readable/assignable reference to the field</returns>
 		///
 		public static ref F StaticFieldRefAccess<T, F>(string fieldName)
 		{
@@ -878,73 +1230,139 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a static field reference</summary>
-		/// <typeparam name="F">The type of the field</typeparam>
-		/// <param name="type">The class/type</param>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
+		/// <param name="type">The type (can be class or struct) the field is defined in</param>
 		/// <param name="fieldName">The name of the field</param>
-		/// <returns>An readable/assignable object representing the static field</returns>
+		/// <returns>A readable/assignable reference to the field</returns>
 		///
 		public static ref F StaticFieldRefAccess<F>(Type type, string fieldName)
 		{
-			const BindingFlags bf = BindingFlags.NonPublic |
-											BindingFlags.Static |
-											BindingFlags.DeclaredOnly;
 			try
 			{
-				var fi = type.GetField(fieldName, bf);
-				return ref StaticFieldRefAccess<F>(fi)();
+				var fieldInfo = Field(type, fieldName);
+				if (fieldInfo is null)
+					throw new MissingFieldException(type.Name, fieldName);
+				return ref StaticFieldRefAccessInternal<F>(fieldInfo)();
 			}
 			catch (Exception ex)
 			{
 				throw new ArgumentException($"StaticFieldRefAccess<{typeof(F)}> for {type}, {fieldName} caused an exception", ex);
-				throw;
 			}
 		}
 
 		/// <summary>Creates a static field reference</summary>
-		/// <typeparam name="T">The class the field is defined in or "object" if type cannot be accessed at compile time</typeparam>
-		/// <typeparam name="F">The type of the field</typeparam>
+		/// <typeparam name="T">An arbitrary type (by convention, the type the field is defined in)</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
 		/// <param name="fieldInfo">The field</param>
-		/// <returns>An readable/assignable object representing the static field</returns>
+		/// <returns>A readable/assignable reference to the field</returns>
+		/// <remarks>
+		/// The type parameter <typeparamref name="T"/> is only used in exception messaging and to distinguish between this method overload
+		/// and the <see cref="StaticFieldRefAccess{F}(FieldInfo)"/> overload (which returns a <see cref="FieldRef{F}"/> rather than a reference).
+		/// </remarks>
 		///
 		public static ref F StaticFieldRefAccess<T, F>(FieldInfo fieldInfo)
 		{
+			if (fieldInfo is null)
+				throw new ArgumentNullException(nameof(fieldInfo));
 			try
 			{
-				return ref StaticFieldRefAccess<F>(fieldInfo)();
+				return ref StaticFieldRefAccessInternal<F>(fieldInfo)();
 			}
 			catch (Exception ex)
 			{
 				throw new ArgumentException($"StaticFieldRefAccess<{typeof(T)}, {typeof(F)}> for {fieldInfo} caused an exception", ex);
-				throw;
 			}
 		}
 
-		/// <summary>A read/writable reference delegate to a static field</summary>
-		/// <typeparam name="F">The type of the field</typeparam>
-		/// <returns>An readable/assignable object representing the static field</returns>
-		///
-		public delegate ref F FieldRef<F>();
-
 		/// <summary>Creates a static field reference delegate</summary>
-		/// <typeparam name="F">The type of the field</typeparam>
+		/// <typeparam name="F">
+		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> the field's type
+		/// </typeparam>
 		/// <param name="fieldInfo">The field</param>
-		/// <returns>A read and writable <see cref="FieldRef{F}"/> delegate</returns>
+		/// <returns>A readable/assignable <see cref="FieldRef{F}"/> delegate</returns>
 		///
 		public static FieldRef<F> StaticFieldRefAccess<F>(FieldInfo fieldInfo)
 		{
-			if (fieldInfo == null)
+			if (fieldInfo is null)
 				throw new ArgumentNullException(nameof(fieldInfo));
-			var type = fieldInfo.DeclaringType;
+			try
+			{
+				return StaticFieldRefAccessInternal<F>(fieldInfo);
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException($"StaticFieldRefAccess<{typeof(F)}> for {fieldInfo} caused an exception", ex);
+			}
+		}
 
-			var s_name = $"__refget_{type?.Name ?? "null"}_static_fi_{fieldInfo.Name}";
+		static FieldRef<F> StaticFieldRefAccessInternal<F>(FieldInfo fieldInfo)
+		{
+			if (fieldInfo.IsStatic is false)
+				throw new ArgumentException("Field must be static");
+			ValidateFieldType<F>(fieldInfo);
 
-			var dm = new DynamicMethodDefinition(s_name, typeof(F).MakeByRefType(), new Type[0]);
+			var dm = new DynamicMethodDefinition($"__refget_{fieldInfo.DeclaringType?.Name ?? "null"}_static_fi_{fieldInfo.Name}",
+				typeof(F).MakeByRefType(), new Type[0]);
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldsflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
 			return (FieldRef<F>)dm.Generate().CreateDelegate(typeof(FieldRef<F>));
+		}
+
+		static FieldInfo GetInstanceField(Type type, string fieldName)
+		{
+			var fieldInfo = Field(type, fieldName);
+			if (fieldInfo is null)
+				throw new MissingFieldException(type.Name, fieldName);
+			if (fieldInfo.IsStatic)
+				throw new ArgumentException("Field must not be static");
+			return fieldInfo;
+		}
+
+		static bool FieldRefNeedsClasscast(Type delegateInstanceType, Type declaringType)
+		{
+			var needCastclass = false;
+			if (delegateInstanceType != declaringType)
+			{
+				needCastclass = delegateInstanceType.IsAssignableFrom(declaringType);
+				if (needCastclass is false && declaringType.IsAssignableFrom(delegateInstanceType) is false)
+					throw new ArgumentException("FieldDeclaringType must be assignable from or to T (FieldRefAccess instance type) - " +
+						"\"instanceOfT is FieldDeclaringType\" must be possible");
+			}
+			return needCastclass;
+		}
+
+		static void ValidateStructField<T, F>(FieldInfo fieldInfo) where T : struct
+		{
+			if (fieldInfo.IsStatic)
+				throw new ArgumentException("Field must not be static");
+			if (fieldInfo.DeclaringType != typeof(T))
+				throw new ArgumentException("FieldDeclaringType must be T (StructFieldRefAccess instance type)");
+		}
+
+		static void ValidateFieldType<F>(FieldInfo fieldInfo)
+		{
+			var fieldType = fieldInfo.FieldType;
+			if (fieldType.IsValueType)
+			{
+				// Boxing/unboxing is not allowed for ref values of value types.
+				if (typeof(F) != fieldType)
+					throw new ArgumentException("FieldRefAccess return type must be the same as FieldType for value types");
+			}
+			else
+			{
+				if (typeof(F).IsAssignableFrom(fieldType) is false)
+					throw new ArgumentException("FieldRefAccess return type must be assignable from FieldType for reference types");
+			}
 		}
 
 		/// <summary>Creates a delegate to a given method</summary>
