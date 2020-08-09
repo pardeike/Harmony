@@ -100,7 +100,7 @@ static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruct
         }
         yield return instruction;
     }
-    if (found == false)
+    if (found is false)
         ReportError(&quot;Cannot find &lt;Stdfld someField&gt; in OriginalType.OriginalMethod&quot;);
 }
 </code></pre>

@@ -716,30 +716,12 @@ references:
   fullName.vb: HarmonyLib.AccessTools.IsOfNullableType(Of T)(T)
   nameWithType: AccessTools.IsOfNullableType<T>(T)
   nameWithType.vb: AccessTools.IsOfNullableType(Of T)(T)
-- uid: HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)
-  name: IsStatic(EventInfo)
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Reflection_EventInfo_
-  commentId: M:HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)
-  fullName: HarmonyLib.AccessTools.IsStatic(System.Reflection.EventInfo)
-  nameWithType: AccessTools.IsStatic(EventInfo)
 - uid: HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)
   name: IsStatic(MemberInfo)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Reflection_MemberInfo_
   commentId: M:HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)
   fullName: HarmonyLib.AccessTools.IsStatic(System.Reflection.MemberInfo)
   nameWithType: AccessTools.IsStatic(MemberInfo)
-- uid: HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)
-  name: IsStatic(PropertyInfo)
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Reflection_PropertyInfo_
-  commentId: M:HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)
-  fullName: HarmonyLib.AccessTools.IsStatic(System.Reflection.PropertyInfo)
-  nameWithType: AccessTools.IsStatic(PropertyInfo)
-- uid: HarmonyLib.AccessTools.IsStatic(System.Type)
-  name: IsStatic(Type)
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_System_Type_
-  commentId: M:HarmonyLib.AccessTools.IsStatic(System.Type)
-  fullName: HarmonyLib.AccessTools.IsStatic(System.Type)
-  nameWithType: AccessTools.IsStatic(Type)
 - uid: HarmonyLib.AccessTools.IsStatic*
   name: IsStatic
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsStatic_
