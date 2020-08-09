@@ -64,10 +64,10 @@ namespace HarmonyLib
 		void ImportMethod(MethodInfo theMethod)
 		{
 			method = theMethod;
-			if (method != null)
+			if (method is object)
 			{
 				var infos = HarmonyMethodExtensions.GetFromMethod(method);
-				if (infos != null)
+				if (infos is object)
 					Merge(infos).CopyTo(this);
 			}
 		}
@@ -77,7 +77,7 @@ namespace HarmonyLib
 		///
 		public HarmonyMethod(MethodInfo method)
 		{
-			if (method == null)
+			if (method is null)
 				throw new ArgumentNullException(nameof(method));
 			ImportMethod(method);
 		}
@@ -91,7 +91,7 @@ namespace HarmonyLib
 		///
 		public HarmonyMethod(MethodInfo method, int priority = -1, string[] before = null, string[] after = null, bool? debug = null)
 		{
-			if (method == null)
+			if (method is null)
 				throw new ArgumentNullException(nameof(method));
 			ImportMethod(method);
 			this.priority = priority;
@@ -108,7 +108,7 @@ namespace HarmonyLib
 		public HarmonyMethod(Type methodType, string methodName, Type[] argumentTypes = null)
 		{
 			var result = AccessTools.Method(methodType, methodName, argumentTypes);
-			if (result == null)
+			if (result is null)
 				throw new ArgumentException($"Cannot not find method for type {methodType} and name {methodName} and parameters {argumentTypes?.Description()}");
 			ImportMethod(result);
 		}
@@ -131,7 +131,7 @@ namespace HarmonyLib
 		public static HarmonyMethod Merge(List<HarmonyMethod> attributes)
 		{
 			var result = new HarmonyMethod();
-			if (attributes == null) return result;
+			if (attributes is null) return result;
 			var resultTrv = Traverse.Create(result);
 			attributes.ForEach(attribute =>
 			{
@@ -139,7 +139,7 @@ namespace HarmonyLib
 				HarmonyFields().ForEach(f =>
 				{
 					var val = trv.Field(f).GetValue();
-					if (val != null)
+					if (val is object)
 						HarmonyMethodExtensions.SetValue(resultTrv, f, val);
 				});
 			});
@@ -164,10 +164,10 @@ namespace HarmonyLib
 		// used for error reporting
 		internal string Description()
 		{
-			var cName = declaringType != null ? declaringType.FullName : "undefined";
+			var cName = declaringType is object ? declaringType.FullName : "undefined";
 			var mName = methodName ?? "undefined";
 			var tName = methodType.HasValue ? methodType.Value.ToString() : "undefined";
-			var aName = argumentTypes != null ? argumentTypes.Description() : "undefined";
+			var aName = argumentTypes is object ? argumentTypes.Description() : "undefined";
 			return $"(class={cName}, methodname={mName}, type={tName}, args={aName})";
 		}
 	}
@@ -178,7 +178,7 @@ namespace HarmonyLib
 	{
 		internal static void SetValue(Traverse trv, string name, object val)
 		{
-			if (val == null) return;
+			if (val is null) return;
 			var fld = trv.Field(name);
 			if (name == nameof(HarmonyMethod.methodType) || name == nameof(HarmonyMethod.reversePatchType))
 			{
@@ -194,13 +194,13 @@ namespace HarmonyLib
 		///
 		public static void CopyTo(this HarmonyMethod from, HarmonyMethod to)
 		{
-			if (to == null) return;
+			if (to is null) return;
 			var fromTrv = Traverse.Create(from);
 			var toTrv = Traverse.Create(to);
 			HarmonyMethod.HarmonyFields().ForEach(f =>
 			{
 				var val = fromTrv.Field(f).GetValue();
-				if (val != null)
+				if (val is object)
 					SetValue(toTrv, f, val);
 			});
 		}
@@ -223,7 +223,7 @@ namespace HarmonyLib
 		///
 		public static HarmonyMethod Merge(this HarmonyMethod master, HarmonyMethod detail)
 		{
-			if (detail == null) return master;
+			if (detail is null) return master;
 			var result = new HarmonyMethod();
 			var resultTrv = Traverse.Create(result);
 			var masterTrv = Traverse.Create(master);
@@ -240,7 +240,7 @@ namespace HarmonyLib
 		static HarmonyMethod GetHarmonyMethodInfo(object attribute)
 		{
 			var f_info = attribute.GetType().GetField(nameof(HarmonyAttribute.info), AccessTools.all);
-			if (f_info == null) return null;
+			if (f_info is null) return null;
 			if (f_info.FieldType.FullName != typeof(HarmonyMethod).FullName) return null;
 			var info = f_info.GetValue(attribute);
 			return AccessTools.MakeDeepCopy<HarmonyMethod>(info);
@@ -254,7 +254,7 @@ namespace HarmonyLib
 		{
 			return type.GetCustomAttributes(true)
 						.Select(attr => GetHarmonyMethodInfo(attr))
-						.Where(info => info != null)
+						.Where(info => info is object)
 						.ToList();
 		}
 
@@ -275,7 +275,7 @@ namespace HarmonyLib
 		{
 			return method.GetCustomAttributes(true)
 						.Select(attr => GetHarmonyMethodInfo(attr))
-						.Where(info => info != null)
+						.Where(info => info is object)
 						.ToList();
 		}
 

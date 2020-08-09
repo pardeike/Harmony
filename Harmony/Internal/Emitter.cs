@@ -83,7 +83,7 @@ namespace HarmonyLib
 
 		internal void LogAllLocalVariables()
 		{
-			if (debug == false)
+			if (debug is false)
 				return;
 
 			il.IL.Body.Variables.Do(v =>
@@ -95,11 +95,11 @@ namespace HarmonyLib
 
 		internal static string FormatArgument(object argument, string extra = null)
 		{
-			if (argument == null) return "NULL";
+			if (argument is null) return "NULL";
 			var type = argument.GetType();
 
 			if (argument is MethodBase method)
-				return method.FullDescription() + (extra != null ? " " + extra : "");
+				return method.FullDescription() + (extra is object ? " " + extra : "");
 
 			if (argument is FieldInfo field)
 				return $"{field.FieldType.FullDescription()} {field.DeclaringType.FullDescription()}::{field.Name}";
@@ -351,7 +351,7 @@ namespace HarmonyLib
 		internal void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, methodInfo));
-			var extra = optionalParameterTypes != null && optionalParameterTypes.Length > 0 ? optionalParameterTypes.Description() : null;
+			var extra = optionalParameterTypes is object && optionalParameterTypes.Length > 0 ? optionalParameterTypes.Description() : null;
 			LogIL(opcode, methodInfo, extra);
 			il.EmitCall(opcode, methodInfo, optionalParameterTypes);
 		}

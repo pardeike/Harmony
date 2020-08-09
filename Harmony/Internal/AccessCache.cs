@@ -31,12 +31,12 @@ namespace HarmonyLib
 
 		static T Get<T>(Dictionary<Type, Dictionary<string, T>> dict, Type type, string name, Func<T> fetcher)
 		{
-			if (dict.TryGetValue(type, out var valuesByName) == false)
+			if (dict.TryGetValue(type, out var valuesByName) is false)
 			{
 				valuesByName = new Dictionary<string, T>();
 				dict[type] = valuesByName;
 			}
-			if (valuesByName.TryGetValue(name, out var value) == false)
+			if (valuesByName.TryGetValue(name, out var value) is false)
 			{
 				value = fetcher();
 				valuesByName[name] = value;
@@ -46,18 +46,18 @@ namespace HarmonyLib
 
 		static T Get<T>(Dictionary<Type, Dictionary<string, Dictionary<int, T>>> dict, Type type, string name, Type[] arguments, Func<T> fetcher)
 		{
-			if (dict.TryGetValue(type, out var valuesByName) == false)
+			if (dict.TryGetValue(type, out var valuesByName) is false)
 			{
 				valuesByName = new Dictionary<string, Dictionary<int, T>>();
 				dict[type] = valuesByName;
 			}
-			if (valuesByName.TryGetValue(name, out var valuesByArgument) == false)
+			if (valuesByName.TryGetValue(name, out var valuesByArgument) is false)
 			{
 				valuesByArgument = new Dictionary<int, T>();
 				valuesByName[name] = valuesByArgument;
 			}
 			var argumentsHash = AccessTools.CombinedHashCode(arguments);
-			if (valuesByArgument.TryGetValue(argumentsHash, out var value) == false)
+			if (valuesByArgument.TryGetValue(argumentsHash, out var value) is false)
 			{
 				value = fetcher();
 				valuesByArgument[argumentsHash] = value;
@@ -68,7 +68,7 @@ namespace HarmonyLib
 		internal FieldInfo GetFieldInfo(Type type, string name, MemberType memberType = MemberType.Any, bool declaredOnly = false)
 		{
 			var value = Get(declaredFields, type, name, () => type.GetField(name, declaredOnlyBindingFlags[memberType]));
-			if (value == null && declaredOnly == false)
+			if (value is null && declaredOnly is false)
 				value = Get(inheritedFields, type, name, () => AccessTools.FindIncludingBaseTypes(type, t => t.GetField(name, AccessTools.all)));
 			return value;
 		}
@@ -76,7 +76,7 @@ namespace HarmonyLib
 		internal PropertyInfo GetPropertyInfo(Type type, string name, MemberType memberType = MemberType.Any, bool declaredOnly = false)
 		{
 			var value = Get(declaredProperties, type, name, () => type.GetProperty(name, declaredOnlyBindingFlags[memberType]));
-			if (value == null && declaredOnly == false)
+			if (value is null && declaredOnly is false)
 				value = Get(inheritedProperties, type, name, () => AccessTools.FindIncludingBaseTypes(type, t => t.GetProperty(name, AccessTools.all)));
 			return value;
 		}
@@ -84,7 +84,7 @@ namespace HarmonyLib
 		internal MethodBase GetMethodInfo(Type type, string name, Type[] arguments, MemberType memberType = MemberType.Any, bool declaredOnly = false)
 		{
 			var value = Get(declaredMethods, type, name, arguments, () => type.GetMethod(name, declaredOnlyBindingFlags[memberType], null, arguments, null));
-			if (value == null && declaredOnly == false)
+			if (value is null && declaredOnly is false)
 				value = Get(inheritedMethods, type, name, arguments, () => AccessTools.Method(type, name, arguments));
 			return value;
 		}

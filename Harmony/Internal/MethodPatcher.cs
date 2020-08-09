@@ -36,7 +36,7 @@ namespace HarmonyLib
 
 		internal MethodPatcher(MethodBase original, MethodBase source, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, bool debug)
 		{
-			if (original == null)
+			if (original is null)
 				throw new ArgumentNullException(nameof(original));
 
 			this.debug = debug;
@@ -60,7 +60,7 @@ namespace HarmonyLib
 			if (debug && useStructReturnBuffer) FileLog.Log($"### Note: A buffer for the returned struct is used. That requires an extra IntPtr argument before the first real argument");
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}", debug);
-			if (patch == null)
+			if (patch is null)
 				throw new Exception("Could not create replacement method");
 
 			il = patch.GetILGenerator();
@@ -92,7 +92,7 @@ namespace HarmonyLib
 
 			prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
 			{
-				if (fix.DeclaringType != null && privateVars.ContainsKey(fix.DeclaringType.FullName) == false)
+				if (fix.DeclaringType is object && privateVars.ContainsKey(fix.DeclaringType.FullName) is false)
 				{
 					fix.GetParameters()
 					.Where(patchParam => patchParam.Name == STATE_VAR)
@@ -133,14 +133,14 @@ namespace HarmonyLib
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
-			if (resultVariable != null)
+			if (resultVariable is object)
 				emitter.Emit(OpCodes.Stloc, resultVariable);
 			if (skipOriginalLabel.HasValue)
 				emitter.MarkLabel(skipOriginalLabel.Value);
 
 			_ = AddPostfixes(privateVars, false);
 
-			if (resultVariable != null)
+			if (resultVariable is object)
 				emitter.Emit(OpCodes.Ldloc, resultVariable);
 
 			var needsToStorePassthroughResult = AddPostfixes(privateVars, true);
@@ -191,7 +191,7 @@ namespace HarmonyLib
 				// end catch
 				emitter.MarkBlockAfter(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
 
-				if (resultVariable != null)
+				if (resultVariable is object)
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
@@ -221,7 +221,7 @@ namespace HarmonyLib
 
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
 		{
-			if (original == null) throw new ArgumentNullException(nameof(original));
+			if (original is null) throw new ArgumentNullException(nameof(original));
 			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 
 			var patchName = $"{original.DeclaringType?.FullName}.{original.Name}{suffix}";
@@ -233,7 +233,7 @@ namespace HarmonyLib
 			parameterTypes.AddRange(parameters.Types());
 			if (useStructReturnBuffer)
 				parameterTypes.Insert(0, typeof(IntPtr));
-			if (original.IsStatic == false)
+			if (original.IsStatic is false)
 			{
 				if (AccessTools.IsStruct(original.DeclaringType))
 					parameterTypes.Insert(0, original.DeclaringType.MakeByRefType());
@@ -279,7 +279,7 @@ namespace HarmonyLib
 		internal static LocalBuilder[] DeclareLocalVariables(ILGenerator il, MethodBase member)
 		{
 			var vars = member.GetMethodBody()?.LocalVariables;
-			if (vars == null)
+			if (vars is null)
 				return new LocalBuilder[0];
 			return vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 		}
@@ -359,7 +359,7 @@ namespace HarmonyLib
 
 		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
 		{
-			var isInstance = original.IsStatic == false;
+			var isInstance = original.IsStatic is false;
 			var originalParameters = original.GetParameters();
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
 
@@ -385,18 +385,18 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Ldnull);
 					else
 					{
-						var instanceIsRef = original.DeclaringType != null && AccessTools.IsStruct(original.DeclaringType);
+						var instanceIsRef = original.DeclaringType is object && AccessTools.IsStruct(original.DeclaringType);
 						var parameterIsRef = patchParam.ParameterType.IsByRef;
 						if (instanceIsRef == parameterIsRef)
 						{
 							emitter.Emit(OpCodes.Ldarg_0);
 						}
-						if (instanceIsRef && parameterIsRef == false)
+						if (instanceIsRef && parameterIsRef is false)
 						{
 							emitter.Emit(OpCodes.Ldarg_0);
 							emitter.Emit(OpCodes.Ldobj, original.DeclaringType);
 						}
-						if (instanceIsRef == false && parameterIsRef)
+						if (instanceIsRef is false && parameterIsRef)
 						{
 							emitter.Emit(OpCodes.Ldarga, 0);
 						}
@@ -412,13 +412,13 @@ namespace HarmonyLib
 					{
 						// field access by index only works for declared fields
 						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, int.Parse(fieldName));
-						if (fieldInfo == null)
+						if (fieldInfo is null)
 							throw new ArgumentException($"No field found at given index in class {original.DeclaringType.FullName}", fieldName);
 					}
 					else
 					{
 						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
-						if (fieldInfo == null)
+						if (fieldInfo is null)
 							throw new ArgumentException($"No such field defined in class {original.DeclaringType.FullName}", fieldName);
 					}
 
@@ -452,7 +452,7 @@ namespace HarmonyLib
 					var resultType = patchParam.ParameterType;
 					if (resultType.IsByRef)
 						resultType = resultType.GetElementType();
-					if (resultType.IsAssignableFrom(returnType) == false)
+					if (resultType.IsAssignableFrom(returnType) is false)
 						throw new Exception($"Cannot assign method return type {returnType.FullName} to {RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					emitter.Emit(ldlocCode, variables[RESULT_VAR]);
@@ -482,13 +482,13 @@ namespace HarmonyLib
 					if (idx == -1)
 					{
 						var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(patchParam.ParameterType);
-						if (harmonyMethod.methodType == null) // MethodType default is Normal
+						if (harmonyMethod.methodType is null) // MethodType default is Normal
 							harmonyMethod.methodType = MethodType.Normal;
 						var delegateOriginal = harmonyMethod.GetOriginalMethod();
 						if (delegateOriginal is MethodInfo methodInfo)
 						{
 							var delegateConstructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
-							if (delegateConstructor != null)
+							if (delegateConstructor is object)
 							{
 								var originalType = original.DeclaringType;
 								if (methodInfo.IsStatic)
@@ -503,7 +503,7 @@ namespace HarmonyLib
 									}
 								}
 
-								if (methodInfo.IsStatic == false && harmonyMethod.nonVirtualDelegate == false)
+								if (methodInfo.IsStatic is false && harmonyMethod.nonVirtualDelegate is false)
 								{
 									emitter.Emit(OpCodes.Dup);
 									emitter.Emit(OpCodes.Ldvirtftn, methodInfo);
@@ -526,8 +526,8 @@ namespace HarmonyLib
 				// 3 ref/out  -> normal  : LDARG, LDIND_x
 				// 4 ref/out  -> ref/out : LDARG
 				//
-				var originalIsNormal = originalParameters[idx].IsOut == false && originalParameters[idx].ParameterType.IsByRef == false;
-				var patchIsNormal = patchParam.IsOut == false && patchParam.ParameterType.IsByRef == false;
+				var originalIsNormal = originalParameters[idx].IsOut is false && originalParameters[idx].ParameterType.IsByRef is false;
+				var patchIsNormal = patchParam.IsOut is false && patchParam.ParameterType.IsByRef is false;
 				var patchArgIndex = idx + (isInstance ? 1 : 0) + (useStructReturnBuffer ? 1 : 0);
 
 				// Case 1 + 4
@@ -538,7 +538,7 @@ namespace HarmonyLib
 				}
 
 				// Case 2
-				if (originalIsNormal && patchIsNormal == false)
+				if (originalIsNormal && patchIsNormal is false)
 				{
 					emitter.Emit(OpCodes.Ldarga, patchArgIndex);
 					continue;
@@ -566,7 +566,7 @@ namespace HarmonyLib
 
 				if (p.IsOut) return true;
 				if (type.IsByRef) return true;
-				if (AccessTools.IsValue(type) == false && AccessTools.IsStruct(type) == false) return true;
+				if (AccessTools.IsValue(type) is false && AccessTools.IsStruct(type) is false) return true;
 
 				return false;
 			});
@@ -577,7 +577,7 @@ namespace HarmonyLib
 			prefixes
 				.Do(fix =>
 				{
-					if (original.HasMethodBody() == false)
+					if (original.HasMethodBody() is false)
 						throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
 
 					var skipLabel = PrefixAffectsOriginal(fix) ? il.DefineLabel() : (Label?)null;
@@ -613,7 +613,7 @@ namespace HarmonyLib
 				.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void)))
 				.Do(fix =>
 				{
-					if (original.HasMethodBody() == false)
+					if (original.HasMethodBody() is false)
 						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
 					EmitCallParameter(fix, variables, true);
@@ -622,12 +622,12 @@ namespace HarmonyLib
 					if (fix.ReturnType != typeof(void))
 					{
 						var firstFixParam = fix.GetParameters().FirstOrDefault();
-						var hasPassThroughResultParam = firstFixParam != null && fix.ReturnType == firstFixParam.ParameterType;
+						var hasPassThroughResultParam = firstFixParam is object && fix.ReturnType == firstFixParam.ParameterType;
 						if (hasPassThroughResultParam)
 							result = true;
 						else
 						{
-							if (firstFixParam != null)
+							if (firstFixParam is object)
 								throw new Exception($"Return type of pass through postfix {fix} does not match type of its first parameter");
 
 							throw new Exception($"Postfix patch {fix} must have a \"void\" return type");
@@ -643,7 +643,7 @@ namespace HarmonyLib
 			finalizers
 				.Do(fix =>
 				{
-					if (original.HasMethodBody() == false)
+					if (original.HasMethodBody() is false)
 						throw new Exception("Methods without body cannot have finalizers. Use a transpiler instead.");
 
 					if (catchExceptions)

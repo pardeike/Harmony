@@ -31,7 +31,7 @@ namespace HarmonyLib
 		///
 		public MethodInfo Patch(HarmonyReversePatchType type = HarmonyReversePatchType.Original)
 		{
-			if (original == null)
+			if (original is null)
 				throw new NullReferenceException($"Null method for {instance.Id}");
 
 			var transpiler = GetTranspiler(standin.method);

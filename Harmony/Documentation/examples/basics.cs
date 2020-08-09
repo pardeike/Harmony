@@ -77,7 +77,7 @@ namespace Basics
 
 				// retrieve all patches
 				var patches = Harmony.GetPatchInfo(original);
-				if (patches == null) return; // not patched
+				if (patches is null) return; // not patched
 
 				// get a summary of all different Harmony ids involved
 				FileLog.Log("all owners: " + patches.Owners);

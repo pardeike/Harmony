@@ -302,7 +302,7 @@ namespace HarmonyLib
 
 		void ParseSpecialArguments(Type[] argumentTypes, ArgumentType[] argumentVariations)
 		{
-			if (argumentVariations == null || argumentVariations.Length == 0)
+			if (argumentVariations is null || argumentVariations.Length == 0)
 			{
 				info.argumentTypes = argumentTypes;
 				return;

@@ -30,7 +30,7 @@ namespace HarmonyLib
 			try
 			{
 				var envDebug = Environment.GetEnvironmentVariable("HARMONY_DEBUG");
-				if (envDebug != null && envDebug.Length > 0)
+				if (envDebug is object && envDebug.Length > 0)
 				{
 					envDebug = envDebug.Trim();
 					DEBUG = envDebug == "1" || bool.Parse(envDebug);
@@ -48,7 +48,7 @@ namespace HarmonyLib
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 				FileLog.Log($"### Harmony id={id}, version={version}, location={location}");
 				var callingMethod = AccessTools.GetOutsideCaller();
-				if (callingMethod.DeclaringType != null)
+				if (callingMethod.DeclaringType is object)
 				{
 					var callingAssembly = callingMethod.DeclaringType.Assembly;
 					location = callingAssembly.Location;
@@ -141,7 +141,7 @@ namespace HarmonyLib
 		///
 		public void UnpatchAll(string harmonyID = null)
 		{
-			bool IDCheck(Patch patchInfo) => harmonyID == null || patchInfo.owner == harmonyID;
+			bool IDCheck(Patch patchInfo) => harmonyID is null || patchInfo.owner == harmonyID;
 
 			var originals = GetAllPatchedMethods().ToList(); // keep as is to avoid "Collection was modified"
 			foreach (var original in originals)

@@ -98,8 +98,8 @@ namespace HarmonyLib
 		internal static bool NeedsFix(MethodBase method)
 		{
 			var returnType = AccessTools.GetReturnedType(method);
-			if (AccessTools.IsStruct(returnType) == false) return false;
-			if (AccessTools.IsMonoRuntime == false && method.IsStatic) return false;
+			if (AccessTools.IsStruct(returnType) is false) return false;
+			if (AccessTools.IsMonoRuntime is false && method.IsStatic) return false;
 
 			var size = SizeOf(returnType);
 			if (specialSizes.Contains(size))
@@ -113,7 +113,7 @@ namespace HarmonyLib
 		{
 			if (AccessTools.IsMonoRuntime)
 			{
-				if (hasTestResult_Mono == false)
+				if (hasTestResult_Mono is false)
 				{
 					Sandbox.hasStructReturnBuffer_Mono = false;
 					var self = new StructReturnBuffer();
@@ -126,7 +126,7 @@ namespace HarmonyLib
 				return Sandbox.hasStructReturnBuffer_Mono;
 			}
 
-			if (hasTestResult_Net == false)
+			if (hasTestResult_Net is false)
 			{
 				Sandbox.hasStructReturnBuffer_Net = false;
 				var self = new StructReturnBuffer();

@@ -18,22 +18,22 @@ namespace HarmonyLib
 			lock (name)
 			{
 				var assembly = SharedStateAssembly();
-				if (assembly == null)
+				if (assembly is null)
 				{
 					CreateModule();
 					assembly = SharedStateAssembly();
-					if (assembly == null) throw new Exception("Cannot find or create harmony shared state");
+					if (assembly is null) throw new Exception("Cannot find or create harmony shared state");
 				}
 
 				var type = assembly.GetType(name);
 
 				var versionField = type.GetField("version");
-				if (versionField == null) throw new Exception("Cannot find harmony state version field");
+				if (versionField is null) throw new Exception("Cannot find harmony state version field");
 				actualVersion = (int)versionField.GetValue(null);
 
 				var stateField = type.GetField("state");
-				if (stateField == null) throw new Exception("Cannot find harmony state field");
-				if (stateField.GetValue(null) == null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
+				if (stateField is null) throw new Exception("Cannot find harmony state field");
+				if (stateField.GetValue(null) is null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
 
 				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 			}
@@ -71,14 +71,14 @@ namespace HarmonyLib
 		static Assembly SharedStateAssembly()
 		{
 			return AppDomain.CurrentDomain.GetAssemblies()
-				.Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") == false)
+				.Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") is false)
 				.FirstOrDefault(a => a.GetName().Name.Contains(name));
 		}
 
 		internal static PatchInfo GetPatchInfo(MethodBase method)
 		{
 			var bytes = GetState().GetValueSafe(method);
-			if (bytes == null) return null;
+			if (bytes is null) return null;
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
 

@@ -46,11 +46,11 @@ namespace HarmonyLib
 		{
 			var outermostExpression = expression.Body as MethodCallExpression;
 
-			if (outermostExpression == null)
+			if (outermostExpression is null)
 				throw new ArgumentException("Invalid Expression. Expression should consist of a Method call only.");
 
 			var method = outermostExpression.Method;
-			if (method == null)
+			if (method is null)
 				throw new Exception($"Cannot find method for expression {expression}");
 
 			return method;

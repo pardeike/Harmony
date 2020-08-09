@@ -43,8 +43,8 @@ namespace HarmonyLib
 
 		internal Job GetJob(MethodBase method)
 		{
-			if (method == null) return null;
-			if (state.TryGetValue(method, out var job) == false)
+			if (method is null) return null;
+			if (state.TryGetValue(method, out var job) is false)
 			{
 				job = new Job() { original = method };
 				state[method] = job;
@@ -86,16 +86,16 @@ namespace HarmonyLib
 		static readonly string harmonyAttributeName = typeof(HarmonyAttribute).FullName;
 		internal static AttributePatch Create(MethodInfo patch)
 		{
-			if (patch == null)
+			if (patch is null)
 				throw new NullReferenceException("Patch method cannot be null");
 
 			var allAttributes = patch.GetCustomAttributes(true);
 			var methodName = patch.Name;
 			var type = GetPatchType(methodName, allAttributes);
-			if (type == null)
+			if (type is null)
 				return null;
 
-			if (type != HarmonyPatchType.ReversePatch && patch.IsStatic == false)
+			if (type != HarmonyPatchType.ReversePatch && patch.IsStatic is false)
 				throw new ArgumentException("Patch method " + patch.FullDescription() + " must be static");
 
 			var list = allAttributes

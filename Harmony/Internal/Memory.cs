@@ -40,7 +40,7 @@ namespace HarmonyLib
 		internal static void DetourMethodAndPersist(MethodBase original, MethodBase replacement)
 		{
 			var errorString = DetourMethod(original, replacement);
-			if (errorString != null)
+			if (errorString is object)
 				throw new FormatException($"Method {original.FullDescription()} cannot be patched. Reason: {errorString}");
 			PatchTools.RememberObject(original, replacement);
 		}

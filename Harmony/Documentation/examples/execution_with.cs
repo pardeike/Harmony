@@ -36,7 +36,7 @@ namespace Execution_With
 				ex = EditFinalizer(ex, ref result);
 				finalized = true;
 
-				if (ex != null) throw ex;
+				if (ex is object) throw ex;
 				return result;
 			}
 			catch (Exception e)
@@ -61,7 +61,7 @@ namespace Execution_With
 				else
 				{
 					// alternative 2: at least one non-void finalizer
-					if (ex != null) throw ex;
+					if (ex is object) throw ex;
 				}
 
 				return result;

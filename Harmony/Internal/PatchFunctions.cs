@@ -15,7 +15,7 @@ namespace HarmonyLib
 		///
 		internal static void AddPrefix(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
-			if (info == null || info.method == null) return;
+			if (info is null || info.method is null) return;
 
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
@@ -41,7 +41,7 @@ namespace HarmonyLib
 		///
 		internal static void AddPostfix(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
-			if (info == null || info.method == null) return;
+			if (info is null || info.method is null) return;
 
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
@@ -67,7 +67,7 @@ namespace HarmonyLib
 		///
 		internal static void AddTranspiler(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
-			if (info == null || info.method == null) return;
+			if (info is null || info.method is null) return;
 
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
@@ -93,7 +93,7 @@ namespace HarmonyLib
 		///
 		internal static void AddFinalizer(PatchInfo patchInfo, string owner, HarmonyMethod info)
 		{
-			if (info == null || info.method == null) return;
+			if (info is null || info.method is null) return;
 
 			var priority = info.priority == -1 ? Priority.Normal : info.priority;
 			var before = info.before ?? new string[0];
@@ -148,7 +148,7 @@ namespace HarmonyLib
 
 			var patcher = new MethodPatcher(original, null, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, debug);
 			var replacement = patcher.CreateReplacement(out var finalInstructions);
-			if (replacement == null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
+			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
 
 			try
 			{
@@ -163,9 +163,9 @@ namespace HarmonyLib
 
 		internal static MethodInfo ReversePatch(HarmonyMethod standin, MethodBase original, MethodInfo postTranspiler)
 		{
-			if (standin == null)
+			if (standin is null)
 				throw new ArgumentNullException(nameof(standin));
-			if (standin.method == null)
+			if (standin.method is null)
 				throw new ArgumentNullException($"{nameof(standin)}.{nameof(standin.method)}");
 
 			var debug = (standin.debug ?? false) || Harmony.DEBUG;
@@ -176,17 +176,17 @@ namespace HarmonyLib
 				var info = Harmony.GetPatchInfo(original);
 				transpilers.AddRange(GetSortedPatchMethods(original, info.Transpilers.ToArray(), debug));
 			}
-			if (postTranspiler != null) transpilers.Add(postTranspiler);
+			if (postTranspiler is object) transpilers.Add(postTranspiler);
 
 			var empty = new List<MethodInfo>();
 			var patcher = new MethodPatcher(standin.method, original, empty, empty, transpilers, empty, debug);
 			var replacement = patcher.CreateReplacement(out var finalInstructions);
-			if (replacement == null) throw new MissingMethodException($"Cannot create replacement for {standin.method.FullDescription()}");
+			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {standin.method.FullDescription()}");
 
 			try
 			{
 				var errorString = Memory.DetourMethod(standin.method, replacement);
-				if (errorString != null)
+				if (errorString is object)
 					throw new FormatException($"Method {standin.method.FullDescription()} cannot be patched. Reason: {errorString}");
 			}
 			catch (Exception ex)

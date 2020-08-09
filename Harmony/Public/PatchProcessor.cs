@@ -127,10 +127,10 @@ namespace HarmonyLib
 		///
 		public MethodInfo Patch()
 		{
-			if (original == null)
+			if (original is null)
 				throw new NullReferenceException($"Null method for {instance.Id}");
 
-			if (original.IsDeclaredMember() == false)
+			if (original.IsDeclaredMember() is false)
 			{
 				var declaredMember = original.GetDeclaredMember();
 				throw new ArgumentException($"You can only patch implemented methods/constructors. Path the declared method {declaredMember.FullDescription()} instead.");
@@ -139,7 +139,7 @@ namespace HarmonyLib
 			lock (locker)
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
-				if (patchInfo == null) patchInfo = new PatchInfo();
+				if (patchInfo is null) patchInfo = new PatchInfo();
 
 				PatchFunctions.AddPrefix(patchInfo, instance.Id, prefix);
 				PatchFunctions.AddPostfix(patchInfo, instance.Id, postfix);
@@ -162,7 +162,7 @@ namespace HarmonyLib
 			lock (locker)
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
-				if (patchInfo == null) patchInfo = new PatchInfo();
+				if (patchInfo is null) patchInfo = new PatchInfo();
 
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.Prefix)
 					PatchFunctions.RemovePrefix(patchInfo, harmonyID);
@@ -188,7 +188,7 @@ namespace HarmonyLib
 			lock (locker)
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
-				if (patchInfo == null) patchInfo = new PatchInfo();
+				if (patchInfo is null) patchInfo = new PatchInfo();
 
 				PatchFunctions.RemovePatch(patchInfo, patch);
 				_ = PatchFunctions.UpdateWrapper(original, patchInfo);
@@ -206,7 +206,7 @@ namespace HarmonyLib
 		{
 			PatchInfo patchInfo;
 			lock (locker) { patchInfo = HarmonySharedState.GetPatchInfo(method); }
-			if (patchInfo == null) return null;
+			if (patchInfo is null) return null;
 			return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers);
 		}
 
@@ -242,7 +242,7 @@ namespace HarmonyLib
 			assemblies.Do(info =>
 			{
 				var assemblyName = info.Value.GetReferencedAssemblies().FirstOrDefault(a => a.FullName.StartsWith("0Harmony, Version", StringComparison.Ordinal));
-				if (assemblyName != null)
+				if (assemblyName is object)
 					result[info.Key] = assemblyName.Version;
 			});
 			return result;
@@ -265,7 +265,7 @@ namespace HarmonyLib
 		{
 			var returnType = original is MethodInfo m ? m.ReturnType : typeof(void);
 			var parameterTypes = original.GetParameters().Select(pi => pi.ParameterType).ToList();
-			if (original.IsStatic == false) parameterTypes.Insert(0, original.DeclaringType);
+			if (original.IsStatic is false) parameterTypes.Insert(0, original.DeclaringType);
 			var method = new DynamicMethodDefinition($"ILGenerator_{original.Name}", returnType, parameterTypes.ToArray());
 			return method.GetILGenerator();
 		}

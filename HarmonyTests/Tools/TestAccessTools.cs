@@ -77,7 +77,7 @@ namespace HarmonyLibTests
 			var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 			var referencedDynamicAssemblies = assemblyBuilder.GetReferencedAssemblies()
 				.Select(referencedAssemblyName => currentAssemblies.FirstOrDefault(assembly => assembly.FullName == referencedAssemblyName.FullName))
-				.Where(referencedAssembly => referencedAssembly != null && referencedAssembly.IsDynamic)
+				.Where(referencedAssembly => referencedAssembly is object && referencedAssembly.IsDynamic)
 				.ToArray();
 			// ILPack currently has an issue where the dynamic assembly has an assembly reference to the runtime assembly (System.Private.CoreLib)
 			// rather than reference assembly (System.Runtime). This causes issues for decompilers, but is fine for loading via Assembly.Load et all,

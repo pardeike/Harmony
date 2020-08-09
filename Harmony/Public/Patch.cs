@@ -290,7 +290,7 @@ namespace HarmonyLib
 		{
 			get
 			{
-				if (patchMethod == null)
+				if (patchMethod is null)
 				{
 					var mdl = AppDomain.CurrentDomain.GetAssemblies()
 						.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
@@ -338,7 +338,7 @@ namespace HarmonyLib
 		{
 			var method = PatchMethod;
 			if (method.ReturnType != typeof(DynamicMethod) && method.ReturnType != typeof(MethodInfo)) return method;
-			if (method.IsStatic == false) return method;
+			if (method.IsStatic is false) return method;
 			var parameters = method.GetParameters();
 			if (parameters.Count() != 1) return method;
 			if (parameters[0].ParameterType != typeof(MethodBase)) return method;
@@ -353,7 +353,7 @@ namespace HarmonyLib
 		///
 		public override bool Equals(object obj)
 		{
-			return ((obj != null) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
+			return ((obj is object) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
 		}
 
 		/// <summary>Determines how patches sort</summary>

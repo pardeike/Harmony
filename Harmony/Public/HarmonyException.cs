@@ -35,7 +35,7 @@ namespace HarmonyLib
 		internal static Exception Create(Exception ex, Dictionary<int, CodeInstruction> finalInstructions)
 		{
 			var match = Regex.Match(ex.Message.TrimEnd(), "Reason: Invalid IL code in.+: IL_(\\d{4}): (.+)$");
-			if (match.Success == false) return ex;
+			if (match.Success is false) return ex;
 
 			var offset = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.HexNumber);
 			_ = Regex.Replace(match.Groups[2].Value, " {2,}", " ");

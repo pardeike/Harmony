@@ -14,7 +14,7 @@ namespace HarmonyLib
 				if (attr.GetType().Name != nameof(HarmonyArgument)) return null;
 				return AccessTools.MakeDeepCopy<HarmonyArgument>(attr);
 			})
-			.Where(harg => harg != null)
+			.Where(harg => harg is object)
 			.ToArray();
 		}
 
@@ -26,7 +26,7 @@ namespace HarmonyLib
 
 		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
 		{
-			if (method == null || method is DynamicMethod)
+			if (method is null || method is DynamicMethod)
 				return default;
 
 			var attributes = method.GetCustomAttributes(false);
@@ -43,10 +43,10 @@ namespace HarmonyLib
 		{
 			var attribute = parameter.GetArgumentAttribute();
 
-			if (attribute == null)
+			if (attribute is null)
 				return null;
 
-			if (string.IsNullOrEmpty(attribute.OriginalName) == false)
+			if (string.IsNullOrEmpty(attribute.OriginalName) is false)
 				return attribute.OriginalName;
 
 			if (attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
@@ -61,13 +61,13 @@ namespace HarmonyLib
 				return null;
 
 			var attribute = attributes.SingleOrDefault(p => p.NewName == name);
-			if (attribute == null)
+			if (attribute is null)
 				return null;
 
-			if (string.IsNullOrEmpty(attribute.OriginalName) == false)
+			if (string.IsNullOrEmpty(attribute.OriginalName) is false)
 				return attribute.OriginalName;
 
-			if (originalParameterNames != null && attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
+			if (originalParameterNames is object && attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
 				return originalParameterNames[attribute.Index];
 
 			return null;
@@ -78,11 +78,11 @@ namespace HarmonyLib
 			string argumentName;
 
 			argumentName = GetOriginalArgumentName(method?.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName != null)
+			if (argumentName is object)
 				return argumentName;
 
 			argumentName = GetOriginalArgumentName(method?.DeclaringType?.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName != null)
+			if (argumentName is object)
 				return argumentName;
 
 			return name;
@@ -94,11 +94,11 @@ namespace HarmonyLib
 				return Array.IndexOf(originalParameterNames, patchParam.Name);
 
 			var originalName = patchParam.GetOriginalArgumentName(originalParameterNames);
-			if (originalName != null)
+			if (originalName is object)
 				return Array.IndexOf(originalParameterNames, originalName);
 
 			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParam.Name);
-			if (originalName != null)
+			if (originalName is object)
 				return Array.IndexOf(originalParameterNames, originalName);
 
 			return -1;

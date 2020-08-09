@@ -67,7 +67,7 @@ namespace HarmonyLibTests.Assets
 
 		static void Cleanup(MethodBase original, Exception ex)
 		{
-			if (original != null)
+			if (original is object)
 			{
 				DeadEndCode_Patch2.original = original;
 				exception = ex;
@@ -90,7 +90,7 @@ namespace HarmonyLibTests.Assets
 
 		static Exception Cleanup(Exception ex)
 		{
-			return ex == null ? null : new ArgumentException("Test", ex);
+			return ex is null ? null : new ArgumentException("Test", ex);
 		}
 	}
 

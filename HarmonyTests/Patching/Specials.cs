@@ -146,7 +146,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_PatchExceptionWithCleanup1()
 		{
-			if (AccessTools.IsMonoRuntime == false)
+			if (AccessTools.IsMonoRuntime is false)
 				return; // Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
 
 			var patchClass = typeof(DeadEndCode_Patch2);
@@ -188,7 +188,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_PatchExceptionWithCleanup2()
 		{
-			if (AccessTools.IsMonoRuntime == false)
+			if (AccessTools.IsMonoRuntime is false)
 				return; // Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
 
 			var patchClass = typeof(DeadEndCode_Patch3);
@@ -215,7 +215,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_PatchExceptionWithCleanup3()
 		{
-			if (AccessTools.IsMonoRuntime == false)
+			if (AccessTools.IsMonoRuntime is false)
 				return; // Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
 
 			var patchClass = typeof(DeadEndCode_Patch4);

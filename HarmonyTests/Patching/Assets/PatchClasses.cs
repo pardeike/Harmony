@@ -296,7 +296,7 @@ namespace HarmonyLibTests.Assets
 		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, IEnumerable<CodeInstruction> instructions)
 		{
 			var f_state1 = typeof(Class7).GetField("state1");
-			if (f_state1 == null) throw new NullReferenceException();
+			if (f_state1 is null) throw new NullReferenceException();
 
 			var f_a = typeof(TestStruct).GetField("a");
 			var f_b = typeof(TestStruct).GetField("b");
@@ -1158,7 +1158,7 @@ namespace HarmonyLibTests.Assets
 			var result = 0;
 			try
 			{
-				if (exception != null)
+				if (exception is object)
 					throw exception;
 			}
 			catch (Exception e) when (e.Message == "test")
