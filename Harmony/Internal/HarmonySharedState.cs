@@ -46,28 +46,26 @@ namespace HarmonyLib
 				Kind = ModuleKind.Dll,
 				ReflectionImporterProvider = MMReflectionImporter.Provider
 			};
-			using (var module = ModuleDefinition.CreateModule(name, parameters))
-			{
-				var attr = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.Abstract | Mono.Cecil.TypeAttributes.Sealed | Mono.Cecil.TypeAttributes.Class;
-				var typedef = new TypeDefinition("", name, attr) { BaseType = module.TypeSystem.Object };
-				module.Types.Add(typedef);
+			using var module = ModuleDefinition.CreateModule(name, parameters);
+			var attr = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.Abstract | Mono.Cecil.TypeAttributes.Sealed | Mono.Cecil.TypeAttributes.Class;
+			var typedef = new TypeDefinition("", name, attr) { BaseType = module.TypeSystem.Object };
+			module.Types.Add(typedef);
 
-				typedef.Fields.Add(new FieldDefinition(
-					 "state",
-					 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
-					 module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
-				));
+			typedef.Fields.Add(new FieldDefinition(
+				 "state",
+				 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+				 module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
+			));
 
-				var versionFieldDef = new FieldDefinition(
-					 "version",
-					 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
-					 module.ImportReference(typeof(int))
-				)
-				{ Constant = internalVersion };
-				typedef.Fields.Add(versionFieldDef);
+			var versionFieldDef = new FieldDefinition(
+				 "version",
+				 Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+				 module.ImportReference(typeof(int))
+			)
+			{ Constant = internalVersion };
+			typedef.Fields.Add(versionFieldDef);
 
-				_ = ReflectionHelper.Load(module);
-			}
+			_ = ReflectionHelper.Load(module);
 		}
 
 		static Assembly SharedStateAssembly()

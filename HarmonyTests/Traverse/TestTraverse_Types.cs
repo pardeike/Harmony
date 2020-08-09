@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace HarmonyLibTests
 		[Test]
 		public void Traverse_Types()
 		{
-			var instance = new Assets.TraverseTypes<InnerClass>();
+			var instance = new TraverseTypes<InnerClass>();
 			var trv = Traverse.Create(instance);
 
 			Assert.AreEqual(

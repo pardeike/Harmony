@@ -43,20 +43,13 @@ namespace HarmonyLib
 
 		internal static TypeReference GetTypeReference(ModuleDefinition module, object param)
 		{
-			switch (param)
+			return param switch
 			{
-				case Type paramType:
-					return module.ImportReference(paramType);
-
-				case InlineSignature paramSig:
-					return paramSig.ToFunctionPointer(module);
-
-				case ModifierType paramMod:
-					return paramMod.ToTypeReference(module);
-
-				default:
-					throw new NotSupportedException($"Unsupported inline signature parameter type: {param} ({param?.GetType().FullDescription()})");
-			}
+				Type paramType => module.ImportReference(paramType),
+				InlineSignature paramSig => paramSig.ToFunctionPointer(module),
+				ModifierType paramMod => paramMod.ToTypeReference(module),
+				_ => throw new NotSupportedException($"Unsupported inline signature parameter type: {param} ({param?.GetType().FullDescription()})"),
+			};
 		}
 
 		CallSite ICallSiteGenerator.ToCallSite(ModuleDefinition module)

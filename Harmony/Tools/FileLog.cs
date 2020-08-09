@@ -113,10 +113,8 @@ namespace HarmonyLib
 		{
 			lock (logPath)
 			{
-				using (var writer = File.AppendText(logPath))
-				{
-					writer.WriteLine(IndentString() + str);
-				}
+				using var writer = File.AppendText(logPath);
+				writer.WriteLine(IndentString() + str);
 			}
 		}
 
@@ -144,7 +142,7 @@ namespace HarmonyLib
 				for (var i = 1; i <= len; i++)
 				{
 					if (s.Length == 0) s = "#  ";
-					s += $"{(*p).ToString("X2")} ";
+					s += $"{*p:X2} ";
 					if (i > 1 || len == 1)
 					{
 						if (i % 8 == 0 || i == len)

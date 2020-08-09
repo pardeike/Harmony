@@ -1,11 +1,11 @@
+using HarmonyLib;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using HarmonyLib;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 namespace HarmonyLibTests
 {

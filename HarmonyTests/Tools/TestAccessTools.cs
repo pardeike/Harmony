@@ -1,12 +1,12 @@
+using HarmonyLib;
+using HarmonyLibTests.Assets;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using HarmonyLib;
-using HarmonyLibTests.Assets;
-using NUnit.Framework;
 using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
 
 namespace HarmonyLibTests

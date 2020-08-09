@@ -41,12 +41,10 @@ namespace HarmonyLib
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
 #pragma warning disable XS0001
-			using (var streamMemory = new MemoryStream())
-			{
-				var formatter = new BinaryFormatter();
-				formatter.Serialize(streamMemory, patchInfo);
-				return streamMemory.GetBuffer();
-			}
+			using var streamMemory = new MemoryStream();
+			var formatter = new BinaryFormatter();
+			formatter.Serialize(streamMemory, patchInfo);
+			return streamMemory.GetBuffer();
 #pragma warning restore XS0001
 		}
 
@@ -282,7 +280,9 @@ namespace HarmonyLib
 		[NonSerialized]
 		private MethodInfo patchMethod;
 		private int methodToken;
+#pragma warning disable CA2235
 		private string moduleGUID;
+#pragma warning restore CA2235
 
 		/// <summary>The method of the static patch method</summary>
 		/// 

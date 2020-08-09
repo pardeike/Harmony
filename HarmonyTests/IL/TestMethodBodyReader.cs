@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Reflection;
-using System.Reflection.Emit;
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System.Collections;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace HarmonyLibTests.IL
 {

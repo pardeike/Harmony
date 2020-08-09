@@ -24,7 +24,7 @@ namespace Basics
 			FileLog.LogBuffered("A");
 			FileLog.LogBuffered("B");
 			FileLog.FlushBuffer(); // don't forget to flush
-										  // </log>
+			// </log>
 
 			// <patch_annotation>
 			var assembly = Assembly.GetExecutingAssembly();

@@ -221,7 +221,7 @@ namespace HarmonyLib
 				return list;
 			}
 
-			string FailOnResult(IEnumerable<MethodBase> res)
+			static string FailOnResult(IEnumerable<MethodBase> res)
 			{
 				if (res == null) return "null";
 				if (res.Any(m => m == null)) return "some element was null";
