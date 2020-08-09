@@ -41,12 +41,10 @@ namespace HarmonyLib
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
 #pragma warning disable XS0001
-			using (var streamMemory = new MemoryStream())
-			{
-				var formatter = new BinaryFormatter();
-				formatter.Serialize(streamMemory, patchInfo);
-				return streamMemory.GetBuffer();
-			}
+			using var streamMemory = new MemoryStream();
+			var formatter = new BinaryFormatter();
+			formatter.Serialize(streamMemory, patchInfo);
+			return streamMemory.GetBuffer();
 #pragma warning restore XS0001
 		}
 
@@ -282,7 +280,9 @@ namespace HarmonyLib
 		[NonSerialized]
 		private MethodInfo patchMethod;
 		private int methodToken;
+#pragma warning disable CA2235
 		private string moduleGUID;
+#pragma warning restore CA2235
 
 		/// <summary>The method of the static patch method</summary>
 		/// 
@@ -290,7 +290,7 @@ namespace HarmonyLib
 		{
 			get
 			{
-				if (patchMethod == null)
+				if (patchMethod is null)
 				{
 					var mdl = AppDomain.CurrentDomain.GetAssemblies()
 						.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
@@ -338,7 +338,7 @@ namespace HarmonyLib
 		{
 			var method = PatchMethod;
 			if (method.ReturnType != typeof(DynamicMethod) && method.ReturnType != typeof(MethodInfo)) return method;
-			if (method.IsStatic == false) return method;
+			if (method.IsStatic is false) return method;
 			var parameters = method.GetParameters();
 			if (parameters.Count() != 1) return method;
 			if (parameters[0].ParameterType != typeof(MethodBase)) return method;
@@ -353,7 +353,7 @@ namespace HarmonyLib
 		///
 		public override bool Equals(object obj)
 		{
-			return ((obj != null) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
+			return ((obj is object) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
 		}
 
 		/// <summary>Determines how patches sort</summary>

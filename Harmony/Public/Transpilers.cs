@@ -18,9 +18,9 @@ namespace HarmonyLib
 		///
 		public static IEnumerable<CodeInstruction> MethodReplacer(this IEnumerable<CodeInstruction> instructions, MethodBase from, MethodBase to)
 		{
-			if (from == null)
+			if (from is null)
 				throw new ArgumentException("Unexpected null argument", nameof(from));
-			if (to == null)
+			if (to is null)
 				throw new ArgumentException("Unexpected null argument", nameof(to));
 
 			foreach (var instruction in instructions)
@@ -43,9 +43,9 @@ namespace HarmonyLib
 		///
 		public static IEnumerable<CodeInstruction> Manipulator(this IEnumerable<CodeInstruction> instructions, Func<CodeInstruction, bool> predicate, Action<CodeInstruction> action)
 		{
-			if (predicate == null)
+			if (predicate is null)
 				throw new ArgumentNullException(nameof(predicate));
-			if (action == null)
+			if (action is null)
 				throw new ArgumentNullException(nameof(action));
 
 			return instructions.Select(instruction =>

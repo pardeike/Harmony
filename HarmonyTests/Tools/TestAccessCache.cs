@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	[TestFixture]
 	public class Test_AccessCache : TestLogger

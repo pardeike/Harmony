@@ -33,7 +33,7 @@ namespace HarmonyLib
 			{
 				var value = trvSrc.GetValue();
 
-				if (trvDest.FieldExists() == false)
+				if (trvDest.FieldExists() is false)
 				{
 					nonExisting[namePath] = value;
 					return null;
@@ -54,10 +54,10 @@ namespace HarmonyLib
 			if (originalIndex == -1)
 				return false; // no need, new instruction
 
-			if (unassignedValues.TryGetValue(op, out var unassigned) == false)
+			if (unassignedValues.TryGetValue(op, out var unassigned) is false)
 				return false; // no need, no unassigned info
 
-			if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out var blocksObject) == false)
+			if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out var blocksObject) is false)
 				return false; // no need, no try-catch info
 			var blocks = blocksObject as List<ExceptionBlock>;
 
@@ -68,18 +68,18 @@ namespace HarmonyLib
 			var isStartBlock = blocks.FirstOrDefault(block => block.blockType != ExceptionBlockType.EndExceptionBlock);
 			var isEndBlock = blocks.FirstOrDefault(block => block.blockType == ExceptionBlockType.EndExceptionBlock);
 
-			if (isStartBlock != null && isEndBlock == null)
+			if (isStartBlock is object && isEndBlock is null)
 			{
 				var pairInstruction = originalInstructions.Skip(originalIndex + 1).FirstOrDefault(instr =>
 				{
-					if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+					if (unassignedValues.TryGetValue(instr, out unassigned) is false)
 						return false;
-					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 						return false;
 					blocks = blocksObject as List<ExceptionBlock>;
 					return blocks.Any();
 				});
-				if (pairInstruction != null)
+				if (pairInstruction is object)
 				{
 					var pairStart = originalIndex + 1;
 					var pairEnd = pairStart + originalInstructions.Skip(pairStart).ToList().IndexOf(pairInstruction) - 1;
@@ -89,35 +89,35 @@ namespace HarmonyLib
 
 					pairInstruction = newInstructions.Skip(opIndex + 1).FirstOrDefault(instr =>
 					{
-						if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+						if (unassignedValues.TryGetValue(instr, out unassigned) is false)
 							return false;
-						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 							return false;
 						blocks = blocksObject as List<ExceptionBlock>;
 						return blocks.Any();
 					});
-					if (pairInstruction != null)
+					if (pairInstruction is object)
 					{
 						pairStart = opIndex + 1;
 						pairEnd = pairStart + newInstructions.Skip(opIndex + 1).ToList().IndexOf(pairInstruction) - 1;
 						var newBetweenInstructions = newInstructions.GetRange(pairStart, pairEnd - pairStart);
 						var remaining = originalBetweenInstructions.Except(newBetweenInstructions).ToList();
-						return remaining.Any() == false;
+						return remaining.Any() is false;
 					}
 				}
 			}
-			if (isStartBlock == null && isEndBlock != null)
+			if (isStartBlock is null && isEndBlock is object)
 			{
 				var pairInstruction = originalInstructions.GetRange(0, originalIndex).LastOrDefault(instr =>
 				{
-					if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+					if (unassignedValues.TryGetValue(instr, out unassigned) is false)
 						return false;
-					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 						return false;
 					blocks = blocksObject as List<ExceptionBlock>;
 					return blocks.Any();
 				});
-				if (pairInstruction != null)
+				if (pairInstruction is object)
 				{
 					var pairStart = originalInstructions.GetRange(0, originalIndex).LastIndexOf(pairInstruction);
 					var pairEnd = originalIndex;
@@ -127,20 +127,20 @@ namespace HarmonyLib
 
 					pairInstruction = newInstructions.GetRange(0, opIndex).LastOrDefault(instr =>
 					{
-						if (unassignedValues.TryGetValue(instr, out unassigned) == false)
+						if (unassignedValues.TryGetValue(instr, out unassigned) is false)
 							return false;
-						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) == false)
+						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 							return false;
 						blocks = blocksObject as List<ExceptionBlock>;
 						return blocks.Any();
 					});
-					if (pairInstruction != null)
+					if (pairInstruction is object)
 					{
 						pairStart = newInstructions.GetRange(0, opIndex).LastIndexOf(pairInstruction);
 						pairEnd = opIndex;
 						var newBetweenInstructions = newInstructions.GetRange(pairStart, pairEnd - pairStart);
 						var remaining = originalBetweenInstructions.Except(newBetweenInstructions);
-						return remaining.Any() == false;
+						return remaining.Any() is false;
 					}
 				}
 			}
@@ -237,17 +237,17 @@ namespace HarmonyLib
 
 				// remember the order of the original input (for detection of dupped code instructions)
 				List<object> originalInstructions = null;
-				if (unassignedValues != null)
+				if (unassignedValues is object)
 					originalInstructions = instructions.Cast<object>().ToList();
 
 				// call the transpiler
 				var parameter = GetTranspilerCallParameters(generator, transpiler, method, instructions);
 				var newInstructions = transpiler.Invoke(null, parameter.ToArray()) as IEnumerable;
-				if (newInstructions != null)
+				if (newInstructions is object)
 					instructions = newInstructions;
 
 				// convert result back to 'our' CodeInstruction and re-assign otherwise lost fields
-				if (unassignedValues != null)
+				if (unassignedValues is object)
 					instructions = ConvertToOurInstructions(instructions, typeof(CodeInstruction), originalInstructions, unassignedValues);
 			});
 

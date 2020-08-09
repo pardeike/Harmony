@@ -95,7 +95,7 @@ namespace HarmonyLib
 		public static CodeInstruction Call(Type type, string name, Type[] parameters = null, Type[] generics = null)
 		{
 			var method = AccessTools.Method(type, name, parameters, generics);
-			if (method == null) throw new ArgumentException($"No method found for type={type}, name={name}, parameters={parameters.Description()}, generics={generics.Description()}");
+			if (method is null) throw new ArgumentException($"No method found for type={type}, name={name}, parameters={parameters.Description()}, generics={generics.Description()}");
 			return new CodeInstruction(OpCodes.Call, method);
 		}
 
@@ -108,7 +108,7 @@ namespace HarmonyLib
 		public static CodeInstruction Call(string typeColonMethodname, Type[] parameters = null, Type[] generics = null)
 		{
 			var method = AccessTools.Method(typeColonMethodname, parameters, generics);
-			if (method == null) throw new ArgumentException($"No method found for {typeColonMethodname}, parameters={parameters.Description()}, generics={generics.Description()}");
+			if (method is null) throw new ArgumentException($"No method found for {typeColonMethodname}, parameters={parameters.Description()}, generics={generics.Description()}");
 			return new CodeInstruction(OpCodes.Call, method);
 		}
 
@@ -158,7 +158,7 @@ namespace HarmonyLib
 		public static CodeInstruction LoadField(Type type, string name, bool useAddress = false)
 		{
 			var field = AccessTools.Field(type, name);
-			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
+			if (field is null) throw new ArgumentException($"No field found for {type} and {name}");
 			return new CodeInstruction(useAddress ? (field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda) : (field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld), field);
 		}
 
@@ -169,7 +169,7 @@ namespace HarmonyLib
 		public static CodeInstruction StoreField(Type type, string name)
 		{
 			var field = AccessTools.Field(type, name);
-			if (field == null) throw new ArgumentException($"No field found for {type} and {name}");
+			if (field is null) throw new ArgumentException($"No field found for {type} and {name}");
 			return new CodeInstruction(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
 		}
 

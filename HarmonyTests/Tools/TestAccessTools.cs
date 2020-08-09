@@ -1,15 +1,15 @@
+using HarmonyLib;
+using HarmonyLibTests.Assets;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using HarmonyLib;
-using HarmonyLibTests.Assets;
-using NUnit.Framework;
 using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	[TestFixture]
 	public class Test_AccessTools : TestLogger
@@ -77,7 +77,7 @@ namespace HarmonyLibTests
 			var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 			var referencedDynamicAssemblies = assemblyBuilder.GetReferencedAssemblies()
 				.Select(referencedAssemblyName => currentAssemblies.FirstOrDefault(assembly => assembly.FullName == referencedAssemblyName.FullName))
-				.Where(referencedAssembly => referencedAssembly != null && referencedAssembly.IsDynamic)
+				.Where(referencedAssembly => referencedAssembly is object && referencedAssembly.IsDynamic)
 				.ToArray();
 			// ILPack currently has an issue where the dynamic assembly has an assembly reference to the runtime assembly (System.Private.CoreLib)
 			// rather than reference assembly (System.Runtime). This causes issues for decompilers, but is fine for loading via Assembly.Load et all,
@@ -363,7 +363,7 @@ namespace HarmonyLibTests
 		public void Test_AccessTools_TypeExtension_Description()
 		{
 			var types = new Type[] { typeof(string), typeof(int), null, typeof(void), typeof(Test_AccessTools) };
-			Assert.AreEqual("(System.String, System.Int32, null, System.Void, HarmonyLibTests.Test_AccessTools)", types.Description());
+			Assert.AreEqual("(System.String, System.Int32, null, System.Void, HarmonyLibTests.Tools.Test_AccessTools)", types.Description());
 		}
 
 		[Test]

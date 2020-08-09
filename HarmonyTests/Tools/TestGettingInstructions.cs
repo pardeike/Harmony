@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	public class InstructionTest
 	{

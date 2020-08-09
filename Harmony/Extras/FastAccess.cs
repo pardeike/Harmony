@@ -44,7 +44,7 @@ namespace HarmonyLib
 			var constructorInfo =
 				typeof(T).GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null,
 					new Type[0], null);
-			if (constructorInfo == null)
+			if (constructorInfo is null)
 			{
 				throw new ApplicationException(string.Format(
 					"The type {0} must declare an empty constructor (the constructor may be private, internal, protected, protected internal, or public).",
@@ -110,11 +110,11 @@ namespace HarmonyLib
 			foreach (var name in names)
 			{
 				var field = typeof(T).GetField(name, AccessTools.all);
-				if (field != null)
+				if (field is object)
 					return CreateGetterHandler<T, S>(field);
 
 				var property = typeof(T).GetProperty(name, AccessTools.all);
-				if (property != null)
+				if (property is object)
 					return CreateGetterHandler<T, S>(property);
 			}
 

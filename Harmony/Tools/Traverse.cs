@@ -50,7 +50,7 @@ namespace HarmonyLib
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		static Traverse()
 		{
-			if (Cache == null)
+			if (Cache is null)
 				Cache = new AccessCache();
 		}
 
@@ -138,9 +138,9 @@ namespace HarmonyLib
 				return ((FieldInfo)_info).GetValue(_root);
 			if (_info is PropertyInfo)
 				return ((PropertyInfo)_info).GetValue(_root, AccessTools.all, null, _params, CultureInfo.CurrentCulture);
-			if (_method != null)
+			if (_method is object)
 				return _method.Invoke(_root, _params);
-			if (_root == null && _type != null) return _type;
+			if (_root is null && _type is object) return _type;
 			return _root;
 		}
 
@@ -151,7 +151,7 @@ namespace HarmonyLib
 		public T GetValue<T>()
 		{
 			var value = GetValue();
-			if (value == null) return default;
+			if (value is null) return default;
 			return (T)value;
 		}
 
@@ -161,7 +161,7 @@ namespace HarmonyLib
 		///
 		public object GetValue(params object[] arguments)
 		{
-			if (_method == null)
+			if (_method is null)
 				throw new Exception("cannot get method value without method");
 			return _method.Invoke(_root, arguments);
 		}
@@ -173,7 +173,7 @@ namespace HarmonyLib
 		///
 		public T GetValue<T>(params object[] arguments)
 		{
-			if (_method == null)
+			if (_method is null)
 				throw new Exception("cannot get method value without method");
 			return (T)_method.Invoke(_root, arguments);
 		}
@@ -188,7 +188,7 @@ namespace HarmonyLib
 				((FieldInfo)_info).SetValue(_root, value, AccessTools.all, null, CultureInfo.CurrentCulture);
 			if (_info is PropertyInfo)
 				((PropertyInfo)_info).SetValue(_root, value, AccessTools.all, null, _params, CultureInfo.CurrentCulture);
-			if (_method != null)
+			if (_method is object)
 				throw new Exception($"cannot set value of method {_method.FullDescription()}");
 			return this;
 		}
@@ -207,16 +207,16 @@ namespace HarmonyLib
 
 		Traverse Resolve()
 		{
-			if (_root == null)
+			if (_root is null)
 			{
 				if (_info is FieldInfo fieldInfo && fieldInfo.IsStatic)
 					return new Traverse(GetValue());
 				if (_info is PropertyInfo propertyInfo && propertyInfo.GetGetMethod().IsStatic)
 					return new Traverse(GetValue());
-				if (_method != null && _method.IsStatic)
+				if (_method is object && _method.IsStatic)
 					return new Traverse(GetValue());
 
-				if (_type != null)
+				if (_type is object)
 					return this;
 			}
 			return new Traverse(GetValue());
@@ -228,10 +228,10 @@ namespace HarmonyLib
 		///
 		public Traverse Type(string name)
 		{
-			if (name == null) throw new ArgumentNullException(nameof(name));
-			if (_type == null) return new Traverse();
+			if (name is null) throw new ArgumentNullException(nameof(name));
+			if (_type is null) return new Traverse();
 			var type = AccessTools.Inner(_type, name);
-			if (type == null) return new Traverse();
+			if (type is null) return new Traverse();
 			return new Traverse(type);
 		}
 
@@ -241,12 +241,12 @@ namespace HarmonyLib
 		///
 		public Traverse Field(string name)
 		{
-			if (name == null) throw new ArgumentNullException(nameof(name));
+			if (name is null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
-			if (resolved._type == null) return new Traverse();
+			if (resolved._type is null) return new Traverse();
 			var info = Cache.GetFieldInfo(resolved._type, name);
-			if (info == null) return new Traverse();
-			if (info.IsStatic == false && resolved._root == null) return new Traverse();
+			if (info is null) return new Traverse();
+			if (info.IsStatic is false && resolved._root is null) return new Traverse();
 			return new Traverse(resolved._root, info, null);
 		}
 
@@ -276,11 +276,11 @@ namespace HarmonyLib
 		///
 		public Traverse Property(string name, object[] index = null)
 		{
-			if (name == null) throw new ArgumentNullException(nameof(name));
+			if (name is null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
-			if (resolved._type == null) return new Traverse();
+			if (resolved._type is null) return new Traverse();
 			var info = Cache.GetPropertyInfo(resolved._type, name);
-			if (info == null) return new Traverse();
+			if (info is null) return new Traverse();
 			return new Traverse(resolved._root, info, index);
 		}
 
@@ -311,12 +311,12 @@ namespace HarmonyLib
 		///
 		public Traverse Method(string name, params object[] arguments)
 		{
-			if (name == null) throw new ArgumentNullException(nameof(name));
+			if (name is null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
-			if (resolved._type == null) return new Traverse();
+			if (resolved._type is null) return new Traverse();
 			var types = AccessTools.GetTypes(arguments);
 			var method = Cache.GetMethodInfo(resolved._type, name, types);
-			if (method == null) return new Traverse();
+			if (method is null) return new Traverse();
 			return new Traverse(resolved._root, (MethodInfo)method, arguments);
 		}
 
@@ -328,11 +328,11 @@ namespace HarmonyLib
 		///
 		public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)
 		{
-			if (name == null) throw new ArgumentNullException(nameof(name));
+			if (name is null) throw new ArgumentNullException(nameof(name));
 			var resolved = Resolve();
-			if (resolved._type == null) return new Traverse();
+			if (resolved._type is null) return new Traverse();
 			var method = Cache.GetMethodInfo(resolved._type, name, paramTypes);
-			if (method == null) return new Traverse();
+			if (method is null) return new Traverse();
 			return new Traverse(resolved._root, (MethodInfo)method, arguments);
 		}
 
@@ -350,7 +350,7 @@ namespace HarmonyLib
 		///
 		public bool FieldExists()
 		{
-			return _info != null && _info is FieldInfo;
+			return _info is object && _info is FieldInfo;
 		}
 
 		/// <summary>Checks if the current traverse instance is for a property</summary>
@@ -358,7 +358,7 @@ namespace HarmonyLib
 		///
 		public bool PropertyExists()
 		{
-			return _info != null && _info is PropertyInfo;
+			return _info is object && _info is PropertyInfo;
 		}
 
 		/// <summary>Checks if the current traverse instance is for a method</summary>
@@ -366,7 +366,7 @@ namespace HarmonyLib
 		///
 		public bool MethodExists()
 		{
-			return _method != null;
+			return _method is object;
 		}
 
 		/// <summary>Checks if the current traverse instance is for a type</summary>
@@ -374,7 +374,7 @@ namespace HarmonyLib
 		///
 		public bool TypeExists()
 		{
-			return _type != null;
+			return _type is object;
 		}
 
 		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>

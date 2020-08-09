@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
 	public class ValueTypes : TestLogger

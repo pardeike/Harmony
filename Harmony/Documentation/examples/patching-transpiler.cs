@@ -25,7 +25,7 @@ namespace Patching_Transpiler
 				}
 				yield return instruction;
 			}
-			if (found == false)
+			if (found is false)
 				ReportError("Cannot find <Stdfld someField> in OriginalType.OriginalMethod");
 		}
 		// </typical>

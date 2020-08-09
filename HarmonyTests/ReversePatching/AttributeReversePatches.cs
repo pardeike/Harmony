@@ -2,7 +2,7 @@ using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.ReversePatching
 {
 	[TestFixture]
 	public class AttributeReversePatches : TestLogger

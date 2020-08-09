@@ -1,10 +1,10 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	[TestFixture]
 	public class TestTraverse_Basics : TestLogger

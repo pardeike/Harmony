@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
 	public class CombinedPatches : TestLogger
@@ -11,9 +11,9 @@ namespace HarmonyLibTests
 		[Test]
 		public void Test_ManyFinalizers()
 		{
-			var originalClass = typeof(Assets.CombinedPatchClass);
+			var originalClass = typeof(CombinedPatchClass);
 			Assert.NotNull(originalClass);
-			var patchClass = typeof(Assets.CombinedPatchClass_Patch_1);
+			var patchClass = typeof(CombinedPatchClass_Patch_1);
 			Assert.NotNull(patchClass);
 
 			var harmonyInstance = new Harmony("test");

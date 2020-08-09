@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -85,7 +85,7 @@ namespace HarmonyLibTests.IL
 			var method = AccessTools.TypeByName(typeName).Module.ResolveMethod(token);
 			log.Add(method.Name);
 			log.Add(instance?.GetType().Name ?? "NULL");
-			if (args != null)
+			if (args is object)
 				foreach (var arg in args)
 					log.Add(arg?.ToString() ?? "NULL");
 			return true;

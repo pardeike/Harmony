@@ -5,8 +5,7 @@ charset = utf-8
 insert_final_newline = false
 end_of_line = crlf
 
-# Matches the exact files appveyor.yml and .travis.yml
-[{appveyor.yml,.travis.yml}]
+[*.{yml,json}]
 indent_style = space
 indent_size = 2
 
@@ -14,6 +13,8 @@ indent_size = 2
 indent_style = tab
 indent_size = 3
 trim_trailing_whitespace = true
+
+dotnet_sort_system_directives_first = false
 
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
@@ -26,6 +27,7 @@ dotnet_style_collection_initializer = true:suggestion
 dotnet_style_explicit_tuple_names = true:suggestion
 dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
 csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_var_elsewhere = true:suggestion
@@ -38,14 +40,13 @@ csharp_style_expression_bodied_accessors = true:suggestion
 csharp_style_pattern_matching_over_is_with_cast_check = false:suggestion
 csharp_style_pattern_matching_over_as_with_null_check = false:suggestion
 csharp_style_inlined_variable_declaration = false:suggestion
-csharp_prefer_simple_default_expression = true:suggestion
 csharp_style_throw_expression = false:suggestion
 csharp_style_unused_value_assignment_preference = discard_variable:suggestion
 csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion
 csharp_style_conditional_delegate_call = false:suggestion
 csharp_prefer_braces = false:suggestion
+csharp_prefer_simple_default_expression = true:suggestion
 
-dotnet_sort_system_directives_first = false
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true

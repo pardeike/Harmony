@@ -79,7 +79,7 @@ namespace HarmonyLib
 			AppendLabel(ref instruction, this);
 			instruction += $": {opcode.Name}";
 
-			if (operand == null)
+			if (operand is null)
 				return instruction;
 
 			instruction += " ";

@@ -2,7 +2,7 @@ using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Patching
 {
 	[TestFixture]
 	public class Arguments : TestLogger

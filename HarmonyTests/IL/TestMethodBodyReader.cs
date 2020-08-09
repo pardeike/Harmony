@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Reflection;
-using System.Reflection.Emit;
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System.Collections;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace HarmonyLibTests.IL
 {
@@ -33,7 +33,7 @@ namespace HarmonyLibTests.IL
 
 				// The only difference between w/o gen and w/ gen is this:
 				var operandType = instrNoGen.opcode.OperandType;
-				if ((operandType == OperandType.ShortInlineVar || operandType == OperandType.InlineVar) && !(instrNoGen.argument is null))
+				if ((operandType == OperandType.ShortInlineVar || operandType == OperandType.InlineVar) && instrNoGen.argument is object)
 				{
 #if NETCOREAPP3_0 || NETCOREAPP3_1
 					Assert.AreEqual("System.Reflection.RuntimeLocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);

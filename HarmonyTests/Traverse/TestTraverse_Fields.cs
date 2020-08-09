@@ -2,7 +2,7 @@ using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	[TestFixture]
 	public class TestTraverse_Fields : TestLogger

@@ -1,14 +1,14 @@
+using HarmonyLib;
+using HarmonyLibTests.Assets;
+using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using HarmonyLib;
-using HarmonyLibTests.Assets;
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
-namespace HarmonyLibTests
+namespace HarmonyLibTests.Tools
 {
 	// This is a comprehensive set of tests for AccessTools.*FieldRefAccess methods.
 	// Fields of test asset types are each subjected to suites of compatible test cases, where each test case follows the form of:
@@ -672,7 +672,7 @@ namespace HarmonyLibTests
 				var field = AccessTools.Field(typeof(AccessToolsClass), "field5");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
 				// Type of field is AccessToolsClass.Inner, which is a private class.
-				IInner TestValue()
+				static IInner TestValue()
 				{
 					return AccessToolsClass.NewInner(987);
 				}
@@ -705,7 +705,7 @@ namespace HarmonyLibTests
 				var field = AccessTools.Field(typeof(AccessToolsClass), "field6");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
 				// Type of field is AccessToolsClass.Inner[], the element type of which is a private class.
-				IList TestValue()
+				static IList TestValue()
 				{
 					// IInner[] can't be cast to AccessTools.Inner[], so must create an actual AccessTools.Inner[].
 					var array = (IList)Array.CreateInstance(AccessTools.Inner(typeof(AccessToolsClass), "Inner"), 2);
@@ -747,7 +747,7 @@ namespace HarmonyLibTests
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
 				// Type of field is AccessToolsClass.InnerStruct, which is a private struct.
 				// As it's a value type and references cannot be made to boxed value type instances, FieldRefValue will never work. 
-				IInner TestValue()
+				static IInner TestValue()
 				{
 					return AccessToolsClass.NewInnerStruct(-987);
 				}
@@ -773,7 +773,7 @@ namespace HarmonyLibTests
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
 				// Type of field is List<AccessToolsClass.Inner>, the element type of which is a private struct.
 				// Although AccessToolsClass.Inner is a value type, List is not, so FieldRefValue works normally.
-				IList TestValue()
+				static IList TestValue()
 				{
 					// List<IInner> can't be cast to List<AccessTools.Inner>, so must create an actual List<AccessTools.Inner>.
 					var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AccessTools.Inner(typeof(AccessToolsClass), "InnerStruct")));
