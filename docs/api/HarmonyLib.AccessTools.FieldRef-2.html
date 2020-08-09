@@ -73,14 +73,14 @@
   
   <h1 id="HarmonyLib_AccessTools_FieldRef_2" data-uid="HarmonyLib.AccessTools.FieldRef`2" class="text-break">Delegate AccessTools.FieldRef&lt;T, F&gt;
   </h1>
-  <div class="markdown level0 summary"><p>A read/writable reference to an instance field</p>
+  <div class="markdown level0 summary"><p>A readable/assignable reference delegate to an instance field of a class or static field (NOT an instance field of a struct)</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
   <h5 id="HarmonyLib_AccessTools_FieldRef_2_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public delegate F FieldRef&lt;T, F&gt;(T obj = null);</code></pre>
+    <pre><code class="lang-csharp hljs">public delegate F FieldRef&lt;T, F&gt;(T instance = null);</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -94,8 +94,8 @@
     <tbody>
       <tr>
         <td><span class="xref">T</span></td>
-        <td><span class="parametername">obj</span></td>
-        <td><p>The runtime instance to access the field (leave empty for static fields)</p>
+        <td><span class="parametername">instance</span></td>
+        <td><p>The runtime instance to access the field (ignored and can be omitted for static fields)</p>
 </td>
       </tr>
     </tbody>
@@ -111,7 +111,7 @@
     <tbody>
       <tr>
         <td><span class="xref">F</span></td>
-        <td><p>An readable/assignable object representing the field</p>
+        <td><p>A readable/assignable reference to the field</p>
 </td>
       </tr>
     </tbody>
@@ -127,16 +127,46 @@
     <tbody>
       <tr>
         <td><span class="parametername">T</span></td>
-        <td><p>The class the field is defined in or &quot;object&quot; if type cannot be accessed at compile time</p>
+        <td><p>An arbitrary type if the field is static; otherwise the class that defines the field, or a parent class (including <span class="xref">System.Object</span>),
+implemented interface, or derived class of this type</p>
 </td>
       </tr>
       <tr>
         <td><span class="parametername">F</span></td>
-        <td><p>The type of the field</p>
+        <td><p>The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+a type that <span class="xref">System.Type.IsAssignableFrom(System.Type)</span> the field's type</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_AccessTools_FieldRef_2_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+This delegate cannot be used for instance fields of structs, since a struct instance passed to the delegate would be passed by
+value and thus would be a copy that only exists within the delegate&apos;s invocation. This is fine for a readonly reference,
+but makes assignment futile. Use <a class="xref" href="HarmonyLib.AccessTools.StructFieldRef-2.html">AccessTools.StructFieldRef&lt;T, F&gt;</a> instead.
+</p>
+<p>
+Note that <code data-dev-comment-type="typeparamref" class="typeparamref">T</code> is not required to be the field&apos;s declaring type. It can be a parent class (including <span class="xref">System.Object</span>),
+implemented interface, or a derived class of the field&apos;s declaring type (&quot;<code>instanceOfT is FieldDeclaringType</code>&quot; must be possible).
+Specifically, <code data-dev-comment-type="typeparamref" class="typeparamref">F</code> must be <span class="xref">System.Type.IsAssignableFrom(System.Type)</span> OR to the field&apos;s declaring type.
+Technically, this allows <code>Nullable</code>, although <code>Nullable</code> is only relevant for structs, and since only static fields of structs
+are allowed for this delegate, and the instance passed to such a delegate is ignored, this hardly matters.
+</p>
+<p>
+Similarly, <code data-dev-comment-type="typeparamref" class="typeparamref">F</code> is not required to be the field&apos;s field type, unless that type is a value type.
+It can be a parent class (including <code>object</code>) or implemented interface of the field&apos;s field type. It cannot be a derived class.
+This variance is not allowed for value types, since that would require boxing/unboxing, which is not allowed for ref values.
+Specifically, for reference types, <code data-dev-comment-type="typeparamref" class="typeparamref">F</code> must be <span class="xref">System.Type.IsAssignableFrom(System.Type)</span>
+the field&apos;s field type; and for value types, <code data-dev-comment-type="typeparamref" class="typeparamref">F</code> must be exactly the field&apos;s field type.
+</p>
+<p>
+This delegate supports static fields, even those defined in structs, for legacy reasons.
+For such static fields, <code data-dev-comment-type="typeparamref" class="typeparamref">T</code> is effectively ignored.
+This is also the reason that this delegate lacks a generic class constraint (it was added to certain <code>FieldRefAccess</code> methods,
+but such a constraint cannot be added to this delegate without breaking binary compatibility).
+Consider using <a class="xref" href="HarmonyLib.AccessTools.FieldRef-1.html">AccessTools.FieldRef&lt;F&gt;</a> (and <code>StaticFieldRefAccess</code> methods that return it) instead for static fields.
+</p>
+</div>
 </article>
           </div>
           
@@ -148,7 +178,7 @@
                     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_FieldRef_2.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.FieldRef%602%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L793" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L830" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
