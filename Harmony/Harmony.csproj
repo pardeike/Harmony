@@ -71,7 +71,8 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
 
-		<PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" PrivateAssets="All" />
+		<!-- See ILRepack.targets -->
+		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.1" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
@@ -82,32 +83,6 @@
 			<OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg" Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
 		</ItemGroup>
 		<Delete Files="@(OldNugetPackages)" />
-	</Target>
-
-	<Target Name="ILRepack" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
-		<!-- Merge all dependencies into Harmony whenever it makes sense and whenever possible. -->
-		<PropertyGroup>
-			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
-		</PropertyGroup>
-		<ItemGroup>
-			<InputAssemblies Include="Mono.Cecil.dll" />
-			<InputAssemblies Include="Mono.Cecil.Mdb.dll" />
-			<InputAssemblies Include="Mono.Cecil.Pdb.dll" />
-			<InputAssemblies Include="MonoMod.Common.dll" />
-			<InternalizeExcludeAssemblies Include="Harmony" />
-		</ItemGroup>
-
-		<ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" WorkingDirectory="$(WorkingDirectory)" />
-	</Target>
-
-	<Target Name="RemoveUnnecessaryDependencyFiles" AfterTargets="ILRepack;PostBuildEvent" Condition="'$(Configuration)'=='Release'">
-		<PropertyGroup>
-			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
-		</PropertyGroup>
-		<ItemGroup>
-			<UnnecessaryDependencyFiles Include="$(WorkingDirectory)\*" Exclude="$(WorkingDirectory)\$(AssemblyName).*"/>
-		</ItemGroup>
-		<Delete Files="@(UnnecessaryDependencyFiles)" />
 	</Target>
 
 	<UsingTask TaskName="Zip" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">

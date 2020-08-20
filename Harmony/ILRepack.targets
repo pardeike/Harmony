@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!--
+	Merge all dependencies into 0Harmony.dll whenever it makes sense and whenever possible.
+
+	This ILRepack.targets file has to exist to prevent ILRepack.Lib.MSBuild.Task.targets' "ILRepack" target from being used
+	(its "ILRepack" target has a condition that disables it if this file exists).
+	Also, since "ILRepack" target already exists, we have to use a different target name here; hence, "ILRepacker".
+	-->
+
+	<Target Name="ILRepacker" AfterTargets="PostBuildEvent" Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
+		<ItemGroup>
+			<!-- Note: With Internalize="true" below, all assemblies except the first listed here are internalized. -->
+			<InputAssemblies Include="$(OutputPath)$(AssemblyName).dll" />
+			<InputAssemblies Include="$(OutputPath)Mono.Cecil.dll" />
+			<InputAssemblies Include="$(OutputPath)Mono.Cecil.Mdb.dll" />
+			<InputAssemblies Include="$(OutputPath)Mono.Cecil.Pdb.dll" />
+			<InputAssemblies Include="$(OutputPath)MonoMod.Common.dll" />
+		</ItemGroup>
+
+		<ILRepack
+			Parallel="true"
+			Internalize="true"
+			InputAssemblies="@(InputAssemblies)"
+			TargetKind="Dll"
+			OutputFile="$(OutputPath)$(AssemblyName).dll" />
+	</Target>
+
+	<Target Name="RemoveUnnecessaryDependencyFiles" AfterTargets="ILRepacker;PostBuildEvent" Condition="'$(Configuration)'=='Release'">
+		<PropertyGroup>
+			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
+		</PropertyGroup>
+		<ItemGroup>
+			<UnnecessaryDependencyFiles Include="$(WorkingDirectory)\*" Exclude="$(WorkingDirectory)\$(AssemblyName).*"/>
+		</ItemGroup>
+		<Delete Files="@(UnnecessaryDependencyFiles)" />
+	</Target>
+</Project>
