@@ -94,6 +94,9 @@ namespace HarmonyLib
 		{
 			lock (logPath)
 			{
+				// To make sure the directory is created, because linux servers don't create it by default 
+				Directory.CreateDirectory(Path.GetDirectoryName(logPath));
+
 				if (buffer.Count > 0)
 				{
 					using (var writer = File.AppendText(logPath))
