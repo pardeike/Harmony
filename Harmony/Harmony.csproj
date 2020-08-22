@@ -43,6 +43,23 @@
 		</Otherwise>
 	</Choose>
 
+	<!-- ILRepack config needs to be specified before MonoMod.Common PackageReference due its dependency on DoILRepack defined here. -->
+	<ItemGroup>
+	</ItemGroup>
+	<Choose>
+		<When Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
+			<PropertyGroup>
+				<DoILRepack>true</DoILRepack>
+				<ILRepackInternalize>true</ILRepackInternalize>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<DoILRepack>false</DoILRepack>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
 	<ItemGroup>
 		<None Include="..\LICENSE" Pack="true" PackagePath="" />
 		<None Include="..\HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
@@ -64,15 +81,15 @@
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
 		<PackageReference Include="MonoMod.Common" Version="20.5.31.1">
-			<PrivateAssets Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">All</PrivateAssets>
+			<PrivateAssets Condition="'$(DoILRepack)'=='true'">All</PrivateAssets>
 		</PackageReference>
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
 
-		<!-- See ILRepack.targets -->
-		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.1" PrivateAssets="All" />
+		<!-- See ILRepack config above. -->
+		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.16" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
