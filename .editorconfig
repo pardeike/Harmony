@@ -2,7 +2,7 @@ root = true
 
 [*]
 charset = utf-8
-insert_final_newline = false
+insert_final_newline = true
 end_of_line = crlf
 
 [*.{yml,json}]
@@ -12,6 +12,7 @@ indent_size = 2
 [*.cs]
 indent_style = tab
 indent_size = 3
+tab_width = 3 # https://github.com/dotnet/roslyn/issues/22601
 trim_trailing_whitespace = true
 
 dotnet_sort_system_directives_first = false
@@ -55,6 +56,7 @@ csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_within_query_expression_clauses = true
 csharp_indent_case_contents = true
+csharp_indent_case_contents_when_block = false
 csharp_indent_switch_labels = true
 csharp_indent_labels = no_change
 csharp_space_after_cast = false
