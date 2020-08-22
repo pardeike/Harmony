@@ -45,6 +45,7 @@ jobs:
   # Relies on all .NET Core (and .NET 5+) framework having a dot in their TFM.
   # Assumes that .NET Standard is never used.
   - ${{ each framework in parameters.frameworks }}:
+    # .NET Core (and .NET 5+) detection is done by taking advantage of TFMs for such frameworks always having a period, which .NET Framework TFMs lack.
     - ${{ if contains(framework, '.') }}:
       # Assume x64 agents lack installed x86 .NET Core runtimes (which is the case for MS-hosted agents), so install them as needed.
       # However, such x86 runtimes can't be installed via the UseDotNet task, so we need to use the official dotnet-install.ps1 script.
@@ -106,7 +107,6 @@ jobs:
       # Following attempts to replicate the behavior of DotNetCoreCLI test with publishTestResults=true, the main difference being:
       # - the usage of mono + vstest.console (since mono + dotnet test doesn't work)
       # - the actual test publishing delegated to a followup PublishTestResults task
-      # - additionally copies over test result files to $(Build.ArtifactStagingDirectory) for a followup PublishBuildArtifacts task
       - bash: |
           shopt -s failglob globstar
           set -x
