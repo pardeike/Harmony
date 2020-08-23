@@ -88,8 +88,12 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
 
-		<!-- See ILRepack config above. -->
-		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.16" PrivateAssets="All" />
+		<!--
+		See ILRepack config above.
+		Version 2.1.15+ currently doesn't work on Linux and macOS (results in "Current platform not supported. Unable to find .NET Framework root"),
+		so using version 2.1.14.
+		-->
+		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
