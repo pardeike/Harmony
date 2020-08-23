@@ -81,19 +81,19 @@
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
 		<PackageReference Include="MonoMod.Common" Version="20.5.31.1">
-			<PrivateAssets Condition="'$(DoILRepack)'=='true'">All</PrivateAssets>
+			<PrivateAssets Condition="'$(DoILRepack)'=='true'">all</PrivateAssets>
 		</PackageReference>
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" Condition="'$(TargetFramework)'=='net35'" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
+		<PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="all" Condition="'$(TargetFramework)'=='net35'" />
 
 		<!--
 		See ILRepack config above.
 		Version 2.1.15+ currently doesn't work on Linux and macOS (results in "Current platform not supported. Unable to find .NET Framework root"),
 		so using version 2.1.14.
 		-->
-		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="All" />
+		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
 	</ItemGroup>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
