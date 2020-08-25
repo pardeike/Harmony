@@ -28,8 +28,10 @@
 	</PropertyGroup>
 
 	<Choose>
-		<!-- Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
-			so instead, relying on the fact that all .NET Core and .NET 5.0+ (and .NET Standard) have a period in their TFMs. -->
+		<!--
+		Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
+		so instead, relying on the fact that all .NET Core and .NET 5.0+ (and .NET Standard) have a period in their TFMs.
+		-->
 		<When Condition="$(TargetFramework.Contains('.'))">
 			<PropertyGroup>
 				<IsCoreOrStandard>true</IsCoreOrStandard>
@@ -43,19 +45,33 @@
 		</Otherwise>
 	</Choose>
 
-	<!-- ILRepack config needs to be specified before MonoMod.Common PackageReference due its dependency on DoILRepack defined here. -->
-	<ItemGroup>
-	</ItemGroup>
+	<!-- ILRepack config needs to be specified before MonoMod.Common PackageReference due its dependency on properties defined here. -->
 	<Choose>
 		<When Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
 			<PropertyGroup>
-				<DoILRepack>true</DoILRepack>
 				<ILRepackInternalize>true</ILRepackInternalize>
 			</PropertyGroup>
+			<Choose>
+				<!-- See ExecILRepack target below. -->
+				<When Condition="$([System.Environment]::GetEnvironmentVariable('DYLD_FALLBACK_LIBRARY_PATH'))=='' And $([MSBuild]::IsOsPlatform('OSX'))">
+					<PropertyGroup>
+						<DoILRepack>false</DoILRepack>
+						<DoExecILRepack>true</DoExecILRepack>
+					</PropertyGroup>
+				</When>
+				<Otherwise>
+					<PropertyGroup>
+						<DoILRepack>true</DoILRepack>
+						<DoExecILRepack>false</DoExecILRepack>
+					</PropertyGroup>
+				</Otherwise>
+			</Choose>
 		</When>
 		<Otherwise>
 			<PropertyGroup>
+				<ILRepackInternalize>false</ILRepackInternalize>
 				<DoILRepack>false</DoILRepack>
+				<DoExecILRepack>false</DoExecILRepack>
 			</PropertyGroup>
 		</Otherwise>
 	</Choose>
@@ -81,7 +97,7 @@
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
 		<PackageReference Include="MonoMod.Common" Version="20.5.31.1">
-			<PrivateAssets Condition="'$(DoILRepack)'=='true'">all</PrivateAssets>
+			<PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets>
 		</PackageReference>
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
@@ -95,6 +111,32 @@
 		-->
 		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
 	</ItemGroup>
+
+	<!--
+	On macOS .NET Framework builds, ILRepack uses Mono.Posix package for copying file permissions, but this problematic because:
+	1) Its P/Invoke usage relies on dynamic linking with the native libs (specifically, libMonoPosixHelper.dylib) of the Mono install(s),
+		(which are typically rooted at /Library/Frameworks/Mono.framework).
+	2) Mono.Posix.dll's dynamic linking doesn't specify absolute paths, so it relies on DYLD_* environment variables for searching for the dylib.
+	3) However, these DYLD_* environment variables are often unset in modern macOS due to SIP:
+		https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/RuntimeProtections/RuntimeProtections.html
+	This results in "Unable to load shared library 'MonoPosixHelper' ... at Mono.Unix.Native.Syscall.stat..." errors.
+
+	Workaround:
+	We default DYLD_FALLBACK_LIBRARY_PATH to what's supposed to be its default value, prepended by Mono's lib folder.
+	However, dyld already initializes and reads DYLD_* env vars before any target is run (even before InitialTargets targets),
+	so we must spawn a new process via the Exec task that sets DYLD_* env vars and runs msbuild on the ILRepack target.
+	Furthermore, DYLD_* env vars aren't inherited (even if specified via Exec's EnvironmentVariables attribute), probably due to SIP,
+	so we must set DYLD_* env vars within the Exec'd command itself.
+	-->
+	<Target Name="ExecILRepack" AfterTargets="PostBuildEvent" Condition="$(DoExecILRepack)">
+		<PropertyGroup>
+			<DYLD_FALLBACK_LIBRARY_PATH>/Library/Frameworks/Mono.framework/Versions/Current/lib:$(HOME)/lib:/usr/local/lib:/lib:/usr/lib</DYLD_FALLBACK_LIBRARY_PATH>
+			<MSBuildCmd Condition="'$(MSBuildRuntimeType)'!='Core'">"$(MSBuildToolsPath)\MSBuild.exe"</MSBuildCmd>
+			<MSBuildCmd Condition="'$(MSBuildRuntimeType)'=='Core'">"$(DOTNET_HOST_PATH)" msbuild</MSBuildCmd>
+			<MSBuildCmdArgs>"-p:TargetFramework=$(TargetFramework);Configuration=$(Configuration);DoILRepack=true" -t:ILRepack</MSBuildCmdArgs>
+		</PropertyGroup>
+		<Exec Command="export DYLD_FALLBACK_LIBRARY_PATH=$(DYLD_FALLBACK_LIBRARY_PATH); $(MSBuildCmd) $(MSBuildCmdArgs)" />
+	</Target>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
 		<PropertyGroup>

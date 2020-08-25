@@ -68,12 +68,6 @@ jobs:
       command: build # `dotnet build` implicitly runs `dotnet restore` as well
       projects: Harmony.sln
       arguments: "--configuration ${{parameters.buildConfiguration}}"
-    env:
-      # ILRepack on macOS can't find Mono native libs because DYLD_* environment variables are unset for some reason
-      # (results in "Unable to load shared library 'MonoPosixHelper' ... at Mono.Unix.Native.Syscall.stat..."),
-      # so need to set DYLD_FALLBACK_LIBRARY_PATH to Mono native lib directory prepending what's supposed to be the default DYLD_FALLBACK_LIBRARY_PATH value.
-      ${{ if eq(parameters.os, 'macOS') }}:
-        DYLD_FALLBACK_LIBRARY_PATH: /Library/Frameworks/Mono.framework/Versions/Current/lib:$(HOME)/lib:/usr/local/lib:/lib:/usr/lib
 
   # For some reason, if mono is installed, above solution restore/build fails when restoring nugets (doesn't fail when only building a project).
   # Since mono is only needed for running tests in 'mono' runtimeType mode, only install mono after the restore/build.
