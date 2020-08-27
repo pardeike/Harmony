@@ -70,7 +70,7 @@ namespace HarmonyLibTests
 		{
 			var process = Process.GetCurrentProcess();
 			TestTools.Log("ProcessName: " + process.ProcessName);
-			TestTools.Log("Modules:\n" + process.Modules.Cast<ProcessModule>().Join(module => module.FileName, "\n"));
+			TestTools.Log("Modules:\n" + process.Modules.Cast<ProcessModule>().Join(module => $"{module.ModuleName}: {module.FileName}", "\n"));
 		}
 	}
 }
