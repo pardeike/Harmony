@@ -79,6 +79,10 @@
 <h4 id="patches-need-to-be-static">Patches need to be static</h4>
 <p>Patch methods need to be static because Harmony works with multiple users in different assemblies in mind. In order to guarantee the correct patching order, patches are always re-applied as soon as someone wants to change the original. Since it is hard to serialize data in a generic way across assemblies in .NET, Harmony only stores a method pointer to your patch methods so it can use and apply them at a later point again.</p>
 <p>If you need custom state in your patches, it is recommended to use a static variable and store all your patch state in there. Keep in mind that Transpilers are only executed to generate the method so they don't &quot;run&quot; when the original is executed.</p>
+<h4 id="commonly-unsupported-use-cases">Commonly unsupported use cases</h4>
+<p>Harmony works only in the current AppDomain. Accessing other app domains requires xpc and serialization which is not supported.</p>
+<p>Currently, support for generic types and methods is experimental and can give unexpected results. See <a href="patching-edgecases.html#generics">Edge Cases</a> for more information.</p>
+<p>When a method is inlined and the code that tries to mark in for not inlining does not work, your patches are not called because there is no method to patch.</p>
 <h2 id="patch-class">Patch Class</h2>
 <p>With manual patching, you can put your patches anywhere you like since you will refer to them yourself. Patching by annotations simplifies patching by assuming that you set up annotated classes and define your patch methods inside them.</p>
 <p><strong>Layout</strong>
