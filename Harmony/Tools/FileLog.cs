@@ -11,9 +11,18 @@ namespace HarmonyLib
 	/// 
 	public static class FileLog
 	{
+		private static readonly object fileLock = new object();
+
+		static FileLog()
+		{
+			var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			_ = Directory.CreateDirectory(desktopPath);
+			logPath = Path.Combine(desktopPath, "harmony.log.txt");
+		}
+
 		/// <summary>Full pathname of the log file, defaults to a file called <c>harmony.log.txt</c> on your Desktop</summary>
-		/// 
-		public static string logPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}{Path.DirectorySeparatorChar}harmony.log.txt";
+		///
+		public static string logPath;
 
 		/// <summary>The indent character. The default is <c>tab</c></summary>
 		/// 
@@ -44,7 +53,7 @@ namespace HarmonyLib
 		///
 		public static void LogBuffered(string str)
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				buffer.Add(IndentString() + str);
 			}
@@ -56,7 +65,7 @@ namespace HarmonyLib
 		///
 		public static void LogBuffered(List<string> strings)
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				buffer.AddRange(strings);
 			}
@@ -68,7 +77,7 @@ namespace HarmonyLib
 		///
 		public static List<string> GetBuffer(bool clear)
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				var result = buffer;
 				if (clear)
@@ -82,7 +91,7 @@ namespace HarmonyLib
 		///
 		public static void SetBuffer(List<string> buffer)
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				FileLog.buffer = buffer;
 			}
@@ -92,7 +101,7 @@ namespace HarmonyLib
 		/// 
 		public static void FlushBuffer()
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				if (buffer.Count > 0)
 				{
@@ -111,7 +120,7 @@ namespace HarmonyLib
 		///
 		public static void Log(string str)
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				using var writer = File.AppendText(logPath);
 				writer.WriteLine(IndentString() + str);
@@ -122,7 +131,7 @@ namespace HarmonyLib
 		/// 
 		public static void Reset()
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				var path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}{Path.DirectorySeparatorChar}harmony.log.txt";
 				File.Delete(path);
@@ -135,7 +144,7 @@ namespace HarmonyLib
 		///
 		public static unsafe void LogBytes(long ptr, int len)
 		{
-			lock (logPath)
+			lock (fileLock)
 			{
 				var p = (byte*)ptr;
 				var s = "";
