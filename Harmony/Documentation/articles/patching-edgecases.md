@@ -27,6 +27,19 @@ Generics can be difficult to patch. In general, expect generic methods and metho
 *  If the method is a generic method of a non-generic class, you may be able to examine the method's arguments, if any argument contains `T`. Also, generic type data will be lost (if `Method<T>` is patched using `Method<string>`, `Method<object>` will become `Method<string>`)
 *  If the method is a static non-generic method of a generic class, generic type data will be lost (see above).
 
+### Changing the type returned by a constructor
+
+It seems to be easy to make a constructor return a different type. Unfortunately, C# and the intermediate bytecode (CIL) doesn’t work like that. A constructor in C# is compiled into the following IL code:
+
+```
+newobj instance void Test::.ctor();
+```
+
+And the newobj IL code is described by Microsoft as
+> The newobj instruction allocates a new instance of the class associated with ctor and initializes all the fields in the new instance to 0 (of the proper type) or null references as appropriate. It then calls the constructor ctor with the given arguments along with the newly created instance. After the constructor has been called, the now initialized object reference (type O) is pushed on the stack.
+
+So a constructor is just an initialiser method that gets the newly empty obj as an argument to set the values of fields. All the "create object of type T" logic is in the IL code and the internal logic of the C# runtime. Which means you cannot change the type from within the constructor method. All you can do is to manipulate the place where the constructor is called (the operand of newobj or some extra IL after it that changes the value on the stack).
+
 ### Static Constructors
 
 Static constructors of a class will run as soon as you touch or instantiate that class. That unfortunately means that when Harmony asks for some basic required information for that class, it will trigger the static constructor before the patch happens.
