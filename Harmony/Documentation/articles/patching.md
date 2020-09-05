@@ -20,6 +20,14 @@ Patch methods need to be static because Harmony works with multiple users in dif
 
 If you need custom state in your patches, it is recommended to use a static variable and store all your patch state in there. Keep in mind that Transpilers are only executed to generate the method so they don't "run" when the original is executed.
 
+#### Commonly unsupported use cases
+
+Harmony works only in the current AppDomain. Accessing other app domains requires xpc and serialization which is not supported.
+
+Currently, support for generic types and methods is experimental and can give unexpected results. See [Edge Cases](patching-edgecases.md#generics) for more information.
+
+When a method is inlined and the code that tries to mark in for not inlining does not work, your patches are not called because there is no method to patch.
+
 ## Patch Class
 
 With manual patching, you can put your patches anywhere you like since you will refer to them yourself. Patching by annotations simplifies patching by assuming that you set up annotated classes and define your patch methods inside them.
