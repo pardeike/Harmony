@@ -893,11 +893,23 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/patching-transpiler-codes.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-transpiler-codes.html",
+          "hash": "7mMchj5rTMpa3bS26tYwgQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/patching-transpiler.md",
       "output": {
         ".html": {
           "relative_path": "articles/patching-transpiler.html",
-          "hash": "QDnvdp5e93WxcnZgVi/bHQ=="
+          "hash": "ETVBv7T+SKGZ/ENvZORozg=="
         }
       },
       "is_incremental": false,
@@ -945,7 +957,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "djgcc8WmarXNNtgvTunm5w=="
+          "hash": "KTMk53V7gXSHtVaP4VhEfg=="
         }
       },
       "is_incremental": false,
@@ -1049,7 +1061,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 18,
+          "total_file_count": 19,
           "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
