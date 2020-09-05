@@ -114,6 +114,13 @@ namespace HarmonyLib
 			prefixes = Add(owner, methods, prefixes);
 		}
 
+		/// <summary>Adds a prefix</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		{
+			AddPrefixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
+		}
+
 		/// <summary>Removes prefixes</summary>
 		/// <param name="owner">The owner of the prefixes, or <c>*</c> for all</param>
 		///
@@ -129,6 +136,13 @@ namespace HarmonyLib
 		internal void AddPostfixes(string owner, params HarmonyMethod[] methods)
 		{
 			postfixes = Add(owner, methods, postfixes);
+		}
+
+		/// <summary>Adds a postfix</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		{
+			AddPostfixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
 		}
 
 		/// <summary>Removes postfixes</summary>
@@ -148,6 +162,13 @@ namespace HarmonyLib
 			transpilers = Add(owner, methods, transpilers);
 		}
 
+		/// <summary>Adds a transpiler</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		{
+			AddTranspilers(owner, new HarmonyMethod(patch, priority, before, after, debug));
+		}
+
 		/// <summary>Removes transpilers</summary>
 		/// <param name="owner">The owner of the transpilers, or <c>*</c> for all</param>
 		///
@@ -163,6 +184,13 @@ namespace HarmonyLib
 		internal void AddFinalizers(string owner, params HarmonyMethod[] methods)
 		{
 			finalizers = Add(owner, methods, finalizers);
+		}
+
+		/// <summary>Adds a finalizer</summary>
+		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
+		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug)
+		{
+			AddFinalizers(owner, new HarmonyMethod(patch, priority, before, after, debug));
 		}
 
 		/// <summary>Removes finalizers</summary>
@@ -184,22 +212,6 @@ namespace HarmonyLib
 			finalizers = finalizers.Where(p => p.PatchMethod != patch).ToArray();
 		}
 
-		/// <summary>Adds a prefix</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddPrefixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
-		/// <summary>Adds a postfix</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddPostfixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
-		/// <summary>Adds a transpiler</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddTranspilers(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
-		/// <summary>Adds a finalizer</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddFinalizers(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
 		/// <summary>Gets a concatenated list of patches</summary>
 		/// <param name="owner">The Harmony instance ID adding the new patches</param>
 		/// <param name="add">The patches to add</param>
@@ -208,16 +220,16 @@ namespace HarmonyLib
 		private static Patch[] Add(string owner, HarmonyMethod[] add, Patch[] current)
 		{
 			// avoid copy if no patch added
-			if (add.Length == 0 || (add.Length == 1 && add[0] == null))
+			if (add.Length == 0)
 				return current;
 
 			// concat lists
-			int index = current.Length;
+			var initialIndex = current.Length;
 			return current
 				.Concat(
-					from method in add
-					where method != null
-					select new Patch(method, ++index, owner)
+					add
+						.Where(method => method != null)
+						.Select((method, i) => new Patch(method, i + initialIndex, owner))
 				)
 				.ToArray();
 		}
