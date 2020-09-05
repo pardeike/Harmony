@@ -3539,6 +3539,12 @@ references:
   commentId: T:HarmonyLib.Patch
   fullName: HarmonyLib.Patch
   nameWithType: Patch
+- uid: HarmonyLib.Patch.#ctor(HarmonyLib.HarmonyMethod,System.Int32,System.String)
+  name: Patch(HarmonyMethod, Int32, String)
+  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch__ctor_HarmonyLib_HarmonyMethod_System_Int32_System_String_
+  commentId: M:HarmonyLib.Patch.#ctor(HarmonyLib.HarmonyMethod,System.Int32,System.String)
+  fullName: HarmonyLib.Patch.Patch(HarmonyLib.HarmonyMethod, System.Int32, System.String)
+  nameWithType: Patch.Patch(HarmonyMethod, Int32, String)
 - uid: HarmonyLib.Patch.#ctor(System.Reflection.MethodInfo,System.Int32,System.String,System.Int32,System.String[],System.String[],System.Boolean)
   name: Patch(MethodInfo, Int32, String, Int32, String[], String[], Boolean)
   href: api/HarmonyLib.Patch.html#HarmonyLib_Patch__ctor_System_Reflection_MethodInfo_System_Int32_System_String_System_Int32_System_String___System_String___System_Boolean_
@@ -3753,19 +3759,6 @@ references:
   commentId: T:HarmonyLib.PatchInfo
   fullName: HarmonyLib.PatchInfo
   nameWithType: PatchInfo
-- uid: HarmonyLib.PatchInfo.#ctor
-  name: PatchInfo()
-  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo__ctor
-  commentId: M:HarmonyLib.PatchInfo.#ctor
-  fullName: HarmonyLib.PatchInfo.PatchInfo()
-  nameWithType: PatchInfo.PatchInfo()
-- uid: HarmonyLib.PatchInfo.#ctor*
-  name: PatchInfo
-  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo__ctor_
-  commentId: Overload:HarmonyLib.PatchInfo.#ctor
-  isSpec: "True"
-  fullName: HarmonyLib.PatchInfo.PatchInfo
-  nameWithType: PatchInfo.PatchInfo
 - uid: HarmonyLib.PatchInfo.AddFinalizer(System.Reflection.MethodInfo,System.String,System.Int32,System.String[],System.String[],System.Boolean)
   name: AddFinalizer(MethodInfo, String, Int32, String[], String[], Boolean)
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_AddFinalizer_System_Reflection_MethodInfo_System_String_System_Int32_System_String___System_String___System_Boolean_
