@@ -247,4 +247,4 @@ Strategy: _Search for RET codes. For every code found, search until the next RET
 
 [!code-csharp[example](../examples/patching-transpiler.cs?name=caravan)]
 
-There it is. Add this to your code and use the normal Harmony bootstrapping as described in the [Harmony Wiki](https://github.com/pardeike/Harmony/wiki) and you have just done your first Harmony Transpiler!
+There it is. Add this to your code and use the normal Harmony bootstrapping and you have just done your first Harmony Transpiler!
