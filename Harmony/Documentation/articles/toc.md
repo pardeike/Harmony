@@ -12,7 +12,7 @@
 
 ## [Transpiler](patching-transpiler.md)
 
-## [Transpiler: using CodeInstruction](patching-transpiler-codes.md)
+## [Transpiler - CodeInstruction](patching-transpiler-codes.md)
 
 ## [Finalizer](patching-finalizer.md)
 
