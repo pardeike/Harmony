@@ -37,7 +37,7 @@ namespace HarmonyLib
 			if (originalCodeStart == 0)
 				return exception.Message;
 
-			FixVirtualMethodTrampoline(original);
+			PadShortMethods(original);
 
 			var patchCodeStart = GetMethodStart(replacement, out exception);
 			if (patchCodeStart == 0)
@@ -54,14 +54,44 @@ namespace HarmonyLib
 			PatchTools.RememberObject(original, replacement);
 		}
 
-		internal static void FixVirtualMethodTrampoline(MethodBase method)
+		/*
+		 * Fix for detour jump overriding the method that's right next in memory
+		 * See https://github.com/MonoMod/MonoMod.Common/blob/58702d64645aba613ad16275c0b78278ff0d2055/RuntimeDetour/Platforms/Native/DetourNativeX86Platform.cs#L77
+		 * 
+		 * It happens for any very small method, not just virtual, but it just so happens that
+		 * virtual methods are usually the only empty ones. The problem is with the detour code
+		 * overriding the method that's right next in memory.
+		 * 
+		 * The 64bit absolute jump detour requires 14 bytes but on Linux an empty method is just 
+		 * 10 bytes. On Windows, due to prologue differences, an empty method is exactly 14 bytes 
+		 * as required.
+		 * 
+		 * Now, the small code size wouldn't be a problem if it wasn't for the way Mono compiles 
+		 * trampolines. Usually methods on x64 are 16 bytes aligned, so no actual code could get 
+		 * overriden by the detour, but trampolines don't follow this rule and a trampoline generated 
+		 * for the dynamic method from the patch is placed right after the method being detoured. 
+		 * 
+		 * The detour code then overrides the beggining of the trampoline and that leads to a 
+		 * segfault on execution.
+		 * 
+		 * There's also the fact that Linux seems to allocate the detour code far away in memory 
+		 * so it uses the 64 bit jump in the first place. On Windows with Mono usually the 32 bit 
+		 * smaller jumps suffice.
+		 * 
+		 * The fix changes the order in which methods are JITted so that no trampoline is placed 
+		 * after the detoured method (or at least the trampoline that causes this specific crash)
+		 */
+		internal static void PadShortMethods(MethodBase method)
 		{
-			if (isWindows || !method.IsVirtual || method.IsAbstract || method.IsFinal) return;
-			var bytes = method.GetMethodBody()?.GetILAsByteArray();
-			if (bytes == null || bytes.Length == 0) return;
-			if (bytes.Length == 1 && bytes[0] == 0x2A) return;
+			if (isWindows) return;
+			var count = method.GetMethodBody()?.GetILAsByteArray()?.Length ?? 0;
+			if (count == 0) return;
 
-			var methodDef = new DynamicMethodDefinition($"VirtualFix-{Guid.NewGuid()}", typeof(void), new Type[0]);
+			// the 16 here is arbitrary but high enough to prevent the jitted code from getting under 14 bytes
+			// and high enough to not generate too many fix methods
+			if (count >= 16) return;
+
+			var methodDef = new DynamicMethodDefinition($"PadMethod-{Guid.NewGuid()}", typeof(void), new Type[0]);
 			methodDef.GetILGenerator().Emit(OpCodes.Ret);
 			_ = GetMethodStart(methodDef.Generate(), out var _); // trigger allocation/generation of jitted assembler
 		}
