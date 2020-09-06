@@ -11,6 +11,8 @@ namespace HarmonyLib
 	///
 	public static class Memory
 	{
+		static readonly bool isWindows = Environment.OSVersion.Platform.Equals(PlatformID.Win32NT);
+
 		/// <summary>Mark method for no inlining (currently only works on Mono)</summary>
 		/// <param name="method">The method/constructor to change</param>
 		///
@@ -54,7 +56,7 @@ namespace HarmonyLib
 
 		internal static void FixVirtualMethodTrampoline(MethodBase method)
 		{
-			if (!method.IsVirtual || method.IsAbstract || method.IsFinal) return;
+			if (isWindows || !method.IsVirtual || method.IsAbstract || method.IsFinal) return;
 			var bytes = method.GetMethodBody()?.GetILAsByteArray();
 			if (bytes == null || bytes.Length == 0) return;
 			if (bytes.Length == 1 && bytes[0] == 0x2A) return;
