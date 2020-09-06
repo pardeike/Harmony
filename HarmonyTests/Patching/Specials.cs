@@ -65,7 +65,7 @@ namespace HarmonyLibTests.Patching
 			TestTools.Log($"Running patched ConcreteClass_Patch done");
 		}
 
-		// TODO: this test might crash in certain environments
+		/* TODO: this test might crash in certain environments
 		[Test, NonParallelizable]
 		public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
 		{
@@ -112,6 +112,70 @@ namespace HarmonyLibTests.Patching
 			catch (Exception ex)
 			{
 				TestTools.Log($"Test_Returning_Structs: running {name} exception: {ex}");
+			}
+		}*/
+
+		[Test]
+		public void Test_Patch_Returning_Structs()
+		{
+			var cls = typeof(ReturningStructs);
+
+			foreach (var type in new[] { "I", "S" })
+			{
+				for (var n = 1; n <= 20; n++)
+				{
+					var name = $"{type}M{n:D2}";
+
+					var patchClass = typeof(ReturningStructs_Patch);
+					Assert.NotNull(patchClass);
+
+					var prefix = SymbolExtensions.GetMethodInfo(() => ReturningStructs_Patch.Prefix(null));
+					Assert.NotNull(prefix);
+
+					var instance = new Harmony("returning-structs");
+					Assert.NotNull(instance);
+
+					var method = AccessTools.DeclaredMethod(cls, name);
+					Assert.NotNull(method, "method");
+
+					TestTools.Log($"Test_Returning_Structs: patching {name} start");
+					try
+					{
+						var replacement = instance.Patch(method, new HarmonyMethod(prefix));
+						Assert.NotNull(replacement, "replacement");
+					}
+					catch (Exception ex)
+					{
+						TestTools.Log($"Test_Returning_Structs: patching {name} exception: {ex}");
+					}
+					TestTools.Log($"Test_Returning_Structs: patching {name} done");
+				}
+			}
+
+			var clsInstance = new ReturningStructs();
+			foreach (var type in new[] { "I", "S" })
+			{
+				for (var n = 1; n <= 20; n++)
+				{
+					var name = $"{type}M{n:D2}";
+
+					try
+					{
+						TestTools.Log($"Test_Returning_Structs: running patched {name}");
+
+						var original = AccessTools.DeclaredMethod(cls, name);
+						Assert.NotNull(original, $"{name}: original");
+						var result = original.Invoke(type == "S" ? null : clsInstance, new object[] { "test" });
+						Assert.NotNull(result, $"{name}: result");
+						Assert.AreEqual($"St{n:D2}", result.GetType().Name);
+
+						TestTools.Log($"Test_Returning_Structs: running patched {name} done");
+					}
+					catch (Exception ex)
+					{
+						TestTools.Log($"Test_Returning_Structs: running {name} exception: {ex}");
+					}
+				}
 			}
 		}
 
