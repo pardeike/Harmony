@@ -1,15 +1,19 @@
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
 	/// <summary>A low level memory helper</summary>
+	///
 	public static class Memory
 	{
 		/// <summary>Mark method for no inlining (currently only works on Mono)</summary>
 		/// <param name="method">The method/constructor to change</param>
+		///
 		unsafe public static void MarkForNoInlining(MethodBase method)
 		{
 			// TODO for now, this only works on mono
@@ -30,6 +34,9 @@ namespace HarmonyLib
 			var originalCodeStart = GetMethodStart(original, out var exception);
 			if (originalCodeStart == 0)
 				return exception.Message;
+
+			FixVirtualMethodTrampoline(original);
+
 			var patchCodeStart = GetMethodStart(replacement, out exception);
 			if (patchCodeStart == 0)
 				return exception.Message;
@@ -43,6 +50,18 @@ namespace HarmonyLib
 			if (errorString is object)
 				throw new FormatException($"Method {original.FullDescription()} cannot be patched. Reason: {errorString}");
 			PatchTools.RememberObject(original, replacement);
+		}
+
+		internal static void FixVirtualMethodTrampoline(MethodBase method)
+		{
+			if (!method.IsVirtual || method.IsAbstract || method.IsFinal) return;
+			var bytes = method.GetMethodBody()?.GetILAsByteArray();
+			if (bytes == null || bytes.Length == 0) return;
+			if (bytes.Length == 1 && bytes[0] == 0x2A) return;
+
+			var methodDef = new DynamicMethodDefinition($"VirtualFix-{Guid.NewGuid()}", typeof(void), new Type[0]);
+			methodDef.GetILGenerator().Emit(OpCodes.Ret);
+			_ = GetMethodStart(methodDef.Generate(), out var _); // trigger allocation/generation of jitted assembler
 		}
 
 		/// <summary>Writes a jump to memory</summary>
