@@ -10,7 +10,7 @@ namespace HarmonyLib
 	/// 
 	public static class Transpilers
 	{
-		/// <summary>A transpiler that replaces all occurrences of a given method with another one</summary>
+		/// <summary>A transpiler that replaces all occurrences of a given method with another one using the same signature</summary>
 		/// <param name="instructions">The enumeration of <see cref="CodeInstruction"/> to act on</param>
 		/// <param name="from">Method or constructor to search for</param>
 		/// <param name="to">Method or constructor to replace with</param>
