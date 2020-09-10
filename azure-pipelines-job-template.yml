@@ -32,10 +32,14 @@ jobs:
     # it only shows "methodname" rather than the fully qualified name (something do with more than 2 periods in the test name).
     # Workaround is to use the format: "namespace.classname:methodname(args)" (note the colon)
     # Also, Azure Pipelines command line argument parser tends to treat single quotes within argument strings literally, so using double quotes instead.
-    runSettingsArgs: "NUnit.DefaultTestNamePattern=\"{C}:{m}{a}\" RunConfiguration.TargetPlatform=${{parameters.architecture}}"
+    # In YAML, >- is similar to | except that newlines are replaced with spaces and the final newline is chomped off
+    runSettingsArgs: >-
+      NUnit.DefaultTestNamePattern="{C}:{m}{a}"
+      RunConfiguration.TargetPlatform=${{parameters.architecture}}
     # Blame mode helps isolate tests that cause crashes (https://github.com/Microsoft/vstest-docs/blob/master/docs/extensions/blame-datacollector.md),
     # although it somewhat ironically also makes such unstable tests crash less often, and makes the test suite run slightly slower.
-    blameArg: --blame
+    additionalDotnetTestArgs: --blame
+    additionalVstestConsoleArgs: --Blame
 
   steps:
   - checkout: self
@@ -52,7 +56,11 @@ jobs:
       - ${{ if and(eq(parameters.architecture, 'x86'), eq(parameters.os, 'windows')) }}:
         - pwsh: |
             Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1
-            .\dotnet-install.ps1 -Channel ${{replace(replace(framework, 'coreapp', ''), 'net', '')}} -Architecture ${{parameters.architecture}} -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+            .\dotnet-install.ps1 -Channel ${{replace(replace(framework, 'coreapp', ''), 'net', '')}} `
+              -Architecture ${{parameters.architecture}} `
+              -Runtime dotnet `
+              -InstallDir "${Env:ProgramFiles(x86)}\dotnet" `
+              -NoPath
           displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}} ${{parameters.architecture}} Runtime"
 
       - ${{ if or(ne(parameters.architecture, 'x86'), ne(parameters.os, 'windows')) }}: # currently no `else` construct in Azure Pipelines
@@ -94,7 +102,12 @@ jobs:
         inputs:
           command: test
           projects: HarmonyTests
-          arguments: "--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --logger \"console;verbosity=normal\" $(blameArg) -- $(runSettingsArgs)"
+          arguments: >-
+            --no-build
+            --configuration ${{parameters.buildConfiguration}}
+            --framework ${{framework}}
+            --logger "console;verbosity=normal"
+            $(additionalDotnetTestArgs) -- $(runSettingsArgs)
           publishTestResults: true
           # .NET Framework on non-Windows implicitly always uses mono.
           ${{ if and(ne(parameters.os, 'windows'), not(contains(framework, '.'))) }}:
@@ -122,7 +135,11 @@ jobs:
           # Execute the tests via mono + vstest.console.
           mono="$(eval $programFilesCmd)/Mono/bin/mono.exe"
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/${{parameters.buildConfiguration}}/${{framework}}/HarmonyTests.dll" --Framework:${{framework}} --logger:trx --ResultsDirectory:"$(Agent.TempDirectory)" $(blameArg) -- $(runSettingsArgs)
+          "$mono" "$vstest"\
+            "HarmonyTests/bin/${{parameters.buildConfiguration}}/${{framework}}/HarmonyTests.dll"\
+            --Framework:${{framework}}\
+            --logger:trx --ResultsDirectory:"$(Agent.TempDirectory)"\
+            $(additionalVstestConsoleArgs) -- $(runSettingsArgs)
         displayName: "Test ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
         condition: succeededOrFailed()
         env:
