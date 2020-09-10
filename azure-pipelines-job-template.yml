@@ -28,13 +28,17 @@ jobs:
   # "variables" is misleading here - these are actually constants.
   # These must be declared here, since templates don't allow combining a root jobs (or steps) section and a root variables section.
   variables:
-    # Note: Azure Pipelines currently has an issue where if the test name is in the fully qualified name format "namespace.classname.methodname(args)",
-    # it only shows "methodname" rather than the fully qualified name (something do with more than 2 periods in the test name).
-    # Workaround is to use the format: "namespace.classname:methodname(args)" (note the colon)
+    # NUnit.DefaultTestNamePattern:
+    #   Azure Pipelines currently has an issue where if the test name is in the fully qualified name format "namespace.classname.methodname(args)",
+    #   it only shows "methodname" rather than the fully qualified name (something do with more than 2 periods in the test name).
+    #   Workaround is to use the format: "namespace.classname:methodname(args)" (note the colon)
+    # NUnit.NumberOfTestWorkers:
+    #   Setting it to 1 to prevent any parallel test running in an effort to improve test stability.
     # Also, Azure Pipelines command line argument parser tends to treat single quotes within argument strings literally, so using double quotes instead.
     # In YAML, >- is similar to | except that newlines are replaced with spaces and the final newline is chomped off
     runSettingsArgs: >-
       NUnit.DefaultTestNamePattern="{C}:{m}{a}"
+      NUnit.NumberOfTestWorkers=1
       RunConfiguration.TargetPlatform=${{parameters.architecture}}
     # Blame mode helps isolate tests that cause crashes (https://github.com/Microsoft/vstest-docs/blob/master/docs/extensions/blame-datacollector.md),
     # although it somewhat ironically also makes such unstable tests crash less often, and makes the test suite run slightly slower.
