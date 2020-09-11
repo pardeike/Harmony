@@ -31,38 +31,44 @@ namespace HarmonyLib
 
 		static T Get<T>(Dictionary<Type, Dictionary<string, T>> dict, Type type, string name, Func<T> fetcher)
 		{
-			if (dict.TryGetValue(type, out var valuesByName) is false)
+			lock (dict)
 			{
-				valuesByName = new Dictionary<string, T>();
-				dict[type] = valuesByName;
+				if (dict.TryGetValue(type, out var valuesByName) is false)
+				{
+					valuesByName = new Dictionary<string, T>();
+					dict[type] = valuesByName;
+				}
+				if (valuesByName.TryGetValue(name, out var value) is false)
+				{
+					value = fetcher();
+					valuesByName[name] = value;
+				}
+				return value;
 			}
-			if (valuesByName.TryGetValue(name, out var value) is false)
-			{
-				value = fetcher();
-				valuesByName[name] = value;
-			}
-			return value;
 		}
 
 		static T Get<T>(Dictionary<Type, Dictionary<string, Dictionary<int, T>>> dict, Type type, string name, Type[] arguments, Func<T> fetcher)
 		{
-			if (dict.TryGetValue(type, out var valuesByName) is false)
+			lock (dict)
 			{
-				valuesByName = new Dictionary<string, Dictionary<int, T>>();
-				dict[type] = valuesByName;
+				if (dict.TryGetValue(type, out var valuesByName) is false)
+				{
+					valuesByName = new Dictionary<string, Dictionary<int, T>>();
+					dict[type] = valuesByName;
+				}
+				if (valuesByName.TryGetValue(name, out var valuesByArgument) is false)
+				{
+					valuesByArgument = new Dictionary<int, T>();
+					valuesByName[name] = valuesByArgument;
+				}
+				var argumentsHash = AccessTools.CombinedHashCode(arguments);
+				if (valuesByArgument.TryGetValue(argumentsHash, out var value) is false)
+				{
+					value = fetcher();
+					valuesByArgument[argumentsHash] = value;
+				}
+				return value;
 			}
-			if (valuesByName.TryGetValue(name, out var valuesByArgument) is false)
-			{
-				valuesByArgument = new Dictionary<int, T>();
-				valuesByName[name] = valuesByArgument;
-			}
-			var argumentsHash = AccessTools.CombinedHashCode(arguments);
-			if (valuesByArgument.TryGetValue(argumentsHash, out var value) is false)
-			{
-				value = fetcher();
-				valuesByArgument[argumentsHash] = value;
-			}
-			return value;
 		}
 
 		internal FieldInfo GetFieldInfo(Type type, string name, MemberType memberType = MemberType.Any, bool declaredOnly = false)

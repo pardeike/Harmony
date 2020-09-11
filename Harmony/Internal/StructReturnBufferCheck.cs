@@ -82,18 +82,20 @@ namespace HarmonyLib
 	internal class StructReturnBuffer
 	{
 #pragma warning disable IDE0044 // so tests can reset it
+		[ThreadStatic]
 		static Dictionary<Type, int> sizes = new Dictionary<Type, int>();
 #pragma warning restore IDE0044
 
 		static int SizeOf(Type type)
 		{
-			if (sizes.TryGetValue(type, out var size))
+			lock (sizes)
+			{
+				if (sizes.TryGetValue(type, out var size))
+					return size;
+				size = type.GetManagedSize();
+				sizes.Add(type, size);
 				return size;
-
-			size = type.GetManagedSize();
-
-			sizes.Add(type, size);
-			return size;
+			}
 		}
 
 		static readonly HashSet<int> specialSizes = new HashSet<int> { 1, 2, 4, 8 };
@@ -109,34 +111,42 @@ namespace HarmonyLib
 			return HasStructReturnBuffer();
 		}
 
-		internal static bool hasTestResult_Net;
 		internal static bool hasTestResult_Mono;
+		static readonly object hasTestResult_Mono_lock = new object();
+		internal static bool hasTestResult_Net;
+		static readonly object hasTestResult_Net_lock = new object();
 		static bool HasStructReturnBuffer()
 		{
 			if (AccessTools.IsMonoRuntime)
 			{
-				if (hasTestResult_Mono is false)
+				lock (hasTestResult_Mono_lock)
 				{
-					Sandbox.hasStructReturnBuffer_Mono = false;
-					var self = new StructReturnBuffer();
-					var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Mono));
-					var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Mono));
-					_ = Memory.DetourMethod(original, replacement);
-					_ = new Sandbox().GetStruct_Mono(Sandbox.magicValue, Sandbox.magicValue);
-					hasTestResult_Mono = true;
+					if (hasTestResult_Mono is false)
+					{
+						Sandbox.hasStructReturnBuffer_Mono = false;
+						var self = new StructReturnBuffer();
+						var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Mono));
+						var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Mono));
+						_ = Memory.DetourMethod(original, replacement);
+						_ = new Sandbox().GetStruct_Mono(Sandbox.magicValue, Sandbox.magicValue);
+						hasTestResult_Mono = true;
+					}
 				}
 				return Sandbox.hasStructReturnBuffer_Mono;
 			}
 
-			if (hasTestResult_Net is false)
+			lock (hasTestResult_Net_lock)
 			{
-				Sandbox.hasStructReturnBuffer_Net = false;
-				var self = new StructReturnBuffer();
-				var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Net));
-				var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Net));
-				_ = Memory.DetourMethod(original, replacement);
-				_ = new Sandbox().GetStruct_Net(Sandbox.magicValue, Sandbox.magicValue);
-				hasTestResult_Net = true;
+				if (hasTestResult_Net is false)
+				{
+					Sandbox.hasStructReturnBuffer_Net = false;
+					var self = new StructReturnBuffer();
+					var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Net));
+					var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Net));
+					_ = Memory.DetourMethod(original, replacement);
+					_ = new Sandbox().GetStruct_Net(Sandbox.magicValue, Sandbox.magicValue);
+					hasTestResult_Net = true;
+				}
 			}
 			return Sandbox.hasStructReturnBuffer_Net;
 		}
