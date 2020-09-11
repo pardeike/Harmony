@@ -81,7 +81,7 @@ namespace HarmonyLib
 
 	internal class StructReturnBuffer
 	{
-		static readonly Dictionary<Type, int> sizes = new Dictionary<Type, int>();
+		static Dictionary<Type, int> sizes = new Dictionary<Type, int>();
 
 		static int SizeOf(Type type)
 		{
@@ -92,6 +92,11 @@ namespace HarmonyLib
 
 			sizes.Add(type, size);
 			return size;
+		}
+
+		internal static void ResetCache()
+		{
+			sizes = new Dictionary<Type, int>();
 		}
 
 		static readonly HashSet<int> specialSizes = new HashSet<int> { 1, 2, 4, 8 };
