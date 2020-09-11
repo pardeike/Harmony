@@ -3,6 +3,7 @@ using HarmonyLibTests.Assets;
 using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace HarmonyLibTests.Patching
 {
@@ -41,7 +42,6 @@ namespace HarmonyLibTests.Patching
 		}
 		*/
 
-		// TODO: this test might crash in certain environments
 		[Test]
 		public void Test_Patch_ConcreteClass()
 		{
@@ -65,12 +65,14 @@ namespace HarmonyLibTests.Patching
 			TestTools.Log($"Running patched ConcreteClass_Patch done");
 		}
 
-		// TODO: this test might crash in certain environments
 		[Test, NonParallelizable]
 		public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
 		{
-			// reset cache
-			StructReturnBuffer.ResetCache();
+			// reset all caches in StructReturnBufferCheck.cs
+			var trv = Traverse.Create<StructReturnBuffer>();
+			_ = trv.Field("sizes").SetValue(new Dictionary<Type, int>());
+			_ = trv.Field("hasTestResult_Net").SetValue(false);
+			_ = trv.Field("hasTestResult_Mono").SetValue(false);
 
 			var name = $"{type}M{n:D2}";
 

@@ -81,7 +81,9 @@ namespace HarmonyLib
 
 	internal class StructReturnBuffer
 	{
+#pragma warning disable IDE0044 // so tests can reset it
 		static Dictionary<Type, int> sizes = new Dictionary<Type, int>();
+#pragma warning restore IDE0044
 
 		static int SizeOf(Type type)
 		{
@@ -92,11 +94,6 @@ namespace HarmonyLib
 
 			sizes.Add(type, size);
 			return size;
-		}
-
-		internal static void ResetCache()
-		{
-			sizes = new Dictionary<Type, int>();
 		}
 
 		static readonly HashSet<int> specialSizes = new HashSet<int> { 1, 2, 4, 8 };
