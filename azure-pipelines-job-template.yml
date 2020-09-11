@@ -40,10 +40,19 @@ jobs:
       NUnit.DefaultTestNamePattern="{C}:{m}{a}"
       NUnit.NumberOfTestWorkers=1
       RunConfiguration.TargetPlatform=${{parameters.architecture}}
-    # Blame mode helps isolate tests that cause crashes (https://github.com/Microsoft/vstest-docs/blob/master/docs/extensions/blame-datacollector.md),
-    # although it somewhat ironically also makes such unstable tests crash less often, and makes the test suite run slightly slower.
-    additionalDotnetTestArgs: --blame
-    additionalVstestConsoleArgs: --Blame
+    # blame:
+    #   Blame mode helps isolate tests that cause crashes (https://github.com/Microsoft/vstest-docs/blob/master/docs/extensions/blame-datacollector.md),
+    #   although it somewhat ironically also makes such unstable tests crash less often, and makes the test suite run slightly slower.
+    # nodeReuse (for `dotnet test`):
+    #   Setting it to false to prevent MSBuild from using multiple worker nodes in an effort to improve test stability.
+    # InIsolation (for `vstest.console`):
+    #   Toggling on to run tests in an isolated process in an effort to improve test stability.
+    additionalDotnetTestArgs: >-
+      --blame
+      -nodeReuse:false
+    additionalVstestConsoleArgs: >-
+      --Blame
+      --InIsolation
 
   steps:
   - checkout: self
