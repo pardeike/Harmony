@@ -3,6 +3,26 @@ using HarmonyLibTests.Assets;
 using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
+using System.IO;
+
+namespace Marshal
+{
+	public class TestReturningStructsProxy : MarshalByRefObject
+	{
+		public string Run(int n, string type)
+		{
+			try
+			{
+				HarmonyLibTests.Patching.Specials.Test_Patch_Returning_Structs_Sub(n, type);
+				return "ok";
+			}
+			catch (Exception ex)
+			{
+				return $"bad-{n}-{type}: {ex}";
+			}
+		}
+	}
+}
 
 namespace HarmonyLibTests.Patching
 {
@@ -65,9 +85,35 @@ namespace HarmonyLibTests.Patching
 			TestTools.Log($"Running patched ConcreteClass_Patch done");
 		}
 
-		// TODO: this test might crash in certain environments
 		[Test, NonParallelizable]
-		public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
+		// public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
+		//
+		// TODO: this test crashes randomly in Azure
+		// Therefore, we load the test assembly into its own AppDomain for each iteration
+		//
+		public void Test_Patch_Returning_Structs()
+		{
+			for (var n = 1; n <= 20; n++)
+			{
+				foreach (var type in new[] { "I", "S" })
+				{
+#if NETCOREAPP3_0 || NETCOREAPP3_1
+					Test_Patch_Returning_Structs_Sub(n, type);
+#else
+					var domain = AppDomain.CreateDomain($"TestDomain{n}{type}", AppDomain.CurrentDomain.Evidence, AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.RelativeSearchPath, false);
+					var path = typeof(Specials).Assembly.Location;
+					_ = domain.Load(File.ReadAllBytes(path));
+					var proxy = typeof(Marshal.TestReturningStructsProxy);
+					var tunnel = (Marshal.TestReturningStructsProxy)domain.CreateInstanceAndUnwrap(proxy.Assembly.FullName, proxy.FullName);
+					var result = tunnel.Run(n, type);
+					AppDomain.Unload(domain);
+					Assert.AreEqual("ok", result);
+#endif
+				}
+			}
+		}
+		//
+		public static void Test_Patch_Returning_Structs_Sub(int n, string type)
 		{
 			var name = $"{type}M{n:D2}";
 
