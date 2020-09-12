@@ -150,6 +150,13 @@ namespace HarmonyLib
 			return Sandbox.hasStructReturnBuffer_Net;
 		}
 
+		internal static void ResetCaches() // used in testing
+		{
+			lock (sizes) sizes.Clear();
+			lock (hasTestResult_Mono_lock) hasTestResult_Mono = false;
+			lock (hasTestResult_Net_lock) hasTestResult_Net = false;
+		}
+
 		internal static void ArgumentShifter(List<CodeInstruction> instructions, bool shiftArgZero)
 		{
 			// Non-static methods:
