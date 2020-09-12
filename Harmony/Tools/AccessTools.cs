@@ -12,12 +12,13 @@ using System.Runtime.Serialization;
 namespace HarmonyLib
 {
 	/// <summary>A helper class for reflection related functions</summary>
-	/// 
+	///
 	public static class AccessTools
 	{
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level</summary>
-		/// 
-		public static BindingFlags all = BindingFlags.Public
+		///
+		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
+		public static readonly BindingFlags all = BindingFlags.Public
 			| BindingFlags.NonPublic
 			| BindingFlags.Instance
 			| BindingFlags.Static
@@ -27,8 +28,9 @@ namespace HarmonyLib
 			| BindingFlags.SetProperty;
 
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level but only within the current type</summary>
-		/// 
-		public static BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
+		///
+		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
+		public static readonly BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
 
 		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
 		/// <param name="name">The name</param>
@@ -59,7 +61,7 @@ namespace HarmonyLib
 		/// If such an exception is thrown, returns the successfully loaded types (<see cref="ReflectionTypeLoadException.Types"/>,
 		/// filtered for non-null values).
 		/// </remarks>
-		/// 
+		///
 		public static Type[] GetTypesFromAssembly(Assembly assembly)
 		{
 			try
@@ -1386,7 +1388,7 @@ namespace HarmonyLib
 		/// and both class and struct methods.
 		/// </para>
 		/// </remarks>
-		/// 
+		///
 		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true) where DelegateType : Delegate
 		{
 			if (method is null)
@@ -1534,7 +1536,7 @@ namespace HarmonyLib
 		/// determined from the [<see cref="HarmonyLib.HarmonyDelegate"/>] attributes on <typeparamref name="DelegateType"/>,
 		/// and the given <paramref name="instance"/> (for closed instance delegates).
 		/// </remarks>
-		/// 
+		///
 		public static DelegateType HarmonyDelegate<DelegateType>(object instance = null) where DelegateType : Delegate
 		{
 			var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(typeof(DelegateType));
@@ -1765,7 +1767,7 @@ namespace HarmonyLib
 		/// <summary>Tests if a type is an integer type</summary>
 		/// <param name="type">The type</param>
 		/// <returns>True if the type represents some integer</returns>
-		/// 
+		///
 		public static bool IsInteger(Type type)
 		{
 			switch (Type.GetTypeCode(type))
@@ -1787,7 +1789,7 @@ namespace HarmonyLib
 		/// <summary>Tests if a type is a floating point type</summary>
 		/// <param name="type">The type</param>
 		/// <returns>True if the type represents some floating point</returns>
-		/// 
+		///
 		public static bool IsFloatingPoint(Type type)
 		{
 			switch (Type.GetTypeCode(type))

@@ -8,7 +8,7 @@ using System.Text;
 namespace HarmonyLib
 {
 	/// <summary>A file log for debugging</summary>
-	/// 
+	///
 	public static class FileLog
 	{
 		private static readonly object fileLock = new object();
@@ -25,11 +25,11 @@ namespace HarmonyLib
 		public static string logPath;
 
 		/// <summary>The indent character. The default is <c>tab</c></summary>
-		/// 
+		///
 		public static char indentChar = '\t';
 
 		/// <summary>The current indent level</summary>
-		/// 
+		///
 		public static int indentLevel = 0;
 
 		static List<string> buffer = new List<string>();
@@ -44,7 +44,10 @@ namespace HarmonyLib
 		///
 		public static void ChangeIndent(int delta)
 		{
-			indentLevel = Math.Max(0, indentLevel + delta);
+			lock (fileLock)
+			{
+				indentLevel = Math.Max(0, indentLevel + delta);
+			}
 		}
 
 		/// <summary>Log a string in a buffered way. Use this method only if you are sure that FlushBuffer will be called
@@ -98,7 +101,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Flushes the log buffer to disk (use in combination with LogBuffered)</summary>
-		/// 
+		///
 		public static void FlushBuffer()
 		{
 			lock (fileLock)
@@ -128,7 +131,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Resets and deletes the log</summary>
-		/// 
+		///
 		public static void Reset()
 		{
 			lock (fileLock)
