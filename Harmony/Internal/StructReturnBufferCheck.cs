@@ -82,7 +82,6 @@ namespace HarmonyLib
 	internal class StructReturnBuffer
 	{
 #pragma warning disable IDE0044 // so tests can reset it
-		[ThreadStatic]
 		static Dictionary<Type, int> sizes = new Dictionary<Type, int>();
 #pragma warning restore IDE0044
 
