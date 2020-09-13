@@ -16,25 +16,28 @@ namespace HarmonyLib
 
 		static Dictionary<MethodBase, byte[]> GetState()
 		{
-			var assembly = SharedStateAssembly();
-			if (assembly is null)
+			lock (locker)
 			{
-				CreateModule();
-				assembly = SharedStateAssembly();
-				if (assembly is null) throw new Exception("Cannot find or create harmony shared state");
+				var assembly = SharedStateAssembly();
+				if (assembly is null)
+				{
+					CreateModule();
+					assembly = SharedStateAssembly();
+					if (assembly is null) throw new Exception("Cannot find or create harmony shared state");
+				}
+
+				var type = assembly.GetType(name);
+
+				var versionField = type.GetField("version");
+				if (versionField is null) throw new Exception("Cannot find harmony state version field");
+				actualVersion = (int)versionField.GetValue(null);
+
+				var stateField = type.GetField("state");
+				if (stateField is null) throw new Exception("Cannot find harmony state field");
+				if (stateField.GetValue(null) is null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
+
+				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 			}
-
-			var type = assembly.GetType(name);
-
-			var versionField = type.GetField("version");
-			if (versionField is null) throw new Exception("Cannot find harmony state version field");
-			actualVersion = (int)versionField.GetValue(null);
-
-			var stateField = type.GetField("state");
-			if (stateField is null) throw new Exception("Cannot find harmony state field");
-			if (stateField.GetValue(null) is null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
-
-			return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 		}
 
 		static void CreateModule()
@@ -75,28 +78,24 @@ namespace HarmonyLib
 
 		internal static PatchInfo GetPatchInfo(MethodBase method)
 		{
-			lock (locker)
-			{
-				var bytes = GetState().GetValueSafe(method);
-				if (bytes is null) return null;
-				return PatchInfoSerialization.Deserialize(bytes);
-			}
+			var state = GetState();
+			byte[] bytes;
+			lock (state) bytes = state.GetValueSafe(method);
+			if (bytes is null) return null;
+			return PatchInfoSerialization.Deserialize(bytes);
 		}
 
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			lock (locker)
-			{
-				return GetState().Keys.AsEnumerable();
-			}
+			var state = GetState();
+			lock (state) return state.Keys;
 		}
 
 		internal static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
 		{
-			lock (locker)
-			{
-				GetState()[method] = patchInfo.Serialize();
-			}
+			var bytes = patchInfo.Serialize();
+			var state = GetState();
+			lock (state) state[method] = bytes;
 		}
 	}
 }
