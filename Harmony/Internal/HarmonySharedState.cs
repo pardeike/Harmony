@@ -88,7 +88,7 @@ namespace HarmonyLib
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
 			var state = GetState();
-			lock (state) return state.Keys;
+			lock (state) return state.Keys.ToArray();
 		}
 
 		internal static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
