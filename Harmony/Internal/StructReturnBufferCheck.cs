@@ -81,9 +81,7 @@ namespace HarmonyLib
 
 	internal class StructReturnBuffer
 	{
-#pragma warning disable IDE0044 // so tests can reset it
-		static Dictionary<Type, int> sizes = new Dictionary<Type, int>();
-#pragma warning restore IDE0044
+		static readonly Dictionary<Type, int> sizes = new Dictionary<Type, int>();
 
 		static int SizeOf(Type type)
 		{
@@ -163,7 +161,7 @@ namespace HarmonyLib
 			//
 			//        insert
 			//          |
-			//          V 
+			//          V
 			// THIS , IntPtr , arg0 , arg1 , arg2 ...
 			//
 			// So we make space at index 1 by moving all Ldarg_[n] to Ldarg_[n+1]
@@ -173,7 +171,7 @@ namespace HarmonyLib
 			//
 			//  insert
 			//    |
-			//    V 
+			//    V
 			// +IntPtr , arg0 , arg1 , arg2 ...
 			//
 			// So we make space at index 0 by moving all Ldarg_[n] to Ldarg_[n+1]

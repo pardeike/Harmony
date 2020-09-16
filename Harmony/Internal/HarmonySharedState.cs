@@ -10,12 +10,13 @@ namespace HarmonyLib
 	internal static class HarmonySharedState
 	{
 		const string name = "HarmonySharedState";
+		static readonly object locker = new object();
 		internal const int internalVersion = 100;
 		internal static int actualVersion = -1;
 
 		static Dictionary<MethodBase, byte[]> GetState()
 		{
-			lock (name)
+			lock (locker)
 			{
 				var assembly = SharedStateAssembly();
 				if (assembly is null)
@@ -77,19 +78,24 @@ namespace HarmonyLib
 
 		internal static PatchInfo GetPatchInfo(MethodBase method)
 		{
-			var bytes = GetState().GetValueSafe(method);
+			var state = GetState();
+			byte[] bytes;
+			lock (state) bytes = state.GetValueSafe(method);
 			if (bytes is null) return null;
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
 
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			return GetState().Keys.AsEnumerable();
+			var state = GetState();
+			lock (state) return state.Keys.ToArray();
 		}
 
 		internal static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
 		{
-			GetState()[method] = patchInfo.Serialize();
+			var bytes = patchInfo.Serialize();
+			var state = GetState();
+			lock (state) state[method] = bytes;
 		}
 	}
 }

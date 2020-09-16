@@ -8,6 +8,9 @@ namespace HarmonyLib
 {
 	internal static class PatchTools
 	{
+		// Note: Even though this Dictionary is only stored to and never read from, it still needs to be thread-safe:
+		// https://stackoverflow.com/a/33153868
+		[ThreadStatic]
 		static readonly Dictionary<object, object> objectReferences = new Dictionary<object, object>();
 
 		internal static void RememberObject(object key, object value)
