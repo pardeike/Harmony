@@ -10,11 +10,14 @@ namespace HarmonyLib
 	{
 		// Note: Even though this Dictionary is only stored to and never read from, it still needs to be thread-safe:
 		// https://stackoverflow.com/a/33153868
+		// ThreadStatic has pitfalls (see RememberObject below), but since we must support net35, it's the best available option.
 		[ThreadStatic]
-		static readonly Dictionary<object, object> objectReferences = new Dictionary<object, object>();
+		static Dictionary<object, object> objectReferences;
 
 		internal static void RememberObject(object key, object value)
 		{
+			// ThreadStatic fields are only initialized for one thread, so ensure it's initialized for current thread.
+			objectReferences ??= new Dictionary<object, object>();
 			objectReferences[key] = value;
 		}
 
