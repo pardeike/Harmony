@@ -16,13 +16,6 @@ namespace HarmonyLib
 	///
 	public static class AccessTools
 	{
-		/// <summary>
-		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
-		/// </summary>
-		private static readonly Dictionary<Type, FastInvokeHandler> handlerCache = new Dictionary<Type, FastInvokeHandler>();
-
-		private static readonly ReaderWriterLockSlim handlerCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level</summary>
 		///
 		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
@@ -1650,6 +1643,13 @@ namespace HarmonyLib
 			return FormatterServices.GetUninitializedObject(type);
 		}
 
+		/// <summary>
+		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
+		/// </summary>
+		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = new Dictionary<Type, FastInvokeHandler>();
+
+		static readonly ReaderWriterLockSlim addHandlerCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
 		/// <summary>Makes a deep copy of any object</summary>
 		/// <typeparam name="T">The type of the instance that should be created</typeparam>
 		/// <param name="source">The original object</param>
@@ -1695,24 +1695,24 @@ namespace HarmonyLib
 
 			if (type.IsGenericType && resultType.IsGenericType)
 			{
-				handlerCacheLock.EnterUpgradeableReadLock();
+				addHandlerCacheLock.EnterUpgradeableReadLock();
 				try
 				{
-					if (!handlerCache.TryGetValue(resultType, out FastInvokeHandler addInvoker))
+					if (!addHandlerCache.TryGetValue(resultType, out var addInvoker))
 					{
 						var addOperation = FirstMethod(resultType, m => m.Name == "Add" && m.GetParameters().Length == 1);
 						if (addOperation is object)
 						{
 							addInvoker = MethodInvoker.GetHandler(addOperation);
 						}
-						handlerCacheLock.EnterWriteLock();
+						addHandlerCacheLock.EnterWriteLock();
 						try
 						{
-							handlerCache[resultType] = addInvoker;
+							addHandlerCache[resultType] = addInvoker;
 						}
 						finally
 						{
-							handlerCacheLock.ExitWriteLock();
+							addHandlerCacheLock.ExitWriteLock();
 						}
 					}
 					if (addInvoker != null)
@@ -1732,7 +1732,7 @@ namespace HarmonyLib
 				}
 				finally
 				{
-					handlerCacheLock.ExitUpgradeableReadLock();
+					addHandlerCacheLock.ExitUpgradeableReadLock();
 				}
 			}
 
