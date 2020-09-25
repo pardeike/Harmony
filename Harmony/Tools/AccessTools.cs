@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using System.Threading;
 
 namespace HarmonyLib
 {
@@ -15,6 +16,13 @@ namespace HarmonyLib
 	///
 	public static class AccessTools
 	{
+		/// <summary>
+		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
+		/// </summary>
+		private static readonly Dictionary<Type, FastInvokeHandler> handlerCache = new Dictionary<Type, FastInvokeHandler>();
+
+		private static readonly ReaderWriterLockSlim handlerCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level</summary>
 		///
 		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
@@ -1687,25 +1695,45 @@ namespace HarmonyLib
 
 			if (type.IsGenericType && resultType.IsGenericType)
 			{
-				var addOperation = FirstMethod(resultType, m => m.Name == "Add" && m.GetParameters().Count() == 1);
-				if (addOperation is object)
+				handlerCacheLock.EnterUpgradeableReadLock();
+				try
 				{
-					var addableResult = Activator.CreateInstance(resultType);
-					var addInvoker = MethodInvoker.GetHandler(addOperation);
-					var newElementType = resultType.GetGenericArguments()[0];
-					var i = 0;
-					foreach (var element in source as IEnumerable)
+					if (!handlerCache.TryGetValue(resultType, out FastInvokeHandler addInvoker))
 					{
-						var iStr = (i++).ToString();
-						var path = pathRoot.Length > 0 ? pathRoot + "." + iStr : iStr;
-						var newElement = MakeDeepCopy(element, newElementType, processor, path);
-						_ = addInvoker(addableResult, new object[] { newElement });
+						var addOperation = FirstMethod(resultType, m => m.Name == "Add" && m.GetParameters().Length == 1);
+						if (addOperation is object)
+						{
+							addInvoker = MethodInvoker.GetHandler(addOperation);
+						}
+						handlerCacheLock.EnterWriteLock();
+						try
+						{
+							handlerCache[resultType] = addInvoker;
+						}
+						finally
+						{
+							handlerCacheLock.ExitWriteLock();
+						}
 					}
-					return addableResult;
+					if (addInvoker != null)
+					{
+						var addableResult = Activator.CreateInstance(resultType);
+						var newElementType = resultType.GetGenericArguments()[0];
+						var i = 0;
+						foreach (var element in source as IEnumerable)
+						{
+							var iStr = (i++).ToString();
+							var path = pathRoot.Length > 0 ? pathRoot + "." + iStr : iStr;
+							var newElement = MakeDeepCopy(element, newElementType, processor, path);
+							_ = addInvoker(addableResult, new object[] { newElement });
+						}
+						return addableResult;
+					}
 				}
-
-				// TODO: add dictionaries support
-				// maybe use methods in Dictionary<KeyValuePair<TKey,TVal>>
+				finally
+				{
+					handlerCacheLock.ExitUpgradeableReadLock();
+				}
 			}
 
 			if (type.IsArray && resultType.IsArray)
