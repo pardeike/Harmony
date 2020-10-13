@@ -456,6 +456,8 @@ namespace HarmonyLib
 						throw new Exception($"Cannot assign method return type {returnType.FullName} to {RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					emitter.Emit(ldlocCode, variables[RESULT_VAR]);
+					if (patchParam.ParameterType==typeof(object) && returnType.IsValueType)
+						emitter.Emit(OpCodes.Box, returnType);
 					continue;
 				}
 
