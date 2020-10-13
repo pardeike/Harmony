@@ -459,6 +459,45 @@ namespace HarmonyLib
 					continue;
 				}
 
+
+
+
+				// treat __args var special
+				if (patchParam.Name == "__args")
+				{
+
+					if (originalParameters.Length==0)
+					{
+						emitter.Emit(OpCodes.Ldnull);
+						continue;
+					}
+
+					int shift = (isInstance ? 1 : 0);
+
+					emitter.Emit(OpCodes.Ldc_I4, originalParameters.Length);
+					emitter.Emit(OpCodes.Newarr, typeof(object));
+
+					for (int i = 0; i < originalParameters.Length; i++)
+					{
+						emitter.Emit(OpCodes.Dup);
+						emitter.Emit(OpCodes.Ldc_I4, i);
+						emitter.Emit(OpCodes.Ldarg, i + shift);
+
+						if (originalParameters[i].ParameterType.IsValueType)
+						{
+							emitter.Emit(OpCodes.Box, originalParameters[i].ParameterType);
+						}
+
+						emitter.Emit(OpCodes.Stelem_Ref);
+					}
+
+					continue;
+
+				}
+
+
+
+
 				// any other declared variables
 				if (variables.TryGetValue(patchParam.Name, out var localBuilder))
 				{
