@@ -18,6 +18,7 @@ namespace HarmonyLib
 		const string STATE_VAR = "__state";
 		const string EXCEPTION_VAR = "__exception";
 		const string PARAM_INDEX_PREFIX = "__";
+		const string ARGS_VAR = "__args";
 		const string INSTANCE_FIELD_PREFIX = "___";
 
 		readonly bool debug;
@@ -464,8 +465,8 @@ namespace HarmonyLib
 
 
 
-				// treat __args var special
-				if (patchParam.Name == "__args")
+				// handle __args var special
+				if (patchParam.Name == ARGS_VAR)
 				{
 
 					if (originalParameters.Length==0)
