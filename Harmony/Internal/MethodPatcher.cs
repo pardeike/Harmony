@@ -475,7 +475,7 @@ namespace HarmonyLib
 						continue;
 					}
 
-					int shift = (isInstance ? 1 : 0);
+					int shift = (isInstance ? 1 : 0) + (useStructReturnBuffer ? 1 : 0);
 
 					emitter.Emit(OpCodes.Ldc_I4, originalParameters.Length);
 					emitter.Emit(OpCodes.Newarr, typeof(object));
