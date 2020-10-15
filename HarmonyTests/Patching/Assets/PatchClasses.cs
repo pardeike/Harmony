@@ -1043,6 +1043,77 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Class19
+	{
+		static readonly int[] test = { 123 };
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static ref int Method19()
+		{
+			return ref test[0];
+		}
+	}
+
+	[HarmonyPatch(typeof(Class19))]
+	[HarmonyPatch(nameof(Class19.Method19))]
+	public static class Class19Patch
+	{
+		public static void Postfix(ref int __result)
+		{
+			__result = 456;
+		}
+	}
+
+	public class Class20
+	{
+		public struct Struct20
+		{
+			public int value;
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static Struct20 Method20()
+		{
+			return new Struct20 { value = 123 };
+		}
+	}
+
+	[HarmonyPatch(typeof(Class20))]
+	[HarmonyPatch(nameof(Class20.Method20))]
+	public static class Class20Patch
+	{
+		public static object theResult;
+
+		public static void Postfix(object __result)
+		{
+			theResult = __result;
+		}
+	}
+
+	public class Class21
+	{
+		public struct Struct21
+		{
+			public int value;
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static Struct21 Method21()
+		{
+			return new Struct21 { value = 123 };
+		}
+	}
+
+	[HarmonyPatch(typeof(Class21))]
+	[HarmonyPatch(nameof(Class21.Method21))]
+	public static class Class21Patch
+	{
+		public static void Postfix(ref object __result)
+		{
+			__result = new Class21.Struct21 { value = 456 };
+		}
+	}
+
 	public class InjectDelegateBaseClass
 	{
 		public string pre;

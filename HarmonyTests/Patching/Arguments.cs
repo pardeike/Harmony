@@ -172,5 +172,54 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(1, patches.Count);
 			Assert.AreEqual("{123}/{456}", instance.Method(4444));
 		}
+
+		[Test]
+		public void Test_RefResults()
+		{
+			var intRef1 = Class19.Method19();
+			Assert.AreEqual(123, intRef1);
+
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(Class19Patch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			var intRef2 = Class19.Method19();
+			Assert.AreEqual(456, intRef2);
+		}
+
+		[Test]
+		public void Test_BoxingValueResults()
+		{
+			var struct1 = Class20.Method20();
+			Assert.AreEqual(123, struct1.value);
+
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(Class20Patch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			_ = Class20.Method20();
+			var result = (Class20.Struct20)Class20Patch.theResult;
+			Assert.AreEqual(123, result.value);
+		}
+
+		[Test]
+		public void Test_BoxingRefValueResults()
+		{
+			var struct1 = Class21.Method21();
+			Assert.AreEqual(123, struct1.value);
+
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(Class21Patch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			var result = Class21.Method21();
+			Assert.AreEqual(456, result.value);
+		}
 	}
 }

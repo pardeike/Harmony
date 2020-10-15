@@ -357,8 +357,9 @@ namespace HarmonyLib
 			return true;
 		}
 
-		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
+		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough, out LocalBuilder tmpObjectVar)
 		{
+			tmpObjectVar = null;
 			var isInstance = original.IsStatic is false;
 			var originalParameters = original.GetParameters();
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
@@ -455,7 +456,20 @@ namespace HarmonyLib
 					if (resultType.IsAssignableFrom(returnType) is false)
 						throw new Exception($"Cannot assign method return type {returnType.FullName} to {RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
 					var ldlocCode = patchParam.ParameterType.IsByRef && returnType.IsByRef == false ? OpCodes.Ldloca : OpCodes.Ldloc;
+					if (returnType.IsValueType && patchParam.ParameterType == typeof(object).MakeByRefType()) ldlocCode = OpCodes.Ldloc;
 					emitter.Emit(ldlocCode, variables[RESULT_VAR]);
+					if (returnType.IsValueType)
+					{
+						if (patchParam.ParameterType == typeof(object))
+							emitter.Emit(OpCodes.Box, returnType);
+						else if (patchParam.ParameterType == typeof(object).MakeByRefType())
+						{
+							emitter.Emit(OpCodes.Box, returnType);
+							tmpObjectVar = il.DeclareLocal(typeof(object));
+							emitter.Emit(OpCodes.Stloc, tmpObjectVar);
+							emitter.Emit(OpCodes.Ldloca, tmpObjectVar);
+						}
+					}
 					continue;
 				}
 
@@ -587,8 +601,15 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Brfalse_S, skipLabel.Value);
 					}
 
-					EmitCallParameter(fix, variables, false);
+
+					EmitCallParameter(fix, variables, false, out var tmpObjectVar);
 					emitter.Emit(OpCodes.Call, fix);
+					if (tmpObjectVar != null)
+					{
+						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
+						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+					}
 
 					var returnType = fix.ReturnType;
 					if (returnType != typeof(void))
@@ -616,8 +637,14 @@ namespace HarmonyLib
 					if (original.HasMethodBody() is false)
 						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
-					EmitCallParameter(fix, variables, true);
+					EmitCallParameter(fix, variables, true, out var tmpObjectVar);
 					emitter.Emit(OpCodes.Call, fix);
+					if (tmpObjectVar != null)
+					{
+						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
+						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+					}
 
 					if (fix.ReturnType != typeof(void))
 					{
@@ -649,8 +676,15 @@ namespace HarmonyLib
 					if (catchExceptions)
 						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 
-					EmitCallParameter(fix, variables, false);
+					EmitCallParameter(fix, variables, false, out var tmpObjectVar);
 					emitter.Emit(OpCodes.Call, fix);
+					if (tmpObjectVar != null)
+					{
+						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
+						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+					}
+
 					if (fix.ReturnType != typeof(void))
 					{
 						emitter.Emit(OpCodes.Stloc, variables[EXCEPTION_VAR]);
