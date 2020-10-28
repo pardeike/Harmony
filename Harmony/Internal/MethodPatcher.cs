@@ -124,6 +124,7 @@ namespace HarmonyLib
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
 			copier.SetArgumentShift(useStructReturnBuffer);
+			copier.SetDebugging(debug);
 
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);

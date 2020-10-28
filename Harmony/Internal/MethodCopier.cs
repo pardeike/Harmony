@@ -23,6 +23,11 @@ namespace HarmonyLib
 			reader.ReadInstructions();
 		}
 
+		internal void SetDebugging(bool debug)
+		{
+			reader.SetDebugging(debug);
+		}
+
 		internal void SetArgumentShift(bool useShift)
 		{
 			reader.SetArgumentShift(useShift);
@@ -66,6 +71,7 @@ namespace HarmonyLib
 	{
 		readonly ILGenerator generator;
 		readonly MethodBase method;
+		bool debug = false;
 		bool argumentShift = false;
 
 		readonly Module module;
@@ -130,6 +136,11 @@ namespace HarmonyLib
 
 			localVariables = body?.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
 			exceptions = body?.ExceptionHandlingClauses ?? new List<ExceptionHandlingClause>();
+		}
+
+		internal void SetDebugging(bool debug)
+		{
+			this.debug = debug;
 		}
 
 		internal void SetArgumentShift(bool argumentShift)
@@ -306,9 +317,12 @@ namespace HarmonyLib
 
 			// pass3 - log out all new local variables
 			//
-			var savedLog = FileLog.GetBuffer(true);
-			emitter.LogAllLocalVariables();
-			FileLog.LogBuffered(savedLog);
+			if (debug)
+			{
+				var savedLog = FileLog.GetBuffer(true);
+				emitter.LogAllLocalVariables();
+				FileLog.LogBuffered(savedLog);
+			}
 
 			// pass4 - check for any RET
 			//
