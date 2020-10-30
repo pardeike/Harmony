@@ -278,8 +278,7 @@ namespace HarmonyLibTests.Tools
 			return firstDict.Merge(otherDicts);
 		}
 
-		static Dictionary<string, IATestCase<T, F>> AvailableTestCases_FieldRefAccess_Class_ByName<T, F>(
-			string fieldName) where T : class
+		static Dictionary<string, IATestCase<T, F>> AvailableTestCases_FieldRefAccess_ByName<T, F>(string fieldName)
 		{
 			return new Dictionary<string, IATestCase<T, F>>
 			{
@@ -290,8 +289,7 @@ namespace HarmonyLibTests.Tools
 			};
 		}
 
-		static Dictionary<string, IATestCase<T, F>> AvailableTestCases_FieldRefAccess_Class_ByFieldInfo<T, F>(
-			FieldInfo field) where T : class
+		static Dictionary<string, IATestCase<T, F>> AvailableTestCases_FieldRefAccess_ByFieldInfo<T, F>(FieldInfo field)
 		{
 			return new Dictionary<string, IATestCase<T, F>>
 			{
@@ -301,18 +299,7 @@ namespace HarmonyLibTests.Tools
 			};
 		}
 
-		static Dictionary<string, IATestCase<T, F>> AvailableTestCases_FieldRefAccess_Struct_ByName<T, F>(
-			string fieldName) where T : struct
-		{
-			return new Dictionary<string, IATestCase<T, F>>
-			{
-				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<F>(typeof(T), fieldName)(instance)),
-				["FieldRefAccess<F>(typeof(T), fieldName)()"] = ATestCase<T, F>(instance => ref AccessTools.FieldRefAccess<F>(typeof(T), fieldName)()),
-			};
-		}
-
-		static Dictionary<string, IATestCase<T, F>> AvailableTestCases_StructFieldRefAccess<T, F>(FieldInfo field,
-			string fieldName) where T : struct
+		static Dictionary<string, IATestCase<T, F>> AvailableTestCases_StructFieldRefAccess<T, F>(FieldInfo field, string fieldName) where T : struct
 		{
 			return new Dictionary<string, IATestCase<T, F>>
 			{
@@ -346,8 +333,8 @@ namespace HarmonyLibTests.Tools
 		{
 			TestTools.AssertImmediate(() => Assert.NotNull(field));
 			var availableTestCases = Merge(
-				AvailableTestCases_FieldRefAccess_Class_ByName<T, F>(field.Name),
-				AvailableTestCases_FieldRefAccess_Class_ByFieldInfo<T, F>(field),
+				AvailableTestCases_FieldRefAccess_ByName<T, F>(field.Name),
+				AvailableTestCases_FieldRefAccess_ByFieldInfo<T, F>(field),
 				AvailableTestCases_StaticFieldRefAccess_ByName<T, F>(field.Name),
 				AvailableTestCases_StaticFieldRefAccess_ByFieldInfo<T, F>(field));
 			new ATestSuite<T, F>(typeof(I), field, testValue, expectedCaseToConstraint, availableTestCases).Run();
@@ -359,7 +346,8 @@ namespace HarmonyLibTests.Tools
 			TestTools.AssertImmediate(() => Assert.NotNull(field));
 			var availableTestCases = Merge(
 				AvailableTestCases_StructFieldRefAccess<T, F>(field, field.Name),
-				AvailableTestCases_FieldRefAccess_Struct_ByName<T, F>(field.Name),
+				AvailableTestCases_FieldRefAccess_ByName<T, F>(field.Name),
+				AvailableTestCases_FieldRefAccess_ByFieldInfo<T, F>(field),
 				AvailableTestCases_StaticFieldRefAccess_ByName<T, F>(field.Name),
 				AvailableTestCases_StaticFieldRefAccess_ByFieldInfo<T, F>(field));
 			new ATestSuite<T, F>(typeof(T), field, testValue, expectedCaseToConstraint, availableTestCases).Run();
@@ -483,8 +471,13 @@ namespace HarmonyLibTests.Tools
 				["StructFieldRefAccess<T, F>(ref instance, fieldName)"] = Throws.Nothing,
 				["StructFieldRefAccess<T, F>(field)(ref instance)"] = Throws.Nothing,
 				["StructFieldRefAccess<T, F>(ref instance, field)"] = Throws.Nothing,
+				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(field)(instance)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(field)()"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(instance, field)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<F>(field)()"] = Throws.InstanceOf<ArgumentException>(),
@@ -498,8 +491,13 @@ namespace HarmonyLibTests.Tools
 				["StructFieldRefAccess<T, F>(ref instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["StructFieldRefAccess<T, F>(field)(ref instance)"] = Throws.InstanceOf<ArgumentException>(),
 				["StructFieldRefAccess<T, F>(ref instance, field)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(fieldName)(instance)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(instance, fieldName)"] = Throws.InstanceOf<ArgumentException>(),
 				["FieldRefAccess<F>(typeof(T), fieldName)(instance)"] = Throws.Nothing,
 				["FieldRefAccess<F>(typeof(T), fieldName)()"] = Throws.Nothing,
+				["FieldRefAccess<T, F>(field)(instance)"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(field)()"] = Throws.InstanceOf<ArgumentException>(),
+				["FieldRefAccess<T, F>(instance, field)"] = Throws.InstanceOf<ArgumentException>(),
 				["StaticFieldRefAccess<T, F>(fieldName)"] = Throws.Nothing,
 				["StaticFieldRefAccess<F>(typeof(T), fieldName)"] = Throws.Nothing,
 				["StaticFieldRefAccess<F>(field)()"] = Throws.Nothing,
@@ -746,7 +744,7 @@ namespace HarmonyLibTests.Tools
 				var field = AccessTools.Field(typeof(AccessToolsClass), "field7");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
 				// Type of field is AccessToolsClass.InnerStruct, which is a private struct.
-				// As it's a value type and references cannot be made to boxed value type instances, FieldRefValue will never work. 
+				// As it's a value type and references cannot be made to boxed value type instances, FieldRefValue will never work.
 				static IInner TestValue()
 				{
 					return AccessToolsClass.NewInnerStruct(-987);
