@@ -820,8 +820,6 @@ namespace HarmonyLib
 		/// <para>
 		/// This delegate supports static fields, even those defined in structs, for legacy reasons.
 		/// For such static fields, <typeparamref name="T"/> is effectively ignored.
-		/// This is also the reason that this delegate lacks a generic class constraint (it was added to certain <c>FieldRefAccess</c> methods,
-		/// but such a constraint cannot be added to this delegate without breaking binary compatibility).
 		/// Consider using <see cref="FieldRef{F}"/> (and <c>StaticFieldRefAccess</c> methods that return it) instead for static fields.
 		/// </para>
 		/// </remarks>
@@ -836,14 +834,23 @@ namespace HarmonyLib
 		/// </typeparam>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A readable/assignable <see cref="FieldRef{T,F}"/> delegate</returns>
+		/// <remarks>
+		/// <para>
+		/// For backwards compatibility, there is no class constraint on <typeparamref name="T"/>.
+		/// Instead, the non-value-type check is done at runtime within the method.
+		/// </para>
+		/// </remarks>
 		///
-		public static FieldRef<T, F> FieldRefAccess<T, F>(string fieldName) where T : class
+		public static FieldRef<T, F> FieldRefAccess<T, F>(string fieldName)
 		{
 			if (fieldName is null)
 				throw new ArgumentNullException(nameof(fieldName));
 			try
 			{
-				return FieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName), needCastclass: false);
+				var delegateInstanceType = typeof(T);
+				if (delegateInstanceType.IsValueType)
+					throw new ArgumentException("T (FieldRefAccess instance type) must not be a value type");
+				return FieldRefAccessInternal<T, F>(GetInstanceField(delegateInstanceType, fieldName), needCastclass: false);
 			}
 			catch (Exception ex)
 			{
@@ -866,9 +873,13 @@ namespace HarmonyLib
 		/// If you need to access a field's value for potentially multiple instances, use <see cref="FieldRefAccess{T, F}(string)"/> instead.
 		/// <c>FieldRefAccess&lt;T, F&gt;(instance, fieldName)</c> is functionally equivalent to <c>FieldRefAccess&lt;T, F&gt;(fieldName)(instance)</c>.
 		/// </para>
+		/// <para>
+		/// For backwards compatibility, there is no class constraint on <typeparamref name="T"/>.
+		/// Instead, the non-value-type check is done at runtime within the method.
+		/// </para>
 		/// </remarks>
 		///
-		public static ref F FieldRefAccess<T, F>(T instance, string fieldName) where T : class
+		public static ref F FieldRefAccess<T, F>(T instance, string fieldName)
 		{
 			if (instance is null)
 				throw new ArgumentNullException(nameof(instance));
@@ -876,7 +887,10 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldName));
 			try
 			{
-				return ref FieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName), needCastclass: false)(instance);
+				var delegateInstanceType = typeof(T);
+				if (delegateInstanceType.IsValueType)
+					throw new ArgumentException("T (FieldRefAccess instance type) must not be a value type");
+				return ref FieldRefAccessInternal<T, F>(GetInstanceField(delegateInstanceType, fieldName), needCastclass: false)(instance);
 			}
 			catch (Exception ex)
 			{
@@ -957,14 +971,21 @@ namespace HarmonyLib
 		/// For such static fields, <typeparamref name="T"/> is effectively ignored.
 		/// Consider using <see cref="StaticFieldRefAccess{T, F}(FieldInfo)"/> (and other overloads) instead for static fields.
 		/// </para>
+		/// <para>
+		/// For backwards compatibility, there is no class constraint on <typeparamref name="T"/>.
+		/// Instead, the non-value-type check is done at runtime within the method.
+		/// </para>
 		/// </remarks>
 		///
-		public static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo) where T : class
+		public static FieldRef<T, F> FieldRefAccess<T, F>(FieldInfo fieldInfo)
 		{
 			if (fieldInfo is null)
 				throw new ArgumentNullException(nameof(fieldInfo));
 			try
 			{
+				var delegateInstanceType = typeof(T);
+				if (delegateInstanceType.IsValueType)
+					throw new ArgumentException("T (FieldRefAccess instance type) must not be a value type");
 				var needCastclass = false;
 				// Backwards compatibility: FieldRefAccess<F>(Type type, string fieldName) used to delegate to this method,
 				// and thus this method must support the same cases - namely, static fields. For static fields, T is effectively ignored.
@@ -974,7 +995,7 @@ namespace HarmonyLib
 					// the field is not a struct instance field, since T could be object, ValueType, or an interface that the struct implements.
 					if (declaringType.IsValueType)
 						throw new ArgumentException("Either FieldDeclaringType must be a class or field must be static");
-					needCastclass = FieldRefNeedsClasscast(typeof(T), declaringType);
+					needCastclass = FieldRefNeedsClasscast(delegateInstanceType, declaringType);
 				}
 				return FieldRefAccessInternal<T, F>(fieldInfo, needCastclass);
 			}
@@ -1002,9 +1023,13 @@ namespace HarmonyLib
 		/// If you need to access a field's value for potentially multiple instances, use <see cref="FieldRefAccess{T, F}(FieldInfo)"/> instead.
 		/// <c>FieldRefAccess&lt;T, F&gt;(instance, fieldInfo)</c> is functionally equivalent to <c>FieldRefAccess&lt;T, F&gt;(fieldInfo)(instance)</c>.
 		/// </para>
+		/// <para>
+		/// For backwards compatibility, there is no class constraint on <typeparamref name="T"/>.
+		/// Instead, the non-value-type check is done at runtime within the method.
+		/// </para>
 		/// </remarks>
 		///
-		public static ref F FieldRefAccess<T, F>(T instance, FieldInfo fieldInfo) where T : class
+		public static ref F FieldRefAccess<T, F>(T instance, FieldInfo fieldInfo)
 		{
 			if (instance is null)
 				throw new ArgumentNullException(nameof(instance));
@@ -1012,6 +1037,9 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldInfo));
 			try
 			{
+				var delegateInstanceType = typeof(T);
+				if (delegateInstanceType.IsValueType)
+					throw new ArgumentException("T (FieldRefAccess instance type) must not be a value type");
 				if (fieldInfo.IsStatic)
 					throw new ArgumentException("Field must not be static");
 				var needCastclass = false;
@@ -1021,7 +1049,7 @@ namespace HarmonyLib
 					// the field is not a struct instance field, since T could be object, ValueType, or an interface that the struct implements.
 					if (declaringType.IsValueType)
 						throw new ArgumentException("FieldDeclaringType must be a class");
-					needCastclass = FieldRefNeedsClasscast(typeof(T), declaringType);
+					needCastclass = FieldRefNeedsClasscast(delegateInstanceType, declaringType);
 				}
 				return ref FieldRefAccessInternal<T, F>(fieldInfo, needCastclass)(instance);
 			}
@@ -1031,7 +1059,7 @@ namespace HarmonyLib
 			}
 		}
 
-		static FieldRef<T, F> FieldRefAccessInternal<T, F>(FieldInfo fieldInfo, bool needCastclass) where T : class
+		static FieldRef<T, F> FieldRefAccessInternal<T, F>(FieldInfo fieldInfo, bool needCastclass)
 		{
 			ValidateFieldType<F>(fieldInfo);
 			var delegateInstanceType = typeof(T);
