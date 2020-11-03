@@ -18,7 +18,6 @@ namespace HarmonyLib
 		const string STATE_VAR = "__state";
 		const string EXCEPTION_VAR = "__exception";
 		const string PARAM_INDEX_PREFIX = "__";
-		const string ARGS_VAR = "__args";
 		const string INSTANCE_FIELD_PREFIX = "___";
 
 		readonly bool debug;
@@ -76,7 +75,7 @@ namespace HarmonyLib
 			LocalBuilder resultVariable = null;
 			if (idx > 0)
 			{
-				resultVariable = DeclareLocalVariable(returnType);
+				resultVariable = DeclareLocalVariable(returnType, true);
 				privateVars[RESULT_VAR] = resultVariable;
 			}
 
@@ -125,6 +124,7 @@ namespace HarmonyLib
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
 			copier.SetArgumentShift(useStructReturnBuffer);
+			copier.SetDebugging(debug);
 
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);
@@ -285,9 +285,9 @@ namespace HarmonyLib
 			return vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 		}
 
-		LocalBuilder DeclareLocalVariable(Type type)
+		LocalBuilder DeclareLocalVariable(Type type, bool isReturnValue = false)
 		{
-			if (type.IsByRef) type = type.GetElementType();
+			if (type.IsByRef && isReturnValue == false) type = type.GetElementType();
 			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
 
 			if (AccessTools.IsClass(type))
@@ -358,8 +358,9 @@ namespace HarmonyLib
 			return true;
 		}
 
-		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough)
+		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough, out LocalBuilder tmpObjectVar)
 		{
+			tmpObjectVar = null;
 			var isInstance = original.IsStatic is false;
 			var originalParameters = original.GetParameters();
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
@@ -451,55 +452,27 @@ namespace HarmonyLib
 					if (returnType == typeof(void))
 						throw new Exception($"Cannot get result from void method {original.FullDescription()}");
 					var resultType = patchParam.ParameterType;
-					if (resultType.IsByRef)
+					if (resultType.IsByRef && returnType.IsByRef == false)
 						resultType = resultType.GetElementType();
 					if (resultType.IsAssignableFrom(returnType) is false)
 						throw new Exception($"Cannot assign method return type {returnType.FullName} to {RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
-					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
+					var ldlocCode = patchParam.ParameterType.IsByRef && returnType.IsByRef == false ? OpCodes.Ldloca : OpCodes.Ldloc;
+					if (returnType.IsValueType && patchParam.ParameterType == typeof(object).MakeByRefType()) ldlocCode = OpCodes.Ldloc;
 					emitter.Emit(ldlocCode, variables[RESULT_VAR]);
-					if (patchParam.ParameterType==typeof(object) && returnType.IsValueType)
-						emitter.Emit(OpCodes.Box, returnType);
-					continue;
-				}
-
-
-
-
-				// handle __args var special
-				if (patchParam.Name == ARGS_VAR)
-				{
-
-					if (originalParameters.Length==0)
+					if (returnType.IsValueType)
 					{
-						emitter.Emit(OpCodes.Ldnull);
-						continue;
-					}
-
-					int shift = (isInstance ? 1 : 0) + (useStructReturnBuffer ? 1 : 0);
-
-					emitter.Emit(OpCodes.Ldc_I4, originalParameters.Length);
-					emitter.Emit(OpCodes.Newarr, typeof(object));
-
-					for (int i = 0; i < originalParameters.Length; i++)
-					{
-						emitter.Emit(OpCodes.Dup);
-						emitter.Emit(OpCodes.Ldc_I4, i);
-						emitter.Emit(OpCodes.Ldarg, i + shift);
-
-						if (originalParameters[i].ParameterType.IsValueType)
+						if (patchParam.ParameterType == typeof(object))
+							emitter.Emit(OpCodes.Box, returnType);
+						else if (patchParam.ParameterType == typeof(object).MakeByRefType())
 						{
-							emitter.Emit(OpCodes.Box, originalParameters[i].ParameterType);
+							emitter.Emit(OpCodes.Box, returnType);
+							tmpObjectVar = il.DeclareLocal(typeof(object));
+							emitter.Emit(OpCodes.Stloc, tmpObjectVar);
+							emitter.Emit(OpCodes.Ldloca, tmpObjectVar);
 						}
-
-						emitter.Emit(OpCodes.Stelem_Ref);
 					}
-
 					continue;
-
 				}
-
-
-
 
 				// any other declared variables
 				if (variables.TryGetValue(patchParam.Name, out var localBuilder))
@@ -629,8 +602,15 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Brfalse_S, skipLabel.Value);
 					}
 
-					EmitCallParameter(fix, variables, false);
+
+					EmitCallParameter(fix, variables, false, out var tmpObjectVar);
 					emitter.Emit(OpCodes.Call, fix);
+					if (tmpObjectVar != null)
+					{
+						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
+						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+					}
 
 					var returnType = fix.ReturnType;
 					if (returnType != typeof(void))
@@ -658,8 +638,14 @@ namespace HarmonyLib
 					if (original.HasMethodBody() is false)
 						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
-					EmitCallParameter(fix, variables, true);
+					EmitCallParameter(fix, variables, true, out var tmpObjectVar);
 					emitter.Emit(OpCodes.Call, fix);
+					if (tmpObjectVar != null)
+					{
+						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
+						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+					}
 
 					if (fix.ReturnType != typeof(void))
 					{
@@ -691,8 +677,15 @@ namespace HarmonyLib
 					if (catchExceptions)
 						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 
-					EmitCallParameter(fix, variables, false);
+					EmitCallParameter(fix, variables, false, out var tmpObjectVar);
 					emitter.Emit(OpCodes.Call, fix);
+					if (tmpObjectVar != null)
+					{
+						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
+						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+					}
+
 					if (fix.ReturnType != typeof(void))
 					{
 						emitter.Emit(OpCodes.Stloc, variables[EXCEPTION_VAR]);

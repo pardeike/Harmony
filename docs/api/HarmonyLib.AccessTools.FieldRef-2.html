@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Delegate AccessTools.FieldRef&lt;T, F&gt;
    ">
-    <meta name="generator" content="docfx 2.56.2.0">
+    <meta name="generator" content="docfx 2.56.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -162,8 +162,6 @@ the field&apos;s field type; and for value types, <code data-dev-comment-type="t
 <p>
 This delegate supports static fields, even those defined in structs, for legacy reasons.
 For such static fields, <code data-dev-comment-type="typeparamref" class="typeparamref">T</code> is effectively ignored.
-This is also the reason that this delegate lacks a generic class constraint (it was added to certain <code>FieldRefAccess</code> methods,
-but such a constraint cannot be added to this delegate without breaking binary compatibility).
 Consider using <a class="xref" href="HarmonyLib.AccessTools.FieldRef-1.html">AccessTools.FieldRef&lt;F&gt;</a> (and <code>StaticFieldRefAccess</code> methods that return it) instead for static fields.
 </p>
 </div>
@@ -178,12 +176,13 @@ Consider using <a class="xref" href="HarmonyLib.AccessTools.FieldRef-1.html">Acc
                     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_FieldRef_2.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.FieldRef%602%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L829" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L827" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+                <h5>In This Article</h5>
+                <div></div>
               </nav>
             </div>
           </div>

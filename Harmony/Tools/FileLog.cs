@@ -15,6 +15,13 @@ namespace HarmonyLib
 
 		static FileLog()
 		{
+			var customPath = Environment.GetEnvironmentVariable("HARMONY_LOG_FILE");
+			if (string.IsNullOrEmpty(customPath) == false)
+			{
+				logPath = customPath;
+				return;
+			}
+
 			var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 			_ = Directory.CreateDirectory(desktopPath);
 			logPath = Path.Combine(desktopPath, "harmony.log.txt");

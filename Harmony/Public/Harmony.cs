@@ -45,8 +45,10 @@ namespace HarmonyLib
 				var assembly = typeof(Harmony).Assembly;
 				var version = assembly.GetName().Version;
 				var location = assembly.Location;
+				var environment = Environment.Version.ToString();
+				var platform = Environment.OSVersion.Platform.ToString();
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
-				FileLog.Log($"### Harmony id={id}, version={version}, location={location}");
+				FileLog.Log($"### Harmony id={id}, version={version}, location={location}, env/clr={environment}, platform={platform}");
 				var callingMethod = AccessTools.GetOutsideCaller();
 				if (callingMethod.DeclaringType is object)
 				{
