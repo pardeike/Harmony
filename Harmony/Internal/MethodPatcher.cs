@@ -16,6 +16,7 @@ namespace HarmonyLib
 		const string ORIGINAL_METHOD_PARAM = "__originalMethod";
 		const string RESULT_VAR = "__result";
 		const string STATE_VAR = "__state";
+		const string ARGS_VAR = "__args";
 		const string EXCEPTION_VAR = "__exception";
 		const string PARAM_INDEX_PREFIX = "__";
 		const string INSTANCE_FIELD_PREFIX = "___";
@@ -474,6 +475,39 @@ namespace HarmonyLib
 					continue;
 				}
 
+				// handle __args var special
+				if (patchParam.Name == ARGS_VAR)
+				{
+
+					if (originalParameters.Length==0)
+					{
+						emitter.Emit(OpCodes.Ldnull);
+						continue;
+					}
+
+					int shift = (isInstance ? 1 : 0) + (useStructReturnBuffer ? 1 : 0);
+
+					emitter.Emit(OpCodes.Ldc_I4, originalParameters.Length);
+					emitter.Emit(OpCodes.Newarr, typeof(object));
+
+					for (int i = 0; i < originalParameters.Length; i++)
+					{
+						emitter.Emit(OpCodes.Dup);
+						emitter.Emit(OpCodes.Ldc_I4, i);
+						emitter.Emit(OpCodes.Ldarg, i + shift);
+
+						if (originalParameters[i].ParameterType.IsValueType)
+						{
+							emitter.Emit(OpCodes.Box, originalParameters[i].ParameterType);
+						}
+
+						emitter.Emit(OpCodes.Stelem_Ref);
+					}
+
+					continue;
+
+				}
+				
 				// any other declared variables
 				if (variables.TryGetValue(patchParam.Name, out var localBuilder))
 				{
