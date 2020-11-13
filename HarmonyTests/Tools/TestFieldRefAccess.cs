@@ -154,7 +154,7 @@ namespace HarmonyLibTests.Tools
 		// Like ATestCase naming above, the "A" here is to distinguish from NUnit's own TestSuite.
 		class ATestSuite<T, F>
 		{
-			readonly Type instanceType;
+			readonly Type instanceType; // must be T or subclass/implementation of T
 			readonly FieldInfo field;
 			readonly F testValue;
 			readonly Dictionary<string, ReusableConstraint> expectedCaseToConstraint;
@@ -222,10 +222,10 @@ namespace HarmonyLibTests.Tools
 						var value = testCase.Get(ref instance);
 						// The ?.ToString() is a trick to ensure that value is fully evaluated from the ref value.
 						_ = value?.ToString();
-						Assert.AreEqual(origValue, value, "{0}: expected Equals(origValue, value)", testCaseLabel);
+						Assert.AreEqual(TryConvert(origValue), value, "{0}: expected Equals(origValue, value)", testCaseLabel);
 						testCase.Set(ref instance, testValue);
 						var newValue = field.GetValue(instance);
-						Assert.AreEqual(testValue, newValue, "{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
+						Assert.AreEqual(testValue, TryConvert(newValue), "{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
 						TestTools.Log($"{field.Name}: {origValue} => {testCase.Get(ref instance)}");
 						testCase.Set(ref instance, value); // reset field value
 						if (field.FieldType.IsInstanceOfType(newValue) is false)
@@ -269,6 +269,20 @@ namespace HarmonyLibTests.Tools
 				if (ex.InnerException is Exception innerException)
 					message += $" [{ExceptionToString(innerException)}]";
 				return message;
+			}
+
+			// Try "casting" to F, but don't throw exception if it fails.
+			// We can't use the `as` operator here since that does not work for numeric/enum conversions.
+			static object TryConvert(object x)
+			{
+				try
+				{
+					return (F)x;
+				}
+				catch
+				{
+					return x;
+				}
 			}
 		}
 
@@ -806,6 +820,38 @@ namespace HarmonyLibTests.Tools
 		}
 
 		[Test]
+		public void Test_ClassInstance_InternalEnumFieldType()
+		{
+			Assert.Multiple(() =>
+			{
+				var field = AccessTools.Field(typeof(AccessToolsClass), "field9");
+				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, DayOfWeek>(
+					field, DayOfWeek.Thursday, expectedCaseToConstraint);
+				TestSuite_Struct<int, DayOfWeek>(
+					field, DayOfWeek.Thursday, expectedCaseToConstraint_ClassInstance_StructT);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
+					field, DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, Enum>(
+					field, DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
+					field, DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, byte>(
+					field, (byte)DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
+					field, (int)DayOfWeek.Thursday, expectedCaseToConstraint);
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, uint>(
+					field, (int)DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, int?>(
+					field, (int)DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, long>(
+					field, (long)DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Class<AccessToolsClass, AccessToolsClass, float>(
+					field, (float)DayOfWeek.Thursday, IncompatibleFieldType(expectedCaseToConstraint));
+			});
+		}
+
+		[Test]
 		public void Test_SubClassInstance_PrivateString()
 		{
 			Assert.Multiple(() =>
@@ -999,6 +1045,50 @@ namespace HarmonyLibTests.Tools
 					field, "structField4test", expectedCaseToConstraint);
 				TestSuite_Struct<AccessToolsStruct, int>(
 					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
+			});
+		}
+
+		[Test]
+		public void Test_StructInstance_PrivateEnumFieldType()
+		{
+			Assert.Multiple(() =>
+			{
+				// Note: AccessToolsStruct.InnerEnum is private, so can't be specified as F here.
+				var field = AccessTools.Field(typeof(AccessToolsStruct), "structField5");
+				var expectedCaseToConstraint = expectedCaseToConstraint_StructInstance;
+				var expectedCaseToConstraintClassT = expectedCaseToConstraint_StructInstance_ClassT;
+				TestSuite_Struct<AccessToolsStruct, byte>(
+					field, 3, expectedCaseToConstraint);
+				TestSuite_Class<IAccessToolsType, AccessToolsStruct, byte>(
+					field, 3, expectedCaseToConstraintClassT);
+				TestSuite_Class<object, AccessToolsStruct, byte>(
+					field, 3, expectedCaseToConstraintClassT);
+				TestSuite_Class<object, string, byte>(
+					field, 3, IncompatibleInstanceType(expectedCaseToConstraintClassT));
+				TestSuite_Class<string, string, byte>(
+					field, 3, IncompatibleTypeT(expectedCaseToConstraintClassT));
+				TestSuite_Struct<int, byte>(
+					field, 3, IncompatibleTypeT(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, object>(
+					field, 3, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, object>(
+					field, AccessToolsStruct.NewInnerEnum(3), IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, Enum>(
+					field, AccessToolsStruct.NewInnerEnum(3), IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, IComparable>(
+					field, 3, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, byte>(
+					field, 3, expectedCaseToConstraint);
+				TestSuite_Struct<AccessToolsStruct, sbyte>(
+					field, 3, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, byte?>(
+					field, 3, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, int>(
+					field, 3, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, long>(
+					field, 3, IncompatibleFieldType(expectedCaseToConstraint));
+				TestSuite_Struct<AccessToolsStruct, float>(
+					field, 3, IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 	}
