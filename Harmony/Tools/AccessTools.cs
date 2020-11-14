@@ -1378,16 +1378,25 @@ namespace HarmonyLib
 
 		static void ValidateFieldType<F>(FieldInfo fieldInfo)
 		{
+			var returnType = typeof(F);
 			var fieldType = fieldInfo.FieldType;
-			if (fieldType.IsValueType)
+			if (returnType == fieldType)
+				return;
+			if (fieldType.IsEnum)
+			{
+				var underlyingType = Enum.GetUnderlyingType(fieldType);
+				if (returnType != underlyingType)
+					throw new ArgumentException("FieldRefAccess return type must be the same as FieldType or " +
+						$"FieldType's underlying integral type ({underlyingType}) for enum types");
+			}
+			else if (fieldType.IsValueType)
 			{
 				// Boxing/unboxing is not allowed for ref values of value types.
-				if (typeof(F) != fieldType)
-					throw new ArgumentException("FieldRefAccess return type must be the same as FieldType for value types");
+				throw new ArgumentException("FieldRefAccess return type must be the same as FieldType for value types");
 			}
 			else
 			{
-				if (typeof(F).IsAssignableFrom(fieldType) is false)
+				if (returnType.IsAssignableFrom(fieldType) is false)
 					throw new ArgumentException("FieldRefAccess return type must be assignable from FieldType for reference types");
 			}
 		}
