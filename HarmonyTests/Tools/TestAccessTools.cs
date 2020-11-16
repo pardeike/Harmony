@@ -365,10 +365,10 @@ namespace HarmonyLibTests.Tools
 			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.NoConstructor>().constructorCalled);
 			Assert.IsFalse(AccessTools.CreateInstance<AccessToolsCreateInstance.OnlyNonParameterlessConstructor>().constructorCalled);
 			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.PublicParameterlessConstructor>().constructorCalled);
-			Assert.IsFalse(AccessTools.CreateInstance<AccessToolsCreateInstance.InternalParameterlessConstructor>().constructorCalled);
+			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.InternalParameterlessConstructor>().constructorCalled);
 			var instruction = AccessTools.CreateInstance<CodeInstruction>();
-			Assert.Null(instruction.labels);
-			Assert.Null(instruction.blocks);
+			Assert.NotNull(instruction.labels);
+			Assert.NotNull(instruction.blocks);
 		}
 
 		[Test]

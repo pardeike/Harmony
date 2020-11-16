@@ -1692,9 +1692,10 @@ namespace HarmonyLib
 		{
 			if (type is null)
 				throw new ArgumentNullException(nameof(type));
-			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, CallingConventions.Any, new Type[0], null);
+			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, binder: null,
+				CallingConventions.Any, new Type[0], modifiers: null);
 			if (ctor is object)
-				return Activator.CreateInstance(type);
+				return ctor.Invoke(null);
 			return FormatterServices.GetUninitializedObject(type);
 		}
 
