@@ -86,6 +86,15 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.CreateInstance
   nameWithType: AccessTools.CreateInstance
+- uid: HarmonyLib.AccessTools.CreateInstance``1
+  name: CreateInstance<T>()
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CreateInstance__1
+  commentId: M:HarmonyLib.AccessTools.CreateInstance``1
+  name.vb: CreateInstance(Of T)()
+  fullName: HarmonyLib.AccessTools.CreateInstance<T>()
+  fullName.vb: HarmonyLib.AccessTools.CreateInstance(Of T)()
+  nameWithType: AccessTools.CreateInstance<T>()
+  nameWithType.vb: AccessTools.CreateInstance(Of T)()
 - uid: HarmonyLib.AccessTools.DeclaredConstructor(System.Type,System.Type[],System.Boolean)
   name: DeclaredConstructor(Type, Type[], Boolean)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredConstructor_System_Type_System_Type___System_Boolean_
