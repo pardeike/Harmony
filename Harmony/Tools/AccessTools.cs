@@ -1,4 +1,4 @@
-using MonoMod.Utils;
+﻿using MonoMod.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -868,6 +868,7 @@ namespace HarmonyLib
 		/// The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
 		/// a type that <see cref="Type.IsAssignableFrom(Type)">is assignable from</see> that type; or if the field's type is an enum type,
 		/// either that type or the underlying integral type of that enum type
+		/// </typeparam>
 		/// <param name="instance">The instance</param>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A readable/assignable reference to the field</returns>
