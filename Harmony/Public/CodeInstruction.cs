@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,7 +11,7 @@ namespace HarmonyLib
 	public class CodeInstruction
 	{
 		/// <summary>The opcode</summary>
-		/// 
+		///
 		public OpCode opcode;
 
 		/// <summary>The operand</summary>
@@ -19,12 +19,17 @@ namespace HarmonyLib
 		public object operand;
 
 		/// <summary>All labels defined on this instruction</summary>
-		/// 
+		///
 		public List<Label> labels = new List<Label>();
 
 		/// <summary>All exception block boundaries defined on this instruction</summary>
-		/// 
+		///
 		public List<ExceptionBlock> blocks = new List<ExceptionBlock>();
+
+		// Internal parameterless constructor that AccessTools.CreateInstance can use, ensuring that labels/blocks are initialized.
+		internal CodeInstruction()
+		{
+		}
 
 		/// <summary>Creates a new CodeInstruction with a given opcode and optional operand</summary>
 		/// <param name="opcode">The opcode</param>

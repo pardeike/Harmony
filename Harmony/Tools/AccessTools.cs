@@ -1692,10 +1692,24 @@ namespace HarmonyLib
 		{
 			if (type is null)
 				throw new ArgumentNullException(nameof(type));
-			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, CallingConventions.Any, new Type[0], null);
+			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, binder: null,
+				CallingConventions.Any, new Type[0], modifiers: null);
 			if (ctor is object)
-				return Activator.CreateInstance(type);
+				return ctor.Invoke(null);
 			return FormatterServices.GetUninitializedObject(type);
+		}
+
+		/// <summary>Creates an (possibly uninitialized) instance of a given type</summary>
+		/// <typeparam name="T">The class/type</typeparam>
+		/// <returns>The new instance</returns>
+		///
+		public static T CreateInstance<T>()
+		{
+			var instance = CreateInstance(typeof(T));
+			// Not using `as` operator since it only works with reference types.
+			if (instance is T typedInstance)
+				return typedInstance;
+			return default;
 		}
 
 		/// <summary>
@@ -1706,7 +1720,7 @@ namespace HarmonyLib
 		static readonly ReaderWriterLockSlim addHandlerCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
 		/// <summary>Makes a deep copy of any object</summary>
-		/// <typeparam name="T">The type of the instance that should be created</typeparam>
+		/// <typeparam name="T">The type of the instance that should be created; for legacy reasons, this must be a class or interface</typeparam>
 		/// <param name="source">The original object</param>
 		/// <returns>A copy of the original object but of type T</returns>
 		///

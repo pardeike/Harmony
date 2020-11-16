@@ -168,6 +168,43 @@ namespace HarmonyLibTests.Assets
 	}
 #pragma warning restore CS0169, CS0414, IDE0044, IDE0051, IDE0052
 
+	public static class AccessToolsCreateInstance
+	{
+		// Has default public parameterless constructor.
+		public class NoConstructor
+		{
+			public bool constructorCalled = true;
+		}
+
+		// Does NOT have a default public parameterless constructor (or any parameterless constructor for that matter).
+		public class OnlyNonParameterlessConstructor
+		{
+			public bool constructorCalled = true;
+
+			public OnlyNonParameterlessConstructor(int _)
+			{
+			}
+		}
+
+		public class PublicParameterlessConstructor
+		{
+			public bool constructorCalled = true;
+
+			public PublicParameterlessConstructor()
+			{
+			}
+		}
+
+		public class InternalParameterlessConstructor
+		{
+			public bool constructorCalled = true;
+
+			internal InternalParameterlessConstructor()
+			{
+			}
+		}
+	}
+
 	public static class AccessToolsMethodDelegate
 	{
 		public interface IInterface
