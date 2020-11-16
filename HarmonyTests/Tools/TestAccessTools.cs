@@ -360,6 +360,18 @@ namespace HarmonyLibTests.Tools
 		}
 
 		[Test]
+		public void Test_AccessTools_CreateInstance()
+		{
+			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.NoConstructor>().constructorCalled);
+			Assert.IsFalse(AccessTools.CreateInstance<AccessToolsCreateInstance.OnlyNonParameterlessConstructor>().constructorCalled);
+			Assert.IsTrue(AccessTools.CreateInstance<AccessToolsCreateInstance.PublicParameterlessConstructor>().constructorCalled);
+			Assert.IsFalse(AccessTools.CreateInstance<AccessToolsCreateInstance.InternalParameterlessConstructor>().constructorCalled);
+			var instruction = AccessTools.CreateInstance<CodeInstruction>();
+			Assert.Null(instruction.labels);
+			Assert.Null(instruction.blocks);
+		}
+
+		[Test]
 		public void Test_AccessTools_TypeExtension_Description()
 		{
 			var types = new Type[] { typeof(string), typeof(int), null, typeof(void), typeof(Test_AccessTools) };

@@ -1698,6 +1698,19 @@ namespace HarmonyLib
 			return FormatterServices.GetUninitializedObject(type);
 		}
 
+		/// <summary>Creates an (possibly uninitialized) instance of a given type</summary>
+		/// <typeparam name="T">The class/type</typeparam>
+		/// <returns>The new instance</returns>
+		///
+		public static T CreateInstance<T>()
+		{
+			var instance = CreateInstance(typeof(T));
+			// Not using `as` operator since it only works with reference types.
+			if (instance is T typedInstance)
+				return typedInstance;
+			return default;
+		}
+
 		/// <summary>
 		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
 		/// </summary>
@@ -1706,7 +1719,7 @@ namespace HarmonyLib
 		static readonly ReaderWriterLockSlim addHandlerCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
 		/// <summary>Makes a deep copy of any object</summary>
-		/// <typeparam name="T">The type of the instance that should be created</typeparam>
+		/// <typeparam name="T">The type of the instance that should be created; for legacy reasons, this must be a class or interface</typeparam>
 		/// <param name="source">The original object</param>
 		/// <returns>A copy of the original object but of type T</returns>
 		///
