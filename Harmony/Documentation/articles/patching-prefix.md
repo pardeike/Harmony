@@ -19,7 +19,7 @@ A prefix is a method that is executed before the original method. It is commonly
 
 To change the result of the original, use `__result` as an argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.
 
-To skip the original, let the prefix return a `bool` and return `true` to let the original run after all prefixes or `false` to stop executing prefixes and skip the original.
+To stop executing prefixes and skip the original, let the prefix return a bool that returns false. To let the original run after all prefixes, return a bool that returns true.
 
 ![note] It is not recommended to skip the original unless you want to completely change the way it works. If you only want a small change or a side effect, using a postfix or a transpiler is always preferred since it allows for multiple users changing the original without each implementation fighting over how the original should behave.
 
