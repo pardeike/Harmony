@@ -98,7 +98,7 @@ class Patch
 }
 </code></pre><h3 id="changing-the-result-and-skipping-the-original">Changing the result and skipping the original</h3>
 <p>To change the result of the original, use <code>__result</code> as an argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.</p>
-<p>To skip the original, let the prefix return a <code>bool</code> and return <code>true</code> to let the original run after all prefixes or <code>false</code> to stop executing prefixes and skip the original.</p>
+<p>To stop executing prefixes and skip the original, let the prefix return a bool that returns false. To let the original run after all prefixes, return a bool that returns true.</p>
 <p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> It is not recommended to skip the original unless you want to completely change the way it works. If you only want a small change or a side effect, using a postfix or a transpiler is always preferred since it allows for multiple users changing the original without each implementation fighting over how the original should behave.</p>
 <pre><code class="lang-csharp" name="example">public class OriginalCode
 {
