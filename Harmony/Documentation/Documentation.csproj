@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoMod.Common" Version="20.5.31.1" />
+		<PackageReference Include="MonoMod.Common" Version="20.12.7.4" />
 	</ItemGroup>
 
 </Project>

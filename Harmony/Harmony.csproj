@@ -96,7 +96,7 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.5.31.1">
+		<PackageReference Include="MonoMod.Common" Version="20.12.7.4">
 			<PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets>
 		</PackageReference>
 
