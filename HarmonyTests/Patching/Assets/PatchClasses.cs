@@ -430,10 +430,25 @@ namespace HarmonyLibTests.Assets
 	{
 		public string s;
 
+		/*
+		 * TODO: This hangs MonoMod Common and we use a different version
+		 * until the problem is fixed
+		 * 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void TestMethod(string val)
 		{
 			s = val;
+		}*/
+
+		public void TestMethod(string val)
+		{
+			try
+			{
+				s = val;
+			}
+			catch
+			{
+			}
 		}
 	}
 
