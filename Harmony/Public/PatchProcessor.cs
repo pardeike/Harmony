@@ -133,7 +133,7 @@ namespace HarmonyLib
 			if (original.IsDeclaredMember() is false)
 			{
 				var declaredMember = original.GetDeclaredMember();
-				throw new ArgumentException($"You can only patch implemented methods/constructors. Path the declared method {declaredMember.FullDescription()} instead.");
+				throw new ArgumentException($"You can only patch implemented methods/constructors. Patch the declared method {declaredMember.FullDescription()} instead.");
 			}
 
 			lock (locker)
