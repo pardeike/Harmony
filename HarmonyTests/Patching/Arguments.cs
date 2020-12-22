@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System;
 
 namespace HarmonyLibTests.Patching
 {
@@ -220,6 +221,59 @@ namespace HarmonyLibTests.Patching
 
 			var result = Class21.Method21();
 			Assert.AreEqual(456, result.value);
+		}
+
+		[Test]
+		public void Test_ArgumentCases()
+		{
+			var harmony = new Harmony("test");
+			typeof(ArgumentOriginalMethods).GetMethods().Do(original =>
+			{
+				var name = original.Name;
+				var i = name.IndexOf("_2_");
+				if (i > 0)
+				{
+					var typeName = name.Substring(i + 3);
+					var replacementName = $"To_{typeName}";
+					var replacement = typeof(ArgumentPatchMethods).GetMethod(replacementName);
+					Assert.NotNull(replacement, $"replacement '{replacementName}'");
+					try
+					{
+						var info = new HarmonyMethod(replacement);
+						info.debug = true;
+						var result = harmony.Patch(original, info);
+						Assert.NotNull(result, "result");
+					}
+					catch (Exception ex)
+					{
+						Assert.Fail($"Patching {original.Name} failed:\n{ex}");
+					}
+				}
+			});
+
+			var instance = new ArgumentOriginalMethods();
+			ArgumentPatchMethods.Reset();
+
+			var obj = new ArgumentTypes.Object();
+			instance.Object_2_Object(obj);
+			instance.Object_2_ObjectRef(obj);
+			instance.ObjectRef_2_Object(ref obj);
+			instance.ObjectRef_2_ObjectRef(ref obj);
+
+			var val = new ArgumentTypes.Value() { n = 100 };
+			instance.Value_2_Value(val);
+			instance.Value_2_Boxing(val);
+			instance.Value_2_ValueRef(val);
+			Assert.AreEqual(100, val.n);
+			instance.Value_2_BoxingRef(val);
+			instance.ValueRef_2_Value(ref val);
+			instance.ValueRef_2_Boxing(ref val);
+			instance.ValueRef_2_ValueRef(ref val);
+			Assert.AreEqual(101, val.n);
+			instance.ValueRef_2_BoxingRef(ref val);
+			Assert.AreEqual(102, val.n);
+
+			Assert.AreEqual("OOOOVVVVVVVV", ArgumentPatchMethods.result);
 		}
 	}
 }

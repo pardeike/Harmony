@@ -358,7 +358,7 @@ namespace HarmonyLib
 			return true;
 		}
 
-		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough, out LocalBuilder tmpObjectVar)
+		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough, out LocalBuilder tmpObjectVar, List<KeyValuePair<LocalBuilder, Type>> tmpBoxVars)
 		{
 			tmpObjectVar = null;
 			var isInstance = original.IsStatic is false;
@@ -541,27 +541,67 @@ namespace HarmonyLib
 				// 3 ref/out  -> normal  : LDARG, LDIND_x
 				// 4 ref/out  -> ref/out : LDARG
 				//
-				var originalIsNormal = originalParameters[idx].IsOut is false && originalParameters[idx].ParameterType.IsByRef is false;
-				var patchIsNormal = patchParam.IsOut is false && patchParam.ParameterType.IsByRef is false;
+				var originalParamType = originalParameters[idx].ParameterType;
+				var originalParamElementType = originalParamType.IsByRef ? originalParamType.GetElementType() : originalParamType;
+				var patchParamType = patchParam.ParameterType;
+				var patchParamElementType = patchParamType.IsByRef ? patchParamType.GetElementType() : patchParamType;
+				var originalIsNormal = originalParameters[idx].IsOut is false && originalParamType.IsByRef is false;
+				var patchIsNormal = patchParam.IsOut is false && patchParamType.IsByRef is false;
+				var needsBoxing = originalParamElementType.IsValueType && patchParamElementType.IsValueType == false;
 				var patchArgIndex = idx + (isInstance ? 1 : 0) + (useStructReturnBuffer ? 1 : 0);
 
 				// Case 1 + 4
 				if (originalIsNormal == patchIsNormal)
 				{
 					emitter.Emit(OpCodes.Ldarg, patchArgIndex);
+					if (needsBoxing)
+					{
+						if (patchIsNormal)
+							emitter.Emit(OpCodes.Box, originalParamElementType);
+						else
+						{
+							emitter.Emit(OpCodes.Ldobj, originalParamElementType);
+							emitter.Emit(OpCodes.Box, originalParamElementType);
+							var tmpBoxVar = il.DeclareLocal(patchParamType);
+							emitter.Emit(OpCodes.Stloc, tmpBoxVar);
+							emitter.Emit(OpCodes.Ldloca_S, tmpBoxVar);
+							tmpBoxVars.Add(new KeyValuePair<LocalBuilder, Type>(tmpBoxVar, originalParamElementType));
+						}
+					}
 					continue;
 				}
 
 				// Case 2
 				if (originalIsNormal && patchIsNormal is false)
 				{
-					emitter.Emit(OpCodes.Ldarga, patchArgIndex);
+					if (needsBoxing)
+					{
+						emitter.Emit(OpCodes.Ldarg, patchArgIndex);
+						emitter.Emit(OpCodes.Box, originalParamElementType);
+						var tmpBoxVar = il.DeclareLocal(patchParamType);
+						emitter.Emit(OpCodes.Stloc, tmpBoxVar);
+						emitter.Emit(OpCodes.Ldloca_S, tmpBoxVar);
+					}
+					else
+						emitter.Emit(OpCodes.Ldarga, patchArgIndex);
 					continue;
 				}
 
 				// Case 3
-				emitter.Emit(OpCodes.Ldarg, patchArgIndex);
-				emitter.Emit(LoadIndOpCodeFor(originalParameters[idx].ParameterType));
+				if (needsBoxing)
+				{
+					emitter.Emit(OpCodes.Ldarg, patchArgIndex);
+					emitter.Emit(OpCodes.Ldobj, originalParamElementType);
+					emitter.Emit(OpCodes.Box, originalParamElementType);
+				}
+				else
+				{
+					emitter.Emit(OpCodes.Ldarg, patchArgIndex);
+					if (originalParamElementType.IsValueType)
+						emitter.Emit(OpCodes.Ldobj, originalParamElementType);
+					else
+						emitter.Emit(LoadIndOpCodeFor(originalParameters[idx].ParameterType));
+				}
 			}
 		}
 
@@ -602,8 +642,8 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Brfalse_S, skipLabel.Value);
 					}
 
-
-					EmitCallParameter(fix, variables, false, out var tmpObjectVar);
+					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
+					EmitCallParameter(fix, variables, false, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (tmpObjectVar != null)
 					{
@@ -611,6 +651,13 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
 						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
 					}
+					tmpBoxVars.Do(tmpBoxVar =>
+					{
+						emitter.Emit(original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
+						emitter.Emit(OpCodes.Ldloc, tmpBoxVar.Key);
+						emitter.Emit(OpCodes.Unbox_Any, tmpBoxVar.Value);
+						emitter.Emit(OpCodes.Stobj, tmpBoxVar.Value);
+					});
 
 					var returnType = fix.ReturnType;
 					if (returnType != typeof(void))
@@ -638,7 +685,8 @@ namespace HarmonyLib
 					if (original.HasMethodBody() is false)
 						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
-					EmitCallParameter(fix, variables, true, out var tmpObjectVar);
+					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
+					EmitCallParameter(fix, variables, true, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (tmpObjectVar != null)
 					{
@@ -646,6 +694,13 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
 						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
 					}
+					tmpBoxVars.Do(tmpBoxVar =>
+					{
+						emitter.Emit(original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
+						emitter.Emit(OpCodes.Ldloc, tmpBoxVar.Key);
+						emitter.Emit(OpCodes.Unbox_Any, tmpBoxVar.Value);
+						emitter.Emit(OpCodes.Stobj, tmpBoxVar.Value);
+					});
 
 					if (fix.ReturnType != typeof(void))
 					{
@@ -677,7 +732,8 @@ namespace HarmonyLib
 					if (catchExceptions)
 						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 
-					EmitCallParameter(fix, variables, false, out var tmpObjectVar);
+					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
+					EmitCallParameter(fix, variables, false, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (tmpObjectVar != null)
 					{
@@ -685,6 +741,13 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
 						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
 					}
+					tmpBoxVars.Do(tmpBoxVar =>
+					{
+						emitter.Emit(original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
+						emitter.Emit(OpCodes.Ldloc, tmpBoxVar.Key);
+						emitter.Emit(OpCodes.Unbox_Any, tmpBoxVar.Value);
+						emitter.Emit(OpCodes.Stobj, tmpBoxVar.Value);
+					});
 
 					if (fix.ReturnType != typeof(void))
 					{
