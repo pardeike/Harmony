@@ -65,21 +65,14 @@ namespace HarmonyLibTests.Assets
 		{
 			class InnerStaticFieldClass2
 			{
-#pragma warning disable IDE0051
 #pragma warning disable CS0414
 				static readonly string field = "helloStatic";
 #pragma warning restore CS0414
-#pragma warning restore IDE0051
 			}
 
 #pragma warning disable IDE0052
-			static InnerStaticFieldClass2 inner2;
+			static InnerStaticFieldClass2 inner2 = new InnerStaticFieldClass2();
 #pragma warning restore IDE0052
-
-			public InnerStaticFieldClass1()
-			{
-				inner2 = new InnerStaticFieldClass2();
-			}
 		}
 
 		protected static class InnerStaticClass1
@@ -92,13 +85,12 @@ namespace HarmonyLibTests.Assets
 
 #pragma warning disable IDE0052
 		readonly InnerClass1 innerInstance;
-		static InnerStaticFieldClass1 innerStatic;
+		static InnerStaticFieldClass1 innerStatic = new InnerStaticFieldClass1();
 #pragma warning restore IDE0052
 
 		public TraverseNestedTypes(string staticValue)
 		{
 			innerInstance = new InnerClass1();
-			innerStatic = new InnerStaticFieldClass1();
 			InnerStaticClass1.InnerStaticClass2.field = staticValue;
 		}
 	}

@@ -14,10 +14,10 @@ namespace HarmonyLibTests.IL
 		public void Test_CanGetInstructionsWithNoILGenerator()
 		{
 			var method = typeof(Class12).GetMethod(nameof(Class12.FizzBuzz));
-			var instrsNoGen = MethodBodyReader.GetInstructions(generator: null, method);
+			var newGenerator = PatchProcessor.CreateILGenerator(method);
 
-			var dynamicMethod = MethodPatcher.CreateDynamicMethod(method, "_Patch", false);
-			var instrsHasGen = MethodBodyReader.GetInstructions(dynamicMethod.GetILGenerator(), method);
+			var instrsNoGen = MethodBodyReader.GetInstructions(generator: null, method);
+			var instrsHasGen = MethodBodyReader.GetInstructions(newGenerator, method);
 
 			Assert.AreEqual(instrsNoGen.Count, instrsHasGen.Count);
 			for (var i = 0; i < instrsNoGen.Count; i++)
@@ -35,7 +35,7 @@ namespace HarmonyLibTests.IL
 				var operandType = instrNoGen.opcode.OperandType;
 				if ((operandType == OperandType.ShortInlineVar || operandType == OperandType.InlineVar) && instrNoGen.argument is object)
 				{
-#if NETCOREAPP3_0 || NETCOREAPP3_1
+#if NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
 					Assert.AreEqual("System.Reflection.RuntimeLocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);
 #else
 					Assert.AreEqual("System.Reflection.LocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);

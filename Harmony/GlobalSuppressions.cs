@@ -14,3 +14,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~F:HarmonyLib.Sandbox.SomeStruct_Mono.b2")]
 [assembly: SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~F:HarmonyLib.Sandbox.SomeStruct_Mono.b3")]
 [assembly: SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~F:HarmonyLib.Sandbox.SomeStruct_Mono.b4")]
+[assembly: SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>", Scope = "member", Target = "~F:HarmonyLib.Harmony.DEBUG")]
+[assembly: SuppressMessage("Style", "IDE0057:Use range operator")]

@@ -239,9 +239,7 @@ namespace HarmonyLibTests.Patching
 					Assert.NotNull(replacement, $"replacement '{replacementName}'");
 					try
 					{
-						var info = new HarmonyMethod(replacement);
-						info.debug = true;
-						var result = harmony.Patch(original, info);
+						var result = harmony.Patch(original, new HarmonyMethod(replacement));
 						Assert.NotNull(result, "result");
 					}
 					catch (Exception ex)

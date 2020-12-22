@@ -40,12 +40,10 @@ namespace HarmonyLib
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
-#pragma warning disable XS0001
 			using var streamMemory = new MemoryStream();
 			var formatter = new BinaryFormatter();
 			formatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.GetBuffer();
-#pragma warning restore XS0001
 		}
 
 		/// <summary>Deserialize a patch info</summary>
@@ -55,9 +53,7 @@ namespace HarmonyLib
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
 			var formatter = new BinaryFormatter { Binder = new Binder() };
-#pragma warning disable XS0001
 			var streamMemory = new MemoryStream(bytes);
-#pragma warning restore XS0001
 			return (PatchInfo)formatter.Deserialize(streamMemory);
 		}
 
@@ -257,9 +253,7 @@ namespace HarmonyLib
 
 		/// <summary>The owner (Harmony ID)</summary>
 		/// 
-#pragma warning disable CA2235
 		public readonly string owner;
-#pragma warning restore CA2235
 
 		/// <summary>The priority, see <see cref="Priority"/></summary>
 		/// 
@@ -267,28 +261,20 @@ namespace HarmonyLib
 
 		/// <summary>Keep this patch before the patches indicated in the list of Harmony IDs</summary>
 		/// 
-#pragma warning disable CA2235
 		public readonly string[] before;
-#pragma warning restore CA2235
 
 		/// <summary>Keep this patch after the patches indicated in the list of Harmony IDs</summary>
 		/// 
-#pragma warning disable CA2235
 		public readonly string[] after;
-#pragma warning restore CA2235
 
 		/// <summary>A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</summary>
 		/// 
-#pragma warning disable CA2235
 		public readonly bool debug;
-#pragma warning restore CA2235
 
 		[NonSerialized]
 		private MethodInfo patchMethod;
 		private int methodToken;
-#pragma warning disable CA2235
 		private string moduleGUID;
-#pragma warning restore CA2235
 
 		/// <summary>The method of the static patch method</summary>
 		/// 
@@ -353,7 +339,7 @@ namespace HarmonyLib
 			if (method.ReturnType != typeof(DynamicMethod) && method.ReturnType != typeof(MethodInfo)) return method;
 			if (method.IsStatic is false) return method;
 			var parameters = method.GetParameters();
-			if (parameters.Count() != 1) return method;
+			if (parameters.Length != 1) return method;
 			if (parameters[0].ParameterType != typeof(MethodBase)) return method;
 
 			// we have a DynamicMethod factory, let's use it

@@ -10,3 +10,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types")]
 [assembly: SuppressMessage("Code Quality", "IDE0051:Remove unused private members")]
 [assembly: SuppressMessage("Design", "CA1034:Nested types should not be visible")]
+[assembly: SuppressMessage("Style", "IDE0057:Use range operator")]

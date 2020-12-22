@@ -13,14 +13,14 @@ jobs:
   parameters:
     os: windows
     architecture: x64
-    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1, net5]
     publishBuild: true
 
 - template: azure-pipelines-job-template.yml
   parameters:
     os: windows
     architecture: x86
-    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1, net5]
 
 - template: azure-pipelines-job-template.yml
   parameters:
@@ -40,7 +40,7 @@ jobs:
   parameters:
     os: ubuntu
     architecture: x64
-    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1, net5]
 
 # Without an x86 ubuntu agent and with mono's packaging not multi-arch-safe (can't install x86 mono on x64 ubuntu), we can't test on x86 ubuntu.
 #- template: azure-pipelines-job-template.yml
@@ -53,7 +53,7 @@ jobs:
   parameters:
     os: macOS
     architecture: x64
-    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1]
+    frameworks: [net35, net45, net472, net48, netcoreapp3.0, netcoreapp3.1, net5]
 
 # x86 ubuntu woes apply to x86 macOS as well.
 #- template: azure-pipelines-job-template.yml

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1;net5</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>8.0</LangVersion>
 		<IsPackable>false</IsPackable>
@@ -45,7 +45,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoMod.Common" Version="20.12.7.4" />
+		<PackageReference Include="MonoMod.Common" Version="20.12.10.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp'">

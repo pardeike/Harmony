@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1;net5</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Product>Harmony</Product>
 		<Company>Andreas Pardeike</Company>
@@ -96,7 +96,7 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.12.7.4">
+		<PackageReference Include="MonoMod.Common" Version="20.12.10.1">
 			<PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets>
 		</PackageReference>
 
@@ -109,7 +109,7 @@
 		Version 2.1.15+ currently doesn't work on Linux and macOS (results in "Current platform not supported. Unable to find .NET Framework root"),
 		so using version 2.1.14.
 		-->
-		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
+		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.16.1" PrivateAssets="all" />
 	</ItemGroup>
 
 	<!--

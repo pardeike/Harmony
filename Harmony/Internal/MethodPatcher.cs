@@ -55,7 +55,7 @@ namespace HarmonyLib
 				FileLog.FlushBuffer();
 			}
 
-			idx = prefixes.Count() + postfixes.Count() + finalizers.Count();
+			idx = prefixes.Count + postfixes.Count + finalizers.Count;
 			useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 			if (debug && useStructReturnBuffer) FileLog.Log($"### Note: A buffer for the returned struct is used. That requires an extra IntPtr argument before the first real argument");
 			returnType = AccessTools.GetReturnedType(original);
@@ -588,15 +588,14 @@ namespace HarmonyLib
 				}
 
 				// Case 3
+				emitter.Emit(OpCodes.Ldarg, patchArgIndex);
 				if (needsBoxing)
 				{
-					emitter.Emit(OpCodes.Ldarg, patchArgIndex);
 					emitter.Emit(OpCodes.Ldobj, originalParamElementType);
 					emitter.Emit(OpCodes.Box, originalParamElementType);
 				}
 				else
 				{
-					emitter.Emit(OpCodes.Ldarg, patchArgIndex);
 					if (originalParamElementType.IsValueType)
 						emitter.Emit(OpCodes.Ldobj, originalParamElementType);
 					else
@@ -639,7 +638,7 @@ namespace HarmonyLib
 					if (skipLabel.HasValue)
 					{
 						emitter.Emit(OpCodes.Ldloc, runOriginalVariable);
-						emitter.Emit(OpCodes.Brfalse_S, skipLabel.Value);
+						emitter.Emit(OpCodes.Brfalse, skipLabel.Value);
 					}
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
@@ -669,7 +668,7 @@ namespace HarmonyLib
 
 					if (skipLabel.HasValue)
 					{
-						il.MarkLabel(skipLabel.Value);
+						emitter.MarkLabel(skipLabel.Value);
 						emitter.Emit(OpCodes.Nop);
 					}
 				});
