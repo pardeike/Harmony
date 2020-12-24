@@ -562,7 +562,7 @@ namespace HarmonyLib
 						{
 							emitter.Emit(OpCodes.Ldobj, originalParamElementType);
 							emitter.Emit(OpCodes.Box, originalParamElementType);
-							var tmpBoxVar = il.DeclareLocal(patchParamType);
+							var tmpBoxVar = il.DeclareLocal(patchParamElementType);
 							emitter.Emit(OpCodes.Stloc, tmpBoxVar);
 							emitter.Emit(OpCodes.Ldloca_S, tmpBoxVar);
 							tmpBoxVars.Add(new KeyValuePair<LocalBuilder, Type>(tmpBoxVar, originalParamElementType));
@@ -578,7 +578,7 @@ namespace HarmonyLib
 					{
 						emitter.Emit(OpCodes.Ldarg, patchArgIndex);
 						emitter.Emit(OpCodes.Box, originalParamElementType);
-						var tmpBoxVar = il.DeclareLocal(patchParamType);
+						var tmpBoxVar = il.DeclareLocal(patchParamElementType);
 						emitter.Emit(OpCodes.Stloc, tmpBoxVar);
 						emitter.Emit(OpCodes.Ldloca_S, tmpBoxVar);
 					}
