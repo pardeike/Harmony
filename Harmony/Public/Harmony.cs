@@ -47,14 +47,18 @@ namespace HarmonyLib
 				var location = assembly.Location;
 				var environment = Environment.Version.ToString();
 				var platform = Environment.OSVersion.Platform.ToString();
+#if !NET5_0
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
+#endif
 				FileLog.Log($"### Harmony id={id}, version={version}, location={location}, env/clr={environment}, platform={platform}");
 				var callingMethod = AccessTools.GetOutsideCaller();
 				if (callingMethod.DeclaringType is object)
 				{
 					var callingAssembly = callingMethod.DeclaringType.Assembly;
 					location = callingAssembly.Location;
+#if !NET5_0
 					if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
+#endif
 					FileLog.Log($"### Started from {callingMethod.FullDescription()}, location {location}");
 					FileLog.Log($"### At {DateTime.Now:yyyy-MM-dd hh.mm.ss}");
 				}
@@ -217,6 +221,15 @@ namespace HarmonyLib
 		public static IEnumerable<MethodBase> GetAllPatchedMethods()
 		{
 			return PatchProcessor.GetAllPatchedMethods();
+		}
+
+		/// <summary>Gets the original method from a given replacement method</summary>
+		/// <param name="replacement">A replacement method, for example from a stacktrace</param>
+		/// <returns>The original method/constructor or null if not found</returns>
+		///
+		public static MethodBase GetOriginalMethod(MethodInfo replacement)
+		{
+			return HarmonySharedState.GetOriginal(replacement);
 		}
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>

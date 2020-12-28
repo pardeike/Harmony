@@ -11,10 +11,16 @@ namespace HarmonyLib
 	{
 		const string name = "HarmonySharedState";
 		static readonly object locker = new object();
-		internal const int internalVersion = 100;
+		internal const int internalVersion = 101;
 		internal static int actualVersion = -1;
 
-		static Dictionary<MethodBase, byte[]> GetState()
+		struct Info
+		{
+			internal Dictionary<MethodBase, byte[]> state;
+			internal Dictionary<MethodInfo, MethodBase> originals;
+		}
+
+		static Info GetState()
 		{
 			lock (locker)
 			{
@@ -33,10 +39,20 @@ namespace HarmonyLib
 				actualVersion = (int)versionField.GetValue(null);
 
 				var stateField = type.GetField("state");
-				if (stateField is null) throw new Exception("Cannot find harmony state field");
+				if (stateField is null) throw new Exception("Cannot find harmony 'state' field");
 				if (stateField.GetValue(null) is null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
+				var state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 
-				return (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
+				var originalsField = type.GetField("originals");
+				var originals = new Dictionary<MethodInfo, MethodBase>();
+				if (actualVersion >= 101)
+				{
+					if (originalsField is null) throw new Exception("Cannot find harmony 'originals' field");
+					if (originalsField.GetValue(null) is null) originalsField.SetValue(null, new Dictionary<MethodInfo, MethodBase>());
+					originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
+				}
+
+				return new Info { state = state, originals = originals };
 			}
 		}
 
@@ -56,6 +72,12 @@ namespace HarmonyLib
 				"state",
 				Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
 				module.ImportReference(typeof(Dictionary<MethodBase, byte[]>))
+			));
+
+			typedef.Fields.Add(new FieldDefinition(
+				"originals",
+				Mono.Cecil.FieldAttributes.Public | Mono.Cecil.FieldAttributes.Static,
+				module.ImportReference(typeof(Dictionary<MethodInfo, MethodBase>))
 			));
 
 			var versionFieldDef = new FieldDefinition(
@@ -78,7 +100,7 @@ namespace HarmonyLib
 
 		internal static PatchInfo GetPatchInfo(MethodBase method)
 		{
-			var state = GetState();
+			var state = GetState().state;
 			byte[] bytes;
 			lock (state) bytes = state.GetValueSafe(method);
 			if (bytes is null) return null;
@@ -87,15 +109,26 @@ namespace HarmonyLib
 
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			var state = GetState();
+			var state = GetState().state;
 			lock (state) return state.Keys.ToArray();
 		}
 
-		internal static void UpdatePatchInfo(MethodBase method, PatchInfo patchInfo)
+		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
 		{
 			var bytes = patchInfo.Serialize();
-			var state = GetState();
-			lock (state) state[method] = bytes;
+			var info = GetState();
+			lock (info.state) info.state[original] = bytes;
+			lock (info.originals) info.originals[replacement] = original;
+		}
+
+		internal static MethodBase GetOriginal(MethodInfo replacement)
+		{
+			var info = GetState();
+			lock (info.originals)
+			{
+				_ = info.originals.TryGetValue(replacement, out var original);
+				return original;
+			}
 		}
 	}
 }
