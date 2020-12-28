@@ -225,11 +225,24 @@ namespace HarmonyLib
 
 		/// <summary>Gets the original method from a given replacement method</summary>
 		/// <param name="replacement">A replacement method, for example from a stacktrace</param>
-		/// <returns>The original method/constructor or null if not found</returns>
+		/// <returns>The original method/constructor or <c>null</c> if not found</returns>
 		///
 		public static MethodBase GetOriginalMethod(MethodInfo replacement)
 		{
+			if (replacement == null) throw new ArgumentNullException(nameof(replacement));
 			return HarmonySharedState.GetOriginal(replacement);
+		}
+
+		/// <summary>Tries to get the method from a stackframe including dynamic replacement methods</summary>
+		/// <param name="frame">The <see cref="StackFrame"/></param>
+		/// <returns>For normal frames, <c>frame.GetMethod()</c> is returned. For frames containing patched methods, the replacement method is returned or <c>null</c> if no method can be found</returns>
+		///
+		public static MethodBase GetMethodFromStackframe(StackFrame frame)
+		{
+			if (frame == null) throw new ArgumentNullException(nameof(frame));
+			var method = frame.GetMethod();
+			if (method != null) return method;
+			return HarmonySharedState.FindReplacement(frame);
 		}
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>

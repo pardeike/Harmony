@@ -1,7 +1,9 @@
 using Mono.Cecil;
+using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -115,6 +117,19 @@ namespace HarmonyLib
 		{
 			var info = GetState();
 			lock (info.originals) return info.originals.GetValueSafe(replacement);
+		}
+
+		internal static MethodInfo FindReplacement(StackFrame frame)
+		{
+			var methodAddress = AccessTools.Field(typeof(StackFrame), "methodAddress");
+			if (methodAddress == null) return null;
+			var framePtr = (long)methodAddress.GetValue(frame);
+			var info = GetState();
+			lock (info.originals)
+			{
+				return info.originals.Keys
+					.FirstOrDefault(replacement => DetourHelper.GetNativeStart(replacement).ToInt64() == framePtr);
+			}
 		}
 	}
 }
