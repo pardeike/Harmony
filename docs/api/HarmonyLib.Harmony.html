@@ -407,6 +407,56 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_Harmony_GetMethodFromStackframe_System_Diagnostics_StackFrame_.md&amp;value=---%0Auid%3A%20HarmonyLib.Harmony.GetMethodFromStackframe(System.Diagnostics.StackFrame)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Harmony.cs/#L240">View Source</a>
+  </span>
+  <a id="HarmonyLib_Harmony_GetMethodFromStackframe_" data-uid="HarmonyLib.Harmony.GetMethodFromStackframe*"></a>
+  <h4 id="HarmonyLib_Harmony_GetMethodFromStackframe_System_Diagnostics_StackFrame_" data-uid="HarmonyLib.Harmony.GetMethodFromStackframe(System.Diagnostics.StackFrame)">GetMethodFromStackframe(StackFrame)</h4>
+  <div class="markdown level1 summary"><p>Tries to get the method from a stackframe including dynamic replacement methods</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodBase GetMethodFromStackframe(StackFrame frame)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Diagnostics.StackFrame</span></td>
+        <td><span class="parametername">frame</span></td>
+        <td><p>The <span class="xref">System.Diagnostics.StackFrame</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><p>For normal frames, <code>frame.GetMethod()</code> is returned. For frames containing patched methods, the replacement method is returned or <code>null</code> if no method can be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_Harmony_GetOriginalMethod_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20HarmonyLib.Harmony.GetOriginalMethod(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -450,7 +500,7 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Reflection.MethodBase</span></td>
-        <td><p>The original method/constructor or null if not found</p>
+        <td><p>The original method/constructor or <code>null</code> if not found</p>
 </td>
       </tr>
     </tbody>
@@ -901,7 +951,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_Harmony_VersionInfo_System_Version__.md&amp;value=---%0Auid%3A%20HarmonyLib.Harmony.VersionInfo(System.Version%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Harmony.cs/#L239">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Harmony.cs/#L252">View Source</a>
   </span>
   <a id="HarmonyLib_Harmony_VersionInfo_" data-uid="HarmonyLib.Harmony.VersionInfo*"></a>
   <h4 id="HarmonyLib_Harmony_VersionInfo_System_Version__" data-uid="HarmonyLib.Harmony.VersionInfo(System.Version@)">VersionInfo(out Version)</h4>
