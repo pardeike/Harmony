@@ -11,7 +11,8 @@ indent_size = 2
 
 # Xml config files
 [*.{props,targets,config,nuspec,vsixmanifest,vsct}]
-indent_size = 2
+indent_style = tab
+indent_size = 3
 
 [*.cs]
 indent_style = tab

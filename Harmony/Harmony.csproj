@@ -107,9 +107,9 @@
 		<!--
 		See ILRepack config above.
 		Version 2.1.15+ currently doesn't work on Linux and macOS (results in "Current platform not supported. Unable to find .NET Framework root"),
-		so using version 2.1.14.
+		WE MUST USE VERSION 2.1.14 HERE FOR NOW!
 		-->
-		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.16.1" PrivateAssets="all" />
+		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
 	</ItemGroup>
 
 	<!--

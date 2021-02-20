@@ -1,7 +1,7 @@
 <Project>
 
-  <PropertyGroup>
-    <MonoModCommonVersion>21.1.12.5</MonoModCommonVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<MonoModCommonVersion>21.1.12.5</MonoModCommonVersion>
+	</PropertyGroup>
 
 </Project>
