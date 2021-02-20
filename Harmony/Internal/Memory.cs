@@ -46,6 +46,13 @@ namespace HarmonyLib
 			return WriteJump(originalCodeStart, patchCodeStart);
 		}
 
+		internal static void DetourCompiledMethod(IntPtr originalCodeStart, MethodBase replacement)
+		{
+			var patchCodeStart = GetMethodStart(replacement, out var exception);
+			if (patchCodeStart != 0 && exception == null)
+				_ = WriteJump((long)originalCodeStart, patchCodeStart);
+		}
+
 		internal static void DetourMethodAndPersist(MethodBase original, MethodBase replacement)
 		{
 			var errorString = DetourMethod(original, replacement);

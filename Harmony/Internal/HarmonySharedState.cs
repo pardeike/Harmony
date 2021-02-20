@@ -31,6 +31,8 @@ namespace HarmonyLib
 				{
 					CreateModule();
 					assembly = SharedStateAssembly();
+
+					DetourHelper.Runtime.OnMethodCompiled += OnCompileMethod;
 				}
 
 				var type = assembly.GetType(name);
@@ -53,6 +55,14 @@ namespace HarmonyLib
 
 				return new Info { state = state, originals = originals };
 			}
+		}
+
+		static void OnCompileMethod(MethodBase method, IntPtr codeStart, ulong codeLen)
+		{
+			if (method == null) return;
+			var info = GetPatchInfo(method);
+			if (info == null) return;
+			PatchFunctions.UpdateRecompiledMethod(method, codeStart, info);
 		}
 
 		static void CreateModule()
