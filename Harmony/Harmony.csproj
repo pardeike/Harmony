@@ -96,7 +96,7 @@
 
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="20.12.10.1">
+		<PackageReference Include="MonoMod.Common" Version="$(MonoModCommonVersion)">
 			<PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets>
 		</PackageReference>
 
@@ -109,7 +109,7 @@
 		Version 2.1.15+ currently doesn't work on Linux and macOS (results in "Current platform not supported. Unable to find .NET Framework root"),
 		so using version 2.1.14.
 		-->
-		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
+		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.16.1" PrivateAssets="all" />
 	</ItemGroup>
 
 	<!--
