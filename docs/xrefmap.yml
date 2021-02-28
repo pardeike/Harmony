@@ -35,12 +35,38 @@ references:
   commentId: F:HarmonyLib.AccessTools.all
   fullName: HarmonyLib.AccessTools.all
   nameWithType: AccessTools.all
+- uid: HarmonyLib.AccessTools.AllAssemblies
+  name: AllAssemblies()
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_AllAssemblies
+  commentId: M:HarmonyLib.AccessTools.AllAssemblies
+  fullName: HarmonyLib.AccessTools.AllAssemblies()
+  nameWithType: AccessTools.AllAssemblies()
+- uid: HarmonyLib.AccessTools.AllAssemblies*
+  name: AllAssemblies
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_AllAssemblies_
+  commentId: Overload:HarmonyLib.AccessTools.AllAssemblies
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.AllAssemblies
+  nameWithType: AccessTools.AllAssemblies
 - uid: HarmonyLib.AccessTools.allDeclared
   name: allDeclared
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_allDeclared
   commentId: F:HarmonyLib.AccessTools.allDeclared
   fullName: HarmonyLib.AccessTools.allDeclared
   nameWithType: AccessTools.allDeclared
+- uid: HarmonyLib.AccessTools.AllTypes
+  name: AllTypes()
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_AllTypes
+  commentId: M:HarmonyLib.AccessTools.AllTypes
+  fullName: HarmonyLib.AccessTools.AllTypes()
+  nameWithType: AccessTools.AllTypes()
+- uid: HarmonyLib.AccessTools.AllTypes*
+  name: AllTypes
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_AllTypes_
+  commentId: Overload:HarmonyLib.AccessTools.AllTypes
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.AllTypes
+  nameWithType: AccessTools.AllTypes
 - uid: HarmonyLib.AccessTools.CombinedHashCode(System.Collections.Generic.IEnumerable{System.Object})
   name: CombinedHashCode(IEnumerable<Object>)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_CombinedHashCode_System_Collections_Generic_IEnumerable_System_Object__
