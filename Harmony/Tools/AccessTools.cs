@@ -1,4 +1,4 @@
-﻿using MonoMod.Utils;
+using MonoMod.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,6 +33,13 @@ namespace HarmonyLib
 		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
 		public static readonly BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
 
+		/// <summary>Enumerates all assemblies in the current app domain, excluding visual studio assemblies</summary>
+		/// <returns>An enumeration of <see cref="Assembly"/></returns>
+		public static IEnumerable<Assembly> AllAssemblies()
+		{
+			return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") is false);
+		}
+
 		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
 		/// <param name="name">The name</param>
 		/// <returns>A type or null if not found</returns>
@@ -40,15 +47,10 @@ namespace HarmonyLib
 		public static Type TypeByName(string name)
 		{
 			var type = Type.GetType(name, false);
-			var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") is false);
 			if (type is null)
-				type = assemblies
-					.SelectMany(a => GetTypesFromAssembly(a))
-					.FirstOrDefault(t => t.FullName == name);
+				type = AllTypes().FirstOrDefault(t => t.FullName == name);
 			if (type is null)
-				type = assemblies
-					.SelectMany(a => GetTypesFromAssembly(a))
-					.FirstOrDefault(t => t.Name == name);
+				type = AllTypes().FirstOrDefault(t => t.Name == name);
 			if (type is null && Harmony.DEBUG)
 				FileLog.Log($"AccessTools.TypeByName: Could not find type named {name}");
 			return type;
@@ -75,6 +77,13 @@ namespace HarmonyLib
 					FileLog.Log($"AccessTools.GetTypesFromAssembly: assembly {assembly} => {ex}");
 				return ex.Types.Where(type => type is object).ToArray();
 			}
+		}
+
+		/// <summary>Enumerates all successfully loaded types in the current app domain, excluding visual studio assemblies</summary>
+		/// <returns>An enumeration of all <see cref="Type"/> in all assemblies, excluding visual studio assemblies</returns>
+		public static IEnumerable<Type> AllTypes()
+		{
+			return AllAssemblies().SelectMany(a => GetTypesFromAssembly(a));
 		}
 
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non-<c>null</c> result</summary>
@@ -1646,13 +1655,13 @@ namespace HarmonyLib
 		/// <summary>True if the current runtime is .NET Framework, false otherwise (.NET Core or Mono, although latter isn't guaranteed)</summary>
 		///
 		public static bool IsNetFrameworkRuntime { get; } =
-			TypeByName("System.Runtime.InteropServices.RuntimeInformation")?.GetProperty("FrameworkDescription")
+			Type.GetType("System.Runtime.InteropServices.RuntimeInformation", false)?.GetProperty("FrameworkDescription")
 			.GetValue(null, null).ToString().StartsWith(".NET Framework") ?? IsMonoRuntime is false;
 
 		/// <summary>True if the current runtime is .NET Core, false otherwise (Mono or .NET Framework)</summary>
 		///
 		public static bool IsNetCoreRuntime { get; } =
-			TypeByName("System.Runtime.InteropServices.RuntimeInformation")?.GetProperty("FrameworkDescription")
+			Type.GetType("System.Runtime.InteropServices.RuntimeInformation", false)?.GetProperty("FrameworkDescription")
 			.GetValue(null, null).ToString().StartsWith(".NET Core") ?? false;
 
 		/// <summary>Throws a missing member runtime exception</summary>
