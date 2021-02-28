@@ -12,48 +12,47 @@ namespace HarmonyLib
 	internal static class HarmonySharedState
 	{
 		const string name = "HarmonySharedState";
+		static FieldInfo stateField;
+		static FieldInfo originalsField;
+		static Dictionary<MethodBase, byte[]> state = null;
+		static Dictionary<MethodInfo, MethodBase> originals = null;
+
 		static readonly object locker = new object();
 		internal const int internalVersion = 101;
 		internal static int actualVersion = -1;
 
-		struct Info
-		{
-			internal Dictionary<MethodBase, byte[]> state;
-			internal Dictionary<MethodInfo, MethodBase> originals;
-		}
-
-		static Info GetState()
+		static void PrepareState()
 		{
 			lock (locker)
 			{
-				var assembly = SharedStateAssembly();
-				if (assembly is null)
+				if (state is null)
 				{
-					CreateModule();
-					assembly = SharedStateAssembly();
-
 					DetourHelper.Runtime.OnMethodCompiled += OnCompileMethod;
+
+					var type = CreateSharedStateType();
+
+					var versionField = type.GetField("version");
+					if ((int)versionField.GetValue(null) == 0)
+						versionField.SetValue(null, internalVersion);
+					actualVersion = (int)versionField.GetValue(null);
+
+					stateField = type.GetField("state");
+					if (stateField.GetValue(null) is null)
+						stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
+
+					originalsField = type.GetField("originals");
+					if (originalsField != null && originalsField.GetValue(null) is null)
+						originalsField.SetValue(null, new Dictionary<MethodInfo, MethodBase>());
 				}
 
-				var type = assembly.GetType(name);
+				// assign values of state and originals every time to be sure they are updated
 
-				var versionField = type.GetField("version");
-				if ((int)versionField.GetValue(null) == 0) versionField.SetValue(null, internalVersion);
-				actualVersion = (int)versionField.GetValue(null);
+				state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 
-				var stateField = type.GetField("state");
-				if (stateField.GetValue(null) is null) stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
-				var state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
-
-				var originals = new Dictionary<MethodInfo, MethodBase>();
-				var originalsField = type.GetField("originals");
-				if (actualVersion >= internalVersion)
-				{
-					if (originalsField.GetValue(null) is null) originalsField.SetValue(null, new Dictionary<MethodInfo, MethodBase>());
+				if (originalsField != null)
 					originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
-				}
-
-				return new Info { state = state, originals = originals };
+				else
+					originals = new Dictionary<MethodInfo, MethodBase>();
 			}
 		}
 
@@ -65,7 +64,7 @@ namespace HarmonyLib
 			PatchFunctions.UpdateRecompiledMethod(method, codeStart, info);
 		}
 
-		static void CreateModule()
+		static Type CreateSharedStateType()
 		{
 			using var module = ModuleDefinition.CreateModule(name, new ModuleParameters() { Kind = ModuleKind.Dll, ReflectionImporterProvider = MMReflectionImporter.Provider });
 			var attr = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.Abstract | Mono.Cecil.TypeAttributes.Sealed | Mono.Cecil.TypeAttributes.Class;
@@ -90,19 +89,12 @@ namespace HarmonyLib
 				module.ImportReference(typeof(int))
 			));
 
-			_ = ReflectionHelper.Load(module);
-		}
-
-		static Assembly SharedStateAssembly()
-		{
-			return AppDomain.CurrentDomain.GetAssemblies()
-				.Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") is false)
-				.FirstOrDefault(a => a.GetName().Name.Contains(name));
+			return ReflectionHelper.Load(module).GetType(name);
 		}
 
 		internal static PatchInfo GetPatchInfo(MethodBase method)
 		{
-			var state = GetState().state;
+			PrepareState();
 			byte[] bytes;
 			lock (state) bytes = state.GetValueSafe(method);
 			if (bytes is null) return null;
@@ -111,22 +103,22 @@ namespace HarmonyLib
 
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			var state = GetState().state;
+			PrepareState();
 			lock (state) return state.Keys.ToArray();
 		}
 
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
 		{
 			var bytes = patchInfo.Serialize();
-			var info = GetState();
-			lock (info.state) info.state[original] = bytes;
-			lock (info.originals) info.originals[replacement] = original;
+			PrepareState();
+			lock (state) state[original] = bytes;
+			lock (originals) originals[replacement] = original;
 		}
 
 		internal static MethodBase GetOriginal(MethodInfo replacement)
 		{
-			var info = GetState();
-			lock (info.originals) return info.originals.GetValueSafe(replacement);
+			PrepareState();
+			lock (originals) return originals.GetValueSafe(replacement);
 		}
 
 		internal static MethodInfo FindReplacement(StackFrame frame)
@@ -134,10 +126,10 @@ namespace HarmonyLib
 			var methodAddress = AccessTools.Field(typeof(StackFrame), "methodAddress");
 			if (methodAddress == null) return null;
 			var framePtr = (long)methodAddress.GetValue(frame);
-			var info = GetState();
-			lock (info.originals)
+			PrepareState();
+			lock (originals)
 			{
-				return info.originals.Keys
+				return originals.Keys
 					.FirstOrDefault(replacement => DetourHelper.GetNativeStart(replacement).ToInt64() == framePtr);
 			}
 		}
