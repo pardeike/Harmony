@@ -1726,7 +1726,11 @@ namespace HarmonyLib
 		/// </summary>
 		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = new Dictionary<Type, FastInvokeHandler>();
 
+#if NET35
+		static readonly ReaderWriterLock addHandlerCacheLock = new ReaderWriterLock();
+#else
 		static readonly ReaderWriterLockSlim addHandlerCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+#endif
 
 		/// <summary>Makes a deep copy of any object</summary>
 		/// <typeparam name="T">The type of the instance that should be created; for legacy reasons, this must be a class or interface</typeparam>
@@ -1773,7 +1777,11 @@ namespace HarmonyLib
 
 			if (type.IsGenericType && resultType.IsGenericType)
 			{
+#if NET35
+				addHandlerCacheLock.AcquireReaderLock(200);
+#else
 				addHandlerCacheLock.EnterUpgradeableReadLock();
+#endif
 				try
 				{
 					if (!addHandlerCache.TryGetValue(resultType, out var addInvoker))
@@ -1783,14 +1791,23 @@ namespace HarmonyLib
 						{
 							addInvoker = MethodInvoker.GetHandler(addOperation);
 						}
+#if NET35
+						addHandlerCacheLock.UpgradeToWriterLock(200);
+						addHandlerCacheLock.AcquireWriterLock(200);
+#else
 						addHandlerCacheLock.EnterWriteLock();
+#endif
 						try
 						{
 							addHandlerCache[resultType] = addInvoker;
 						}
 						finally
 						{
+#if NET35
+							addHandlerCacheLock.ReleaseWriterLock();
+#else
 							addHandlerCacheLock.ExitWriteLock();
+#endif
 						}
 					}
 					if (addInvoker != null)
@@ -1810,7 +1827,11 @@ namespace HarmonyLib
 				}
 				finally
 				{
+#if NET35
+					addHandlerCacheLock.ReleaseReaderLock();
+#else
 					addHandlerCacheLock.ExitUpgradeableReadLock();
+#endif
 				}
 			}
 
