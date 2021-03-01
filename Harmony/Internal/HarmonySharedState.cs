@@ -6,24 +6,26 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace HarmonyLib
 {
 	internal static class HarmonySharedState
 	{
 		const string name = "HarmonySharedState";
-		static FieldInfo stateField;
-		static FieldInfo originalsField;
+		static readonly Mutex mutex = new Mutex(false, name);
 		static Dictionary<MethodBase, byte[]> state = null;
 		static Dictionary<MethodInfo, MethodBase> originals = null;
 
-		static readonly object locker = new object();
 		internal const int internalVersion = 101;
 		internal static int actualVersion = -1;
 
-		static void PrepareState()
+		static T WithState<T>(Func<T> action)
 		{
-			lock (locker)
+			_ = mutex.WaitOne();
+
+			T result = default;
+			try
 			{
 				if (state is null)
 				{
@@ -36,24 +38,29 @@ namespace HarmonyLib
 						versionField.SetValue(null, internalVersion);
 					actualVersion = (int)versionField.GetValue(null);
 
-					stateField = type.GetField("state");
+					var stateField = type.GetField("state");
 					if (stateField.GetValue(null) is null)
 						stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
 
-					originalsField = type.GetField("originals");
+					var originalsField = type.GetField("originals");
 					if (originalsField != null && originalsField.GetValue(null) is null)
 						originalsField.SetValue(null, new Dictionary<MethodInfo, MethodBase>());
+
+					state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
+
+					originals = new Dictionary<MethodInfo, MethodBase>();
+					if (originalsField != null) // may not exist in older versions
+						originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
 				}
 
-				// assign values of state and originals every time to be sure they are updated
-
-				state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
-
-				if (originalsField != null)
-					originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
-				else
-					originals = new Dictionary<MethodInfo, MethodBase>();
+				result = action();
 			}
+			finally
+			{
+				mutex.ReleaseMutex();
+			}
+
+			return result;
 		}
 
 		static void OnCompileMethod(MethodBase method, IntPtr codeStart, ulong codeLen)
@@ -94,31 +101,39 @@ namespace HarmonyLib
 
 		internal static PatchInfo GetPatchInfo(MethodBase method)
 		{
-			PrepareState();
-			byte[] bytes;
-			lock (state) bytes = state.GetValueSafe(method);
-			if (bytes is null) return null;
-			return PatchInfoSerialization.Deserialize(bytes);
+			return WithState(() =>
+			{
+				var bytes = state.GetValueSafe(method);
+				if (bytes is null) return null;
+				return PatchInfoSerialization.Deserialize(bytes);
+			});
 		}
 
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			PrepareState();
-			lock (state) return state.Keys.ToArray();
+			return WithState(() =>
+			{
+				return state.Keys.ToArray();
+			});
 		}
 
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
 		{
 			var bytes = patchInfo.Serialize();
-			PrepareState();
-			lock (state) state[original] = bytes;
-			lock (originals) originals[replacement] = original;
+			_ = WithState<object>(() =>
+			{
+				state[original] = bytes;
+				originals[replacement] = original;
+				return null;
+			});
 		}
 
 		internal static MethodBase GetOriginal(MethodInfo replacement)
 		{
-			PrepareState();
-			lock (originals) return originals.GetValueSafe(replacement);
+			return WithState(() =>
+			{
+				return originals.GetValueSafe(replacement);
+			});
 		}
 
 		internal static MethodInfo FindReplacement(StackFrame frame)
@@ -126,12 +141,11 @@ namespace HarmonyLib
 			var methodAddress = AccessTools.Field(typeof(StackFrame), "methodAddress");
 			if (methodAddress == null) return null;
 			var framePtr = (long)methodAddress.GetValue(frame);
-			PrepareState();
-			lock (originals)
+			return WithState(() =>
 			{
 				return originals.Keys
 					.FirstOrDefault(replacement => DetourHelper.GetNativeStart(replacement).ToInt64() == framePtr);
-			}
+			});
 		}
 	}
 }
