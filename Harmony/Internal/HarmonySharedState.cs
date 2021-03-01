@@ -22,11 +22,13 @@ namespace HarmonyLib
 
 		static T WithState<T>(Func<T> action)
 		{
-			_ = mutex.WaitOne();
-
 			T result = default;
+			var acquired = false;
 			try
 			{
+				_ = mutex.WaitOne();
+				acquired = true;
+
 				if (state is null)
 				{
 					DetourHelper.Runtime.OnMethodCompiled += OnCompileMethod;
@@ -57,9 +59,9 @@ namespace HarmonyLib
 			}
 			finally
 			{
-				mutex.ReleaseMutex();
+				if (acquired)
+					mutex.ReleaseMutex();
 			}
-
 			return result;
 		}
 
