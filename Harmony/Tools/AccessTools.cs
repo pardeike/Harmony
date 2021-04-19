@@ -836,7 +836,7 @@ namespace HarmonyLib
 		/// </para>
 		/// </remarks>
 		///
-		public delegate ref F FieldRef<T, F>(T instance = default);
+		public delegate ref F FieldRef<in T, F>(T instance = default);
 
 		/// <summary>Creates a field reference delegate for an instance field of a class</summary>
 		/// <typeparam name="T">The class that defines the instance field, or derived class of this type</typeparam>
