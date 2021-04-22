@@ -14,6 +14,7 @@ namespace HarmonyLibTests.Assets
 
 	[HarmonyPatch(typeof(string))]
 	[HarmonyPatch("foobar")]
+	[HarmonyPriority(Priority.High)]
 	[HarmonyPatch(new Type[] { typeof(float), typeof(string) })]
 	public class AllAttributesClass
 	{

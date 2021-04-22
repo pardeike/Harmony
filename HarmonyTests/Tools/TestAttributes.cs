@@ -20,6 +20,7 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual(2, info.argumentTypes.Length);
 			Assert.AreEqual(typeof(float), info.argumentTypes[0]);
 			Assert.AreEqual(typeof(string), info.argumentTypes[1]);
+			Assert.AreEqual(Priority.High, info.priority);
 		}
 
 		[Test]
