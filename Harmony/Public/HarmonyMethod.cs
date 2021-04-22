@@ -139,7 +139,10 @@ namespace HarmonyLib
 				HarmonyFields().ForEach(f =>
 				{
 					var val = trv.Field(f).GetValue();
-					if (val is object)
+					// The second half of this if is needed because priority defaults to -1
+					// This causes the value of a HarmonyPriority attribute to be overriden by the next attribute if it is not merged last
+					// should be removed by making priority nullable and default to null at some point
+					if (val is object && (f != nameof(HarmonyMethod.priority) || (int)val != -1))
 						HarmonyMethodExtensions.SetValue(resultTrv, f, val);
 				});
 			});
@@ -232,7 +235,11 @@ namespace HarmonyLib
 			{
 				var baseValue = masterTrv.Field(f).GetValue();
 				var detailValue = detailTrv.Field(f).GetValue();
-				SetValue(resultTrv, f, detailValue ?? baseValue);
+				// This if is needed because priority defaults to -1
+				// This causes the value of a HarmonyPriority attribute to be overriden by the next attribute if it is not merged last
+				// should be removed by making priority nullable and default to null at some point
+				if (f != nameof(HarmonyMethod.priority) || (int)detailValue != -1)
+					SetValue(resultTrv, f, detailValue ?? baseValue);
 			});
 			return result;
 		}
