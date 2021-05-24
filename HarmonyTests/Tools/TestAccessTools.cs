@@ -315,6 +315,23 @@ namespace HarmonyLibTests.Tools
 			Assert.Null(AccessTools.DeclaredMethod(interfaceType, "unknown"));
 		}
 
+		delegate object Method5(int x);
+
+		[Test]
+		public void Test_AccessTools_Method3()
+		{
+			var classType = typeof(AccessToolsClass);
+			Assert.NotNull(AccessTools.DeclaredMethod<Func<object>>(classType, "Method5"));
+			Assert.NotNull(AccessTools.DeclaredMethod<Method5>(classType));
+			Assert.Null(AccessTools.DeclaredMethod<Func<int,int,object>>(classType, "Method5"));
+
+			Assert.NotNull(AccessTools.Method<Func<object>>(classType, "Method5"));
+			Assert.NotNull(AccessTools.Method<Method5>("HarmonyLibTests.Assets.AccessToolsClass:Method5"));
+			Assert.NotNull(AccessTools.Method<Func<int, object>>(classType, "Method5"));
+			Assert.Null(AccessTools.Method<Func<int, int, object>>(classType, "Method5"));
+		}
+
+
 		[Test]
 		public void Test_AccessTools_InnerClass()
 		{

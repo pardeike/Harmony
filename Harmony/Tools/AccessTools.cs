@@ -86,6 +86,19 @@ namespace HarmonyLib
 			return AllAssemblies().SelectMany(a => GetTypesFromAssembly(a));
 		}
 
+		/// <summary>Gets parameter types from delegate</summary>
+		/// <typeparam name="TDelegate">delegate type</typeparam>
+		/// <param name="instance">skip first parameter.</param>
+		/// <returns>Type[] representing parameters of the delegate.</returns>
+		internal static Type[] GetParameterTypes<TDelegate>(bool instance = false) where TDelegate : Delegate
+		{
+			IEnumerable<ParameterInfo> parameters = typeof(TDelegate).GetMethod("Invoke").GetParameters();
+			if (instance)
+				parameters = parameters.Skip(1);
+
+			return parameters.Select(p => p.ParameterType).ToArray();
+		}
+
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non-<c>null</c> result</summary>
 		/// <typeparam name="T">Result type of func()</typeparam>
 		/// <param name="type">The class/type to start with</param>
@@ -326,6 +339,19 @@ namespace HarmonyLib
 			return result;
 		}
 
+		/// <summary>Gets the reflection information for a directly declared method</summary>
+		/// <typeparam name="TDelegate">delegate that has the same argument types as the intented overloaded method</typeparam>
+		/// <param name="type">The class/type where the method is declared</param>
+		/// <param name="name">The name of the method (case sensitive). Uses delegate name by default.</param>
+		/// <param name="instance">is instance delegate (skips the first parameter)</param>
+		/// <returns>A method or null when type/name is null or when the method cannot be found</returns>
+		internal static MethodInfo DeclaredMethod<TDelegate>(Type type, string name = null, bool instance = false)
+			 where TDelegate : Delegate
+		{
+			var args = GetParameterTypes<TDelegate>(instance);
+			return DeclaredMethod(type, name ?? typeof(TDelegate).Name, args);
+		}
+
 		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
 		/// <param name="type">The class/type where the method is declared</param>
 		/// <param name="name">The name of the method (case sensitive)</param>
@@ -400,6 +426,33 @@ namespace HarmonyLib
 
 			var type = TypeByName(parts[0]);
 			return DeclaredMethod(type, parts[1], parameters, generics);
+		}
+
+		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
+		/// <summary>Gets the reflection information for a directly declared method</summary>
+		/// <typeparam name="TDelegate">delegate that has the same argument types as the intented overloaded method</typeparam>
+		/// <param name="type">The class/type where the method is declared</param>
+		/// <param name="name">The name of the method (case sensitive). Uses delegate name by default.</param>
+		/// <param name="instance">is instance delegate (skips the first parameter)</param>
+		/// <returns>A method or null when type/name is null or when the method cannot be found</returns>
+		internal static MethodInfo Method<TDelegate>(Type type, string name = null, bool instance = false)
+			 where TDelegate : Delegate
+		{
+			var args = GetParameterTypes<TDelegate>(instance);
+			return Method(type, name ?? typeof(TDelegate).Name, args);
+		}
+
+		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
+		/// <summary>Gets the reflection information for a directly declared method</summary>
+		/// <typeparam name="TDelegate">delegate that has the same argument types as the intented overloaded method</typeparam>
+		/// <param name="typeColonMethodname">The target method in the form <c>TypeFullName:MethodName</c>, where the type name matches a form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <param name="instance">is instance delegate (skips the first parameter)</param>
+		/// <returns>A method or null when type/name is null or when the method cannot be found</returns>
+		internal static MethodInfo Method<TDelegate>(string typeColonMethodname, bool instance = false)
+			 where TDelegate : Delegate
+		{
+			var args = GetParameterTypes<TDelegate>(instance);
+			return Method(typeColonMethodname, args);
 		}
 
 		/// <summary>Gets the names of all method that are declared in a type</summary>

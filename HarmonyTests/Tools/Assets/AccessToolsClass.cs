@@ -111,6 +111,15 @@ namespace HarmonyLibTests.Assets
 		{
 			return field4;
 		}
+
+		public object Method5()
+		{
+			return null;
+		}
+		public static object Method5(int x)
+		{
+			return null;
+		}
 	}
 
 	public class AccessToolsSubClass : AccessToolsClass
