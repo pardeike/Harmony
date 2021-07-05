@@ -17,6 +17,7 @@ namespace HarmonyLib
 		const string RESULT_VAR = "__result";
 		const string STATE_VAR = "__state";
 		const string EXCEPTION_VAR = "__exception";
+		const string RUN_ORIGINA_VAR = "__runOriginal";
 		const string PARAM_INDEX_PREFIX = "__";
 		const string INSTANCE_FIELD_PREFIX = "___";
 
@@ -92,14 +93,14 @@ namespace HarmonyLib
 
 			prefixes.Union(postfixes).Union(finalizers).ToList().ForEach(fix =>
 			{
-				if (fix.DeclaringType is object && privateVars.ContainsKey(fix.DeclaringType.FullName) is false)
+				if (fix.DeclaringType is object && privateVars.ContainsKey(fix.DeclaringType.AssemblyQualifiedName) is false)
 				{
 					fix.GetParameters()
 					.Where(patchParam => patchParam.Name == STATE_VAR)
 					.Do(patchParam =>
 					{
 						var privateStateVariable = DeclareLocalVariable(patchParam.ParameterType);
-						privateVars[fix.DeclaringType.FullName] = privateStateVariable;
+						privateVars[fix.DeclaringType.AssemblyQualifiedName] = privateStateVariable;
 					});
 				}
 			});
@@ -358,7 +359,7 @@ namespace HarmonyLib
 			return true;
 		}
 
-		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, bool allowFirsParamPassthrough, out LocalBuilder tmpObjectVar, List<KeyValuePair<LocalBuilder, Type>> tmpBoxVars)
+		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable, bool allowFirsParamPassthrough, out LocalBuilder tmpObjectVar, List<KeyValuePair<LocalBuilder, Type>> tmpBoxVars)
 		{
 			tmpObjectVar = null;
 			var isInstance = original.IsStatic is false;
@@ -378,6 +379,15 @@ namespace HarmonyLib
 						continue;
 
 					emitter.Emit(OpCodes.Ldnull);
+					continue;
+				}
+
+				if (patchParam.Name == RUN_ORIGINA_VAR)
+				{
+					if (runOriginalVariable != null)
+						emitter.Emit(OpCodes.Ldloc, runOriginalVariable);
+					else
+						emitter.Emit(OpCodes.Ldc_I4_0);
 					continue;
 				}
 
@@ -415,13 +425,13 @@ namespace HarmonyLib
 						// field access by index only works for declared fields
 						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, int.Parse(fieldName));
 						if (fieldInfo is null)
-							throw new ArgumentException($"No field found at given index in class {original.DeclaringType.FullName}", fieldName);
+							throw new ArgumentException($"No field found at given index in class {original.DeclaringType.AssemblyQualifiedName}", fieldName);
 					}
 					else
 					{
 						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
 						if (fieldInfo is null)
-							throw new ArgumentException($"No such field defined in class {original.DeclaringType.FullName}", fieldName);
+							throw new ArgumentException($"No such field defined in class {original.DeclaringType.AssemblyQualifiedName}", fieldName);
 					}
 
 					if (fieldInfo.IsStatic)
@@ -438,7 +448,7 @@ namespace HarmonyLib
 				if (patchParam.Name == STATE_VAR)
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					if (variables.TryGetValue(patch.DeclaringType.FullName, out var stateVar))
+					if (variables.TryGetValue(patch.DeclaringType.AssemblyQualifiedName, out var stateVar))
 						emitter.Emit(ldlocCode, stateVar);
 					else
 						emitter.Emit(OpCodes.Ldnull);
@@ -642,7 +652,7 @@ namespace HarmonyLib
 					}
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, false, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (tmpObjectVar != null)
 					{
@@ -685,7 +695,7 @@ namespace HarmonyLib
 						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, true, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, null, true, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (tmpObjectVar != null)
 					{
@@ -732,7 +742,7 @@ namespace HarmonyLib
 						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, false, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, null, false, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (tmpObjectVar != null)
 					{

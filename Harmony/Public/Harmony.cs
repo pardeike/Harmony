@@ -1,3 +1,4 @@
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,7 +51,9 @@ namespace HarmonyLib
 #if !NET5_0
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 #endif
-				FileLog.Log($"### Harmony id={id}, version={version}, location={location}, env/clr={environment}, platform={platform}");
+				var ptr_runtime = IntPtr.Size;
+				var ptr_env = PlatformHelper.Current;
+				FileLog.Log($"### Harmony id={id}, version={version}, location={location}, env/clr={environment}, platform={platform}, ptrsize:runtime/env={ptr_runtime}/{ptr_env}");
 				var callingMethod = AccessTools.GetOutsideCaller();
 				if (callingMethod.DeclaringType is object)
 				{
@@ -68,6 +71,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Searches the current assembly for Harmony annotations and uses them to create patches</summary>
+		/// <remarks>This method can fail to use the correct assembly when being inlined. It calls StackTrace.GetFrame(1) which can point to the wrong method/assembly. If you are unsure or run into problems, use <code>PatchAll(Assembly.GetExecutingAssembly())</code> instead.</remarks>
 		/// 
 		public void PatchAll()
 		{

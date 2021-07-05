@@ -1129,6 +1129,35 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class Class22
+	{
+		public static bool? bool1 = null;
+		public static bool? bool2 = null;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static void Method22()
+		{
+			try
+			{
+			}
+			catch
+			{
+				throw;
+			}
+		}
+
+		public static bool Prefix1(bool __runOriginal)
+		{
+			bool1 = __runOriginal;
+			return false;
+		}
+
+		public static void Prefix2(bool __runOriginal)
+		{
+			bool2 = __runOriginal;
+		}
+	}
+
 	public class InjectDelegateBaseClass
 	{
 		public string pre;

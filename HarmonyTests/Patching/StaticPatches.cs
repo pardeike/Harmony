@@ -402,5 +402,34 @@ namespace HarmonyLibTests.Patching
 			Assert.IsTrue(Class18Patch.prefixExecuted, "prefixExecuted");
 			Assert.AreEqual((float)1, color.r);
 		}
+
+		[Test]
+		public void Test_Class22()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+
+			var original = SymbolExtensions.GetMethodInfo(() => Class22.Method22());
+			Assert.NotNull(original, "original");
+			var prefix1 = SymbolExtensions.GetMethodInfo(() => Class22.Prefix1(false));
+			Assert.NotNull(original, "prefix1");
+			var prefix2 = SymbolExtensions.GetMethodInfo(() => Class22.Prefix2(false));
+			Assert.NotNull(original, "prefix2");
+
+			var patched1 = instance.Patch(original, new HarmonyMethod(prefix1));
+			Assert.NotNull(patched1, "patched1");
+
+			var patched2 = instance.Patch(original, new HarmonyMethod(prefix2));
+			Assert.NotNull(patched2, "patched2");
+
+			Class22.bool1 = null;
+			Class22.bool2 = null;
+			Class22.Method22();
+
+			Assert.NotNull(Class22.bool1, "Class22.bool1");
+			Assert.NotNull(Class22.bool2, "Class22.bool2");
+			Assert.IsTrue(Class22.bool1.Value, "Class22.bool1.Value");
+			Assert.IsFalse(Class22.bool2.Value, "Class22.bool2.Value");
+		}
 	}
 }
