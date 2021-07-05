@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class AccessTools
    ">
-    <meta name="generator" content="docfx 2.57.2.0">
+    <meta name="generator" content="docfx 2.58.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -1165,7 +1165,7 @@ Consider using <a class="xref" href="HarmonyLib.AccessTools.html#HarmonyLib_Acce
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static F FieldRefAccess&lt;T, F&gt;(T instance, FieldInfo fieldInfo)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ref F FieldRefAccess&lt;T, F&gt;(T instance, FieldInfo fieldInfo)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1256,7 +1256,7 @@ Instead, the non-value-type check is done at runtime within the method.
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static F FieldRefAccess&lt;T, F&gt;(T instance, string fieldName)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ref F FieldRefAccess&lt;T, F&gt;(T instance, string fieldName)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -4108,7 +4108,7 @@ either that type or the underlying integral type of that enum type</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static F StaticFieldRefAccess&lt;F&gt;(Type type, string fieldName)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ref F StaticFieldRefAccess&lt;F&gt;(Type type, string fieldName)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -4182,7 +4182,7 @@ either that type or the underlying integral type of that enum type</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static F StaticFieldRefAccess&lt;T, F&gt;(FieldInfo fieldInfo)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ref F StaticFieldRefAccess&lt;T, F&gt;(FieldInfo fieldInfo)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -4259,7 +4259,7 @@ and the <a class="xref" href="HarmonyLib.AccessTools.html#HarmonyLib_AccessTools
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static F StaticFieldRefAccess&lt;T, F&gt;(string fieldName)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ref F StaticFieldRefAccess&lt;T, F&gt;(string fieldName)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -4332,7 +4332,7 @@ either that type or the underlying integral type of that enum type</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static F StructFieldRefAccess&lt;T, F&gt;(ref T instance, FieldInfo fieldInfo)
+    <pre><code class="lang-csharp hljs">public static ref F StructFieldRefAccess&lt;T, F&gt;(ref T instance, FieldInfo fieldInfo)
     where T : struct</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -4419,7 +4419,7 @@ If you need to access a field&apos;s value for potentially multiple instances, u
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static F StructFieldRefAccess&lt;T, F&gt;(ref T instance, string fieldName)
+    <pre><code class="lang-csharp hljs">public static ref F StructFieldRefAccess&lt;T, F&gt;(ref T instance, string fieldName)
     where T : struct</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
