@@ -554,6 +554,7 @@ namespace HarmonyLib
 				{
 					var val = ilBytes.ReadInt32();
 					instruction.operand = module.ResolveMember(val, typeArguments, methodArguments);
+					((MemberInfo)instruction.operand).DeclaringType?.FixReflectionCacheAuto();
 					GetMemberInfoValue((MemberInfo)instruction.operand, out instruction.argument);
 					break;
 				}
@@ -562,6 +563,7 @@ namespace HarmonyLib
 				{
 					var val = ilBytes.ReadInt32();
 					instruction.operand = module.ResolveType(val, typeArguments, methodArguments);
+					((Type)instruction.operand).FixReflectionCacheAuto();
 					instruction.argument = (Type)instruction.operand;
 					break;
 				}
@@ -570,6 +572,7 @@ namespace HarmonyLib
 				{
 					var val = ilBytes.ReadInt32();
 					instruction.operand = module.ResolveMethod(val, typeArguments, methodArguments);
+					((MemberInfo)instruction.operand).DeclaringType?.FixReflectionCacheAuto();
 					if (instruction.operand is ConstructorInfo)
 						instruction.argument = (ConstructorInfo)instruction.operand;
 					else
@@ -581,6 +584,7 @@ namespace HarmonyLib
 				{
 					var val = ilBytes.ReadInt32();
 					instruction.operand = module.ResolveField(val, typeArguments, methodArguments);
+					((MemberInfo)instruction.operand).DeclaringType?.FixReflectionCacheAuto();
 					instruction.argument = (FieldInfo)instruction.operand;
 					break;
 				}
