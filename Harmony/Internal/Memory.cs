@@ -100,7 +100,9 @@ namespace HarmonyLib
 
 			var methodDef = new DynamicMethodDefinition($"PadMethod-{Guid.NewGuid()}", typeof(void), new Type[0]);
 			methodDef.GetILGenerator().Emit(OpCodes.Ret);
-			_ = GetMethodStart(methodDef.Generate(), out var _); // trigger allocation/generation of jitted assembler
+			// Invoke the method so that it generates a trampoline that will later get overridden by the detour
+			// code.
+			methodDef.Generate().Invoke(null, null);
 		}
 
 		/// <summary>Writes a jump to memory</summary>
