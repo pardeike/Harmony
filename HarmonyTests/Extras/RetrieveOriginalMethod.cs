@@ -32,7 +32,7 @@ namespace HarmonyLibTests.Extras
 			{
 				var original = Harmony.GetOriginalMethod(replacement);
 				Assert.NotNull(original);
-				Assert.Equals(original, AccessTools.Method(typeof(RetrieveOriginalMethod), nameof(RetrieveOriginalMethod.PatchTarget)));
+				Assert.AreEqual(original, AccessTools.Method(typeof(RetrieveOriginalMethod), nameof(RetrieveOriginalMethod.PatchTarget)));
 			}
 		}
 
