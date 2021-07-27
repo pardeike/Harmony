@@ -20,6 +20,9 @@ namespace HarmonyLib
 		internal const int internalVersion = 101;
 		internal static int actualVersion = -1;
 
+		// typeof(StackFrame).methodAddress
+		private static FieldInfo methodAddress = null;
+		
 		static T WithState<T>(Func<T> action)
 		{
 			T result = default;
@@ -138,15 +141,35 @@ namespace HarmonyLib
 			});
 		}
 
-		internal static MethodInfo FindReplacement(StackFrame frame)
+		internal static MethodBase FindReplacement(StackFrame frame)
 		{
-			var methodAddress = AccessTools.Field(typeof(StackFrame), "methodAddress");
-			if (methodAddress == null) return null;
-			var framePtr = (long)methodAddress.GetValue(frame);
+			methodAddress ??= typeof(StackFrame).GetField("methodAddress", BindingFlags.Instance | BindingFlags.NonPublic);
+
+			var frameMethod = frame.GetMethod();
+			var methodStart = 0L;
+			
+			if (frameMethod is null)
+			{
+				if (methodAddress == null) 
+					return null;
+
+				methodStart = (long) methodAddress.GetValue(frame);
+			}
+			else
+			{
+				var baseMethod = DetourHelper.Runtime.GetIdentifiable(frameMethod);
+				methodStart = baseMethod.GetNativeStart().ToInt64();
+			}
+
+			// Failed to find any usable method, if `frameMethod` is null, we can not find any 
+			// method from the stacktrace.
+			if (methodStart == 0) 
+				return frameMethod;
+			
 			return WithState(() =>
 			{
 				return originals.Keys
-					.FirstOrDefault(replacement => DetourHelper.GetNativeStart(replacement).ToInt64() == framePtr);
+					.FirstOrDefault(replacement => replacement.GetNativeStart().ToInt64() == methodStart);
 			});
 		}
 	}
