@@ -11,7 +11,7 @@
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>true</SignAssembly>
-		<Version>2.1.1.0</Version>
+		<Version>2.1.2.0</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

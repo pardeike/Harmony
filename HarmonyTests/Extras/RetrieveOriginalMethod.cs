@@ -12,12 +12,9 @@ namespace HarmonyLibTests.Extras
 		public void Test0()
 		{
 			var harmony = new Harmony("test-original-method");
-
-			var originalMethod = AccessTools.Method(typeof(RetrieveOriginalMethod), nameof(RetrieveOriginalMethod.PatchTarget));
-			var dummyPrefix = AccessTools.Method(typeof(RetrieveOriginalMethod), nameof(RetrieveOriginalMethod.DummyPrefix));
-
+			var originalMethod = SymbolExtensions.GetMethodInfo(() => PatchTarget());
+			var dummyPrefix = SymbolExtensions.GetMethodInfo(() => DummyPrefix());
 			_ = harmony.Patch(originalMethod, new HarmonyMethod(dummyPrefix));
-
 			PatchTarget();
 		}
 
@@ -28,6 +25,7 @@ namespace HarmonyLibTests.Extras
 
 			// Replacement will be HarmonyLibTests.Extras.RetrieveOriginalMethod.PatchTarget_Patch1
 			// We should be able to go from this method, back to HarmonyLibTests.Extras.PatchTarget
+			//
 			if (method is MethodInfo replacement)
 			{
 				var original = Harmony.GetOriginalMethod(replacement);
@@ -38,12 +36,12 @@ namespace HarmonyLibTests.Extras
 
 		internal static void PatchTarget()
 		{
-			ChecksStackTrace();
+			ChecksStackTrace(); // call this from within PatchTarget
 		}
 
+		// [MethodImpl(MethodImplOptions.NoInlining)]
 		internal static void DummyPrefix()
 		{
-
 		}
 	}
 }

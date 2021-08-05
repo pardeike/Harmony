@@ -20,9 +20,8 @@ namespace HarmonyLib
 		internal const int internalVersion = 101;
 		internal static int actualVersion = -1;
 
-		// typeof(StackFrame).methodAddress
-		private static FieldInfo methodAddress = null;
-		
+		private static FieldInfo methodAddress = typeof(StackFrame).GetField("methodAddress", BindingFlags.Instance | BindingFlags.NonPublic);
+
 		static T WithState<T>(Func<T> action)
 		{
 			T result = default;
@@ -116,10 +115,7 @@ namespace HarmonyLib
 
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			return WithState(() =>
-			{
-				return state.Keys.ToArray();
-			});
+			return WithState(() => state.Keys.ToArray());
 		}
 
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
@@ -135,25 +131,18 @@ namespace HarmonyLib
 
 		internal static MethodBase GetOriginal(MethodInfo replacement)
 		{
-			return WithState(() =>
-			{
-				return originals.GetValueSafe(replacement);
-			});
+			return WithState(() => originals.GetValueSafe(replacement));
 		}
 
 		internal static MethodBase FindReplacement(StackFrame frame)
 		{
-			methodAddress ??= typeof(StackFrame).GetField("methodAddress", BindingFlags.Instance | BindingFlags.NonPublic);
-
 			var frameMethod = frame.GetMethod();
 			var methodStart = 0L;
-			
+
 			if (frameMethod is null)
 			{
-				if (methodAddress == null) 
-					return null;
-
-				methodStart = (long) methodAddress.GetValue(frame);
+				if (methodAddress == null) return null;
+				methodStart = (long)methodAddress.GetValue(frame);
 			}
 			else
 			{
@@ -163,14 +152,10 @@ namespace HarmonyLib
 
 			// Failed to find any usable method, if `frameMethod` is null, we can not find any 
 			// method from the stacktrace.
-			if (methodStart == 0) 
+			if (methodStart == 0)
 				return frameMethod;
-			
-			return WithState(() =>
-			{
-				return originals.Keys
-					.FirstOrDefault(replacement => replacement.GetNativeStart().ToInt64() == methodStart);
-			});
+
+			return WithState(() => originals.Keys.FirstOrDefault(replacement => replacement.GetNativeStart().ToInt64() == methodStart));
 		}
 	}
 }
