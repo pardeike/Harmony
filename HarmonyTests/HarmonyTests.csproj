@@ -24,6 +24,10 @@
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(TargetFramework.Contains('.'))">
+		<DefineConstants>$(DefineConstants);CORE_OR_STANDARD</DefineConstants>
+	</PropertyGroup>
+
 	<!-- Workaround for `dotnet test HarmonyTests -f net35` not running tests - Microsoft.NET.Test.Sdk only sets IsTestProject property for net40+. -->
 	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
 		<IsTestProject>true</IsTestProject>

@@ -94,6 +94,10 @@
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(IsCoreOrStandard)">
+		<DefineConstants>$(DefineConstants);CORE_OR_STANDARD</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
 		<PackageReference Include="MonoMod.Common" Version="$(MonoModCommonVersion)">
@@ -109,6 +113,10 @@
 		WE MUST USE VERSION 2.1.14 HERE FOR NOW!
 		-->
 		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsCoreOrStandard)">
+		<PackageReference Include="System.Text.Json" Version="5.0.2" />
 	</ItemGroup>
 
 	<!--
