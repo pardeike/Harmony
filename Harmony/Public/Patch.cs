@@ -5,6 +5,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+#if CORE_OR_STANDARD
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+#endif
 
 namespace HarmonyLib
 {
@@ -34,16 +39,33 @@ namespace HarmonyLib
 			}
 		}
 
+#if CORE_OR_STANDARD
+		static JsonSerializerOptions _defaultJsonSerializerOptions = new JsonSerializerOptions()
+		{
+			IncludeFields = true,
+			Converters =
+			{
+				new PatchJsonConverter()
+			}
+		};
+#endif
+
 		/// <summary>Serializes a patch info</summary>
 		/// <param name="patchInfo">The <see cref="PatchInfo"/></param>
 		/// <returns>The serialized data</returns>
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
+			// ! https://docs.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide
+#if CORE_OR_STANDARD
+			var test = JsonSerializer.Serialize<PatchInfo>(patchInfo, _defaultJsonSerializerOptions);
+			return JsonSerializer.SerializeToUtf8Bytes<PatchInfo>(patchInfo, _defaultJsonSerializerOptions);
+#else
 			using var streamMemory = new MemoryStream();
 			var formatter = new BinaryFormatter();
 			formatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.GetBuffer();
+#endif
 		}
 
 		/// <summary>Deserialize a patch info</summary>
@@ -52,9 +74,14 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
+			// ! https://docs.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide
+#if CORE_OR_STANDARD
+			return JsonSerializer.Deserialize<PatchInfo>(bytes, _defaultJsonSerializerOptions);
+#else
 			var formatter = new BinaryFormatter { Binder = new Binder() };
 			var streamMemory = new MemoryStream(bytes);
 			return (PatchInfo)formatter.Deserialize(streamMemory);
+#endif
 		}
 
 		/// <summary>Compare function to sort patch priorities</summary>
@@ -295,8 +322,8 @@ namespace HarmonyLib
 			set
 			{
 				patchMethod = value;
-				methodToken = patchMethod.MetadataToken;
-				moduleGUID = patchMethod.Module.ModuleVersionId.ToString();
+				methodToken = patchMethod?.MetadataToken ?? 0;
+				moduleGUID = patchMethod?.Module.ModuleVersionId.ToString();
 			}
 		}
 
@@ -328,6 +355,25 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		public Patch(HarmonyMethod method, int index, string owner)
 			: this(method.method, index, owner, method.priority, method.before, method.after, method.debug ?? false) { }
+
+		/// <summary>Creates a patch</summary>
+		/// <param name="patch">The method of the patch</param>
+		/// <param name="index">Zero-based index</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="priority">The priority, see <see cref="Priority"/></param>
+		/// <param name="before">A list of Harmony IDs for patches that should run after this patch</param>
+		/// <param name="after">A list of Harmony IDs for patches that should run before this patch</param>
+		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</param>
+		/// <param name="methodToken">A token for method used for <see cref="PatchMethod"/></param>
+		/// <param name="moduleGUID">A GUID for the module used for <see cref="PatchMethod"/></param>
+		///
+		internal Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID)
+			: this(patch, index, owner, priority, before, after, debug)
+		{
+			this.methodToken = methodToken;
+			this.moduleGUID = moduleGUID;
+		}
+
 
 		/// <summary>Get the patch method or a DynamicMethod if original patch method is a patch factory</summary>
 		/// <param name="original">The original method/constructor</param>
@@ -372,4 +418,84 @@ namespace HarmonyLib
 			return PatchMethod.GetHashCode();
 		}
 	}
+
+#if CORE_OR_STANDARD
+	class PatchJsonConverter : JsonConverter<Patch>
+	{
+		public override Patch Read(
+				ref Utf8JsonReader reader,
+				Type typeToConvert,
+				JsonSerializerOptions options)
+		{
+			if(reader.TokenType != JsonTokenType.StartObject)
+			{
+				throw new JsonException();
+			}
+
+			reader.Read(); //index
+			reader.Read();
+			int index = reader.GetInt32();
+			reader.Read(); //debug
+			reader.Read();
+			bool debug = reader.GetBoolean();
+			reader.Read(); //owner
+			reader.Read();
+			string owner = reader.GetString();
+			reader.Read(); //priority
+			reader.Read();
+			int priority = reader.GetInt32();
+			reader.Read(); //methodToken
+			reader.Read();
+			int methodToken = reader.GetInt32();
+			reader.Read(); //moduleGUID
+			reader.Read();
+			string moduleGUID = reader.GetString();
+			reader.Read(); // after
+			reader.Read();
+			List<string> after = new List<string>();
+			while(reader.Read())
+			{
+				if(reader.TokenType == JsonTokenType.EndArray)
+					break;
+				after.Add(reader.GetString());
+			}
+			reader.Read(); // before
+			reader.Read();
+			List<string> before = new List<string>();
+			while(reader.Read())
+			{
+				if(reader.TokenType == JsonTokenType.EndArray)
+					break;
+				before.Add(reader.GetString());
+			}
+			reader.Read();
+
+			return new Patch(null, index, owner, priority, before.ToArray(), after.ToArray(), debug, methodToken, moduleGUID);
+		}
+
+		public override void Write(
+			 Utf8JsonWriter writer,
+			 Patch patchValue,
+			 JsonSerializerOptions options)
+		{
+
+			writer.WriteStartObject();
+			writer.WriteNumber("index", patchValue.index);
+			writer.WriteBoolean("debug", patchValue.debug);
+			writer.WriteString("owner", patchValue.owner);
+			writer.WriteNumber("priority", patchValue.priority);
+			writer.WriteNumber("methodToken", patchValue.PatchMethod.MetadataToken);
+			writer.WriteString("moduleGUID", patchValue.PatchMethod.Module.ModuleVersionId.ToString());
+			writer.WriteStartArray("after");
+			foreach(var a in patchValue.after)
+				writer.WriteStringValue(a);
+			writer.WriteEndArray();
+			writer.WriteStartArray("before");
+			foreach(var b in patchValue.before)
+				writer.WriteStringValue(b);
+			writer.WriteEndArray();
+			writer.WriteEndObject();
+		}
+	}
+#endif
 }
