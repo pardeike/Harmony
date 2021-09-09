@@ -58,7 +58,6 @@ namespace HarmonyLib
 		{
 			// ! https://docs.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide
 #if CORE_OR_STANDARD
-			var test = JsonSerializer.Serialize<PatchInfo>(patchInfo, _defaultJsonSerializerOptions);
 			return JsonSerializer.SerializeToUtf8Bytes<PatchInfo>(patchInfo, _defaultJsonSerializerOptions);
 #else
 			using var streamMemory = new MemoryStream();
