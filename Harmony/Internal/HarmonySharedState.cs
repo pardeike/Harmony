@@ -105,8 +105,7 @@ namespace HarmonyLib
 			lock (originals) return originals.GetValueSafe(replacement);
 		}
 
-		static readonly bool hasMethodAddress = AccessTools.GetFieldNames(typeof(StackFrame)).Contains("methodAddress");
-		static readonly AccessTools.FieldRef<StackFrame, long> methodAddressRef = AccessTools.FieldRefAccess<StackFrame, long>("methodAddress");
+		static FieldInfo methodAddress = typeof(StackFrame).GetField("methodAddress", BindingFlags.Instance | BindingFlags.NonPublic);
 		internal static MethodBase FindReplacement(StackFrame frame)
 		{
 			var frameMethod = frame.GetMethod();
@@ -114,8 +113,8 @@ namespace HarmonyLib
 
 			if (frameMethod is null)
 			{
-				if (hasMethodAddress == false) return null;
-				methodStart = methodAddressRef(frame);
+				if (methodAddress == null) return null;
+				methodStart = (long)methodAddress.GetValue(frame);
 			}
 			else
 			{
