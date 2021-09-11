@@ -11,7 +11,7 @@ namespace Annotations_Multiple
 		[HarmonyPatch] // make sure Harmony inspects the class
 		class MyPatches
 		{
-			IEnumerable<MethodBase> TargetMethods()
+			static IEnumerable<MethodBase> TargetMethods()
 			{
 				return AccessTools.GetTypesFromAssembly(someAssembly)
 					.SelectMany(type => type.GetMethods())
