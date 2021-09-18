@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 #if NET50_OR_GREATER
+using System.Runtime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 #endif
@@ -16,6 +17,19 @@ namespace HarmonyLib
 	///
 	internal static class PatchInfoSerialization
 	{
+#if NET50_OR_GREATER
+		static bool useBinaryFormatter
+		{
+			get
+			{
+				// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
+				bool hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out bool isEnabled);
+				// Default true - https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs#L54
+				return (hasSwitch) ? isEnabled : true;
+			}
+		}
+#endif
+
 		class Binder : SerializationBinder
 		{
 			/// <summary>Control the binding of a serialized object to a type</summary>
@@ -45,7 +59,7 @@ namespace HarmonyLib
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
 #if NET50_OR_GREATER
-			try
+			if(useBinaryFormatter)
 			{
 #endif
 			using var streamMemory = new MemoryStream();
@@ -54,10 +68,8 @@ namespace HarmonyLib
 			return streamMemory.GetBuffer();
 #if NET50_OR_GREATER
 			}
-			catch(NotSupportedException) // ! https://docs.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide
-			{
+			else
 				return JsonSerializer.SerializeToUtf8Bytes<PatchInfo>(patchInfo);
-			}
 #endif
 		}
 
@@ -68,7 +80,7 @@ namespace HarmonyLib
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
 #if NET50_OR_GREATER
-			try
+			if(useBinaryFormatter)
 			{
 #endif
 			var formatter = new BinaryFormatter { Binder = new Binder() };
@@ -76,10 +88,8 @@ namespace HarmonyLib
 			return (PatchInfo)formatter.Deserialize(streamMemory);
 #if NET50_OR_GREATER
 			}
-			catch(NotSupportedException) // ! https://docs.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide
-			{
+			else
 				return JsonSerializer.Deserialize<PatchInfo>(bytes);
-			}
 #endif
 		}
 
