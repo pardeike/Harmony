@@ -18,14 +18,22 @@ namespace HarmonyLib
 	internal static class PatchInfoSerialization
 	{
 #if NET50_OR_GREATER
+		static bool? _useBinaryFormatter = null;
 		static bool useBinaryFormatter
 		{
 			get
 			{
-				// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
-				bool hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out bool isEnabled);
-				// Default true - https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs#L54
-				return (hasSwitch) ? isEnabled : true;
+				if(!_useBinaryFormatter.HasValue)
+				{
+					// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
+					bool hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out bool isEnabled);
+					if(hasSwitch)
+						_useBinaryFormatter = isEnabled;
+					else
+						_useBinaryFormatter = true; // Default true, inline with Microsoft - https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs#L54
+				}
+
+				return _useBinaryFormatter.Value;
 			}
 		}
 #endif
