@@ -27,6 +27,20 @@
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
 	</PropertyGroup>
 
+	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
+	<Choose>
+		<When Condition="'$(TargetFramework)' == 'net5.0'">
+			<PropertyGroup>
+				<IsNET5OrGreater>true</IsNET5OrGreater>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<IsNET5OrGreater>false</IsNET5OrGreater>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
 	<Choose>
 		<!--
 		Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
@@ -94,6 +108,10 @@
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(IsNET5OrGreater)">
+		<DefineConstants>$(DefineConstants);NET50_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
 		<PackageReference Include="MonoMod.Common" Version="$(MonoModCommonVersion)">
@@ -109,6 +127,13 @@
 		WE MUST USE VERSION 2.1.14 HERE FOR NOW!
 		-->
 		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsNET5OrGreater)">
+		<PackageReference Include="System.Text.Json" Version="5.0.2" />
+	</ItemGroup>
+	<ItemGroup Condition="!$(IsNET5OrGreater)">
+		<Compile Remove="**\*.net5.cs" />
 	</ItemGroup>
 
 	<!--

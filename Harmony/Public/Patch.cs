@@ -5,13 +5,39 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+#if NET50_OR_GREATER
+using System.Runtime;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+#endif
 
 namespace HarmonyLib
 {
 	/// <summary>Patch serialization</summary>
-	/// 
+	///
 	internal static class PatchInfoSerialization
 	{
+#if NET50_OR_GREATER
+		static bool? _useBinaryFormatter = null;
+		static bool useBinaryFormatter
+		{
+			get
+			{
+				if(!_useBinaryFormatter.HasValue)
+				{
+					// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
+					bool hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out bool isEnabled);
+					if(hasSwitch)
+						_useBinaryFormatter = isEnabled;
+					else
+						_useBinaryFormatter = true; // Default true, inline with Microsoft - https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs#L54
+				}
+
+				return _useBinaryFormatter.Value;
+			}
+		}
+#endif
+
 		class Binder : SerializationBinder
 		{
 			/// <summary>Control the binding of a serialized object to a type</summary>
@@ -40,10 +66,19 @@ namespace HarmonyLib
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
+#if NET50_OR_GREATER
+			if(useBinaryFormatter)
+			{
+#endif
 			using var streamMemory = new MemoryStream();
 			var formatter = new BinaryFormatter();
 			formatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.GetBuffer();
+#if NET50_OR_GREATER
+			}
+			else
+				return JsonSerializer.SerializeToUtf8Bytes<PatchInfo>(patchInfo);
+#endif
 		}
 
 		/// <summary>Deserialize a patch info</summary>
@@ -52,9 +87,18 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
+#if NET50_OR_GREATER
+			if(useBinaryFormatter)
+			{
+#endif
 			var formatter = new BinaryFormatter { Binder = new Binder() };
 			var streamMemory = new MemoryStream(bytes);
 			return (PatchInfo)formatter.Deserialize(streamMemory);
+#if NET50_OR_GREATER
+			}
+			else
+				return JsonSerializer.Deserialize<PatchInfo>(bytes);
+#endif
 		}
 
 		/// <summary>Compare function to sort patch priorities</summary>
@@ -77,28 +121,43 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Serializable patch information</summary>
-	/// 
+	///
 	[Serializable]
 	public class PatchInfo
 	{
 		/// <summary>Prefixes as an array of <see cref="Patch"/></summary>
-		/// 
+		///
+#if NET50_OR_GREATER
+		[JsonInclude]
+#endif
 		public Patch[] prefixes = new Patch[0];
 
 		/// <summary>Postfixes as an array of <see cref="Patch"/></summary>
-		/// 
+		///
+#if NET50_OR_GREATER
+		[JsonInclude]
+#endif
 		public Patch[] postfixes = new Patch[0];
 
 		/// <summary>Transpilers as an array of <see cref="Patch"/></summary>
-		/// 
+		///
+#if NET50_OR_GREATER
+		[JsonInclude]
+#endif
 		public Patch[] transpilers = new Patch[0];
 
 		/// <summary>Finalizers as an array of <see cref="Patch"/></summary>
-		/// 
+		///
+#if NET50_OR_GREATER
+		[JsonInclude]
+#endif
 		public Patch[] finalizers = new Patch[0];
 
 		/// <summary>Returns if any of the patches wants debugging turned on</summary>
-		/// 
+		///
+#if NET50_OR_GREATER
+		[JsonIgnore]
+#endif
 		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug);
 
 		/// <summary>Adds prefixes</summary>
@@ -243,32 +302,35 @@ namespace HarmonyLib
 	}
 
 	/// <summary>A serializable patch</summary>
-	/// 
+	///
+#if NET50_OR_GREATER
+	[JsonConverter(typeof(PatchJsonConverter))]
+#endif
 	[Serializable]
 	public class Patch : IComparable
 	{
 		/// <summary>Zero-based index</summary>
-		/// 
+		///
 		public readonly int index;
 
 		/// <summary>The owner (Harmony ID)</summary>
-		/// 
+		///
 		public readonly string owner;
 
 		/// <summary>The priority, see <see cref="Priority"/></summary>
-		/// 
+		///
 		public readonly int priority;
 
 		/// <summary>Keep this patch before the patches indicated in the list of Harmony IDs</summary>
-		/// 
+		///
 		public readonly string[] before;
 
 		/// <summary>Keep this patch after the patches indicated in the list of Harmony IDs</summary>
-		/// 
+		///
 		public readonly string[] after;
 
 		/// <summary>A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</summary>
-		/// 
+		///
 		public readonly bool debug;
 
 		[NonSerialized]
@@ -277,7 +339,7 @@ namespace HarmonyLib
 		private string moduleGUID;
 
 		/// <summary>The method of the static patch method</summary>
-		/// 
+		///
 		public MethodInfo PatchMethod
 		{
 			get
@@ -328,6 +390,18 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		public Patch(HarmonyMethod method, int index, string owner)
 			: this(method.method, index, owner, method.priority, method.before, method.after, method.debug ?? false) { }
+
+		internal Patch(int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID)
+		{
+			this.index = index;
+			this.owner = owner;
+			this.priority = priority == -1 ? Priority.Normal : priority;
+			this.before = before ?? new string[0];
+			this.after = after ?? new string[0];
+			this.debug = debug;
+			this.methodToken = methodToken;
+			this.moduleGUID = moduleGUID;
+		}
 
 		/// <summary>Get the patch method or a DynamicMethod if original patch method is a patch factory</summary>
 		/// <param name="original">The original method/constructor</param>
