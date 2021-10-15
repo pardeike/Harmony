@@ -42,15 +42,6 @@ namespace HarmonyLib
 
 		static HarmonySharedState()
 		{
-			// newer .NET versions can re-jit methods so we need to patch them after that happens
-			DetourHelper.Runtime.OnMethodCompiled += (MethodBase method, IntPtr codeStart, ulong codeLen) =>
-			{
-				if (method == null) return;
-				var info = GetPatchInfo(method);
-				if (info == null) return;
-				PatchFunctions.UpdateRecompiledMethod(method, codeStart, info);
-			};
-
 			// create singleton type
 			var type = GetOrCreateSharedStateType();
 
@@ -77,6 +68,15 @@ namespace HarmonyLib
 			originals = new Dictionary<MethodInfo, MethodBase>();
 			if (originalsField != null) // may not exist in older versions
 				originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
+
+			// newer .NET versions can re-jit methods so we need to patch them after that happens
+			DetourHelper.Runtime.OnMethodCompiled += (MethodBase method, IntPtr codeStart, ulong codeLen) =>
+			{
+				if (method == null) return;
+				var info = GetPatchInfo(method);
+				if (info == null) return;
+				PatchFunctions.UpdateRecompiledMethod(method, codeStart, info);
+			};
 		}
 
 		// creates a dynamic 'global' type if it does not exist
