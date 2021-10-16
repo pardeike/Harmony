@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NUnit.Framework;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -36,7 +37,12 @@ namespace HarmonyLibTests.Extras
 
 		internal static void PatchTarget()
 		{
-			ChecksStackTrace(); // call this from within PatchTarget
+			try {
+				ChecksStackTrace(); // call this from within PatchTarget
+				throw new Exception();
+			} catch (Exception e) {
+				
+			}
 		}
 
 		// [MethodImpl(MethodImplOptions.NoInlining)]
