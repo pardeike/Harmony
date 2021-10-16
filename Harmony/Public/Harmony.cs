@@ -244,7 +244,7 @@ namespace HarmonyLib
 		public static MethodBase GetMethodFromStackframe(StackFrame frame)
 		{
 			if (frame == null) throw new ArgumentNullException(nameof(frame));
-			return HarmonySharedState.FindReplacement(frame);
+			return HarmonySharedState.FindReplacement(frame) ?? frame.GetMethod();
 		}
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
