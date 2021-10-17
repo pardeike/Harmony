@@ -17,7 +17,6 @@ namespace Intro_Manual
 		{
 			var harmony = new Harmony("com.example.patch");
 
-			//
 			var mOriginal = AccessTools.Method(typeof(SomeGameClass), "DoSomething");
 			var mPrefix = SymbolExtensions.GetMethodInfo(() => MyPrefix());
 			var mPostfix = SymbolExtensions.GetMethodInfo(() => MyPostfix());
