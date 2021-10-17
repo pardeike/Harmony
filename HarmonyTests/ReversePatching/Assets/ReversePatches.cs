@@ -91,4 +91,25 @@ namespace HarmonyLibTests.Assets
 			return false;
 		}
 	}
+
+	[HarmonyPatch]
+	public class Class1ReversePatchWithTargetMethod
+	{
+		public static MethodBase TargetMethod()
+		{
+			return AccessTools.Method(typeof(Class1Reverse), "GetExtra");
+		}
+
+		[HarmonyReversePatch]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static string GetExtra(int n)
+		{
+			// this will be replaced by reverse patching
+
+			// using a fake while loop to force non-inlining
+			while (DateTime.Now.Ticks > 0)
+				throw new NotImplementedException();
+			return null;
+		}
+	}
 }

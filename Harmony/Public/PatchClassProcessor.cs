@@ -84,9 +84,12 @@ namespace HarmonyLib
 			MethodBase lastOriginal = null;
 			try
 			{
+				var originals = GetBulkMethods();
+
+				if (originals.Count == 1)
+					lastOriginal = originals[0];
 				ReversePatch(ref lastOriginal);
 
-				var originals = GetBulkMethods();
 				replacements = originals.Count > 0 ? BulkPatch(originals, ref lastOriginal) : PatchWithAttributes(ref lastOriginal);
 			}
 			catch (Exception ex)
@@ -106,7 +109,9 @@ namespace HarmonyLib
 				var patchMethod = patchMethods[i];
 				if (patchMethod.type == HarmonyPatchType.ReversePatch)
 				{
-					lastOriginal = patchMethod.info.GetOriginalMethod();
+					var annotatedOriginal = patchMethod.info.GetOriginalMethod();
+					if (annotatedOriginal is object)
+						lastOriginal = annotatedOriginal;
 					var reversePatcher = instance.CreateReversePatcher(lastOriginal, patchMethod.info);
 					lock (PatchProcessor.locker)
 						_ = reversePatcher.Patch();
