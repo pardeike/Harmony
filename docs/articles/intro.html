@@ -203,7 +203,6 @@ public class MyPatcher
     {
         var harmony = new Harmony(&quot;com.example.patch&quot;);
 
-        //
         var mOriginal = AccessTools.Method(typeof(SomeGameClass), &quot;DoSomething&quot;);
         var mPrefix = SymbolExtensions.GetMethodInfo(() =&gt; MyPrefix());
         var mPostfix = SymbolExtensions.GetMethodInfo(() =&gt; MyPostfix());
