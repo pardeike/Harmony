@@ -7,7 +7,7 @@
 
 ### About
 
-Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is well established in titles like **7 Days To Die**, **BattleTech**, **Besiege**, **Cities:Skylines**, **Kerbal Space Program**, **Oxygen Not Included**, Ravenfield, **Rimworld**, Sheltered, **Stardew Valley**, Staxel, **Subnautica**, The Ultimate Nerd Game, Total Miner, Unturned and many more.
+Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is well established in titles like **7 Days To Die**, **BattleTech**, **Besiege**, **Cities:Skylines**, **Kerbal Space Program**, **Oxygen Not Included**, Ravenfield, **Rimworld**, Sheltered, **Stardew Valley**, Staxel, **Subnautica**, The Ultimate Nerd Game, Total Miner, Unturned, SCP: Secret Laboratory and many more.
 
 It is also used in unit testing WPF controls and in many other areas.
 
