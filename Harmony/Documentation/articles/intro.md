@@ -12,7 +12,7 @@ The exception is probably [Unity .NET Standard profile](https://docs.unity3d.com
 
 Harmony does not provide you with a way to run your own code within an application that is not designed to execute foreign code. You need a way to inject at least the few lines that start the Harmony patching and this is usually done with a loader. Here are some common examples of loaders (incomplete):
 
-- [Unity Doorstep](https://github.com/NeighTools/UnityDoorstop)
+- [Unity Doorstop](https://github.com/NeighTools/UnityDoorstop)
 - [BepInEx](https://github.com/BepInEx/BepInEx)
 - [UnityAssemblyInjector](https://github.com/avail/UnityAssemblyInjector)
 - [MonoJunkie](https://github.com/wledfor2/MonoJunkie)
