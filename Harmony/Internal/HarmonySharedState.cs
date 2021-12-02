@@ -33,11 +33,13 @@ namespace HarmonyLib
 	internal static class HarmonySharedState
 	{
 		const string name = "HarmonySharedState";
-		internal const int internalVersion = 101; // bumb this if the layout of the HarmonySharedState type changes
+		internal const int internalVersion = 102; // bump this if the layout of the HarmonySharedState type changes
 
-		// state/originals are set to instances stored in the global dynamic types static fields with the same name
+		// state/originals/methodStarts are set to instances stored in the global dynamic types static fields with the same name
 		static readonly Dictionary<MethodBase, byte[]> state;
 		static readonly Dictionary<MethodInfo, MethodBase> originals;
+		// maps the native start of the method to the method itself
+		static readonly Dictionary<long, MethodInfo> methodStarts;
 		internal static readonly int actualVersion;
 
 		static HarmonySharedState()
@@ -68,6 +70,12 @@ namespace HarmonyLib
 			originals = new Dictionary<MethodInfo, MethodBase>();
 			if (originalsField != null) // may not exist in older versions
 				originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
+
+			// re-create 'methodStarts' based on the value(s) in 'originals'
+			methodStarts = new Dictionary<long, MethodInfo>();
+			foreach ( var original in originals.Keys ) {
+				methodStarts.Add(original.GetNativeStart().ToInt64(), original);
+			}
 
 			// newer .NET versions can re-jit methods so we need to patch them after that happens
 			DetourHelper.Runtime.OnMethodCompiled += (MethodBase method, IntPtr codeStart, ulong codeLen) =>
@@ -129,6 +137,7 @@ namespace HarmonyLib
 			var bytes = patchInfo.Serialize();
 			lock (state) state[original] = bytes;
 			lock (originals) originals[replacement] = original;
+			lock (methodStarts) methodStarts[replacement.GetNativeStart().ToInt64()] = replacement;
 		}
 
 		internal static MethodBase GetOriginal(MethodInfo replacement)
@@ -158,7 +167,9 @@ namespace HarmonyLib
 			if (methodStart == 0)
 				return frameMethod;
 
-			lock (originals) return originals.Keys.FirstOrDefault(replacement => replacement.GetNativeStart().ToInt64() == methodStart);
+			lock (methodStarts) return methodStarts.TryGetValue(methodStart, out var originalMethod) 
+				? originalMethod 
+				: frameMethod;
 		}
 	}
 }
