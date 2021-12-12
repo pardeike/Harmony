@@ -4,7 +4,6 @@ using System.Linq;
 namespace HarmonyLibTests.Assets
 {
 #pragma warning disable CS0414
-#pragma warning disable IDE0052
 
 	public class TraverseProperties
 	{
@@ -39,7 +38,6 @@ namespace HarmonyLibTests.Assets
 			set => _basePropertyField2 = value;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
 		public string BaseProperty3
 		{
 			get => throw new Exception();
@@ -101,8 +99,6 @@ namespace HarmonyLibTests.Assets
 
 		string ImmediateProperty => TraverseProperties.testStrings.Last();
 
-		// TODO: should this really be suppressed?
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		public TraverseProperties_AccessModifiers(string[] s)
 		{
 			PublicProperty = s[0];
@@ -175,6 +171,5 @@ namespace HarmonyLibTests.Assets
 	{
 	}
 
-#pragma warning restore IDE0052
 #pragma warning restore CS0414
 }

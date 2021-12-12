@@ -16,8 +16,8 @@
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
-		<AssemblyVersion>2.1.1.0</AssemblyVersion>
-		<FileVersion>2.1.1.0</FileVersion>
+		<AssemblyVersion>2.1.2.0</AssemblyVersion>
+		<FileVersion>2.1.2.0</FileVersion>
 		<PackageIcon>HarmonyLogo.png</PackageIcon>
 		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -25,6 +25,8 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>8.0</LangVersion>
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
+		<NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
 	</PropertyGroup>
 
 	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->

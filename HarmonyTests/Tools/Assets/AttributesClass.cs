@@ -38,9 +38,7 @@ namespace HarmonyLibTests.Assets
 	{
 		[HarmonyPatch(typeof(List<string>), "TestMethod")]
 		[HarmonyPatch(new Type[] { typeof(string), typeof(string), typeof(string) }, new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal })]
-#pragma warning disable IDE0051
 		static void Patch() { }
-#pragma warning restore IDE0051
 	}
 
 	public class MainClass

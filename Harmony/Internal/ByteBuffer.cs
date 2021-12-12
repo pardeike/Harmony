@@ -99,7 +99,7 @@ namespace HarmonyLib
 		void CheckCanRead(int count)
 		{
 			if (position + count > buffer.Length)
-				throw new ArgumentOutOfRangeException();
+				throw new ArgumentOutOfRangeException(nameof(count), $"position({position}) + count({count}) > buffer.Length({buffer.Length})");
 		}
 	}
 }

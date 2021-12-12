@@ -11,8 +11,11 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0062:")]
 [assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value")]
 
+[assembly: SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible")]
+
 [assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
 
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static")]
+[assembly: SuppressMessage("Performance", "CA1806:Do not ignore method results")]
 
 [assembly: SuppressMessage("", "CS0649:")]

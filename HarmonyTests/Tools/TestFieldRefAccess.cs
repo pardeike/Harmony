@@ -127,9 +127,7 @@ namespace HarmonyLibTests.Tools
 
 		// As a final check during a test case, ATestSuite checks that field.FieldType.IsInstanceOfType(field.GetValue(instance)),
 		// and throws this specific exception if that check fails.
-#pragma warning disable CA1032 // Implement standard exception constructors
 		class IncompatibleFieldTypeException : Exception
-#pragma warning restore CA1032 // Implement standard exception constructors
 		{
 			public IncompatibleFieldTypeException(string message) : base(message) { }
 		}

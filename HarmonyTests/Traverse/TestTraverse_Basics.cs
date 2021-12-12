@@ -40,11 +40,9 @@ namespace HarmonyLibTests.Tools
 
 		class FooBar
 		{
-#pragma warning disable IDE0051
 #pragma warning disable CS0169
 			readonly string field;
 #pragma warning restore CS0169
-#pragma warning restore IDE0051
 		}
 
 		// Traverse should default to an empty instance to avoid errors

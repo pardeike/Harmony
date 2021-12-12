@@ -8,7 +8,6 @@ namespace HarmonyLibTests.Patching
 	[TestFixture]
 	public class PatchSorting : TestLogger
 	{
-#pragma warning disable IDE0051
 		void Patch1() { }
 		void Patch2() { }
 		void Patch3() { }
@@ -18,7 +17,6 @@ namespace HarmonyLibTests.Patching
 		void Patch7() { }
 		void Patch8() { }
 		void Patch9() { }
-#pragma warning restore IDE0051
 
 		[Test]
 		public void Test_PatchOrder_SamePriorities()

@@ -239,9 +239,7 @@ namespace HarmonyLib
 				return y is object && x is object && x.owner == y.owner && x.PatchMethod == y.PatchMethod && x.index == y.index
 					&& x.priority == y.priority
 					&& x.before.Length == y.before.Length && x.after.Length == y.after.Length
-#pragma warning disable RECS0030
 					&& x.before.All(y.before.Contains) && x.after.All(y.after.Contains);
-#pragma warning restore RECS0030
 			}
 
 			public int GetHashCode(Patch obj)

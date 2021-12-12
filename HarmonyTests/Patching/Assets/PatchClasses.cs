@@ -158,10 +158,8 @@ namespace HarmonyLibTests.Assets
 
 	public class Class4
 	{
-#pragma warning disable IDE0060
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method4(object sender)
-#pragma warning restore IDE0060
 		{
 			_ = DateTime.Now;
 			Class4Patch.originalExecuted = true;
@@ -174,9 +172,7 @@ namespace HarmonyLibTests.Assets
 		public static object senderValue = null;
 		public static bool originalExecuted = false;
 
-#pragma warning disable IDE0060
 		public static bool Prefix(Class4 __instance, object sender)
-#pragma warning restore IDE0060
 		{
 			prefixed = true;
 			senderValue = sender;
@@ -193,10 +189,8 @@ namespace HarmonyLibTests.Assets
 
 	public class Class5
 	{
-#pragma warning disable IDE0060
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method5(object xxxyyy)
-#pragma warning restore IDE0060
 		{
 			_ = DateTime.Now;
 		}
@@ -208,17 +202,13 @@ namespace HarmonyLibTests.Assets
 		public static bool postfixed = false;
 
 		[HarmonyArgument("xxxyyy", "bar")]
-#pragma warning disable IDE0060
 		public static void Prefix(object bar)
-#pragma warning restore IDE0060
 		{
 			prefixed = true;
 		}
 
 		public static void Postfix(
-#pragma warning disable IDE0060
 			[HarmonyArgument("xxxyyy")] object bar
-#pragma warning restore IDE0060
 		)
 		{
 			postfixed = true;
@@ -377,11 +367,8 @@ namespace HarmonyLibTests.Assets
 			__state = null;
 		}
 
-#pragma warning disable IDE0060
 		public static void Postfix(object __state)
-#pragma warning restore IDE0060
 		{
-
 		}
 	}
 

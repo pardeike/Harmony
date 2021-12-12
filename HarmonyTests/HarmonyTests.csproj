@@ -5,6 +5,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>8.0</LangVersion>
 		<IsPackable>false</IsPackable>
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 	</PropertyGroup>
 
 	<ItemGroup>

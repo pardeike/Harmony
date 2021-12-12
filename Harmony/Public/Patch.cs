@@ -18,22 +18,24 @@ namespace HarmonyLib
 	internal static class PatchInfoSerialization
 	{
 #if NET50_OR_GREATER
-		static bool? _useBinaryFormatter = null;
-		static bool useBinaryFormatter
+		static bool? useBinaryFormatter = null;
+		static bool UseBinaryFormatter
 		{
 			get
 			{
-				if(!_useBinaryFormatter.HasValue)
+				if(!useBinaryFormatter.HasValue)
 				{
 					// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
-					bool hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out bool isEnabled);
+					var hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out var isEnabled);
 					if(hasSwitch)
-						_useBinaryFormatter = isEnabled;
+						useBinaryFormatter = isEnabled;
 					else
-						_useBinaryFormatter = true; // Default true, inline with Microsoft - https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs#L54
+					{
+						// Default true, in line with Microsoft - https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs#L54
+						useBinaryFormatter = true;
+					}
 				}
-
-				return _useBinaryFormatter.Value;
+				return useBinaryFormatter.Value;
 			}
 		}
 #endif
@@ -59,6 +61,7 @@ namespace HarmonyLib
 				return typeToDeserialize;
 			}
 		}
+		internal static BinaryFormatter binaryFormatter = new BinaryFormatter { Binder = new Binder() };
 
 		/// <summary>Serializes a patch info</summary>
 		/// <param name="patchInfo">The <see cref="PatchInfo"/></param>
@@ -67,12 +70,11 @@ namespace HarmonyLib
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
 #if NET50_OR_GREATER
-			if(useBinaryFormatter)
+			if(UseBinaryFormatter)
 			{
 #endif
 			using var streamMemory = new MemoryStream();
-			var formatter = new BinaryFormatter();
-			formatter.Serialize(streamMemory, patchInfo);
+			binaryFormatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.GetBuffer();
 #if NET50_OR_GREATER
 			}
@@ -88,12 +90,11 @@ namespace HarmonyLib
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
 #if NET50_OR_GREATER
-			if(useBinaryFormatter)
+			if(UseBinaryFormatter)
 			{
 #endif
-			var formatter = new BinaryFormatter { Binder = new Binder() };
-			var streamMemory = new MemoryStream(bytes);
-			return (PatchInfo)formatter.Deserialize(streamMemory);
+			using var streamMemory = new MemoryStream(bytes);
+			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
 #if NET50_OR_GREATER
 			}
 			else

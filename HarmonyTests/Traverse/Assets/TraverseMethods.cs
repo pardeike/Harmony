@@ -6,7 +6,6 @@ namespace HarmonyLibTests.Assets
 	{
 		public bool Method1_called;
 
-#pragma warning disable IDE0051
 		void Method1()
 		{
 			Method1_called = true;
@@ -16,22 +15,18 @@ namespace HarmonyLibTests.Assets
 		{
 			return arg1 + arg1;
 		}
-#pragma warning restore IDE0051
 	}
 
 	public static class TraverseMethods_Static
 	{
-#pragma warning disable IDE0051
 		static int StaticMethod(int a, int b)
 		{
 			return a * b;
 		}
-#pragma warning restore IDE0051
 	}
 
 	public static class TraverseMethods_VarArgs
 	{
-#pragma warning disable IDE0051
 		static int Test1(int a, int b)
 		{
 			return a + b;
@@ -45,12 +40,10 @@ namespace HarmonyLibTests.Assets
 		{
 			return n.Aggregate(0, (acc, x) => acc + x) * multiplier;
 		}
-#pragma warning restore IDE0051
 	}
 
 	public static class TraverseMethods_Parameter
 	{
-#pragma warning disable IDE0051
 		static string WithRefParameter(ref string refParameter)
 		{
 			refParameter = "hello";
@@ -67,7 +60,6 @@ namespace HarmonyLibTests.Assets
 		{
 			return refParameter;
 		}
-#pragma warning restore IDE0051
 	}
 
 	public class TraverseMethods_Overloads

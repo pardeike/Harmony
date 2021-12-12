@@ -73,7 +73,7 @@ namespace HarmonyLib
 			if (standin is null)
 				throw new ArgumentNullException(nameof(standin));
 			if (standin.method is null)
-				throw new ArgumentNullException($"{nameof(standin)}.{nameof(standin.method)}");
+				throw new ArgumentNullException(nameof(standin), $"{nameof(standin)}.{nameof(standin.method)} is NULL");
 
 			var debug = (standin.debug ?? false) || Harmony.DEBUG;
 

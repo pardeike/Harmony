@@ -7,14 +7,14 @@ namespace HarmonyLib
 	{
 		internal static void SkipPropertyName(this Utf8JsonReader reader)
 		{
-			reader.Read(); // this is the `PropertyName`, skip it
-			reader.Read(); // this is the `value`, making it ready to get
+			_ = reader.Read(); // this is the `PropertyName`, skip it
+			_ = reader.Read(); // this is the `value`, making it ready to get
 		}
 
 		internal static void WriteStringArray(this Utf8JsonWriter writer, string propertyName, IEnumerable<string> strings)
 		{
 			writer.WriteStartArray(propertyName);
-			foreach(var str in strings)
+			foreach (var str in strings)
 				writer.WriteStringValue(str);
 			writer.WriteEndArray();
 		}
@@ -22,7 +22,7 @@ namespace HarmonyLib
 		internal static List<string> GetStringArray(this Utf8JsonReader reader)
 		{
 			List<string> strings = new List<string>();
-			while(reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+			while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
 				strings.Add(reader.GetString());
 			return strings;
 		}

@@ -11,3 +11,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Code Quality", "IDE0051:Remove unused private members")]
 [assembly: SuppressMessage("Design", "CA1034:Nested types should not be visible")]
 [assembly: SuppressMessage("Style", "IDE0057:Use range operator")]
+[assembly: SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible")]
+[assembly: SuppressMessage("", "CS0169")]

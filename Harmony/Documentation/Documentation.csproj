@@ -6,6 +6,7 @@
 		<IsPackable>false</IsPackable>
 		<IntermediateOutputPath>obj</IntermediateOutputPath>
 		<OutputPath>obj</OutputPath>
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 	</PropertyGroup>
 
 	<ItemGroup>

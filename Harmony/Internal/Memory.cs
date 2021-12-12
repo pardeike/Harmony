@@ -100,9 +100,9 @@ namespace HarmonyLib
 
 			var methodDef = new DynamicMethodDefinition($"PadMethod-{Guid.NewGuid()}", typeof(void), new Type[0]);
 			methodDef.GetILGenerator().Emit(OpCodes.Ret);
-			// Invoke the method so that it generates a trampoline that will later get overridden by the detour
-			// code.
-			methodDef.Generate().Invoke(null, null);
+
+			// invoke the method so that it generates a trampoline that will later get overridden by the detour code
+			_ = methodDef.Generate().Invoke(null, null);
 		}
 
 		/// <summary>Writes a jump to memory</summary>
