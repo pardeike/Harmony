@@ -1268,7 +1268,6 @@ namespace HarmonyLibTests.Assets
 
 	[HarmonyPatch(typeof(BulkPatchClass))]
 	[HarmonyPatchAll]
-	[HarmonyDebug]
 	public class BulkPatchClassPatch
 	{
 		public static int transpileCount = 0;
