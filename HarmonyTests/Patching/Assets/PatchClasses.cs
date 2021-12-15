@@ -3,6 +3,7 @@ using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -1247,6 +1248,43 @@ namespace HarmonyLibTests.Assets
 		{
 			__result = someMethod(123) + "/" + someMethod(456);
 			return false;
+		}
+	}
+
+	public class BulkPatchClass
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string Method1()
+		{
+			return "TEST1";
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public string Method2()
+		{
+			return "TEST2";
+		}
+	}
+
+	[HarmonyPatch(typeof(BulkPatchClass))]
+	[HarmonyPatchAll]
+	[HarmonyDebug]
+	public class BulkPatchClassPatch
+	{
+		public static int transpileCount = 0;
+
+		static string Fix(string result)
+		{
+			return result + "+";
+		}
+
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original)
+		{
+			transpileCount++;
+			var list = instructions.ToList();
+			if (original.IsConstructor == false)
+				list.Insert(list.Count - 1, CodeInstruction.Call(() => Fix("")));
+			return list.AsEnumerable();
 		}
 	}
 
