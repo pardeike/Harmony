@@ -126,4 +126,73 @@ namespace HarmonyLibTests.Assets
 			_ = Traverse.Create(p).Field("n").SetValue(102);
 		}
 	}
+
+	public class ArgumentArrayMethods
+	{
+		public struct SomeStruct
+		{
+			public int n;
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Method(
+			int n1, ref int n2, out int n3,
+			string s1, ref string s2, out string s3,
+			SomeStruct st1, ref SomeStruct st2, out SomeStruct st3,
+			float[] f1, ref float[] f2, out float[] f3
+		)
+		{
+			n2 = 12;
+			n3 = 45;
+			s2 = "ab";
+			s3 = "de";
+			st2 = new SomeStruct() { n = 12 };
+			st3 = new SomeStruct() { n = 45 };
+			f2 = new float[] { 1f, 3f, 5f };
+			f3 = new float[] { 2f, 4f, 6f };
+		}
+	}
+
+	[HarmonyPatch(typeof(ArgumentArrayMethods), nameof(ArgumentArrayMethods.Method))]
+	public static class ArgumentArrayPatches
+	{
+		public static object[] prefixInput;
+		public static object[] postfixInput;
+
+		public static bool Prefix(object[] __args)
+		{
+			prefixInput = (object[])Array.CreateInstance(typeof(object), __args.Length);
+			Array.Copy(__args, prefixInput, __args.Length);
+
+			__args[1] = 123;
+			__args[2] = 456;
+
+			__args[4] = "abc";
+			__args[5] = "def";
+
+			__args[7] = new ArgumentArrayMethods.SomeStruct() { n = 123 };
+			__args[8] = new ArgumentArrayMethods.SomeStruct() { n = 456 };
+
+			__args[10] = new float[] { 1.2f, 3.4f, 5.6f };
+			__args[11] = new float[] { 2.1f, 4.3f, 6.5f };
+
+			return false;
+		}
+
+		public static void Postfix(
+			int n1, int n2, int n3,
+			string s1, string s2, string s3,
+			ArgumentArrayMethods.SomeStruct st1, ArgumentArrayMethods.SomeStruct st2, ArgumentArrayMethods.SomeStruct st3,
+			float[] f1, float[] f2, float[] f3
+		)
+		{
+			postfixInput = new object[]
+			{
+				n1, n2, n3,
+				s1, s2, s3,
+				st1, st2, st3,
+				f1, f2, f3
+			};
+		}
+	}
 }

@@ -143,7 +143,7 @@ namespace HarmonyLibTests.IL
 				yield return new CodeInstruction(OpCodes.Ldarg, argIndex);
 				if (pInfo.IsOut || pInfo.IsRetval)
 				{
-					if (pType.IsValueType)
+					if (pType.IsValueType && AccessTools.IsStruct(pType) is false)
 						yield return new CodeInstruction(OpCodes.Ldobj, pType);
 					else
 						yield return new CodeInstruction(OpCodes.Ldind_Ref);

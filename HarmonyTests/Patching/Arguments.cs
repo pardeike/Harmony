@@ -273,5 +273,83 @@ namespace HarmonyLibTests.Patching
 
 			Assert.AreEqual("OOOOVVVVVVVV", ArgumentPatchMethods.result);
 		}
+
+		[Test]
+		public void Test_ArrayArguments()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(ArgumentArrayPatches));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			ArgumentArrayPatches.prefixInput = null;
+			ArgumentArrayPatches.postfixInput = null;
+
+			var instance = new ArgumentArrayMethods();
+			var n1 = 8;
+			var n2 = 9;
+			var s1 = "A";
+			var s2 = "B";
+			var st1 = new ArgumentArrayMethods.SomeStruct() { n = 8 };
+			var st2 = new ArgumentArrayMethods.SomeStruct() { n = 9 };
+			var f1 = new float[] { 8f };
+			var f2 = new float[] { 9f };
+
+			instance.Method(
+				n1, ref n2, out var n3,
+				s1, ref s2, out var s3,
+				st1, ref st2, out var st3,
+				f1, ref f2, out var f3
+			);
+
+			// prefix input
+			var r = ArgumentArrayPatches.prefixInput;
+			var i = 0;
+			Assert.AreEqual(8, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(9, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(0, r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual("A", r[i], $"prefix[{i++}]");
+			Assert.AreEqual("B", r[i], $"prefix[{i++}]");
+			Assert.AreEqual(null, r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual(8, ((ArgumentArrayMethods.SomeStruct)r[i]).n, $"prefix[{i++}]");
+			Assert.AreEqual(9, ((ArgumentArrayMethods.SomeStruct)r[i]).n, $"prefix[{i++}]");
+			Assert.AreEqual(0, ((ArgumentArrayMethods.SomeStruct)r[i]).n, $"prefix[{i++}]");
+
+			Assert.AreEqual(8f, ((float[])r[i])[0], $"prefix[{i++}]");
+			Assert.AreEqual(9f, ((float[])r[i])[0], $"prefix[{i++}]");
+			Assert.AreEqual(null, (float[])r[i], $"prefix[{i++}]");
+
+			// postfix input
+			r = ArgumentArrayPatches.postfixInput;
+			i = 0;
+			Assert.AreEqual(8, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(123, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(456, r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual("A", r[i], $"postfix[{i++}]");
+			Assert.AreEqual("abc", r[i], $"postfix[{i++}]");
+			Assert.AreEqual("def", r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual(8, ((ArgumentArrayMethods.SomeStruct)r[i]).n, $"postfix[{i++}]");
+			Assert.AreEqual(123, ((ArgumentArrayMethods.SomeStruct)r[i]).n, $"postfix[{i++}]");
+			Assert.AreEqual(456, ((ArgumentArrayMethods.SomeStruct)r[i]).n, $"postfix[{i++}]");
+
+			Assert.AreEqual(8f, ((float[])r[i])[0], $"postfix[{i++}]");
+			Assert.AreEqual(5.6f, ((float[])r[i])[2], $"postfix[{i++}]");
+			Assert.AreEqual(6.5f, ((float[])r[i])[2], $"postfix[{i++}]");
+
+			// method output values
+			Assert.AreEqual(123, n2, "n2");
+			Assert.AreEqual(456, n3, "n3");
+			Assert.AreEqual("abc", s2, "s2");
+			Assert.AreEqual("def", s3, "s3");
+			Assert.AreEqual(123, st2.n, "st2");
+			Assert.AreEqual(456, st3.n, "st3");
+			Assert.AreEqual(5.6f, f2[2], "f2");
+			Assert.AreEqual(6.5f, f3[2], "f3");
+		}
 	}
 }

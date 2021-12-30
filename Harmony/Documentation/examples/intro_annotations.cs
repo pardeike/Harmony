@@ -21,7 +21,7 @@ namespace Intro_Annotations
 	}
 
 	[HarmonyPatch(typeof(SomeGameClass))]
-	[HarmonyPatch("DoSomething")]
+	[HarmonyPatch("DoSomething")] // if possible use nameof() here
 	class Patch01
 	{
 		static AccessTools.FieldRef<SomeGameClass, bool> isRunningRef =

@@ -9,7 +9,7 @@ namespace Patching_Transpiler
 	class TypicalExample
 	{
 		// <typical>
-		static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), "someField");
+		static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), nameof(SomeType.someField));
 		static MethodInfo m_MyExtraMethod = SymbolExtensions.GetMethodInfo(() => Tools.MyExtraMethod());
 
 		// looks for STDFLD someField and inserts CALL MyExtraMethod before it
@@ -30,7 +30,7 @@ namespace Patching_Transpiler
 		}
 		// </typical>
 
-		class SomeType { }
+		class SomeType { public string someField; }
 
 		class Tools
 		{
@@ -44,7 +44,7 @@ namespace Patching_Transpiler
 	{
 		// <caravan>
 		[HarmonyPatch(typeof(Dialog_FormCaravan))]
-		[HarmonyPatch("CheckForErrors")]
+		[HarmonyPatch(nameof(Dialog_FormCaravan.CheckForErrors))]
 		public static class Dialog_FormCaravan_CheckForErrors_Patch
 		{
 			static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -98,7 +98,7 @@ namespace Patching_Transpiler
 		}
 		// </caravan>
 
-		class Dialog_FormCaravan { }
+		class Dialog_FormCaravan { public void CheckForErrors() { } }
 
 		class Log
 		{

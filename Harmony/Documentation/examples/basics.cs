@@ -38,6 +38,7 @@ namespace Basics
 			{
 				// <patch_manual>
 				// add null checks to the following lines, they are omitted for clarity
+				// when possible, don't use string and instead use nameof(...)
 				var original = typeof(TheClass).GetMethod("TheMethod");
 				var prefix = typeof(MyPatchClass1).GetMethod("SomeMethod");
 				var postfix = typeof(MyPatchClass2).GetMethod("SomeMethod");
@@ -140,6 +141,30 @@ namespace Basics
 			harmony.Unpatch(original, patch);
 			// </unpatch_one>
 		}
+
+		// <target_method>
+		[HarmonyPatch] // at least one Harmony annotation makes Harmony not skip this patch class when calling PatchAll()
+		class MyPatch
+		{
+			// here, inside the patch class, you can place the auxilary patch methods
+			// for example TargetMethod:
+
+			public MethodBase TargetMethod()
+			{
+				// use normal reflection or helper methods in <AccessTools> to find the method/constructor
+				// you want to patch and return its MethodInfo/ConstructorInfo
+				//
+				var type = AccessTools.FirstInner(typeof(TheClass), t => t.Name.Contains("Stuff"));
+				return AccessTools.FirstMethod(type, method => method.Name.Contains("SomeMethod"));
+			}
+
+			// your patches
+			public void Prefix()
+			{
+				// ...
+			}
+		}
+		// </target_method>
 
 		class TheClass { }
 		class MyPatchClass1 { }

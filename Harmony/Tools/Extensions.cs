@@ -400,7 +400,7 @@ namespace HarmonyLib
 			var ldfldCode = field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld;
 			if (byAddress is false && code.opcode == ldfldCode && Equals(code.operand, field)) return true;
 			var ldfldaCode = field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda;
-			if (byAddress == true && code.opcode == ldfldaCode && Equals(code.operand, field)) return true;
+			if (byAddress is true && code.opcode == ldfldaCode && Equals(code.operand, field)) return true;
 			return false;
 		}
 

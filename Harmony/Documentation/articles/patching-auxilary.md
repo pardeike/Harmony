@@ -10,6 +10,10 @@ Each of those methods can take up to three optional arguments that are injected 
 - `Harmony harmony` - the current Harmony instance
 - `Exception ex` - only valid in `Cleanup` and receives a possible exception
 
+Here is a simple example that patches a method inside a private type:
+
+[!code-csharp[example](../examples/basics.cs?name=target_method)]
+
 ### Prepare
 
 Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called

@@ -16,7 +16,7 @@ namespace HarmonyLib
 		static FileLog()
 		{
 			var customPath = Environment.GetEnvironmentVariable("HARMONY_LOG_FILE");
-			if (string.IsNullOrEmpty(customPath) == false)
+			if (string.IsNullOrEmpty(customPath) is false)
 			{
 				logPath = customPath;
 				return;

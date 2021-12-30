@@ -17,7 +17,7 @@ namespace Intro_Manual
 		{
 			var harmony = new Harmony("com.example.patch");
 
-			var mOriginal = AccessTools.Method(typeof(SomeGameClass), "DoSomething");
+			var mOriginal = AccessTools.Method(typeof(SomeGameClass), "DoSomething"); // if possible use nameof() here
 			var mPrefix = SymbolExtensions.GetMethodInfo(() => MyPrefix());
 			var mPostfix = SymbolExtensions.GetMethodInfo(() => MyPostfix());
 			// in general, add null checks here (new HarmonyMethod() does it for you too)

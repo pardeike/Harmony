@@ -4,7 +4,7 @@ namespace Annotations_Basics
 	using HarmonyLib;
 
 	[HarmonyPatch(typeof(SomeTypeHere))]
-	[HarmonyPatch("SomeMethodName")]
+	[HarmonyPatch("SomeMethodName")] // if possible use nameof() here
 	class MyPatches
 	{
 		static void Postfix(/*...*/)

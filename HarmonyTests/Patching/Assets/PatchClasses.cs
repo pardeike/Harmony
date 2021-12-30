@@ -1281,7 +1281,7 @@ namespace HarmonyLibTests.Assets
 		{
 			transpileCount++;
 			var list = instructions.ToList();
-			if (original.IsConstructor == false)
+			if (original.IsConstructor is false)
 				list.Insert(list.Count - 1, CodeInstruction.Call(() => Fix("")));
 			return list.AsEnumerable();
 		}
