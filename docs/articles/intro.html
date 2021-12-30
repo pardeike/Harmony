@@ -167,7 +167,7 @@ public class MyPatcher
 }
 
 [HarmonyPatch(typeof(SomeGameClass))]
-[HarmonyPatch(&quot;DoSomething&quot;)]
+[HarmonyPatch(&quot;DoSomething&quot;)] // if possible use nameof() here
 class Patch01
 {
     static AccessTools.FieldRef&lt;SomeGameClass, bool&gt; isRunningRef =
@@ -203,7 +203,7 @@ public class MyPatcher
     {
         var harmony = new Harmony(&quot;com.example.patch&quot;);
 
-        var mOriginal = AccessTools.Method(typeof(SomeGameClass), &quot;DoSomething&quot;);
+        var mOriginal = AccessTools.Method(typeof(SomeGameClass), &quot;DoSomething&quot;); // if possible use nameof() here
         var mPrefix = SymbolExtensions.GetMethodInfo(() =&gt; MyPrefix());
         var mPostfix = SymbolExtensions.GetMethodInfo(() =&gt; MyPostfix());
         // in general, add null checks here (new HarmonyMethod() does it for you too)

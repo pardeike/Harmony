@@ -77,7 +77,29 @@
 <li><code>Harmony harmony</code> - the current Harmony instance</li>
 <li><code>Exception ex</code> - only valid in <code>Cleanup</code> and receives a possible exception</li>
 </ul>
-<h3 id="prepare">Prepare</h3>
+<p>Here is a simple example that patches a method inside a private type:</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch] // at least one Harmony annotation makes Harmony not skip this patch class when calling PatchAll()
+class MyPatch
+{
+    // here, inside the patch class, you can place the auxilary patch methods
+    // for example TargetMethod:
+
+    public MethodBase TargetMethod()
+    {
+        // use normal reflection or helper methods in &lt;AccessTools&gt; to find the method/constructor
+        // you want to patch and return its MethodInfo/ConstructorInfo
+        //
+        var type = AccessTools.FirstInner(typeof(TheClass), t =&gt; t.Name.Contains(&quot;Stuff&quot;));
+        return AccessTools.FirstMethod(type, method =&gt; method.Name.Contains(&quot;SomeMethod&quot;));
+    }
+
+    // your patches
+    public void Prefix()
+    {
+        // ...
+    }
+}
+</code></pre><h3 id="prepare">Prepare</h3>
 <p>Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static void Prepare(...)
 static void Prepare(MethodBase original, ...)
@@ -107,8 +129,10 @@ static IEnumerable&lt;MethodBase&gt; CalculateMethods(...)
 <p>A typical implementation would <code>yield</code> the results like this:</p>
 <pre><code class="lang-csharp" name="example">static IEnumerable&lt;MethodBase&gt; TargetMethods()
 {
+    // if possible use nameof() or SymbolExtensions.GetMethodInfo() here
     yield return AccessTools.Method(typeof(Foo), &quot;Method1&quot;);
     yield return AccessTools.Method(typeof(Bar), &quot;Method2&quot;);
+
     // you could also iterate using reflections over many methods
 }
 </code></pre><h3 id="cleanup">Cleanup</h3>

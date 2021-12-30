@@ -87,7 +87,7 @@
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
 class Patch
 {
     static void Prefix(int counter, ref string name)
@@ -108,7 +108,7 @@ class Patch
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;GetName&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
 class Patch
 {
     static bool Prefix(ref string __result)
@@ -127,7 +127,7 @@ class Patch
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;IsFullAfterTakingIn&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.IsFullAfterTakingIn))]
 class Patch
 {
     static bool Prefix(ref bool __result, int i)
@@ -151,7 +151,7 @@ class Patch
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
 class Patch
 {
     // this example uses a Stopwatch type to measure

@@ -117,6 +117,7 @@ harmony.PatchAll();
 <h3 id="manual-patching">Manual patching</h3>
 <p>For more control, you use <code>Patch()</code>. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to <code>Patch()</code> to skip one type of patch):</p>
 <pre><code class="lang-csharp" name="example">// add null checks to the following lines, they are omitted for clarity
+// when possible, don't use string and instead use nameof(...)
 var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
 var prefix = typeof(MyPatchClass1).GetMethod(&quot;SomeMethod&quot;);
 var postfix = typeof(MyPatchClass2).GetMethod(&quot;SomeMethod&quot;);

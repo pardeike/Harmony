@@ -765,7 +765,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/annotations.html",
-          "hash": "cb9xyQ4JEdmeI69EbT3t2yjfKxpubI46dNrFYx7mW+o="
+          "hash": "qPxnLPo1JnmvmRRPlqEa1NGByKyNlxxqAgIHIwXZDOc="
         }
       },
       "is_incremental": false,
@@ -777,7 +777,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/basics.html",
-          "hash": "hqe4hYiGZDMv+M+3v9qtKUrkU6LHNDRdsDyTCQW/1lE="
+          "hash": "LzGOvKHjm60rOciG6Aalo//fimNpifblhpZDM/1j0zY="
         }
       },
       "is_incremental": false,
@@ -801,7 +801,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "d9XhrmoH/020jxqei5oVZy88FgQmocXAD7EHYgyn4Ec="
+          "hash": "BNBKp9rS8Q8YWtFePsL3cxkXRwAS+lHyV8cZENR6BSo="
         }
       },
       "is_incremental": false,
@@ -825,7 +825,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-auxilary.html",
-          "hash": "Db86a2ij4RvDdryNsg7UWVXJOJ7H76RcGswJ0RZfxK0="
+          "hash": "itFMxuvZ6pkq7p1wf4aBfP1pNSfe46zYkQVGblVMAWI="
         }
       },
       "is_incremental": false,
@@ -861,7 +861,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-injections.html",
-          "hash": "z8k3di28o9P3ksXmfhzTALn0yvzE2QQ9yMELCLN+1PM="
+          "hash": "hg/Y+tyTNRuwq0ZN9V8HgBMGQqRdOHd3X4ip3kVL+g0="
         }
       },
       "is_incremental": false,
@@ -873,7 +873,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-postfix.html",
-          "hash": "EMqnVw0UhzrH2uHzkDMbIEpzZF/a6q7z4w1g4EUuAKo="
+          "hash": "OMIezCWvqQTgJUfC0F6anfu/7FX/iZjEh38xCjzNZ1g="
         }
       },
       "is_incremental": false,
@@ -885,7 +885,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-prefix.html",
-          "hash": "FU13McuExihrqoeqcc/XE1so+UyIlxdrZ87Nvh7GUso="
+          "hash": "Cr7cb37TGb2fW+pu64pap4uNg4peyGg3soDnbYekEoE="
         }
       },
       "is_incremental": false,
@@ -909,7 +909,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-transpiler.html",
-          "hash": "SvD/f+TUOYCoTFWtlQk6P2ir1y1gCWKebl46OzsuECE="
+          "hash": "hGLOJJbyCUyYIQtvKhWkD/01JcQXYfG7gaCfvCjVEfY="
         }
       },
       "is_incremental": false,

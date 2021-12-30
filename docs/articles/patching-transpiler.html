@@ -84,7 +84,7 @@ ILGenerator generator // [OPTIONAL]
 MethodBase original // [OPTIONAL]
 </code></pre>
 <p>A typical transpiler looks like this:</p>
-<pre><code class="lang-csharp" name="example">static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), &quot;someField&quot;);
+<pre><code class="lang-csharp" name="example">static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), nameof(SomeType.someField));
 static MethodInfo m_MyExtraMethod = SymbolExtensions.GetMethodInfo(() =&gt; Tools.MyExtraMethod());
 
 // looks for STDFLD someField and inserts CALL MyExtraMethod before it
@@ -259,7 +259,7 @@ IL_00ac: ...codes...
 <p><strong>11) The execution</strong></p>
 <p>Strategy: <em>Search for RET codes. For every code found, search until the next RET and look for the usage of the string &quot;TooBigCaravanMassUsage&quot;. If found, continue to find the following RET and remove everything from right after the first RET to including the second RET</em>:</p>
 <pre><code class="lang-csharp" name="example">[HarmonyPatch(typeof(Dialog_FormCaravan))]
-[HarmonyPatch(&quot;CheckForErrors&quot;)]
+[HarmonyPatch(nameof(Dialog_FormCaravan.CheckForErrors))]
 public static class Dialog_FormCaravan_CheckForErrors_Patch
 {
     static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)

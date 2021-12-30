@@ -87,7 +87,7 @@
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;GetName&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
 class Patch
 {
     static void Postfix(ref string __result)
@@ -114,7 +114,7 @@ class Patch
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;GetName&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
 class Patch1
 {
     static string Postfix(string name)
@@ -123,7 +123,7 @@ class Patch1
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;GetNumbers&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetNumbers))]
 class Patch2
 {
     static IEnumerable&lt;int&gt; Postfix(IEnumerable&lt;int&gt; values)
@@ -147,7 +147,7 @@ class Patch2
     }
 }
 
-[HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
 class Patch
 {
     static void Prefix(int counter)
