@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" /></p>
 
-# Harmony 2.0
+# Harmony 2
 
 ## Introduction
 
