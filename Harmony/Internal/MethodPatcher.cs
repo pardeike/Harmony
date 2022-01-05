@@ -237,7 +237,7 @@ namespace HarmonyLib
 			if (original is null) throw new ArgumentNullException(nameof(original));
 			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 
-			var patchName = $"{original.DeclaringType?.FullName}.{original.Name}{suffix}";
+			var patchName = $"{original.DeclaringType?.FullName ?? "GLOBALTYPE"}.{original.Name}{suffix}";
 			patchName = patchName.Replace("<>", "");
 
 			var parameters = original.GetParameters();
@@ -283,7 +283,7 @@ namespace HarmonyLib
 				if (parameterTypes.Count == method.Definition.Parameters.Count)
 					for (var i = 0; i < parameterTypes.Count; i++)
 						parameterStrings[i] += $" {method.Definition.Parameters[i].Name}";
-				FileLog.Log($"### Replacement: static {returnType.FullDescription()} {original.DeclaringType.FullName}::{patchName}({parameterStrings.Join()})");
+				FileLog.Log($"### Replacement: static {returnType.FullDescription()} {original.DeclaringType?.FullName ?? "GLOBALTYPE"}::{patchName}({parameterStrings.Join()})");
 			}
 
 			return method;
@@ -510,13 +510,13 @@ namespace HarmonyLib
 						// field access by index only works for declared fields
 						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, int.Parse(fieldName));
 						if (fieldInfo is null)
-							throw new ArgumentException($"No field found at given index in class {original.DeclaringType.AssemblyQualifiedName}", fieldName);
+							throw new ArgumentException($"No field found at given index in class {original.DeclaringType?.AssemblyQualifiedName ?? "null"}", fieldName);
 					}
 					else
 					{
 						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
 						if (fieldInfo is null)
-							throw new ArgumentException($"No such field defined in class {original.DeclaringType.AssemblyQualifiedName}", fieldName);
+							throw new ArgumentException($"No such field defined in class {original.DeclaringType?.AssemblyQualifiedName ?? "null"}", fieldName);
 					}
 
 					if (fieldInfo.IsStatic)
@@ -533,7 +533,7 @@ namespace HarmonyLib
 				if (patchParam.Name == STATE_VAR)
 				{
 					var ldlocCode = patchParam.ParameterType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					if (variables.TryGetValue(patch.DeclaringType.AssemblyQualifiedName, out var stateVar))
+					if (variables.TryGetValue(patch.DeclaringType?.AssemblyQualifiedName ?? "null", out var stateVar))
 						emitter.Emit(ldlocCode, stateVar);
 					else
 						emitter.Emit(OpCodes.Ldnull);
@@ -606,7 +606,7 @@ namespace HarmonyLib
 								else
 								{
 									emitter.Emit(OpCodes.Ldarg_0);
-									if (originalType.IsValueType)
+									if (originalType != null && originalType.IsValueType)
 									{
 										emitter.Emit(OpCodes.Ldobj, originalType);
 										emitter.Emit(OpCodes.Box, originalType);
