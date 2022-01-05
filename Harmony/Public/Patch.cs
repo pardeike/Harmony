@@ -6,7 +6,6 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 #if NET50_OR_GREATER
-using System.Runtime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 #endif
@@ -23,11 +22,11 @@ namespace HarmonyLib
 		{
 			get
 			{
-				if(!useBinaryFormatter.HasValue)
+				if (!useBinaryFormatter.HasValue)
 				{
 					// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
 					var hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out var isEnabled);
-					if(hasSwitch)
+					if (hasSwitch)
 						useBinaryFormatter = isEnabled;
 					else
 					{
@@ -61,7 +60,7 @@ namespace HarmonyLib
 				return typeToDeserialize;
 			}
 		}
-		internal static BinaryFormatter binaryFormatter = new BinaryFormatter { Binder = new Binder() };
+		internal static readonly BinaryFormatter binaryFormatter = new BinaryFormatter { Binder = new Binder() };
 
 		/// <summary>Serializes a patch info</summary>
 		/// <param name="patchInfo">The <see cref="PatchInfo"/></param>
@@ -70,16 +69,16 @@ namespace HarmonyLib
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
 #if NET50_OR_GREATER
-			if(UseBinaryFormatter)
+			if (UseBinaryFormatter)
 			{
 #endif
-			using var streamMemory = new MemoryStream();
-			binaryFormatter.Serialize(streamMemory, patchInfo);
-			return streamMemory.GetBuffer();
+				using var streamMemory = new MemoryStream();
+				binaryFormatter.Serialize(streamMemory, patchInfo);
+				return streamMemory.GetBuffer();
 #if NET50_OR_GREATER
 			}
 			else
-				return JsonSerializer.SerializeToUtf8Bytes<PatchInfo>(patchInfo);
+				return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
 #endif
 		}
 
@@ -90,11 +89,11 @@ namespace HarmonyLib
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
 #if NET50_OR_GREATER
-			if(UseBinaryFormatter)
+			if (UseBinaryFormatter)
 			{
 #endif
-			using var streamMemory = new MemoryStream(bytes);
-			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
+				using var streamMemory = new MemoryStream(bytes);
+				return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
 #if NET50_OR_GREATER
 			}
 			else

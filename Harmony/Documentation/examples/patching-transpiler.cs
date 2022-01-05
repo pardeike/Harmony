@@ -30,7 +30,9 @@ namespace Patching_Transpiler
 		}
 		// </typical>
 
+#pragma warning disable CS0649
 		class SomeType { public string someField; }
+#pragma warning restore CS0649
 
 		class Tools
 		{
