@@ -278,5 +278,47 @@ namespace HarmonyLibTests.Patching
 			new MarshalledTestClass().Run();
 			Console.WriteLine($"### MarshalledTestClass AFTER");
 		}
+
+		[Test]
+		public void Test_MarshalledWithEventHandler1()
+		{
+			Console.WriteLine($"### MarshalledWithEventHandlerTest1 TEST");
+
+			var patchClass = typeof(MarshalledWithEventHandlerTest1Class_Patch);
+			Assert.NotNull(patchClass);
+
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "Harmony instance");
+			var patcher = instance.CreateClassProcessor(patchClass);
+			Assert.NotNull(patcher, "Patch processor");
+			var patched = patcher.Patch();
+			Assert.AreEqual(1, patched.Count);
+			Assert.NotNull(patched[0]);
+
+			Console.WriteLine($"### MarshalledWithEventHandlerTest1 BEFORE");
+			new MarshalledWithEventHandlerTest1Class().Run();
+			Console.WriteLine($"### MarshalledWithEventHandlerTest1 AFTER");
+		}
+
+		[Test]
+		public void Test_MarshalledWithEventHandler2()
+		{
+			Console.WriteLine($"### MarshalledWithEventHandlerTest2 TEST");
+
+			var patchClass = typeof(MarshalledWithEventHandlerTest2Class_Patch);
+			Assert.NotNull(patchClass);
+
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "Harmony instance");
+			var patcher = instance.CreateClassProcessor(patchClass);
+			Assert.NotNull(patcher, "Patch processor");
+			var patched = patcher.Patch();
+			Assert.AreEqual(1, patched.Count);
+			Assert.NotNull(patched[0]);
+
+			Console.WriteLine($"### MarshalledWithEventHandlerTest2 BEFORE");
+			new MarshalledWithEventHandlerTest2Class().Run();
+			Console.WriteLine($"### MarshalledWithEventHandlerTest2 AFTER");
+		}
 	}
 }
