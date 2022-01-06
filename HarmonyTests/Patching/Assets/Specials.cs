@@ -169,4 +169,27 @@ namespace HarmonyLibTests.Assets
 			yield return new CodeInstruction(OpCodes.Ret);
 		}
 	}
+
+	public class MarshalledTestClass : MarshalByRefObject
+	{
+		public delegate void TestEvent();
+		public event TestEvent OnTestEvent;
+
+		public void Run()
+		{
+			OnTestEvent += Handler;
+			_ = OnTestEvent.Method;
+		}
+
+		// patched with an empty prefix
+		public void Handler() { }
+	}
+
+	[HarmonyPatch(typeof(MarshalledTestClass), nameof(MarshalledTestClass.Handler))]
+	public class MarshalledTestClass_Patch
+	{
+		static void Prefix()
+		{
+		}
+	}
 }
