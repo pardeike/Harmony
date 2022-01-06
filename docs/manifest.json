@@ -585,7 +585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Patch.html",
-          "hash": "Pd0t/zKLrRe8MxmYsvT90XrdHLeZbYQcNsaGTSiPOO4="
+          "hash": "E5GEC4cpwRTrFogFZTlu50ZUspkvtSVCC69Cl7+eMWo="
         }
       },
       "is_incremental": false,
@@ -609,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchInfo.html",
-          "hash": "gEXEPqsOKzGCLwu/q7nf0Gma3GH8ECVDvLKZTTP59+c="
+          "hash": "Ycd0xeU/aull7sWIT38522vY7vKm3SbAcVd31rzk6E0="
         }
       },
       "is_incremental": false,
