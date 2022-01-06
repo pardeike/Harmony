@@ -35,7 +35,7 @@ namespace HarmonyTests.Extras
 		[Test]
 		public void Deserialize()
 		{
-			AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false);
+			PatchInfoSerialization.useBinaryFormatter = false;
 
 			var data = Encoding.UTF8.GetBytes(ExpectedJSON());
 			var patchInfo = PatchInfoSerialization.Deserialize(data);
