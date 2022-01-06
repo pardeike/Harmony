@@ -170,7 +170,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public class MarshalledTestClass : MarshalByRefObject
+	public class MarshalledTestClass // : MarshalByRefObject
 	{
 		public delegate void TestEvent();
 		public event TestEvent OnTestEvent;
@@ -179,9 +179,8 @@ namespace HarmonyLibTests.Assets
 		{
 			Console.WriteLine("MarshalledTestClass.Run called");
 
-			// this crashes our Azure tests, so for now its disabled
-			// OnTestEvent += Handler;
-			// _ = OnTestEvent.Method;
+			OnTestEvent += Handler;
+			_ = OnTestEvent.Method;
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
