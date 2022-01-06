@@ -301,6 +301,9 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+#if !NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
+		[Ignore("Crashes on x86:<=net48")]
+#endif
 		public void Test_MarshalledWithEventHandler2()
 		{
 			Console.WriteLine($"### MarshalledWithEventHandlerTest2 TEST");
