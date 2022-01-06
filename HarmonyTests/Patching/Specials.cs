@@ -238,6 +238,27 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+		public void Test_PatchEventHandler()
+		{
+			Console.WriteLine($"### EventHandlerTestClass TEST");
+
+			var patchClass = typeof(EventHandlerTestClass_Patch);
+			Assert.NotNull(patchClass);
+
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "Harmony instance");
+			var patcher = instance.CreateClassProcessor(patchClass);
+			Assert.NotNull(patcher, "Patch processor");
+			var patched = patcher.Patch();
+			Assert.AreEqual(1, patched.Count);
+			Assert.NotNull(patched[0]);
+
+			Console.WriteLine($"### EventHandlerTestClass BEFORE");
+			new EventHandlerTestClass().Run();
+			Console.WriteLine($"### EventHandlerTestClass AFTER");
+		}
+
+		[Test]
 		public void Test_PatchMarshalledClass()
 		{
 			Console.WriteLine($"### MarshalledTestClass TEST");

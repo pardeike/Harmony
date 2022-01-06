@@ -170,7 +170,41 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public class MarshalledTestClass // : MarshalByRefObject
+	public class EventHandlerTestClass
+	{
+		public delegate void TestEvent();
+		public event TestEvent OnTestEvent;
+
+		public void Run()
+		{
+			Console.WriteLine("EventHandlerTestClass.Run called");
+			OnTestEvent += Handler;
+			_ = OnTestEvent.Method;
+			Console.WriteLine("EventHandlerTestClass.Run done");
+		}
+
+		public void Handler()
+		{
+			try
+			{
+				Console.WriteLine("MarshalledTestClass.Handler called");
+			}
+			catch
+			{
+				Console.WriteLine("MarshalledTestClass.Handler exception");
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(EventHandlerTestClass), nameof(EventHandlerTestClass.Handler))]
+	public class EventHandlerTestClass_Patch
+	{
+		static void Prefix()
+		{
+		}
+	}
+
+	public class MarshalledTestClass : MarshalByRefObject
 	{
 		public delegate void TestEvent();
 		public event TestEvent OnTestEvent;
@@ -178,13 +212,21 @@ namespace HarmonyLibTests.Assets
 		public void Run()
 		{
 			Console.WriteLine("MarshalledTestClass.Run called");
-
-			OnTestEvent += Handler;
-			_ = OnTestEvent.Method;
+			Handler();
+			Console.WriteLine("MarshalledTestClass.Run called");
 		}
 
-		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Handler() { }
+		public void Handler()
+		{
+			try
+			{
+				Console.WriteLine("MarshalledTestClass.Handler called");
+			}
+			catch
+			{
+				Console.WriteLine("MarshalledTestClass.Handler exception");
+			}
+		}
 	}
 
 	[HarmonyPatch(typeof(MarshalledTestClass), nameof(MarshalledTestClass.Handler))]
