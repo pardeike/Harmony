@@ -8,6 +8,20 @@
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 	</PropertyGroup>
 
+	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
+	<Choose>
+		<When Condition="'$(TargetFramework)' == 'net5.0'">
+			<PropertyGroup>
+				<IsNET5OrGreater>true</IsNET5OrGreater>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<IsNET5OrGreater>false</IsNET5OrGreater>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
 	<ItemGroup>
 		<ProjectReference Include="..\Harmony\Harmony.csproj" />
 	</ItemGroup>
@@ -23,6 +37,10 @@
 		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(IsNET5OrGreater)">
+		<DefineConstants>$(DefineConstants);NET50_OR_GREATER</DefineConstants>
 	</PropertyGroup>
 
 	<!-- Workaround for `dotnet test HarmonyTests -f net35` not running tests - Microsoft.NET.Test.Sdk only sets IsTestProject property for net40+. -->

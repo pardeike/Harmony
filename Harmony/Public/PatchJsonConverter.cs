@@ -48,7 +48,8 @@ namespace HarmonyLib
 				before.Add(reader.GetString());
 			_ = reader.Read();
 
-			_ = reader.Read(); // end object
+			// we shall not read end object here
+			//_ = reader.Read();
 
 			return new Patch(index, owner, priority, before.ToArray(), after.ToArray(), debug, methodToken, moduleGUID);
 		}

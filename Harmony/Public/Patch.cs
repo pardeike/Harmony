@@ -97,7 +97,10 @@ namespace HarmonyLib
 #if NET50_OR_GREATER
 			}
 			else
-				return JsonSerializer.Deserialize<PatchInfo>(bytes);
+			{
+				var options = new JsonSerializerOptions { IncludeFields = true };
+				return JsonSerializer.Deserialize<PatchInfo>(bytes, options);
+			}
 #endif
 		}
 
@@ -340,6 +343,9 @@ namespace HarmonyLib
 
 		/// <summary>The method of the static patch method</summary>
 		///
+#if NET50_OR_GREATER
+		[JsonIgnore]
+#endif
 		public MethodInfo PatchMethod
 		{
 			get
