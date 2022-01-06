@@ -240,6 +240,8 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Test_PatchMarshalledClass()
 		{
+			TestTools.Log($"### MarshalledTestClass TEST", indentLevel: 0);
+
 			var patchClass = typeof(MarshalledTestClass_Patch);
 			Assert.NotNull(patchClass);
 
@@ -251,7 +253,9 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(1, patched.Count);
 			Assert.NotNull(patched[0]);
 
+			TestTools.Log($"### MarshalledTestClass BEFORE", indentLevel: 0);
 			new MarshalledTestClass().Run();
+			TestTools.Log($"### MarshalledTestClass AFTER", indentLevel: 0);
 		}
 	}
 }

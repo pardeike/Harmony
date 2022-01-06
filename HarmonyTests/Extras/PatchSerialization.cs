@@ -1,6 +1,7 @@
 using HarmonyLib;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Text;
 
 namespace HarmonyTests.Extras
@@ -11,9 +12,20 @@ namespace HarmonyTests.Extras
 		static string ExpectedJSON()
 		{
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-			var expected = "{\"prefixes\":[{\"index\":0,\"debug\":true,\"owner\":\"test\",\"priority\":600,\"methodToken\":$MT$,\"moduleGUID\":\"$MGUID$\",\"after\":[],\"before\":[\"p1\",null,\"p2\"]}],\"postfixes\":[],\"transpilers\":[],\"finalizers\":[]}";
-			expected = expected.Replace("$MT$", method.MetadataToken.ToString()).Replace("$MGUID$", method.Module.ModuleVersionId.ToString());
-			return expected;
+			var fix = "\"$FIX$\":[{\"index\":0,\"debug\":true,\"owner\":\"$NAME$\",\"priority\":600,\"methodToken\":$MT$,\"moduleGUID\":\"$MGUID$\",\"after\":[],\"before\":[\"p1\",null,\"p2\"]}]";
+			var fixes = new[] { "prefixes", "postfixes", "transpilers", "finalizers" }
+				.Select(name =>
+				{
+					return fix
+						.Replace("$MT$", method.MetadataToken.ToString())
+						.Replace("$MGUID$", method.Module.ModuleVersionId.ToString())
+						.Replace("$FIX$", name)
+						.Replace("$NAME$", name);
+				})
+				.ToList()
+				.Join(delimiter: ",");
+
+			return "{" + fixes + "}";
 		}
 
 #if NET50_OR_GREATER
@@ -24,7 +36,10 @@ namespace HarmonyTests.Extras
 			var hMethod = new HarmonyMethod(method, Priority.High, new[] { "p1", null, "p2" }, new string[0], true);
 
 			var patchInfo = new PatchInfo();
-			patchInfo.AddPrefixes("test", new[] { hMethod });
+			patchInfo.AddPrefixes("prefixes", new[] { hMethod });
+			patchInfo.AddPostfixes("postfixes", new[] { hMethod });
+			patchInfo.AddTranspilers("transpilers", new[] { hMethod });
+			patchInfo.AddFinalizers("finalizers", new[] { hMethod });
 
 			PatchInfoSerialization.useBinaryFormatter = false;
 			var result = PatchInfoSerialization.Serialize(patchInfo);
@@ -40,19 +55,22 @@ namespace HarmonyTests.Extras
 			var data = Encoding.UTF8.GetBytes(ExpectedJSON());
 			var patchInfo = PatchInfoSerialization.Deserialize(data);
 
-			Assert.AreEqual(1, patchInfo.prefixes.Length);
-			Assert.AreEqual(0, patchInfo.postfixes.Length);
-			Assert.AreEqual(0, patchInfo.transpilers.Length);
-			Assert.AreEqual(0, patchInfo.finalizers.Length);
+			var n = 0;
+			var names = new[] { "prefixes", "postfixes", "transpilers", "finalizers" };
+			new[] { patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers }
+				.Do(fixes =>
+				{
+					Assert.AreEqual(1, fixes.Length);
 
-			Assert.AreEqual("test", patchInfo.prefixes[0].owner);
-			Assert.AreEqual(Priority.High, patchInfo.prefixes[0].priority);
-			Assert.AreEqual(new[] { "p1", null, "p2" }, patchInfo.prefixes[0].before);
-			Assert.AreEqual(0, patchInfo.prefixes[0].after.Length);
-			Assert.True(patchInfo.prefixes[0].debug);
+					Assert.AreEqual(names[n++], fixes[0].owner);
+					Assert.AreEqual(Priority.High, fixes[0].priority);
+					Assert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
+					Assert.AreEqual(0, fixes[0].after.Length);
+					Assert.True(fixes[0].debug);
 
-			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-			Assert.AreEqual(method, patchInfo.prefixes[0].PatchMethod);
+					var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
+					Assert.AreEqual(method, fixes[0].PatchMethod);
+				});
 		}
 #else
 		[Test]
@@ -62,23 +80,30 @@ namespace HarmonyTests.Extras
 			var hMethod = new HarmonyMethod(method, Priority.High, new[] { "p1", null, "p2" }, new string[0], true);
 
 			var originalPatchInfo = new PatchInfo();
-			originalPatchInfo.AddPrefixes("test", new[] { hMethod });
+			originalPatchInfo.AddPrefixes("prefixes", new[] { hMethod });
+			originalPatchInfo.AddPostfixes("postfixes", new[] { hMethod });
+			originalPatchInfo.AddTranspilers("transpilers", new[] { hMethod });
+			originalPatchInfo.AddFinalizers("finalizers", new[] { hMethod });
 
 			var data = PatchInfoSerialization.Serialize(originalPatchInfo);
 			var patchInfo = PatchInfoSerialization.Deserialize(data);
 
-			Assert.AreEqual(1, patchInfo.prefixes.Length);
-			Assert.AreEqual(0, patchInfo.postfixes.Length);
-			Assert.AreEqual(0, patchInfo.transpilers.Length);
-			Assert.AreEqual(0, patchInfo.finalizers.Length);
+			var n = 0;
+			var names = new[] { "prefixes", "postfixes", "transpilers", "finalizers" };
+			new[] { patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers }
+				.Do(fixes =>
+				{
+					Assert.AreEqual(1, fixes.Length);
 
-			Assert.AreEqual("test", patchInfo.prefixes[0].owner);
-			Assert.AreEqual(Priority.High, patchInfo.prefixes[0].priority);
-			Assert.AreEqual(new[] { "p1", null, "p2" }, patchInfo.prefixes[0].before);
-			Assert.AreEqual(0, patchInfo.prefixes[0].after.Length);
-			Assert.True(patchInfo.prefixes[0].debug);
+					Assert.AreEqual(names[n++], fixes[0].owner);
+					Assert.AreEqual(Priority.High, fixes[0].priority);
+					Assert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
+					Assert.AreEqual(0, fixes[0].after.Length);
+					Assert.True(fixes[0].debug);
 
-			Assert.AreEqual(method, patchInfo.prefixes[0].PatchMethod);
+					var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
+					Assert.AreEqual(method, fixes[0].PatchMethod);
+				});
 		}
 #endif
 	}
