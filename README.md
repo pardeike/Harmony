@@ -75,3 +75,7 @@ Harmony 1 is deprecated and not under active development anymore. The latest ver
 		<img src="https://img.shields.io/badge/twitter-@pardeike-blue.svg?style=flat&logo=twitter" />
 	</a>
 </p>
+
+
+### Looking for the Deno Discord API library?
+https://github.com/harmonyland/harmony
