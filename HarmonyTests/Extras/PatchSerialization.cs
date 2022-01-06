@@ -26,8 +26,7 @@ namespace HarmonyTests.Extras
 			var patchInfo = new PatchInfo();
 			patchInfo.AddPrefixes("test", new[] { hMethod });
 
-			AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", false);
-
+			PatchInfoSerialization.useBinaryFormatter = false;
 			var result = PatchInfoSerialization.Serialize(patchInfo);
 			var resString = Encoding.UTF8.GetString(result, 0, result.Length);
 			Assert.AreEqual(ExpectedJSON(), resString);

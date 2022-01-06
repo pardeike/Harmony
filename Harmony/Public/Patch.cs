@@ -17,8 +17,8 @@ namespace HarmonyLib
 	internal static class PatchInfoSerialization
 	{
 #if NET50_OR_GREATER
-		static bool? useBinaryFormatter = null;
-		static bool UseBinaryFormatter
+		internal static bool? useBinaryFormatter = null;
+		internal static bool UseBinaryFormatter
 		{
 			get
 			{
@@ -72,9 +72,9 @@ namespace HarmonyLib
 			if (UseBinaryFormatter)
 			{
 #endif
-				using var streamMemory = new MemoryStream();
-				binaryFormatter.Serialize(streamMemory, patchInfo);
-				return streamMemory.GetBuffer();
+			using var streamMemory = new MemoryStream();
+			binaryFormatter.Serialize(streamMemory, patchInfo);
+			return streamMemory.GetBuffer();
 #if NET50_OR_GREATER
 			}
 			else
@@ -92,8 +92,8 @@ namespace HarmonyLib
 			if (UseBinaryFormatter)
 			{
 #endif
-				using var streamMemory = new MemoryStream(bytes);
-				return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
+			using var streamMemory = new MemoryStream(bytes);
+			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
 #if NET50_OR_GREATER
 			}
 			else
