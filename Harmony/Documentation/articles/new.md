@@ -1,6 +1,6 @@
 # What's New
 
-Harmony 2.0 has come a long way since the last release 1.2.0.1. Here are all the changes:
+Harmony 2 has come a long way since the last release 1.2.0.1. Here are all the changes:
 
 #### New
 
