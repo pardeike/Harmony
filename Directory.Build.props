@@ -1,6 +1,7 @@
 <Project>
 
 	<PropertyGroup>
+		<HarmonyVersion>2.2.1.0</HarmonyVersion>
 		<MonoModCommonVersion>22.1.4.2</MonoModCommonVersion>
 	</PropertyGroup>
 

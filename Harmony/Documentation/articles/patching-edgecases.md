@@ -81,7 +81,7 @@ This situation occurs when the original method directly or indirectly calls an `
 
 In the following example code, patching either `SomeMethod()` or `SomeOtherMethod()` will cause the exception:
 
-[!code-csharp[example](../examples/patching-edgecases.cs?early1)]
+[!code-csharp[example](../examples/patching-edgecases.cs?name=early1)]
 
 `UnityEngine.Object.DontDestroyOnLoad()` is an external UnityEngine method:
 
@@ -95,4 +95,4 @@ To prevent this issue, make sure UnityEngine has finished its startup phase (dyn
 
 One way to do so is to execute patching only after Unity has loaded the first scene, for example by using the `SceneManager.sceneLoaded` event:
 
-[!code-csharp[example](../examples/patching-edgecases.cs?early2)]
+[!code-csharp[example](../examples/patching-edgecases.cs?name=early2)]
