@@ -14,7 +14,7 @@ namespace HarmonyLib
 		}
 
 		const BindingFlags BasicFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField | BindingFlags.GetProperty | BindingFlags.SetProperty;
-		readonly static Dictionary<MemberType, BindingFlags> declaredOnlyBindingFlags = new Dictionary<MemberType, BindingFlags>()
+		static readonly Dictionary<MemberType, BindingFlags> declaredOnlyBindingFlags = new Dictionary<MemberType, BindingFlags>()
 		{
 			{ MemberType.Any, BasicFlags | BindingFlags.Instance | BindingFlags.Static },
 			{ MemberType.Instance, BasicFlags | BindingFlags.Instance },

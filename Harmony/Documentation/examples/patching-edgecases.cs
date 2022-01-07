@@ -61,6 +61,7 @@ namespace EdgeCases
 		internal static Action<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.LoadSceneMode> sceneLoaded;
 	}
 
+#pragma warning disable CS0649
 	// <early1>
 	class SomeGameObject
 	{
@@ -77,6 +78,7 @@ namespace EdgeCases
 		}
 	}
 	// </early1>
+#pragma warning restore CS0649
 
 	// <early2>
 	public static class Patcher

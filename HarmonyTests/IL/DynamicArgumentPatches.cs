@@ -24,7 +24,7 @@ namespace HarmonyLibTests.IL
 
 		public static Vec3 Zero => new Vec3(0, 0, 0);
 
-		override public string ToString()
+		public override string ToString()
 		{
 			return v1 + "," + v2 + "," + v3;
 		}

@@ -1,7 +1,6 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
-using System.Reflection;
 
 namespace HarmonyLibTests.ReversePatching
 {

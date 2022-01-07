@@ -237,7 +237,9 @@ namespace HarmonyLibTests.Assets
 	public class MarshalledWithEventHandlerTest1Class : MarshalByRefObject
 	{
 		public delegate void TestEvent();
+#pragma warning disable CS0067
 		public event TestEvent OnTestEvent;
+#pragma warning restore CS0067
 
 		public void Run()
 		{

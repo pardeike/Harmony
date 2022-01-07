@@ -682,10 +682,7 @@ namespace HarmonyLibTests.Tools
 				var field = AccessTools.Field(typeof(AccessToolsClass), "field5");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
 				// Type of field is AccessToolsClass.Inner, which is a private class.
-				static IInner TestValue()
-				{
-					return AccessToolsClass.NewInner(987);
-				}
+				static IInner TestValue() => AccessToolsClass.NewInner(987);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IInner>(
 					field, TestValue(), expectedCaseToConstraint);
 				TestSuite_Class<IAccessToolsType, AccessToolsClass, IInner>(
@@ -757,10 +754,7 @@ namespace HarmonyLibTests.Tools
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
 				// Type of field is AccessToolsClass.InnerStruct, which is a private struct.
 				// As it's a value type and references cannot be made to boxed value type instances, FieldRefValue will never work.
-				static IInner TestValue()
-				{
-					return AccessToolsClass.NewInnerStruct(-987);
-				}
+				static IInner TestValue() => AccessToolsClass.NewInnerStruct(-987);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IInner>(
 					field, TestValue(), IncompatibleFieldType(expectedCaseToConstraint));
 				TestSuite_Struct<int, IInner>(
