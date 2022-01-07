@@ -73,30 +73,17 @@ public SomeType MyMethod()
 
 That method has no `RET` IL code in its body and if you try to patch it, Harmony will generate illegal IL. The only solution to this is to create a `Transpiler` that transpiles the method to a correct version by creating valid IL. This is also true for adding a Prefix or Postfix to that method. The way Harmony works, the replacement method needs to be valid to add calls to your patches to it.
 
-### Patching game objects too early can cause Unity throwing "MissingMethodException"
+### Patching too early: MissingMethodException in Unity
 
-There's a case where patching a method too early ( i.e: on injected assembly's entry point ) will cause Unity throwing a `MissingMethodException: Attempted to access a missing method` and the game will crash.
+When patching too early, for example on the injected assemblys entry point, Unity will throw a `MissingMethodException: Attempted to access a missing method`.
 
-This situation occurs when the original method to patch calls either directly or indirectly an `external` UnityEngine method. 
+This situation occurs when the original method directly or indirectly calls an `external` UnityEngine method. 
 
-i.e: In this case patching either `someMethod()` or `someOtherMethod()` will cause the problem.
+In the following example code, patching either `SomeMethod()` or `SomeOtherMethod()` will cause the exception:
 
-```csharp
-class someGameObject
-{
-	void someMethod()
-	{
-		UnityEngine.Object.DontDestroyOnLoad(gameObject);
-	}
+[!code-csharp[example](../examples/patching-edgecases.cs?early1)]
 
-	void someOtherMethod()
-	{
-		someMethod()
-	}
-}
-```
-
-UnityEngine.Object.DontDestroyOnLoad() is an `external` UnityEngine method
+`UnityEngine.Object.DontDestroyOnLoad()` is an external UnityEngine method:
 
 ```csharp
 [MethodImpl(MethodImplOptions.InternalCall)]
@@ -104,48 +91,8 @@ UnityEngine.Object.DontDestroyOnLoad() is an `external` UnityEngine method
 public static extern void DontDestroyOnLoad(Object target);
 ```
 
-To circumvent this issue, make sure UnityEngine has finished it's startup (dynamically links external methods to actual binary) before patching the method.
+To prevent this issue, make sure UnityEngine has finished its startup phase (dynamically linking external methods to actual binary) before patching such methods.
 
-One way to do so is to execute patching only after Unity has loaded at least the game's first scene, by using the SceneManager.sceneLoaded event. e.g:
+One way to do so is to execute patching only after Unity has loaded the first scene, for example by using the `SceneManager.sceneLoaded` event:
 
-```csharp
-using HarmonyLib;
-using UnityEngine.SceneManagement;
-
-namespace MyAssembly
-{
-    public static class Patcher
-    {
-        private static readonly string HarmonyId = $"MyAssembly";
-        private static bool patched = false;
-
-        public static void Main()
-        {
-            try
-            {
-                //DoPatch(); <-- Do not execute patching on assembly entry point
-                SceneManager.sceneLoaded += SceneLoaded;
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
-        }
-
-        private static void DoPatch()
-        {
-            var harmony = new Harmony(HarmonyId);
-            harmony.PatchAll();
-
-            patched = true;
-        }
-
-        private static void SceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
-        {
-			// Execute patching after unity has finished it's startup and loaded at least the first game scene
-            if (!patched)
-                DoPatch(); 
-        }
-    }
-}
-```
+[!code-csharp[example](../examples/patching-edgecases.cs?early2)]
