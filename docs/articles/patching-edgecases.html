@@ -148,6 +148,70 @@ public class SubClass : BaseClass
 }
 </code></pre>
 <p>That method has no <code>RET</code> IL code in its body and if you try to patch it, Harmony will generate illegal IL. The only solution to this is to create a <code>Transpiler</code> that transpiles the method to a correct version by creating valid IL. This is also true for adding a Prefix or Postfix to that method. The way Harmony works, the replacement method needs to be valid to add calls to your patches to it.</p>
+<h3 id="patching-game-objects-too-early-can-cause-unity-throwing-missingmethodexception">Patching game objects too early can cause Unity throwing &quot;MissingMethodException&quot;</h3>
+<p>There's a case where patching a method too early ( i.e: on injected assembly's entry point ) will cause Unity throwing a <code>MissingMethodException: Attempted to access a missing method</code> and the game will crash.</p>
+<p>This situation occurs when the original method to patch calls either directly or indirectly an <code>external</code> UnityEngine method.</p>
+<p>i.e: In this case patching either <code>someMethod()</code> or <code>someOtherMethod()</code> will cause the problem.</p>
+<pre><code class="lang-csharp">class someGameObject
+{
+	void someMethod()
+	{
+		UnityEngine.Object.DontDestroyOnLoad(gameObject);
+	}
+
+	void someOtherMethod()
+	{
+		someMethod()
+	}
+}
+</code></pre>
+<p>UnityEngine.Object.DontDestroyOnLoad() is an <code>external</code> UnityEngine method</p>
+<pre><code class="lang-csharp">[MethodImpl(MethodImplOptions.InternalCall)]
+[GeneratedByOldBindingsGenerator]
+public static extern void DontDestroyOnLoad(Object target);
+</code></pre>
+<p>To circumvent this issue, make sure UnityEngine has finished it's startup (dynamically links external methods to actual binary) before patching the method.</p>
+<p>One way to do so is to execute patching only after Unity has loaded at least the game's first scene, by using the SceneManager.sceneLoaded event. e.g:</p>
+<pre><code class="lang-csharp">using HarmonyLib;
+using UnityEngine.SceneManagement;
+
+namespace MyAssembly
+{
+    public static class Patcher
+    {
+        private static readonly string HarmonyId = $&quot;MyAssembly&quot;;
+        private static bool patched = false;
+
+        public static void Main()
+        {
+            try
+            {
+                //DoPatch(); &lt;-- Do not execute patching on assembly entry point
+                SceneManager.sceneLoaded += SceneLoaded;
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
+        }
+
+        private static void DoPatch()
+        {
+            var harmony = new Harmony(HarmonyId);
+            harmony.PatchAll();
+
+            patched = true;
+        }
+
+        private static void SceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
+        {
+			// Execute patching after unity has finished it's startup and loaded at least the first game scene
+            if (!patched)
+                DoPatch(); 
+        }
+    }
+}
+</code></pre>
 </article>
           </div>
           
