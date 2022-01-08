@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
@@ -40,6 +41,8 @@ namespace HarmonyLib
 		static readonly Dictionary<MethodInfo, MethodBase> originals;
 		// maps the native start of the method to the method itself
 		static readonly Dictionary<long, MethodInfo> methodStarts;
+		static bool methodStartsInvalidated;
+		
 		internal static readonly int actualVersion;
 
 		static HarmonySharedState()
@@ -71,11 +74,9 @@ namespace HarmonyLib
 			if (originalsField != null) // may not exist in older versions
 				originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
 
-			// re-create 'methodStarts' based on the value(s) in 'originals'
+			// create 'methodStarts' based on the value(s) in 'originals'
 			methodStarts = new Dictionary<long, MethodInfo>();
-			foreach ( var original in originals.Keys ) {
-				methodStarts.Add(original.GetNativeStart().ToInt64(), original);
-			}
+			RefreshMethodStarts();
 
 			// newer .NET versions can re-jit methods so we need to patch them after that happens
 			DetourHelper.Runtime.OnMethodCompiled += (MethodBase method, IntPtr codeStart, ulong codeLen) =>
@@ -84,7 +85,18 @@ namespace HarmonyLib
 				var info = GetPatchInfo(method);
 				if (info == null) return;
 				PatchFunctions.UpdateRecompiledMethod(method, codeStart, info);
+				methodStartsInvalidated = true;
 			};
+		}
+		
+		private static void RefreshMethodStarts() {
+			lock (originals) {
+				methodStarts.Clear();
+				foreach ( var original in originals.Keys ) {
+					methodStarts.Add(original.GetNativeStart().ToInt64(), original);
+				}
+			}
+			methodStartsInvalidated = false;
 		}
 
 		// creates a dynamic 'global' type if it does not exist
@@ -163,13 +175,18 @@ namespace HarmonyLib
 			}
 
 			// Failed to find any usable method, returning a null frameMethod means we could not find any method from the stacktrace
-			//
 			if (methodStart == 0)
 				return frameMethod;
 
-			lock (methodStarts) return methodStarts.TryGetValue(methodStart, out var originalMethod) 
-				? originalMethod 
-				: frameMethod;
+			lock (methodStarts) {
+				if (methodStartsInvalidated) {
+					RefreshMethodStarts();
+				}
+				
+				return methodStarts.TryGetValue(methodStart, out var originalMethod) 
+					? originalMethod 
+					: frameMethod;
+			}
 		}
 	}
 }
