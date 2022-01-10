@@ -80,6 +80,12 @@ namespace HarmonyLib
 						return AccessTools.GetDeclaredConstructors(attr.declaringType)
 							.Where(c => c.IsStatic)
 							.FirstOrDefault();
+
+					case MethodType.Enumerator:
+						if (attr.methodName is null)
+							return null;
+						var method = AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
+						return AccessTools.EnumeratorMoveNext(method);
 				}
 			}
 			catch (AmbiguousMatchException ex)

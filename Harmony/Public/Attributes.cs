@@ -16,7 +16,9 @@ namespace HarmonyLib
 		/// <summary>This is a constructor</summary>
 		Constructor,
 		/// <summary>This is a static constructor</summary>
-		StaticConstructor
+		StaticConstructor,
+		/// <summary>This targets the MoveNext method of the enumerator result</summary>
+		Enumerator
 	}
 
 	/// <summary>Specifies the type of argument</summary>

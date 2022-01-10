@@ -137,6 +137,14 @@ namespace HarmonyLib
 			}
 		}
 
+		/// <summary>Log a string directly to disk if Harmony.DEBUG is true. Slower method that prevents missing information in case of a crash</summary>
+		/// <param name="str">The string to log.</param>
+		///
+		public static void Debug(string str)
+		{
+			if (Harmony.DEBUG) Log(str);
+		}
+
 		/// <summary>Resets and deletes the log</summary>
 		///
 		public static void Reset()
