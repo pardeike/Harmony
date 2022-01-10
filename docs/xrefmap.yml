@@ -211,6 +211,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.DeclaredPropertySetter
   nameWithType: AccessTools.DeclaredPropertySetter
+- uid: HarmonyLib.AccessTools.EnumeratorMoveNext(System.Reflection.MethodBase)
+  name: EnumeratorMoveNext(MethodBase)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_EnumeratorMoveNext_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.AccessTools.EnumeratorMoveNext(System.Reflection.MethodBase)
+  fullName: HarmonyLib.AccessTools.EnumeratorMoveNext(System.Reflection.MethodBase)
+  nameWithType: AccessTools.EnumeratorMoveNext(MethodBase)
+- uid: HarmonyLib.AccessTools.EnumeratorMoveNext*
+  name: EnumeratorMoveNext
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_EnumeratorMoveNext_
+  commentId: Overload:HarmonyLib.AccessTools.EnumeratorMoveNext
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.EnumeratorMoveNext
+  nameWithType: AccessTools.EnumeratorMoveNext
 - uid: HarmonyLib.AccessTools.Field(System.Type,System.String)
   name: Field(Type, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Field_System_Type_System_String_
@@ -1173,6 +1186,22 @@ references:
   fullName.vb: HarmonyLib.CodeInstruction.Call(Of T, TResult)(System.Linq.Expressions.Expression(Of System.Func(Of T, TResult)))
   nameWithType: CodeInstruction.Call<T, TResult>(Expression<Func<T, TResult>>)
   nameWithType.vb: CodeInstruction.Call(Of T, TResult)(Expression(Of Func(Of T, TResult)))
+- uid: HarmonyLib.CodeInstruction.CallClosure*
+  name: CallClosure
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_CallClosure_
+  commentId: Overload:HarmonyLib.CodeInstruction.CallClosure
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.CallClosure
+  nameWithType: CodeInstruction.CallClosure
+- uid: HarmonyLib.CodeInstruction.CallClosure``1(``0)
+  name: CallClosure<T>(T)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_CallClosure__1___0_
+  commentId: M:HarmonyLib.CodeInstruction.CallClosure``1(``0)
+  name.vb: CallClosure(Of T)(T)
+  fullName: HarmonyLib.CodeInstruction.CallClosure<T>(T)
+  fullName.vb: HarmonyLib.CodeInstruction.CallClosure(Of T)(T)
+  nameWithType: CodeInstruction.CallClosure<T>(T)
+  nameWithType.vb: CodeInstruction.CallClosure(Of T)(T)
 - uid: HarmonyLib.CodeInstruction.Clone
   name: Clone()
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_Clone
@@ -1879,6 +1908,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.FileLog.ChangeIndent
   nameWithType: FileLog.ChangeIndent
+- uid: HarmonyLib.FileLog.Debug(System.String)
+  name: Debug(String)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_Debug_System_String_
+  commentId: M:HarmonyLib.FileLog.Debug(System.String)
+  fullName: HarmonyLib.FileLog.Debug(System.String)
+  nameWithType: FileLog.Debug(String)
+- uid: HarmonyLib.FileLog.Debug*
+  name: Debug
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_Debug_
+  commentId: Overload:HarmonyLib.FileLog.Debug
+  isSpec: "True"
+  fullName: HarmonyLib.FileLog.Debug
+  nameWithType: FileLog.Debug
 - uid: HarmonyLib.FileLog.FlushBuffer
   name: FlushBuffer()
   href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_FlushBuffer
@@ -3570,6 +3612,12 @@ references:
   commentId: F:HarmonyLib.MethodType.Constructor
   fullName: HarmonyLib.MethodType.Constructor
   nameWithType: MethodType.Constructor
+- uid: HarmonyLib.MethodType.Enumerator
+  name: Enumerator
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_Enumerator
+  commentId: F:HarmonyLib.MethodType.Enumerator
+  fullName: HarmonyLib.MethodType.Enumerator
+  nameWithType: MethodType.Enumerator
 - uid: HarmonyLib.MethodType.Getter
   name: Getter
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_Getter
