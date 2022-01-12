@@ -192,6 +192,14 @@ namespace HarmonyLib
 			OpCodes.Ldc_I4, OpCodes.Ldc_I4_S, OpCodes.Ldc_I8, OpCodes.Ldc_R4, OpCodes.Ldc_R8
 		};
 
+		/// <summary>Returns if an <see cref="OpCode"/> is initialized and valid</summary>
+		/// <param name="code">The <see cref="OpCode"/></param>
+		/// <returns></returns>
+		public static bool IsValid(this OpCode code)
+		{
+			return code.Size > 0;
+		}
+
 		/// <summary>Shortcut for testing whether the operand is equal to a non-null value</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="value">The value</param>
