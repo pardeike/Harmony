@@ -1,6 +1,7 @@
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -16,6 +17,10 @@ namespace HarmonyLibTests.IL
 		public void FixIssue449()
 		{
 			var method = typeof(HttpRuntime).GetMethod("ReleaseResourcesAndUnloadAppDomain", BindingFlags.Instance | BindingFlags.NonPublic);
+
+			if (Environment.OSVersion.Platform != PlatformID.Win32NT) return;
+
+			Assert.NotNull(method);
 
 			Assert.AreEqual(29, MethodBodyReader.GetInstructions(null, method).Count);
 		}
