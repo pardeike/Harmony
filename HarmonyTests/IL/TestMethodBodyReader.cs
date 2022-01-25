@@ -4,12 +4,22 @@ using NUnit.Framework;
 using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Web;
 
 namespace HarmonyLibTests.IL
 {
 	[TestFixture]
 	public class TestMethodBodyReader : TestLogger
 	{
+#if NETFRAMEWORK
+		[Test]
+		public void FixIssue449()
+		{
+			var method = typeof(HttpRuntime).GetMethod("ReleaseResourcesAndUnloadAppDomain", BindingFlags.Instance | BindingFlags.NonPublic);
+
+			Assert.AreEqual(29, MethodBodyReader.GetInstructions(null, method).Count);
+		}
+#endif
 		[Test]
 		public void Test_CanGetInstructionsWithNoILGenerator()
 		{
