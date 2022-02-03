@@ -58,7 +58,6 @@ jobs:
       - ${{ if or(ne(parameters.architecture, 'x86'), ne(parameters.os, 'windows')) }}: # currently no `else` construct in Azure Pipelines
         - task: UseDotNet@2
           displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}} Runtime"
-          retryCountOnFailure: 5
           inputs:
             version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
             packageType: runtime
@@ -68,7 +67,6 @@ jobs:
 
   - task: DotNetCoreCLI@2
     displayName: 'Build'
-    retryCountOnFailure: 5
     inputs:
       command: build # `dotnet build` implicitly runs `dotnet restore` as well
       projects: Harmony.sln
@@ -95,7 +93,6 @@ jobs:
       #   run the tests in 'CLR 4.0 "compatibility mode"' (or the mono equivalent of this).
       - task: DotNetCoreCLI@2
         displayName: "Test ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
-        retryCountOnFailure: 5
         condition: succeededOrFailed()
         inputs:
           command: test
@@ -140,7 +137,6 @@ jobs:
     - ${{ if eq(parameters.runtimeType, 'mono') }}:
       - task: PublishTestResults@2
         displayName: "Publish ${{framework}} test results"
-        retryCountOnFailure: 5
         condition: succeededOrFailed()
         inputs:
           buildPlatform: ${{parameters.architecture}}
