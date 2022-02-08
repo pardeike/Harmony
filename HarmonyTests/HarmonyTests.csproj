@@ -62,10 +62,6 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
-    <Reference Include="System.Web" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="MonoMod.Common" Version="$(MonoModCommonVersion)" />
 	</ItemGroup>

@@ -5,26 +5,37 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Web;
 
 namespace HarmonyLibTests.IL
 {
 	[TestFixture]
 	public class TestMethodBodyReader : TestLogger
 	{
-#if NETFRAMEWORK
-		[Test]
-		public void FixIssue449()
+		public static void WeirdMethodWithGoto()
 		{
-			var method = typeof(HttpRuntime).GetMethod("ReleaseResourcesAndUnloadAppDomain", BindingFlags.Instance | BindingFlags.NonPublic);
-
-			if (Environment.OSVersion.Platform != PlatformID.Win32NT) return;
-
-			Assert.NotNull(method);
-
-			Assert.AreEqual(29, MethodBodyReader.GetInstructions(null, method).Count);
+			LABEL:
+			try
+			{
+				for (; ; )
+				{
+				}
+			}
+			catch (Exception)
+			{
+				goto LABEL;
+			}
 		}
-#endif
+
+		[Test]
+		public void Test_Read_WeirdMethodWithGoto()
+		{
+			var method = SymbolExtensions.GetMethodInfo(() => WeirdMethodWithGoto());
+			Assert.NotNull(method);
+			var instructions = PatchProcessor.GetOriginalInstructions(method);
+			Assert.NotNull(instructions);
+			Assert.Greater(instructions.Count, 0);
+		}
+
 		[Test]
 		public void Test_CanGetInstructionsWithNoILGenerator()
 		{
