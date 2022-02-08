@@ -214,8 +214,8 @@ namespace HarmonyLib
 				var instr2 = GetInstruction(handler_end, true);
 				instr2.blocks.Add(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock, null));
 
-				// The FilterOffset property is meaningful only for Filter clauses. 
-				// The CatchType property is not meaningful for Filter or Finally clauses. 
+				// The FilterOffset property is meaningful only for Filter clauses.
+				// The CatchType property is not meaningful for Filter or Finally clauses.
 				//
 				switch (exception.Flags)
 				{
@@ -640,16 +640,20 @@ namespace HarmonyLib
 
 		ILInstruction GetInstruction(int offset, bool isEndOfInstruction)
 		{
+			if (offset < 0)
+				throw new ArgumentOutOfRangeException(nameof(offset), offset, $"Instruction offset {offset} is less than 0");
+
 			var lastInstructionIndex = ilInstructions.Count - 1;
-			if (offset < 0 || offset > ilInstructions[lastInstructionIndex].offset)
-				throw new Exception($"Instruction offset {offset} is outside valid range 0 - {ilInstructions[lastInstructionIndex].offset}");
+			var instruction = ilInstructions[lastInstructionIndex];
+			if (offset > instruction.offset + instruction.GetSize() - 1)
+				throw new ArgumentOutOfRangeException(nameof(offset), offset, $"Instruction offset {offset} is outside valid range 0 - {instruction.offset + instruction.GetSize() - 1}");
 
 			var min = 0;
 			var max = lastInstructionIndex;
 			while (min <= max)
 			{
 				var mid = min + ((max - min) / 2);
-				var instruction = ilInstructions[mid];
+				instruction = ilInstructions[mid];
 
 				if (isEndOfInstruction)
 				{
