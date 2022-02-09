@@ -10,6 +10,7 @@
 				}
 			],
 			"dest": "api",
+      "filter": "filterConfig.yml",
 			"properties": {
 				"TargetFramework": "net35"
 			}
