@@ -17,8 +17,7 @@ namespace HarmonyLib
 		{
 			this.argumentShift = argumentShift;
 			codeInstructions = ilInstructions
-				.Select(ilInstruction => ilInstruction.GetCodeInstruction())
-				.ToList().AsEnumerable();
+				.Select(ilInstruction => ilInstruction.GetCodeInstruction());
 		}
 
 		internal void Add(MethodInfo transpiler)
