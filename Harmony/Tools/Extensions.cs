@@ -454,9 +454,9 @@ namespace HarmonyLib
 			return labels;
 		}
 
-		/// <summary>Moves all labels from the code instruction to a different one</summary>
+		/// <summary>Moves all labels from the code instruction to another one</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the labels from</param>
-		/// <param name="other">The <see cref="CodeInstruction"/> to move the labels to</param>
+		/// <param name="other">The other <see cref="CodeInstruction"/> to move the labels to</param>
 		/// <returns>The code instruction labels were moved from (now empty)</returns>
 		public static CodeInstruction MoveLabelsTo(this CodeInstruction code, CodeInstruction other)
 		{
@@ -464,9 +464,9 @@ namespace HarmonyLib
 			return code;
 		}
 
-		/// <summary>Moves all labels from a different code instruction to the current one</summary>
-		/// <param name="code">The <see cref="CodeInstruction"/> to move the labels from</param>
-		/// <param name="other">The <see cref="CodeInstruction"/> to move the labels to</param>
+		/// <summary>Moves all labels from another code instruction to the current one</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/> to move the labels to</param>
+		/// <param name="other">The other <see cref="CodeInstruction"/> to move the labels from</param>
 		/// <returns>The code instruction that received the labels</returns>
 		public static CodeInstruction MoveLabelsFrom(this CodeInstruction code, CodeInstruction other)
 		{
@@ -503,9 +503,9 @@ namespace HarmonyLib
 			return blocks;
 		}
 
-		/// <summary>Moves all ExceptionBlocks from the code instruction to a different one</summary>
+		/// <summary>Moves all ExceptionBlocks from the code instruction to another one</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the ExceptionBlocks from</param>
-		/// <param name="other">The <see cref="CodeInstruction"/> to move the ExceptionBlocks to</param>
+		/// <param name="other">The other <see cref="CodeInstruction"/> to move the ExceptionBlocks to</param>
 		/// <returns>The code instruction blocks were moved from (now empty)</returns>
 		public static CodeInstruction MoveBlocksTo(this CodeInstruction code, CodeInstruction other)
 		{
@@ -513,9 +513,9 @@ namespace HarmonyLib
 			return code;
 		}
 
-		/// <summary>Moves all ExceptionBlocks from a different code instruction to the current one</summary>
-		/// <param name="code">The <see cref="CodeInstruction"/> to move the ExceptionBlocks from</param>
-		/// <param name="other">The <see cref="CodeInstruction"/> to move the ExceptionBlocks to</param>
+		/// <summary>Moves all ExceptionBlocks from another code instruction to the current one</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/> to move the ExceptionBlocks to</param>
+		/// <param name="other">The other <see cref="CodeInstruction"/> to move the ExceptionBlocks from</param>
 		/// <returns>The code instruction that received the blocks</returns>
 		public static CodeInstruction MoveBlocksFrom(this CodeInstruction code, CodeInstruction other)
 		{
