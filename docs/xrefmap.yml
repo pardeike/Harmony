@@ -3194,6 +3194,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.GetOriginalMethod
   nameWithType: Harmony.GetOriginalMethod
+- uid: HarmonyLib.Harmony.GetOriginalMethodFromStackframe(System.Diagnostics.StackFrame)
+  name: GetOriginalMethodFromStackframe(StackFrame)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_GetOriginalMethodFromStackframe_System_Diagnostics_StackFrame_
+  commentId: M:HarmonyLib.Harmony.GetOriginalMethodFromStackframe(System.Diagnostics.StackFrame)
+  fullName: HarmonyLib.Harmony.GetOriginalMethodFromStackframe(System.Diagnostics.StackFrame)
+  nameWithType: Harmony.GetOriginalMethodFromStackframe(StackFrame)
+- uid: HarmonyLib.Harmony.GetOriginalMethodFromStackframe*
+  name: GetOriginalMethodFromStackframe
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_GetOriginalMethodFromStackframe_
+  commentId: Overload:HarmonyLib.Harmony.GetOriginalMethodFromStackframe
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.GetOriginalMethodFromStackframe
+  nameWithType: Harmony.GetOriginalMethodFromStackframe
 - uid: HarmonyLib.Harmony.GetPatchedMethods
   name: GetPatchedMethods()
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_GetPatchedMethods
