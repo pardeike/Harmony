@@ -147,6 +147,18 @@ namespace HarmonyLib
 			return fieldInfo;
 		}
 
+		/// <summary>Gets the reflection information for a directly declared field</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A field or null when the field cannot be found</returns>
+		///
+		public static FieldInfo DeclaredField(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			var fieldInfo = info.type.GetField(info.name, allDeclared);
+			if (fieldInfo is null) FileLog.Debug($"AccessTools.DeclaredField: Could not find field for type {info.type} and name {info.name}");
+			return fieldInfo;
+		}
+
 		/// <summary>Gets the reflection information for a field by searching the type and all its super types</summary>
 		/// <param name="type">The class/type where the field is defined</param>
 		/// <param name="name">The name of the field (case sensitive)</param>
@@ -166,6 +178,18 @@ namespace HarmonyLib
 			}
 			var fieldInfo = FindIncludingBaseTypes(type, t => t.GetField(name, all));
 			if (fieldInfo is null) FileLog.Debug($"AccessTools.Field: Could not find field for type {type} and name {name}");
+			return fieldInfo;
+		}
+
+		/// <summary>Gets the reflection information for a field by searching the type and all its super types</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A field or null when the field cannot be found</returns>
+		///
+		public static FieldInfo Field(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			var fieldInfo = FindIncludingBaseTypes(info.type, t => t.GetField(info.name, all));
+			if (fieldInfo is null) FileLog.Debug($"AccessTools.Field: Could not find field for type {info.type} and name {info.name}");
 			return fieldInfo;
 		}
 
@@ -208,6 +232,18 @@ namespace HarmonyLib
 			return property;
 		}
 
+		/// <summary>Gets the reflection information for a directly declared property</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A property or null when the property cannot be found</returns>
+		///
+		public static PropertyInfo DeclaredProperty(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			var property = info.type.GetProperty(info.name, allDeclared);
+			if (property is null) FileLog.Debug($"AccessTools.DeclaredProperty: Could not find property for type {info.type} and name {info.name}");
+			return property;
+		}
+
 		/// <summary>Gets the reflection information for the getter method of a directly declared property</summary>
 		/// <param name="type">The class/type where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
@@ -218,6 +254,15 @@ namespace HarmonyLib
 			return DeclaredProperty(type, name)?.GetGetMethod(true);
 		}
 
+		/// <summary>Gets the reflection information for the getter method of a directly declared property</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when the property cannot be found</returns>
+		///
+		public static MethodInfo DeclaredPropertyGetter(string typeColonName)
+		{
+			return DeclaredProperty(typeColonName)?.GetGetMethod(true);
+		}
+
 		/// <summary>Gets the reflection information for the setter method of a directly declared property</summary>
 		/// <param name="type">The class/type where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
@@ -226,6 +271,15 @@ namespace HarmonyLib
 		public static MethodInfo DeclaredPropertySetter(Type type, string name)
 		{
 			return DeclaredProperty(type, name)?.GetSetMethod(true);
+		}
+
+		/// <summary>Gets the reflection information for the Setter method of a directly declared property</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when the property cannot be found</returns>
+		///
+		public static MethodInfo DeclaredPropertySetter(string typeColonName)
+		{
+			return DeclaredProperty(typeColonName)?.GetSetMethod(true);
 		}
 
 		/// <summary>Gets the reflection information for a property by searching the type and all its super types</summary>
@@ -250,6 +304,18 @@ namespace HarmonyLib
 			return property;
 		}
 
+		/// <summary>Gets the reflection information for a property by searching the type and all its super types</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A property or null when the property cannot be found</returns>
+		///
+		public static PropertyInfo Property(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			var property = FindIncludingBaseTypes(info.type, t => t.GetProperty(info.name, all));
+			if (property is null) FileLog.Debug($"AccessTools.Property: Could not find property for type {info.type} and name {info.name}");
+			return property;
+		}
+
 		/// <summary>Gets the reflection information for the getter method of a property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
 		/// <param name="name">The name</param>
@@ -260,6 +326,15 @@ namespace HarmonyLib
 			return Property(type, name)?.GetGetMethod(true);
 		}
 
+		/// <summary>Gets the reflection information for the getter method of a property by searching the type and all its super types</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
+		///
+		public static MethodInfo PropertyGetter(string typeColonName)
+		{
+			return Property(typeColonName)?.GetGetMethod(true);
+		}
+
 		/// <summary>Gets the reflection information for the setter method of a property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
 		/// <param name="name">The name</param>
@@ -268,6 +343,15 @@ namespace HarmonyLib
 		public static MethodInfo PropertySetter(Type type, string name)
 		{
 			return Property(type, name)?.GetSetMethod(true);
+		}
+
+		/// <summary>Gets the reflection information for the setter method of a property by searching the type and all its super types</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
+		///
+		public static MethodInfo PropertySetter(string typeColonName)
+		{
+			return Property(typeColonName)?.GetSetMethod(true);
 		}
 
 		/// <summary>Gets the reflection information for a directly declared method</summary>
@@ -305,6 +389,18 @@ namespace HarmonyLib
 
 			if (generics is object) result = result.MakeGenericMethod(generics);
 			return result;
+		}
+
+		/// <summary>Gets the reflection information for a directly declared method</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
+		/// <param name="generics">Optional list of types that define the generic version of the method</param>
+		/// <returns>A method or null when the method cannot be found</returns>
+		///
+		public static MethodInfo DeclaredMethod(string typeColonName, Type[] parameters = null, Type[] generics = null)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			return DeclaredMethod(info.type, info.name, parameters, generics);
 		}
 
 		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
@@ -359,24 +455,15 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the reflection information for a method by searching the type and all its super types</summary>
-		/// <param name="typeColonMethodname">The target method in the form <c>TypeFullName:MethodName</c>, where the type name matches a form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of the method</param>
 		/// <param name="generics">Optional list of types that define the generic version of the method</param>
-		/// <returns>A method or null when type/name is null or when the method cannot be found</returns>
+		/// <returns>A method or null when the method cannot be found</returns>
 		///
-		public static MethodInfo Method(string typeColonMethodname, Type[] parameters = null, Type[] generics = null)
+		public static MethodInfo Method(string typeColonName, Type[] parameters = null, Type[] generics = null)
 		{
-			if (typeColonMethodname is null)
-			{
-				FileLog.Debug("AccessTools.Method: typeColonMethodname is null");
-				return null;
-			}
-			var parts = typeColonMethodname.Split(':');
-			if (parts.Length != 2)
-				throw new ArgumentException("Method must be specified as 'Namespace.Type1.Type2:MethodName", nameof(typeColonMethodname));
-
-			var type = TypeByName(parts[0]);
-			return DeclaredMethod(type, parts[1], parameters, generics);
+			var info = Tools.TypColonName(typeColonName);
+			return Method(info.type, info.name, parameters, generics);
 		}
 
 		/// <summary>Gets the <see cref="IEnumerator.MoveNext" /> method of an enumerator method</summary>
@@ -850,7 +937,7 @@ namespace HarmonyLib
 				var delegateInstanceType = typeof(T);
 				if (delegateInstanceType.IsValueType)
 					throw new ArgumentException("T (FieldRefAccess instance type) must not be a value type");
-				return FieldRefAccessInternal<T, F>(GetInstanceField(delegateInstanceType, fieldName), needCastclass: false);
+				return Tools.FieldRefAccess<T, F>(Tools.GetInstanceField(delegateInstanceType, fieldName), needCastclass: false);
 			}
 			catch (Exception ex)
 			{
@@ -891,7 +978,7 @@ namespace HarmonyLib
 				var delegateInstanceType = typeof(T);
 				if (delegateInstanceType.IsValueType)
 					throw new ArgumentException("T (FieldRefAccess instance type) must not be a value type");
-				return ref FieldRefAccessInternal<T, F>(GetInstanceField(delegateInstanceType, fieldName), needCastclass: false)(instance);
+				return ref Tools.FieldRefAccess<T, F>(Tools.GetInstanceField(delegateInstanceType, fieldName), needCastclass: false)(instance);
 			}
 			catch (Exception ex)
 			{
@@ -944,12 +1031,22 @@ namespace HarmonyLib
 						throw new ArgumentException("Either FieldDeclaringType must be a class or field must be static");
 				}
 				// Field's declaring type cannot be object, since object has no fields, so always need a castclass for T=object.
-				return FieldRefAccessInternal<object, F>(fieldInfo, needCastclass: true);
+				return Tools.FieldRefAccess<object, F>(fieldInfo, needCastclass: true);
 			}
 			catch (Exception ex)
 			{
 				throw new ArgumentException($"FieldRefAccess<{typeof(F)}> for {type}, {fieldName} caused an exception", ex);
 			}
+		}
+
+		/// <summary>Creates a field reference delegate for an instance field of a class or static field (NOT an instance field of a struct)</summary>
+		/// <typeparam name="F"> type of the field</typeparam>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A readable/assignable <see cref="FieldRef{T,F}"/> delegate with <c>T=object</c></returns>
+		public static FieldRef<object, F> FieldRefAccess<F>(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			return FieldRefAccess<F>(info.type, info.name);
 		}
 
 		/// <summary>Creates a field reference delegate for an instance field of a class or static field (NOT an instance field of a struct)</summary>
@@ -998,9 +1095,9 @@ namespace HarmonyLib
 					// the field is not a struct instance field, since T could be object, ValueType, or an interface that the struct implements.
 					if (declaringType.IsValueType)
 						throw new ArgumentException("Either FieldDeclaringType must be a class or field must be static");
-					needCastclass = FieldRefNeedsClasscast(delegateInstanceType, declaringType);
+					needCastclass = Tools.FieldRefNeedsClasscast(delegateInstanceType, declaringType);
 				}
-				return FieldRefAccessInternal<T, F>(fieldInfo, needCastclass);
+				return Tools.FieldRefAccess<T, F>(fieldInfo, needCastclass);
 			}
 			catch (Exception ex)
 			{
@@ -1053,46 +1150,14 @@ namespace HarmonyLib
 					// the field is not a struct instance field, since T could be object, ValueType, or an interface that the struct implements.
 					if (declaringType.IsValueType)
 						throw new ArgumentException("FieldDeclaringType must be a class");
-					needCastclass = FieldRefNeedsClasscast(delegateInstanceType, declaringType);
+					needCastclass = Tools.FieldRefNeedsClasscast(delegateInstanceType, declaringType);
 				}
-				return ref FieldRefAccessInternal<T, F>(fieldInfo, needCastclass)(instance);
+				return ref Tools.FieldRefAccess<T, F>(fieldInfo, needCastclass)(instance);
 			}
 			catch (Exception ex)
 			{
 				throw new ArgumentException($"FieldRefAccess<{typeof(T)}, {typeof(F)}> for {instance}, {fieldInfo} caused an exception", ex);
 			}
-		}
-
-		static FieldRef<T, F> FieldRefAccessInternal<T, F>(FieldInfo fieldInfo, bool needCastclass)
-		{
-			ValidateFieldType<F>(fieldInfo);
-			var delegateInstanceType = typeof(T);
-			var declaringType = fieldInfo.DeclaringType;
-
-			var dm = new DynamicMethodDefinition($"__refget_{delegateInstanceType.Name}_fi_{fieldInfo.Name}",
-				typeof(F).MakeByRefType(), new[] { delegateInstanceType });
-
-			var il = dm.GetILGenerator();
-			// Backwards compatibility: This supports static fields, even those defined in structs.
-			if (fieldInfo.IsStatic)
-			{
-				// ldarg.0 + ldflda actually works for static fields, but the potential castclass (and InvalidCastException) below must be avoided
-				// so might as well use the singular ldsflda for static fields.
-				il.Emit(OpCodes.Ldsflda, fieldInfo);
-			}
-			else
-			{
-				il.Emit(OpCodes.Ldarg_0);
-				// The castclass is needed when T is a parent class or interface of declaring type (e.g. if T is object),
-				// since there's no guarantee the instance passed to the delegate is actually of the declaring type.
-				// In such a situation, the castclass will throw an InvalidCastException and thus prevent undefined behavior.
-				if (needCastclass)
-					il.Emit(OpCodes.Castclass, declaringType);
-				il.Emit(OpCodes.Ldflda, fieldInfo);
-			}
-			il.Emit(OpCodes.Ret);
-
-			return (FieldRef<T, F>)dm.Generate().CreateDelegate(typeof(FieldRef<T, F>));
 		}
 
 		/// <summary>A readable/assignable reference delegate to an instance field of a struct</summary>
@@ -1123,7 +1188,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldName));
 			try
 			{
-				return StructFieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName));
+				return Tools.StructFieldRefAccess<T, F>(Tools.GetInstanceField(typeof(T), fieldName));
 			}
 			catch (Exception ex)
 			{
@@ -1155,7 +1220,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldName));
 			try
 			{
-				return ref StructFieldRefAccessInternal<T, F>(GetInstanceField(typeof(T), fieldName))(ref instance);
+				return ref Tools.StructFieldRefAccess<T, F>(Tools.GetInstanceField(typeof(T), fieldName))(ref instance);
 			}
 			catch (Exception ex)
 			{
@@ -1185,8 +1250,8 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldInfo));
 			try
 			{
-				ValidateStructField<T, F>(fieldInfo);
-				return StructFieldRefAccessInternal<T, F>(fieldInfo);
+				Tools.ValidateStructField<T, F>(fieldInfo);
+				return Tools.StructFieldRefAccess<T, F>(fieldInfo);
 			}
 			catch (Exception ex)
 			{
@@ -1218,28 +1283,13 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldInfo));
 			try
 			{
-				ValidateStructField<T, F>(fieldInfo);
-				return ref StructFieldRefAccessInternal<T, F>(fieldInfo)(ref instance);
+				Tools.ValidateStructField<T, F>(fieldInfo);
+				return ref Tools.StructFieldRefAccess<T, F>(fieldInfo)(ref instance);
 			}
 			catch (Exception ex)
 			{
 				throw new ArgumentException($"StructFieldRefAccess<{typeof(T)}, {typeof(F)}> for {instance}, {fieldInfo} caused an exception", ex);
 			}
-		}
-
-		static StructFieldRef<T, F> StructFieldRefAccessInternal<T, F>(FieldInfo fieldInfo) where T : struct
-		{
-			ValidateFieldType<F>(fieldInfo);
-
-			var dm = new DynamicMethodDefinition($"__refget_{typeof(T).Name}_struct_fi_{fieldInfo.Name}",
-				typeof(F).MakeByRefType(), new[] { typeof(T).MakeByRefType() });
-
-			var il = dm.GetILGenerator();
-			il.Emit(OpCodes.Ldarg_0);
-			il.Emit(OpCodes.Ldflda, fieldInfo);
-			il.Emit(OpCodes.Ret);
-
-			return (StructFieldRef<T, F>)dm.Generate().CreateDelegate(typeof(StructFieldRef<T, F>));
 		}
 
 		/// <summary>A readable/assignable reference delegate to a static field</summary>
@@ -1284,12 +1334,23 @@ namespace HarmonyLib
 				var fieldInfo = Field(type, fieldName);
 				if (fieldInfo is null)
 					throw new MissingFieldException(type.Name, fieldName);
-				return ref StaticFieldRefAccessInternal<F>(fieldInfo)();
+				return ref Tools.StaticFieldRefAccess<F>(fieldInfo)();
 			}
 			catch (Exception ex)
 			{
 				throw new ArgumentException($"StaticFieldRefAccess<{typeof(F)}> for {type}, {fieldName} caused an exception", ex);
 			}
+		}
+
+		/// <summary>Creates a static field reference</summary>
+		/// <typeparam name="F">The type of the field</typeparam>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A readable/assignable reference to the field</returns>
+		///
+		public static ref F StaticFieldRefAccess<F>(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			return ref StaticFieldRefAccess<F>(info.type, info.name);
 		}
 
 		/// <summary>Creates a static field reference</summary>
@@ -1312,7 +1373,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldInfo));
 			try
 			{
-				return ref StaticFieldRefAccessInternal<F>(fieldInfo)();
+				return ref Tools.StaticFieldRefAccess<F>(fieldInfo)();
 			}
 			catch (Exception ex)
 			{
@@ -1335,83 +1396,11 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(fieldInfo));
 			try
 			{
-				return StaticFieldRefAccessInternal<F>(fieldInfo);
+				return Tools.StaticFieldRefAccess<F>(fieldInfo);
 			}
 			catch (Exception ex)
 			{
 				throw new ArgumentException($"StaticFieldRefAccess<{typeof(F)}> for {fieldInfo} caused an exception", ex);
-			}
-		}
-
-		static FieldRef<F> StaticFieldRefAccessInternal<F>(FieldInfo fieldInfo)
-		{
-			if (fieldInfo.IsStatic is false)
-				throw new ArgumentException("Field must be static");
-			ValidateFieldType<F>(fieldInfo);
-
-			var dm = new DynamicMethodDefinition($"__refget_{fieldInfo.DeclaringType?.Name ?? "null"}_static_fi_{fieldInfo.Name}",
-				typeof(F).MakeByRefType(), new Type[0]);
-
-			var il = dm.GetILGenerator();
-			il.Emit(OpCodes.Ldsflda, fieldInfo);
-			il.Emit(OpCodes.Ret);
-
-			return (FieldRef<F>)dm.Generate().CreateDelegate(typeof(FieldRef<F>));
-		}
-
-		static FieldInfo GetInstanceField(Type type, string fieldName)
-		{
-			var fieldInfo = Field(type, fieldName);
-			if (fieldInfo is null)
-				throw new MissingFieldException(type.Name, fieldName);
-			if (fieldInfo.IsStatic)
-				throw new ArgumentException("Field must not be static");
-			return fieldInfo;
-		}
-
-		static bool FieldRefNeedsClasscast(Type delegateInstanceType, Type declaringType)
-		{
-			var needCastclass = false;
-			if (delegateInstanceType != declaringType)
-			{
-				needCastclass = delegateInstanceType.IsAssignableFrom(declaringType);
-				if (needCastclass is false && declaringType.IsAssignableFrom(delegateInstanceType) is false)
-					throw new ArgumentException("FieldDeclaringType must be assignable from or to T (FieldRefAccess instance type) - " +
-						"\"instanceOfT is FieldDeclaringType\" must be possible");
-			}
-			return needCastclass;
-		}
-
-		static void ValidateStructField<T, F>(FieldInfo fieldInfo) where T : struct
-		{
-			if (fieldInfo.IsStatic)
-				throw new ArgumentException("Field must not be static");
-			if (fieldInfo.DeclaringType != typeof(T))
-				throw new ArgumentException("FieldDeclaringType must be T (StructFieldRefAccess instance type)");
-		}
-
-		static void ValidateFieldType<F>(FieldInfo fieldInfo)
-		{
-			var returnType = typeof(F);
-			var fieldType = fieldInfo.FieldType;
-			if (returnType == fieldType)
-				return;
-			if (fieldType.IsEnum)
-			{
-				var underlyingType = Enum.GetUnderlyingType(fieldType);
-				if (returnType != underlyingType)
-					throw new ArgumentException("FieldRefAccess return type must be the same as FieldType or " +
-						$"FieldType's underlying integral type ({underlyingType}) for enum types");
-			}
-			else if (fieldType.IsValueType)
-			{
-				// Boxing/unboxing is not allowed for ref values of value types.
-				throw new ArgumentException("FieldRefAccess return type must be the same as FieldType for value types");
-			}
-			else
-			{
-				if (returnType.IsAssignableFrom(fieldType) is false)
-					throw new ArgumentException("FieldRefAccess return type must be assignable from FieldType for reference types");
 			}
 		}
 
@@ -1572,6 +1561,39 @@ namespace HarmonyLib
 				return (DelegateType)dmd.Generate().Invoke(null, new object[] { instance });
 			}
 			return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
+		}
+
+		/// <summary>Creates a delegate to a given method</summary>
+		/// <typeparam name="DelegateType">The delegate Type</typeparam>
+		/// <param name="typeColonName">The method in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <param name="instance">
+		/// Only applies for instance methods. If <c>null</c> (default), returned delegate is an open (a.k.a. unbound) instance delegate
+		/// where an instance is supplied as the first argument to the delegate invocation; else, delegate is a closed (a.k.a. bound)
+		/// instance delegate where the delegate invocation always applies to the given <paramref name="instance"/>.
+		/// </param>
+		/// <param name="virtualCall">
+		/// Only applies for instance methods. If <c>true</c> (default) and <paramref name="method"/> is virtual, invocation of the delegate
+		/// calls the instance method virtually (the instance type's most-derived/overriden implementation of the method is called);
+		/// else, invocation of the delegate calls the exact specified <paramref name="method"/> (this is useful for calling base class methods)
+		/// Note: if <c>false</c> and <paramref name="method"/> is an interface method, an ArgumentException is thrown.
+		/// </param>
+		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
+		/// <remarks>
+		/// <para>
+		/// Delegate invocation is more performant and more convenient to use than <see cref="MethodBase.Invoke(object, object[])"/>
+		/// at a one-time setup cost.
+		/// </para>
+		/// <para>
+		/// Works for both type of static and instance methods, both open and closed (a.k.a. unbound and bound) instance methods,
+		/// and both class and struct methods.
+		/// </para>
+		/// </remarks>
+		///
+		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance = null, bool virtualCall = true) where DelegateType : Delegate
+		{
+			var method = DeclaredMethod(typeColonName);
+			return MethodDelegate<DelegateType>(method, instance, virtualCall);
+
 		}
 
 		/// <summary>Creates a delegate for a given delegate definition, attributed with [<see cref="HarmonyLib.HarmonyDelegate"/>]</summary>

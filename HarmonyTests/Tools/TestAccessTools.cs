@@ -265,7 +265,7 @@ namespace HarmonyLibTests.Tools
 		{
 			var type = typeof(AccessToolsClass);
 
-			Assert.Null(AccessTools.Method(null));
+			Assert.Null(AccessTools.Method("foo:bar"));
 			Assert.Null(AccessTools.Method(type, null));
 			Assert.Null(AccessTools.Method(null, "Method1"));
 			Assert.Null(AccessTools.Method(type, "unknown"));
