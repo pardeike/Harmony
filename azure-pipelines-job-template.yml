@@ -1,6 +1,7 @@
 parameters:
 - name: dependsOn
   type: string
+  default: ''
 - name: os
   type: string
   values: [windows, ubuntu, macOS]
