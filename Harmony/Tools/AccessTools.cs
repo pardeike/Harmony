@@ -1572,12 +1572,12 @@ namespace HarmonyLib
 		/// instance delegate where the delegate invocation always applies to the given <paramref name="instance"/>.
 		/// </param>
 		/// <param name="virtualCall">
-		/// Only applies for instance methods. If <c>true</c> (default) and <paramref name="method"/> is virtual, invocation of the delegate
+		/// Only applies for instance methods. If <c>true</c> (default) and <paramref name="typeColonName"/> is virtual, invocation of the delegate
 		/// calls the instance method virtually (the instance type's most-derived/overriden implementation of the method is called);
-		/// else, invocation of the delegate calls the exact specified <paramref name="method"/> (this is useful for calling base class methods)
-		/// Note: if <c>false</c> and <paramref name="method"/> is an interface method, an ArgumentException is thrown.
+		/// else, invocation of the delegate calls the exact specified <paramref name="typeColonName"/> (this is useful for calling base class methods)
+		/// Note: if <c>false</c> and <paramref name="typeColonName"/> is an interface method, an ArgumentException is thrown.
 		/// </param>
-		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
+		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="typeColonName"/></returns>
 		/// <remarks>
 		/// <para>
 		/// Delegate invocation is more performant and more convenient to use than <see cref="MethodBase.Invoke(object, object[])"/>
