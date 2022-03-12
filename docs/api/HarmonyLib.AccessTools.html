@@ -4296,10 +4296,10 @@ instance delegate where the delegate invocation always applies to the given <cod
       <tr>
         <td><span class="xref">System.Boolean</span></td>
         <td><span class="parametername">virtualCall</span></td>
-        <td><p>Only applies for instance methods. If <code>true</code> (default) and <code data-dev-comment-type="paramref" class="paramref">method</code> is virtual, invocation of the delegate
+        <td><p>Only applies for instance methods. If <code>true</code> (default) and <code data-dev-comment-type="paramref" class="paramref">typeColonName</code> is virtual, invocation of the delegate
 calls the instance method virtually (the instance type's most-derived/overriden implementation of the method is called);
-else, invocation of the delegate calls the exact specified <code data-dev-comment-type="paramref" class="paramref">method</code> (this is useful for calling base class methods)
-Note: if <code>false</code> and <code data-dev-comment-type="paramref" class="paramref">method</code> is an interface method, an ArgumentException is thrown.</p>
+else, invocation of the delegate calls the exact specified <code data-dev-comment-type="paramref" class="paramref">typeColonName</code> (this is useful for calling base class methods)
+Note: if <code>false</code> and <code data-dev-comment-type="paramref" class="paramref">typeColonName</code> is an interface method, an ArgumentException is thrown.</p>
 </td>
       </tr>
     </tbody>
@@ -4315,7 +4315,7 @@ Note: if <code>false</code> and <code data-dev-comment-type="paramref" class="pa
     <tbody>
       <tr>
         <td><span class="xref">DelegateType</span></td>
-        <td><p>A delegate of given <code data-dev-comment-type="typeparamref" class="typeparamref">DelegateType</code> to given <code data-dev-comment-type="paramref" class="paramref">method</code></p>
+        <td><p>A delegate of given <code data-dev-comment-type="typeparamref" class="typeparamref">DelegateType</code> to given <code data-dev-comment-type="paramref" class="paramref">typeColonName</code></p>
 </td>
       </tr>
     </tbody>
