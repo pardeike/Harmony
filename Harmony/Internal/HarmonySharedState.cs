@@ -142,7 +142,7 @@ namespace HarmonyLib
 			var frameMethod = frame.GetMethod();
 			var methodStart = 0L;
 
-			if (frameMethod is null)
+			if (frameMethod is null || frameMethod.IsGenericMethod)
 			{
 				if (methodAddress == null) return null;
 				methodStart = (long)methodAddress.GetValue(frame);
