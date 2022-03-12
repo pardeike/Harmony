@@ -302,6 +302,18 @@ namespace HarmonyLib
 			ParseSpecialArguments(argumentTypes, argumentVariations);
 		}
 
+		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
+		/// <param name="typeName">The full name of the declaring class/type</param>
+		/// <param name="methodName">The name of the method, property or constructor to patch</param>
+		/// <param name="methodType">The <see cref="MethodType"/></param>
+		///
+		public HarmonyPatch(string typeName, string methodName, MethodType methodType = MethodType.Normal)
+		{
+			info.declaringType = AccessTools.TypeByName(typeName);
+			info.methodName = methodName;
+			info.methodType = methodType;
+		}
+
 		void ParseSpecialArguments(Type[] argumentTypes, ArgumentType[] argumentVariations)
 		{
 			if (argumentVariations is null || argumentVariations.Length == 0)
