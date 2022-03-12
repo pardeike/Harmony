@@ -146,14 +146,14 @@ namespace HarmonyLib
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
-			if (resultVariable is object)
+			if (resultVariable is object && hasReturnCode)
 				emitter.Emit(OpCodes.Stloc, resultVariable);
 			if (skipOriginalLabel.HasValue)
 				emitter.MarkLabel(skipOriginalLabel.Value);
 
 			_ = AddPostfixes(privateVars, false);
 
-			if (resultVariable is object)
+			if (resultVariable is object && hasReturnCode)
 				emitter.Emit(OpCodes.Ldloc, resultVariable);
 
 			var needsToStorePassthroughResult = AddPostfixes(privateVars, true);
