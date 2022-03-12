@@ -4120,6 +4120,12 @@ references:
   commentId: M:HarmonyLib.HarmonyPatch.#ctor(System.String,HarmonyLib.MethodType)
   fullName: HarmonyLib.HarmonyPatch.HarmonyPatch(System.String, HarmonyLib.MethodType)
   nameWithType: HarmonyPatch.HarmonyPatch(String, MethodType)
+- uid: HarmonyLib.HarmonyPatch.#ctor(System.String,System.String,HarmonyLib.MethodType)
+  name: HarmonyPatch(String, String, MethodType)
+  href: api/HarmonyLib.HarmonyPatch.html#HarmonyLib_HarmonyPatch__ctor_System_String_System_String_HarmonyLib_MethodType_
+  commentId: M:HarmonyLib.HarmonyPatch.#ctor(System.String,System.String,HarmonyLib.MethodType)
+  fullName: HarmonyLib.HarmonyPatch.HarmonyPatch(System.String, System.String, HarmonyLib.MethodType)
+  nameWithType: HarmonyPatch.HarmonyPatch(String, String, MethodType)
 - uid: HarmonyLib.HarmonyPatch.#ctor(System.String,System.Type[])
   name: HarmonyPatch(String, Type[])
   href: api/HarmonyLib.HarmonyPatch.html#HarmonyLib_HarmonyPatch__ctor_System_String_System_Type___
