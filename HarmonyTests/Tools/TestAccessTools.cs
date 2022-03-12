@@ -11,7 +11,7 @@ using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
 
 namespace HarmonyLibTests.Tools
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class Test_AccessTools : TestLogger
 	{
 		[OneTimeSetUp]

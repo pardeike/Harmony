@@ -5,7 +5,7 @@ using System;
 
 namespace HarmonyLibTests.Tools
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class TestTraverse_Methods : TestLogger
 	{
 		[Test]

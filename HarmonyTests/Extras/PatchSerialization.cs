@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HarmonyTests.Extras
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	class PatchSerialization
 	{
 		static string ExpectedJSON()

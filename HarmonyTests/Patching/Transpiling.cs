@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace HarmonyLibTests.Patching
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class Transpiling : TestLogger
 	{
 		static CodeInstruction[] savedInstructions = null;

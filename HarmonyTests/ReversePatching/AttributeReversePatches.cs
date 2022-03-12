@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace HarmonyLibTests.ReversePatching
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class AttributeReversePatches : TestLogger
 	{
 		[Test]

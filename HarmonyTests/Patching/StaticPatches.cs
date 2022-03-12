@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace HarmonyLibTests.Patching
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class StaticPatches : TestLogger
 	{
 		[Test]

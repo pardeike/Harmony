@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System;
@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 namespace HarmonyLibTests
 {
 	// Logs info on what's running these tests (useful for debugging CI).
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class TestEnvironment : TestLogger
 	{
 		[Test]

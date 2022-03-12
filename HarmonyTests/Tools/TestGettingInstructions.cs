@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace HarmonyLibTests.Tools
 		}
 	}
 
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class Test_GettingInstructions : TestLogger
 	{
 		[Test]

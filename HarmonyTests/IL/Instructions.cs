@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using static HarmonyLib.Code;
 
 namespace HarmonyLibTests.IL
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class Instructions : TestLogger
 	{
 		[Test]

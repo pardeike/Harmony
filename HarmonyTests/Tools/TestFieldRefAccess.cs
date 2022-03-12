@@ -21,7 +21,7 @@ namespace HarmonyLibTests.Tools
 	// - the type of the field
 	// - type parameter F (which again may not match previous)
 	// particularly around differences between references types (classes and interfaces) and value types (structs, primitives, etc.).
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class TestFieldRefAccess : TestLogger
 	{
 		// The "A" here is to distinguish from NUnit's own TestCase, though the "ATestCase" naming is a neat side effect.

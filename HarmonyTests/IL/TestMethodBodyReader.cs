@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace HarmonyLibTests.IL
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class TestMethodBodyReader : TestLogger
 	{
 		public static void WeirdMethodWithGoto()

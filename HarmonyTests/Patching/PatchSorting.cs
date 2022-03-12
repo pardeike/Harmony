@@ -1,11 +1,11 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 using System.Linq;
 using System.Reflection;
 
 namespace HarmonyLibTests.Patching
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class PatchSorting : TestLogger
 	{
 		void Patch1() { }

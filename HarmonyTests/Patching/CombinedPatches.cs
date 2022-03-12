@@ -1,11 +1,11 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace HarmonyLibTests.Patching
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class CombinedPatches : TestLogger
 	{
 		[Test]

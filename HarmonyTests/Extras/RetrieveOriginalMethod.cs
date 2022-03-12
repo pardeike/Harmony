@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace HarmonyLibTests.Extras
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	class RetrieveOriginalMethod : TestLogger
 	{
 		[Test]

@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace HarmonyLibTests.Tools
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class Test_AccessCache : TestLogger
 	{
 		void InjectField(AccessCache cache)

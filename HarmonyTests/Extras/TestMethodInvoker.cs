@@ -1,10 +1,10 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 
 namespace HarmonyLibTests.Extras
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class TestMethodInvoker : TestLogger
 	{
 		[Test]

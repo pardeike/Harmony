@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace HarmonyLibTests.Tools
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class TestTraverse_Types : TestLogger
 	{
 		class InnerClass { }

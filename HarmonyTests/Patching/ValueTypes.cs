@@ -1,9 +1,9 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using NUnit.Framework;
 
 namespace HarmonyLibTests.Patching
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class ValueTypes : TestLogger
 	{
 		[Test]

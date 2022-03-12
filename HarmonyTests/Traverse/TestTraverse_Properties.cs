@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace HarmonyLibTests.Tools
 {
-	[TestFixture]
+	[TestFixture, NonParallelizable]
 	public class TestTraverse_Properties : TestLogger
 	{
 		// Traverse.ToString() should return the value of a traversed property
