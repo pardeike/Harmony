@@ -1,4 +1,6 @@
 parameters:
+- name: dependsOn
+  type: []
 - name: os
   type: string
   values: [windows, ubuntu, macOS]
@@ -20,6 +22,7 @@ parameters:
 
 jobs:
 - job: ${{parameters.os}}_${{parameters.runtimeType}}_${{parameters.architecture}}
+  dependsOn: ${{parameters.DependsOn}}
   displayName: ${{replace(format('{0} {1} {2}', parameters.os, replace(parameters.runtimeType, 'dotnet', ''), parameters.architecture), '  ', ' ')}}
 
   pool:
