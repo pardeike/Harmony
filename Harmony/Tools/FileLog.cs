@@ -12,24 +12,45 @@ namespace HarmonyLib
 	public static class FileLog
 	{
 		private static readonly object fileLock = new object();
+		private static bool _logPathInited;
+		private static string _logPath;
 
-		static FileLog()
-		{
-			var customPath = Environment.GetEnvironmentVariable("HARMONY_LOG_FILE");
-			if (string.IsNullOrEmpty(customPath) is false)
-			{
-				logPath = customPath;
-				return;
-			}
-
-			var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-			_ = Directory.CreateDirectory(desktopPath);
-			logPath = Path.Combine(desktopPath, "harmony.log.txt");
-		}
+		/// <summary>Set this to make Harmony write its log content to this stream</summary>
+		///
+		public static StreamWriter LogWriter { get; set; }
 
 		/// <summary>Full pathname of the log file, defaults to a file called <c>harmony.log.txt</c> on your Desktop</summary>
 		///
-		public static string logPath;
+		public static string LogPath
+		{
+			get
+			{
+				lock (fileLock)
+				{
+					if (_logPathInited == false)
+					{
+						_logPathInited = true;
+
+						var noLog = Environment.GetEnvironmentVariable("HARMONY_NO_LOG");
+						if (string.IsNullOrEmpty(noLog) is false)
+							return null;
+
+						_logPath = Environment.GetEnvironmentVariable("HARMONY_LOG_FILE");
+						if (string.IsNullOrEmpty(_logPath))
+						{
+							try
+							{
+								var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+								_ = Directory.CreateDirectory(desktopPath);
+								_logPath = Path.Combine(desktopPath, "harmony.log.txt");
+							}
+							finally { }
+						}
+					}
+					return _logPath;
+				}
+			}
+		}
 
 		/// <summary>The indent character. The default is <c>tab</c></summary>
 		///
@@ -111,15 +132,22 @@ namespace HarmonyLib
 		///
 		public static void FlushBuffer()
 		{
+			if (LogWriter != null)
+			{
+				foreach (var str in buffer)
+					LogWriter.WriteLine(str);
+				buffer.Clear();
+				return;
+			}
+
+			if (LogPath == null) return;
 			lock (fileLock)
 			{
 				if (buffer.Count > 0)
 				{
-					using (var writer = File.AppendText(logPath))
-					{
-						foreach (var str in buffer)
-							writer.WriteLine(str);
-					}
+					using var writer = File.AppendText(LogPath);
+					foreach (var str in buffer)
+						writer.WriteLine(str);
 					buffer.Clear();
 				}
 			}
@@ -130,9 +158,16 @@ namespace HarmonyLib
 		///
 		public static void Log(string str)
 		{
+			if (LogWriter != null)
+			{
+				LogWriter.WriteLine(IndentString() + str);
+				return;
+			}
+
+			if (LogPath == null) return;
 			lock (fileLock)
 			{
-				using var writer = File.AppendText(logPath);
+				using var writer = File.AppendText(LogPath);
 				writer.WriteLine(IndentString() + str);
 			}
 		}
