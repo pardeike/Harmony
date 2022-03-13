@@ -3013,12 +3013,32 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.FileLog.LogBytes
   nameWithType: FileLog.LogBytes
-- uid: HarmonyLib.FileLog.logPath
-  name: logPath
-  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_logPath
-  commentId: F:HarmonyLib.FileLog.logPath
-  fullName: HarmonyLib.FileLog.logPath
-  nameWithType: FileLog.logPath
+- uid: HarmonyLib.FileLog.LogPath
+  name: LogPath
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogPath
+  commentId: P:HarmonyLib.FileLog.LogPath
+  fullName: HarmonyLib.FileLog.LogPath
+  nameWithType: FileLog.LogPath
+- uid: HarmonyLib.FileLog.LogPath*
+  name: LogPath
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogPath_
+  commentId: Overload:HarmonyLib.FileLog.LogPath
+  isSpec: "True"
+  fullName: HarmonyLib.FileLog.LogPath
+  nameWithType: FileLog.LogPath
+- uid: HarmonyLib.FileLog.LogWriter
+  name: LogWriter
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogWriter
+  commentId: P:HarmonyLib.FileLog.LogWriter
+  fullName: HarmonyLib.FileLog.LogWriter
+  nameWithType: FileLog.LogWriter
+- uid: HarmonyLib.FileLog.LogWriter*
+  name: LogWriter
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogWriter_
+  commentId: Overload:HarmonyLib.FileLog.LogWriter
+  isSpec: "True"
+  fullName: HarmonyLib.FileLog.LogWriter
+  nameWithType: FileLog.LogWriter
 - uid: HarmonyLib.FileLog.Reset
   name: Reset()
   href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_Reset
