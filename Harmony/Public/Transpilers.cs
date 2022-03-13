@@ -64,7 +64,7 @@ namespace HarmonyLib
 		public static IEnumerable<CodeInstruction> DebugLogger(this IEnumerable<CodeInstruction> instructions, string text)
 		{
 			yield return new CodeInstruction(OpCodes.Ldstr, text);
-			yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FileLog), nameof(FileLog.Log)));
+			yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FileLog), nameof(FileLog.Debug)));
 			foreach (var instruction in instructions) yield return instruction;
 		}
 	}
