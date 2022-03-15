@@ -409,27 +409,65 @@ namespace HarmonyLibTests.Patching
 			var instance = new Harmony("test");
 			Assert.NotNull(instance, "instance");
 
-			var original = SymbolExtensions.GetMethodInfo(() => Class22.Method22());
-			Assert.NotNull(original, "original");
-			var prefix1 = SymbolExtensions.GetMethodInfo(() => Class22.Prefix1(false));
-			Assert.NotNull(original, "prefix1");
-			var prefix2 = SymbolExtensions.GetMethodInfo(() => Class22.Prefix2(false));
-			Assert.NotNull(original, "prefix2");
-
-			var patched1 = instance.Patch(original, new HarmonyMethod(prefix1));
-			Assert.NotNull(patched1, "patched1");
-
-			var patched2 = instance.Patch(original, new HarmonyMethod(prefix2));
-			Assert.NotNull(patched2, "patched2");
+			var processor = new PatchClassProcessor(instance, typeof(Class22));
+			Assert.NotNull(processor, "processor");
+			_ = processor.Patch();
 
 			Class22.bool1 = null;
 			Class22.bool2 = null;
+			Class22.bool3 = null;
+			Class22.bool4 = null;
 			Class22.Method22();
 
-			Assert.NotNull(Class22.bool1, "Class22.bool1");
-			Assert.NotNull(Class22.bool2, "Class22.bool2");
-			Assert.IsTrue(Class22.bool1.Value, "Class22.bool1.Value");
-			Assert.IsFalse(Class22.bool2.Value, "Class22.bool2.Value");
+			Assert.NotNull(Class22.bool1, "bool1");
+			Assert.IsTrue(Class22.bool1.Value, "bool1.Value");
+
+			Assert.NotNull(Class22.bool2, "bool2");
+			Assert.IsTrue(Class22.bool2.Value, "bool2.Value");
+
+			Assert.NotNull(Class22.bool3, "bool3");
+			Assert.IsFalse(Class22.bool3.Value, "bool3.Value");
+
+			Assert.NotNull(Class22.bool4, "bool3");
+			Assert.IsFalse(Class22.bool4.Value, "bool4.Value");
+		}
+
+		[Test]
+		public void Test_Class23()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+
+			var processor = new PatchClassProcessor(instance, typeof(Class23));
+			Assert.NotNull(processor, "processor");
+			_ = processor.Patch();
+
+			Class23.bool1 = null;
+			Class23.Method23();
+
+			Assert.NotNull(Class23.bool1, "bool1");
+			Assert.IsTrue(Class23.bool1.Value, "bool1.Value");
+		}
+
+		[Test]
+		public void Test_Class24()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+
+			var processor = new PatchClassProcessor(instance, typeof(Class24));
+			Assert.NotNull(processor, "processor");
+			_ = processor.Patch();
+
+			Class24.bool1 = null;
+			Class24.bool2 = null;
+			Class24.Method24();
+
+			Assert.NotNull(Class24.bool1, "bool1");
+			Assert.IsTrue(Class24.bool1.Value, "bool1.Value");
+
+			Assert.NotNull(Class24.bool2, "bool2");
+			Assert.IsTrue(Class24.bool2.Value, "bool2.Value");
 		}
 	}
 }

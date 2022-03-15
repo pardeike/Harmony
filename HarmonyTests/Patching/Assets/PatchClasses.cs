@@ -1117,10 +1117,13 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	[HarmonyPatch(typeof(Class22), nameof(Class22.Method22))]
 	public class Class22
 	{
-		public static bool? bool1 = null;
-		public static bool? bool2 = null;
+		public static bool? bool1;
+		public static bool? bool2;
+		public static bool? bool3;
+		public static bool? bool4;
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static void Method22()
@@ -1134,13 +1137,80 @@ namespace HarmonyLibTests.Assets
 			}
 		}
 
+		[HarmonyPrefix]
 		public static bool Prefix1(bool __runOriginal)
 		{
 			bool1 = __runOriginal;
+			return true;
+		}
+
+		[HarmonyPrefix]
+		public static bool Prefix2(bool __runOriginal)
+		{
+			bool2 = __runOriginal;
 			return false;
 		}
 
-		public static void Prefix2(bool __runOriginal)
+		[HarmonyPrefix]
+		public static void Prefix3(bool __runOriginal)
+		{
+			bool3 = __runOriginal;
+		}
+
+		[HarmonyPostfix]
+		public static void Postfix(bool __runOriginal)
+		{
+			bool4 = __runOriginal;
+		}
+	}
+
+	[HarmonyPatch(typeof(Class23), nameof(Class23.Method23))]
+	public class Class23
+	{
+		public static bool? bool1;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static void Method23()
+		{
+			try
+			{
+			}
+			catch
+			{
+				throw;
+			}
+		}
+
+		public static void Postfix(bool __runOriginal)
+		{
+			bool1 = __runOriginal;
+		}
+	}
+
+	[HarmonyPatch(typeof(Class24), nameof(Class24.Method24))]
+	public class Class24
+	{
+		public static bool? bool1;
+		public static bool? bool2;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static void Method24()
+		{
+			try
+			{
+			}
+			catch
+			{
+				throw;
+			}
+		}
+
+		public static void Prefix(bool __runOriginal)
+		{
+			bool1 = __runOriginal;
+		}
+
+		public static void Postfix(bool __runOriginal)
 		{
 			bool2 = __runOriginal;
 		}
