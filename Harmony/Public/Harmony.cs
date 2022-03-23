@@ -174,7 +174,7 @@ namespace HarmonyLib
 		/// <param name="type">The <see cref="HarmonyPatchType"/></param>
 		/// <param name="harmonyID">The optional Harmony ID to restrict unpatching to a specific Harmony instance</param>
 		///
-		public void Unpatch(MethodBase original, HarmonyPatchType type, string harmonyID = null)
+		public void Unpatch(MethodBase original, HarmonyPatchType type, string harmonyID = "*")
 		{
 			var processor = CreateProcessor(original);
 			_ = processor.Unpatch(type, harmonyID);
