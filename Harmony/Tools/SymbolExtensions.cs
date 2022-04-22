@@ -47,7 +47,11 @@ namespace HarmonyLib
 			var outermostExpression = expression.Body as MethodCallExpression;
 
 			if (outermostExpression is null)
+			{
+				if (expression.Body is UnaryExpression ue && ue.Operand is MethodCallExpression me && me.Object is System.Linq.Expressions.ConstantExpression ce && ce.Value is MethodInfo mi)
+					return mi;
 				throw new ArgumentException("Invalid Expression. Expression should consist of a Method call only.");
+			}
 
 			var method = outermostExpression.Method;
 			if (method is null)
