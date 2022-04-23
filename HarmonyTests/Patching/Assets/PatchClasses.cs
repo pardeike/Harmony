@@ -1164,6 +1164,34 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	[HarmonyPatch(typeof(Class22b), nameof(Class22b.Method22b))]
+	public class Class22b
+	{
+		public static bool prefixResult;
+		public static bool originalExecuted;
+		public static bool? runOriginalPre;
+		public static bool? runOriginalPost;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static void Method22b()
+		{
+			originalExecuted = true;
+			try { }
+			catch { throw; }
+		}
+
+		public static bool Prefix(bool __runOriginal)
+		{
+			runOriginalPre = __runOriginal;
+			return prefixResult;
+		}
+
+		public static void Postfix(bool __runOriginal)
+		{
+			runOriginalPost = __runOriginal;
+		}
+	}
+
 	[HarmonyPatch(typeof(Class23), nameof(Class23.Method23))]
 	public class Class23
 	{

@@ -433,6 +433,37 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+		public void Test_Class22b()
+		{
+			var instance = new Harmony("test");
+			Assert.NotNull(instance, "instance");
+
+			var processor = new PatchClassProcessor(instance, typeof(Class22b));
+			Assert.NotNull(processor, "processor");
+			_ = processor.Patch();
+
+			Class22b.prefixResult = false;
+			Class22b.originalExecuted = false;
+			Class22b.runOriginalPre = null;
+			Class22b.runOriginalPost = null;
+			Class22b.Method22b();
+
+			Assert.IsFalse(Class22b.originalExecuted, "originalExecuted 1");
+			Assert.IsTrue(Class22b.runOriginalPre.Value, "runOriginalPre.Value 1");
+			Assert.IsFalse(Class22b.runOriginalPost.Value, "runOriginalPre.Value 1");
+
+			Class22b.prefixResult = true;
+			Class22b.originalExecuted = false;
+			Class22b.runOriginalPre = null;
+			Class22b.runOriginalPost = null;
+			Class22b.Method22b();
+
+			Assert.IsTrue(Class22b.originalExecuted, "originalExecuted 2");
+			Assert.IsTrue(Class22b.runOriginalPre.Value, "runOriginalPre.Value 2");
+			Assert.IsTrue(Class22b.runOriginalPost.Value, "runOriginalPre.Value 2");
+		}
+
+		[Test]
 		public void Test_Class23()
 		{
 			var instance = new Harmony("test");
