@@ -1732,12 +1732,12 @@ namespace HarmonyLib
 		/// <summary>
 		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
 		/// </summary>
-		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = new Dictionary<Type, FastInvokeHandler>();
+		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = new();
 
 #if NET35
-		static readonly ReaderWriterLock addHandlerCacheLock = new ReaderWriterLock();
+		static readonly ReaderWriterLock addHandlerCacheLock = new();
 #else
-		static readonly ReaderWriterLockSlim addHandlerCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+		static readonly ReaderWriterLockSlim addHandlerCacheLock = new(LockRecursionPolicy.SupportsRecursion);
 #endif
 
 		/// <summary>Makes a deep copy of any object</summary>
@@ -1913,20 +1913,11 @@ namespace HarmonyLib
 		{
 			if (type == null)
 				return false;
-			switch (Type.GetTypeCode(type))
+			return Type.GetTypeCode(type) switch
 			{
-				case TypeCode.Byte:
-				case TypeCode.SByte:
-				case TypeCode.UInt16:
-				case TypeCode.UInt32:
-				case TypeCode.UInt64:
-				case TypeCode.Int16:
-				case TypeCode.Int32:
-				case TypeCode.Int64:
-					return true;
-				default:
-					return false;
-			}
+				TypeCode.Byte or TypeCode.SByte or TypeCode.UInt16 or TypeCode.UInt32 or TypeCode.UInt64 or TypeCode.Int16 or TypeCode.Int32 or TypeCode.Int64 => true,
+				_ => false,
+			};
 		}
 
 		/// <summary>Tests if a type is a floating point type</summary>
@@ -1937,15 +1928,11 @@ namespace HarmonyLib
 		{
 			if (type == null)
 				return false;
-			switch (Type.GetTypeCode(type))
+			return Type.GetTypeCode(type) switch
 			{
-				case TypeCode.Decimal:
-				case TypeCode.Double:
-				case TypeCode.Single:
-					return true;
-				default:
-					return false;
-			}
+				TypeCode.Decimal or TypeCode.Double or TypeCode.Single => true,
+				_ => false,
+			};
 		}
 
 		/// <summary>Tests if a type is a numerical type</summary>
@@ -1986,23 +1973,15 @@ namespace HarmonyLib
 		{
 			if (member is null)
 				throw new ArgumentNullException(nameof(member));
-			switch (member.MemberType)
+			return member.MemberType switch
 			{
-				case MemberTypes.Constructor:
-				case MemberTypes.Method:
-					return ((MethodBase)member).IsStatic;
-				case MemberTypes.Event:
-					return IsStatic((EventInfo)member);
-				case MemberTypes.Field:
-					return ((FieldInfo)member).IsStatic;
-				case MemberTypes.Property:
-					return IsStatic((PropertyInfo)member);
-				case MemberTypes.TypeInfo:
-				case MemberTypes.NestedType:
-					return IsStatic((Type)member);
-				default:
-					throw new ArgumentException($"Unknown member type: {member.MemberType}");
-			}
+				MemberTypes.Constructor or MemberTypes.Method => ((MethodBase)member).IsStatic,
+				MemberTypes.Event => IsStatic((EventInfo)member),
+				MemberTypes.Field => ((FieldInfo)member).IsStatic,
+				MemberTypes.Property => IsStatic((PropertyInfo)member),
+				MemberTypes.TypeInfo or MemberTypes.NestedType => IsStatic((Type)member),
+				_ => throw new ArgumentException($"Unknown member type: {member.MemberType}"),
+			};
 		}
 
 		/// <summary>Tests whether a type is static, as defined in C#</summary>

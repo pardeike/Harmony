@@ -17,7 +17,8 @@ namespace HarmonyLib
 
 		readonly List<AttributePatch> patchMethods;
 
-		static readonly List<Type> auxilaryTypes = new List<Type>() {
+		static readonly List<Type> auxilaryTypes = new()
+		{
 			typeof(HarmonyPrepare),
 			typeof(HarmonyCleanup),
 			typeof(HarmonyTargetMethod),

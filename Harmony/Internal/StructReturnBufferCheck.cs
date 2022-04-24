@@ -81,7 +81,7 @@ namespace HarmonyLib
 
 	internal class StructReturnBuffer
 	{
-		static readonly Dictionary<Type, int> sizes = new Dictionary<Type, int>();
+		static readonly Dictionary<Type, int> sizes = new();
 
 		static int SizeOf(Type type)
 		{
@@ -95,7 +95,7 @@ namespace HarmonyLib
 			}
 		}
 
-		static readonly HashSet<int> specialSizes = new HashSet<int> { 1, 2, 4, 8 };
+		static readonly HashSet<int> specialSizes = new() { 1, 2, 4, 8 };
 		internal static bool NeedsFix(MethodBase method)
 		{
 			var returnType = AccessTools.GetReturnedType(method);
@@ -109,9 +109,9 @@ namespace HarmonyLib
 		}
 
 		internal static bool hasTestResult_Mono;
-		static readonly object hasTestResult_Mono_lock = new object();
+		static readonly object hasTestResult_Mono_lock = new();
 		internal static bool hasTestResult_Net;
-		static readonly object hasTestResult_Net_lock = new object();
+		static readonly object hasTestResult_Net_lock = new();
 		static bool HasStructReturnBuffer()
 		{
 			if (AccessTools.IsMonoRuntime)

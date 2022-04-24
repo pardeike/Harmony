@@ -14,20 +14,20 @@ namespace HarmonyLib
 		}
 
 		const BindingFlags BasicFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField | BindingFlags.GetProperty | BindingFlags.SetProperty;
-		static readonly Dictionary<MemberType, BindingFlags> declaredOnlyBindingFlags = new Dictionary<MemberType, BindingFlags>()
+		static readonly Dictionary<MemberType, BindingFlags> declaredOnlyBindingFlags = new()
 		{
 			{ MemberType.Any, BasicFlags | BindingFlags.Instance | BindingFlags.Static },
 			{ MemberType.Instance, BasicFlags | BindingFlags.Instance },
 			{ MemberType.Static, BasicFlags | BindingFlags.Static }
 		};
 
-		readonly Dictionary<Type, Dictionary<string, FieldInfo>> declaredFields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
-		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> declaredProperties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
-		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> declaredMethods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
+		readonly Dictionary<Type, Dictionary<string, FieldInfo>> declaredFields = new();
+		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> declaredProperties = new();
+		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> declaredMethods = new();
 
-		readonly Dictionary<Type, Dictionary<string, FieldInfo>> inheritedFields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
-		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> inheritedProperties = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
-		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> inheritedMethods = new Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>>();
+		readonly Dictionary<Type, Dictionary<string, FieldInfo>> inheritedFields = new();
+		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> inheritedProperties = new();
+		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> inheritedMethods = new();
 
 		static T Get<T>(Dictionary<Type, Dictionary<string, T>> dict, Type type, string name, Func<T> fetcher)
 		{

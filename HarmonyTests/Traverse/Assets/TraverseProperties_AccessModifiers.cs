@@ -14,7 +14,7 @@ namespace HarmonyLibTests.Assets
 	public class Traverse_ExtraClass
 	{
 		public readonly string someString = "-";
-		public readonly Traverse_BaseClass baseClass = new Traverse_BaseClass();
+		public readonly Traverse_BaseClass baseClass = new();
 
 		public Traverse_ExtraClass(string val)
 		{
@@ -56,7 +56,7 @@ namespace HarmonyLibTests.Assets
 	public static class TraverseFields_Static
 	{
 		static readonly string staticField = "test2";
-		public static readonly Traverse_ExtraClass extraClassInstance = new Traverse_ExtraClass("test2");
+		public static readonly Traverse_ExtraClass extraClassInstance = new("test2");
 	}
 
 	public static class TraverseProperties_Static

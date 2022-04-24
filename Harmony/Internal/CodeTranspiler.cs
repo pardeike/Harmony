@@ -11,7 +11,7 @@ namespace HarmonyLib
 	{
 		readonly IEnumerable<CodeInstruction> codeInstructions;
 		readonly bool argumentShift;
-		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
+		readonly List<MethodInfo> transpilers = new();
 
 		internal CodeTranspiler(List<ILInstruction> ilInstructions, bool argumentShift)
 		{
@@ -259,7 +259,7 @@ namespace HarmonyLib
 
 		//
 
-		static readonly Dictionary<OpCode, OpCode> allJumpCodes = new Dictionary<OpCode, OpCode>
+		static readonly Dictionary<OpCode, OpCode> allJumpCodes = new()
 		{
 			{ OpCodes.Beq_S, OpCodes.Beq },
 			{ OpCodes.Bge_S, OpCodes.Bge },

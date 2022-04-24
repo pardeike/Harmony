@@ -60,7 +60,7 @@ namespace HarmonyLib
 				return typeToDeserialize;
 			}
 		}
-		internal static readonly BinaryFormatter binaryFormatter = new BinaryFormatter { Binder = new Binder() };
+		internal static readonly BinaryFormatter binaryFormatter = new() { Binder = new Binder() };
 
 		/// <summary>Serializes a patch info</summary>
 		/// <param name="patchInfo">The <see cref="PatchInfo"/></param>

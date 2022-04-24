@@ -67,7 +67,7 @@ namespace HarmonyLibTests.Patching
 			}
 		}
 
-		public List<T> list = new List<T>();
+		public List<T> list = new();
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public MyEnumerator GetEnumerator()

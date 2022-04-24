@@ -165,31 +165,75 @@ namespace HarmonyLib
 	///
 	public static class CodeInstructionExtensions
 	{
-		static readonly HashSet<OpCode> loadVarCodes = new HashSet<OpCode>
+		static readonly HashSet<OpCode> loadVarCodes = new()
 		{
-			OpCodes.Ldloc_0, OpCodes.Ldloc_1, OpCodes.Ldloc_2, OpCodes.Ldloc_3,
-			OpCodes.Ldloc, OpCodes.Ldloca, OpCodes.Ldloc_S, OpCodes.Ldloca_S
+			OpCodes.Ldloc_0,
+			OpCodes.Ldloc_1,
+			OpCodes.Ldloc_2,
+			OpCodes.Ldloc_3,
+			OpCodes.Ldloc,
+			OpCodes.Ldloca,
+			OpCodes.Ldloc_S,
+			OpCodes.Ldloca_S
 		};
 
-		static readonly HashSet<OpCode> storeVarCodes = new HashSet<OpCode>
+		static readonly HashSet<OpCode> storeVarCodes = new()
 		{
-			OpCodes.Stloc_0, OpCodes.Stloc_1, OpCodes.Stloc_2, OpCodes.Stloc_3,
-			OpCodes.Stloc, OpCodes.Stloc_S
+			OpCodes.Stloc_0,
+			OpCodes.Stloc_1,
+			OpCodes.Stloc_2,
+			OpCodes.Stloc_3,
+			OpCodes.Stloc,
+			OpCodes.Stloc_S
 		};
 
-		static readonly HashSet<OpCode> branchCodes = new HashSet<OpCode>
+		static readonly HashSet<OpCode> branchCodes = new()
 		{
-			OpCodes.Br_S, OpCodes.Brfalse_S, OpCodes.Brtrue_S, OpCodes.Beq_S, OpCodes.Bge_S, OpCodes.Bgt_S,
-			OpCodes.Ble_S, OpCodes.Blt_S, OpCodes.Bne_Un_S, OpCodes.Bge_Un_S, OpCodes.Bgt_Un_S, OpCodes.Ble_Un_S,
-			OpCodes.Blt_Un_S, OpCodes.Br, OpCodes.Brfalse, OpCodes.Brtrue, OpCodes.Beq, OpCodes.Bge, OpCodes.Bgt,
-			OpCodes.Ble, OpCodes.Blt, OpCodes.Bne_Un, OpCodes.Bge_Un, OpCodes.Bgt_Un, OpCodes.Ble_Un, OpCodes.Blt_Un
+			OpCodes.Br_S,
+			OpCodes.Brfalse_S,
+			OpCodes.Brtrue_S,
+			OpCodes.Beq_S,
+			OpCodes.Bge_S,
+			OpCodes.Bgt_S,
+			OpCodes.Ble_S,
+			OpCodes.Blt_S,
+			OpCodes.Bne_Un_S,
+			OpCodes.Bge_Un_S,
+			OpCodes.Bgt_Un_S,
+			OpCodes.Ble_Un_S,
+			OpCodes.Blt_Un_S,
+			OpCodes.Br,
+			OpCodes.Brfalse,
+			OpCodes.Brtrue,
+			OpCodes.Beq,
+			OpCodes.Bge,
+			OpCodes.Bgt,
+			OpCodes.Ble,
+			OpCodes.Blt,
+			OpCodes.Bne_Un,
+			OpCodes.Bge_Un,
+			OpCodes.Bgt_Un,
+			OpCodes.Ble_Un,
+			OpCodes.Blt_Un
 		};
 
-		static readonly HashSet<OpCode> constantLoadingCodes = new HashSet<OpCode>
+		static readonly HashSet<OpCode> constantLoadingCodes = new()
 		{
-			OpCodes.Ldc_I4_M1, OpCodes.Ldc_I4_0, OpCodes.Ldc_I4_1, OpCodes.Ldc_I4_2, OpCodes.Ldc_I4_3,
-			OpCodes.Ldc_I4_4, OpCodes.Ldc_I4_5, OpCodes.Ldc_I4_6, OpCodes.Ldc_I4_7, OpCodes.Ldc_I4_8,
-			OpCodes.Ldc_I4, OpCodes.Ldc_I4_S, OpCodes.Ldc_I8, OpCodes.Ldc_R4, OpCodes.Ldc_R8
+			OpCodes.Ldc_I4_M1,
+			OpCodes.Ldc_I4_0,
+			OpCodes.Ldc_I4_1,
+			OpCodes.Ldc_I4_2,
+			OpCodes.Ldc_I4_3,
+			OpCodes.Ldc_I4_4,
+			OpCodes.Ldc_I4_5,
+			OpCodes.Ldc_I4_6,
+			OpCodes.Ldc_I4_7,
+			OpCodes.Ldc_I4_8,
+			OpCodes.Ldc_I4,
+			OpCodes.Ldc_I4_S,
+			OpCodes.Ldc_I8,
+			OpCodes.Ldc_R4,
+			OpCodes.Ldc_R8
 		};
 
 		/// <summary>Returns if an <see cref="OpCode"/> is initialized and valid</summary>

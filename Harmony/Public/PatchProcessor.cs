@@ -19,7 +19,7 @@ namespace HarmonyLib
 		HarmonyMethod transpiler;
 		HarmonyMethod finalizer;
 
-		internal static readonly object locker = new object();
+		internal static readonly object locker = new();
 
 		/// <summary>Creates an empty patch processor</summary>
 		/// <param name="instance">The Harmony instance</param>

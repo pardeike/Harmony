@@ -132,7 +132,7 @@ namespace HarmonyLibTests.Tools
 			public IncompatibleFieldTypeException(string message) : base(message) { }
 		}
 
-		static readonly Dictionary<Type, object> instancePrototypes = new Dictionary<Type, object>
+		static readonly Dictionary<Type, object> instancePrototypes = new()
 		{
 			[typeof(AccessToolsClass)] = new AccessToolsClass(),
 			[typeof(AccessToolsSubClass)] = new AccessToolsSubClass(),

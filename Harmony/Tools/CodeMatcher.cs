@@ -10,14 +10,14 @@ namespace HarmonyLib
 	public class CodeMatcher
 	{
 		private readonly ILGenerator generator;
-		private readonly List<CodeInstruction> codes = new List<CodeInstruction>();
+		private readonly List<CodeInstruction> codes = new();
 
 		/// <summary>The current position</summary>
 		/// <value>The index or -1 if out of bounds</value>
 		///
 		public int Pos { get; private set; } = -1;
 
-		private Dictionary<string, CodeInstruction> lastMatches = new Dictionary<string, CodeInstruction>();
+		private Dictionary<string, CodeInstruction> lastMatches = new();
 		private string lastError;
 		private delegate CodeMatcher MatchDelegate();
 		private MatchDelegate lastMatchCall;

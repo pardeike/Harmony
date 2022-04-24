@@ -14,10 +14,10 @@ namespace HarmonyLib
 		{
 			internal MethodBase original;
 			internal T replacement;
-			internal List<HarmonyMethod> prefixes = new List<HarmonyMethod>();
-			internal List<HarmonyMethod> postfixes = new List<HarmonyMethod>();
-			internal List<HarmonyMethod> transpilers = new List<HarmonyMethod>();
-			internal List<HarmonyMethod> finalizers = new List<HarmonyMethod>();
+			internal List<HarmonyMethod> prefixes = new();
+			internal List<HarmonyMethod> postfixes = new();
+			internal List<HarmonyMethod> transpilers = new();
+			internal List<HarmonyMethod> finalizers = new();
 
 			internal void AddPatch(AttributePatch patch)
 			{
@@ -39,7 +39,7 @@ namespace HarmonyLib
 			}
 		}
 
-		internal Dictionary<MethodBase, Job> state = new Dictionary<MethodBase, Job>();
+		internal Dictionary<MethodBase, Job> state = new();
 
 		internal Job GetJob(MethodBase method)
 		{

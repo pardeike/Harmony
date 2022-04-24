@@ -13,7 +13,7 @@ namespace HarmonyLib
 	internal class MethodCopier
 	{
 		readonly MethodBodyReader reader;
-		readonly List<MethodInfo> transpilers = new List<MethodInfo>();
+		readonly List<MethodInfo> transpilers = new();
 
 		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
 		{
@@ -243,7 +243,7 @@ namespace HarmonyLib
 		}
 
 		// used in FinalizeILCodes to convert short jumps to long ones
-		static readonly Dictionary<OpCode, OpCode> shortJumps = new Dictionary<OpCode, OpCode>
+		static readonly Dictionary<OpCode, OpCode> shortJumps = new()
 		{
 			{ OpCodes.Leave_S, OpCodes.Leave },
 			{ OpCodes.Brfalse_S, OpCodes.Brfalse },

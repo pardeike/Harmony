@@ -71,7 +71,7 @@ namespace HarmonyLibTests.Assets
 			}
 
 #pragma warning disable IDE0052
-			static readonly InnerStaticFieldClass2 inner2 = new InnerStaticFieldClass2();
+			static readonly InnerStaticFieldClass2 inner2 = new();
 #pragma warning restore IDE0052
 		}
 
@@ -85,7 +85,7 @@ namespace HarmonyLibTests.Assets
 
 #pragma warning disable IDE0052
 		readonly InnerClass1 innerInstance;
-		static readonly InnerStaticFieldClass1 innerStatic = new InnerStaticFieldClass1();
+		static readonly InnerStaticFieldClass1 innerStatic = new();
 #pragma warning restore IDE0052
 
 		public TraverseNestedTypes(string staticValue)

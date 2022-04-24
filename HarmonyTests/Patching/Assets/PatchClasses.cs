@@ -596,7 +596,7 @@ namespace HarmonyLibTests.Assets
 
 	public class Class13<T> : IEnumerable<T>
 	{
-		readonly List<T> store = new List<T>();
+		readonly List<T> store = new();
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Add(T item)
@@ -630,7 +630,7 @@ namespace HarmonyLibTests.Assets
 
 	public class Class14
 	{
-		public static List<string> state = new List<string>();
+		public static List<string> state = new();
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public bool Test(string s, KeyValuePair<string, int> p)
@@ -846,7 +846,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(nameof(Finalizer_Patch_Order_Class.Method))]
 	public class Finalizer_Patch_Order_Patch
 	{
-		public static List<string> events = new List<string>();
+		public static List<string> events = new();
 
 		public static List<string> GetEvents()
 		{
@@ -949,7 +949,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(nameof(Affecting_Original_Prefixes_Class.Method))]
 	public class Affecting_Original_Prefixes_Patch
 	{
-		public static List<string> events = new List<string>();
+		public static List<string> events = new();
 
 		public static List<string> GetEvents()
 		{
