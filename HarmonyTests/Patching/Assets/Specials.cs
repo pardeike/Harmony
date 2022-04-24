@@ -112,8 +112,8 @@ namespace HarmonyLibTests.Assets
 	{
 		public bool accepted;
 
-		public static SomeStruct WasAccepted => new SomeStruct { accepted = true };
-		public static SomeStruct WasNotAccepted => new SomeStruct { accepted = false };
+		public static SomeStruct WasAccepted => new() { accepted = true };
+		public static SomeStruct WasNotAccepted => new() { accepted = false };
 
 		public static implicit operator SomeStruct(bool value)
 		{

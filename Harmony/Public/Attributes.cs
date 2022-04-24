@@ -103,7 +103,7 @@ namespace HarmonyLib
 	public class HarmonyAttribute : Attribute
 	{
 		/// <summary>The common information for all attributes</summary>
-		public HarmonyMethod info = new HarmonyMethod();
+		public HarmonyMethod info = new();
 	}
 
 	/// <summary>Annotation to define your Harmony patch methods</summary>

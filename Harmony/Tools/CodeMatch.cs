@@ -12,16 +12,16 @@ namespace HarmonyLib
 		public string name;
 
 		/// <summary>The matched opcodes</summary>
-		public List<OpCode> opcodes = new List<OpCode>();
+		public List<OpCode> opcodes = new();
 
 		/// <summary>The matched operands</summary>
-		public List<object> operands = new List<object>();
+		public List<object> operands = new();
 
 		/// <summary>The jumps from the match</summary>
-		public List<int> jumpsFrom = new List<int>();
+		public List<int> jumpsFrom = new();
 
 		/// <summary>The jumps to the match</summary>
-		public List<int> jumpsTo = new List<int>();
+		public List<int> jumpsTo = new();
 
 		/// <summary>The match predicate</summary>
 		public Func<CodeInstruction, bool> predicate;

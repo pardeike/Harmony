@@ -55,10 +55,10 @@ namespace HarmonyLibTests.Assets
 		// https://docs.microsoft.com/en-us/dotnet/core/compatibility/corefx#fieldinfosetvalue-throws-exception-for-static-init-only-fields
 		// As of .NET Core 3.1, the FieldRef delegates can change static readonly fields, so all resetting happens in the unit tests themselves.
 		private static readonly string field4 = "field4orig";
-		private Inner field5 = new Inner { x = 999 };
+		private Inner field5 = new() { x = 999 };
 		private Inner[] field6 = new Inner[] { new Inner { x = 11 }, new Inner { x = 22 } };
-		private InnerStruct field7 = new InnerStruct { x = 999 };
-		private List<InnerStruct> field8 = new List<InnerStruct> { new InnerStruct { x = 11 }, new InnerStruct { x = 22 } };
+		private InnerStruct field7 = new() { x = 999 };
+		private List<InnerStruct> field8 = new() { new InnerStruct { x = 11 }, new InnerStruct { x = 22 } };
 		internal DayOfWeek field9 = DayOfWeek.Saturday;
 
 		private int _property = 314159;

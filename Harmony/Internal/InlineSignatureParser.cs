@@ -83,18 +83,12 @@ namespace HarmonyLib
 				if ((u & 1) == 0)
 					return v;
 
-				switch (b & 0xc0)
+				return (b & 0xc0) switch
 				{
-					case 0:
-					case 0x40:
-						return v - 0x40;
-
-					case 0x80:
-						return v - 0x2000;
-
-					default:
-						return v - 0x10000000;
-				}
+					0 or 0x40 => v - 0x40,
+					0x80 => v - 0x2000,
+					_ => v - 0x10000000,
+				};
 			}
 
 

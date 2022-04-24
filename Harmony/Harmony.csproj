@@ -23,7 +23,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<LangVersion>8.0</LangVersion>
+		<LangVersion>preview</LangVersion>
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 		<NoWarn>$(NoWarn);SYSLIB0011</NoWarn>

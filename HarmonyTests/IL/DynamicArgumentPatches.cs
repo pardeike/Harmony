@@ -22,7 +22,7 @@ namespace HarmonyLibTests.IL
 			this.v3 = v3;
 		}
 
-		public static Vec3 Zero => new Vec3(0, 0, 0);
+		public static Vec3 Zero => new(0, 0, 0);
 
 		public override string ToString()
 		{
@@ -78,7 +78,7 @@ namespace HarmonyLibTests.IL
 	[TestFixture, NonParallelizable]
 	public class DynamicArgumentPatches : TestLogger
 	{
-		static readonly List<string> log = new List<string>();
+		static readonly List<string> log = new();
 
 		static bool General(string typeName, int token, object instance, object[] args)
 		{

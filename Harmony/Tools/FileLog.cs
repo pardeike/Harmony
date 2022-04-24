@@ -11,7 +11,7 @@ namespace HarmonyLib
 	///
 	public static class FileLog
 	{
-		private static readonly object fileLock = new object();
+		private static readonly object fileLock = new();
 		private static bool _logPathInited;
 		private static string _logPath;
 
@@ -60,7 +60,7 @@ namespace HarmonyLib
 		///
 		public static int indentLevel = 0;
 
-		static List<string> buffer = new List<string>();
+		static List<string> buffer = new();
 
 		static string IndentString()
 		{
