@@ -55,7 +55,7 @@ jobs:
       # However, such x86 runtimes can't be installed via the UseDotNet task, so we need to use the official dotnet-install.ps1 script.
       - ${{ if and(eq(parameters.architecture, 'x86'), eq(parameters.os, 'windows')) }}:
         - pwsh: |
-            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1
+            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1
             .\dotnet-install.ps1 -Channel ${{replace(replace(framework, 'coreapp', ''), 'net', '')}} -Architecture ${{parameters.architecture}} -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
           displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}} ${{parameters.architecture}} Runtime"
 
