@@ -440,6 +440,18 @@ namespace HarmonyLib
 			return code.LoadsConstant(Convert.ToInt64(e));
 		}
 
+		/// <summary>Tests if the code instruction loads a string constant</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="str">The string</param>
+		/// <returns>True if the instruction loads the constant</returns>
+		///
+		public static bool LoadsConstant(this CodeInstruction code, string str)
+		{
+			if (code.opcode != OpCodes.Ldstr) return false;
+			var val = Convert.ToString(code.operand);
+			return val == str;
+		}
+
 		/// <summary>Tests if the code instruction loads a field</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="field">The field</param>
