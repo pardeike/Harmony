@@ -1559,6 +1559,12 @@ references:
   commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Int64)
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction, System.Int64)
   nameWithType: CodeInstructionExtensions.LoadsConstant(CodeInstruction, Int64)
+- uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.String)
+  name: LoadsConstant(CodeInstruction, String)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_String_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.String)
+  fullName: HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction, System.String)
+  nameWithType: CodeInstructionExtensions.LoadsConstant(CodeInstruction, String)
 - uid: HarmonyLib.CodeInstructionExtensions.LoadsConstant*
   name: LoadsConstant
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LoadsConstant_
