@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace HarmonyLib
 {
@@ -20,7 +21,7 @@ namespace HarmonyLib
 			if (fromMethod is null) throw new ArgumentNullException(nameof(fromMethod));
 			reader = new MethodBodyReader(fromMethod, toILGenerator);
 			reader.DeclareVariables(existingVariables);
-			reader.ReadInstructions();
+			reader.GenerateInstructions();
 		}
 
 		internal void SetDebugging(bool debug)
@@ -91,7 +92,7 @@ namespace HarmonyLib
 			if (method is null) throw new ArgumentNullException(nameof(method));
 			var reader = new MethodBodyReader(method, generator);
 			reader.DeclareVariables(null);
-			reader.ReadInstructions();
+			reader.GenerateInstructions();
 			return reader.ilInstructions;
 		}
 
@@ -148,7 +149,7 @@ namespace HarmonyLib
 			this.argumentShift = argumentShift;
 		}
 
-		internal void ReadInstructions()
+		internal void GenerateInstructions()
 		{
 			while (ilBytes.position < ilBytes.buffer.Length)
 			{
@@ -158,9 +159,75 @@ namespace HarmonyLib
 				ilInstructions.Add(instruction);
 			}
 
+			HandleNativeMethod();
+
 			ResolveBranches();
 			ParseExceptions();
 		}
+
+		// if we have no instructions we probably deal with a native dllimport method
+		//
+		internal void HandleNativeMethod()
+		{
+			if (method is not MethodInfo methodInfo) return;
+			var dllAttribute = methodInfo.GetCustomAttributes(false).OfType<DllImportAttribute>().FirstOrDefault();
+			if (dllAttribute == null) return;
+
+			// TODO: will generate same type for overloads of methodInfo!
+			// FIXME
+			var name = $"{(methodInfo.DeclaringType?.FullName ?? "").Replace(".", "_")}_{methodInfo.Name}";
+			var assemblyName = new AssemblyName(name);
+#if NET35
+			var dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#else
+			var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#endif
+
+			var dynamicModule = dynamicAssembly.DefineDynamicModule(assemblyName.Name);
+			var typeBuilder = dynamicModule.DefineType("NativeMethodHolder", TypeAttributes.Public | TypeAttributes.UnicodeClass);
+			var methodBuilder = typeBuilder.DefinePInvokeMethod(methodInfo.Name, dllAttribute.Value,
+				MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
+				CallingConventions.Standard, methodInfo.ReturnType, methodInfo.GetParameters().Select(x => x.ParameterType).ToArray(),
+				dllAttribute.CallingConvention, dllAttribute.CharSet
+			);
+			methodBuilder.SetImplementationFlags(methodBuilder.GetMethodImplementationFlags() | MethodImplAttributes.PreserveSig);
+			var type = typeBuilder.CreateType();
+			var proxyMethod = type.GetMethod(methodInfo.Name);
+			/*
+			var name = $"{(methodInfo.DeclaringType?.FullName ?? "").Replace(".", "_")}_{methodInfo.Name}";
+			using var module = Mono.Cecil.ModuleDefinition.CreateModule(name, new Mono.Cecil.ModuleParameters() { Kind = Mono.Cecil.ModuleKind.Dll, ReflectionImporterProvider = MMReflectionImporter.Provider });
+
+			var typeAttribute = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.UnicodeClass;
+			var typeDefinition = new Mono.Cecil.TypeDefinition("", name, typeAttribute) { BaseType = module.TypeSystem.Object };
+			module.Types.Add(typeDefinition);
+
+			var methodAttributes = Mono.Cecil.MethodAttributes.Public | Mono.Cecil.MethodAttributes.Static | Mono.Cecil.MethodAttributes.PInvokeImpl;
+			var returnType = module.ImportReference(methodInfo.ReturnType); // Resolve(module, module.ImportReference(methodInfo.ReturnType));
+			typeDefinition.Methods.Add(new Mono.Cecil.MethodDefinition(method.Name, methodAttributes, returnType)
+			{
+				IsPInvokeImpl = true,
+				IsPreserveSig = true,
+			});
+
+			var loadedType = ReflectionHelper.Load(module).GetType(name);
+			var proxyMethod = loadedType.GetMethod(method.Name);
+			*/
+
+			var argCount = method.GetParameters().Length;
+			for (var i = 0; i < argCount; i++)
+				ilInstructions.Add(new ILInstruction(OpCodes.Ldarg, i) { offset = 0 });
+			ilInstructions.Add(new ILInstruction(OpCodes.Call, proxyMethod) { offset = argCount });
+			ilInstructions.Add(new ILInstruction(OpCodes.Ret, null) { offset = argCount + 5 });
+		}
+
+		/*private TypeReference Resolve(ModuleDefinition module, TypeReference baseType)
+		{
+			var typeDefinition = baseType.Resolve();
+			var typeReference = module.ImportReference(typeDefinition);
+			if (baseType is ArrayType)
+				return new ArrayType(typeReference);
+			return typeReference;
+		}*/
 
 		internal void DeclareVariables(LocalBuilder[] existingVariables)
 		{

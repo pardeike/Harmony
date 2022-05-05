@@ -13,3 +13,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0057:Use range operator")]
 [assembly: SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible")]
 [assembly: SuppressMessage("", "CS0169")]
+[assembly: SuppressMessage("", "CA1401")]

@@ -729,8 +729,8 @@ namespace HarmonyLib
 			prefixes
 				.Do(fix =>
 				{
-					if (original.HasMethodBody() is false)
-						throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
+					//if (original.HasMethodBody() is false)
+					//	throw new Exception("Methods without body cannot have prefixes. Use a transpiler instead.");
 
 					var skipLabel = PrefixAffectsOriginal(fix) ? il.DefineLabel() : (Label?)null;
 					if (skipLabel.HasValue)
@@ -781,8 +781,8 @@ namespace HarmonyLib
 				.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void)))
 				.Do(fix =>
 				{
-					if (original.HasMethodBody() is false)
-						throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
+					//if (original.HasMethodBody() is false)
+					//	throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
 					EmitCallParameter(fix, variables, runOriginalVariable, true, out var tmpObjectVar, tmpBoxVars);
@@ -827,8 +827,8 @@ namespace HarmonyLib
 			finalizers
 				.Do(fix =>
 				{
-					if (original.HasMethodBody() is false)
-						throw new Exception("Methods without body cannot have finalizers. Use a transpiler instead.");
+					//if (original.HasMethodBody() is false)
+					//	throw new Exception("Methods without body cannot have finalizers. Use a transpiler instead.");
 
 					if (catchExceptions)
 						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);

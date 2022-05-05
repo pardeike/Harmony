@@ -1,9 +1,12 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace HarmonyLibTests.Assets
 {
@@ -300,6 +303,44 @@ namespace HarmonyLibTests.Assets
 	{
 		static void Prefix()
 		{
+		}
+	}
+
+	public static class NativeMethodPatchingSimple
+	{
+		[DllImport("kernel32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool AllocConsole();
+
+		public static List<CodeInstruction> instructions;
+
+		public static bool MyAllocConsole()
+		{
+			return true;
+		}
+
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			NativeMethodPatchingSimple.instructions = instructions.ToList();
+
+			foreach (var code in instructions)
+			{
+				if (code.opcode == OpCodes.Call)
+					code.operand = SymbolExtensions.GetMethodInfo(() => MyAllocConsole());
+				yield return code;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(NativeMethodPatchingPostfix), nameof(NativeMethodPatchingPostfix.gethostname))]
+	public static class NativeMethodPatchingPostfix
+	{
+		[DllImport("WSOCK32.DLL", SetLastError = true)]
+		public static extern long gethostname(StringBuilder name, int nameLen);
+
+		public static void Postfix(StringBuilder name)
+		{
+			_ = name.Append("-postfix");
 		}
 	}
 }
