@@ -14,7 +14,7 @@ namespace HarmonyLib
 		/// 
 		BeginCatchBlock,
 
-		/// <summary>The beginning of an except filter block</summary>
+		/// <summary>The beginning of an except filter block (currently not supported to use in a patch)</summary>
 		/// 
 		BeginExceptFilterBlock,
 

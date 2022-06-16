@@ -40,7 +40,7 @@ To create a new label to jump to, use `ILGenerator.DefineLabel()` and put that l
 
 #### Try/catch boundaries
 
-When constructing methods with instructions, you need to specify the exception block boundaries. Harmony will automatically create the necessary meta information from them. Use the `blocks` field of an instruction (of type `ExceptionBlock[]`) to mark the different types of boundaries. They are named in correspondence to the actual names.
+When constructing methods with instructions, you need to specify the exception block boundaries. Harmony will automatically create the necessary meta information from them. Use the `blocks` field of an instruction (of type `ExceptionBlock[]`) to mark the different types of boundaries. They are named in correspondence to the actual names. Please note that **filter blocks are unsupported** because it's not possible to build them dynamically into a method as of now.
 
 #### Convenience methods
 
