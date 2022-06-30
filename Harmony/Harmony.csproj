@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0</TargetFrameworks>
+		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Product>Harmony</Product>
 		<Company>Andreas Pardeike</Company>
@@ -31,7 +31,7 @@
 
 	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
 	<Choose>
-		<When Condition="'$(TargetFramework)' == 'net5.0'">
+		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0'">
 			<PropertyGroup>
 				<IsNET5OrGreater>true</IsNET5OrGreater>
 			</PropertyGroup>
@@ -136,6 +136,8 @@
 	</ItemGroup>
 	<ItemGroup Condition="!$(IsNET5OrGreater)">
 		<Compile Remove="**\*.net5.cs" />
+		<Compile Remove="**\*.net6.cs" />
+		<Compile Remove="**\*.net7.cs" />
 	</ItemGroup>
 
 	<!--

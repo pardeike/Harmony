@@ -267,6 +267,9 @@ namespace HarmonyLibTests.Patching
 			Console.WriteLine($"### EventHandlerTestClass AFTER");
 		}
 
+		/* 
+		These tests are really a pain, so for now they are disabled
+		//
 		[Test]
 		public void Test_PatchMarshalledClass()
 		{
@@ -287,9 +290,6 @@ namespace HarmonyLibTests.Patching
 			new MarshalledTestClass().Run();
 			Console.WriteLine($"### MarshalledTestClass AFTER");
 		}
-
-		/* 
-		These tests are really a pain, so for now they are disabled
 		//
 		[Test]
 		public void Test_MarshalledWithEventHandler1()
