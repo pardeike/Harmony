@@ -9,8 +9,25 @@ namespace HarmonyLibTests.Extras
 	[TestFixture, NonParallelizable]
 	class RetrieveOriginalMethod : TestLogger
 	{
+		private static void CheckStackTraceFor(MethodBase expectedMethod)
+		{
+			Assert.NotNull(expectedMethod);
+
+			var st = new StackTrace(1, false);
+			var method = Harmony.GetMethodFromStackframe(st.GetFrame(0));
+			
+			Assert.NotNull(method);
+			
+			if (method is MethodInfo replacement)
+			{
+				var original = Harmony.GetOriginalMethod(replacement);
+				Assert.NotNull(original);
+				Assert.AreEqual(original, expectedMethod);
+			}
+		}
+		
 		[Test]
-		public void Test0()
+		public void TestRegularMethod()
 		{
 			var harmony = new Harmony("test-original-method");
 			var originalMethod = SymbolExtensions.GetMethodInfo(() => PatchTarget());
@@ -18,38 +35,47 @@ namespace HarmonyLibTests.Extras
 			_ = harmony.Patch(originalMethod, new HarmonyMethod(dummyPrefix));
 			PatchTarget();
 		}
-
-		private static void ChecksStackTrace()
+		
+		[Test]
+		public void TestConstructor()
 		{
-			var st = new StackTrace(1, false);
-			var method = Harmony.GetMethodFromStackframe(st.GetFrame(0));
-
-			// Replacement will be HarmonyLibTests.Extras.RetrieveOriginalMethod.PatchTarget_Patch1
-			// We should be able to go from this method, back to HarmonyLibTests.Extras.PatchTarget
-			//
-			if (method is MethodInfo replacement)
-			{
-				var original = Harmony.GetOriginalMethod(replacement);
-				Assert.NotNull(original);
-				Assert.AreEqual(original, AccessTools.Method(typeof(RetrieveOriginalMethod), nameof(RetrieveOriginalMethod.PatchTarget)));
-			}
+			var harmony = new Harmony("test-original-method-1");
+			var originalMethod = AccessTools.Constructor(typeof(NestedClass), new Type[] { typeof(int) });
+			var dummyPrefix = SymbolExtensions.GetMethodInfo(() => DummyPrefix());
+			_ = harmony.Patch(originalMethod, new HarmonyMethod(dummyPrefix));
+			var inst = new NestedClass(5);
+			_ = inst.index;
 		}
 
 		internal static void PatchTarget()
 		{
-			try
-			{
-				ChecksStackTrace(); // call this from within PatchTarget
+			try {
+				CheckStackTraceFor(AccessTools.Method(typeof(RetrieveOriginalMethod), nameof(PatchTarget))); // call this from within PatchTarget
 				throw new Exception();
-			}
-			catch
-			{
+			} catch (Exception e) {
+				_ = e;
 			}
 		}
 
 		// [MethodImpl(MethodImplOptions.NoInlining)]
 		internal static void DummyPrefix()
 		{
+		}
+
+		class NestedClass {
+			public NestedClass(int i)
+			{
+				try {
+					CheckStackTraceFor(AccessTools.Constructor(typeof(NestedClass), new Type[] { typeof(int) })); 
+					throw new Exception();
+				} catch (Exception e)
+				{
+					_ = e;
+				}
+				index = i;
+			}
+
+			public int index;
 		}
 	}
 }
