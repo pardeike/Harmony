@@ -8,6 +8,8 @@ namespace HarmonyLib
 {
 	internal class Tools
 	{
+		internal static readonly bool isWindows = Environment.OSVersion.Platform.Equals(PlatformID.Win32NT);
+
 		internal struct TypeAndName
 		{
 			internal Type type;

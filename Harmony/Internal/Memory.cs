@@ -11,8 +11,6 @@ namespace HarmonyLib
 	///
 	public static class Memory
 	{
-		static readonly bool isWindows = Environment.OSVersion.Platform.Equals(PlatformID.Win32NT);
-
 		/// <summary>Mark method for no inlining (currently only works on Mono)</summary>
 		/// <param name="method">The method/constructor to change</param>
 		///
@@ -90,7 +88,7 @@ namespace HarmonyLib
 		 */
 		internal static void PadShortMethods(MethodBase method)
 		{
-			if (isWindows) return;
+			if (Tools.isWindows) return;
 			var count = method.GetMethodBody()?.GetILAsByteArray()?.Length ?? 0;
 			if (count == 0) return;
 

@@ -103,6 +103,8 @@ namespace HarmonyLib
 			if (AccessTools.IsMonoRuntime is false && method.IsStatic) return false;
 
 			var size = SizeOf(returnType);
+			if (Tools.isWindows == false && size > 16)
+				return true;
 			if (specialSizes.Contains(size))
 				return false;
 			return HasStructReturnBuffer();
@@ -121,7 +123,6 @@ namespace HarmonyLib
 					if (hasTestResult_Mono is false)
 					{
 						Sandbox.hasStructReturnBuffer_Mono = false;
-						var self = new StructReturnBuffer();
 						var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Mono));
 						var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Mono));
 						_ = Memory.DetourMethod(original, replacement);
@@ -137,7 +138,6 @@ namespace HarmonyLib
 				if (hasTestResult_Net is false)
 				{
 					Sandbox.hasStructReturnBuffer_Net = false;
-					var self = new StructReturnBuffer();
 					var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Net));
 					var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Net));
 					_ = Memory.DetourMethod(original, replacement);
