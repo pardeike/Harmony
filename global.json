@@ -1,5 +1,5 @@
 {
 	"sdk": {
-		"allowPrerelease": true
+		"allowPrerelease": false
 	}
 }
