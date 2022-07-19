@@ -64,7 +64,7 @@ jobs:
           displayName: "Install latest .NET ${{replace(replace(framework, 'coreapp', 'Core '), 'net', '')}} Runtime"
           inputs:
             version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
-            packageType: runtime
+            packageType: sdk
 
   - bash: "dotnet clean --configuration ${{parameters.buildConfiguration}} && dotnet nuget locals all --clear"
     displayName: 'Clean'
