@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Emit;
 
 namespace HarmonyLib
@@ -49,6 +50,36 @@ namespace HarmonyLib
 			if (operand != null)
 				operands.Add(operand);
 			this.operand = operand;
+			this.name = name;
+		}
+
+		/// <summary>Creates a code match that calls a method</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <param name="name">The optional name</param>
+		///
+		public CodeMatch(Expression<Action> expression, string name = null)
+		{
+			opcodes.AddRange(new[]
+			{
+				OpCodes.Call,
+				OpCodes.Callvirt,
+			});
+			operand = SymbolExtensions.GetMethodInfo(expression);
+			this.name = name;
+		}
+
+		/// <summary>Creates a code match that calls a method</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <param name="name">The optional name</param>
+		///
+		public CodeMatch(LambdaExpression expression, string name = null)
+		{
+			opcodes.AddRange(new[]
+			{
+				OpCodes.Call,
+				OpCodes.Callvirt,
+			});
+			operand = SymbolExtensions.GetMethodInfo(expression);
 			this.name = name;
 		}
 

@@ -24,6 +24,13 @@ namespace HarmonyLib
 #pragma warning restore CS0169
 		}
 
+		internal unsafe struct SomeStruct_NetLinux
+		{
+#pragma warning disable CS0169
+			public fixed byte headerBytes[17];
+#pragma warning restore CS0169
+		}
+
 		internal struct SomeStruct_Mono
 		{
 #pragma warning disable CS0169
@@ -36,6 +43,14 @@ namespace HarmonyLib
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		internal SomeStruct_Net GetStruct_Net(IntPtr x, IntPtr y)
+		{
+			_ = x;
+			_ = y;
+			throw new Exception("This method should've been detoured!");
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		internal SomeStruct_NetLinux GetStruct_NetLinux(IntPtr x, IntPtr y)
 		{
 			_ = x;
 			_ = y;
@@ -103,8 +118,8 @@ namespace HarmonyLib
 			if (AccessTools.IsMonoRuntime is false && method.IsStatic) return false;
 
 			var size = SizeOf(returnType);
-			if (Tools.isWindows == false && size > 16)
-				return true;
+			if (Tools.isWindows == false && size <= 16)
+				return false;
 			if (specialSizes.Contains(size))
 				return false;
 			return HasStructReturnBuffer();
@@ -138,10 +153,13 @@ namespace HarmonyLib
 				if (hasTestResult_Net is false)
 				{
 					Sandbox.hasStructReturnBuffer_Net = false;
-					var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Net));
+					var original = AccessTools.DeclaredMethod(typeof(Sandbox), Tools.isWindows ? nameof(Sandbox.GetStruct_Net) : nameof(Sandbox.GetStruct_NetLinux));
 					var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Net));
 					_ = Memory.DetourMethod(original, replacement);
-					_ = new Sandbox().GetStruct_Net(Sandbox.magicValue, Sandbox.magicValue);
+					if (Tools.isWindows)
+						_ = new Sandbox().GetStruct_Net(Sandbox.magicValue, Sandbox.magicValue);
+					else
+						_ = new Sandbox().GetStruct_NetLinux(Sandbox.magicValue, Sandbox.magicValue);
 					hasTestResult_Net = true;
 				}
 			}
