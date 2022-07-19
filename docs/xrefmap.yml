@@ -1734,6 +1734,21 @@ references:
   fullName.vb: HarmonyLib.CodeMatch.CodeMatch(System.Func(Of HarmonyLib.CodeInstruction, System.Boolean), System.String)
   nameWithType: CodeMatch.CodeMatch(Func<CodeInstruction, Boolean>, String)
   nameWithType.vb: CodeMatch.CodeMatch(Func(Of CodeInstruction, Boolean), String)
+- uid: HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.Expression{System.Action},System.String)
+  name: CodeMatch(Expression<Action>, String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch__ctor_System_Linq_Expressions_Expression_System_Action__System_String_
+  commentId: M:HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.Expression{System.Action},System.String)
+  name.vb: CodeMatch(Expression(Of Action), String)
+  fullName: HarmonyLib.CodeMatch.CodeMatch(System.Linq.Expressions.Expression<System.Action>, System.String)
+  fullName.vb: HarmonyLib.CodeMatch.CodeMatch(System.Linq.Expressions.Expression(Of System.Action), System.String)
+  nameWithType: CodeMatch.CodeMatch(Expression<Action>, String)
+  nameWithType.vb: CodeMatch.CodeMatch(Expression(Of Action), String)
+- uid: HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.LambdaExpression,System.String)
+  name: CodeMatch(LambdaExpression, String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch__ctor_System_Linq_Expressions_LambdaExpression_System_String_
+  commentId: M:HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.LambdaExpression,System.String)
+  fullName: HarmonyLib.CodeMatch.CodeMatch(System.Linq.Expressions.LambdaExpression, System.String)
+  nameWithType: CodeMatch.CodeMatch(LambdaExpression, String)
 - uid: HarmonyLib.CodeMatch.#ctor(System.Nullable{System.Reflection.Emit.OpCode},System.Object,System.String)
   name: CodeMatch(Nullable<OpCode>, Object, String)
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch__ctor_System_Nullable_System_Reflection_Emit_OpCode__System_Object_System_String_
