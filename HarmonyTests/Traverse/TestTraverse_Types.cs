@@ -55,7 +55,7 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual("somevalue", field2.GetValue());
 		}
 
-#if !NET5_0 // writing to static fields after init not allowed in NET5
+#if !NET50_OR_GREATER // writing to static fields after init not allowed in NET5
 		[Test]
 		public void Traverse_InnerStatic()
 		{

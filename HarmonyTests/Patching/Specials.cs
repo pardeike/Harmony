@@ -233,6 +233,9 @@ namespace HarmonyLibTests.Patching
 			_ = patcher.Patch();
 		}
 
+		/* 
+		These tests are really a pain, so for now they are disabled
+		//
 		[Test]
 		public void Test_PatchExternalMethod()
 		{
@@ -245,7 +248,7 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(patcher, "Patch processor");
 			_ = patcher.Patch();
 		}
-
+		//
 		[Test]
 		public void Test_PatchEventHandler()
 		{
@@ -266,7 +269,7 @@ namespace HarmonyLibTests.Patching
 			new EventHandlerTestClass().Run();
 			Console.WriteLine($"### EventHandlerTestClass AFTER");
 		}
-
+		//
 		[Test]
 		public void Test_PatchMarshalledClass()
 		{
@@ -287,9 +290,6 @@ namespace HarmonyLibTests.Patching
 			new MarshalledTestClass().Run();
 			Console.WriteLine($"### MarshalledTestClass AFTER");
 		}
-
-		/* 
-		These tests are really a pain, so for now they are disabled
 		//
 		[Test]
 		public void Test_MarshalledWithEventHandler1()
