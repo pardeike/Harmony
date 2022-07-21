@@ -7,6 +7,14 @@ assignees: pardeike
 
 ---
 
+**IMPORTANT:** Do **NOT** use this form to send support questions. If you send things like "How do I do X" or "It does not patch Y" your submission will be closed and you will be forwarded to the official Harmony Discord channel anyway.
+
+**OFFICIAL DISCORD:** https://discord.gg/xXgghXR
+
+If you think you found a bug in Harmony please use the following to format:
+
+---
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
