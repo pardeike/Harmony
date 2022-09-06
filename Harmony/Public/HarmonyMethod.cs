@@ -14,6 +14,10 @@ namespace HarmonyLib
 		/// 
 		public MethodInfo method; // need to be called 'method'
 
+		/// <summary>Patch Category</summary>
+		/// 
+		public string category = null;
+
 		/// <summary>Class/type declaring this patch</summary>
 		/// 
 		public Type declaringType;
