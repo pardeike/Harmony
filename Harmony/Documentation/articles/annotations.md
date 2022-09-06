@@ -4,7 +4,9 @@ Instead of writing a lot of reflection code you can use annotations to define yo
 
 To simplify things, each original method you want to patch is usually represented by a "patch class", that is, a class that has at least one harmony patch annotation `[HarmonyPatch]`.
 
-When you call harmony.**PatchAll()**, Harmony will search through all classes and methods inside the given assembly looking for specific Harmony annotations.
+When you call harmony.**PatchAll()**, Harmony will search through all classes and methods inside the given assembly looking for specific Harmony annotations, applying all patch classes that it finds.
+
+To selectively apply certain patch classes, harmony.**PatchCategory()** can be used with `[HarmonyPatchCategory]` to mark specific patch classes to apply. Alongside this, harmony.**PatchAllUncategorized()** can be used to apply patch classes not marked with a specific category. Note that harmony.**PatchAll()** ignores categories.
 
 A typical patch consists of a class with annotations that looks like this:
 
@@ -18,7 +20,7 @@ This example annotates the class with enough information to identify the method 
 
 ##### Limitations
 
-The only limitation is that annotations are not ordered (even if they appear so). At runtime, the order of methdos or multiple annotations on something is undefined. The consequence of this is that you cannot rely on order when you define multiple annotations that theoretically could overwrite each other like with normal inheritance. This normally isn't a problem unless you annotate multiple Prefix methods in a class and expect the order of the prefixes to be as in the source code (use priority annotations in this case).
+The only limitation is that annotations are not ordered (even if they appear so). At runtime, the order of methods or multiple annotations on something is undefined. The consequence of this is that you cannot rely on order when you define multiple annotations that theoretically could overwrite each other like with normal inheritance. This normally isn't a problem unless you annotate multiple Prefix methods in a class and expect the order of the prefixes to be as in the source code (use priority annotations in this case).
 
 ### Annotation alternatives
 
@@ -69,6 +71,13 @@ Basic annotations need to be combined to define all aspects of your original met
 // form allows for a ArgumentType array defining the type of each argument type
 // Normal, Ref, Out or Pointer. Both arrays need to have the same number of elements:
 [HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)]
+```
+
+**Category annotation**
+
+```csharp
+// Use with Harmony.PatchCategory()
+[HarmonyPatchCategory(string category)]
 ```
 
 #### Combination annotations
