@@ -229,6 +229,80 @@ namespace HarmonyLib
 			return new CodeInstruction(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
 		}
 
+		// --- LOCALS
+
+		/// <summary>Creates a CodeInstruction loading a local with the given index, using the shorter forms when possible</summary>
+		/// <param name="index">The index where the local is stored</param>
+		/// <param name="useAddress">Use address of local</param>
+		/// <returns></returns>
+		/// <seealso cref="CodeInstructionExtensions.LocalIndex(CodeInstruction)"/>
+		public static CodeInstruction LoadLocal(int index, bool useAddress = false)
+		{
+			if (useAddress)
+			{
+				if (index < 256) return new CodeInstruction(OpCodes.Ldloca_S, Convert.ToByte(index));
+				else return new CodeInstruction(OpCodes.Ldloca, index);
+			}
+			else
+			{
+				if (index == 0) return new CodeInstruction(OpCodes.Ldloc_0);
+				else if (index == 1) return new CodeInstruction(OpCodes.Ldloc_1);
+				else if (index == 2) return new CodeInstruction(OpCodes.Ldloc_2);
+				else if (index == 3) return new CodeInstruction(OpCodes.Ldloc_3);
+				else if (index < 256) return new CodeInstruction(OpCodes.Ldloc_S, Convert.ToByte(index));
+				else return new CodeInstruction(OpCodes.Ldloc, index);
+			}
+		}
+
+		/// <summary>Creates a CodeInstruction storing to a local with the given index, using the shorter forms when possible</summary>
+		/// <param name="index">The index where the local is stored</param>
+		/// <returns></returns>
+		/// <seealso cref="CodeInstructionExtensions.LocalIndex(CodeInstruction)"/>
+		public static CodeInstruction StoreLocal(int index)
+		{
+			if (index == 0) return new CodeInstruction(OpCodes.Stloc_0);
+			else if (index == 1) return new CodeInstruction(OpCodes.Stloc_1);
+			else if (index == 2) return new CodeInstruction(OpCodes.Stloc_2);
+			else if (index == 3) return new CodeInstruction(OpCodes.Stloc_3);
+			else if (index < 256) return new CodeInstruction(OpCodes.Stloc_S, Convert.ToByte(index));
+			else return new CodeInstruction(OpCodes.Stloc, index);
+		}
+
+		// --- ARGUMENTS
+
+		/// <summary>Creates a CodeInstruction loading an argument with the given index, using the shorter forms when possible</summary>
+		/// <param name="index">The index of the argument</param>
+		/// <param name="useAddress">Use address of argument</param>
+		/// <returns></returns>
+		/// <seealso cref="CodeInstructionExtensions.ArgIndex(CodeInstruction)"/>
+		public static CodeInstruction LoadArg(int index, bool useAddress = false)
+		{
+			if (useAddress)
+			{
+				if (index < 256) return new CodeInstruction(OpCodes.Ldarga_S, Convert.ToByte(index));
+				else return new CodeInstruction(OpCodes.Ldarga, index);
+			}
+			else
+			{
+				if (index == 0) return new CodeInstruction(OpCodes.Ldarg_0);
+				else if (index == 1) return new CodeInstruction(OpCodes.Ldarg_1);
+				else if (index == 2) return new CodeInstruction(OpCodes.Ldarg_2);
+				else if (index == 3) return new CodeInstruction(OpCodes.Ldarg_3);
+				else if (index < 256) return new CodeInstruction(OpCodes.Ldarg_S, Convert.ToByte(index));
+				else return new CodeInstruction(OpCodes.Ldarg, index);
+			}
+		}
+
+		/// <summary>Creates a CodeInstruction storing to an argument with the given index, using the shorter forms when possible</summary>
+		/// <param name="index">The index of the argument</param>
+		/// <returns></returns>
+		/// <seealso cref="CodeInstructionExtensions.ArgIndex(CodeInstruction)"/>
+		public static CodeInstruction StoreArg(int index)
+		{
+			if (index < 256) return new CodeInstruction(OpCodes.Starg_S, Convert.ToByte(index));
+			else return new CodeInstruction(OpCodes.Starg, index);
+		}
+
 		// --- TOSTRING
 
 		/// <summary>Returns a string representation of the code instruction</summary>

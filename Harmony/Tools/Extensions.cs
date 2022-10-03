@@ -480,6 +480,40 @@ namespace HarmonyLib
 			return code.opcode == stfldCode && Equals(code.operand, field);
 		}
 
+		/// <summary>Returns the index targeted by this <c>ldloc</c>, <c>ldloca</c>, or <c>stloc</c></summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <returns>The index it targets</returns>
+		/// <seealso cref="CodeInstruction.LoadLocal(int, bool)"/>
+		/// <seealso cref="CodeInstruction.StoreLocal(int)"/>
+		public static int LocalIndex(this CodeInstruction code)
+		{
+			if (code.opcode == OpCodes.Ldloc_0 || code.opcode == OpCodes.Stloc_0) return 0;
+			else if (code.opcode == OpCodes.Ldloc_1 || code.opcode == OpCodes.Stloc_1) return 1;
+			else if (code.opcode == OpCodes.Ldloc_2 || code.opcode == OpCodes.Stloc_2) return 2;
+			else if (code.opcode == OpCodes.Ldloc_3 || code.opcode == OpCodes.Stloc_3) return 3;
+			else if (code.opcode == OpCodes.Ldloc_S || code.opcode == OpCodes.Ldloc) return Convert.ToInt32(code.operand);
+			else if (code.opcode == OpCodes.Stloc_S || code.opcode == OpCodes.Stloc) return Convert.ToInt32(code.operand);
+			else if (code.opcode == OpCodes.Ldloca_S || code.opcode == OpCodes.Ldloca) return Convert.ToInt32(code.operand);
+			else throw new ArgumentException("Instruction is not a load or store", "code");
+		}
+
+		/// <summary>Returns the index targeted by this <c>ldarg</c>, <c>ldarga</c>, or <c>starg</c></summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <returns>The index it targets</returns>
+		/// <seealso cref="CodeInstruction.LoadArg(int, bool)"/>
+		/// <seealso cref="CodeInstruction.StoreArg(int)"/>
+		public static int ArgIndex(this CodeInstruction code)
+		{
+			if (code.opcode == OpCodes.Ldarg_0) return 0;
+			else if (code.opcode == OpCodes.Ldarg_1) return 1;
+			else if (code.opcode == OpCodes.Ldarg_2) return 2;
+			else if (code.opcode == OpCodes.Ldarg_3) return 3;
+			else if (code.opcode == OpCodes.Ldarg_S || code.opcode == OpCodes.Ldarg) return Convert.ToInt32(code.operand);
+			else if (code.opcode == OpCodes.Starg_S || code.opcode == OpCodes.Starg) return Convert.ToInt32(code.operand);
+			else if (code.opcode == OpCodes.Ldarga_S || code.opcode == OpCodes.Ldarga) return Convert.ToInt32(code.operand);
+			else throw new ArgumentException("Instruction is not a load or store", "code");
+		}
+
 		/// <summary>Adds labels to the code instruction and return it</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="labels">One or several <see cref="Label"/> to add</param>
