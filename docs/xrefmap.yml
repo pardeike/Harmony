@@ -1323,6 +1323,19 @@ references:
   commentId: F:HarmonyLib.CodeInstruction.labels
   fullName: HarmonyLib.CodeInstruction.labels
   nameWithType: CodeInstruction.labels
+- uid: HarmonyLib.CodeInstruction.LoadArgument(System.Int32,System.Boolean)
+  name: LoadArgument(Int32, Boolean)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadArgument_System_Int32_System_Boolean_
+  commentId: M:HarmonyLib.CodeInstruction.LoadArgument(System.Int32,System.Boolean)
+  fullName: HarmonyLib.CodeInstruction.LoadArgument(System.Int32, System.Boolean)
+  nameWithType: CodeInstruction.LoadArgument(Int32, Boolean)
+- uid: HarmonyLib.CodeInstruction.LoadArgument*
+  name: LoadArgument
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadArgument_
+  commentId: Overload:HarmonyLib.CodeInstruction.LoadArgument
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.LoadArgument
+  nameWithType: CodeInstruction.LoadArgument
 - uid: HarmonyLib.CodeInstruction.LoadField(System.Type,System.String,System.Boolean)
   name: LoadField(Type, String, Boolean)
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadField_System_Type_System_String_System_Boolean_
@@ -1336,6 +1349,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstruction.LoadField
   nameWithType: CodeInstruction.LoadField
+- uid: HarmonyLib.CodeInstruction.LoadLocal(System.Int32,System.Boolean)
+  name: LoadLocal(Int32, Boolean)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadLocal_System_Int32_System_Boolean_
+  commentId: M:HarmonyLib.CodeInstruction.LoadLocal(System.Int32,System.Boolean)
+  fullName: HarmonyLib.CodeInstruction.LoadLocal(System.Int32, System.Boolean)
+  nameWithType: CodeInstruction.LoadLocal(Int32, Boolean)
+- uid: HarmonyLib.CodeInstruction.LoadLocal*
+  name: LoadLocal
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadLocal_
+  commentId: Overload:HarmonyLib.CodeInstruction.LoadLocal
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.LoadLocal
+  nameWithType: CodeInstruction.LoadLocal
 - uid: HarmonyLib.CodeInstruction.opcode
   name: opcode
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_opcode
@@ -1348,6 +1374,19 @@ references:
   commentId: F:HarmonyLib.CodeInstruction.operand
   fullName: HarmonyLib.CodeInstruction.operand
   nameWithType: CodeInstruction.operand
+- uid: HarmonyLib.CodeInstruction.StoreArgument(System.Int32)
+  name: StoreArgument(Int32)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreArgument_System_Int32_
+  commentId: M:HarmonyLib.CodeInstruction.StoreArgument(System.Int32)
+  fullName: HarmonyLib.CodeInstruction.StoreArgument(System.Int32)
+  nameWithType: CodeInstruction.StoreArgument(Int32)
+- uid: HarmonyLib.CodeInstruction.StoreArgument*
+  name: StoreArgument
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreArgument_
+  commentId: Overload:HarmonyLib.CodeInstruction.StoreArgument
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.StoreArgument
+  nameWithType: CodeInstruction.StoreArgument
 - uid: HarmonyLib.CodeInstruction.StoreField(System.Type,System.String)
   name: StoreField(Type, String)
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreField_System_Type_System_String_
@@ -1361,6 +1400,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstruction.StoreField
   nameWithType: CodeInstruction.StoreField
+- uid: HarmonyLib.CodeInstruction.StoreLocal(System.Int32)
+  name: StoreLocal(Int32)
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreLocal_System_Int32_
+  commentId: M:HarmonyLib.CodeInstruction.StoreLocal(System.Int32)
+  fullName: HarmonyLib.CodeInstruction.StoreLocal(System.Int32)
+  nameWithType: CodeInstruction.StoreLocal(Int32)
+- uid: HarmonyLib.CodeInstruction.StoreLocal*
+  name: StoreLocal
+  href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreLocal_
+  commentId: Overload:HarmonyLib.CodeInstruction.StoreLocal
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstruction.StoreLocal
+  nameWithType: CodeInstruction.StoreLocal
 - uid: HarmonyLib.CodeInstruction.ToString
   name: ToString()
   href: api/HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_ToString
@@ -1380,6 +1432,19 @@ references:
   commentId: T:HarmonyLib.CodeInstructionExtensions
   fullName: HarmonyLib.CodeInstructionExtensions
   nameWithType: CodeInstructionExtensions
+- uid: HarmonyLib.CodeInstructionExtensions.ArgumentIndex(HarmonyLib.CodeInstruction)
+  name: ArgumentIndex(CodeInstruction)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ArgumentIndex_HarmonyLib_CodeInstruction_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.ArgumentIndex(HarmonyLib.CodeInstruction)
+  fullName: HarmonyLib.CodeInstructionExtensions.ArgumentIndex(HarmonyLib.CodeInstruction)
+  nameWithType: CodeInstructionExtensions.ArgumentIndex(CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.ArgumentIndex*
+  name: ArgumentIndex
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ArgumentIndex_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.ArgumentIndex
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.ArgumentIndex
+  nameWithType: CodeInstructionExtensions.ArgumentIndex
 - uid: HarmonyLib.CodeInstructionExtensions.Branches(HarmonyLib.CodeInstruction,System.Nullable{System.Reflection.Emit.Label}@)
   name: Branches(CodeInstruction, out Nullable<Label>)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Branches_HarmonyLib_CodeInstruction_System_Nullable_System_Reflection_Emit_Label___
@@ -1585,6 +1650,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.LoadsField
   nameWithType: CodeInstructionExtensions.LoadsField
+- uid: HarmonyLib.CodeInstructionExtensions.LocalIndex(HarmonyLib.CodeInstruction)
+  name: LocalIndex(CodeInstruction)
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LocalIndex_HarmonyLib_CodeInstruction_
+  commentId: M:HarmonyLib.CodeInstructionExtensions.LocalIndex(HarmonyLib.CodeInstruction)
+  fullName: HarmonyLib.CodeInstructionExtensions.LocalIndex(HarmonyLib.CodeInstruction)
+  nameWithType: CodeInstructionExtensions.LocalIndex(CodeInstruction)
+- uid: HarmonyLib.CodeInstructionExtensions.LocalIndex*
+  name: LocalIndex
+  href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_LocalIndex_
+  commentId: Overload:HarmonyLib.CodeInstructionExtensions.LocalIndex
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionExtensions.LocalIndex
+  nameWithType: CodeInstructionExtensions.LocalIndex
 - uid: HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)
   name: MoveBlocksFrom(CodeInstruction, CodeInstruction)
   href: api/HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_
@@ -1777,6 +1855,32 @@ references:
   commentId: F:HarmonyLib.CodeMatch.jumpsTo
   fullName: HarmonyLib.CodeMatch.jumpsTo
   nameWithType: CodeMatch.jumpsTo
+- uid: HarmonyLib.CodeMatch.LoadsArgument(System.Boolean,System.String)
+  name: LoadsArgument(Boolean, String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsArgument_System_Boolean_System_String_
+  commentId: M:HarmonyLib.CodeMatch.LoadsArgument(System.Boolean,System.String)
+  fullName: HarmonyLib.CodeMatch.LoadsArgument(System.Boolean, System.String)
+  nameWithType: CodeMatch.LoadsArgument(Boolean, String)
+- uid: HarmonyLib.CodeMatch.LoadsArgument*
+  name: LoadsArgument
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsArgument_
+  commentId: Overload:HarmonyLib.CodeMatch.LoadsArgument
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.LoadsArgument
+  nameWithType: CodeMatch.LoadsArgument
+- uid: HarmonyLib.CodeMatch.LoadsLocal(System.Boolean,System.String)
+  name: LoadsLocal(Boolean, String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsLocal_System_Boolean_System_String_
+  commentId: M:HarmonyLib.CodeMatch.LoadsLocal(System.Boolean,System.String)
+  fullName: HarmonyLib.CodeMatch.LoadsLocal(System.Boolean, System.String)
+  nameWithType: CodeMatch.LoadsLocal(Boolean, String)
+- uid: HarmonyLib.CodeMatch.LoadsLocal*
+  name: LoadsLocal
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsLocal_
+  commentId: Overload:HarmonyLib.CodeMatch.LoadsLocal
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.LoadsLocal
+  nameWithType: CodeMatch.LoadsLocal
 - uid: HarmonyLib.CodeMatch.name
   name: name
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_name
@@ -1801,6 +1905,32 @@ references:
   commentId: F:HarmonyLib.CodeMatch.predicate
   fullName: HarmonyLib.CodeMatch.predicate
   nameWithType: CodeMatch.predicate
+- uid: HarmonyLib.CodeMatch.StoresArgument(System.String)
+  name: StoresArgument(String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresArgument_System_String_
+  commentId: M:HarmonyLib.CodeMatch.StoresArgument(System.String)
+  fullName: HarmonyLib.CodeMatch.StoresArgument(System.String)
+  nameWithType: CodeMatch.StoresArgument(String)
+- uid: HarmonyLib.CodeMatch.StoresArgument*
+  name: StoresArgument
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresArgument_
+  commentId: Overload:HarmonyLib.CodeMatch.StoresArgument
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.StoresArgument
+  nameWithType: CodeMatch.StoresArgument
+- uid: HarmonyLib.CodeMatch.StoresLocal(System.String)
+  name: StoresLocal(String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresLocal_System_String_
+  commentId: M:HarmonyLib.CodeMatch.StoresLocal(System.String)
+  fullName: HarmonyLib.CodeMatch.StoresLocal(System.String)
+  nameWithType: CodeMatch.StoresLocal(String)
+- uid: HarmonyLib.CodeMatch.StoresLocal*
+  name: StoresLocal
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresLocal_
+  commentId: Overload:HarmonyLib.CodeMatch.StoresLocal
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.StoresLocal
+  nameWithType: CodeMatch.StoresLocal
 - uid: HarmonyLib.CodeMatch.ToString
   name: ToString()
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_ToString
