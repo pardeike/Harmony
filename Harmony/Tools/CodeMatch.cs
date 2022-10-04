@@ -125,6 +125,106 @@ namespace HarmonyLib
 			return true;
 		}
 
+		/// <summary>Creates a code match for local loads</summary>
+		/// <param name="useAddress">Whether to match for address loads</param>
+		/// <param name="name">An optional name</param>
+		/// <returns></returns>
+		public static CodeMatch LoadsLocal(bool useAddress = false, string name = null)
+		{
+			CodeMatch match = new CodeMatch(null, null, name);
+
+			if (useAddress)
+			{
+				match.opcodes.AddRange(new[]
+				{
+					OpCodes.Ldloca_S,
+					OpCodes.Ldloca
+				});
+			}
+			else
+			{
+				match.opcodes.AddRange(new[]
+				{
+					OpCodes.Ldloc_0,
+					OpCodes.Ldloc_1,
+					OpCodes.Ldloc_2,
+					OpCodes.Ldloc_3,
+					OpCodes.Ldloc_S,
+					OpCodes.Ldloc
+				});
+			}
+
+			return match;
+		}
+
+		/// <summary>Creates a code match for local stores</summary>
+		/// <param name="name">An optional name</param>
+		/// <returns></returns>
+		public static CodeMatch StoresLocal(string name = null)
+		{
+			CodeMatch match = new CodeMatch(null, null, name);
+
+			match.opcodes.AddRange(new[]
+			{
+				OpCodes.Stloc_0,
+				OpCodes.Stloc_1,
+				OpCodes.Stloc_2,
+				OpCodes.Stloc_3,
+				OpCodes.Stloc_S,
+				OpCodes.Stloc
+			});
+
+			return match;
+		}
+
+		/// <summary>Creates a code match for argument loads</summary>
+		/// <param name="useAddress">Whether to match for address loads</param>
+		/// <param name="name">An optional name</param>
+		/// <returns></returns>
+		public static CodeMatch LoadsArgument(bool useAddress = false, string name = null)
+		{
+			CodeMatch match = new CodeMatch(null, null, name);
+
+			if (useAddress)
+			{
+				match.opcodes.AddRange(new[]
+				{
+					OpCodes.Ldarga_S,
+					OpCodes.Ldarga
+				});
+			}
+			else
+			{
+				match.opcodes.AddRange(new[]
+				{
+					OpCodes.Ldarg_0,
+					OpCodes.Ldarg_1,
+					OpCodes.Ldarg_2,
+					OpCodes.Ldarg_3,
+					OpCodes.Ldarg_S,
+					OpCodes.Ldarg
+				});
+			}
+
+			return match;
+		}
+
+		/// <summary>Creates a code match for argument stores</summary>
+		/// <param name="name">An optional name</param>
+		/// <returns></returns>
+		public static CodeMatch StoresArgument(string name = null)
+		{
+			CodeMatch match = new CodeMatch(null, null, name);
+
+			match.opcodes.AddRange(new[]
+			{
+				OpCodes.Starg_S,
+				OpCodes.Starg
+			});
+
+			return match;
+		}
+
 		/// <summary>Returns a string that represents the match</summary>
 		/// <returns>A string representation</returns>
 		///
