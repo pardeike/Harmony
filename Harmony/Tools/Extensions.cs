@@ -500,9 +500,9 @@ namespace HarmonyLib
 		/// <summary>Returns the index targeted by this <c>ldarg</c>, <c>ldarga</c>, or <c>starg</c></summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <returns>The index it targets</returns>
-		/// <seealso cref="CodeInstruction.LoadArg(int, bool)"/>
-		/// <seealso cref="CodeInstruction.StoreArg(int)"/>
-		public static int ArgIndex(this CodeInstruction code)
+		/// <seealso cref="CodeInstruction.LoadArgument(int, bool)"/>
+		/// <seealso cref="CodeInstruction.StoreArgument(int)"/>
+		public static int ArgumentIndex(this CodeInstruction code)
 		{
 			if (code.opcode == OpCodes.Ldarg_0) return 0;
 			else if (code.opcode == OpCodes.Ldarg_1) return 1;

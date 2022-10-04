@@ -274,8 +274,8 @@ namespace HarmonyLib
 		/// <param name="index">The index of the argument</param>
 		/// <param name="useAddress">Use address of argument</param>
 		/// <returns></returns>
-		/// <seealso cref="CodeInstructionExtensions.ArgIndex(CodeInstruction)"/>
-		public static CodeInstruction LoadArg(int index, bool useAddress = false)
+		/// <seealso cref="CodeInstructionExtensions.ArgumentIndex(CodeInstruction)"/>
+		public static CodeInstruction LoadArgument(int index, bool useAddress = false)
 		{
 			if (useAddress)
 			{
@@ -296,8 +296,8 @@ namespace HarmonyLib
 		/// <summary>Creates a CodeInstruction storing to an argument with the given index, using the shorter forms when possible</summary>
 		/// <param name="index">The index of the argument</param>
 		/// <returns></returns>
-		/// <seealso cref="CodeInstructionExtensions.ArgIndex(CodeInstruction)"/>
-		public static CodeInstruction StoreArg(int index)
+		/// <seealso cref="CodeInstructionExtensions.ArgumentIndex(CodeInstruction)"/>
+		public static CodeInstruction StoreArgument(int index)
 		{
 			if (index < 256) return new CodeInstruction(OpCodes.Starg_S, Convert.ToByte(index));
 			else return new CodeInstruction(OpCodes.Starg, index);
