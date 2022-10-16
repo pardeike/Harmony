@@ -63,6 +63,25 @@ If you prefer manual patching, you can use any method name or class structure yo
 
 ![note] Patch methods _must_ be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.
 
+```csharp
+[HarmonyPatch(...)]
+class Patch
+{
+	// the return type of factory methods can be either MethodInfo or DynamicMethod
+	[HarmonyPrefix]
+	static MethodInfo PrefixFactory(MethodBase originalMethod)
+	{
+		// return an instance of MethodInfo or an instance of DynamicMethod
+	}
+
+	[HarmonyPostfix]
+	static MethodInfo PostfixFactory(MethodBase originalMethod)
+	{
+		// return an instance of MethodInfo or an instance of DynamicMethod
+	}
+}
+```
+
 ### Method names
 
 Manual patching knows four main patch types: **Prefix**, **Postfix**, **Transpiler** and **Finalizer**. If you use attributes for patching, you can also use the helper methods: **Prepare**, **TargetMethod**, **TargetMethods** and **Cleanup** as explained below.
