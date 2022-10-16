@@ -149,7 +149,7 @@ namespace Basics
 			// here, inside the patch class, you can place the auxilary patch methods
 			// for example TargetMethod:
 
-			public MethodBase TargetMethod()
+			public static MethodBase TargetMethod()
 			{
 				// use normal reflection or helper methods in <AccessTools> to find the method/constructor
 				// you want to patch and return its MethodInfo/ConstructorInfo
@@ -159,7 +159,7 @@ namespace Basics
 			}
 
 			// your patches
-			public void Prefix()
+			public static void Prefix()
 			{
 				// ...
 			}
