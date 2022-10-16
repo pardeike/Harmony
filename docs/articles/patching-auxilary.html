@@ -84,7 +84,7 @@ class MyPatch
     // here, inside the patch class, you can place the auxilary patch methods
     // for example TargetMethod:
 
-    public MethodBase TargetMethod()
+    public static MethodBase TargetMethod()
     {
         // use normal reflection or helper methods in &lt;AccessTools&gt; to find the method/constructor
         // you want to patch and return its MethodInfo/ConstructorInfo
@@ -94,7 +94,7 @@ class MyPatch
     }
 
     // your patches
-    public void Prefix()
+    public static void Prefix()
     {
         // ...
     }
