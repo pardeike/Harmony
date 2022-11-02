@@ -438,12 +438,15 @@ namespace HarmonyLib
 			return true;
 		}
 
-		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable, bool allowFirsParamPassthrough, out LocalBuilder tmpObjectVar, List<KeyValuePair<LocalBuilder, Type>> tmpBoxVars)
+		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable, bool allowFirsParamPassthrough, out LocalBuilder tmpInstanceBoxingVar, out LocalBuilder tmpObjectVar, List<KeyValuePair<LocalBuilder, Type>> tmpBoxVars)
 		{
+			tmpInstanceBoxingVar = null;
 			tmpObjectVar = null;
+
 			var isInstance = original.IsStatic is false;
 			var originalParameters = original.GetParameters();
 			var originalParameterNames = originalParameters.Select(p => p.Name).ToArray();
+			var originalType = original.DeclaringType;
 
 			// check for passthrough using first parameter (which must have same type as return type)
 			var parameters = patch.GetParameters().ToList();
@@ -476,20 +479,48 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Ldnull);
 					else
 					{
-						var instanceIsRef = original.DeclaringType is object && AccessTools.IsStruct(original.DeclaringType);
-						var parameterIsRef = patchParam.ParameterType.IsByRef;
-						if (instanceIsRef == parameterIsRef)
+						var paramType = patchParam.ParameterType;
+						
+						var parameterIsRef = paramType.IsByRef;
+						var parameterIsObject = paramType == typeof(object) || paramType == typeof(object).MakeByRefType();
+						
+						if (AccessTools.IsStruct(originalType))
 						{
-							emitter.Emit(OpCodes.Ldarg_0);
+							if (parameterIsObject)
+							{
+								if (parameterIsRef)
+								{
+									emitter.Emit(OpCodes.Ldarg_0);
+									emitter.Emit(OpCodes.Ldobj, originalType);
+									emitter.Emit(OpCodes.Box, originalType);
+									tmpInstanceBoxingVar = il.DeclareLocal(typeof(object));
+									emitter.Emit(OpCodes.Stloc, tmpInstanceBoxingVar);
+									emitter.Emit(OpCodes.Ldloca, tmpInstanceBoxingVar);
+								}
+								else
+								{
+									emitter.Emit(OpCodes.Ldarg_0);
+									emitter.Emit(OpCodes.Ldobj, originalType);
+									emitter.Emit(OpCodes.Box, originalType);
+								}
+							}
+							else
+							{
+								if (parameterIsRef)
+									emitter.Emit(OpCodes.Ldarg_0);
+								else
+								{
+									emitter.Emit(OpCodes.Ldarg_0);
+									emitter.Emit(OpCodes.Ldobj, originalType);
+								}
+							}
 						}
-						if (instanceIsRef && parameterIsRef is false)
+						else
 						{
-							emitter.Emit(OpCodes.Ldarg_0);
-							emitter.Emit(OpCodes.Ldobj, original.DeclaringType);
-						}
-						if (instanceIsRef is false && parameterIsRef)
-						{
-							emitter.Emit(OpCodes.Ldarga, 0);
+							if (parameterIsRef)
+								emitter.Emit(OpCodes.Ldarga, 0);
+							else
+								emitter.Emit(OpCodes.Ldarg_0);
 						}
 					}
 					continue;
@@ -511,15 +542,15 @@ namespace HarmonyLib
 					if (fieldName.All(char.IsDigit))
 					{
 						// field access by index only works for declared fields
-						fieldInfo = AccessTools.DeclaredField(original.DeclaringType, int.Parse(fieldName));
+						fieldInfo = AccessTools.DeclaredField(originalType, int.Parse(fieldName));
 						if (fieldInfo is null)
-							throw new ArgumentException($"No field found at given index in class {original.DeclaringType?.AssemblyQualifiedName ?? "null"}", fieldName);
+							throw new ArgumentException($"No field found at given index in class {originalType?.AssemblyQualifiedName ?? "null"}", fieldName);
 					}
 					else
 					{
-						fieldInfo = AccessTools.Field(original.DeclaringType, fieldName);
+						fieldInfo = AccessTools.Field(originalType, fieldName);
 						if (fieldInfo is null)
-							throw new ArgumentException($"No such field defined in class {original.DeclaringType?.AssemblyQualifiedName ?? "null"}", fieldName);
+							throw new ArgumentException($"No such field defined in class {originalType?.AssemblyQualifiedName ?? "null"}", fieldName);
 					}
 
 					if (fieldInfo.IsStatic)
@@ -603,7 +634,6 @@ namespace HarmonyLib
 							var delegateConstructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
 							if (delegateConstructor is object)
 							{
-								var originalType = original.DeclaringType;
 								if (methodInfo.IsStatic)
 									emitter.Emit(OpCodes.Ldnull);
 								else
@@ -740,10 +770,17 @@ namespace HarmonyLib
 					}
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (fix.GetParameters().Any(p => p.Name == ARGS_ARRAY_VAR))
 						RestoreArgumentArray(variables);
+					if (tmpInstanceBoxingVar != null)
+					{
+						emitter.Emit(OpCodes.Ldarg_0);
+						emitter.Emit(OpCodes.Ldloc, tmpInstanceBoxingVar);
+						emitter.Emit(OpCodes.Unbox_Any, original.DeclaringType);
+						emitter.Emit(OpCodes.Stobj, original.DeclaringType);
+					}
 					if (tmpObjectVar != null)
 					{
 						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
@@ -785,10 +822,17 @@ namespace HarmonyLib
 					//	throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, runOriginalVariable, true, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, runOriginalVariable, true, out var tmpInstanceBoxingVar, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (fix.GetParameters().Any(p => p.Name == ARGS_ARRAY_VAR))
 						RestoreArgumentArray(variables);
+					if (tmpInstanceBoxingVar != null)
+					{
+						emitter.Emit(OpCodes.Ldarg_0);
+						emitter.Emit(OpCodes.Ldloc, tmpInstanceBoxingVar);
+						emitter.Emit(OpCodes.Unbox_Any, original.DeclaringType);
+						emitter.Emit(OpCodes.Stobj, original.DeclaringType);
+					}
 					if (tmpObjectVar != null)
 					{
 						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
@@ -834,10 +878,17 @@ namespace HarmonyLib
 						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (fix.GetParameters().Any(p => p.Name == ARGS_ARRAY_VAR))
 						RestoreArgumentArray(variables);
+					if (tmpInstanceBoxingVar != null)
+					{
+						emitter.Emit(OpCodes.Ldarg_0);
+						emitter.Emit(OpCodes.Ldloc, tmpInstanceBoxingVar);
+						emitter.Emit(OpCodes.Unbox_Any, original.DeclaringType);
+						emitter.Emit(OpCodes.Stobj, original.DeclaringType);
+					}
 					if (tmpObjectVar != null)
 					{
 						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);

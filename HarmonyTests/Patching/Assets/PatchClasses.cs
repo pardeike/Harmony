@@ -414,37 +414,86 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public struct Struct2
+	public struct Struct2NoRef
 	{
 		public string s;
 
-		/*
-		 * TODO: This hangs MonoMod Common and we use a different version
-		 * until the problem is fixed
-		 * 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void TestMethod(string val)
 		{
 			s = val;
-		}*/
-
-		public void TestMethod(string val)
-		{
-			try
-			{
-				s = val;
-			}
-			catch
-			{
-			}
 		}
 	}
 
-	public class Struct2Patch
+	public class Struct2NoRefObjectPatch
 	{
-		public static void Postfix(ref Struct2 __instance)
+		public static string s;
+
+		public static void Postfix(Struct2NoRef __instance)
+		{
+			s = __instance.s;
+		}
+	}
+
+	public struct Struct2Ref
+	{
+		public string s;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void TestMethod(string val)
+		{
+			s = val;
+		}
+	}
+
+	public class Struct2RefPatch
+	{
+		public static void Postfix(ref Struct2Ref __instance)
 		{
 			__instance.s = "patched";
+		}
+	}
+
+	public struct Struct3NoRefObject
+	{
+		public string s;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void TestMethod(string val)
+		{
+			s = val;
+		}
+	}
+
+	public class Struct3NoRefObjectPatch
+	{
+		public static string s;
+
+		public static void Postfix(object __instance)
+		{
+			var str = (Struct3NoRefObject)__instance;
+			s = str.s;
+		}
+	}
+
+	public struct Struct3RefObject
+	{
+		public string s;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void TestMethod(string val)
+		{
+			s = val;
+		}
+	}
+
+	public class Struct3RefObjectPatch
+	{
+		public static void Postfix(ref object __instance)
+		{
+			var str = (Struct3RefObject)__instance;
+			str.s = "patched";
+			__instance = str;
 		}
 	}
 
