@@ -988,6 +988,17 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Stind_Ref);
 					}
 				}
+				else
+				{
+					emitter.Emit(OpCodes.Ldloc, variables[ARGS_ARRAY_VAR]);
+					emitter.Emit(OpCodes.Ldc_I4, arrayIdx);
+					emitter.Emit(OpCodes.Ldelem_Ref);
+					if (pType.IsValueType)
+						emitter.Emit(OpCodes.Unbox_Any, pType);
+					else
+						emitter.Emit(OpCodes.Castclass, pType);
+					emitter.Emit(OpCodes.Starg, argIndex);
+				}
 				arrayIdx++;
 			}
 		}

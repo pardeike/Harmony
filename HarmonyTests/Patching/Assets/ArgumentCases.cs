@@ -127,6 +127,40 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class SimpleArgumentArrayUsage
+	{
+		public static int n;
+		public static string s;
+		public static SomeStruct st;
+		public static float[] f;
+
+		public struct SomeStruct
+		{
+			public int n;
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Method(int n, string s, SomeStruct st, float[] f)
+		{
+			SimpleArgumentArrayUsage.n = n;
+			SimpleArgumentArrayUsage.s = s;
+			SimpleArgumentArrayUsage.st = st;
+			SimpleArgumentArrayUsage.f = f;
+		}
+	}
+
+	[HarmonyPatch(typeof(SimpleArgumentArrayUsage), nameof(SimpleArgumentArrayUsage.Method))]
+	public static class SimpleArgumentArrayUsagePatch
+	{
+		public static void Prefix(object[] __args)
+		{
+			__args[0] = 123;
+			__args[1] = "patched";
+			__args[2] = new SimpleArgumentArrayUsage.SomeStruct() { n = 456 };
+			__args[3] = new float[] { 1.2f, 3.4f, 5.6f };
+		}
+	}
+
 	public class ArgumentArrayMethods
 	{
 		public struct SomeStruct

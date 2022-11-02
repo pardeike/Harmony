@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -272,6 +272,37 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(102, val.n);
 
 			Assert.AreEqual("OOOOVVVVVVVV", ArgumentPatchMethods.result);
+		}
+
+		[Test]
+		public void Test_SimpleArgumentArrayUsage()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(SimpleArgumentArrayUsagePatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			SimpleArgumentArrayUsage.n = 0;
+			SimpleArgumentArrayUsage.s = "";
+			SimpleArgumentArrayUsage.st = new SimpleArgumentArrayUsage.SomeStruct() { n = 0 };
+			SimpleArgumentArrayUsage.f = new float[0];
+
+			var instance = new SimpleArgumentArrayUsage();
+			instance.Method(
+				100,
+				"original",
+				new SimpleArgumentArrayUsage.SomeStruct() { n = 200 },
+				new float[] { 10f, 20f, 30f }
+			);
+
+			Assert.AreEqual(123, SimpleArgumentArrayUsage.n);
+			Assert.AreEqual("patched", SimpleArgumentArrayUsage.s);
+			Assert.AreEqual(456, SimpleArgumentArrayUsage.st.n);
+			Assert.AreEqual(3, SimpleArgumentArrayUsage.f.Length);
+			Assert.AreEqual(1.2f, SimpleArgumentArrayUsage.f[0]);
+			Assert.AreEqual(3.4f, SimpleArgumentArrayUsage.f[1]);
+			Assert.AreEqual(5.6f, SimpleArgumentArrayUsage.f[2]);
 		}
 
 		[Test]
