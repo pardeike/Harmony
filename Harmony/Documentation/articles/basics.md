@@ -58,6 +58,8 @@ If you prefer annotations to organize your patches, you instruct Harmony to sear
 
 which will search the given assembly for all classes that are decorated with Harmony annotations. All patches are registered automatically and Harmony will do the rest.
 
+If you need to apply different patches at different times, you can use `PatchCategory()` and the `[HarmonyPatchCategory()]` annotation to exclude them (by default) from `PatchAll()`.
+
 ### Manual patching
 
 For more control, you use `Patch()`. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to `Patch()` to skip one type of patch):
