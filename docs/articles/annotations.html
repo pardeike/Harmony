@@ -71,7 +71,8 @@
 
 <p>Instead of writing a lot of reflection code you can use annotations to define your original and patch methods in a declarative way. Harmony uses annotations in a hierarchical way on classes and methods in those classes to determine which original methods you want to patch with which patch methods and with which properties like priorities and such.</p>
 <p>To simplify things, each original method you want to patch is usually represented by a &quot;patch class&quot;, that is, a class that has at least one harmony patch annotation <code>[HarmonyPatch]</code>.</p>
-<p>When you call harmony.<strong>PatchAll()</strong>, Harmony will search through all classes and methods inside the given assembly looking for specific Harmony annotations.</p>
+<p>When you call harmony.<strong>PatchAll()</strong>, Harmony will search through all classes and methods inside the given assembly looking for specific Harmony annotations, applying all patch classes that it finds.</p>
+<p>To selectively apply certain patch classes, harmony.<strong>PatchCategory()</strong> can be used with <code>[HarmonyPatchCategory]</code> to mark specific patch classes to apply. Alongside this, harmony.<strong>PatchAllUncategorized()</strong> can be used to apply patch classes not marked with a specific category. Note that harmony.<strong>PatchAll()</strong> ignores categories.</p>
 <p>A typical patch consists of a class with annotations that looks like this:</p>
 <pre><code class="lang-csharp" name="example">using HarmonyLib;
 
@@ -89,7 +90,7 @@ class MyPatches
 <h3 id="patch-classes">Patch classes</h3>
 <p><strong>Patch classes</strong> can be public, private, static or not. <strong>Patch methods</strong> can be public or private but <strong>must be static</strong> since the patched original method does not have any reference to an instance of your patch class. If you use the manual way to specify the patch methods, your patch methods can even be DynamicMethod's.</p>
 <h5 id="limitations">Limitations</h5>
-<p>The only limitation is that annotations are not ordered (even if they appear so). At runtime, the order of methdos or multiple annotations on something is undefined. The consequence of this is that you cannot rely on order when you define multiple annotations that theoretically could overwrite each other like with normal inheritance. This normally isn't a problem unless you annotate multiple Prefix methods in a class and expect the order of the prefixes to be as in the source code (use priority annotations in this case).</p>
+<p>The only limitation is that annotations are not ordered (even if they appear so). At runtime, the order of methods or multiple annotations on something is undefined. The consequence of this is that you cannot rely on order when you define multiple annotations that theoretically could overwrite each other like with normal inheritance. This normally isn't a problem unless you annotate multiple Prefix methods in a class and expect the order of the prefixes to be as in the source code (use priority annotations in this case).</p>
 <h3 id="annotation-alternatives">Annotation alternatives</h3>
 <p>To indicate that a class contains patch methods it needs to be annotated with at lease one annotations.</p>
 <h4 id="basic-annotations">Basic annotations</h4>
@@ -121,6 +122,10 @@ class MyPatches
 // form allows for a ArgumentType array defining the type of each argument type
 // Normal, Ref, Out or Pointer. Both arrays need to have the same number of elements:
 [HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)]
+</code></pre>
+<p><strong>Category annotation</strong></p>
+<pre><code class="lang-csharp">// Use with Harmony.PatchCategory()
+[HarmonyPatchCategory(string category)]
 </code></pre>
 <h4 id="combination-annotations">Combination annotations</h4>
 <p>Beside combining the basic annotations you can also pick from the many combination annotations to express things more compact:</p>

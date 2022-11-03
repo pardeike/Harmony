@@ -3546,6 +3546,44 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.PatchAll
   nameWithType: Harmony.PatchAll
+- uid: HarmonyLib.Harmony.PatchAllUncategorized
+  name: PatchAllUncategorized()
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchAllUncategorized
+  commentId: M:HarmonyLib.Harmony.PatchAllUncategorized
+  fullName: HarmonyLib.Harmony.PatchAllUncategorized()
+  nameWithType: Harmony.PatchAllUncategorized()
+- uid: HarmonyLib.Harmony.PatchAllUncategorized(System.Reflection.Assembly)
+  name: PatchAllUncategorized(Assembly)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchAllUncategorized_System_Reflection_Assembly_
+  commentId: M:HarmonyLib.Harmony.PatchAllUncategorized(System.Reflection.Assembly)
+  fullName: HarmonyLib.Harmony.PatchAllUncategorized(System.Reflection.Assembly)
+  nameWithType: Harmony.PatchAllUncategorized(Assembly)
+- uid: HarmonyLib.Harmony.PatchAllUncategorized*
+  name: PatchAllUncategorized
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchAllUncategorized_
+  commentId: Overload:HarmonyLib.Harmony.PatchAllUncategorized
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.PatchAllUncategorized
+  nameWithType: Harmony.PatchAllUncategorized
+- uid: HarmonyLib.Harmony.PatchCategory(System.Reflection.Assembly,System.String)
+  name: PatchCategory(Assembly, String)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchCategory_System_Reflection_Assembly_System_String_
+  commentId: M:HarmonyLib.Harmony.PatchCategory(System.Reflection.Assembly,System.String)
+  fullName: HarmonyLib.Harmony.PatchCategory(System.Reflection.Assembly, System.String)
+  nameWithType: Harmony.PatchCategory(Assembly, String)
+- uid: HarmonyLib.Harmony.PatchCategory(System.String)
+  name: PatchCategory(String)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchCategory_System_String_
+  commentId: M:HarmonyLib.Harmony.PatchCategory(System.String)
+  fullName: HarmonyLib.Harmony.PatchCategory(System.String)
+  nameWithType: Harmony.PatchCategory(String)
+- uid: HarmonyLib.Harmony.PatchCategory*
+  name: PatchCategory
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchCategory_
+  commentId: Overload:HarmonyLib.Harmony.PatchCategory
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.PatchCategory
+  nameWithType: Harmony.PatchCategory
 - uid: HarmonyLib.Harmony.ReversePatch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,System.Reflection.MethodInfo)
   name: ReversePatch(MethodBase, HarmonyMethod, MethodInfo)
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ReversePatch_System_Reflection_MethodBase_HarmonyLib_HarmonyMethod_System_Reflection_MethodInfo_
@@ -4056,6 +4094,12 @@ references:
   commentId: F:HarmonyLib.HarmonyMethod.before
   fullName: HarmonyLib.HarmonyMethod.before
   nameWithType: HarmonyMethod.before
+- uid: HarmonyLib.HarmonyMethod.category
+  name: category
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_category
+  commentId: F:HarmonyLib.HarmonyMethod.category
+  fullName: HarmonyLib.HarmonyMethod.category
+  nameWithType: HarmonyMethod.category
 - uid: HarmonyLib.HarmonyMethod.debug
   name: debug
   href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_debug
@@ -4415,6 +4459,25 @@ references:
   commentId: T:HarmonyLib.HarmonyPatchAll
   fullName: HarmonyLib.HarmonyPatchAll
   nameWithType: HarmonyPatchAll
+- uid: HarmonyLib.HarmonyPatchCategory
+  name: HarmonyPatchCategory
+  href: api/HarmonyLib.HarmonyPatchCategory.html
+  commentId: T:HarmonyLib.HarmonyPatchCategory
+  fullName: HarmonyLib.HarmonyPatchCategory
+  nameWithType: HarmonyPatchCategory
+- uid: HarmonyLib.HarmonyPatchCategory.#ctor(System.String)
+  name: HarmonyPatchCategory(String)
+  href: api/HarmonyLib.HarmonyPatchCategory.html#HarmonyLib_HarmonyPatchCategory__ctor_System_String_
+  commentId: M:HarmonyLib.HarmonyPatchCategory.#ctor(System.String)
+  fullName: HarmonyLib.HarmonyPatchCategory.HarmonyPatchCategory(System.String)
+  nameWithType: HarmonyPatchCategory.HarmonyPatchCategory(String)
+- uid: HarmonyLib.HarmonyPatchCategory.#ctor*
+  name: HarmonyPatchCategory
+  href: api/HarmonyLib.HarmonyPatchCategory.html#HarmonyLib_HarmonyPatchCategory__ctor_
+  commentId: Overload:HarmonyLib.HarmonyPatchCategory.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.HarmonyPatchCategory.HarmonyPatchCategory
+  nameWithType: HarmonyPatchCategory.HarmonyPatchCategory
 - uid: HarmonyLib.HarmonyPatchType
   name: HarmonyPatchType
   href: api/HarmonyLib.HarmonyPatchType.html
@@ -4986,6 +5049,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchClassProcessor.PatchClassProcessor
   nameWithType: PatchClassProcessor.PatchClassProcessor
+- uid: HarmonyLib.PatchClassProcessor.Category
+  name: Category
+  href: api/HarmonyLib.PatchClassProcessor.html#HarmonyLib_PatchClassProcessor_Category
+  commentId: P:HarmonyLib.PatchClassProcessor.Category
+  fullName: HarmonyLib.PatchClassProcessor.Category
+  nameWithType: PatchClassProcessor.Category
+- uid: HarmonyLib.PatchClassProcessor.Category*
+  name: Category
+  href: api/HarmonyLib.PatchClassProcessor.html#HarmonyLib_PatchClassProcessor_Category_
+  commentId: Overload:HarmonyLib.PatchClassProcessor.Category
+  isSpec: "True"
+  fullName: HarmonyLib.PatchClassProcessor.Category
+  nameWithType: PatchClassProcessor.Category
 - uid: HarmonyLib.PatchClassProcessor.Patch
   name: Patch()
   href: api/HarmonyLib.PatchClassProcessor.html#HarmonyLib_PatchClassProcessor_Patch

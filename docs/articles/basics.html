@@ -114,6 +114,7 @@ harmony.PatchAll(assembly);
 harmony.PatchAll();
 </code></pre>
 <p>which will search the given assembly for all classes that are decorated with Harmony annotations. All patches are registered automatically and Harmony will do the rest.</p>
+<p>If you need to apply different patches at different times, you can use <code>PatchCategory()</code> and the <code>[HarmonyPatchCategory()]</code> annotation to exclude them (by default) from <code>PatchAll()</code>.</p>
 <h3 id="manual-patching">Manual patching</h3>
 <p>For more control, you use <code>Patch()</code>. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to <code>Patch()</code> to skip one type of patch):</p>
 <pre><code class="lang-csharp" name="example">// add null checks to the following lines, they are omitted for clarity
