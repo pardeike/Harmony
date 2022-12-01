@@ -37,7 +37,7 @@ namespace HarmonyLib
 		internal static AssemblyBuilder DefineDynamicAssembly(string name)
 		{
 			var assemblyName = new AssemblyName(name);
-#if NETCOREAPP2_0 || NETCOREAPP3_0 || NETCOREAPP3_1 || NETSTANDARD2_0 || NET50_OR_GREATER
+#if NETCOREAPP2_0 || NETCOREAPP3_0 || NETCOREAPP3_1 || NETSTANDARD2_0_OR_GREATER || NET50_OR_GREATER
 			return AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
 #else
 			return AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);

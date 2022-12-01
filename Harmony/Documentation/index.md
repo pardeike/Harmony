@@ -6,7 +6,7 @@
 
 Harmony gives you an elegant and high level way to **alter functionality** in applications written in C#. It does this at **runtime** by monkey patching methods unlike other solutions that change the content of dll files.
 
-It supports **Mono** and **.NET** environments on Windows, Unix and macOS except when Unity uses the stripped down NetStandard profile (.NET 4.x profile works fine). Harmony is used in mainstream Unity games and many other applications.
+It supports **Mono** and **.NET** environments on Windows, Unix and macOS except when Unity uses the stripped down NetStandard profile below 2.1 (.NET 4.x profile works fine). Harmony is used in mainstream Unity games and many other applications.
 
 Designed to be used by multiple users (usually called Mods) that would otherwise override each others hooks, it was originally created for the game [RimWorld](https://rimworldgame.com) and its large modding community by [Andreas Pardeike](https://www.patreon.com/pardeike).
 
