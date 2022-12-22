@@ -17,6 +17,7 @@ Harmony does not provide you with a way to run your own code within an applicati
 - [UnityAssemblyInjector](https://github.com/avail/UnityAssemblyInjector)
 - [MonoJunkie](https://github.com/wledfor2/MonoJunkie)
 - [MInjector](https://github.com/EquiFox/MInjector)
+- [net-core-injector](https://github.com/StackOverflowExcept1on/net-core-injector)
 - and more...
 
 You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld ([Wiki](https://rimworldwiki.com/wiki/Modding_Tutorials/)).
