@@ -4,12 +4,804 @@
   "xrefmap": "xrefmap.yml",
   "files": [
     {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.html",
+          "hash": "hiv4b9uh7sDjCVM0MKOmxVAnXKgfw3b059EdIqthGv8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.AccessTools.FieldRef-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.AccessTools.FieldRef-2.html",
+          "hash": "YaesprIeCEpWiDFNH9pda2SQuZ7Dmf2XX2OXNIqYp80="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.AccessTools.StructFieldRef-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.AccessTools.StructFieldRef-2.html",
+          "hash": "N0HqHIV4zH0snkP8P4aYwO4CsD0Eb1c1nWcPnsQ6rDw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.AccessTools.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.AccessTools.html",
+          "hash": "W00GIRVsvTP+XIhyVDtKq9wMBUBd19Z/dJxh76K9gwA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.ArgumentType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.ArgumentType.html",
+          "hash": "AaZVSYSnzQZh7oeAH4qdbOzqaAME4KNQa9FM6EEeIbk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Code.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Code.html",
+          "hash": "rzQuGsdiEYFO2f99smNBO7sBQ7oHg4/qDpm4R81zO24="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.CodeInstruction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.CodeInstruction.html",
+          "hash": "CvRJB6ywkZPNJycPR4L8rXJtuflDTaLff9Ty14J3Iq4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.CodeInstructionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.CodeInstructionExtensions.html",
+          "hash": "BUURdbkb1EQOsYPBdlEGUhgQ8wapGPZUDwigPF0Irss="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.CodeMatch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.CodeMatch.html",
+          "hash": "7GSc8x0Z/bvMSTIAarbFqZZOGxpfxdMfBFzfCAKhvl0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.CodeMatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.CodeMatcher.html",
+          "hash": "bTrue7FLGafAQ7aadgAQjh/UaHo3Y24auu0EIdBruu4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.CollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.CollectionExtensions.html",
+          "hash": "XzVqu2YiwPt0iI8M7ZP88AUskkoCA/PshpywPmQzEyU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.DelegateTypeFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.DelegateTypeFactory.html",
+          "hash": "9eAuNyr0lrOtq/HIjyA2zWD4vV4n1lgDNxeV1wJxFMs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.ExceptionBlock.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.ExceptionBlock.html",
+          "hash": "3LQz7AhpGBK2dGghA6pnEXr80CGraDMa5VrcYpDru9M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.ExceptionBlockType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.ExceptionBlockType.html",
+          "hash": "wArxnDF8aT0U6QyZxS0p5EF8HdjtRN/yTaNxSSwpk4c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.FastAccess.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.FastAccess.html",
+          "hash": "kTyo7ZV5KQ/qYog2+77VrtijKfYidR17tlNU2xI7CCc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.FastInvokeHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.FastInvokeHandler.html",
+          "hash": "N4yM2SA4F9X8KkfNEVoNYCkej/B+PgvuPCWvpDiROKA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.FileLog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.FileLog.html",
+          "hash": "XNARmf1wquUvBInRxyIH92uKBUfzWPnG3wfWcgniQIs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.GeneralExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.GeneralExtensions.html",
+          "hash": "fkgp1Rzvmgzh/G1v+MRZiBBBm0f3hJ4kxH9pAWSLEGc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.GetterHandler-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.GetterHandler-2.html",
+          "hash": "Pqg5G7mTRGS+F/lZwygXY+CIBR+e0jS6gHBlPHKMWRE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Harmony.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Harmony.html",
+          "hash": "xVUwqQYa14sUJfRndumYSgssTUavW8UqWxIMVPv9Zu4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyAfter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyAfter.html",
+          "hash": "ecgiqCx77r8cYRrNtK//PBJwoasrM29ugZzhAD4xXHQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyArgument.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyArgument.html",
+          "hash": "3vonRefrbzNfLNa23VZ/KB7hNhf73oWltdTQ906F8Bw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyAttribute.html",
+          "hash": "N2hPrpKUBxwPKLIqGaaPH3HpCqbWJ34CIWRc4/WIEyE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyBefore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyBefore.html",
+          "hash": "DFPGwAZO9sMGh0mhT4nC2G/byq6lWmI7tRBzVquK4IA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyCleanup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyCleanup.html",
+          "hash": "bioTyJS1tDRv+Uk+CkN8m2xvqZryFnHQ5H8INC6m90s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyDebug.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyDebug.html",
+          "hash": "pc8HZfIEXW7fyAM+AOjdwfxDzcxn2xnAwVObfrYBZyU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyDelegate.html",
+          "hash": "VJUfEm1EB2ABFCvwJnnwfABHecPZ6kLseAF44pwr2Yo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyException.html",
+          "hash": "4ikub7txPLMbeoRDJgU1XTGMixchVUeysCTHrEZk6FY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyFinalizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyFinalizer.html",
+          "hash": "+ZIzucwHkjdGehQ+hWLNm2usYIn13isAuLL8NgNGqS0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyMethod.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyMethod.html",
+          "hash": "mJPnHid/vGoqwyQj7L5pdcxyyvKSqr16Bx2SzW6idmU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyMethodExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyMethodExtensions.html",
+          "hash": "bGACsv9p1lVzQhE8CixLdvTTRI5m0r8JquT6WIMjJ8c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPatch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPatch.html",
+          "hash": "Ebo56r5FzryHoKgKTwgGoMBMH97FIaXht5WF+71lw9s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPatchAll.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPatchAll.html",
+          "hash": "IU8X5ScAivutyQhowrDecs8njOq4EMLiGnTz0xqy33c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPatchCategory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPatchCategory.html",
+          "hash": "hM0qYiq674yTRPT8SpvxqZjTjMrSiSAvw0YKCYQtIpw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPatchType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPatchType.html",
+          "hash": "mXViQXPtGgl0/GN7nrWxX2o5IHhLOvbyoJU51V0SqjQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPostfix.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPostfix.html",
+          "hash": "pV1DCsjQOqV1RPb/AGlVU2k5dd4cKiBthOZtioX6wzU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPrefix.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPrefix.html",
+          "hash": "7nZAXBsGv7hE/eyP/D14i9QJk6S1s/Srlj3Vrzhj9Tg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPrepare.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPrepare.html",
+          "hash": "uzOMbl4eulwG/PJUaqGLdLqpTz8I/pH4hh65gy5eW80="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyPriority.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyPriority.html",
+          "hash": "ReeqZCcklF42Y4KBxhac/k9m1R2xawOYaRUsp3bTV9s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyReversePatch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyReversePatch.html",
+          "hash": "gnQugkc3luyKriFgwyzfwblelPLlIcVEV5zQMoSk0Mk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyReversePatchType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyReversePatchType.html",
+          "hash": "dpv0qTmIHVNCBy8vjBTgR3ReMkNOrROFzKOiM5MhutQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyTargetMethod.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyTargetMethod.html",
+          "hash": "d00oD3uycLDZCNhNturM+MiX5+JKuVXG3Lh7tUWAcJY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyTargetMethods.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyTargetMethods.html",
+          "hash": "ZvHVMkEDE2ZGI6FyX8Ayo4MN54DrS+lfWKhc7bi+OkU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyTranspiler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyTranspiler.html",
+          "hash": "SbUM+l5kMSBq89sMeT5e8A55xvvZnKn+oewxiio8OLw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.InlineSignature.ModifierType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.InlineSignature.ModifierType.html",
+          "hash": "hJ1cjJ1yAQ+qhiYCVHgKKueCSW+IeUeX1kc0br/yLi4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.InlineSignature.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.InlineSignature.html",
+          "hash": "XhnPV7PA20EdyLvxaVEkvOgXYNAvYYJEmLETfo5f+Zo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.InstantiationHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.InstantiationHandler-1.html",
+          "hash": "tcWW4mhpbnazHdaH2kGGVy/ZkfUQqiVP6n3FIaAccQs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Memory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Memory.html",
+          "hash": "/h/6aXM+9/VV8kmyXVi1jB/Tk9LCjoHnYr5agOPYASk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.MethodBaseExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.MethodBaseExtensions.html",
+          "hash": "4Sao5i/+HI87IzkeRgtL6hy6ElfE0aDJtYpOkUC9o3s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.MethodDispatchType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.MethodDispatchType.html",
+          "hash": "Tc/6L2JNdrcldBPsSz+/jMthaAqPqbQNpmTKsXllbLA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.MethodInvoker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.MethodInvoker.html",
+          "hash": "3hEKUI/j81kb6J1zw66VyJb+OtoQsKTAFx/miwJegGU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.MethodType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.MethodType.html",
+          "hash": "ORaHJ7Gw8Ypb1now6nZGLDxK5wxMfbW+dHQRvz6tN6E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Patch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Patch.html",
+          "hash": "lyh2nT649tSK0Vyztg22XeTeHg7c/ltnV5kn52ITEm0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.PatchClassProcessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.PatchClassProcessor.html",
+          "hash": "Cl/CgJF/+TIag8qKkjZaG1Zyp05Bsq6ynF4ZzNI1AZA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.PatchInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.PatchInfo.html",
+          "hash": "4EXHjI6HYu8YBnIj5GxRbmxlSOMTE2ZApNzw5Ehb6Go="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.PatchProcessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.PatchProcessor.html",
+          "hash": "YvG5O7iL/SrOQmRCIZ3MDWMEDRA4qo6NIoRzZF38byI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Patches.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Patches.html",
+          "hash": "IdeKG30mmZPzIHLzL5GSsC8cGK+IoxyUWgGhTBuWZWY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Priority.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Priority.html",
+          "hash": "rl0PuTvSp7HkVvWU7ive5yMhdGtTfPpucyQ+P6827u0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.ReversePatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.ReversePatcher.html",
+          "hash": "8po6mKpDVc+zLdTxaThQaCaIOwXpG2Ts5jEXgqgHkPg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.SetterHandler-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.SetterHandler-2.html",
+          "hash": "MWnqxFvS/taD7A3Lk1KKHEN6I5bKMxuaYGiMJlgdyu4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.SymbolExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.SymbolExtensions.html",
+          "hash": "HwGb+LHOlUDEuJX5BKxJ5gTmnbyR4s75pTbCfOoK1/I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Transpilers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Transpilers.html",
+          "hash": "5Ln5MvoRnKx1Gl6x4yGexCEMrjy26VTz9a3vzkU8O4s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Traverse-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Traverse-1.html",
+          "hash": "3uJPp+kOdsjzfsMs81KVobLAZZyPDHPJPzB2OUN8jvY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.Traverse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.Traverse.html",
+          "hash": "5az7DT/UvP5BSEbBMHL4T62ju7kfKMfReXtgDzOzq6c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.html",
+          "hash": "FLDZq/uDvoJTlaQu48TdaXdt3Uln4Wod8PSgxQ3PkaM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "api/index.md",
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "Glkn6IU1/7EQLPzpGQ97lJL3q8GyEyR/DxCpIE+iAmg="
+          "hash": "I/vleipmraMwEAu10QU0F41n51GgNETkPHREgKFmotI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "Y5RDMaBQSMAK1Pa5apiP5Yq7s1ud7dd3ILHaLSvkK/Y="
         }
       },
       "is_incremental": false,
@@ -148,15 +940,12 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Conceptual",
       "source_relative_path": "articles/patching-transpiler-codes.md",
       "output": {
         ".html": {
           "relative_path": "articles/patching-transpiler-codes.html",
-          "hash": "Lq7cffOBq6U+bJ9S88fp46+MTAHrOo4i1HEcHIgZ9pY="
+          "hash": "V5hI5iEgnpD/48/cAXDrtInlOGVuO2IC3FKIOZ74RsE="
         }
       },
       "is_incremental": false,
@@ -299,7 +1088,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "Zk+t7btAIdUoP7YgYwHQUwrMljDLb8MOSeBbLbXbEvM="
+          "hash": "85d9rOmo3EhVqqKebh3/Z0C4UeOjgKFSVo6nNzbpGCc="
         }
       },
       "is_incremental": false,
@@ -321,6 +1110,12 @@
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 19,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 65,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
