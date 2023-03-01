@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace HarmonyLib
@@ -497,6 +498,37 @@ namespace HarmonyLib
 			}
 			return Method(type, nameof(IEnumerator.MoveNext));
 		}
+
+#if NET40_OR_GREATER
+		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext" /> method of an async method's state machine</summary>
+		/// <param name="method">Async method that creates the state machine internally</param>
+		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext" /> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
+		public static MethodInfo AsyncMoveNext(MethodBase method)
+		{
+			if (method is null)
+			{
+				FileLog.Debug("AccessTools.AsyncMoveNext: method is null");
+				return null;
+			}
+
+			var asyncAttribute = method.GetCustomAttribute<AsyncStateMachineAttribute>();
+			if (asyncAttribute == null)
+			{
+				FileLog.Debug($"AccessTools.AsyncMoveNext: Could not find AsyncStateMachine for {method.FullDescription()}");
+				return null;
+			}
+
+			var asyncStateMachineType = asyncAttribute.StateMachineType;
+			var asyncMethodBody = DeclaredMethod(asyncStateMachineType, "MoveNext");
+			if (asyncMethodBody == null)
+			{
+				FileLog.Debug($"AccessTools.AsyncMoveNext: Could not find async method body for {method.FullDescription()}");
+				return null;
+			}
+
+			return asyncMethodBody;
+		}
+#endif
 
 		/// <summary>Gets the names of all method that are declared in a type</summary>
 		/// <param name="type">The declaring class/type</param>
