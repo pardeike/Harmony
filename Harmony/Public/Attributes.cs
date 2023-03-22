@@ -17,10 +17,10 @@ namespace HarmonyLib
 		Constructor,
 		/// <summary>This is a static constructor</summary>
 		StaticConstructor,
-		/// <summary>This targets the MoveNext method of the enumerator result</summary>
+		/// <summary>This targets the MoveNext method of the enumerator result, that actually contains the method's implementation</summary>
 		Enumerator,
-#if NET40_OR_GREATER
-		/// <summary>This targets the MoveNext method of the async state machine</summary>
+#if NET45_OR_GREATER
+		/// <summary>This targets the MoveNext method of the async state machine, that actually contains the method's implementation</summary>
 		Async
 #endif
 	}

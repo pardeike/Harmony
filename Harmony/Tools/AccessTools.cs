@@ -467,9 +467,9 @@ namespace HarmonyLib
 			return Method(info.type, info.name, parameters, generics);
 		}
 
-		/// <summary>Gets the <see cref="IEnumerator.MoveNext" /> method of an enumerator method</summary>
+		/// <summary>Gets the <see cref="IEnumerator.MoveNext"/> method of an enumerator method</summary>
 		/// <param name="method">Enumerator method that creates the enumerator <see cref="IEnumerator" /></param>
-		/// <returns>The internal <see cref="IEnumerator.MoveNext" /> method of the enumerator or <b>null</b> if no valid enumerator is detected</returns>
+		/// <returns>The internal <see cref="IEnumerator.MoveNext"/> method of the enumerator or <b>null</b> if no valid enumerator is detected</returns>
 		public static MethodInfo EnumeratorMoveNext(MethodBase method)
 		{
 			if (method is null)
@@ -499,10 +499,10 @@ namespace HarmonyLib
 			return Method(type, nameof(IEnumerator.MoveNext));
 		}
 
-#if NET40_OR_GREATER
-		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext" /> method of an async method's state machine</summary>
+#if NET45_OR_GREATER
+		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext"/> method of an async method's state machine</summary>
 		/// <param name="method">Async method that creates the state machine internally</param>
-		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext" /> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
+		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
 		public static MethodInfo AsyncMoveNext(MethodBase method)
 		{
 			if (method is null)
@@ -512,15 +512,15 @@ namespace HarmonyLib
 			}
 
 			var asyncAttribute = method.GetCustomAttribute<AsyncStateMachineAttribute>();
-			if (asyncAttribute == null)
+			if (asyncAttribute is null)
 			{
 				FileLog.Debug($"AccessTools.AsyncMoveNext: Could not find AsyncStateMachine for {method.FullDescription()}");
 				return null;
 			}
 
 			var asyncStateMachineType = asyncAttribute.StateMachineType;
-			var asyncMethodBody = DeclaredMethod(asyncStateMachineType, "MoveNext");
-			if (asyncMethodBody == null)
+			var asyncMethodBody = DeclaredMethod(asyncStateMachineType, nameof(IAsyncStateMachine.MoveNext));
+			if (asyncMethodBody is null)
 			{
 				FileLog.Debug($"AccessTools.AsyncMoveNext: Could not find async method body for {method.FullDescription()}");
 				return null;

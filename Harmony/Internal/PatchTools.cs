@@ -87,7 +87,7 @@ namespace HarmonyLib
 						var enumMethod = AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
 						return AccessTools.EnumeratorMoveNext(enumMethod);
 
-#if NET40_OR_GREATER
+#if NET45_OR_GREATER
 					case MethodType.Async:
 						if (attr.methodName is null)
 							return null;
