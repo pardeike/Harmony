@@ -87,6 +87,13 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Creates a patch from a given method</summary>
+		/// <param name="delegate">The original method</param>
+		///
+		public HarmonyMethod(Delegate @delegate)
+			: this(@delegate.Method)
+		{ }
+
+		/// <summary>Creates a patch from a given method</summary>
 		/// <param name="method">The original method</param>
 		/// <param name="priority">The patch <see cref="Priority"/></param>
 		/// <param name="before">A list of harmony IDs that should come after this patch</param>
@@ -103,6 +110,17 @@ namespace HarmonyLib
 			this.after = after;
 			this.debug = debug;
 		}
+
+		/// <summary>Creates a patch from a given method</summary>
+		/// <param name="delegate">The original method</param>
+		/// <param name="priority">The patch <see cref="Priority"/></param>
+		/// <param name="before">A list of harmony IDs that should come after this patch</param>
+		/// <param name="after">A list of harmony IDs that should come before this patch</param>
+		/// <param name="debug">Set to true to generate debug output</param>
+		///
+		public HarmonyMethod(Delegate @delegate, int priority = -1, string[] before = null, string[] after = null, bool? debug = null)
+			: this(@delegate.Method, priority, before, after, debug)
+		{ }
 
 		/// <summary>Creates a patch from a given method</summary>
 		/// <param name="methodType">The patch class/type</param>
@@ -176,6 +194,22 @@ namespace HarmonyLib
 			var tName = methodType.HasValue ? methodType.Value.ToString() : "undefined";
 			var aName = argumentTypes is object ? argumentTypes.Description() : "undefined";
 			return $"(class={cName}, methodname={mName}, type={tName}, args={aName})";
+		}
+
+		/// <summary>Creates a patch from a given method</summary>
+		/// <param name="method">The original method</param>
+		///
+		public static implicit operator HarmonyMethod(MethodInfo method)
+		{
+			return new HarmonyMethod(method);
+		}
+
+		/// <summary>Creates a patch from a given method</summary>
+		/// <param name="delegate">The original method</param>
+		///
+		public static implicit operator HarmonyMethod(Delegate @delegate)
+		{
+			return new HarmonyMethod(@delegate);
 		}
 	}
 
