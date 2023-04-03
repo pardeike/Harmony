@@ -245,6 +245,36 @@ namespace HarmonyLib
 			return property;
 		}
 
+		/// <summary>Gets the reflection information for a directly declared indexer property</summary>
+		/// <param name="type">The class/type where the indexer property is declared</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
+		/// <returns>An indexer property or null when type is null or when it cannot be found</returns>
+		///
+		public static PropertyInfo DeclaredIndexer(Type type, Type[] parameters = null)
+		{
+			if (type is null)
+			{
+				FileLog.Debug("AccessTools.DeclaredIndexer: type is null");
+				return null;
+			}
+
+			try
+			{
+				// Can find multiple indexers without specified parameters, but only one with specified ones
+				var indexer = parameters is null ?
+					type.GetProperties(allDeclared).SingleOrDefault(property => property.GetIndexParameters().Any())
+					: type.GetProperties(allDeclared).FirstOrDefault(property => property.GetIndexParameters().Select(param => param.ParameterType).SequenceEqual(parameters));
+
+				if (indexer is null) FileLog.Debug($"AccessTools.DeclaredIndexer: Could not find indexer for type {type} and parameters {parameters?.Description()}");
+
+				return indexer;
+			}
+			catch (InvalidOperationException ex)
+			{
+				throw new AmbiguousMatchException("Multiple possible indexers were found.", ex);
+			}
+		}
+
 		/// <summary>Gets the reflection information for the getter method of a directly declared property</summary>
 		/// <param name="type">The class/type where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
@@ -264,6 +294,16 @@ namespace HarmonyLib
 			return DeclaredProperty(typeColonName)?.GetGetMethod(true);
 		}
 
+		/// <summary>Gets the reflection information for the getter method of a directly declared indexer property</summary>
+		/// <param name="type">The class/type where the indexer property is declared</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
+		/// <returns>A method or null when type is null or when indexer property cannot be found</returns>
+		///
+		public static MethodInfo DeclaredIndexerGetter(Type type, Type[] parameters = null)
+		{
+			return DeclaredIndexer(type, parameters)?.GetGetMethod(true);
+		}
+
 		/// <summary>Gets the reflection information for the setter method of a directly declared property</summary>
 		/// <param name="type">The class/type where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
@@ -281,6 +321,16 @@ namespace HarmonyLib
 		public static MethodInfo DeclaredPropertySetter(string typeColonName)
 		{
 			return DeclaredProperty(typeColonName)?.GetSetMethod(true);
+		}
+
+		/// <summary>Gets the reflection information for the setter method of a directly declared indexer property</summary>
+		/// <param name="type">The class/type where the indexer property is declared</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
+		/// <returns>A method or null when type is null or when indexer property cannot be found</returns>
+		///
+		public static MethodInfo DeclaredIndexerSetter(Type type, Type[] parameters)
+		{
+			return DeclaredIndexer(type, parameters)?.GetSetMethod(true);
 		}
 
 		/// <summary>Gets the reflection information for a property by searching the type and all its super types</summary>
@@ -317,6 +367,38 @@ namespace HarmonyLib
 			return property;
 		}
 
+		/// <summary>Gets the reflection information for an indexer property by searching the type and all its super types</summary>
+		/// <param name="type">The class/type</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
+		/// <returns>An indexer property or null when type is null or when it cannot be found</returns>
+		///
+		public static PropertyInfo Indexer(Type type, Type[] parameters = null)
+		{
+			if (type is null)
+			{
+				FileLog.Debug("AccessTools.Indexer: type is null");
+				return null;
+			}
+
+			// Can find multiple indexers without specified parameters, but only one with specified ones
+			Func<Type, PropertyInfo> func = parameters is null ?
+				t => t.GetProperties(all).SingleOrDefault(property => property.GetIndexParameters().Any())
+				: t => t.GetProperties(all).FirstOrDefault(property => property.GetIndexParameters().Select(param => param.ParameterType).SequenceEqual(parameters));
+
+			try
+			{
+				var indexer = FindIncludingBaseTypes(type, func);
+
+				if (indexer is null) FileLog.Debug($"AccessTools.Indexer: Could not find indexer for type {type} and parameters {parameters?.Description()}");
+
+				return indexer;
+			}
+			catch (InvalidOperationException ex)
+			{
+				throw new AmbiguousMatchException("Multiple possible indexers were found.", ex);
+			}
+		}
+
 		/// <summary>Gets the reflection information for the getter method of a property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
 		/// <param name="name">The name</param>
@@ -336,6 +418,15 @@ namespace HarmonyLib
 			return Property(typeColonName)?.GetGetMethod(true);
 		}
 
+		/// <summary>Gets the reflection information for the getter method of an indexer property by searching the type and all its super types</summary>
+		/// <param name="type">The class/type</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
+		/// <returns>A method or null when type is null or when the indexer property cannot be found</returns>
+		public static MethodInfo IndexerGetter(Type type, Type[] parameters = null)
+		{
+			return Indexer(type, parameters)?.GetGetMethod(true);
+		}
+
 		/// <summary>Gets the reflection information for the setter method of a property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
 		/// <param name="name">The name</param>
@@ -353,6 +444,15 @@ namespace HarmonyLib
 		public static MethodInfo PropertySetter(string typeColonName)
 		{
 			return Property(typeColonName)?.GetSetMethod(true);
+		}
+
+		/// <summary>Gets the reflection information for the setter method of an indexer property by searching the type and all its super types</summary>
+		/// <param name="type">The class/type</param>
+		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
+		/// <returns>A method or null when type is null or when the indexer property cannot be found</returns>
+		public static MethodInfo IndexerSetter(Type type, Type[] parameters = null)
+		{
+			return Indexer(type, parameters)?.GetSetMethod(true);
 		}
 
 		/// <summary>Gets the reflection information for a directly declared method</summary>
