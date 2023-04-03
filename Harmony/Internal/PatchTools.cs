@@ -12,7 +12,7 @@ namespace HarmonyLib
 		// https://stackoverflow.com/a/33153868
 		// ThreadStatic has pitfalls (see RememberObject below), but since we must support net35, it's the best available option.
 		[ThreadStatic]
-		static Dictionary<object, object> objectReferences;
+		private static Dictionary<object, object> objectReferences;
 
 		internal static void RememberObject(object key, object value)
 		{
@@ -65,12 +65,12 @@ namespace HarmonyLib
 
 					case MethodType.Getter:
 						if (attr.methodName is null)
-							return null;
+							return AccessTools.DeclaredIndexer(attr.declaringType, attr.argumentTypes).GetGetMethod(true);
 						return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod(true);
 
 					case MethodType.Setter:
 						if (attr.methodName is null)
-							return null;
+							return AccessTools.DeclaredIndexer(attr.declaringType, attr.argumentTypes).GetSetMethod(true);
 						return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod(true);
 
 					case MethodType.Constructor:
