@@ -31,6 +31,16 @@ namespace HarmonyLib
 		internal CodeMatch Set(object operand, string name)
 		{
 			this.operand ??= operand;
+			if (operand != null) operands.Add(operand);
+			this.name ??= name;
+			return this;
+		}
+		internal CodeMatch Set(OpCode opcode, object operand, string name)
+		{
+			this.opcode = opcode;
+			opcodes.Add(opcode);
+			this.operand ??= operand;
+			if (operand != null) operands.Add(operand);
 			this.name ??= name;
 			return this;
 		}
