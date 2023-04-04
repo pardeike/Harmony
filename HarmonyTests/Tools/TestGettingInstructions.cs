@@ -2,18 +2,27 @@ using HarmonyLib;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Tools
 {
 	public class InstructionTest
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public int Method(string input)
 		{
-			var count = 0;
-			for (var i = 0; i < input.Length; i++)
-				if (input[i] == ' ')
-					count++;
-			return count;
+			try
+			{
+				var count = 0;
+				for (var i = 0; i < input.Length; i++)
+					if (input[i] == ' ')
+						count++;
+				return count;
+			}
+			catch
+			{
+				return -1;
+			}
 		}
 
 		[HarmonyPatch]
