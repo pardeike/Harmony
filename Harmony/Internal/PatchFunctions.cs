@@ -39,7 +39,13 @@ namespace HarmonyLib
 
 			try
 			{
+				Console.WriteLine("$$$ detour start");
 				PatchTools.DetourMethod(original, replacement);
+				Console.WriteLine("$$$ detour end");
+			}
+			catch (TypeLoadException loadException)
+			{
+				Console.WriteLine($"!!! TYPE LOAD EXCEPTION: [{loadException.TypeName}] [{loadException.HelpLink}] [{loadException.InnerException?.Message}]");
 			}
 			catch (Exception ex)
 			{
