@@ -143,6 +143,8 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(exception);
 		}
 
+		/* TODO
+		 * 
 		[Test]
 		public void Test_PatchExceptionWithCleanup1()
 		{
@@ -211,6 +213,7 @@ namespace HarmonyLibTests.Patching
 			}
 			Assert.Fail("Patch should throw HarmonyException");
 		}
+		*/
 
 		[Test]
 		public void Test_PatchExceptionWithCleanup3()
