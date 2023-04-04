@@ -1,4 +1,3 @@
-using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
@@ -48,8 +47,6 @@ namespace HarmonyLib
 			this.postfixes = postfixes;
 			this.transpilers = transpilers;
 			this.finalizers = finalizers;
-
-			Memory.MarkForNoInlining(original);
 
 			if (debug)
 			{
@@ -232,7 +229,7 @@ namespace HarmonyLib
 				FileLog.FlushBuffer();
 			}
 
-			return patch.Generate().Pin();
+			return patch.Generate();
 		}
 
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
@@ -265,7 +262,7 @@ namespace HarmonyLib
 				parameterTypes.ToArray()
 			)
 			{
-				OwnerType = original.DeclaringType
+				// OwnerType = original.DeclaringType
 			};
 
 			var offset = (original.IsStatic ? 0 : 1) + (useStructReturnBuffer ? 1 : 0);

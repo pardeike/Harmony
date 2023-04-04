@@ -1,9 +1,6 @@
-extern alias mmc;
-
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using HarmonyLibTests.Assets.Methods;
-using mmc::MonoMod.Utils;
 using NUnit.Framework;
 using System;
 using System.Diagnostics;

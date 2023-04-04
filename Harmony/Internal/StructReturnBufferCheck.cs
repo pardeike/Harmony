@@ -140,7 +140,7 @@ namespace HarmonyLib
 						Sandbox.hasStructReturnBuffer_Mono = false;
 						var original = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStruct_Mono));
 						var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Mono));
-						_ = Memory.DetourMethod(original, replacement);
+						PatchTools.DetourMethod(original, replacement);
 						_ = new Sandbox().GetStruct_Mono(Sandbox.magicValue, Sandbox.magicValue);
 						hasTestResult_Mono = true;
 					}
@@ -155,7 +155,7 @@ namespace HarmonyLib
 					Sandbox.hasStructReturnBuffer_Net = false;
 					var original = AccessTools.DeclaredMethod(typeof(Sandbox), Tools.isWindows ? nameof(Sandbox.GetStruct_Net) : nameof(Sandbox.GetStruct_NetLinux));
 					var replacement = AccessTools.DeclaredMethod(typeof(Sandbox), nameof(Sandbox.GetStructReplacement_Net));
-					_ = Memory.DetourMethod(original, replacement);
+					PatchTools.DetourMethod(original, replacement);
 					if (Tools.isWindows)
 						_ = new Sandbox().GetStruct_Net(Sandbox.magicValue, Sandbox.magicValue);
 					else

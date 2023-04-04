@@ -1643,7 +1643,7 @@ namespace HarmonyLib
 					method.ReturnType,
 					parameterTypes)
 				{
-					OwnerType = declaringType
+					// OwnerType = declaringType
 				};
 				var ilGen = dmd.GetILGenerator();
 				if (declaringType != null && declaringType.IsValueType)
@@ -1683,7 +1683,7 @@ namespace HarmonyLib
 					delegateType,
 					new[] { typeof(object) })
 				{
-					OwnerType = delegateType
+					// OwnerType = delegateType
 				};
 				var ilGen = dmd.GetILGenerator();
 				ilGen.Emit(OpCodes.Ldarg_0);

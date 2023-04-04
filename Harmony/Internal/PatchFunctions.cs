@@ -39,33 +39,13 @@ namespace HarmonyLib
 
 			try
 			{
-				Memory.DetourMethodAndPersist(original, replacement);
+				PatchTools.DetourMethod(original, replacement);
 			}
 			catch (Exception ex)
 			{
 				throw HarmonyException.Create(ex, finalInstructions);
 			}
 			return replacement;
-		}
-
-		internal static void UpdateRecompiledMethod(MethodBase original, IntPtr codeStart, PatchInfo patchInfo)
-		{
-			try
-			{
-				var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes, false);
-				var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes, false);
-				var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers, false);
-				var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers, false);
-
-				var patcher = new MethodPatcher(original, null, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, false);
-				var replacement = patcher.CreateReplacement(out var finalInstructions);
-				if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
-
-				Memory.DetourCompiledMethod(codeStart, replacement);
-			}
-			catch
-			{
-			}
 		}
 
 		internal static MethodInfo ReversePatch(HarmonyMethod standin, MethodBase original, MethodInfo postTranspiler)
@@ -92,16 +72,13 @@ namespace HarmonyLib
 
 			try
 			{
-				var errorString = Memory.DetourMethod(standin.method, replacement);
-				if (errorString is object)
-					throw new FormatException($"Method {standin.method.FullDescription()} cannot be patched. Reason: {errorString}");
+				PatchTools.DetourMethod(standin.method, replacement);
 			}
 			catch (Exception ex)
 			{
 				throw HarmonyException.Create(ex, finalInstructions);
 			}
 
-			PatchTools.RememberObject(standin.method, replacement);
 			return replacement;
 		}
 	}
