@@ -29,11 +29,6 @@ namespace HarmonyLib
 			reader.SetDebugging(debug);
 		}
 
-		internal void SetArgumentShift(bool useShift)
-		{
-			reader.SetArgumentShift(useShift);
-		}
-
 		internal void AddTranspiler(MethodInfo transpiler)
 		{
 			transpilers.Add(transpiler);
@@ -52,9 +47,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(method));
 
 			var originalVariables = MethodPatcher.DeclareLocalVariables(generator, method);
-			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(method);
 			var copier = new MethodCopier(method, generator, originalVariables);
-			copier.SetArgumentShift(useStructReturnBuffer);
 
 			var info = Harmony.GetPatchInfo(method);
 			if (info is object)
@@ -73,7 +66,6 @@ namespace HarmonyLib
 		readonly ILGenerator generator;
 		readonly MethodBase method;
 		bool debug = false;
-		bool argumentShift = false;
 
 		readonly Module module;
 		readonly Type[] typeArguments;
@@ -142,11 +134,6 @@ namespace HarmonyLib
 		internal void SetDebugging(bool debug)
 		{
 			this.debug = debug;
-		}
-
-		internal void SetArgumentShift(bool argumentShift)
-		{
-			this.argumentShift = argumentShift;
 		}
 
 		internal void GenerateInstructions()
@@ -373,7 +360,7 @@ namespace HarmonyLib
 
 			// pass2 - filter through all processors
 			//
-			var codeTranspiler = new CodeTranspiler(ilInstructions, argumentShift);
+			var codeTranspiler = new CodeTranspiler(ilInstructions);
 			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 

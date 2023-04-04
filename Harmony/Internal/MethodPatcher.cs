@@ -55,8 +55,6 @@ namespace HarmonyLib
 			}
 
 			idx = prefixes.Count + postfixes.Count + finalizers.Count;
-			useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
-			if (debug && useStructReturnBuffer) FileLog.Log($"### Note: A buffer for the returned struct is used. That requires an extra IntPtr argument before the first real argument");
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}", debug);
 			if (patch is null)
@@ -135,7 +133,6 @@ namespace HarmonyLib
 			}
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
-			copier.SetArgumentShift(useStructReturnBuffer);
 			copier.SetDebugging(debug);
 
 			foreach (var transpiler in transpilers)
@@ -235,7 +232,6 @@ namespace HarmonyLib
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
 		{
 			if (original is null) throw new ArgumentNullException(nameof(original));
-			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 
 			var patchName = $"{original.DeclaringType?.FullName ?? "GLOBALTYPE"}.{original.Name}{suffix}";
 			patchName = patchName.Replace("<>", "");
@@ -244,8 +240,6 @@ namespace HarmonyLib
 			var parameterTypes = new List<Type>();
 
 			parameterTypes.AddRange(parameters.Types());
-			if (useStructReturnBuffer)
-				parameterTypes.Insert(0, typeof(IntPtr));
 			if (original.IsStatic is false)
 			{
 				if (AccessTools.IsStruct(original.DeclaringType))
@@ -254,7 +248,7 @@ namespace HarmonyLib
 					parameterTypes.Insert(0, original.DeclaringType);
 			}
 
-			var returnType = useStructReturnBuffer ? typeof(void) : AccessTools.GetReturnedType(original);
+			var returnType = AccessTools.GetReturnedType(original);
 
 			var method = new DynamicMethodDefinition(
 				patchName,
@@ -265,9 +259,7 @@ namespace HarmonyLib
 				// OwnerType = original.DeclaringType
 			};
 
-			var offset = (original.IsStatic ? 0 : 1) + (useStructReturnBuffer ? 1 : 0);
-			if (useStructReturnBuffer)
-				method.Definition.Parameters[original.IsStatic ? 0 : 1].Name = "retbuf";
+			var offset = original.IsStatic ? 0 : 1;
 			if (!original.IsStatic)
 				method.Definition.Parameters[0].Name = "this";
 			for (var i = 0; i < parameters.Length; i++)

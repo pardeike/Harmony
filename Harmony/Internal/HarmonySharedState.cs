@@ -115,12 +115,18 @@ namespace HarmonyLib
 			lock (state) return state.Keys.ToArray();
 		}
 
+		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
+		{
+			var bytes = patchInfo.Serialize();
+			lock (state) state[original] = bytes;
+			lock (originals) originals[replacement] = original;
+		}
+
 		internal static MethodBase GetOriginal(MethodInfo replacement)
 		{
 			lock (originals) return originals.GetValueSafe(replacement);
 		}
 
-		static readonly FieldInfo methodAddress = typeof(StackFrame).GetField("methodAddress", BindingFlags.Instance | BindingFlags.NonPublic);
 		internal static MethodBase FindReplacement(StackFrame frame)
 		{
 			return frame.GetMethod();
