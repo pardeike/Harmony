@@ -129,7 +129,7 @@ namespace HarmonyLib
 
 		internal static MethodBase FindReplacement(StackFrame frame)
 		{
-			return frame.GetMethod();
+			lock (originals) return originals[frame.GetMethod() as MethodInfo];
 		}
 	}
 }
