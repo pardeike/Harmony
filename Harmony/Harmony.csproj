@@ -28,8 +28,8 @@
 		<Version>$(HarmonyVersion)</Version>
 		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
 		<FileVersion>$(HarmonyVersion)</FileVersion>
-		<PackageVersion>$(HarmonyVersion)-alpha.2</PackageVersion>
-		<InformationalVersion>$(HarmonyVersion)-alpha.2</InformationalVersion>
+		<PackageVersion>$(HarmonyVersion)-alpha.3</PackageVersion>
+		<InformationalVersion>$(HarmonyVersion)-alpha.3</InformationalVersion>
 	</PropertyGroup>
 
 	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
@@ -64,14 +64,13 @@
 		</Otherwise>
 	</Choose>
 
-	<!-- ILRepack config needs to be specified before MonoMod.Common PackageReference due its dependency on properties defined here. -->
+	<!-- ILRepack config needs to be specified before MonoMod.Common PackageReference due its dependency on properties defined here.
 	<Choose>
 		<When Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
 			<PropertyGroup>
 				<ILRepackInternalize>true</ILRepackInternalize>
 			</PropertyGroup>
 			<Choose>
-				<!-- See ExecILRepack target below. -->
 				<When Condition="$([System.Environment]::GetEnvironmentVariable('DYLD_FALLBACK_LIBRARY_PATH'))=='' And $([MSBuild]::IsOsPlatform('OSX'))">
 					<PropertyGroup>
 						<DoILRepack>false</DoILRepack>
@@ -93,7 +92,7 @@
 				<DoExecILRepack>false</DoExecILRepack>
 			</PropertyGroup>
 		</Otherwise>
-	</Choose>
+	</Choose> -->
 
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="" />
@@ -120,7 +119,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MonoModReorg.Core" Version="$(MonoModCoreVersion)">
-			<PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets>
+			<!-- <PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets> -->
 		</PackageReference>
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
@@ -130,8 +129,8 @@
 		See ILRepack config above.
 		Version 2.1.15+ currently doesn't work on Linux and macOS (results in "Current platform not supported. Unable to find .NET Framework root"),
 		WE MUST USE VERSION 2.1.14 HERE FOR NOW!
-		-->
-		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
+		
+		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" /> -->
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsNET5OrGreater)">
@@ -158,7 +157,7 @@
 	so we must spawn a new process via the Exec task that sets DYLD_* env vars and runs msbuild on the ILRepack target.
 	Furthermore, DYLD_* env vars aren't inherited (even if specified via Exec's EnvironmentVariables attribute), probably due to SIP,
 	so we must set DYLD_* env vars within the Exec'd command itself.
-	-->
+	
 	<Target Name="ExecILRepack" AfterTargets="PostBuildEvent" Condition="$(DoExecILRepack)">
 		<PropertyGroup>
 			<DYLD_FALLBACK_LIBRARY_PATH>/Library/Frameworks/Mono.framework/Versions/Current/lib:$(HOME)/lib:/usr/local/lib:/lib:/usr/lib</DYLD_FALLBACK_LIBRARY_PATH>
@@ -167,7 +166,7 @@
 			<MSBuildCmdArgs>"-p:TargetFramework=$(TargetFramework);Configuration=$(Configuration);DoILRepack=true" -t:ILRepack</MSBuildCmdArgs>
 		</PropertyGroup>
 		<Exec Command="export DYLD_FALLBACK_LIBRARY_PATH=$(DYLD_FALLBACK_LIBRARY_PATH); $(MSBuildCmd) $(MSBuildCmdArgs)" />
-	</Target>
+	</Target> -->
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
 		<PropertyGroup>
