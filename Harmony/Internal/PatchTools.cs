@@ -10,19 +10,16 @@ namespace HarmonyLib
 {
 	internal static class PatchTools
 	{
-		// Note: Even though this Dictionary is only stored to and never read from, it still needs to be thread-safe:
-		// https://stackoverflow.com/a/33153868
-		// ThreadStatic has pitfalls (see RememberObject below), but since we must support net35, it's the best available option.
-		[ThreadStatic]
-		private static HashSet<ICoreDetour> objectReferences;
+		private static readonly Dictionary<MethodBase, ICoreDetour> detours = new();
 
 		internal static void DetourMethod(MethodBase method, MethodBase replacement)
 		{
-			var handle = DetourFactory.Current.CreateDetour(method, replacement);
-
-			// ThreadStatic fields are only initialized for one thread, so ensure it's initialized for current thread.
-			objectReferences ??= new HashSet<ICoreDetour>();
-			_ = objectReferences.Add(handle);
+			lock (detours)
+			{
+				if (detours.TryGetValue(method, out var detour))
+					detour.Dispose();
+				detours[method] = DetourFactory.Current.CreateDetour(method, replacement);
+			}
 		}
 
 		public static MethodInfo CreateMethod(string name, Type returnType, List<KeyValuePair<string, Type>> parameters, Action<ILGenerator> generator)

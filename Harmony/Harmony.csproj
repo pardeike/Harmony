@@ -28,8 +28,8 @@
 		<Version>$(HarmonyVersion)</Version>
 		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
 		<FileVersion>$(HarmonyVersion)</FileVersion>
-		<PackageVersion>$(HarmonyVersion)-alpha.3</PackageVersion>
-		<InformationalVersion>$(HarmonyVersion)-alpha.3</InformationalVersion>
+		<PackageVersion>$(HarmonyVersion)-alpha.4</PackageVersion>
+		<InformationalVersion>$(HarmonyVersion)-alpha.4</InformationalVersion>
 	</PropertyGroup>
 
 	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
