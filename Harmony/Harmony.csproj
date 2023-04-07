@@ -135,12 +135,29 @@
 
 	<!-- netstandard2.0 reference assemblies -->
 	<PropertyGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<!-- Remove from /lib in NuGet -->
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<!-- Create reference Assemblies instead of a full assembly -->
 		<ProduceOnlyReferenceAssembly>true</ProduceOnlyReferenceAssembly>
+		<!-- Add our target for packing -->
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<!-- Adding System.Reflection.Emit to satisfy the compiler -->
 		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" PrivateAssets="all" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" />
 	</ItemGroup>
+	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework) == 'netstandard2.0'">
+		<ItemGroup>
+			<!-- Adding the Reference Assembly and the xml documentation to /ref of NuGet -->
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).dll">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).xml">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup Condition="$(IsNET5OrGreater)">
 		<PackageReference Include="System.Text.Json" Version="5.0.2" />
