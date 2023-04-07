@@ -143,9 +143,8 @@
 		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
-		<!-- Adding System.Reflection.Emit to satisfy the compiler -->
-		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" PrivateAssets="all" />
-		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" />
+		<!-- Adding System.Reflection.Emit to because there are public types exposed from its's package -->
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
 	</ItemGroup>
 	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework) == 'netstandard2.0'">
 		<ItemGroup>
