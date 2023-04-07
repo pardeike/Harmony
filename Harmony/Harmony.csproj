@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Product>Harmony</Product>
 		<Company>Andreas Pardeike</Company>
@@ -131,6 +131,15 @@
 		WE MUST USE VERSION 2.1.14 HERE FOR NOW!
 		
 		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" /> -->
+	</ItemGroup>
+
+	<!-- netstandard2.0 reference assemblies -->
+	<PropertyGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<ProduceOnlyReferenceAssembly>true</ProduceOnlyReferenceAssembly>
+	</PropertyGroup>
+	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" PrivateAssets="all" />
+		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsNET5OrGreater)">
