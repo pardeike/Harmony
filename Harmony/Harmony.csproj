@@ -28,8 +28,8 @@
 		<Version>$(HarmonyVersion)</Version>
 		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
 		<FileVersion>$(HarmonyVersion)</FileVersion>
-		<PackageVersion>$(HarmonyVersion)-alpha.4</PackageVersion>
-		<InformationalVersion>$(HarmonyVersion)-alpha.4</InformationalVersion>
+		<PackageVersion>$(HarmonyVersion)-alpha.5</PackageVersion>
+		<InformationalVersion>$(HarmonyVersion)-alpha.5</InformationalVersion>
 	</PropertyGroup>
 
 	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
@@ -118,6 +118,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net35" Version="1.0.3">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="MonoModReorg.Core" Version="$(MonoModCoreVersion)">
 			<!-- <PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets> -->
 		</PackageReference>
