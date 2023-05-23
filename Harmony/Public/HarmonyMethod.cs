@@ -68,10 +68,10 @@ namespace HarmonyLib
 		void ImportMethod(MethodInfo theMethod)
 		{
 			method = theMethod;
-			if (method is object)
+			if (method is not null)
 			{
 				var infos = HarmonyMethodExtensions.GetFromMethod(method);
-				if (infos is object)
+				if (infos is not null)
 					Merge(infos).CopyTo(this);
 			}
 		}
@@ -164,7 +164,7 @@ namespace HarmonyLib
 					// The second half of this if is needed because priority defaults to -1
 					// This causes the value of a HarmonyPriority attribute to be overriden by the next attribute if it is not merged last
 					// should be removed by making priority nullable and default to null at some point
-					if (val is object && (f != nameof(HarmonyMethod.priority) || (int)val != -1))
+					if (val is not null && (f != nameof(priority) || (int)val != -1))
 						HarmonyMethodExtensions.SetValue(resultTrv, f, val);
 				});
 			});
@@ -189,10 +189,10 @@ namespace HarmonyLib
 		// used for error reporting
 		internal string Description()
 		{
-			var cName = declaringType is object ? declaringType.FullName : "undefined";
+			var cName = declaringType is not null ? declaringType.FullName : "undefined";
 			var mName = methodName ?? "undefined";
 			var tName = methodType.HasValue ? methodType.Value.ToString() : "undefined";
-			var aName = argumentTypes is object ? argumentTypes.Description() : "undefined";
+			var aName = argumentTypes is not null ? argumentTypes.Description() : "undefined";
 			return $"(class={cName}, methodname={mName}, type={tName}, args={aName})";
 		}
 
@@ -241,7 +241,7 @@ namespace HarmonyLib
 			HarmonyMethod.HarmonyFields().ForEach(f =>
 			{
 				var val = fromTrv.Field(f).GetValue();
-				if (val is object)
+				if (val is not null)
 					SetValue(toTrv, f, val);
 			});
 		}
@@ -299,7 +299,7 @@ namespace HarmonyLib
 		{
 			return type.GetCustomAttributes(true)
 						.Select(attr => GetHarmonyMethodInfo(attr))
-						.Where(info => info is object)
+						.Where(info => info is not null)
 						.ToList();
 		}
 
@@ -320,7 +320,7 @@ namespace HarmonyLib
 		{
 			return method.GetCustomAttributes(true)
 						.Select(attr => GetHarmonyMethodInfo(attr))
-						.Where(info => info is object)
+						.Where(info => info is not null)
 						.ToList();
 		}
 

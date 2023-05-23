@@ -162,7 +162,7 @@ namespace HarmonyLib
 			lock (locker)
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
-				if (patchInfo is null) patchInfo = new PatchInfo();
+				patchInfo ??= new PatchInfo();
 
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.Prefix)
 					patchInfo.RemovePrefix(harmonyID);
@@ -188,7 +188,7 @@ namespace HarmonyLib
 			lock (locker)
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
-				if (patchInfo is null) patchInfo = new PatchInfo();
+				patchInfo ??= new PatchInfo();
 
 				patchInfo.RemovePatch(patch);
 				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
@@ -242,7 +242,7 @@ namespace HarmonyLib
 			assemblies.Do(info =>
 			{
 				var assemblyName = info.Value.GetReferencedAssemblies().FirstOrDefault(a => a.FullName.StartsWith("0Harmony, Version", StringComparison.Ordinal));
-				if (assemblyName is object)
+				if (assemblyName is not null)
 					result[info.Key] = assemblyName.Version;
 			});
 			return result;

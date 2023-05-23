@@ -149,11 +149,7 @@ namespace HarmonyLib
 		{
 			var instructions = codes;
 			if (start > end)
-			{
-				var tmp = start;
-				start = end;
-				end = tmp;
-			}
+				(end, start) = (start, end);
 
 			instructions = instructions.GetRange(start, end - start + 1);
 			return instructions.Select(c => new CodeInstruction(c)).ToList();
@@ -499,11 +495,7 @@ namespace HarmonyLib
 		public CodeMatcher RemoveInstructionsInRange(int start, int end)
 		{
 			if (start > end)
-			{
-				var tmp = start;
-				start = end;
-				end = tmp;
-			}
+				(end, start) = (start, end);
 
 			codes.RemoveRange(start, end - start + 1);
 			return this;

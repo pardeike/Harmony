@@ -63,7 +63,7 @@ namespace HarmonyLib
 		{
 			return AccessTools.GetDeclaredMethods(type)
 				.Select(method => AttributePatch.Create(method))
-				.Where(attributePatch => attributePatch is object)
+				.Where(attributePatch => attributePatch is not null)
 				.ToList();
 		}
 

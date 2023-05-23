@@ -32,7 +32,7 @@ namespace HarmonyLibTests.Patching
 			var original = AccessTools.Method(typeof(Class3), nameof(Class3.TestMethod));
 			Assert.NotNull(original);
 
-			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(Transpiling.TestTranspiler));
+			var transpiler = AccessTools.Method(typeof(Transpiling), nameof(TestTranspiler));
 			Assert.NotNull(transpiler);
 
 			var instance = new Harmony("test-exception1");

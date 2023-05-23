@@ -21,7 +21,7 @@ namespace HarmonyLib
 		///
 		public static string Join<T>(this IEnumerable<T> enumeration, Func<T, string> converter = null, string delimiter = ", ")
 		{
-			if (converter is null) converter = t => t.ToString();
+			converter ??= t => t.ToString();
 			return enumeration.Aggregate("", (prev, curr) => prev + (prev.Length > 0 ? delimiter : "") + converter(curr));
 		}
 
@@ -77,7 +77,7 @@ namespace HarmonyLib
 			if (member.IsAbstract) _ = result.Append("abstract ");
 			if (member.IsVirtual) _ = result.Append("virtual ");
 			_ = result.Append($"{returnType.FullDescription()} ");
-			if (member.DeclaringType is object)
+			if (member.DeclaringType is not null)
 				_ = result.Append($"{member.DeclaringType.FullDescription()}::");
 			var parameterString = member.GetParameters().Join(p => $"{p.ParameterType.FullDescription()} {p.Name}");
 			_ = result.Append($"{member.Name}({parameterString})");
@@ -494,7 +494,7 @@ namespace HarmonyLib
 			else if (code.opcode == OpCodes.Ldloc_S || code.opcode == OpCodes.Ldloc) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Stloc_S || code.opcode == OpCodes.Stloc) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Ldloca_S || code.opcode == OpCodes.Ldloca) return Convert.ToInt32(code.operand);
-			else throw new ArgumentException("Instruction is not a load or store", "code");
+			else throw new ArgumentException("Instruction is not a load or store", nameof(code));
 		}
 
 		/// <summary>Returns the index targeted by this <c>ldarg</c>, <c>ldarga</c>, or <c>starg</c></summary>
@@ -511,7 +511,7 @@ namespace HarmonyLib
 			else if (code.opcode == OpCodes.Ldarg_S || code.opcode == OpCodes.Ldarg) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Starg_S || code.opcode == OpCodes.Starg) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Ldarga_S || code.opcode == OpCodes.Ldarga) return Convert.ToInt32(code.operand);
-			else throw new ArgumentException("Instruction is not a load or store", "code");
+			else throw new ArgumentException("Instruction is not a load or store", nameof(code));
 		}
 
 		/// <summary>Adds labels to the code instruction and return it</summary>

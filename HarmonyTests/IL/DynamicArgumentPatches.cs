@@ -85,7 +85,7 @@ namespace HarmonyLibTests.IL
 			var method = AccessTools.TypeByName(typeName).Module.ResolveMethod(token);
 			log.Add(method.Name);
 			log.Add(instance?.GetType().Name ?? "NULL");
-			if (args is object)
+			if (args is not null)
 				foreach (var arg in args)
 					log.Add(arg?.ToString() ?? "NULL");
 			return true;

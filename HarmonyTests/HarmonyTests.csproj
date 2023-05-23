@@ -62,7 +62,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoModReorg.Core" Version="$(MonoModCoreVersion)" />
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
 
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />

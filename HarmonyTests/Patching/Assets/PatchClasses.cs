@@ -1165,7 +1165,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class22), nameof(Class22.Method22))]
+	[HarmonyPatch(typeof(Class22), nameof(Method22))]
 	public class Class22
 	{
 		public static bool? bool1;
@@ -1212,7 +1212,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class22b), nameof(Class22b.Method22b))]
+	[HarmonyPatch(typeof(Class22b), nameof(Method22b))]
 	public class Class22b
 	{
 		public static bool prefixResult;
@@ -1240,7 +1240,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class23), nameof(Class23.Method23))]
+	[HarmonyPatch(typeof(Class23), nameof(Method23))]
 	public class Class23
 	{
 		public static bool? bool1;
@@ -1263,7 +1263,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class24), nameof(Class24.Method24))]
+	[HarmonyPatch(typeof(Class24), nameof(Method24))]
 	public class Class24
 	{
 		public static bool? bool1;

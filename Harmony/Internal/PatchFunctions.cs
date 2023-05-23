@@ -63,7 +63,7 @@ namespace HarmonyLib
 				var info = Harmony.GetPatchInfo(original);
 				transpilers.AddRange(GetSortedPatchMethods(original, info.Transpilers.ToArray(), debug));
 			}
-			if (postTranspiler is object) transpilers.Add(postTranspiler);
+			if (postTranspiler is not null) transpilers.Add(postTranspiler);
 
 			var empty = new List<MethodInfo>();
 			var patcher = new MethodPatcher(standin.method, original, empty, empty, transpilers, empty, debug);
