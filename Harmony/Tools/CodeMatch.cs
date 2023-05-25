@@ -141,7 +141,7 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch LoadsLocal(bool useAddress = false, string name = null)
 		{
-			CodeMatch match = new CodeMatch(null, null, name);
+			var match = new CodeMatch(null, null, name);
 
 			if (useAddress)
 			{
@@ -172,7 +172,7 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch StoresLocal(string name = null)
 		{
-			CodeMatch match = new CodeMatch(null, null, name);
+			var match = new CodeMatch(null, null, name);
 
 			match.opcodes.AddRange(new[]
 			{
@@ -193,7 +193,7 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch LoadsArgument(bool useAddress = false, string name = null)
 		{
-			CodeMatch match = new CodeMatch(null, null, name);
+			var match = new CodeMatch(null, null, name);
 
 			if (useAddress)
 			{
@@ -224,7 +224,7 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch StoresArgument(string name = null)
 		{
-			CodeMatch match = new CodeMatch(null, null, name);
+			var match = new CodeMatch(null, null, name);
 
 			match.opcodes.AddRange(new[]
 			{

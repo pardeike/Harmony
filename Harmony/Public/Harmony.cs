@@ -1,4 +1,3 @@
-using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -148,7 +147,7 @@ namespace HarmonyLib
 		/// 
 		public void PatchCategory(Assembly assembly, string category)
 		{
-			PatchClassProcessor[] patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
+			var patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
 			patchClasses.DoIf((patchClass => patchClass.Category == category), (patchClass => patchClass.Patch()));
 		}
 

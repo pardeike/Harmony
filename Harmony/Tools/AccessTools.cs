@@ -8,8 +8,11 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
-using System.Runtime.CompilerServices;
 using System.Threading;
+
+#if NET45_OR_GREATER
+using System.Runtime.CompilerServices;
+#endif
 
 namespace HarmonyLib
 {

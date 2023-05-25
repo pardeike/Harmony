@@ -30,6 +30,7 @@
 		<FileVersion>$(HarmonyVersion)</FileVersion>
 		<PackageVersion>$(HarmonyVersion)$(HarmonyPrerelease)</PackageVersion>
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
+		<NoWarn>$(NoWarn);NU5131</NoWarn>
 	</PropertyGroup>
 
 	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
@@ -45,7 +46,7 @@
 			</PropertyGroup>
 		</Otherwise>
 	</Choose>
-
+	
 	<Choose>
 		<!--
 		Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
