@@ -99,7 +99,7 @@ namespace HarmonyLib
 			var type = argument.GetType();
 
 			if (argument is MethodBase method)
-				return method.FullDescription() + (extra is object ? " " + extra : "");
+				return method.FullDescription() + (extra is not null ? " " + extra : "");
 
 			if (argument is FieldInfo field)
 				return $"{field.FieldType.FullDescription()} {field.DeclaringType.FullDescription()}::{field.Name}";
@@ -351,7 +351,7 @@ namespace HarmonyLib
 		internal void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, methodInfo));
-			var extra = optionalParameterTypes is object && optionalParameterTypes.Length > 0 ? optionalParameterTypes.Description() : null;
+			var extra = optionalParameterTypes is not null && optionalParameterTypes.Length > 0 ? optionalParameterTypes.Description() : null;
 			LogIL(opcode, methodInfo, extra);
 			il.EmitCall(opcode, methodInfo, optionalParameterTypes);
 		}

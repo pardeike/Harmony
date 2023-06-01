@@ -70,7 +70,7 @@ namespace HarmonyLibTests.Assets
 
 		static void Cleanup(MethodBase original, Exception ex)
 		{
-			if (original is object)
+			if (original is not null)
 			{
 				DeadEndCode_Patch2.original = original;
 				exception = ex;
@@ -332,10 +332,10 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(NativeMethodPatchingPostfix), nameof(NativeMethodPatchingPostfix.gethostname))]
+	[HarmonyPatch(typeof(NativeMethodPatchingPostfix), nameof(gethostname))]
 	public static class NativeMethodPatchingPostfix
 	{
-		[DllImport("WSOCK32.DLL", SetLastError = true)]
+		[DllImport("WSOCK32.DLL", CharSet = CharSet.Unicode, SetLastError = true)]
 		public static extern long gethostname(StringBuilder name, int nameLen);
 
 		public static void Postfix(StringBuilder name)

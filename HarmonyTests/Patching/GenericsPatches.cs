@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
@@ -143,8 +143,10 @@ namespace HarmonyLibTests.Patching
 			var prefix = patchClass.GetMethod("Prefix");
 			Assert.NotNull(prefix);
 
+#pragma warning disable IDE0028
 			var list1 = new Class13<int> { 1, 2, 3 };
 			list1.Add(1000);
+#pragma warning restore IDE0028
 			var e1 = list1.GetEnumerator();
 			_ = e1.MoveNext();
 			_ = e1.MoveNext();
@@ -163,8 +165,10 @@ namespace HarmonyLibTests.Patching
 			Class13Patch.method = null;
 			Class13Patch.result = 0;
 
+#pragma warning disable IDE0028
 			var list2 = new Class13<int> { 1, 2, 3 };
 			list2.Add(1000);
+#pragma warning restore IDE0028
 			var e2 = list2.GetEnumerator();
 			_ = e2.MoveNext();
 			_ = e2.MoveNext();

@@ -48,10 +48,10 @@ namespace HarmonyLib
 		///
 		public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finalizers)
 		{
-			if (prefixes is null) prefixes = new Patch[0];
-			if (postfixes is null) postfixes = new Patch[0];
-			if (transpilers is null) transpilers = new Patch[0];
-			if (finalizers is null) finalizers = new Patch[0];
+			prefixes ??= new Patch[0];
+			postfixes ??= new Patch[0];
+			transpilers ??= new Patch[0];
+			finalizers ??= new Patch[0];
 
 			Prefixes = prefixes.ToList().AsReadOnly();
 			Postfixes = postfixes.ToList().AsReadOnly();

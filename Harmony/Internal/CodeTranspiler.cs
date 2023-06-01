@@ -10,12 +10,10 @@ namespace HarmonyLib
 	internal class CodeTranspiler
 	{
 		readonly IEnumerable<CodeInstruction> codeInstructions;
-		readonly bool argumentShift;
 		readonly List<MethodInfo> transpilers = new();
 
-		internal CodeTranspiler(List<ILInstruction> ilInstructions, bool argumentShift)
+		internal CodeTranspiler(List<ILInstruction> ilInstructions)
 		{
-			this.argumentShift = argumentShift;
 			codeInstructions = ilInstructions
 				.Select(ilInstruction => ilInstruction.GetCodeInstruction())
 				.ToList().AsEnumerable();
@@ -68,7 +66,7 @@ namespace HarmonyLib
 			var isStartBlock = blocks.FirstOrDefault(block => block.blockType != ExceptionBlockType.EndExceptionBlock);
 			var isEndBlock = blocks.FirstOrDefault(block => block.blockType == ExceptionBlockType.EndExceptionBlock);
 
-			if (isStartBlock is object && isEndBlock is null)
+			if (isStartBlock is not null && isEndBlock is null)
 			{
 				var pairInstruction = originalInstructions.Skip(originalIndex + 1).FirstOrDefault(instr =>
 				{
@@ -79,7 +77,7 @@ namespace HarmonyLib
 					blocks = blocksObject as List<ExceptionBlock>;
 					return blocks.Any();
 				});
-				if (pairInstruction is object)
+				if (pairInstruction is not null)
 				{
 					var pairStart = originalIndex + 1;
 					var pairEnd = pairStart + originalInstructions.Skip(pairStart).ToList().IndexOf(pairInstruction) - 1;
@@ -96,7 +94,7 @@ namespace HarmonyLib
 						blocks = blocksObject as List<ExceptionBlock>;
 						return blocks.Any();
 					});
-					if (pairInstruction is object)
+					if (pairInstruction is not null)
 					{
 						pairStart = opIndex + 1;
 						pairEnd = pairStart + newInstructions.Skip(opIndex + 1).ToList().IndexOf(pairInstruction) - 1;
@@ -106,7 +104,7 @@ namespace HarmonyLib
 					}
 				}
 			}
-			if (isStartBlock is null && isEndBlock is object)
+			if (isStartBlock is null && isEndBlock is not null)
 			{
 				var pairInstruction = originalInstructions.GetRange(0, originalIndex).LastOrDefault(instr =>
 				{
@@ -117,7 +115,7 @@ namespace HarmonyLib
 					blocks = blocksObject as List<ExceptionBlock>;
 					return blocks.Any();
 				});
-				if (pairInstruction is object)
+				if (pairInstruction is not null)
 				{
 					var pairStart = originalInstructions.GetRange(0, originalIndex).LastIndexOf(pairInstruction);
 					var pairEnd = originalIndex;
@@ -134,7 +132,7 @@ namespace HarmonyLib
 						blocks = blocksObject as List<ExceptionBlock>;
 						return blocks.Any();
 					});
-					if (pairInstruction is object)
+					if (pairInstruction is not null)
 					{
 						pairStart = newInstructions.GetRange(0, opIndex).LastIndexOf(pairInstruction);
 						pairEnd = opIndex;
@@ -237,7 +235,7 @@ namespace HarmonyLib
 
 				// remember the order of the original input (for detection of dupped code instructions)
 				List<object> originalInstructions = null;
-				if (unassignedValues is object)
+				if (unassignedValues is not null)
 					originalInstructions = instructions.Cast<object>().ToList();
 
 				// call the transpiler
@@ -247,14 +245,11 @@ namespace HarmonyLib
 					instructions = newInstructions;
 
 				// convert result back to 'our' CodeInstruction and re-assign otherwise lost fields
-				if (unassignedValues is object)
+				if (unassignedValues is not null)
 					instructions = ConvertToOurInstructions(instructions, typeof(CodeInstruction), originalInstructions, unassignedValues);
 			});
 
-			var result = instructions as List<CodeInstruction> ?? instructions.Cast<CodeInstruction>().ToList();
-			if (argumentShift)
-				StructReturnBuffer.ArgumentShifter(result, method.IsStatic && AccessTools.IsMonoRuntime);
-			return result;
+			return instructions as List<CodeInstruction> ?? instructions.Cast<CodeInstruction>().ToList();
 		}
 
 		//

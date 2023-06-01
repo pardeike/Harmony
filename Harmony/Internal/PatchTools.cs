@@ -1,3 +1,5 @@
+using MonoMod.Core;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +10,30 @@ namespace HarmonyLib
 {
 	internal static class PatchTools
 	{
-		// Note: Even though this Dictionary is only stored to and never read from, it still needs to be thread-safe:
-		// https://stackoverflow.com/a/33153868
-		// ThreadStatic has pitfalls (see RememberObject below), but since we must support net35, it's the best available option.
-		[ThreadStatic]
-		private static Dictionary<object, object> objectReferences;
+		private static readonly Dictionary<MethodBase, ICoreDetour> detours = new();
 
-		internal static void RememberObject(object key, object value)
+		internal static void DetourMethod(MethodBase method, MethodBase replacement)
 		{
-			// ThreadStatic fields are only initialized for one thread, so ensure it's initialized for current thread.
-			objectReferences ??= new Dictionary<object, object>();
-			objectReferences[key] = value;
+			lock (detours)
+			{
+				if (detours.TryGetValue(method, out var detour))
+					detour.Dispose();
+				detours[method] = DetourFactory.Current.CreateDetour(method, replacement);
+			}
+		}
+
+		public static MethodInfo CreateMethod(string name, Type returnType, List<KeyValuePair<string, Type>> parameters, Action<ILGenerator> generator)
+		{
+			var parameterTypes = parameters.Select(p => p.Value).ToArray();
+			var dynamicMethod = new DynamicMethodDefinition(name, returnType, parameterTypes);
+
+			for (var i = 0; i < parameters.Count; i++)
+				dynamicMethod.Definition.Parameters[i].Name = parameters[i].Key;
+
+			var il = dynamicMethod.GetILGenerator();
+			generator(il);
+
+			return dynamicMethod.Generate();
 		}
 
 		internal static MethodInfo GetPatchMethod(Type patchType, string attributeName)
@@ -48,7 +63,7 @@ namespace HarmonyLib
 		{
 			return AccessTools.GetDeclaredMethods(type)
 				.Select(method => AttributePatch.Create(method))
-				.Where(attributePatch => attributePatch is object)
+				.Where(attributePatch => attributePatch is not null)
 				.ToList();
 		}
 

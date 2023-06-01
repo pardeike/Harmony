@@ -29,11 +29,6 @@ namespace HarmonyLib
 			reader.SetDebugging(debug);
 		}
 
-		internal void SetArgumentShift(bool useShift)
-		{
-			reader.SetArgumentShift(useShift);
-		}
-
 		internal void AddTranspiler(MethodInfo transpiler)
 		{
 			transpilers.Add(transpiler);
@@ -52,12 +47,10 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(method));
 
 			var originalVariables = MethodPatcher.DeclareLocalVariables(generator, method);
-			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(method);
 			var copier = new MethodCopier(method, generator, originalVariables);
-			copier.SetArgumentShift(useStructReturnBuffer);
 
 			var info = Harmony.GetPatchInfo(method);
-			if (info is object)
+			if (info is not null)
 			{
 				var sortedTranspilers = PatchFunctions.GetSortedPatchMethods(method, info.Transpilers.ToArray(), false);
 				for (var i = 0; i < maxTranspilers && i < sortedTranspilers.Count; i++)
@@ -73,7 +66,6 @@ namespace HarmonyLib
 		readonly ILGenerator generator;
 		readonly MethodBase method;
 		bool debug = false;
-		bool argumentShift = false;
 
 		readonly Module module;
 		readonly Type[] typeArguments;
@@ -119,7 +111,7 @@ namespace HarmonyLib
 
 			var type = method.DeclaringType;
 
-			if (type is object && type.IsGenericType)
+			if (type is not null && type.IsGenericType)
 			{
 				try { typeArguments = type.GetGenericArguments(); }
 				catch { typeArguments = null; }
@@ -142,11 +134,6 @@ namespace HarmonyLib
 		internal void SetDebugging(bool debug)
 		{
 			this.debug = debug;
-		}
-
-		internal void SetArgumentShift(bool argumentShift)
-		{
-			this.argumentShift = argumentShift;
 		}
 
 		internal void GenerateInstructions()
@@ -232,7 +219,7 @@ namespace HarmonyLib
 		internal void DeclareVariables(LocalBuilder[] existingVariables)
 		{
 			if (generator is null) return;
-			if (existingVariables is object)
+			if (existingVariables is not null)
 				variables = existingVariables;
 			else
 				variables = localVariables.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
@@ -342,7 +329,7 @@ namespace HarmonyLib
 					case OperandType.InlineSwitch:
 					{
 						var targets = ilInstruction.operand as ILInstruction[];
-						if (targets is object)
+						if (targets is not null)
 						{
 							var labels = new List<Label>();
 							foreach (var target in targets)
@@ -360,7 +347,7 @@ namespace HarmonyLib
 					case OperandType.InlineBrTarget:
 					{
 						var target = ilInstruction.operand as ILInstruction;
-						if (target is object)
+						if (target is not null)
 						{
 							var label = generator.DefineLabel();
 							target.labels.Add(label);
@@ -373,7 +360,7 @@ namespace HarmonyLib
 
 			// pass2 - filter through all processors
 			//
-			var codeTranspiler = new CodeTranspiler(ilInstructions, argumentShift);
+			var codeTranspiler = new CodeTranspiler(ilInstructions);
 			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 

@@ -11,7 +11,7 @@ namespace HarmonyLib
 	/// Used by the calli instruction, can be used by transpilers
 	/// </summary>
 	///
-	public class InlineSignature : ICallSiteGenerator
+	internal class InlineSignature : ICallSiteGenerator
 	{
 		/// <summary>See <see cref="System.Reflection.CallingConventions.HasThis"/></summary>
 		///

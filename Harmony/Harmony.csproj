@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Product>Harmony</Product>
 		<Company>Andreas Pardeike</Company>
@@ -11,13 +11,11 @@
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>true</SignAssembly>
-		<Version>$(HarmonyVersion)</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
-		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
-		<FileVersion>$(HarmonyVersion)</FileVersion>
 		<PackageIcon>HarmonyLogo.png</PackageIcon>
 		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -27,11 +25,17 @@
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 		<NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
+		<Version>$(HarmonyVersion)</Version>
+		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
+		<FileVersion>$(HarmonyVersion)</FileVersion>
+		<PackageVersion>$(HarmonyVersion)$(HarmonyPrerelease)</PackageVersion>
+		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
+		<NoWarn>$(NoWarn);NU5131</NoWarn>
 	</PropertyGroup>
 
 	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
 	<Choose>
-		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0'">
+		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0'">
 			<PropertyGroup>
 				<IsNET5OrGreater>true</IsNET5OrGreater>
 			</PropertyGroup>
@@ -42,7 +46,7 @@
 			</PropertyGroup>
 		</Otherwise>
 	</Choose>
-
+	
 	<Choose>
 		<!--
 		Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
@@ -61,38 +65,8 @@
 		</Otherwise>
 	</Choose>
 
-	<!-- ILRepack config needs to be specified before MonoMod.Common PackageReference due its dependency on properties defined here. -->
-	<Choose>
-		<When Condition="!$(IsCoreOrStandard) And '$(Configuration)'=='Release'">
-			<PropertyGroup>
-				<ILRepackInternalize>true</ILRepackInternalize>
-			</PropertyGroup>
-			<Choose>
-				<!-- See ExecILRepack target below. -->
-				<When Condition="$([System.Environment]::GetEnvironmentVariable('DYLD_FALLBACK_LIBRARY_PATH'))=='' And $([MSBuild]::IsOsPlatform('OSX'))">
-					<PropertyGroup>
-						<DoILRepack>false</DoILRepack>
-						<DoExecILRepack>true</DoExecILRepack>
-					</PropertyGroup>
-				</When>
-				<Otherwise>
-					<PropertyGroup>
-						<DoILRepack>true</DoILRepack>
-						<DoExecILRepack>false</DoExecILRepack>
-					</PropertyGroup>
-				</Otherwise>
-			</Choose>
-		</When>
-		<Otherwise>
-			<PropertyGroup>
-				<ILRepackInternalize>false</ILRepackInternalize>
-				<DoILRepack>false</DoILRepack>
-				<DoExecILRepack>false</DoExecILRepack>
-			</PropertyGroup>
-		</Otherwise>
-	</Choose>
-
 	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="" />
 		<None Include="..\LICENSE" Pack="true" PackagePath="" />
 		<None Include="..\HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
 	</ItemGroup>
@@ -115,21 +89,35 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- https://dev.azure.com/MonoMod/MonoMod/_packaging?_a=feed&feed=DevBuilds -->
-		<PackageReference Include="MonoMod.Common" Version="$(MonoModCommonVersion)">
-			<PrivateAssets Condition="$(ILRepackInternalize)">all</PrivateAssets>
-		</PackageReference>
-
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-
-		<!--
-		See ILRepack config above.
-		Version 2.1.15+ currently doesn't work on Linux and macOS (results in "Current platform not supported. Unable to find .NET Framework root"),
-		WE MUST USE VERSION 2.1.14 HERE FOR NOW!
-		-->
-		<PackageReference Include="ILRepack.Lib.MSBuild" Version="2.1.14" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 	</ItemGroup>
+
+	<!-- netstandard2.0 reference assemblies -->
+	<PropertyGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<!-- Remove from /lib in NuGet -->
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<!-- Create reference Assemblies instead of a full assembly -->
+		<ProduceOnlyReferenceAssembly>true</ProduceOnlyReferenceAssembly>
+		<!-- Add our target for packing -->
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
+	</PropertyGroup>
+	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<!-- Adding System.Reflection.Emit to because there are public types exposed from its's package -->
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+	</ItemGroup>
+	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework) == 'netstandard2.0'">
+		<ItemGroup>
+			<!-- Adding the Reference Assembly and the xml documentation to /ref of NuGet -->
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).dll">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).xml">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup Condition="$(IsNET5OrGreater)">
 		<PackageReference Include="System.Text.Json" Version="5.0.2" />
@@ -139,32 +127,6 @@
 		<Compile Remove="**\*.net6.cs" />
 		<Compile Remove="**\*.net7.cs" />
 	</ItemGroup>
-
-	<!--
-	On macOS .NET Framework builds, ILRepack uses Mono.Posix package for copying file permissions, but this problematic because:
-	1) Its P/Invoke usage relies on dynamic linking with the native libs (specifically, libMonoPosixHelper.dylib) of the Mono install(s),
-		(which are typically rooted at /Library/Frameworks/Mono.framework).
-	2) Mono.Posix.dll's dynamic linking doesn't specify absolute paths, so it relies on DYLD_* environment variables for searching for the dylib.
-	3) However, these DYLD_* environment variables are often unset in modern macOS due to SIP:
-		https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/RuntimeProtections/RuntimeProtections.html
-	This results in "Unable to load shared library 'MonoPosixHelper' ... at Mono.Unix.Native.Syscall.stat..." errors.
-
-	Workaround:
-	We default DYLD_FALLBACK_LIBRARY_PATH to what's supposed to be its default value, prepended by Mono's lib folder.
-	However, dyld already initializes and reads DYLD_* env vars before any target is run (even before InitialTargets targets),
-	so we must spawn a new process via the Exec task that sets DYLD_* env vars and runs msbuild on the ILRepack target.
-	Furthermore, DYLD_* env vars aren't inherited (even if specified via Exec's EnvironmentVariables attribute), probably due to SIP,
-	so we must set DYLD_* env vars within the Exec'd command itself.
-	-->
-	<Target Name="ExecILRepack" AfterTargets="PostBuildEvent" Condition="$(DoExecILRepack)">
-		<PropertyGroup>
-			<DYLD_FALLBACK_LIBRARY_PATH>/Library/Frameworks/Mono.framework/Versions/Current/lib:$(HOME)/lib:/usr/local/lib:/lib:/usr/lib</DYLD_FALLBACK_LIBRARY_PATH>
-			<MSBuildCmd Condition="'$(MSBuildRuntimeType)'!='Core'">"$(MSBuildToolsPath)\MSBuild.exe"</MSBuildCmd>
-			<MSBuildCmd Condition="'$(MSBuildRuntimeType)'=='Core'">"$(DOTNET_HOST_PATH)" msbuild</MSBuildCmd>
-			<MSBuildCmdArgs>"-p:TargetFramework=$(TargetFramework);Configuration=$(Configuration);DoILRepack=true" -t:ILRepack</MSBuildCmdArgs>
-		</PropertyGroup>
-		<Exec Command="export DYLD_FALLBACK_LIBRARY_PATH=$(DYLD_FALLBACK_LIBRARY_PATH); $(MSBuildCmd) $(MSBuildCmdArgs)" />
-	</Target>
 
 	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
 		<PropertyGroup>

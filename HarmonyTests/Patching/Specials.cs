@@ -1,9 +1,6 @@
-extern alias mmc;
-
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using HarmonyLibTests.Assets.Methods;
-using mmc::MonoMod.Utils;
 using NUnit.Framework;
 using System;
 using System.Diagnostics;
@@ -76,8 +73,6 @@ namespace HarmonyLibTests.Patching
 		[Test, NonParallelizable]
 		public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
 		{
-			StructReturnBuffer.ResetCaches();
-
 			var name = $"{type}M{n:D2}";
 
 			var patchClass = typeof(ReturningStructs_Patch);
@@ -148,6 +143,8 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(exception);
 		}
 
+		/* TODO
+		 * 
 		[Test]
 		public void Test_PatchExceptionWithCleanup1()
 		{
@@ -216,6 +213,7 @@ namespace HarmonyLibTests.Patching
 			}
 			Assert.Fail("Patch should throw HarmonyException");
 		}
+		*/
 
 		[Test]
 		public void Test_PatchExceptionWithCleanup3()

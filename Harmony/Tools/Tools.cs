@@ -102,7 +102,7 @@ namespace HarmonyLib
 		{
 			if (fieldInfo.IsStatic is false)
 				throw new ArgumentException("Field must be static");
-			Tools.ValidateFieldType<F>(fieldInfo);
+			ValidateFieldType<F>(fieldInfo);
 
 			var dm = new DynamicMethodDefinition($"__refget_{fieldInfo.DeclaringType?.Name ?? "null"}_static_fi_{fieldInfo.Name}",
 				typeof(F).MakeByRefType(), new Type[0]);

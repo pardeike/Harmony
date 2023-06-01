@@ -432,7 +432,7 @@ namespace HarmonyLib
 		///
 		public override bool Equals(object obj)
 		{
-			return ((obj is object) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
+			return ((obj is not null) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
 		}
 
 		/// <summary>Determines how patches sort</summary>

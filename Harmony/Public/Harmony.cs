@@ -1,4 +1,3 @@
-using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,7 +30,7 @@ namespace HarmonyLib
 			try
 			{
 				var envDebug = Environment.GetEnvironmentVariable("HARMONY_DEBUG");
-				if (envDebug is object && envDebug.Length > 0)
+				if (envDebug is not null && envDebug.Length > 0)
 				{
 					envDebug = envDebug.Trim();
 					DEBUG = envDebug == "1" || bool.Parse(envDebug);
@@ -51,11 +50,9 @@ namespace HarmonyLib
 #if !NET50_OR_GREATER
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 #endif
-				var ptr_runtime = IntPtr.Size;
-				var ptr_env = PlatformHelper.Current;
-				FileLog.Log($"### Harmony id={id}, version={version}, location={location}, env/clr={environment}, platform={platform}, ptrsize:runtime/env={ptr_runtime}/{ptr_env}");
+				FileLog.Log($"### Harmony id={id}, version={version}, location={location}, env/clr={environment}, platform={platform}");
 				var callingMethod = AccessTools.GetOutsideCaller();
-				if (callingMethod.DeclaringType is object)
+				if (callingMethod.DeclaringType is not null)
 				{
 					var callingAssembly = callingMethod.DeclaringType.Assembly;
 					location = callingAssembly.Location;
@@ -130,8 +127,8 @@ namespace HarmonyLib
 		/// 
 		public void PatchAllUncategorized(Assembly assembly)
 		{
-			PatchClassProcessor[] patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
-			patchClasses.DoIf((patchClass => String.IsNullOrEmpty(patchClass.Category)), (patchClass => patchClass.Patch()));
+			var patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
+			patchClasses.DoIf((patchClass => string.IsNullOrEmpty(patchClass.Category)), (patchClass => patchClass.Patch()));
 		}
 
 		/// <summary>Searches an assembly for Harmony annotations with a specific category and uses them to create patches</summary>
@@ -150,7 +147,7 @@ namespace HarmonyLib
 		/// 
 		public void PatchCategory(Assembly assembly, string category)
 		{
-			PatchClassProcessor[] patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
+			var patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
 			patchClasses.DoIf((patchClass => patchClass.Category == category), (patchClass => patchClass.Patch()));
 		}
 
