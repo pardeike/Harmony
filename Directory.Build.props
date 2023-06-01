@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<HarmonyVersion>2.3.0.0</HarmonyVersion>
-		<HarmonyPrerelease>-prerelease.1</HarmonyPrerelease>
-		<MonoModCoreVersion>1.0.0-prerelease.1</MonoModCoreVersion>
+		<HarmonyPrerelease>-prerelease.2</HarmonyPrerelease>
+		<MonoModCoreVersion>1.0.0-prerelease.2</MonoModCoreVersion>
 	</PropertyGroup>
 
 </Project>
