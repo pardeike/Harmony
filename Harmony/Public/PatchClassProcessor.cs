@@ -224,20 +224,29 @@ namespace HarmonyLib
 				return list;
 			}
 
-			static string FailOnResult(IEnumerable<MethodBase> res)
-			{
-				if (res is null) return "null";
-				if (res.Any(m => m is null)) return "some element was null";
-				return null;
-			}
-			var targetMethods = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null, null, FailOnResult);
-			if (targetMethods is object)
-				return targetMethods.ToList();
-
 			var result = new List<MethodBase>();
+
+			var targetMethods = RunMethod<HarmonyTargetMethods, IEnumerable<MethodBase>>(null, null);
+			if (targetMethods is object)
+			{
+				string error = null;
+				result = targetMethods.ToList();
+				if (result is null) error = "null";
+				else if (result.Any(m => m is null)) error = "some element was null";
+				if (error != null)
+				{
+					if (auxilaryMethods.TryGetValue(typeof(HarmonyTargetMethods), out var method))
+						throw new Exception($"Method {method.FullDescription()} returned an unexpected result: {error}");
+					else
+						throw new Exception($"Some method returned an unexpected result: {error}");
+				}
+				return result;
+			}
+
 			var targetMethod = RunMethod<HarmonyTargetMethod, MethodBase>(null, null, method => method is null ? "null" : null);
 			if (targetMethod is not null)
 				result.Add(targetMethod);
+
 			return result;
 		}
 
