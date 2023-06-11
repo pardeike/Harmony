@@ -31,6 +31,7 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.Cil.MethodBody))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.Cil.MethodDebugInformation))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.Cil.OpCode))]
+[assembly: TypeForwardedTo(typeof(Mono.Cecil.Cil.OpCodes))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.Cil.OpCodeType))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.Cil.OperandType))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.Cil.ScopeDebugInformation))]

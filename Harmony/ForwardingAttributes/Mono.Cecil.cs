@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.AssemblyNameDefinition))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.AssemblyNameReference))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.AssemblyResolutionException))]
+[assembly: TypeForwardedTo(typeof(Mono.Cecil.ByReferenceType))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.CallSite))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.CustomAttribute))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.CustomAttributeArgument))]
@@ -18,6 +19,8 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.FieldAttributes))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.FieldDefinition))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.FieldReference))]
+[assembly: TypeForwardedTo(typeof(Mono.Cecil.GenericInstanceMethod))]
+[assembly: TypeForwardedTo(typeof(Mono.Cecil.GenericInstanceType))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.GenericParameter))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.GenericParameterAttributes))]
 #if NET472
@@ -80,6 +83,7 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.TypeAttributes))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.TypeDefinition))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.TypeReference))]
+[assembly: TypeForwardedTo(typeof(Mono.Cecil.TypeSpecification))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.TypeSystem))]
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.WriterParameters))]
 #endif
