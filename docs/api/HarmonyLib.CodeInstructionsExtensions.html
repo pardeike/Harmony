@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class MethodBaseExtensions
+    <title>Class CodeInstructionsExtensions
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class MethodBaseExtensions
+    <meta name="title" content="Class CodeInstructionsExtensions
    ">
     <meta name="generator" content="docfx 2.59.4.0">
     
@@ -68,18 +68,18 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.MethodBaseExtensions">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.CodeInstructionsExtensions">
   
   
-  <h1 id="HarmonyLib_MethodBaseExtensions" data-uid="HarmonyLib.MethodBaseExtensions" class="text-break">Class MethodBaseExtensions
+  <h1 id="HarmonyLib_CodeInstructionsExtensions" data-uid="HarmonyLib.CodeInstructionsExtensions" class="text-break">Class CodeInstructionsExtensions
   </h1>
-  <div class="markdown level0 summary"><p>General extensions for collections</p>
+  <div class="markdown level0 summary"><p>Extensions for a sequence of <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><span class="xref">MethodBaseExtensions</span></div>
+    <div class="level1"><span class="xref">CodeInstructionsExtensions</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -107,27 +107,27 @@
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_MethodBaseExtensions_syntax">Syntax</h5>
+  <h5 id="HarmonyLib_CodeInstructionsExtensions_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class MethodBaseExtensions</code></pre>
+    <pre><code class="lang-csharp hljs">public static class CodeInstructionsExtensions</code></pre>
   </div>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodBaseExtensions_HasMethodBody_System_Reflection_MethodBase_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionsExtensions_Matches_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__HarmonyLib_CodeMatch___.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionsExtensions.Matches(System.Collections.Generic.IEnumerable%7BHarmonyLib.CodeInstruction%7D%2CHarmonyLib.CodeMatch%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L763">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L658">View Source</a>
   </span>
-  <a id="HarmonyLib_MethodBaseExtensions_HasMethodBody_" data-uid="HarmonyLib.MethodBaseExtensions.HasMethodBody*"></a>
-  <h4 id="HarmonyLib_MethodBaseExtensions_HasMethodBody_System_Reflection_MethodBase_" data-uid="HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)">HasMethodBody(MethodBase)</h4>
-  <div class="markdown level1 summary"><p>Tests a class member if it has an IL method body (external methods for example don't have a body)</p>
+  <a id="HarmonyLib_CodeInstructionsExtensions_Matches_" data-uid="HarmonyLib.CodeInstructionsExtensions.Matches*"></a>
+  <h4 id="HarmonyLib_CodeInstructionsExtensions_Matches_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeInstructionsExtensions.Matches(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.CodeMatch[])">Matches(IEnumerable&lt;CodeInstruction&gt;, CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Searches a list of <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> by running a sequence of <a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a> against it</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool HasMethodBody(this MethodBase member)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool Matches(this IEnumerable&lt;CodeInstruction&gt; instructions, CodeMatch[] matches)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -140,9 +140,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.MethodBase</span></td>
-        <td><span class="parametername">member</span></td>
-        <td><p>The member to test</p>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The CodeInstructions (like a body of a method) to search in</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>An array of <a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a> representing the sequence of codes you want to search for</p>
 </td>
       </tr>
     </tbody>
@@ -158,8 +164,7 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td><p>Returns true if the member has an IL body or false if not</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -171,10 +176,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodBaseExtensions.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodBaseExtensions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_CodeInstructionsExtensions.md&amp;value=---%0Auid%3A%20HarmonyLib.CodeInstructionsExtensions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L758" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L652" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
