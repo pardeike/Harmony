@@ -47,7 +47,7 @@ namespace HarmonyLib
 				var location = assembly.Location;
 				var environment = Environment.Version.ToString();
 				var platform = Environment.OSVersion.Platform.ToString();
-#if !NET50_OR_GREATER
+#if !NET5_0_OR_GREATER
 				if (string.IsNullOrEmpty(location)) location = new Uri(assembly.CodeBase).LocalPath;
 #endif
 				FileLog.Log($"### Harmony id={id}, version={version}, location={location}, env/clr={environment}, platform={platform}");
@@ -56,7 +56,7 @@ namespace HarmonyLib
 				{
 					var callingAssembly = callingMethod.DeclaringType.Assembly;
 					location = callingAssembly.Location;
-#if !NET50_OR_GREATER
+#if !NET5_0_OR_GREATER
 					if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
 #endif
 					FileLog.Log($"### Started from {callingMethod.FullDescription()}, location {location}");

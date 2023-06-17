@@ -44,7 +44,7 @@ namespace HarmonyLib
 			for (var i = 0; i < parameters.Length; i++)
 				invokeMethod.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
 
-#if NETSTANDARD2_0
+#if NETSTANDARD
 			return typeBuilder.CreateTypeInfo().AsType();
 #else
 			return typeBuilder.CreateType();

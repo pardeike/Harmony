@@ -356,8 +356,6 @@ namespace HarmonyLib
 			il.EmitCall(opcode, methodInfo, optionalParameterTypes);
 		}
 
-#if NETSTANDARD2_0 || NETCOREAPP2_0
-#else
 		internal void EmitCalli(OpCode opcode, CallingConvention unmanagedCallConv, Type returnType, Type[] parameterTypes)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, unmanagedCallConv));
@@ -365,7 +363,6 @@ namespace HarmonyLib
 			LogIL(opcode, unmanagedCallConv, extra);
 			il.EmitCalli(opcode, unmanagedCallConv, returnType, parameterTypes);
 		}
-#endif
 
 		internal void EmitCalli(OpCode opcode, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type[] optionalParameterTypes)
 		{

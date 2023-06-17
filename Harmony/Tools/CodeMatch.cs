@@ -13,7 +13,18 @@ namespace HarmonyLib
 		public string name;
 
 		/// <summary>The matched opcodes</summary>
-		public List<OpCode> opcodes = new();
+		public HashSet<OpCode> opcodeSet = new();
+
+		// for backwards compatibility we keep
+		/// <summary>The matched opcodes</summary>
+		[Obsolete("Use opcodeSet instead")]
+#pragma warning disable IDE1006
+		public List<OpCode> opcodes
+		{
+			get => opcodeSet.ToList();
+			set => opcodeSet = new HashSet<OpCode>(value);
+		}
+#pragma warning restore IDE1006
 
 		/// <summary>The matched operands</summary>
 		public List<object> operands = new();
@@ -38,7 +49,7 @@ namespace HarmonyLib
 		internal CodeMatch Set(OpCode opcode, object operand, string name)
 		{
 			this.opcode = opcode;
-			opcodes.Add(opcode);
+			_ = opcodeSet.Add(opcode);
 			this.operand ??= operand;
 			if (operand != null) operands.Add(operand);
 			this.name ??= name;
@@ -55,12 +66,22 @@ namespace HarmonyLib
 			if (opcode is OpCode opcodeValue)
 			{
 				this.opcode = opcodeValue;
-				opcodes.Add(opcodeValue);
+				_ = opcodeSet.Add(opcodeValue);
 			}
 			if (operand != null)
 				operands.Add(operand);
 			this.operand = operand;
 			this.name = name;
+		}
+
+		/// <summary>Creates a code match</summary>
+		/// <param name="opcodes">The opcodes</param>
+		/// <param name="operand">The optional operand</param>
+		/// <param name="name">The optional name</param>
+		///
+		public static CodeMatch WithOpcodes(HashSet<OpCode> opcodes, object operand = null, string name = null)
+		{
+			return new CodeMatch(null, operand, name) { opcodeSet = opcodes };
 		}
 
 		/// <summary>Creates a code match that calls a method</summary>
@@ -69,11 +90,7 @@ namespace HarmonyLib
 		///
 		public CodeMatch(Expression<Action> expression, string name = null)
 		{
-			opcodes.AddRange(new[]
-			{
-				OpCodes.Call,
-				OpCodes.Callvirt,
-			});
+			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCalling);
 			operand = SymbolExtensions.GetMethodInfo(expression);
 			this.name = name;
 		}
@@ -84,11 +101,7 @@ namespace HarmonyLib
 		///
 		public CodeMatch(LambdaExpression expression, string name = null)
 		{
-			opcodes.AddRange(new[]
-			{
-				OpCodes.Call,
-				OpCodes.Callvirt,
-			});
+			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCalling);
 			operand = SymbolExtensions.GetMethodInfo(expression);
 			this.name = name;
 		}
@@ -115,7 +128,7 @@ namespace HarmonyLib
 		{
 			if (predicate != null) return predicate(instruction);
 
-			if (opcodes.Count > 0 && opcodes.Contains(instruction.opcode) == false) return false;
+			if (opcodeSet.Count > 0 && opcodeSet.Contains(instruction.opcode) == false) return false;
 			if (operands.Count > 0 && operands.Contains(instruction.operand) == false) return false;
 			if (labels.Count > 0 && labels.Intersect(instruction.labels).Any() == false) return false;
 			if (blocks.Count > 0 && blocks.Intersect(instruction.blocks).Any() == false) return false;
@@ -141,30 +154,7 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch LoadsLocal(bool useAddress = false, string name = null)
 		{
-			var match = new CodeMatch(null, null, name);
-
-			if (useAddress)
-			{
-				match.opcodes.AddRange(new[]
-				{
-					OpCodes.Ldloca_S,
-					OpCodes.Ldloca
-				});
-			}
-			else
-			{
-				match.opcodes.AddRange(new[]
-				{
-					OpCodes.Ldloc_0,
-					OpCodes.Ldloc_1,
-					OpCodes.Ldloc_2,
-					OpCodes.Ldloc_3,
-					OpCodes.Ldloc_S,
-					OpCodes.Ldloc
-				});
-			}
-
-			return match;
+			return WithOpcodes(useAddress ? CodeInstructionExtensions.opcodesLoadingLocalByAddress : CodeInstructionExtensions.opcodesLoadingLocalNormal, null, name);
 		}
 
 		/// <summary>Creates a code match for local stores</summary>
@@ -172,19 +162,7 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch StoresLocal(string name = null)
 		{
-			var match = new CodeMatch(null, null, name);
-
-			match.opcodes.AddRange(new[]
-			{
-				OpCodes.Stloc_0,
-				OpCodes.Stloc_1,
-				OpCodes.Stloc_2,
-				OpCodes.Stloc_3,
-				OpCodes.Stloc_S,
-				OpCodes.Stloc
-			});
-
-			return match;
+			return WithOpcodes(CodeInstructionExtensions.opcodesStoringLocal, null, name);
 		}
 
 		/// <summary>Creates a code match for argument loads</summary>
@@ -193,30 +171,7 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch LoadsArgument(bool useAddress = false, string name = null)
 		{
-			var match = new CodeMatch(null, null, name);
-
-			if (useAddress)
-			{
-				match.opcodes.AddRange(new[]
-				{
-					OpCodes.Ldarga_S,
-					OpCodes.Ldarga
-				});
-			}
-			else
-			{
-				match.opcodes.AddRange(new[]
-				{
-					OpCodes.Ldarg_0,
-					OpCodes.Ldarg_1,
-					OpCodes.Ldarg_2,
-					OpCodes.Ldarg_3,
-					OpCodes.Ldarg_S,
-					OpCodes.Ldarg
-				});
-			}
-
-			return match;
+			return WithOpcodes(useAddress ? CodeInstructionExtensions.opcodesLoadingArgumentByAddress : CodeInstructionExtensions.opcodesLoadingArgumentNormal, null, name);
 		}
 
 		/// <summary>Creates a code match for argument stores</summary>
@@ -224,15 +179,15 @@ namespace HarmonyLib
 		/// <returns></returns>
 		public static CodeMatch StoresArgument(string name = null)
 		{
-			var match = new CodeMatch(null, null, name);
+			return WithOpcodes(CodeInstructionExtensions.opcodesStoringArgument, null, name);
+		}
 
-			match.opcodes.AddRange(new[]
-			{
-				OpCodes.Starg_S,
-				OpCodes.Starg
-			});
-
-			return match;
+		/// <summary>Creates a code match for branching</summary>
+		/// <param name="name">An optional name</param>
+		/// <returns></returns>
+		public static CodeMatch Branches(string name = null)
+		{
+			return WithOpcodes(CodeInstructionExtensions.opcodesBranching, null, name);
 		}
 
 		/// <summary>Returns a string that represents the match</summary>
@@ -243,8 +198,8 @@ namespace HarmonyLib
 			var result = "[";
 			if (name != null)
 				result += $"{name}: ";
-			if (opcodes.Count > 0)
-				result += $"opcodes={opcodes.Join()} ";
+			if (opcodeSet.Count > 0)
+				result += $"opcodes={opcodeSet.Join()} ";
 			if (operands.Count > 0)
 				result += $"operands={operands.Join()} ";
 			if (labels.Count > 0)

@@ -10,7 +10,7 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Threading;
 
-#if NET45_OR_GREATER
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
 #endif
 
@@ -600,7 +600,7 @@ namespace HarmonyLib
 			return Method(type, nameof(IEnumerator.MoveNext));
 		}
 
-#if NET45_OR_GREATER
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext"/> method of an async method's state machine</summary>
 		/// <param name="method">Async method that creates the state machine internally</param>
 		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>

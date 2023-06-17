@@ -19,7 +19,7 @@ namespace HarmonyLib
 		StaticConstructor,
 		/// <summary>This targets the MoveNext method of the enumerator result, that actually contains the method's implementation</summary>
 		Enumerator,
-#if NET45_OR_GREATER
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 		/// <summary>This targets the MoveNext method of the async state machine, that actually contains the method's implementation</summary>
 		Async
 #endif

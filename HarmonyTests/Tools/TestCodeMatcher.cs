@@ -2,6 +2,7 @@ using HarmonyLib;
 using HarmonyTests.Tools.Assets;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 
 namespace HarmonyLibTests.Tools
@@ -15,7 +16,7 @@ namespace HarmonyLibTests.Tools
 			var method = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
 			var match = new CodeMatch(OpCodes.Call, method);
 			Assert.AreEqual(match.opcode, OpCodes.Call);
-			Assert.AreEqual(match.opcodes, new[] { OpCodes.Call });
+			Assert.AreEqual(match.opcodeSet, new HashSet<OpCode>() { OpCodes.Call });
 			Assert.AreEqual(match.operand, method);
 			Assert.AreEqual(match.operands, new[] { method });
 		}
@@ -26,7 +27,7 @@ namespace HarmonyLibTests.Tools
 			var method = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
 			var code = Code.Call[method];
 			Assert.AreEqual(code.opcode, OpCodes.Call);
-			Assert.AreEqual(code.opcodes, new[] { OpCodes.Call });
+			Assert.AreEqual(code.opcodeSet, new HashSet<OpCode>() { OpCodes.Call });
 			Assert.AreEqual(code.operand, method);
 			Assert.AreEqual(code.operands, new[] { method });
 		}

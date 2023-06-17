@@ -1,4 +1,4 @@
-#if NETFRAMEWORK || NETSTANDARD2_0
+#if NETFRAMEWORK || NETSTANDARD
 using System.Runtime.CompilerServices;
 
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.AssemblyAttributes))]

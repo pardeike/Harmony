@@ -1,4 +1,4 @@
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 using System;
 using System.Collections.Generic;
 using System.Text.Json;

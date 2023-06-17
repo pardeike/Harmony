@@ -577,14 +577,6 @@ namespace HarmonyLibTests.Assets
 	{
 		public static bool prefixed = false;
 
-#if NETCOREAPP2_0
-		public static bool Prefix(ref string __result, int dummy)
-		{
-			__result = "patched";
-			prefixed = true;
-			return false;
-		}
-#else
 		public static MethodInfo Prefix(MethodBase method)
 		{
 			return PatchTools.CreateMethod(
@@ -612,7 +604,6 @@ namespace HarmonyLibTests.Assets
 				}
 			);
 		}
-#endif
 	}
 
 	public class Class12
