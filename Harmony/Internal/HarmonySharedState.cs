@@ -1,4 +1,5 @@
 using Mono.Cecil;
+using MonoMod.Core.Platforms;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
@@ -118,13 +119,16 @@ namespace HarmonyLib
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
 		{
 			var bytes = patchInfo.Serialize();
+			// We assume that both `original` and `replacement` do not need `PlatformTriple.Current.GetIdentifiable`
 			lock (state) state[original] = bytes;
 			lock (originals) originals[replacement] = original;
 		}
 
 		internal static MethodBase GetOriginal(MethodInfo replacement)
 		{
-			lock (originals) return originals.GetValueSafe(replacement);
+			// The runtime can return several different MethodInfo's that point to the same method. Use the correct one
+			var identifiableReplacement = PlatformTriple.Current.GetIdentifiable(replacement) as MethodInfo;
+			lock (originals) return originals.GetValueSafe(identifiableReplacement);
 		}
 
 		internal static MethodBase FindReplacement(StackFrame frame)
