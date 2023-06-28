@@ -3,7 +3,11 @@
 	<PropertyGroup>
 		<HarmonyVersion>2.3.0.0</HarmonyVersion>
 		<HarmonyPrerelease>-prerelease.3</HarmonyPrerelease>
-		<MonoModCoreVersion>1.0.0</MonoModCoreVersion>
+		<!--
+			let's see if this prevents test failures
+			<MonoModCoreVersion>1.0.0</MonoModCoreVersion>
+		-->
+		<MonoModCoreVersion>1.0.0-prerelease.2</MonoModCoreVersion>
 	</PropertyGroup>
 
 </Project>
