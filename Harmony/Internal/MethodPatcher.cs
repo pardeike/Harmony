@@ -204,8 +204,8 @@ namespace HarmonyLib
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			if (hasFinalizers || hasReturnCode)
-				emitter.Emit(OpCodes.Ret);
+			//if (hasFinalizers || hasReturnCode)
+			emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();
 
