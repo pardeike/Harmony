@@ -170,6 +170,7 @@ namespace HarmonyLib
 			var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
 #endif
 
+#if !NETSTANDARD2_0
 			var dynamicModule = dynamicAssembly.DefineDynamicModule(assemblyName.Name);
 			var typeBuilder = dynamicModule.DefineType("NativeMethodHolder", TypeAttributes.Public | TypeAttributes.UnicodeClass);
 			var methodBuilder = typeBuilder.DefinePInvokeMethod(methodInfo.Name, dllAttribute.Value,
@@ -180,8 +181,7 @@ namespace HarmonyLib
 			methodBuilder.SetImplementationFlags(methodBuilder.GetMethodImplementationFlags() | MethodImplAttributes.PreserveSig);
 			var type = typeBuilder.CreateType();
 			var proxyMethod = type.GetMethod(methodInfo.Name);
-			/*
-			var name = $"{(methodInfo.DeclaringType?.FullName ?? "").Replace(".", "_")}_{methodInfo.Name}";
+#else
 			using var module = Mono.Cecil.ModuleDefinition.CreateModule(name, new Mono.Cecil.ModuleParameters() { Kind = Mono.Cecil.ModuleKind.Dll, ReflectionImporterProvider = MMReflectionImporter.Provider });
 
 			var typeAttribute = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.UnicodeClass;
@@ -198,7 +198,7 @@ namespace HarmonyLib
 
 			var loadedType = ReflectionHelper.Load(module).GetType(name);
 			var proxyMethod = loadedType.GetMethod(method.Name);
-			*/
+#endif
 
 			var argCount = method.GetParameters().Length;
 			for (var i = 0; i < argCount; i++)

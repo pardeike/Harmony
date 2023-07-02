@@ -138,7 +138,8 @@ namespace HarmonyLib
 				copier.AddTranspiler(transpiler);
 
 			var endLabels = new List<Label>();
-			_ = copier.Finalize(emitter, endLabels, out var hasReturnCode);
+			var lastCode = copier.Finalize(emitter, endLabels, out var hasReturnCode).LastOrDefault();
+			var endsInThrow = lastCode != null && lastCode.opcode == OpCodes.Throw;
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
@@ -204,8 +205,8 @@ namespace HarmonyLib
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			//if (hasFinalizers || hasReturnCode)
-			emitter.Emit(OpCodes.Ret);
+			if (hasFinalizers || (hasReturnCode && endsInThrow == false))
+				emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();
 
