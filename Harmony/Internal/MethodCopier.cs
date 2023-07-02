@@ -46,7 +46,7 @@ namespace HarmonyLib
 			if (method is null)
 				throw new ArgumentNullException(nameof(method));
 
-			var originalVariables = MethodPatcher.DeclareLocalVariables(generator, method);
+			var originalVariables = MethodPatcher.DeclareOriginalLocalVariables(generator, method);
 			var copier = new MethodCopier(method, generator, originalVariables);
 
 			var info = Harmony.GetPatchInfo(method);

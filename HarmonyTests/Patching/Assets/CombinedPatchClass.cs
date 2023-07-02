@@ -30,19 +30,19 @@ namespace HarmonyLibTests.Assets
 	{
 		public static int counter = 0;
 
-		[HarmonyFinalizer]
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CombinedPatchClass), "Method1")]
 		static bool Prefix1()
 		{
-			counter++;
+			counter += 1;
 			return false;
 		}
 
-		[HarmonyFinalizer]
+		[HarmonyPostfix]
 		[HarmonyPatch(typeof(CombinedPatchClass), "Method2")]
-		static void Postfix(ref string __result)
+		static void Postfix2(ref string __result)
 		{
-			counter++;
+			counter += 10;
 			__result = "tested";
 		}
 
@@ -50,14 +50,14 @@ namespace HarmonyLibTests.Assets
 		[HarmonyPatch(typeof(CombinedPatchClass), "Method3")]
 		static void Finalizer3()
 		{
-			counter++;
+			counter += 100;
 		}
 
 		[HarmonyFinalizer]
 		[HarmonyPatch(typeof(CombinedPatchClass), "Method3")]
 		static Exception Finalizer4()
 		{
-			counter++;
+			counter += 1000;
 			return null;
 		}
 	}

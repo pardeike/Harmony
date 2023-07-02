@@ -65,7 +65,7 @@ namespace HarmonyLib
 
 		internal MethodInfo CreateReplacement(out Dictionary<int, CodeInstruction> finalInstructions)
 		{
-			var originalVariables = DeclareLocalVariables(il, source ?? original);
+			var originalVariables = DeclareOriginalLocalVariables(il, source ?? original);
 			var privateVars = new Dictionary<string, LocalBuilder>();
 			var fixes = prefixes.Union(postfixes).Union(finalizers).ToList();
 
@@ -205,8 +205,7 @@ namespace HarmonyLib
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			if (hasFinalizers || (hasReturnCode && endsInThrow == false))
-				emitter.Emit(OpCodes.Ret);
+			emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();
 
@@ -272,7 +271,7 @@ namespace HarmonyLib
 			return method;
 		}
 
-		internal static LocalBuilder[] DeclareLocalVariables(ILGenerator il, MethodBase member)
+		internal static LocalBuilder[] DeclareOriginalLocalVariables(ILGenerator il, MethodBase member)
 		{
 			var vars = member.GetMethodBody()?.LocalVariables;
 			if (vars is null)
@@ -282,7 +281,21 @@ namespace HarmonyLib
 
 		LocalBuilder DeclareLocalVariable(Type type, bool isReturnValue = false)
 		{
-			if (type.IsByRef && isReturnValue is false) type = type.GetElementType();
+			if (type.IsByRef)
+			{
+				if (isReturnValue)
+				{
+					var v = il.DeclareLocal(type);
+					emitter.Emit(OpCodes.Ldc_I4_1);
+					emitter.Emit(OpCodes.Newarr, type.GetElementType());
+					emitter.Emit(OpCodes.Ldc_I4_0);
+					emitter.Emit(OpCodes.Ldelema, type.GetElementType());
+					emitter.Emit(OpCodes.Stloc, v);
+					return v;
+				}
+				else
+					type = type.GetElementType();
+			}
 			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
 
 			if (AccessTools.IsClass(type))

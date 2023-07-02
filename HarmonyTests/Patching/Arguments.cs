@@ -178,7 +178,7 @@ namespace HarmonyLibTests.Patching
 		public void Test_RefResults()
 		{
 			var intRef1 = Class19.Method19();
-			Assert.AreEqual(123, intRef1);
+			Assert.AreEqual("abc", intRef1);
 
 			var harmony = new Harmony("test");
 			var processor = new PatchClassProcessor(harmony, typeof(Class19Patch));
@@ -187,7 +187,7 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(1, patches.Count);
 
 			var intRef2 = Class19.Method19();
-			Assert.AreEqual(456, intRef2);
+			Assert.AreEqual("def", intRef2);
 		}
 
 		[Test]

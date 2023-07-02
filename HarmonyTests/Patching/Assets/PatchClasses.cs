@@ -1087,10 +1087,10 @@ namespace HarmonyLibTests.Assets
 
 	public class Class19
 	{
-		static readonly int[] test = { 123 };
+		static readonly string[] test = { "abc" };
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static ref int Method19()
+		public static ref string Method19()
 		{
 			return ref test[0];
 		}
@@ -1100,9 +1100,9 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(nameof(Class19.Method19))]
 	public static class Class19Patch
 	{
-		public static void Postfix(ref int __result)
+		public static void Postfix(ref string __result)
 		{
-			__result = 456;
+			__result = "def";
 		}
 	}
 

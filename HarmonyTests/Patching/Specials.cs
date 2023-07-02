@@ -140,7 +140,17 @@ namespace HarmonyLibTests.Patching
 			{
 				exception = ex;
 			}
-			Assert.NotNull(exception);
+			Assert.Null(exception, "expecting no patching exception");
+
+			try
+			{
+				new DeadEndCode().Method();
+			}
+			catch (Exception ex)
+			{
+				exception = ex;
+			}
+			Assert.NotNull(exception, "expecting runtime exception");
 		}
 
 		/* TODO
