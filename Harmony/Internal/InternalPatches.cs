@@ -11,6 +11,9 @@ namespace HarmonyLib
 		{
 			Assembly dummy = null;
 			var getExecutingAssemblyMethod = SymbolExtensions.GetMethodInfo(() => Assembly.GetExecutingAssembly());
+			if (PatchProcessor.ReadMethodBody(getExecutingAssemblyMethod).Any() == false)
+				return;
+
 			var getExecutingAssemblyPostfix = SymbolExtensions.GetMethodInfo(() => GetExecutingAssemblyPostfix(ref dummy));
 
 			var empty = new List<MethodInfo>();
