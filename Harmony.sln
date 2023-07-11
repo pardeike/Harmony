@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "Harmony\Do
 		{69AEE16A-B6E7-4642-8081-3928B32455DF} = {69AEE16A-B6E7-4642-8081-3928B32455DF}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{11F828EC-7C50-48F4-A30D-9BED06837F3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

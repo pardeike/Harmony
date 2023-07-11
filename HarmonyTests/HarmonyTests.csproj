@@ -24,6 +24,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Harmony\Harmony.csproj" />
+		<ProjectReference Include="..\TestLibrary\TestLibrary.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -58,8 +59,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
-
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 	</ItemGroup>
