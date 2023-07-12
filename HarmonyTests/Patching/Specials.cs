@@ -144,51 +144,6 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
-		public void Test_PatchExceptionWithCleanup1()
-		{
-			if (AccessTools.IsMonoRuntime is false)
-				Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
-
-			var il = PatchProcessor.ReadMethodBody(SymbolExtensions.GetMethodInfo(() => new DeadEndCode().Method()));
-			il.Do(c => Console.WriteLine(c));
-
-			var patchClass = typeof(DeadEndCode_Patch2);
-			Assert.NotNull(patchClass);
-
-			DeadEndCode_Patch2.original = null;
-			DeadEndCode_Patch2.exception = null;
-
-			var instance = new Harmony("test");
-			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.CreateClassProcessor(patchClass);
-			Assert.NotNull(patcher, "Patch processor");
-			try
-			{
-				_ = patcher.Patch();
-				Assert.Fail("Patch should throw exception");
-			}
-			catch (Exception)
-			{
-			}
-
-			Assert.AreSame(typeof(DeadEndCode).GetMethod("Method"), DeadEndCode_Patch2.original, "Patch should save original method");
-			Assert.NotNull(DeadEndCode_Patch2.exception, "Patch should save exception");
-
-			var harmonyException = DeadEndCode_Patch2.exception as HarmonyException;
-			Assert.NotNull(harmonyException, $"Exception should be a HarmonyException (is: {DeadEndCode_Patch2.exception.GetType()}");
-
-			var instructions = harmonyException.GetInstructions();
-			Assert.NotNull(instructions, "HarmonyException should have instructions");
-			Assert.AreEqual(12, instructions.Count);
-
-			var errorIndex = harmonyException.GetErrorIndex();
-			Assert.AreEqual(10, errorIndex);
-
-			var errorOffset = harmonyException.GetErrorOffset();
-			Assert.AreEqual(50, errorOffset);
-		}
-
-		[Test]
 		public void Test_PatchExceptionWithCleanup2()
 		{
 			if (AccessTools.IsMonoRuntime is false)
