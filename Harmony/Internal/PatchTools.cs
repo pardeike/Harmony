@@ -28,8 +28,10 @@ namespace HarmonyLib
 		internal static readonly MethodInfo m_GetExecutingAssemblyReplacement = SymbolExtensions.GetMethodInfo(() => GetExecutingAssemblyReplacement());
 		static Assembly GetExecutingAssemblyReplacement()
 		{
-			var frame = new StackTrace().GetFrames().Skip(1).FirstOrDefault();
-			return frame == null ? Assembly.GetExecutingAssembly() : Harmony.GetOriginalMethodFromStackframe(frame).Module.Assembly;
+			var frames = new StackTrace().GetFrames();
+			if (frames?.Skip(1).FirstOrDefault() is { } frame && Harmony.GetOriginalMethodFromStackframe(frame) is { } original)
+				return original.Module.Assembly;
+			return Assembly.GetExecutingAssembly();
 		}
 		internal static IEnumerable<CodeInstruction> GetExecutingAssemblyTranspiler(IEnumerable<CodeInstruction> instructions)
 		{
