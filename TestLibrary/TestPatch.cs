@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,6 +9,8 @@ public static class TestPatch
 {
 	private static void Method(ref Assembly prefix, ref Assembly original, ref Assembly postfix)
 	{
+		_ = prefix;
+		_ = postfix;
 		original = Assembly.GetExecutingAssembly();
 	}
 
@@ -22,15 +24,11 @@ public static class TestPatch
 		postfix = Assembly.GetExecutingAssembly();
 	}
 
-	private static void Finalizer(Exception? __exception) { }
-
+	private static void Finalizer(Exception __exception) { }
 
 	private static IEnumerable<CodeInstruction> EmptyTranspiler(IEnumerable<CodeInstruction> instructions) => instructions;
 
-
-	/// <summary>
-	/// Checks that Assembly.GetExecutingAssembly is not broken for non patched methods
-	/// </summary>
+	/// <summary>Checks that Assembly.GetExecutingAssembly is not broken for non patched methods</summary>
 	public static void TestGlobalPatch(out Assembly original, out Assembly patched)
 	{
 		original = Assembly.GetExecutingAssembly();
@@ -43,9 +41,7 @@ public static class TestPatch
 		patched = Assembly.GetExecutingAssembly();
 	}
 
-	/// <summary>
-	/// Checks that Assembly.GetExecutingAssembly is not broken for patched methods
-	/// </summary>
+	/// <summary>Checks that Assembly.GetExecutingAssembly is not broken for patched methods</summary>
 	public static void TestPatching(out Assembly prefix, out Assembly original, out Assembly postfix)
 	{
 		var instance = new Harmony("test");
