@@ -19,3 +19,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Usage", "CA2211")]
 [assembly: SuppressMessage("Performance", "CA1825")]
 [assembly: SuppressMessage("Interoperability", "SYSLIB1054")]
+[assembly: SuppressMessage("Obsoletions", "SYSLIB0014")]
