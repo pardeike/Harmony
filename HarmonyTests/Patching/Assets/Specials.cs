@@ -10,7 +10,7 @@ using System.Text;
 
 namespace HarmonyLibTests.Assets
 {
-	/*public class HttpWebRequestPatches
+	public class HttpWebRequestPatches
 	{
 		public static bool prefixCalled = false;
 		public static bool postfixCalled = false;
@@ -30,7 +30,7 @@ namespace HarmonyLibTests.Assets
 			prefixCalled = false;
 			postfixCalled = false;
 		}
-	}*/
+	}
 
 	public class DeadEndCode
 	{
@@ -303,44 +303,6 @@ namespace HarmonyLibTests.Assets
 	{
 		static void Prefix()
 		{
-		}
-	}
-
-	public static class NativeMethodPatchingSimple
-	{
-		[DllImport("kernel32.dll")]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool AllocConsole();
-
-		public static List<CodeInstruction> instructions;
-
-		public static bool MyAllocConsole()
-		{
-			return true;
-		}
-
-		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
-			NativeMethodPatchingSimple.instructions = instructions.ToList();
-
-			foreach (var code in instructions)
-			{
-				if (code.opcode == OpCodes.Call)
-					code.operand = SymbolExtensions.GetMethodInfo(() => MyAllocConsole());
-				yield return code;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(NativeMethodPatchingPostfix), nameof(gethostname))]
-	public static class NativeMethodPatchingPostfix
-	{
-		[DllImport("WSOCK32.DLL", CharSet = CharSet.Unicode, SetLastError = true)]
-		public static extern long gethostname(StringBuilder name, int nameLen);
-
-		public static void Postfix(StringBuilder name)
-		{
-			_ = name.Append("-postfix");
 		}
 	}
 }

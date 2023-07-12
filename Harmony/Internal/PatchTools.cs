@@ -2,6 +2,7 @@ using MonoMod.Core;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -20,6 +21,19 @@ namespace HarmonyLib
 					detour.Dispose();
 				detours[method] = DetourFactory.Current.CreateDetour(method, replacement);
 			}
+		}
+
+		internal static readonly MethodInfo m_GetExecutingAssemblyReplacementTranspiler = SymbolExtensions.GetMethodInfo(() => GetExecutingAssemblyTranspiler(null));
+		internal static readonly MethodInfo m_GetExecutingAssembly = SymbolExtensions.GetMethodInfo(() => Assembly.GetExecutingAssembly());
+		internal static readonly MethodInfo m_GetExecutingAssemblyReplacement = SymbolExtensions.GetMethodInfo(() => GetExecutingAssemblyReplacement());
+		static Assembly GetExecutingAssemblyReplacement()
+		{
+			var frame = new StackTrace().GetFrames().Skip(1).FirstOrDefault();
+			return frame == null ? Assembly.GetExecutingAssembly() : Harmony.GetOriginalMethodFromStackframe(frame).Module.Assembly;
+		}
+		internal static IEnumerable<CodeInstruction> GetExecutingAssemblyTranspiler(IEnumerable<CodeInstruction> instructions)
+		{
+			return instructions.MethodReplacer(m_GetExecutingAssembly, m_GetExecutingAssemblyReplacement);
 		}
 
 		public static MethodInfo CreateMethod(string name, Type returnType, List<KeyValuePair<string, Type>> parameters, Action<ILGenerator> generator)

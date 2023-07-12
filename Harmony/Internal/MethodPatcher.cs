@@ -136,6 +136,7 @@ namespace HarmonyLib
 
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);
+			copier.AddTranspiler(PatchTools.m_GetExecutingAssemblyReplacementTranspiler);
 
 			var endLabels = new List<Label>();
 			var lastCode = copier.Finalize(emitter, endLabels, out var hasReturnCode).LastOrDefault();
