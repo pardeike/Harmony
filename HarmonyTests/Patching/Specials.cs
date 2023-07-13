@@ -3,7 +3,11 @@ using HarmonyLibTests.Assets;
 using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
+#if NET6_0_OR_GREATER
+using System.Net.Http;
+#else
 using System.Net;
+#endif
 
 namespace HarmonyLibTests.Patching
 {
@@ -13,25 +17,34 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Test_HttpWebRequestGetResponse()
 		{
+#if NET6_0_OR_GREATER
+			var original = SymbolExtensions.GetMethodInfo(() => new HttpClient().Send(default));
+#else
 			var t_WebRequest = typeof(HttpWebRequest);
 			Assert.NotNull(t_WebRequest);
 			var original = AccessTools.DeclaredMethod(t_WebRequest, nameof(HttpWebRequest.GetResponse));
+#endif
 			Assert.NotNull(original);
 
-			var t_HttpWebRequestPatches = typeof(HttpWebRequestPatches);
-			var prefix = t_HttpWebRequestPatches.GetMethod("Prefix");
-			Assert.NotNull(prefix);
-			var postfix = t_HttpWebRequestPatches.GetMethod("Postfix");
-			Assert.NotNull(postfix);
+			var prefix = SymbolExtensions.GetMethodInfo(() => HttpWebRequestPatches.Prefix());
+			var postfix = SymbolExtensions.GetMethodInfo(() => HttpWebRequestPatches.Postfix());
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance);
 			_ = instance.Patch(original, new HarmonyMethod(prefix, debug: true), new HarmonyMethod(postfix, debug: true));
 
 			HttpWebRequestPatches.ResetTest();
+
+#if NET6_0_OR_GREATER
+			var client = new HttpClient();
+			var webRequest = new HttpRequestMessage(HttpMethod.Get, "http://google.com");
+			var response = client.Send(webRequest);
+#else
 			var request = WebRequest.Create("http://google.com");
 			Assert.AreEqual(request.GetType(), t_WebRequest);
 			var response = request.GetResponse();
+#endif
+
 			Assert.NotNull(response);
 			Assert.True(HttpWebRequestPatches.prefixCalled, "Prefix not called");
 			Assert.True(HttpWebRequestPatches.postfixCalled, "Postfix not called");
