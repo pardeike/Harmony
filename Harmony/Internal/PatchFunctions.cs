@@ -37,14 +37,14 @@ namespace HarmonyLib
 			var replacement = patcher.CreateReplacement(out var finalInstructions);
 			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
 
-			try
-			{
+			//try
+			//{
 				PatchTools.DetourMethod(original, replacement);
-			}
-			catch (Exception ex)
-			{
-				throw HarmonyException.Create(ex, finalInstructions);
-			}
+			//}
+			//catch (Exception ex)
+			//{
+			//	throw HarmonyException.Create(ex, finalInstructions);
+			//}
 			return replacement;
 		}
 
