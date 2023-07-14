@@ -67,10 +67,10 @@ jobs:
 
   - ${{ each buildConfiguration in parameters.buildConfigurations }}:
     - bash: "dotnet clean --configuration ${{buildConfiguration}} && dotnet nuget locals all --clear"
-      displayName: 'Clean'
+      displayName: 'Clean ${{buildConfiguration}}'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Build'
+      displayName: 'Build ${{buildConfiguration}}'
       inputs:
         command: build # `dotnet build` implicitly runs `dotnet restore` as well
         projects: Harmony.sln
@@ -97,7 +97,7 @@ jobs:
         #   Both `dotnet test path/to/net35/HarmonyTests.dll --framework net35` and `mono path/to/nunit3-console.exe path/to/net35/HarmonyTests.dll`
         #   run the tests in 'CLR 4.0 "compatibility mode"' (or the mono equivalent of this).
         - task: DotNetCoreCLI@2
-          displayName: "Test ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
+          displayName: "Test ${{buildConfiguration}} ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
           condition: succeededOrFailed()
           inputs:
             command: test
@@ -131,7 +131,7 @@ jobs:
             mono="$(eval $programFilesCmd)/Mono/bin/mono.exe"
             vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
             "$mono" "$vstest" "HarmonyTests/bin/${{buildConfiguration}}/${{framework}}/HarmonyTests.dll" --Framework:${{framework}} --logger:trx --ResultsDirectory:"$(Agent.TempDirectory)" $(blameArg) -- $(runSettingsArgs)
-          displayName: "Test ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
+          displayName: "Test ${{buildConfiguration}} ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
           condition: succeededOrFailed()
           env:
             ${{ if eq(parameters.architecture, 'x86') }}:
@@ -141,7 +141,7 @@ jobs:
 
       - ${{ if eq(parameters.runtimeType, 'mono') }}:
         - task: PublishTestResults@2
-          displayName: "Publish ${{framework}} test results"
+          displayName: "Publish ${{buildConfiguration}} ${{framework}} test results"
           condition: succeededOrFailed()
           inputs:
             buildPlatform: ${{parameters.architecture}}
@@ -165,5 +165,5 @@ jobs:
 
     - ${{ each buildConfiguration in parameters.buildConfigurations }}:
       - publish: $(buildZipFile)
-        displayName: "Publish Harmony zip as build artifact"
+        displayName: "Publish ${{buildConfiguration}} Harmony zip as build artifact"
         artifact: ${{buildConfiguration}}
