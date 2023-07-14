@@ -65,8 +65,11 @@ jobs:
             version: ${{replace(replace(framework, 'coreapp', ''), 'net', '')}}.x
             packageType: sdk
 
+  - bash: "dotnet nuget locals all --clear"
+    displayName: 'Clean NuGet ${{buildConfiguration}}'
+
   - ${{ each buildConfiguration in parameters.buildConfigurations }}:
-    - bash: "dotnet clean --configuration ${{buildConfiguration}} && dotnet nuget locals all --clear"
+    - bash: "dotnet clean --configuration ${{buildConfiguration}}"
       displayName: 'Clean ${{buildConfiguration}}'
 
     - task: DotNetCoreCLI@2
