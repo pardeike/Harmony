@@ -66,7 +66,7 @@ jobs:
             packageType: sdk
 
   - bash: "dotnet nuget locals all --clear"
-    displayName: 'Clean NuGet ${{buildConfiguration}}'
+    displayName: 'Clean NuGet'
 
   - ${{ each buildConfiguration in parameters.buildConfigurations }}:
     - bash: "dotnet clean --configuration ${{buildConfiguration}}"
