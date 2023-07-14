@@ -155,18 +155,18 @@ jobs:
             testRunTitle: "${{framework}} (${{parameters.os}} mono ${{parameters.architecture}})"
 
   - ${{ if parameters.publishBuild }}:
-    # publish task doesn't support globbing, so have to find the file and output it as a variable. Yes, this is clunky.
-    - bash: |
-        shopt -s failglob
-        # Expecting only one zip file, but this allows script to error if no such zip file is found.
-        for buildZipFile in Harmony/bin/Harmony*.zip; do
-          echo "##vso[task.setvariable variable=buildZipFile]$buildZipFile"
-        done
-      name: FindBuildArtifact
-      displayName: "Find Harmony zip for build artifact publishing"
-      condition: succeededOrFailed()
-
     - ${{ each buildConfiguration in parameters.buildConfigurations }}:
+      # publish task doesn't support globbing, so have to find the file and output it as a variable. Yes, this is clunky.
+      - bash: |
+          shopt -s failglob
+          # Expecting only one zip file, but this allows script to error if no such zip file is found.
+          for buildZipFile in Harmony/bin/Harmony_${{buildConfiguration}}*.zip; do
+            echo "##vso[task.setvariable variable=buildZipFile]$buildZipFile"
+          done
+        name: FindBuildArtifact
+        displayName: "Find Harmony zip for build artifact publishing"
+        condition: succeededOrFailed()
+
       - publish: $(buildZipFile)
         displayName: "Publish ${{buildConfiguration}} Harmony zip as build artifact"
         artifact: ${{buildConfiguration}}
