@@ -1,0 +1,33 @@
+<Project>
+
+    <Choose>
+        <When Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
+            <PropertyGroup>
+                <IsNETCore>true</IsNETCore>
+            </PropertyGroup>
+        </When>
+        <Otherwise>
+            <PropertyGroup>
+                <IsNETCore>false</IsNETCore>
+            </PropertyGroup>
+        </Otherwise>
+    </Choose>
+
+    <Choose>
+        <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0'">
+            <PropertyGroup>
+                <IsNET5OrGreater>true</IsNET5OrGreater>
+            </PropertyGroup>
+        </When>
+        <Otherwise>
+            <PropertyGroup>
+                <IsNET5OrGreater>false</IsNET5OrGreater>
+            </PropertyGroup>
+        </Otherwise>
+    </Choose>
+
+    <Target Name="WarningsForEnvs" BeforeTargets="BeforeCompile">
+        <Error Condition="'$(IsNETCore)' == 'true' OR '$(IsNET5OrGreater)' == 'true'" Text="Lib.Harmony package does not support $(TargetFramework)! Please use Lib.Harmony.Lite package instead!" />
+    </Target>
+
+</Project>
