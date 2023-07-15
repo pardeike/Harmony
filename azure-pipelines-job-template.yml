@@ -163,7 +163,7 @@ jobs:
           for buildZipFile in Harmony/bin/Harmony_${{buildConfiguration}}*.zip; do
             echo "##vso[task.setvariable variable=buildZipFile]$buildZipFile"
           done
-        displayName: "Find Harmony zip for build artifact publishing"
+        displayName: "Find ${{buildConfiguration}} Harmony zip for build artifact publishing"
         condition: succeededOrFailed()
 
       - publish: $(buildZipFile)
