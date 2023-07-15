@@ -2,7 +2,6 @@
 <!-- Currently, we only allow .NET Framework to have IL Merged -->
 <Project>
 
-    <!-- ILRepack config needs to be specified before MonoMod.Common PackageReference due its dependency on properties defined here. -->
     <Choose>
         <When Condition="'$(IsFAT)' == 'true' AND '$(IsNETCore)' == 'false' AND '$(IsNET5OrGreater)' == 'false'">
             <PropertyGroup>
@@ -17,7 +16,7 @@
     </Choose>
 
     <PropertyGroup Condition="'$(DoILRepack)' == 'true'">
-        <ILRepackTargetConfigurations>Release</ILRepackTargetConfigurations>
+        <ILRepackTargetConfigurations>$(Configuration)</ILRepackTargetConfigurations>
         <ILRepackAllowDuplicateResources>false</ILRepackAllowDuplicateResources>
         <ILRepackMergeDebugSymbols>true</ILRepackMergeDebugSymbols>
         <ILRepackPerformInternalize>true</ILRepackPerformInternalize>
@@ -26,7 +25,7 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(DoILRepack)' == 'true'">
-        <PackageReference Include="ILRepack" Version="2.0.18" PrivateAssets="all" IncludeAssets="none" />
+        <PackageReference Include="ILRepack" Version="*" PrivateAssets="all" IncludeAssets="none" />
         <PackageReference Include="BUTR.ILRepack" Version="2.1.9-beta7" GeneratePathProperty="true" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
         <PackageReference Include="ILRepack.FullAuto" Version="1.2.0" PrivateAssets="all" />
     </ItemGroup>
