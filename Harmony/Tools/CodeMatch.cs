@@ -92,6 +92,8 @@ namespace HarmonyLib
 		{
 			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCalling);
 			operand = SymbolExtensions.GetMethodInfo(expression);
+			if (operand != null)
+				operands.Add(operand);
 			this.name = name;
 		}
 
@@ -103,6 +105,8 @@ namespace HarmonyLib
 		{
 			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCalling);
 			operand = SymbolExtensions.GetMethodInfo(expression);
+			if (operand != null)
+				operands.Add(operand);
 			this.name = name;
 		}
 
