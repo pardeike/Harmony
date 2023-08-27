@@ -118,7 +118,7 @@ static bool MyInitializer(MethodBase original, ...)
 [HarmonyTargetMethod]
 static MethodBase CalculateMethod(...)
 </code></pre>
-<p>That method, if it exists, is expected to return a <code>MethodBase</code> of the method to be patched.</p>
+<p>That method, if it exists, is expected to return a <code>MethodBase</code> of the method to be patched. The return cannot be null. If you want to conditionally skip patching, use a <code>Prepare()</code> method.</p>
 <h3 id="targetmethods">TargetMethods</h3>
 <p>If you want to patch multiple methods with the same patch, you can use <code>TargetMethods</code>. It has the same behaviour as <code>TargetMethod</code> except that it returns an enumeration of <code>MethodBase</code> instead of a single <code>MethodBase</code>:</p>
 <pre><code class="lang-csharp">static IEnumerable&lt;MethodBase&gt; TargetMethods(...)
@@ -135,7 +135,9 @@ static IEnumerable&lt;MethodBase&gt; CalculateMethods(...)
 
     // you could also iterate using reflections over many methods
 }
-</code></pre><h3 id="cleanup">Cleanup</h3>
+</code></pre>
+<p>Similar to <code>TargetMethod</code>, the implementation cannot return zero results. If you want to conditionally skip patching, use a <code>Prepare()</code> method.</p>
+<h3 id="cleanup">Cleanup</h3>
 <p>After patching, Harmony gives you a chance to clean up your state. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static void Cleanup(...)
 static void Cleanup(MethodBase original, ...)
