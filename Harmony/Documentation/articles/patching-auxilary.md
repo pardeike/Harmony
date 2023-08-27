@@ -42,7 +42,7 @@ static MethodBase TargetMethod(...)
 static MethodBase CalculateMethod(...)
 ```
 
-That method, if it exists, is expected to return a `MethodBase` of the method to be patched.
+That method, if it exists, is expected to return a `MethodBase` of the method to be patched. The return cannot be null. If you want to conditionally skip patching, use a `Prepare()` method.
 
 ### TargetMethods
 
@@ -58,6 +58,8 @@ static IEnumerable<MethodBase> CalculateMethods(...)
 A typical implementation would `yield` the results like this:
 
 [!code-csharp[example](../examples/patching-auxilary.cs?name=yield)]
+
+Similar to `TargetMethod`, the implementation cannot return zero results. If you want to conditionally skip patching, use a `Prepare()` method.
 
 ### Cleanup
 
