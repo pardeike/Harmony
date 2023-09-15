@@ -845,11 +845,11 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "articles/patching-auxilary.md",
+      "source_relative_path": "articles/patching-auxiliary.md",
       "output": {
         ".html": {
-          "relative_path": "articles/patching-auxilary.html",
-          "hash": "IkXRuKgA9NqU9Mp6eE61AHsONLiO0nPvT+T79s+dvN8="
+          "relative_path": "articles/patching-auxiliary.html",
+          "hash": "K5sWXSOyqzl3aJjAlEh/PFRGsPXbqhb47iGwcT+hL/s="
         }
       },
       "is_incremental": false,
@@ -981,7 +981,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "Gq34/p24IPk7O/RrEC7NPvkj+gq9HtjpePpRVi0b+es="
+          "hash": "fS3ejo0KLMrH2nOzhyFzuzvqW0RyV5NnFQmgIisnygc="
         }
       },
       "is_incremental": false,
