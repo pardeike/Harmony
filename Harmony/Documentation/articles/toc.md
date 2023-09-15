@@ -20,7 +20,7 @@
 
 ## [Reverse Patch](reverse-patching.md)
 
-## [Auxilary methods](patching-auxilary.md)
+## [Auxiliary methods](patching-auxiliary.md)
 
 ## [Edge Cases](patching-edgecases.md)
 
