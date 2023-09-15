@@ -1,6 +1,6 @@
 # Patching
 
-## Auxilary patch methods
+## Auxiliary patch methods
 
 If you use manual patching, you are in full control of your state and the execution and handling of extra resources and logic. For annotation patching, Harmony offers you a number of methods you can implement on a patch class that allow you to execute code before and after patching on that class as well as methods that combine annotations with manually defining which methods that should be patched.
 
@@ -57,7 +57,7 @@ static IEnumerable<MethodBase> CalculateMethods(...)
 
 A typical implementation would `yield` the results like this:
 
-[!code-csharp[example](../examples/patching-auxilary.cs?name=yield)]
+[!code-csharp[example](../examples/patching-auxiliary.cs?name=yield)]
 
 Similar to `TargetMethod`, the implementation cannot return zero results. If you want to conditionally skip patching, use a `Prepare()` method.
 

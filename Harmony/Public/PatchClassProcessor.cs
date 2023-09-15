@@ -13,11 +13,11 @@ namespace HarmonyLib
 
 		readonly Type containerType;
 		readonly HarmonyMethod containerAttributes;
-		readonly Dictionary<Type, MethodInfo> auxilaryMethods;
+		readonly Dictionary<Type, MethodInfo> auxiliaryMethods;
 
 		readonly List<AttributePatch> patchMethods;
 
-		static readonly List<Type> auxilaryTypes = new()
+		static readonly List<Type> auxiliaryTypes = new()
 		{
 			typeof(HarmonyPrepare),
 			typeof(HarmonyCleanup),
@@ -51,11 +51,11 @@ namespace HarmonyLib
 			
 			Category = containerAttributes.category;
 
-			auxilaryMethods = new Dictionary<Type, MethodInfo>();
-			foreach (var auxType in auxilaryTypes)
+			auxiliaryMethods = new Dictionary<Type, MethodInfo>();
+			foreach (var auxType in auxiliaryTypes)
 			{
 				var method = PatchTools.GetPatchMethod(containerType, auxType.FullName);
-				if (method is not null) auxilaryMethods[auxType] = method;
+				if (method is not null) auxiliaryMethods[auxType] = method;
 			}
 
 			patchMethods = PatchTools.GetPatchMethods(containerType);
@@ -235,7 +235,7 @@ namespace HarmonyLib
 				else if (result.Any(m => m is null)) error = "some element was null";
 				if (error != null)
 				{
-					if (auxilaryMethods.TryGetValue(typeof(HarmonyTargetMethods), out var method))
+					if (auxiliaryMethods.TryGetValue(typeof(HarmonyTargetMethods), out var method))
 						throw new Exception($"Method {method.FullDescription()} returned an unexpected result: {error}");
 					else
 						throw new Exception($"Some method returned an unexpected result: {error}");
@@ -276,7 +276,7 @@ namespace HarmonyLib
 
 		T RunMethod<S, T>(T defaultIfNotExisting, T defaultIfFailing, Func<T, string> failOnResult = null, params object[] parameters)
 		{
-			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
+			if (auxiliaryMethods.TryGetValue(typeof(S), out var method))
 			{
 				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);
@@ -314,7 +314,7 @@ namespace HarmonyLib
 
 		void RunMethod<S>(ref Exception exception, params object[] parameters)
 		{
-			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
+			if (auxiliaryMethods.TryGetValue(typeof(S), out var method))
 			{
 				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);

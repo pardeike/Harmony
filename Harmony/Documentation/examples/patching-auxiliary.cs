@@ -1,4 +1,4 @@
-namespace Patching_Auxilary
+namespace Patching_Auxiliary
 {
 	using HarmonyLib;
 	using System.Collections.Generic;

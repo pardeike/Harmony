@@ -146,7 +146,7 @@ namespace Basics
 		[HarmonyPatch] // at least one Harmony annotation makes Harmony not skip this patch class when calling PatchAll()
 		class MyPatch
 		{
-			// here, inside the patch class, you can place the auxilary patch methods
+			// here, inside the patch class, you can place the auxiliary patch methods
 			// for example TargetMethod:
 
 			public static MethodBase TargetMethod()
