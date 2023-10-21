@@ -24,6 +24,7 @@ namespace HarmonyLib
 			| BindingFlags.NonPublic
 			| BindingFlags.Instance
 			| BindingFlags.Static
+			| BindingFlags.FlattenHierarchy
 			| BindingFlags.GetField
 			| BindingFlags.SetField
 			| BindingFlags.GetProperty
@@ -32,7 +33,7 @@ namespace HarmonyLib
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level but only within the current type</summary>
 		///
 		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
-		public static readonly BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
+		public static readonly BindingFlags allDeclared = (all & ~BindingFlags.FlattenHierarchy) | BindingFlags.DeclaredOnly;
 
 		/// <summary>Enumerates all assemblies in the current app domain, excluding visual studio assemblies</summary>
 		/// <returns>An enumeration of <see cref="Assembly"/></returns>
