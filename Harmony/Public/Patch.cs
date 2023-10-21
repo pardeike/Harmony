@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 using System.Text.Json;
 using System.Text.Json.Serialization;
 #endif
@@ -16,7 +16,7 @@ namespace HarmonyLib
 	///
 	internal static class PatchInfoSerialization
 	{
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		internal static bool? useBinaryFormatter = null;
 		internal static bool UseBinaryFormatter
 		{
@@ -68,14 +68,14 @@ namespace HarmonyLib
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 			if (UseBinaryFormatter)
 			{
 #endif
 			using var streamMemory = new MemoryStream();
 			binaryFormatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.GetBuffer();
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 			}
 			else
 				return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
@@ -88,13 +88,13 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 			if (UseBinaryFormatter)
 			{
 #endif
 			using var streamMemory = new MemoryStream(bytes);
 			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 			}
 			else
 			{
@@ -130,35 +130,35 @@ namespace HarmonyLib
 	{
 		/// <summary>Prefixes as an array of <see cref="Patch"/></summary>
 		///
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		[JsonInclude]
 #endif
 		public Patch[] prefixes = new Patch[0];
 
 		/// <summary>Postfixes as an array of <see cref="Patch"/></summary>
 		///
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		[JsonInclude]
 #endif
 		public Patch[] postfixes = new Patch[0];
 
 		/// <summary>Transpilers as an array of <see cref="Patch"/></summary>
 		///
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		[JsonInclude]
 #endif
 		public Patch[] transpilers = new Patch[0];
 
 		/// <summary>Finalizers as an array of <see cref="Patch"/></summary>
 		///
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		[JsonInclude]
 #endif
 		public Patch[] finalizers = new Patch[0];
 
 		/// <summary>Returns if any of the patches wants debugging turned on</summary>
 		///
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		[JsonIgnore]
 #endif
 		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug);
@@ -306,7 +306,7 @@ namespace HarmonyLib
 
 	/// <summary>A serializable patch</summary>
 	///
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 	[JsonConverter(typeof(PatchJsonConverter))]
 #endif
 	[Serializable]
@@ -343,7 +343,7 @@ namespace HarmonyLib
 
 		/// <summary>The method of the static patch method</summary>
 		///
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		[JsonIgnore]
 #endif
 		public MethodInfo PatchMethod
@@ -432,7 +432,7 @@ namespace HarmonyLib
 		///
 		public override bool Equals(object obj)
 		{
-			return ((obj is object) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
+			return ((obj is not null) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
 		}
 
 		/// <summary>Determines how patches sort</summary>

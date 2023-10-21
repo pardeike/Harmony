@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net45;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>preview</LangVersion>
 		<IsPackable>false</IsPackable>
@@ -10,7 +10,7 @@
 
 	<!-- In .NET 5.0 Binary Formatters are off by default. Support is added for .NET 5.0+ for fallback JSON Serialization -->
 	<Choose>
-		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0'">
+		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0'">
 			<PropertyGroup>
 				<IsNET5OrGreater>true</IsNET5OrGreater>
 			</PropertyGroup>
@@ -24,6 +24,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Harmony\Harmony.csproj" />
+		<ProjectReference Include="..\TestLibrary\TestLibrary.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -39,18 +40,18 @@
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(IsNET5OrGreater)">
-		<DefineConstants>$(DefineConstants);NET50_OR_GREATER</DefineConstants>
-	</PropertyGroup>
-
 	<!-- Workaround for `dotnet test HarmonyTests -f net35` not running tests - Microsoft.NET.Test.Sdk only sets IsTestProject property for net40+. -->
 	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
 		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-		<PackageReference Include="NUnit" Version="3.12.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net35" Version="1.0.3">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="NUnit" Version="3.13.3" />
 		<PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -59,11 +60,7 @@
 
 	<ItemGroup>
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="MonoMod.Common" Version="$(MonoModCommonVersion)" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
@@ -72,7 +69,7 @@
 
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
 		<ItemGroup>
-			<ReferencePath Condition="'%(FileName)'=='MonoMod.Common'">
+			<ReferencePath Condition="'%(FileName)'=='MonoMod.Core'">
 				<Aliases>mmc</Aliases>
 			</ReferencePath>
 		</ItemGroup>

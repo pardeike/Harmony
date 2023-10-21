@@ -21,7 +21,7 @@ namespace HarmonyLib
 		///
 		public static string Join<T>(this IEnumerable<T> enumeration, Func<T, string> converter = null, string delimiter = ", ")
 		{
-			if (converter is null) converter = t => t.ToString();
+			converter ??= t => t.ToString();
 			return enumeration.Aggregate("", (prev, curr) => prev + (prev.Length > 0 ? delimiter : "") + converter(curr));
 		}
 
@@ -77,7 +77,7 @@ namespace HarmonyLib
 			if (member.IsAbstract) _ = result.Append("abstract ");
 			if (member.IsVirtual) _ = result.Append("virtual ");
 			_ = result.Append($"{returnType.FullDescription()} ");
-			if (member.DeclaringType is object)
+			if (member.DeclaringType is not null)
 				_ = result.Append($"{member.DeclaringType.FullDescription()}::");
 			var parameterString = member.GetParameters().Join(p => $"{p.ParameterType.FullDescription()} {p.Name}");
 			_ = result.Append($"{member.Name}({parameterString})");
@@ -165,29 +165,61 @@ namespace HarmonyLib
 	///
 	public static class CodeInstructionExtensions
 	{
-		static readonly HashSet<OpCode> loadVarCodes = new()
+		internal static readonly HashSet<OpCode> opcodesCalling = new()
+		{
+			OpCodes.Call,
+			OpCodes.Callvirt
+		};
+
+		internal static readonly HashSet<OpCode> opcodesLoadingLocalByAddress = new()
+		{
+			OpCodes.Ldloca_S,
+			OpCodes.Ldloca
+		};
+
+		internal static readonly HashSet<OpCode> opcodesLoadingLocalNormal = new()
 		{
 			OpCodes.Ldloc_0,
 			OpCodes.Ldloc_1,
 			OpCodes.Ldloc_2,
 			OpCodes.Ldloc_3,
-			OpCodes.Ldloc,
-			OpCodes.Ldloca,
 			OpCodes.Ldloc_S,
-			OpCodes.Ldloca_S
+			OpCodes.Ldloc
 		};
 
-		static readonly HashSet<OpCode> storeVarCodes = new()
+		internal static readonly HashSet<OpCode> opcodesStoringLocal = new()
 		{
 			OpCodes.Stloc_0,
 			OpCodes.Stloc_1,
 			OpCodes.Stloc_2,
 			OpCodes.Stloc_3,
-			OpCodes.Stloc,
-			OpCodes.Stloc_S
+			OpCodes.Stloc_S,
+			OpCodes.Stloc
 		};
 
-		static readonly HashSet<OpCode> branchCodes = new()
+		internal static readonly HashSet<OpCode> opcodesLoadingArgumentByAddress = new()
+		{
+			OpCodes.Ldarga_S,
+			OpCodes.Ldarga
+		};
+
+		internal static readonly HashSet<OpCode> opcodesLoadingArgumentNormal = new()
+		{
+			OpCodes.Ldarg_0,
+			OpCodes.Ldarg_1,
+			OpCodes.Ldarg_2,
+			OpCodes.Ldarg_3,
+			OpCodes.Ldarg_S,
+			OpCodes.Ldarg
+		};
+
+		internal static readonly HashSet<OpCode> opcodesStoringArgument = new()
+		{
+			OpCodes.Starg_S,
+			OpCodes.Starg
+		};
+
+		internal static readonly HashSet<OpCode> opcodesBranching = new()
 		{
 			OpCodes.Br_S,
 			OpCodes.Brfalse_S,
@@ -344,7 +376,9 @@ namespace HarmonyLib
 		///
 		public static bool IsLdloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
-			if (loadVarCodes.Contains(code.opcode) is false) return false;
+			if (opcodesLoadingLocalNormal.Contains(code.opcode) is false)
+				if (opcodesLoadingLocalByAddress.Contains(code.opcode) is false)
+					return false;
 			return variable is null || Equals(variable, code.operand);
 		}
 
@@ -355,7 +389,7 @@ namespace HarmonyLib
 		///
 		public static bool IsStloc(this CodeInstruction code, LocalBuilder variable = null)
 		{
-			if (storeVarCodes.Contains(code.opcode) is false) return false;
+			if (opcodesStoringLocal.Contains(code.opcode) is false) return false;
 			return variable is null || Equals(variable, code.operand);
 		}
 
@@ -366,7 +400,7 @@ namespace HarmonyLib
 		///
 		public static bool Branches(this CodeInstruction code, out Label? label)
 		{
-			if (branchCodes.Contains(code.opcode))
+			if (opcodesBranching.Contains(code.opcode))
 			{
 				label = (Label)code.operand;
 				return true;
@@ -494,7 +528,7 @@ namespace HarmonyLib
 			else if (code.opcode == OpCodes.Ldloc_S || code.opcode == OpCodes.Ldloc) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Stloc_S || code.opcode == OpCodes.Stloc) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Ldloca_S || code.opcode == OpCodes.Ldloca) return Convert.ToInt32(code.operand);
-			else throw new ArgumentException("Instruction is not a load or store", "code");
+			else throw new ArgumentException("Instruction is not a load or store", nameof(code));
 		}
 
 		/// <summary>Returns the index targeted by this <c>ldarg</c>, <c>ldarga</c>, or <c>starg</c></summary>
@@ -511,7 +545,7 @@ namespace HarmonyLib
 			else if (code.opcode == OpCodes.Ldarg_S || code.opcode == OpCodes.Ldarg) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Starg_S || code.opcode == OpCodes.Starg) return Convert.ToInt32(code.operand);
 			else if (code.opcode == OpCodes.Ldarga_S || code.opcode == OpCodes.Ldarga) return Convert.ToInt32(code.operand);
-			else throw new ArgumentException("Instruction is not a load or store", "code");
+			else throw new ArgumentException("Instruction is not a load or store", nameof(code));
 		}
 
 		/// <summary>Adds labels to the code instruction and return it</summary>
@@ -610,6 +644,20 @@ namespace HarmonyLib
 		public static CodeInstruction MoveBlocksFrom(this CodeInstruction code, CodeInstruction other)
 		{
 			return code.WithBlocks(other.ExtractBlocks());
+		}
+	}
+
+	/// <summary>Extensions for a sequence of <see cref="CodeInstruction"/></summary>
+	///
+	public static class CodeInstructionsExtensions
+	{
+		/// <summary>Searches a list of <see cref="CodeInstruction"/> by running a sequence of <see cref="CodeMatch"/> against it</summary>
+		/// <param name="instructions">The CodeInstructions (like a body of a method) to search in</param>
+		/// <param name="matches">An array of <see cref="CodeMatch"/> representing the sequence of codes you want to search for</param>
+		/// <returns></returns>
+		public static bool Matches(this IEnumerable<CodeInstruction> instructions, CodeMatch[] matches)
+		{
+			return new CodeMatcher(instructions).MatchStartForward(matches).IsValid;
 		}
 	}
 

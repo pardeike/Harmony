@@ -27,7 +27,7 @@ namespace HarmonyTests.Extras
 			return "{" + fixes + "}";
 		}
 
-#if NET50_OR_GREATER
+#if NET5_0_OR_GREATER
 		[Test]
 		public void Serialize()
 		{

@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.html",
-          "hash": "oZO6wj2AOeCZ6fg2OyfPPeOeH63b9Kh2TyMt59Vaiss="
+          "hash": "d/H9Tdt1UDJIle6zL3zC0jEI8FEGz7446KS1ym/dYwA="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-2.html",
-          "hash": "/fTvsyTUnLiETZPotyPpJK2KNCNp7uKNonW0GQov0Ic="
+          "hash": "wtDjgsYPqgV5VuhCsRqPFaNvyD+yT8X1LRHQ65Zz9D4="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.StructFieldRef-2.html",
-          "hash": "B+zznuPpucHSHzkJogm/CZABTEZv8e32C1hyUWgb6sk="
+          "hash": "09TL2UlzfMu/NESEJDLv0uXcY36fBZyUz9r9luIWdwM="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.html",
-          "hash": "Px7yNA8pN54FgEzs6Owk41fVzO270btuc7uuyALAIg0="
+          "hash": "JCcgXdQH6kMsE7Td4W9VnKfcdP5+UZyirkqUgstSiUo="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,19 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeInstructionExtensions.html",
-          "hash": "BUURdbkb1EQOsYPBdlEGUhgQ8wapGPZUDwigPF0Irss="
+          "hash": "sPbAEBWm6BGfH0kPYD0pEAPXoGsgqzOKUjcvZYtQU/E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.CodeInstructionsExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.CodeInstructionsExtensions.html",
+          "hash": "vzj5VDKpFxCOW6ZhiQCPYn++BROvrIOR7vEE5NbD41M="
         }
       },
       "is_incremental": false,
@@ -105,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeMatch.html",
-          "hash": "7GSc8x0Z/bvMSTIAarbFqZZOGxpfxdMfBFzfCAKhvl0="
+          "hash": "9ku8aqz0qzaovO/0m4cQhh/NI3zIc0wE/smBeWgdWBA="
         }
       },
       "is_incremental": false,
@@ -117,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeMatcher.html",
-          "hash": "bTrue7FLGafAQ7aadgAQjh/UaHo3Y24auu0EIdBruu4="
+          "hash": "gBn/OPLKzu01yDB8WSyw82E8f63RAGgST3Zy2ntIViA="
         }
       },
       "is_incremental": false,
@@ -129,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CollectionExtensions.html",
-          "hash": "XzVqu2YiwPt0iI8M7ZP88AUskkoCA/PshpywPmQzEyU="
+          "hash": "/iYr5RpNhTSQI2fGeAFMGpruc0HETMPkA5KZ+tC8I0o="
         }
       },
       "is_incremental": false,
@@ -237,7 +249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Harmony.html",
-          "hash": "xVUwqQYa14sUJfRndumYSgssTUavW8UqWxIMVPv9Zu4="
+          "hash": "fFSliKT5c6Ywm2fQFVS6+SL8Gp/Kw9Nz+PoXCZw7D2E="
         }
       },
       "is_incremental": false,
@@ -357,7 +369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyMethod.html",
-          "hash": "mJPnHid/vGoqwyQj7L5pdcxyyvKSqr16Bx2SzW6idmU="
+          "hash": "3cq7jdN6BkHUayl1gsMLEE5Q3Uz4fsNcVVCKx/K1SQA="
         }
       },
       "is_incremental": false,
@@ -369,7 +381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.HarmonyMethodExtensions.html",
-          "hash": "bGACsv9p1lVzQhE8CixLdvTTRI5m0r8JquT6WIMjJ8c="
+          "hash": "ezTdr3xzSRsx7JKbtXxk1F8xSROey9DQPDa/5bz1ys4="
         }
       },
       "is_incremental": false,
@@ -533,30 +545,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/HarmonyLib.InlineSignature.ModifierType.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/HarmonyLib.InlineSignature.ModifierType.html",
-          "hash": "hJ1cjJ1yAQ+qhiYCVHgKKueCSW+IeUeX1kc0br/yLi4="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/HarmonyLib.InlineSignature.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/HarmonyLib.InlineSignature.html",
-          "hash": "XhnPV7PA20EdyLvxaVEkvOgXYNAvYYJEmLETfo5f+Zo="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/HarmonyLib.InstantiationHandler-1.yml",
       "output": {
         ".html": {
@@ -569,23 +557,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/HarmonyLib.Memory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/HarmonyLib.Memory.html",
-          "hash": "/h/6aXM+9/VV8kmyXVi1jB/Tk9LCjoHnYr5agOPYASk="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/HarmonyLib.MethodBaseExtensions.yml",
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.MethodBaseExtensions.html",
-          "hash": "4Sao5i/+HI87IzkeRgtL6hy6ElfE0aDJtYpOkUC9o3s="
+          "hash": "MnFQBiSH45LzOLvwqRdTB/UFmsGyO1JQBwkdNO7FSDI="
         }
       },
       "is_incremental": false,
@@ -645,7 +621,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchClassProcessor.html",
-          "hash": "Cl/CgJF/+TIag8qKkjZaG1Zyp05Bsq6ynF4ZzNI1AZA="
+          "hash": "6dF6t2fCdBTPsdL9lhMW0Gu3m97Y54XeceKO6s+Jaao="
         }
       },
       "is_incremental": false,
@@ -765,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.Traverse.html",
-          "hash": "5az7DT/UvP5BSEbBMHL4T62ju7kfKMfReXtgDzOzq6c="
+          "hash": "goLDPh4WAlv9HZB6xTNsM2U+CfPfewHmRn+yPuJhUbk="
         }
       },
       "is_incremental": false,
@@ -777,7 +753,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.html",
-          "hash": "FLDZq/uDvoJTlaQu48TdaXdt3Uln4Wod8PSgxQ3PkaM="
+          "hash": "TKUTRqwV7visewXZFVHMNv7m8yJh7pBPjRp67opX3j4="
         }
       },
       "is_incremental": false,
@@ -801,7 +777,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "Y5RDMaBQSMAK1Pa5apiP5Yq7s1ud7dd3ILHaLSvkK/Y="
+          "hash": "Vc8hLFn5985bHNbdfk9lIf4O0RFz+lGYgv+OOSJvqB4="
         }
       },
       "is_incremental": false,
@@ -837,7 +813,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/execution.html",
-          "hash": "8G4ykGK/YP2rFzpZWhEd4rItynALY3d0T93wV8TVz4A="
+          "hash": "ZQ6kk8Fk6jxvhFWbEnnTF2i8ELbL8h8u/ywWUFdRGR0="
         }
       },
       "is_incremental": false,
@@ -869,11 +845,11 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "articles/patching-auxilary.md",
+      "source_relative_path": "articles/patching-auxiliary.md",
       "output": {
         ".html": {
-          "relative_path": "articles/patching-auxilary.html",
-          "hash": "z8/WHg+8eVGJXkfGb5TotDQ8rYv0KaI03W1iJ6pF+G0="
+          "relative_path": "articles/patching-auxiliary.html",
+          "hash": "K5sWXSOyqzl3aJjAlEh/PFRGsPXbqhb47iGwcT+hL/s="
         }
       },
       "is_incremental": false,
@@ -1005,7 +981,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "Gq34/p24IPk7O/RrEC7NPvkj+gq9HtjpePpRVi0b+es="
+          "hash": "fS3ejo0KLMrH2nOzhyFzuzvqW0RyV5NnFQmgIisnygc="
         }
       },
       "is_incremental": false,
@@ -1115,7 +1091,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 65,
+          "total_file_count": 63,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

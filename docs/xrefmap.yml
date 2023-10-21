@@ -162,6 +162,54 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.DeclaredField
   nameWithType: AccessTools.DeclaredField
+- uid: HarmonyLib.AccessTools.DeclaredIndexer(System.Type,System.Type[])
+  name: DeclaredIndexer(Type, Type[])
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredIndexer_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessTools.DeclaredIndexer(System.Type,System.Type[])
+  name.vb: DeclaredIndexer(Type, Type())
+  fullName: HarmonyLib.AccessTools.DeclaredIndexer(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessTools.DeclaredIndexer(System.Type, System.Type())
+  nameWithType: AccessTools.DeclaredIndexer(Type, Type[])
+  nameWithType.vb: AccessTools.DeclaredIndexer(Type, Type())
+- uid: HarmonyLib.AccessTools.DeclaredIndexer*
+  name: DeclaredIndexer
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredIndexer_
+  commentId: Overload:HarmonyLib.AccessTools.DeclaredIndexer
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.DeclaredIndexer
+  nameWithType: AccessTools.DeclaredIndexer
+- uid: HarmonyLib.AccessTools.DeclaredIndexerGetter(System.Type,System.Type[])
+  name: DeclaredIndexerGetter(Type, Type[])
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredIndexerGetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessTools.DeclaredIndexerGetter(System.Type,System.Type[])
+  name.vb: DeclaredIndexerGetter(Type, Type())
+  fullName: HarmonyLib.AccessTools.DeclaredIndexerGetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessTools.DeclaredIndexerGetter(System.Type, System.Type())
+  nameWithType: AccessTools.DeclaredIndexerGetter(Type, Type[])
+  nameWithType.vb: AccessTools.DeclaredIndexerGetter(Type, Type())
+- uid: HarmonyLib.AccessTools.DeclaredIndexerGetter*
+  name: DeclaredIndexerGetter
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredIndexerGetter_
+  commentId: Overload:HarmonyLib.AccessTools.DeclaredIndexerGetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.DeclaredIndexerGetter
+  nameWithType: AccessTools.DeclaredIndexerGetter
+- uid: HarmonyLib.AccessTools.DeclaredIndexerSetter(System.Type,System.Type[])
+  name: DeclaredIndexerSetter(Type, Type[])
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredIndexerSetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessTools.DeclaredIndexerSetter(System.Type,System.Type[])
+  name.vb: DeclaredIndexerSetter(Type, Type())
+  fullName: HarmonyLib.AccessTools.DeclaredIndexerSetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessTools.DeclaredIndexerSetter(System.Type, System.Type())
+  nameWithType: AccessTools.DeclaredIndexerSetter(Type, Type[])
+  nameWithType.vb: AccessTools.DeclaredIndexerSetter(Type, Type())
+- uid: HarmonyLib.AccessTools.DeclaredIndexerSetter*
+  name: DeclaredIndexerSetter
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredIndexerSetter_
+  commentId: Overload:HarmonyLib.AccessTools.DeclaredIndexerSetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.DeclaredIndexerSetter
+  nameWithType: AccessTools.DeclaredIndexerSetter
 - uid: HarmonyLib.AccessTools.DeclaredMethod(System.String,System.Type[],System.Type[])
   name: DeclaredMethod(String, Type[], Type[])
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_DeclaredMethod_System_String_System_Type___System_Type___
@@ -676,6 +724,54 @@ references:
   fullName.vb: HarmonyLib.AccessTools.HarmonyDelegate(Of DelegateType)(System.Object)
   nameWithType: AccessTools.HarmonyDelegate<DelegateType>(Object)
   nameWithType.vb: AccessTools.HarmonyDelegate(Of DelegateType)(Object)
+- uid: HarmonyLib.AccessTools.Indexer(System.Type,System.Type[])
+  name: Indexer(Type, Type[])
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Indexer_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessTools.Indexer(System.Type,System.Type[])
+  name.vb: Indexer(Type, Type())
+  fullName: HarmonyLib.AccessTools.Indexer(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessTools.Indexer(System.Type, System.Type())
+  nameWithType: AccessTools.Indexer(Type, Type[])
+  nameWithType.vb: AccessTools.Indexer(Type, Type())
+- uid: HarmonyLib.AccessTools.Indexer*
+  name: Indexer
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Indexer_
+  commentId: Overload:HarmonyLib.AccessTools.Indexer
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.Indexer
+  nameWithType: AccessTools.Indexer
+- uid: HarmonyLib.AccessTools.IndexerGetter(System.Type,System.Type[])
+  name: IndexerGetter(Type, Type[])
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IndexerGetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessTools.IndexerGetter(System.Type,System.Type[])
+  name.vb: IndexerGetter(Type, Type())
+  fullName: HarmonyLib.AccessTools.IndexerGetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessTools.IndexerGetter(System.Type, System.Type())
+  nameWithType: AccessTools.IndexerGetter(Type, Type[])
+  nameWithType.vb: AccessTools.IndexerGetter(Type, Type())
+- uid: HarmonyLib.AccessTools.IndexerGetter*
+  name: IndexerGetter
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IndexerGetter_
+  commentId: Overload:HarmonyLib.AccessTools.IndexerGetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IndexerGetter
+  nameWithType: AccessTools.IndexerGetter
+- uid: HarmonyLib.AccessTools.IndexerSetter(System.Type,System.Type[])
+  name: IndexerSetter(Type, Type[])
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IndexerSetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessTools.IndexerSetter(System.Type,System.Type[])
+  name.vb: IndexerSetter(Type, Type())
+  fullName: HarmonyLib.AccessTools.IndexerSetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessTools.IndexerSetter(System.Type, System.Type())
+  nameWithType: AccessTools.IndexerSetter(Type, Type[])
+  nameWithType.vb: AccessTools.IndexerSetter(Type, Type())
+- uid: HarmonyLib.AccessTools.IndexerSetter*
+  name: IndexerSetter
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IndexerSetter_
+  commentId: Overload:HarmonyLib.AccessTools.IndexerSetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.IndexerSetter
+  nameWithType: AccessTools.IndexerSetter
 - uid: HarmonyLib.AccessTools.Inner(System.Type,System.String)
   name: Inner(Type, String)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Inner_System_Type_System_String_
@@ -1791,6 +1887,28 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeInstructionExtensions.WithLabels
   nameWithType: CodeInstructionExtensions.WithLabels
+- uid: HarmonyLib.CodeInstructionsExtensions
+  name: CodeInstructionsExtensions
+  href: api/HarmonyLib.CodeInstructionsExtensions.html
+  commentId: T:HarmonyLib.CodeInstructionsExtensions
+  fullName: HarmonyLib.CodeInstructionsExtensions
+  nameWithType: CodeInstructionsExtensions
+- uid: HarmonyLib.CodeInstructionsExtensions.Matches(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.CodeMatch[])
+  name: Matches(IEnumerable<CodeInstruction>, CodeMatch[])
+  href: api/HarmonyLib.CodeInstructionsExtensions.html#HarmonyLib_CodeInstructionsExtensions_Matches_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__HarmonyLib_CodeMatch___
+  commentId: M:HarmonyLib.CodeInstructionsExtensions.Matches(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.CodeMatch[])
+  name.vb: Matches(IEnumerable(Of CodeInstruction), CodeMatch())
+  fullName: HarmonyLib.CodeInstructionsExtensions.Matches(System.Collections.Generic.IEnumerable<HarmonyLib.CodeInstruction>, HarmonyLib.CodeMatch[])
+  fullName.vb: HarmonyLib.CodeInstructionsExtensions.Matches(System.Collections.Generic.IEnumerable(Of HarmonyLib.CodeInstruction), HarmonyLib.CodeMatch())
+  nameWithType: CodeInstructionsExtensions.Matches(IEnumerable<CodeInstruction>, CodeMatch[])
+  nameWithType.vb: CodeInstructionsExtensions.Matches(IEnumerable(Of CodeInstruction), CodeMatch())
+- uid: HarmonyLib.CodeInstructionsExtensions.Matches*
+  name: Matches
+  href: api/HarmonyLib.CodeInstructionsExtensions.html#HarmonyLib_CodeInstructionsExtensions_Matches_
+  commentId: Overload:HarmonyLib.CodeInstructionsExtensions.Matches
+  isSpec: "True"
+  fullName: HarmonyLib.CodeInstructionsExtensions.Matches
+  nameWithType: CodeInstructionsExtensions.Matches
 - uid: HarmonyLib.CodeMatch
   name: CodeMatch
   href: api/HarmonyLib.CodeMatch.html
@@ -1843,6 +1961,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatch.CodeMatch
   nameWithType: CodeMatch.CodeMatch
+- uid: HarmonyLib.CodeMatch.Branches(System.String)
+  name: Branches(String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Branches_System_String_
+  commentId: M:HarmonyLib.CodeMatch.Branches(System.String)
+  fullName: HarmonyLib.CodeMatch.Branches(System.String)
+  nameWithType: CodeMatch.Branches(String)
+- uid: HarmonyLib.CodeMatch.Branches*
+  name: Branches
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Branches_
+  commentId: Overload:HarmonyLib.CodeMatch.Branches
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.Branches
+  nameWithType: CodeMatch.Branches
 - uid: HarmonyLib.CodeMatch.jumpsFrom
   name: jumpsFrom
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_jumpsFrom
@@ -1890,9 +2021,22 @@ references:
 - uid: HarmonyLib.CodeMatch.opcodes
   name: opcodes
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_opcodes
-  commentId: F:HarmonyLib.CodeMatch.opcodes
+  commentId: P:HarmonyLib.CodeMatch.opcodes
   fullName: HarmonyLib.CodeMatch.opcodes
   nameWithType: CodeMatch.opcodes
+- uid: HarmonyLib.CodeMatch.opcodes*
+  name: opcodes
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_opcodes_
+  commentId: Overload:HarmonyLib.CodeMatch.opcodes
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.opcodes
+  nameWithType: CodeMatch.opcodes
+- uid: HarmonyLib.CodeMatch.opcodeSet
+  name: opcodeSet
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_opcodeSet
+  commentId: F:HarmonyLib.CodeMatch.opcodeSet
+  fullName: HarmonyLib.CodeMatch.opcodeSet
+  nameWithType: CodeMatch.opcodeSet
 - uid: HarmonyLib.CodeMatch.operands
   name: operands
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_operands
@@ -1944,6 +2088,22 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatch.ToString
   nameWithType: CodeMatch.ToString
+- uid: HarmonyLib.CodeMatch.WithOpcodes(System.Collections.Generic.HashSet{System.Reflection.Emit.OpCode},System.Object,System.String)
+  name: WithOpcodes(HashSet<OpCode>, Object, String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_WithOpcodes_System_Collections_Generic_HashSet_System_Reflection_Emit_OpCode__System_Object_System_String_
+  commentId: M:HarmonyLib.CodeMatch.WithOpcodes(System.Collections.Generic.HashSet{System.Reflection.Emit.OpCode},System.Object,System.String)
+  name.vb: WithOpcodes(HashSet(Of OpCode), Object, String)
+  fullName: HarmonyLib.CodeMatch.WithOpcodes(System.Collections.Generic.HashSet<System.Reflection.Emit.OpCode>, System.Object, System.String)
+  fullName.vb: HarmonyLib.CodeMatch.WithOpcodes(System.Collections.Generic.HashSet(Of System.Reflection.Emit.OpCode), System.Object, System.String)
+  nameWithType: CodeMatch.WithOpcodes(HashSet<OpCode>, Object, String)
+  nameWithType.vb: CodeMatch.WithOpcodes(HashSet(Of OpCode), Object, String)
+- uid: HarmonyLib.CodeMatch.WithOpcodes*
+  name: WithOpcodes
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_WithOpcodes_
+  commentId: Overload:HarmonyLib.CodeMatch.WithOpcodes
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.WithOpcodes
+  nameWithType: CodeMatch.WithOpcodes
 - uid: HarmonyLib.CodeMatcher
   name: CodeMatcher
   href: api/HarmonyLib.CodeMatcher.html
@@ -4045,6 +4205,21 @@ references:
   commentId: M:HarmonyLib.HarmonyMethod.#ctor
   fullName: HarmonyLib.HarmonyMethod.HarmonyMethod()
   nameWithType: HarmonyMethod.HarmonyMethod()
+- uid: HarmonyLib.HarmonyMethod.#ctor(System.Delegate)
+  name: HarmonyMethod(Delegate)
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod__ctor_System_Delegate_
+  commentId: M:HarmonyLib.HarmonyMethod.#ctor(System.Delegate)
+  fullName: HarmonyLib.HarmonyMethod.HarmonyMethod(System.Delegate)
+  nameWithType: HarmonyMethod.HarmonyMethod(Delegate)
+- uid: HarmonyLib.HarmonyMethod.#ctor(System.Delegate,System.Int32,System.String[],System.String[],System.Nullable{System.Boolean})
+  name: HarmonyMethod(Delegate, Int32, String[], String[], Nullable<Boolean>)
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod__ctor_System_Delegate_System_Int32_System_String___System_String___System_Nullable_System_Boolean__
+  commentId: M:HarmonyLib.HarmonyMethod.#ctor(System.Delegate,System.Int32,System.String[],System.String[],System.Nullable{System.Boolean})
+  name.vb: HarmonyMethod(Delegate, Int32, String(), String(), Nullable(Of Boolean))
+  fullName: HarmonyLib.HarmonyMethod.HarmonyMethod(System.Delegate, System.Int32, System.String[], System.String[], System.Nullable<System.Boolean>)
+  fullName.vb: HarmonyLib.HarmonyMethod.HarmonyMethod(System.Delegate, System.Int32, System.String(), System.String(), System.Nullable(Of System.Boolean))
+  nameWithType: HarmonyMethod.HarmonyMethod(Delegate, Int32, String[], String[], Nullable<Boolean>)
+  nameWithType.vb: HarmonyMethod.HarmonyMethod(Delegate, Int32, String(), String(), Nullable(Of Boolean))
 - uid: HarmonyLib.HarmonyMethod.#ctor(System.Reflection.MethodInfo)
   name: HarmonyMethod(MethodInfo)
   href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod__ctor_System_Reflection_MethodInfo_
@@ -4165,6 +4340,34 @@ references:
   commentId: F:HarmonyLib.HarmonyMethod.nonVirtualDelegate
   fullName: HarmonyLib.HarmonyMethod.nonVirtualDelegate
   nameWithType: HarmonyMethod.nonVirtualDelegate
+- uid: HarmonyLib.HarmonyMethod.op_Implicit(System.Delegate)~HarmonyLib.HarmonyMethod
+  name: Implicit(Delegate to HarmonyMethod)
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_op_Implicit_System_Delegate__HarmonyLib_HarmonyMethod
+  commentId: M:HarmonyLib.HarmonyMethod.op_Implicit(System.Delegate)~HarmonyLib.HarmonyMethod
+  name.vb: Widening(Delegate to HarmonyMethod)
+  fullName: HarmonyLib.HarmonyMethod.Implicit(System.Delegate to HarmonyLib.HarmonyMethod)
+  fullName.vb: HarmonyLib.HarmonyMethod.Widening(System.Delegate to HarmonyLib.HarmonyMethod)
+  nameWithType: HarmonyMethod.Implicit(Delegate to HarmonyMethod)
+  nameWithType.vb: HarmonyMethod.Widening(Delegate to HarmonyMethod)
+- uid: HarmonyLib.HarmonyMethod.op_Implicit(System.Reflection.MethodInfo)~HarmonyLib.HarmonyMethod
+  name: Implicit(MethodInfo to HarmonyMethod)
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_op_Implicit_System_Reflection_MethodInfo__HarmonyLib_HarmonyMethod
+  commentId: M:HarmonyLib.HarmonyMethod.op_Implicit(System.Reflection.MethodInfo)~HarmonyLib.HarmonyMethod
+  name.vb: Widening(MethodInfo to HarmonyMethod)
+  fullName: HarmonyLib.HarmonyMethod.Implicit(System.Reflection.MethodInfo to HarmonyLib.HarmonyMethod)
+  fullName.vb: HarmonyLib.HarmonyMethod.Widening(System.Reflection.MethodInfo to HarmonyLib.HarmonyMethod)
+  nameWithType: HarmonyMethod.Implicit(MethodInfo to HarmonyMethod)
+  nameWithType.vb: HarmonyMethod.Widening(MethodInfo to HarmonyMethod)
+- uid: HarmonyLib.HarmonyMethod.op_Implicit*
+  name: Implicit
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_op_Implicit_
+  commentId: Overload:HarmonyLib.HarmonyMethod.op_Implicit
+  isSpec: "True"
+  name.vb: Widening
+  fullName: HarmonyLib.HarmonyMethod.Implicit
+  fullName.vb: HarmonyLib.HarmonyMethod.Widening
+  nameWithType: HarmonyMethod.Implicit
+  nameWithType.vb: HarmonyMethod.Widening
 - uid: HarmonyLib.HarmonyMethod.priority
   name: priority
   href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_priority
@@ -4612,127 +4815,6 @@ references:
   commentId: T:HarmonyLib.HarmonyTranspiler
   fullName: HarmonyLib.HarmonyTranspiler
   nameWithType: HarmonyTranspiler
-- uid: HarmonyLib.InlineSignature
-  name: InlineSignature
-  href: api/HarmonyLib.InlineSignature.html
-  commentId: T:HarmonyLib.InlineSignature
-  fullName: HarmonyLib.InlineSignature
-  nameWithType: InlineSignature
-- uid: HarmonyLib.InlineSignature.CallingConvention
-  name: CallingConvention
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_CallingConvention
-  commentId: P:HarmonyLib.InlineSignature.CallingConvention
-  fullName: HarmonyLib.InlineSignature.CallingConvention
-  nameWithType: InlineSignature.CallingConvention
-- uid: HarmonyLib.InlineSignature.CallingConvention*
-  name: CallingConvention
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_CallingConvention_
-  commentId: Overload:HarmonyLib.InlineSignature.CallingConvention
-  isSpec: "True"
-  fullName: HarmonyLib.InlineSignature.CallingConvention
-  nameWithType: InlineSignature.CallingConvention
-- uid: HarmonyLib.InlineSignature.ExplicitThis
-  name: ExplicitThis
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ExplicitThis
-  commentId: P:HarmonyLib.InlineSignature.ExplicitThis
-  fullName: HarmonyLib.InlineSignature.ExplicitThis
-  nameWithType: InlineSignature.ExplicitThis
-- uid: HarmonyLib.InlineSignature.ExplicitThis*
-  name: ExplicitThis
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ExplicitThis_
-  commentId: Overload:HarmonyLib.InlineSignature.ExplicitThis
-  isSpec: "True"
-  fullName: HarmonyLib.InlineSignature.ExplicitThis
-  nameWithType: InlineSignature.ExplicitThis
-- uid: HarmonyLib.InlineSignature.HasThis
-  name: HasThis
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_HasThis
-  commentId: P:HarmonyLib.InlineSignature.HasThis
-  fullName: HarmonyLib.InlineSignature.HasThis
-  nameWithType: InlineSignature.HasThis
-- uid: HarmonyLib.InlineSignature.HasThis*
-  name: HasThis
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_HasThis_
-  commentId: Overload:HarmonyLib.InlineSignature.HasThis
-  isSpec: "True"
-  fullName: HarmonyLib.InlineSignature.HasThis
-  nameWithType: InlineSignature.HasThis
-- uid: HarmonyLib.InlineSignature.ModifierType
-  name: InlineSignature.ModifierType
-  href: api/HarmonyLib.InlineSignature.ModifierType.html
-  commentId: T:HarmonyLib.InlineSignature.ModifierType
-  fullName: HarmonyLib.InlineSignature.ModifierType
-  nameWithType: InlineSignature.ModifierType
-- uid: HarmonyLib.InlineSignature.ModifierType.IsOptional
-  name: IsOptional
-  href: api/HarmonyLib.InlineSignature.ModifierType.html#HarmonyLib_InlineSignature_ModifierType_IsOptional
-  commentId: F:HarmonyLib.InlineSignature.ModifierType.IsOptional
-  fullName: HarmonyLib.InlineSignature.ModifierType.IsOptional
-  nameWithType: InlineSignature.ModifierType.IsOptional
-- uid: HarmonyLib.InlineSignature.ModifierType.Modifier
-  name: Modifier
-  href: api/HarmonyLib.InlineSignature.ModifierType.html#HarmonyLib_InlineSignature_ModifierType_Modifier
-  commentId: F:HarmonyLib.InlineSignature.ModifierType.Modifier
-  fullName: HarmonyLib.InlineSignature.ModifierType.Modifier
-  nameWithType: InlineSignature.ModifierType.Modifier
-- uid: HarmonyLib.InlineSignature.ModifierType.ToString
-  name: ToString()
-  href: api/HarmonyLib.InlineSignature.ModifierType.html#HarmonyLib_InlineSignature_ModifierType_ToString
-  commentId: M:HarmonyLib.InlineSignature.ModifierType.ToString
-  fullName: HarmonyLib.InlineSignature.ModifierType.ToString()
-  nameWithType: InlineSignature.ModifierType.ToString()
-- uid: HarmonyLib.InlineSignature.ModifierType.ToString*
-  name: ToString
-  href: api/HarmonyLib.InlineSignature.ModifierType.html#HarmonyLib_InlineSignature_ModifierType_ToString_
-  commentId: Overload:HarmonyLib.InlineSignature.ModifierType.ToString
-  isSpec: "True"
-  fullName: HarmonyLib.InlineSignature.ModifierType.ToString
-  nameWithType: InlineSignature.ModifierType.ToString
-- uid: HarmonyLib.InlineSignature.ModifierType.Type
-  name: Type
-  href: api/HarmonyLib.InlineSignature.ModifierType.html#HarmonyLib_InlineSignature_ModifierType_Type
-  commentId: F:HarmonyLib.InlineSignature.ModifierType.Type
-  fullName: HarmonyLib.InlineSignature.ModifierType.Type
-  nameWithType: InlineSignature.ModifierType.Type
-- uid: HarmonyLib.InlineSignature.Parameters
-  name: Parameters
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters
-  commentId: P:HarmonyLib.InlineSignature.Parameters
-  fullName: HarmonyLib.InlineSignature.Parameters
-  nameWithType: InlineSignature.Parameters
-- uid: HarmonyLib.InlineSignature.Parameters*
-  name: Parameters
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters_
-  commentId: Overload:HarmonyLib.InlineSignature.Parameters
-  isSpec: "True"
-  fullName: HarmonyLib.InlineSignature.Parameters
-  nameWithType: InlineSignature.Parameters
-- uid: HarmonyLib.InlineSignature.ReturnType
-  name: ReturnType
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ReturnType
-  commentId: P:HarmonyLib.InlineSignature.ReturnType
-  fullName: HarmonyLib.InlineSignature.ReturnType
-  nameWithType: InlineSignature.ReturnType
-- uid: HarmonyLib.InlineSignature.ReturnType*
-  name: ReturnType
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ReturnType_
-  commentId: Overload:HarmonyLib.InlineSignature.ReturnType
-  isSpec: "True"
-  fullName: HarmonyLib.InlineSignature.ReturnType
-  nameWithType: InlineSignature.ReturnType
-- uid: HarmonyLib.InlineSignature.ToString
-  name: ToString()
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ToString
-  commentId: M:HarmonyLib.InlineSignature.ToString
-  fullName: HarmonyLib.InlineSignature.ToString()
-  nameWithType: InlineSignature.ToString()
-- uid: HarmonyLib.InlineSignature.ToString*
-  name: ToString
-  href: api/HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ToString_
-  commentId: Overload:HarmonyLib.InlineSignature.ToString
-  isSpec: "True"
-  fullName: HarmonyLib.InlineSignature.ToString
-  nameWithType: InlineSignature.ToString
 - uid: HarmonyLib.InstantiationHandler`1
   name: InstantiationHandler<T>
   href: api/HarmonyLib.InstantiationHandler-1.html
@@ -4742,67 +4824,6 @@ references:
   fullName.vb: HarmonyLib.InstantiationHandler(Of T)
   nameWithType: InstantiationHandler<T>
   nameWithType.vb: InstantiationHandler(Of T)
-- uid: HarmonyLib.Memory
-  name: Memory
-  href: api/HarmonyLib.Memory.html
-  commentId: T:HarmonyLib.Memory
-  fullName: HarmonyLib.Memory
-  nameWithType: Memory
-- uid: HarmonyLib.Memory.DetourMethod(System.Reflection.MethodBase,System.Reflection.MethodBase)
-  name: DetourMethod(MethodBase, MethodBase)
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_DetourMethod_System_Reflection_MethodBase_System_Reflection_MethodBase_
-  commentId: M:HarmonyLib.Memory.DetourMethod(System.Reflection.MethodBase,System.Reflection.MethodBase)
-  fullName: HarmonyLib.Memory.DetourMethod(System.Reflection.MethodBase, System.Reflection.MethodBase)
-  nameWithType: Memory.DetourMethod(MethodBase, MethodBase)
-- uid: HarmonyLib.Memory.DetourMethod*
-  name: DetourMethod
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_DetourMethod_
-  commentId: Overload:HarmonyLib.Memory.DetourMethod
-  isSpec: "True"
-  fullName: HarmonyLib.Memory.DetourMethod
-  nameWithType: Memory.DetourMethod
-- uid: HarmonyLib.Memory.GetMethodStart(System.Reflection.MethodBase,System.Exception@)
-  name: GetMethodStart(MethodBase, out Exception)
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_GetMethodStart_System_Reflection_MethodBase_System_Exception__
-  commentId: M:HarmonyLib.Memory.GetMethodStart(System.Reflection.MethodBase,System.Exception@)
-  name.vb: GetMethodStart(MethodBase, ByRef Exception)
-  fullName: HarmonyLib.Memory.GetMethodStart(System.Reflection.MethodBase, out System.Exception)
-  fullName.vb: HarmonyLib.Memory.GetMethodStart(System.Reflection.MethodBase, ByRef System.Exception)
-  nameWithType: Memory.GetMethodStart(MethodBase, out Exception)
-  nameWithType.vb: Memory.GetMethodStart(MethodBase, ByRef Exception)
-- uid: HarmonyLib.Memory.GetMethodStart*
-  name: GetMethodStart
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_GetMethodStart_
-  commentId: Overload:HarmonyLib.Memory.GetMethodStart
-  isSpec: "True"
-  fullName: HarmonyLib.Memory.GetMethodStart
-  nameWithType: Memory.GetMethodStart
-- uid: HarmonyLib.Memory.MarkForNoInlining(System.Reflection.MethodBase)
-  name: MarkForNoInlining(MethodBase)
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_MarkForNoInlining_System_Reflection_MethodBase_
-  commentId: M:HarmonyLib.Memory.MarkForNoInlining(System.Reflection.MethodBase)
-  fullName: HarmonyLib.Memory.MarkForNoInlining(System.Reflection.MethodBase)
-  nameWithType: Memory.MarkForNoInlining(MethodBase)
-- uid: HarmonyLib.Memory.MarkForNoInlining*
-  name: MarkForNoInlining
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_MarkForNoInlining_
-  commentId: Overload:HarmonyLib.Memory.MarkForNoInlining
-  isSpec: "True"
-  fullName: HarmonyLib.Memory.MarkForNoInlining
-  nameWithType: Memory.MarkForNoInlining
-- uid: HarmonyLib.Memory.WriteJump(System.Int64,System.Int64)
-  name: WriteJump(Int64, Int64)
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_WriteJump_System_Int64_System_Int64_
-  commentId: M:HarmonyLib.Memory.WriteJump(System.Int64,System.Int64)
-  fullName: HarmonyLib.Memory.WriteJump(System.Int64, System.Int64)
-  nameWithType: Memory.WriteJump(Int64, Int64)
-- uid: HarmonyLib.Memory.WriteJump*
-  name: WriteJump
-  href: api/HarmonyLib.Memory.html#HarmonyLib_Memory_WriteJump_
-  commentId: Overload:HarmonyLib.Memory.WriteJump
-  isSpec: "True"
-  fullName: HarmonyLib.Memory.WriteJump
-  nameWithType: Memory.WriteJump
 - uid: HarmonyLib.MethodBaseExtensions
   name: MethodBaseExtensions
   href: api/HarmonyLib.MethodBaseExtensions.html

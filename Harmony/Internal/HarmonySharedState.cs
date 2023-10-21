@@ -1,12 +1,10 @@
 using Mono.Cecil;
-using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
@@ -39,9 +37,6 @@ namespace HarmonyLib
 		// state/originals/methodStarts are set to instances stored in the global dynamic types static fields with the same name
 		static readonly Dictionary<MethodBase, byte[]> state;
 		static readonly Dictionary<MethodInfo, MethodBase> originals;
-		// maps the native start of the method to the method itself
-		static readonly Dictionary<long, MethodInfo> methodStarts;
-		static bool methodStartsInvalidated;
 		
 		internal static readonly int actualVersion;
 
@@ -73,30 +68,6 @@ namespace HarmonyLib
 			originals = new Dictionary<MethodInfo, MethodBase>();
 			if (originalsField != null) // may not exist in older versions
 				originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
-
-			// create 'methodStarts' based on the value(s) in 'originals'
-			methodStarts = new Dictionary<long, MethodInfo>();
-			RefreshMethodStarts();
-
-			// newer .NET versions can re-jit methods so we need to patch them after that happens
-			DetourHelper.Runtime.OnMethodCompiled += (MethodBase method, IntPtr codeStart, ulong codeLen) =>
-			{
-				if (method == null) return;
-				var info = GetPatchInfo(method);
-				if (info == null) return;
-				PatchFunctions.UpdateRecompiledMethod(method, codeStart, info);
-				methodStartsInvalidated = true;
-			};
-		}
-		
-		private static void RefreshMethodStarts() {
-			lock (originals) {
-				methodStarts.Clear();
-				foreach ( var original in originals.Keys ) {
-					methodStarts.Add(original.GetNativeStart().ToInt64(), original);
-				}
-			}
-			methodStartsInvalidated = false;
 		}
 
 		// creates a dynamic 'global' type if it does not exist
@@ -149,7 +120,6 @@ namespace HarmonyLib
 			var bytes = patchInfo.Serialize();
 			lock (state) state[original] = bytes;
 			lock (originals) originals[replacement] = original;
-			lock (methodStarts) methodStarts[replacement.GetNativeStart().ToInt64()] = replacement;
 		}
 
 		internal static MethodBase GetOriginal(MethodInfo replacement)
@@ -157,36 +127,11 @@ namespace HarmonyLib
 			lock (originals) return originals.GetValueSafe(replacement);
 		}
 
-		static readonly FieldInfo methodAddress = typeof(StackFrame).GetField("methodAddress", BindingFlags.Instance | BindingFlags.NonPublic);
 		internal static MethodBase FindReplacement(StackFrame frame)
 		{
-			var frameMethod = frame.GetMethod();
-			var methodStart = 0L;
-
-			if (frameMethod is null || frameMethod.IsGenericMethod)
-			{
-				if (methodAddress == null) return null;
-				methodStart = (long)methodAddress.GetValue(frame);
-			}
-			else
-			{
-				var baseMethod = DetourHelper.Runtime.GetIdentifiable(frameMethod);
-				methodStart = baseMethod.GetNativeStart().ToInt64();
-			}
-
-			// Failed to find any usable method, returning a null frameMethod means we could not find any method from the stacktrace
-			if (methodStart == 0)
-				return frameMethod;
-
-			lock (methodStarts) {
-				if (methodStartsInvalidated) {
-					RefreshMethodStarts();
-				}
-				
-				return methodStarts.TryGetValue(methodStart, out var originalMethod) 
-					? originalMethod 
-					: frameMethod;
-			}
+			var method = frame.GetMethod() as MethodInfo;
+			if (method == null) return null;
+			return GetOriginal(method);
 		}
 	}
 }

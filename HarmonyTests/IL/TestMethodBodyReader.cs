@@ -59,9 +59,9 @@ namespace HarmonyLibTests.IL
 
 				// The only difference between w/o gen and w/ gen is this:
 				var operandType = instrNoGen.opcode.OperandType;
-				if ((operandType == OperandType.ShortInlineVar || operandType == OperandType.InlineVar) && instrNoGen.argument is object)
+				if ((operandType == OperandType.ShortInlineVar || operandType == OperandType.InlineVar) && instrNoGen.argument is not null)
 				{
-#if NETCOREAPP3_0 || NETCOREAPP3_1 || NET50_OR_GREATER
+#if NETCOREAPP || NET5_0_OR_GREATER
 					Assert.AreEqual("System.Reflection.RuntimeLocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);
 #else
 					Assert.AreEqual("System.Reflection.LocalVariableInfo", instrNoGen.argument.GetType().FullName, "w/o generator argument type @ {0} ({1})", i, instrNoGen);

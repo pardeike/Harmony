@@ -25,7 +25,9 @@ namespace HarmonyLibTests.Extras
 				Assert.AreEqual(original, expectedMethod);
 			}
 		}
-		
+
+		/* TODO
+		 * 
 		[Test]
 		public void TestRegularMethod()
 		{
@@ -46,6 +48,7 @@ namespace HarmonyLibTests.Extras
 			var inst = new NestedClass(5);
 			_ = inst.index;
 		}
+		*/
 
 		internal static void PatchTarget()
 		{

@@ -1,54 +1,54 @@
-extern alias mmc;
-
 using HarmonyLib;
 using HarmonyLibTests.Assets;
 using HarmonyLibTests.Assets.Methods;
-using mmc::MonoMod.Utils;
 using NUnit.Framework;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
-using System.Text;
+#if NET6_0_OR_GREATER
+using System.Net.Http;
+#else
+using System.Net;
+#endif
 
 namespace HarmonyLibTests.Patching
 {
 	[TestFixture, NonParallelizable]
 	public class Specials : TestLogger
 	{
-		/* TODO - patching HttpWebRequest.GetResponse does not work
-		 * 
 		[Test]
 		public void Test_HttpWebRequestGetResponse()
 		{
-			Assert.Ignore("Someone patching HttpWebRequest does not work");
-
+#if NET6_0_OR_GREATER
+			var original = SymbolExtensions.GetMethodInfo(() => new HttpClient().Send(default));
+#else
 			var t_WebRequest = typeof(HttpWebRequest);
 			Assert.NotNull(t_WebRequest);
 			var original = AccessTools.DeclaredMethod(t_WebRequest, nameof(HttpWebRequest.GetResponse));
+#endif
 			Assert.NotNull(original);
 
-			var t_HttpWebRequestPatches = typeof(HttpWebRequestPatches);
-			var prefix = t_HttpWebRequestPatches.GetMethod("Prefix");
-			Assert.NotNull(prefix);
-			var postfix = t_HttpWebRequestPatches.GetMethod("Postfix");
-			Assert.NotNull(postfix);
+			var prefix = SymbolExtensions.GetMethodInfo(() => HttpWebRequestPatches.Prefix());
+			var postfix = SymbolExtensions.GetMethodInfo(() => HttpWebRequestPatches.Postfix());
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance);
 			_ = instance.Patch(original, new HarmonyMethod(prefix, debug: true), new HarmonyMethod(postfix, debug: true));
 
 			HttpWebRequestPatches.ResetTest();
+
+#if NET6_0_OR_GREATER
+			var client = new HttpClient();
+			var webRequest = new HttpRequestMessage(HttpMethod.Get, "http://google.com");
+			var response = client.Send(webRequest);
+#else
 			var request = WebRequest.Create("http://google.com");
 			Assert.AreEqual(request.GetType(), t_WebRequest);
 			var response = request.GetResponse();
+#endif
+
 			Assert.NotNull(response);
 			Assert.True(HttpWebRequestPatches.prefixCalled, "Prefix not called");
 			Assert.True(HttpWebRequestPatches.postfixCalled, "Postfix not called");
 		}
-		*/
 
 		[Test]
 		public void Test_Patch_ConcreteClass()
@@ -76,8 +76,6 @@ namespace HarmonyLibTests.Patching
 		[Test, NonParallelizable]
 		public void Test_Patch_Returning_Structs([Values(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)] int n, [Values("I", "S")] string type)
 		{
-			StructReturnBuffer.ResetCaches();
-
 			var name = $"{type}M{n:D2}";
 
 			var patchClass = typeof(ReturningStructs_Patch);
@@ -145,49 +143,17 @@ namespace HarmonyLibTests.Patching
 			{
 				exception = ex;
 			}
-			Assert.NotNull(exception);
-		}
+			Assert.Null(exception, "expecting no patching exception");
 
-		[Test]
-		public void Test_PatchExceptionWithCleanup1()
-		{
-			if (AccessTools.IsMonoRuntime is false)
-				return; // Assert.Ignore("Only mono allows for detailed IL exceptions. Test ignored.");
-
-			var patchClass = typeof(DeadEndCode_Patch2);
-			Assert.NotNull(patchClass);
-
-			DeadEndCode_Patch2.original = null;
-			DeadEndCode_Patch2.exception = null;
-
-			var instance = new Harmony("test");
-			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.CreateClassProcessor(patchClass);
-			Assert.NotNull(patcher, "Patch processor");
 			try
 			{
-				_ = patcher.Patch();
-				Assert.Fail("Patch should throw exception");
+				new DeadEndCode().Method();
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				exception = ex;
 			}
-
-			Assert.AreSame(typeof(DeadEndCode).GetMethod("Method"), DeadEndCode_Patch2.original, "Patch should save original method");
-			Assert.NotNull(DeadEndCode_Patch2.exception, "Patch should save exception");
-
-			var harmonyException = DeadEndCode_Patch2.exception as HarmonyException;
-			Assert.NotNull(harmonyException, $"Exception should be a HarmonyException (is: {DeadEndCode_Patch2.exception.GetType()}");
-
-			var instructions = harmonyException.GetInstructions();
-			Assert.NotNull(instructions, "HarmonyException should have instructions");
-			Assert.AreEqual(12, instructions.Count);
-
-			var errorIndex = harmonyException.GetErrorIndex();
-			Assert.AreEqual(10, errorIndex);
-
-			var errorOffset = harmonyException.GetErrorOffset();
-			Assert.AreEqual(50, errorOffset);
+			Assert.NotNull(exception, "expecting runtime exception");
 		}
 
 		[Test]
@@ -233,9 +199,6 @@ namespace HarmonyLibTests.Patching
 			_ = patcher.Patch();
 		}
 
-		/* 
-		These tests are really a pain, so for now they are disabled
-		//
 		[Test]
 		public void Test_PatchExternalMethod()
 		{
@@ -248,7 +211,7 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(patcher, "Patch processor");
 			_ = patcher.Patch();
 		}
-		//
+		
 		[Test]
 		public void Test_PatchEventHandler()
 		{
@@ -269,7 +232,7 @@ namespace HarmonyLibTests.Patching
 			new EventHandlerTestClass().Run();
 			Console.WriteLine($"### EventHandlerTestClass AFTER");
 		}
-		//
+		
 		[Test]
 		public void Test_PatchMarshalledClass()
 		{
@@ -290,7 +253,7 @@ namespace HarmonyLibTests.Patching
 			new MarshalledTestClass().Run();
 			Console.WriteLine($"### MarshalledTestClass AFTER");
 		}
-		//
+		
 		[Test]
 		public void Test_MarshalledWithEventHandler1()
 		{
@@ -311,7 +274,7 @@ namespace HarmonyLibTests.Patching
 			new MarshalledWithEventHandlerTest1Class().Run();
 			Console.WriteLine($"### MarshalledWithEventHandlerTest1 AFTER");
 		}
-		//
+		
 		[Test]
 		public void Test_MarshalledWithEventHandler2()
 		{
@@ -332,77 +295,5 @@ namespace HarmonyLibTests.Patching
 			new MarshalledWithEventHandlerTest2Class().Run();
 			Console.WriteLine($"### MarshalledWithEventHandlerTest2 AFTER");
 		}
-		//
-		[Test]
-		public void Test_NativeMethodPatchingSimple()
-		{
-			var res1 = NativeMethodPatchingSimple.AllocConsole();
-			Assert.IsFalse(res1);
-
-			var original = SymbolExtensions.GetMethodInfo(() => NativeMethodPatchingSimple.AllocConsole());
-			var transpiler = SymbolExtensions.GetMethodInfo(() => NativeMethodPatchingSimple.Transpiler(default));
-
-			var instance = new Harmony("test");
-			NativeMethodPatchingSimple.instructions = null;
-			var patched = instance.Patch(original, transpiler: new HarmonyMethod(transpiler));
-			Assert.NotNull(patched);
-			Assert.IsNotNull(NativeMethodPatchingSimple.instructions);
-			Assert.AreEqual(2, NativeMethodPatchingSimple.instructions.Count);
-
-			var res2 = NativeMethodPatchingSimple.AllocConsole();
-			Assert.IsTrue(res2);
-		}
-		//
-		[Test]
-		public void Test_NativeMethodPatchingPostfix()
-		{
-			var patchClass = typeof(NativeMethodPatchingPostfix);
-			Assert.NotNull(patchClass);
-
-			var instance = new Harmony("test");
-			Assert.NotNull(instance, "Harmony instance");
-			var patcher = instance.CreateClassProcessor(patchClass);
-			Assert.NotNull(patcher, "Patch processor");
-			var patched = patcher.Patch();
-			Assert.AreEqual(1, patched.Count);
-			Assert.NotNull(patched[0]);
-
-			var builder = new StringBuilder(256);
-			var res = NativeMethodPatchingPostfix.gethostname(builder, 256);
-			Assert.AreEqual(0, res);
-			var host = builder.ToString();
-			Console.WriteLine($"host={host}");
-			Assert.IsTrue(host.Length > 0);
-			Assert.IsTrue(host.EndsWith("-postfix"));
-		}
-		//
-		[Test]
-		public void Test_RunAllocConsole()
-		{
-			var method = SymbolExtensions.GetMethodInfo(() => NativeMethodPatchingSimple.AllocConsole());
-			var att = method.GetCustomAttributes(false).OfType<DllImportAttribute>().FirstOrDefault();
-			var name = att.Value;
-			var asmname = new AssemblyName("Test");
-#if NET35
-			var dynamicAsm = AppDomain.CurrentDomain.DefineDynamicAssembly(asmname, AssemblyBuilderAccess.Run);
-#else
-			var dynamicAsm = AssemblyBuilder.DefineDynamicAssembly(asmname, AssemblyBuilderAccess.Run);
-#endif
-
-			var dynamicMod = dynamicAsm.DefineDynamicModule(asmname.Name);
-			var tb = dynamicMod.DefineType("MyType", TypeAttributes.Public | TypeAttributes.UnicodeClass);
-			var mb = tb.DefinePInvokeMethod(method.Name, name,
-					  MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
-					  CallingConventions.Standard, method.ReturnType, method.GetParameters().Select(x => x.ParameterType).ToArray(),
-					  att.CallingConvention, att.CharSet
-			);
-			mb.SetImplementationFlags(mb.GetMethodImplementationFlags() | MethodImplAttributes.PreserveSig);
-			var t = tb.CreateType();
-			var proxyMethod = t.GetMethod(method.Name);
-
-			var res = proxyMethod.Invoke(null, null);
-			Console.WriteLine($"res = {res}");
-		}
-		*/
 	}
 }

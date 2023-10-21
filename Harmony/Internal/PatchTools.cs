@@ -1,5 +1,8 @@
+using MonoMod.Core;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -8,17 +11,45 @@ namespace HarmonyLib
 {
 	internal static class PatchTools
 	{
-		// Note: Even though this Dictionary is only stored to and never read from, it still needs to be thread-safe:
-		// https://stackoverflow.com/a/33153868
-		// ThreadStatic has pitfalls (see RememberObject below), but since we must support net35, it's the best available option.
-		[ThreadStatic]
-		private static Dictionary<object, object> objectReferences;
+		private static readonly Dictionary<MethodBase, ICoreDetour> detours = new();
 
-		internal static void RememberObject(object key, object value)
+		internal static void DetourMethod(MethodBase method, MethodBase replacement)
 		{
-			// ThreadStatic fields are only initialized for one thread, so ensure it's initialized for current thread.
-			objectReferences ??= new Dictionary<object, object>();
-			objectReferences[key] = value;
+			lock (detours)
+			{
+				if (detours.TryGetValue(method, out var detour))
+					detour.Dispose();
+				detours[method] = DetourFactory.Current.CreateDetour(method, replacement);
+			}
+		}
+
+		internal static readonly MethodInfo m_GetExecutingAssemblyReplacementTranspiler = SymbolExtensions.GetMethodInfo(() => GetExecutingAssemblyTranspiler(null));
+		internal static readonly MethodInfo m_GetExecutingAssembly = SymbolExtensions.GetMethodInfo(() => Assembly.GetExecutingAssembly());
+		internal static readonly MethodInfo m_GetExecutingAssemblyReplacement = SymbolExtensions.GetMethodInfo(() => GetExecutingAssemblyReplacement());
+		static Assembly GetExecutingAssemblyReplacement()
+		{
+			var frames = new StackTrace().GetFrames();
+			if (frames?.Skip(1).FirstOrDefault() is { } frame && Harmony.GetOriginalMethodFromStackframe(frame) is { } original)
+				return original.Module.Assembly;
+			return Assembly.GetExecutingAssembly();
+		}
+		internal static IEnumerable<CodeInstruction> GetExecutingAssemblyTranspiler(IEnumerable<CodeInstruction> instructions)
+		{
+			return instructions.MethodReplacer(m_GetExecutingAssembly, m_GetExecutingAssemblyReplacement);
+		}
+
+		public static MethodInfo CreateMethod(string name, Type returnType, List<KeyValuePair<string, Type>> parameters, Action<ILGenerator> generator)
+		{
+			var parameterTypes = parameters.Select(p => p.Value).ToArray();
+			var dynamicMethod = new DynamicMethodDefinition(name, returnType, parameterTypes);
+
+			for (var i = 0; i < parameters.Count; i++)
+				dynamicMethod.Definition.Parameters[i].Name = parameters[i].Key;
+
+			var il = dynamicMethod.GetILGenerator();
+			generator(il);
+
+			return dynamicMethod.Generate();
 		}
 
 		internal static MethodInfo GetPatchMethod(Type patchType, string attributeName)
@@ -37,7 +68,7 @@ namespace HarmonyLib
 		internal static AssemblyBuilder DefineDynamicAssembly(string name)
 		{
 			var assemblyName = new AssemblyName(name);
-#if NETCOREAPP2_0 || NETCOREAPP3_0 || NETCOREAPP3_1 || NETSTANDARD2_0 || NET50_OR_GREATER
+#if NETCOREAPP || NETSTANDARD || NET5_0_OR_GREATER
 			return AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
 #else
 			return AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
@@ -48,7 +79,7 @@ namespace HarmonyLib
 		{
 			return AccessTools.GetDeclaredMethods(type)
 				.Select(method => AttributePatch.Create(method))
-				.Where(attributePatch => attributePatch is object)
+				.Where(attributePatch => attributePatch is not null)
 				.ToList();
 		}
 
@@ -87,7 +118,7 @@ namespace HarmonyLib
 						var enumMethod = AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
 						return AccessTools.EnumeratorMoveNext(enumMethod);
 
-#if NET45_OR_GREATER
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 					case MethodType.Async:
 						if (attr.methodName is null)
 							return null;

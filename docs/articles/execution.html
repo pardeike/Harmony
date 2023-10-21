@@ -151,7 +151,7 @@ static R ReplacementMethod(T optionalThisArgument, params object[] arguments)
         ex = EditFinalizer(ex, ref result);
         finalized = true;
 
-        if (ex is object) throw ex;
+        if (ex is not null) throw ex;
         return result;
     }
     catch (Exception e)
@@ -176,7 +176,7 @@ static R ReplacementMethod(T optionalThisArgument, params object[] arguments)
         else
         {
             // alternative 2: at least one non-void finalizer
-            if (ex is object) throw ex;
+            if (ex is not null) throw ex;
         }
 
         return result;

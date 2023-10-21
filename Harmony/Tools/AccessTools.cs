@@ -8,8 +8,11 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
-using System.Runtime.CompilerServices;
 using System.Threading;
+
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
+using System.Runtime.CompilerServices;
+#endif
 
 namespace HarmonyLib
 {
@@ -49,10 +52,8 @@ namespace HarmonyLib
 		public static Type TypeByName(string name)
 		{
 			var type = Type.GetType(name, false);
-			if (type is null)
-				type = AllTypes().FirstOrDefault(t => t.FullName == name);
-			if (type is null)
-				type = AllTypes().FirstOrDefault(t => t.Name == name);
+			type ??= AllTypes().FirstOrDefault(t => t.FullName == name);
+			type ??= AllTypes().FirstOrDefault(t => t.Name == name);
 			if (type is null) FileLog.Debug($"AccessTools.TypeByName: Could not find type named {name}");
 			return type;
 		}
@@ -75,7 +76,7 @@ namespace HarmonyLib
 			catch (ReflectionTypeLoadException ex)
 			{
 				FileLog.Debug($"AccessTools.GetTypesFromAssembly: assembly {assembly} => {ex}");
-				return ex.Types.Where(type => type is object).ToArray();
+				return ex.Types.Where(type => type is not null).ToArray();
 			}
 		}
 
@@ -489,7 +490,7 @@ namespace HarmonyLib
 				return null;
 			}
 
-			if (generics is object) result = result.MakeGenericMethod(generics);
+			if (generics is not null) result = result.MakeGenericMethod(generics);
 			return result;
 		}
 
@@ -552,7 +553,7 @@ namespace HarmonyLib
 				return null;
 			}
 
-			if (generics is object) result = result.MakeGenericMethod(generics);
+			if (generics is not null) result = result.MakeGenericMethod(generics);
 			return result;
 		}
 
@@ -600,7 +601,7 @@ namespace HarmonyLib
 			return Method(type, nameof(IEnumerator.MoveNext));
 		}
 
-#if NET45_OR_GREATER
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext"/> method of an async method's state machine</summary>
 		/// <param name="method">Async method that creates the state machine internally</param>
 		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
@@ -771,7 +772,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredConstructor: type is null");
 				return null;
 			}
-			if (parameters is null) parameters = new Type[0];
+			parameters ??= new Type[0];
 			var flags = searchForStatic ? allDeclared & ~BindingFlags.Instance : allDeclared & ~BindingFlags.Static;
 			return type.GetConstructor(flags, null, parameters, new ParameterModifier[] { });
 		}
@@ -789,7 +790,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.ConstructorInfo: type is null");
 				return null;
 			}
-			if (parameters is null) parameters = new Type[0];
+			parameters ??= new Type[0];
 			var flags = searchForStatic ? all & ~BindingFlags.Instance : all & ~BindingFlags.Static;
 			return FindIncludingBaseTypes(type, t => t.GetConstructor(flags, null, parameters, new ParameterModifier[] { }));
 		}
@@ -866,7 +867,7 @@ namespace HarmonyLib
 				return null;
 			}
 			var constructor = methodOrConstructor as ConstructorInfo;
-			if (constructor is object) return typeof(void);
+			if (constructor is not null) return typeof(void);
 			return ((MethodInfo)methodOrConstructor).ReturnType;
 		}
 
@@ -990,7 +991,7 @@ namespace HarmonyLib
 			var inputTypes = inputs.Select(obj => obj?.GetType()).ToList();
 			return method.GetParameters().Select(p => p.ParameterType).Select(pType =>
 			{
-				var index = inputTypes.FindIndex(inType => inType is object && pType.IsAssignableFrom(inType));
+				var index = inputTypes.FindIndex(inType => inType is not null && pType.IsAssignableFrom(inType));
 				if (index >= 0)
 					return inputs[index];
 				return GetDefaultValue(pType);
@@ -1644,7 +1645,7 @@ namespace HarmonyLib
 					method.ReturnType,
 					parameterTypes)
 				{
-					OwnerType = declaringType
+					// OwnerType = declaringType
 				};
 				var ilGen = dmd.GetILGenerator();
 				if (declaringType != null && declaringType.IsValueType)
@@ -1684,7 +1685,7 @@ namespace HarmonyLib
 					delegateType,
 					new[] { typeof(object) })
 				{
-					OwnerType = delegateType
+					// OwnerType = delegateType
 				};
 				var ilGen = dmd.GetILGenerator();
 				ilGen.Emit(OpCodes.Ldarg_0);
@@ -1747,8 +1748,7 @@ namespace HarmonyLib
 		public static DelegateType HarmonyDelegate<DelegateType>(object instance = null) where DelegateType : Delegate
 		{
 			var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(typeof(DelegateType));
-			if (harmonyMethod.methodType is null) // MethodType default is Normal
-				harmonyMethod.methodType = MethodType.Normal;
+			harmonyMethod.methodType ??= MethodType.Normal;
 			var method = harmonyMethod.GetOriginalMethod() as MethodInfo;
 			if (method is null)
 				throw new NullReferenceException($"Delegate {typeof(DelegateType)} has no defined original method");
@@ -1792,7 +1792,7 @@ namespace HarmonyLib
 
 		/// <summary>True if the current runtime is based on Mono, false otherwise (.NET)</summary>
 		///
-		public static bool IsMonoRuntime { get; } = Type.GetType("Mono.Runtime") is object;
+		public static bool IsMonoRuntime { get; } = Type.GetType("Mono.Runtime") is not null;
 
 		/// <summary>True if the current runtime is .NET Framework, false otherwise (.NET Core or Mono, although latter isn't guaranteed)</summary>
 		///
@@ -1844,7 +1844,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(type));
 			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, binder: null,
 				CallingConventions.Any, new Type[0], modifiers: null);
-			if (ctor is object)
+			if (ctor is not null)
 				return ctor.Invoke(null);
 			return FormatterServices.GetUninitializedObject(type);
 		}
@@ -1928,7 +1928,7 @@ namespace HarmonyLib
 					if (!addHandlerCache.TryGetValue(resultType, out var addInvoker))
 					{
 						var addOperation = FirstMethod(resultType, m => m.Name == "Add" && m.GetParameters().Length == 1);
-						if (addOperation is object)
+						if (addOperation is not null)
 						{
 							addInvoker = MethodInvoker.GetHandler(addOperation);
 						}
@@ -1999,7 +1999,7 @@ namespace HarmonyLib
 			Traverse.IterateFields(source, result, (name, src, dst) =>
 			{
 				var path = pathRoot.Length > 0 ? pathRoot + "." + name : name;
-				var value = processor is object ? processor(path, src, dst) : src.GetValue();
+				var value = processor is not null ? processor(path, src, dst) : src.GetValue();
 				_ = dst.SetValue(MakeDeepCopy(value, dst.GetValueType(), processor, path));
 			});
 			return result;
@@ -2095,7 +2095,7 @@ namespace HarmonyLib
 		public static bool IsOfNullableType<T>(T instance)
 #pragma warning restore IDE0060
 		{
-			return Nullable.GetUnderlyingType(typeof(T)) is object;
+			return Nullable.GetUnderlyingType(typeof(T)) is not null;
 		}
 
 		/// <summary>Tests whether a type or member is static, as defined in C#</summary>

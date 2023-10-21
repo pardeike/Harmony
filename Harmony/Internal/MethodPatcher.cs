@@ -1,4 +1,3 @@
-using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
@@ -30,7 +29,6 @@ namespace HarmonyLib
 		readonly List<MethodInfo> transpilers;
 		readonly List<MethodInfo> finalizers;
 		readonly int idx;
-		readonly bool useStructReturnBuffer;
 		readonly Type returnType;
 		readonly DynamicMethodDefinition patch;
 		readonly ILGenerator il;
@@ -49,8 +47,6 @@ namespace HarmonyLib
 			this.transpilers = transpilers;
 			this.finalizers = finalizers;
 
-			Memory.MarkForNoInlining(original);
-
 			if (debug)
 			{
 				FileLog.LogBuffered($"### Patch: {original.FullDescription()}");
@@ -58,8 +54,6 @@ namespace HarmonyLib
 			}
 
 			idx = prefixes.Count + postfixes.Count + finalizers.Count;
-			useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
-			if (debug && useStructReturnBuffer) FileLog.Log($"### Note: A buffer for the returned struct is used. That requires an extra IntPtr argument before the first real argument");
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}", debug);
 			if (patch is null)
@@ -71,7 +65,7 @@ namespace HarmonyLib
 
 		internal MethodInfo CreateReplacement(out Dictionary<int, CodeInstruction> finalInstructions)
 		{
-			var originalVariables = DeclareLocalVariables(il, source ?? original);
+			var originalVariables = DeclareOriginalLocalVariables(il, source ?? original);
 			var privateVars = new Dictionary<string, LocalBuilder>();
 			var fixes = prefixes.Union(postfixes).Union(finalizers).ToList();
 
@@ -107,7 +101,7 @@ namespace HarmonyLib
 
 			fixes.ForEach(fix =>
 			{
-				if (fix.DeclaringType is object && privateVars.ContainsKey(fix.DeclaringType.AssemblyQualifiedName) is false)
+				if (fix.DeclaringType is not null && privateVars.ContainsKey(fix.DeclaringType.AssemblyQualifiedName) is false)
 				{
 					fix.GetParameters()
 					.Where(patchParam => patchParam.Name == STATE_VAR)
@@ -138,25 +132,26 @@ namespace HarmonyLib
 			}
 
 			var copier = new MethodCopier(source ?? original, il, originalVariables);
-			copier.SetArgumentShift(useStructReturnBuffer);
 			copier.SetDebugging(debug);
 
 			foreach (var transpiler in transpilers)
 				copier.AddTranspiler(transpiler);
+			copier.AddTranspiler(PatchTools.m_GetExecutingAssemblyReplacementTranspiler);
 
 			var endLabels = new List<Label>();
-			_ = copier.Finalize(emitter, endLabels, out var hasReturnCode);
+			var lastCode = copier.Finalize(emitter, endLabels, out var hasReturnCode).LastOrDefault();
+			var endsInThrow = lastCode != null && lastCode.opcode == OpCodes.Throw;
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
-			if (resultVariable is object && hasReturnCode)
+			if (resultVariable is not null && hasReturnCode)
 				emitter.Emit(OpCodes.Stloc, resultVariable);
 			if (skipOriginalLabel.HasValue)
 				emitter.MarkLabel(skipOriginalLabel.Value);
 
 			_ = AddPostfixes(privateVars, runOriginalVariable, false);
 
-			if (resultVariable is object && hasReturnCode)
+			if (resultVariable is not null && hasReturnCode)
 				emitter.Emit(OpCodes.Ldloc, resultVariable);
 
 			var needsToStorePassthroughResult = AddPostfixes(privateVars, runOriginalVariable, true);
@@ -207,21 +202,11 @@ namespace HarmonyLib
 				// end catch
 				emitter.MarkBlockAfter(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
 
-				if (resultVariable is object)
+				if (resultVariable is not null)
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			if (useStructReturnBuffer)
-			{
-				var tmpVar = DeclareLocalVariable(returnType);
-				emitter.Emit(OpCodes.Stloc, tmpVar);
-				emitter.Emit(original.IsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1);
-				emitter.Emit(OpCodes.Ldloc, tmpVar);
-				emitter.Emit(OpCodes.Stobj, returnType); // store result into ref
-			}
-
-			if (hasFinalizers || hasReturnCode)
-				emitter.Emit(OpCodes.Ret);
+			emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();
 
@@ -232,13 +217,12 @@ namespace HarmonyLib
 				FileLog.FlushBuffer();
 			}
 
-			return patch.Generate().Pin();
+			return patch.Generate();
 		}
 
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
 		{
 			if (original is null) throw new ArgumentNullException(nameof(original));
-			var useStructReturnBuffer = StructReturnBuffer.NeedsFix(original);
 
 			var patchName = $"{original.DeclaringType?.FullName ?? "GLOBALTYPE"}.{original.Name}{suffix}";
 			patchName = patchName.Replace("<>", "");
@@ -247,8 +231,6 @@ namespace HarmonyLib
 			var parameterTypes = new List<Type>();
 
 			parameterTypes.AddRange(parameters.Types());
-			if (useStructReturnBuffer)
-				parameterTypes.Insert(0, typeof(IntPtr));
 			if (original.IsStatic is false)
 			{
 				if (AccessTools.IsStruct(original.DeclaringType))
@@ -257,7 +239,7 @@ namespace HarmonyLib
 					parameterTypes.Insert(0, original.DeclaringType);
 			}
 
-			var returnType = useStructReturnBuffer ? typeof(void) : AccessTools.GetReturnedType(original);
+			var returnType = AccessTools.GetReturnedType(original);
 
 			var method = new DynamicMethodDefinition(
 				patchName,
@@ -265,12 +247,10 @@ namespace HarmonyLib
 				parameterTypes.ToArray()
 			)
 			{
-				OwnerType = original.DeclaringType
+				// OwnerType = original.DeclaringType
 			};
 
-			var offset = (original.IsStatic ? 0 : 1) + (useStructReturnBuffer ? 1 : 0);
-			if (useStructReturnBuffer)
-				method.Definition.Parameters[original.IsStatic ? 0 : 1].Name = "retbuf";
+			var offset = original.IsStatic ? 0 : 1;
 			if (!original.IsStatic)
 				method.Definition.Parameters[0].Name = "this";
 			for (var i = 0; i < parameters.Length; i++)
@@ -292,7 +272,7 @@ namespace HarmonyLib
 			return method;
 		}
 
-		internal static LocalBuilder[] DeclareLocalVariables(ILGenerator il, MethodBase member)
+		internal static LocalBuilder[] DeclareOriginalLocalVariables(ILGenerator il, MethodBase member)
 		{
 			var vars = member.GetMethodBody()?.LocalVariables;
 			if (vars is null)
@@ -302,7 +282,21 @@ namespace HarmonyLib
 
 		LocalBuilder DeclareLocalVariable(Type type, bool isReturnValue = false)
 		{
-			if (type.IsByRef && isReturnValue is false) type = type.GetElementType();
+			if (type.IsByRef)
+			{
+				if (isReturnValue)
+				{
+					var v = il.DeclareLocal(type);
+					emitter.Emit(OpCodes.Ldc_I4_1);
+					emitter.Emit(OpCodes.Newarr, type.GetElementType());
+					emitter.Emit(OpCodes.Ldc_I4_0);
+					emitter.Emit(OpCodes.Ldelema, type.GetElementType());
+					emitter.Emit(OpCodes.Stloc, v);
+					return v;
+				}
+				else
+					type = type.GetElementType();
+			}
 			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
 
 			if (AccessTools.IsClass(type))
@@ -626,13 +620,12 @@ namespace HarmonyLib
 					if (idx == -1)
 					{
 						var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(patchParam.ParameterType);
-						if (harmonyMethod.methodType is null) // MethodType default is Normal
-							harmonyMethod.methodType = MethodType.Normal;
+						harmonyMethod.methodType ??= MethodType.Normal;
 						var delegateOriginal = harmonyMethod.GetOriginalMethod();
 						if (delegateOriginal is MethodInfo methodInfo)
 						{
 							var delegateConstructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
-							if (delegateConstructor is object)
+							if (delegateConstructor is not null)
 							{
 								if (methodInfo.IsStatic)
 									emitter.Emit(OpCodes.Ldnull);
@@ -676,7 +669,7 @@ namespace HarmonyLib
 				var originalIsNormal = originalParameters[idx].IsOut is false && originalParamType.IsByRef is false;
 				var patchIsNormal = patchParam.IsOut is false && patchParamType.IsByRef is false;
 				var needsBoxing = originalParamElementType.IsValueType && patchParamElementType.IsValueType is false;
-				var patchArgIndex = idx + (isInstance ? 1 : 0) + (useStructReturnBuffer ? 1 : 0);
+				var patchArgIndex = idx + (isInstance ? 1 : 0);
 
 				// Case 1 + 4
 				if (originalIsNormal == patchIsNormal)
@@ -850,12 +843,12 @@ namespace HarmonyLib
 					if (fix.ReturnType != typeof(void))
 					{
 						var firstFixParam = fix.GetParameters().FirstOrDefault();
-						var hasPassThroughResultParam = firstFixParam is object && fix.ReturnType == firstFixParam.ParameterType;
+						var hasPassThroughResultParam = firstFixParam is not null && fix.ReturnType == firstFixParam.ParameterType;
 						if (hasPassThroughResultParam)
 							result = true;
 						else
 						{
-							if (firstFixParam is object)
+							if (firstFixParam is not null)
 								throw new Exception($"Return type of pass through postfix {fix} does not match type of its first parameter");
 
 							throw new Exception($"Postfix patch {fix} must have a \"void\" return type");

@@ -110,11 +110,11 @@ namespace HarmonyLib
 			foreach (var name in names)
 			{
 				var field = typeof(T).GetField(name, AccessTools.all);
-				if (field is object)
+				if (field is not null)
 					return CreateGetterHandler<T, S>(field);
 
 				var property = typeof(T).GetProperty(name, AccessTools.all);
-				if (property is object)
+				if (property is not null)
 					return CreateGetterHandler<T, S>(property);
 			}
 

@@ -1,4 +1,3 @@
-extern alias mmc;
 using HarmonyLib;
 using System;
 using System.Collections;
@@ -578,42 +577,33 @@ namespace HarmonyLibTests.Assets
 	{
 		public static bool prefixed = false;
 
-#if NETCOREAPP2_0
-		public static bool Prefix(ref string __result, int dummy)
-		{
-			__result = "patched";
-			prefixed = true;
-			return false;
-		}
-#else
 		public static MethodInfo Prefix(MethodBase method)
 		{
-			var dynamicMethod = new mmc::MonoMod.Utils.DynamicMethodDefinition(method.Name + "_Class11Patch_Prefix",
+			return PatchTools.CreateMethod(
+				$"{method.Name}_Class11Patch_Prefix",
 				typeof(bool),
-				new[] { typeof(string).MakeByRefType(), typeof(int) });
+				new() {
+					new KeyValuePair<string, Type>("__result", typeof(string).MakeByRefType()),
+					new KeyValuePair<string, Type>("dummy", typeof(int))
+				},
+				il =>
+				{
+					//load "patched" into __result
+					il.Emit(OpCodes.Ldarg_0);
+					il.Emit(OpCodes.Ldstr, "patched");
+					il.Emit(OpCodes.Stind_Ref);
 
-			dynamicMethod.Definition.Parameters[0].Name = "__result";
-			dynamicMethod.Definition.Parameters[1].Name = "dummy";
+					//set prefixed to true
+					il.Emit(OpCodes.Ldnull);
+					il.Emit(OpCodes.Ldc_I4_1);
+					il.Emit(OpCodes.Stfld, typeof(Class11Patch).GetField(nameof(prefixed)));
 
-			var il = dynamicMethod.GetILGenerator();
-
-			//load "patched" into __result
-			il.Emit(OpCodes.Ldarg_0);
-			il.Emit(OpCodes.Ldstr, "patched");
-			il.Emit(OpCodes.Stind_Ref);
-
-			//set prefixed to true
-			il.Emit(OpCodes.Ldnull);
-			il.Emit(OpCodes.Ldc_I4_1);
-			il.Emit(OpCodes.Stfld, typeof(Class11Patch).GetField(nameof(prefixed)));
-
-			//return false
-			il.Emit(OpCodes.Ldc_I4_0);
-			il.Emit(OpCodes.Ret);
-
-			return dynamicMethod.Generate();
+					//return false
+					il.Emit(OpCodes.Ldc_I4_0);
+					il.Emit(OpCodes.Ret);
+				}
+			);
 		}
-#endif
 	}
 
 	public class Class12
@@ -1097,10 +1087,10 @@ namespace HarmonyLibTests.Assets
 
 	public class Class19
 	{
-		static readonly int[] test = { 123 };
+		static readonly string[] test = { "abc" };
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static ref int Method19()
+		public static ref string Method19()
 		{
 			return ref test[0];
 		}
@@ -1110,9 +1100,9 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(nameof(Class19.Method19))]
 	public static class Class19Patch
 	{
-		public static void Postfix(ref int __result)
+		public static void Postfix(ref string __result)
 		{
-			__result = 456;
+			__result = "def";
 		}
 	}
 
@@ -1166,7 +1156,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class22), nameof(Class22.Method22))]
+	[HarmonyPatch(typeof(Class22), nameof(Method22))]
 	public class Class22
 	{
 		public static bool? bool1;
@@ -1213,7 +1203,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class22b), nameof(Class22b.Method22b))]
+	[HarmonyPatch(typeof(Class22b), nameof(Method22b))]
 	public class Class22b
 	{
 		public static bool prefixResult;
@@ -1241,7 +1231,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class23), nameof(Class23.Method23))]
+	[HarmonyPatch(typeof(Class23), nameof(Method23))]
 	public class Class23
 	{
 		public static bool? bool1;
@@ -1264,7 +1254,7 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	[HarmonyPatch(typeof(Class24), nameof(Class24.Method24))]
+	[HarmonyPatch(typeof(Class24), nameof(Method24))]
 	public class Class24
 	{
 		public static bool? bool1;

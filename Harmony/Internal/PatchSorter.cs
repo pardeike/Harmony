@@ -41,7 +41,7 @@ namespace HarmonyLib
 		internal List<MethodInfo> Sort(MethodBase original)
 		{
 			// Check if cache exists and the method was used before.
-			if (sortedPatchArray is object) return sortedPatchArray.Select(x => x.GetMethod(original)).ToList();
+			if (sortedPatchArray is not null) return sortedPatchArray.Select(x => x.GetMethod(original)).ToList();
 
 			// Initialize internal structures used for sorting.
 			handledPatches = new HashSet<PatchSortingWrapper>();
@@ -91,7 +91,7 @@ namespace HarmonyLib
 		internal bool ComparePatchLists(Patch[] patches)
 		{
 			if (sortedPatchArray is null) _ = Sort(null);
-			return patches is object && sortedPatchArray.Length == patches.Length
+			return patches is not null && sortedPatchArray.Length == patches.Length
 				&& sortedPatchArray.All(x => patches.Contains(x, new PatchDetailedComparer()));
 		}
 
@@ -236,7 +236,7 @@ namespace HarmonyLib
 		{
 			public bool Equals(Patch x, Patch y)
 			{
-				return y is object && x is object && x.owner == y.owner && x.PatchMethod == y.PatchMethod && x.index == y.index
+				return y is not null && x is not null && x.owner == y.owner && x.PatchMethod == y.PatchMethod && x.index == y.index
 					&& x.priority == y.priority
 					&& x.before.Length == y.before.Length && x.after.Length == y.after.Length
 					&& x.before.All(y.before.Contains) && x.after.All(y.after.Contains);

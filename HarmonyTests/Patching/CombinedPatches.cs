@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ namespace HarmonyLibTests.Patching
 			instance.Method1();
 			Assert.AreEqual("tested", instance.Method2("test"));
 			instance.Method3(123);
-			Assert.AreEqual(4, CombinedPatchClass_Patch_1.counter);
+			Assert.AreEqual(1111, CombinedPatchClass_Patch_1.counter);
 		}
 
 		[Test]

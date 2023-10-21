@@ -69,7 +69,7 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="patching">Patching</h1>
 
-<h2 id="auxilary-patch-methods">Auxilary patch methods</h2>
+<h2 id="auxiliary-patch-methods">Auxiliary patch methods</h2>
 <p>If you use manual patching, you are in full control of your state and the execution and handling of extra resources and logic. For annotation patching, Harmony offers you a number of methods you can implement on a patch class that allow you to execute code before and after patching on that class as well as methods that combine annotations with manually defining which methods that should be patched.</p>
 <p>Each of those methods can take up to three optional arguments that are injected by type so you can call them anything you like:</p>
 <ul>
@@ -81,7 +81,7 @@
 <pre><code class="lang-csharp" name="example">[HarmonyPatch] // at least one Harmony annotation makes Harmony not skip this patch class when calling PatchAll()
 class MyPatch
 {
-    // here, inside the patch class, you can place the auxilary patch methods
+    // here, inside the patch class, you can place the auxiliary patch methods
     // for example TargetMethod:
 
     public static MethodBase TargetMethod()
@@ -118,7 +118,7 @@ static bool MyInitializer(MethodBase original, ...)
 [HarmonyTargetMethod]
 static MethodBase CalculateMethod(...)
 </code></pre>
-<p>That method, if it exists, is expected to return a <code>MethodBase</code> of the method to be patched.</p>
+<p>That method, if it exists, is expected to return a <code>MethodBase</code> of the method to be patched. The return cannot be null. If you want to conditionally skip patching, use a <code>Prepare()</code> method.</p>
 <h3 id="targetmethods">TargetMethods</h3>
 <p>If you want to patch multiple methods with the same patch, you can use <code>TargetMethods</code>. It has the same behaviour as <code>TargetMethod</code> except that it returns an enumeration of <code>MethodBase</code> instead of a single <code>MethodBase</code>:</p>
 <pre><code class="lang-csharp">static IEnumerable&lt;MethodBase&gt; TargetMethods(...)
@@ -135,7 +135,9 @@ static IEnumerable&lt;MethodBase&gt; CalculateMethods(...)
 
     // you could also iterate using reflections over many methods
 }
-</code></pre><h3 id="cleanup">Cleanup</h3>
+</code></pre>
+<p>Similar to <code>TargetMethod</code>, the implementation cannot return zero results. If you want to conditionally skip patching, use a <code>Prepare()</code> method.</p>
+<h3 id="cleanup">Cleanup</h3>
 <p>After patching, Harmony gives you a chance to clean up your state. For this, Harmony searches for a method called</p>
 <pre><code class="lang-csharp">static void Cleanup(...)
 static void Cleanup(MethodBase original, ...)
@@ -156,7 +158,7 @@ static Exception MyCleanup(MethodBase original, ...)
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Documentation/articles/patching-auxilary.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Documentation/articles/patching-auxiliary.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
