@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.html",
-          "hash": "d/H9Tdt1UDJIle6zL3zC0jEI8FEGz7446KS1ym/dYwA="
+          "hash": "sr/58RpiZn/iRAJr1wddPEW7gTJZM3jM3E9bRjSBsBw="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.FieldRef-2.html",
-          "hash": "wtDjgsYPqgV5VuhCsRqPFaNvyD+yT8X1LRHQ65Zz9D4="
+          "hash": "LG8zl8azJMJvCUJApZjVaDa3OsQuC3kqvoLG/D60aAs="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.StructFieldRef-2.html",
-          "hash": "09TL2UlzfMu/NESEJDLv0uXcY36fBZyUz9r9luIWdwM="
+          "hash": "7d2tmD7VkoQdu9QkDJxiGXmuCASPe9D1wDxsktZR6IU="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,19 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.AccessTools.html",
-          "hash": "JCcgXdQH6kMsE7Td4W9VnKfcdP5+UZyirkqUgstSiUo="
+          "hash": "0tNi23YGA067QGWaAZBUgMtUvNrMJs0MEd6RUF8CWGk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.AccessToolsExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.AccessToolsExtensions.html",
+          "hash": "arWLMbAoY8VqVGBH6VsweENhPrZVPp2C0GrQTFeUrgQ="
         }
       },
       "is_incremental": false,
@@ -753,7 +765,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.html",
-          "hash": "TKUTRqwV7visewXZFVHMNv7m8yJh7pBPjRp67opX3j4="
+          "hash": "ePwyt587YyoQrV06e63CcafyfEFxFZPq6p7jcBCs2X8="
         }
       },
       "is_incremental": false,
@@ -777,7 +789,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "Vc8hLFn5985bHNbdfk9lIf4O0RFz+lGYgv+OOSJvqB4="
+          "hash": "bkstmwYuPZHXZ8+z4LOEYPQnMFMOEdr900bmSrmMta0="
         }
       },
       "is_incremental": false,
@@ -825,7 +837,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "ppIuUcmSm5jguTn+XHFDwnK9FSYF8b/7YzmhgSP0GGY="
+          "hash": "B9Nbve2Le5BHsyTR93UC6cJNNXqNkhUDQmAoEovP3E8="
         }
       },
       "is_incremental": false,
@@ -1091,7 +1103,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 63,
+          "total_file_count": 64,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

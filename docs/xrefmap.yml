@@ -785,6 +785,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.Inner
   nameWithType: AccessTools.Inner
+- uid: HarmonyLib.AccessTools.InnerTypes(System.Type)
+  name: InnerTypes(Type)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_InnerTypes_System_Type_
+  commentId: M:HarmonyLib.AccessTools.InnerTypes(System.Type)
+  fullName: HarmonyLib.AccessTools.InnerTypes(System.Type)
+  nameWithType: AccessTools.InnerTypes(Type)
+- uid: HarmonyLib.AccessTools.InnerTypes*
+  name: InnerTypes
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_InnerTypes_
+  commentId: Overload:HarmonyLib.AccessTools.InnerTypes
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.InnerTypes
+  nameWithType: AccessTools.InnerTypes
 - uid: HarmonyLib.AccessTools.IsClass(System.Type)
   name: IsClass(Type)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_IsClass_System_Type_
@@ -1247,6 +1260,663 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.TypeByName
   nameWithType: AccessTools.TypeByName
+- uid: HarmonyLib.AccessToolsExtensions
+  name: AccessToolsExtensions
+  href: api/HarmonyLib.AccessToolsExtensions.html
+  commentId: T:HarmonyLib.AccessToolsExtensions
+  fullName: HarmonyLib.AccessToolsExtensions
+  nameWithType: AccessToolsExtensions
+- uid: HarmonyLib.AccessToolsExtensions.Constructor(System.Type,System.Type[],System.Boolean)
+  name: Constructor(Type, Type[], Boolean)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Constructor_System_Type_System_Type___System_Boolean_
+  commentId: M:HarmonyLib.AccessToolsExtensions.Constructor(System.Type,System.Type[],System.Boolean)
+  name.vb: Constructor(Type, Type(), Boolean)
+  fullName: HarmonyLib.AccessToolsExtensions.Constructor(System.Type, System.Type[], System.Boolean)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.Constructor(System.Type, System.Type(), System.Boolean)
+  nameWithType: AccessToolsExtensions.Constructor(Type, Type[], Boolean)
+  nameWithType.vb: AccessToolsExtensions.Constructor(Type, Type(), Boolean)
+- uid: HarmonyLib.AccessToolsExtensions.Constructor*
+  name: Constructor
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Constructor_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.Constructor
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.Constructor
+  nameWithType: AccessToolsExtensions.Constructor
+- uid: HarmonyLib.AccessToolsExtensions.CreateInstance(System.Type)
+  name: CreateInstance(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_CreateInstance_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.CreateInstance(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.CreateInstance(System.Type)
+  nameWithType: AccessToolsExtensions.CreateInstance(Type)
+- uid: HarmonyLib.AccessToolsExtensions.CreateInstance*
+  name: CreateInstance
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_CreateInstance_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.CreateInstance
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.CreateInstance
+  nameWithType: AccessToolsExtensions.CreateInstance
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredConstructor(System.Type,System.Type[],System.Boolean)
+  name: DeclaredConstructor(Type, Type[], Boolean)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredConstructor_System_Type_System_Type___System_Boolean_
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredConstructor(System.Type,System.Type[],System.Boolean)
+  name.vb: DeclaredConstructor(Type, Type(), Boolean)
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredConstructor(System.Type, System.Type[], System.Boolean)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.DeclaredConstructor(System.Type, System.Type(), System.Boolean)
+  nameWithType: AccessToolsExtensions.DeclaredConstructor(Type, Type[], Boolean)
+  nameWithType.vb: AccessToolsExtensions.DeclaredConstructor(Type, Type(), Boolean)
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredConstructor*
+  name: DeclaredConstructor
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredConstructor_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredConstructor
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredConstructor
+  nameWithType: AccessToolsExtensions.DeclaredConstructor
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type,System.Int32)
+  name: DeclaredField(Type, Int32)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredField_System_Type_System_Int32_
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type,System.Int32)
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type, System.Int32)
+  nameWithType: AccessToolsExtensions.DeclaredField(Type, Int32)
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type,System.String)
+  name: DeclaredField(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredField_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.DeclaredField(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredField*
+  name: DeclaredField
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredField_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredField
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredField
+  nameWithType: AccessToolsExtensions.DeclaredField
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredIndexer(System.Type,System.Type[])
+  name: DeclaredIndexer(Type, Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredIndexer_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredIndexer(System.Type,System.Type[])
+  name.vb: DeclaredIndexer(Type, Type())
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredIndexer(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.DeclaredIndexer(System.Type, System.Type())
+  nameWithType: AccessToolsExtensions.DeclaredIndexer(Type, Type[])
+  nameWithType.vb: AccessToolsExtensions.DeclaredIndexer(Type, Type())
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredIndexer*
+  name: DeclaredIndexer
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredIndexer_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredIndexer
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredIndexer
+  nameWithType: AccessToolsExtensions.DeclaredIndexer
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter(System.Type,System.Type[])
+  name: DeclaredIndexerGetter(Type, Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredIndexerGetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter(System.Type,System.Type[])
+  name.vb: DeclaredIndexerGetter(Type, Type())
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter(System.Type, System.Type())
+  nameWithType: AccessToolsExtensions.DeclaredIndexerGetter(Type, Type[])
+  nameWithType.vb: AccessToolsExtensions.DeclaredIndexerGetter(Type, Type())
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter*
+  name: DeclaredIndexerGetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredIndexerGetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter
+  nameWithType: AccessToolsExtensions.DeclaredIndexerGetter
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter(System.Type,System.Type[])
+  name: DeclaredIndexerSetter(Type, Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredIndexerSetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter(System.Type,System.Type[])
+  name.vb: DeclaredIndexerSetter(Type, Type())
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter(System.Type, System.Type())
+  nameWithType: AccessToolsExtensions.DeclaredIndexerSetter(Type, Type[])
+  nameWithType.vb: AccessToolsExtensions.DeclaredIndexerSetter(Type, Type())
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter*
+  name: DeclaredIndexerSetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredIndexerSetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter
+  nameWithType: AccessToolsExtensions.DeclaredIndexerSetter
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  name: DeclaredMethod(Type, String, Type[], Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredMethod_System_Type_System_String_System_Type___System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])
+  name.vb: DeclaredMethod(Type, String, Type(), Type())
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredMethod(System.Type, System.String, System.Type[], System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.DeclaredMethod(System.Type, System.String, System.Type(), System.Type())
+  nameWithType: AccessToolsExtensions.DeclaredMethod(Type, String, Type[], Type[])
+  nameWithType.vb: AccessToolsExtensions.DeclaredMethod(Type, String, Type(), Type())
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredMethod*
+  name: DeclaredMethod
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredMethod_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredMethod
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredMethod
+  nameWithType: AccessToolsExtensions.DeclaredMethod
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredProperty(System.Type,System.String)
+  name: DeclaredProperty(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredProperty_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredProperty(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredProperty(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.DeclaredProperty(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredProperty*
+  name: DeclaredProperty
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredProperty_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredProperty
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredProperty
+  nameWithType: AccessToolsExtensions.DeclaredProperty
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter(System.Type,System.String)
+  name: DeclaredPropertyGetter(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredPropertyGetter_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.DeclaredPropertyGetter(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter*
+  name: DeclaredPropertyGetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredPropertyGetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter
+  nameWithType: AccessToolsExtensions.DeclaredPropertyGetter
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter(System.Type,System.String)
+  name: DeclaredPropertySetter(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredPropertySetter_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.DeclaredPropertySetter(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter*
+  name: DeclaredPropertySetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_DeclaredPropertySetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter
+  nameWithType: AccessToolsExtensions.DeclaredPropertySetter
+- uid: HarmonyLib.AccessToolsExtensions.Field(System.Type,System.String)
+  name: Field(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Field_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.Field(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.Field(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.Field(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.Field*
+  name: Field
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Field_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.Field
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.Field
+  nameWithType: AccessToolsExtensions.Field
+- uid: HarmonyLib.AccessToolsExtensions.FieldRefAccess*
+  name: FieldRefAccess
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FieldRefAccess_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.FieldRefAccess
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.FieldRefAccess
+  nameWithType: AccessToolsExtensions.FieldRefAccess
+- uid: HarmonyLib.AccessToolsExtensions.FieldRefAccess``1(System.Type,System.String)
+  name: FieldRefAccess<F>(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FieldRefAccess__1_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.FieldRefAccess``1(System.Type,System.String)
+  name.vb: FieldRefAccess(Of F)(Type, String)
+  fullName: HarmonyLib.AccessToolsExtensions.FieldRefAccess<F>(System.Type, System.String)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.FieldRefAccess(Of F)(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.FieldRefAccess<F>(Type, String)
+  nameWithType.vb: AccessToolsExtensions.FieldRefAccess(Of F)(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes*
+  name: FindIncludingBaseTypes
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FindIncludingBaseTypes_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes
+  nameWithType: AccessToolsExtensions.FindIncludingBaseTypes
+- uid: HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  name: FindIncludingBaseTypes<T>(Type, Func<Type, T>)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FindIncludingBaseTypes__1_System_Type_System_Func_System_Type___0__
+  commentId: M:HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})
+  name.vb: FindIncludingBaseTypes(Of T)(Type, Func(Of Type, T))
+  fullName: HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes<T>(System.Type, System.Func<System.Type, T>)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes(Of T)(System.Type, System.Func(Of System.Type, T))
+  nameWithType: AccessToolsExtensions.FindIncludingBaseTypes<T>(Type, Func<Type, T>)
+  nameWithType.vb: AccessToolsExtensions.FindIncludingBaseTypes(Of T)(Type, Func(Of Type, T))
+- uid: HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes*
+  name: FindIncludingInnerTypes
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FindIncludingInnerTypes_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes
+  nameWithType: AccessToolsExtensions.FindIncludingInnerTypes
+- uid: HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  name: FindIncludingInnerTypes<T>(Type, Func<Type, T>)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FindIncludingInnerTypes__1_System_Type_System_Func_System_Type___0__
+  commentId: M:HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})
+  name.vb: FindIncludingInnerTypes(Of T)(Type, Func(Of Type, T))
+  fullName: HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes<T>(System.Type, System.Func<System.Type, T>)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes(Of T)(System.Type, System.Func(Of System.Type, T))
+  nameWithType: AccessToolsExtensions.FindIncludingInnerTypes<T>(Type, Func<Type, T>)
+  nameWithType.vb: AccessToolsExtensions.FindIncludingInnerTypes(Of T)(Type, Func(Of Type, T))
+- uid: HarmonyLib.AccessToolsExtensions.FirstConstructor(System.Type,System.Func{System.Reflection.ConstructorInfo,System.Boolean})
+  name: FirstConstructor(Type, Func<ConstructorInfo, Boolean>)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstConstructor_System_Type_System_Func_System_Reflection_ConstructorInfo_System_Boolean__
+  commentId: M:HarmonyLib.AccessToolsExtensions.FirstConstructor(System.Type,System.Func{System.Reflection.ConstructorInfo,System.Boolean})
+  name.vb: FirstConstructor(Type, Func(Of ConstructorInfo, Boolean))
+  fullName: HarmonyLib.AccessToolsExtensions.FirstConstructor(System.Type, System.Func<System.Reflection.ConstructorInfo, System.Boolean>)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.FirstConstructor(System.Type, System.Func(Of System.Reflection.ConstructorInfo, System.Boolean))
+  nameWithType: AccessToolsExtensions.FirstConstructor(Type, Func<ConstructorInfo, Boolean>)
+  nameWithType.vb: AccessToolsExtensions.FirstConstructor(Type, Func(Of ConstructorInfo, Boolean))
+- uid: HarmonyLib.AccessToolsExtensions.FirstConstructor*
+  name: FirstConstructor
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstConstructor_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.FirstConstructor
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.FirstConstructor
+  nameWithType: AccessToolsExtensions.FirstConstructor
+- uid: HarmonyLib.AccessToolsExtensions.FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  name: FirstInner(Type, Func<Type, Boolean>)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstInner_System_Type_System_Func_System_Type_System_Boolean__
+  commentId: M:HarmonyLib.AccessToolsExtensions.FirstInner(System.Type,System.Func{System.Type,System.Boolean})
+  name.vb: FirstInner(Type, Func(Of Type, Boolean))
+  fullName: HarmonyLib.AccessToolsExtensions.FirstInner(System.Type, System.Func<System.Type, System.Boolean>)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.FirstInner(System.Type, System.Func(Of System.Type, System.Boolean))
+  nameWithType: AccessToolsExtensions.FirstInner(Type, Func<Type, Boolean>)
+  nameWithType.vb: AccessToolsExtensions.FirstInner(Type, Func(Of Type, Boolean))
+- uid: HarmonyLib.AccessToolsExtensions.FirstInner*
+  name: FirstInner
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstInner_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.FirstInner
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.FirstInner
+  nameWithType: AccessToolsExtensions.FirstInner
+- uid: HarmonyLib.AccessToolsExtensions.FirstMethod(System.Type,System.Func{System.Reflection.MethodInfo,System.Boolean})
+  name: FirstMethod(Type, Func<MethodInfo, Boolean>)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstMethod_System_Type_System_Func_System_Reflection_MethodInfo_System_Boolean__
+  commentId: M:HarmonyLib.AccessToolsExtensions.FirstMethod(System.Type,System.Func{System.Reflection.MethodInfo,System.Boolean})
+  name.vb: FirstMethod(Type, Func(Of MethodInfo, Boolean))
+  fullName: HarmonyLib.AccessToolsExtensions.FirstMethod(System.Type, System.Func<System.Reflection.MethodInfo, System.Boolean>)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.FirstMethod(System.Type, System.Func(Of System.Reflection.MethodInfo, System.Boolean))
+  nameWithType: AccessToolsExtensions.FirstMethod(Type, Func<MethodInfo, Boolean>)
+  nameWithType.vb: AccessToolsExtensions.FirstMethod(Type, Func(Of MethodInfo, Boolean))
+- uid: HarmonyLib.AccessToolsExtensions.FirstMethod*
+  name: FirstMethod
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstMethod_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.FirstMethod
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.FirstMethod
+  nameWithType: AccessToolsExtensions.FirstMethod
+- uid: HarmonyLib.AccessToolsExtensions.FirstProperty(System.Type,System.Func{System.Reflection.PropertyInfo,System.Boolean})
+  name: FirstProperty(Type, Func<PropertyInfo, Boolean>)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstProperty_System_Type_System_Func_System_Reflection_PropertyInfo_System_Boolean__
+  commentId: M:HarmonyLib.AccessToolsExtensions.FirstProperty(System.Type,System.Func{System.Reflection.PropertyInfo,System.Boolean})
+  name.vb: FirstProperty(Type, Func(Of PropertyInfo, Boolean))
+  fullName: HarmonyLib.AccessToolsExtensions.FirstProperty(System.Type, System.Func<System.Reflection.PropertyInfo, System.Boolean>)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.FirstProperty(System.Type, System.Func(Of System.Reflection.PropertyInfo, System.Boolean))
+  nameWithType: AccessToolsExtensions.FirstProperty(Type, Func<PropertyInfo, Boolean>)
+  nameWithType.vb: AccessToolsExtensions.FirstProperty(Type, Func(Of PropertyInfo, Boolean))
+- uid: HarmonyLib.AccessToolsExtensions.FirstProperty*
+  name: FirstProperty
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_FirstProperty_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.FirstProperty
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.FirstProperty
+  nameWithType: AccessToolsExtensions.FirstProperty
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors(System.Type,System.Nullable{System.Boolean})
+  name: GetDeclaredConstructors(Type, Nullable<Boolean>)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredConstructors_System_Type_System_Nullable_System_Boolean__
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors(System.Type,System.Nullable{System.Boolean})
+  name.vb: GetDeclaredConstructors(Type, Nullable(Of Boolean))
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors(System.Type, System.Nullable<System.Boolean>)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors(System.Type, System.Nullable(Of System.Boolean))
+  nameWithType: AccessToolsExtensions.GetDeclaredConstructors(Type, Nullable<Boolean>)
+  nameWithType.vb: AccessToolsExtensions.GetDeclaredConstructors(Type, Nullable(Of Boolean))
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors*
+  name: GetDeclaredConstructors
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredConstructors_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors
+  nameWithType: AccessToolsExtensions.GetDeclaredConstructors
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredFields(System.Type)
+  name: GetDeclaredFields(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredFields_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetDeclaredFields(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredFields(System.Type)
+  nameWithType: AccessToolsExtensions.GetDeclaredFields(Type)
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredFields*
+  name: GetDeclaredFields
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredFields_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetDeclaredFields
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredFields
+  nameWithType: AccessToolsExtensions.GetDeclaredFields
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredMethods(System.Type)
+  name: GetDeclaredMethods(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredMethods_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetDeclaredMethods(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredMethods(System.Type)
+  nameWithType: AccessToolsExtensions.GetDeclaredMethods(Type)
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredMethods*
+  name: GetDeclaredMethods
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredMethods_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetDeclaredMethods
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredMethods
+  nameWithType: AccessToolsExtensions.GetDeclaredMethods
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredProperties(System.Type)
+  name: GetDeclaredProperties(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredProperties_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetDeclaredProperties(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredProperties(System.Type)
+  nameWithType: AccessToolsExtensions.GetDeclaredProperties(Type)
+- uid: HarmonyLib.AccessToolsExtensions.GetDeclaredProperties*
+  name: GetDeclaredProperties
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDeclaredProperties_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetDeclaredProperties
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetDeclaredProperties
+  nameWithType: AccessToolsExtensions.GetDeclaredProperties
+- uid: HarmonyLib.AccessToolsExtensions.GetDefaultValue(System.Type)
+  name: GetDefaultValue(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDefaultValue_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetDefaultValue(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.GetDefaultValue(System.Type)
+  nameWithType: AccessToolsExtensions.GetDefaultValue(Type)
+- uid: HarmonyLib.AccessToolsExtensions.GetDefaultValue*
+  name: GetDefaultValue
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetDefaultValue_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetDefaultValue
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetDefaultValue
+  nameWithType: AccessToolsExtensions.GetDefaultValue
+- uid: HarmonyLib.AccessToolsExtensions.GetFieldNames(System.Type)
+  name: GetFieldNames(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetFieldNames_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetFieldNames(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.GetFieldNames(System.Type)
+  nameWithType: AccessToolsExtensions.GetFieldNames(Type)
+- uid: HarmonyLib.AccessToolsExtensions.GetFieldNames*
+  name: GetFieldNames
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetFieldNames_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetFieldNames
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetFieldNames
+  nameWithType: AccessToolsExtensions.GetFieldNames
+- uid: HarmonyLib.AccessToolsExtensions.GetMethodNames(System.Type)
+  name: GetMethodNames(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetMethodNames_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetMethodNames(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.GetMethodNames(System.Type)
+  nameWithType: AccessToolsExtensions.GetMethodNames(Type)
+- uid: HarmonyLib.AccessToolsExtensions.GetMethodNames*
+  name: GetMethodNames
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetMethodNames_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetMethodNames
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetMethodNames
+  nameWithType: AccessToolsExtensions.GetMethodNames
+- uid: HarmonyLib.AccessToolsExtensions.GetPropertyNames(System.Type)
+  name: GetPropertyNames(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetPropertyNames_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.GetPropertyNames(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.GetPropertyNames(System.Type)
+  nameWithType: AccessToolsExtensions.GetPropertyNames(Type)
+- uid: HarmonyLib.AccessToolsExtensions.GetPropertyNames*
+  name: GetPropertyNames
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_GetPropertyNames_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.GetPropertyNames
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.GetPropertyNames
+  nameWithType: AccessToolsExtensions.GetPropertyNames
+- uid: HarmonyLib.AccessToolsExtensions.Indexer(System.Type,System.Type[])
+  name: Indexer(Type, Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Indexer_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.Indexer(System.Type,System.Type[])
+  name.vb: Indexer(Type, Type())
+  fullName: HarmonyLib.AccessToolsExtensions.Indexer(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.Indexer(System.Type, System.Type())
+  nameWithType: AccessToolsExtensions.Indexer(Type, Type[])
+  nameWithType.vb: AccessToolsExtensions.Indexer(Type, Type())
+- uid: HarmonyLib.AccessToolsExtensions.Indexer*
+  name: Indexer
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Indexer_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.Indexer
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.Indexer
+  nameWithType: AccessToolsExtensions.Indexer
+- uid: HarmonyLib.AccessToolsExtensions.IndexerGetter(System.Type,System.Type[])
+  name: IndexerGetter(Type, Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IndexerGetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.IndexerGetter(System.Type,System.Type[])
+  name.vb: IndexerGetter(Type, Type())
+  fullName: HarmonyLib.AccessToolsExtensions.IndexerGetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.IndexerGetter(System.Type, System.Type())
+  nameWithType: AccessToolsExtensions.IndexerGetter(Type, Type[])
+  nameWithType.vb: AccessToolsExtensions.IndexerGetter(Type, Type())
+- uid: HarmonyLib.AccessToolsExtensions.IndexerGetter*
+  name: IndexerGetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IndexerGetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IndexerGetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IndexerGetter
+  nameWithType: AccessToolsExtensions.IndexerGetter
+- uid: HarmonyLib.AccessToolsExtensions.IndexerSetter(System.Type,System.Type[])
+  name: IndexerSetter(Type, Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IndexerSetter_System_Type_System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.IndexerSetter(System.Type,System.Type[])
+  name.vb: IndexerSetter(Type, Type())
+  fullName: HarmonyLib.AccessToolsExtensions.IndexerSetter(System.Type, System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.IndexerSetter(System.Type, System.Type())
+  nameWithType: AccessToolsExtensions.IndexerSetter(Type, Type[])
+  nameWithType.vb: AccessToolsExtensions.IndexerSetter(Type, Type())
+- uid: HarmonyLib.AccessToolsExtensions.IndexerSetter*
+  name: IndexerSetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IndexerSetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IndexerSetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IndexerSetter
+  nameWithType: AccessToolsExtensions.IndexerSetter
+- uid: HarmonyLib.AccessToolsExtensions.Inner(System.Type,System.String)
+  name: Inner(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Inner_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.Inner(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.Inner(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.Inner(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.Inner*
+  name: Inner
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Inner_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.Inner
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.Inner
+  nameWithType: AccessToolsExtensions.Inner
+- uid: HarmonyLib.AccessToolsExtensions.InnerTypes(System.Type)
+  name: InnerTypes(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_InnerTypes_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.InnerTypes(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.InnerTypes(System.Type)
+  nameWithType: AccessToolsExtensions.InnerTypes(Type)
+- uid: HarmonyLib.AccessToolsExtensions.InnerTypes*
+  name: InnerTypes
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_InnerTypes_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.InnerTypes
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.InnerTypes
+  nameWithType: AccessToolsExtensions.InnerTypes
+- uid: HarmonyLib.AccessToolsExtensions.IsClass(System.Type)
+  name: IsClass(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsClass_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.IsClass(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.IsClass(System.Type)
+  nameWithType: AccessToolsExtensions.IsClass(Type)
+- uid: HarmonyLib.AccessToolsExtensions.IsClass*
+  name: IsClass
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsClass_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IsClass
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IsClass
+  nameWithType: AccessToolsExtensions.IsClass
+- uid: HarmonyLib.AccessToolsExtensions.IsFloatingPoint(System.Type)
+  name: IsFloatingPoint(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsFloatingPoint_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.IsFloatingPoint(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.IsFloatingPoint(System.Type)
+  nameWithType: AccessToolsExtensions.IsFloatingPoint(Type)
+- uid: HarmonyLib.AccessToolsExtensions.IsFloatingPoint*
+  name: IsFloatingPoint
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsFloatingPoint_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IsFloatingPoint
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IsFloatingPoint
+  nameWithType: AccessToolsExtensions.IsFloatingPoint
+- uid: HarmonyLib.AccessToolsExtensions.IsInteger(System.Type)
+  name: IsInteger(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsInteger_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.IsInteger(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.IsInteger(System.Type)
+  nameWithType: AccessToolsExtensions.IsInteger(Type)
+- uid: HarmonyLib.AccessToolsExtensions.IsInteger*
+  name: IsInteger
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsInteger_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IsInteger
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IsInteger
+  nameWithType: AccessToolsExtensions.IsInteger
+- uid: HarmonyLib.AccessToolsExtensions.IsNumber(System.Type)
+  name: IsNumber(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsNumber_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.IsNumber(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.IsNumber(System.Type)
+  nameWithType: AccessToolsExtensions.IsNumber(Type)
+- uid: HarmonyLib.AccessToolsExtensions.IsNumber*
+  name: IsNumber
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsNumber_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IsNumber
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IsNumber
+  nameWithType: AccessToolsExtensions.IsNumber
+- uid: HarmonyLib.AccessToolsExtensions.IsStruct(System.Type)
+  name: IsStruct(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsStruct_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.IsStruct(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.IsStruct(System.Type)
+  nameWithType: AccessToolsExtensions.IsStruct(Type)
+- uid: HarmonyLib.AccessToolsExtensions.IsStruct*
+  name: IsStruct
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsStruct_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IsStruct
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IsStruct
+  nameWithType: AccessToolsExtensions.IsStruct
+- uid: HarmonyLib.AccessToolsExtensions.IsValue(System.Type)
+  name: IsValue(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsValue_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.IsValue(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.IsValue(System.Type)
+  nameWithType: AccessToolsExtensions.IsValue(Type)
+- uid: HarmonyLib.AccessToolsExtensions.IsValue*
+  name: IsValue
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsValue_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IsValue
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IsValue
+  nameWithType: AccessToolsExtensions.IsValue
+- uid: HarmonyLib.AccessToolsExtensions.IsVoid(System.Type)
+  name: IsVoid(Type)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsVoid_System_Type_
+  commentId: M:HarmonyLib.AccessToolsExtensions.IsVoid(System.Type)
+  fullName: HarmonyLib.AccessToolsExtensions.IsVoid(System.Type)
+  nameWithType: AccessToolsExtensions.IsVoid(Type)
+- uid: HarmonyLib.AccessToolsExtensions.IsVoid*
+  name: IsVoid
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_IsVoid_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.IsVoid
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.IsVoid
+  nameWithType: AccessToolsExtensions.IsVoid
+- uid: HarmonyLib.AccessToolsExtensions.Method(System.Type,System.String,System.Type[],System.Type[])
+  name: Method(Type, String, Type[], Type[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Method_System_Type_System_String_System_Type___System_Type___
+  commentId: M:HarmonyLib.AccessToolsExtensions.Method(System.Type,System.String,System.Type[],System.Type[])
+  name.vb: Method(Type, String, Type(), Type())
+  fullName: HarmonyLib.AccessToolsExtensions.Method(System.Type, System.String, System.Type[], System.Type[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.Method(System.Type, System.String, System.Type(), System.Type())
+  nameWithType: AccessToolsExtensions.Method(Type, String, Type[], Type[])
+  nameWithType.vb: AccessToolsExtensions.Method(Type, String, Type(), Type())
+- uid: HarmonyLib.AccessToolsExtensions.Method*
+  name: Method
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Method_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.Method
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.Method
+  nameWithType: AccessToolsExtensions.Method
+- uid: HarmonyLib.AccessToolsExtensions.Property(System.Type,System.String)
+  name: Property(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Property_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.Property(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.Property(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.Property(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.Property*
+  name: Property
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_Property_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.Property
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.Property
+  nameWithType: AccessToolsExtensions.Property
+- uid: HarmonyLib.AccessToolsExtensions.PropertyGetter(System.Type,System.String)
+  name: PropertyGetter(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_PropertyGetter_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.PropertyGetter(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.PropertyGetter(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.PropertyGetter(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.PropertyGetter*
+  name: PropertyGetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_PropertyGetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.PropertyGetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.PropertyGetter
+  nameWithType: AccessToolsExtensions.PropertyGetter
+- uid: HarmonyLib.AccessToolsExtensions.PropertySetter(System.Type,System.String)
+  name: PropertySetter(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_PropertySetter_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.PropertySetter(System.Type,System.String)
+  fullName: HarmonyLib.AccessToolsExtensions.PropertySetter(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.PropertySetter(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.PropertySetter*
+  name: PropertySetter
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_PropertySetter_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.PropertySetter
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.PropertySetter
+  nameWithType: AccessToolsExtensions.PropertySetter
+- uid: HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess*
+  name: StaticFieldRefAccess
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_StaticFieldRefAccess_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess
+  nameWithType: AccessToolsExtensions.StaticFieldRefAccess
+- uid: HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess``1(System.Type,System.String)
+  name: StaticFieldRefAccess<F>(Type, String)
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_StaticFieldRefAccess__1_System_Type_System_String_
+  commentId: M:HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess``1(System.Type,System.String)
+  name.vb: StaticFieldRefAccess(Of F)(Type, String)
+  fullName: HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess<F>(System.Type, System.String)
+  fullName.vb: HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess(Of F)(System.Type, System.String)
+  nameWithType: AccessToolsExtensions.StaticFieldRefAccess<F>(Type, String)
+  nameWithType.vb: AccessToolsExtensions.StaticFieldRefAccess(Of F)(Type, String)
+- uid: HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException(System.Type,System.String[])
+  name: ThrowMissingMemberException(Type, String[])
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_ThrowMissingMemberException_System_Type_System_String___
+  commentId: M:HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException(System.Type,System.String[])
+  name.vb: ThrowMissingMemberException(Type, String())
+  fullName: HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException(System.Type, System.String[])
+  fullName.vb: HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException(System.Type, System.String())
+  nameWithType: AccessToolsExtensions.ThrowMissingMemberException(Type, String[])
+  nameWithType.vb: AccessToolsExtensions.ThrowMissingMemberException(Type, String())
+- uid: HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException*
+  name: ThrowMissingMemberException
+  href: api/HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_ThrowMissingMemberException_
+  commentId: Overload:HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException
+  isSpec: "True"
+  fullName: HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException
+  nameWithType: AccessToolsExtensions.ThrowMissingMemberException
 - uid: HarmonyLib.ArgumentType
   name: ArgumentType
   href: api/HarmonyLib.ArgumentType.html
