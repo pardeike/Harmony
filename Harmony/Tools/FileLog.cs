@@ -60,7 +60,7 @@ namespace HarmonyLib
 		///
 		public static int indentLevel = 0;
 
-		static List<string> buffer = new();
+		static List<string> buffer = [];
 
 		static string IndentString()
 		{
@@ -112,7 +112,7 @@ namespace HarmonyLib
 			{
 				var result = buffer;
 				if (clear)
-					buffer = new List<string>();
+					buffer = [];
 				return result;
 			}
 		}

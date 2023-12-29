@@ -229,7 +229,7 @@ namespace HarmonyLibTests.Patching
 			var obj = Activator.CreateInstance(originalType);
 			var m_method = AccessTools.Method(originalType, "Method");
 			Assert.NotNull(m_method, nameof(m_method));
-			info = new Dictionary<string, object>();
+			info = [];
 			try
 			{
 				if (m_method.ReturnType == typeof(void))

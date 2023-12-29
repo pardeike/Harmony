@@ -238,7 +238,7 @@ namespace HarmonyLibTests.Assets
 		public List<object> Method6()
 		{
 			_ = DateTime.Now;
-			return new List<object>() { someFloat, someString, someStruct };
+			return [someFloat, someString, someStruct];
 		}
 	}
 
@@ -582,10 +582,10 @@ namespace HarmonyLibTests.Assets
 			return PatchTools.CreateMethod(
 				$"{method.Name}_Class11Patch_Prefix",
 				typeof(bool),
-				new() {
+				[
 					new KeyValuePair<string, Type>("__result", typeof(string).MakeByRefType()),
 					new KeyValuePair<string, Type>("dummy", typeof(int))
-				},
+				],
 				il =>
 				{
 					//load "patched" into __result
@@ -635,7 +635,7 @@ namespace HarmonyLibTests.Assets
 
 	public class Class13<T> : IEnumerable<T>
 	{
-		readonly List<T> store = new();
+		readonly List<T> store = [];
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Add(T item)
@@ -669,7 +669,7 @@ namespace HarmonyLibTests.Assets
 
 	public class Class14
 	{
-		public static List<string> state = new();
+		public static List<string> state = [];
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public bool Test(string s, KeyValuePair<string, int> p)
@@ -885,7 +885,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(nameof(Finalizer_Patch_Order_Class.Method))]
 	public class Finalizer_Patch_Order_Patch
 	{
-		public static List<string> events = new();
+		public static List<string> events = [];
 
 		public static List<string> GetEvents()
 		{
@@ -894,7 +894,7 @@ namespace HarmonyLibTests.Assets
 
 		public static void ResetTest()
 		{
-			events = new List<string>();
+			events = [];
 		}
 
 		[HarmonyPrefix]
@@ -988,7 +988,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(nameof(Affecting_Original_Prefixes_Class.Method))]
 	public class Affecting_Original_Prefixes_Patch
 	{
-		public static List<string> events = new();
+		public static List<string> events = [];
 
 		public static List<string> GetEvents()
 		{
@@ -997,7 +997,7 @@ namespace HarmonyLibTests.Assets
 
 		public static void ResetTest()
 		{
-			events = new List<string>();
+			events = [];
 		}
 
 		[HarmonyPrefix]

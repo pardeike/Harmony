@@ -47,9 +47,11 @@ namespace HarmonyLibTests.Assets
 		{
 		}
 
-		static void Postfix()
-		{
-		}
+		// cannot patch method that ends in throw with a postfix
+		//
+		// static void Postfix()
+		// {
+		// }
 	}
 
 	[HarmonyPatch(typeof(DeadEndCode), nameof(DeadEndCode.Method))]

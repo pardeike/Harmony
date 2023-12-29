@@ -13,7 +13,7 @@ namespace HarmonyLib
 		public string name;
 
 		/// <summary>The matched opcodes</summary>
-		public HashSet<OpCode> opcodeSet = new();
+		public HashSet<OpCode> opcodeSet = [];
 
 		// for backwards compatibility we keep
 		/// <summary>The matched opcodes</summary>
@@ -27,13 +27,13 @@ namespace HarmonyLib
 #pragma warning restore IDE1006
 
 		/// <summary>The matched operands</summary>
-		public List<object> operands = new();
+		public List<object> operands = [];
 
 		/// <summary>The jumps from the match</summary>
-		public List<int> jumpsFrom = new();
+		public List<int> jumpsFrom = [];
 
 		/// <summary>The jumps to the match</summary>
-		public List<int> jumpsTo = new();
+		public List<int> jumpsTo = [];
 
 		/// <summary>The match predicate</summary>
 		public Func<CodeInstruction, bool> predicate;

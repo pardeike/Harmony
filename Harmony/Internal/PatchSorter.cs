@@ -44,8 +44,8 @@ namespace HarmonyLib
 			if (sortedPatchArray is not null) return sortedPatchArray.Select(x => x.GetMethod(original)).ToList();
 
 			// Initialize internal structures used for sorting.
-			handledPatches = new HashSet<PatchSortingWrapper>();
-			waitingList = new List<PatchSortingWrapper>();
+			handledPatches = [];
+			waitingList = [];
 			result = new List<PatchSortingWrapper>(patches.Count);
 			var queue = new Queue<PatchSortingWrapper>(patches);
 
@@ -165,8 +165,8 @@ namespace HarmonyLib
 			internal PatchSortingWrapper(Patch patch)
 			{
 				innerPatch = patch;
-				before = new HashSet<PatchSortingWrapper>();
-				after = new HashSet<PatchSortingWrapper>();
+				before = [];
+				after = [];
 			}
 
 			/// <summary>Determines how patches sort</summary>

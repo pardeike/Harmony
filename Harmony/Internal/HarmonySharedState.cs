@@ -65,7 +65,7 @@ namespace HarmonyLib
 			state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 
 			// copy 'originals' over to our fields
-			originals = new Dictionary<MethodInfo, MethodBase>();
+			originals = [];
 			if (originalsField != null) // may not exist in older versions
 				originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
 		}

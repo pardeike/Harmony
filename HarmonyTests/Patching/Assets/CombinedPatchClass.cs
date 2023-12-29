@@ -9,7 +9,13 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method1()
 		{
-			throw new Exception();
+			try
+			{
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
@@ -21,7 +27,13 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method3(int n)
 		{
-			throw new Exception("" + n);
+			try
+			{
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 		}
 	}
 

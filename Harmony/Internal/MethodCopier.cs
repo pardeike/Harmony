@@ -14,7 +14,7 @@ namespace HarmonyLib
 	internal class MethodCopier
 	{
 		readonly MethodBodyReader reader;
-		readonly List<MethodInfo> transpilers = new();
+		readonly List<MethodInfo> transpilers = [];
 
 		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
 		{
@@ -98,7 +98,7 @@ namespace HarmonyLib
 			if ((body?.GetILAsByteArray()?.Length ?? 0) == 0)
 			{
 				ilBytes = new ByteBuffer(new byte[0]);
-				ilInstructions = new List<ILInstruction>();
+				ilInstructions = [];
 			}
 			else
 			{
@@ -127,7 +127,7 @@ namespace HarmonyLib
 				this_parameter = new ThisParameter(method);
 			parameters = method.GetParameters();
 
-			localVariables = body?.LocalVariables?.ToList() ?? new List<LocalVariableInfo>();
+			localVariables = body?.LocalVariables?.ToList() ?? [];
 			exceptions = body?.ExceptionHandlingClauses ?? new List<ExceptionHandlingClause>();
 		}
 

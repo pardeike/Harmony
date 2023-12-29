@@ -7,8 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.Serialization;
 using System.Threading;
+using System.Runtime.Serialization;
+
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
@@ -659,7 +660,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetMethodNames: type is null");
-				return new List<string>();
+				return [];
 			}
 			return GetDeclaredMethods(type).Select(m => m.Name).ToList();
 		}
@@ -673,7 +674,7 @@ namespace HarmonyLib
 			if (instance is null)
 			{
 				FileLog.Debug("AccessTools.GetMethodNames: instance is null");
-				return new List<string>();
+				return [];
 			}
 			return GetMethodNames(instance.GetType());
 		}
@@ -687,7 +688,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetFieldNames: type is null");
-				return new List<string>();
+				return [];
 			}
 			return GetDeclaredFields(type).Select(f => f.Name).ToList();
 		}
@@ -701,7 +702,7 @@ namespace HarmonyLib
 			if (instance is null)
 			{
 				FileLog.Debug("AccessTools.GetFieldNames: instance is null");
-				return new List<string>();
+				return [];
 			}
 			return GetFieldNames(instance.GetType());
 		}
@@ -715,7 +716,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetPropertyNames: type is null");
-				return new List<string>();
+				return [];
 			}
 			return GetDeclaredProperties(type).Select(f => f.Name).ToList();
 		}
@@ -729,7 +730,7 @@ namespace HarmonyLib
 			if (instance is null)
 			{
 				FileLog.Debug("AccessTools.GetPropertyNames: instance is null");
-				return new List<string>();
+				return [];
 			}
 			return GetPropertyNames(instance.GetType());
 		}
@@ -823,7 +824,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredConstructors: type is null");
-				return new List<ConstructorInfo>();
+				return [];
 			}
 			var flags = allDeclared;
 			if (searchForStatic.HasValue)
@@ -840,7 +841,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredMethods: type is null");
-				return new List<MethodInfo>();
+				return [];
 			}
 			return type.GetMethods(allDeclared).ToList();
 		}
@@ -854,7 +855,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredProperties: type is null");
-				return new List<PropertyInfo>();
+				return [];
 			}
 			return type.GetProperties(allDeclared).ToList();
 		}
@@ -868,7 +869,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredFields: type is null");
-				return new List<FieldInfo>();
+				return [];
 			}
 			return type.GetFields(allDeclared).ToList();
 		}
@@ -1865,7 +1866,11 @@ namespace HarmonyLib
 				CallingConventions.Any, new Type[0], modifiers: null);
 			if (ctor is not null)
 				return ctor.Invoke(null);
-			return FormatterServices.GetUninitializedObject(type);
+#if NET5_0_OR_GREATER
+			return System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(type);
+#else
+			return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
+#endif
 		}
 
 		/// <summary>Creates an (possibly uninitialized) instance of a given type</summary>
@@ -1885,7 +1890,7 @@ namespace HarmonyLib
 		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
 		/// </summary>
 		///
-		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = new();
+		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = [];
 
 #if NET35
 		static readonly ReaderWriterLock addHandlerCacheLock = new();

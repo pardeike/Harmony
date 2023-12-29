@@ -19,7 +19,7 @@ namespace HarmonyLib
 	internal class Emitter
 	{
 		readonly CecilILGenerator il;
-		readonly Dictionary<int, CodeInstruction> instructions = new();
+		readonly Dictionary<int, CodeInstruction> instructions = [];
 		readonly bool debug;
 
 		internal Emitter(ILGenerator il, bool debug)

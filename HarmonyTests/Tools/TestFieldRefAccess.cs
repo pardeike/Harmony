@@ -939,7 +939,7 @@ namespace HarmonyLibTests.Tools
 				TestSuite_Struct<AccessToolsStruct, IComparable>(
 					field, "structField1test", expectedCaseToConstraint);
 				TestSuite_Struct<AccessToolsStruct, List<string>>(
-					field, new List<string> { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+					field, ["should always throw"], IncompatibleFieldType(expectedCaseToConstraint));
 			});
 		}
 

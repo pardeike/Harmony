@@ -206,7 +206,8 @@ namespace HarmonyLib
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			emitter.Emit(OpCodes.Ret);
+			if (endsInThrow == false || hasFinalizers) // methods ending in throw cannot have more code after the throw
+				emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();
 

@@ -21,13 +21,13 @@ namespace HarmonyLib
 			{ MemberType.Static, BasicFlags | BindingFlags.Static }
 		};
 
-		readonly Dictionary<Type, Dictionary<string, FieldInfo>> declaredFields = new();
-		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> declaredProperties = new();
-		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> declaredMethods = new();
+		readonly Dictionary<Type, Dictionary<string, FieldInfo>> declaredFields = [];
+		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> declaredProperties = [];
+		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> declaredMethods = [];
 
-		readonly Dictionary<Type, Dictionary<string, FieldInfo>> inheritedFields = new();
-		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> inheritedProperties = new();
-		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> inheritedMethods = new();
+		readonly Dictionary<Type, Dictionary<string, FieldInfo>> inheritedFields = [];
+		readonly Dictionary<Type, Dictionary<string, PropertyInfo>> inheritedProperties = [];
+		readonly Dictionary<Type, Dictionary<string, Dictionary<int, MethodBase>>> inheritedMethods = [];
 
 		static T Get<T>(Dictionary<Type, Dictionary<string, T>> dict, Type type, string name, Func<T> fetcher)
 		{
@@ -35,7 +35,7 @@ namespace HarmonyLib
 			{
 				if (dict.TryGetValue(type, out var valuesByName) is false)
 				{
-					valuesByName = new Dictionary<string, T>();
+					valuesByName = [];
 					dict[type] = valuesByName;
 				}
 				if (valuesByName.TryGetValue(name, out var value) is false)
@@ -53,12 +53,12 @@ namespace HarmonyLib
 			{
 				if (dict.TryGetValue(type, out var valuesByName) is false)
 				{
-					valuesByName = new Dictionary<string, Dictionary<int, T>>();
+					valuesByName = [];
 					dict[type] = valuesByName;
 				}
 				if (valuesByName.TryGetValue(name, out var valuesByArgument) is false)
 				{
-					valuesByArgument = new Dictionary<int, T>();
+					valuesByArgument = [];
 					valuesByName[name] = valuesByArgument;
 				}
 				var argumentsHash = AccessTools.CombinedHashCode(arguments);

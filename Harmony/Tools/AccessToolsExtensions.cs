@@ -264,13 +264,13 @@ namespace HarmonyLib
 		/// </param>
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>
-		/// A readable/assignable <see cref="FieldRef{T,F}"/> delegate with <c>T=object</c>
+		/// A readable/assignable <see cref="AccessTools.FieldRef{T,F}"/> delegate with <c>T=object</c>
 		/// (for static fields, the <c>instance</c> delegate parameter is ignored)
 		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// This method is meant for cases where the given type is only known at runtime and thus can't be used as a type parameter <c>T</c>
-		/// in e.g. <see cref="FieldRefAccess{T, F}(string)"/>.
+		/// in e.g. <see cref="AccessTools.FieldRefAccess{T, F}(string)"/>.
 		/// </para>
 		/// <para>
 		/// This method supports static fields, even those defined in structs, for legacy reasons.

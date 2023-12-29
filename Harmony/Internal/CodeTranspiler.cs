@@ -10,7 +10,7 @@ namespace HarmonyLib
 	internal class CodeTranspiler
 	{
 		readonly IEnumerable<CodeInstruction> codeInstructions;
-		readonly List<MethodInfo> transpilers = new();
+		readonly List<MethodInfo> transpilers = [];
 
 		internal CodeTranspiler(List<ILInstruction> ilInstructions)
 		{
@@ -156,7 +156,7 @@ namespace HarmonyLib
 			var listType = enumerableAssembly.GetType(genericListTypeWithElement.FullName);
 			var list = Activator.CreateInstance(listType);
 			var listAdd = list.GetType().GetMethod("Add");
-			unassignedValues = new Dictionary<object, Dictionary<string, object>>();
+			unassignedValues = [];
 			foreach (var op in enumerable)
 			{
 				var elementTo = ConvertInstruction(elementType, op, out var unassigned);
