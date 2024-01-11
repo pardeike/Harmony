@@ -115,8 +115,17 @@
 		</ItemGroup>
 	</Target>
 
-	<ItemGroup Condition="$(IsNET5OrGreater)">
+	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
 		<PackageReference Include="System.Text.Json" Version="5.0.2" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+		<PackageReference Include="System.Text.Json" Version="6.0.9" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<PackageReference Include="System.Text.Json" Version="7.0.4" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+		<PackageReference Include="System.Text.Json" Version="8.0.1" />
 	</ItemGroup>
 	<ItemGroup Condition="!$(IsNET5OrGreater)">
 		<Compile Remove="**\*.net5.cs" />
