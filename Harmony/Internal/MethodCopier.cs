@@ -34,9 +34,9 @@ namespace HarmonyLib
 			transpilers.Add(transpiler);
 		}
 
-		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode)
+		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode, out bool endsInThrow)
 		{
-			return reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode);
+			return reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode, out endsInThrow);
 		}
 
 		internal static List<CodeInstruction> GetInstructions(ILGenerator generator, MethodBase method, int maxTranspilers)
@@ -57,7 +57,7 @@ namespace HarmonyLib
 					copier.AddTranspiler(sortedTranspilers[i]);
 			}
 
-			return copier.Finalize(null, null, out var _);
+			return copier.Finalize(null, null, out var _, out var _);
 		}
 	}
 
@@ -315,9 +315,10 @@ namespace HarmonyLib
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
 
-		internal List<CodeInstruction> FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode)
+		internal List<CodeInstruction> FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode, out bool endsInThrow)
 		{
 			hasReturnCode = false;
+			endsInThrow = false;
 			if (generator is null) return null;
 
 			// pass1 - define labels and add them to instructions that are target of a jump
@@ -381,6 +382,7 @@ namespace HarmonyLib
 			// pass4 - check for any RET
 			//
 			hasReturnCode = codeInstructions.Any(code => code.opcode == OpCodes.Ret);
+			endsInThrow = codeInstructions.LastOrDefault()?.opcode == OpCodes.Throw;
 
 			// pass5 - remove RET if it appears at the end
 			//

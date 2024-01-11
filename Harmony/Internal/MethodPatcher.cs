@@ -139,8 +139,7 @@ namespace HarmonyLib
 			copier.AddTranspiler(PatchTools.m_GetExecutingAssemblyReplacementTranspiler);
 
 			var endLabels = new List<Label>();
-			var lastCode = copier.Finalize(emitter, endLabels, out var hasReturnCode).LastOrDefault();
-			var endsInThrow = lastCode != null && lastCode.opcode == OpCodes.Throw;
+			_ = copier.Finalize(emitter, endLabels, out var hasReturnCode, out var endsInThrow);
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
