@@ -1,6 +1,7 @@
 using Mono.Cecil;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -185,8 +186,16 @@ namespace HarmonyLib
 
 					case MetadataType.Var:
 					case MetadataType.MVar:
-					case MetadataType.GenericInstance:
 						throw new NotSupportedException($"Unsupported generic callsite element: {etype}");
+
+					case MetadataType.GenericInstance:
+						reader.ReadByte(); // element type, unused
+						var elType = GetTypeDefOrRef();
+						var arity = (int)ReadCompressedUInt32();
+
+						return elType.MakeGenericType(
+							Enumerable.Range(0, arity).Select(_ => (Type)ReadTypeSignature()).ToArray()
+						);
 
 					case MetadataType.Object:
 						return typeof(object);
