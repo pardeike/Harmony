@@ -27,9 +27,11 @@
     <ItemGroup Condition="'$(DoILRepack)' == 'true'">
         <!-- ILRepack.FullAuto seems to gracefully manage Windows, Linux and OS X -->
         <!-- We do need to replace the original ILRepack with out fork that also supports the newer .NET runtime -->
-        <PackageReference Include="ILRepack" Version="*" PrivateAssets="all" IncludeAssets="none" />
+        <!-- 
+		  <PackageReference Include="ILRepack" Version="*" PrivateAssets="all" IncludeAssets="none" />
         <PackageReference Include="BUTR.ILRepack" Version="2.1.9-beta7" GeneratePathProperty="true" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
-        <PackageReference Include="ILRepack.FullAuto" Version="1.2.0" PrivateAssets="all" />
+		  -->
+        <PackageReference Include="ILRepack.FullAuto" Version="1.5.0" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>
