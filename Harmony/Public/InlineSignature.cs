@@ -27,7 +27,7 @@ namespace HarmonyLib
 
 		/// <summary>The list of all parameter types or function pointer signatures received by the call site</summary>
 		///
-		public List<object> Parameters { get; set; } = new List<object>();
+		public List<object> Parameters { get; set; } = [];
 
 		/// <summary>The return type or function pointer signature returned by the call site</summary>
 		///

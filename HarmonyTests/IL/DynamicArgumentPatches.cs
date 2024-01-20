@@ -67,7 +67,7 @@ namespace HarmonyLibTests.IL
 		{
 			try
 			{
-				return new List<int>();
+				return [];
 			}
 			finally
 			{
@@ -78,7 +78,7 @@ namespace HarmonyLibTests.IL
 	[TestFixture, NonParallelizable]
 	public class DynamicArgumentPatches : TestLogger
 	{
-		static readonly List<string> log = new();
+		static readonly List<string> log = [];
 
 		static bool General(string typeName, int token, object instance, object[] args)
 		{

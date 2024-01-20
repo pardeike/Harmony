@@ -11,8 +11,8 @@ namespace HarmonyLib
 		internal object operand;
 		internal object argument;
 
-		internal List<Label> labels = new();
-		internal List<ExceptionBlock> blocks = new();
+		internal List<Label> labels = [];
+		internal List<ExceptionBlock> blocks = [];
 
 		internal ILInstruction(OpCode opcode, object operand = null)
 		{

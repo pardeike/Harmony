@@ -54,7 +54,7 @@ namespace HarmonyLibTests.Patching
 				if (instruction.opcode == insertLoc)
 				{
 					var blocks = instruction.blocks;
-					instruction.blocks = new List<ExceptionBlock>();
+					instruction.blocks = [];
 
 					var log = AccessTools.DeclaredField(typeof(Class3), "log");
 					var tst = typeof(string);

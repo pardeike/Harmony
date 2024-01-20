@@ -1,6 +1,8 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -47,9 +49,11 @@ namespace HarmonyLibTests.Assets
 		{
 		}
 
-		static void Postfix()
-		{
-		}
+		// cannot patch method that ends in throw with a postfix
+		//
+		// static void Postfix()
+		// {
+		// }
 	}
 
 	[HarmonyPatch(typeof(DeadEndCode), nameof(DeadEndCode.Method))]
@@ -108,6 +112,33 @@ namespace HarmonyLibTests.Assets
 		static Exception Cleanup()
 		{
 			return null;
+		}
+	}
+
+	public class LateThrowClass
+	{
+		StringBuilder builder;
+
+		public void Method()
+		{
+			if (builder == null)
+			{
+				builder = new StringBuilder();
+				var num = builder.Length == 123;
+
+				// this throw is the last IL code before 'ret' in this method
+				if (num == false)
+					throw new Exception("Test");
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(LateThrowClass), nameof(LateThrowClass.Method))]
+	public class LateThrowClass_Patch
+	{
+		static bool Prefix()
+		{
+			return false;
 		}
 	}
 

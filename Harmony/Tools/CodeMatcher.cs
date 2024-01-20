@@ -10,14 +10,14 @@ namespace HarmonyLib
 	public class CodeMatcher
 	{
 		private readonly ILGenerator generator;
-		private readonly List<CodeInstruction> codes = new();
+		private readonly List<CodeInstruction> codes = [];
 
 		/// <summary>The current position</summary>
 		/// <value>The index or -1 if out of bounds</value>
 		///
 		public int Pos { get; private set; } = -1;
 
-		private Dictionary<string, CodeInstruction> lastMatches = new();
+		private Dictionary<string, CodeInstruction> lastMatches = [];
 		private string lastError;
 		private delegate CodeMatcher MatchDelegate();
 		private MatchDelegate lastMatchCall;
@@ -663,7 +663,7 @@ namespace HarmonyLib
 		private bool MatchSequence(int start, CodeMatch[] matches)
 		{
 			if (start < 0) return false;
-			lastMatches = new Dictionary<string, CodeInstruction>();
+			lastMatches = [];
 			foreach (var match in matches)
 			{
 				if (start >= Length || match.Matches(codes, codes[start]) == false)

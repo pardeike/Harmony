@@ -139,8 +139,7 @@ namespace HarmonyLib
 			copier.AddTranspiler(PatchTools.m_GetExecutingAssemblyReplacementTranspiler);
 
 			var endLabels = new List<Label>();
-			var lastCode = copier.Finalize(emitter, endLabels, out var hasReturnCode).LastOrDefault();
-			var endsInThrow = lastCode != null && lastCode.opcode == OpCodes.Throw;
+			_ = copier.Finalize(emitter, endLabels, out var hasReturnCode, out var endsInThrow);
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
@@ -206,7 +205,8 @@ namespace HarmonyLib
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			emitter.Emit(OpCodes.Ret);
+			if (endsInThrow == false || hasFinalizers) // methods ending in throw cannot have more code after the throw
+				emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();
 

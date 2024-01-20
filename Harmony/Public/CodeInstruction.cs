@@ -13,7 +13,7 @@ namespace HarmonyLib
 	{
 		internal static class State
 		{
-			internal static readonly Dictionary<int, Delegate> closureCache = new();
+			internal static readonly Dictionary<int, Delegate> closureCache = [];
 		}
 
 		/// <summary>The opcode</summary>
@@ -26,11 +26,11 @@ namespace HarmonyLib
 
 		/// <summary>All labels defined on this instruction</summary>
 		///
-		public List<Label> labels = new();
+		public List<Label> labels = [];
 
 		/// <summary>All exception block boundaries defined on this instruction</summary>
 		///
-		public List<ExceptionBlock> blocks = new();
+		public List<ExceptionBlock> blocks = [];
 
 		// Internal parameterless constructor that AccessTools.CreateInstance can use, ensuring that labels/blocks are initialized.
 		internal CodeInstruction()
@@ -67,8 +67,8 @@ namespace HarmonyLib
 		{
 			return new CodeInstruction(this)
 			{
-				labels = new List<Label>(),
-				blocks = new List<ExceptionBlock>()
+				labels = [],
+				blocks = []
 			};
 		}
 

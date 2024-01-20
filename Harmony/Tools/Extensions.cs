@@ -165,62 +165,62 @@ namespace HarmonyLib
 	///
 	public static class CodeInstructionExtensions
 	{
-		internal static readonly HashSet<OpCode> opcodesCalling = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesCalling =
+		[
 			OpCodes.Call,
 			OpCodes.Callvirt
-		};
+		];
 
-		internal static readonly HashSet<OpCode> opcodesLoadingLocalByAddress = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesLoadingLocalByAddress =
+		[
 			OpCodes.Ldloca_S,
 			OpCodes.Ldloca
-		};
+		];
 
-		internal static readonly HashSet<OpCode> opcodesLoadingLocalNormal = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesLoadingLocalNormal =
+		[
 			OpCodes.Ldloc_0,
 			OpCodes.Ldloc_1,
 			OpCodes.Ldloc_2,
 			OpCodes.Ldloc_3,
 			OpCodes.Ldloc_S,
 			OpCodes.Ldloc
-		};
+		];
 
-		internal static readonly HashSet<OpCode> opcodesStoringLocal = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesStoringLocal =
+		[
 			OpCodes.Stloc_0,
 			OpCodes.Stloc_1,
 			OpCodes.Stloc_2,
 			OpCodes.Stloc_3,
 			OpCodes.Stloc_S,
 			OpCodes.Stloc
-		};
+		];
 
-		internal static readonly HashSet<OpCode> opcodesLoadingArgumentByAddress = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesLoadingArgumentByAddress =
+		[
 			OpCodes.Ldarga_S,
 			OpCodes.Ldarga
-		};
+		];
 
-		internal static readonly HashSet<OpCode> opcodesLoadingArgumentNormal = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesLoadingArgumentNormal =
+		[
 			OpCodes.Ldarg_0,
 			OpCodes.Ldarg_1,
 			OpCodes.Ldarg_2,
 			OpCodes.Ldarg_3,
 			OpCodes.Ldarg_S,
 			OpCodes.Ldarg
-		};
+		];
 
-		internal static readonly HashSet<OpCode> opcodesStoringArgument = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesStoringArgument =
+		[
 			OpCodes.Starg_S,
 			OpCodes.Starg
-		};
+		];
 
-		internal static readonly HashSet<OpCode> opcodesBranching = new()
-		{
+		internal static readonly HashSet<OpCode> opcodesBranching =
+		[
 			OpCodes.Br_S,
 			OpCodes.Brfalse_S,
 			OpCodes.Brtrue_S,
@@ -247,10 +247,10 @@ namespace HarmonyLib
 			OpCodes.Bgt_Un,
 			OpCodes.Ble_Un,
 			OpCodes.Blt_Un
-		};
+		];
 
-		static readonly HashSet<OpCode> constantLoadingCodes = new()
-		{
+		static readonly HashSet<OpCode> constantLoadingCodes =
+		[
 			OpCodes.Ldc_I4_M1,
 			OpCodes.Ldc_I4_0,
 			OpCodes.Ldc_I4_1,
@@ -266,7 +266,7 @@ namespace HarmonyLib
 			OpCodes.Ldc_I8,
 			OpCodes.Ldc_R4,
 			OpCodes.Ldc_R8
-		};
+		];
 
 		/// <summary>Returns if an <see cref="OpCode"/> is initialized and valid</summary>
 		/// <param name="code">The <see cref="OpCode"/></param>

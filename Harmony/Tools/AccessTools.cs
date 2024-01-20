@@ -7,8 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.Serialization;
 using System.Threading;
+using System.Runtime.Serialization;
+
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
@@ -16,14 +17,19 @@ using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
+	// ---------------------------------------------------------------------------------------------------------------------
+	// NOTE:
+	// When adding or updating methods that have a first argument of 'Type type, please create/update a corresponding method
+	// and xml documentation in AccessToolsExtensions!
+	// ---------------------------------------------------------------------------------------------------------------------
+
 	/// <summary>A helper class for reflection related functions</summary>
 	///
 	public static class AccessTools
 	{
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level</summary>
 		///
-		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
-		public static readonly BindingFlags all = BindingFlags.Public
+		public static readonly BindingFlags all = BindingFlags.Public // This should a be const, but changing from static (readonly) to const breaks binary compatibility.
 			| BindingFlags.NonPublic
 			| BindingFlags.Instance
 			| BindingFlags.Static
@@ -34,11 +40,11 @@ namespace HarmonyLib
 
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level but only within the current type</summary>
 		///
-		// Note: This should a be const, but changing from static (readonly) to const breaks binary compatibility.
-		public static readonly BindingFlags allDeclared = all | BindingFlags.DeclaredOnly;
+		public static readonly BindingFlags allDeclared = all | BindingFlags.DeclaredOnly; //  This should a be const, but changing from static (readonly) to const breaks binary compatibility.
 
 		/// <summary>Enumerates all assemblies in the current app domain, excluding visual studio assemblies</summary>
 		/// <returns>An enumeration of <see cref="Assembly"/></returns>
+		///
 		public static IEnumerable<Assembly> AllAssemblies()
 		{
 			return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") is false);
@@ -81,9 +87,19 @@ namespace HarmonyLib
 
 		/// <summary>Enumerates all successfully loaded types in the current app domain, excluding visual studio assemblies</summary>
 		/// <returns>An enumeration of all <see cref="Type"/> in all assemblies, excluding visual studio assemblies</returns>
+		///
 		public static IEnumerable<Type> AllTypes()
 		{
 			return AllAssemblies().SelectMany(a => GetTypesFromAssembly(a));
+		}
+
+		/// <summary>Enumerates all inner types (non-recursive) of a given type</summary>
+		/// <param name="type">The class/type to start with</param>
+		/// <returns>An enumeration of all inner <see cref="Type"/></returns>
+		///
+		public static IEnumerable<Type> InnerTypes(Type type)
+		{
+			return type.GetNestedTypes(all);
 		}
 
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non-<c>null</c> result</summary>
@@ -423,6 +439,7 @@ namespace HarmonyLib
 		/// <param name="type">The class/type</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
 		/// <returns>A method or null when type is null or when the indexer property cannot be found</returns>
+		///
 		public static MethodInfo IndexerGetter(Type type, Type[] parameters = null)
 		{
 			return Indexer(type, parameters)?.GetGetMethod(true);
@@ -451,6 +468,7 @@ namespace HarmonyLib
 		/// <param name="type">The class/type</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
 		/// <returns>A method or null when type is null or when the indexer property cannot be found</returns>
+		///
 		public static MethodInfo IndexerSetter(Type type, Type[] parameters = null)
 		{
 			return Indexer(type, parameters)?.GetSetMethod(true);
@@ -571,6 +589,7 @@ namespace HarmonyLib
 		/// <summary>Gets the <see cref="IEnumerator.MoveNext"/> method of an enumerator method</summary>
 		/// <param name="method">Enumerator method that creates the enumerator <see cref="IEnumerator" /></param>
 		/// <returns>The internal <see cref="IEnumerator.MoveNext"/> method of the enumerator or <b>null</b> if no valid enumerator is detected</returns>
+		///
 		public static MethodInfo EnumeratorMoveNext(MethodBase method)
 		{
 			if (method is null)
@@ -604,6 +623,7 @@ namespace HarmonyLib
 		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext"/> method of an async method's state machine</summary>
 		/// <param name="method">Async method that creates the state machine internally</param>
 		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
+		///
 		public static MethodInfo AsyncMoveNext(MethodBase method)
 		{
 			if (method is null)
@@ -640,7 +660,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetMethodNames: type is null");
-				return new List<string>();
+				return [];
 			}
 			return GetDeclaredMethods(type).Select(m => m.Name).ToList();
 		}
@@ -654,7 +674,7 @@ namespace HarmonyLib
 			if (instance is null)
 			{
 				FileLog.Debug("AccessTools.GetMethodNames: instance is null");
-				return new List<string>();
+				return [];
 			}
 			return GetMethodNames(instance.GetType());
 		}
@@ -668,7 +688,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetFieldNames: type is null");
-				return new List<string>();
+				return [];
 			}
 			return GetDeclaredFields(type).Select(f => f.Name).ToList();
 		}
@@ -682,7 +702,7 @@ namespace HarmonyLib
 			if (instance is null)
 			{
 				FileLog.Debug("AccessTools.GetFieldNames: instance is null");
-				return new List<string>();
+				return [];
 			}
 			return GetFieldNames(instance.GetType());
 		}
@@ -696,7 +716,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetPropertyNames: type is null");
-				return new List<string>();
+				return [];
 			}
 			return GetDeclaredProperties(type).Select(f => f.Name).ToList();
 		}
@@ -710,7 +730,7 @@ namespace HarmonyLib
 			if (instance is null)
 			{
 				FileLog.Debug("AccessTools.GetPropertyNames: instance is null");
-				return new List<string>();
+				return [];
 			}
 			return GetPropertyNames(instance.GetType());
 		}
@@ -804,7 +824,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredConstructors: type is null");
-				return new List<ConstructorInfo>();
+				return [];
 			}
 			var flags = allDeclared;
 			if (searchForStatic.HasValue)
@@ -821,7 +841,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredMethods: type is null");
-				return new List<MethodInfo>();
+				return [];
 			}
 			return type.GetMethods(allDeclared).ToList();
 		}
@@ -835,7 +855,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredProperties: type is null");
-				return new List<PropertyInfo>();
+				return [];
 			}
 			return type.GetProperties(allDeclared).ToList();
 		}
@@ -849,7 +869,7 @@ namespace HarmonyLib
 			if (type is null)
 			{
 				FileLog.Debug("AccessTools.GetDeclaredFields: type is null");
-				return new List<FieldInfo>();
+				return [];
 			}
 			return type.GetFields(allDeclared).ToList();
 		}
@@ -1176,6 +1196,7 @@ namespace HarmonyLib
 		/// <typeparam name="F"> type of the field</typeparam>
 		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
 		/// <returns>A readable/assignable <see cref="FieldRef{T,F}"/> delegate with <c>T=object</c></returns>
+		///
 		public static FieldRef<object, F> FieldRefAccess<F>(string typeColonName)
 		{
 			var info = Tools.TypColonName(typeColonName);
@@ -1845,7 +1866,11 @@ namespace HarmonyLib
 				CallingConventions.Any, new Type[0], modifiers: null);
 			if (ctor is not null)
 				return ctor.Invoke(null);
-			return FormatterServices.GetUninitializedObject(type);
+#if NET5_0_OR_GREATER
+			return System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(type);
+#else
+			return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
+#endif
 		}
 
 		/// <summary>Creates an (possibly uninitialized) instance of a given type</summary>
@@ -1864,7 +1889,8 @@ namespace HarmonyLib
 		/// <summary>
 		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
 		/// </summary>
-		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = new();
+		///
+		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = [];
 
 #if NET35
 		static readonly ReaderWriterLock addHandlerCacheLock = new();

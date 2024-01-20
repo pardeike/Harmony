@@ -17,13 +17,13 @@ namespace HarmonyLib
 
 		readonly List<AttributePatch> patchMethods;
 
-		static readonly List<Type> auxilaryTypes = new()
-		{
+		static readonly List<Type> auxilaryTypes =
+		[
 			typeof(HarmonyPrepare),
 			typeof(HarmonyCleanup),
 			typeof(HarmonyTargetMethod),
 			typeof(HarmonyTargetMethods)
-		};
+		];
 
 		/// <summary name="Category">Name of the patch class's category</summary>
 		public string Category { get; set; }
@@ -51,7 +51,7 @@ namespace HarmonyLib
 			
 			Category = containerAttributes.category;
 
-			auxilaryMethods = new Dictionary<Type, MethodInfo>();
+			auxilaryMethods = [];
 			foreach (var auxType in auxilaryTypes)
 			{
 				var method = PatchTools.GetPatchMethod(containerType, auxType.FullName);
@@ -82,7 +82,7 @@ namespace HarmonyLib
 			{
 				RunMethod<HarmonyCleanup>(ref exception);
 				ReportException(exception, null);
-				return new List<MethodInfo>();
+				return [];
 			}
 
 			var replacements = new List<MethodInfo>();

@@ -58,7 +58,7 @@ namespace HarmonyLibTests.Assets
 		private Inner field5 = new() { x = 999 };
 		private Inner[] field6 = new Inner[] { new Inner { x = 11 }, new Inner { x = 22 } };
 		private InnerStruct field7 = new() { x = 999 };
-		private List<InnerStruct> field8 = new() { new InnerStruct { x = 11 }, new InnerStruct { x = 22 } };
+		private List<InnerStruct> field8 = [new InnerStruct { x = 11 }, new InnerStruct { x = 22 }];
 		internal DayOfWeek field9 = DayOfWeek.Saturday;
 
 		private int _property = 314159;

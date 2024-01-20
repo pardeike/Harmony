@@ -40,7 +40,7 @@ Depending on the needs and situation, altering dll files is not always a desirab
 - it does not coordinate nicely with multiple concurrent changes
 - it has to be done before and outside the original application
 
-Harmony uses a variation of hooking and focuces only on runtime changes that don't affect files on disk:
+Harmony uses a variation of hooking and focuses only on runtime changes that don't affect files on disk:
 
 - less conflicts with multiple mods
 - supports existing mod loaders

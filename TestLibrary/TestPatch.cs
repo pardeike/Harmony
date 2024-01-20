@@ -24,7 +24,7 @@ public static class TestPatch
 		postfix = Assembly.GetExecutingAssembly();
 	}
 
-	private static void Finalizer(Exception __exception) { }
+	private static void Finalizer(Exception __exception) { _ = __exception; }
 
 	private static IEnumerable<CodeInstruction> EmptyTranspiler(IEnumerable<CodeInstruction> instructions) => instructions;
 

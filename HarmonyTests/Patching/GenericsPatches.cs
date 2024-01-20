@@ -67,7 +67,7 @@ namespace HarmonyLibTests.Patching
 			}
 		}
 
-		public List<T> list = new();
+		public List<T> list = [];
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public MyEnumerator GetEnumerator()
@@ -92,7 +92,7 @@ namespace HarmonyLibTests.Patching
 	{
 		public static MyList<int>.MyEnumerator Postfix(MyList<int>.MyEnumerator input)
 		{
-			input.SetList(new List<int>() { 100, 200, 300 });
+			input.SetList([100, 200, 300]);
 			return input;
 		}
 	}
@@ -120,7 +120,7 @@ namespace HarmonyLibTests.Patching
 			_ = patcher.AddPostfix(postfix);
 			_ = patcher.Patch();
 
-			var list = new MyList<int> { list = new List<int>() { 1, 2, 3 } };
+			var list = new MyList<int> { list = [1, 2, 3] };
 
 			var enumerator = list.GetEnumerator();
 			var result = new List<int>();

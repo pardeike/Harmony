@@ -11,7 +11,7 @@ namespace HarmonyLib
 {
 	internal static class PatchTools
 	{
-		private static readonly Dictionary<MethodBase, ICoreDetour> detours = new();
+		private static readonly Dictionary<MethodBase, ICoreDetour> detours = [];
 
 		internal static void DetourMethod(MethodBase method, MethodBase replacement)
 		{

@@ -1,5 +1,18 @@
 <Project>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
+		<PackageReference Include="System.Text.Json" Version="5.0.2" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+		<PackageReference Include="System.Text.Json" Version="6.0.9" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<PackageReference Include="System.Text.Json" Version="7.0.4" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+		<PackageReference Include="System.Text.Json" Version="8.0.1" />
+	</ItemGroup>
+	
     <Choose>
         <When Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
             <PropertyGroup>
@@ -14,7 +27,7 @@
     </Choose>
 
     <Choose>
-        <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0'">
+        <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net7.0' Or '$(TargetFramework)' == 'net8.0'">
             <PropertyGroup>
                 <IsNET5OrGreater>true</IsNET5OrGreater>
             </PropertyGroup>

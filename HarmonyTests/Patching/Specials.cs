@@ -157,6 +157,31 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+		public void Test_PatchingLateThrow()
+		{
+			var patchClass = typeof(LateThrowClass_Patch);
+			Assert.NotNull(patchClass);
+
+			try
+			{
+				new LateThrowClass().Method();
+				Assert.Fail("expecting exception");
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual(ex.Message, "Test");
+			}
+
+			var instance = new Harmony("test");
+			Assert.NotNull(instance);
+			var patcher = instance.CreateClassProcessor(patchClass);
+			Assert.NotNull(patcher);
+			Assert.NotNull(patcher.Patch());
+
+			new LateThrowClass().Method();
+		}
+
+		[Test]
 		public void Test_PatchExceptionWithCleanup2()
 		{
 			if (AccessTools.IsMonoRuntime is false)
