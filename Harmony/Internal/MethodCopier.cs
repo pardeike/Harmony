@@ -320,7 +320,7 @@ namespace HarmonyLib
 			var n = list.Count;
 			if (n < 2 || list.Last().opcode != OpCodes.Throw)
 				return false;
-			return list.GetRange(0, n - 1).Any(code => code.opcode == OpCodes.Ret);
+			return list.GetRange(0, n - 1).All(code => code.opcode != OpCodes.Ret);
 		}
 
 		internal List<CodeInstruction> FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode, out bool methodEndsInDeadCode)

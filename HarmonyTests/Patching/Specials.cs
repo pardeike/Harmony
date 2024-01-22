@@ -152,8 +152,6 @@ namespace HarmonyLibTests.Patching
 			var newMethod = instance.Patch(original, prefix: new HarmonyMethod(prefix));
 			Assert.NotNull(newMethod);
 
-			Exception exception = null;
-
 			// run original with prefix
 			DeadEndCode_Patch1.prefixCalled = false;
 			try
@@ -163,28 +161,28 @@ namespace HarmonyLibTests.Patching
 			}
 			catch (Exception ex)
 			{
-				exception = ex;
+				Assert.NotNull(ex as FormatException);
 			}
 			Assert.True(DeadEndCode_Patch1.prefixCalled);
-			Assert.NotNull(exception as FormatException);
 
-			// patch: +postfix (should fail)
+			// patch: +postfix
 			if (AccessTools.IsMonoRuntime)
 			{
-				exception = null;
+				// mono should fail
 				try
 				{
 					_ = instance.Patch(original, postfix: new HarmonyMethod(postfix));
-					Assert.NotNull(exception, "expecting patch exception");
+					Assert.Fail("expecting patch exception");
 				}
 				catch (Exception ex)
 				{
-					exception = ex;
+					Assert.NotNull(ex as InvalidProgramException);
 				}
-				Assert.NotNull(exception as InvalidProgramException);
 			}
 			else
 			{
+				// non-mono can add postfix to methods ending in dead code
+
 				_ = instance.Patch(original, postfix: new HarmonyMethod(prefix));
 				DeadEndCode_Patch1.prefixCalled = false;
 				DeadEndCode_Patch1.postfixCalled = false;

@@ -1,14 +1,9 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace HarmonyLibTests.Assets
 {
@@ -38,6 +33,7 @@ namespace HarmonyLibTests.Assets
 
 	public class DeadEndCode
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public string Method()
 		{
 			throw new FormatException();
@@ -57,7 +53,7 @@ namespace HarmonyLibTests.Assets
 
 		public static void Postfix()
 		{
-			prefixCalled = true;
+			postfixCalled = true;
 		}
 	}
 
@@ -124,6 +120,7 @@ namespace HarmonyLibTests.Assets
 
 	public class LateThrowClass1
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method(string str)
 		{
 			if (str.Length == 2)
@@ -155,6 +152,7 @@ namespace HarmonyLibTests.Assets
 
 	public class LateThrowClass2
 	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method(int i)
 		{
 			switch (i)
