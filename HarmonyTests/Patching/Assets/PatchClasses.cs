@@ -1,4 +1,5 @@
 using HarmonyLib;
+using MonoMod.Utils.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1424,12 +1425,25 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	// disabled - see test case
-	/*
 	public class ClassExceptionFilter
 	{
+		static bool flag = false;
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static int Method(Exception exception)
+		public static void Method1()
+		{
+			try
+			{
+				Console.WriteLine("code");
+			}
+			catch (Exception e) when (flag)
+			{
+				Console.WriteLine(e.Message);
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static int Method2(Exception exception)
 		{
 			var result = 0;
 			try
@@ -1452,5 +1466,4 @@ namespace HarmonyLibTests.Assets
 			return result;
 		}
 	}
-	*/
 }

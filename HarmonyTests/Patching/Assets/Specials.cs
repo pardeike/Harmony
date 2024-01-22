@@ -34,26 +34,31 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	// -----------------------------------------------------
+
 	public class DeadEndCode
 	{
 		public string Method()
 		{
-			throw new Exception();
+			throw new FormatException();
 		}
 	}
 
-	[HarmonyPatch(typeof(DeadEndCode), nameof(DeadEndCode.Method))]
+	// not using attributes here because we apply prefix first, then postfix
 	public class DeadEndCode_Patch1
 	{
-		static void Prefix()
+		public static bool prefixCalled = false;
+		public static bool postfixCalled = false;
+
+		public static void Prefix()
 		{
+			prefixCalled = true;
 		}
 
-		// cannot patch method that ends in throw with a postfix
-		//
-		// static void Postfix()
-		// {
-		// }
+		public static void Postfix()
+		{
+			prefixCalled = true;
+		}
 	}
 
 	[HarmonyPatch(typeof(DeadEndCode), nameof(DeadEndCode.Method))]
@@ -115,32 +120,72 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public class LateThrowClass
+	// -----------------------------------------------------
+
+	public class LateThrowClass1
 	{
-		StringBuilder builder;
-
-		public void Method()
+		public void Method(string str)
 		{
-			if (builder == null)
-			{
-				builder = new StringBuilder();
-				var num = builder.Length == 123;
+			if (str.Length == 2)
+				return;
 
-				// this throw is the last IL code before 'ret' in this method
-				if (num == false)
-					throw new Exception("Test");
+			// this throw is the last IL code before 'ret' in this method
+			throw new ArgumentException("fail");
+		}
+	}
+
+	[HarmonyPatch(typeof(LateThrowClass1), nameof(LateThrowClass1.Method))]
+	public class LateThrowClass_Patch1
+	{
+		public static bool prefixCalled = false;
+		public static bool postfixCalled = false;
+
+		static void Prefix()
+		{
+			prefixCalled = true;
+		}
+
+		static void Postfix()
+		{
+			postfixCalled = true;
+		}
+	}
+
+	// -----------------------------------------------------
+
+	public class LateThrowClass2
+	{
+		public void Method(int i)
+		{
+			switch (i)
+			{
+				case 0:
+					Console.WriteLine("Test");
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 	}
 
-	[HarmonyPatch(typeof(LateThrowClass), nameof(LateThrowClass.Method))]
-	public class LateThrowClass_Patch
+	[HarmonyPatch(typeof(LateThrowClass2), nameof(LateThrowClass2.Method))]
+	public class LateThrowClass_Patch2
 	{
-		static bool Prefix()
+		public static bool prefixCalled = false;
+		public static bool postfixCalled = false;
+
+		static void Prefix()
 		{
-			return false;
+			prefixCalled = true;
+		}
+
+		static void Postfix()
+		{
+			postfixCalled = true;
 		}
 	}
+
+	// -----------------------------------------------------
 
 	public struct SomeStruct
 	{

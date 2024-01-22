@@ -34,9 +34,9 @@ namespace HarmonyLib
 			transpilers.Add(transpiler);
 		}
 
-		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode, out bool endsInThrow)
+		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode, out bool methodEndsInDeadCode)
 		{
-			return reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode, out endsInThrow);
+			return reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode, out methodEndsInDeadCode);
 		}
 
 		internal static List<CodeInstruction> GetInstructions(ILGenerator generator, MethodBase method, int maxTranspilers)
@@ -315,10 +315,18 @@ namespace HarmonyLib
 			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
 		};
 
-		internal List<CodeInstruction> FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode, out bool endsInThrow)
+		bool EndsInDeadCode(List<CodeInstruction> list)
+		{
+			var n = list.Count;
+			if (n < 2 || list.Last().opcode != OpCodes.Throw)
+				return false;
+			return list.GetRange(0, n - 1).Any(code => code.opcode == OpCodes.Ret);
+		}
+
+		internal List<CodeInstruction> FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode, out bool methodEndsInDeadCode)
 		{
 			hasReturnCode = false;
-			endsInThrow = false;
+			methodEndsInDeadCode = false;
 			if (generator is null) return null;
 
 			// pass1 - define labels and add them to instructions that are target of a jump
@@ -382,7 +390,7 @@ namespace HarmonyLib
 			// pass4 - check for any RET
 			//
 			hasReturnCode = codeInstructions.Any(code => code.opcode == OpCodes.Ret);
-			endsInThrow = codeInstructions.LastOrDefault()?.opcode == OpCodes.Throw;
+			methodEndsInDeadCode = EndsInDeadCode(codeInstructions);
 
 			// pass5 - remove RET if it appears at the end
 			//
@@ -460,7 +468,7 @@ namespace HarmonyLib
 				codeInstruction.blocks.Do(block => emitter.MarkBlockAfter(block));
 			});
 
-			emitter.LogComment("end original");
+			emitter.LogComment("end original" + (methodEndsInDeadCode ? " (has dead code end)" : ""));
 			return codeInstructions;
 		}
 

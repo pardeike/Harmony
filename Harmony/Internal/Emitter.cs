@@ -208,17 +208,22 @@ namespace HarmonyLib
 
 		internal void MarkBlockAfter(ExceptionBlock block)
 		{
-			if (block.blockType == ExceptionBlockType.EndExceptionBlock)
+			switch (block.blockType)
 			{
-				if (debug)
-				{
-					// fake log a LEAVE code since BeginCatchBlock() does add it
-					LogIL(OpCodes.Leave, new LeaveTry());
+				case ExceptionBlockType.EndExceptionBlock:
+					if (debug)
+					{
+						// fake log a LEAVE code since BeginCatchBlock() does add it
+						LogIL(OpCodes.Leave, new LeaveTry());
 
-					FileLog.ChangeIndent(-1);
-					FileLog.LogBuffered("} // end handler");
-				}
-				il.EndExceptionBlock();
+						FileLog.ChangeIndent(-1);
+						FileLog.LogBuffered("} // end handler");
+					}
+					il.EndExceptionBlock();
+					return;
+				default:
+					Console.WriteLine(block.ToString());
+					return;
 			}
 		}
 

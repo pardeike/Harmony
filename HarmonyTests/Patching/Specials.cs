@@ -31,7 +31,7 @@ namespace HarmonyLibTests.Patching
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance);
-			_ = instance.Patch(original, new HarmonyMethod(prefix, debug: true), new HarmonyMethod(postfix, debug: true));
+			_ = instance.Patch(original, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
 
 			HttpWebRequestPatches.ResetTest();
 
@@ -126,50 +126,98 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Test_PatchException()
 		{
-			var patchClass = typeof(DeadEndCode_Patch1);
-			Assert.NotNull(patchClass);
+			var test = new DeadEndCode();
 
 			var instance = new Harmony("test");
 			Assert.NotNull(instance);
-			var patcher = instance.CreateClassProcessor(patchClass);
-			Assert.NotNull(patcher);
+			var original = AccessTools.Method(typeof(DeadEndCode), nameof(DeadEndCode.Method));
+			Assert.NotNull(original);
+			var prefix = AccessTools.Method(typeof(DeadEndCode_Patch1), nameof(DeadEndCode_Patch1.Prefix));
+			Assert.NotNull(prefix);
+			var postfix = AccessTools.Method(typeof(DeadEndCode_Patch1), nameof(DeadEndCode_Patch1.Postfix));
+			Assert.NotNull(postfix);
+
+			// run original
+			try
+			{
+				_ = test.Method();
+				Assert.Fail("expecting format exception");
+			}
+			catch (FormatException ex)
+			{
+				Assert.NotNull(ex);
+			}
+
+			// patch: +prefix
+			var newMethod = instance.Patch(original, prefix: new HarmonyMethod(prefix));
+			Assert.NotNull(newMethod);
 
 			Exception exception = null;
-			try
-			{
-				Assert.NotNull(patcher.Patch());
-			}
-			catch (Exception ex)
-			{
-				exception = ex;
-			}
-			Assert.Null(exception, "expecting no patching exception");
 
+			// run original with prefix
+			DeadEndCode_Patch1.prefixCalled = false;
 			try
 			{
-				new DeadEndCode().Method();
+				_ = test.Method();
+				Assert.Fail("expecting format exception");
 			}
 			catch (Exception ex)
 			{
 				exception = ex;
 			}
-			Assert.NotNull(exception, "expecting runtime exception");
+			Assert.True(DeadEndCode_Patch1.prefixCalled);
+			Assert.NotNull(exception as FormatException);
+
+			// patch: +postfix (should fail)
+			if (AccessTools.IsMonoRuntime)
+			{
+				exception = null;
+				try
+				{
+					_ = instance.Patch(original, postfix: new HarmonyMethod(postfix));
+					Assert.NotNull(exception, "expecting patch exception");
+				}
+				catch (Exception ex)
+				{
+					exception = ex;
+				}
+				Assert.NotNull(exception as InvalidProgramException);
+			}
+			else
+			{
+				_ = instance.Patch(original, postfix: new HarmonyMethod(prefix));
+				DeadEndCode_Patch1.prefixCalled = false;
+				DeadEndCode_Patch1.postfixCalled = false;
+				// run original
+				try
+				{
+					_ = test.Method();
+					Assert.Fail("expecting format exception");
+				}
+				catch (FormatException ex)
+				{
+					Assert.NotNull(ex);
+					Assert.True(DeadEndCode_Patch1.prefixCalled);
+					Assert.False(DeadEndCode_Patch1.postfixCalled);
+				}
+			}
 		}
 
 		[Test]
-		public void Test_PatchingLateThrow()
+		public void Test_PatchingLateThrow1()
 		{
-			var patchClass = typeof(LateThrowClass_Patch);
+			var patchClass = typeof(LateThrowClass_Patch1);
 			Assert.NotNull(patchClass);
 
+			new LateThrowClass1().Method("AB");
 			try
 			{
-				new LateThrowClass().Method();
+				new LateThrowClass1().Method("");
 				Assert.Fail("expecting exception");
 			}
-			catch (Exception ex)
+			catch (ArgumentException ex)
 			{
-				Assert.AreEqual(ex.Message, "Test");
+				Assert.AreEqual(ex.Message, "fail");
 			}
 
 			var instance = new Harmony("test");
@@ -178,7 +226,52 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(patcher);
 			Assert.NotNull(patcher.Patch());
 
-			new LateThrowClass().Method();
+			LateThrowClass_Patch1.prefixCalled = false;
+			LateThrowClass_Patch1.postfixCalled = false;
+			new LateThrowClass1().Method("AB");
+			Assert.True(LateThrowClass_Patch1.prefixCalled);
+			Assert.True(LateThrowClass_Patch1.postfixCalled);
+
+			LateThrowClass_Patch1.prefixCalled = false;
+			LateThrowClass_Patch1.postfixCalled = false;
+			try
+			{
+				new LateThrowClass1().Method("");
+				Assert.Fail("expecting exception");
+			}
+			catch (ArgumentException ex)
+			{
+				Assert.AreEqual(ex.Message, "fail");
+			}
+			Assert.True(LateThrowClass_Patch1.prefixCalled);
+			Assert.False(LateThrowClass_Patch1.postfixCalled);
+
+			LateThrowClass_Patch1.prefixCalled = false;
+			LateThrowClass_Patch1.postfixCalled = false;
+			new LateThrowClass1().Method("AB");
+			Assert.True(LateThrowClass_Patch1.prefixCalled);
+			Assert.True(LateThrowClass_Patch1.postfixCalled);
+		}
+
+		[Test]
+		public void Test_PatchingLateThrow2()
+		{
+			var patchClass = typeof(LateThrowClass_Patch2);
+			Assert.NotNull(patchClass);
+
+			new LateThrowClass2().Method(0);
+
+			var instance = new Harmony("test");
+			Assert.NotNull(instance);
+			var patcher = instance.CreateClassProcessor(patchClass);
+			Assert.NotNull(patcher);
+			Assert.NotNull(patcher.Patch());
+
+			LateThrowClass_Patch2.prefixCalled = false;
+			LateThrowClass_Patch2.postfixCalled = false;
+			new LateThrowClass2().Method(0);
+			Assert.True(LateThrowClass_Patch2.prefixCalled);
+			Assert.True(LateThrowClass_Patch2.postfixCalled);
 		}
 
 		[Test]

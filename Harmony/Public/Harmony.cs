@@ -1,3 +1,4 @@
+using MonoMod;
 using MonoMod.Core.Platforms;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,9 @@ namespace HarmonyLib
 			}
 
 			Id = id;
+
+			// TODO: enable to switch to building methods with CECIL
+			// Switches.SetSwitchValue(Switches.DMDType, "cecil");
 		}
 
 		/// <summary>Searches the current assembly for Harmony annotations and uses them to create patches</summary>
