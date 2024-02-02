@@ -23,6 +23,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>preview</LangVersion>
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 		<NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
 		<Version>$(HarmonyVersion)</Version>
@@ -46,24 +47,6 @@
 			</PropertyGroup>
 		</Otherwise>
 	</Choose>
-	
-	<Choose>
-		<!--
-		Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
-		so instead, relying on the fact that all .NET Core and .NET 5.0+ (and .NET Standard) have a period in their TFMs.
-		-->
-		<When Condition="$(TargetFramework.Contains('.'))">
-			<PropertyGroup>
-				<IsCoreOrStandard>true</IsCoreOrStandard>
-			</PropertyGroup>
-		</When>
-		<Otherwise>
-			<PropertyGroup>
-				<IsCoreOrStandard>false</IsCoreOrStandard>
-				<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-			</PropertyGroup>
-		</Otherwise>
-	</Choose>
 
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="" />
@@ -82,10 +65,13 @@
 		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
+		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
+		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
+		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.26" PrivateAssets="all" />
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 	</ItemGroup>
@@ -100,7 +86,7 @@
 		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
-		<!-- Adding System.Reflection.Emit to because there are public types exposed from its's package -->
+		<!-- Adding System.Reflection.Emit because there are public types exposed from its's package -->
 		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
 	</ItemGroup>
 	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework) == 'netstandard2.0'">
