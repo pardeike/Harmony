@@ -6,46 +6,30 @@
 		<LangVersion>preview</LangVersion>
 		<IsPackable>false</IsPackable>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
+		<Configurations>ReleaseFat;ReleaseLite;DebugLite;DebugFat</Configurations>
 	</PropertyGroup>
 
-	<!-- In .NET 5.0 Binary Formatters are off by default. Support is added for .NET 5.0+ for fallback JSON Serialization -->
-	<Choose>
-		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
-			<PropertyGroup>
-				<IsNET5OrGreater>true</IsNET5OrGreater>
-			</PropertyGroup>
-		</When>
-		<Otherwise>
-			<PropertyGroup>
-				<IsNET5OrGreater>false</IsNET5OrGreater>
-			</PropertyGroup>
-		</Otherwise>
-	</Choose>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Harmony\Harmony.csproj" />
-		<ProjectReference Include="..\TestLibrary\TestLibrary.csproj" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<Optimize>false</Optimize>
-		<DebugType>full</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<DefineConstants>DEBUG</DefineConstants>
+	<PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
+	  <Optimize>false</Optimize>
+	  <DebugType>full</DebugType>
+	  <DebugSymbols>true</DebugSymbols>
+	  <DefineConstants>DEBUG</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<PropertyGroup Condition="$(Configuration.StartsWith('Release'))">
 		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
 	<!-- Workaround for `dotnet test HarmonyTests -f net35` not running tests - Microsoft.NET.Test.Sdk only sets IsTestProject property for net40+. -->
-	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net35'">
 		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- Harmony FAT doesn't expose MonoMod.Core, so if we use it directly, we need to shit it ourselves -->
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net35" Version="1.0.3">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -63,13 +47,18 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
 		<PackageReference Include="Lokad.ILPack" Version="0.1.4" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Harmony\Harmony.csproj" />
+		<ProjectReference Include="..\TestLibrary\TestLibrary.csproj" />
 	</ItemGroup>
 
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
 		<ItemGroup>
-			<ReferencePath Condition="'%(FileName)'=='MonoMod.Core'">
+			<ReferencePath Condition="'%(FileName)' == 'MonoMod.Core'">
 				<Aliases>mmc</Aliases>
 			</ReferencePath>
 		</ItemGroup>

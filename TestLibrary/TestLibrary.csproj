@@ -1,33 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFrameworks>net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
 		<LangVersion>preview</LangVersion>
-		<IsPackable>false</IsPackable>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Harmony\Harmony.csproj" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<Optimize>false</Optimize>
-		<DebugType>full</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<DefineConstants>DEBUG</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<Optimize>true</Optimize>
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Harmony\Harmony.csproj" />
 	</ItemGroup>
 
 </Project>

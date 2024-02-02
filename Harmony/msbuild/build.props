@@ -1,0 +1,17 @@
+<!-- Basic variables for the builds -->
+<Project>
+
+    <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
+        <Optimize>false</Optimize>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>DEBUG</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(Configuration.StartsWith('Release'))">
+        <Optimize>true</Optimize>
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
+
+</Project>

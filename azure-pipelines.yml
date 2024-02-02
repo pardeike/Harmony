@@ -14,6 +14,7 @@ jobs:
     os: windows
     architecture: x64
     frameworks: [net35, net452, net472, net48, netcoreapp3.0, netcoreapp3.1, net5.0, net6.0, net7.0, net8.0]
+    buildConfigurations: [ReleaseFat, ReleaseLite]
     publishBuild: true
 
 - template: azure-pipelines-job-template.yml
@@ -22,6 +23,7 @@ jobs:
     os: windows
     architecture: x86
     frameworks: [net35, net452, net472, net48, netcoreapp3.0, netcoreapp3.1, net5.0, net6.0, net7.0, net8.0]
+    buildConfigurations: [ReleaseFat, ReleaseLite]
 
 - template: azure-pipelines-job-template.yml
   parameters:
@@ -30,6 +32,7 @@ jobs:
     architecture: x64
     runtimeType: mono
     frameworks: [net35, net452, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
+    buildConfigurations: [ReleaseFat, ReleaseLite]
 
 - template: azure-pipelines-job-template.yml
   parameters:
@@ -38,6 +41,7 @@ jobs:
     architecture: x86
     runtimeType: mono
     frameworks: [net35, net452, net472, net48] # mono for .NET Core just delegates to actual .NET Core, so no need for mono .NET Core tests
+    buildConfigurations: [ReleaseFat, ReleaseLite]
 
 - template: azure-pipelines-job-template.yml
   parameters:
@@ -45,6 +49,7 @@ jobs:
     os: ubuntu
     architecture: x64
     frameworks: [net35, net452, net472, net48, netcoreapp3.0, netcoreapp3.1, net5.0, net6.0, net7.0, net8.0]
+    buildConfigurations: [ReleaseFat, ReleaseLite]
 
 # Without an x86 ubuntu agent and with mono's packaging not multi-arch-safe (can't install x86 mono on x64 ubuntu), we can't test on x86 ubuntu.
 #- template: azure-pipelines-job-template.yml
@@ -52,6 +57,7 @@ jobs:
 #    os: ubuntu
 #    architecture: x86
 #    frameworks: [net35, net452, net472, net48] # .NET Core x86 is unavailable for non-Windows
+#    buildConfigurations: [ReleaseFat, ReleaseLite]
 
 - template: azure-pipelines-job-template.yml
   parameters:
@@ -59,6 +65,7 @@ jobs:
     os: macOS
     architecture: x64
     frameworks: [net35, net452, net472, net48, netcoreapp3.0, netcoreapp3.1, net5.0, net6.0, net7.0, net8.0]
+    buildConfigurations: [ReleaseFat, ReleaseLite]
 
 # x86 ubuntu does apply to x86 macOS as well.
 #- template: azure-pipelines-job-template.yml
@@ -66,3 +73,4 @@ jobs:
 #    os: macOS
 #    architecture: x86
 #    frameworks: [net35, net452, net472, net48] # .NET Core x86 is unavailable for non-Windows
+#    buildConfigurations: [ReleaseFat, ReleaseLite]
