@@ -79,7 +79,7 @@ jobs:
   # For some reason, if mono is installed, above solution restore/build fails when restoring nugets (doesn't fail when only building a project).
   # Since mono is only needed for running tests in 'mono' runtimeType mode, only install mono after the restore/build.
   - ${{ if eq(parameters.runtimeType, 'mono') }}:
-    - bash: "choco install mono --yes --no-progress --${{parameters.architecture}}"
+    - bash: "choco install mono --yes --no-progress --${{parameters.architecture}} --ignore-checksums"
       displayName: 'Install Mono'
 
   # 'dotnet' runtimeType means using `dotnet test`.
