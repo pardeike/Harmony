@@ -2,55 +2,157 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
-		
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Product>Harmony</Product>
+		<Company>Andreas Pardeike</Company>
+		<Copyright>Copyright © 2016</Copyright>
+		<Description>A general non-destructive patch library for .NET and Mono modules</Description>
+		<PackageId>Lib.Harmony</PackageId>
+		<Authors>Andreas Pardeike</Authors>
+		<AssemblyName>0Harmony</AssemblyName>
+		<SignAssembly>true</SignAssembly>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>Harmony,Mono,Patch,Patching,Runtime,Detour,Detours,Aspect,Aspects</PackageTags>
+		<PackageIcon>HarmonyLogo.png</PackageIcon>
+		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>preview</LangVersion>
-		<AssemblyName>0Harmony</AssemblyName>
-		
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
-		
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
+		<NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
 		<Version>$(HarmonyVersion)</Version>
 		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
 		<FileVersion>$(HarmonyVersion)</FileVersion>
+		<PackageVersion>$(HarmonyVersion)$(HarmonyPrerelease)</PackageVersion>
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
-		
-		<Configurations>ReleaseFat;ReleaseLite;DebugLite;DebugFat</Configurations>
-
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
-		<CheckEolTargetFramework>false</CheckEolTargetFramework>
-		<NoWarn>$(NoWarn);SYSLIB0011;NU5131</NoWarn>
-		
+		<NoWarn>$(NoWarn);NU5131</NoWarn>
 	</PropertyGroup>
 
-	<Import Project="msbuild\build.props" />
-
-	<Import Project="msbuild\variables.props" />
-
-	<Import Project="msbuild\ilrepack.props" />
+	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
+	<Choose>
+		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
+			<PropertyGroup>
+				<IsNET5OrGreater>true</IsNET5OrGreater>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<IsNET5OrGreater>false</IsNET5OrGreater>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
 	
-	<Import Project="msbuild\nuget.props" />
+	<Choose>
+		<!--
+		Ideally would check for .NET Core and .NET 5.0+ via TargetFrameworkIdentifier being .NETCoreApp, but that property isn't defined at this point,
+		so instead, relying on the fact that all .NET Core and .NET 5.0+ (and .NET Standard) have a period in their TFMs.
+		-->
+		<When Condition="$(TargetFramework.Contains('.'))">
+			<PropertyGroup>
+				<IsCoreOrStandard>true</IsCoreOrStandard>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<IsCoreOrStandard>false</IsCoreOrStandard>
+				<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
 
 	<ItemGroup>
-		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)">
-			<PrivateAssets Condition="'$(IsFAT)' == 'true'">all</PrivateAssets>
-		</PackageReference>
-		<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
-		<PackageReference Condition="'$(IsNET5OrGreater)' == 'true'" Include="System.Text.Json" Version="5.0.2">
-			<PrivateAssets Condition="'$(IsFAT)' == 'true'">all</PrivateAssets>
-		</PackageReference>
+		<None Include="..\README.md" Pack="true" PackagePath="" />
+		<None Include="..\LICENSE" Pack="true" PackagePath="" />
+		<None Include="..\HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<DefineConstants>DEBUG</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<Optimize>true</Optimize>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(IsNET5OrGreater)' == 'false'">
+
+	<!-- netstandard2.0 reference assemblies -->
+	<PropertyGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<!-- Remove from /lib in NuGet -->
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<!-- Create reference Assemblies instead of a full assembly -->
+		<ProduceOnlyReferenceAssembly>true</ProduceOnlyReferenceAssembly>
+		<!-- Add our target for packing -->
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
+	</PropertyGroup>
+	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<!-- Adding System.Reflection.Emit to because there are public types exposed from its's package -->
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+	</ItemGroup>
+	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework) == 'netstandard2.0'">
+		<ItemGroup>
+			<!-- Adding the Reference Assembly and the xml documentation to /ref of NuGet -->
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).dll">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).xml">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+		</ItemGroup>
+	</Target>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
+		<PackageReference Include="System.Text.Json" Version="5.0.2" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+		<PackageReference Include="System.Text.Json" Version="6.0.9" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<PackageReference Include="System.Text.Json" Version="7.0.4" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+		<PackageReference Include="System.Text.Json" Version="8.0.1" />
+	</ItemGroup>
+	<ItemGroup Condition="!$(IsNET5OrGreater)">
 		<Compile Remove="**\*.net5.cs" />
 		<Compile Remove="**\*.net6.cs" />
 		<Compile Remove="**\*.net7.cs" />
 		<Compile Remove="**\*.net8.cs" />
 	</ItemGroup>
 
-	<Import Project="msbuild\netstandard.props" />
+	<Target Name="RemoveOldNuGetPackages" BeforeTargets="PreBuildEvent">
+		<PropertyGroup>
+			<WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)</WorkingDirectory>
+		</PropertyGroup>
+		<ItemGroup>
+			<OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg" Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
+		</ItemGroup>
+		<Delete Files="@(OldNugetPackages)" />
+	</Target>
 
-	<Import Project="msbuild\clean.props" />
+	<Target Name="Zip" AfterTargets="Pack" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony.$(Version).zip" Overwrite="true" />
+	</Target>
+
+	<Target Name="CleanZip" AfterTargets="Clean">
+		<ItemGroup>
+			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\*.zip" />
+		</ItemGroup>
+		<Delete Files="@(OldZipFiles)" />
+	</Target>
 
 </Project>
