@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: Bug report (NO SUPPORT QUESTIONS!!)
 about: Create a report to help improving Harmony
 title: ''
 labels: ''
