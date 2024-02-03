@@ -1,22 +1,33 @@
 parameters:
+
 - name: dependsOn
   type: string
   default: ''
+
 - name: os
   type: string
   values: [windows, ubuntu, macOS]
+
 - name: runtimeType
   type: string
   values: [dotnet, mono]
   default: dotnet
+
 - name: architecture
   type: string
   values: [x86, x64]
+
 - name: frameworks
   type: object
+
 - name: buildConfiguration
   type: string
+  default: ReleaseFat
+
+- name: testConfiguration
+  type: string
   default: Release
+
 - name: publishBuild
   type: boolean
   default: false
@@ -101,7 +112,7 @@ jobs:
         inputs:
           command: test
           projects: HarmonyTests
-          arguments: "--no-build --configuration ${{parameters.buildConfiguration}} --framework ${{framework}} --logger \"console;verbosity=normal\" $(blameArg) -- $(runSettingsArgs)"
+          arguments: "--no-build --configuration ${{parameters.testConfiguration}} --framework ${{framework}} --logger \"console;verbosity=normal\" $(blameArg) -- $(runSettingsArgs)"
           publishTestResults: true
           # .NET Framework on non-Windows implicitly always uses mono.
           ${{ if and(ne(parameters.os, 'windows'), not(contains(framework, '.'))) }}:
@@ -129,7 +140,7 @@ jobs:
           # Execute the tests via mono + vstest.console.
           mono="$(eval $programFilesCmd)/Mono/bin/mono.exe"
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/${{parameters.buildConfiguration}}/${{framework}}/HarmonyTests.dll" --Framework:${{framework}} --logger:trx --ResultsDirectory:"$(Agent.TempDirectory)" $(blameArg) -- $(runSettingsArgs)
+          "$mono" "$vstest" "HarmonyTests/bin/${{parameters.testConfiguration}}/${{framework}}/HarmonyTests.dll" --Framework:${{framework}} --logger:trx --ResultsDirectory:"$(Agent.TempDirectory)" $(blameArg) -- $(runSettingsArgs)
         displayName: "Test ${{replace(framework, 'net35', 'net35 in CLR 4.0 \"compatibility mode\"')}}"
         condition: succeededOrFailed()
         env:

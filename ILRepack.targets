@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'DebugFat' Or '$(Configuration)' == 'ReleaseFat'">
+		<ItemGroup>
+			<InputAssemblies Include="$(OutputPath)\*.dll" />
+		</ItemGroup>
+		<ILRepack InputAssemblies="@(InputAssemblies)" OutputFile="$(OutputPath)\$(AssemblyName).dll" CopyAttributes="true" XmlDocumentation="true" Parallel="true" TargetKind="Dll" Wildcards="true" />
+	</Target>
+</Project>
