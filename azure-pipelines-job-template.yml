@@ -16,7 +16,7 @@ parameters:
   type: object
 - name: buildConfiguration
   type: string
-  default: Release
+  default: ReleaseFat
 - name: publishBuild
   type: boolean
   default: false
