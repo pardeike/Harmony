@@ -8,6 +8,7 @@
 		<Copyright>Copyright © 2016</Copyright>
 		<Description>A general non-destructive patch library for .NET and Mono modules</Description>
 		<PackageId>Lib.Harmony</PackageId>
+		<PackageId Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">Lib.Harmony.Thin</PackageId>
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>true</SignAssembly>
@@ -25,28 +26,21 @@
 		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
-		<NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
 		<Version>$(HarmonyVersion)</Version>
 		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
 		<FileVersion>$(HarmonyVersion)</FileVersion>
 		<PackageVersion>$(HarmonyVersion)$(HarmonyPrerelease)</PackageVersion>
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
-		<NoWarn>$(NoWarn);NU5131</NoWarn>
+		<NoWarn>$(NoWarn);SYSLIB0011;NU5131</NoWarn>
+		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat</Configurations>
 	</PropertyGroup>
 
-	<!-- In .NET 5.0 Binary Formatters are off by default.  Support is added for .NET 5.0+ for fallback JSON Serialization -->
-	<Choose>
-		<When Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
-			<PropertyGroup>
-				<IsNET5OrGreater>true</IsNET5OrGreater>
-			</PropertyGroup>
-		</When>
-		<Otherwise>
-			<PropertyGroup>
-				<IsNET5OrGreater>false</IsNET5OrGreater>
-			</PropertyGroup>
-		</Otherwise>
-	</Choose>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
+		<IsNET5OrGreater>true</IsNET5OrGreater>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(IsNET5OrGreater)' != 'true'">
+		<IsNET5OrGreater>false</IsNET5OrGreater>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="" />
@@ -54,14 +48,14 @@
 		<None Include="..\HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+	<PropertyGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='DebugFat'">
 		<Optimize>false</Optimize>
 		<DebugType>full</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<DefineConstants>DEBUG</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseThin' Or '$(Configuration)'=='ReleaseFat'">
 		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
@@ -77,7 +71,7 @@
 	</ItemGroup>
 
 	<!-- netstandard2.0 reference assemblies -->
-	<PropertyGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+	<PropertyGroup Condition="$(TargetFramework)=='netstandard2.0'">
 		<!-- Remove from /lib in NuGet -->
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<!-- Create reference Assemblies instead of a full assembly -->
@@ -85,11 +79,11 @@
 		<!-- Add our target for packing -->
 		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 	</PropertyGroup>
-	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+	<ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
 		<!-- Adding System.Reflection.Emit because there are public types exposed from its's package -->
 		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
 	</ItemGroup>
-	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework) == 'netstandard2.0'">
+	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework)=='netstandard2.0'">
 		<ItemGroup>
 			<!-- Adding the Reference Assembly and the xml documentation to /ref of NuGet -->
 			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).dll">
@@ -130,15 +124,26 @@
 		<Delete Files="@(OldNugetPackages)" />
 	</Target>
 
-	<Target Name="Zip" AfterTargets="Pack" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
-		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony.$(Version).zip" Overwrite="true" />
-	</Target>
-
 	<Target Name="CleanZip" AfterTargets="Clean">
 		<ItemGroup>
-			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\*.zip" />
+			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\Harmony-Thin.*.zip" Condition="'$(Configuration)'=='ReleaseThin'"/>
+			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\Harmony-Fat.*.zip" Condition="'$(Configuration)'=='ReleaseFat'"/>
 		</ItemGroup>
 		<Delete Files="@(OldZipFiles)" />
+	</Target>
+
+	<Target Name="RemoveExtraDlls" AfterTargets="Pack">
+		<ItemGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">
+			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\MonoMod.*.dll" />
+			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\Mono.*.dll" />
+			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\System.*.dll" />
+		</ItemGroup>
+		<Delete Files="@(ExtraDlls)" />
+	</Target>
+
+	<Target Name="Zip" AfterTargets="RemoveExtraDlls" DependsOnTargets="CleanZip">
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Thin.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseThin'"/>
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Fat.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseFat'"/>
 	</Target>
 
 </Project>

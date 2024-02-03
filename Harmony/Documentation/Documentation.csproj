@@ -7,28 +7,15 @@
 		<IntermediateOutputPath>obj</IntermediateOutputPath>
 		<OutputPath>obj</OutputPath>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Harmony.csproj" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<Optimize>false</Optimize>
-		<DebugType>full</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-		<DefineConstants>DEBUG</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<Configurations>Default</Configurations>
 		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Harmony.csproj" />
 		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
-
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net35" Version="1.0.3">
