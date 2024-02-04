@@ -222,7 +222,7 @@ namespace HarmonyLib
 					il.EndExceptionBlock();
 					return;
 				default:
-					Console.WriteLine(block.ToString());
+					// Console.WriteLine(block.ToString());
 					return;
 			}
 		}
