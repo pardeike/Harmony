@@ -4,6 +4,15 @@
 		<ItemGroup>
 			<InputAssemblies Include="$(OutputPath)\*.dll" />
 		</ItemGroup>
-		<ILRepack InputAssemblies="@(InputAssemblies)" OutputFile="$(OutputPath)\$(AssemblyName).dll" CopyAttributes="true" XmlDocumentation="true" Parallel="true" TargetKind="Dll" Wildcards="true" />
+		<ILRepack
+			InputAssemblies="@(InputAssemblies)"
+			OutputFile="$(OutputPath)\$(AssemblyName).dll"
+			CopyAttributes="true"
+			XmlDocumentation="true"
+			Internalize="true"
+			Parallel="true"
+			TargetKind="Dll"
+			Wildcards="true"
+		/>
 	</Target>
 </Project>
