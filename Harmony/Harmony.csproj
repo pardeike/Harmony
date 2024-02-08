@@ -59,12 +59,16 @@
 		<Optimize>true</Optimize>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
-		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
 		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
-
+	
+	<PropertyGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">
+		<!-- Disable to merge external dll -->
+		<DisableFody>true</DisableFody>
+	</PropertyGroup>
+	
 	<ItemGroup>
-		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.26" PrivateAssets="all" />
+		<PackageReference Include="Costura.Fody" Version="5.7.0" PrivateAssets="all"/>
 		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
@@ -126,8 +130,8 @@
 
 	<Target Name="CleanZip" AfterTargets="Clean">
 		<ItemGroup>
-			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\Harmony-Thin.*.zip" Condition="'$(Configuration)'=='ReleaseThin'"/>
-			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\Harmony-Fat.*.zip" Condition="'$(Configuration)'=='ReleaseFat'"/>
+			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\Harmony-Thin.*.zip" Condition="'$(Configuration)'=='ReleaseThin'" />
+			<OldZipFiles Include="$(MSBuildThisFileDirectory)bin\Harmony-Fat.*.zip" Condition="'$(Configuration)'=='ReleaseFat'" />
 		</ItemGroup>
 		<Delete Files="@(OldZipFiles)" />
 	</Target>
@@ -142,8 +146,8 @@
 	</Target>
 
 	<Target Name="Zip" AfterTargets="RemoveExtraDlls" DependsOnTargets="CleanZip">
-		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Thin.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseThin'"/>
-		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Fat.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseFat'"/>
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Thin.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseThin'" />
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Fat.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseFat'" />
 	</Target>
 
 </Project>
