@@ -1,0 +1,58 @@
+name: Template Testing Build
+# We build the binaries for all os and configurations
+# So we don't have to do that on each test run
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+        description: 'The operating system to use'
+      image:
+        required: true
+        type: string
+        description: 'The image to use'
+      build_configuration:
+        required: true
+        type: string
+        description: 'The build configuration to use'
+      publish:
+        required: true
+        type: boolean
+        description: 'Whether to publish the build artifacts'
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-output-cache:
+    name: Upload Test Build Output Cache
+    runs-on: ${{inputs.image}}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+
+      - name: Build
+        run: |
+          dotnet build -c ${{inputs.build_configuration}} Harmony.sln
+
+      - name: Upload Test Build Output Cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
+          path: HarmonyTests/bin/**/*
+
+      - name: Upload Harmony zip
+        if: ${{inputs.publish}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Harmony-${{inputs.build_configuration}}-${{inputs.os}}
+          path: Harmony/bin/Harmony*.zip

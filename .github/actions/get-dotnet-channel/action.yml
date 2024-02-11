@@ -1,0 +1,22 @@
+name: Convert Target Framework to Channel
+description: Convert Target Framework to Channel
+
+inputs:
+  target_framework:
+    description: 'The target framework to use'
+    required: true
+
+outputs:
+  channel:
+    description: 'The converted Channel variable'
+    value: ${{ steps.set_channel.outputs.channel }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Channel
+      id: set_channel
+      run: |
+        $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
+        "channel=$channel" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+      shell: pwsh

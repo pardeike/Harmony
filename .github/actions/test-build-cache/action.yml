@@ -1,0 +1,19 @@
+name: Test Download Build Cache
+description: Download the build cache for the specified operating system and build configuration
+
+inputs:
+  os:
+    description: 'The operating system to use'
+    required: true
+  build_configuration:
+    description: 'The build configuration to use'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download Build Cache
+      uses: actions/download-artifact@v4
+      with:
+        name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
+        path: HarmonyTests/bin/

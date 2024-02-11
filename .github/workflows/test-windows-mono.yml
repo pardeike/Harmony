@@ -1,0 +1,66 @@
+name: Template Testing Windows Mono
+
+on:
+  workflow_call:
+    inputs:
+      architecture:
+        required: true
+        type: string
+        description: 'The architecture to use'
+      target_framework:
+        required: true
+        type: string
+        description: 'The target framework to use'
+      build_configuration:
+        required: true
+        type: string
+        description: 'The build configuration to use'
+      upload_tests:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to upload the test results'
+      experimental:
+        required: false
+        type: boolean
+        default: false
+        description: 'Whether the tests are mandatory for the build to pass'
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  windows-mono:
+    name: Mono ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    runs-on: windows-latest
+    continue-on-error: ${{inputs.experimental}}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
+        with:
+          os: windows
+          build_configuration: ${{inputs.build_configuration}}
+
+      - name: Setup Mono ${{inputs.architecture}}
+        uses: ./.github/actions/test-setup-mono-windows
+        with:
+          architecture: ${{inputs.architecture}}
+
+      - name: Test Mono ${{inputs.architecture}}
+        uses: ./.github/actions/test-execute-test
+        with:
+          os: windows
+          architecture: ${{inputs.architecture}}
+          runtime-type: mono
+          target_framework: ${{inputs.target_framework}}
+          build_configuration: ${{inputs.build_configuration}}
+          upload_tests: ${{inputs.upload_tests}}
+          experimental: ${{inputs.experimental}}

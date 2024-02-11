@@ -1,0 +1,27 @@
+name: Setup .NET
+description: Setup .NET using the provided target framework and architecture
+
+inputs:
+  architecture:
+    description: 'The .NET architecture to setup'
+    required: true
+  target_framework:
+    description: 'The .NET target framework to setup'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup .NET Sdk
+      uses: actions/setup-dotnet@v4
+
+    - name: Get .NET Channel for ${{inputs.target_framework}}
+      uses: ./.github/actions/get-dotnet-channel
+      id: get_channel
+      with:
+        target_framework: ${{inputs.target_framework}}
+
+    - name: Setup .NET ${{steps.get_channel.outputs.channel}}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{steps.get_channel.outputs.channel}}

@@ -1,0 +1,28 @@
+name: Get ProgramFiles Path
+description: Get ProgramFiles path for the architecture
+
+inputs:
+  architecture:
+    description: 'The architecture to use'
+    required: true
+
+outputs:
+  path:
+    description: 'The ProgramFiles path for the architecture'
+    value: ${{ steps.set-path.outputs.path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Program Files path for ${{inputs.architecture}}
+      id: set-path
+      run: |
+        if ('${{ inputs.architecture == 'x86'}}' -eq 'true') {
+          $path = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
+          "path=$path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        }
+        if ('${{ inputs.architecture == 'x64'}}' -eq 'true') {
+          $path = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
+          "path=$path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        }
+      shell: pwsh
