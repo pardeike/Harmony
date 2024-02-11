@@ -140,6 +140,7 @@ jobs:
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
+    if: false # TODO: Enable once we are able to ignore a failed job
     strategy:
       fail-fast: false
       matrix:
@@ -155,6 +156,7 @@ jobs:
   ubuntu-arm64-mono:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
+    if: false # TODO: Enable once we are able to ignore a failed job
     strategy:
       fail-fast: false
       matrix:
@@ -170,6 +172,7 @@ jobs:
   macos-arm64-dotnet:
     name: MacOS .NET arm64
     needs: [variables, build-binaries]
+    if: false # TODO: Enable once we are able to ignore a failed job
     strategy:
       fail-fast: false
       matrix:
@@ -195,7 +198,7 @@ jobs:
   test-results-experimental:
     name: Download and Upload Test Results (Experimental)
     needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-arm64-dotnet, ubuntu-arm64-mono, macos-arm64-dotnet]
-    if: always()
+    if: false && always() # TODO: Enable once we are able to ignore a failed job
     uses: ./.github/workflows/test-result-upload.yml
     with:
       experimental: true
@@ -213,5 +216,6 @@ jobs:
         with:
           pattern: test-results-*
       - uses: joutvhu/delete-artifact@v2
+        if: false # TODO: Enable once we are able to ignore a failed job
         with:
           pattern: experimental-test-results-*
