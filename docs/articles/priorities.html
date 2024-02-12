@@ -136,7 +136,7 @@ class MyPatch
 [HarmonyPatch(&quot;Bar&quot;)]
 class MyPatch
 {
-    [HarmonyAfter(new string[] { &quot;net.example.plugin2&quot; })]
+    [HarmonyAfter([&quot;net.example.plugin2&quot;])]
     static void Postfix(ref string result)
     {
         result = &quot;new secret 1&quot;;

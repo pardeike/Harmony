@@ -133,7 +133,7 @@ harmony.Patch(original, prefix: new HarmonyMethod(prefix), transpiler: new Harmo
 <pre><code class="lang-csharp" name="example">var harmonyPostfix = new HarmonyMethod(postfix)
 {
     priority = Priority.Low,
-    before = new[] { &quot;that.other.harmony.user&quot; }
+    before = [&quot;that.other.harmony.user&quot;]
 };
 </code></pre>
 <p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a <code>null</code> value which when passed to HarmonyMethod will throw an error. You can use standard <code>System.Reflection</code> to get the MethodInfo of the original and your HarmonyMethods. See the Utilities section for the various ways Harmony can make Reflection easier.</p>
