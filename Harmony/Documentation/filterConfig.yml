@@ -1,3 +1,7 @@
 apiRules:
 - exclude:
+    uidRegex: ^System\.
+    type: Type
+- exclude:
     uidRegex: ^HarmonyLib\.Code\.
+    type: Type
