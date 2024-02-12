@@ -189,7 +189,7 @@ namespace HarmonyLib
 						throw new NotSupportedException($"Unsupported generic callsite element: {etype}");
 
 					case MetadataType.GenericInstance:
-						reader.ReadByte(); // element type, unused
+						_ = reader.ReadByte(); // element type, unused
 						var elType = GetTypeDefOrRef();
 						var arity = (int)ReadCompressedUInt32();
 

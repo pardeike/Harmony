@@ -212,7 +212,7 @@ namespace HarmonyLibTests.IL
 
 			TestMethods1.Test1(out var s);
 			_ = new TestMethods2().Test2(123, "hello");
-			_ = TestMethods3.Test3(new Vec3(2, 4, 6), new[] { 100, 200, 300 }.ToList());
+			_ = TestMethods3.Test3(new Vec3(2, 4, 6), [100, 200, 300]);
 
 			var n = 0;
 			Assert.AreEqual(11, log.Count);

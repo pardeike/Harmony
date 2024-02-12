@@ -53,7 +53,7 @@ namespace HarmonyLib
 		/// 
 		public List<KeyValuePair<int, CodeInstruction>> GetInstructionsWithOffsets()
 		{
-			return instructions.OrderBy(ins => ins.Key).ToList();
+			return [.. instructions.OrderBy(ins => ins.Key)];
 		}
 
 		/// <summary>Get a list of IL instructions without offsets</summary>

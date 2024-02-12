@@ -9,10 +9,14 @@ namespace HarmonyLib
 {
 	/// <summary>A PatchProcessor handles patches on a method/constructor</summary>
 	/// 
-	public class PatchProcessor
+	/// <remarks>Creates an empty patch processor</remarks>
+	/// <param name="instance">The Harmony instance</param>
+	/// <param name="original">The original method/constructor</param>
+	///
+	public class PatchProcessor(Harmony instance, MethodBase original)
 	{
-		readonly Harmony instance;
-		readonly MethodBase original;
+		readonly Harmony instance = instance;
+		readonly MethodBase original = original;
 
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
@@ -20,16 +24,6 @@ namespace HarmonyLib
 		HarmonyMethod finalizer;
 
 		internal static readonly object locker = new();
-
-		/// <summary>Creates an empty patch processor</summary>
-		/// <param name="instance">The Harmony instance</param>
-		/// <param name="original">The original method/constructor</param>
-		///
-		public PatchProcessor(Harmony instance, MethodBase original)
-		{
-			this.instance = instance;
-			this.original = original;
-		}
 
 		/// <summary>Adds a prefix</summary>
 		/// <param name="prefix">The prefix as a <see cref="HarmonyMethod"/></param>
@@ -266,7 +260,7 @@ namespace HarmonyLib
 			var returnType = original is MethodInfo m ? m.ReturnType : typeof(void);
 			var parameterTypes = original.GetParameters().Select(pi => pi.ParameterType).ToList();
 			if (original.IsStatic is false) parameterTypes.Insert(0, original.DeclaringType);
-			var method = new DynamicMethodDefinition($"ILGenerator_{original.Name}", returnType, parameterTypes.ToArray());
+			var method = new DynamicMethodDefinition($"ILGenerator_{original.Name}", returnType, [.. parameterTypes]);
 			return method.GetILGenerator();
 		}
 

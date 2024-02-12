@@ -153,7 +153,7 @@ namespace HarmonyLib
 		public static HarmonyMethod Merge(List<HarmonyMethod> attributes)
 		{
 			var result = new HarmonyMethod();
-			if (attributes is null) return result;
+			if (attributes is null || attributes.Count == 0) return result;
 			var resultTrv = Traverse.Create(result);
 			attributes.ForEach(attribute =>
 			{

@@ -114,7 +114,7 @@ namespace HarmonyLib
 			});
 
 			LocalBuilder finalizedVariable = null;
-			if (finalizers.Any())
+			if (finalizers.Count > 0)
 			{
 				finalizedVariable = DeclareLocalVariable(typeof(bool));
 
@@ -155,7 +155,7 @@ namespace HarmonyLib
 
 			var needsToStorePassthroughResult = AddPostfixes(privateVars, runOriginalVariable, true);
 
-			var hasFinalizers = finalizers.Any();
+			var hasFinalizers = finalizers.Count > 0;
 			if (hasFinalizers)
 			{
 				if (needsToStorePassthroughResult)
@@ -244,7 +244,7 @@ namespace HarmonyLib
 			var method = new DynamicMethodDefinition(
 				patchName,
 				returnType,
-				parameterTypes.ToArray()
+				[.. parameterTypes]
 			)
 			{
 				// OwnerType = original.DeclaringType

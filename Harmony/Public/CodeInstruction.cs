@@ -54,8 +54,8 @@ namespace HarmonyLib
 		{
 			opcode = instruction.opcode;
 			operand = instruction.operand;
-			labels = instruction.labels.ToList();
-			blocks = instruction.blocks.ToList();
+			labels = [.. instruction.labels];
+			blocks = [.. instruction.blocks];
 		}
 
 		// --- CLONING
@@ -316,7 +316,7 @@ namespace HarmonyLib
 			foreach (var block in blocks)
 				list.Add($"EX_{block.blockType.ToString().Replace("Block", "")}");
 
-			var extras = list.Count > 0 ? $" [{string.Join(", ", list.ToArray())}]" : "";
+			var extras = list.Count > 0 ? $" [{string.Join(", ", [.. list])}]" : "";
 			var operandStr = Emitter.FormatArgument(operand);
 			if (operandStr.Length > 0) operandStr = " " + operandStr;
 			return opcode + operandStr + extras;

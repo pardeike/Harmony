@@ -40,7 +40,7 @@ namespace HarmonyLib
 
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level but only within the current type</summary>
 		///
-		public static readonly BindingFlags allDeclared = all | BindingFlags.DeclaredOnly; //  This should a be const, but changing from static (readonly) to const breaks binary compatibility.
+		public static readonly BindingFlags allDeclared = all | BindingFlags.DeclaredOnly; // This should a be const, but changing from static (readonly) to const breaks binary compatibility.
 
 		/// <summary>Enumerates all assemblies in the current app domain, excluding visual studio assemblies</summary>
 		/// <returns>An enumeration of <see cref="Assembly"/></returns>
@@ -279,7 +279,7 @@ namespace HarmonyLib
 			{
 				// Can find multiple indexers without specified parameters, but only one with specified ones
 				var indexer = parameters is null ?
-					type.GetProperties(allDeclared).SingleOrDefault(property => property.GetIndexParameters().Any())
+					type.GetProperties(allDeclared).SingleOrDefault(property => property.GetIndexParameters().Length > 0)
 					: type.GetProperties(allDeclared).FirstOrDefault(property => property.GetIndexParameters().Select(param => param.ParameterType).SequenceEqual(parameters));
 
 				if (indexer is null) FileLog.Debug($"AccessTools.DeclaredIndexer: Could not find indexer for type {type} and parameters {parameters?.Description()}");
@@ -399,7 +399,7 @@ namespace HarmonyLib
 
 			// Can find multiple indexers without specified parameters, but only one with specified ones
 			Func<Type, PropertyInfo> func = parameters is null ?
-				t => t.GetProperties(all).SingleOrDefault(property => property.GetIndexParameters().Any())
+				t => t.GetProperties(all).SingleOrDefault(property => property.GetIndexParameters().Length > 0)
 				: t => t.GetProperties(all).FirstOrDefault(property => property.GetIndexParameters().Select(param => param.ParameterType).SequenceEqual(parameters));
 
 			try
@@ -843,7 +843,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.GetDeclaredMethods: type is null");
 				return [];
 			}
-			return type.GetMethods(allDeclared).ToList();
+			return [.. type.GetMethods(allDeclared)];
 		}
 
 		/// <summary>Gets reflection information for all declared properties</summary>
@@ -857,7 +857,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.GetDeclaredProperties: type is null");
 				return [];
 			}
-			return type.GetProperties(allDeclared).ToList();
+			return [.. type.GetProperties(allDeclared)];
 		}
 
 		/// <summary>Gets reflection information for all declared fields</summary>
@@ -871,7 +871,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.GetDeclaredFields: type is null");
 				return [];
 			}
-			return type.GetFields(allDeclared).ToList();
+			return [.. type.GetFields(allDeclared)];
 		}
 
 		/// <summary>Gets the return type of a method or constructor</summary>
@@ -1832,8 +1832,8 @@ namespace HarmonyLib
 		///
 		public static void ThrowMissingMemberException(Type type, params string[] names)
 		{
-			var fields = string.Join(",", GetFieldNames(type).ToArray());
-			var properties = string.Join(",", GetPropertyNames(type).ToArray());
+			var fields = string.Join(",", [.. GetFieldNames(type)]);
+			var properties = string.Join(",", [.. GetPropertyNames(type)]);
 			throw new MissingMemberException($"{string.Join(",", names)}; available fields: {fields}; available properties: {properties}");
 		}
 

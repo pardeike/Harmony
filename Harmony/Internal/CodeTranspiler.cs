@@ -75,7 +75,7 @@ namespace HarmonyLib
 					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 						return false;
 					blocks = blocksObject as List<ExceptionBlock>;
-					return blocks.Any();
+					return blocks.Count > 0;
 				});
 				if (pairInstruction is not null)
 				{
@@ -92,7 +92,7 @@ namespace HarmonyLib
 						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 							return false;
 						blocks = blocksObject as List<ExceptionBlock>;
-						return blocks.Any();
+						return blocks.Count > 0;
 					});
 					if (pairInstruction is not null)
 					{
@@ -100,7 +100,7 @@ namespace HarmonyLib
 						pairEnd = pairStart + newInstructions.Skip(opIndex + 1).ToList().IndexOf(pairInstruction) - 1;
 						var newBetweenInstructions = newInstructions.GetRange(pairStart, pairEnd - pairStart);
 						var remaining = originalBetweenInstructions.Except(newBetweenInstructions).ToList();
-						return remaining.Any() is false;
+						return remaining.Count == 0;
 					}
 				}
 			}
@@ -113,7 +113,7 @@ namespace HarmonyLib
 					if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 						return false;
 					blocks = blocksObject as List<ExceptionBlock>;
-					return blocks.Any();
+					return blocks.Count > 0;
 				});
 				if (pairInstruction is not null)
 				{
@@ -130,7 +130,7 @@ namespace HarmonyLib
 						if (unassigned.TryGetValue(nameof(CodeInstruction.blocks), out blocksObject) is false)
 							return false;
 						blocks = blocksObject as List<ExceptionBlock>;
-						return blocks.Any();
+						return blocks.Count > 0;
 					});
 					if (pairInstruction is not null)
 					{
@@ -240,7 +240,7 @@ namespace HarmonyLib
 
 				// call the transpiler
 				var parameter = GetTranspilerCallParameters(generator, transpiler, method, instructions);
-				var newInstructions = transpiler.Invoke(null, parameter.ToArray()) as IEnumerable;
+				var newInstructions = transpiler.Invoke(null, [.. parameter]) as IEnumerable;
 				if (newInstructions is object)
 					instructions = newInstructions;
 

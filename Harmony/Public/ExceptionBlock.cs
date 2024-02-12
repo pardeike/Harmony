@@ -33,24 +33,18 @@ namespace HarmonyLib
 
 	/// <summary>An exception block</summary>
 	/// 
-	public class ExceptionBlock
+	/// <remarks>Creates an exception block</remarks>
+	/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
+	/// <param name="catchType">The catch type</param>
+	///
+	public class ExceptionBlock(ExceptionBlockType blockType, Type catchType = null)
 	{
 		/// <summary>Block type</summary>
 		/// 
-		public ExceptionBlockType blockType;
+		public ExceptionBlockType blockType = blockType;
 
 		/// <summary>Catch type</summary>
 		/// 
-		public Type catchType;
-
-		/// <summary>Creates an exception block</summary>
-		/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
-		/// <param name="catchType">The catch type</param>
-		///
-		public ExceptionBlock(ExceptionBlockType blockType, Type catchType = null)
-		{
-			this.blockType = blockType;
-			this.catchType = catchType ?? typeof(object);
-		}
+		public Type catchType = catchType ?? typeof(object);
 	}
 }

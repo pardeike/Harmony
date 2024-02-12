@@ -17,6 +17,7 @@ namespace HarmonyLib
 	internal static class PatchInfoSerialization
 	{
 #if NET5_0_OR_GREATER
+		static readonly JsonSerializerOptions serializerOptions = new() { IncludeFields = true };
 		internal static bool? useBinaryFormatter = null;
 		internal static bool UseBinaryFormatter
 		{
@@ -98,8 +99,7 @@ namespace HarmonyLib
 			}
 			else
 			{
-				var options = new JsonSerializerOptions { IncludeFields = true };
-				return JsonSerializer.Deserialize<PatchInfo>(bytes, options);
+				return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
 			}
 #endif
 		}
@@ -283,13 +283,15 @@ namespace HarmonyLib
 
 			// concat lists
 			var initialIndex = current.Length;
-			return current
-				.Concat(
-					add
-						.Where(method => method != null)
-						.Select((method, i) => new Patch(method, i + initialIndex, owner))
-				)
-				.ToArray();
+			return
+			[
+				.. current
+,
+				.. add
+					.Where(method => method != null)
+					.Select((method, i) => new Patch(method, i + initialIndex, owner))
+,
+			];
 		}
 
 		/// <summary>Gets a list of patches with any from the given owner removed</summary>

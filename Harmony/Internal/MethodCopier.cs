@@ -52,7 +52,7 @@ namespace HarmonyLib
 			var info = Harmony.GetPatchInfo(method);
 			if (info is not null)
 			{
-				var sortedTranspilers = PatchFunctions.GetSortedPatchMethods(method, info.Transpilers.ToArray(), false);
+				var sortedTranspilers = PatchFunctions.GetSortedPatchMethods(method, [.. info.Transpilers], false);
 				for (var i = 0; i < maxTranspilers && i < sortedTranspilers.Count; i++)
 					copier.AddTranspiler(sortedTranspilers[i]);
 			}

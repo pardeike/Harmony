@@ -51,7 +51,7 @@ namespace HarmonyLib
 			// we shall not read end object here
 			//_ = reader.Read();
 
-			return new Patch(index, owner, priority, before.ToArray(), after.ToArray(), debug, methodToken, moduleGUID);
+			return new Patch(index, owner, priority, [.. before], [.. after], debug, methodToken, moduleGUID);
 		}
 
 		public override void Write(Utf8JsonWriter writer, Patch patchValue, JsonSerializerOptions options)

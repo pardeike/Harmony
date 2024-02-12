@@ -14,7 +14,6 @@ namespace HarmonyLib
 		private static readonly Dictionary<MethodBase, ICoreDetour> detours = [];
 		internal static readonly string harmonyMethodFullName = typeof(HarmonyMethod).FullName;
 		internal static readonly string harmonyAttributeFullName = typeof(HarmonyAttribute).FullName;
-		internal static readonly string harmonyPatchCategoryFullName = typeof(HarmonyPatchCategory).FullName;
 		internal static readonly string harmonyPatchAllFullName = typeof(HarmonyPatchAll).FullName;
 
 		internal static void DetourMethod(MethodBase method, MethodBase replacement)

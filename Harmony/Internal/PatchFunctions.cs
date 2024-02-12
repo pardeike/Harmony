@@ -61,7 +61,7 @@ namespace HarmonyLib
 			if (standin.reversePatchType == HarmonyReversePatchType.Snapshot)
 			{
 				var info = Harmony.GetPatchInfo(original);
-				transpilers.AddRange(GetSortedPatchMethods(original, info.Transpilers.ToArray(), debug));
+				transpilers.AddRange(GetSortedPatchMethods(original, [.. info.Transpilers], debug));
 			}
 			if (postTranspiler is not null) transpilers.Add(postTranspiler);
 

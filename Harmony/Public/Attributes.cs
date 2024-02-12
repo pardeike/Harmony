@@ -361,7 +361,7 @@ namespace HarmonyLib
 				}
 				types.Add(type);
 			}
-			info.argumentTypes = types.ToArray();
+			info.argumentTypes = [.. types];
 		}
 	}
 

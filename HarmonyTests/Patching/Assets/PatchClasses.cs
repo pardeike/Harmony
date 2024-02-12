@@ -1447,7 +1447,7 @@ namespace HarmonyLibTests.Assets
 			var result = 0;
 			try
 			{
-				if (exception is object)
+				if (exception is not null)
 					throw exception;
 			}
 			catch (Exception e) when (e.Message == "test")
