@@ -2,8 +2,8 @@ namespace HarmonyLibTests.Assets
 {
 	public class TraverseFields
 	{
-		public static string[] testStrings = new string[] { "test01", "test02", "test03", "test04" };
-		public static string[] fieldNames = new string[] { "publicField", "privateField", "protectedField", "internalField" };
+		public static string[] testStrings = ["test01", "test02", "test03", "test04"];
+		public static string[] fieldNames = ["publicField", "privateField", "protectedField", "internalField"];
 	}
 
 	public class TraverseFields_AccessModifiers

@@ -47,7 +47,7 @@ namespace Priorities
 		[HarmonyPatch("Bar")]
 		class MyPatch
 		{
-			[HarmonyAfter(new string[] { "net.example.plugin2" })]
+			[HarmonyAfter(["net.example.plugin2"])]
 			static void Postfix(ref string result)
 			{
 				result = "new secret 1";

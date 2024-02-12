@@ -15,7 +15,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(typeof(string))]
 	[HarmonyPatch("foobar")]
 	[HarmonyPriority(Priority.High)]
-	[HarmonyPatch(new Type[] { typeof(float), typeof(string) })]
+	[HarmonyPatch([typeof(float), typeof(string)])]
 	public class AllAttributesClass
 	{
 		[HarmonyPrepare]
@@ -37,7 +37,7 @@ namespace HarmonyLibTests.Assets
 	public class NoAnnotationsClass
 	{
 		[HarmonyPatch(typeof(List<string>), "TestMethod")]
-		[HarmonyPatch(new Type[] { typeof(string), typeof(string), typeof(string) }, new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal })]
+		[HarmonyPatch([typeof(string), typeof(string), typeof(string)], [ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal])]
 		static void Patch() { }
 	}
 

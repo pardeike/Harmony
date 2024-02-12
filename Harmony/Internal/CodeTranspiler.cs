@@ -152,7 +152,7 @@ namespace HarmonyLib
 			var enumerableAssembly = type.GetGenericTypeDefinition().Assembly;
 			var genericListType = enumerableAssembly.GetType(typeof(List<>).FullName);
 			var elementType = type.GetGenericArguments()[0];
-			var genericListTypeWithElement = genericListType.MakeGenericType(new Type[] { elementType });
+			var genericListTypeWithElement = genericListType.MakeGenericType([elementType]);
 			var listType = enumerableAssembly.GetType(genericListTypeWithElement.FullName);
 			var list = Activator.CreateInstance(listType);
 			var listAdd = list.GetType().GetMethod("Add");
@@ -161,7 +161,7 @@ namespace HarmonyLib
 			{
 				var elementTo = ConvertInstruction(elementType, op, out var unassigned);
 				unassignedValues.Add(elementTo, unassigned);
-				_ = listAdd.Invoke(list, new object[] { elementTo });
+				_ = listAdd.Invoke(list, [elementTo]);
 				// cannot yield return 'elementTo' here because we have an out parameter in the method
 			}
 			return list as IEnumerable;

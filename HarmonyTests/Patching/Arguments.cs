@@ -293,7 +293,7 @@ namespace HarmonyLibTests.Patching
 				100,
 				"original",
 				new SimpleArgumentArrayUsage.SomeStruct() { n = 200 },
-				new float[] { 10f, 20f, 30f }
+				[10f, 20f, 30f]
 			);
 
 			Assert.AreEqual(123, SimpleArgumentArrayUsage.n);

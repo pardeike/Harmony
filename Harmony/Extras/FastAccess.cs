@@ -164,12 +164,12 @@ namespace HarmonyLib
 
 		static DynamicMethodDefinition CreateGetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethodDefinition($"DynamicGet_{type.Name}", typeof(S), new Type[] { typeof(T) });
+			return new DynamicMethodDefinition($"DynamicGet_{type.Name}", typeof(S), [typeof(T)]);
 		}
 
 		static DynamicMethodDefinition CreateSetDynamicMethod<T, S>(Type type)
 		{
-			return new DynamicMethodDefinition($"DynamicSet_{type.Name}", typeof(void), new Type[] { typeof(T), typeof(S) });
+			return new DynamicMethodDefinition($"DynamicSet_{type.Name}", typeof(void), [typeof(T), typeof(S)]);
 		}
 	}
 }

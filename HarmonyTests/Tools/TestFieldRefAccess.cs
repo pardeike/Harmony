@@ -563,7 +563,7 @@ namespace HarmonyLibTests.Tools
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
 					field, "field1test", expectedCaseToConstraint);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
-					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+					field, ["should always throw"], IncompatibleFieldType(expectedCaseToConstraint));
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
 					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});
@@ -698,7 +698,7 @@ namespace HarmonyLibTests.Tools
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
 					field, TestValue(), expectedCaseToConstraint);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
-					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+					field, ["should always throw"], IncompatibleFieldType(expectedCaseToConstraint));
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
 					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});
@@ -739,7 +739,7 @@ namespace HarmonyLibTests.Tools
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IList>(
 					field, TestValue(), expectedCaseToConstraint);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
-					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+					field, ["should always throw"], IncompatibleFieldType(expectedCaseToConstraint));
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
 					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});
@@ -805,7 +805,7 @@ namespace HarmonyLibTests.Tools
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IList>(
 					field, TestValue(), expectedCaseToConstraint);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, string[]>(
-					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
+					field, ["should always throw"], IncompatibleFieldType(expectedCaseToConstraint));
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
 					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});

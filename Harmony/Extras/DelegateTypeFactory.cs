@@ -31,7 +31,7 @@ namespace HarmonyLib
 
 			var constructor = typeBuilder.DefineConstructor(
 				MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public,
-				CallingConventions.Standard, new[] { typeof(object), typeof(IntPtr) });
+				CallingConventions.Standard, [typeof(object), typeof(IntPtr)]);
 			constructor.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
 			var parameters = method.GetParameters();

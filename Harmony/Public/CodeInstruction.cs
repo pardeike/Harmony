@@ -192,7 +192,7 @@ namespace HarmonyLib
 					il.Emit(OpCodes.Newobj, AccessTools.FirstConstructor(targetType, x => x.IsStatic == false && x.GetParameters().Length == 0));
 
 				il.Emit(OpCodes.Ldftn, closure.Method);
-				il.Emit(OpCodes.Newobj, AccessTools.Constructor(typeof(T), new[] { typeof(object), typeof(IntPtr) }));
+				il.Emit(OpCodes.Newobj, AccessTools.Constructor(typeof(T), [typeof(object), typeof(IntPtr)]));
 			}
 
 			for (var i = 0; i < parameters.Length; i++)

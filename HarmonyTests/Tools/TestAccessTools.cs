@@ -280,10 +280,10 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual(type, m2.DeclaringType);
 			Assert.AreEqual("Method1", m2.Name);
 
-			var m3 = AccessTools.Method(type, "Method1", new Type[] { });
+			var m3 = AccessTools.Method(type, "Method1", []);
 			Assert.NotNull(m3);
 
-			var m4 = AccessTools.Method(type, "SetField", new Type[] { typeof(string) });
+			var m4 = AccessTools.Method(type, "SetField", [typeof(string)]);
 			Assert.NotNull(m4);
 		}
 
@@ -339,7 +339,7 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual(0, empty.Length);
 
 			// TODO: typeof(null) is ambiguous and resolves for now to <object>. is this a problem?
-			var types = AccessTools.GetTypes(new object[] { "hi", 123, null, new Test_AccessTools() });
+			var types = AccessTools.GetTypes(["hi", 123, null, new Test_AccessTools()]);
 			Assert.NotNull(types);
 			Assert.AreEqual(4, types.Length);
 			Assert.AreEqual(typeof(string), types[0]);

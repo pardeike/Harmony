@@ -793,7 +793,7 @@ namespace HarmonyLib
 			}
 			parameters ??= new Type[0];
 			var flags = searchForStatic ? allDeclared & ~BindingFlags.Instance : allDeclared & ~BindingFlags.Static;
-			return type.GetConstructor(flags, null, parameters, new ParameterModifier[] { });
+			return type.GetConstructor(flags, null, parameters, []);
 		}
 
 		/// <summary>Gets the reflection information for a constructor by searching the type and all its super types</summary>
@@ -811,7 +811,7 @@ namespace HarmonyLib
 			}
 			parameters ??= new Type[0];
 			var flags = searchForStatic ? all & ~BindingFlags.Instance : all & ~BindingFlags.Static;
-			return FindIncludingBaseTypes(type, t => t.GetConstructor(flags, null, parameters, new ParameterModifier[] { }));
+			return FindIncludingBaseTypes(type, t => t.GetConstructor(flags, null, parameters, []));
 		}
 
 		/// <summary>Gets reflection information for all declared constructors</summary>
@@ -1710,9 +1710,9 @@ namespace HarmonyLib
 				var ilGen = dmd.GetILGenerator();
 				ilGen.Emit(OpCodes.Ldarg_0);
 				ilGen.Emit(OpCodes.Ldftn, method);
-				ilGen.Emit(OpCodes.Newobj, delegateType.GetConstructor(new[] { typeof(object), typeof(IntPtr) }));
+				ilGen.Emit(OpCodes.Newobj, delegateType.GetConstructor([typeof(object), typeof(IntPtr)]));
 				ilGen.Emit(OpCodes.Ret);
-				return (DelegateType)dmd.Generate().Invoke(null, new object[] { instance });
+				return (DelegateType)dmd.Generate().Invoke(null, [instance]);
 			}
 			return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
 		}
@@ -1986,7 +1986,7 @@ namespace HarmonyLib
 							var iStr = (i++).ToString();
 							var path = pathRoot.Length > 0 ? pathRoot + "." + iStr : iStr;
 							var newElement = MakeDeepCopy(element, newElementType, processor, path);
-							_ = addInvoker(addableResult, new object[] { newElement });
+							_ = addInvoker(addableResult, [newElement]);
 						}
 						return addableResult;
 					}
@@ -2005,7 +2005,7 @@ namespace HarmonyLib
 			{
 				var elementType = resultType.GetElementType();
 				var length = ((Array)source).Length;
-				var arrayResult = Activator.CreateInstance(resultType, new object[] { length }) as object[];
+				var arrayResult = Activator.CreateInstance(resultType, [length]) as object[];
 				var originalArray = source as object[];
 				for (var i = 0; i < length; i++)
 				{

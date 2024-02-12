@@ -72,13 +72,13 @@ namespace HarmonyLib
 	//
 	internal class AttributePatch
 	{
-		static readonly HarmonyPatchType[] allPatchTypes = new[] {
+		static readonly HarmonyPatchType[] allPatchTypes = [
 			HarmonyPatchType.Prefix,
 			HarmonyPatchType.Postfix,
 			HarmonyPatchType.Transpiler,
 			HarmonyPatchType.Finalizer,
 			HarmonyPatchType.ReversePatch,
-		};
+		];
 
 		internal HarmonyMethod info;
 		internal HarmonyPatchType? type;

@@ -423,7 +423,7 @@ namespace HarmonyLib
 			if (parameters[0].ParameterType != typeof(MethodBase)) return method;
 
 			// we have a DynamicMethod factory, let's use it
-			return method.Invoke(null, new object[] { original }) as MethodInfo;
+			return method.Invoke(null, [original]) as MethodInfo;
 		}
 
 		/// <summary>Determines whether patches are equal</summary>

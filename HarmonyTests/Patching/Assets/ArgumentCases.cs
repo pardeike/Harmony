@@ -182,8 +182,8 @@ namespace HarmonyLibTests.Assets
 			s3 = "de";
 			st2 = new SomeStruct() { n = 12 };
 			st3 = new SomeStruct() { n = 45 };
-			f2 = new float[] { 1f, 3f, 5f };
-			f3 = new float[] { 2f, 4f, 6f };
+			f2 = [1f, 3f, 5f];
+			f3 = [2f, 4f, 6f];
 		}
 	}
 
@@ -220,13 +220,13 @@ namespace HarmonyLibTests.Assets
 			float[] f1, float[] f2, float[] f3
 		)
 		{
-			postfixInput = new object[]
-			{
+			postfixInput =
+			[
 				n1, n2, n3,
 				s1, s2, s3,
 				st1, st2, st3,
 				f1, f2, f3
-			};
+			];
 		}
 	}
 }

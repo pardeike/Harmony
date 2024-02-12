@@ -194,12 +194,12 @@ namespace HarmonyLibTests.IL
 			}
 		}
 
-		static readonly MethodInfo[] methods = new MethodInfo[]
-		{
+		static readonly MethodInfo[] methods =
+		[
 			AccessTools.Method(typeof(TestMethods1), "Test1"),
 			SymbolExtensions.GetMethodInfo(() => new TestMethods2().Test2(0, "")),
 			SymbolExtensions.GetMethodInfo(() => TestMethods3.Test3(Vec3.Zero, null))
-		};
+		];
 
 		[Test]
 		public void Test_SendingArguments()

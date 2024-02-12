@@ -19,7 +19,7 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual(null, mtrv1.GetValue());
 			Assert.AreEqual(true, instance.Method1_called);
 
-			var mtrv2 = trv.Method("Method2", new object[] { "arg" });
+			var mtrv2 = trv.Method("Method2", ["arg"]);
 			Assert.AreEqual("argarg", mtrv2.GetValue());
 		}
 
@@ -27,7 +27,7 @@ namespace HarmonyLibTests.Tools
 		public void Traverse_Method_Static()
 		{
 			var trv = Traverse.Create(typeof(TraverseMethods_Static));
-			var mtrv = trv.Method("StaticMethod", new object[] { 6, 7 });
+			var mtrv = trv.Method("StaticMethod", [6, 7]);
 			Assert.AreEqual(42, mtrv.GetValue<int>());
 		}
 
@@ -76,7 +76,7 @@ namespace HarmonyLibTests.Tools
 			var instance = new TraverseMethods_Overloads();
 			var trv = Traverse.Create(instance);
 
-			var mtrv1 = trv.Method("SomeMethod", new Type[] { typeof(string), typeof(bool) });
+			var mtrv1 = trv.Method("SomeMethod", [typeof(string), typeof(bool)]);
 			Assert.AreEqual(true, mtrv1.GetValue<bool>("test", false));
 			Assert.AreEqual(false, mtrv1.GetValue<bool>("test", true));
 		}

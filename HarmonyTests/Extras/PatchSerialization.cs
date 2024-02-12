@@ -32,13 +32,13 @@ namespace HarmonyTests.Extras
 		public void Serialize()
 		{
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-			var hMethod = new HarmonyMethod(method, Priority.High, new[] { "p1", null, "p2" }, new string[0], true);
+			var hMethod = new HarmonyMethod(method, Priority.High, ["p1", null, "p2"], new string[0], true);
 
 			var patchInfo = new PatchInfo();
-			patchInfo.AddPrefixes("prefixes", new[] { hMethod });
-			patchInfo.AddPostfixes("postfixes", new[] { hMethod });
-			patchInfo.AddTranspilers("transpilers", new[] { hMethod });
-			patchInfo.AddFinalizers("finalizers", new[] { hMethod });
+			patchInfo.AddPrefixes("prefixes", [hMethod]);
+			patchInfo.AddPostfixes("postfixes", [hMethod]);
+			patchInfo.AddTranspilers("transpilers", [hMethod]);
+			patchInfo.AddFinalizers("finalizers", [hMethod]);
 
 			PatchInfoSerialization.useBinaryFormatter = false;
 			var result = PatchInfoSerialization.Serialize(patchInfo);
@@ -76,13 +76,13 @@ namespace HarmonyTests.Extras
 		public void SerializeAndDeserialize()
 		{
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-			var hMethod = new HarmonyMethod(method, Priority.High, new[] { "p1", null, "p2" }, new string[0], true);
+			var hMethod = new HarmonyMethod(method, Priority.High, ["p1", null, "p2"], new string[0], true);
 
 			var originalPatchInfo = new PatchInfo();
-			originalPatchInfo.AddPrefixes("prefixes", new[] { hMethod });
-			originalPatchInfo.AddPostfixes("postfixes", new[] { hMethod });
-			originalPatchInfo.AddTranspilers("transpilers", new[] { hMethod });
-			originalPatchInfo.AddFinalizers("finalizers", new[] { hMethod });
+			originalPatchInfo.AddPrefixes("prefixes", [hMethod]);
+			originalPatchInfo.AddPostfixes("postfixes", [hMethod]);
+			originalPatchInfo.AddTranspilers("transpilers", [hMethod]);
+			originalPatchInfo.AddFinalizers("finalizers", [hMethod]);
 
 			var data = PatchInfoSerialization.Serialize(originalPatchInfo);
 			var patchInfo = PatchInfoSerialization.Deserialize(data);

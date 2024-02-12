@@ -7,8 +7,8 @@ namespace HarmonyLibTests.Assets
 
 	public class TraverseProperties
 	{
-		public static string[] testStrings = new string[] { "test01", "test02", "test03", "test04", "test05", "test06", "test07" };
-		public static string[] propertyNames = new string[] { "PublicProperty", "PublicPrivateProperty", "AutoProperty", "BaseProperty1", "BaseProperty2", "BaseProperty3", "ImmediateProperty" };
+		public static string[] testStrings = ["test01", "test02", "test03", "test04", "test05", "test06", "test07"];
+		public static string[] propertyNames = ["PublicProperty", "PublicPrivateProperty", "AutoProperty", "BaseProperty1", "BaseProperty2", "BaseProperty3", "ImmediateProperty"];
 	}
 
 	public class Traverse_ExtraClass

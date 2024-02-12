@@ -111,7 +111,7 @@ namespace HarmonyLibTests.Patching
 
 				var original = AccessTools.DeclaredMethod(cls, name);
 				Assert.NotNull(original, $"{name}: original");
-				var result = original.Invoke(type == "S" ? null : clsInstance, new object[] { "test" });
+				var result = original.Invoke(type == "S" ? null : clsInstance, ["test"]);
 				Assert.NotNull(result, $"{name}: result");
 				Assert.AreEqual($"St{n:D2}", result.GetType().Name);
 

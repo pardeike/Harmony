@@ -416,8 +416,8 @@ namespace HarmonyLib
 			emitter.Emit(OpCodes.Stind_Ref);
 		}
 
-		static readonly MethodInfo m_GetMethodFromHandle1 = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
-		static readonly MethodInfo m_GetMethodFromHandle2 = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) });
+		static readonly MethodInfo m_GetMethodFromHandle1 = typeof(MethodBase).GetMethod("GetMethodFromHandle", [typeof(RuntimeMethodHandle)]);
+		static readonly MethodInfo m_GetMethodFromHandle2 = typeof(MethodBase).GetMethod("GetMethodFromHandle", [typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle)]);
 		bool EmitOriginalBaseMethod()
 		{
 			if (original is MethodInfo method)
@@ -624,7 +624,7 @@ namespace HarmonyLib
 						var delegateOriginal = harmonyMethod.GetOriginalMethod();
 						if (delegateOriginal is MethodInfo methodInfo)
 						{
-							var delegateConstructor = patchParam.ParameterType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+							var delegateConstructor = patchParam.ParameterType.GetConstructor([typeof(object), typeof(IntPtr)]);
 							if (delegateConstructor is not null)
 							{
 								if (methodInfo.IsStatic)

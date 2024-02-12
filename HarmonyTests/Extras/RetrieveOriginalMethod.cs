@@ -42,7 +42,7 @@ namespace HarmonyLibTests.Extras
 		public void TestConstructor()
 		{
 			var harmony = new Harmony("test-original-method-1");
-			var originalMethod = AccessTools.Constructor(typeof(NestedClass), new Type[] { typeof(int) });
+			var originalMethod = AccessTools.Constructor(typeof(NestedClass), [typeof(int)]);
 			var dummyPrefix = SymbolExtensions.GetMethodInfo(() => DummyPrefix());
 			_ = harmony.Patch(originalMethod, new HarmonyMethod(dummyPrefix));
 			var inst = new NestedClass(5);
@@ -69,7 +69,7 @@ namespace HarmonyLibTests.Extras
 			public NestedClass(int i)
 			{
 				try {
-					CheckStackTraceFor(AccessTools.Constructor(typeof(NestedClass), new Type[] { typeof(int) })); 
+					CheckStackTraceFor(AccessTools.Constructor(typeof(NestedClass), [typeof(int)])); 
 					throw new Exception();
 				} catch (Exception e)
 				{

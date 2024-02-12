@@ -252,7 +252,7 @@ namespace HarmonyLibTests
 				// There's no simpler way to call a non-parameterless constructor than this monstrosity.
 				var proxy = (TestDomainProxy)testDomain.CreateInstanceAndUnwrap(
 					typeof(TestDomainProxy).Assembly.FullName, typeof(TestDomainProxy).FullName, default, default, default,
-					new object[] { AppDomain.CurrentDomain }, default, default
+					[AppDomain.CurrentDomain], default, default
 #if NET35
 					, default // .NET Framework requires obsolete Evidence parameter overload
 #endif

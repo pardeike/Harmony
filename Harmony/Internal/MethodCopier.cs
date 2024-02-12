@@ -128,7 +128,7 @@ namespace HarmonyLib
 			parameters = method.GetParameters();
 
 			localVariables = body?.LocalVariables?.ToList() ?? [];
-			exceptions = body?.ExceptionHandlingClauses ?? new List<ExceptionHandlingClause>();
+			exceptions = body?.ExceptionHandlingClauses ?? [];
 		}
 
 		internal void SetDebugging(bool debug)

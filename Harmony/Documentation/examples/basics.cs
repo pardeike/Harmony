@@ -54,7 +54,7 @@ namespace Basics
 				var harmonyPostfix = new HarmonyMethod(postfix)
 				{
 					priority = Priority.Low,
-					before = new[] { "that.other.harmony.user" }
+					before = ["that.other.harmony.user"]
 				};
 				// </patch_method>
 			}
