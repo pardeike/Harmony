@@ -208,12 +208,12 @@ namespace HarmonyLib
 
 		List<MethodBase> GetBulkMethods()
 		{
-			var isPatchAll = containerType.GetCustomAttributes(true).Any(a => a.GetType().FullName == typeof(HarmonyPatchAll).FullName);
+			var isPatchAll = containerType.GetCustomAttributes(true).Any(a => a.GetType().FullName == PatchTools.harmonyPatchAllFullName);
 			if (isPatchAll)
 			{
 				var type = containerAttributes.declaringType;
 				if (type is null)
-					throw new ArgumentException($"Using {typeof(HarmonyPatchAll).FullName} requires an additional attribute for specifying the Class/Type");
+					throw new ArgumentException($"Using {PatchTools.harmonyPatchAllFullName} requires an additional attribute for specifying the Class/Type");
 
 				var list = new List<MethodBase>();
 				list.AddRange(AccessTools.GetDeclaredConstructors(type).Cast<MethodBase>());

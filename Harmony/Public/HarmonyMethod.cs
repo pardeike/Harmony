@@ -286,7 +286,7 @@ namespace HarmonyLib
 		{
 			var f_info = attribute.GetType().GetField(nameof(HarmonyAttribute.info), AccessTools.all);
 			if (f_info is null) return null;
-			if (f_info.FieldType.FullName != typeof(HarmonyMethod).FullName) return null;
+			if (f_info.FieldType.FullName != PatchTools.harmonyMethodFullName) return null;
 			var info = f_info.GetValue(attribute);
 			return AccessTools.MakeDeepCopy<HarmonyMethod>(info);
 		}

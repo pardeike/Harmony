@@ -152,8 +152,11 @@ namespace HarmonyLib
 		/// 
 		public void PatchCategory(Assembly assembly, string category)
 		{
-			var patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
-			patchClasses.DoIf((patchClass => patchClass.Category == category), (patchClass => patchClass.Patch()));
+			AccessTools.GetTypesFromAssembly(assembly)
+				.Where(type => type.GetCustomAttributes(true).Any(a => a.GetType().FullName == PatchTools.harmonyPatchCategoryFullName))
+				.Select(CreateClassProcessor)
+				.Where(patchClass => patchClass.Category == category)
+				.Do(patchClass => patchClass.Patch());
 		}
 
 		/// <summary>Creates patches by manually specifying the methods</summary>
