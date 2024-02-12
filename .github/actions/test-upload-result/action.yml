@@ -13,7 +13,7 @@ inputs:
     required: true
   target_framework:
     description: 'The target framework to use'
-    required: true
+    required: false
   build_configuration:
     description: 'The build configuration to use'
     required: true

@@ -8,6 +8,9 @@ inputs:
   target_framework:
     description: 'The .NET target framework to setup'
     required: true
+  target_framework_array:
+    description: 'The .NET target frameworks to setup'
+    required: true
 
 runs:
   using: "composite"
@@ -15,13 +18,16 @@ runs:
     - name: Setup .NET Sdk
       uses: actions/setup-dotnet@v4
 
-    - name: Get .NET Channel for ${{inputs.target_framework}}
+    - name: Get .NET Channels
       uses: ./.github/actions/get-dotnet-channel
-      id: get_channel
+      id: get_channels
       with:
         target_framework: ${{inputs.target_framework}}
+        target_framework_array: ${{inputs.target_framework_array}}
 
-    - name: Setup .NET ${{steps.get_channel.outputs.channel}}
+    - name: Setup .NET ${{steps.get_channels.outputs.channels_multiline}}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{steps.get_channel.outputs.channel}}
+        dotnet-version: |
+          ${{steps.get_channels.outputs.channel}}
+          ${{steps.get_channels.outputs.channels_multiline}}

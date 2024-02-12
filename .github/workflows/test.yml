@@ -16,6 +16,20 @@ on:
   workflow_dispatch: 
 
 env:
+  # Right now we can't run experimental tests that can fail, since it will affect the PR
+  # We could potentially exclude experimental build on PR and only run it on master push
+  EXPERIMENTAL: false
+  # If set true, each target framework will be tested in it's own job instead of a single job
+  # NOTE: At some point when we'll have more target frameworks, parallelization should be more efficient
+  # It also will be more efficient once the `windows` workers will have a faster startup time
+  # METRICS:
+  # PARALLEL: true & PREBUILD: true ~ 15 minutes
+  # PARALLEL: false ~ 7 minutes
+  PARALLEL: false
+  # Whether we should build the binaries before running the tests
+  # Use with `PARALLEL: true` to reduce the execution time of test jobs, this increasing the throughput
+  PREBUILD: false
+  
   # You are interested in changing these values
   BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
   DOTNET_TARGET_FRAMEWORKS:             "['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']"
@@ -29,13 +43,19 @@ jobs:
     name: Variable Accessibility Workaround for Jobs
     runs-on: ubuntu-latest
     outputs:
-      BUILD_CONFIGURATIONS: ${{ env.BUILD_CONFIGURATIONS }}
-      DOTNET_TARGET_FRAMEWORKS: ${{ env.DOTNET_TARGET_FRAMEWORKS }}
-      DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: ${{ env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64 }}
-      FRAMEWORK_TARGET_FRAMEWORKS: ${{ env.FRAMEWORK_TARGET_FRAMEWORKS }}
+      EXPERIMENTAL: ${{env.EXPERIMENTAL}}
+      PARALLEL: ${{env.PARALLEL}}
+      PREBUILD: ${{env.PREBUILD}}
+      BUILD_CONFIGURATIONS: ${{env.BUILD_CONFIGURATIONS}}
+      DOTNET_TARGET_FRAMEWORKS: ${{env.DOTNET_TARGET_FRAMEWORKS}}
+      DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: ${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}
+      FRAMEWORK_TARGET_FRAMEWORKS: ${{env.FRAMEWORK_TARGET_FRAMEWORKS}}
     steps:
       - name: Compute outputs
         run: |
+          echo "EXPERIMENTAL=${{env.EXPERIMENTAL}}" >> $GITHUB_OUTPUT
+          echo "PARALLEL=${{env.PARALLEL}}" >> $GITHUB_OUTPUT
+          echo "PREBUILD=${{env.PREBUILD}}" >> $GITHUB_OUTPUT
           echo "BUILD_CONFIGURATIONS=${{env.BUILD_CONFIGURATIONS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS=${{env.DOTNET_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64=${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}" >> $GITHUB_OUTPUT
@@ -52,10 +72,11 @@ jobs:
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-build.yml
     with:
-      os: ${{ matrix.image.os }}
-      image: ${{ matrix.image.code }}
-      build_configuration: ${{ matrix.build_configuration }}
-      publish: ${{ matrix.image.os == 'windows' }}
+      os: ${{matrix.image.os}}
+      image: ${{matrix.image.code}}
+      build_configuration: ${{matrix.build_configuration}}
+      publish: ${{matrix.image.os == 'windows'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   windows-dotnet:
     name: Windows .NET x86/x64
@@ -63,13 +84,15 @@ jobs:
     strategy:
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)}}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-dotnet.yml
     with:
-      architecture: ${{ matrix.architecture }}
-      target_framework: ${{ matrix.target_framework }}
-      build_configuration: ${{ matrix.build_configuration }}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework}}
+      target_framework_array: ${{needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   windows-framework:
     name: Windows .NET Framework x86/x64
@@ -78,13 +101,15 @@ jobs:
       fail-fast: false
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-framework.yml
     with:
-      architecture: ${{ matrix.architecture }}
-      target_framework: ${{ matrix.target_framework }}
-      build_configuration: ${{ matrix.build_configuration }}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework}}
+      target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   windows-mono:
     name: Windows Mono x86/x64
@@ -93,13 +118,15 @@ jobs:
       fail-fast: false
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-mono.yml
     with:
-      architecture: ${{ matrix.architecture }}
-      target_framework: ${{ matrix.target_framework }}
-      build_configuration: ${{ matrix.build_configuration }}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework}}
+      target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   ubuntu-macos-x64-dotnet:
     name: Ubuntu/MacOS .NET x64
@@ -109,15 +136,17 @@ jobs:
       matrix:
         image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
-        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)}}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
-      os: ${{ matrix.image.os }}
-      image: ${{ matrix.image.code }}
-      architecture: ${{ matrix.architecture }}
-      target_framework: ${{ matrix.target_framework }}
-      build_configuration: ${{ matrix.build_configuration }}
+      os: ${{matrix.image.os}}
+      image: ${{matrix.image.code}}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework }}
+      target_framework_array: ${{needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
@@ -127,58 +156,64 @@ jobs:
       matrix:
         image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
-        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-mono.yml
     with:
-      os: ${{ matrix.image.os }}
-      image: ${{ matrix.image.code }}
-      architecture: ${{ matrix.architecture }}
-      target_framework: ${{ matrix.target_framework }}
-      build_configuration: ${{ matrix.build_configuration }}
+      os: ${{matrix.image.os}}
+      image: ${{matrix.image.code}}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework}}
+      target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
-    if: false # TODO: Enable once we are able to ignore a failed job
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
     strategy:
       fail-fast: false
       matrix:
-        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) }}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-dotnet.yml
     with:
-      target_framework: ${{ matrix.target_framework }}
+      target_framework: ${{matrix.target_framework}}
+      #target_framework_array: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)}}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=arm64'
+      #manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
       experimental: true
 
   ubuntu-arm64-mono:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
-    if: false # TODO: Enable once we are able to ignore a failed job
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
     strategy:
       fail-fast: false
       matrix:
-        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) }}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-mono.yml
     with:
-      target_framework: ${{ matrix.target_framework }}
-      build_configuration: ${{ matrix.build_configuration }}
+      target_framework: ${{matrix.target_framework}}
+      #target_framework_array: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
+      build_configuration: ${{matrix.build_configuration}}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=arm64'
+      #manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
       experimental: true
 
   macos-arm64-dotnet:
     name: MacOS .NET arm64
     needs: [variables, build-binaries]
-    if: false # TODO: Enable once we are able to ignore a failed job
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
     strategy:
       fail-fast: false
       matrix:
         image: [ { os: 'macos-arm64', code: 'macos-14' } ]
         architecture: ['arm64']
-        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) }}
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
@@ -186,7 +221,9 @@ jobs:
       image: ${{ matrix.image.code }}
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
-      build_configuration: ${{ matrix.build_configuration }}
+      target_framework_array: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
       experimental: true
 
   test-results:
@@ -198,7 +235,7 @@ jobs:
   test-results-experimental:
     name: Download and Upload Test Results (Experimental)
     needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-arm64-dotnet, ubuntu-arm64-mono, macos-arm64-dotnet]
-    if: false && always() # TODO: Enable once we are able to ignore a failed job
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true' && always()}}
     uses: ./.github/workflows/test-result-upload.yml
     with:
       experimental: true
@@ -216,6 +253,6 @@ jobs:
         with:
           pattern: test-results-*
       - uses: joutvhu/delete-artifact@v2
-        if: false # TODO: Enable once we are able to ignore a failed job
+        if: ${{needs.variables.outputs.PARALLEL == 'true'}}
         with:
           pattern: experimental-test-results-*

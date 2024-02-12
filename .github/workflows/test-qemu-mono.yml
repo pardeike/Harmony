@@ -39,7 +39,7 @@ jobs:
     name: Mono ubuntu-arm64 ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ubuntu-latest
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 7
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
 

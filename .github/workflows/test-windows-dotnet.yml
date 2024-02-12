@@ -11,10 +11,19 @@ on:
         required: true
         type: string
         description: 'The target framework to use'
+      target_framework_array:
+        required: true
+        type: string
+        description: 'The target frameworks to use'
       build_configuration:
         required: true
         type: string
         description: 'The build configuration to use'
+      manual_build:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to build manually before running the tests'
       upload_tests:
         required: false
         type: boolean
@@ -39,21 +48,23 @@ jobs:
     name: .NET ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-
-      - name: Download Build Cache
-        uses: ./.github/actions/test-build-cache
-        with:
-          os: windows
-          build_configuration: ${{inputs.build_configuration}}
 
       - name: Setup .NET Latest/${{inputs.target_framework}} ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}
+          target_framework_array: ${{inputs.target_framework_array}}
+
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
+        if: ${{!inputs.manual_build}}
+        with:
+          os: windows
+          build_configuration: ${{inputs.build_configuration}}
           
       - name: Test .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-execute-test
@@ -62,6 +73,8 @@ jobs:
           architecture: ${{inputs.architecture}}
           runtime-type: dotnet
           target_framework: ${{inputs.target_framework}}
+          target_framework_array: ${{inputs.target_framework_array}}
           build_configuration: ${{inputs.build_configuration}}
+          manual_build: ${{inputs.manual_build}}
           upload_tests: ${{inputs.upload_tests}}
           experimental: ${{inputs.experimental}}

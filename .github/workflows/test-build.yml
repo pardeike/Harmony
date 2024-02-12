@@ -17,6 +17,11 @@ on:
         required: true
         type: string
         description: 'The build configuration to use'
+      manual_build:
+        required: false
+        type: boolean
+        description: 'Whether to do the build'
+        default: true
       publish:
         required: true
         type: boolean
@@ -34,6 +39,8 @@ jobs:
   build-output-cache:
     name: Upload Test Build Output Cache
     runs-on: ${{inputs.image}}
+    if: ${{!inputs.manual_build || inputs.publish}}
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
 
