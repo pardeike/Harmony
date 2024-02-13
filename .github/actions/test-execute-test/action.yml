@@ -56,7 +56,7 @@ runs:
         $target_framework = "${{inputs.target_framework}}";
         $target_frameworks = "${{inputs.target_framework_array}}";
         if ($target_frameworks -eq '') {
-          $target_frameworks = "['$target_framework']";
+          $target_frameworks = "'['$target_framework']'";
         }
         "target_frameworks=$target_frameworks" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh
@@ -64,7 +64,7 @@ runs:
     - name: Build if required
       if: ${{inputs.manual_build == 'true'}}
       run: |
-        foreach ($target_framework in ConvertFrom-Json ${{steps.test-args.outputs.target_frameworks}}) {
+        foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           dotnet build Harmony.sln -c ${{inputs.build_configuration}} -f $target_framework;
         }
       shell: pwsh
@@ -77,7 +77,7 @@ runs:
         $vspath = vswhere -latest -property installationPath;
         $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
     
-        foreach ($target_framework in ConvertFrom-Json ${{steps.test-args.outputs.target_frameworks}}) {
+        foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" --framework:$target_framework ${{steps.test-args.outputs.vstest}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
@@ -85,7 +85,7 @@ runs:
     - name: Perform Tests Windows .NET | Ubuntu/MacOS/MacOS-arm64 .NET/Mono
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
       run: |
-        foreach ($target_framework in ConvertFrom-Json ${{steps.test-args.outputs.target_frameworks}}) {
+        foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
