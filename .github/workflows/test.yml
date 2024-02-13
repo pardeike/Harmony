@@ -75,7 +75,7 @@ jobs:
       os: ${{matrix.image.os}}
       image: ${{matrix.image.code}}
       build_configuration: ${{matrix.build_configuration}}
-      publish: ${{matrix.image.os == 'windows'}}
+      publish: ${{matrix.image.os == 'ubuntu'}}
       manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   windows-dotnet:

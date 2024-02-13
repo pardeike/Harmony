@@ -69,42 +69,22 @@ runs:
         }
       shell: pwsh
 
-    - name: Perform Tests Windows Mono
-      if: ${{inputs.os == 'windows' && inputs.runtime-type == 'mono'}}
-      run: |
-        $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
-        
-        $vspath = vswhere -latest -property installationPath;
-        $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
-
-        foreach ($target_framework in ConvertFrom-Json ${{steps.test-args.outputs.target_frameworks}}) {
-          & "$mono" "$vstest" "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" --framework:$target_framework ${{steps.test-args.outputs.vstest}} -- ${{steps.test-args.outputs.run_settings_args}};
-        }
-      shell: pwsh
-      
-    - name: Perform Tests Windows FX
+    - name: Perform Tests Windows FX/Mono
       if: ${{inputs.os == 'windows' && inputs.runtime-type == 'fx'}}
       run: |
+        $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
+       
         $vspath = vswhere -latest -property installationPath;
         $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
     
         foreach ($target_framework in ConvertFrom-Json ${{steps.test-args.outputs.target_frameworks}}) {
-          & "$vstest" "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" --framework:$target_framework ${{steps.test-args.outputs.vstest}} -- ${{steps.test-args.outputs.run_settings_args}};
+          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" --framework:$target_framework ${{steps.test-args.outputs.vstest}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
       
-    - name: Perform Tests Windows .NET
-      if: ${{inputs.os == 'windows' && inputs.runtime-type == 'dotnet'}}
+    - name: Perform Tests Windows .NET | Ubuntu/MacOS/MacOS-arm64 .NET/Mono
+      if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
       run: |
-        foreach ($target_framework in ConvertFrom-Json ${{steps.test-args.outputs.target_frameworks}}) {
-          dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
-        }
-      shell: pwsh
-      
-    - name: Perform Tests Ubuntu/MacOS/MacOS-arm64 .NET/Mono
-      if: ${{inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
-      run: |
-        if ($target_frameworks -ne '') {
         foreach ($target_framework in ConvertFrom-Json ${{steps.test-args.outputs.target_frameworks}}) {
           dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
