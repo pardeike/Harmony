@@ -70,7 +70,7 @@ runs:
       shell: pwsh
 
     - name: Perform Tests Windows FX/Mono
-      if: ${{inputs.os == 'windows' && inputs.runtime-type == 'fx'}}
+      if: ${{inputs.os == 'windows' && (inputs.runtime-type == 'fx' || inputs.runtime-type == 'mono')}}
       run: |
         $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
        
