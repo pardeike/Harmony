@@ -15,6 +15,10 @@ on:
       - 'Harmony/Documentation/*'
   workflow_dispatch: 
 
+concurrency:
+  group: ${{github.head_ref}}-${{github.event.pull_request.number}}
+  cancel-in-progress: true
+
 env:
   # Right now we can't run experimental tests that can fail, since it will affect the PR
   # We could potentially exclude experimental build on PR and only run it on master push
