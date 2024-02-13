@@ -46,32 +46,17 @@ Harmony 1 is deprecated and not under active development anymore. The latest ver
 <br>&nbsp;
 
 <p align="center">
-	<a href="../../releases/latest">
-		<img src="https://img.shields.io/github/release/pardeike/harmony.svg?style=flat" />
-	</a>
-	<a href="https://www.nuget.org/packages/lib.harmony">
-		<img src="https://img.shields.io/nuget/v/lib.harmony.svg?style=flat" />
-	</a>
-	<a href="https://harmony.pardeike.net">
-		<img src="https://img.shields.io/badge/documentation-%F0%9F%94%8D-blue?style=flat" />
-	</a>
+	<a href="../../releases/latest"><img src="https://img.shields.io/github/release/pardeike/harmony.svg?style=flat" /></a>
+	<a href="https://www.nuget.org/packages/lib.harmony"><img src="https://img.shields.io/nuget/v/lib.harmony.svg?style=flat" /></a>
+	<a href="https://harmony.pardeike.net"><img src="https://img.shields.io/badge/documentation-%F0%9F%94%8D-blue?style=flat" /></a>
 </p>
 <p align="center">
-	<a href="https://dev.azure.com/pardeike/Harmony/_build">
-		<img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Build%20and%20test" />
-	</a>
-	<a href="https://discord.gg/xXgghXR">
-		<img src="https://img.shields.io/discord/131466550938042369.svg?style=flat&logo=discord&label=discord" />
-	</a>
-	<a href="../../blob/master/LICENSE">
-		<img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" />
-	</a>
+	<a href="https://github.com/pardeike/Harmony/actions/workflows/test.yml"><img src="https://github.com/pardeike/Harmony/actions/workflows/test.yml/badge.svg" /></a>
+	<a href="https://dev.azure.com/pardeike/Harmony/_build"><img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Build%20and%20test" /></a>
+	<a href="https://discord.gg/xXgghXR"><img src="https://img.shields.io/discord/131466550938042369.svg?style=flat&logo=discord&label=discord" /></a>
+	<a href="../../blob/master/LICENSE"><img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" /></a>
 </p>
 <p align="center">
-	<a href="mailto:andreas@pardeike.net">
-		<img src="https://img.shields.io/badge/email-andreas@pardeike.net-blue.svg?style=flat" />
-	</a>
-	<a href="https://twitter.com/pardeike">
-		<img src="https://img.shields.io/badge/twitter-@pardeike-blue.svg?style=flat&logo=twitter" />
-	</a>
+	<a href="mailto:andreas@pardeike.net"><img src="https://img.shields.io/badge/email-andreas@pardeike.net-blue.svg?style=flat" /></a>
+	<a href="https://twitter.com/pardeike"><img src="https://img.shields.io/badge/twitter-@pardeike-blue.svg?style=flat&logo=twitter" /></a>
 </p>
