@@ -1,4 +1,4 @@
-name: Perform Testing
+name: Platform Tests
 
 on:
   push:
