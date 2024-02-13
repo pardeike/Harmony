@@ -16,7 +16,7 @@ on:
   workflow_dispatch: 
 
 concurrency:
-  group: ${{github.head_ref}}-${{github.event.pull_request.number}}
+  group: ${{github.workflow}}-${{github.event.pull_request.number || github.ref}}
   cancel-in-progress: true
 
 env:
