@@ -1,0 +1,34 @@
+name: Test Upload Result
+description: Test Upload Result
+
+inputs:
+  os:
+    description: 'The operating system to use'
+    required: true
+  architecture:
+    description: 'The architecture to use'
+    required: true
+  runtime-type:
+    description: 'Values: "dotnet", "mono", "fx"'
+    required: true
+  target_framework:
+    description: 'The target framework to use'
+    required: false
+  build_configuration:
+    description: 'The build configuration to use'
+    required: true
+  experimental:
+    description: 'Whether the tests are mandatory for the build to pass'
+    required: true
+    #type: boolean # We don't have boolean types in composites https://github.com/actions/runner/issues/2238
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: ${{success() || failure()}}
+      with:
+        name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
+        path: '**/*.trx'
+        if-no-files-found: ${{(inputs.experimental == 'true' && 'ignore') || 'warn'}}

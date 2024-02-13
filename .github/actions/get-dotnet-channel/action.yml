@@ -1,0 +1,43 @@
+name: Convert Target Framework to Channel
+description: |
+  Convert Target Framework to Channel.
+  Use `target_framework` for a single conversion with `channel` as output.
+  Use `target_framework_array` for a single conversion with `channels_multiline` as output.
+
+inputs:
+  target_framework:
+    description: 'The target framework to use'
+    required: false
+  target_framework_array:
+    description: 'The target framework array to use'
+    required: false
+
+outputs:
+  channel:
+    description: 'The converted Channel variable'
+    value: ${{steps.set_output.outputs.channel}}
+  channels_multiline:
+    description: 'The converted Channels multiline variable'
+    value: ${{steps.set_output.outputs.channels_multiline}}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Channels
+      id: set_output
+      run: |
+        $target_framework = "${{inputs.target_framework}}";
+        if ($target_framework -ne '') {
+            $channel = $target_framework.Replace('coreapp', '').Replace('net', '');
+            "channel=$channel" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        }
+        $target_frameworks = "${{inputs.target_framework_array}}";
+        if ($target_frameworks -ne '') {
+          $EOF = -join (1..15 | ForEach {[char]((48..57)+(65..90)+(97..122) | Get-Random)});
+          "channels_multiline<<$EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+          foreach ($target_framework in ConvertFrom-Json "${{inputs.target_framework_array}}") {
+              $target_framework.Replace('coreapp', '').Replace('net', '') | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+          }
+          "$EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        }
+      shell: pwsh

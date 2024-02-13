@@ -1,0 +1,85 @@
+name: Template Testing Qemu Mono
+
+on:
+  workflow_call:
+    inputs:
+      target_framework:
+        required: true
+        type: string
+        description: 'The target framework to use'
+      build_configuration:
+        required: true
+        type: string
+        description: 'The build configuration to use'
+      run_settings_args:
+        required: true
+        type: string
+        description: 'The run settings arguments to use for tests'
+      upload_tests:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to upload the test results'
+      experimental:
+        required: false
+        type: boolean
+        default: false
+        description: 'Whether the tests are mandatory for the build to pass'
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  ubuntu-mono-arm64:
+    name: Mono ubuntu-arm64 ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    runs-on: ubuntu-latest
+    continue-on-error: ${{inputs.experimental}}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
+        with:
+          os: ubuntu
+          build_configuration: ${{inputs.build_configuration}}
+
+      - name: Test Mono
+        uses: uraimo/run-on-arch-action@v2.7.1
+        id: build
+        with:
+          arch: aarch64
+          distro: ubuntu22.04
+          shell: /bin/bash
+          env: |
+            DOTNET_NOLOGO: ${{env.DOTNET_NOLOGO}}
+            DOTNET_SKIP_FIRST_TIME_EXPERIENCE: ${{env.DOTNET_SKIP_FIRST_TIME_EXPERIENCE}}
+            DOTNET_CLI_TELEMETRY_OPTOUT: ${{env.DOTNET_CLI_TELEMETRY_OPTOUT}}
+          dockerRunArgs: |
+            --volume "${PWD}/src:/src"
+          install: |
+            apt-get update
+            apt-get install -y wget libc6 libgcc-s1 libgssapi-krb5-2 libicu70 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g mono-devel
+            
+            wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh;
+            chmod +x dotnet-install.sh;
+            ./dotnet-install.sh --channel LTS --no-path > /dev/null;
+            ./dotnet-install.sh --channel STS --no-path > /dev/null;
+          run: |
+            LD_LIBRARY_PATH="/usr/local/lib"  /root/.dotnet/dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
+
+      - name: Upload Test Result
+        uses: ./.github/actions/test-upload-result
+        if: ${{inputs.upload_tests}}
+        with:
+          os: ${{inputs.os}}
+          architecture: ${{inputs.architecture}}
+          runtime-type: mono
+          target_framework: ${{inputs.target_framework}}
+          build_configuration: ${{inputs.build_configuration}}
+          experimental: ${{inputs.experimental}}

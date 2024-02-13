@@ -1,0 +1,80 @@
+name: Template Testing Windows .NET
+
+on:
+  workflow_call:
+    inputs:
+      architecture:
+        required: true
+        type: string
+        description: 'The architecture to use'
+      target_framework:
+        required: true
+        type: string
+        description: 'The target framework to use'
+      target_framework_array:
+        required: true
+        type: string
+        description: 'The target frameworks to use'
+      build_configuration:
+        required: true
+        type: string
+        description: 'The build configuration to use'
+      manual_build:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to build manually before running the tests'
+      upload_tests:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to upload the test results'
+      experimental:
+        required: false
+        type: boolean
+        default: false
+        description: 'Whether the tests are mandatory for the build to pass'
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  unix-net:
+    name: .NET ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    runs-on: windows-latest
+    continue-on-error: ${{inputs.experimental}}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET Latest/${{inputs.target_framework}} ${{inputs.architecture}}
+        uses: ./.github/actions/test-setup-dotnet-windows
+        with:
+          architecture: ${{inputs.architecture}}
+          target_framework: ${{inputs.target_framework}}
+          target_framework_array: ${{inputs.target_framework_array}}
+
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
+        if: ${{!inputs.manual_build}}
+        with:
+          os: windows
+          build_configuration: ${{inputs.build_configuration}}
+          
+      - name: Test .NET ${{inputs.architecture}}
+        uses: ./.github/actions/test-execute-test
+        with:
+          os: windows
+          architecture: ${{inputs.architecture}}
+          runtime-type: dotnet
+          target_framework: ${{inputs.target_framework}}
+          target_framework_array: ${{inputs.target_framework_array}}
+          build_configuration: ${{inputs.build_configuration}}
+          manual_build: ${{inputs.manual_build}}
+          upload_tests: ${{inputs.upload_tests}}
+          experimental: ${{inputs.experimental}}

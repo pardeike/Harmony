@@ -31,6 +31,66 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "Harmony\Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{11F828EC-7C50-48F4-A30D-9BED06837F3A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{597B1581-64EA-4F8F-A703-17B642B05C94}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\test.yml = .github\workflows\test.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{71B8832A-3E69-4908-98FE-EE9680F5EF25}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\test-build.yml = .github\workflows\test-build.yml
+		.github\workflows\test-qemu-dotnet.yml = .github\workflows\test-qemu-dotnet.yml
+		.github\workflows\test-qemu-mono.yml = .github\workflows\test-qemu-mono.yml
+		.github\workflows\test-result-upload.yml = .github\workflows\test-result-upload.yml
+		.github\workflows\test-unix-dotnet.yml = .github\workflows\test-unix-dotnet.yml
+		.github\workflows\test-unix-mono.yml = .github\workflows\test-unix-mono.yml
+		.github\workflows\test-windows-dotnet.yml = .github\workflows\test-windows-dotnet.yml
+		.github\workflows\test-windows-framework.yml = .github\workflows\test-windows-framework.yml
+		.github\workflows\test-windows-mono.yml = .github\workflows\test-windows-mono.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{9A886F28-B059-46CC-BE43-EA234CE1DD78}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-setup-mono-windows", "test-setup-mono-windows", "{FF253D20-5CFB-42A6-BC33-A0E213C3CF7E}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\setup-mono-windows\action.yml = .github\actions\test-setup-mono-windows\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "get-program-files", "get-program-files", "{685B28DF-D62E-4A68-842D-C3E6D4CFB24B}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\get-programfiles\action.yml = .github\actions\get-program-files\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-build-cache", "test-build-cache", "{BBEC08CE-1F26-46B3-9EC2-F1BC7B692A56}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\setup-shared\action.yml = .github\actions\test-build-cache\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-setup-dotnet-windows", "test-setup-dotnet-windows", "{AE672D7F-D913-4CED-A6B3-A21001E5C8DF}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\test-setup-dotnet-windows\action.yml = .github\actions\test-setup-dotnet-windows\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "get-dotnet-channel", "get-dotnet-channel", "{B0927B75-AE86-460B-9C42-6DED427304C6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\get-dotnet-channel\action.yml = .github\actions\get-dotnet-channel\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-upload-result", "test-upload-result", "{145A597F-00D3-42D0-930D-85EF1257FA6D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\test-upload-result\action.yml = .github\actions\test-upload-result\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-execute-test", "test-execute-test", "{E625C76C-C4AA-43A9-AFB5-BD1D605A4F48}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\test-execute-test\action.yml = .github\actions\test-execute-test\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-setup-dotnet", "test-setup-dotnet", "{15C84537-CCEF-43F5-B556-34369D7B320D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\test-setup-dotnet\action.yml = .github\actions\test-setup-dotnet\action.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DebugFat|Any CPU = DebugFat|Any CPU
@@ -77,5 +137,18 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61622750-C658-496F-B2E2-75D94AF6CF8B}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{597B1581-64EA-4F8F-A703-17B642B05C94} = {887FC7DA-9A29-4130-92E7-66E21E76CAC4}
+		{71B8832A-3E69-4908-98FE-EE9680F5EF25} = {597B1581-64EA-4F8F-A703-17B642B05C94}
+		{9A886F28-B059-46CC-BE43-EA234CE1DD78} = {887FC7DA-9A29-4130-92E7-66E21E76CAC4}
+		{FF253D20-5CFB-42A6-BC33-A0E213C3CF7E} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{685B28DF-D62E-4A68-842D-C3E6D4CFB24B} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{BBEC08CE-1F26-46B3-9EC2-F1BC7B692A56} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{AE672D7F-D913-4CED-A6B3-A21001E5C8DF} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{B0927B75-AE86-460B-9C42-6DED427304C6} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{145A597F-00D3-42D0-930D-85EF1257FA6D} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{E625C76C-C4AA-43A9-AFB5-BD1D605A4F48} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{15C84537-CCEF-43F5-B556-34369D7B320D} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 	EndGlobalSection
 EndGlobal
