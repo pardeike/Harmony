@@ -56,7 +56,7 @@ jobs:
     name: .NET ${{inputs.os}}-${{inputs.architecture}} ${{ inputs.target_framework }} ${{inputs.build_configuration}}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
