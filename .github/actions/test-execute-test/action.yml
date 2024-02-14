@@ -104,7 +104,7 @@ runs:
           } else {
             $dotnet = '/Users/runner/.dotnet/dotnet';
           }
-            foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
+          foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
             & $dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
           }
         shell: pwsh
