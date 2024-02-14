@@ -40,7 +40,7 @@ jobs:
     name: Upload Test Build Output Cache
     runs-on: ${{inputs.image}}
     if: ${{!inputs.manual_build || inputs.publish}}
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 

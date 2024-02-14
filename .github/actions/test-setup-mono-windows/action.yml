@@ -14,28 +14,8 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup Mono x86 Manually
-      if: inputs.architecture == 'x86'
-      run: |
-        curl -L https://download.mono-project.com/archive/mono-latest-x86-preview.msi -o mono.msi;
-        $file = "mono.msi" 
-        $log = "install.log"
-        $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
-        $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
-        $procMain.WaitForExit()
-        $procLog.Kill()
-      shell: pwsh
-
-    - name: Setup Mono x64 Manually
-      if: inputs.architecture == 'x64'
-      run: |
-        curl -L https://download.mono-project.com/archive/mono-latest-x64-preview.msi -o mono.msi;
-        $file = "mono.msi" 
-        $log = "install.log"
-        $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
-        $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
-        $procMain.WaitForExit()
-        $procLog.Kill()
+    - name: Setup Mono
+      run: choco install mono --yes --no-progress --${{inputs.architecture}} --ignore-checksums
       shell: pwsh
 
     - name: Get Program Files path for ${{inputs.architecture}}

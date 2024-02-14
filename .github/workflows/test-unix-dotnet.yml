@@ -56,16 +56,33 @@ jobs:
     name: .NET ${{inputs.os}}-${{inputs.architecture}} ${{ inputs.target_framework }} ${{inputs.build_configuration}}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET ${{inputs.architecture}}
-        uses: ./.github/actions/test-setup-dotnet
+      - name: Install Rosetta 2 on macOS
+        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+        shell: pwsh
+
+      - name: Setup .NET MacOS Rosetta
+        uses: ./.github/actions/test-setup-dotnet-macos-rosetta
+        if: ${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64'}}
         with:
           architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
+
+      - name: Setup .NET ${{inputs.architecture}}
+        uses: ./.github/actions/test-setup-dotnet
+        if: ${{!(inputs.os == 'macos-arm64' && inputs.architecture == 'x64')}}
+        with:
+          architecture: ${{inputs.architecture}}
+          target_framework: ${{inputs.target_framework}}
+          target_framework_array: ${{inputs.target_framework_array}}
+
+      - name: Get Installed .NET Sdk Information
+        run: dotnet --info
+        shell: pwsh
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache

@@ -1,0 +1,41 @@
+name: Setup .NET
+description: Setup .NET using the provided target framework and architecture
+
+inputs:
+  architecture:
+    description: 'The .NET architecture to setup'
+    required: true
+  target_framework:
+    description: 'The .NET target framework to setup'
+    required: true
+  target_framework_array:
+    description: 'The .NET target frameworks to setup'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get .NET Channels
+      uses: ./.github/actions/get-dotnet-channel
+      id: get_channels
+      with:
+        target_framework: ${{inputs.target_framework}}
+        target_framework_array: ${{inputs.target_framework_array}}
+
+    - name: Setup .NET x64 ${{steps.get_channels.outputs.channels_multiline}}
+      uses: dlemstra/setup-dotnet@add-architecture-option
+      with:
+        dotnet-architecture: x64
+        dotnet-version: |
+          ${{steps.get_channels.outputs.channel}}
+          ${{steps.get_channels.outputs.channels_multiline}}
+      env:
+        DOTNET_INSTALL_DIR: /Users/runner/.dotnet/x64
+
+    - name: Setup .NET arm64 ${{steps.get_channels.outputs.channels_multiline}}
+      uses: dlemstra/setup-dotnet@add-architecture-option
+      with:
+        dotnet-architecture: arm64
+        dotnet-version: |
+          ${{steps.get_channels.outputs.channel}}
+          ${{steps.get_channels.outputs.channels_multiline}}

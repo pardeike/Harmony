@@ -48,7 +48,7 @@ jobs:
     name: .NET ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -58,6 +58,9 @@ jobs:
           architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
+
+      - name: Get Installed .NET Sdk Information
+        run: dotnet --info
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache

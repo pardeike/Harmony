@@ -56,12 +56,19 @@ jobs:
     name: Mono ${{ inputs.os }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Rosetta 2 on macOS
+        if: ${{inputs.image == 'macos-14' && inputs.architecture == 'x64'}}
+        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v4
+
+      - name: Get Installed .NET Sdk Information
+        run: dotnet --info
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
