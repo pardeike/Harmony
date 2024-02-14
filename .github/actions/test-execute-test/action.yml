@@ -82,13 +82,27 @@ runs:
         }
       shell: pwsh
       
-    - name: Perform Tests Windows .NET | Ubuntu/MacOS/MacOS-arm64 .NET/Mono
-      if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
+    - name: Perform Tests Windows .NET | Ubuntu .NET/Mono
+      if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
+
+    # Not sure if continue_on_error: true is needed
+    - name: Perform Tests MacOS/MacOS-arm64 .NET/Mono
+      uses: nick-fields/retry@v3
+      if: ${{inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
+      with:
+        timeout_seconds: 0
+        max_attempts: 3
+        retry_on: timeout
+        command: |
+          foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
+            dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+          }
+        shell: pwsh
 
     - name: Upload Test Result
       uses: ./.github/actions/test-upload-result
