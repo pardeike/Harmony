@@ -95,7 +95,7 @@ runs:
       uses: nick-fields/retry@v3
       if: ${{inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
       with:
-        timeout_seconds: 1
+        timeout_minutes: 3
         max_attempts: 3
         retry_on: timeout
         command: |
