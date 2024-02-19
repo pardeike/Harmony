@@ -5,6 +5,7 @@ using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -585,6 +586,7 @@ namespace HarmonyLibTests.Tools
 		}
 
 		[Test]
+		[SuppressMessage("Style", "IDE0300")]
 		public void Test_ClassStatic_PrivateReadonlyString()
 		{
 			Assert.Multiple(() =>
@@ -611,7 +613,7 @@ namespace HarmonyLibTests.Tools
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IComparable>(
 					field, "field4test", expectedCaseToConstraint);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IEnumerable<string>>(
-					field, ["should always throw"], IncompatibleFieldType(expectedCaseToConstraint));
+					field, new[] { "should always throw" }, IncompatibleFieldType(expectedCaseToConstraint));
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, int>(
 					field, 1337, IncompatibleFieldType(expectedCaseToConstraint));
 			});
