@@ -73,7 +73,9 @@
   
   <h1 id="HarmonyLib_Code" data-uid="HarmonyLib.Code" class="text-break">Class Code
   </h1>
-  <div class="markdown level0 summary"><p>By adding the following using statement to your source code:</p>
+  <div class="markdown level0 summary"><p>By adding the following using statement to your source code: <code>using static HarmonyLib.Code;</code>
+you can for example start using <code>Ldarg_1</code> in you code instead of <code>new CodeMatch(OpCodes.Ldarg_1)</code>
+and then you can use array notation to add an operand and/or a name: <code>Call[myMethodInfo]</code> instead of <code>new CodeMatch(OpCodes.Call, myMethodInfo)</code></p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
