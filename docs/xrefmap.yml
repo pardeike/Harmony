@@ -5595,6 +5595,108 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatch.Branches
   nameWithType: CodeMatch.Branches
+- uid: HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.Expression{System.Action})
+  name: Calls(Expression<Action>)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Calls_System_Linq_Expressions_Expression_System_Action__
+  commentId: M:HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.Expression{System.Action})
+  name.vb: Calls(Expression(Of Action))
+  fullName: HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.Expression<System.Action>)
+  fullName.vb: HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.Expression(Of System.Action))
+  nameWithType: CodeMatch.Calls(Expression<Action>)
+  nameWithType.vb: CodeMatch.Calls(Expression(Of Action))
+- uid: HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.LambdaExpression)
+  name: Calls(LambdaExpression)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Calls_System_Linq_Expressions_LambdaExpression_
+  commentId: M:HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.LambdaExpression)
+  fullName: HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.LambdaExpression)
+  nameWithType: CodeMatch.Calls(LambdaExpression)
+- uid: HarmonyLib.CodeMatch.Calls(System.Reflection.MethodInfo)
+  name: Calls(MethodInfo)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Calls_System_Reflection_MethodInfo_
+  commentId: M:HarmonyLib.CodeMatch.Calls(System.Reflection.MethodInfo)
+  fullName: HarmonyLib.CodeMatch.Calls(System.Reflection.MethodInfo)
+  nameWithType: CodeMatch.Calls(MethodInfo)
+- uid: HarmonyLib.CodeMatch.Calls*
+  name: Calls
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Calls_
+  commentId: Overload:HarmonyLib.CodeMatch.Calls
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.Calls
+  nameWithType: CodeMatch.Calls
+- uid: HarmonyLib.CodeMatch.IsLdarg(System.Nullable{System.Int32})
+  name: IsLdarg(Nullable<Int32>)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsLdarg_System_Nullable_System_Int32__
+  commentId: M:HarmonyLib.CodeMatch.IsLdarg(System.Nullable{System.Int32})
+  name.vb: IsLdarg(Nullable(Of Int32))
+  fullName: HarmonyLib.CodeMatch.IsLdarg(System.Nullable<System.Int32>)
+  fullName.vb: HarmonyLib.CodeMatch.IsLdarg(System.Nullable(Of System.Int32))
+  nameWithType: CodeMatch.IsLdarg(Nullable<Int32>)
+  nameWithType.vb: CodeMatch.IsLdarg(Nullable(Of Int32))
+- uid: HarmonyLib.CodeMatch.IsLdarg*
+  name: IsLdarg
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsLdarg_
+  commentId: Overload:HarmonyLib.CodeMatch.IsLdarg
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.IsLdarg
+  nameWithType: CodeMatch.IsLdarg
+- uid: HarmonyLib.CodeMatch.IsLdarga(System.Nullable{System.Int32})
+  name: IsLdarga(Nullable<Int32>)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsLdarga_System_Nullable_System_Int32__
+  commentId: M:HarmonyLib.CodeMatch.IsLdarga(System.Nullable{System.Int32})
+  name.vb: IsLdarga(Nullable(Of Int32))
+  fullName: HarmonyLib.CodeMatch.IsLdarga(System.Nullable<System.Int32>)
+  fullName.vb: HarmonyLib.CodeMatch.IsLdarga(System.Nullable(Of System.Int32))
+  nameWithType: CodeMatch.IsLdarga(Nullable<Int32>)
+  nameWithType.vb: CodeMatch.IsLdarga(Nullable(Of Int32))
+- uid: HarmonyLib.CodeMatch.IsLdarga*
+  name: IsLdarga
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsLdarga_
+  commentId: Overload:HarmonyLib.CodeMatch.IsLdarga
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.IsLdarga
+  nameWithType: CodeMatch.IsLdarga
+- uid: HarmonyLib.CodeMatch.IsLdloc(System.Reflection.Emit.LocalBuilder)
+  name: IsLdloc(LocalBuilder)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsLdloc_System_Reflection_Emit_LocalBuilder_
+  commentId: M:HarmonyLib.CodeMatch.IsLdloc(System.Reflection.Emit.LocalBuilder)
+  fullName: HarmonyLib.CodeMatch.IsLdloc(System.Reflection.Emit.LocalBuilder)
+  nameWithType: CodeMatch.IsLdloc(LocalBuilder)
+- uid: HarmonyLib.CodeMatch.IsLdloc*
+  name: IsLdloc
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsLdloc_
+  commentId: Overload:HarmonyLib.CodeMatch.IsLdloc
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.IsLdloc
+  nameWithType: CodeMatch.IsLdloc
+- uid: HarmonyLib.CodeMatch.IsStarg(System.Nullable{System.Int32})
+  name: IsStarg(Nullable<Int32>)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsStarg_System_Nullable_System_Int32__
+  commentId: M:HarmonyLib.CodeMatch.IsStarg(System.Nullable{System.Int32})
+  name.vb: IsStarg(Nullable(Of Int32))
+  fullName: HarmonyLib.CodeMatch.IsStarg(System.Nullable<System.Int32>)
+  fullName.vb: HarmonyLib.CodeMatch.IsStarg(System.Nullable(Of System.Int32))
+  nameWithType: CodeMatch.IsStarg(Nullable<Int32>)
+  nameWithType.vb: CodeMatch.IsStarg(Nullable(Of Int32))
+- uid: HarmonyLib.CodeMatch.IsStarg*
+  name: IsStarg
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsStarg_
+  commentId: Overload:HarmonyLib.CodeMatch.IsStarg
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.IsStarg
+  nameWithType: CodeMatch.IsStarg
+- uid: HarmonyLib.CodeMatch.IsStloc(System.Reflection.Emit.LocalBuilder)
+  name: IsStloc(LocalBuilder)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsStloc_System_Reflection_Emit_LocalBuilder_
+  commentId: M:HarmonyLib.CodeMatch.IsStloc(System.Reflection.Emit.LocalBuilder)
+  fullName: HarmonyLib.CodeMatch.IsStloc(System.Reflection.Emit.LocalBuilder)
+  nameWithType: CodeMatch.IsStloc(LocalBuilder)
+- uid: HarmonyLib.CodeMatch.IsStloc*
+  name: IsStloc
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsStloc_
+  commentId: Overload:HarmonyLib.CodeMatch.IsStloc
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.IsStloc
+  nameWithType: CodeMatch.IsStloc
 - uid: HarmonyLib.CodeMatch.jumpsFrom
   name: jumpsFrom
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_jumpsFrom
@@ -5620,6 +5722,56 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatch.LoadsArgument
   nameWithType: CodeMatch.LoadsArgument
+- uid: HarmonyLib.CodeMatch.LoadsConstant
+  name: LoadsConstant()
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsConstant
+  commentId: M:HarmonyLib.CodeMatch.LoadsConstant
+  fullName: HarmonyLib.CodeMatch.LoadsConstant()
+  nameWithType: CodeMatch.LoadsConstant()
+- uid: HarmonyLib.CodeMatch.LoadsConstant(System.Double)
+  name: LoadsConstant(Double)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsConstant_System_Double_
+  commentId: M:HarmonyLib.CodeMatch.LoadsConstant(System.Double)
+  fullName: HarmonyLib.CodeMatch.LoadsConstant(System.Double)
+  nameWithType: CodeMatch.LoadsConstant(Double)
+- uid: HarmonyLib.CodeMatch.LoadsConstant(System.Enum)
+  name: LoadsConstant(Enum)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsConstant_System_Enum_
+  commentId: M:HarmonyLib.CodeMatch.LoadsConstant(System.Enum)
+  fullName: HarmonyLib.CodeMatch.LoadsConstant(System.Enum)
+  nameWithType: CodeMatch.LoadsConstant(Enum)
+- uid: HarmonyLib.CodeMatch.LoadsConstant(System.Int64)
+  name: LoadsConstant(Int64)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsConstant_System_Int64_
+  commentId: M:HarmonyLib.CodeMatch.LoadsConstant(System.Int64)
+  fullName: HarmonyLib.CodeMatch.LoadsConstant(System.Int64)
+  nameWithType: CodeMatch.LoadsConstant(Int64)
+- uid: HarmonyLib.CodeMatch.LoadsConstant(System.String)
+  name: LoadsConstant(String)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsConstant_System_String_
+  commentId: M:HarmonyLib.CodeMatch.LoadsConstant(System.String)
+  fullName: HarmonyLib.CodeMatch.LoadsConstant(System.String)
+  nameWithType: CodeMatch.LoadsConstant(String)
+- uid: HarmonyLib.CodeMatch.LoadsConstant*
+  name: LoadsConstant
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsConstant_
+  commentId: Overload:HarmonyLib.CodeMatch.LoadsConstant
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.LoadsConstant
+  nameWithType: CodeMatch.LoadsConstant
+- uid: HarmonyLib.CodeMatch.LoadsField(System.Reflection.FieldInfo,System.Boolean)
+  name: LoadsField(FieldInfo, Boolean)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsField_System_Reflection_FieldInfo_System_Boolean_
+  commentId: M:HarmonyLib.CodeMatch.LoadsField(System.Reflection.FieldInfo,System.Boolean)
+  fullName: HarmonyLib.CodeMatch.LoadsField(System.Reflection.FieldInfo, System.Boolean)
+  nameWithType: CodeMatch.LoadsField(FieldInfo, Boolean)
+- uid: HarmonyLib.CodeMatch.LoadsField*
+  name: LoadsField
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsField_
+  commentId: Overload:HarmonyLib.CodeMatch.LoadsField
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.LoadsField
+  nameWithType: CodeMatch.LoadsField
 - uid: HarmonyLib.CodeMatch.LoadsLocal(System.Boolean,System.String)
   name: LoadsLocal(Boolean, String)
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_LoadsLocal_System_Boolean_System_String_
@@ -5683,6 +5835,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatch.StoresArgument
   nameWithType: CodeMatch.StoresArgument
+- uid: HarmonyLib.CodeMatch.StoresField(System.Reflection.FieldInfo)
+  name: StoresField(FieldInfo)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresField_System_Reflection_FieldInfo_
+  commentId: M:HarmonyLib.CodeMatch.StoresField(System.Reflection.FieldInfo)
+  fullName: HarmonyLib.CodeMatch.StoresField(System.Reflection.FieldInfo)
+  nameWithType: CodeMatch.StoresField(FieldInfo)
+- uid: HarmonyLib.CodeMatch.StoresField*
+  name: StoresField
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresField_
+  commentId: Overload:HarmonyLib.CodeMatch.StoresField
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatch.StoresField
+  nameWithType: CodeMatch.StoresField
 - uid: HarmonyLib.CodeMatch.StoresLocal(System.String)
   name: StoresLocal(String)
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresLocal_System_String_
@@ -5872,6 +6037,38 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatcher.CreateLabelWithOffsets
   nameWithType: CodeMatcher.CreateLabelWithOffsets
+- uid: HarmonyLib.CodeMatcher.DeclareLocal(System.Type,System.Reflection.Emit.LocalBuilder@)
+  name: DeclareLocal(Type, out LocalBuilder)
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_DeclareLocal_System_Type_System_Reflection_Emit_LocalBuilder__
+  commentId: M:HarmonyLib.CodeMatcher.DeclareLocal(System.Type,System.Reflection.Emit.LocalBuilder@)
+  name.vb: DeclareLocal(Type, ByRef LocalBuilder)
+  fullName: HarmonyLib.CodeMatcher.DeclareLocal(System.Type, out System.Reflection.Emit.LocalBuilder)
+  fullName.vb: HarmonyLib.CodeMatcher.DeclareLocal(System.Type, ByRef System.Reflection.Emit.LocalBuilder)
+  nameWithType: CodeMatcher.DeclareLocal(Type, out LocalBuilder)
+  nameWithType.vb: CodeMatcher.DeclareLocal(Type, ByRef LocalBuilder)
+- uid: HarmonyLib.CodeMatcher.DeclareLocal*
+  name: DeclareLocal
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_DeclareLocal_
+  commentId: Overload:HarmonyLib.CodeMatcher.DeclareLocal
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatcher.DeclareLocal
+  nameWithType: CodeMatcher.DeclareLocal
+- uid: HarmonyLib.CodeMatcher.DefineLabel(System.Reflection.Emit.Label@)
+  name: DefineLabel(out Label)
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_DefineLabel_System_Reflection_Emit_Label__
+  commentId: M:HarmonyLib.CodeMatcher.DefineLabel(System.Reflection.Emit.Label@)
+  name.vb: DefineLabel(ByRef Label)
+  fullName: HarmonyLib.CodeMatcher.DefineLabel(out System.Reflection.Emit.Label)
+  fullName.vb: HarmonyLib.CodeMatcher.DefineLabel(ByRef System.Reflection.Emit.Label)
+  nameWithType: CodeMatcher.DefineLabel(out Label)
+  nameWithType.vb: CodeMatcher.DefineLabel(ByRef Label)
+- uid: HarmonyLib.CodeMatcher.DefineLabel*
+  name: DefineLabel
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_DefineLabel_
+  commentId: Overload:HarmonyLib.CodeMatcher.DefineLabel
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatcher.DefineLabel
+  nameWithType: CodeMatcher.DefineLabel
 - uid: HarmonyLib.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})
   name: DistinctLabels(IEnumerable<CodeInstruction>)
   href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_DistinctLabels_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__

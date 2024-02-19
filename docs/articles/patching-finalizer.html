@@ -96,16 +96,10 @@ public class MyException : Exception
     public MyException() { }
     public MyException(string message) : base(message) { }
     public MyException(string message, Exception innerException) : base(message, innerException) { }
-    protected MyException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-    {
-        throw new NotImplementedException();
-    }
+    protected MyException(SerializationInfo serializationInfo, StreamingContext streamingContext) =&gt; throw new NotImplementedException();
 }
 
-static Exception Finalizer(Exception __exception)
-{
-    return new MyException(&quot;Oops&quot;, __exception);
-}
+static Exception Finalizer(Exception __exception) =&gt; new MyException(&quot;Oops&quot;, __exception);
 </code></pre>
 <p>Beside their handling of exceptions they can receive the same arguments as Postfixes.</p>
 </article>

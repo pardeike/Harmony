@@ -102,10 +102,7 @@ class Patch
 <p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> It is not recommended to skip the original unless you want to completely change the way it works. If you only want a small change or a side effect, using a postfix or a transpiler is always preferred since it allows for multiple users changing the original without each implementation fighting over how the original should behave.</p>
 <pre><code class="lang-csharp" name="example">public class OriginalCode
 {
-    public string GetName()
-    {
-        return name; // ...
-    }
+    public string GetName() =&gt; name; // ...
 }
 
 [HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
@@ -121,10 +118,7 @@ class Patch
 <p>Here is another example showing the diference between what the original method returns and what the Prefix returns. it illustrate that the boolean return value of the Prefix only determines if the original gets executed or not.</p>
 <pre><code class="lang-csharp" name="example">public class OriginalCode
 {
-    public bool IsFullAfterTakingIn(int i)
-    {
-        return DoSomeExpensiveCalculation() &gt; i;
-    }
+    public bool IsFullAfterTakingIn(int i) =&gt; DoSomeExpensiveCalculation() &gt; i;
 }
 
 [HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.IsFullAfterTakingIn))]

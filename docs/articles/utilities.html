@@ -118,10 +118,7 @@ public static void IterateProperties(object source, object target, Action&lt;Tra
     {
         static string secret = &quot;hello&quot;;
 
-        public string ModifiedSecret()
-        {
-            return secret.ToUpper();
-        }
+        public string ModifiedSecret() =&gt; secret.ToUpper();
     }
 
     Bar MyBar
@@ -132,19 +129,13 @@ public static void IterateProperties(object source, object target, Action&lt;Tra
         }
     }
 
-    public string GetSecret()
-    {
-        return MyBar.ModifiedSecret();
-    }
+    public string GetSecret() =&gt; MyBar.ModifiedSecret();
 
     Foo()
     {
     }
 
-    static Foo MakeFoo()
-    {
-        return new Foo();
-    }
+    static Foo MakeFoo() =&gt; new();
 }
 
 void Test()

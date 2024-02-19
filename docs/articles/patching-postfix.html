@@ -81,10 +81,7 @@
 <p>Since the postfix has access to the result of the original (or a prefix that has skipped the original), it can read or alter the result by using the argument <code>__result</code>. It must match the return type of the original or be assignable from it.</p>
 <pre><code class="lang-csharp" name="example">public class OriginalCode
 {
-    public string GetName()
-    {
-        return name; // ...
-    }
+    public string GetName() =&gt; name; // ...
 }
 
 [HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
@@ -101,10 +98,7 @@ class Patch
 <p>Harmony will call the postfix with the result of the original and will use the result of the postfix to continue. Since this works for all types, it is especially useful for types like <code>IEnumerable&lt;T&gt;</code> that cannot be combined with <code>ref</code>. This allows for changing the result with <code>yield</code> operations.</p>
 <pre><code class="lang-csharp" name="example">public class OriginalCode
 {
-    public string GetName()
-    {
-        return &quot;David&quot;;
-    }
+    public string GetName() =&gt; &quot;David&quot;;
 
     public IEnumerable&lt;int&gt; GetNumbers()
     {
@@ -117,10 +111,7 @@ class Patch
 [HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
 class Patch1
 {
-    static string Postfix(string name)
-    {
-        return &quot;Hello &quot; + name;
-    }
+    static string Postfix(string name) =&gt; &quot;Hello &quot; + name;
 }
 
 [HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetNumbers))]
@@ -150,10 +141,7 @@ class Patch2
 [HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
 class Patch
 {
-    static void Prefix(int counter)
-    {
-        FileLog.Log(&quot;counter = &quot; + counter);
-    }
+    static void Prefix(int counter) =&gt; FileLog.Log(&quot;counter = &quot; + counter);
 }
 </code></pre><h3 id="postfixes-always-run">Postfixes always run</h3>
 <p>Harmony will not skip any postfix regardless of what any prefix or the original method do. It is good style to use postfixes as much as possible since they lead to more compatible code.</p>

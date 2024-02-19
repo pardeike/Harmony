@@ -96,20 +96,16 @@ public class Patch
 {
     [HarmonyReversePatch]
     [HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
-    public static void MyTest(object instance, int counter, string name)
-    {
+    public static void MyTest(object instance, int counter, string name) =&gt;
         // its a stub so it has no initial content
         throw new NotImplementedException(&quot;It's a stub&quot;);
-    }
 }
 
 class Main
 {
-    void Test()
-    {
+    void Test() =&gt;
         // here we call OriginalCode.Test()
         Patch.MyTest(originalInstance, 100, &quot;hello&quot;);
-    }
 }
 </code></pre><h3 id="types-of-reverse-patches">Types of reverse patches</h3>
 <p>The HarmonyReversePatch attribute comes in two alternatives:</p>

@@ -184,9 +184,9 @@ static R ReplacementMethod(T optionalThisArgument, params object[] arguments)
 }
 
 // given the following signatures:
-public static R Original() { return new R(&quot;original&quot;); }
+public static R Original() =&gt; new(&quot;original&quot;);
 public static void SimpleFinalizer(ref R result) { }
-public static Exception EditFinalizer(Exception ex, ref R result) { return ex; }
+public static Exception EditFinalizer(Exception ex, ref R result) =&gt; ex;
 </code></pre></article>
           </div>
           

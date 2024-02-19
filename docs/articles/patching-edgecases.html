@@ -86,7 +86,7 @@ class Patch
     [HarmonyReversePatch]
     [HarmonyPatch(typeof(BaseClass), nameof(BaseClass.Method))]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    static string BaseMethodDummy(SubClass instance) { return null; }
+    static string BaseMethodDummy(SubClass instance) =&gt; null;
 
     [HarmonyPatch(typeof(SubClass), nameof(SubClass.Method))]
     static void Prefix(SubClass __instance)
@@ -98,18 +98,12 @@ class Patch
 
 public class BaseClass
 {
-    public virtual string Method()
-    {
-        return &quot;base&quot;;
-    }
+    public virtual string Method() =&gt; &quot;base&quot;;
 }
 
 public class SubClass : BaseClass
 {
-    public override string Method()
-    {
-        return &quot;subclass&quot;;
-    }
+    public override string Method() =&gt; &quot;subclass&quot;;
 }
 </code></pre>
 <p>The reason for this is that the resolution of <code>base.SomeMethod()</code> happens in your compiler. It will create IL code that targets that specific method. At runtime however, you can't simply use reflections or delegates to call it. They all will be resolved to the overwriting method. The only solution that is known to solve this is to use a <code>Reverse Patch</code>, that copies the original to a stub of your own that you then can call. See this <a href="https://gist.github.com/pardeike/45196a8b8ef331f38b14e1a7e5ee1782">gist</a> for an example and a comparison.</p>
@@ -156,15 +150,9 @@ public class SubClass : BaseClass
 {
     GameObject gameObject;
 
-    void SomeMethod()
-    {
-        UnityEngine.Object.DontDestroyOnLoad(gameObject);
-    }
+    void SomeMethod() =&gt; UnityEngine.Object.DontDestroyOnLoad(gameObject);
 
-    void SomeOtherMethod()
-    {
-        SomeMethod();
-    }
+    void SomeOtherMethod() =&gt; SomeMethod();
 }
 </code></pre>
 <p><code>UnityEngine.Object.DontDestroyOnLoad()</code> is an external UnityEngine method:</p>
@@ -178,11 +166,9 @@ public static extern void DontDestroyOnLoad(Object target);
 {
     private static bool patched = false;
 
-    public static void Main()
-    {
+    public static void Main() =&gt;
         //DoPatch(); &lt;-- Do not execute patching on assembly entry point
         SceneManager.sceneLoaded += SceneLoaded;
-    }
 
     private static void DoPatch()
     {

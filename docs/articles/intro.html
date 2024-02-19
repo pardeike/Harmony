@@ -183,10 +183,7 @@ class Patch01
         return true;
     }
 
-    static void Postfix(ref int __result)
-    {
-        __result *= 2;
-    }
+    static void Postfix(ref int __result) =&gt; __result *= 2;
 }
 </code></pre>
 <p>Alternatively, manual patching with reflection:</p>
