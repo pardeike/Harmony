@@ -20,10 +20,7 @@ namespace HarmonyLib
 		/// <summary>Creates a traverse instance from an existing instance</summary>
 		/// <param name="traverse">The existing <see cref="Traverse"/> instance</param>
 		///
-		public Traverse(Traverse traverse)
-		{
-			this.traverse = traverse;
-		}
+		public Traverse(Traverse traverse) => this.traverse = traverse;
 
 		/// <summary>Gets/Sets the current value</summary>
 		/// <value>The value to read or write</value>
@@ -48,46 +45,31 @@ namespace HarmonyLib
 		readonly object[] _params;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		static Traverse()
-		{
-			Cache ??= new AccessCache();
-		}
+		static Traverse() => Cache ??= new AccessCache();
 
 		/// <summary>Creates a new traverse instance from a class/type</summary>
 		/// <param name="type">The class/type</param>
 		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
-		public static Traverse Create(Type type)
-		{
-			return new Traverse(type);
-		}
+		public static Traverse Create(Type type) => new(type);
 
 		/// <summary>Creates a new traverse instance from a class T</summary>
 		/// <typeparam name="T">The class</typeparam>
 		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
-		public static Traverse Create<T>()
-		{
-			return Create(typeof(T));
-		}
+		public static Traverse Create<T>() => Create(typeof(T));
 
 		/// <summary>Creates a new traverse instance from an instance</summary>
 		/// <param name="root">The object</param>
 		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
-		public static Traverse Create(object root)
-		{
-			return new Traverse(root);
-		}
+		public static Traverse Create(object root) => new(root);
 
 		/// <summary>Creates a new traverse instance from a named type</summary>
 		/// <param name="name">The type name, for format see <see cref="AccessTools.TypeByName"/></param>
 		/// <returns>A <see cref="Traverse"/> instance</returns>
 		///
-		public static Traverse CreateWithType(string name)
-		{
-			return new Traverse(AccessTools.TypeByName(name));
-		}
+		public static Traverse CreateWithType(string name) => new(AccessTools.TypeByName(name));
 
 		/// <summary>Creates a new and empty traverse instance</summary>
 		///
@@ -98,10 +80,7 @@ namespace HarmonyLib
 		/// <summary>Creates a new traverse instance from a class/type</summary>
 		/// <param name="type">The class/type</param>
 		///
-		public Traverse(Type type)
-		{
-			_type = type;
-		}
+		public Traverse(Type type) => _type = type;
 
 		/// <summary>Creates a new traverse instance from an instance</summary>
 		/// <param name="root">The object</param>
@@ -254,10 +233,7 @@ namespace HarmonyLib
 		/// <param name="name">The type name</param>
 		/// <returns>A traverse instance</returns>
 		///
-		public Traverse<T> Field<T>(string name)
-		{
-			return new Traverse<T>(Field(name));
-		}
+		public Traverse<T> Field<T>(string name) => new(Field(name));
 
 		/// <summary>Gets all fields of the current type</summary>
 		/// <returns>A list of field names</returns>
@@ -289,10 +265,7 @@ namespace HarmonyLib
 		/// <param name="index">Optional property index</param>
 		/// <returns>A traverse instance</returns>
 		///
-		public Traverse<T> Property<T>(string name, object[] index = null)
-		{
-			return new Traverse<T>(Property(name, index));
-		}
+		public Traverse<T> Property<T>(string name, object[] index = null) => new(Property(name, index));
 
 		/// <summary>Gets all properties of the current type</summary>
 		/// <returns>A list of property names</returns>
@@ -347,34 +320,22 @@ namespace HarmonyLib
 		/// <summary>Checks if the current traverse instance is for a field</summary>
 		/// <returns>True if its a field</returns>
 		///
-		public bool FieldExists()
-		{
-			return _info is not null && _info is FieldInfo;
-		}
+		public bool FieldExists() => _info is not null && _info is FieldInfo;
 
 		/// <summary>Checks if the current traverse instance is for a property</summary>
 		/// <returns>True if its a property</returns>
 		///
-		public bool PropertyExists()
-		{
-			return _info is not null && _info is PropertyInfo;
-		}
+		public bool PropertyExists() => _info is not null && _info is PropertyInfo;
 
 		/// <summary>Checks if the current traverse instance is for a method</summary>
 		/// <returns>True if its a method</returns>
 		///
-		public bool MethodExists()
-		{
-			return _method is not null;
-		}
+		public bool MethodExists() => _method is not null;
 
 		/// <summary>Checks if the current traverse instance is for a type</summary>
 		/// <returns>True if its a type</returns>
 		///
-		public bool TypeExists()
-		{
-			return _type is not null;
-		}
+		public bool TypeExists() => _type is not null;
 
 		/// <summary>Iterates over all fields of the current type and executes a traverse action</summary>
 		/// <param name="source">Original object</param>

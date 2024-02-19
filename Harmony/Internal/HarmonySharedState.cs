@@ -3,7 +3,6 @@ using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 namespace HarmonyLib
@@ -112,7 +111,7 @@ namespace HarmonyLib
 
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
-			lock (state) return state.Keys.ToArray();
+			lock (state) return [.. state.Keys];
 		}
 
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)

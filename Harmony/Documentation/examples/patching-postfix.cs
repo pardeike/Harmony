@@ -8,10 +8,7 @@ namespace Patching_Postfix
 		// <result>
 		public class OriginalCode
 		{
-			public string GetName()
-			{
-				return name; // ...
-			}
+			public string GetName() => name; // ...
 		}
 
 		[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
@@ -33,10 +30,7 @@ namespace Patching_Postfix
 		// <passthrough>
 		public class OriginalCode
 		{
-			public string GetName()
-			{
-				return "David";
-			}
+			public string GetName() => "David";
 
 			public IEnumerable<int> GetNumbers()
 			{
@@ -49,10 +43,7 @@ namespace Patching_Postfix
 		[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
 		class Patch1
 		{
-			static string Postfix(string name)
-			{
-				return "Hello " + name;
-			}
+			static string Postfix(string name) => "Hello " + name;
 		}
 
 		[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetNumbers))]
@@ -86,10 +77,7 @@ namespace Patching_Postfix
 		[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
 		class Patch
 		{
-			static void Prefix(int counter)
-			{
-				FileLog.Log("counter = " + counter);
-			}
+			static void Prefix(int counter) => FileLog.Log("counter = " + counter);
 		}
 		// </args>
 	}

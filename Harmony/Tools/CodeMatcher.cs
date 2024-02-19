@@ -22,15 +22,9 @@ namespace HarmonyLib
 		private delegate CodeMatcher MatchDelegate();
 		private MatchDelegate lastMatchCall;
 
-		private void FixStart()
-		{
-			Pos = Math.Max(0, Pos);
-		}
+		private void FixStart() => Pos = Math.Max(0, Pos);
 
-		private void SetOutOfBounds(int direction)
-		{
-			Pos = direction > 0 ? Length : -1;
-		}
+		private void SetOutOfBounds(int direction) => Pos = direction > 0 ? Length : -1;
 
 		/// <summary>Gets the number of code instructions in this matcher</summary>
 		/// <value>The count</value>
@@ -110,35 +104,23 @@ namespace HarmonyLib
 		/// <param name="offset">The offset</param>
 		/// <returns>The instruction</returns>
 		///
-		public CodeInstruction InstructionAt(int offset)
-		{
-			return codes[Pos + offset];
-		}
+		public CodeInstruction InstructionAt(int offset) => codes[Pos + offset];
 
 		/// <summary>Gets all instructions</summary>
 		/// <returns>A list of instructions</returns>
 		///
-		public List<CodeInstruction> Instructions()
-		{
-			return codes;
-		}
+		public List<CodeInstruction> Instructions() => codes;
 
 		/// <summary>Gets all instructions as an enumeration</summary>
 		/// <returns>A list of instructions</returns>
 		///
-		public IEnumerable<CodeInstruction> InstructionEnumeration()
-		{
-			return codes.AsEnumerable();
-		}
+		public IEnumerable<CodeInstruction> InstructionEnumeration() => codes.AsEnumerable();
 
 		/// <summary>Gets some instructions counting from current position</summary>
 		/// <param name="count">Number of instructions</param>
 		/// <returns>A list of instructions</returns>
 		///
-		public List<CodeInstruction> Instructions(int count)
-		{
-			return codes.GetRange(Pos, count).Select(c => new CodeInstruction(c)).ToList();
-		}
+		public List<CodeInstruction> Instructions(int count) => codes.GetRange(Pos, count).Select(c => new CodeInstruction(c)).ToList();
 
 		/// <summary>Gets all instructions within a range</summary>
 		/// <param name="start">The start index</param>
@@ -160,19 +142,13 @@ namespace HarmonyLib
 		/// <param name="endOffset">The end offset</param>
 		/// <returns>A list of instructions</returns>
 		///
-		public List<CodeInstruction> InstructionsWithOffsets(int startOffset, int endOffset)
-		{
-			return InstructionsInRange(Pos + startOffset, Pos + endOffset);
-		}
+		public List<CodeInstruction> InstructionsWithOffsets(int startOffset, int endOffset) => InstructionsInRange(Pos + startOffset, Pos + endOffset);
 
 		/// <summary>Gets a list of all distinct labels</summary>
 		/// <param name="instructions">The instructions (transpiler argument)</param>
 		/// <returns>A list of Labels</returns>
 		///
-		public List<Label> DistinctLabels(IEnumerable<CodeInstruction> instructions)
-		{
-			return instructions.SelectMany(instruction => instruction.labels).Distinct().ToList();
-		}
+		public List<Label> DistinctLabels(IEnumerable<CodeInstruction> instructions) => instructions.SelectMany(instruction => instruction.labels).Distinct().ToList();
 
 		/// <summary>Reports a failure</summary>
 		/// <param name="method">The method involved</param>
@@ -331,6 +307,27 @@ namespace HarmonyLib
 			return this;
 		}
 
+		/// <summary>Declares a local variable but does not add it</summary>
+		/// <param name="variableType">The variable type</param>
+		/// <param name="localVariable">[out] The new local variable</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher DeclareLocal(Type variableType, out LocalBuilder localVariable)
+		{
+			localVariable = generator.DeclareLocal(variableType);
+			return this;
+		}
+
+		/// <summary>Declares a new label but does not add it</summary>
+		/// <param name="label">[out] The new label</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher DefineLabel(out Label label)
+		{
+			label = generator.DefineLabel();
+			return this;
+		}
+
 		/// <summary>Creates a label at current position</summary>
 		/// <param name="label">[out] The label</param>
 		/// <returns>The same code matcher</returns>
@@ -350,7 +347,7 @@ namespace HarmonyLib
 		public CodeMatcher CreateLabelAt(int position, out Label label)
 		{
 			label = generator.DefineLabel();
-			_ = AddLabelsAt(position, new[] { label });
+			_ = AddLabelsAt(position, [label]);
 			return this;
 		}
 
@@ -362,7 +359,7 @@ namespace HarmonyLib
 		public CodeMatcher CreateLabelWithOffsets(int offset, out Label label)
 		{
 			label = generator.DefineLabel();
-			return AddLabelsAt(Pos + offset, new[] { label });
+			return AddLabelsAt(Pos + offset, [label]);
 		}
 
 		/// <summary>Adds an enumeration of labels to current position</summary>
@@ -506,10 +503,7 @@ namespace HarmonyLib
 		/// <param name="endOffset">The end offset</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher RemoveInstructionsWithOffsets(int startOffset, int endOffset)
-		{
-			return RemoveInstructionsInRange(Pos + startOffset, Pos + endOffset);
-		}
+		public CodeMatcher RemoveInstructionsWithOffsets(int startOffset, int endOffset) => RemoveInstructionsInRange(Pos + startOffset, Pos + endOffset);
 
 		/// <summary>Advances the current position</summary>
 		/// <param name="offset">The offset</param>
@@ -544,19 +538,13 @@ namespace HarmonyLib
 		/// <param name="predicate">The predicate</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher SearchForward(Func<CodeInstruction, bool> predicate)
-		{
-			return Search(predicate, 1);
-		}
+		public CodeMatcher SearchForward(Func<CodeInstruction, bool> predicate) => Search(predicate, 1);
 
 		/// <summary>Searches backwards with a predicate and reverses position</summary>
 		/// <param name="predicate">The predicate</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher SearchBackwards(Func<CodeInstruction, bool> predicate)
-		{
-			return Search(predicate, -1);
-		}
+		public CodeMatcher SearchBackwards(Func<CodeInstruction, bool> predicate) => Search(predicate, -1);
 
 		private CodeMatcher Search(Func<CodeInstruction, bool> predicate, int direction)
 		{
@@ -571,37 +559,25 @@ namespace HarmonyLib
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchStartForward(params CodeMatch[] matches)
-		{
-			return Match(matches, 1, false);
-		}
+		public CodeMatcher MatchStartForward(params CodeMatch[] matches) => Match(matches, 1, false);
 
 		/// <summary>Matches forward and advances position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchEndForward(params CodeMatch[] matches)
-		{
-			return Match(matches, 1, true);
-		}
+		public CodeMatcher MatchEndForward(params CodeMatch[] matches) => Match(matches, 1, true);
 
 		/// <summary>Matches backwards and reverses position to beginning of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchStartBackwards(params CodeMatch[] matches)
-		{
-			return Match(matches, -1, false);
-		}
+		public CodeMatcher MatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, false);
 
 		/// <summary>Matches backwards and reverses position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchEndBackwards(params CodeMatch[] matches)
-		{
-			return Match(matches, -1, true);
-		}
+		public CodeMatcher MatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, true);
 
 		private CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd)
 		{
@@ -655,10 +631,7 @@ namespace HarmonyLib
 		/// <param name="name">The match name</param>
 		/// <returns>An instruction</returns>
 		///
-		public CodeInstruction NamedMatch(string name)
-		{
-			return lastMatches[name];
-		}
+		public CodeInstruction NamedMatch(string name) => lastMatches[name];
 
 		private bool MatchSequence(int start, CodeMatch[] matches)
 		{

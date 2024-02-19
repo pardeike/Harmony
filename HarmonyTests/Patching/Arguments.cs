@@ -286,7 +286,7 @@ namespace HarmonyLibTests.Patching
 			SimpleArgumentArrayUsage.n = 0;
 			SimpleArgumentArrayUsage.s = "";
 			SimpleArgumentArrayUsage.st = new SimpleArgumentArrayUsage.SomeStruct() { n = 0 };
-			SimpleArgumentArrayUsage.f = new float[0];
+			SimpleArgumentArrayUsage.f = [];
 
 			var instance = new SimpleArgumentArrayUsage();
 			instance.Method(

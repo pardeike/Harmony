@@ -12,10 +12,7 @@ namespace Utilities
 			{
 				static string secret = "hello";
 
-				public string ModifiedSecret()
-				{
-					return secret.ToUpper();
-				}
+				public string ModifiedSecret() => secret.ToUpper();
 			}
 
 			Bar MyBar
@@ -26,19 +23,13 @@ namespace Utilities
 				}
 			}
 
-			public string GetSecret()
-			{
-				return MyBar.ModifiedSecret();
-			}
+			public string GetSecret() => MyBar.ModifiedSecret();
 
 			Foo()
 			{
 			}
 
-			static Foo MakeFoo()
-			{
-				return new Foo();
-			}
+			static Foo MakeFoo() => new();
 		}
 
 		void Test()

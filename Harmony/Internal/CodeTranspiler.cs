@@ -19,10 +19,7 @@ namespace HarmonyLib
 				.ToList().AsEnumerable();
 		}
 
-		internal void Add(MethodInfo transpiler)
-		{
-			transpilers.Add(transpiler);
-		}
+		internal void Add(MethodInfo transpiler) => transpilers.Add(transpiler);
 
 		internal static object ConvertInstruction(Type type, object instruction, out Dictionary<string, object> unassigned)
 		{
@@ -191,10 +188,7 @@ namespace HarmonyLib
 			}
 		}
 
-		static bool IsCodeInstructionsParameter(Type type)
-		{
-			return type.IsGenericType && type.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal);
-		}
+		static bool IsCodeInstructionsParameter(Type type) => type.IsGenericType && type.GetGenericTypeDefinition().Name.StartsWith("IEnumerable", StringComparison.Ordinal);
 
 		internal static IEnumerable ConvertToGeneralInstructions(MethodInfo transpiler, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{

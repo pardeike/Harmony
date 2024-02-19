@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using System.Runtime.Serialization;
 
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
@@ -45,10 +44,7 @@ namespace HarmonyLib
 		/// <summary>Enumerates all assemblies in the current app domain, excluding visual studio assemblies</summary>
 		/// <returns>An enumeration of <see cref="Assembly"/></returns>
 		///
-		public static IEnumerable<Assembly> AllAssemblies()
-		{
-			return AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") is false);
-		}
+		public static IEnumerable<Assembly> AllAssemblies() => AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("Microsoft.VisualStudio") is false);
 
 		/// <summary>Gets a type by name. Prefers a full name with namespace but falls back to the first type matching the name otherwise</summary>
 		/// <param name="name">The name</param>
@@ -88,19 +84,13 @@ namespace HarmonyLib
 		/// <summary>Enumerates all successfully loaded types in the current app domain, excluding visual studio assemblies</summary>
 		/// <returns>An enumeration of all <see cref="Type"/> in all assemblies, excluding visual studio assemblies</returns>
 		///
-		public static IEnumerable<Type> AllTypes()
-		{
-			return AllAssemblies().SelectMany(a => GetTypesFromAssembly(a));
-		}
+		public static IEnumerable<Type> AllTypes() => AllAssemblies().SelectMany(a => GetTypesFromAssembly(a));
 
 		/// <summary>Enumerates all inner types (non-recursive) of a given type</summary>
 		/// <param name="type">The class/type to start with</param>
 		/// <returns>An enumeration of all inner <see cref="Type"/></returns>
 		///
-		public static IEnumerable<Type> InnerTypes(Type type)
-		{
-			return type.GetNestedTypes(all);
-		}
+		public static IEnumerable<Type> InnerTypes(Type type) => type.GetNestedTypes(all);
 
 		/// <summary>Applies a function going up the type hierarchy and stops at the first non-<c>null</c> result</summary>
 		/// <typeparam name="T">Result type of func()</typeparam>
@@ -297,58 +287,40 @@ namespace HarmonyLib
 		/// <param name="name">The name of the property (case sensitive)</param>
 		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
 		///
-		public static MethodInfo DeclaredPropertyGetter(Type type, string name)
-		{
-			return DeclaredProperty(type, name)?.GetGetMethod(true);
-		}
+		public static MethodInfo DeclaredPropertyGetter(Type type, string name) => DeclaredProperty(type, name)?.GetGetMethod(true);
 
 		/// <summary>Gets the reflection information for the getter method of a directly declared property</summary>
 		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
 		/// <returns>A method or null when the property cannot be found</returns>
 		///
-		public static MethodInfo DeclaredPropertyGetter(string typeColonName)
-		{
-			return DeclaredProperty(typeColonName)?.GetGetMethod(true);
-		}
+		public static MethodInfo DeclaredPropertyGetter(string typeColonName) => DeclaredProperty(typeColonName)?.GetGetMethod(true);
 
 		/// <summary>Gets the reflection information for the getter method of a directly declared indexer property</summary>
 		/// <param name="type">The class/type where the indexer property is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
 		/// <returns>A method or null when type is null or when indexer property cannot be found</returns>
 		///
-		public static MethodInfo DeclaredIndexerGetter(Type type, Type[] parameters = null)
-		{
-			return DeclaredIndexer(type, parameters)?.GetGetMethod(true);
-		}
+		public static MethodInfo DeclaredIndexerGetter(Type type, Type[] parameters = null) => DeclaredIndexer(type, parameters)?.GetGetMethod(true);
 
 		/// <summary>Gets the reflection information for the setter method of a directly declared property</summary>
 		/// <param name="type">The class/type where the property is declared</param>
 		/// <param name="name">The name of the property (case sensitive)</param>
 		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
 		///
-		public static MethodInfo DeclaredPropertySetter(Type type, string name)
-		{
-			return DeclaredProperty(type, name)?.GetSetMethod(true);
-		}
+		public static MethodInfo DeclaredPropertySetter(Type type, string name) => DeclaredProperty(type, name)?.GetSetMethod(true);
 
 		/// <summary>Gets the reflection information for the Setter method of a directly declared property</summary>
 		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
 		/// <returns>A method or null when the property cannot be found</returns>
 		///
-		public static MethodInfo DeclaredPropertySetter(string typeColonName)
-		{
-			return DeclaredProperty(typeColonName)?.GetSetMethod(true);
-		}
+		public static MethodInfo DeclaredPropertySetter(string typeColonName) => DeclaredProperty(typeColonName)?.GetSetMethod(true);
 
 		/// <summary>Gets the reflection information for the setter method of a directly declared indexer property</summary>
 		/// <param name="type">The class/type where the indexer property is declared</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
 		/// <returns>A method or null when type is null or when indexer property cannot be found</returns>
 		///
-		public static MethodInfo DeclaredIndexerSetter(Type type, Type[] parameters)
-		{
-			return DeclaredIndexer(type, parameters)?.GetSetMethod(true);
-		}
+		public static MethodInfo DeclaredIndexerSetter(Type type, Type[] parameters) => DeclaredIndexer(type, parameters)?.GetSetMethod(true);
 
 		/// <summary>Gets the reflection information for a property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
@@ -421,58 +393,40 @@ namespace HarmonyLib
 		/// <param name="name">The name</param>
 		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
 		///
-		public static MethodInfo PropertyGetter(Type type, string name)
-		{
-			return Property(type, name)?.GetGetMethod(true);
-		}
+		public static MethodInfo PropertyGetter(Type type, string name) => Property(type, name)?.GetGetMethod(true);
 
 		/// <summary>Gets the reflection information for the getter method of a property by searching the type and all its super types</summary>
 		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
 		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
 		///
-		public static MethodInfo PropertyGetter(string typeColonName)
-		{
-			return Property(typeColonName)?.GetGetMethod(true);
-		}
+		public static MethodInfo PropertyGetter(string typeColonName) => Property(typeColonName)?.GetGetMethod(true);
 
 		/// <summary>Gets the reflection information for the getter method of an indexer property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
 		/// <returns>A method or null when type is null or when the indexer property cannot be found</returns>
 		///
-		public static MethodInfo IndexerGetter(Type type, Type[] parameters = null)
-		{
-			return Indexer(type, parameters)?.GetGetMethod(true);
-		}
+		public static MethodInfo IndexerGetter(Type type, Type[] parameters = null) => Indexer(type, parameters)?.GetGetMethod(true);
 
 		/// <summary>Gets the reflection information for the setter method of a property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
 		/// <param name="name">The name</param>
 		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
 		///
-		public static MethodInfo PropertySetter(Type type, string name)
-		{
-			return Property(type, name)?.GetSetMethod(true);
-		}
+		public static MethodInfo PropertySetter(Type type, string name) => Property(type, name)?.GetSetMethod(true);
 
 		/// <summary>Gets the reflection information for the setter method of a property by searching the type and all its super types</summary>
 		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
 		/// <returns>A method or null when type/name is null or when the property cannot be found</returns>
 		///
-		public static MethodInfo PropertySetter(string typeColonName)
-		{
-			return Property(typeColonName)?.GetSetMethod(true);
-		}
+		public static MethodInfo PropertySetter(string typeColonName) => Property(typeColonName)?.GetSetMethod(true);
 
 		/// <summary>Gets the reflection information for the setter method of an indexer property by searching the type and all its super types</summary>
 		/// <param name="type">The class/type</param>
 		/// <param name="parameters">Optional parameters to target a specific overload of multiple indexers</param>
 		/// <returns>A method or null when type is null or when the indexer property cannot be found</returns>
 		///
-		public static MethodInfo IndexerSetter(Type type, Type[] parameters = null)
-		{
-			return Indexer(type, parameters)?.GetSetMethod(true);
-		}
+		public static MethodInfo IndexerSetter(Type type, Type[] parameters = null) => Indexer(type, parameters)?.GetSetMethod(true);
 
 		/// <summary>Gets the reflection information for a directly declared method</summary>
 		/// <param name="type">The class/type where the method is declared</param>
@@ -552,7 +506,7 @@ namespace HarmonyLib
 				}
 				catch (AmbiguousMatchException ex)
 				{
-					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, new Type[0], modifiers));
+					result = FindIncludingBaseTypes(type, t => t.GetMethod(name, all, null, [], modifiers));
 					if (result is null)
 					{
 						throw new AmbiguousMatchException($"Ambiguous match in Harmony patch for {type}:{name}", ex);
@@ -755,10 +709,7 @@ namespace HarmonyLib
 		/// <param name="member">A member</param>
 		/// <returns>True if the member is a declared</returns>
 		///
-		public static bool IsDeclaredMember<T>(this T member) where T : MemberInfo
-		{
-			return member.DeclaringType == member.ReflectedType;
-		}
+		public static bool IsDeclaredMember<T>(this T member) where T : MemberInfo => member.DeclaringType == member.ReflectedType;
 
 		/// <summary>Gets the real implementation of a class member</summary>
 		/// <param name="member">A member</param>
@@ -770,7 +721,7 @@ namespace HarmonyLib
 				return member;
 
 			var metaToken = member.MetadataToken;
-			var members = member.DeclaringType?.GetMembers(all) ?? new MemberInfo[0];
+			var members = member.DeclaringType?.GetMembers(all) ?? [];
 			foreach (var other in members)
 				if (other.MetadataToken == metaToken)
 					return (T)other;
@@ -791,7 +742,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredConstructor: type is null");
 				return null;
 			}
-			parameters ??= new Type[0];
+			parameters ??= [];
 			var flags = searchForStatic ? allDeclared & ~BindingFlags.Instance : allDeclared & ~BindingFlags.Static;
 			return type.GetConstructor(flags, null, parameters, []);
 		}
@@ -809,7 +760,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.ConstructorInfo: type is null");
 				return null;
 			}
-			parameters ??= new Type[0];
+			parameters ??= [];
 			var flags = searchForStatic ? all & ~BindingFlags.Instance : all & ~BindingFlags.Static;
 			return FindIncludingBaseTypes(type, t => t.GetConstructor(flags, null, parameters, []));
 		}
@@ -996,7 +947,7 @@ namespace HarmonyLib
 		///
 		public static Type[] GetTypes(object[] parameters)
 		{
-			if (parameters is null) return new Type[0];
+			if (parameters is null) return [];
 			return parameters.Select(p => p is null ? typeof(object) : p.GetType()).ToArray();
 		}
 
@@ -1466,10 +1417,7 @@ namespace HarmonyLib
 		/// <param name="fieldName">The name of the field</param>
 		/// <returns>A readable/assignable reference to the field</returns>
 		///
-		public static ref F StaticFieldRefAccess<T, F>(string fieldName)
-		{
-			return ref StaticFieldRefAccess<F>(typeof(T), fieldName);
-		}
+		public static ref F StaticFieldRefAccess<T, F>(string fieldName) => ref StaticFieldRefAccess<F>(typeof(T), fieldName);
 
 		/// <summary>Creates a static field reference</summary>
 		/// <typeparam name="F">
@@ -1703,7 +1651,7 @@ namespace HarmonyLib
 				var dmd = new DynamicMethodDefinition(
 					"LdftnDelegate_" + method.Name,
 					delegateType,
-					new[] { typeof(object) })
+					[typeof(object)])
 				{
 					// OwnerType = delegateType
 				};
@@ -1863,7 +1811,7 @@ namespace HarmonyLib
 			if (type is null)
 				throw new ArgumentNullException(nameof(type));
 			var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, binder: null,
-				CallingConventions.Any, new Type[0], modifiers: null);
+				CallingConventions.Any, [], modifiers: null);
 			if (ctor is not null)
 				return ctor.Invoke(null);
 #if NET5_0_OR_GREATER
@@ -1903,10 +1851,7 @@ namespace HarmonyLib
 		/// <param name="source">The original object</param>
 		/// <returns>A copy of the original object but of type T</returns>
 		///
-		public static T MakeDeepCopy<T>(object source) where T : class
-		{
-			return MakeDeepCopy(source, typeof(T)) as T;
-		}
+		public static T MakeDeepCopy<T>(object source) where T : class => MakeDeepCopy(source, typeof(T)) as T;
 
 		/// <summary>Makes a deep copy of any object</summary>
 		/// <typeparam name="T">The type of the instance that should be created</typeparam>
@@ -1915,10 +1860,7 @@ namespace HarmonyLib
 		/// <param name="processor">Optional value transformation function (taking a field name and src/dst <see cref="Traverse"/> instances)</param>
 		/// <param name="pathRoot">The optional path root to start with</param>
 		///
-		public static void MakeDeepCopy<T>(object source, out T result, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "")
-		{
-			result = (T)MakeDeepCopy(source, typeof(T), processor, pathRoot);
-		}
+		public static void MakeDeepCopy<T>(object source, out T result, Func<string, Traverse, Traverse, object> processor = null, string pathRoot = "") => result = (T)MakeDeepCopy(source, typeof(T), processor, pathRoot);
 
 		/// <summary>Makes a deep copy of any object</summary>
 		/// <param name="source">The original object</param>
@@ -2097,19 +2039,13 @@ namespace HarmonyLib
 		/// <param name="type">The type</param>
 		/// <returns>True if the type represents some number</returns>
 		///
-		public static bool IsNumber(Type type)
-		{
-			return IsInteger(type) || IsFloatingPoint(type);
-		}
+		public static bool IsNumber(Type type) => IsInteger(type) || IsFloatingPoint(type);
 
 		/// <summary>Tests if a type is void</summary>
 		/// <param name="type">The type</param>
 		/// <returns>True if the type is void</returns>
 		///
-		public static bool IsVoid(Type type)
-		{
-			return type == typeof(void);
-		}
+		public static bool IsVoid(Type type) => type == typeof(void);
 
 		/// <summary>Test whether an instance is of a nullable type</summary>
 		/// <typeparam name="T">Type of instance</typeparam>
@@ -2117,11 +2053,7 @@ namespace HarmonyLib
 		/// <returns>True if instance is of nullable type, false if not</returns>
 		///
 #pragma warning disable IDE0060
-		public static bool IsOfNullableType<T>(T instance)
-#pragma warning restore IDE0060
-		{
-			return Nullable.GetUnderlyingType(typeof(T)) is not null;
-		}
+		public static bool IsOfNullableType<T>(T instance) => Nullable.GetUnderlyingType(typeof(T)) is not null;
 
 		/// <summary>Tests whether a type or member is static, as defined in C#</summary>
 		/// <param name="member">The type or member</param>

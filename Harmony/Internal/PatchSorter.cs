@@ -181,17 +181,11 @@ namespace HarmonyLib
 			/// <summary>Determines whether patches are equal</summary>
 			/// <param name="obj">The other patch</param>
 			/// <returns>true if equal</returns>
-			public override bool Equals(object obj)
-			{
-				return obj is PatchSortingWrapper wrapper && innerPatch.PatchMethod == wrapper.innerPatch.PatchMethod;
-			}
+			public override bool Equals(object obj) => obj is PatchSortingWrapper wrapper && innerPatch.PatchMethod == wrapper.innerPatch.PatchMethod;
 
 			/// <summary>Hash function</summary>
 			/// <returns>A hash code</returns>
-			public override int GetHashCode()
-			{
-				return innerPatch.PatchMethod.GetHashCode();
-			}
+			public override int GetHashCode() => innerPatch.PatchMethod.GetHashCode();
 
 			/// <summary>Bidirectionally registers Patches as after dependencies</summary>
 			/// <param name="dependencies">List of dependencies to register</param>
@@ -242,10 +236,7 @@ namespace HarmonyLib
 					&& x.before.All(y.before.Contains) && x.after.All(y.after.Contains);
 			}
 
-			public int GetHashCode(Patch obj)
-			{
-				return obj.GetHashCode();
-			}
+			public int GetHashCode(Patch obj) => obj.GetHashCode();
 		}
 	}
 }

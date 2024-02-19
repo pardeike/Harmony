@@ -36,7 +36,7 @@ namespace Patching_Transpiler
 
 		class Tools
 		{
-			public static MethodInfo MyExtraMethod() { return null; }
+			public static MethodInfo MyExtraMethod() => null;
 		}
 
 		static void ReportError(string s) { }

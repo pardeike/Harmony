@@ -21,10 +21,7 @@ namespace HarmonyLib
 		/// <param name="serializationInfo">The info</param>
 		/// <param name="streamingContext">The context</param>
 		/// 
-		protected HarmonyException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
-		{
-			throw new NotImplementedException();
-		}
+		protected HarmonyException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) => throw new NotImplementedException();
 
 		internal HarmonyException(Exception innerException, Dictionary<int, CodeInstruction> instructions, int errorOffset) : base("IL Compile Error", innerException)
 		{
@@ -51,26 +48,17 @@ namespace HarmonyLib
 		/// <summary>Get a list of IL instructions in pairs of offset+code</summary>
 		/// <returns>A list of key/value pairs which represent an offset and the code at that offset</returns>
 		/// 
-		public List<KeyValuePair<int, CodeInstruction>> GetInstructionsWithOffsets()
-		{
-			return [.. instructions.OrderBy(ins => ins.Key)];
-		}
+		public List<KeyValuePair<int, CodeInstruction>> GetInstructionsWithOffsets() => [.. instructions.OrderBy(ins => ins.Key)];
 
 		/// <summary>Get a list of IL instructions without offsets</summary>
 		/// <returns>A list of <see cref="CodeInstruction"/></returns>
 		/// 
-		public List<CodeInstruction> GetInstructions()
-		{
-			return instructions.OrderBy(ins => ins.Key).Select(ins => ins.Value).ToList();
-		}
+		public List<CodeInstruction> GetInstructions() => instructions.OrderBy(ins => ins.Key).Select(ins => ins.Value).ToList();
 
 		/// <summary>Get the error offset of the errornous IL instruction</summary>
 		/// <returns>The offset</returns>
 		/// 
-		public int GetErrorOffset()
-		{
-			return errorOffset;
-		}
+		public int GetErrorOffset() => errorOffset;
 
 		/// <summary>Get the index of the errornous IL instruction</summary>
 		/// <returns>The index into the list of instructions or -1 if not found</returns>

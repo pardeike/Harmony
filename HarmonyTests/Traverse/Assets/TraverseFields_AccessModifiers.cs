@@ -6,20 +6,12 @@ namespace HarmonyLibTests.Assets
 		public static string[] fieldNames = ["publicField", "privateField", "protectedField", "internalField"];
 	}
 
-	public class TraverseFields_AccessModifiers
+	public class TraverseFields_AccessModifiers(string[] s)
 	{
-		public string publicField;
-		readonly string privateField;
-		protected string protectedField;
-		internal string internalField;
-
-		public TraverseFields_AccessModifiers(string[] s)
-		{
-			publicField = s[0];
-			privateField = s[1];
-			protectedField = s[2];
-			internalField = s[3];
-		}
+		public string publicField = s[0];
+		readonly string privateField = s[1];
+		protected string protectedField = s[2];
+		internal string internalField = s[3];
 
 		public string GetTestField(int n)
 		{
@@ -38,9 +30,6 @@ namespace HarmonyLibTests.Assets
 			}
 		}
 
-		public override string ToString()
-		{
-			return "TraverseFields_AccessModifiers";
-		}
+		public override string ToString() => "TraverseFields_AccessModifiers";
 	}
 }

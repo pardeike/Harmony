@@ -19,10 +19,7 @@ namespace HarmonyLibTests.Assets
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method2(string str)
-		{
-			return str;
-		}
+		public string Method2(string str) => str;
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method3(int n)
@@ -60,10 +57,7 @@ namespace HarmonyLibTests.Assets
 
 		[HarmonyFinalizer]
 		[HarmonyPatch(typeof(CombinedPatchClass), "Method3")]
-		static void Finalizer3()
-		{
-			counter += 100;
-		}
+		static void Finalizer3() => counter += 100;
 
 		[HarmonyFinalizer]
 		[HarmonyPatch(typeof(CombinedPatchClass), "Method3")]

@@ -118,10 +118,7 @@ namespace HarmonyLib
 		/// <summary>Annotation specifying the category</summary>
 		/// <param name="category">Name of patch category</param>
 		///
-		public HarmonyPatchCategory(string category)
-		{
-			info.category = category;
-		}
+		public HarmonyPatchCategory(string category) => info.category = category;
 	}
 
 	/// <summary>Annotation to define your Harmony patch methods</summary>
@@ -138,10 +135,7 @@ namespace HarmonyLib
 		/// <summary>An annotation that specifies a class to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
 		///
-		public HarmonyPatch(Type declaringType)
-		{
-			info.declaringType = declaringType;
-		}
+		public HarmonyPatch(Type declaringType) => info.declaringType = declaringType;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
@@ -238,10 +232,7 @@ namespace HarmonyLib
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
 		///
-		public HarmonyPatch(string methodName)
-		{
-			info.methodName = methodName;
-		}
+		public HarmonyPatch(string methodName) => info.methodName = methodName;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
@@ -277,10 +268,7 @@ namespace HarmonyLib
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
 		///
-		public HarmonyPatch(MethodType methodType)
-		{
-			info.methodType = methodType;
-		}
+		public HarmonyPatch(MethodType methodType) => info.methodType = methodType;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodType">The <see cref="MethodType"/></param>
@@ -306,19 +294,13 @@ namespace HarmonyLib
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
-		public HarmonyPatch(Type[] argumentTypes)
-		{
-			info.argumentTypes = argumentTypes;
-		}
+		public HarmonyPatch(Type[] argumentTypes) => info.argumentTypes = argumentTypes;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
 		///
-		public HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)
-		{
-			ParseSpecialArguments(argumentTypes, argumentVariations);
-		}
+		public HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations) => ParseSpecialArguments(argumentTypes, argumentVariations);
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="typeName">The full name of the declaring class/type</param>
@@ -412,10 +394,7 @@ namespace HarmonyLib
 		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
 		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType)
-			: base(declaringType, MethodType.Normal)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+			: base(declaringType, MethodType.Normal) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
@@ -423,10 +402,7 @@ namespace HarmonyLib
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
 		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, params Type[] argumentTypes)
-			: base(declaringType, MethodType.Normal, argumentTypes)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+			: base(declaringType, MethodType.Normal, argumentTypes) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
@@ -435,10 +411,7 @@ namespace HarmonyLib
 		/// <param name="argumentVariations">Array of <see cref="ArgumentType"/></param>
 		///
 		public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)
-			: base(declaringType, MethodType.Normal, argumentTypes, argumentVariations)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+			: base(declaringType, MethodType.Normal, argumentTypes, argumentVariations) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="declaringType">The declaring class/type</param>
@@ -446,10 +419,7 @@ namespace HarmonyLib
 		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
 		public HarmonyDelegate(Type declaringType, string methodName, MethodDispatchType methodDispatchType)
-			: base(declaringType, methodName, MethodType.Normal)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+			: base(declaringType, methodName, MethodType.Normal) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodName">The name of the method, property or constructor to patch</param>
@@ -477,28 +447,19 @@ namespace HarmonyLib
 		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
 		public HarmonyDelegate(string methodName, MethodDispatchType methodDispatchType)
-			: base(methodName, MethodType.Normal)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+			: base(methodName, MethodType.Normal) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies call dispatching mechanics for the delegate</summary>
 		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		///
-		public HarmonyDelegate(MethodDispatchType methodDispatchType)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+		public HarmonyDelegate(MethodDispatchType methodDispatchType) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
 		///
 		public HarmonyDelegate(MethodDispatchType methodDispatchType, params Type[] argumentTypes)
-			: base(MethodType.Normal, argumentTypes)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+			: base(MethodType.Normal, argumentTypes) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="methodDispatchType">The <see cref="MethodDispatchType"/></param>
@@ -506,10 +467,7 @@ namespace HarmonyLib
 		/// <param name="argumentVariations">An array of <see cref="ArgumentType"/></param>
 		///
 		public HarmonyDelegate(MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)
-			: base(MethodType.Normal, argumentTypes, argumentVariations)
-		{
-			info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
-		}
+			: base(MethodType.Normal, argumentTypes, argumentVariations) => info.nonVirtualDelegate = methodDispatchType == MethodDispatchType.Call;
 
 		/// <summary>An annotation that specifies a method, property or constructor to patch</summary>
 		/// <param name="argumentTypes">An array of argument types to target overloads</param>
@@ -533,10 +491,7 @@ namespace HarmonyLib
 		/// <summary>An annotation that specifies the type of reverse patching</summary>
 		/// <param name="type">The <see cref="HarmonyReversePatchType"/> of the reverse patch</param>
 		///
-		public HarmonyReversePatch(HarmonyReversePatchType type = HarmonyReversePatchType.Original)
-		{
-			info.reversePatchType = type;
-		}
+		public HarmonyReversePatch(HarmonyReversePatchType type = HarmonyReversePatchType.Original) => info.reversePatchType = type;
 	}
 
 	/// <summary>A Harmony annotation to define that all methods in a class are to be patched</summary>
@@ -554,10 +509,7 @@ namespace HarmonyLib
 		/// <summary>A Harmony annotation to define patch priority</summary>
 		/// <param name="priority">The priority</param>
 		///
-		public HarmonyPriority(int priority)
-		{
-			info.priority = priority;
-		}
+		public HarmonyPriority(int priority) => info.priority = priority;
 	}
 
 	/// <summary>A Harmony annotation</summary>
@@ -568,10 +520,7 @@ namespace HarmonyLib
 		/// <summary>A Harmony annotation to define that a patch comes before another patch</summary>
 		/// <param name="before">The array of harmony IDs of the other patches</param>
 		///
-		public HarmonyBefore(params string[] before)
-		{
-			info.before = before;
-		}
+		public HarmonyBefore(params string[] before) => info.before = before;
 	}
 
 	/// <summary>A Harmony annotation</summary>
@@ -581,10 +530,7 @@ namespace HarmonyLib
 		/// <summary>A Harmony annotation to define that a patch comes after another patch</summary>
 		/// <param name="after">The array of harmony IDs of the other patches</param>
 		///
-		public HarmonyAfter(params string[] after)
-		{
-			info.after = after;
-		}
+		public HarmonyAfter(params string[] after) => info.after = after;
 	}
 
 	/// <summary>A Harmony annotation</summary>
@@ -593,10 +539,7 @@ namespace HarmonyLib
 	{
 		/// <summary>A Harmony annotation to debug a patch (output uses <see cref="FileLog"/> to log to your Desktop)</summary>
 		///
-		public HarmonyDebug()
-		{
-			info.debug = true;
-		}
+		public HarmonyDebug() => info.debug = true;
 	}
 
 	/// <summary>Specifies the Prepare function in a patch class</summary>

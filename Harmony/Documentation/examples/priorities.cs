@@ -6,10 +6,7 @@ namespace Priorities
 	// <foo>
 	class Foo
 	{
-		static string Bar()
-		{
-			return "secret";
-		}
+		static string Bar() => "secret";
 	}
 	// </foo>
 
@@ -26,10 +23,7 @@ namespace Priorities
 		[HarmonyPatch("Bar")]
 		class MyPatch
 		{
-			static void Postfix(ref string result)
-			{
-				result = "new secret 1";
-			}
+			static void Postfix(ref string result) => result = "new secret 1";
 		}
 		// </plugin1>
 	}
@@ -48,10 +42,7 @@ namespace Priorities
 		class MyPatch
 		{
 			[HarmonyAfter(["net.example.plugin2"])]
-			static void Postfix(ref string result)
-			{
-				result = "new secret 1";
-			}
+			static void Postfix(ref string result) => result = "new secret 1";
 		}
 		// </plugin1b>
 	}
@@ -69,10 +60,7 @@ namespace Priorities
 		[HarmonyPatch("Bar")]
 		class MyPatch
 		{
-			static void Postfix(ref string result)
-			{
-				result = "new secret 2";
-			}
+			static void Postfix(ref string result) => result = "new secret 2";
 		}
 		// </plugin2>
 	}

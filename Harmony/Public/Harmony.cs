@@ -1,4 +1,3 @@
-using MonoMod;
 using MonoMod.Core.Platforms;
 using System;
 using System.Collections.Generic;
@@ -86,37 +85,25 @@ namespace HarmonyLib
 		/// <param name="original">The original method/constructor</param>
 		/// <returns>A new <see cref="PatchProcessor"/> instance</returns>
 		///
-		public PatchProcessor CreateProcessor(MethodBase original)
-		{
-			return new PatchProcessor(this, original);
-		}
+		public PatchProcessor CreateProcessor(MethodBase original) => new(this, original);
 
 		/// <summary>Creates a patch class processor from an annotated class</summary>
 		/// <param name="type">The class/type</param>
 		/// <returns>A new <see cref="PatchClassProcessor"/> instance</returns>
 		/// 
-		public PatchClassProcessor CreateClassProcessor(Type type)
-		{
-			return new PatchClassProcessor(this, type);
-		}
+		public PatchClassProcessor CreateClassProcessor(Type type) => new(this, type);
 
 		/// <summary>Creates a reverse patcher for one of your stub methods</summary>
 		/// <param name="original">The original method/constructor</param>
 		/// <param name="standin">The stand-in stub method as <see cref="HarmonyMethod"/></param>
 		/// <returns>A new <see cref="ReversePatcher"/> instance</returns>
 		///
-		public ReversePatcher CreateReversePatcher(MethodBase original, HarmonyMethod standin)
-		{
-			return new ReversePatcher(this, original, standin);
-		}
+		public ReversePatcher CreateReversePatcher(MethodBase original, HarmonyMethod standin) => new(this, original, standin);
 
 		/// <summary>Searches an assembly for Harmony annotations and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
 		/// 
-		public void PatchAll(Assembly assembly)
-		{
-			AccessTools.GetTypesFromAssembly(assembly).Do(type => CreateClassProcessor(type).Patch());
-		}
+		public void PatchAll(Assembly assembly) => AccessTools.GetTypesFromAssembly(assembly).Do(type => CreateClassProcessor(type).Patch());
 
 		/// <summary>Searches an assembly for Harmony-annotated classes without category annotations and uses them to create patches</summary>
 		/// 
@@ -186,10 +173,7 @@ namespace HarmonyLib
 		/// <param name="transpiler">An optional transpiler as method that will be applied during the process</param>
 		/// <returns>The replacement method that was created to patch the stub method</returns>
 		/// 
-		public static MethodInfo ReversePatch(MethodBase original, HarmonyMethod standin, MethodInfo transpiler = null)
-		{
-			return PatchFunctions.ReversePatch(standin, original, transpiler);
-		}
+		public static MethodInfo ReversePatch(MethodBase original, HarmonyMethod standin, MethodInfo transpiler = null) => PatchFunctions.ReversePatch(standin, original, transpiler);
 
 		/// <summary>Unpatches methods by patching them with zero patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
 		/// <param name="harmonyID">The optional Harmony ID to restrict unpatching to a specific Harmony instance</param>
@@ -251,10 +235,7 @@ namespace HarmonyLib
 		/// <param name="method">The original method/constructor</param>
 		/// <returns>The patch information as <see cref="Patches"/></returns>
 		///
-		public static Patches GetPatchInfo(MethodBase method)
-		{
-			return PatchProcessor.GetPatchInfo(method);
-		}
+		public static Patches GetPatchInfo(MethodBase method) => PatchProcessor.GetPatchInfo(method);
 
 		/// <summary>Gets the methods this instance has patched</summary>
 		/// <returns>An enumeration of original methods/constructors</returns>
@@ -268,10 +249,7 @@ namespace HarmonyLib
 		/// <summary>Gets all patched original methods in the appdomain</summary>
 		/// <returns>An enumeration of patched original methods/constructors</returns>
 		///
-		public static IEnumerable<MethodBase> GetAllPatchedMethods()
-		{
-			return PatchProcessor.GetAllPatchedMethods();
-		}
+		public static IEnumerable<MethodBase> GetAllPatchedMethods() => PatchProcessor.GetAllPatchedMethods();
 
 		/// <summary>Gets the original method from a given replacement method</summary>
 		/// <param name="replacement">A replacement method, for example from a stacktrace</param>
@@ -310,9 +288,6 @@ namespace HarmonyLib
 		/// <param name="currentVersion">[out] The current Harmony version</param>
 		/// <returns>A dictionary containing assembly versions keyed by Harmony IDs</returns>
 		///
-		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
-		{
-			return PatchProcessor.VersionInfo(out currentVersion);
-		}
+		public static Dictionary<string, Version> VersionInfo(out Version currentVersion) => PatchProcessor.VersionInfo(out currentVersion);
 	}
 }

@@ -24,20 +24,11 @@ namespace HarmonyLib
 			reader.GenerateInstructions();
 		}
 
-		internal void SetDebugging(bool debug)
-		{
-			reader.SetDebugging(debug);
-		}
+		internal void SetDebugging(bool debug) => reader.SetDebugging(debug);
 
-		internal void AddTranspiler(MethodInfo transpiler)
-		{
-			transpilers.Add(transpiler);
-		}
+		internal void AddTranspiler(MethodInfo transpiler) => transpilers.Add(transpiler);
 
-		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode, out bool methodEndsInDeadCode)
-		{
-			return reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode, out methodEndsInDeadCode);
-		}
+		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode, out bool methodEndsInDeadCode) => reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode, out methodEndsInDeadCode);
 
 		internal static List<CodeInstruction> GetInstructions(ILGenerator generator, MethodBase method, int maxTranspilers)
 		{
@@ -97,7 +88,7 @@ namespace HarmonyLib
 			var body = method.GetMethodBody();
 			if ((body?.GetILAsByteArray()?.Length ?? 0) == 0)
 			{
-				ilBytes = new ByteBuffer(new byte[0]);
+				ilBytes = new ByteBuffer([]);
 				ilInstructions = [];
 			}
 			else
@@ -131,10 +122,7 @@ namespace HarmonyLib
 			exceptions = body?.ExceptionHandlingClauses ?? [];
 		}
 
-		internal void SetDebugging(bool debug)
-		{
-			this.debug = debug;
-		}
+		internal void SetDebugging(bool debug) => this.debug = debug;
 
 		internal void GenerateInstructions()
 		{
@@ -739,15 +727,9 @@ namespace HarmonyLib
 			throw new Exception($"Cannot find instruction for {offset:X4}");
 		}
 
-		static bool TargetsLocalVariable(OpCode opcode)
-		{
-			return opcode.Name.Contains("loc");
-		}
+		static bool TargetsLocalVariable(OpCode opcode) => opcode.Name.Contains("loc");
 
-		LocalVariableInfo GetLocalVariable(int index)
-		{
-			return localVariables?[index];
-		}
+		LocalVariableInfo GetLocalVariable(int index) => localVariables?[index];
 
 		ParameterInfo GetParameter(int index)
 		{

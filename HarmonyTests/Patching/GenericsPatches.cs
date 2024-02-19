@@ -26,10 +26,7 @@ namespace HarmonyLibTests.Patching
 				}
 			}
 
-			internal void SetList(List<T> list)
-			{
-				this.list = list;
-			}
+			internal void SetList(List<T> list) => this.list = list;
 
 			internal MyEnumerator(List<T> list)
 			{
@@ -70,22 +67,13 @@ namespace HarmonyLibTests.Patching
 		public List<T> list = [];
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public MyEnumerator GetEnumerator()
-		{
-			return new MyEnumerator(list);
-		}
+		public MyEnumerator GetEnumerator() => new(list);
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		IEnumerator<T> IEnumerable<T>.GetEnumerator()
-		{
-			return new MyEnumerator(list);
-		}
+		IEnumerator<T> IEnumerable<T>.GetEnumerator() => new MyEnumerator(list);
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return new MyEnumerator(list);
-		}
+		IEnumerator IEnumerable.GetEnumerator() => new MyEnumerator(list);
 	}
 
 	public class TestGenericStructReturnTypes_Patch

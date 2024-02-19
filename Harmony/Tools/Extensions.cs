@@ -54,7 +54,13 @@ namespace HarmonyLib
 				var subTypes = type.GetGenericArguments();
 				for (var i = 0; i < subTypes.Length; i++)
 				{
-					if (result.EndsWith("<", StringComparison.Ordinal) is false)
+					if (result
+#if NET8_0_OR_GREATER
+					.EndsWith('<')
+#else
+					.EndsWith("<", StringComparison.Ordinal)
+#endif
+					is false)
 						result += ", ";
 					result += subTypes[i].FullDescription();
 				}
@@ -88,10 +94,7 @@ namespace HarmonyLib
 		/// <param name="pinfo">The array of parameter infos</param>
 		/// <returns>An array of types</returns>
 		///
-		public static Type[] Types(this ParameterInfo[] pinfo)
-		{
-			return pinfo.Select(pi => pi.ParameterType).ToArray();
-		}
+		public static Type[] Types(this ParameterInfo[] pinfo) => pinfo.Select(pi => pi.ParameterType).ToArray();
 
 		/// <summary>A helper to access a value via key from a dictionary</summary>
 		/// <typeparam name="S">The key type</typeparam>
@@ -271,10 +274,7 @@ namespace HarmonyLib
 		/// <summary>Returns if an <see cref="OpCode"/> is initialized and valid</summary>
 		/// <param name="code">The <see cref="OpCode"/></param>
 		/// <returns></returns>
-		public static bool IsValid(this OpCode code)
-		{
-			return code.Size > 0;
-		}
+		public static bool IsValid(this OpCode code) => code.Size > 0;
 
 		/// <summary>Shortcut for testing whether the operand is equal to a non-null value</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -313,10 +313,7 @@ namespace HarmonyLib
 		/// <param name="operand">The operand value</param>
 		/// <returns>True if the opcode is equal to the given opcode and the operand has the same type and is equal to the given operand</returns>
 		///
-		public static bool Is(this CodeInstruction code, OpCode opcode, object operand)
-		{
-			return code.opcode == opcode && code.OperandIs(operand);
-		}
+		public static bool Is(this CodeInstruction code, OpCode opcode, object operand) => code.opcode == opcode && code.OperandIs(operand);
 
 		/// <summary>Shortcut for <code>code.opcode == opcode &amp;&amp; code.OperandIs(operand)</code></summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -326,10 +323,7 @@ namespace HarmonyLib
 		/// <remarks>This is an optimized version of <see cref="Is(CodeInstruction, OpCode, object)"/> for <see cref="MemberInfo"/></remarks>
 		///
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static bool Is(this CodeInstruction code, OpCode opcode, MemberInfo operand)
-		{
-			return code.opcode == opcode && code.OperandIs(operand);
-		}
+		public static bool Is(this CodeInstruction code, OpCode opcode, MemberInfo operand) => code.opcode == opcode && code.OperandIs(operand);
 
 		/// <summary>Tests for any form of Ldarg*</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -425,10 +419,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <returns>True if the instruction loads a constant</returns>
 		///
-		public static bool LoadsConstant(this CodeInstruction code)
-		{
-			return constantLoadingCodes.Contains(code.opcode);
-		}
+		public static bool LoadsConstant(this CodeInstruction code) => constantLoadingCodes.Contains(code.opcode);
 
 		/// <summary>Tests if the code instruction loads an integer constant</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -469,10 +460,7 @@ namespace HarmonyLib
 		/// <param name="e">The enum</param>
 		/// <returns>True if the instruction loads the constant</returns>
 		///
-		public static bool LoadsConstant(this CodeInstruction code, Enum e)
-		{
-			return code.LoadsConstant(Convert.ToInt64(e));
-		}
+		public static bool LoadsConstant(this CodeInstruction code, Enum e) => code.LoadsConstant(Convert.ToInt64(e));
 
 		/// <summary>Tests if the code instruction loads a string constant</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -592,10 +580,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the labels to</param>
 		/// <param name="other">The other <see cref="CodeInstruction"/> to move the labels from</param>
 		/// <returns>The code instruction that received the labels</returns>
-		public static CodeInstruction MoveLabelsFrom(this CodeInstruction code, CodeInstruction other)
-		{
-			return code.WithLabels(other.ExtractLabels());
-		}
+		public static CodeInstruction MoveLabelsFrom(this CodeInstruction code, CodeInstruction other) => code.WithLabels(other.ExtractLabels());
 
 		/// <summary>Adds ExceptionBlocks to the code instruction and return it</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
@@ -641,10 +626,7 @@ namespace HarmonyLib
 		/// <param name="code">The <see cref="CodeInstruction"/> to move the ExceptionBlocks to</param>
 		/// <param name="other">The other <see cref="CodeInstruction"/> to move the ExceptionBlocks from</param>
 		/// <returns>The code instruction that received the blocks</returns>
-		public static CodeInstruction MoveBlocksFrom(this CodeInstruction code, CodeInstruction other)
-		{
-			return code.WithBlocks(other.ExtractBlocks());
-		}
+		public static CodeInstruction MoveBlocksFrom(this CodeInstruction code, CodeInstruction other) => code.WithBlocks(other.ExtractBlocks());
 	}
 
 	/// <summary>Extensions for a sequence of <see cref="CodeInstruction"/></summary>
@@ -655,10 +637,7 @@ namespace HarmonyLib
 		/// <param name="instructions">The CodeInstructions (like a body of a method) to search in</param>
 		/// <param name="matches">An array of <see cref="CodeMatch"/> representing the sequence of codes you want to search for</param>
 		/// <returns></returns>
-		public static bool Matches(this IEnumerable<CodeInstruction> instructions, CodeMatch[] matches)
-		{
-			return new CodeMatcher(instructions).MatchStartForward(matches).IsValid;
-		}
+		public static bool Matches(this IEnumerable<CodeInstruction> instructions, CodeMatch[] matches) => new CodeMatcher(instructions).MatchStartForward(matches).IsValid;
 	}
 
 	/// <summary>General extensions for collections</summary>
@@ -683,10 +662,7 @@ namespace HarmonyLib
 		/// <param name="condition">The predicate</param>
 		/// <param name="action">The action to execute</param>
 		///
-		public static void DoIf<T>(this IEnumerable<T> sequence, Func<T, bool> condition, Action<T> action)
-		{
-			sequence.Where(condition).Do(action);
-		}
+		public static void DoIf<T>(this IEnumerable<T> sequence, Func<T, bool> condition, Action<T> action) => sequence.Where(condition).Do(action);
 
 		/// <summary>A helper to add an item to a collection</summary>
 		/// <typeparam name="T">The inner type of the collection</typeparam>
@@ -694,10 +670,7 @@ namespace HarmonyLib
 		/// <param name="item">The item to add</param>
 		/// <returns>The collection containing the item</returns>
 		///
-		public static IEnumerable<T> AddItem<T>(this IEnumerable<T> sequence, T item)
-		{
-			return (sequence ?? Enumerable.Empty<T>()).Concat(new[] { item });
-		}
+		public static IEnumerable<T> AddItem<T>(this IEnumerable<T> sequence, T item) => (sequence ?? []).Concat([item]);
 
 		/// <summary>A helper to add an item to an array</summary>
 		/// <typeparam name="T">The inner type of the collection</typeparam>
@@ -705,10 +678,7 @@ namespace HarmonyLib
 		/// <param name="item">The item to add</param>
 		/// <returns>The array containing the item</returns>
 		///
-		public static T[] AddToArray<T>(this T[] sequence, T item)
-		{
-			return AddItem(sequence, item).ToArray();
-		}
+		public static T[] AddToArray<T>(this T[] sequence, T item) => AddItem(sequence, item).ToArray();
 
 		/// <summary>A helper to add items to an array</summary>
 		/// <typeparam name="T">The inner type of the collection</typeparam>
@@ -716,10 +686,7 @@ namespace HarmonyLib
 		/// <param name="items">The items to add</param>
 		/// <returns>The array containing the items</returns>
 		///
-		public static T[] AddRangeToArray<T>(this T[] sequence, T[] items)
-		{
-			return (sequence ?? Enumerable.Empty<T>()).Concat(items).ToArray();
-		}
+		public static T[] AddRangeToArray<T>(this T[] sequence, T[] items) => (sequence ?? Enumerable.Empty<T>()).Concat(items).ToArray();
 
 		// TODO: Should these be made public?
 		// These extension methods may collide with extension methods from other libraries users may be using,
@@ -760,9 +727,6 @@ namespace HarmonyLib
 		/// <summary>Tests a class member if it has an IL method body (external methods for example don't have a body)</summary>
 		/// <param name="member">The member to test</param>
 		/// <returns>Returns true if the member has an IL body or false if not</returns>
-		public static bool HasMethodBody(this MethodBase member)
-		{
-			return (member.GetMethodBody()?.GetILAsByteArray()?.Length ?? 0) > 0;
-		}
+		public static bool HasMethodBody(this MethodBase member) => (member.GetMethodBody()?.GetILAsByteArray()?.Length ?? 0) > 0;
 	}
 }

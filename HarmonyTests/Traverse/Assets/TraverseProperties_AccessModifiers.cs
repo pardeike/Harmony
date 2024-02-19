@@ -11,15 +11,10 @@ namespace HarmonyLibTests.Assets
 		public static string[] propertyNames = ["PublicProperty", "PublicPrivateProperty", "AutoProperty", "BaseProperty1", "BaseProperty2", "BaseProperty3", "ImmediateProperty"];
 	}
 
-	public class Traverse_ExtraClass
+	public class Traverse_ExtraClass(string val)
 	{
-		public readonly string someString = "-";
+		public readonly string someString = val;
 		public readonly Traverse_BaseClass baseClass = new();
-
-		public Traverse_ExtraClass(string val)
-		{
-			someString = val;
-		}
 	}
 
 	public class Traverse_BaseClass
@@ -50,7 +45,7 @@ namespace HarmonyLibTests.Assets
 		static string StaticProperty => "test1";
 		private string BaseProperty => "base-property";
 
-		private string BaseMethod() { return "base-method"; }
+		private string BaseMethod() => "base-method";
 	}
 
 	public static class TraverseFields_Static
@@ -161,10 +156,7 @@ namespace HarmonyLibTests.Assets
 			}
 		}
 
-		public override string ToString()
-		{
-			return "TraverseProperties_AccessModifiers";
-		}
+		public override string ToString() => "TraverseProperties_AccessModifiers";
 	}
 
 	public class TraverseProperties_SubClass : Traverse_BaseClass

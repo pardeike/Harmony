@@ -36,10 +36,7 @@ namespace Intro_Annotations
 			return true;
 		}
 
-		static void Postfix(ref int __result)
-		{
-			__result *= 2;
-		}
+		static void Postfix(ref int __result) => __result *= 2;
 	}
 	// </example>
 }

@@ -2,6 +2,7 @@ namespace Execution_With
 {
 	using System;
 
+#pragma warning disable CS9113
 	public class Code
 	{
 		// <example>
@@ -69,13 +70,14 @@ namespace Execution_With
 		}
 
 		// given the following signatures:
-		public static R Original() { return new R("original"); }
+		public static R Original() => new("original");
 		public static void SimpleFinalizer(ref R result) { }
-		public static Exception EditFinalizer(Exception ex, ref R result) { return ex; }
+		public static Exception EditFinalizer(Exception ex, ref R result) => ex;
 		// </example>
 
-		public class R { public R(string s) { } }
+		public class R(string s) { }
 		public class T { }
 		public static bool allVoid;
 	}
+#pragma warning restore CS9113
 }

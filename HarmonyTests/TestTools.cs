@@ -104,9 +104,9 @@ namespace HarmonyLibTests
 			return capture.capturedResult;
 		}
 
-		class CaptureResultConstraint : IConstraint
+		class CaptureResultConstraint(IResolveConstraint parent) : IConstraint
 		{
-			readonly IResolveConstraint parent;
+			readonly IResolveConstraint parent = parent;
 			IConstraint resolvedParent;
 			public ConstraintResult capturedResult;
 
@@ -117,11 +117,6 @@ namespace HarmonyLibTests
 			public object[] Arguments => throw new NotImplementedException();
 
 			public ConstraintBuilder Builder { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-			public CaptureResultConstraint(IResolveConstraint parent)
-			{
-				this.parent = parent;
-			}
 
 			ConstraintResult CaptureResult(ConstraintResult result)
 			{
@@ -137,20 +132,119 @@ namespace HarmonyLibTests
 				return result;
 			}
 
-			public ConstraintResult ApplyTo<TActual>(TActual actual)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(actual));
-			}
+			public ConstraintResult ApplyTo<TActual>(TActual actual) => CaptureResult(resolvedParent.ApplyTo(actual));
 
+
+/* Unmerged change from project 'HarmonyTests (net8.0)'
+Before:
 			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
 			{
 				return CaptureResult(resolvedParent.ApplyTo(del));
-			}
+After:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
+*/
 
+/* Unmerged change from project 'HarmonyTests (netcoreapp3.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(del));
+After:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
+*/
+
+/* Unmerged change from project 'HarmonyTests (net7.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(del));
+After:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
+*/
+
+/* Unmerged change from project 'HarmonyTests (net5.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(del));
+After:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
+*/
+
+/* Unmerged change from project 'HarmonyTests (net6.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(del));
+After:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
+*/
+
+/* Unmerged change from project 'HarmonyTests (netcoreapp3.1)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(del));
+After:
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
+*/
+			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
+
+
+/* Unmerged change from project 'HarmonyTests (net8.0)'
+Before:
 			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
 			{
 				return CaptureResult(resolvedParent.ApplyTo(ref actual));
-			}
+After:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
+*/
+
+/* Unmerged change from project 'HarmonyTests (netcoreapp3.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(ref actual));
+After:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
+*/
+
+/* Unmerged change from project 'HarmonyTests (net7.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(ref actual));
+After:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
+*/
+
+/* Unmerged change from project 'HarmonyTests (net5.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(ref actual));
+After:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
+*/
+
+/* Unmerged change from project 'HarmonyTests (net6.0)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(ref actual));
+After:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
+*/
+
+/* Unmerged change from project 'HarmonyTests (netcoreapp3.1)'
+Before:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
+			{
+				return CaptureResult(resolvedParent.ApplyTo(ref actual));
+After:
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
+*/
+			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
 
 			public IConstraint Resolve()
 			{
@@ -176,14 +270,61 @@ namespace HarmonyLibTests
 		}
 
 		// Run an action in a test isolation context.
+
+/* Unmerged change from project 'HarmonyTests (net8.0)'
+Before:
 		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
 		{
+After:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
+*/
+
+/* Unmerged change from project 'HarmonyTests (netcoreapp3.0)'
+Before:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
+		{
+After:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
+*/
+
+/* Unmerged change from project 'HarmonyTests (net7.0)'
+Before:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
+		{
+After:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
+*/
+
+/* Unmerged change from project 'HarmonyTests (net5.0)'
+Before:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
+		{
+After:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
+*/
+
+/* Unmerged change from project 'HarmonyTests (net6.0)'
+Before:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
+		{
+After:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
+*/
+
+/* Unmerged change from project 'HarmonyTests (netcoreapp3.1)'
+Before:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
+		{
+After:
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
+*/
+		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
 #if NETCOREAPP
 			TestAssemblyLoadContext.RunInIsolationContext(action);
 #else
 			TestDomainProxy.RunInIsolationContext(action);
 #endif
-		}
+
 
 #if NETCOREAPP
 		// .NET Core does not support multiple AppDomains, but it does support unloading assemblies via AssemblyLoadContext.
@@ -216,30 +357,22 @@ namespace HarmonyLibTests
 
 			public TestAssemblyLoadContext() : base(isCollectible: true) { }
 
-			protected override Assembly Load(AssemblyName name)
-			{
+			protected override Assembly Load(AssemblyName name) =>
 				// Defer loading of assembly's dependencies to parent (AssemblyLoadContext.Default) assembly load context.
-				return null;
-			}
+				null;
 
-			public void AssemblyLoad(string name)
-			{
-				_ = LoadFromAssemblyPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
-			}
+			public void AssemblyLoad(string name) => _ = LoadFromAssemblyPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
 
 			// There's no separate AppDomain, so this is just an alias for callback(arg).
-			public void ParentCallback<T>(Action<T> callback, T arg)
-			{
-				callback(arg);
-			}
+			public void ParentCallback<T>(Action<T> callback, T arg) => callback(arg);
 		}
 #else
 		// For .NET Framework and its multiple AppDomain support, need a MarshalByRefObject, so that for an instance created
 		// via appDomain.CreateInstanceAndUnwrap, all calls to that instance's methods are executed in that appDomain.
 
-		class TestDomainProxy : MarshalByRefObject, ITestIsolationContext
+		class TestDomainProxy(AppDomain parentDomain) : MarshalByRefObject, ITestIsolationContext
 		{
-			readonly AppDomain parentDomain;
+			readonly AppDomain parentDomain = parentDomain;
 
 			// Run an action in "isolation" (seperate AppDomain that's unloaded afterwards).
 			// This a static method and thus is run in the AppDomain of the caller (the main AppDomain).
@@ -261,61 +394,36 @@ namespace HarmonyLibTests
 				AppDomain.Unload(testDomain);
 			}
 
-			public TestDomainProxy(AppDomain parentDomain)
-			{
-				this.parentDomain = parentDomain;
-			}
-
 			// Rules for proxy instance methods:
 			// Ensure that all loaded Types of the dummy assemblies are never leaked out of the test domain, so:
 			// 1) never return loaded Types (or instances of those Types); and
 			// 2) always catch exceptions that may contain loaded Types (or instances of those Types) directly.
 			// As long as there is no such leakage, AppDomain.Unload will fully unload the domain and all its assemblies.
 
-			void Run(Action<ITestIsolationContext> action)
-			{
-				action(this);
-			}
+			void Run(Action<ITestIsolationContext> action) => action(this);
 
 			// Note: Console usage won't work within a non-main domain - that has to be delegated to the main domain via a callback.
-			public void ParentCallback<T>(Action<T> action, T arg)
-			{
-				parentDomain.DoCallBack(new ActionTCallback<T>(action, arg).Call);
-			}
+			public void ParentCallback<T>(Action<T> action, T arg) => parentDomain.DoCallBack(new ActionTCallback<T>(action, arg).Call);
 
 			// Delegates used for DoCallback must be serializable.
 			[Serializable]
-			class ActionTCallback<T>
+			class ActionTCallback<T>(Action<T> action, T arg)
 			{
-				readonly Action<T> action;
-				readonly T arg;
+				readonly Action<T> action = action;
+				readonly T arg = arg;
 
-				public ActionTCallback(Action<T> action, T arg)
-				{
-					this.action = action;
-					this.arg = arg;
-				}
-
-				public void Call()
-				{
-					action(arg);
-				}
+				public void Call() => action(arg);
 			}
 
-			public void AssemblyLoad(string assemblyName)
-			{
-				_ = Assembly.Load(assemblyName);
-			}
+			public void AssemblyLoad(string assemblyName) => _ = Assembly.Load(assemblyName);
 		}
 #endif
 	}
 
 	public class TestLogger
 	{
-		class ExplicitException : ResultStateException
+		class ExplicitException(string message) : ResultStateException(message)
 		{
-			public ExplicitException(string message) : base(message) { }
-
 			public override ResultState ResultState => ResultState.Explicit;
 		}
 

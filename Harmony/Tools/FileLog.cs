@@ -62,10 +62,7 @@ namespace HarmonyLib
 
 		static List<string> buffer = [];
 
-		static string IndentString()
-		{
-			return new string(indentChar, indentLevel);
-		}
+		static string IndentString() => new(indentChar, indentLevel);
 
 		/// <summary>Changes the indentation level</summary>
 		/// <param name="delta">The value to add to the indentation level</param>

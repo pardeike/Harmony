@@ -235,7 +235,7 @@ namespace HarmonyLibTests.Patching
 				if (m_method.ReturnType == typeof(void))
 					_ = m_method.Invoke(obj, null);
 				else
-					info["result"] = m_method.Invoke(obj, new object[0]);
+					info["result"] = m_method.Invoke(obj, []);
 				info["outerexception"] = null;
 			}
 			catch (TargetInvocationException e)

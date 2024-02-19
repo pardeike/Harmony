@@ -12,18 +12,12 @@ namespace HarmonyLibTests.Assets
 	public class Class0
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method0()
-		{
-			return "original";
-		}
+		public string Method0() => "original";
 	}
 
 	public class Class0Patch
 	{
-		public static void Postfix(ref string __result)
-		{
-			__result = "patched";
-		}
+		public static void Postfix(ref string __result) => __result = "patched";
 	}
 
 	public class Class1
@@ -53,10 +47,7 @@ namespace HarmonyLibTests.Assets
 			return true;
 		}
 
-		public static void Postfix()
-		{
-			postfixed = true;
-		}
+		public static void Postfix() => postfixed = true;
 
 		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, IEnumerable<CodeInstruction> instructions)
 		{
@@ -103,16 +94,11 @@ namespace HarmonyLibTests.Assets
 			return true;
 		}
 
-		public static void Postfix()
-		{
-			postfixed = true;
-		}
+		public static void Postfix() => postfixed = true;
 
-		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) =>
 			// no-op / passthrough
-			return instructions;
-		}
+			instructions;
 
 		public static void ResetTest()
 		{
@@ -190,10 +176,7 @@ namespace HarmonyLibTests.Assets
 	public class Class5
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Method5(object xxxyyy)
-		{
-			_ = DateTime.Now;
-		}
+		public void Method5(object xxxyyy) => _ = DateTime.Now;
 	}
 
 	public class Class5Patch
@@ -202,17 +185,11 @@ namespace HarmonyLibTests.Assets
 		public static bool postfixed = false;
 
 		[HarmonyArgument("xxxyyy", "bar")]
-		public static void Prefix(object bar)
-		{
-			prefixed = true;
-		}
+		public static void Prefix(object bar) => prefixed = true;
 
 		public static void Postfix(
 			[HarmonyArgument("xxxyyy")] object bar
-		)
-		{
-			postfixed = true;
-		}
+		) => postfixed = true;
 
 		public static void ResetTest()
 		{
@@ -277,10 +254,7 @@ namespace HarmonyLibTests.Assets
 
 	public static class Class7Patch
 	{
-		public static void Postfix(ref TestStruct __result)
-		{
-			__result = new TestStruct() { a = 10, b = 20 };
-		}
+		public static void Postfix(ref TestStruct __result) => __result = new TestStruct() { a = 10, b = 20 };
 
 		/*
 		public static IEnumerable<CodeInstruction> Transpiler(ILGenerator il, IEnumerable<CodeInstruction> instructions)
@@ -346,26 +320,17 @@ namespace HarmonyLibTests.Assets
 
 	public class Class8Patch
 	{
-		public static void Postfix(ref TestStruct __result)
-		{
-			__result = new TestStruct() { a = 10, b = 20 };
-		}
+		public static void Postfix(ref TestStruct __result) => __result = new TestStruct() { a = 10, b = 20 };
 	}
 
 	public class Class9
 	{
-		public override string ToString()
-		{
-			return string.Format("foobar");
-		}
+		public override string ToString() => string.Format("foobar");
 	}
 
 	public class Class9Patch
 	{
-		public static void Prefix(out object __state)
-		{
-			__state = null;
-		}
+		public static void Prefix(out object __state) => __state = null;
 
 		public static void Postfix(object __state)
 		{
@@ -402,15 +367,9 @@ namespace HarmonyLibTests.Assets
 
 	public class Struct1Patch
 	{
-		public static void Prefix()
-		{
-			Struct1.prefixed = true;
-		}
+		public static void Prefix() => Struct1.prefixed = true;
 
-		public static void Postfix()
-		{
-			Struct1.postfixed = true;
-		}
+		public static void Postfix() => Struct1.postfixed = true;
 	}
 
 	public struct Struct2NoRef
@@ -418,20 +377,14 @@ namespace HarmonyLibTests.Assets
 		public string s;
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void TestMethod(string val)
-		{
-			s = val;
-		}
+		public void TestMethod(string val) => s = val;
 	}
 
 	public class Struct2NoRefObjectPatch
 	{
 		public static string s;
 
-		public static void Postfix(Struct2NoRef __instance)
-		{
-			s = __instance.s;
-		}
+		public static void Postfix(Struct2NoRef __instance) => s = __instance.s;
 	}
 
 	public struct Struct2Ref
@@ -439,18 +392,12 @@ namespace HarmonyLibTests.Assets
 		public string s;
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void TestMethod(string val)
-		{
-			s = val;
-		}
+		public void TestMethod(string val) => s = val;
 	}
 
 	public class Struct2RefPatch
 	{
-		public static void Postfix(ref Struct2Ref __instance)
-		{
-			__instance.s = "patched";
-		}
+		public static void Postfix(ref Struct2Ref __instance) => __instance.s = "patched";
 	}
 
 	public struct Struct3NoRefObject
@@ -458,10 +405,7 @@ namespace HarmonyLibTests.Assets
 		public string s;
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void TestMethod(string val)
-		{
-			s = val;
-		}
+		public void TestMethod(string val) => s = val;
 	}
 
 	public class Struct3NoRefObjectPatch
@@ -480,10 +424,7 @@ namespace HarmonyLibTests.Assets
 		public string s;
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void TestMethod(string val)
-		{
-			s = val;
-		}
+		public void TestMethod(string val) => s = val;
 	}
 
 	public class Struct3RefObjectPatch
@@ -499,10 +440,7 @@ namespace HarmonyLibTests.Assets
 	public class AttributesClass
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Method(string foo)
-		{
-			_ = DateTime.Now;
-		}
+		public void Method(string foo) => _ = DateTime.Now;
 	}
 
 	[HarmonyPatch]
@@ -520,16 +458,10 @@ namespace HarmonyLibTests.Assets
 		}
 
 		[HarmonyPrefix]
-		public static void Patch1()
-		{
-			prefixed = true;
-		}
+		public static void Patch1() => prefixed = true;
 
 		[HarmonyPostfix]
-		public static void Patch2()
-		{
-			postfixed = true;
-		}
+		public static void Patch2() => postfixed = true;
 
 		public static void ResetTest()
 		{
@@ -606,14 +538,9 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
-	public class Class12
+	public class Class12(int count)
 	{
-		readonly int count;
-
-		public Class12(int count)
-		{
-			this.count = count;
-		}
+		readonly int count = count;
 
 		public List<string> FizzBuzz()
 		{
@@ -638,20 +565,11 @@ namespace HarmonyLibTests.Assets
 		readonly List<T> store = [];
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Add(T item)
-		{
-			store.Add(item);
-		}
+		public void Add(T item) => store.Add(item);
 
-		public IEnumerator<T> GetEnumerator()
-		{
-			return store.GetEnumerator();
-		}
+		public IEnumerator<T> GetEnumerator() => store.GetEnumerator();
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return store.GetEnumerator();
-		}
+		IEnumerator IEnumerable.GetEnumerator() => store.GetEnumerator();
 	}
 
 	public class Class13Patch
@@ -700,10 +618,7 @@ namespace HarmonyLibTests.Assets
 		}
 		[HarmonyPatch(typeof(Class14), "Test", [typeof(string), typeof(KeyValuePair<string, int>)])]
 		[HarmonyPostfix]
-		static void Postfix0()
-		{
-			Class14.state.Add("Postfix0");
-		}
+		static void Postfix0() => Class14.state.Add("Postfix0");
 
 		[HarmonyPatch(typeof(Class14), "Test", [typeof(string), typeof(KeyValuePair<string, int>), typeof(KeyValuePair<string, int>)])]
 		[HarmonyPrefix]
@@ -714,19 +629,13 @@ namespace HarmonyLibTests.Assets
 		}
 		[HarmonyPatch(typeof(Class14), "Test", [typeof(string), typeof(KeyValuePair<string, int>), typeof(KeyValuePair<string, int>)])]
 		[HarmonyPostfix]
-		static void Postfix1()
-		{
-			Class14.state.Add("Postfix1");
-		}
+		static void Postfix1() => Class14.state.Add("Postfix1");
 	}
 
 	[HarmonyPatch]
 	public static class Class15Patch
 	{
-		static MethodBase TargetMethod()
-		{
-			return null;
-		}
+		static MethodBase TargetMethod() => null;
 
 		static void Postfix()
 		{
@@ -736,10 +645,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch]
 	public static class Class16Patch
 	{
-		static string TargetMethod()
-		{
-			return null;
-		}
+		static string TargetMethod() => null;
 
 		static void Postfix()
 		{
@@ -790,53 +696,35 @@ namespace HarmonyLibTests.Assets
 	{
 		[HarmonyPatch(typeof(MultiplePatches1), "TestMethod")]
 		[HarmonyPrefix]
-		public static void Fix1(ref string val)
-		{
-			val += ",prefix1";
-		}
+		public static void Fix1(ref string val) => val += ",prefix1";
 
 		[HarmonyPatch(typeof(MultiplePatches1), "TestMethod")]
 		[HarmonyPrefix]
 		[HarmonyPriority(Priority.High)]
-		public static void Fix2(ref string val)
-		{
-			val += ",prefix2";
-		}
+		public static void Fix2(ref string val) => val += ",prefix2";
 
 		[HarmonyPatch(typeof(MultiplePatches1), "TestMethod")]
 		[HarmonyPostfix]
-		public static void Fix3(ref string __result)
-		{
-			__result += ",postfix";
-		}
+		public static void Fix3(ref string __result) => __result += ",postfix";
 	}
 
 	[HarmonyPatch(typeof(MultiplePatches2), "TestMethod")]
 	public class MultiplePatchesPatch2_Part1
 	{
 		[HarmonyPriority(Priority.Low)]
-		public static void Prefix(ref string val)
-		{
-			val += ",prefix1";
-		}
+		public static void Prefix(ref string val) => val += ",prefix1";
 	}
 
 	[HarmonyPatch(typeof(MultiplePatches2), "TestMethod")]
 	public class MultiplePatchesPatch2_Part2
 	{
-		public static void Prefix(ref string val)
-		{
-			val += ",prefix2";
-		}
+		public static void Prefix(ref string val) => val += ",prefix2";
 	}
 
 	[HarmonyPatch(typeof(MultiplePatches2), "TestMethod")]
 	public class MultiplePatchesPatch2_Part3
 	{
-		public static void Postfix(ref string __result)
-		{
-			__result = "patched";
-		}
+		public static void Postfix(ref string __result) => __result = "patched";
 	}
 
 	public class InjectFieldBase
@@ -864,10 +752,7 @@ namespace HarmonyLibTests.Assets
 	[HarmonyPatch(typeof(InjectFieldSubClass), nameof(InjectFieldSubClass.Method))]
 	public class InjectFieldSubClass_Patch
 	{
-		public static void Postfix(ref string ___testField)
-		{
-			___testField = "patched";
-		}
+		public static void Postfix(ref string ___testField) => ___testField = "patched";
 	}
 
 	public class Finalizer_Patch_Order_Class
@@ -887,15 +772,9 @@ namespace HarmonyLibTests.Assets
 	{
 		public static List<string> events = [];
 
-		public static List<string> GetEvents()
-		{
-			return events;
-		}
+		public static List<string> GetEvents() => events;
 
-		public static void ResetTest()
-		{
-			events = [];
-		}
+		public static void ResetTest() => events = [];
 
 		[HarmonyPrefix]
 		[HarmonyPriority(200)]
@@ -907,17 +786,11 @@ namespace HarmonyLibTests.Assets
 
 		[HarmonyPrefix]
 		[HarmonyPriority(100)]
-		public static void Void_Prefix()
-		{
-			events.Add(nameof(Void_Prefix));
-		}
+		public static void Void_Prefix() => events.Add(nameof(Void_Prefix));
 
 		[HarmonyPostfix]
 		[HarmonyPriority(200)]
-		public static void Simple_Postfix()
-		{
-			events.Add(nameof(Simple_Postfix));
-		}
+		public static void Simple_Postfix() => events.Add(nameof(Simple_Postfix));
 
 		[HarmonyPostfix]
 		[HarmonyPriority(200)]
@@ -969,19 +842,13 @@ namespace HarmonyLibTests.Assets
 
 		[HarmonyFinalizer]
 		[HarmonyPriority(100)]
-		public static void Void_Finalizer(Exception __exception)
-		{
-			events.Add(nameof(Void_Finalizer));
-		}
+		public static void Void_Finalizer(Exception __exception) => events.Add(nameof(Void_Finalizer));
 	}
 
 	public class Affecting_Original_Prefixes_Class
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method(int n)
-		{
-			return $"{n}";
-		}
+		public string Method(int n) => $"{n}";
 	}
 
 	[HarmonyPatch(typeof(Affecting_Original_Prefixes_Class))]
@@ -990,15 +857,9 @@ namespace HarmonyLibTests.Assets
 	{
 		public static List<string> events = [];
 
-		public static List<string> GetEvents()
-		{
-			return events;
-		}
+		public static List<string> GetEvents() => events;
 
-		public static void ResetTest()
-		{
-			events = [];
-		}
+		public static void ResetTest() => events = [];
 
 		[HarmonyPrefix]
 		[HarmonyPriority(500)]
@@ -1011,10 +872,7 @@ namespace HarmonyLibTests.Assets
 
 		[HarmonyPrefix]
 		[HarmonyPriority(400)]
-		public static void Prefix2()
-		{
-			events.Add(nameof(Prefix2));
-		}
+		public static void Prefix2() => events.Add(nameof(Prefix2));
 
 		[HarmonyPrefix]
 		[HarmonyPriority(300)]
@@ -1026,17 +884,11 @@ namespace HarmonyLibTests.Assets
 
 		[HarmonyPrefix]
 		[HarmonyPriority(200)]
-		public static void Prefix4(ref string __result)
-		{
-			events.Add(nameof(Prefix4));
-		}
+		public static void Prefix4(ref string __result) => events.Add(nameof(Prefix4));
 
 		[HarmonyPrefix]
 		[HarmonyPriority(100)]
-		public static void Prefix5()
-		{
-			events.Add(nameof(Prefix5));
-		}
+		public static void Prefix5() => events.Add(nameof(Prefix5));
 	}
 
 	public static class LazyTranspilerRunsOnce_Class
@@ -1064,10 +916,7 @@ namespace HarmonyLibTests.Assets
 	public class Class18
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static UnityColor GetDefaultNameplateColor(APIUser user)
-		{
-			return new UnityColor() { r = 0, g = 0, b = 0, a = 0 };
-		}
+		public static UnityColor GetDefaultNameplateColor(APIUser user) => new() { r = 0, g = 0, b = 0, a = 0 };
 	}
 
 	[HarmonyPatch(typeof(Class18))]
@@ -1090,20 +939,14 @@ namespace HarmonyLibTests.Assets
 		static readonly string[] test = ["abc"];
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static ref string Method19()
-		{
-			return ref test[0];
-		}
+		public static ref string Method19() => ref test[0];
 	}
 
 	[HarmonyPatch(typeof(Class19))]
 	[HarmonyPatch(nameof(Class19.Method19))]
 	public static class Class19Patch
 	{
-		public static void Postfix(ref string __result)
-		{
-			__result = "def";
-		}
+		public static void Postfix(ref string __result) => __result = "def";
 	}
 
 	public class Class20
@@ -1114,10 +957,7 @@ namespace HarmonyLibTests.Assets
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static Struct20 Method20()
-		{
-			return new Struct20 { value = 123 };
-		}
+		public static Struct20 Method20() => new() { value = 123 };
 	}
 
 	[HarmonyPatch(typeof(Class20))]
@@ -1126,10 +966,7 @@ namespace HarmonyLibTests.Assets
 	{
 		public static object theResult;
 
-		public static void Postfix(object __result)
-		{
-			theResult = __result;
-		}
+		public static void Postfix(object __result) => theResult = __result;
 	}
 
 	public class Class21
@@ -1140,20 +977,14 @@ namespace HarmonyLibTests.Assets
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static Struct21 Method21()
-		{
-			return new Struct21 { value = 123 };
-		}
+		public static Struct21 Method21() => new() { value = 123 };
 	}
 
 	[HarmonyPatch(typeof(Class21))]
 	[HarmonyPatch(nameof(Class21.Method21))]
 	public static class Class21Patch
 	{
-		public static void Postfix(ref object __result)
-		{
-			__result = new Class21.Struct21 { value = 456 };
-		}
+		public static void Postfix(ref object __result) => __result = new Class21.Struct21 { value = 456 };
 	}
 
 	[HarmonyPatch(typeof(Class22), nameof(Method22))]
@@ -1191,16 +1022,10 @@ namespace HarmonyLibTests.Assets
 		}
 
 		[HarmonyPrefix]
-		public static void Prefix3(bool __runOriginal)
-		{
-			bool3 = __runOriginal;
-		}
+		public static void Prefix3(bool __runOriginal) => bool3 = __runOriginal;
 
 		[HarmonyPostfix]
-		public static void Postfix(bool __runOriginal)
-		{
-			bool4 = __runOriginal;
-		}
+		public static void Postfix(bool __runOriginal) => bool4 = __runOriginal;
 	}
 
 	[HarmonyPatch(typeof(Class22b), nameof(Method22b))]
@@ -1225,10 +1050,7 @@ namespace HarmonyLibTests.Assets
 			return prefixResult;
 		}
 
-		public static void Postfix(bool __runOriginal)
-		{
-			runOriginalPost = __runOriginal;
-		}
+		public static void Postfix(bool __runOriginal) => runOriginalPost = __runOriginal;
 	}
 
 	[HarmonyPatch(typeof(Class23), nameof(Method23))]
@@ -1248,10 +1070,7 @@ namespace HarmonyLibTests.Assets
 			}
 		}
 
-		public static void Postfix(bool __runOriginal)
-		{
-			bool1 = __runOriginal;
-		}
+		public static void Postfix(bool __runOriginal) => bool1 = __runOriginal;
 	}
 
 	[HarmonyPatch(typeof(Class24), nameof(Method24))]
@@ -1272,15 +1091,9 @@ namespace HarmonyLibTests.Assets
 			}
 		}
 
-		public static void Prefix(bool __runOriginal)
-		{
-			bool1 = __runOriginal;
-		}
+		public static void Prefix(bool __runOriginal) => bool1 = __runOriginal;
 
-		public static void Postfix(bool __runOriginal)
-		{
-			bool2 = __runOriginal;
-		}
+		public static void Postfix(bool __runOriginal) => bool2 = __runOriginal;
 	}
 
 	public class InjectDelegateBaseClass
@@ -1288,20 +1101,14 @@ namespace HarmonyLibTests.Assets
 		public string pre;
 		public string post;
 
-		internal virtual string SomeMethod(ref string s, int n)
-		{
-			return pre + s + ":" + n + post;
-		}
+		internal virtual string SomeMethod(ref string s, int n) => pre + s + ":" + n + post;
 	}
 
 	public class InjectDelegateClass : InjectDelegateBaseClass
 	{
 		public string result = "";
 
-		internal override string SomeMethod(ref string s, int n)
-		{
-			return $"[{base.SomeMethod(ref s, n)}]";
-		}
+		internal override string SomeMethod(ref string s, int n) => $"[{base.SomeMethod(ref s, n)}]";
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method(int n)
@@ -1333,16 +1140,10 @@ namespace HarmonyLibTests.Assets
 
 	public static class InjectDelegateStaticClass
 	{
-		internal static string SomeMethod(int n)
-		{
-			return $"[{n}]";
-		}
+		internal static string SomeMethod(int n) => $"[{n}]";
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static string Method(int n)
-		{
-			return SomeMethod(n + 1000);
-		}
+		public static string Method(int n) => SomeMethod(n + 1000);
 	}
 
 	[HarmonyPatch(typeof(InjectDelegateStaticClass), "Method")]
@@ -1363,16 +1164,10 @@ namespace HarmonyLibTests.Assets
 		public string pre;
 		public string post;
 
-		internal string SomeMethod(int n)
-		{
-			return pre + n + post;
-		}
+		internal string SomeMethod(int n) => pre + n + post;
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method(int n)
-		{
-			return SomeMethod(n + 1000);
-		}
+		public string Method(int n) => SomeMethod(n + 1000);
 	}
 
 	[HarmonyPatch(typeof(InjectDelegateStruct), "Method")]
@@ -1391,16 +1186,10 @@ namespace HarmonyLibTests.Assets
 	public class BulkPatchClass
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method1()
-		{
-			return "TEST1";
-		}
+		public string Method1() => "TEST1";
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method2()
-		{
-			return "TEST2";
-		}
+		public string Method2() => "TEST2";
 	}
 
 	[HarmonyPatch(typeof(BulkPatchClass))]
@@ -1409,10 +1198,7 @@ namespace HarmonyLibTests.Assets
 	{
 		public static int transpileCount = 0;
 
-		static string Fix(string result)
-		{
-			return result + "+";
-		}
+		static string Fix(string result) => result + "+";
 
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original)
 		{

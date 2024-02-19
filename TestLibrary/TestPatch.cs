@@ -14,17 +14,11 @@ public static class TestPatch
 		original = Assembly.GetExecutingAssembly();
 	}
 
-	private static void Prefix(ref Assembly prefix)
-	{
-		prefix = Assembly.GetExecutingAssembly();
-	}
+	private static void Prefix(ref Assembly prefix) => prefix = Assembly.GetExecutingAssembly();
 
-	private static void Postfix(ref Assembly postfix)
-	{
-		postfix = Assembly.GetExecutingAssembly();
-	}
+	private static void Postfix(ref Assembly postfix) => postfix = Assembly.GetExecutingAssembly();
 
-	private static void Finalizer(Exception __exception) { _ = __exception; }
+	private static void Finalizer(Exception __exception) => _ = __exception;
 
 	private static IEnumerable<CodeInstruction> EmptyTranspiler(IEnumerable<CodeInstruction> instructions) => instructions;
 

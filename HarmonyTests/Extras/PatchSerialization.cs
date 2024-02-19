@@ -32,7 +32,7 @@ namespace HarmonyTests.Extras
 		public void Serialize()
 		{
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-			var hMethod = new HarmonyMethod(method, Priority.High, ["p1", null, "p2"], new string[0], true);
+			var hMethod = new HarmonyMethod(method, Priority.High, ["p1", null, "p2"], [], true);
 
 			var patchInfo = new PatchInfo();
 			patchInfo.AddPrefixes("prefixes", [hMethod]);
@@ -76,7 +76,7 @@ namespace HarmonyTests.Extras
 		public void SerializeAndDeserialize()
 		{
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
-			var hMethod = new HarmonyMethod(method, Priority.High, ["p1", null, "p2"], new string[0], true);
+			var hMethod = new HarmonyMethod(method, Priority.High, ["p1", null, "p2"], [], true);
 
 			var originalPatchInfo = new PatchInfo();
 			originalPatchInfo.AddPrefixes("prefixes", [hMethod]);

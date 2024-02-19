@@ -11,7 +11,7 @@ namespace EdgeCases
 		[HarmonyReversePatch]
 		[HarmonyPatch(typeof(BaseClass), nameof(BaseClass.Method))]
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		static string BaseMethodDummy(SubClass instance) { return null; }
+		static string BaseMethodDummy(SubClass instance) => null;
 
 		[HarmonyPatch(typeof(SubClass), nameof(SubClass.Method))]
 		static void Prefix(SubClass __instance)
@@ -23,18 +23,12 @@ namespace EdgeCases
 
 	public class BaseClass
 	{
-		public virtual string Method()
-		{
-			return "base";
-		}
+		public virtual string Method() => "base";
 	}
 
 	public class SubClass : BaseClass
 	{
-		public override string Method()
-		{
-			return "subclass";
-		}
+		public override string Method() => "subclass";
 	}
 	// </example>
 
@@ -67,15 +61,9 @@ namespace EdgeCases
 	{
 		GameObject gameObject;
 
-		void SomeMethod()
-		{
-			UnityEngine.Object.DontDestroyOnLoad(gameObject);
-		}
+		void SomeMethod() => UnityEngine.Object.DontDestroyOnLoad(gameObject);
 
-		void SomeOtherMethod()
-		{
-			SomeMethod();
-		}
+		void SomeOtherMethod() => SomeMethod();
 	}
 	// </early1>
 #pragma warning restore CS0649
@@ -85,11 +73,9 @@ namespace EdgeCases
 	{
 		private static bool patched = false;
 
-		public static void Main()
-		{
+		public static void Main() =>
 			//DoPatch(); <-- Do not execute patching on assembly entry point
 			SceneManager.sceneLoaded += SceneLoaded;
-		}
 
 		private static void DoPatch()
 		{

@@ -58,7 +58,7 @@ namespace HarmonyLib
 			var declaringType = fieldInfo.DeclaringType;
 
 			var dm = new DynamicMethodDefinition($"__refget_{delegateInstanceType.Name}_fi_{fieldInfo.Name}",
-				typeof(F).MakeByRefType(), new[] { delegateInstanceType });
+				typeof(F).MakeByRefType(), [delegateInstanceType]);
 
 			var il = dm.GetILGenerator();
 			// Backwards compatibility: This supports static fields, even those defined in structs.
@@ -88,7 +88,7 @@ namespace HarmonyLib
 			ValidateFieldType<F>(fieldInfo);
 
 			var dm = new DynamicMethodDefinition($"__refget_{typeof(T).Name}_struct_fi_{fieldInfo.Name}",
-				typeof(F).MakeByRefType(), new[] { typeof(T).MakeByRefType() });
+				typeof(F).MakeByRefType(), [typeof(T).MakeByRefType()]);
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
@@ -105,7 +105,7 @@ namespace HarmonyLib
 			ValidateFieldType<F>(fieldInfo);
 
 			var dm = new DynamicMethodDefinition($"__refget_{fieldInfo.DeclaringType?.Name ?? "null"}_static_fi_{fieldInfo.Name}",
-				typeof(F).MakeByRefType(), new Type[0]);
+				typeof(F).MakeByRefType(), []);
 
 			var il = dm.GetILGenerator();
 			il.Emit(OpCodes.Ldsflda, fieldInfo);

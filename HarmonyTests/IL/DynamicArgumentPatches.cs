@@ -9,25 +9,15 @@ using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.IL
 {
-	public struct Vec3
+	public struct Vec3(int v1, int v2, int v3)
 	{
-		public int v1;
-		public int v2;
-		public int v3;
-
-		public Vec3(int v1, int v2, int v3)
-		{
-			this.v1 = v1;
-			this.v2 = v2;
-			this.v3 = v3;
-		}
+		public int v1 = v1;
+		public int v2 = v2;
+		public int v3 = v3;
 
 		public static Vec3 Zero => new(0, 0, 0);
 
-		public override string ToString()
-		{
-			return v1 + "," + v2 + "," + v3;
-		}
+		public override string ToString() => v1 + "," + v2 + "," + v3;
 	}
 
 	public static class TestMethods1

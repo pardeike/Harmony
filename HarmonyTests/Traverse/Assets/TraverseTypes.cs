@@ -45,20 +45,14 @@ namespace HarmonyLibTests.Assets
 #pragma warning restore CS0414
 #pragma warning restore IDE0052
 
-				public InnerClass2()
-				{
-					field = "helloInstance";
-				}
+				public InnerClass2() => field = "helloInstance";
 			}
 
 #pragma warning disable IDE0052
 			readonly InnerClass2 inner2;
 #pragma warning restore IDE0052
 
-			public InnerClass1()
-			{
-				inner2 = new InnerClass2();
-			}
+			public InnerClass1() => inner2 = new InnerClass2();
 		}
 
 		class InnerStaticFieldClass1

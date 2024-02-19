@@ -17,10 +17,7 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(assembly, thisAssembly);
 		}
 
-		private static void Prefix(ref Assembly assembly)
-		{
-			assembly = Assembly.GetExecutingAssembly();
-		}
+		private static void Prefix(ref Assembly assembly) => assembly = Assembly.GetExecutingAssembly();
 
 		private static void Postfix(ref Assembly assembly)
 		{

@@ -278,7 +278,7 @@ namespace HarmonyLib
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
-				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
+				var input = (parameters ?? []).Union([instance]).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);
 
 				if (method.ReturnType != typeof(void) && typeof(T).IsAssignableFrom(method.ReturnType) is false)
@@ -316,7 +316,7 @@ namespace HarmonyLib
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
-				var input = (parameters ?? new object[0]).Union(new object[] { instance }).ToArray();
+				var input = (parameters ?? []).Union([instance]).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);
 				try
 				{

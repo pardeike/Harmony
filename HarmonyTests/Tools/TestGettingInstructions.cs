@@ -29,10 +29,7 @@ namespace HarmonyLibTests.Tools
 		public class Patch
 		{
 			[HarmonyPatch(typeof(InstructionTest), nameof(Method))]
-			static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-			{
-				return Transpilers.Manipulator(instructions, instr => instr.OperandIs((int)' '), instr => instr.operand = (int)'*');
-			}
+			static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => Transpilers.Manipulator(instructions, instr => instr.OperandIs((int)' '), instr => instr.operand = (int)'*');
 		}
 	}
 

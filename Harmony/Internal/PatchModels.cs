@@ -62,10 +62,7 @@ namespace HarmonyLib
 			).ToList();
 		}
 
-		internal List<T> GetReplacements()
-		{
-			return state.Values.Select(job => job.replacement).ToList();
-		}
+		internal List<T> GetReplacements() => state.Values.Select(job => job.replacement).ToList();
 	}
 
 	// AttributePatch contains all information for a patch defined by attributes

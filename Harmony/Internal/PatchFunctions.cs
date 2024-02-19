@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace HarmonyLib
@@ -14,10 +13,7 @@ namespace HarmonyLib
 		/// <param name="debug">Use debug mode</param>
 		/// <returns>The sorted patch methods</returns>
 		///
-		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
-		{
-			return new PatchSorter(patches, debug).Sort(original);
-		}
+		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug) => new PatchSorter(patches, debug).Sort(original);
 
 		/// <summary>Creates new replacement method with the latest patches and detours the original method</summary>
 		/// <param name="original">The original method</param>

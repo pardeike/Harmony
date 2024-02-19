@@ -199,18 +199,12 @@ namespace HarmonyLib
 		/// <summary>Creates a patch from a given method</summary>
 		/// <param name="method">The original method</param>
 		///
-		public static implicit operator HarmonyMethod(MethodInfo method)
-		{
-			return new HarmonyMethod(method);
-		}
+		public static implicit operator HarmonyMethod(MethodInfo method) => new(method);
 
 		/// <summary>Creates a patch from a given method</summary>
 		/// <param name="delegate">The original method</param>
 		///
-		public static implicit operator HarmonyMethod(Delegate @delegate)
-		{
-			return new HarmonyMethod(@delegate);
-		}
+		public static implicit operator HarmonyMethod(Delegate @delegate) => new(@delegate);
 	}
 
 	/// <summary>Annotation extensions</summary>
@@ -307,10 +301,7 @@ namespace HarmonyLib
 		/// <param name="type">The class/type</param>
 		/// <returns>The merged <see cref="HarmonyMethod"/></returns>
 		///
-		public static HarmonyMethod GetMergedFromType(Type type)
-		{
-			return HarmonyMethod.Merge(GetFromType(type));
-		}
+		public static HarmonyMethod GetMergedFromType(Type type) => HarmonyMethod.Merge(GetFromType(type));
 
 		/// <summary>Gets all annotations on a method</summary>
 		/// <param name="method">The method/constructor</param>
@@ -328,9 +319,6 @@ namespace HarmonyLib
 		/// <param name="method">The method/constructor</param>
 		/// <returns>The merged <see cref="HarmonyMethod"/></returns>
 		///
-		public static HarmonyMethod GetMergedFromMethod(MethodBase method)
-		{
-			return HarmonyMethod.Merge(GetFromMethod(method));
-		}
+		public static HarmonyMethod GetMergedFromMethod(MethodBase method) => HarmonyMethod.Merge(GetFromMethod(method));
 	}
 }

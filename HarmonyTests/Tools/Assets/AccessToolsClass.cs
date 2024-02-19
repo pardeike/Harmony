@@ -22,31 +22,19 @@ namespace HarmonyLibTests.Assets
 		{
 			public int x;
 
-			public override string ToString()
-			{
-				return x.ToString();
-			}
+			public override string ToString() => x.ToString();
 		}
 
-		public static IInner NewInner(int x)
-		{
-			return new Inner { x = x };
-		}
+		public static IInner NewInner(int x) => new Inner { x = x };
 
 		private struct InnerStruct : IInner
 		{
 			public int x;
 
-			public override string ToString()
-			{
-				return x.ToString();
-			}
+			public override string ToString() => x.ToString();
 		}
 
-		public static IInner NewInnerStruct(int x)
-		{
-			return new InnerStruct { x = x };
-		}
+		public static IInner NewInnerStruct(int x) => new InnerStruct { x = x };
 
 		protected string field1 = "field1orig";
 		public readonly float field2 = 2.71828f;
@@ -87,30 +75,15 @@ namespace HarmonyLibTests.Assets
 			set { }
 		}
 
-		public string Method1()
-		{
-			return field1;
-		}
+		public string Method1() => field1;
 
-		public double Method2()
-		{
-			return field2;
-		}
+		public double Method2() => field2;
 
-		public void SetField(string val)
-		{
-			field1 = val;
-		}
+		public void SetField(string val) => field1 = val;
 
-		public static long Method3()
-		{
-			return field3;
-		}
+		public static long Method3() => field3;
 
-		public static string Method4()
-		{
-			return field4;
-		}
+		public static string Method4() => field4;
 	}
 
 	public class AccessToolsSubClass : AccessToolsClass
@@ -119,7 +92,8 @@ namespace HarmonyLibTests.Assets
 		internal static int subclassField2 = -321;
 	}
 
-	public struct AccessToolsStruct : IAccessToolsType
+#pragma warning disable CS9113
+	public struct AccessToolsStruct(object obj) : IAccessToolsType
 	{
 		private enum InnerEnum : byte
 		{
@@ -128,20 +102,17 @@ namespace HarmonyLibTests.Assets
 			C = 4,
 		}
 
-		public static Enum NewInnerEnum(byte b)
-		{
-			return (InnerEnum)b;
-		}
+		public static Enum NewInnerEnum(byte b) => (InnerEnum)b;
 
-		public string structField1;
-		private readonly int structField2;
+		public string structField1 = "structField1orig";
+		private readonly int structField2 = -666;
 		private static int structField3 = -123;
 		public static readonly string structField4 = "structField4orig";
-		private InnerEnum structField5;
+		private InnerEnum structField5 = InnerEnum.B;
 
-		public int Property1 { get; set; }
+		public int Property1 { get; set; } = 161803;
 
-		private string Property2 { get; }
+		private string Property2 { get; } = "1.61803";
 
 		public static int Property3 { get; set; } = 299792458;
 
@@ -149,24 +120,9 @@ namespace HarmonyLibTests.Assets
 
 		public string this[string key] => key;
 
-		// Structs don't allow default constructor (and even a constructor with all default parameters won't be called with 'new AccessToolsStruct()'),
-		// but we need to assign some values to instance fields that aren't simply the default value for their types
-		// (so that ref value can be checked against orig value).
-		public AccessToolsStruct(object _)
-		{
-			structField1 = "structField1orig";
-			structField2 = -666;
-			structField5 = InnerEnum.B;
-			Property1 = 161803;
-			Property2 = "1.61803";
-		}
-
-		public string Method1()
-		{
-			return structField1;
-		}
+		public string Method1() => structField1;
 	}
-#pragma warning restore CS0169, CS0414, IDE0044, IDE0051, IDE0052
+#pragma warning restore CS0169, CS0414, CS9113, IDE0044, IDE0051, IDE0052
 
 	public static class AccessToolsCreateInstance
 	{
@@ -177,13 +133,9 @@ namespace HarmonyLibTests.Assets
 		}
 
 		// Does NOT have a default public parameterless constructor (or any parameterless constructor for that matter).
-		public class OnlyNonParameterlessConstructor
+		public class OnlyNonParameterlessConstructor(int n)
 		{
-			public bool constructorCalled = true;
-
-			public OnlyNonParameterlessConstructor(int _)
-			{
-			}
+			public bool constructorCalled = n != 0xbeef; // true
 		}
 
 		public class PublicParameterlessConstructor
@@ -216,46 +168,31 @@ namespace HarmonyLibTests.Assets
 		{
 			public int x;
 
-			public virtual string Test(int n, ref float f)
-			{
-				return $"base test {n} {++f} {++x}";
-			}
+			public virtual string Test(int n, ref float f) => $"base test {n} {++f} {++x}";
 		}
 
 		public class Derived : Base
 		{
-			public override string Test(int n, ref float f)
-			{
-				return $"derived test {n} {++f} {++x}";
-			}
+			public override string Test(int n, ref float f) => $"derived test {n} {++f} {++x}";
 		}
 
 		public struct Struct : IInterface
 		{
 			public int x;
 
-			public string Test(int n, ref float f)
-			{
-				return $"struct result {n} {++f} {++x}";
-			}
+			public string Test(int n, ref float f) => $"struct result {n} {++f} {++x}";
 		}
 
 		public static int x;
 
-		public static string Test(int n, ref float f)
-		{
-			return $"static test {n} {++f} {++x}";
-		}
+		public static string Test(int n, ref float f) => $"static test {n} {++f} {++x}";
 	}
 
 	public static class AccessToolsHarmonyDelegate
 	{
 		public class Foo
 		{
-			private string SomeMethod(string s)
-			{
-				return $"[{s}]";
-			}
+			private string SomeMethod(string s) => $"[{s}]";
 		}
 
 		[HarmonyDelegate(typeof(Foo), "SomeMethod")]

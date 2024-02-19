@@ -209,10 +209,7 @@ namespace HarmonyLib
 		/// <param name="patches">Patches to sort</param>
 		/// <returns>The sorted patch methods</returns>
 		///
-		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches)
-		{
-			return PatchFunctions.GetSortedPatchMethods(original, patches, false);
-		}
+		public static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches) => PatchFunctions.GetSortedPatchMethods(original, patches, false);
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
 		/// <param name="currentVersion">[out] The current Harmony version</param>
@@ -247,7 +244,7 @@ namespace HarmonyLib
 		/// 
 		public static ILGenerator CreateILGenerator()
 		{
-			var method = new DynamicMethodDefinition($"ILGenerator_{Guid.NewGuid()}", typeof(void), new Type[0]);
+			var method = new DynamicMethodDefinition($"ILGenerator_{Guid.NewGuid()}", typeof(void), []);
 			return method.GetILGenerator();
 		}
 
@@ -269,10 +266,7 @@ namespace HarmonyLib
 		/// <param name="generator">Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
 		/// <returns>A list containing all the original <see cref="CodeInstruction"/></returns>
 		/// 
-		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null)
-		{
-			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(original), original, 0);
-		}
+		public static List<CodeInstruction> GetOriginalInstructions(MethodBase original, ILGenerator generator = null) => MethodCopier.GetInstructions(generator ?? CreateILGenerator(original), original, 0);
 
 		/// <summary>Returns the methods unmodified list of code instructions</summary>
 		/// <param name="original">The original method/constructor</param>
@@ -291,10 +285,7 @@ namespace HarmonyLib
 		/// <param name="generator">Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</param>
 		/// <returns>A list of <see cref="CodeInstruction"/></returns>
 		/// 
-		public static List<CodeInstruction> GetCurrentInstructions(MethodBase original, int maxTranspilers = int.MaxValue, ILGenerator generator = null)
-		{
-			return MethodCopier.GetInstructions(generator ?? CreateILGenerator(original), original, maxTranspilers);
-		}
+		public static List<CodeInstruction> GetCurrentInstructions(MethodBase original, int maxTranspilers = int.MaxValue, ILGenerator generator = null) => MethodCopier.GetInstructions(generator ?? CreateILGenerator(original), original, maxTranspilers);
 
 		/// <summary>Returns the methods current list of code instructions after all existing transpilers have been applied</summary>
 		/// <param name="original">The original method/constructor</param>

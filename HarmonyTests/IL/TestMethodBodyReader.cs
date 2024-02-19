@@ -92,10 +92,7 @@ namespace HarmonyLibTests.IL
 
 		struct ILInstructionOffsetComparer : IComparer
 		{
-			public int Compare(object x, object y)
-			{
-				return ((ILInstruction)x).offset.CompareTo(((ILInstruction)y).offset);
-			}
+			public int Compare(object x, object y) => ((ILInstruction)x).offset.CompareTo(((ILInstruction)y).offset);
 		}
 	}
 }

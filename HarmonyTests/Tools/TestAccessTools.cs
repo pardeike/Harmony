@@ -15,10 +15,7 @@ namespace HarmonyLibTests.Tools
 	public class Test_AccessTools : TestLogger
 	{
 		[OneTimeSetUp]
-		public void CreateAndUnloadTestDummyAssemblies()
-		{
-			TestTools.RunInIsolationContext(CreateTestDummyAssemblies);
-		}
+		public void CreateAndUnloadTestDummyAssemblies() => TestTools.RunInIsolationContext(CreateTestDummyAssemblies);
 
 		// Comment out following attribute if you want to keep the dummy assembly files after the test runs.
 		[OneTimeTearDown]

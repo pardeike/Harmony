@@ -276,7 +276,7 @@ namespace HarmonyLib
 		{
 			var vars = member.GetMethodBody()?.LocalVariables;
 			if (vars is null)
-				return new LocalBuilder[0];
+				return [];
 			return vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 		}
 

@@ -31,10 +31,7 @@ namespace Patching_Prefix
 		// <skip>
 		public class OriginalCode
 		{
-			public string GetName()
-			{
-				return name; // ...
-			}
+			public string GetName() => name; // ...
 		}
 
 		[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
@@ -56,10 +53,7 @@ namespace Patching_Prefix
 		// <skip_maybe>
 		public class OriginalCode
 		{
-			public bool IsFullAfterTakingIn(int i)
-			{
-				return DoSomeExpensiveCalculation() > i;
-			}
+			public bool IsFullAfterTakingIn(int i) => DoSomeExpensiveCalculation() > i;
 		}
 
 		[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.IsFullAfterTakingIn))]
@@ -77,7 +71,7 @@ namespace Patching_Prefix
 		}
 		// </skip_maybe>
 
-		static int DoSomeExpensiveCalculation() { return 0; }
+		static int DoSomeExpensiveCalculation() => 0;
 	}
 
 	public class StateExample

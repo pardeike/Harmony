@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace HarmonyLib
@@ -21,7 +22,7 @@ namespace HarmonyLib
 #pragma warning disable IDE1006
 		public List<OpCode> opcodes
 		{
-			get => opcodeSet.ToList();
+			get => [.. opcodeSet];
 			set => opcodeSet = new HashSet<OpCode>(value);
 		}
 #pragma warning restore IDE1006
@@ -79,10 +80,7 @@ namespace HarmonyLib
 		/// <param name="operand">The optional operand</param>
 		/// <param name="name">The optional name</param>
 		///
-		public static CodeMatch WithOpcodes(HashSet<OpCode> opcodes, object operand = null, string name = null)
-		{
-			return new CodeMatch(null, operand, name) { opcodeSet = opcodes };
-		}
+		public static CodeMatch WithOpcodes(HashSet<OpCode> opcodes, object operand = null, string name = null) => new(null, operand, name) { opcodeSet = opcodes };
 
 		/// <summary>Creates a code match that calls a method</summary>
 		/// <param name="expression">The lambda expression using the method</param>
@@ -152,47 +150,121 @@ namespace HarmonyLib
 			return true;
 		}
 
+		/// <summary>Tests for any form of Ldarg*</summary>
+		/// <param name="n">The (optional) index</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch IsLdarg(int? n = null) => new(instruction => instruction.IsLdarg(n));
+
+		/// <summary>Tests for Ldarga/Ldarga_S</summary>
+		/// <param name="n">The (optional) index</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch IsLdarga(int? n = null) => new(instruction => instruction.IsLdarga(n));
+
+		/// <summary>Tests for Starg/Starg_S</summary>
+		/// <param name="n">The (optional) index</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch IsStarg(int? n = null) => new(instruction => instruction.IsStarg(n));
+
+		/// <summary>Tests for any form of Ldloc*</summary>
+		/// <param name="variable">The optional local variable</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch IsLdloc(LocalBuilder variable = null) => new(instruction => instruction.IsLdloc(variable));
+
+		/// <summary>Tests for any form of Stloc*</summary>
+		/// <param name="variable">The optional local variable</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch IsStloc(LocalBuilder variable = null) => new(instruction => instruction.IsStloc(variable));
+
+		/// <summary>Tests if the code instruction calls the method/constructor</summary>
+		/// <param name="method">The method</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch Calls(MethodInfo method) => WithOpcodes(CodeInstructionExtensions.opcodesCalling, method);
+
+		/// <summary>Tests if the code instruction loads a constant</summary>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch LoadsConstant() => new(instruction => instruction.LoadsConstant());
+
+		/// <summary>Tests if the code instruction loads an integer constant</summary>
+		/// <param name="number">The integer constant</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch LoadsConstant(long number) => new(instruction => instruction.LoadsConstant(number));
+
+		/// <summary>Tests if the code instruction loads a floating point constant</summary>
+		/// <param name="number">The floating point constant</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch LoadsConstant(double number) => new(instruction => instruction.LoadsConstant(number));
+
+		/// <summary>Tests if the code instruction loads an enum constant</summary>
+		/// <param name="e">The enum</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch LoadsConstant(Enum e) => new(instruction => instruction.LoadsConstant(e));
+
+		/// <summary>Tests if the code instruction loads a string constant</summary>
+		/// <param name="str">The string</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch LoadsConstant(string str) => new(instruction => instruction.LoadsConstant(str));
+
+		/// <summary>Tests if the code instruction loads a field</summary>
+		/// <param name="field">The field</param>
+		/// <param name="byAddress">Set to true if the address of the field is loaded</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch LoadsField(FieldInfo field, bool byAddress = false) => new(instruction => instruction.LoadsField(field, byAddress));
+
+		/// <summary>Tests if the code instruction stores a field</summary>
+		/// <param name="field">The field</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch StoresField(FieldInfo field) => new(instruction => instruction.StoresField(field));
+
+		/// <summary>Creates a code match that calls a method</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns>A new code match</returns>
+		public static CodeMatch Calls(Expression<Action> expression) => new(expression);
+
+		/// <summary>Creates a code match that calls a method</summary>
+		/// <param name="expression">The lambda expression using the method</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch Calls(LambdaExpression expression) => new(expression);
+
 		/// <summary>Creates a code match for local loads</summary>
 		/// <param name="useAddress">Whether to match for address loads</param>
 		/// <param name="name">An optional name</param>
-		/// <returns></returns>
-		public static CodeMatch LoadsLocal(bool useAddress = false, string name = null)
-		{
-			return WithOpcodes(useAddress ? CodeInstructionExtensions.opcodesLoadingLocalByAddress : CodeInstructionExtensions.opcodesLoadingLocalNormal, null, name);
-		}
+		/// <returns>A new code match</returns>
+		public static CodeMatch LoadsLocal(bool useAddress = false, string name = null) => WithOpcodes(useAddress ? CodeInstructionExtensions.opcodesLoadingLocalByAddress : CodeInstructionExtensions.opcodesLoadingLocalNormal, null, name);
 
 		/// <summary>Creates a code match for local stores</summary>
 		/// <param name="name">An optional name</param>
-		/// <returns></returns>
-		public static CodeMatch StoresLocal(string name = null)
-		{
-			return WithOpcodes(CodeInstructionExtensions.opcodesStoringLocal, null, name);
-		}
+		/// <returns>A new code match</returns>
+		public static CodeMatch StoresLocal(string name = null) => WithOpcodes(CodeInstructionExtensions.opcodesStoringLocal, null, name);
 
 		/// <summary>Creates a code match for argument loads</summary>
 		/// <param name="useAddress">Whether to match for address loads</param>
 		/// <param name="name">An optional name</param>
-		/// <returns></returns>
-		public static CodeMatch LoadsArgument(bool useAddress = false, string name = null)
-		{
-			return WithOpcodes(useAddress ? CodeInstructionExtensions.opcodesLoadingArgumentByAddress : CodeInstructionExtensions.opcodesLoadingArgumentNormal, null, name);
-		}
+		/// <returns>A new code match</returns>
+		public static CodeMatch LoadsArgument(bool useAddress = false, string name = null) => WithOpcodes(useAddress ? CodeInstructionExtensions.opcodesLoadingArgumentByAddress : CodeInstructionExtensions.opcodesLoadingArgumentNormal, null, name);
 
 		/// <summary>Creates a code match for argument stores</summary>
 		/// <param name="name">An optional name</param>
-		/// <returns></returns>
-		public static CodeMatch StoresArgument(string name = null)
-		{
-			return WithOpcodes(CodeInstructionExtensions.opcodesStoringArgument, null, name);
-		}
+		/// <returns>A new code match</returns>
+		public static CodeMatch StoresArgument(string name = null) => WithOpcodes(CodeInstructionExtensions.opcodesStoringArgument, null, name);
 
 		/// <summary>Creates a code match for branching</summary>
 		/// <param name="name">An optional name</param>
-		/// <returns></returns>
-		public static CodeMatch Branches(string name = null)
-		{
-			return WithOpcodes(CodeInstructionExtensions.opcodesBranching, null, name);
-		}
+		/// <returns>A new code match</returns>
+		public static CodeMatch Branches(string name = null) => WithOpcodes(CodeInstructionExtensions.opcodesBranching, null, name);
 
 		/// <summary>Returns a string that represents the match</summary>
 		/// <returns>A string representation</returns>

@@ -12,15 +12,9 @@ namespace HarmonyLibTests.Assets
 		public static bool prefixCalled = false;
 		public static bool postfixCalled = false;
 
-		public static void Prefix()
-		{
-			prefixCalled = true;
-		}
+		public static void Prefix() => prefixCalled = true;
 
-		public static void Postfix()
-		{
-			postfixCalled = true;
-		}
+		public static void Postfix() => postfixCalled = true;
 
 		public static void ResetTest()
 		{
@@ -34,10 +28,7 @@ namespace HarmonyLibTests.Assets
 	public class DeadEndCode
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method()
-		{
-			throw new FormatException();
-		}
+		public string Method() => throw new FormatException();
 	}
 
 	// not using attributes here because we apply prefix first, then postfix
@@ -46,15 +37,9 @@ namespace HarmonyLibTests.Assets
 		public static bool prefixCalled = false;
 		public static bool postfixCalled = false;
 
-		public static void Prefix()
-		{
-			prefixCalled = true;
-		}
+		public static void Prefix() => prefixCalled = true;
 
-		public static void Postfix()
-		{
-			postfixCalled = true;
-		}
+		public static void Postfix() => postfixCalled = true;
 	}
 
 	[HarmonyPatch(typeof(DeadEndCode), nameof(DeadEndCode.Method))]
@@ -96,10 +81,7 @@ namespace HarmonyLibTests.Assets
 			yield return new CodeInstruction(OpCodes.Ret);
 		}
 
-		static Exception Cleanup(Exception ex)
-		{
-			return ex is null ? null : new ArgumentException("Test", ex);
-		}
+		static Exception Cleanup(Exception ex) => ex is null ? null : new ArgumentException("Test", ex);
 	}
 
 	[HarmonyPatch(typeof(DeadEndCode), nameof(DeadEndCode.Method))]
@@ -110,10 +92,7 @@ namespace HarmonyLibTests.Assets
 			yield return new CodeInstruction(OpCodes.Call, null);
 		}
 
-		static Exception Cleanup()
-		{
-			return null;
-		}
+		static Exception Cleanup() => null;
 	}
 
 	// -----------------------------------------------------
@@ -137,15 +116,9 @@ namespace HarmonyLibTests.Assets
 		public static bool prefixCalled = false;
 		public static bool postfixCalled = false;
 
-		static void Prefix()
-		{
-			prefixCalled = true;
-		}
+		static void Prefix() => prefixCalled = true;
 
-		static void Postfix()
-		{
-			postfixCalled = true;
-		}
+		static void Postfix() => postfixCalled = true;
 	}
 
 	// -----------------------------------------------------
@@ -172,15 +145,9 @@ namespace HarmonyLibTests.Assets
 		public static bool prefixCalled = false;
 		public static bool postfixCalled = false;
 
-		static void Prefix()
-		{
-			prefixCalled = true;
-		}
+		static void Prefix() => prefixCalled = true;
 
-		static void Postfix()
-		{
-			postfixCalled = true;
-		}
+		static void Postfix() => postfixCalled = true;
 	}
 
 	// -----------------------------------------------------
@@ -192,15 +159,9 @@ namespace HarmonyLibTests.Assets
 		public static SomeStruct WasAccepted => new() { accepted = true };
 		public static SomeStruct WasNotAccepted => new() { accepted = false };
 
-		public static implicit operator SomeStruct(bool value)
-		{
-			return value ? WasAccepted : WasNotAccepted;
-		}
+		public static implicit operator SomeStruct(bool value) => value ? WasAccepted : WasNotAccepted;
 
-		public static implicit operator SomeStruct(string value)
-		{
-			return new SomeStruct();
-		}
+		public static implicit operator SomeStruct(string value) => new();
 	}
 
 	public struct AnotherStruct
@@ -212,29 +173,20 @@ namespace HarmonyLibTests.Assets
 
 	public abstract class AbstractClass
 	{
-		public virtual SomeStruct Method(string originalDef, AnotherStruct loc)
-		{
-			return SomeStruct.WasAccepted;
-		}
+		public virtual SomeStruct Method(string originalDef, AnotherStruct loc) => SomeStruct.WasAccepted;
 	}
 
 	public class ConcreteClass : AbstractClass
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public override SomeStruct Method(string def, AnotherStruct loc)
-		{
-			return true;
-		}
+		public override SomeStruct Method(string def, AnotherStruct loc) => true;
 	}
 
 	[HarmonyPatch(typeof(ConcreteClass))]
 	[HarmonyPatch(nameof(ConcreteClass.Method))]
 	public static class ConcreteClass_Patch
 	{
-		static void Prefix(ConcreteClass __instance, string def, AnotherStruct loc)
-		{
-			TestTools.Log("ConcreteClass_Patch.Method.Prefix");
-		}
+		static void Prefix(ConcreteClass __instance, string def, AnotherStruct loc) => TestTools.Log("ConcreteClass_Patch.Method.Prefix");
 	}
 
 	[HarmonyPatch(typeof(AppDomain), nameof(AppDomain.GetData))]

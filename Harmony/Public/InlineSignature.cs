@@ -36,10 +36,7 @@ namespace HarmonyLib
 		/// <summary>Returns a string representation of the inline signature</summary>
 		/// <returns>A string representation of the inline signature</returns>
 		///
-		public override string ToString()
-		{
-			return $"{(ReturnType is Type rt ? rt.FullDescription() : ReturnType?.ToString())} ({Parameters.Join(p => p is Type pt ? pt.FullDescription() : p?.ToString())})";
-		}
+		public override string ToString() => $"{(ReturnType is Type rt ? rt.FullDescription() : ReturnType?.ToString())} ({Parameters.Join(p => p is Type pt ? pt.FullDescription() : p?.ToString())})";
 
 		internal static TypeReference GetTypeReference(ModuleDefinition module, object param)
 		{
@@ -105,10 +102,7 @@ namespace HarmonyLib
 			/// <summary>Returns a string representation of the modifier type</summary>
 			/// <returns>A string representation of the modifier type</returns>
 			///
-			public override string ToString()
-			{
-				return $"{(Type is Type rt ? rt.FullDescription() : Type?.ToString())} mod{(IsOptional ? "opt" : "req")}({Modifier?.FullDescription()})";
-			}
+			public override string ToString() => $"{(Type is Type rt ? rt.FullDescription() : Type?.ToString())} mod{(IsOptional ? "opt" : "req")}({Modifier?.FullDescription()})";
 
 			internal TypeReference ToTypeReference(ModuleDefinition module)
 			{

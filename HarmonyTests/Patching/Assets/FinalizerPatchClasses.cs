@@ -9,10 +9,7 @@ namespace HarmonyLibTests.Assets
 		public OriginalException() { }
 		public OriginalException(string message) : base(message) { }
 		public OriginalException(string message, Exception innerException) : base(message, innerException) { }
-		protected OriginalException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
-		{
-			throw new NotImplementedException();
-		}
+		protected OriginalException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) => throw new NotImplementedException();
 	}
 
 	[Serializable]
@@ -21,10 +18,7 @@ namespace HarmonyLibTests.Assets
 		public ReplacedException() { }
 		public ReplacedException(string message) : base(message) { }
 		public ReplacedException(string message, Exception innerException) : base(message, innerException) { }
-		protected ReplacedException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
-		{
-			throw new NotImplementedException();
-		}
+		protected ReplacedException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) => throw new NotImplementedException();
 	}
 
 	public class NoThrowingVoidMethod
@@ -45,10 +39,7 @@ namespace HarmonyLibTests.Assets
 	public class ThrowingVoidMethod
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Method()
-		{
-			throw new OriginalException();
-		}
+		public void Method() => throw new OriginalException();
 	}
 
 	public class NoThrowingStringReturningMethod
@@ -69,10 +60,7 @@ namespace HarmonyLibTests.Assets
 		// So for now this is excluded on mono (except for NET Core 3.x where it works)
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public string Method()
-		{
-			throw new OriginalException();
-		}
+		public string Method() => throw new OriginalException();
 	}
 
 	//
@@ -81,10 +69,7 @@ namespace HarmonyLibTests.Assets
 	{
 		public static bool finalized = false;
 
-		public static void Finalizer()
-		{
-			finalized = true;
-		}
+		public static void Finalizer() => finalized = true;
 	}
 
 	public class EmptyFinalizerWithExceptionArg

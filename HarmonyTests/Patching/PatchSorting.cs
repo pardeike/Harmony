@@ -27,9 +27,9 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[1], 1, "owner B", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0], false)
+				new Patch(patches[0], 0, "owner A", Priority.Normal, [], [], false),
+				new Patch(patches[1], 1, "owner B", Priority.Normal, [], [], false),
+				new Patch(patches[2], 2, "owner C", Priority.Normal, [], [], false)
 			};
 
 			var expectedOrder = new[] { 0, 1, 2 };
@@ -48,15 +48,15 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Last, new string[0], new string[0], false),
-				new Patch(patches[1], 1, "owner B", Priority.VeryLow, new string[0], new string[0], false),
-				new Patch(patches[2], 2, "owner C", Priority.Low, new string[0], new string[0], false),
-				new Patch(patches[3], 3, "owner D", Priority.LowerThanNormal, new string[0], new string[0], false),
-				new Patch(patches[4], 4, "owner E", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[5], 5, "owner F", Priority.HigherThanNormal, new string[0], new string[0], false),
-				new Patch(patches[6], 6, "owner G", Priority.High, new string[0], new string[0], false),
-				new Patch(patches[7], 7, "owner H", Priority.VeryHigh, new string[0], new string[0], false),
-				new Patch(patches[8], 8, "owner I", Priority.First, new string[0], new string[0], false)
+				new Patch(patches[0], 0, "owner A", Priority.Last, [], [], false),
+				new Patch(patches[1], 1, "owner B", Priority.VeryLow, [], [], false),
+				new Patch(patches[2], 2, "owner C", Priority.Low, [], [], false),
+				new Patch(patches[3], 3, "owner D", Priority.LowerThanNormal, [], [], false),
+				new Patch(patches[4], 4, "owner E", Priority.Normal, [], [], false),
+				new Patch(patches[5], 5, "owner F", Priority.HigherThanNormal, [], [], false),
+				new Patch(patches[6], 6, "owner G", Priority.High, [], [], false),
+				new Patch(patches[7], 7, "owner H", Priority.VeryHigh, [], [], false),
+				new Patch(patches[8], 8, "owner I", Priority.First, [], [], false)
 			};
 
 			var expectedOrder = new[] { 8, 7, 6, 5, 4, 3, 2, 1, 0 };
@@ -75,11 +75,11 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[1], 1, "owner A", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[2], 2, "owner B", Priority.Normal, ["owner A"], new string[0], false),
-				new Patch(patches[3], 3, "owner C", Priority.First, new string[0], new string[0], false),
-				new Patch(patches[4], 4, "owner D", Priority.Low, ["owner A"], new string[0], false)
+				new Patch(patches[0], 0, "owner A", Priority.Normal, [], [], false),
+				new Patch(patches[1], 1, "owner A", Priority.Normal, [], [], false),
+				new Patch(patches[2], 2, "owner B", Priority.Normal, ["owner A"], [], false),
+				new Patch(patches[3], 3, "owner C", Priority.First, [], [], false),
+				new Patch(patches[4], 4, "owner D", Priority.Low, ["owner A"], [], false)
 			};
 
 			var expectedOrder = new[] { 3, 2, 4, 0, 1 };
@@ -98,10 +98,10 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], ["owner C"], false),
-				new Patch(patches[1], 1, "owner B", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[3], 3, "owner D", Priority.First, new string[0], ["owner C"], false)
+				new Patch(patches[0], 0, "owner A", Priority.Normal, [], ["owner C"], false),
+				new Patch(patches[1], 1, "owner B", Priority.Normal, [], [], false),
+				new Patch(patches[2], 2, "owner C", Priority.Normal, [], [], false),
+				new Patch(patches[3], 3, "owner D", Priority.First, [], ["owner C"], false)
 			};
 
 			var expectedOrder = new[] { 1, 2, 3, 0 };
@@ -120,11 +120,11 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.First, new string[0], new string[0], false),
+				new Patch(patches[0], 0, "owner A", Priority.First, [], [], false),
 				new Patch(patches[1], 1, "owner B", Priority.HigherThanNormal, ["owner E"], ["owner C"], false),
-				new Patch(patches[2], 2, "owner C", Priority.First, new string[0], new string[0], false),
+				new Patch(patches[2], 2, "owner C", Priority.First, [], [], false),
 				new Patch(patches[3], 3, "owner D", Priority.VeryHigh, ["owner E"], ["owner C"], false),
-				new Patch(patches[4], 4, "owner E", Priority.First, new string[0], new string[0], false)
+				new Patch(patches[4], 4, "owner E", Priority.First, [], [], false)
 			};
 
 			var expectedOrder = new[] { 0, 2, 3, 1, 4 };
@@ -143,11 +143,11 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner B"], new string[0], false),
-				new Patch(patches[1], 1, "owner B", Priority.HigherThanNormal, ["owner C"], new string[0], false),
-				new Patch(patches[2], 2, "owner C", Priority.High, ["owner D"], new string[0], false),
-				new Patch(patches[3], 3, "owner D", Priority.VeryHigh, ["owner E"], new string[0], false),
-				new Patch(patches[4], 4, "owner E", Priority.First, new string[0], new string[0], false)
+				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner B"], [], false),
+				new Patch(patches[1], 1, "owner B", Priority.HigherThanNormal, ["owner C"], [], false),
+				new Patch(patches[2], 2, "owner C", Priority.High, ["owner D"], [], false),
+				new Patch(patches[3], 3, "owner D", Priority.VeryHigh, ["owner E"], [], false),
+				new Patch(patches[4], 4, "owner E", Priority.First, [], [], false)
 			};
 
 			var expectedOrder = new[] { 0, 1, 2, 3, 4 };
@@ -166,11 +166,11 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.First, new string[0], ["owner B"], false),
-				new Patch(patches[1], 1, "owner B", Priority.VeryHigh, new string[0], ["owner C"], false),
-				new Patch(patches[2], 2, "owner C", Priority.High, new string[0], ["owner D"], false),
-				new Patch(patches[3], 3, "owner D", Priority.HigherThanNormal, new string[0], ["owner E"], false),
-				new Patch(patches[4], 4, "owner E", Priority.Normal, new string[0], new string[0], false)
+				new Patch(patches[0], 0, "owner A", Priority.First, [], ["owner B"], false),
+				new Patch(patches[1], 1, "owner B", Priority.VeryHigh, [], ["owner C"], false),
+				new Patch(patches[2], 2, "owner C", Priority.High, [], ["owner D"], false),
+				new Patch(patches[3], 3, "owner D", Priority.HigherThanNormal, [], ["owner E"], false),
+				new Patch(patches[4], 4, "owner E", Priority.Normal, [], [], false)
 			};
 
 			var expectedOrder = new[] { 4, 3, 2, 1, 0 };
@@ -190,9 +190,9 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], ["owner B"], false),
-				new Patch(patches[1], 1, "owner B", Priority.Normal, new string[0], ["owner C"], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], ["owner A"], false)
+				new Patch(patches[0], 0, "owner A", Priority.Normal, [], ["owner B"], false),
+				new Patch(patches[1], 1, "owner B", Priority.Normal, [], ["owner C"], false),
+				new Patch(patches[2], 2, "owner C", Priority.Normal, [], ["owner A"], false)
 			};
 
 			var expectedOrder = new[] { 2, 1, 0 };
@@ -212,9 +212,9 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner C"], new string[0], false),
-				new Patch(patches[1], 1, "owner B", Priority.Normal, ["owner A"], new string[0], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, ["owner B"], new string[0], false)
+				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner C"], [], false),
+				new Patch(patches[1], 1, "owner B", Priority.Normal, ["owner A"], [], false),
+				new Patch(patches[2], 2, "owner C", Priority.Normal, ["owner B"], [], false)
 			};
 
 			var expectedOrder = new[] { 2, 1, 0 };
@@ -234,14 +234,14 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner C"], new string[0], false),
-				new Patch(patches[1], 1, "owner B", Priority.Normal, ["owner A"], new string[0], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, ["owner B"], new string[0], false),
-				new Patch(patches[3], 3, "owner D", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[4], 4, "owner E", Priority.First, new string[0], new string[0], false),
-				new Patch(patches[5], 5, "owner F", Priority.Low, new string[0], ["owner G"], false),
-				new Patch(patches[6], 6, "owner G", Priority.Normal, new string[0], ["owner H"], false),
-				new Patch(patches[7], 7, "owner H", Priority.Normal, new string[0], ["owner F"], false)
+				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner C"], [], false),
+				new Patch(patches[1], 1, "owner B", Priority.Normal, ["owner A"], [], false),
+				new Patch(patches[2], 2, "owner C", Priority.Normal, ["owner B"], [], false),
+				new Patch(patches[3], 3, "owner D", Priority.Normal, [], [], false),
+				new Patch(patches[4], 4, "owner E", Priority.First, [], [], false),
+				new Patch(patches[5], 5, "owner F", Priority.Low, [], ["owner G"], false),
+				new Patch(patches[6], 6, "owner G", Priority.Normal, [], ["owner H"], false),
+				new Patch(patches[7], 7, "owner H", Priority.Normal, [], ["owner F"], false)
 			};
 
 			var expectedOrder = new[] { 4, 3, 5, 7, 6, 2, 1, 0 };
@@ -261,14 +261,14 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner C"], new string[0], false),
-				new Patch(patches[1], 1, "owner B", Priority.Normal, ["owner A"], new string[0], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, ["owner B"], new string[0], false),
-				new Patch(patches[3], 3, "owner D", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[4], 4, "owner E", Priority.First, new string[0], new string[0], false),
+				new Patch(patches[0], 0, "owner A", Priority.Normal, ["owner C"], [], false),
+				new Patch(patches[1], 1, "owner B", Priority.Normal, ["owner A"], [], false),
+				new Patch(patches[2], 2, "owner C", Priority.Normal, ["owner B"], [], false),
+				new Patch(patches[3], 3, "owner D", Priority.Normal, [], [], false),
+				new Patch(patches[4], 4, "owner E", Priority.First, [], [], false),
 				new Patch(patches[5], 5, "owner F", Priority.Low, ["owner C", "owner H"], ["owner G", "owner B"], false),
-				new Patch(patches[6], 6, "owner G", Priority.Normal, new string[0], ["owner H"], false),
-				new Patch(patches[7], 7, "owner H", Priority.Normal, new string[0], ["owner F"], false)
+				new Patch(patches[6], 6, "owner G", Priority.Normal, [], ["owner H"], false),
+				new Patch(patches[7], 7, "owner H", Priority.Normal, [], ["owner F"], false)
 			};
 
 			var expectedOrder = new[] { 4, 3, 5, 7, 6, 2, 1, 0 };
@@ -289,8 +289,8 @@ namespace HarmonyLibTests.Patching
 			var patchInstances = new[]
 			{
 				new Patch(patches[0], 0, "owner A", Priority.Normal, ["ownerB", "missing 1"], ["owner C"], false),
-				new Patch(patches[1], 1, "owner B", Priority.Normal, new string[0], ["missing 2"], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0], false)
+				new Patch(patches[1], 1, "owner B", Priority.Normal, [], ["missing 2"], false),
+				new Patch(patches[2], 2, "owner C", Priority.Normal, [], [], false)
 			};
 
 			var expectedOrder = new[] { 1, 2, 0 };
@@ -310,10 +310,10 @@ namespace HarmonyLibTests.Patching
 
 			var patchInstances = new[]
 			{
-				new Patch(patches[0], 0, "owner A", Priority.Normal, new string[0], new string[0], false),
+				new Patch(patches[0], 0, "owner A", Priority.Normal, [], [], false),
 				new Patch(patches[1], 1, "owner B", Priority.Normal, ["owner A"], ["owner C"], false),
-				new Patch(patches[2], 2, "owner C", Priority.Normal, new string[0], new string[0], false),
-				new Patch(patches[3], 3, "owner D", Priority.Normal, new string[0], new string[0], false)
+				new Patch(patches[2], 2, "owner C", Priority.Normal, [], [], false),
+				new Patch(patches[3], 3, "owner D", Priority.Normal, [], [], false)
 			};
 
 			var sorter = new PatchSorter(patchInstances, false);

@@ -47,13 +47,13 @@ namespace Execution_Without
 		static int someArgument;
 
 		static void SimplePrefix1(params object[] arguments) { }
-		static bool Prefix2() { return true; }
+		static bool Prefix2() => true;
 		static void SimplePrefix3(params object[] arguments) { }
 		static void SimplePrefix4(params object[] arguments) { }
-		static bool Prefix5(ref int i, ref R r) { return true; }
-		static R ModifiedOriginal(params object[] arguments) { return null; }
+		static bool Prefix5(ref int i, ref R r) => true;
+		static R ModifiedOriginal(params object[] arguments) => null;
 		static void Postfix1(ref R r) { }
-		static R Postfix2(R r, params object[] arguments) { return r; }
+		static R Postfix2(R r, params object[] arguments) => r;
 		static void Postfix3() { }
 	}
 }

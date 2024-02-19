@@ -8,10 +8,7 @@ namespace HarmonyLib
 
 		internal int position;
 
-		internal ByteBuffer(byte[] buffer)
-		{
-			this.buffer = buffer;
-		}
+		internal ByteBuffer(byte[] buffer) => this.buffer = buffer;
 
 		internal byte ReadByte()
 		{

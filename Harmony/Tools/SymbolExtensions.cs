@@ -12,20 +12,14 @@ namespace HarmonyLib
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>The method in the lambda expression</returns>
 		///
-		public static MethodInfo GetMethodInfo(Expression<Action> expression)
-		{
-			return GetMethodInfo((LambdaExpression)expression);
-		}
+		public static MethodInfo GetMethodInfo(Expression<Action> expression) => GetMethodInfo((LambdaExpression)expression);
 
 		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
 		/// <typeparam name="T">The generic type</typeparam>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>The method in the lambda expression</returns>
 		///
-		public static MethodInfo GetMethodInfo<T>(Expression<Action<T>> expression)
-		{
-			return GetMethodInfo((LambdaExpression)expression);
-		}
+		public static MethodInfo GetMethodInfo<T>(Expression<Action<T>> expression) => GetMethodInfo((LambdaExpression)expression);
 
 		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
 		/// <typeparam name="T">The generic type</typeparam>
@@ -33,10 +27,7 @@ namespace HarmonyLib
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>The method in the lambda expression</returns>
 		///
-		public static MethodInfo GetMethodInfo<T, TResult>(Expression<Func<T, TResult>> expression)
-		{
-			return GetMethodInfo((LambdaExpression)expression);
-		}
+		public static MethodInfo GetMethodInfo<T, TResult>(Expression<Func<T, TResult>> expression) => GetMethodInfo((LambdaExpression)expression);
 
 		/// <summary>Given a lambda expression that calls a method, returns the method info</summary>
 		/// <param name="expression">The lambda expression using the method</param>

@@ -23,20 +23,16 @@ namespace Reverse_Patching
 		{
 			[HarmonyReversePatch]
 			[HarmonyPatch(typeof(OriginalCode), "Test")]
-			public static void MyTest(object instance, int counter, string name)
-			{
+			public static void MyTest(object instance, int counter, string name) =>
 				// its a stub so it has no initial content
 				throw new NotImplementedException("It's a stub");
-			}
 		}
 
 		class Main
 		{
-			void Test()
-			{
+			void Test() =>
 				// here we call OriginalCode.Test()
 				Patch.MyTest(originalInstance, 100, "hello");
-			}
 		}
 		// </example>
 

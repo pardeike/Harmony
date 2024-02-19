@@ -3,10 +3,7 @@ namespace HarmonyLibTests.Assets
 	public class TestMethodInvokerObject
 	{
 		public int Value;
-		public void Method1(int a)
-		{
-			Value += a;
-		}
+		public void Method1(int a) => Value += a;
 	}
 
 	public struct TestMethodInvokerStruct

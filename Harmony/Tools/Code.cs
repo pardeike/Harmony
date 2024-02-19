@@ -3,6 +3,12 @@ using System.Reflection.Emit;
 
 namespace HarmonyLib
 {
+	/// <summary>By adding the following using statement to your source code:</summary>
+	/// <code>using static HarmonyLib.Code;</code>
+	/// you can i.e. start using <c>Ldarg_1</c> instead of <c>new CodeMatch(OpCodes.Ldarg_1)</c>
+	/// and then you can use array notation to add an operand and/or a name:
+	/// <c>Call[myMethodInfo]</c> instead of <c>new CodeMatch(OpCodes.Call, myMethodInfo)</c>
+	///
 	public static class Code
 	{
 		public static Operand_ Operand => new();

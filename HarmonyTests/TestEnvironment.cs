@@ -42,15 +42,9 @@ namespace HarmonyLibTests
 				.FirstOrDefault() ?? "null"));
 		}
 
-		static string GetProperty(Type type, string propertyName)
-		{
-			return AccessTools.Property(type, propertyName)?.GetValue(null, new object[0])?.ToString() ?? "null";
-		}
+		static string GetProperty(Type type, string propertyName) => AccessTools.Property(type, propertyName)?.GetValue(null, [])?.ToString() ?? "null";
 
-		static string CallGetter(Type type, string methodName)
-		{
-			return AccessTools.Method(type, methodName)?.Invoke(null, new object[0])?.ToString() ?? "null";
-		}
+		static string CallGetter(Type type, string methodName) => AccessTools.Method(type, methodName)?.Invoke(null, [])?.ToString() ?? "null";
 
 		[Test]
 		public void OutputEnvironmentVariables()
@@ -60,10 +54,7 @@ namespace HarmonyLibTests
 		}
 
 		[Test]
-		public void OutputAssemblies()
-		{
-			TestTools.Log(AppDomain.CurrentDomain.GetAssemblies().Join(delimiter: "\n"), indentLevelAfterNewLine: 1);
-		}
+		public void OutputAssemblies() => TestTools.Log(AppDomain.CurrentDomain.GetAssemblies().Join(delimiter: "\n"), indentLevelAfterNewLine: 1);
 
 		[Test]
 		public void OutputProcessInfo()
