@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -274,11 +275,12 @@ namespace HarmonyLib
 			throw new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
 		}
 
+		[SuppressMessage("Style", "IDE0300")]
 		T RunMethod<S, T>(T defaultIfNotExisting, T defaultIfFailing, Func<T, string> failOnResult = null, params object[] parameters)
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
-				var input = (parameters ?? []).Union([instance]).ToArray();
+				var input = (parameters ?? []).Union(new object[] { instance }).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);
 
 				if (method.ReturnType != typeof(void) && typeof(T).IsAssignableFrom(method.ReturnType) is false)
@@ -312,11 +314,12 @@ namespace HarmonyLib
 			return defaultIfNotExisting;
 		}
 
+		[SuppressMessage("Style", "IDE0300")]
 		void RunMethod<S>(ref Exception exception, params object[] parameters)
 		{
 			if (auxilaryMethods.TryGetValue(typeof(S), out var method))
 			{
-				var input = (parameters ?? []).Union([instance]).ToArray();
+				var input = (parameters ?? []).Union(new object[] { instance }).ToArray();
 				var actualParameters = AccessTools.ActualParameters(method, input);
 				try
 				{

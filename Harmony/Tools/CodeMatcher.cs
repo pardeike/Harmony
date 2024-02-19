@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HarmonyLib
 {
@@ -344,10 +345,11 @@ namespace HarmonyLib
 		/// <param name="label">[out] The new label</param>
 		/// <returns>The same code matcher</returns>
 		///
+		[SuppressMessage("Style", "IDE0300")]
 		public CodeMatcher CreateLabelAt(int position, out Label label)
 		{
 			label = generator.DefineLabel();
-			_ = AddLabelsAt(position, [label]);
+			_ = AddLabelsAt(position, new Label[] { label });
 			return this;
 		}
 
@@ -356,10 +358,12 @@ namespace HarmonyLib
 		/// <param name="label">[out] The new label</param>
 		/// <returns>The same code matcher</returns>
 		///
+
+		[SuppressMessage("Style", "IDE0300")]
 		public CodeMatcher CreateLabelWithOffsets(int offset, out Label label)
 		{
 			label = generator.DefineLabel();
-			return AddLabelsAt(Pos + offset, [label]);
+			return AddLabelsAt(Pos + offset, new Label[] { label });
 		}
 
 		/// <summary>Adds an enumeration of labels to current position</summary>

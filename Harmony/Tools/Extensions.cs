@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -670,7 +671,8 @@ namespace HarmonyLib
 		/// <param name="item">The item to add</param>
 		/// <returns>The collection containing the item</returns>
 		///
-		public static IEnumerable<T> AddItem<T>(this IEnumerable<T> sequence, T item) => (sequence ?? []).Concat([item]);
+		[SuppressMessage("Style", "IDE0300")]
+		public static IEnumerable<T> AddItem<T>(this IEnumerable<T> sequence, T item) => (sequence ?? []).Concat(new T[] { item });
 
 		/// <summary>A helper to add an item to an array</summary>
 		/// <typeparam name="T">The inner type of the collection</typeparam>
