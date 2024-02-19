@@ -99,8 +99,13 @@ runs:
         max_attempts: 3
         retry_on: timeout
         command: |
+          if ('${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64' && inputs.runtime-type == 'dotnet'}}' -eq 'true') {
+            $dotnet = '/Users/runner/.dotnet/x64/dotnet';
+          } else {
+            $dotnet = '/Users/runner/.dotnet/dotnet';
+          }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-            dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+            & $dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
           }
         shell: pwsh
 

@@ -172,6 +172,47 @@ jobs:
       build_configuration: ${{matrix.build_configuration}}
       manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
+  macos-rosetta-dotnet:
+    name: MacOS .NET Rosetta 2
+    needs: [variables, build-binaries]
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [ { os: 'macos-arm64', code: 'macos-14' } ]
+        architecture: ['x64']
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) || '[""]')}}
+        build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
+    uses: ./.github/workflows/test-unix-dotnet.yml
+    with:
+      os: ${{matrix.image.os}}
+      image: ${{matrix.image.code}}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework }}
+      target_framework_array: ${{needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
+
+  macos-rosetta-mono:
+    name: MacOS Mono Rosetta 2
+    needs: [variables, build-binaries]
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [ { os: 'macos-arm64', code: 'macos-14' } ]
+        architecture: ['x64']
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
+        build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
+    uses: ./.github/workflows/test-unix-mono.yml
+    with:
+      os: ${{matrix.image.os}}
+      image: ${{matrix.image.code}}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework}}
+      target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
+
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
@@ -232,13 +273,13 @@ jobs:
 
   test-results:
     name: Download and Upload Test Results
-    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-arm64-dotnet, ubuntu-arm64-mono, macos-arm64-dotnet]
+    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, macos-rosetta-dotnet, macos-rosetta-mono]
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
 
   test-results-experimental:
     name: Download and Upload Test Results (Experimental)
-    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-arm64-dotnet, ubuntu-arm64-mono, macos-arm64-dotnet]
+    needs: [ubuntu-arm64-dotnet, ubuntu-arm64-mono, macos-arm64-dotnet]
     if: ${{needs.variables.outputs.EXPERIMENTAL == 'true' && always()}}
     uses: ./.github/workflows/test-result-upload.yml
     with:

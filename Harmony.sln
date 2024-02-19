@@ -91,6 +91,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{71B8832A-3
 		.github\workflows\test-windows-mono.yml = .github\workflows\test-windows-mono.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-setup-dotnet-macos-rosetta", "test-setup-dotnet-macos-rosetta", "{821995BE-A095-4C39-95F5-8E54A5E6944D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\test-setup-dotnet-macos-rosetta\action.yml = .github\actions\test-setup-dotnet-macos-rosetta\action.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DebugFat|Any CPU = DebugFat|Any CPU
@@ -150,5 +155,6 @@ Global
 		{145A597F-00D3-42D0-930D-85EF1257FA6D} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 		{E625C76C-C4AA-43A9-AFB5-BD1D605A4F48} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 		{15C84537-CCEF-43F5-B556-34369D7B320D} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{821995BE-A095-4C39-95F5-8E54A5E6944D} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 	EndGlobalSection
 EndGlobal

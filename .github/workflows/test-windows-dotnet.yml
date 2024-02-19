@@ -59,6 +59,9 @@ jobs:
           target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
 
+      - name: Get Installed .NET Sdk Information
+        run: dotnet --info
+
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
         if: ${{!inputs.manual_build}}
