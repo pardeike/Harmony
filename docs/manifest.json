@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeInstructionExtensions.html",
-          "hash": "5kJHFP4xWNQPqGCEH5NX9pAwIxCtFaulVLaLno0IuaE="
+          "hash": "TPUAb/tAerZNPTi0sL1TsLP9VRgBaYxWA+q4FlLKr9Y="
         }
       },
       "is_incremental": false,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeInstructionsExtensions.html",
-          "hash": "hyrbLA2JawfK9/IhtMsNf5WTueuGEfnacTRRbcc+2Tc="
+          "hash": "OcVt86dQ8KoUzzGqSQ42nRlGbHp4g65KGa92e6ZTTA8="
         }
       },
       "is_incremental": false,
@@ -141,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CodeMatcher.html",
-          "hash": "2X1D6+G42vlJG+vfC053PB7V+wE+TYL30FLISkmzJpg="
+          "hash": "qpHTw8shNUGg9SGOfwKheUSeMISjbblqQ46ykdoWpwQ="
         }
       },
       "is_incremental": false,
@@ -153,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.CollectionExtensions.html",
-          "hash": "k1Jzh1dTGbLwL0oCdTnnkWCXBPy06Wyh84+8IxkFkEk="
+          "hash": "HuhmLffmwRgdL/W7/3rrqmPJvLlLmUeFdAAa8lNhqf0="
         }
       },
       "is_incremental": false,
@@ -237,7 +237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.GeneralExtensions.html",
-          "hash": "u4CTMibIl4GmSErU+dbg6Qn3wWoK1V3aagEWC4VzCFE="
+          "hash": "6zSK1HIONJhXz/VXmffWvDsXlN6aPIKeUycl2YIVbEw="
         }
       },
       "is_incremental": false,
@@ -573,7 +573,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.MethodBaseExtensions.html",
-          "hash": "YbfUuzmg6yR44lL+eJhb6wbGFV2xhfJs48jeZVDBfEI="
+          "hash": "M1V2Nyp6iCvp8gf05XZ4gkp+04eRS7o9onhf+vnEhRI="
         }
       },
       "is_incremental": false,
@@ -633,7 +633,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchClassProcessor.html",
-          "hash": "l3E0KF6Or4AVqXTOBctCzPmC0KqRHGVLYXL5z7HOoCI="
+          "hash": "hvwaoH3FvJK+60jMLItkCQGiHSrY//LlAt0DBOfcpf4="
         }
       },
       "is_incremental": false,
