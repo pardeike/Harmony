@@ -51,6 +51,49 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+		public void Test_PatchResultRef()
+		{
+			ResultRefStruct.numbersPrefix = [0, 0];
+			ResultRefStruct.numbersPostfix = [0, 0];
+			ResultRefStruct.numbersPostfixWithNull = [0];
+			ResultRefStruct.numbersFinalizer = [0];
+			ResultRefStruct.numbersMixed = [0, 0];
+
+			var test = new ResultRefStruct();
+
+			var instance = new Harmony("result-ref-test");
+			Assert.NotNull(instance);
+			var processor = instance.CreateClassProcessor(typeof(ResultRefStruct_Patch));
+			Assert.NotNull(processor, "processor");
+
+			test.ToPrefix() = 1;
+			test.ToPostfix() = 2;
+			test.ToPostfixWithNull() = 3;
+			test.ToMixed() = 5;
+
+			Assert.AreEqual(new[] { 1, 0 }, ResultRefStruct.numbersPrefix);
+			Assert.AreEqual(new[] { 2, 0 }, ResultRefStruct.numbersPostfix);
+			Assert.AreEqual(new[] { 3 }, ResultRefStruct.numbersPostfixWithNull);
+			Assert.Throws<Exception>(() => test.ToFinalizer(), "ToFinalizer method does not throw");
+			Assert.AreEqual(new[] { 5, 0 }, ResultRefStruct.numbersMixed);
+
+			var replacements = processor.Patch();
+			Assert.NotNull(replacements, "replacements");
+
+			test.ToPrefix() = -1;
+			test.ToPostfix() = -2;
+			test.ToPostfixWithNull() = -3;
+			test.ToFinalizer() = -4;
+			test.ToMixed() = -5;
+
+			Assert.AreEqual(new[] { 1, -1 }, ResultRefStruct.numbersPrefix);
+			Assert.AreEqual(new[] { 2, -2 }, ResultRefStruct.numbersPostfix);
+			Assert.AreEqual(new[] { -3 }, ResultRefStruct.numbersPostfixWithNull);
+			Assert.AreEqual(new[] { -4 }, ResultRefStruct.numbersFinalizer);
+			Assert.AreEqual(new[] { 42, -5 }, ResultRefStruct.numbersMixed);
+		}
+
+		[Test]
 		public void Test_Patch_ConcreteClass()
 		{
 			var instance = new Harmony("special-case-1");
@@ -327,7 +370,7 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(patcher, "Patch processor");
 			_ = patcher.Patch();
 		}
-		
+
 		[Test]
 		public void Test_PatchEventHandler()
 		{
@@ -348,7 +391,7 @@ namespace HarmonyLibTests.Patching
 			new EventHandlerTestClass().Run();
 			Console.WriteLine($"### EventHandlerTestClass AFTER");
 		}
-		
+
 		[Test]
 		public void Test_PatchMarshalledClass()
 		{
@@ -369,7 +412,7 @@ namespace HarmonyLibTests.Patching
 			new MarshalledTestClass().Run();
 			Console.WriteLine($"### MarshalledTestClass AFTER");
 		}
-		
+
 		[Test]
 		public void Test_MarshalledWithEventHandler1()
 		{
@@ -390,7 +433,7 @@ namespace HarmonyLibTests.Patching
 			new MarshalledWithEventHandlerTest1Class().Run();
 			Console.WriteLine($"### MarshalledWithEventHandlerTest1 AFTER");
 		}
-		
+
 		[Test]
 		public void Test_MarshalledWithEventHandler2()
 		{
