@@ -15,6 +15,7 @@ namespace HarmonyLib
 		const string ORIGINAL_METHOD_PARAM = "__originalMethod";
 		const string ARGS_ARRAY_VAR = "__args";
 		const string RESULT_VAR = "__result";
+		const string RESULT_REF_VAR = "__resultRef";
 		const string STATE_VAR = "__state";
 		const string EXCEPTION_VAR = "__exception";
 		const string RUN_ORIGINAL_VAR = "__runOriginal";
@@ -74,6 +75,19 @@ namespace HarmonyLib
 			{
 				resultVariable = DeclareLocalVariable(returnType, true);
 				privateVars[RESULT_VAR] = resultVariable;
+			}
+
+			if (fixes.Any(fix => fix.GetParameters().Any(p => p.Name == RESULT_REF_VAR)))
+			{
+				if(returnType.IsByRef)
+				{
+					var resultRefVariable = il.DeclareLocal(
+						typeof(RefResult<>).MakeGenericType(returnType.GetElementType())
+					);
+					emitter.Emit(OpCodes.Ldnull);
+					emitter.Emit(OpCodes.Stloc, resultRefVariable);
+					privateVars[RESULT_REF_VAR] = resultRefVariable;
+				}
 			}
 
 			LocalBuilder argsArrayVariable = null;
@@ -432,10 +446,11 @@ namespace HarmonyLib
 			return true;
 		}
 
-		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable, bool allowFirsParamPassthrough, out LocalBuilder tmpInstanceBoxingVar, out LocalBuilder tmpObjectVar, List<KeyValuePair<LocalBuilder, Type>> tmpBoxVars)
+		void EmitCallParameter(MethodInfo patch, Dictionary<string, LocalBuilder> variables, LocalBuilder runOriginalVariable, bool allowFirsParamPassthrough, out LocalBuilder tmpInstanceBoxingVar, out LocalBuilder tmpObjectVar, out bool refResultUsed, List<KeyValuePair<LocalBuilder, Type>> tmpBoxVars)
 		{
 			tmpInstanceBoxingVar = null;
 			tmpObjectVar = null;
+			refResultUsed = false;
 
 			var isInstance = original.IsStatic is false;
 			var originalParameters = original.GetParameters();
@@ -474,10 +489,10 @@ namespace HarmonyLib
 					else
 					{
 						var paramType = patchParam.ParameterType;
-						
+
 						var parameterIsRef = paramType.IsByRef;
 						var parameterIsObject = paramType == typeof(object) || paramType == typeof(object).MakeByRefType();
-						
+
 						if (AccessTools.IsStruct(originalType))
 						{
 							if (parameterIsObject)
@@ -571,7 +586,6 @@ namespace HarmonyLib
 				// treat __result var special
 				if (patchParam.Name == RESULT_VAR)
 				{
-					var returnType = AccessTools.GetReturnedType(original);
 					if (returnType == typeof(void))
 						throw new Exception($"Cannot get result from void method {original.FullDescription()}");
 					var resultType = patchParam.ParameterType;
@@ -594,6 +608,25 @@ namespace HarmonyLib
 							emitter.Emit(OpCodes.Ldloca, tmpObjectVar);
 						}
 					}
+					continue;
+				}
+
+				// treat __resultRef delegate special
+				if (patchParam.Name == RESULT_REF_VAR)
+				{
+					if (!returnType.IsByRef)
+						throw new Exception(
+							$"Cannot use {RESULT_REF_VAR} with non-ref return type {returnType.FullName} of method {original.FullDescription()}");
+
+					var resultType = patchParam.ParameterType;
+					var expectedTypeRef = typeof(RefResult<>).MakeGenericType(returnType.GetElementType()).MakeByRefType();
+					if (resultType != expectedTypeRef)
+						throw new Exception(
+							$"Wrong type of {RESULT_REF_VAR} for method {original.FullDescription()}. Expected {expectedTypeRef.FullName}, got {resultType.FullName}");
+
+					emitter.Emit(OpCodes.Ldloca, variables[RESULT_REF_VAR]);
+
+					refResultUsed = true;
 					continue;
 				}
 
@@ -763,7 +796,7 @@ namespace HarmonyLib
 					}
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, out var refResultUsed, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (fix.GetParameters().Any(p => p.Name == ARGS_ARRAY_VAR))
 						RestoreArgumentArray(variables);
@@ -774,7 +807,22 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Unbox_Any, original.DeclaringType);
 						emitter.Emit(OpCodes.Stobj, original.DeclaringType);
 					}
-					if (tmpObjectVar != null)
+					if (refResultUsed)
+					{
+						var label = il.DefineLabel();
+						emitter.Emit(OpCodes.Ldloc, variables[RESULT_REF_VAR]);
+						emitter.Emit(OpCodes.Brfalse_S, label);
+
+						emitter.Emit(OpCodes.Ldloc, variables[RESULT_REF_VAR]);
+						emitter.Emit(OpCodes.Callvirt, AccessTools.Method(variables[RESULT_REF_VAR].LocalType, "Invoke"));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+						emitter.Emit(OpCodes.Ldnull);
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_REF_VAR]);
+
+						emitter.MarkLabel(label);
+						emitter.Emit(OpCodes.Nop);
+					}
+					else if (tmpObjectVar != null)
 					{
 						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
 						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
@@ -815,7 +863,7 @@ namespace HarmonyLib
 					//	throw new Exception("Methods without body cannot have postfixes. Use a transpiler instead.");
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, runOriginalVariable, true, out var tmpInstanceBoxingVar, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, runOriginalVariable, true, out var tmpInstanceBoxingVar, out var tmpObjectVar, out var refResultUsed, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (fix.GetParameters().Any(p => p.Name == ARGS_ARRAY_VAR))
 						RestoreArgumentArray(variables);
@@ -826,7 +874,22 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Unbox_Any, original.DeclaringType);
 						emitter.Emit(OpCodes.Stobj, original.DeclaringType);
 					}
-					if (tmpObjectVar != null)
+					if (refResultUsed)
+					{
+						var label = il.DefineLabel();
+						emitter.Emit(OpCodes.Ldloc, variables[RESULT_REF_VAR]);
+						emitter.Emit(OpCodes.Brfalse_S, label);
+
+						emitter.Emit(OpCodes.Ldloc, variables[RESULT_REF_VAR]);
+						emitter.Emit(OpCodes.Callvirt, AccessTools.Method(variables[RESULT_REF_VAR].LocalType, "Invoke"));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+						emitter.Emit(OpCodes.Ldnull);
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_REF_VAR]);
+
+						emitter.MarkLabel(label);
+						emitter.Emit(OpCodes.Nop);
+					}
+					else if (tmpObjectVar != null)
 					{
 						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
 						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));
@@ -871,7 +934,7 @@ namespace HarmonyLib
 						emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock), out var label);
 
 					var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, tmpBoxVars);
+					EmitCallParameter(fix, variables, runOriginalVariable, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, out var refResultUsed, tmpBoxVars);
 					emitter.Emit(OpCodes.Call, fix);
 					if (fix.GetParameters().Any(p => p.Name == ARGS_ARRAY_VAR))
 						RestoreArgumentArray(variables);
@@ -882,7 +945,22 @@ namespace HarmonyLib
 						emitter.Emit(OpCodes.Unbox_Any, original.DeclaringType);
 						emitter.Emit(OpCodes.Stobj, original.DeclaringType);
 					}
-					if (tmpObjectVar != null)
+					if (refResultUsed)
+					{
+						var label = il.DefineLabel();
+						emitter.Emit(OpCodes.Ldloc, variables[RESULT_REF_VAR]);
+						emitter.Emit(OpCodes.Brfalse_S, label);
+
+						emitter.Emit(OpCodes.Ldloc, variables[RESULT_REF_VAR]);
+						emitter.Emit(OpCodes.Callvirt, AccessTools.Method(variables[RESULT_REF_VAR].LocalType, "Invoke"));
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_VAR]);
+						emitter.Emit(OpCodes.Ldnull);
+						emitter.Emit(OpCodes.Stloc, variables[RESULT_REF_VAR]);
+
+						emitter.MarkLabel(label);
+						emitter.Emit(OpCodes.Nop);
+					}
+					else if (tmpObjectVar != null)
 					{
 						emitter.Emit(OpCodes.Ldloc, tmpObjectVar);
 						emitter.Emit(OpCodes.Unbox_Any, AccessTools.GetReturnedType(original));

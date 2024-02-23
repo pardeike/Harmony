@@ -25,6 +25,70 @@ namespace HarmonyLibTests.Assets
 
 	// -----------------------------------------------------
 
+	public class ResultRefStruct
+	{
+		// ReSharper disable FieldCanBeMadeReadOnly.Global
+		public static int[] numbersPrefix = [0, 0];
+		public static int[] numbersPostfix = [0, 0];
+		public static int[] numbersPostfixWithNull = [0];
+		public static int[] numbersFinalizer = [0];
+		public static int[] numbersMixed = [0, 0];
+		// ReSharper restore FieldCanBeMadeReadOnly.Global
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public ref int ToPrefix() => ref numbersPrefix[0];
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public ref int ToPostfix() => ref numbersPostfix[0];
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public ref int ToPostfixWithNull() => ref numbersPostfixWithNull[0];
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public ref int ToFinalizer() => throw new Exception();
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public ref int ToMixed() => ref numbersMixed[0];
+	}
+
+	[HarmonyPatch(typeof(ResultRefStruct))]
+	public class ResultRefStruct_Patch
+	{
+		[HarmonyPatch(nameof(ResultRefStruct.ToPrefix))]
+		[HarmonyPrefix]
+		public static bool Prefix(ref RefResult<int> __resultRef)
+		{
+			__resultRef = () => ref ResultRefStruct.numbersPrefix[1];
+			return false;
+		}
+
+		[HarmonyPatch(nameof(ResultRefStruct.ToPostfix))]
+		[HarmonyPostfix]
+		public static void Postfix(ref RefResult<int> __resultRef) => __resultRef = () => ref ResultRefStruct.numbersPostfix[1];
+
+		[HarmonyPatch(nameof(ResultRefStruct.ToPostfixWithNull))]
+		[HarmonyPostfix]
+		public static void PostfixWithNull(ref RefResult<int> __resultRef) => __resultRef = null;
+
+		[HarmonyPatch(nameof(ResultRefStruct.ToFinalizer))]
+		[HarmonyFinalizer]
+		public static Exception Finalizer(ref RefResult<int> __resultRef)
+		{
+			__resultRef = () => ref ResultRefStruct.numbersFinalizer[0];
+			return null;
+		}
+
+		[HarmonyPatch(nameof(ResultRefStruct.ToMixed))]
+		[HarmonyPostfix]
+		public static void PostfixMixed(ref int __result, ref RefResult<int> __resultRef)
+		{
+			__result = 42;
+			__resultRef = () => ref ResultRefStruct.numbersMixed[1];
+		}
+	}
+
+	// -----------------------------------------------------
+
 	public class DeadEndCode
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]

@@ -14,6 +14,10 @@ Patches can use an argument called **`__instance`** to access the instance value
 
 Patches can use an argument called **`__result`** to access the returned value. The type must match the return type of the original or be assignable from it. For prefixes, as the original method hasn't run yet, the value of `__result` is the default for that type. For most reference types, that would be `null`. If you wish to **alter** the `__result`, you need to define it **by reference** like `ref string name`.
 
+### __resultRef
+
+Patches can use an argument called **`__resultRef`** to alter the "**ref return**" reference itself. The type must be `RefResult<T>` by reference, where `T` must match the return type of the original, without `ref` modifier. For example `ref RefResult<string> __resultRef`.
+
 ### __state
 
 Patches can use an argument called **`__state`** to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix. **Note:** It only works if both patches are defined in the same class.
