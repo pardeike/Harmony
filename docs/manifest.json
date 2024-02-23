@@ -689,6 +689,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.RefResult-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.RefResult-1.html",
+          "hash": "QxGBhK24HgUzIww7+dmsIvrjIBPUYZ+7V1XbGp/Eg68="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/HarmonyLib.ReversePatcher.yml",
       "output": {
         ".html": {
@@ -765,7 +777,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.html",
-          "hash": "chEAxFUBf4O50TWb0MOiGTez7+bqCTkdJS7cYQenL/8="
+          "hash": "m7K8j2J6MgSWEe+OZF3hammvnz1O0zMYnc19/jMy1Oo="
         }
       },
       "is_incremental": false,
@@ -789,7 +801,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "bkstmwYuPZHXZ8+z4LOEYPQnMFMOEdr900bmSrmMta0="
+          "hash": "BzkGRGIidP3xJhvGaxB4UD6dXXmu+CkMbPXhDI9Hb2E="
         }
       },
       "is_incremental": false,
@@ -897,7 +909,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/patching-injections.html",
-          "hash": "IItUeTCcUx7fqHI0K1n1yi3QQXMFwZkhq8ggMghO3t0="
+          "hash": "hJclnI5sjfedQKkMoywOFBpYfaTepib0PMdztKCZW7g="
         }
       },
       "is_incremental": false,
@@ -1103,7 +1115,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 64,
+          "total_file_count": 65,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

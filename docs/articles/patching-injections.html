@@ -76,6 +76,8 @@
 <p>Patches can use an argument called <strong><code>__instance</code></strong> to access the instance value if original method is not static. This is similar to the C# keyword <code>this</code> when used in the original method.</p>
 <h3 id="__result">__result</h3>
 <p>Patches can use an argument called <strong><code>__result</code></strong> to access the returned value. The type must match the return type of the original or be assignable from it. For prefixes, as the original method hasn't run yet, the value of <code>__result</code> is the default for that type. For most reference types, that would be <code>null</code>. If you wish to <strong>alter</strong> the <code>__result</code>, you need to define it <strong>by reference</strong> like <code>ref string name</code>.</p>
+<h3 id="__resultref">__resultRef</h3>
+<p>Patches can use an argument called <strong><code>__resultRef</code></strong> to alter the &quot;<strong>ref return</strong>&quot; reference itself. The type must be <code>RefResult&lt;T&gt;</code> by reference, where <code>T</code> must match the return type of the original, without <code>ref</code> modifier. For example <code>ref RefResult&lt;string&gt; __resultRef</code>.</p>
 <h3 id="__state">__state</h3>
 <p>Patches can use an argument called <strong><code>__state</code></strong> to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix. <strong>Note:</strong> It only works if both patches are defined in the same class.</p>
 <h3 id="___fields">___fields</h3>

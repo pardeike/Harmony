@@ -9186,6 +9186,15 @@ references:
   commentId: F:HarmonyLib.Priority.VeryLow
   fullName: HarmonyLib.Priority.VeryLow
   nameWithType: Priority.VeryLow
+- uid: HarmonyLib.RefResult`1
+  name: RefResult<T>
+  href: api/HarmonyLib.RefResult-1.html
+  commentId: T:HarmonyLib.RefResult`1
+  name.vb: RefResult(Of T)
+  fullName: HarmonyLib.RefResult<T>
+  fullName.vb: HarmonyLib.RefResult(Of T)
+  nameWithType: RefResult<T>
+  nameWithType.vb: RefResult(Of T)
 - uid: HarmonyLib.ReversePatcher
   name: ReversePatcher
   href: api/HarmonyLib.ReversePatcher.html
