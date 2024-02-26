@@ -37,7 +37,7 @@ I put thousands of hours into this project and its support. So every little acti
 • Spread the word in your developer communities  
 • Become a [GitHub sponsor](https://github.com/sponsors/pardeike) or a [Patreon](https://www.patreon.com/pardeike)
 
-This project uses the great [MonoMod.Common](https://github.com/MonoMod/MonoMod.Common) library by [0x0ade](https://github.com/0x0ade).
+This project uses the great [MonoMod.Core](https://github.com/MonoMod) library by [0x0ade](https://github.com/0x0ade) and [nike4613](https://github.com/nike4613).
 
 ### Harmony 1
 
