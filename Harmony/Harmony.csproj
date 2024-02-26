@@ -63,9 +63,16 @@
 		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
 
+	<ItemGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='DebugFat' Or '$(Configuration)'=='ReleaseFat'">
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.26" PrivateAssets="all" />
-		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 	</ItemGroup>
