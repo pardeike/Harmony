@@ -1,8 +1,7 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+
 #if NET5_0_OR_GREATER
 using System.Text.Json.Serialization;
 #endif
@@ -46,6 +45,10 @@ namespace HarmonyLib
 		private int methodToken;
 		private string moduleGUID;
 
+		/// <summary>For an infix patch, this defines the inner method that we will apply the patch to</summary>
+		///
+		public readonly InnerMethod innerMethod;
+
 		/// <summary>The method of the static patch method</summary>
 		///
 #if NET5_0_OR_GREATER
@@ -55,14 +58,7 @@ namespace HarmonyLib
 		{
 			get
 			{
-				if (patchMethod is null)
-				{
-					var mdl = AppDomain.CurrentDomain.GetAssemblies()
-						.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
-						.SelectMany(a => a.GetLoadedModules())
-						.First(m => m.ModuleVersionId.ToString() == moduleGUID);
-					patchMethod = (MethodInfo)mdl.ResolveMethod(methodToken);
-				}
+				patchMethod ??= AccessTools.GetMethodByModuleAndToken(moduleGUID, methodToken);
 				return patchMethod;
 			}
 			set

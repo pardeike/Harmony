@@ -5,19 +5,29 @@ using System.Reflection;
 namespace HarmonyLib
 {
 	/// <summary>An inner postfix that is applied inside some method call inside a method</summary>
+	/// 
 	public class InnerPostfix : InnerFix
 	{
-		/// <summary>This InnerFix is a InnerFixType.Postfix</summary>
-		public override PatchType Type => PatchType.Postfix;
+		internal override InnerFixType Type
+		{
+			get => InnerFixType.Postfix;
+			set => throw new NotImplementedException();
+		}
 
-		/// <summary>Creates an inner postfix for an implicit defined method call</summary>
-		/// <param name="target">The method call to patch</param>
-		/// <param name="patch">The patch to apply</param>
-		public InnerPostfix(InnerMethod target, MethodInfo patch) : base(target, patch) { }
+		/// <summary>Creates an infix for an implicit defined method call</summary>
+		/// <param name="innerMethod">The method call to apply the fix to</param>
+		/// 
+		public InnerPostfix(InnerMethod innerMethod) : base(InnerFixType.Postfix, innerMethod) { }
 
-		/// <summary>Creates an inner postfix for an indirectly defined method call</summary>
+		/// <summary>Creates an infix for an indirectly defined method call</summary>
 		/// <param name="targetFinder">Calculates Target from a given methods content</param>
-		/// <param name="patch">The patch to apply</param>
-		public InnerPostfix(Func<IEnumerable<CodeInstruction>, InnerMethod> targetFinder, MethodInfo patch) : base(targetFinder, patch) { }
+		/// 
+		public InnerPostfix(Func<IEnumerable<CodeInstruction>, InnerMethod> targetFinder) : base(InnerFixType.Postfix, targetFinder) { }
+
+		internal override IEnumerable<CodeInstruction> Apply(MethodBase original, IEnumerable<CodeInstruction> instructions)
+		{
+			_ = original;
+			foreach (var instruction in instructions) yield return instruction;
+		}
 	}
 }

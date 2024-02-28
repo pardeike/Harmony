@@ -8,20 +8,25 @@ namespace HarmonyLib
 	/// 
 	public class InnerPrefix : InnerFix
 	{
-		/// <summary>This InnerFix is a InnerFixType.Prefix</summary>
-		/// 
-		public override PatchType Type => PatchType.Prefix;
+		internal override InnerFixType Type {
+			get => InnerFixType.Prefix;
+			set => throw new NotImplementedException();
+		}
 
-		/// <summary>Creates an inner prefix for an implicit defined method call</summary>
-		/// <param name="target">The method call to patch</param>
-		/// <param name="patch">The patch to apply</param>
+		/// <summary>Creates an infix for an implicit defined method call</summary>
+		/// <param name="innerMethod">The method call to apply the fix to</param>
 		/// 
-		public InnerPrefix(InnerMethod target, MethodInfo patch) : base(target, patch) { }
+		public InnerPrefix(InnerMethod innerMethod) : base(InnerFixType.Prefix, innerMethod) { }
 
-		/// <summary>Creates an inner prefix for an indirectly defined method call</summary>
+		/// <summary>Creates an infix for an indirectly defined method call</summary>
 		/// <param name="targetFinder">Calculates Target from a given methods content</param>
-		/// <param name="patch">The patch to apply</param>
 		/// 
-		public InnerPrefix(Func<IEnumerable<CodeInstruction>, InnerMethod> targetFinder, MethodInfo patch) : base(targetFinder, patch) { }
+		public InnerPrefix(Func<IEnumerable<CodeInstruction>, InnerMethod> targetFinder) : base(InnerFixType.Prefix, targetFinder) { }
+
+		internal override IEnumerable<CodeInstruction> Apply(MethodBase original, IEnumerable<CodeInstruction> instructions)
+		{
+			_ = original;
+			foreach (var instruction in instructions) yield return instruction;
+		}
 	}
 }

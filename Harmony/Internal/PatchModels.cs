@@ -5,9 +5,6 @@ using System.Reflection;
 
 namespace HarmonyLib
 {
-	// PatchJobs holds the information during correlation
-	// of methods and patches while processing attribute patches
-	//
 	internal class PatchJobs<T>
 	{
 		internal class Job
@@ -18,6 +15,7 @@ namespace HarmonyLib
 			internal List<HarmonyMethod> postfixes = [];
 			internal List<HarmonyMethod> transpilers = [];
 			internal List<HarmonyMethod> finalizers = [];
+			internal List<HarmonyMethod> infixes = [];
 
 			internal void AddPatch(AttributePatch patch)
 			{
@@ -34,6 +32,9 @@ namespace HarmonyLib
 						break;
 					case HarmonyPatchType.Finalizer:
 						finalizers.Add(patch.info);
+						break;
+					case HarmonyPatchType.Infix:
+						infixes.Add(patch.info);
 						break;
 				}
 			}
@@ -58,7 +59,8 @@ namespace HarmonyLib
 				job.prefixes.Count +
 				job.postfixes.Count +
 				job.transpilers.Count +
-				job.finalizers.Count > 0
+				job.finalizers.Count +
+				job.infixes.Count > 0
 			).ToList();
 		}
 
@@ -75,6 +77,7 @@ namespace HarmonyLib
 			HarmonyPatchType.Transpiler,
 			HarmonyPatchType.Finalizer,
 			HarmonyPatchType.ReversePatch,
+			HarmonyPatchType.Infix
 		];
 
 		internal HarmonyMethod info;

@@ -1,7 +1,9 @@
 using System;
-using System.Linq;
 using System.Reflection;
+
+#if NET5_0_OR_GREATER
 using System.Text.Json.Serialization;
+#endif
 
 namespace HarmonyLib
 {
@@ -38,14 +40,7 @@ namespace HarmonyLib
 		{
 			get
 			{
-				if (method is null)
-				{
-					var mdl = AppDomain.CurrentDomain.GetAssemblies()
-						.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
-						.SelectMany(a => a.GetLoadedModules())
-						.First(m => m.ModuleVersionId.ToString() == moduleGUID);
-					method = (MethodInfo)mdl.ResolveMethod(methodToken);
-				}
+				method ??= AccessTools.GetMethodByModuleAndToken(moduleGUID, methodToken);
 				return method;
 			}
 			set
