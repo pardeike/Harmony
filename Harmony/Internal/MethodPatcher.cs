@@ -164,7 +164,7 @@ namespace HarmonyLib
 
 			_ = AddPostfixes(privateVars, runOriginalVariable, false);
 
-			if (resultVariable is not null && hasReturnCode)
+			if (resultVariable is not null && (hasReturnCode || (methodEndsInDeadCode && skipOriginalLabel is not null)))
 				emitter.Emit(OpCodes.Ldloc, resultVariable);
 
 			var needsToStorePassthroughResult = AddPostfixes(privateVars, runOriginalVariable, true);
@@ -219,7 +219,7 @@ namespace HarmonyLib
 					emitter.Emit(OpCodes.Ldloc, resultVariable);
 			}
 
-			if (methodEndsInDeadCode == false || hasFinalizers || postfixes.Count > 0)
+			if (methodEndsInDeadCode == false || skipOriginalLabel is not null || hasFinalizers || postfixes.Count > 0)
 				emitter.Emit(OpCodes.Ret);
 
 			finalInstructions = emitter.GetInstructions();

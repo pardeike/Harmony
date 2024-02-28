@@ -104,6 +104,8 @@ namespace HarmonyLibTests.Assets
 		public static void Prefix() => prefixCalled = true;
 
 		public static void Postfix() => postfixCalled = true;
+
+		public static bool PrefixWithControl() => false;
 	}
 
 	[HarmonyPatch(typeof(DeadEndCode), nameof(DeadEndCode.Method))]
