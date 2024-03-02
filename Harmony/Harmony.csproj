@@ -63,6 +63,7 @@
 		<Optimize>true</Optimize>
 		<DebugType>embedded</DebugType>
 		<DebugSymbols>true</DebugSymbols>
+		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
 		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
 
