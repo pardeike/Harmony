@@ -35,8 +35,8 @@
 		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat</Configurations>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
@@ -59,10 +59,18 @@
 		<DefineConstants>DEBUG</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='ReleaseThin' Or '$(Configuration)'=='ReleaseFat'">
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseThin'">
+		<Optimize>true</Optimize>
+		<DebugType>embedded</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
+		<ClearOutputDirectory>True</ClearOutputDirectory>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseFat'">
 		<Optimize>true</Optimize>
 		<DebugType>portable</DebugType>
-		<DebugSymbols>false</DebugSymbols>
+		<DebugSymbols>true</DebugSymbols>
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
 		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
@@ -93,9 +101,9 @@
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
 		<!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
-		<PackageReference Include="System.Reflection.Emit" Version="4.7.0"  IncludeAssets="compile" />
-		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0"  IncludeAssets="compile" />
-		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0"  IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
 	</ItemGroup>
 	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework)=='netstandard2.0'">
 		<ItemGroup>
@@ -136,6 +144,13 @@
 			<OldNugetPackages Include="$(WorkingDirectory)\$(PackageId).*.nupkg" Exclude="$(WorkingDirectory)\$(PackageId).$(Version).nupkg" />
 		</ItemGroup>
 		<Delete Files="@(OldNugetPackages)" />
+	</Target>
+
+	<Target Name="RemoveFaultyPdb" BeforeTargets="Build">
+		<ItemGroup>
+			<FilesToDelete Include="$(ProjectDir)\$(OutDir)\MonoMod.ILHelpers.pdb"/>
+		</ItemGroup>
+		<Delete Files="@(FilesToDelete)" />
 	</Target>
 
 	<Target Name="CleanZip" AfterTargets="Clean">
