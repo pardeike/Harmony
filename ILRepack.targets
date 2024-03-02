@@ -7,7 +7,7 @@
 		<ILRepack
 			InputAssemblies="@(InputAssemblies)"
 			OutputFile="$(OutputPath)\$(AssemblyName).dll"
-			CopyAttributes="true"
+			CopyAttributes="false"
 			XmlDocumentation="true"
 			Internalize="true"
 			Parallel="true"

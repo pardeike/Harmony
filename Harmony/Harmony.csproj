@@ -33,6 +33,12 @@
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
 		<NoWarn>$(NoWarn);SYSLIB0011;NU5131</NoWarn>
 		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat</Configurations>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!--
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    -->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
@@ -75,6 +81,7 @@
 		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.26" PrivateAssets="all" />
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
 	</ItemGroup>
 
 	<!-- netstandard2.0 reference assemblies -->
