@@ -33,10 +33,10 @@
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
 		<NoWarn>$(NoWarn);SYSLIB0011;NU5131</NoWarn>
 		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat</Configurations>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
@@ -59,12 +59,20 @@
 		<DefineConstants>DEBUG</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='ReleaseThin' Or '$(Configuration)'=='ReleaseFat'">
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseThin'">
 		<Optimize>true</Optimize>
-		<DebugType>portable</DebugType>
-		<DebugSymbols>false</DebugSymbols>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
-		<ClearOutputDirectory>True</ClearOutputDirectory>
+		<ClearOutputDirectory>false</ClearOutputDirectory>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseFat'">
+		<Optimize>true</Optimize>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
+		<ClearOutputDirectory>false</ClearOutputDirectory>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">
@@ -137,6 +145,13 @@
 		</ItemGroup>
 		<Delete Files="@(OldNugetPackages)" />
 	</Target>
+
+  <Target Name="RemoveFaultyPdb" BeforeTargets="Build">
+    <ItemGroup>
+      <FilesToDelete Include="$(ProjectDir)\$(OutDir)\MonoMod.ILHelpers.pdb"/>
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
 
 	<Target Name="CleanZip" AfterTargets="Clean">
 		<ItemGroup>
