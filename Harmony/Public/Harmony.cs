@@ -155,15 +155,17 @@ namespace HarmonyLib
 		/// <param name="postfix">An optional postfix method wrapped in a <see cref="HarmonyMethod"/> object</param>
 		/// <param name="transpiler">An optional transpiler method wrapped in a <see cref="HarmonyMethod"/> object</param>
 		/// <param name="finalizer">An optional finalizer method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="infix">An optional infix method wrapped in a <see cref="HarmonyMethod"/> object</param>
 		/// <returns>The replacement method that was created to patch the original method</returns>
 		///
-		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null)
+		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null, HarmonyMethod infix = null)
 		{
 			var processor = CreateProcessor(original);
 			_ = processor.AddPrefix(prefix);
 			_ = processor.AddPostfix(postfix);
 			_ = processor.AddTranspiler(transpiler);
 			_ = processor.AddFinalizer(finalizer);
+			_ = processor.AddInfix(infix);
 			return processor.Patch();
 		}
 
@@ -193,6 +195,7 @@ namespace HarmonyLib
 					info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 					info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 				}
+				info.Infixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 				if (hasBody)
 					info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));

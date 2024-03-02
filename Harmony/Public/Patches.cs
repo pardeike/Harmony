@@ -24,6 +24,10 @@ namespace HarmonyLib
 		/// 
 		public readonly ReadOnlyCollection<Patch> Finalizers;
 
+		/// <summary>A collection of infix <see cref="Patch"/></summary>
+		/// 
+		public readonly ReadOnlyCollection<Patch> Infixes;
+
 		/// <summary>Gets all owners (Harmony IDs) or all known patches</summary>
 		/// <value>The patch owners</value>
 		///
@@ -36,6 +40,7 @@ namespace HarmonyLib
 				result.UnionWith(Postfixes.Select(p => p.owner));
 				result.UnionWith(Transpilers.Select(p => p.owner));
 				result.UnionWith(Finalizers.Select(p => p.owner));
+				result.UnionWith(Infixes.Select(p => p.owner));
 				return result.ToList().AsReadOnly();
 			}
 		}
@@ -45,18 +50,21 @@ namespace HarmonyLib
 		/// <param name="postfixes">An array of postfixes as <see cref="Patch"/></param>
 		/// <param name="transpilers">An array of transpileres as <see cref="Patch"/></param>
 		/// <param name="finalizers">An array of finalizeres as <see cref="Patch"/></param>
+		/// <param name="infixes">An array of infixes as <see cref="Patch"/></param>
 		///
-		public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finalizers)
+		public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finalizers, Patch[] infixes)
 		{
 			prefixes ??= [];
 			postfixes ??= [];
 			transpilers ??= [];
 			finalizers ??= [];
+			infixes ??= [];
 
 			Prefixes = prefixes.ToList().AsReadOnly();
 			Postfixes = postfixes.ToList().AsReadOnly();
 			Transpilers = transpilers.ToList().AsReadOnly();
 			Finalizers = finalizers.ToList().AsReadOnly();
+			Infixes = infixes.ToList().AsReadOnly();
 		}
 	}
 }

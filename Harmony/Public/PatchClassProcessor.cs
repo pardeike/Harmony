@@ -192,6 +192,7 @@ namespace HarmonyLib
 						patchInfo.AddPostfixes(instance.Id, [.. job.postfixes]);
 						patchInfo.AddTranspilers(instance.Id, [.. job.transpilers]);
 						patchInfo.AddFinalizers(instance.Id, [.. job.finalizers]);
+						patchInfo.AddInfixes(instance.Id, [.. job.infixes]);
 
 						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo);
 						HarmonySharedState.UpdatePatchInfo(job.original, replacement, patchInfo);

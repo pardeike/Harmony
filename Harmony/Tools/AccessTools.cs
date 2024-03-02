@@ -9,6 +9,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
+#if NET5_0_OR_GREATER
+using System.Threading.Tasks;
+#endif
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
@@ -703,6 +706,35 @@ namespace HarmonyLib
 				MemberTypes.Property => ((PropertyInfo)member).PropertyType,
 				_ => throw new ArgumentException("Member must be of type EventInfo, FieldInfo, MethodInfo, or PropertyInfo"),
 			};
+		}
+
+		/// <summary>Returns a <see cref="MethodInfo"/> by searching for module-id and token</summary>
+		/// <param name="moduleGUID">The module of the method</param>
+		/// <param name="token">The token of the method</param>
+		/// <returns></returns>
+		public static MethodInfo GetMethodByModuleAndToken(string moduleGUID, int token)
+		{
+#if NET5_0_OR_GREATER
+			Module module = null;
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			var moduleVersionGUID = new Guid(moduleGUID);
+			Parallel.ForEach(assemblies, (assembly) =>
+			{
+				var allModules = assembly.GetModules();
+				for (var i = 0; i < allModules.Length; i++)
+					if (allModules[i].ModuleVersionId == moduleVersionGUID)
+					{
+						module = allModules[i];
+						break;
+					}
+			});
+#else
+			var module = AppDomain.CurrentDomain.GetAssemblies()
+				.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
+				.SelectMany(a => a.GetLoadedModules())
+				.First(m => m.ModuleVersionId.ToString() == moduleGUID);
+#endif
+			return module == null ? null : (MethodInfo)module.ResolveMethod(token);
 		}
 
 		/// <summary>Test if a class member is actually an concrete implementation</summary>
