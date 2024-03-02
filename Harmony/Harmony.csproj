@@ -64,7 +64,7 @@
 		<DebugType>embedded</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
-		<ClearOutputDirectory>false</ClearOutputDirectory>
+		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='ReleaseFat'">
@@ -72,7 +72,7 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
-		<ClearOutputDirectory>false</ClearOutputDirectory>
+		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">
