@@ -100,9 +100,9 @@
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
 		<!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
-		<PackageReference Include="System.Reflection.Emit" Version="4.7.0"  IncludeAssets="compile" />
-		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0"  IncludeAssets="compile" />
-		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0"  IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
 	</ItemGroup>
 	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework)=='netstandard2.0'">
 		<ItemGroup>
