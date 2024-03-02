@@ -179,6 +179,9 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(prefix);
 			var postfix = AccessTools.Method(typeof(DeadEndCode_Patch1), nameof(DeadEndCode_Patch1.Postfix));
 			Assert.NotNull(postfix);
+			var prefixWithControl =
+				AccessTools.Method(typeof(DeadEndCode_Patch1), nameof(DeadEndCode_Patch1.PrefixWithControl));
+			Assert.NotNull(postfix);
 
 			// run original
 			try
@@ -208,13 +211,16 @@ namespace HarmonyLibTests.Patching
 			}
 			Assert.True(DeadEndCode_Patch1.prefixCalled);
 
+
+			var isMonoRuntime = AccessTools.IsMonoRuntime;
+			var harmonyMethodPostfix = new HarmonyMethod(postfix);
 			// patch: +postfix
-			if (AccessTools.IsMonoRuntime)
+			if (isMonoRuntime)
 			{
 				// mono should fail
 				try
 				{
-					_ = instance.Patch(original, postfix: new HarmonyMethod(postfix));
+					_ = instance.Patch(original, postfix: harmonyMethodPostfix);
 					Assert.Fail("expecting patch exception");
 				}
 				catch (Exception ex)
@@ -226,7 +232,7 @@ namespace HarmonyLibTests.Patching
 			{
 				// non-mono can add postfix to methods ending in dead code
 
-				_ = instance.Patch(original, postfix: new HarmonyMethod(prefix));
+				_ = instance.Patch(original, postfix: harmonyMethodPostfix);
 				DeadEndCode_Patch1.prefixCalled = false;
 				DeadEndCode_Patch1.postfixCalled = false;
 				// run original
@@ -242,6 +248,16 @@ namespace HarmonyLibTests.Patching
 					Assert.False(DeadEndCode_Patch1.postfixCalled);
 				}
 			}
+
+			_ = instance.Patch(original,
+				prefix: new HarmonyMethod(prefixWithControl),
+				postfix: isMonoRuntime ? harmonyMethodPostfix : null
+			);
+			DeadEndCode_Patch1.prefixCalled = false;
+			DeadEndCode_Patch1.postfixCalled = false;
+			test.Method();
+			Assert.True(DeadEndCode_Patch1.prefixCalled);
+			Assert.True(DeadEndCode_Patch1.postfixCalled);
 		}
 
 		[Test]
