@@ -33,12 +33,10 @@
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
 		<NoWarn>$(NoWarn);SYSLIB0011;NU5131</NoWarn>
 		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat</Configurations>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!--
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
@@ -63,7 +61,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)'=='ReleaseThin' Or '$(Configuration)'=='ReleaseFat'">
 		<Optimize>true</Optimize>
-		<DebugType>none</DebugType>
+		<DebugType>portable</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
 		<ClearOutputDirectory>True</ClearOutputDirectory>
@@ -81,7 +79,7 @@
 		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.26" PrivateAssets="all" />
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
 	</ItemGroup>
 
 	<!-- netstandard2.0 reference assemblies -->
@@ -94,8 +92,10 @@
 		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
-		<!-- Adding System.Reflection.Emit because there are public types exposed from its's package -->
-		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+		<!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0"  IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0"  IncludeAssets="compile" />
+		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0"  IncludeAssets="compile" />
 	</ItemGroup>
 	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework)=='netstandard2.0'">
 		<ItemGroup>
