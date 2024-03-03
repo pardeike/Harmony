@@ -51,7 +51,7 @@
 		<None Include="..\README.md" Pack="true" PackagePath="" />
 		<None Include="..\LICENSE" Pack="true" PackagePath="" />
 		<None Include="..\HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
-		<None Include="..\_._" Pack="true" Visible="false" PackagePath="lib/netstandard2.0" />
+		<None Include="..\_._" Pack="true" Visible="false" PackagePath="lib/netstandard2.0" Condition="$(Configuration)!='ReleaseRef'" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='DebugFat'">
@@ -174,7 +174,6 @@
 	<ItemGroup Condition="$(Configuration)=='ReleaseRef'">
 		<!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
 		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
-		<None Remove="_._" />
 	</ItemGroup>
 	<Target Name="AddRefAssemblyToPackage" Condition="$(Configuration)=='ReleaseRef'">
 		<ItemGroup>
