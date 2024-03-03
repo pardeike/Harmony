@@ -10,12 +10,14 @@ It supports **Mono** and **.NET** environments on Windows, Unix and macOS except
 
 Designed to be used by multiple users (usually called Mods) that would otherwise override each others hooks, it was originally created for the game [RimWorld](https://rimworldgame.com) and its large modding community by [Andreas Pardeike](https://www.patreon.com/pardeike).
 
-Enjoy!  
+Enjoy!
 /Andreas Pardeike
 
 # Getting Started
 
-Installation is usually done by copying and referencing [0Harmony.dll](https://github.com/pardeike/Harmony/releases) from your project or by using the [Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony) nuget package.
+If you want a single file, dependency-merged assembly, you should use the [Lib.Harmony](https://www.nuget.org/packages/Lib.Harmony) nuget package. This is the **preferred** way.
+
+If you instead want to supply the dependencies yourself, you should use the [Lib.Harmony.Thin](https://www.nuget.org/packages/Lib.Harmony.Thin) nuget package. You get more control but you are responsible to make all references available at runtime.
 
 # Documentation
 
@@ -27,7 +29,7 @@ If you find a factual error or if you have feedback about the documentation you 
 - file a documentation Issue on the repo
 - or write about it on the official discord
 
-**New to modding and C#?** Beside the basic language features you need at least a good overview of **Reflection** in C#. Read this short and useful [introduction](https://dotnetcademy.net/Learn/4/Pages/1). 
+**New to modding and C#?** Beside the basic language features you need at least a good overview of **Reflection** in C#. Read this short and useful [introduction](https://dotnetcademy.net/Learn/4/Pages/1).
 
 ## Community
 
@@ -37,11 +39,11 @@ Help by promoting this library so other developers can find it. One way is to up
 
 # Contact
 
-Andreas Pardeike  
-andreas@pardeike.net  
-twitter: @pardeike  
+Andreas Pardeike
+andreas@pardeike.net
+twitter: @pardeike
 
 ## Donations
 
-Donations keep me going:  
+Donations keep me going:
 [https://www.patreon.com/pardeike](https://www.patreon.com/pardeike)

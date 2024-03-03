@@ -434,7 +434,7 @@ namespace HarmonyLib
 						var cecilGenerator = generator.GetProxiedShim<CecilILGenerator>();
 						if (cecilGenerator is null)
 						{
-							// Right now InlineSignatures can only be emitted using MonoMod.Common and its CecilILGenerator.
+							// Right now InlineSignatures can only be emitted using MonoMod and its CecilILGenerator.
 							// That is because DynamicMethod's original ILGenerator is very restrictive about the calli opcode.
 							throw new NotSupportedException();
 						}

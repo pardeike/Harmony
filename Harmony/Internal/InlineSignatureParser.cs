@@ -9,8 +9,7 @@ namespace HarmonyLib
 {
 	internal static class InlineSignatureParser
 	{
-		// Based on https://github.com/MonoMod/MonoMod.Common/blob/fb7fed148af165905ee0f2db1bb4c78a0137fb89/Utils/ReflectionHelper.ParseCallSite.cs
-		// ... which is based on https://github.com/jbevain/cecil/blob/96026325ee1cb6627a3e4a32b924ab2905f02553/Mono.Cecil/AssemblyReader.cs#L3448
+		// Based on code of MonoMod, which is based on https://github.com/jbevain/cecil/blob/96026325ee1cb6627a3e4a32b924ab2905f02553/Mono.Cecil/AssemblyReader.cs#L3448
 
 		internal static InlineSignature ImportCallSite(Module moduleFrom, byte[] data)
 		{
