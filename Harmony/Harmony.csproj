@@ -98,8 +98,14 @@
 		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
 	</ItemGroup>
 	<ItemGroup Condition="$(Configuration)!='ReleaseRef' And $(TargetFramework)=='netstandard2.0'">
-		<PackageReference Include="Lib.Harmony.Ref" Version="$(HarmonyVersion)" IncludeAssets="contentFiles" />
+		<PackageReference Include="Lib.Harmony.Ref" Version="$(HarmonyVersion)" GeneratePath="true" />
 	</ItemGroup>
+	<Target Name="CustomBeforeBuild" AfterTargets="ResolvePackageDependenciesForBuild" Condition="$(Configuration)!='ReleaseRef'">
+		<ItemGroup>
+			<ReferenceToBeRemoved Include="@(Reference)" Condition="'%(Reference.PathInPackage)' == 'ref/netstandard2.0/0Harmony.dll'" />
+			<Reference Remove="@(ReferenceToBeRemoved)" />
+		</ItemGroup>
+	</Target>
 	<!-- netstandard2.0 reference assemblies -->
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
