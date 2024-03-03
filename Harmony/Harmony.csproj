@@ -162,10 +162,10 @@
 	</Target>
 
 	<Target Name="RemoveExtraDlls" AfterTargets="Pack">
-		<ItemGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">
-			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\MonoMod.*.dll" />
-			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\Mono.*.dll" />
-			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\System.*.dll" />
+		<ItemGroup>
+			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\MonoMod.*.*" />
+			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\Mono.*.*" />
+			<ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\System.*.*" />
 		</ItemGroup>
 		<Delete Files="@(ExtraDlls)" />
 	</Target>
