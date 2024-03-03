@@ -102,6 +102,7 @@ Global
 		DebugThin|Any CPU = DebugThin|Any CPU
 		ReleaseFat|Any CPU = ReleaseFat|Any CPU
 		ReleaseThin|Any CPU = ReleaseThin|Any CPU
+		ReleaseRef|Any CPU = ReleaseRef|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{69AEE16A-B6E7-4642-8081-3928B32455DF}.DebugFat|Any CPU.ActiveCfg = DebugFat|Any CPU
@@ -112,6 +113,8 @@ Global
 		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseFat|Any CPU.Build.0 = ReleaseFat|Any CPU
 		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseThin|Any CPU.ActiveCfg = ReleaseThin|Any CPU
 		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseThin|Any CPU.Build.0 = ReleaseThin|Any CPU
+		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseRef|Any CPU.ActiveCfg = ReleaseRef|Any CPU
+		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseRef|Any CPU.Build.0 = ReleaseRef|Any CPU
 		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.DebugFat|Any CPU.ActiveCfg = Debug|Any CPU
 		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.DebugFat|Any CPU.Build.0 = Debug|Any CPU
 		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.DebugThin|Any CPU.ActiveCfg = Debug|Any CPU

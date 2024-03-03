@@ -32,7 +32,7 @@
 		<PackageVersion>$(HarmonyVersion)$(HarmonyPrerelease)</PackageVersion>
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
 		<NoWarn>$(NoWarn);SYSLIB0011;NU5131</NoWarn>
-		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat</Configurations>
+		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat;ReleaseRef</Configurations>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
@@ -51,6 +51,7 @@
 		<None Include="..\README.md" Pack="true" PackagePath="" />
 		<None Include="..\LICENSE" Pack="true" PackagePath="" />
 		<None Include="..\HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
+		<None Include="..\_._" Pack="true" Visible="false" PackagePath="lib/netstandard2.0" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='DebugFat'">
@@ -77,7 +78,7 @@
 		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(Configuration)'=='DebugFat' Or '$(Configuration)'=='ReleaseFat'">
+	<ItemGroup Condition="'$(Configuration)'=='DebugFat' Or '$(Configuration)'=='ReleaseFat' Or '$(Configuration)'=='ReleaseRef'">
 		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
 	</ItemGroup>
 
@@ -89,31 +90,17 @@
 	</ItemGroup>
 
 	<!-- netstandard2.0 reference assemblies -->
-	<PropertyGroup Condition="$(TargetFramework)=='netstandard2.0'">
+	<PropertyGroup Condition="$(Configuration)!='ReleaseRef' AND $(TargetFramework)=='netstandard2.0'">
 		<!-- Remove from /lib in NuGet -->
 		<IncludeBuildOutput>false</IncludeBuildOutput>
-		<!-- Create reference Assemblies instead of a full assembly -->
-		<ProduceOnlyReferenceAssembly>true</ProduceOnlyReferenceAssembly>
-		<!-- Add our target for packing -->
-		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 	</PropertyGroup>
-	<ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
-		<!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
-		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
-		<PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
-		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
+	<ItemGroup Condition="$(Configuration)!='ReleaseRef' AND $(TargetFramework)=='netstandard2.0'">
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
 	</ItemGroup>
-	<Target Name="AddRefAssemblyToPackage" Condition="$(TargetFramework)=='netstandard2.0'">
-		<ItemGroup>
-			<!-- Adding the Reference Assembly and the xml documentation to /ref of NuGet -->
-			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).dll">
-				<PackagePath>ref/netstandard2.0</PackagePath>
-			</TfmSpecificPackageFile>
-			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).xml">
-				<PackagePath>ref/netstandard2.0</PackagePath>
-			</TfmSpecificPackageFile>
-		</ItemGroup>
-	</Target>
+	<ItemGroup Condition="$(Configuration)!='ReleaseRef' AND $(TargetFramework)=='netstandard2.0'">
+		<PackageReference Include="Lib.Harmony.Ref" Version="$(HarmonyVersion)" IncludeAssets="contentFiles" />
+	</ItemGroup>
+	<!-- netstandard2.0 reference assemblies -->
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
 		<PackageReference Include="System.Text.Json" Version="5.0.2" />
@@ -173,4 +160,33 @@
 		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Fat.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseFat'"/>
 	</Target>
 
+	<!-- ReleaseRef -->
+	<PropertyGroup Condition="$(Configuration)=='ReleaseRef'">
+		<TargetFrameworks>netstandard2.0;</TargetFrameworks>
+		<PackageId>Lib.Harmony.Ref</PackageId>
+		<!-- Remove from /lib in NuGet -->
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<!-- Create reference Assemblies instead of a full assembly -->
+		<ProduceOnlyReferenceAssembly>true</ProduceOnlyReferenceAssembly>
+		<!-- Add our target for packing -->
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
+	</PropertyGroup>
+	<ItemGroup Condition="$(Configuration)=='ReleaseRef'">
+		<!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
+		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
+		<None Remove="_._" />
+	</ItemGroup>
+	<Target Name="AddRefAssemblyToPackage" Condition="$(Configuration)=='ReleaseRef'">
+		<ItemGroup>
+			<!-- Adding the Reference Assembly and the xml documentation to /ref of NuGet -->
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).dll">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+			<TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).xml">
+				<PackagePath>ref/netstandard2.0</PackagePath>
+			</TfmSpecificPackageFile>
+		</ItemGroup>
+	</Target>
+	<!-- ReleaseRef -->
+	
 </Project>
