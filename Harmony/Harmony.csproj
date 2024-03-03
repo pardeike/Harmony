@@ -35,7 +35,9 @@
 		<Configurations>DebugThin;DebugFat;ReleaseThin;ReleaseFat</Configurations>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
@@ -62,16 +64,12 @@
 		<Optimize>true</Optimize>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
-		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
-		<ClearOutputDirectory>True</ClearOutputDirectory>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='ReleaseFat'">
 		<Optimize>true</Optimize>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
-		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
-		<ClearOutputDirectory>True</ClearOutputDirectory>
 		<CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
 	</PropertyGroup>
 
