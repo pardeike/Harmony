@@ -55,7 +55,7 @@ Harmony 1 is deprecated and not under active development anymore. The latest ver
 	<a href="https://dev.azure.com/pardeike/Harmony/_build"><img src="https://pardeike.visualstudio.com/Harmony/_apis/build/status/Build%20and%20test" /></a>
 </p>
 <p align="center">
-	<img src="https://img.shields.io/github/downloads/pardeike/Harmony/total.svg?style=flat&logo=github" />
+	<a href="https://github.com/pardeike/Harmony/releases/latest"><img src="https://img.shields.io/github/downloads/pardeike/Harmony/total.svg?style=flat&logo=github" /></a>
 	<a href="https://discord.gg/xXgghXR"><img src="https://img.shields.io/discord/131466550938042369.svg?style=flat&logo=discord&label=discord" /></a>
 	<a href="../../blob/master/LICENSE"><img src="https://img.shields.io/github/license/pardeike/harmony.svg?style=flat" /></a>
 </p>
