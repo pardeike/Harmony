@@ -8,7 +8,7 @@
 		<Copyright>Copyright © 2016</Copyright>
 		<Description>A general non-destructive patch library for .NET and Mono modules</Description>
 		<PackageId>Lib.Harmony</PackageId>
-		<PackageId Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">Lib.Harmony.Thin</PackageId>
+		<PackageId Condition="$(Configuration.EndsWith('Thin'))">Lib.Harmony.Thin</PackageId>
 		<Authors>Andreas Pardeike</Authors>
 		<AssemblyName>0Harmony</AssemblyName>
 		<SignAssembly>true</SignAssembly>
@@ -54,7 +54,7 @@
 		<None Include="..\_._" Pack="true" Visible="false" PackagePath="lib/netstandard2.0" Condition="$(Configuration)!='ReleaseRef'" />
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='DebugFat'">
+	<PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
 		<Optimize>false</Optimize>
 		<DebugType>full</DebugType>
 		<DebugSymbols>true</DebugSymbols>
@@ -74,11 +74,11 @@
 		<CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(Configuration)'=='DebugThin' Or '$(Configuration)'=='ReleaseThin'">
+	<ItemGroup Condition="$(Configuration.EndsWith('Thin'))">
 		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(Configuration)'=='DebugFat' Or '$(Configuration)'=='ReleaseFat' Or '$(Configuration)'=='ReleaseRef'">
+	<ItemGroup Condition="$(Configuration.EndsWith('Fat')) Or '$(Configuration)'=='ReleaseRef'">
 		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
 	</ItemGroup>
 
@@ -90,14 +90,14 @@
 	</ItemGroup>
 
 	<!-- netstandard2.0 reference assemblies -->
-	<PropertyGroup Condition="$(Configuration)!='ReleaseRef' AND $(TargetFramework)=='netstandard2.0'">
+	<PropertyGroup Condition="$(Configuration)!='ReleaseRef' And $(TargetFramework)=='netstandard2.0'">
 		<!-- Remove from /lib in NuGet -->
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 	</PropertyGroup>
-	<ItemGroup Condition="$(Configuration)!='ReleaseRef' AND $(TargetFramework)=='netstandard2.0'">
+	<ItemGroup Condition="$(Configuration)!='ReleaseRef' And $(TargetFramework)=='netstandard2.0'">
 		<PackageReference Include="System.Reflection.Emit" Version="4.7.0" PrivateAssets="all" IncludeAssets="compile" />
 	</ItemGroup>
-	<ItemGroup Condition="$(Configuration)!='ReleaseRef' AND $(TargetFramework)=='netstandard2.0'">
+	<ItemGroup Condition="$(Configuration)!='ReleaseRef' And $(TargetFramework)=='netstandard2.0'">
 		<PackageReference Include="Lib.Harmony.Ref" Version="$(HarmonyVersion)" IncludeAssets="contentFiles" />
 	</ItemGroup>
 	<!-- netstandard2.0 reference assemblies -->
