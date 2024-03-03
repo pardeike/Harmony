@@ -71,41 +71,41 @@
 
 <p>Harmony 2 has come a long way since the last release 1.2.0.1. Here are all the changes:</p>
 <h4 id="new">New</h4>
-<p>CI/CD on Azure, Travis and AppVeyor<br>
-Switched to <code>MonoMod.Common</code> for shared low level patching with MonoMod project<br>
-Works with more .NET versions<br>
-Inline prevention for Mono<br>
-4th patch type: <code>Finalizer</code> - for handling and manipulating exceptions<br>
-Reverse Patching (original onto one of your stub methods)<br>
-Convenience extension methods for <code>CodeInstruction</code><br>
-Selective debug log with <code>[HarmonyDebug]</code> annotation - works even with future changes of the method<br>
-<code>Prepare</code>/<code>Cleanup</code> will be called even with exceptions during patching<br>
-Cleanup can now receive and return the current Exception during patching<br>
-Better exception reporting with <code>HarmonyException</code><br>
-Automatic documentation generated to <code>https://harmony.pardeike.net</code><br>
-AccessTools has methods for declared members<br>
-<code>FastAccess</code> now deals with generics<br>
-<code>Manipulator</code> transpiler helper<br>
-Get IL code from a method<br>
+<p>CI/CD with GitHub Actions
+Switched to <code>MonoMod.Core</code> for shared low level patching with MonoMod project
+Works with more .NET versions
+Inline prevention for Mono
+4th patch type: <code>Finalizer</code> - for handling and manipulating exceptions
+Reverse Patching (original onto one of your stub methods)
+Convenience extension methods for <code>CodeInstruction</code>
+Selective debug log with <code>[HarmonyDebug]</code> annotation - works even with future changes of the method
+<code>Prepare</code>/<code>Cleanup</code> will be called even with exceptions during patching
+Cleanup can now receive and return the current Exception during patching
+Better exception reporting with <code>HarmonyException</code>
+Automatic documentation generated to <code>https://harmony.pardeike.net</code>
+AccessTools has methods for declared members
+<code>FastAccess</code> now deals with generics
+<code>Manipulator</code> transpiler helper
+Get IL code from a method
 Support for IL InlineSignature (patching methods with CALLI)</p>
 <h4 id="fixed">Fixed</h4>
-<p>Priority field spelling<br>
-<code>Traverse</code> can handle static members<br>
-Methods returning struct types are now patchable<br>
-Main API is now properly divided into static/instance methods<br>
-<code>HarmonyMethod</code> and other high level API throws on null input<br>
-Patch sorting<br>
-DeepCopy works with nullable types<br>
-Patch annotations API cleaned up<br>
-<code>FieldRef</code> covers more cases and is simplified<br>
-<code>__result</code> assignability checks<br>
-Handling <code>__state</code> without Prefix<br>
-Debug log writes out full type names<br>
-Documentation now uses compiled code snippets for correctness<br>
+<p>Priority field spelling
+<code>Traverse</code> can handle static members
+Methods returning struct types are now patchable
+Main API is now properly divided into static/instance methods
+<code>HarmonyMethod</code> and other high level API throws on null input
+Patch sorting
+DeepCopy works with nullable types
+Patch annotations API cleaned up
+<code>FieldRef</code> covers more cases and is simplified
+<code>__result</code> assignability checks
+Handling <code>__state</code> without Prefix
+Debug log writes out full type names
+Documentation now uses compiled code snippets for correctness
 <code>Traverse</code> works with inherited fields, properties and methods</p>
 <h4 id="changes">Changes</h4>
-<p>Removed Self-patching<br>
-Renamed <code>Add()</code> extension on <code>IEnumerable&lt;T&gt;</code> and <code>T[]</code> to <code>AddItem()</code> to avoid conflicts<br>
+<p>Removed Self-patching
+Renamed <code>Add()</code> extension on <code>IEnumerable&lt;T&gt;</code> and <code>T[]</code> to <code>AddItem()</code> to avoid conflicts
 <code>HarmonyInstance</code> is now called <code>Harmony</code> and <code>Harmony</code> namespace is now called <code>HarmonyLib</code></p>
 </article>
           </div>

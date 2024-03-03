@@ -67,10 +67,11 @@
 <p>Harmony gives you an elegant and high level way to <strong>alter functionality</strong> in applications written in C#. It does this at <strong>runtime</strong> by monkey patching methods unlike other solutions that change the content of dll files.</p>
 <p>It supports <strong>Mono</strong> and <strong>.NET</strong> environments on Windows, Unix and macOS except when Unity uses the stripped down NetStandard profile (.NET 4.x profile works fine). Harmony is used in mainstream Unity games and many other applications.</p>
 <p>Designed to be used by multiple users (usually called Mods) that would otherwise override each others hooks, it was originally created for the game <a href="https://rimworldgame.com">RimWorld</a> and its large modding community by <a href="https://www.patreon.com/pardeike">Andreas Pardeike</a>.</p>
-<p>Enjoy!<br>
+<p>Enjoy!
 /Andreas Pardeike</p>
 <h1 id="getting-started">Getting Started</h1>
-<p>Installation is usually done by copying and referencing <a href="https://github.com/pardeike/Harmony/releases">0Harmony.dll</a> from your project or by using the <a href="https://www.nuget.org/packages/Lib.Harmony">Lib.Harmony</a> nuget package.</p>
+<p>If you want a single file, dependency-merged assembly, you should use the <a href="https://www.nuget.org/packages/Lib.Harmony">Lib.Harmony</a> nuget package. This is the <strong>preferred</strong> way.</p>
+<p>If you instead want to supply the dependencies yourself, you should use the <a href="https://www.nuget.org/packages/Lib.Harmony.Thin">Lib.Harmony.Thin</a> nuget package. You get more control but you are responsible to make all references available at runtime.</p>
 <h1 id="documentation">Documentation</h1>
 <p>You can learn more about Harmony by using the top menu links. The main section [<a href="articles/intro.html">Harmony</a>] brings you to the full documentation that explains everything about Harmony and gives you lots of high level examples. In the second section [<a href="api/index.html">API Documentation</a>] you can browse the public API and all its methods and classes.</p>
 <p>If you find a factual error or if you have feedback about the documentation you are welcome to</p>
@@ -84,11 +85,11 @@
 <p>If you feel stuck or have questions that this site does not answer, feel free to join the official <a href="https://discord.gg/xXgghXR">Discord Server</a> or file a <a href="https://github.com/pardeike/Harmony/issues">GitHub Issue</a>.</p>
 <p>Help by promoting this library so other developers can find it. One way is to upvote <a href="https://stackoverflow.com/questions/7299097/dynamically-replace-the-contents-of-a-c-sharp-method/42043003#42043003">this stackoverflow answer</a>. Or spread the word in your developer communities. Thank you!</p>
 <h1 id="contact">Contact</h1>
-<p>Andreas Pardeike<br>
-andreas@pardeike.net<br>
+<p>Andreas Pardeike
+andreas@pardeike.net
 twitter: @pardeike</p>
 <h2 id="donations">Donations</h2>
-<p>Donations keep me going:<br>
+<p>Donations keep me going:
 <a href="https://www.patreon.com/pardeike">https://www.patreon.com/pardeike</a></p>
 </article>
           </div>
