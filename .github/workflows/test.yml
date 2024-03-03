@@ -36,6 +36,7 @@ env:
 
   # You are interested in changing these values
   BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
+  BUILD_CONFIGURATIONS_WITH_REF:        "['ReleaseFat', 'ReleaseThin', 'ReleaseRef']"
   DOTNET_TARGET_FRAMEWORKS:             "['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']"
   DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: "['net6.0', 'net7.0', 'net8.0']"
   FRAMEWORK_TARGET_FRAMEWORKS:          "['net35', 'net452', 'net472', 'net48']"
@@ -51,6 +52,7 @@ jobs:
       PARALLEL: ${{env.PARALLEL}}
       PREBUILD: ${{env.PREBUILD}}
       BUILD_CONFIGURATIONS: ${{env.BUILD_CONFIGURATIONS}}
+      BUILD_CONFIGURATIONS_WITH_REF: ${{env.BUILD_CONFIGURATIONS_WITH_REF}}
       DOTNET_TARGET_FRAMEWORKS: ${{env.DOTNET_TARGET_FRAMEWORKS}}
       DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: ${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}
       FRAMEWORK_TARGET_FRAMEWORKS: ${{env.FRAMEWORK_TARGET_FRAMEWORKS}}
@@ -61,6 +63,7 @@ jobs:
           echo "PARALLEL=${{env.PARALLEL}}" >> $GITHUB_OUTPUT
           echo "PREBUILD=${{env.PREBUILD}}" >> $GITHUB_OUTPUT
           echo "BUILD_CONFIGURATIONS=${{env.BUILD_CONFIGURATIONS}}" >> $GITHUB_OUTPUT
+          echo "BUILD_CONFIGURATIONS_WITH_REF=${{env.BUILD_CONFIGURATIONS_WITH_REF}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS=${{env.DOTNET_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64=${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}" >> $GITHUB_OUTPUT
           echo "FRAMEWORK_TARGET_FRAMEWORKS=${{env.FRAMEWORK_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
@@ -73,7 +76,7 @@ jobs:
     strategy:
       matrix:
         image: [ { os: 'windows', code: 'windows-latest' }, { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' }, { os: 'macos-arm64', code: 'macos-14' } ]
-        build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
+        build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS_WITH_REF)}}
     uses: ./.github/workflows/test-build.yml
     with:
       os: ${{matrix.image.os}}
