@@ -134,116 +134,8 @@ namespace HarmonyLibTests
 
 			public ConstraintResult ApplyTo<TActual>(TActual actual) => CaptureResult(resolvedParent.ApplyTo(actual));
 
-
-/* Unmerged change from project 'HarmonyTests (net8.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(del));
-After:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
-*/
-
-/* Unmerged change from project 'HarmonyTests (netcoreapp3.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(del));
-After:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
-*/
-
-/* Unmerged change from project 'HarmonyTests (net7.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(del));
-After:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
-*/
-
-/* Unmerged change from project 'HarmonyTests (net5.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(del));
-After:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
-*/
-
-/* Unmerged change from project 'HarmonyTests (net6.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(del));
-After:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
-*/
-
-/* Unmerged change from project 'HarmonyTests (netcoreapp3.1)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(del));
-After:
-			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
-*/
 			public ConstraintResult ApplyTo<TActual>(ActualValueDelegate<TActual> del) => CaptureResult(resolvedParent.ApplyTo(del));
 
-
-/* Unmerged change from project 'HarmonyTests (net8.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(ref actual));
-After:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
-*/
-
-/* Unmerged change from project 'HarmonyTests (netcoreapp3.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(ref actual));
-After:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
-*/
-
-/* Unmerged change from project 'HarmonyTests (net7.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(ref actual));
-After:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
-*/
-
-/* Unmerged change from project 'HarmonyTests (net5.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(ref actual));
-After:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
-*/
-
-/* Unmerged change from project 'HarmonyTests (net6.0)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(ref actual));
-After:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
-*/
-
-/* Unmerged change from project 'HarmonyTests (netcoreapp3.1)'
-Before:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual)
-			{
-				return CaptureResult(resolvedParent.ApplyTo(ref actual));
-After:
-			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
-*/
 			public ConstraintResult ApplyTo<TActual>(ref TActual actual) => CaptureResult(resolvedParent.ApplyTo(ref actual));
 
 			public IConstraint Resolve()
@@ -271,60 +163,12 @@ After:
 
 		// Run an action in a test isolation context.
 
-/* Unmerged change from project 'HarmonyTests (net8.0)'
-Before:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
-		{
-After:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
-*/
-
-/* Unmerged change from project 'HarmonyTests (netcoreapp3.0)'
-Before:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
-		{
-After:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
-*/
-
-/* Unmerged change from project 'HarmonyTests (net7.0)'
-Before:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
-		{
-After:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
-*/
-
-/* Unmerged change from project 'HarmonyTests (net5.0)'
-Before:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
-		{
-After:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
-*/
-
-/* Unmerged change from project 'HarmonyTests (net6.0)'
-Before:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
-		{
-After:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
-*/
-
-/* Unmerged change from project 'HarmonyTests (netcoreapp3.1)'
-Before:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action)
-		{
-After:
-		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
-*/
 		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
 #if NETCOREAPP
 			TestAssemblyLoadContext.RunInIsolationContext(action);
 #else
 			TestDomainProxy.RunInIsolationContext(action);
 #endif
-
 
 #if NETCOREAPP
 		// .NET Core does not support multiple AppDomains, but it does support unloading assemblies via AssemblyLoadContext.
