@@ -1,4 +1,3 @@
-using MonoMod.Core.Platforms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -258,9 +257,7 @@ namespace HarmonyLib
 		public static MethodBase GetOriginalMethod(MethodInfo replacement)
 		{
 			if (replacement == null) throw new ArgumentNullException(nameof(replacement));
-			// The runtime can return several different MethodInfo's that point to the same method. Use the correct one
-			var identifiableReplacement = PlatformTriple.Current.GetIdentifiable(replacement) as MethodInfo;
-			return HarmonySharedState.GetOriginal(identifiableReplacement);
+			return HarmonySharedState.GetOriginal(replacement);
 		}
 
 		/// <summary>Tries to get the method from a stackframe including dynamic replacement methods</summary>

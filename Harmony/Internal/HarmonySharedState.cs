@@ -1,4 +1,5 @@
 using Mono.Cecil;
+using MonoMod.Core.Platforms;
 using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
@@ -127,7 +128,10 @@ namespace HarmonyLib
 
 		internal static MethodBase GetOriginal(MethodInfo replacement)
 		{
-			lock (originals) return originals.GetValueSafe(replacement);
+			// The runtime can return several different MethodInfo's that point to the same method. Use the correct one
+			replacement = PlatformTriple.Current.GetIdentifiable(replacement) as MethodInfo;
+			lock (originals)
+				return originals.GetValueSafe(replacement);
 		}
 
 		internal static MethodBase FindReplacement(StackFrame frame)
