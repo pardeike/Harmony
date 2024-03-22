@@ -194,7 +194,7 @@ namespace HarmonyLib
 		{
 			var type = transpiler.GetParameters()
 				.Select(p => p.ParameterType)
-				.FirstOrDefault(t => IsCodeInstructionsParameter(t));
+				.FirstOrDefault(IsCodeInstructionsParameter);
 			if (type == typeof(IEnumerable<CodeInstruction>))
 			{
 				unassignedValues = null;

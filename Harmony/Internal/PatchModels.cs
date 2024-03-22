@@ -101,7 +101,7 @@ namespace HarmonyLib
 					var f_info = AccessTools.Field(attr.GetType(), nameof(HarmonyAttribute.info));
 					return f_info.GetValue(attr);
 				})
-				.Select(harmonyInfo => AccessTools.MakeDeepCopy<HarmonyMethod>(harmonyInfo))
+				.Select(AccessTools.MakeDeepCopy<HarmonyMethod>)
 				.ToList();
 			var info = HarmonyMethod.Merge(list);
 			info.method = patch;

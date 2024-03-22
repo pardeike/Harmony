@@ -226,7 +226,7 @@ namespace HarmonyLib
 		public static bool HasAnyPatches(string harmonyID)
 		{
 			return GetAllPatchedMethods()
-				.Select(original => GetPatchInfo(original))
+				.Select(GetPatchInfo)
 				.Any(info => info.Owners.Contains(harmonyID));
 		}
 
@@ -251,13 +251,13 @@ namespace HarmonyLib
 		public static IEnumerable<MethodBase> GetAllPatchedMethods() => PatchProcessor.GetAllPatchedMethods();
 
 		/// <summary>Gets the original method from a given replacement method</summary>
-		/// <param name="replacement">A replacement method, for example from a stacktrace</param>
+		/// <param name="replacement">A replacement method (patched original method)</param>
 		/// <returns>The original method/constructor or <c>null</c> if not found</returns>
 		///
 		public static MethodBase GetOriginalMethod(MethodInfo replacement)
 		{
 			if (replacement == null) throw new ArgumentNullException(nameof(replacement));
-			return HarmonySharedState.GetOriginal(replacement);
+			return HarmonySharedState.GetRealMethod(replacement, useReplacement: false);
 		}
 
 		/// <summary>Tries to get the method from a stackframe including dynamic replacement methods</summary>
@@ -267,7 +267,7 @@ namespace HarmonyLib
 		public static MethodBase GetMethodFromStackframe(StackFrame frame)
 		{
 			if (frame == null) throw new ArgumentNullException(nameof(frame));
-			return HarmonySharedState.FindReplacement(frame) ?? frame.GetMethod();
+			return HarmonySharedState.GetStackFrameMethod(frame, useReplacement: true);
 		}
 
 		/// <summary>Gets the original method from the stackframe and uses original if method is a dynamic replacement</summary>
@@ -275,16 +275,15 @@ namespace HarmonyLib
 		/// <returns>The original method from that stackframe</returns>
 		public static MethodBase GetOriginalMethodFromStackframe(StackFrame frame)
 		{
-			var member = GetMethodFromStackframe(frame);
-			if (member is MethodInfo methodInfo)
-				member = GetOriginalMethod(methodInfo) ?? member;
-			return member;
+			if (frame == null) throw new ArgumentNullException(nameof(frame));
+			return HarmonySharedState.GetStackFrameMethod(frame, useReplacement: false);
 		}
 
 		/// <summary>Gets Harmony version for all active Harmony instances</summary>
 		/// <param name="currentVersion">[out] The current Harmony version</param>
 		/// <returns>A dictionary containing assembly versions keyed by Harmony IDs</returns>
 		///
-		public static Dictionary<string, Version> VersionInfo(out Version currentVersion) => PatchProcessor.VersionInfo(out currentVersion);
+		public static Dictionary<string, Version> VersionInfo(out Version currentVersion)
+			=> PatchProcessor.VersionInfo(out currentVersion);
 	}
 }

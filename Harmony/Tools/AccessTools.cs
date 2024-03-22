@@ -1,3 +1,4 @@
+using MonoMod.Core.Platforms;
 using MonoMod.Utils;
 using System;
 using System.Collections;
@@ -84,7 +85,7 @@ namespace HarmonyLib
 		/// <summary>Enumerates all successfully loaded types in the current app domain, excluding visual studio assemblies</summary>
 		/// <returns>An enumeration of all <see cref="Type"/> in all assemblies, excluding visual studio assemblies</returns>
 		///
-		public static IEnumerable<Type> AllTypes() => AllAssemblies().SelectMany(a => GetTypesFromAssembly(a));
+		public static IEnumerable<Type> AllTypes() => AllAssemblies().SelectMany(GetTypesFromAssembly);
 
 		/// <summary>Enumerates all inner types (non-recursive) of a given type</summary>
 		/// <param name="type">The class/type to start with</param>
@@ -132,6 +133,11 @@ namespace HarmonyLib
 			}
 			return result;
 		}
+
+		/// <summary>Creates an identifiable version of a method</summary>
+		/// <param name="method">The method</param>
+		/// <returns></returns>
+		public static MethodInfo Identifiable(this MethodInfo method) => PlatformTriple.Current.GetIdentifiable(method) as MethodInfo ?? method;
 
 		/// <summary>Gets the reflection information for a directly declared field</summary>
 		/// <param name="type">The class/type where the field is defined</param>
