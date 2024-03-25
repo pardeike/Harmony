@@ -358,7 +358,7 @@ namespace HarmonyLib
 			// pass2 - filter through all processors
 			//
 			var codeTranspiler = new CodeTranspiler(ilInstructions);
-			transpilers.Do(transpiler => codeTranspiler.Add(transpiler));
+			transpilers.Do(codeTranspiler.Add);
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 
 			if (emitter is null)

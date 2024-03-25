@@ -292,7 +292,7 @@ namespace HarmonyLib
 		public static List<HarmonyMethod> GetFromType(Type type)
 		{
 			return type.GetCustomAttributes(true)
-						.Select(attr => GetHarmonyMethodInfo(attr))
+						.Select(GetHarmonyMethodInfo)
 						.Where(info => info is not null)
 						.ToList();
 		}
@@ -310,7 +310,7 @@ namespace HarmonyLib
 		public static List<HarmonyMethod> GetFromMethod(MethodBase method)
 		{
 			return method.GetCustomAttributes(true)
-						.Select(attr => GetHarmonyMethodInfo(attr))
+						.Select(GetHarmonyMethodInfo)
 						.Where(info => info is not null)
 						.ToList();
 		}

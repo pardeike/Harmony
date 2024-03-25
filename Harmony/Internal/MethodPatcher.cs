@@ -101,7 +101,7 @@ namespace HarmonyLib
 
 			Label? skipOriginalLabel = null;
 			LocalBuilder runOriginalVariable = null;
-			var prefixAffectsOriginal = prefixes.Any(fix => PrefixAffectsOriginal(fix));
+			var prefixAffectsOriginal = prefixes.Any(PrefixAffectsOriginal);
 			var anyFixHasRunOriginalVar = fixes.Any(fix => fix.GetParameters().Any(p => p.Name == RUN_ORIGINAL_VAR));
 			if (prefixAffectsOriginal || anyFixHasRunOriginalVar)
 			{

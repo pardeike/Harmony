@@ -32,7 +32,7 @@ namespace HarmonyLib
 		static Assembly GetExecutingAssemblyReplacement()
 		{
 			var frames = new StackTrace().GetFrames();
-			if (frames?.Skip(1).FirstOrDefault() is { } frame && Harmony.GetOriginalMethodFromStackframe(frame) is { } original)
+			if (frames?.Skip(1).FirstOrDefault() is { } frame && Harmony.GetMethodFromStackframe(frame) is { } original)
 				return original.Module.Assembly;
 			return Assembly.GetExecutingAssembly();
 		}
@@ -78,7 +78,7 @@ namespace HarmonyLib
 		internal static List<AttributePatch> GetPatchMethods(Type type)
 		{
 			return AccessTools.GetDeclaredMethods(type)
-				.Select(method => AttributePatch.Create(method))
+				.Select(AttributePatch.Create)
 				.Where(attributePatch => attributePatch is not null)
 				.ToList();
 		}

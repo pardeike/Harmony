@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Extras
 {
@@ -14,20 +15,20 @@ namespace HarmonyLibTests.Extras
 			Assert.NotNull(expectedMethod);
 
 			var st = new StackTrace(1, false);
-			var method = Harmony.GetMethodFromStackframe(st.GetFrame(0));
-			
-			Assert.NotNull(method);
-			
-			if (method is MethodInfo replacement)
-			{
-				var original = Harmony.GetOriginalMethod(replacement);
-				Assert.NotNull(original);
-				Assert.AreEqual(original, expectedMethod);
-			}
+			var frame = st.GetFrame(0);
+			Assert.NotNull(frame);
+
+			var methodFromStackframe = Harmony.GetMethodFromStackframe(frame);
+			Assert.NotNull(methodFromStackframe);
+			Assert.AreEqual(expectedMethod, methodFromStackframe);
+
+			var replacement = frame.GetMethod() as MethodInfo;
+			Assert.NotNull(replacement);
+			var original = Harmony.GetOriginalMethod(replacement);
+			Assert.NotNull(original);
+			Assert.AreEqual(expectedMethod, original);
 		}
 
-		/* TODO
-		 * 
 		[Test]
 		public void TestRegularMethod()
 		{
@@ -37,7 +38,7 @@ namespace HarmonyLibTests.Extras
 			_ = harmony.Patch(originalMethod, new HarmonyMethod(dummyPrefix));
 			PatchTarget();
 		}
-		
+
 		[Test]
 		public void TestConstructor()
 		{
@@ -48,7 +49,6 @@ namespace HarmonyLibTests.Extras
 			var inst = new NestedClass(5);
 			_ = inst.index;
 		}
-		*/
 
 		internal static void PatchTarget()
 		{
@@ -60,7 +60,7 @@ namespace HarmonyLibTests.Extras
 			}
 		}
 
-		// [MethodImpl(MethodImplOptions.NoInlining)]
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		internal static void DummyPrefix()
 		{
 		}
@@ -69,7 +69,7 @@ namespace HarmonyLibTests.Extras
 			public NestedClass(int i)
 			{
 				try {
-					CheckStackTraceFor(AccessTools.Constructor(typeof(NestedClass), [typeof(int)])); 
+					CheckStackTraceFor(AccessTools.Constructor(typeof(NestedClass), [typeof(int)]));
 					throw new Exception();
 				} catch (Exception e)
 				{
