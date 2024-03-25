@@ -724,6 +724,19 @@ references:
   fullName.vb: HarmonyLib.AccessTools.HarmonyDelegate(Of DelegateType)(System.Object)
   nameWithType: AccessTools.HarmonyDelegate<DelegateType>(Object)
   nameWithType.vb: AccessTools.HarmonyDelegate(Of DelegateType)(Object)
+- uid: HarmonyLib.AccessTools.Identifiable(System.Reflection.MethodInfo)
+  name: Identifiable(MethodInfo)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Identifiable_System_Reflection_MethodInfo_
+  commentId: M:HarmonyLib.AccessTools.Identifiable(System.Reflection.MethodInfo)
+  fullName: HarmonyLib.AccessTools.Identifiable(System.Reflection.MethodInfo)
+  nameWithType: AccessTools.Identifiable(MethodInfo)
+- uid: HarmonyLib.AccessTools.Identifiable*
+  name: Identifiable
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Identifiable_
+  commentId: Overload:HarmonyLib.AccessTools.Identifiable
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.Identifiable
+  nameWithType: AccessTools.Identifiable
 - uid: HarmonyLib.AccessTools.Indexer(System.Type,System.Type[])
   name: Indexer(Type, Type[])
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_Indexer_System_Type_System_Type___
