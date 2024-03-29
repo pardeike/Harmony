@@ -7595,6 +7595,25 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.UnpatchAll
   nameWithType: Harmony.UnpatchAll
+- uid: HarmonyLib.Harmony.UnpatchCategory(System.Reflection.Assembly,System.String)
+  name: UnpatchCategory(Assembly, String)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_UnpatchCategory_System_Reflection_Assembly_System_String_
+  commentId: M:HarmonyLib.Harmony.UnpatchCategory(System.Reflection.Assembly,System.String)
+  fullName: HarmonyLib.Harmony.UnpatchCategory(System.Reflection.Assembly, System.String)
+  nameWithType: Harmony.UnpatchCategory(Assembly, String)
+- uid: HarmonyLib.Harmony.UnpatchCategory(System.String)
+  name: UnpatchCategory(String)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_UnpatchCategory_System_String_
+  commentId: M:HarmonyLib.Harmony.UnpatchCategory(System.String)
+  fullName: HarmonyLib.Harmony.UnpatchCategory(System.String)
+  nameWithType: Harmony.UnpatchCategory(String)
+- uid: HarmonyLib.Harmony.UnpatchCategory*
+  name: UnpatchCategory
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_UnpatchCategory_
+  commentId: Overload:HarmonyLib.Harmony.UnpatchCategory
+  isSpec: "True"
+  fullName: HarmonyLib.Harmony.UnpatchCategory
+  nameWithType: Harmony.UnpatchCategory
 - uid: HarmonyLib.Harmony.VersionInfo(System.Version@)
   name: VersionInfo(out Version)
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_VersionInfo_System_Version__
@@ -8902,6 +8921,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchClassProcessor.Patch
   nameWithType: PatchClassProcessor.Patch
+- uid: HarmonyLib.PatchClassProcessor.Unpatch
+  name: Unpatch()
+  href: api/HarmonyLib.PatchClassProcessor.html#HarmonyLib_PatchClassProcessor_Unpatch
+  commentId: M:HarmonyLib.PatchClassProcessor.Unpatch
+  fullName: HarmonyLib.PatchClassProcessor.Unpatch()
+  nameWithType: PatchClassProcessor.Unpatch()
+- uid: HarmonyLib.PatchClassProcessor.Unpatch*
+  name: Unpatch
+  href: api/HarmonyLib.PatchClassProcessor.html#HarmonyLib_PatchClassProcessor_Unpatch_
+  commentId: Overload:HarmonyLib.PatchClassProcessor.Unpatch
+  isSpec: "True"
+  fullName: HarmonyLib.PatchClassProcessor.Unpatch
+  nameWithType: PatchClassProcessor.Unpatch
 - uid: HarmonyLib.Patches
   name: Patches
   href: api/HarmonyLib.Patches.html
