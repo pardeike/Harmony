@@ -122,7 +122,7 @@ namespace HarmonyLib
 			patchClasses.DoIf((patchClass => string.IsNullOrEmpty(patchClass.Category)), (patchClass => patchClass.Patch()));
 		}
 
-		/// <summary>Searches an assembly for Harmony annotations with a specific category and uses them to create patches</summary>
+		/// <summary>Searches the current assembly for Harmony annotations with a specific category and uses them to create patches</summary>
 		/// <param name="category">Name of patch category</param>
 		/// 
 		public void PatchCategory(string category)
@@ -217,6 +217,32 @@ namespace HarmonyLib
 		{
 			var processor = CreateProcessor(original);
 			_ = processor.Unpatch(patch);
+		}
+
+		/// <summary>Searches the current assembly for types with a specific category annotation and uses them to unpatch existing patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
+		/// <param name="category">Name of patch category</param>
+		///
+		public void UnpatchCategory(string category)
+		{
+			var method = new StackTrace().GetFrame(1).GetMethod();
+			var assembly = method.ReflectedType.Assembly;
+			UnpatchCategory(assembly, category);
+		}
+
+		/// <summary>Searches an assembly for types with a specific category annotation and uses them to unpatch existing patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
+		/// <param name="assembly">The assembly</param>
+		/// <param name="category">Name of patch category</param>
+		///
+		public void UnpatchCategory(Assembly assembly, string category)
+		{
+			AccessTools.GetTypesFromAssembly(assembly)
+				.Where(type =>
+				{
+					var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
+					var containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
+					return containerAttributes.category == category;
+				})
+				.Do(type => CreateClassProcessor(type).Unpatch());
 		}
 
 		/// <summary>Test for patches from a specific Harmony ID</summary>

@@ -113,8 +113,8 @@ namespace HarmonyLib
 		internal static int PriorityComparer(object obj, int index, int priority)
 		{
 			var trv = Traverse.Create(obj);
-			var theirPriority = trv.Field("priority").GetValue<int>();
-			var theirIndex = trv.Field("index").GetValue<int>();
+			var theirPriority = trv.Field(nameof(Patch.priority)).GetValue<int>();
+			var theirIndex = trv.Field(nameof(Patch.index)).GetValue<int>();
 
 			if (priority != theirPriority)
 				return -(priority.CompareTo(theirPriority));

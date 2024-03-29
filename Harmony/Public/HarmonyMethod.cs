@@ -267,11 +267,23 @@ namespace HarmonyLib
 			{
 				var baseValue = masterTrv.Field(f).GetValue();
 				var detailValue = detailTrv.Field(f).GetValue();
-				// This if is needed because priority defaults to -1
-				// This causes the value of a HarmonyPriority attribute to be overriden by the next attribute if it is not merged last
-				// should be removed by making priority nullable and default to null at some point
-				if (f != nameof(HarmonyMethod.priority) || (int)detailValue != -1)
+				if (f != nameof(HarmonyMethod.priority))
 					SetValue(resultTrv, f, detailValue ?? baseValue);
+				else
+				{
+					// This if is needed because priority defaults to -1
+					// This causes the value of a HarmonyPriority attribute to be overriden by the next attribute if it is not merged last
+					// should be removed by making priority nullable and default to null at some point
+
+					var baseInt = (int)baseValue;
+					var detailInt = (int)detailValue;
+					var priority = Math.Max(baseInt, detailInt);
+					if (baseInt == -1 && detailInt != -1)
+						priority = detailInt;
+					if (baseInt != -1 && detailInt == -1)
+						priority = baseInt;
+					SetValue(resultTrv, f, priority);
+				}
 			});
 			return result;
 		}
