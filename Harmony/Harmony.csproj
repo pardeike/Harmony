@@ -87,6 +87,15 @@
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<!-- Ensure the ref assemblies for .NET Core are on disk.
+			Needed by ILRepack to resolve framework references for each platform.
+			Ensures the build (ILRepack task) can work without having all these versions installed. -->
+		<PackageReference Condition="$(TargetFramework) == 'netcoreapp3.0'" Include="Microsoft.NetCore.App.Ref" Version="3.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Condition="$(TargetFramework) == 'netcoreapp3.1'" Include="Microsoft.NetCore.App.Ref" Version="3.1.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Condition="$(TargetFramework) == 'net5.0'" Include="Microsoft.NetCore.App.Ref" Version="5.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Condition="$(TargetFramework) == 'net6.0'" Include="Microsoft.NetCore.App.Ref" Version="6.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Condition="$(TargetFramework) == 'net7.0'" Include="Microsoft.NetCore.App.Ref" Version="7.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Condition="$(TargetFramework) == 'net8.0'" Include="Microsoft.NetCore.App.Ref" Version="8.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<!-- netstandard2.0 reference assemblies -->
