@@ -8,8 +8,17 @@
 		<ItemGroup>
 			<InputAssemblies Include="$(OutputPath)\*.dll" />
 		</ItemGroup>
+		<ItemGroup>
+			<LibraryPath Condition="$(TargetFramework) == 'netcoreapp3.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\netcoreapp3.0" />
+			<LibraryPath Condition="$(TargetFramework) == 'netcoreapp3.1'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\netcoreapp3.1" />
+			<LibraryPath Condition="$(TargetFramework) == 'net5.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net5.0" />
+			<LibraryPath Condition="$(TargetFramework) == 'net6.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net6.0" />
+			<LibraryPath Condition="$(TargetFramework) == 'net7.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net7.0" />
+			<LibraryPath Condition="$(TargetFramework) == 'net8.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net8.0" />
+		</ItemGroup>
 		<ILRepack
 			InputAssemblies="@(InputAssemblies)"
+			LibraryPath="@(LibraryPath)"
 			OutputFile="$(OutputPath)\$(AssemblyName).dll"
 			DebugInfo="$(DebugInfo)"
 			CopyAttributes="false"
