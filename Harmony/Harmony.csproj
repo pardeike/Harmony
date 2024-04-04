@@ -38,9 +38,10 @@
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 		<ClearOutputDirectory>True</ClearOutputDirectory>
+		<PackageOutputPath>../packages</PackageOutputPath>
 		<RestoreAdditionalProjectSources>
 			https://api.nuget.org/v3/index.json;
-			$(MSBuildThisFileDirectory)/bin/ReleaseRef/;
+			$(MSBuildThisFileDirectory)../packages;
 		</RestoreAdditionalProjectSources>
 	</PropertyGroup>
 
