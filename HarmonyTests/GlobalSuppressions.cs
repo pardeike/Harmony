@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Design", "CA1034")]
 [assembly: SuppressMessage("Design", "CA1052")]
 
+[assembly: SuppressMessage("", "CA1016")]
 [assembly: SuppressMessage("", "CS0169")]
 [assembly: SuppressMessage("", "CA1401")]
 

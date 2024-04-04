@@ -74,7 +74,7 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(new[] { 1, 0 }, ResultRefStruct.numbersPrefix);
 			Assert.AreEqual(new[] { 2, 0 }, ResultRefStruct.numbersPostfix);
 			Assert.AreEqual(new[] { 3 }, ResultRefStruct.numbersPostfixWithNull);
-			Assert.Throws<Exception>(() => test.ToFinalizer(), "ToFinalizer method does not throw");
+			_ = Assert.Throws<Exception>(() => test.ToFinalizer(), "ToFinalizer method does not throw");
 			Assert.AreEqual(new[] { 5, 0 }, ResultRefStruct.numbersMixed);
 
 			var replacements = processor.Patch();
@@ -255,7 +255,7 @@ namespace HarmonyLibTests.Patching
 			);
 			DeadEndCode_Patch1.prefixCalled = false;
 			DeadEndCode_Patch1.postfixCalled = false;
-			test.Method();
+			_ = test.Method();
 			Assert.True(DeadEndCode_Patch1.prefixCalled);
 			Assert.True(DeadEndCode_Patch1.postfixCalled);
 		}

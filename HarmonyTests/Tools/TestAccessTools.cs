@@ -4,10 +4,12 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
+#if NETCOREAPP
+using System.Linq;
+#endif
 
 namespace HarmonyLibTests.Tools
 {

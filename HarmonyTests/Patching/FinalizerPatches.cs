@@ -3,9 +3,7 @@ using HarmonyLibTests.Assets;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace HarmonyLibTests.Patching
@@ -22,7 +20,7 @@ namespace HarmonyLibTests.Patching
 			harmony.PatchCategory("finalizer-test");
 			try
 			{
-				_ = progress.Clear();
+				progress = new();
 				Class.Test();
 				Assert.Fail("Should throw an exception");
 			}
