@@ -62,4 +62,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Harmony-${{inputs.build_configuration}}-${{inputs.os}}
-          path: Harmony/bin/Harmony*.zip
+          path: Harmony/bin/*.zip

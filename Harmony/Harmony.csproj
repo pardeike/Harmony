@@ -38,6 +38,11 @@
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 		<ClearOutputDirectory>True</ClearOutputDirectory>
+		<PackageOutputPath>../packages</PackageOutputPath>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			$(MSBuildThisFileDirectory)../packages;
+		</RestoreAdditionalProjectSources>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">
@@ -175,6 +180,9 @@
 		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Ref.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseRef'" />
 		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Thin.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseThin'" />
 		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)bin\Harmony-Fat.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseFat'" />
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)..\packages" DestinationFile="$(MSBuildThisFileDirectory)bin\NuGet-Ref.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseRef'" />
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)..\packages" DestinationFile="$(MSBuildThisFileDirectory)bin\NuGet-Thin.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseThin'" />
+		<ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)..\packages" DestinationFile="$(MSBuildThisFileDirectory)bin\NuGet-Fat.$(Version).zip" Overwrite="true" Condition="'$(Configuration)'=='ReleaseFat'" />
 	</Target>
 
 	<!-- ReleaseRef -->
