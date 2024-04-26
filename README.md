@@ -20,6 +20,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 • **Kerbal Space Program**  
 • **Resonite**  
 • **BattleTech**  
+• **Slime Rancher**  
 
 and others like Ravenfield, Sheltered, Staxel, The Ultimate Nerd Game, Total Miner, Unturned, SCP: Secret Laboratory ...
 
