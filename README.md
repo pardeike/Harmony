@@ -18,6 +18,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 • **Besiege**  
 • **Cities:Skylines**  
 • **Kerbal Space Program**  
+• **Resonite**  
 • **BattleTech**  
 
 and others like Ravenfield, Sheltered, Staxel, The Ultimate Nerd Game, Total Miner, Unturned, SCP: Secret Laboratory ...
