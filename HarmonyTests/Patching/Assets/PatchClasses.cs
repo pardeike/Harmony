@@ -184,7 +184,7 @@ namespace HarmonyLibTests.Assets
 		public static bool prefixed = false;
 		public static bool postfixed = false;
 
-		[HarmonyArgument("xxxyyy", "bar")]
+		[HarmonyArgument("bar", "xxxyyy")]
 		public static void Prefix(object bar) => prefixed = true;
 
 		public static void Postfix(

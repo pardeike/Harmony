@@ -382,5 +382,19 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(5.6f, f2[2], "f2");
 			Assert.AreEqual(6.5f, f3[2], "f3");
 		}
+
+		[Test]
+		public void Test_RenamedArguments()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(RenamedArgumentsPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+			RenamedArgumentsPatch.log.Clear();
+			new RenamedArguments().Method("test");
+			var log = RenamedArgumentsPatch.log.Join();
+			Assert.AreEqual("val1, patched, val2, hello", log);
+		}
 	}
 }

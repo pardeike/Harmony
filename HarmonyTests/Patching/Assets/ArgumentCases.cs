@@ -1,5 +1,7 @@
 using HarmonyLib;
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Assets
@@ -107,6 +109,38 @@ namespace HarmonyLibTests.Assets
 			__args[1] = "patched";
 			__args[2] = new SimpleArgumentArrayUsage.SomeStruct() { n = 456 };
 			__args[3] = new float[] { 1.2f, 3.4f, 5.6f };
+		}
+	}
+
+	public class RenamedArguments
+	{
+		public string val;
+
+		public RenamedArguments() => val = "val";
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Method(string name) => RenamedArgumentsPatch.log.Add(name);
+	}
+
+	[HarmonyPatch(typeof(RenamedArguments), nameof(RenamedArguments.Method))]
+	[HarmonyArgument("foo2", "__state")]
+	public static class RenamedArgumentsPatch
+	{
+		public static List<string> log = [];
+
+		[HarmonyArgument("foo1", "name")]
+		[HarmonyArgument("instance", "__instance")]
+		public static void Prefix(RenamedArguments instance, ref string foo1, out string foo2)
+		{
+			log.Add(instance.val + "1");
+			foo1 = "patched";
+			foo2 = "hello";
+		}
+
+		public static void Postfix([HarmonyArgument("__instance")] RenamedArguments foo2, [HarmonyArgument("__state")] string foo3)
+		{
+			log.Add(foo2.val + "2");
+			log.Add(foo3);
 		}
 	}
 

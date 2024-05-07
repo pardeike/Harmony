@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -7,42 +8,72 @@ namespace HarmonyLib
 {
 	internal static class PatchArgumentExtensions
 	{
-		static HarmonyArgument[] AllHarmonyArguments(object[] attributes)
+		static IEnumerable<HarmonyArgument> AllHarmonyArguments(object[] attributes)
 		{
 			return attributes.Select(attr =>
 			{
 				if (attr.GetType().Name != nameof(HarmonyArgument)) return null;
 				return AccessTools.MakeDeepCopy<HarmonyArgument>(attr);
 			})
-			.Where(harg => harg is not null)
-			.ToArray();
+			.OfType<HarmonyArgument>();
 		}
 
-		static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
+		internal static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
-			var attributes = parameter.GetCustomAttributes(false);
+			var attributes = parameter.GetCustomAttributes(true);
 			return AllHarmonyArguments(attributes).FirstOrDefault();
 		}
 
-		static HarmonyArgument[] GetArgumentAttributes(this MethodInfo method)
+		internal static IEnumerable<HarmonyArgument> GetArgumentAttributes(this MethodInfo method)
+		{
+			var attributes = method.GetCustomAttributes(true);
+			return AllHarmonyArguments(attributes);
+		}
+
+		internal static IEnumerable<HarmonyArgument> GetArgumentAttributes(this Type type)
+		{
+			var attributes = type.GetCustomAttributes(true);
+			return AllHarmonyArguments(attributes);
+		}
+
+		internal static string GetRealName(this IEnumerable<HarmonyArgument> attributes, string name, string[] originalParameterNames)
+		{
+			var attribute = attributes.FirstOrDefault(p => p.OriginalName == name);
+			if (attribute is null)
+				return null;
+
+			if (string.IsNullOrEmpty(attribute.NewName) is false)
+				return attribute.NewName;
+
+			if (originalParameterNames is not null && attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
+				return originalParameterNames[attribute.Index];
+
+			return null;
+		}
+
+		static string GetRealParameterName(this MethodInfo method, string[] originalParameterNames, string name)
 		{
 			if (method is null || method is DynamicMethod)
-				return default;
+				return name;
 
-			var attributes = method.GetCustomAttributes(false);
-			return AllHarmonyArguments(attributes);
+			var argumentName = method.GetArgumentAttributes().GetRealName(name, originalParameterNames);
+			if (argumentName is not null)
+				return argumentName;
+
+			var type = method.DeclaringType;
+			if (type is not null)
+			{
+				argumentName = type.GetArgumentAttributes().GetRealName(name, originalParameterNames);
+				if (argumentName is not null)
+					return argumentName;
+			}
+
+			return name;
 		}
 
-		static HarmonyArgument[] GetArgumentAttributes(this Type type)
-		{
-			var attributes = type.GetCustomAttributes(false);
-			return AllHarmonyArguments(attributes);
-		}
-
-		static string GetOriginalArgumentName(this ParameterInfo parameter, string[] originalParameterNames)
+		static string GetRealParameterName(this ParameterInfo parameter, string[] originalParameterNames)
 		{
 			var attribute = parameter.GetArgumentAttribute();
-
 			if (attribute is null)
 				return null;
 
@@ -55,49 +86,16 @@ namespace HarmonyLib
 			return null;
 		}
 
-		static string GetOriginalArgumentName(HarmonyArgument[] attributes, string name, string[] originalParameterNames)
-		{
-			if ((attributes?.Length ?? 0) <= 0)
-				return null;
-
-			var attribute = attributes.SingleOrDefault(p => p.NewName == name);
-			if (attribute is null)
-				return null;
-
-			if (string.IsNullOrEmpty(attribute.OriginalName) is false)
-				return attribute.OriginalName;
-
-			if (originalParameterNames is not null && attribute.Index >= 0 && attribute.Index < originalParameterNames.Length)
-				return originalParameterNames[attribute.Index];
-
-			return null;
-		}
-
-		static string GetOriginalArgumentName(this MethodInfo method, string[] originalParameterNames, string name)
-		{
-			string argumentName;
-
-			argumentName = GetOriginalArgumentName(method?.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName is not null)
-				return argumentName;
-
-			argumentName = GetOriginalArgumentName(method?.DeclaringType?.GetArgumentAttributes(), name, originalParameterNames);
-			if (argumentName is not null)
-				return argumentName;
-
-			return name;
-		}
-
 		internal static int GetArgumentIndex(this MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam)
 		{
 			if (patch is DynamicMethod)
 				return Array.IndexOf(originalParameterNames, patchParam.Name);
 
-			var originalName = patchParam.GetOriginalArgumentName(originalParameterNames);
+			var originalName = patchParam.GetRealParameterName(originalParameterNames);
 			if (originalName is not null)
 				return Array.IndexOf(originalParameterNames, originalName);
 
-			originalName = patch.GetOriginalArgumentName(originalParameterNames, patchParam.Name);
+			originalName = patch.GetRealParameterName(originalParameterNames, patchParam.Name);
 			if (originalName is not null)
 				return Array.IndexOf(originalParameterNames, originalName);
 
