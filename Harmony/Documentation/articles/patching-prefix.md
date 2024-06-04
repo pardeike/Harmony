@@ -25,7 +25,7 @@ To stop executing prefixes and skip the original, let the prefix return a bool t
 
 [!code-csharp[example](../examples/patching-prefix.cs?name=skip)]
 
-Here is another example showing the diference between what the original method returns and what the Prefix returns. it illustrate that the boolean return value of the Prefix only determines if the original gets executed or not.
+Here is another example showing the difference between what the original method returns and what the Prefix returns. it illustrate that the boolean return value of the Prefix only determines if the original gets executed or not.
 
 [!code-csharp[example](../examples/patching-prefix.cs?name=skip_maybe)]
 
