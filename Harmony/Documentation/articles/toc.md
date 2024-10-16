@@ -14,6 +14,8 @@
 
 ## [Transpiler - CodeInstruction](patching-transpiler-codes.md)
 
+## [Transpiler - CodeMatcher](patching-transpiler-matcher.md)
+
 ## [Finalizer](patching-finalizer.md)
 
 ## [Injections](patching-injections.md)
