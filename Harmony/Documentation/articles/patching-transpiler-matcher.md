@@ -16,11 +16,7 @@ In our case, let's find the call to `Kill()` and replace it with our method `MyD
 
 Using `ThrowIfInvalid` is for an example purposes. There is `ThrowIfNotMatchForward` which summarizes the successive calls of `MatchStartForward` and `ThrowIfInvalid`.
 
-```cs
-codeMatcher.ThrowIfNotMatchForward("Could not find call to DamageHandler.Kill",
-		CodeMatch.Calls(() => default(DamageHandler).Kill(default(Player)))
-	);
-```
+[!code-csharp[example](../examples/patching-transpiler-codematcher.cs?name=replacement_alt)]
 
 Furthermore, in this context, it is very likely that not all patcher methods call `Kill()`. It is possible to check the match validation in the following way. When a Match is a failure, the `CodeMatcher` pointer finds it at the end of the list of instructions. With the `Start()` method this will return the cursor to the start.
 

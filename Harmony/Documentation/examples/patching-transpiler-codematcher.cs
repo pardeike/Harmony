@@ -3,7 +3,6 @@ namespace patching_transpiler_codematcher
 	using HarmonyLib;
 	using System.Collections.Generic;
 	using System.Reflection;
-	using System.Reflection.Emit;
 
 	public class SimpleMatching
 	{
@@ -43,6 +42,30 @@ namespace patching_transpiler_codematcher
 		}
 		// </replacement>
 
+		[HarmonyPatch]
+		public static class DamageHandler_Apply_Patch_Alternative
+		{
+			static IEnumerable<MethodBase> TargetMethods() => new List<MethodBase>();
+
+			static void MyDeathHandler(DamageHandler handler, Player player) { }
+
+			static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions /*, ILGenerator generator*/)
+			{
+				var codeMatcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
+
+				//  <replacement_alt>
+				codeMatcher.ThrowIfNotMatchForward("Could not find call to DamageHandler.Kill",
+						CodeMatch.Calls(() => default(DamageHandler).Kill(default(Player)))
+					)
+					.RemoveInstruction()
+					.InsertAndAdvance(
+						CodeInstruction.Call(() => MyDeathHandler(default, default))
+					);
+				// </replacement_alt>
+				return codeMatcher.Instructions();
+			}
+		}
+
 		class Player { }
 
 		class DamageHandler
@@ -57,6 +80,7 @@ namespace patching_transpiler_codematcher
 	public class CheckMatcherMatching
 	{
 		// <check_matcher>
+		[HarmonyPatch]
 		public static class DamageHandler_Apply_Patch
 		{
 			static IEnumerable<MethodBase> TargetMethods()
@@ -108,6 +132,7 @@ namespace patching_transpiler_codematcher
 	public class RepeatMatching
 	{
 		// <repeat>
+		[HarmonyPatch]
 		public static class DamageHandler_Apply_Patch
 		{
 			static IEnumerable<MethodBase> TargetMethods()
