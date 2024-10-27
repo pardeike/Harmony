@@ -965,6 +965,18 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/patching-transpiler-matcher.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/patching-transpiler-matcher.html",
+          "hash": "39fUvAYZ2Z43y5O8KuGm0VD5NjhRK1XBm2NskYfwPdQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/patching-transpiler.md",
       "output": {
         ".html": {
@@ -1017,7 +1029,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "fS3ejo0KLMrH2nOzhyFzuzvqW0RyV5NnFQmgIisnygc="
+          "hash": "C9+3EWpQ9W5RUD3cjNY1NiT9cgp8ep54EuFrnesp/0I="
         }
       },
       "is_incremental": false,
@@ -1121,7 +1133,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 19,
+          "total_file_count": 20,
           "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
