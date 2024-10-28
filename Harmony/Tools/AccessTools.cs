@@ -149,9 +149,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredField: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.DeclaredField: name is null");
+				FileLog.Debug("AccessTools.DeclaredField: name is null/empty");
 				return null;
 			}
 			var fieldInfo = type.GetField(name, allDeclared);
@@ -183,9 +183,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Field: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Field: name is null");
+				FileLog.Debug("AccessTools.Field: name is null/empty");
 				return null;
 			}
 			var fieldInfo = FindIncludingBaseTypes(type, t => t.GetField(name, all));
@@ -234,9 +234,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredProperty: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.DeclaredProperty: name is null");
+				FileLog.Debug("AccessTools.DeclaredProperty: name is null/empty");
 				return null;
 			}
 			var property = type.GetProperty(name, allDeclared);
@@ -338,9 +338,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Property: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Property: name is null");
+				FileLog.Debug("AccessTools.Property: name is null/empty");
 				return null;
 			}
 			var property = FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
@@ -446,9 +446,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredMethod: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.DeclaredMethod: name is null");
+				FileLog.Debug("AccessTools.DeclaredMethod: name is null/empty");
 				return null;
 			}
 			MethodInfo result;
@@ -495,9 +495,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Method: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Method: name is null");
+				FileLog.Debug("AccessTools.Method: name is null/empty");
 				return null;
 			}
 			MethodInfo result;
@@ -578,6 +578,7 @@ namespace HarmonyLib
 		}
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
+
 		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext"/> method of an async method's state machine</summary>
 		/// <param name="method">Async method that creates the state machine internally</param>
 		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
@@ -607,6 +608,7 @@ namespace HarmonyLib
 
 			return asyncMethodBody;
 		}
+
 #endif
 
 		/// <summary>Gets the names of all method that are declared in a type</summary>
@@ -857,9 +859,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Inner: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Inner: name is null");
+				FileLog.Debug("AccessTools.Inner: name is null/empty");
 				return null;
 			}
 			return FindIncludingBaseTypes(type, t => t.GetNestedType(name, all));
@@ -1699,7 +1701,6 @@ namespace HarmonyLib
 		{
 			var method = DeclaredMethod(typeColonName);
 			return MethodDelegate<DelegateType>(method, instance, virtualCall);
-
 		}
 
 		/// <summary>Creates a delegate for a given delegate definition, attributed with [<see cref="HarmonyLib.HarmonyDelegate"/>]</summary>
@@ -1842,12 +1843,12 @@ namespace HarmonyLib
 		/// A cache for the <see cref="ICollection{T}.Add"/> or similar Add methods for different types.
 		/// </summary>
 		///
-		static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = [];
+		private static readonly Dictionary<Type, FastInvokeHandler> addHandlerCache = [];
 
 #if NET35
 		static readonly ReaderWriterLock addHandlerCacheLock = new();
 #else
-		static readonly ReaderWriterLockSlim addHandlerCacheLock = new(LockRecursionPolicy.SupportsRecursion);
+		private static readonly ReaderWriterLockSlim addHandlerCacheLock = new(LockRecursionPolicy.SupportsRecursion);
 #endif
 
 		/// <summary>Makes a deep copy of any object</summary>
@@ -2057,6 +2058,7 @@ namespace HarmonyLib
 		/// <returns>True if instance is of nullable type, false if not</returns>
 		///
 #pragma warning disable IDE0060
+
 		public static bool IsOfNullableType<T>(T instance) => Nullable.GetUnderlyingType(typeof(T)) is not null;
 
 		/// <summary>Tests whether a type or member is static, as defined in C#</summary>
