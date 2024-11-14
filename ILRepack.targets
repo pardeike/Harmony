@@ -15,6 +15,7 @@
 			<LibraryPath Condition="$(TargetFramework) == 'net6.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net6.0" />
 			<LibraryPath Condition="$(TargetFramework) == 'net7.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net7.0" />
 			<LibraryPath Condition="$(TargetFramework) == 'net8.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net8.0" />
+			<LibraryPath Condition="$(TargetFramework) == 'net9.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net9.0" />
 		</ItemGroup>
 		<ILRepack
 			InputAssemblies="@(InputAssemblies)"

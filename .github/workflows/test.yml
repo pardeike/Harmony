@@ -37,8 +37,8 @@ env:
   # You are interested in changing these values
   BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
   BUILD_CONFIGURATIONS_WITH_REF:        "['ReleaseFat', 'ReleaseThin', 'ReleaseRef']"
-  DOTNET_TARGET_FRAMEWORKS:             "['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']"
-  DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: "['net6.0', 'net7.0', 'net8.0']"
+  DOTNET_TARGET_FRAMEWORKS:             "['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0', 'net9.0']"
+  DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: "['net6.0', 'net7.0', 'net8.0', 'net9.0']"
   FRAMEWORK_TARGET_FRAMEWORKS:          "['net35', 'net452', 'net472', 'net48']"
 
 jobs:
