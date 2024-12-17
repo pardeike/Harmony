@@ -96,13 +96,13 @@ namespace HarmonyLib
 
 					case MethodType.Getter:
 						if (attr.methodName is null)
-							return AccessTools.DeclaredIndexer(attr.declaringType, attr.argumentTypes).GetGetMethod(true);
-						return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetGetMethod(true);
+							return AccessTools.DeclaredIndexerGetter(attr.declaringType, attr.argumentTypes);
+						return AccessTools.DeclaredPropertyGetter(attr.declaringType, attr.methodName);
 
 					case MethodType.Setter:
 						if (attr.methodName is null)
-							return AccessTools.DeclaredIndexer(attr.declaringType, attr.argumentTypes).GetSetMethod(true);
-						return AccessTools.DeclaredProperty(attr.declaringType, attr.methodName).GetSetMethod(true);
+							return AccessTools.DeclaredIndexerSetter(attr.declaringType, attr.argumentTypes);
+						return AccessTools.DeclaredPropertySetter(attr.declaringType, attr.methodName);
 
 					case MethodType.Constructor:
 						return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes);
