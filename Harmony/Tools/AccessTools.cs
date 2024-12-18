@@ -1524,6 +1524,13 @@ namespace HarmonyLib
 		/// else, invocation of the delegate calls the exact specified <paramref name="method"/> (this is useful for calling base class methods)
 		/// Note: if <c>false</c> and <paramref name="method"/> is an interface method, an ArgumentException is thrown.
 		/// </param>
+		/// <param name="delegateArgs">
+		/// Only applies for instance methods, and if argument <paramref name="instance"/> is null.
+		/// This argument only matters if the target <paramref name="method"/> signature contains a value type (such as struct or primitive types),
+		/// and your <typeparamref name="DelegateType"/> argument is replaced by a non-value type
+		/// (usually <c>object</c>) instead of using said value type.
+		/// Use this if the generic arguments of <typeparamref name="DelegateType"/> doesn't represent the delegate's
+		/// arguments, and calling this function fails
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
 		/// <remarks>
 		/// <para>
@@ -1536,7 +1543,7 @@ namespace HarmonyLib
 		/// </para>
 		/// </remarks>
 		///
-		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true) where DelegateType : Delegate
+		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true, Type[] delegateArgs = null) where DelegateType : Delegate
 		{
 			if (method is null)
 				throw new ArgumentNullException(nameof(method));
@@ -1612,20 +1619,36 @@ namespace HarmonyLib
 				parameterTypes[0] = declaringType;
 				for (var i = 0; i < numParameters; i++)
 					parameterTypes[i + 1] = parameters[i].ParameterType;
+				var delegateArgsResolved = delegateArgs ?? delegateType.GetGenericArguments();
+				var dynMethodReturn = delegateArgsResolved.Length < parameterTypes.Length
+					? parameterTypes
+					: delegateArgsResolved;
 				var dmd = new DynamicMethodDefinition(
 					"OpenInstanceDelegate_" + method.Name,
 					method.ReturnType,
-					parameterTypes)
+					dynMethodReturn)
 				{
 					// OwnerType = declaringType
 				};
 				var ilGen = dmd.GetILGenerator();
-				if (declaringType != null && declaringType.IsValueType)
+				if (declaringType != null && declaringType.IsValueType && delegateArgsResolved.Length > 0 &&
+					!delegateArgsResolved[0].IsByRef)
+				{
 					ilGen.Emit(OpCodes.Ldarga_S, 0);
+				}
 				else
 					ilGen.Emit(OpCodes.Ldarg_0);
 				for (var i = 1; i < parameterTypes.Length; i++)
+				{
 					ilGen.Emit(OpCodes.Ldarg, i);
+					// unbox to make il code valid
+					if (parameterTypes[i].IsValueType && i < delegateArgsResolved.Length &&
+						!delegateArgsResolved[i].IsValueType)
+					{
+						ilGen.Emit(OpCodes.Unbox_Any, parameterTypes[i]);
+					}
+				}
+
 				ilGen.Emit(OpCodes.Call, method);
 				ilGen.Emit(OpCodes.Ret);
 				return (DelegateType)dmd.Generate().CreateDelegate(delegateType);
