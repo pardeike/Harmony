@@ -149,9 +149,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredField: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.DeclaredField: name is null");
+				FileLog.Debug("AccessTools.DeclaredField: name is null/empty");
 				return null;
 			}
 			var fieldInfo = type.GetField(name, allDeclared);
@@ -183,9 +183,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Field: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Field: name is null");
+				FileLog.Debug("AccessTools.Field: name is null/empty");
 				return null;
 			}
 			var fieldInfo = FindIncludingBaseTypes(type, t => t.GetField(name, all));
@@ -234,9 +234,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredProperty: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.DeclaredProperty: name is null");
+				FileLog.Debug("AccessTools.DeclaredProperty: name is null/empty");
 				return null;
 			}
 			var property = type.GetProperty(name, allDeclared);
@@ -338,9 +338,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Property: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Property: name is null");
+				FileLog.Debug("AccessTools.Property: name is null/empty");
 				return null;
 			}
 			var property = FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
@@ -446,9 +446,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.DeclaredMethod: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.DeclaredMethod: name is null");
+				FileLog.Debug("AccessTools.DeclaredMethod: name is null/empty");
 				return null;
 			}
 			MethodInfo result;
@@ -495,9 +495,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Method: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Method: name is null");
+				FileLog.Debug("AccessTools.Method: name is null/empty");
 				return null;
 			}
 			MethodInfo result;
@@ -857,9 +857,9 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.Inner: type is null");
 				return null;
 			}
-			if (name is null)
+			if (string.IsNullOrEmpty(name))
 			{
-				FileLog.Debug("AccessTools.Inner: name is null");
+				FileLog.Debug("AccessTools.Inner: name is null/empty");
 				return null;
 			}
 			return FindIncludingBaseTypes(type, t => t.GetNestedType(name, all));
@@ -1722,7 +1722,6 @@ namespace HarmonyLib
 		{
 			var method = DeclaredMethod(typeColonName);
 			return MethodDelegate<DelegateType>(method, instance, virtualCall);
-
 		}
 
 		/// <summary>Creates a delegate for a given delegate definition, attributed with [<see cref="HarmonyLib.HarmonyDelegate"/>]</summary>

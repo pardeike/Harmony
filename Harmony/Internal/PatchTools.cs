@@ -90,17 +90,17 @@ namespace HarmonyLib
 				switch (attr.methodType)
 				{
 					case MethodType.Normal:
-						if (attr.methodName is null)
+						if (string.IsNullOrEmpty(attr.methodName))
 							return null;
 						return AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
 
 					case MethodType.Getter:
-						if (attr.methodName is null)
+						if (string.IsNullOrEmpty(attr.methodName))
 							return AccessTools.DeclaredIndexerGetter(attr.declaringType, attr.argumentTypes);
 						return AccessTools.DeclaredPropertyGetter(attr.declaringType, attr.methodName);
 
 					case MethodType.Setter:
-						if (attr.methodName is null)
+						if (string.IsNullOrEmpty(attr.methodName))
 							return AccessTools.DeclaredIndexerSetter(attr.declaringType, attr.argumentTypes);
 						return AccessTools.DeclaredPropertySetter(attr.declaringType, attr.methodName);
 
@@ -113,14 +113,14 @@ namespace HarmonyLib
 							.FirstOrDefault();
 
 					case MethodType.Enumerator:
-						if (attr.methodName is null)
+						if (string.IsNullOrEmpty(attr.methodName))
 							return null;
 						var enumMethod = AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
 						return AccessTools.EnumeratorMoveNext(enumMethod);
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 					case MethodType.Async:
-						if (attr.methodName is null)
+						if (string.IsNullOrEmpty(attr.methodName))
 							return null;
 						var asyncMethod = AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
 						return AccessTools.AsyncMoveNext(asyncMethod);
