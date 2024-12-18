@@ -1052,15 +1052,15 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.MethodDelegate
   nameWithType: AccessTools.MethodDelegate
-- uid: HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
-  name: MethodDelegate<DelegateType>(MethodInfo, Object, Boolean)
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_MethodDelegate__1_System_Reflection_MethodInfo_System_Object_System_Boolean_
-  commentId: M:HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean)
-  name.vb: MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
-  fullName: HarmonyLib.AccessTools.MethodDelegate<DelegateType>(System.Reflection.MethodInfo, System.Object, System.Boolean)
-  fullName.vb: HarmonyLib.AccessTools.MethodDelegate(Of DelegateType)(System.Reflection.MethodInfo, System.Object, System.Boolean)
-  nameWithType: AccessTools.MethodDelegate<DelegateType>(MethodInfo, Object, Boolean)
-  nameWithType.vb: AccessTools.MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean)
+- uid: HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean,System.Type[])
+  name: MethodDelegate<DelegateType>(MethodInfo, Object, Boolean, Type[])
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_MethodDelegate__1_System_Reflection_MethodInfo_System_Object_System_Boolean_System_Type___
+  commentId: M:HarmonyLib.AccessTools.MethodDelegate``1(System.Reflection.MethodInfo,System.Object,System.Boolean,System.Type[])
+  name.vb: MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean, Type())
+  fullName: HarmonyLib.AccessTools.MethodDelegate<DelegateType>(System.Reflection.MethodInfo, System.Object, System.Boolean, System.Type[])
+  fullName.vb: HarmonyLib.AccessTools.MethodDelegate(Of DelegateType)(System.Reflection.MethodInfo, System.Object, System.Boolean, System.Type())
+  nameWithType: AccessTools.MethodDelegate<DelegateType>(MethodInfo, Object, Boolean, Type[])
+  nameWithType.vb: AccessTools.MethodDelegate(Of DelegateType)(MethodInfo, Object, Boolean, Type())
 - uid: HarmonyLib.AccessTools.MethodDelegate``1(System.String,System.Object,System.Boolean)
   name: MethodDelegate<DelegateType>(String, Object, Boolean)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_MethodDelegate__1_System_String_System_Object_System_Boolean_
