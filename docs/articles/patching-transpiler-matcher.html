@@ -97,7 +97,7 @@ public static class DamageHandler_Apply_Patch
         var codeMatcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
 
         codeMatcher.MatchStartForward(
-                CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default(Player)))
+                CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default))
             )
             .ThrowIfInvalid(&quot;Could not find call to DamageHandler.Kill&quot;)
             .RemoveInstruction()
@@ -111,7 +111,7 @@ public static class DamageHandler_Apply_Patch
 </code></pre>
 <p>Using <code>ThrowIfInvalid</code> is for an example purposes. There is <code>ThrowIfNotMatchForward</code> which summarizes the successive calls of <code>MatchStartForward</code> and <code>ThrowIfInvalid</code>.</p>
 <pre><code class="lang-csharp" name="example">codeMatcher.ThrowIfNotMatchForward(&quot;Could not find call to DamageHandler.Kill&quot;,
-        CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default(Player)))
+        CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default))
     )
     .RemoveInstruction()
     .InsertAndAdvance(
