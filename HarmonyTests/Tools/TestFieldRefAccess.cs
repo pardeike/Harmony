@@ -717,7 +717,7 @@ namespace HarmonyLibTests.Tools
 		[Test]
 		public void Test_ClassInstance_ListOfPrivateStructFieldType()
 		{
-			Assert.Multiple(() =>
+			Assert.Multiple(static () =>
 			{
 				var field = AccessTools.Field(typeof(AccessToolsClass), "field8");
 				var expectedCaseToConstraint = expectedCaseToConstraint_ClassInstance;
@@ -745,7 +745,7 @@ namespace HarmonyLibTests.Tools
 					field, TestValue(), expectedCaseToConstraint_ClassInstance_StructT);
 				// List<T> is invariant - List<AccessTools.Inner> cannot be cast to List<IInner> nor vice versa,
 				// so can't do TestSuite_Class<AccessToolsClass, AccessToolsClass, List<IInner>(...).
-				Assert.That(TestValue(), Is.Not.InstanceOf(typeof(List<IInner>)));
+				Assert.That(TestValue(), Is.Not.InstanceOf<List<IInner>>());
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, object>(
 					field, TestValue(), expectedCaseToConstraint);
 				TestSuite_Class<AccessToolsClass, AccessToolsClass, IList>(

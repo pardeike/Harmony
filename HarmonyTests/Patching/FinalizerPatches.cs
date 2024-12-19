@@ -335,7 +335,7 @@ namespace HarmonyLibTests.Patching
 		{
 			Assert.NotNull(info, "info should not be null");
 			Assert.NotNull(info["outerexception"], "Should throw an exception");
-			Assert.IsInstanceOf(typeof(E), info["outerexception"]);
+			Assert.IsInstanceOf<E>(info["outerexception"]);
 		}
 
 		private void AssertNullExceptionInput()
@@ -350,7 +350,7 @@ namespace HarmonyLibTests.Patching
 			Assert.NotNull(info, "info should not be null");
 			Assert.True(info.ContainsKey("exception"), "Finalizer should have an exception field");
 			Assert.NotNull(info["exception"], "Finalizer should get an exception input");
-			Assert.IsInstanceOf(typeof(E), info["exception"]);
+			Assert.IsInstanceOf<E>(info["exception"]);
 		}
 	}
 }

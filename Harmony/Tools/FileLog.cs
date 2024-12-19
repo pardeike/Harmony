@@ -4,6 +4,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+#if NET9_0_OR_GREATER
+using System.Threading;
+#endif
 
 namespace HarmonyLib
 {
@@ -11,7 +14,11 @@ namespace HarmonyLib
 	///
 	public static class FileLog
 	{
+#if NET9_0_OR_GREATER
+		private static readonly Lock fileLock = new();
+#else
 		private static readonly object fileLock = new();
+#endif
 		private static bool _logPathInited;
 		private static string _logPath;
 

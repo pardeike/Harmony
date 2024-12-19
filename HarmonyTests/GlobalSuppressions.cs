@@ -21,6 +21,8 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0066")]
 [assembly: SuppressMessage("Style", "IDE0251")]
 
+[assembly: SuppressMessage("", "IDE0130")]
+
 [assembly: SuppressMessage("Usage", "CA2208")]
 [assembly: SuppressMessage("Usage", "CA2211")]
 

@@ -1532,15 +1532,16 @@ namespace HarmonyLib
 		/// Use this if the generic arguments of <typeparamref name="DelegateType"/> doesn't represent the delegate's
 		/// arguments, and calling this function fails
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
+		/// </param>
 		/// <remarks>
-		/// <para>
+		/// <param>
 		/// Delegate invocation is more performant and more convenient to use than <see cref="MethodBase.Invoke(object, object[])"/>
 		/// at a one-time setup cost.
-		/// </para>
-		/// <para>
+		/// </param>
+		/// <param>
 		/// Works for both type of static and instance methods, both open and closed (a.k.a. unbound and bound) instance methods,
 		/// and both class and struct methods.
-		/// </para>
+		/// </param>
 		/// </remarks>
 		///
 		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true, Type[] delegateArgs = null) where DelegateType : Delegate
@@ -1734,7 +1735,7 @@ namespace HarmonyLib
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to the method specified via [<see cref="HarmonyLib.HarmonyDelegate"/>]
 		/// attributes on <typeparamref name="DelegateType"/></returns>
 		/// <remarks>
-		/// This calls <see cref="MethodDelegate{DelegateType}(MethodInfo, object, bool)"/> with the <c>method</c> and <c>virtualCall</c> arguments
+		/// This calls <see cref="MethodDelegate{DelegateType}(MethodInfo, object, bool, Type[])"/> with the <c>method</c> and <c>virtualCall</c> arguments
 		/// determined from the [<see cref="HarmonyLib.HarmonyDelegate"/>] attributes on <typeparamref name="DelegateType"/>,
 		/// and the given <paramref name="instance"/> (for closed instance delegates).
 		/// </remarks>

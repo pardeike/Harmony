@@ -29,7 +29,7 @@ namespace patching_transpiler_codematcher
 				var codeMatcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
 
 				codeMatcher.MatchStartForward(
-						CodeMatch.Calls(() => default(DamageHandler).Kill(default(Player)))
+						CodeMatch.Calls(() => default(DamageHandler).Kill(default))
 					)
 					.ThrowIfInvalid("Could not find call to DamageHandler.Kill")
 					.RemoveInstruction()
@@ -45,7 +45,7 @@ namespace patching_transpiler_codematcher
 		[HarmonyPatch]
 		public static class DamageHandler_Apply_Patch_Alternative
 		{
-			static IEnumerable<MethodBase> TargetMethods() => new List<MethodBase>();
+			static IEnumerable<MethodBase> TargetMethods() => [];
 
 			static void MyDeathHandler(DamageHandler handler, Player player) { }
 
@@ -55,7 +55,7 @@ namespace patching_transpiler_codematcher
 
 				//  <replacement_alt>
 				codeMatcher.ThrowIfNotMatchForward("Could not find call to DamageHandler.Kill",
-						CodeMatch.Calls(() => default(DamageHandler).Kill(default(Player)))
+						CodeMatch.Calls(() => default(DamageHandler).Kill(default))
 					)
 					.RemoveInstruction()
 					.InsertAndAdvance(

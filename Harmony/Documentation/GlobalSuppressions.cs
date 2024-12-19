@@ -22,3 +22,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("", "CA1016")]
 [assembly: SuppressMessage("", "CS0649")]
 [assembly: SuppressMessage("", "IDE0251")]
+[assembly: SuppressMessage("", "IDE0130")]

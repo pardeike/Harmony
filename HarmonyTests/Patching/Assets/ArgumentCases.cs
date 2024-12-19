@@ -2,6 +2,7 @@ using HarmonyLib;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Assets
@@ -149,7 +150,11 @@ namespace HarmonyLibTests.Assets
 		private string s = "foo";
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public bool? Method() => false;
+		public bool? Method()
+		{
+			_ = s;
+			return false;
+		}
 	}
 
 	[HarmonyPatch(typeof(NullableResults), nameof(NullableResults.Method))]

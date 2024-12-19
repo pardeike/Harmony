@@ -351,7 +351,7 @@ namespace HarmonyLibTests.Patching
 			catch (HarmonyException ex)
 			{
 				Assert.NotNull(ex.InnerException);
-				Assert.IsInstanceOf(typeof(ArgumentException), ex.InnerException);
+				Assert.IsInstanceOf<ArgumentException>(ex.InnerException);
 				Assert.AreEqual("Test", ex.InnerException.Message);
 				return;
 			}

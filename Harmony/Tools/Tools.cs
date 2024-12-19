@@ -80,7 +80,7 @@ namespace HarmonyLib
 			}
 			il.Emit(OpCodes.Ret);
 
-			return (FieldRef<T, F>)dm.Generate().CreateDelegate(typeof(FieldRef<T, F>));
+			return dm.Generate().CreateDelegate<FieldRef<T, F>>();
 		}
 
 		internal static StructFieldRef<T, F> StructFieldRefAccess<T, F>(FieldInfo fieldInfo) where T : struct
@@ -95,7 +95,7 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ldflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
-			return (StructFieldRef<T, F>)dm.Generate().CreateDelegate(typeof(StructFieldRef<T, F>));
+			return dm.Generate().CreateDelegate<StructFieldRef<T, F>>();
 		}
 
 		internal static FieldRef<F> StaticFieldRefAccess<F>(FieldInfo fieldInfo)
@@ -111,7 +111,7 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ldsflda, fieldInfo);
 			il.Emit(OpCodes.Ret);
 
-			return (FieldRef<F>)dm.Generate().CreateDelegate(typeof(FieldRef<F>));
+			return dm.Generate().CreateDelegate<FieldRef<F>>();
 		}
 
 		internal static FieldInfo GetInstanceField(Type type, string fieldName)

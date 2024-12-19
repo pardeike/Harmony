@@ -140,7 +140,7 @@ namespace HarmonyLib
 
 			Emit(il, OpCodes.Ret);
 
-			var invoder = (FastInvokeHandler)dynamicMethod.Generate().CreateDelegate(typeof(FastInvokeHandler));
+			var invoder = dynamicMethod.Generate().CreateDelegate<FastInvokeHandler>();
 			return invoder;
 		}
 
