@@ -144,6 +144,24 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class NullableResults
+	{
+		private string s = "foo";
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public bool? Method() => false;
+	}
+
+	[HarmonyPatch(typeof(NullableResults), nameof(NullableResults.Method))]
+	public static class NullableResultsPatch
+	{
+		public static bool Prefix(ref bool? __result)
+		{
+			__result = true;
+			return false;
+		}
+	}
+
 	public class ArgumentArrayMethods
 	{
 		public struct SomeStruct

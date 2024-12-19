@@ -396,5 +396,23 @@ namespace HarmonyLibTests.Patching
 			var log = RenamedArgumentsPatch.log.Join();
 			Assert.AreEqual("val1, patched, val2, hello", log);
 		}
+
+		[Test]
+		public void Test_NullableResults()
+		{
+			var res1 = new NullableResults().Method();
+			Assert.True(res1.HasValue);
+			Assert.False(res1.Value);
+
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(NullableResultsPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			var res2 = new NullableResults().Method();
+			Assert.True(res2.HasValue);
+			Assert.True(res2.Value);
+		}
 	}
 }
