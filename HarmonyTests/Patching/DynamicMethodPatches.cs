@@ -9,13 +9,6 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Test_ByRefResultPrefix()
 		{
-			if (AccessTools.IsMonoRuntime && HarmonyLib.Tools.isWindows == false)
-			{
-				// no longer works with linux/mac and mono
-				// System.NotSupportedException : Custom attributes on a ParamInfo with member System.Reflection.Emit.DynamicMethod are not supported
-				return;
-			}
-
 			var originalClass = typeof(Assets.Class11);
 			Assert.NotNull(originalClass);
 

@@ -41,14 +41,43 @@ namespace HarmonyLib
 		public static MethodInfo CreateMethod(string name, Type returnType, List<KeyValuePair<string, Type>> parameters, Action<ILGenerator> generator)
 		{
 			var parameterTypes = parameters.Select(p => p.Value).ToArray();
+
+			if (AccessTools.IsMonoRuntime && HarmonyLib.Tools.isWindows == false)
+			{
+				var assemblyName = new AssemblyName("TempAssembly");
+
+#if NET2 || NET35
+				var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#else
+				var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#endif
+
+				var moduleBuilder = assemblyBuilder.DefineDynamicModule("TempModule");
+				var typeBuilder = moduleBuilder.DefineType("TempType", TypeAttributes.Public);
+
+				var methodBuilder = typeBuilder.DefineMethod(name,
+					 MethodAttributes.Public | MethodAttributes.Static,
+					 returnType, parameterTypes);
+
+				for (var i = 0; i < parameters.Count; i++)
+					methodBuilder.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Key);
+
+				generator(methodBuilder.GetILGenerator());
+
+#if NETSTANDARD2_0
+				var createdType = typeBuilder.CreateTypeInfo().AsType();
+#else
+				var createdType = typeBuilder.CreateType();
+#endif
+				return createdType.GetMethod(name, BindingFlags.Public | BindingFlags.Static);
+			}
+
 			var dynamicMethod = new DynamicMethodDefinition(name, returnType, parameterTypes);
 
 			for (var i = 0; i < parameters.Count; i++)
 				dynamicMethod.Definition.Parameters[i].Name = parameters[i].Key;
 
-			var il = dynamicMethod.GetILGenerator();
-			generator(il);
-
+			generator(dynamicMethod.GetILGenerator());
 			return dynamicMethod.Generate();
 		}
 
