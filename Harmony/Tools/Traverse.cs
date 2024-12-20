@@ -183,6 +183,35 @@ namespace HarmonyLib
 			return null;
 		}
 
+		/// <summary>Checks if the current traverse instance is for a field</summary>
+		/// <returns>True if its a field</returns>
+		///
+		public bool IsField => _info is FieldInfo;
+
+		/// <summary>Checks if the current traverse instance is for a property</summary>
+		/// <returns>True if its a property</returns>
+		///
+		public bool IsProperty => _info is PropertyInfo;
+
+		/// <summary>Checks if the current field or property is writeable</summary>
+		/// <returns>True if writing is possible</returns>
+		///
+		public bool IsWriteable
+		{
+			get
+			{
+				if (_info is FieldInfo fi)
+				{
+					var isConst = fi.IsLiteral && fi.IsInitOnly == false && fi.IsStatic;
+					var isStaticReadonly = fi.IsLiteral == false && fi.IsInitOnly && fi.IsStatic;
+					return isConst == false && isStaticReadonly == false;
+				}
+				if (_info is PropertyInfo pi)
+					return pi.CanWrite;
+				return false;
+			}
+		}
+
 		Traverse Resolve()
 		{
 			if (_root is null)
@@ -407,7 +436,11 @@ namespace HarmonyLib
 
 		/// <summary>A default field action that copies fields to fields</summary>
 		/// 
-		public static Action<Traverse, Traverse> CopyFields = (from, to) => { _ = to.SetValue(from.GetValue()); };
+		public static Action<Traverse, Traverse> CopyFields = (from, to) =>
+		{
+			if (to.IsWriteable)
+				_ = to.SetValue(from.GetValue());
+		};
 
 		/// <summary>Returns a string that represents the current traverse</summary>
 		/// <returns>A string representation</returns>

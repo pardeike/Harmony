@@ -1994,7 +1994,8 @@ namespace HarmonyLib
 			{
 				var path = pathRoot.Length > 0 ? pathRoot + "." + name : name;
 				var value = processor is not null ? processor(path, src, dst) : src.GetValue();
-				_ = dst.SetValue(MakeDeepCopy(value, dst.GetValueType(), processor, path));
+				if (dst.IsWriteable)
+					_ = dst.SetValue(MakeDeepCopy(value, dst.GetValueType(), processor, path));
 			});
 			return result;
 		}
