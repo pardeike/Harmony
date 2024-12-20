@@ -7,8 +7,8 @@ Here is a selected list of classes:
 ### Basics
 
 - [Harmony](HarmonyLib.Harmony.html)
-- [PatchClassProcessor](HarmonyLib.PatchClassProcessor)
-- [PatchProcessor](HarmonyLib.PatchProcessor)
+- [PatchClassProcessor](HarmonyLib.PatchClassProcessor.html)
+- [PatchProcessor](HarmonyLib.PatchProcessor.html)
 - [HarmonyPatch](HarmonyLib.HarmonyPatch.html)
 - [PatchInfo](HarmonyLib.PatchInfo.html)
 - [Patches](HarmonyLib.Patches.html)
