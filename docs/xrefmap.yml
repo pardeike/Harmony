@@ -6625,6 +6625,45 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Traverse.GetValueType
   nameWithType: Traverse.GetValueType
+- uid: HarmonyLib.Traverse.IsField
+  name: IsField
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_IsField
+  commentId: P:HarmonyLib.Traverse.IsField
+  fullName: HarmonyLib.Traverse.IsField
+  nameWithType: Traverse.IsField
+- uid: HarmonyLib.Traverse.IsField*
+  name: IsField
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_IsField_
+  commentId: Overload:HarmonyLib.Traverse.IsField
+  isSpec: "True"
+  fullName: HarmonyLib.Traverse.IsField
+  nameWithType: Traverse.IsField
+- uid: HarmonyLib.Traverse.IsProperty
+  name: IsProperty
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_IsProperty
+  commentId: P:HarmonyLib.Traverse.IsProperty
+  fullName: HarmonyLib.Traverse.IsProperty
+  nameWithType: Traverse.IsProperty
+- uid: HarmonyLib.Traverse.IsProperty*
+  name: IsProperty
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_IsProperty_
+  commentId: Overload:HarmonyLib.Traverse.IsProperty
+  isSpec: "True"
+  fullName: HarmonyLib.Traverse.IsProperty
+  nameWithType: Traverse.IsProperty
+- uid: HarmonyLib.Traverse.IsWriteable
+  name: IsWriteable
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_IsWriteable
+  commentId: P:HarmonyLib.Traverse.IsWriteable
+  fullName: HarmonyLib.Traverse.IsWriteable
+  nameWithType: Traverse.IsWriteable
+- uid: HarmonyLib.Traverse.IsWriteable*
+  name: IsWriteable
+  href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_IsWriteable_
+  commentId: Overload:HarmonyLib.Traverse.IsWriteable
+  isSpec: "True"
+  fullName: HarmonyLib.Traverse.IsWriteable
+  nameWithType: Traverse.IsWriteable
 - uid: HarmonyLib.Traverse.IterateFields(System.Object,System.Action{HarmonyLib.Traverse})
   name: IterateFields(Object, Action<Traverse>)
   href: api/HarmonyLib.Traverse.html#HarmonyLib_Traverse_IterateFields_System_Object_System_Action_HarmonyLib_Traverse__
