@@ -168,7 +168,7 @@ namespace HarmonyLib
 			{
 				var n = State.closureCache.Count;
 				State.closureCache[n] = closure;
-				il.Emit(OpCodes.Ldsfld, AccessTools.Field(typeof(Transpilers), nameof(State.closureCache)));
+				il.Emit(OpCodes.Ldsfld, AccessTools.Field(typeof(State), nameof(State.closureCache)));
 				il.Emit(OpCodes.Ldc_I4, n);
 				il.Emit(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Dictionary<int, Delegate>), "Item"));
 			}
