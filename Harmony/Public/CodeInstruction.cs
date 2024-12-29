@@ -13,7 +13,7 @@ namespace HarmonyLib
 	{
 		internal static class State
 		{
-			internal static readonly Dictionary<int, Delegate> closureCache = [];
+			internal static readonly List<Delegate> closureCache = [];
 		}
 
 		/// <summary>The opcode</summary>
@@ -166,11 +166,10 @@ namespace HarmonyLib
 			var preserveContext = closure.Target != null && targetType.GetFields().Any(x => !x.IsStatic);
 			if (preserveContext)
 			{
-				var n = State.closureCache.Count;
-				State.closureCache[n] = closure;
+				State.closureCache.Add(closure);
 				il.Emit(OpCodes.Ldsfld, AccessTools.Field(typeof(State), nameof(State.closureCache)));
-				il.Emit(OpCodes.Ldc_I4, n);
-				il.Emit(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Dictionary<int, Delegate>), "Item"));
+				il.Emit(OpCodes.Ldc_I4, State.closureCache.Count - 1);
+				il.Emit(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(List<Delegate>), "Item"));
 			}
 			else
 			{

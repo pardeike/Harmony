@@ -397,4 +397,13 @@ namespace HarmonyLibTests.Assets
 		{
 		}
 	}
+
+	public class ClassTestingCallClosure
+	{
+		public string field1 = "";
+		public string field2 = "";
+
+		public CodeInstruction WIthoutContext() => CodeInstruction.CallClosure<Func<string, string>>(input => { return $"[{input}]"; });
+		public CodeInstruction WithContext() => CodeInstruction.CallClosure(() => { field2 = field1; });
+	}
 }

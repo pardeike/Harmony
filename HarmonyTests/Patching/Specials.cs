@@ -5,8 +5,10 @@ using NUnit.Framework;
 using System;
 #if NET6_0_OR_GREATER
 using System.Net.Http;
+using System.Reflection.Emit;
 #else
 using System.Net;
+using System.Reflection.Emit;
 #endif
 
 namespace HarmonyLibTests.Patching
@@ -469,6 +471,37 @@ namespace HarmonyLibTests.Patching
 			Console.WriteLine($"### MarshalledWithEventHandlerTest2 BEFORE");
 			new MarshalledWithEventHandlerTest2Class().Run();
 			Console.WriteLine($"### MarshalledWithEventHandlerTest2 AFTER");
+		}
+
+		[Test]
+		public void Test_CallClosure()
+		{
+			CodeInstruction.State.closureCache.Clear();
+			var instance = new ClassTestingCallClosure
+			{
+				field1 = "test",
+				field2 = "tobereplaced"
+			};
+
+			var code1 = instance.WIthoutContext();
+			var action1 = code1.operand as DynamicMethod;
+			Assert.NotNull(action1);
+			var result = action1.Invoke(null, ["TEST"]);
+			Assert.AreEqual(result, "[TEST]");
+			Assert.AreEqual(CodeInstruction.State.closureCache.Count, 0);
+
+			var code2 = instance.WithContext();
+			Assert.AreEqual(instance.field1, "test");
+			Assert.AreEqual(instance.field2, "tobereplaced");
+			var action2 = code2.operand as DynamicMethod;
+			Assert.NotNull(action2);
+			_ = action2.Invoke(null, []);
+			Assert.AreEqual(instance.field1, "test");
+			Assert.AreEqual(instance.field2, "test");
+			Assert.AreEqual(CodeInstruction.State.closureCache.Count, 1);
+
+			_ = instance.WithContext();
+			Assert.AreEqual(CodeInstruction.State.closureCache.Count, 2);
 		}
 	}
 }
