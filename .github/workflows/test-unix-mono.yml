@@ -64,6 +64,9 @@ jobs:
         if: ${{inputs.image == 'macos-14' && inputs.architecture == 'x64'}}
         run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
 
+      - name: Install Mono
+        run: sudo apt-get update && sudo apt-get install -y mono-complete
+
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v4
 
