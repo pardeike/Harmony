@@ -1,9 +1,9 @@
 <Project>
 
 	<PropertyGroup>
-		<HarmonyVersion>2.3.3.0</HarmonyVersion>
+		<HarmonyVersion>2.3.4.0</HarmonyVersion>
 		<HarmonyPrerelease></HarmonyPrerelease>
-		<MonoModCoreVersion>1.2.2</MonoModCoreVersion>
+		<MonoModCoreVersion>1.2.3</MonoModCoreVersion>
 	</PropertyGroup>
 
 </Project>
