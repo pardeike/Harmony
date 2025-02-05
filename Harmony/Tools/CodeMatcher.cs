@@ -194,7 +194,7 @@ namespace HarmonyLib
 			var tempPos = Pos;
 			try
 			{
-				if (Match(matches, direction, false).IsInvalid)
+				if (Match(matches, direction, false, false).IsInvalid)
 					throw new InvalidOperationException(explanation + " - Match failed");
 			}
 			finally
@@ -563,31 +563,54 @@ namespace HarmonyLib
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchStartForward(params CodeMatch[] matches) => Match(matches, 1, false);
+		public CodeMatcher MatchStartForward(params CodeMatch[] matches) => Match(matches, 1, false, false);
+
+		/// <summary>Prepares matching forward and advancing position to beginning of matching sequence</summary>
+		/// <param name="matches">Some code matches</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher PrepareMatchStartForward(params CodeMatch[] matches) => Match(matches, 1, false, true);
 
 		/// <summary>Matches forward and advances position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchEndForward(params CodeMatch[] matches) => Match(matches, 1, true);
+		public CodeMatcher MatchEndForward(params CodeMatch[] matches) => Match(matches, 1, true, false);
+
+		/// <summary>Prepares matching forward and advancing position to ending of matching sequence</summary>
+		/// <param name="matches">Some code matches</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher PrepareMatchEndForward(params CodeMatch[] matches) => Match(matches, 1, true, true);
 
 		/// <summary>Matches backwards and reverses position to beginning of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, false);
+		public CodeMatcher MatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, false, false);
+
+		/// <summary>Prepares matching backwards and reversing position to beginning of matching sequence</summary>
+		/// <param name="matches">Some code matches</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher PrepareMatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, false, true);
 
 		/// <summary>Matches backwards and reverses position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, true);
+		public CodeMatcher MatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, true, false);
 
-		private CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd)
+		/// <summary>Prepares matching backwards and reversing position to ending of matching sequence</summary>
+		/// <param name="matches">Some code matches</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher PrepareMatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, true, true);
+
+		private CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd, bool prepareOnly)
 		{
 			lastMatchCall = delegate ()
 			{
-				FixStart();
 				while (IsValid)
 				{
 					if (MatchSequence(Pos, matches))
@@ -602,6 +625,9 @@ namespace HarmonyLib
 				lastError = IsInvalid ? $"Cannot find {matches.Join()}" : null;
 				return this;
 			};
+			if (prepareOnly)
+				return this;
+			FixStart();
 			return lastMatchCall();
 		}
 
