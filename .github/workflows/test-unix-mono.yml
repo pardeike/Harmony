@@ -50,8 +50,6 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   # Disable sending .NET CLI telemetry to Microsoft.
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  # Use a writeable installation directory
-  DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
 
 jobs:
   unix-mono:
@@ -80,6 +78,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.102'
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
 
       - name: Get Installed .NET SDK Information
         run: dotnet --info
