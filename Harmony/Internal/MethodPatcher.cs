@@ -87,8 +87,8 @@ namespace HarmonyLib
 		{
 			var originalVariables = DeclareOriginalLocalVariables(il, source ?? original);
 			var privateVars = new Dictionary<string, LocalBuilder>();
-			var parameterNames = fixes.ToDictionary(fix => fix, fix => new HashSet<(ParameterInfo info, string realName)>(OriginalParameters(fix)));
 			var fixes = prefixes.Union(postfixes).Union(finalizers).Union(infixes).ToList();
+			var parameterNames = fixes.ToDictionary(fix => fix, fix => new HashSet<(ParameterInfo info, string realName)>(OriginalParameters(fix)));
 
 			LocalBuilder resultVariable = null;
 			if (idx > 0)

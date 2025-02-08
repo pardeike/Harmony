@@ -10,8 +10,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
+using System.Threading.Tasks;
 #endif
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP

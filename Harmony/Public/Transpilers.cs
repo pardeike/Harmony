@@ -70,6 +70,7 @@ namespace HarmonyLib
 
 		/// <summary>Applies all infixes to a method</summary>
 		/// <param name="instructions">The instructions of the method</param>
+		/// <param name="original">The target method that gets the infixes applied to</param>
 		/// <param name="infixes">A list of infixes</param>
 		/// <returns>The new instructions of the method</returns>
 		public static IEnumerable<CodeInstruction> ApplyInfixes(this IEnumerable<CodeInstruction> instructions, MethodBase original, params InnerFix[] infixes)
