@@ -29,13 +29,14 @@ namespace HarmonyLib
 		readonly List<MethodInfo> postfixes;
 		readonly List<MethodInfo> transpilers;
 		readonly List<MethodInfo> finalizers;
+		readonly List<MethodInfo> infixes;
 		readonly int idx;
 		readonly Type returnType;
 		readonly DynamicMethodDefinition patch;
 		readonly ILGenerator il;
 		readonly Emitter emitter;
 
-		internal MethodPatcher(MethodBase original, MethodBase source, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, bool debug)
+		internal MethodPatcher(MethodBase original, MethodBase source, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, List<MethodInfo> infixes, bool debug)
 		{
 			if (original is null)
 				throw new ArgumentNullException(nameof(original));
@@ -47,6 +48,7 @@ namespace HarmonyLib
 			this.postfixes = postfixes;
 			this.transpilers = transpilers;
 			this.finalizers = finalizers;
+			this.infixes = infixes;
 
 			if (debug)
 			{
@@ -54,7 +56,7 @@ namespace HarmonyLib
 				FileLog.FlushBuffer();
 			}
 
-			idx = prefixes.Count + postfixes.Count + finalizers.Count;
+			idx = prefixes.Count + postfixes.Count + finalizers.Count + infixes.Count;
 			returnType = AccessTools.GetReturnedType(original);
 			patch = CreateDynamicMethod(original, $"_Patch{idx}", debug);
 			if (patch is null)
@@ -85,8 +87,8 @@ namespace HarmonyLib
 		{
 			var originalVariables = DeclareOriginalLocalVariables(il, source ?? original);
 			var privateVars = new Dictionary<string, LocalBuilder>();
-			var fixes = prefixes.Union(postfixes).Union(finalizers).ToList();
 			var parameterNames = fixes.ToDictionary(fix => fix, fix => new HashSet<(ParameterInfo info, string realName)>(OriginalParameters(fix)));
+			var fixes = prefixes.Union(postfixes).Union(finalizers).Union(infixes).ToList();
 
 			LocalBuilder resultVariable = null;
 			if (idx > 0)

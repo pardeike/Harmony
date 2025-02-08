@@ -4,22 +4,10 @@ using System.Reflection;
 
 namespace HarmonyLib
 {
-	/// <summary>Patch function helpers</summary>
 	internal static class PatchFunctions
 	{
-		/// <summary>Sorts patch methods by their priority rules</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="patches">Patches to sort</param>
-		/// <param name="debug">Use debug mode</param>
-		/// <returns>The sorted patch methods</returns>
-		///
 		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug) => new PatchSorter(patches, debug).Sort(original);
 
-		/// <summary>Creates new replacement method with the latest patches and detours the original method</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="patchInfo">Information describing the patches</param>
-		/// <returns>The newly created replacement method</returns>
-		///
 		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo)
 		{
 			var debug = patchInfo.Debugging || Harmony.DEBUG;
@@ -28,8 +16,9 @@ namespace HarmonyLib
 			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes, debug);
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers, debug);
 			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers, debug);
+			var sortedInfixes = GetSortedPatchMethods(original, patchInfo.infixes, debug);
 
-			var patcher = new MethodPatcher(original, null, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, debug);
+			var patcher = new MethodPatcher(original, null, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, sortedInfixes, debug);
 			var replacement = patcher.CreateReplacement(out var finalInstructions);
 			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
 
@@ -62,7 +51,7 @@ namespace HarmonyLib
 			if (postTranspiler is not null) transpilers.Add(postTranspiler);
 
 			var empty = new List<MethodInfo>();
-			var patcher = new MethodPatcher(standin.method, original, empty, empty, transpilers, empty, debug);
+			var patcher = new MethodPatcher(standin.method, original, empty, empty, transpilers, empty, empty, debug);
 			var replacement = patcher.CreateReplacement(out var finalInstructions);
 			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {standin.method.FullDescription()}");
 

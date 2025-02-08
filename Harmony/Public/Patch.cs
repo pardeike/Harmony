@@ -1,275 +1,13 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+
 #if NET5_0_OR_GREATER
-using System.Text.Json;
 using System.Text.Json.Serialization;
 #endif
 
 namespace HarmonyLib
 {
-	/// <summary>Patch serialization</summary>
-	///
-	internal static class PatchInfoSerialization
-	{
-#if NET5_0_OR_GREATER
-		static readonly JsonSerializerOptions serializerOptions = new() { IncludeFields = true };
-		internal static bool? useBinaryFormatter = null;
-		internal static bool UseBinaryFormatter
-		{
-			get
-			{
-				if (!useBinaryFormatter.HasValue)
-				{
-					// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
-					var hasSwitch = AppContext.TryGetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", out var isEnabled);
-					if (hasSwitch)
-						useBinaryFormatter = isEnabled;
-					else
-					{
-						// Default true, in line with Microsoft - https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/Common/src/System/LocalAppContextSwitches.Common.cs#L54
-						useBinaryFormatter = true;
-					}
-				}
-				return useBinaryFormatter.Value;
-			}
-		}
-#endif
-
-		class Binder : SerializationBinder
-		{
-			/// <summary>Control the binding of a serialized object to a type</summary>
-			/// <param name="assemblyName">Specifies the assembly name of the serialized object</param>
-			/// <param name="typeName">Specifies the type name of the serialized object</param>
-			/// <returns>The type of the object the formatter creates a new instance of</returns>
-			///
-			public override Type BindToType(string assemblyName, string typeName)
-			{
-				var types = new Type[] {
-					typeof(PatchInfo),
-					typeof(Patch[]),
-					typeof(Patch)
-				};
-				foreach (var type in types)
-					if (typeName == type.FullName)
-						return type;
-				var typeToDeserialize = Type.GetType(string.Format("{0}, {1}", typeName, assemblyName));
-				return typeToDeserialize;
-			}
-		}
-		internal static readonly BinaryFormatter binaryFormatter = new() { Binder = new Binder() };
-
-		/// <summary>Serializes a patch info</summary>
-		/// <param name="patchInfo">The <see cref="PatchInfo"/></param>
-		/// <returns>The serialized data</returns>
-		///
-		internal static byte[] Serialize(this PatchInfo patchInfo)
-		{
-#if NET5_0_OR_GREATER
-			if (UseBinaryFormatter)
-			{
-#endif
-			using var streamMemory = new MemoryStream();
-			binaryFormatter.Serialize(streamMemory, patchInfo);
-			return streamMemory.GetBuffer();
-#if NET5_0_OR_GREATER
-			}
-			else
-				return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
-#endif
-		}
-
-		/// <summary>Deserialize a patch info</summary>
-		/// <param name="bytes">The serialized data</param>
-		/// <returns>A <see cref="PatchInfo"/></returns>
-		///
-		internal static PatchInfo Deserialize(byte[] bytes)
-		{
-#if NET5_0_OR_GREATER
-			if (UseBinaryFormatter)
-			{
-#endif
-			using var streamMemory = new MemoryStream(bytes);
-			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
-#if NET5_0_OR_GREATER
-			}
-			else
-			{
-				return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
-			}
-#endif
-		}
-
-		/// <summary>Compare function to sort patch priorities</summary>
-		/// <param name="obj">The patch</param>
-		/// <param name="index">Zero-based index</param>
-		/// <param name="priority">The priority</param>
-		/// <returns>A standard sort integer (-1, 0, 1)</returns>
-		///
-		internal static int PriorityComparer(object obj, int index, int priority)
-		{
-			var trv = Traverse.Create(obj);
-			var theirPriority = trv.Field(nameof(Patch.priority)).GetValue<int>();
-			var theirIndex = trv.Field(nameof(Patch.index)).GetValue<int>();
-
-			if (priority != theirPriority)
-				return -(priority.CompareTo(theirPriority));
-
-			return index.CompareTo(theirIndex);
-		}
-	}
-
-	/// <summary>Serializable patch information</summary>
-	///
-	[Serializable]
-	public class PatchInfo
-	{
-		/// <summary>Prefixes as an array of <see cref="Patch"/></summary>
-		///
-#if NET5_0_OR_GREATER
-		[JsonInclude]
-#endif
-		public Patch[] prefixes = [];
-
-		/// <summary>Postfixes as an array of <see cref="Patch"/></summary>
-		///
-#if NET5_0_OR_GREATER
-		[JsonInclude]
-#endif
-		public Patch[] postfixes = [];
-
-		/// <summary>Transpilers as an array of <see cref="Patch"/></summary>
-		///
-#if NET5_0_OR_GREATER
-		[JsonInclude]
-#endif
-		public Patch[] transpilers = [];
-
-		/// <summary>Finalizers as an array of <see cref="Patch"/></summary>
-		///
-#if NET5_0_OR_GREATER
-		[JsonInclude]
-#endif
-		public Patch[] finalizers = [];
-
-		/// <summary>Returns if any of the patches wants debugging turned on</summary>
-		///
-#if NET5_0_OR_GREATER
-		[JsonIgnore]
-#endif
-		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug);
-
-		/// <summary>Adds prefixes</summary>
-		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="methods">The patch methods</param>
-		///
-		internal void AddPrefixes(string owner, params HarmonyMethod[] methods) => prefixes = Add(owner, methods, prefixes);
-
-		/// <summary>Adds a prefix</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddPrefix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddPrefixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
-		/// <summary>Removes prefixes</summary>
-		/// <param name="owner">The owner of the prefixes, or <c>*</c> for all</param>
-		///
-		public void RemovePrefix(string owner) => prefixes = Remove(owner, prefixes);
-
-		/// <summary>Adds postfixes</summary>
-		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="methods">The patch methods</param>
-		///
-		internal void AddPostfixes(string owner, params HarmonyMethod[] methods) => postfixes = Add(owner, methods, postfixes);
-
-		/// <summary>Adds a postfix</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddPostfix(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddPostfixes(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
-		/// <summary>Removes postfixes</summary>
-		/// <param name="owner">The owner of the postfixes, or <c>*</c> for all</param>
-		///
-		public void RemovePostfix(string owner) => postfixes = Remove(owner, postfixes);
-
-		/// <summary>Adds transpilers</summary>
-		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="methods">The patch methods</param>
-		///
-		internal void AddTranspilers(string owner, params HarmonyMethod[] methods) => transpilers = Add(owner, methods, transpilers);
-
-		/// <summary>Adds a transpiler</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddTranspiler(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddTranspilers(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
-		/// <summary>Removes transpilers</summary>
-		/// <param name="owner">The owner of the transpilers, or <c>*</c> for all</param>
-		///
-		public void RemoveTranspiler(string owner) => transpilers = Remove(owner, transpilers);
-
-		/// <summary>Adds finalizers</summary>
-		/// <param name="owner">An owner (Harmony ID)</param>
-		/// <param name="methods">The patch methods</param>
-		///
-		internal void AddFinalizers(string owner, params HarmonyMethod[] methods) => finalizers = Add(owner, methods, finalizers);
-
-		/// <summary>Adds a finalizer</summary>
-		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
-		public void AddFinalizer(MethodInfo patch, string owner, int priority, string[] before, string[] after, bool debug) => AddFinalizers(owner, new HarmonyMethod(patch, priority, before, after, debug));
-
-		/// <summary>Removes finalizers</summary>
-		/// <param name="owner">The owner of the finalizers, or <c>*</c> for all</param>
-		///
-		public void RemoveFinalizer(string owner) => finalizers = Remove(owner, finalizers);
-
-		/// <summary>Removes a patch using its method</summary>
-		/// <param name="patch">The method of the patch to remove</param>
-		///
-		public void RemovePatch(MethodInfo patch)
-		{
-			prefixes = prefixes.Where(p => p.PatchMethod != patch).ToArray();
-			postfixes = postfixes.Where(p => p.PatchMethod != patch).ToArray();
-			transpilers = transpilers.Where(p => p.PatchMethod != patch).ToArray();
-			finalizers = finalizers.Where(p => p.PatchMethod != patch).ToArray();
-		}
-
-		/// <summary>Gets a concatenated list of patches</summary>
-		/// <param name="owner">The Harmony instance ID adding the new patches</param>
-		/// <param name="add">The patches to add</param>
-		/// <param name="current">The current patches</param>
-		///
-		private static Patch[] Add(string owner, HarmonyMethod[] add, Patch[] current)
-		{
-			// avoid copy if no patch added
-			if (add.Length == 0)
-				return current;
-
-			// concat lists
-			var initialIndex = current.Length;
-			return
-			[
-				.. current
-,
-				.. add
-					.Where(method => method != null)
-					.Select((method, i) => new Patch(method, i + initialIndex, owner))
-,
-			];
-		}
-
-		/// <summary>Gets a list of patches with any from the given owner removed</summary>
-		/// <param name="owner">The owner of the methods, or <c>*</c> for all</param>
-		/// <param name="current">The current patches</param>
-		///
-		private static Patch[] Remove(string owner, Patch[] current)
-		{
-			return owner == "*"
-				? []
-				: current.Where(patch => patch.owner != owner).ToArray();
-		}
-	}
-
 	/// <summary>A serializable patch</summary>
 	///
 #if NET5_0_OR_GREATER
@@ -307,6 +45,10 @@ namespace HarmonyLib
 		private int methodToken;
 		private string moduleGUID;
 
+		/// <summary>For an infix patch, this defines the inner method that we will apply the patch to</summary>
+		///
+		public readonly InnerMethod innerMethod;
+
 		/// <summary>The method of the static patch method</summary>
 		///
 #if NET5_0_OR_GREATER
@@ -316,14 +58,7 @@ namespace HarmonyLib
 		{
 			get
 			{
-				if (patchMethod is null)
-				{
-					var mdl = AppDomain.CurrentDomain.GetAssemblies()
-						.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
-						.SelectMany(a => a.GetLoadedModules())
-						.First(m => m.ModuleVersionId.ToString() == moduleGUID);
-					patchMethod = (MethodInfo)mdl.ResolveMethod(methodToken);
-				}
+				patchMethod ??= AccessTools.GetMethodByModuleAndToken(moduleGUID, methodToken);
 				return patchMethod;
 			}
 			set
