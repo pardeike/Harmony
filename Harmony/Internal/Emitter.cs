@@ -35,6 +35,183 @@ namespace HarmonyLib
 
 		internal string CodePos() => CodePos(CurrentPos());
 
+		internal LocalBuilder DeclareLocalVariable(Type type, bool isReturnValue = false)
+		{
+			if (type.IsByRef)
+			{
+				if (isReturnValue)
+				{
+					var v = il.DeclareLocal(type);
+					Emit(OpCodes.Ldc_I4_1);
+					Emit(OpCodes.Newarr, type.GetElementType());
+					Emit(OpCodes.Ldc_I4_0);
+					Emit(OpCodes.Ldelema, type.GetElementType());
+					Emit(OpCodes.Stloc, v);
+					return v;
+				}
+				else
+					type = type.GetElementType();
+			}
+			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
+
+			if (AccessTools.IsClass(type))
+			{
+				var v = il.DeclareLocal(type);
+				Emit(OpCodes.Ldnull);
+				Emit(OpCodes.Stloc, v);
+				return v;
+			}
+			if (AccessTools.IsStruct(type))
+			{
+				var v = il.DeclareLocal(type);
+				Emit(OpCodes.Ldloca, v);
+				Emit(OpCodes.Initobj, type);
+				return v;
+			}
+			if (AccessTools.IsValue(type))
+			{
+				var v = il.DeclareLocal(type);
+				if (type == typeof(float))
+					Emit(OpCodes.Ldc_R4, (float)0);
+				else if (type == typeof(double))
+					Emit(OpCodes.Ldc_R8, (double)0);
+				else if (type == typeof(long) || type == typeof(ulong))
+					Emit(OpCodes.Ldc_I8, (long)0);
+				else
+					Emit(OpCodes.Ldc_I4, 0);
+				Emit(OpCodes.Stloc, v);
+				return v;
+			}
+			return null;
+		}
+
+		internal void InitializeOutParameter(int argIndex, Type type)
+		{
+			if (type.IsByRef) type = type.GetElementType();
+			Emit(OpCodes.Ldarg, argIndex);
+
+			if (AccessTools.IsStruct(type))
+			{
+				Emit(OpCodes.Initobj, type);
+				return;
+			}
+
+			if (AccessTools.IsValue(type))
+			{
+				if (type == typeof(float))
+				{
+					Emit(OpCodes.Ldc_R4, (float)0);
+					Emit(OpCodes.Stind_R4);
+					return;
+				}
+				else if (type == typeof(double))
+				{
+					Emit(OpCodes.Ldc_R8, (double)0);
+					Emit(OpCodes.Stind_R8);
+					return;
+				}
+				else if (type == typeof(long))
+				{
+					Emit(OpCodes.Ldc_I8, (long)0);
+					Emit(OpCodes.Stind_I8);
+					return;
+				}
+				else
+				{
+					Emit(OpCodes.Ldc_I4, 0);
+					Emit(OpCodes.Stind_I4);
+					return;
+				}
+			}
+
+			// class or default
+			Emit(OpCodes.Ldnull);
+			Emit(OpCodes.Stind_Ref);
+		}
+
+		internal void PrepareArgumentArray(MethodBase original)
+		{
+			var parameters = original.GetParameters();
+			var i = 0;
+			foreach (var pInfo in parameters)
+			{
+				var argIndex = i++ + (original.IsStatic ? 0 : 1);
+				if (pInfo.IsOut || pInfo.IsRetval)
+					InitializeOutParameter(argIndex, pInfo.ParameterType);
+			}
+			Emit(OpCodes.Ldc_I4, parameters.Length);
+			Emit(OpCodes.Newarr, typeof(object));
+			i = 0;
+			var arrayIdx = 0;
+			foreach (var pInfo in parameters)
+			{
+				var argIndex = i++ + (original.IsStatic ? 0 : 1);
+				var pType = pInfo.ParameterType;
+				var paramByRef = pType.IsByRef;
+				if (paramByRef) pType = pType.GetElementType();
+				Emit(OpCodes.Dup);
+				Emit(OpCodes.Ldc_I4, arrayIdx++);
+				Emit(OpCodes.Ldarg, argIndex);
+				if (paramByRef)
+				{
+					if (AccessTools.IsStruct(pType))
+						Emit(OpCodes.Ldobj, pType);
+					else
+						Emit(MethodPatcherTools.LoadIndOpCodeFor(pType));
+				}
+				if (pType.IsValueType)
+					Emit(OpCodes.Box, pType);
+				Emit(OpCodes.Stelem_Ref);
+			}
+		}
+
+		internal void RestoreArgumentArray(MethodBase original, LocalBuilderState localState)
+		{
+			var parameters = original.GetParameters();
+			var i = 0;
+			var arrayIdx = 0;
+			foreach (var pInfo in parameters)
+			{
+				var argIndex = i++ + (original.IsStatic ? 0 : 1);
+				var pType = pInfo.ParameterType;
+				if (pType.IsByRef)
+				{
+					pType = pType.GetElementType();
+
+					Emit(OpCodes.Ldarg, argIndex);
+					Emit(OpCodes.Ldloc, localState[MethodPatcherTools.ARGS_ARRAY_VAR]);
+					Emit(OpCodes.Ldc_I4, arrayIdx);
+					Emit(OpCodes.Ldelem_Ref);
+
+					if (pType.IsValueType)
+					{
+						Emit(OpCodes.Unbox_Any, pType);
+						if (AccessTools.IsStruct(pType))
+							Emit(OpCodes.Stobj, pType);
+						else
+							Emit(MethodPatcherTools.StoreIndOpCodeFor(pType));
+					}
+					else
+					{
+						Emit(OpCodes.Castclass, pType);
+						Emit(OpCodes.Stind_Ref);
+					}
+				}
+				else
+				{
+					Emit(OpCodes.Ldloc, localState[MethodPatcherTools.ARGS_ARRAY_VAR]);
+					Emit(OpCodes.Ldc_I4, arrayIdx);
+					Emit(OpCodes.Ldelem_Ref);
+					if (pType.IsValueType)
+						Emit(OpCodes.Unbox_Any, pType);
+					else
+						Emit(OpCodes.Castclass, pType);
+					Emit(OpCodes.Starg, argIndex);
+				}
+				arrayIdx++;
+			}
+		}
+
 		internal void LogComment(string comment)
 		{
 			if (debug)
