@@ -1510,6 +1510,10 @@ namespace HarmonyLib
 			}
 		}
 
+		/// <inheritdoc cref="MethodDelegate{DelegateType}(MethodInfo, object, bool, Type[])"/>
+		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true) where DelegateType : Delegate
+			=> MethodDelegate<DelegateType>(method, instance, virtualCall, null);
+
 		/// <summary>Creates a delegate to a given method</summary>
 		/// <typeparam name="DelegateType">The delegate Type</typeparam>
 		/// <param name="method">The method to create a delegate from.</param>
@@ -1534,14 +1538,14 @@ namespace HarmonyLib
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
 		/// </param>
 		/// <remarks>
-		/// <param>
+		/// <para>
 		/// Delegate invocation is more performant and more convenient to use than <see cref="MethodBase.Invoke(object, object[])"/>
 		/// at a one-time setup cost.
-		/// </param>
-		/// <param>
+		/// </para>
+		/// <para>
 		/// Works for both type of static and instance methods, both open and closed (a.k.a. unbound and bound) instance methods,
 		/// and both class and struct methods.
-		/// </param>
+		/// </para>
 		/// </remarks>
 		///
 		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true, Type[] delegateArgs = null) where DelegateType : Delegate
@@ -1693,6 +1697,10 @@ namespace HarmonyLib
 			return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
 		}
 
+		/// <inheritdoc cref="MethodDelegate{DelegateType}(string, object, bool, Type[])"/>
+		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance = null, bool virtualCall = true) where DelegateType : Delegate
+			=> MethodDelegate<DelegateType>(typeColonName, instance, virtualCall, null);
+
 		/// <summary>Creates a delegate to a given method</summary>
 		/// <typeparam name="DelegateType">The delegate Type</typeparam>
 		/// <param name="typeColonName">The method in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
@@ -1707,6 +1715,15 @@ namespace HarmonyLib
 		/// else, invocation of the delegate calls the exact specified <paramref name="typeColonName"/> (this is useful for calling base class methods)
 		/// Note: if <c>false</c> and <paramref name="typeColonName"/> is an interface method, an ArgumentException is thrown.
 		/// </param>
+		/// <param name="delegateArgs">
+		/// Only applies for instance methods, and if argument <paramref name="instance"/> is null.
+		/// This argument only matters if the target <paramref name="method"/> signature contains a value type (such as struct or primitive types),
+		/// and your <typeparamref name="DelegateType"/> argument is replaced by a non-value type
+		/// (usually <c>object</c>) instead of using said value type.
+		/// Use this if the generic arguments of <typeparamref name="DelegateType"/> doesn't represent the delegate's
+		/// arguments, and calling this function fails
+		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
+		/// </param>
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="typeColonName"/></returns>
 		/// <remarks>
 		/// <para>
@@ -1719,10 +1736,10 @@ namespace HarmonyLib
 		/// </para>
 		/// </remarks>
 		///
-		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance = null, bool virtualCall = true) where DelegateType : Delegate
+		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance = null, bool virtualCall = true, Type[] delegateArgs = null) where DelegateType : Delegate
 		{
 			var method = DeclaredMethod(typeColonName);
-			return MethodDelegate<DelegateType>(method, instance, virtualCall);
+			return MethodDelegate<DelegateType>(method, instance, virtualCall, delegateArgs);
 		}
 
 		/// <summary>Creates a delegate for a given delegate definition, attributed with [<see cref="HarmonyLib.HarmonyDelegate"/>]</summary>
