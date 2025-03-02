@@ -1512,6 +1512,7 @@ namespace HarmonyLib
 
 #pragma warning disable CS1591
 		[Obsolete("This overload only exists for runtime backwards compatibility and will be removed in Harmony 3. Use MethodDelegate(MethodInfo, object, bool, Type[]) instead")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance, bool virtualCall) where DelegateType : Delegate
 			 => MethodDelegate<DelegateType>(method, instance, virtualCall, null);
 #pragma warning restore CS1591
@@ -1701,6 +1702,7 @@ namespace HarmonyLib
 
 #pragma warning disable CS1591
 		[Obsolete("This overload only exists for runtime backwards compatibility and will be removed in Harmony 3. Use MethodDelegate(string, object, bool, Type[]) instead")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance, bool virtualCall) where DelegateType : Delegate
 			 => MethodDelegate<DelegateType>(typeColonName, instance, virtualCall, null);
 #pragma warning restore CS1591

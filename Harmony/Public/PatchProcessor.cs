@@ -8,15 +8,11 @@ using System.Reflection.Emit;
 namespace HarmonyLib
 {
 	/// <summary>A PatchProcessor handles patches on a method/constructor</summary>
-	/// 
-	/// <remarks>Creates an empty patch processor</remarks>
-	/// <param name="instance">The Harmony instance</param>
-	/// <param name="original">The original method/constructor</param>
 	///
-	public class PatchProcessor(Harmony instance, MethodBase original)
+	public class PatchProcessor
 	{
-		readonly Harmony instance = instance;
-		readonly MethodBase original = original;
+		readonly Harmony instance;
+		readonly MethodBase original;
 
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
@@ -24,6 +20,15 @@ namespace HarmonyLib
 		HarmonyMethod finalizer;
 
 		internal static readonly object locker = new();
+
+		/// <summary>Creates a new PatchProcessor.</summary>
+		/// <param name="instance">The Harmony instance</param>
+		/// <param name="original">The original method/constructor</param>
+		public PatchProcessor(Harmony instance, MethodBase original)
+		{
+			this.instance = instance;
+			this.original = original;
+		}
 
 		/// <summary>Adds a prefix</summary>
 		/// <param name="prefix">The prefix as a <see cref="HarmonyMethod"/></param>

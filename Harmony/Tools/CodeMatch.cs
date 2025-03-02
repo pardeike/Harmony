@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -19,6 +20,7 @@ namespace HarmonyLib
 		// for backwards compatibility we keep
 		/// <summary>The matched opcodes</summary>
 		[Obsolete("Use opcodeSet instead")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 #pragma warning disable IDE1006
 		public List<OpCode> opcodes
 		{

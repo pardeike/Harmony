@@ -15,6 +15,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("", "IDE0251")]
 [assembly: SuppressMessage("", "IDE0130")]
 [assembly: SuppressMessage("Style", "IDE0270")]
+[assembly: SuppressMessage("Style", "IDE0290")]
 [assembly: SuppressMessage("Usage", "CA2211")]
 [assembly: SuppressMessage("GeneratedRegex", "SYSLIB1045")]
 
