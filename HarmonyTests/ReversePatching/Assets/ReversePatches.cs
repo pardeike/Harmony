@@ -12,7 +12,13 @@ namespace HarmonyLibTests.Assets
 	{
 		public string Method(string original, int n)
 		{
-			var parts = original.Split('-').Reverse().ToArray();
+			var parts = original.Split('-');
+			for (var i = 0; i < parts.Length / 2; i++)
+			{
+				var tmp = parts[i];
+				parts[i] = parts[parts.Length - i - 1];
+				parts[parts.Length - i - 1] = tmp;
+			}
 			var str = string.Join("", parts) + n;
 			return str + "Prolog";
 		}
