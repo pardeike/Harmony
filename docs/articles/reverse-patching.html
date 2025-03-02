@@ -125,7 +125,7 @@ Lets say the original method is long and has some part where a checksum is calcu
 {
     private string SpecialCalculation(string original, int n)
     {
-        var parts = original.Split('-').Reverse().ToArray();
+        var parts = original.Split('-');
         var str = string.Join(&quot;&quot;, parts) + n;
         return str + &quot;Prolog&quot;;
     }
@@ -138,7 +138,7 @@ public class Patch
     // code from the original including the Join() but not the +n
     //
     // Basically
-    // var parts = original.Split('-').Reverse().ToArray();
+    // var parts = original.Split('-');
     // return string.Join(&quot;&quot;, parts)
     //
     [HarmonyReversePatch]
