@@ -46,7 +46,7 @@ namespace Reverse_Patching
 		{
 			private string SpecialCalculation(string original, int n)
 			{
-				var parts = original.Split('-').Reverse().ToArray();
+				var parts = original.Split('-');
 				var str = string.Join("", parts) + n;
 				return str + "Prolog";
 			}
@@ -59,7 +59,7 @@ namespace Reverse_Patching
 			// code from the original including the Join() but not the +n
 			//
 			// Basically
-			// var parts = original.Split('-').Reverse().ToArray();
+			// var parts = original.Split('-');
 			// return string.Join("", parts)
 			//
 			[HarmonyReversePatch]
