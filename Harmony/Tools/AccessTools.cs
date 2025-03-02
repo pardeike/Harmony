@@ -1511,7 +1511,8 @@ namespace HarmonyLib
 		}
 
 		/// <inheritdoc cref="MethodDelegate{DelegateType}(MethodInfo, object, bool, Type[])"/>
-		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance = null, bool virtualCall = true) where DelegateType : Delegate
+		[Obsolete("Use the new overload with extra delegate argument Types parameter.")]
+		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance, bool virtualCall) where DelegateType : Delegate
 			=> MethodDelegate<DelegateType>(method, instance, virtualCall, null);
 
 		/// <summary>Creates a delegate to a given method</summary>
@@ -1698,7 +1699,8 @@ namespace HarmonyLib
 		}
 
 		/// <inheritdoc cref="MethodDelegate{DelegateType}(string, object, bool, Type[])"/>
-		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance = null, bool virtualCall = true) where DelegateType : Delegate
+		[Obsolete("Use the new overload with extra delegate argument Types parameter.")]
+		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance, bool virtualCall) where DelegateType : Delegate
 			=> MethodDelegate<DelegateType>(typeColonName, instance, virtualCall, null);
 
 		/// <summary>Creates a delegate to a given method</summary>
