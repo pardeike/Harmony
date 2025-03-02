@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -70,6 +71,9 @@ namespace HarmonyLib
 		static List<string> buffer = [];
 
 		static string IndentString() => new(indentChar, indentLevel);
+		static string CodePos(int offset) => string.Format("IL_{0:X4}: ", offset);
+
+
 
 		/// <summary>Changes the indentation level</summary>
 		/// <param name="delta">The value to add to the indentation level</param>
@@ -173,6 +177,121 @@ namespace HarmonyLib
 			{
 				using var writer = File.AppendText(LogPath);
 				writer.WriteLine(IndentString() + str);
+			}
+		}
+
+		/// <summary>TODO</summary>
+		/// <param name="codePos"></param>
+		/// <param name="comment"></param>
+		public static void LogILComment(int codePos, string comment)
+			=> LogBuffered(string.Format("{0}// {1}", CodePos(codePos), comment));
+
+		/// <summary>TODO</summary>
+		/// <param name="codePos"></param>
+		/// <param name="opcode"></param>
+		public static void LogIL(int codePos, OpCode opcode)
+			=> LogBuffered(string.Format("{0}{1}", CodePos(codePos), opcode));
+
+		/// <summary>TODO</summary>
+		/// <param name="codePos"></param>
+		/// <param name="opcode"></param>
+		/// <param name="arg"></param>
+		public static void LogIL(int codePos, OpCode opcode, object arg)
+		{
+			var argStr = Emitter.FormatOperand(arg);
+			var space = argStr.Length > 0 ? " " : "";
+			var opcodeName = opcode.ToString();
+			if (opcode.FlowControl == FlowControl.Branch || opcode.FlowControl == FlowControl.Cond_Branch) opcodeName += " =>";
+			opcodeName = opcodeName.PadRight(10);
+			LogBuffered(string.Format("{0}{1}{2}{3}", CodePos(codePos), opcodeName, space, argStr));
+		}
+
+		/// <summary>TODO</summary>
+		/// <param name="variable"></param>
+		public static void LogIL(Mono.Cecil.Cil.VariableDefinition variable)
+			=> LogBuffered(string.Format("{0}Local var {1}: {2}{3}", CodePos(0), variable.Index, variable.VariableType.FullName, variable.IsPinned ? "(pinned)" : ""));
+
+		/// <summary>TODO</summary>
+		/// <param name="codePos"></param>
+		/// <param name="label"></param>
+		public static void LogIL(int codePos, Label label)
+			=> LogBuffered(CodePos(codePos) + Emitter.FormatOperand(label));
+
+		/// <summary>TODO</summary>
+		/// <param name="codePos"></param>
+		/// <param name="block"></param>
+		public static void LogILBlockBegin(int codePos, ExceptionBlock block)
+		{
+			switch (block.blockType)
+			{
+				case ExceptionBlockType.BeginExceptionBlock:
+					LogBuffered(".try");
+					LogBuffered("{");
+					ChangeIndent(1);
+					break;
+
+				case ExceptionBlockType.BeginCatchBlock:
+					// fake log a LEAVE code since BeginCatchBlock() does add it
+					LogIL(codePos, OpCodes.Leave, new LeaveTry());
+
+					ChangeIndent(-1);
+					LogBuffered("} // end try");
+
+					LogBuffered($".catch {block.catchType}");
+					LogBuffered("{");
+					ChangeIndent(1);
+					break;
+
+				case ExceptionBlockType.BeginExceptFilterBlock:
+					// fake log a LEAVE code since BeginCatchBlock() does add it
+					LogIL(codePos, OpCodes.Leave, new LeaveTry());
+
+					ChangeIndent(-1);
+					LogBuffered("} // end try");
+
+					LogBuffered(".filter");
+					LogBuffered("{");
+					ChangeIndent(1);
+					break;
+
+				case ExceptionBlockType.BeginFaultBlock:
+					// fake log a LEAVE code since BeginCatchBlock() does add it
+					LogIL(codePos, OpCodes.Leave, new LeaveTry());
+
+					ChangeIndent(-1);
+					LogBuffered("} // end try");
+
+					LogBuffered(".fault");
+					LogBuffered("{");
+					ChangeIndent(1);
+					break;
+
+				case ExceptionBlockType.BeginFinallyBlock:
+					// fake log a LEAVE code since BeginCatchBlock() does add it
+					LogIL(codePos, OpCodes.Leave, new LeaveTry());
+
+					ChangeIndent(-1);
+					LogBuffered("} // end try");
+
+					LogBuffered(".finally");
+					LogBuffered("{");
+					ChangeIndent(1);
+					break;
+			}
+		}
+
+		/// <summary>TODO</summary>
+		/// <param name="codePos"></param>
+		/// <param name="block"></param>
+		public static void LogILBlockEnd(int codePos, ExceptionBlock block)
+		{
+			switch (block.blockType)
+			{
+				case ExceptionBlockType.EndExceptionBlock:
+					LogIL(codePos, OpCodes.Leave, new LeaveTry());
+					ChangeIndent(-1);
+					LogBuffered("} // end handler");
+					break;
 			}
 		}
 

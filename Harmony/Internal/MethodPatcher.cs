@@ -17,7 +17,7 @@ namespace HarmonyLib
 		readonly List<MethodInfo> transpilers;
 		readonly List<MethodInfo> finalizers;
 		readonly List<MethodInfo> infixes;
-		readonly int idx;
+		readonly int patchIdx;
 		readonly Type returnType;
 		readonly DynamicMethodDefinition patch;
 		readonly ILGenerator il;
@@ -43,17 +43,17 @@ namespace HarmonyLib
 				FileLog.FlushBuffer();
 			}
 
-			idx = prefixes.Count + postfixes.Count + finalizers.Count + infixes.Count;
+			patchIdx = prefixes.Count + postfixes.Count + finalizers.Count + infixes.Count;
 			returnType = AccessTools.GetReturnedType(original);
-			patch = MethodPatcherTools.CreateDynamicMethod(original, $"_Patch{idx}", debug);
+			patch = MethodPatcherTools.CreateDynamicMethod(original, $"_Patch{patchIdx}", debug);
 			if (patch is null)
 				throw new Exception("Could not create replacement method");
 
 			il = patch.GetILGenerator();
-			emitter = new Emitter(il, debug);
+			emitter = new Emitter(il); // TODO: remove Emitter and only create it in the last step
 		}
 
-		internal MethodInfo CreateReplacement(out Dictionary<int, CodeInstruction> finalInstructions)
+		internal (MethodInfo, Dictionary<int, CodeInstruction>) CreateReplacement()
 		{
 			var originalVariables = MethodPatcherTools.DeclareOriginalLocalVariables(il, source ?? original);
 			var localState = new LocalBuilderState();
@@ -61,7 +61,7 @@ namespace HarmonyLib
 			var parameterNames = fixes.ToDictionary(fix => fix, fix => new HashSet<(ParameterInfo info, string realName)>(MethodPatcherTools.OriginalParameters(fix)));
 
 			LocalBuilder resultVariable = null;
-			if (idx > 0)
+			if (patchIdx > 0)
 			{
 				resultVariable = emitter.DeclareLocalVariable(returnType, true);
 				localState[MethodPatcherTools.RESULT_VAR] = resultVariable;
@@ -140,7 +140,9 @@ namespace HarmonyLib
 			copier.AddTranspiler(PatchTools.m_GetExecutingAssemblyReplacementTranspiler);
 
 			var endLabels = new List<Label>();
-			_ = copier.Finalize(emitter, endLabels, out var hasReturnCode, out var methodEndsInDeadCode);
+			var replacementCodes = copier.Finalize(out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
+			//copier.LogCodes(emitter, replacementCodes);
+			copier.EmitCodes(emitter, replacementCodes, endLabels);
 
 			foreach (var label in endLabels)
 				emitter.MarkLabel(label);
@@ -153,6 +155,7 @@ namespace HarmonyLib
 
 			if (resultVariable is not null && (hasReturnCode || (methodEndsInDeadCode && skipOriginalLabel is not null)))
 				emitter.Emit(OpCodes.Ldloc, resultVariable);
+			FileLog.LogILComment(emitter.CurrentPos(), "end original" + (methodEndsInDeadCode ? " (has dead code end)" : ""));
 
 			var needsToStorePassthroughResult = AddPostfixes(localState, runOriginalVariable, true);
 
@@ -176,7 +179,7 @@ namespace HarmonyLib
 				emitter.MarkLabel(noExceptionLabel1);
 
 				// end try, begin catch
-				emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label);
+				emitter.MarkBlockBefore(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock), out var label_off);
 				emitter.Emit(OpCodes.Stloc, localState[MethodPatcherTools.EXCEPTION_VAR]);
 
 				emitter.Emit(OpCodes.Ldloc, finalizedVariable);
@@ -209,8 +212,6 @@ namespace HarmonyLib
 			if (methodEndsInDeadCode == false || skipOriginalLabel is not null || hasFinalizers || postfixes.Count > 0)
 				emitter.Emit(OpCodes.Ret);
 
-			finalInstructions = emitter.GetInstructions();
-
 			if (debug)
 			{
 				FileLog.LogBuffered("DONE");
@@ -218,7 +219,7 @@ namespace HarmonyLib
 				FileLog.FlushBuffer();
 			}
 
-			return patch.Generate();
+			return (patch.Generate(), emitter.GetInstructions());
 		}
 
 		void AddPrefixes(LocalBuilderState localState, LocalBuilder runOriginalVariable)
@@ -608,19 +609,19 @@ namespace HarmonyLib
 					continue;
 				}
 
-				int idx;
+				int argumentIdx;
 				if (patchParamName.StartsWith(MethodPatcherTools.PARAM_INDEX_PREFIX, StringComparison.Ordinal))
 				{
 					var val = patchParamName.Substring(MethodPatcherTools.PARAM_INDEX_PREFIX.Length);
-					if (!int.TryParse(val, out idx))
+					if (!int.TryParse(val, out argumentIdx))
 						throw new Exception($"Parameter {patchParamName} does not contain a valid index");
-					if (idx < 0 || idx >= originalParameters.Length)
-						throw new Exception($"No parameter found at index {idx}");
+					if (argumentIdx < 0 || argumentIdx >= originalParameters.Length)
+						throw new Exception($"No parameter found at index {argumentIdx}");
 				}
 				else
 				{
-					idx = patch.GetArgumentIndex(originalParameterNames, patchParam);
-					if (idx == -1)
+					argumentIdx = patch.GetArgumentIndex(originalParameterNames, patchParam);
+					if (argumentIdx == -1)
 					{
 						var harmonyMethod = HarmonyMethodExtensions.GetMergedFromType(patchParam.ParameterType);
 						harmonyMethod.methodType ??= MethodType.Normal;
@@ -658,14 +659,14 @@ namespace HarmonyLib
 					}
 				}
 
-				var originalParamType = originalParameters[idx].ParameterType;
+				var originalParamType = originalParameters[argumentIdx].ParameterType;
 				var originalParamElementType = originalParamType.IsByRef ? originalParamType.GetElementType() : originalParamType;
 				var patchParamType = patchParam.ParameterType;
 				var patchParamElementType = patchParamType.IsByRef ? patchParamType.GetElementType() : patchParamType;
-				var originalIsNormal = originalParameters[idx].IsOut is false && originalParamType.IsByRef is false;
+				var originalIsNormal = originalParameters[argumentIdx].IsOut is false && originalParamType.IsByRef is false;
 				var patchIsNormal = patchParam.IsOut is false && patchParamType.IsByRef is false;
 				var needsBoxing = originalParamElementType.IsValueType && patchParamElementType.IsValueType is false;
-				var patchArgIndex = idx + (isInstance ? 1 : 0);
+				var patchArgIndex = argumentIdx + (isInstance ? 1 : 0);
 
 				if (originalIsNormal == patchIsNormal)
 				{
@@ -713,7 +714,7 @@ namespace HarmonyLib
 					if (originalParamElementType.IsValueType)
 						emitter.Emit(OpCodes.Ldobj, originalParamElementType);
 					else
-						emitter.Emit(MethodPatcherTools.LoadIndOpCodeFor(originalParameters[idx].ParameterType));
+						emitter.Emit(MethodPatcherTools.LoadIndOpCodeFor(originalParameters[argumentIdx].ParameterType));
 				}
 			}
 		}

@@ -30,7 +30,7 @@ namespace HarmonyTests.Extras
 				.ToList()
 				.Join(delimiter: ",");
 
-			return "{" + fixes + "}";
+			return "{" + fixes + ",\"VersionCount\":123}";
 		}
 
 #if NET5_0_OR_GREATER
@@ -46,6 +46,7 @@ namespace HarmonyTests.Extras
 			patchInfo.AddTranspilers("transpilers", [hMethod]);
 			patchInfo.AddFinalizers("finalizers", [hMethod]);
 			patchInfo.AddInfixes("infixes", [hMethod]);
+			patchInfo.VersionCount = 123;
 
 			PatchInfoSerialization.useBinaryFormatter = false;
 			var result = PatchInfoSerialization.Serialize(patchInfo);
@@ -62,6 +63,7 @@ namespace HarmonyTests.Extras
 
 			var data = Encoding.UTF8.GetBytes(ExpectedJSON());
 			var patchInfo = PatchInfoSerialization.Deserialize(data);
+			Assert.AreEqual(123, patchInfo.VersionCount);
 
 			var n = 0;
 			GetFixes(patchInfo)

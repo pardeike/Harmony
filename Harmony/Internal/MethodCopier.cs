@@ -24,11 +24,27 @@ namespace HarmonyLib
 			reader.GenerateInstructions();
 		}
 
+		internal MethodCopier(MethodCreatorConfig config)
+		{
+			if (config.MethodBase is null) throw new ArgumentNullException("config.methodbase");
+			reader = new MethodBodyReader(config.MethodBase, config.il);
+			reader.DeclareVariables(config.originalVariables);
+			reader.GenerateInstructions();
+			reader.SetDebugging(config.debug);
+		}
+
 		internal void SetDebugging(bool debug) => reader.SetDebugging(debug);
 
 		internal void AddTranspiler(MethodInfo transpiler) => transpilers.Add(transpiler);
 
-		internal List<CodeInstruction> Finalize(Emitter emitter, List<Label> endLabels, out bool hasReturnCode, out bool methodEndsInDeadCode) => reader.FinalizeILCodes(emitter, transpilers, endLabels, out hasReturnCode, out methodEndsInDeadCode);
+		internal List<CodeInstruction> Finalize(out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
+			=> reader.FinalizeILCodes(transpilers, out hasReturnCode, out methodEndsInDeadCode, endLabels);
+
+		internal void LogCodes(Emitter emitter, List<CodeInstruction> codeInstructions)
+			=> reader.LogCodes(emitter, codeInstructions);
+
+		internal void EmitCodes(Emitter emitter, List<CodeInstruction> codeInstructions, List<Label> endLabels)
+			=> reader.EmitCodes(emitter, codeInstructions, endLabels);
 
 		internal static List<CodeInstruction> GetInstructions(ILGenerator generator, MethodBase method, int maxTranspilers)
 		{
@@ -48,7 +64,7 @@ namespace HarmonyLib
 					copier.AddTranspiler(sortedTranspilers[i]);
 			}
 
-			return copier.Finalize(null, null, out var _, out var _);
+			return copier.Finalize(out var _, out var _, null);
 		}
 	}
 
@@ -311,7 +327,7 @@ namespace HarmonyLib
 			return list.GetRange(0, n - 1).All(code => code.opcode != OpCodes.Ret);
 		}
 
-		internal List<CodeInstruction> FinalizeILCodes(Emitter emitter, List<MethodInfo> transpilers, List<Label> endLabels, out bool hasReturnCode, out bool methodEndsInDeadCode)
+		internal List<CodeInstruction> FinalizeILCodes(List<MethodInfo> transpilers, out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
 		{
 			hasReturnCode = false;
 			methodEndsInDeadCode = false;
@@ -361,26 +377,12 @@ namespace HarmonyLib
 			transpilers.Do(codeTranspiler.Add);
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
 
-			if (emitter is null)
-				return codeInstructions;
-
-			emitter.LogComment("start original");
-
-			// pass3 - log out all new local variables
-			//
-			if (debug)
-			{
-				var savedLog = FileLog.GetBuffer(true);
-				emitter.LogAllLocalVariables();
-				FileLog.LogBuffered(savedLog);
-			}
-
-			// pass4 - check for any RET
+			// pass3 - check for any RET
 			//
 			hasReturnCode = codeInstructions.Any(code => code.opcode == OpCodes.Ret);
 			methodEndsInDeadCode = EndsInDeadCode(codeInstructions);
 
-			// pass5 - remove RET if it appears at the end
+			// pass4 - remove RET if it appears at the end
 			//
 			while (true)
 			{
@@ -388,12 +390,51 @@ namespace HarmonyLib
 				if (lastInstruction is null || lastInstruction.opcode != OpCodes.Ret) break;
 
 				// remember any existing labels
-				endLabels.AddRange(lastInstruction.labels);
+				endLabels?.AddRange(lastInstruction.labels);
 
 				codeInstructions.RemoveAt(codeInstructions.Count - 1);
 			}
 
-			// pass6 - mark labels and exceptions and emit codes
+			return codeInstructions;
+		}
+
+		internal void LogCodes(Emitter emitter, List<CodeInstruction> codeInstructions)
+		{
+			if (debug == false) return;
+
+			emitter.Variables().Do(v => FileLog.LogIL(v));
+			FileLog.LogILComment(emitter.CurrentPos(), "start original");
+
+			codeInstructions.Do(codeInstruction =>
+			{
+				codeInstruction.labels.Do(label => FileLog.LogIL(emitter.CurrentPos(), label));
+				codeInstruction.blocks.Do(block => FileLog.LogILBlockBegin(emitter.CurrentPos(), block));
+
+				var code = codeInstruction.opcode;
+				var operand = codeInstruction.operand;
+
+				switch (code.OperandType)
+				{
+					case OperandType.InlineNone:
+						FileLog.LogIL(emitter.CurrentPos(), code);
+						break;
+
+					case OperandType.InlineSig:
+						FileLog.LogIL(emitter.CurrentPos(), code, (ICallSiteGenerator)operand);
+						break;
+
+					default:
+						FileLog.LogIL(emitter.CurrentPos(), code, operand);
+						break;
+				}
+
+				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(emitter.CurrentPos(), block));
+			});
+		}
+
+		internal void EmitCodes(Emitter emitter, List<CodeInstruction> codeInstructions, List<Label> endLabels)
+		{
+			// pass5 - mark labels and exceptions and emit codes
 			//
 			codeInstructions.Do(codeInstruction =>
 			{
@@ -403,10 +444,7 @@ namespace HarmonyLib
 				// start all exception blocks
 				// TODO: we ignore the resulting label because we have no way to use it
 				//
-				codeInstruction.blocks.Do(block =>
-				{
-					emitter.MarkBlockBefore(block, out var label);
-				});
+				codeInstruction.blocks.Do(block => emitter.MarkBlockBefore(block, out var label));
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
@@ -441,23 +479,18 @@ namespace HarmonyLib
 						if (operand is null) throw new Exception($"Wrong null argument: {codeInstruction}");
 						if ((operand is ICallSiteGenerator) is false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
 						emitter.AddInstruction(code, operand);
-						emitter.LogIL(code, operand);
 						cecilGenerator.Emit(code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
 						if (operand is null) throw new Exception($"Wrong null argument: {codeInstruction}");
 						emitter.AddInstruction(code, operand);
-						emitter.LogIL(code, operand);
 						_ = generator.DynEmit(code, operand);
 						break;
 				}
 
 				codeInstruction.blocks.Do(block => emitter.MarkBlockAfter(block));
 			});
-
-			emitter.LogComment("end original" + (methodEndsInDeadCode ? " (has dead code end)" : ""));
-			return codeInstructions;
 		}
 
 		// interpret member info value

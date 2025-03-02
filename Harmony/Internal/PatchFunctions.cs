@@ -18,8 +18,21 @@ namespace HarmonyLib
 			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers, debug);
 			var sortedInfixes = GetSortedPatchMethods(original, patchInfo.infixes, debug);
 
-			var patcher = new MethodPatcher(original, null, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, sortedInfixes, debug);
-			var replacement = patcher.CreateReplacement(out var finalInstructions);
+			var patcher = new MethodCreator(new MethodCreatorConfig(
+				original,
+				null,
+				sortedPrefixes,
+				sortedPostfixes,
+				sortedTranspilers,
+				sortedFinalizers,
+				sortedInfixes,
+				true /* debug */
+			));
+			var (replacement, finalInstructions) = patcher.CreateReplacement();
+
+			//var patcher = new MethodPatcher(original, null, sortedPrefixes, sortedPostfixes, sortedTranspilers, sortedFinalizers, sortedInfixes, debug);
+			//var (replacement, finalInstructions) = patcher.CreateReplacement();
+
 			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
 
 			try
@@ -52,7 +65,7 @@ namespace HarmonyLib
 
 			var empty = new List<MethodInfo>();
 			var patcher = new MethodPatcher(standin.method, original, empty, empty, transpilers, empty, empty, debug);
-			var replacement = patcher.CreateReplacement(out var finalInstructions);
+			var (replacement, finalInstructions) = patcher.CreateReplacement();
 			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {standin.method.FullDescription()}");
 
 			try

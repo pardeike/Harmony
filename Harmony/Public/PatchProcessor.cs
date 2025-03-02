@@ -162,7 +162,6 @@ namespace HarmonyLib
 				patchInfo.AddInfixes(instance.Id, infix);
 
 				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
-
 				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
 				return replacement;
 			}
@@ -190,8 +189,8 @@ namespace HarmonyLib
 					patchInfo.RemoveFinalizer(harmonyID);
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.Infix)
 					patchInfo.RemoveInfix(harmonyID);
-				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
 
+				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
 				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
 				return this;
 			}
@@ -209,8 +208,8 @@ namespace HarmonyLib
 				patchInfo ??= new PatchInfo();
 
 				patchInfo.RemovePatch(patch);
-				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
 
+				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
 				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
 				return this;
 			}

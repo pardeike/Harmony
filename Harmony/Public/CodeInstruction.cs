@@ -37,6 +37,12 @@ namespace HarmonyLib
 		{
 		}
 
+		internal static CodeInstruction Annotation(string annotation)
+			=> new(OpCodes.Nop, annotation);
+
+		internal string IsAnnotation()
+			=> opcode == OpCodes.Nop ? operand as string : null;
+
 		/// <summary>Creates a new CodeInstruction with a given opcode and optional operand</summary>
 		/// <param name="opcode">The opcode</param>
 		/// <param name="operand">The operand</param>
@@ -304,7 +310,7 @@ namespace HarmonyLib
 				list.Add($"EX_{block.blockType.ToString().Replace("Block", "")}");
 
 			var extras = list.Count > 0 ? $" [{string.Join(", ", [.. list])}]" : "";
-			var operandStr = Emitter.FormatArgument(operand);
+			var operandStr = Emitter.FormatOperand(operand);
 			if (operandStr.Length > 0) operandStr = " " + operandStr;
 			return opcode + operandStr + extras;
 		}

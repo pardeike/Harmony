@@ -54,6 +54,13 @@ namespace HarmonyLib
 #endif
 		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug) || infixes.Any(p => p.debug);
 
+		/// <summary>Number of replacements created</summary>
+		///
+#if NET5_0_OR_GREATER
+		[JsonInclude]
+#endif
+		public int VersionCount = 0;
+
 		/// <summary>Adds prefixes</summary>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
