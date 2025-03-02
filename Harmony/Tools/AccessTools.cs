@@ -1510,6 +1510,12 @@ namespace HarmonyLib
 			}
 		}
 
+#pragma warning disable CS1591
+		[Obsolete("This overload only exists for runtime backwards compatibility and will be removed in Harmony 3. Use MethodDelegate(MethodInfo, object, bool, Type[]) instead")]
+		public static DelegateType MethodDelegate<DelegateType>(MethodInfo method, object instance, bool virtualCall) where DelegateType : Delegate
+			 => MethodDelegate<DelegateType>(method, instance, virtualCall, null);
+#pragma warning restore CS1591
+
 		/// <summary>Creates a delegate to a given method</summary>
 		/// <typeparam name="DelegateType">The delegate Type</typeparam>
 		/// <param name="method">The method to create a delegate from.</param>
@@ -1693,6 +1699,12 @@ namespace HarmonyLib
 			return (DelegateType)Activator.CreateInstance(delegateType, instance, method.MethodHandle.GetFunctionPointer());
 		}
 
+#pragma warning disable CS1591
+		[Obsolete("This overload only exists for runtime backwards compatibility and will be removed in Harmony 3. Use MethodDelegate(string, object, bool, Type[]) instead")]
+		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance, bool virtualCall) where DelegateType : Delegate
+			 => MethodDelegate<DelegateType>(typeColonName, instance, virtualCall, null);
+#pragma warning restore CS1591
+
 		/// <summary>Creates a delegate to a given method</summary>
 		/// <typeparam name="DelegateType">The delegate Type</typeparam>
 		/// <param name="typeColonName">The method in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
@@ -1707,23 +1719,28 @@ namespace HarmonyLib
 		/// else, invocation of the delegate calls the exact specified <paramref name="typeColonName"/> (this is useful for calling base class methods)
 		/// Note: if <c>false</c> and <paramref name="typeColonName"/> is an interface method, an ArgumentException is thrown.
 		/// </param>
+		/// <param name="delegateArgs">
+		/// Only applies for instance methods, and if argument <paramref name="instance"/> is null.
+		/// This argument only matters if the target <paramref name="typeColonName"/> signature contains a value type (such as struct or primitive types),
+		/// and your <typeparamref name="DelegateType"/> argument is replaced by a non-value type
+		/// (usually <c>object</c>) instead of using said value type.
+		/// Use this if the generic arguments of <typeparamref name="DelegateType"/> doesn't represent the delegate's
+		/// arguments, and calling this function fails
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="typeColonName"/></returns>
+		/// </param>
 		/// <remarks>
-		/// <para>
+		/// <param>
 		/// Delegate invocation is more performant and more convenient to use than <see cref="MethodBase.Invoke(object, object[])"/>
 		/// at a one-time setup cost.
-		/// </para>
-		/// <para>
+		/// </param>
+		/// <param>
 		/// Works for both type of static and instance methods, both open and closed (a.k.a. unbound and bound) instance methods,
 		/// and both class and struct methods.
-		/// </para>
+		/// </param>
 		/// </remarks>
 		///
-		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance = null, bool virtualCall = true) where DelegateType : Delegate
-		{
-			var method = DeclaredMethod(typeColonName);
-			return MethodDelegate<DelegateType>(method, instance, virtualCall);
-		}
+		public static DelegateType MethodDelegate<DelegateType>(string typeColonName, object instance = null, bool virtualCall = true, Type[] delegateArgs = null) where DelegateType : Delegate
+			=> MethodDelegate<DelegateType>(DeclaredMethod(typeColonName), instance, virtualCall, delegateArgs);
 
 		/// <summary>Creates a delegate for a given delegate definition, attributed with [<see cref="HarmonyLib.HarmonyDelegate"/>]</summary>
 		/// <typeparam name="DelegateType">The delegate Type, attributed with [<see cref="HarmonyLib.HarmonyDelegate"/>]</typeparam>
@@ -1747,7 +1764,7 @@ namespace HarmonyLib
 			var method = harmonyMethod.GetOriginalMethod() as MethodInfo;
 			if (method is null)
 				throw new NullReferenceException($"Delegate {typeof(DelegateType)} has no defined original method");
-			return MethodDelegate<DelegateType>(method, instance, harmonyMethod.nonVirtualDelegate is false);
+			return MethodDelegate<DelegateType>(method, instance, harmonyMethod.nonVirtualDelegate is false, null);
 		}
 
 		/// <summary>Returns who called the current method</summary>
