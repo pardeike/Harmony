@@ -6,4 +6,5 @@ apiRules:
     uidRegex: ^HarmonyLib\.Code\.
     type: Type
 - exclude:
-    hasAttribute: System.ObsoleteAttribute
+    hasAttribute:
+      uid: System.ObsoleteAttribute
