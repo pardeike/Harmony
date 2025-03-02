@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HarmonyLib
 {
 	/// <summary>A CodeInstruction matcher</summary>
+	///
 	public class CodeMatcher
 	{
 		private readonly ILGenerator generator;
@@ -68,6 +69,7 @@ namespace HarmonyLib
 		public ref List<ExceptionBlock> Blocks => ref codes[Pos].blocks;
 
 		/// <summary>Creates an empty code matcher</summary>
+		/// 
 		public CodeMatcher()
 		{
 		}
@@ -121,7 +123,12 @@ namespace HarmonyLib
 		/// <param name="count">Number of instructions</param>
 		/// <returns>A list of instructions</returns>
 		///
-		public List<CodeInstruction> Instructions(int count) => codes.GetRange(Pos, count).Select(c => new CodeInstruction(c)).ToList();
+		public List<CodeInstruction> Instructions(int count)
+		{
+			if (Pos < 0 || Pos + count > Length)
+				throw new InvalidOperationException("Cannot retrieve instructions: range is out-of-bounds.");
+			return codes.GetRange(Pos, count).Select(c => new CodeInstruction(c)).ToList();
+		}
 
 		/// <summary>Gets all instructions within a range</summary>
 		/// <param name="start">The start index</param>
@@ -133,7 +140,8 @@ namespace HarmonyLib
 			var instructions = codes;
 			if (start > end)
 				(end, start) = (start, end);
-
+			if (start < 0 || end >= Length)
+				throw new InvalidOperationException("Cannot retrieve instructions: range is out-of-bounds.");
 			instructions = instructions.GetRange(start, end - start + 1);
 			return instructions.Select(c => new CodeInstruction(c)).ToList();
 		}
@@ -247,6 +255,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher SetInstruction(CodeInstruction instruction)
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot set instruction/opcode at invalid position.");
 			codes[Pos] = instruction;
 			return this;
 		}
@@ -269,6 +279,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher Set(OpCode opcode, object operand)
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot set values at invalid position.");
 			Opcode = opcode;
 			Operand = operand;
 			return this;
@@ -292,6 +304,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher SetOpcodeAndAdvance(OpCode opcode)
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot set values at invalid position.");
 			Opcode = opcode;
 			Pos++;
 			return this;
@@ -303,6 +317,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher SetOperandAndAdvance(object operand)
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot set values at invalid position.");
 			Operand = operand;
 			Pos++;
 			return this;
@@ -315,6 +331,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher DeclareLocal(Type variableType, out LocalBuilder localVariable)
 		{
+			if (generator is null)
+				throw new InvalidOperationException("Generator must be provided to use this method");
 			localVariable = generator.DeclareLocal(variableType);
 			return this;
 		}
@@ -325,6 +343,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher DefineLabel(out Label label)
 		{
+			if (generator is null)
+				throw new InvalidOperationException("Generator must be provided to use this method");
 			label = generator.DefineLabel();
 			return this;
 		}
@@ -335,6 +355,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher CreateLabel(out Label label)
 		{
+			if (generator is null)
+				throw new InvalidOperationException("Generator must be provided to use this method");
 			label = generator.DefineLabel();
 			Labels.Add(label);
 			return this;
@@ -348,6 +370,8 @@ namespace HarmonyLib
 		[SuppressMessage("Style", "IDE0300")]
 		public CodeMatcher CreateLabelAt(int position, out Label label)
 		{
+			if (generator is null)
+				throw new InvalidOperationException("Generator must be provided to use this method");
 			label = generator.DefineLabel();
 			_ = AddLabelsAt(position, new Label[] { label });
 			return this;
@@ -362,6 +386,8 @@ namespace HarmonyLib
 		[SuppressMessage("Style", "IDE0300")]
 		public CodeMatcher CreateLabelWithOffsets(int offset, out Label label)
 		{
+			if (generator is null)
+				throw new InvalidOperationException("Generator must be provided to use this method");
 			label = generator.DefineLabel();
 			return AddLabelsAt(Pos + offset, new Label[] { label });
 		}
@@ -383,6 +409,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher AddLabelsAt(int position, IEnumerable<Label> labels)
 		{
+			if (position < 0 || position >= Length)
+				throw new InvalidOperationException("Cannot add labels at invalid position.");
 			codes[position].labels.AddRange(labels);
 			return this;
 		}
@@ -399,39 +427,45 @@ namespace HarmonyLib
 			return Set(opcode, label);
 		}
 
-		/// <summary>Inserts some instructions</summary>
+		/// <summary>Inserts some instructions at the current position</summary>
 		/// <param name="instructions">The instructions</param>
 		/// <returns>The same code matcher</returns>
 		///
 		public CodeMatcher Insert(params CodeInstruction[] instructions)
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
 			codes.InsertRange(Pos, instructions);
 			return this;
 		}
 
-		/// <summary>Inserts an enumeration of instructions</summary>
+		/// <summary>Inserts an enumeration of instructions at the current position</summary>
 		/// <param name="instructions">The instructions</param>
 		/// <returns>The same code matcher</returns>
 		///
 		public CodeMatcher Insert(IEnumerable<CodeInstruction> instructions)
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
 			codes.InsertRange(Pos, instructions);
 			return this;
 		}
 
-		/// <summary>Inserts a branch</summary>
+		/// <summary>Inserts a branch at the current position</summary>
 		/// <param name="opcode">The branch opcode</param>
 		/// <param name="destination">Branch destination</param>
 		/// <returns>The same code matcher</returns>
 		///
 		public CodeMatcher InsertBranch(OpCode opcode, int destination)
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
 			_ = CreateLabelAt(destination, out var label);
 			codes.Insert(Pos, new CodeInstruction(opcode, label));
 			return this;
 		}
 
-		/// <summary>Inserts some instructions and advances the position</summary>
+		/// <summary>Inserts some instructions at the current position and advances it</summary>
 		/// <param name="instructions">The instructions</param>
 		/// <returns>The same code matcher</returns>
 		///
@@ -446,7 +480,7 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Inserts an enumeration of instructions and advances the position</summary>
+		/// <summary>Inserts an enumeration of instructions at the current position and advances it</summary>
 		/// <param name="instructions">The instructions</param>
 		/// <returns>The same code matcher</returns>
 		///
@@ -457,7 +491,7 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Inserts a branch and advances the position</summary>
+		/// <summary>Inserts a branch at the current position and advances it</summary>
 		/// <param name="opcode">The branch opcode</param>
 		/// <param name="destination">Branch destination</param>
 		/// <returns>The same code matcher</returns>
@@ -469,11 +503,86 @@ namespace HarmonyLib
 			return this;
 		}
 
+		/// <summary>Inserts instructions immediately after the current position</summary>
+		/// <param name="instructions">The instructions</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher InsertAfter(params CodeInstruction[] instructions)
+		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+			codes.InsertRange(Pos + 1, instructions);
+			return this;
+		}
+
+		/// <summary>Inserts an enumeration of instructions immediately after the current position</summary>
+		/// <param name="instructions">The instructions</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher InsertAfter(IEnumerable<CodeInstruction> instructions)
+		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+			codes.InsertRange(Pos + 1, instructions);
+			return this;
+		}
+
+		/// <summary>Inserts a branch instruction immediately after the current position</summary>
+		/// <param name="opcode">The branch opcode</param>
+		/// <param name="destination">Branch destination index</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher InsertBranchAfter(OpCode opcode, int destination)
+		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+			_ = CreateLabelAt(destination, out var label);
+			codes.Insert(Pos + 1, new CodeInstruction(opcode, label));
+			return this;
+		}
+
+		/// <summary>Inserts instructions immediately after the current position and advances to the last inserted instruction</summary>
+		/// <param name="instructions">The instructions</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher InsertAfterAndAdvance(params CodeInstruction[] instructions)
+		{
+			_ = InsertAfter(instructions);
+			Pos += instructions.Length;
+			return this;
+		}
+
+		/// <summary>Inserts an enumeration of instructions immediately after the current position and advances to the last inserted instruction</summary>
+		/// <param name="instructions">The instructions</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher InsertAfterAndAdvance(IEnumerable<CodeInstruction> instructions)
+		{
+			var instructionList = instructions.ToList();
+			_ = InsertAfter(instructionList);
+			Pos += instructionList.Count;
+			return this;
+		}
+
+		/// <summary>Inserts a branch instruction immediately after the current position and advances the position</summary>
+		/// <param name="opcode">The branch opcode</param>
+		/// <param name="destination">Branch destination index</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher InsertBranchAfterAndAdvance(OpCode opcode, int destination)
+		{
+			_ = InsertBranchAfter(opcode, destination);
+			Pos++;
+			return this;
+		}
+
 		/// <summary>Removes current instruction</summary>
 		/// <returns>The same code matcher</returns>
 		///
 		public CodeMatcher RemoveInstruction()
 		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
 			codes.RemoveAt(Pos);
 			return this;
 		}
@@ -484,6 +593,8 @@ namespace HarmonyLib
 		///
 		public CodeMatcher RemoveInstructions(int count)
 		{
+			if (IsInvalid || Pos + count > Length)
+				throw new InvalidOperationException("Cannot remove instructions from an invalid or out-of-range position.");
 			codes.RemoveRange(Pos, count);
 			return this;
 		}
