@@ -1719,12 +1719,11 @@ namespace HarmonyLib
 		/// </param>
 		/// <param name="delegateArgs">
 		/// Only applies for instance methods, and if argument <paramref name="instance"/> is null.
-		/// This argument only matters if the target <paramref name="method"/> signature contains a value type (such as struct or primitive types),
+		/// This argument only matters if the target method signature contains a value type (such as struct or primitive types),
 		/// and your <typeparamref name="DelegateType"/> argument is replaced by a non-value type
 		/// (usually <c>object</c>) instead of using said value type.
 		/// Use this if the generic arguments of <typeparamref name="DelegateType"/> doesn't represent the delegate's
-		/// arguments, and calling this function fails
-		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
+		/// arguments, and calling this function fails.
 		/// </param>
 		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="typeColonName"/></returns>
 		/// <remarks>
