@@ -3220,6 +3220,56 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatcher.Insert
   nameWithType: CodeMatcher.Insert
+- uid: HarmonyLib.CodeMatcher.InsertAfter(HarmonyLib.CodeInstruction[])
+  name: InsertAfter(CodeInstruction[])
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertAfter_HarmonyLib_CodeInstruction___
+  commentId: M:HarmonyLib.CodeMatcher.InsertAfter(HarmonyLib.CodeInstruction[])
+  name.vb: InsertAfter(CodeInstruction())
+  fullName: HarmonyLib.CodeMatcher.InsertAfter(HarmonyLib.CodeInstruction[])
+  fullName.vb: HarmonyLib.CodeMatcher.InsertAfter(HarmonyLib.CodeInstruction())
+  nameWithType: CodeMatcher.InsertAfter(CodeInstruction[])
+  nameWithType.vb: CodeMatcher.InsertAfter(CodeInstruction())
+- uid: HarmonyLib.CodeMatcher.InsertAfter(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})
+  name: InsertAfter(IEnumerable<CodeInstruction>)
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertAfter_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__
+  commentId: M:HarmonyLib.CodeMatcher.InsertAfter(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})
+  name.vb: InsertAfter(IEnumerable(Of CodeInstruction))
+  fullName: HarmonyLib.CodeMatcher.InsertAfter(System.Collections.Generic.IEnumerable<HarmonyLib.CodeInstruction>)
+  fullName.vb: HarmonyLib.CodeMatcher.InsertAfter(System.Collections.Generic.IEnumerable(Of HarmonyLib.CodeInstruction))
+  nameWithType: CodeMatcher.InsertAfter(IEnumerable<CodeInstruction>)
+  nameWithType.vb: CodeMatcher.InsertAfter(IEnumerable(Of CodeInstruction))
+- uid: HarmonyLib.CodeMatcher.InsertAfter*
+  name: InsertAfter
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertAfter_
+  commentId: Overload:HarmonyLib.CodeMatcher.InsertAfter
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatcher.InsertAfter
+  nameWithType: CodeMatcher.InsertAfter
+- uid: HarmonyLib.CodeMatcher.InsertAfterAndAdvance(HarmonyLib.CodeInstruction[])
+  name: InsertAfterAndAdvance(CodeInstruction[])
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertAfterAndAdvance_HarmonyLib_CodeInstruction___
+  commentId: M:HarmonyLib.CodeMatcher.InsertAfterAndAdvance(HarmonyLib.CodeInstruction[])
+  name.vb: InsertAfterAndAdvance(CodeInstruction())
+  fullName: HarmonyLib.CodeMatcher.InsertAfterAndAdvance(HarmonyLib.CodeInstruction[])
+  fullName.vb: HarmonyLib.CodeMatcher.InsertAfterAndAdvance(HarmonyLib.CodeInstruction())
+  nameWithType: CodeMatcher.InsertAfterAndAdvance(CodeInstruction[])
+  nameWithType.vb: CodeMatcher.InsertAfterAndAdvance(CodeInstruction())
+- uid: HarmonyLib.CodeMatcher.InsertAfterAndAdvance(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})
+  name: InsertAfterAndAdvance(IEnumerable<CodeInstruction>)
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertAfterAndAdvance_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__
+  commentId: M:HarmonyLib.CodeMatcher.InsertAfterAndAdvance(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})
+  name.vb: InsertAfterAndAdvance(IEnumerable(Of CodeInstruction))
+  fullName: HarmonyLib.CodeMatcher.InsertAfterAndAdvance(System.Collections.Generic.IEnumerable<HarmonyLib.CodeInstruction>)
+  fullName.vb: HarmonyLib.CodeMatcher.InsertAfterAndAdvance(System.Collections.Generic.IEnumerable(Of HarmonyLib.CodeInstruction))
+  nameWithType: CodeMatcher.InsertAfterAndAdvance(IEnumerable<CodeInstruction>)
+  nameWithType.vb: CodeMatcher.InsertAfterAndAdvance(IEnumerable(Of CodeInstruction))
+- uid: HarmonyLib.CodeMatcher.InsertAfterAndAdvance*
+  name: InsertAfterAndAdvance
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertAfterAndAdvance_
+  commentId: Overload:HarmonyLib.CodeMatcher.InsertAfterAndAdvance
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatcher.InsertAfterAndAdvance
+  nameWithType: CodeMatcher.InsertAfterAndAdvance
 - uid: HarmonyLib.CodeMatcher.InsertAndAdvance(HarmonyLib.CodeInstruction[])
   name: InsertAndAdvance(CodeInstruction[])
   href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertAndAdvance_HarmonyLib_CodeInstruction___
@@ -3258,6 +3308,32 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.CodeMatcher.InsertBranch
   nameWithType: CodeMatcher.InsertBranch
+- uid: HarmonyLib.CodeMatcher.InsertBranchAfter(System.Reflection.Emit.OpCode,System.Int32)
+  name: InsertBranchAfter(OpCode, Int32)
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertBranchAfter_System_Reflection_Emit_OpCode_System_Int32_
+  commentId: M:HarmonyLib.CodeMatcher.InsertBranchAfter(System.Reflection.Emit.OpCode,System.Int32)
+  fullName: HarmonyLib.CodeMatcher.InsertBranchAfter(System.Reflection.Emit.OpCode, System.Int32)
+  nameWithType: CodeMatcher.InsertBranchAfter(OpCode, Int32)
+- uid: HarmonyLib.CodeMatcher.InsertBranchAfter*
+  name: InsertBranchAfter
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertBranchAfter_
+  commentId: Overload:HarmonyLib.CodeMatcher.InsertBranchAfter
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatcher.InsertBranchAfter
+  nameWithType: CodeMatcher.InsertBranchAfter
+- uid: HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance(System.Reflection.Emit.OpCode,System.Int32)
+  name: InsertBranchAfterAndAdvance(OpCode, Int32)
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertBranchAfterAndAdvance_System_Reflection_Emit_OpCode_System_Int32_
+  commentId: M:HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance(System.Reflection.Emit.OpCode,System.Int32)
+  fullName: HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance(System.Reflection.Emit.OpCode, System.Int32)
+  nameWithType: CodeMatcher.InsertBranchAfterAndAdvance(OpCode, Int32)
+- uid: HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance*
+  name: InsertBranchAfterAndAdvance
+  href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertBranchAfterAndAdvance_
+  commentId: Overload:HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance
+  isSpec: "True"
+  fullName: HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance
+  nameWithType: CodeMatcher.InsertBranchAfterAndAdvance
 - uid: HarmonyLib.CodeMatcher.InsertBranchAndAdvance(System.Reflection.Emit.OpCode,System.Int32)
   name: InsertBranchAndAdvance(OpCode, Int32)
   href: api/HarmonyLib.CodeMatcher.html#HarmonyLib_CodeMatcher_InsertBranchAndAdvance_System_Reflection_Emit_OpCode_System_Int32_
