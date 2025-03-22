@@ -587,10 +587,6 @@ namespace HarmonyLib
 					var signature = InlineSignatureParser.ImportCallSite(module, bytes);
 					instruction.operand = signature;
 					instruction.argument = signature;
-					Debugger.Log(0, "TEST", $"METHOD {method.FullDescription()}\n");
-					Debugger.Log(0, "TEST", $"Signature Blob = {bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b)}\n");
-					Debugger.Log(0, "TEST", $"Signature = {signature}\n");
-					Debugger.Break();
 					break;
 				}
 
