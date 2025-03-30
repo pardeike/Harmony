@@ -269,7 +269,8 @@ namespace HarmonyLib
 			OpCodes.Ldc_I4_S,
 			OpCodes.Ldc_I8,
 			OpCodes.Ldc_R4,
-			OpCodes.Ldc_R8
+			OpCodes.Ldc_R8,
+			OpCodes.Ldstr
 		];
 
 		/// <summary>Returns if an <see cref="OpCode"/> is initialized and valid</summary>
