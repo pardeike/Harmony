@@ -375,7 +375,7 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(5.6f, ((float[])r[i])[2], $"postfix[{i++}]");
 			Assert.AreEqual(6.5f, ((float[])r[i])[2], $"postfix[{i++}]");
 
-			Assert.AreEqual(false, (bool)r[i], $"postfix[{i++}]");
+			Assert.AreEqual(true, (bool)r[i], $"postfix[{i++}]");
 
 			// method output values
 			Assert.AreEqual(123, n2, "n2");
@@ -386,7 +386,7 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(456, st3.n, "st3");
 			Assert.AreEqual(5.6f, f2[2], "f2");
 			Assert.AreEqual(6.5f, f3[2], "f3");
-			Assert.AreEqual(false, b1, $"b1");
+			Assert.AreEqual(true, b1, $"b1");
 		}
 
 		[Test]

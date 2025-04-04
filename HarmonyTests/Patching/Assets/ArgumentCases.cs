@@ -218,7 +218,7 @@ namespace HarmonyLibTests.Assets
 			__args[10] = new float[] { 1.2f, 3.4f, 5.6f };
 			__args[11] = new float[] { 2.1f, 4.3f, 6.5f };
 
-			__args[12] = false;
+			__args[12] = true;
 
 			return false;
 		}
