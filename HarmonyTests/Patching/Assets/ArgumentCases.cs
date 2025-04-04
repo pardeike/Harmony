@@ -180,7 +180,7 @@ namespace HarmonyLibTests.Assets
 			string s1, ref string s2, out string s3,
 			SomeStruct st1, ref SomeStruct st2, out SomeStruct st3,
 			float[] f1, ref float[] f2, out float[] f3,
-			out bool b1
+			bool b1, ref bool b2, out bool b3
 		)
 		{
 			n2 = 12;
@@ -191,7 +191,8 @@ namespace HarmonyLibTests.Assets
 			st3 = new SomeStruct() { n = 45 };
 			f2 = [1f, 3f, 5f];
 			f3 = [2f, 4f, 6f];
-			b1 = true;
+			b2 = true;
+			b3 = false;
 		}
 	}
 
@@ -218,7 +219,8 @@ namespace HarmonyLibTests.Assets
 			__args[10] = new float[] { 1.2f, 3.4f, 5.6f };
 			__args[11] = new float[] { 2.1f, 4.3f, 6.5f };
 
-			__args[12] = true;
+			__args[13] = false;
+			__args[14] = true;
 
 			return false;
 		}
@@ -228,7 +230,7 @@ namespace HarmonyLibTests.Assets
 			string s1, string s2, string s3,
 			ArgumentArrayMethods.SomeStruct st1, ArgumentArrayMethods.SomeStruct st2, ArgumentArrayMethods.SomeStruct st3,
 			float[] f1, float[] f2, float[] f3,
-			bool b1
+			bool b1, bool b2, bool b3
 		)
 		{
 			postfixInput =
@@ -237,7 +239,7 @@ namespace HarmonyLibTests.Assets
 				s1, s2, s3,
 				st1, st2, st3,
 				f1, f2, f3,
-				b1
+				b1, b2, b3
 			];
 		}
 	}

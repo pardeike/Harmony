@@ -326,13 +326,15 @@ namespace HarmonyLibTests.Patching
 			var st2 = new ArgumentArrayMethods.SomeStruct() { n = 9 };
 			var f1 = new float[] { 8f };
 			var f2 = new float[] { 9f };
+			var b1 = true;
+			var b2 = true;
 
 			instance.Method(
 				n1, ref n2, out var n3,
 				s1, ref s2, out var s3,
 				st1, ref st2, out var st3,
 				f1, ref f2, out var f3,
-				out var b1
+				b1, ref b2, out var b3
 			);
 
 			// prefix input
@@ -354,6 +356,8 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(9f, ((float[])r[i])[0], $"prefix[{i++}]");
 			Assert.AreEqual(null, (float[])r[i], $"prefix[{i++}]");
 
+			Assert.AreEqual(true, (bool)r[i], $"prefix[{i++}]");
+			Assert.AreEqual(true, (bool)r[i], $"prefix[{i++}]");
 			Assert.AreEqual(false, (bool)r[i], $"prefix[{i++}]");
 
 			// postfix input
@@ -376,6 +380,8 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(6.5f, ((float[])r[i])[2], $"postfix[{i++}]");
 
 			Assert.AreEqual(true, (bool)r[i], $"postfix[{i++}]");
+			Assert.AreEqual(false, (bool)r[i], $"postfix[{i++}]");
+			Assert.AreEqual(true, (bool)r[i], $"postfix[{i++}]");
 
 			// method output values
 			Assert.AreEqual(123, n2, "n2");
@@ -387,6 +393,8 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(5.6f, f2[2], "f2");
 			Assert.AreEqual(6.5f, f3[2], "f3");
 			Assert.AreEqual(true, b1, $"b1");
+			Assert.AreEqual(false, b2, $"b2");
+			Assert.AreEqual(true, b3, $"b3");
 		}
 
 		[Test]
