@@ -331,7 +331,8 @@ namespace HarmonyLibTests.Patching
 				n1, ref n2, out var n3,
 				s1, ref s2, out var s3,
 				st1, ref st2, out var st3,
-				f1, ref f2, out var f3
+				f1, ref f2, out var f3,
+				out var b1
 			);
 
 			// prefix input
@@ -353,6 +354,8 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(9f, ((float[])r[i])[0], $"prefix[{i++}]");
 			Assert.AreEqual(null, (float[])r[i], $"prefix[{i++}]");
 
+			Assert.AreEqual(false, (bool)r[i], $"prefix[{i++}]");
+
 			// postfix input
 			r = ArgumentArrayPatches.postfixInput;
 			i = 0;
@@ -372,6 +375,8 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(5.6f, ((float[])r[i])[2], $"postfix[{i++}]");
 			Assert.AreEqual(6.5f, ((float[])r[i])[2], $"postfix[{i++}]");
 
+			Assert.AreEqual(false, (bool)r[i], $"postfix[{i++}]");
+
 			// method output values
 			Assert.AreEqual(123, n2, "n2");
 			Assert.AreEqual(456, n3, "n3");
@@ -381,6 +386,7 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(456, st3.n, "st3");
 			Assert.AreEqual(5.6f, f2[2], "f2");
 			Assert.AreEqual(6.5f, f3[2], "f3");
+			Assert.AreEqual(false, b1, $"b1");
 		}
 
 		[Test]
