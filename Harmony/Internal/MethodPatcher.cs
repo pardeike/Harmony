@@ -378,6 +378,8 @@ namespace HarmonyLib
 			if (type == typeof(int)) return OpCodes.Ldind_I4;
 			if (type == typeof(long)) return OpCodes.Ldind_I8;
 
+			if (type == typeof(bool)) return OpCodes.Ldind_I4;
+
 			return OpCodes.Ldind_Ref;
 		}
 
@@ -398,6 +400,9 @@ namespace HarmonyLib
 			if (type == typeof(short)) return OpCodes.Stind_I2;
 			if (type == typeof(int)) return OpCodes.Stind_I4;
 			if (type == typeof(long)) return OpCodes.Stind_I8;
+
+
+			if (type == typeof(bool)) return OpCodes.Stind_I4;
 
 			return OpCodes.Stind_Ref;
 		}
