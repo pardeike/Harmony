@@ -387,11 +387,12 @@ namespace HarmonyLib
 					return OpCodes.Ldind_R4;
 				case TypeCode.Double:
 					return OpCodes.Ldind_R8;
+				case TypeCode.DateTime:
+				case TypeCode.Decimal:
+					return OpCodes.Ldobj;
 				case TypeCode.Empty:
 				case TypeCode.Object:
 				case TypeCode.DBNull:
-				case TypeCode.DateTime:
-				case TypeCode.Decimal:
 				case TypeCode.String:
 					return OpCodes.Ldind_Ref;
 				default:
@@ -423,11 +424,12 @@ namespace HarmonyLib
 					return OpCodes.Stind_R4;
 				case TypeCode.Double:
 					return OpCodes.Stind_R8;
+				case TypeCode.DateTime:
+				case TypeCode.Decimal:
+					return OpCodes.Stobj;
 				case TypeCode.Empty:
 				case TypeCode.Object:
 				case TypeCode.DBNull:
-				case TypeCode.DateTime:
-				case TypeCode.Decimal:
 				case TypeCode.String:
 					return OpCodes.Stind_Ref;
 				default:
