@@ -360,51 +360,79 @@ namespace HarmonyLib
 			return null;
 		}
 
+		static HashSet<Type> PrimitivesWithObjectTypeCode = [typeof(nint), typeof(nuint), typeof(IntPtr), typeof(UIntPtr)];
 		static OpCode LoadIndOpCodeFor(Type type)
 		{
-			if (type.IsEnum)
-				return OpCodes.Ldind_I4;
-
-			if (type == typeof(float)) return OpCodes.Ldind_R4;
-			if (type == typeof(double)) return OpCodes.Ldind_R8;
-
-			if (type == typeof(byte)) return OpCodes.Ldind_U1;
-			if (type == typeof(ushort)) return OpCodes.Ldind_U2;
-			if (type == typeof(uint)) return OpCodes.Ldind_U4;
-			if (type == typeof(ulong)) return OpCodes.Ldind_I8;
-
-			if (type == typeof(sbyte)) return OpCodes.Ldind_I1;
-			if (type == typeof(short)) return OpCodes.Ldind_I2;
-			if (type == typeof(int)) return OpCodes.Ldind_I4;
-			if (type == typeof(long)) return OpCodes.Ldind_I8;
-
-			if (type == typeof(bool)) return OpCodes.Ldind_I4;
-
-			return OpCodes.Ldind_Ref;
+			if (PrimitivesWithObjectTypeCode.Contains(type))
+			{
+				return OpCodes.Ldind_I;
+			}
+			switch (Type.GetTypeCode(type))
+			{
+				case TypeCode.SByte:
+				case TypeCode.Byte:
+				case TypeCode.Boolean:
+					return OpCodes.Ldind_I1;
+				case TypeCode.Char:
+				case TypeCode.Int16:
+				case TypeCode.UInt16:
+					return OpCodes.Ldind_I2;
+				case TypeCode.Int32:
+				case TypeCode.UInt32:
+					return OpCodes.Ldind_I4;
+				case TypeCode.Int64:
+				case TypeCode.UInt64:
+					return OpCodes.Ldind_I8;
+				case TypeCode.Single:
+					return OpCodes.Ldind_R4;
+				case TypeCode.Double:
+					return OpCodes.Ldind_R8;
+				case TypeCode.Empty:
+				case TypeCode.Object:
+				case TypeCode.DBNull:
+				case TypeCode.DateTime:
+				case TypeCode.Decimal:
+				case TypeCode.String:
+					return OpCodes.Ldind_Ref;
+				default:
+					return OpCodes.Ldind_Ref;
+			}
 		}
-
 		static OpCode StoreIndOpCodeFor(Type type)
 		{
-			if (type.IsEnum)
-				return OpCodes.Stind_I4;
-
-			if (type == typeof(float)) return OpCodes.Stind_R4;
-			if (type == typeof(double)) return OpCodes.Stind_R8;
-
-			if (type == typeof(byte)) return OpCodes.Stind_I1;
-			if (type == typeof(ushort)) return OpCodes.Stind_I2;
-			if (type == typeof(uint)) return OpCodes.Stind_I4;
-			if (type == typeof(ulong)) return OpCodes.Stind_I8;
-
-			if (type == typeof(sbyte)) return OpCodes.Stind_I1;
-			if (type == typeof(short)) return OpCodes.Stind_I2;
-			if (type == typeof(int)) return OpCodes.Stind_I4;
-			if (type == typeof(long)) return OpCodes.Stind_I8;
-
-
-			if (type == typeof(bool)) return OpCodes.Stind_I4;
-
-			return OpCodes.Stind_Ref;
+			if (PrimitivesWithObjectTypeCode.Contains(type)) {
+				return OpCodes.Stind_I;
+			}
+			switch (Type.GetTypeCode(type))
+			{
+				case TypeCode.SByte:
+				case TypeCode.Byte:
+				case TypeCode.Boolean:
+					return OpCodes.Stind_I1;
+				case TypeCode.Char:
+				case TypeCode.Int16:
+				case TypeCode.UInt16:
+					return OpCodes.Stind_I2;
+				case TypeCode.Int32:
+				case TypeCode.UInt32:
+					return OpCodes.Stind_I4;
+				case TypeCode.Int64:
+				case TypeCode.UInt64:
+					return OpCodes.Stind_I8;
+				case TypeCode.Single:
+					return OpCodes.Stind_R4;
+				case TypeCode.Double:
+					return OpCodes.Stind_R8;
+				case TypeCode.Empty:
+				case TypeCode.Object:
+				case TypeCode.DBNull:
+				case TypeCode.DateTime:
+				case TypeCode.Decimal:
+				case TypeCode.String:
+					return OpCodes.Stind_Ref;
+				default:
+					return OpCodes.Stind_Ref;
+			}
 		}
 
 		void InitializeOutParameter(int argIndex, Type type)
