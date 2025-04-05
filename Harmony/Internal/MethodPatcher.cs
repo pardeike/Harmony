@@ -360,7 +360,7 @@ namespace HarmonyLib
 			return null;
 		}
 
-		static HashSet<Type> PrimitivesWithObjectTypeCode = [typeof(nint), typeof(nuint), typeof(IntPtr), typeof(UIntPtr)];
+		static readonly HashSet<Type> PrimitivesWithObjectTypeCode = [typeof(nint), typeof(nuint), typeof(IntPtr), typeof(UIntPtr)];
 		static OpCode LoadIndOpCodeFor(Type type)
 		{
 			if (PrimitivesWithObjectTypeCode.Contains(type))
@@ -389,7 +389,7 @@ namespace HarmonyLib
 					return OpCodes.Ldind_R8;
 				case TypeCode.DateTime:
 				case TypeCode.Decimal:
-					return OpCodes.Ldobj;
+					throw new NotSupportedException();
 				case TypeCode.Empty:
 				case TypeCode.Object:
 				case TypeCode.DBNull:
@@ -426,7 +426,7 @@ namespace HarmonyLib
 					return OpCodes.Stind_R8;
 				case TypeCode.DateTime:
 				case TypeCode.Decimal:
-					return OpCodes.Stobj;
+					throw new NotSupportedException();
 				case TypeCode.Empty:
 				case TypeCode.Object:
 				case TypeCode.DBNull:
