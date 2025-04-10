@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text.RegularExpressions;
+//using System.Text.RegularExpressions;
 using System.Threading;
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
@@ -79,6 +79,7 @@ namespace HarmonyLib
 			return null;
 		}
 
+		/*
 		/// <summary>Searches a type by regular expression. For exact searching, use <see cref="AccessTools.TypeByName(string)"/>.</summary>
 		/// <param name="search">The regular expression that matches against Type.FullName or Type.Name</param>
 		/// <param name="invalidateCache">Refetches the cached types if set to true</param>
@@ -100,8 +101,9 @@ namespace HarmonyLib
 			FileLog.Debug($"AccessTools.TypeSearch: Could not find type with regular expression {search}");
 			return null;
 		}
+		*/
 
-		/// <summary>Clears the type cache that <see cref="AccessTools.TypeSearch(Regex, bool)"/> uses.</summary>
+		/// <summary>Clears the type cache that AccessTools.TypeSearch uses.</summary>
 		///
 		public static void ClearTypeSearchCache() => allTypesCached = [];
 
