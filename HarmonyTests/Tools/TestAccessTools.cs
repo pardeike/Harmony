@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 using static HarmonyLibTests.Assets.AccessToolsMethodDelegate;
 #if NETCOREAPP
 using System.Linq;
@@ -98,6 +99,14 @@ namespace HarmonyLibTests.Tools
 			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyB.Class2"));
 			Assert.Null(AccessTools.TypeByName("HarmonyTestsDummyAssemblyC.Class1"));
 			Assert.Null(AccessTools.TypeByName("IAmALittleTeaPot.ShortAndStout"));
+		}
+
+		[Test, NonParallelizable]
+		public void Test_AccessTools_TypeSearch_CurrentAssemblies()
+		{
+			Assert.NotNull(AccessTools.TypeSearch(new Regex("^HarmonyLib\\.Harmony$")), "Harmony");
+			Assert.NotNull(AccessTools.TypeSearch(new Regex(".+\\.Test_.+Tools$")), "Test_AccessTools");
+			Assert.NotNull(AccessTools.TypeSearch(new Regex("harmony.+?tests\\..+environment", RegexOptions.IgnoreCase)), "HarmonyLibTests.TestEnvironment");
 		}
 
 		[Test, NonParallelizable]

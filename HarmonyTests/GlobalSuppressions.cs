@@ -30,3 +30,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Code Quality", "IDE0051")]
 [assembly: SuppressMessage("Interoperability", "SYSLIB1054")]
 [assembly: SuppressMessage("Obsoletions", "SYSLIB0014")]
+[assembly: SuppressMessage("", "SYSLIB1045")]

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 using System.Threading;
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
@@ -25,6 +26,8 @@ namespace HarmonyLib
 	///
 	public static class AccessTools
 	{
+		private static Type[] allTypesCached = null;
+
 		/// <summary>Shortcut for <see cref="BindingFlags"/> to simplify the use of reflections and make it work for any access level</summary>
 		///
 		public static readonly BindingFlags all = BindingFlags.Public // This should a be const, but changing from static (readonly) to const breaks binary compatibility.
@@ -51,12 +54,56 @@ namespace HarmonyLib
 		///
 		public static Type TypeByName(string name)
 		{
-			var type = Type.GetType(name, false);
-			type ??= AllTypes().FirstOrDefault(t => t.FullName == name);
-			type ??= AllTypes().FirstOrDefault(t => t.Name == name);
-			if (type is null) FileLog.Debug($"AccessTools.TypeByName: Could not find type named {name}");
-			return type;
+			var localType = Type.GetType(name, false);
+			if (localType is not null)
+				return localType;
+
+			foreach (var assembly in AllAssemblies())
+			{
+				var specificType = assembly.GetType(name, false);
+				if (specificType is not null)
+					return specificType;
+			}
+
+			var allTypes = AllTypes().ToArray();
+
+			var fullType = allTypes.FirstOrDefault(t => t.FullName == name);
+			if (fullType is not null)
+				return fullType;
+
+			var partialType = allTypes.FirstOrDefault(t => t.Name == name);
+			if (partialType is not null)
+				return partialType;
+
+			FileLog.Debug($"AccessTools.TypeByName: Could not find type named {name}");
+			return null;
 		}
+
+		/// <summary>Searches a type by regular expression. For exact searching, use <see cref="AccessTools.TypeByName(string)"/>.</summary>
+		/// <param name="search">The regular expression that matches against Type.FullName or Type.Name</param>
+		/// <param name="invalidateCache">Refetches the cached types if set to true</param>
+		/// <returns>The first type where FullName or Name matches the search</returns>
+		///
+		public static Type TypeSearch(Regex search, bool invalidateCache = false)
+		{
+			if (allTypesCached == null || invalidateCache)
+				allTypesCached = [.. AllTypes()];
+
+			var fullType = allTypesCached.FirstOrDefault(t => search.IsMatch(t.FullName));
+			if (fullType is not null)
+				return fullType;
+
+			var partialType = allTypesCached.FirstOrDefault(t => search.IsMatch(t.Name));
+			if (partialType is not null)
+				return partialType;
+
+			FileLog.Debug($"AccessTools.TypeSearch: Could not find type with regular expression {search}");
+			return null;
+		}
+
+		/// <summary>Clears the type cache that <see cref="AccessTools.TypeSearch(Regex, bool)"/> uses.</summary>
+		///
+		public static void ClearTypeSearchCache() => allTypesCached = [];
 
 		/// <summary>Gets all successfully loaded types from a given assembly</summary>
 		/// <param name="assembly">The assembly</param>
