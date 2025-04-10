@@ -79,6 +79,9 @@ csharp_style_prefer_top_level_statements = true:silent
 csharp_style_expression_bodied_lambdas = when_on_single_line:silent
 csharp_style_expression_bodied_local_functions = when_on_single_line:silent
 csharp_style_prefer_primary_constructors = true:suggestion
+csharp_prefer_system_threading_lock = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_style_prefer_local_over_anonymous_function = true:warning
 
 [*.{cs,vb}]
 #### Naming styles ####
@@ -143,3 +146,7 @@ dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 3
 indent_size = 3
 dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
+dotnet_style_prefer_compound_assignment = true:warning
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
