@@ -1286,19 +1286,6 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.TypeByName
   nameWithType: AccessTools.TypeByName
-- uid: HarmonyLib.AccessTools.TypeSearch(System.Text.RegularExpressions.Regex,System.Boolean)
-  name: TypeSearch(Regex, Boolean)
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_TypeSearch_System_Text_RegularExpressions_Regex_System_Boolean_
-  commentId: M:HarmonyLib.AccessTools.TypeSearch(System.Text.RegularExpressions.Regex,System.Boolean)
-  fullName: HarmonyLib.AccessTools.TypeSearch(System.Text.RegularExpressions.Regex, System.Boolean)
-  nameWithType: AccessTools.TypeSearch(Regex, Boolean)
-- uid: HarmonyLib.AccessTools.TypeSearch*
-  name: TypeSearch
-  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_TypeSearch_
-  commentId: Overload:HarmonyLib.AccessTools.TypeSearch
-  isSpec: "True"
-  fullName: HarmonyLib.AccessTools.TypeSearch
-  nameWithType: AccessTools.TypeSearch
 - uid: HarmonyLib.AccessToolsExtensions
   name: AccessToolsExtensions
   href: api/HarmonyLib.AccessToolsExtensions.html
