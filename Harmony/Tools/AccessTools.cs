@@ -54,6 +54,12 @@ namespace HarmonyLib
 		///
 		public static Type TypeByName(string name)
 		{
+			var type = Type.GetType(name, false);
+			type ??= AllTypes().FirstOrDefault(t => t.FullName == name);
+			type ??= AllTypes().FirstOrDefault(t => t.Name == name);
+			if (type is null) FileLog.Debug($"AccessTools.TypeByName: Could not find type named {name}");
+			return type;
+			/*
 			var localType = Type.GetType(name, false);
 			if (localType is not null)
 				return localType;
@@ -77,6 +83,7 @@ namespace HarmonyLib
 
 			FileLog.Debug($"AccessTools.TypeByName: Could not find type named {name}");
 			return null;
+			*/
 		}
 
 		/*
