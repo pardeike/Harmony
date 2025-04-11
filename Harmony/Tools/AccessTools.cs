@@ -58,14 +58,12 @@ namespace HarmonyLib
 			if (localType is not null)
 				return localType;
 
-			/* TODO: this crashes CI tests for Ubuntu/MacOS Mono x64 and MacOS Mono Rosetta 2 -------
 			foreach (var assembly in AllAssemblies())
 			{
 				var specificType = assembly.GetType(name, false);
 				if (specificType is not null)
 					return specificType;
 			}
-			// -------------------------------------------------------------------------------------- */
 
 			var allTypes = AllTypes().ToArray();
 
