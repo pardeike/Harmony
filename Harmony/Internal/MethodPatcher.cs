@@ -307,7 +307,7 @@ namespace HarmonyLib
 			var vars = member.GetMethodBody()?.LocalVariables;
 			if (vars is null)
 				return [];
-			return vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
+			return [.. vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned))];
 		}
 
 		LocalBuilder DeclareLocalVariable(Type type, bool isReturnValue = false)
@@ -364,77 +364,39 @@ namespace HarmonyLib
 		static OpCode LoadIndOpCodeFor(Type type)
 		{
 			if (PrimitivesWithObjectTypeCode.Contains(type))
-			{
 				return OpCodes.Ldind_I;
-			}
-			switch (Type.GetTypeCode(type))
+
+			return Type.GetTypeCode(type) switch
 			{
-				case TypeCode.SByte:
-				case TypeCode.Byte:
-				case TypeCode.Boolean:
-					return OpCodes.Ldind_I1;
-				case TypeCode.Char:
-				case TypeCode.Int16:
-				case TypeCode.UInt16:
-					return OpCodes.Ldind_I2;
-				case TypeCode.Int32:
-				case TypeCode.UInt32:
-					return OpCodes.Ldind_I4;
-				case TypeCode.Int64:
-				case TypeCode.UInt64:
-					return OpCodes.Ldind_I8;
-				case TypeCode.Single:
-					return OpCodes.Ldind_R4;
-				case TypeCode.Double:
-					return OpCodes.Ldind_R8;
-				case TypeCode.DateTime:
-				case TypeCode.Decimal:
-					throw new NotSupportedException();
-				case TypeCode.Empty:
-				case TypeCode.Object:
-				case TypeCode.DBNull:
-				case TypeCode.String:
-					return OpCodes.Ldind_Ref;
-				default:
-					return OpCodes.Ldind_Ref;
-			}
+				TypeCode.SByte or TypeCode.Byte or TypeCode.Boolean => OpCodes.Ldind_I1,
+				TypeCode.Char or TypeCode.Int16 or TypeCode.UInt16 => OpCodes.Ldind_I2,
+				TypeCode.Int32 or TypeCode.UInt32 => OpCodes.Ldind_I4,
+				TypeCode.Int64 or TypeCode.UInt64 => OpCodes.Ldind_I8,
+				TypeCode.Single => OpCodes.Ldind_R4,
+				TypeCode.Double => OpCodes.Ldind_R8,
+				TypeCode.DateTime or TypeCode.Decimal => throw new NotSupportedException(),
+				TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.String => OpCodes.Ldind_Ref,
+				_ => OpCodes.Ldind_Ref,
+			};
 		}
+
 		static OpCode StoreIndOpCodeFor(Type type)
 		{
-			if (PrimitivesWithObjectTypeCode.Contains(type)) {
+			if (PrimitivesWithObjectTypeCode.Contains(type))
 				return OpCodes.Stind_I;
-			}
-			switch (Type.GetTypeCode(type))
+
+			return Type.GetTypeCode(type) switch
 			{
-				case TypeCode.SByte:
-				case TypeCode.Byte:
-				case TypeCode.Boolean:
-					return OpCodes.Stind_I1;
-				case TypeCode.Char:
-				case TypeCode.Int16:
-				case TypeCode.UInt16:
-					return OpCodes.Stind_I2;
-				case TypeCode.Int32:
-				case TypeCode.UInt32:
-					return OpCodes.Stind_I4;
-				case TypeCode.Int64:
-				case TypeCode.UInt64:
-					return OpCodes.Stind_I8;
-				case TypeCode.Single:
-					return OpCodes.Stind_R4;
-				case TypeCode.Double:
-					return OpCodes.Stind_R8;
-				case TypeCode.DateTime:
-				case TypeCode.Decimal:
-					throw new NotSupportedException();
-				case TypeCode.Empty:
-				case TypeCode.Object:
-				case TypeCode.DBNull:
-				case TypeCode.String:
-					return OpCodes.Stind_Ref;
-				default:
-					return OpCodes.Stind_Ref;
-			}
+				TypeCode.SByte or TypeCode.Byte or TypeCode.Boolean => OpCodes.Stind_I1,
+				TypeCode.Char or TypeCode.Int16 or TypeCode.UInt16 => OpCodes.Stind_I2,
+				TypeCode.Int32 or TypeCode.UInt32 => OpCodes.Stind_I4,
+				TypeCode.Int64 or TypeCode.UInt64 => OpCodes.Stind_I8,
+				TypeCode.Single => OpCodes.Stind_R4,
+				TypeCode.Double => OpCodes.Stind_R8,
+				TypeCode.DateTime or TypeCode.Decimal => throw new NotSupportedException(),
+				TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.String => OpCodes.Stind_Ref,
+				_ => OpCodes.Stind_Ref,
+			};
 		}
 
 		void InitializeOutParameter(int argIndex, Type type)

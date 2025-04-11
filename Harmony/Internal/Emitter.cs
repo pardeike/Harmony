@@ -90,7 +90,7 @@ namespace HarmonyLib
 				return $"Label{((Label)argument).GetHashCode()}";
 
 			if (type == typeof(Label[]))
-				return $"Labels{string.Join(",", ((Label[])argument).Select(l => l.GetHashCode().ToString()).ToArray())}";
+				return $"Labels{string.Join(",", [.. ((Label[])argument).Select(l => l.GetHashCode().ToString())])}";
 
 			if (type == typeof(LocalBuilder))
 				return $"{((LocalBuilder)argument).LocalIndex} ({((LocalBuilder)argument).LocalType})";

@@ -270,7 +270,7 @@ namespace HarmonyLib
 			if (targetMethods is object)
 			{
 				string error = null;
-				result = targetMethods.ToList();
+				result = [.. targetMethods];
 				if (result is null) error = "null";
 				else if (result.Any(m => m is null)) error = "some element was null";
 				if (error != null)

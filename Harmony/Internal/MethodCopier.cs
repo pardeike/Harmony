@@ -163,7 +163,7 @@ namespace HarmonyLib
 			var typeBuilder = dynamicModule.DefineType("NativeMethodHolder", TypeAttributes.Public | TypeAttributes.UnicodeClass);
 			var methodBuilder = typeBuilder.DefinePInvokeMethod(methodInfo.Name, dllAttribute.Value,
 				MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
-				CallingConventions.Standard, methodInfo.ReturnType, methodInfo.GetParameters().Select(x => x.ParameterType).ToArray(),
+				CallingConventions.Standard, methodInfo.ReturnType, [.. methodInfo.GetParameters().Select(x => x.ParameterType)],
 				dllAttribute.CallingConvention, dllAttribute.CharSet
 			);
 			methodBuilder.SetImplementationFlags(methodBuilder.GetMethodImplementationFlags() | MethodImplAttributes.PreserveSig);
@@ -210,7 +210,7 @@ namespace HarmonyLib
 			if (existingVariables is not null)
 				variables = existingVariables;
 			else
-				variables = localVariables.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
+				variables = [.. localVariables.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned))];
 		}
 
 		// process all jumps

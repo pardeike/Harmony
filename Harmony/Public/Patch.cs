@@ -233,10 +233,10 @@ namespace HarmonyLib
 		///
 		public void RemovePatch(MethodInfo patch)
 		{
-			prefixes = prefixes.Where(p => p.PatchMethod != patch).ToArray();
-			postfixes = postfixes.Where(p => p.PatchMethod != patch).ToArray();
-			transpilers = transpilers.Where(p => p.PatchMethod != patch).ToArray();
-			finalizers = finalizers.Where(p => p.PatchMethod != patch).ToArray();
+			prefixes = [.. prefixes.Where(p => p.PatchMethod != patch)];
+			postfixes = [.. postfixes.Where(p => p.PatchMethod != patch)];
+			transpilers = [.. transpilers.Where(p => p.PatchMethod != patch)];
+			finalizers = [.. finalizers.Where(p => p.PatchMethod != patch)];
 		}
 
 		/// <summary>Gets a concatenated list of patches</summary>
@@ -271,7 +271,7 @@ namespace HarmonyLib
 		{
 			return owner == "*"
 				? []
-				: current.Where(patch => patch.owner != owner).ToArray();
+				: [.. current.Where(patch => patch.owner != owner)];
 		}
 	}
 

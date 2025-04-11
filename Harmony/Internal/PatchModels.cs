@@ -54,15 +54,15 @@ namespace HarmonyLib
 
 		internal List<Job> GetJobs()
 		{
-			return state.Values.Where(job =>
+			return [.. state.Values.Where(job =>
 				job.prefixes.Count +
 				job.postfixes.Count +
 				job.transpilers.Count +
 				job.finalizers.Count > 0
-			).ToList();
+			)];
 		}
 
-		internal List<T> GetReplacements() => state.Values.Select(job => job.replacement).ToList();
+		internal List<T> GetReplacements() => [.. state.Values.Select(job => job.replacement)];
 	}
 
 	// AttributePatch contains all information for a patch defined by attributes

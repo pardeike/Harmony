@@ -81,7 +81,7 @@ namespace HarmonyLib
 		public CodeMatcher(IEnumerable<CodeInstruction> instructions, ILGenerator generator = null)
 		{
 			this.generator = generator;
-			codes = instructions.Select(c => new CodeInstruction(c)).ToList();
+			codes = [.. instructions.Select(c => new CodeInstruction(c))];
 		}
 
 		/// <summary>Makes a clone of this instruction matcher</summary>
@@ -127,7 +127,7 @@ namespace HarmonyLib
 		{
 			if (Pos < 0 || Pos + count > Length)
 				throw new InvalidOperationException("Cannot retrieve instructions: range is out-of-bounds.");
-			return codes.GetRange(Pos, count).Select(c => new CodeInstruction(c)).ToList();
+			return [.. codes.GetRange(Pos, count).Select(c => new CodeInstruction(c))];
 		}
 
 		/// <summary>Gets all instructions within a range</summary>
@@ -143,7 +143,7 @@ namespace HarmonyLib
 			if (start < 0 || end >= Length)
 				throw new InvalidOperationException("Cannot retrieve instructions: range is out-of-bounds.");
 			instructions = instructions.GetRange(start, end - start + 1);
-			return instructions.Select(c => new CodeInstruction(c)).ToList();
+			return [.. instructions.Select(c => new CodeInstruction(c))];
 		}
 
 		/// <summary>Gets all instructions within a range (relative to current position)</summary>
@@ -157,7 +157,7 @@ namespace HarmonyLib
 		/// <param name="instructions">The instructions (transpiler argument)</param>
 		/// <returns>A list of Labels</returns>
 		///
-		public List<Label> DistinctLabels(IEnumerable<CodeInstruction> instructions) => instructions.SelectMany(instruction => instruction.labels).Distinct().ToList();
+		public List<Label> DistinctLabels(IEnumerable<CodeInstruction> instructions) => [.. instructions.SelectMany(instruction => instruction.labels).Distinct()];
 
 		/// <summary>Reports a failure</summary>
 		/// <param name="method">The method involved</param>

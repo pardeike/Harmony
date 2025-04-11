@@ -95,7 +95,7 @@ namespace HarmonyLib
 		/// <param name="pinfo">The array of parameter infos</param>
 		/// <returns>An array of types</returns>
 		///
-		public static Type[] Types(this ParameterInfo[] pinfo) => pinfo.Select(pi => pi.ParameterType).ToArray();
+		public static Type[] Types(this ParameterInfo[] pinfo) => [.. pinfo.Select(pi => pi.ParameterType)];
 
 		/// <summary>A helper to access a value via key from a dictionary</summary>
 		/// <typeparam name="S">The key type</typeparam>
@@ -681,7 +681,7 @@ namespace HarmonyLib
 		/// <param name="item">The item to add</param>
 		/// <returns>The array containing the item</returns>
 		///
-		public static T[] AddToArray<T>(this T[] sequence, T item) => AddItem(sequence, item).ToArray();
+		public static T[] AddToArray<T>(this T[] sequence, T item) => [.. AddItem(sequence, item)];
 
 		/// <summary>A helper to add items to an array</summary>
 		/// <typeparam name="T">The inner type of the collection</typeparam>
@@ -689,7 +689,7 @@ namespace HarmonyLib
 		/// <param name="items">The items to add</param>
 		/// <returns>The array containing the items</returns>
 		///
-		public static T[] AddRangeToArray<T>(this T[] sequence, T[] items) => (sequence ?? Enumerable.Empty<T>()).Concat(items).ToArray();
+		public static T[] AddRangeToArray<T>(this T[] sequence, T[] items) => [.. (sequence ?? Enumerable.Empty<T>()), .. items];
 
 		// TODO: Should these be made public?
 		// These extension methods may collide with extension methods from other libraries users may be using,

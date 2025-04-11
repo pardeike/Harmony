@@ -123,7 +123,7 @@ namespace HarmonyLib
 			catch (ReflectionTypeLoadException ex)
 			{
 				FileLog.Debug($"AccessTools.GetTypesFromAssembly: assembly {assembly} => {ex}");
-				return ex.Types.Where(type => type is not null).ToArray();
+				return [.. ex.Types.Where(type => type is not null)];
 			}
 		}
 
@@ -667,7 +667,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.GetMethodNames: type is null");
 				return [];
 			}
-			return GetDeclaredMethods(type).Select(m => m.Name).ToList();
+			return [.. GetDeclaredMethods(type).Select(m => m.Name)];
 		}
 
 		/// <summary>Gets the names of all method that are declared in the type of the instance</summary>
@@ -695,7 +695,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.GetFieldNames: type is null");
 				return [];
 			}
-			return GetDeclaredFields(type).Select(f => f.Name).ToList();
+			return [.. GetDeclaredFields(type).Select(f => f.Name)];
 		}
 
 		/// <summary>Gets the names of all fields that are declared in the type of the instance</summary>
@@ -723,7 +723,7 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.GetPropertyNames: type is null");
 				return [];
 			}
-			return GetDeclaredProperties(type).Select(f => f.Name).ToList();
+			return [.. GetDeclaredProperties(type).Select(f => f.Name)];
 		}
 
 		/// <summary>Gets the names of all properties that are declared in the type of the instance</summary>
@@ -831,7 +831,7 @@ namespace HarmonyLib
 			var flags = allDeclared;
 			if (searchForStatic.HasValue)
 				flags = searchForStatic.Value ? flags & ~BindingFlags.Instance : flags & ~BindingFlags.Static;
-			return type.GetConstructors(flags).Where(method => method.DeclaringType == type).ToList();
+			return [.. type.GetConstructors(flags).Where(method => method.DeclaringType == type)];
 		}
 
 		/// <summary>Gets reflection information for all declared methods</summary>
@@ -999,7 +999,7 @@ namespace HarmonyLib
 		public static Type[] GetTypes(object[] parameters)
 		{
 			if (parameters is null) return [];
-			return parameters.Select(p => p is null ? typeof(object) : p.GetType()).ToArray();
+			return [.. parameters.Select(p => p is null ? typeof(object) : p.GetType())];
 		}
 
 		/// <summary>Creates an array of input parameters for a given method and a given set of potential inputs</summary>
@@ -1010,13 +1010,13 @@ namespace HarmonyLib
 		public static object[] ActualParameters(MethodBase method, object[] inputs)
 		{
 			var inputTypes = inputs.Select(obj => obj?.GetType()).ToList();
-			return method.GetParameters().Select(p => p.ParameterType).Select(pType =>
+			return [.. method.GetParameters().Select(p => p.ParameterType).Select(pType =>
 			{
 				var index = inputTypes.FindIndex(inType => inType is not null && pType.IsAssignableFrom(inType));
 				if (index >= 0)
 					return inputs[index];
 				return GetDefaultValue(pType);
-			}).ToArray();
+			})];
 		}
 
 		/// <summary>A readable/assignable reference delegate to an instance field of a class or static field (NOT an instance field of a struct)</summary>
