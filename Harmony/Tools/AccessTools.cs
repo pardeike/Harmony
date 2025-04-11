@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-//using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using System.Threading;
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
@@ -54,22 +54,18 @@ namespace HarmonyLib
 		///
 		public static Type TypeByName(string name)
 		{
-			var type = Type.GetType(name, false);
-			type ??= AllTypes().FirstOrDefault(t => t.FullName == name);
-			type ??= AllTypes().FirstOrDefault(t => t.Name == name);
-			if (type is null) FileLog.Debug($"AccessTools.TypeByName: Could not find type named {name}");
-			return type;
-			/*
 			var localType = Type.GetType(name, false);
 			if (localType is not null)
 				return localType;
 
+			/* TODO: this crashes CI tests for Ubuntu/MacOS Mono x64 and MacOS Mono Rosetta 2 -------
 			foreach (var assembly in AllAssemblies())
 			{
 				var specificType = assembly.GetType(name, false);
 				if (specificType is not null)
 					return specificType;
 			}
+			// -------------------------------------------------------------------------------------- */
 
 			var allTypes = AllTypes().ToArray();
 
@@ -83,10 +79,8 @@ namespace HarmonyLib
 
 			FileLog.Debug($"AccessTools.TypeByName: Could not find type named {name}");
 			return null;
-			*/
 		}
 
-		/*
 		/// <summary>Searches a type by regular expression. For exact searching, use <see cref="AccessTools.TypeByName(string)"/>.</summary>
 		/// <param name="search">The regular expression that matches against Type.FullName or Type.Name</param>
 		/// <param name="invalidateCache">Refetches the cached types if set to true</param>
@@ -108,9 +102,8 @@ namespace HarmonyLib
 			FileLog.Debug($"AccessTools.TypeSearch: Could not find type with regular expression {search}");
 			return null;
 		}
-		*/
 
-		/// <summary>Clears the type cache that AccessTools.TypeSearch uses.</summary>
+		/// <summary>Clears the type cache that <see cref="AccessTools.TypeSearch(Regex, bool)" /> uses.</summary>
 		///
 		public static void ClearTypeSearchCache() => allTypesCached = [];
 
