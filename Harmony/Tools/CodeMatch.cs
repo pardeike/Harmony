@@ -25,7 +25,7 @@ namespace HarmonyLib
 		public List<OpCode> opcodes
 		{
 			get => [.. opcodeSet];
-			set => opcodeSet = new HashSet<OpCode>(value);
+			set => opcodeSet = [.. value];
 		}
 #pragma warning restore IDE1006
 
