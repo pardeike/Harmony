@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IntermediateOutputPath>obj</IntermediateOutputPath>
+    <OutputPath>obj</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lib.Harmony\Lib.Harmony.csproj" />
+    <PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
+  </ItemGroup>
+
+</Project>
