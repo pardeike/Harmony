@@ -12,21 +12,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		.github\copilot-instructions.md = .github\copilot-instructions.md
 		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 		global.json = global.json
-		ILRepack.targets = ILRepack.targets
 		LICENSE = LICENSE
 		README.md = README.md
 		_config.yml = _config.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony", "Harmony\Harmony.csproj", "{69AEE16A-B6E7-4642-8081-3928B32455DF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarmonyTests", "HarmonyTests\HarmonyTests.csproj", "{DEE74EFC-29A8-4704-8536-7DA38D3999F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "Harmony\Documentation\Documentation.csproj", "{9B9DD18C-6EB7-497F-8ED5-699515A840C5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{69AEE16A-B6E7-4642-8081-3928B32455DF} = {69AEE16A-B6E7-4642-8081-3928B32455DF}
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "Documentation\Documentation.csproj", "{9B9DD18C-6EB7-497F-8ED5-699515A840C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{11F828EC-7C50-48F4-A30D-9BED06837F3A}"
 EndProject
@@ -95,52 +90,44 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-setup-dotnet-macos-ros
 		.github\actions\test-setup-dotnet-macos-rosetta\action.yml = .github\actions\test-setup-dotnet-macos-rosetta\action.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Harmony", "Lib.Harmony\Lib.Harmony.csproj", "{DE9D3761-F5E2-46EA-8CA9-A8ECF52589C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Harmony.Thin", "Lib.Harmony.Thin\Lib.Harmony.Thin.csproj", "{AFF09524-D41E-4655-A320-762643DC586B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Harmony.Ref", "Lib.Harmony.Ref\Lib.Harmony.Ref.csproj", "{93530C3F-39BC-4CEB-8D70-C36CE500024D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Harmony", "Harmony\Harmony.shproj", "{8ECC3919-9F65-4A39-B57E-E99A3837DCD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		DebugFat|Any CPU = DebugFat|Any CPU
-		DebugThin|Any CPU = DebugThin|Any CPU
-		ReleaseFat|Any CPU = ReleaseFat|Any CPU
-		ReleaseRef|Any CPU = ReleaseRef|Any CPU
-		ReleaseThin|Any CPU = ReleaseThin|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.DebugFat|Any CPU.ActiveCfg = DebugFat|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.DebugFat|Any CPU.Build.0 = DebugFat|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.DebugThin|Any CPU.ActiveCfg = DebugThin|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.DebugThin|Any CPU.Build.0 = DebugThin|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseFat|Any CPU.ActiveCfg = ReleaseFat|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseFat|Any CPU.Build.0 = ReleaseFat|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseRef|Any CPU.ActiveCfg = ReleaseRef|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseRef|Any CPU.Build.0 = ReleaseRef|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseThin|Any CPU.ActiveCfg = ReleaseThin|Any CPU
-		{69AEE16A-B6E7-4642-8081-3928B32455DF}.ReleaseThin|Any CPU.Build.0 = ReleaseThin|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.DebugFat|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.DebugFat|Any CPU.Build.0 = Debug|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.DebugThin|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.DebugThin|Any CPU.Build.0 = Debug|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.ReleaseFat|Any CPU.ActiveCfg = Release|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.ReleaseFat|Any CPU.Build.0 = Release|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.ReleaseRef|Any CPU.ActiveCfg = Release|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.ReleaseThin|Any CPU.ActiveCfg = Release|Any CPU
-		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.ReleaseThin|Any CPU.Build.0 = Release|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.DebugFat|Any CPU.ActiveCfg = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.DebugFat|Any CPU.Build.0 = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.DebugThin|Any CPU.ActiveCfg = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.DebugThin|Any CPU.Build.0 = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.ReleaseFat|Any CPU.ActiveCfg = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.ReleaseFat|Any CPU.Build.0 = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.ReleaseRef|Any CPU.ActiveCfg = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.ReleaseThin|Any CPU.ActiveCfg = Default|Any CPU
-		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.ReleaseThin|Any CPU.Build.0 = Default|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.DebugFat|Any CPU.ActiveCfg = Debug|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.DebugFat|Any CPU.Build.0 = Debug|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.DebugThin|Any CPU.ActiveCfg = Debug|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.DebugThin|Any CPU.Build.0 = Debug|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.ReleaseFat|Any CPU.ActiveCfg = Release|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.ReleaseFat|Any CPU.Build.0 = Release|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.ReleaseRef|Any CPU.ActiveCfg = Release|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.ReleaseThin|Any CPU.ActiveCfg = Release|Any CPU
-		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.ReleaseThin|Any CPU.Build.0 = Release|Any CPU
+		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEE74EFC-29A8-4704-8536-7DA38D3999F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.Debug|Any CPU.ActiveCfg = Default|Any CPU
+		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.Debug|Any CPU.Build.0 = Default|Any CPU
+		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B9DD18C-6EB7-497F-8ED5-699515A840C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11F828EC-7C50-48F4-A30D-9BED06837F3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE9D3761-F5E2-46EA-8CA9-A8ECF52589C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE9D3761-F5E2-46EA-8CA9-A8ECF52589C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE9D3761-F5E2-46EA-8CA9-A8ECF52589C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE9D3761-F5E2-46EA-8CA9-A8ECF52589C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFF09524-D41E-4655-A320-762643DC586B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFF09524-D41E-4655-A320-762643DC586B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFF09524-D41E-4655-A320-762643DC586B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF09524-D41E-4655-A320-762643DC586B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93530C3F-39BC-4CEB-8D70-C36CE500024D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93530C3F-39BC-4CEB-8D70-C36CE500024D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93530C3F-39BC-4CEB-8D70-C36CE500024D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93530C3F-39BC-4CEB-8D70-C36CE500024D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,5 +148,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61622750-C658-496F-B2E2-75D94AF6CF8B}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Harmony\Harmony.projitems*{8ecc3919-9f65-4a39-b57e-e99a3837dcd0}*SharedItemsImports = 13
+		Harmony\Harmony.projitems*{93530c3f-39bc-4ceb-8d70-c36ce500024d}*SharedItemsImports = 5
+		Harmony\Harmony.projitems*{aff09524-d41e-4655-a320-762643dc586b}*SharedItemsImports = 5
+		Harmony\Harmony.projitems*{de9d3761-f5e2-46ea-8ca9-a8ecf52589c0}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

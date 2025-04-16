@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <!-- Create reference Assemblies instead of a full assembly -->
+    <ProduceOnlyReferenceAssembly>true</ProduceOnlyReferenceAssembly>
+
+    <!-- Add our target for packing -->
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
+
+    <PackageId>Lib.Harmony.Ref</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
+
+    <PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="AddRefAssemblyToPackage">
+    <ItemGroup>
+      <!-- Adding the Reference Assembly and the xml documentation to /ref of NuGet -->
+      <TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).dll" PackagePath="ref/netstandard2.0" />
+      <TfmSpecificPackageFile Include="$(OutDir)$(AssemblyName).xml" PackagePath="ref/netstandard2.0" />
+    </ItemGroup>
+  </Target>
+
+  <Import Project="..\Harmony\Harmony.projitems" Label="Shared" />
+
+  <Target Name="CleanZip" AfterTargets="Clean" Condition="'$(Configuration)'=='Release'">
+    <ItemGroup>
+      <OldZipFiles Include="$(MSBuildThisFileDirectory)..\packages\Harmony-Ref.*.zip" Condition="'$(Configuration)'=='Release'" />
+    </ItemGroup>
+    <Delete Files="@(OldZipFiles)" />
+  </Target>
+
+  <Target Name="RemoveExtraDlls" AfterTargets="Pack" Condition="'$(Configuration)'=='Release'">
+    <ItemGroup>
+      <ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\MonoMod.*.*" />
+      <ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\Mono.*.*" />
+      <ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\System.*.*" />
+    </ItemGroup>
+    <Delete Files="@(ExtraDlls)" />
+  </Target>
+
+  <Target Name="Zip" AfterTargets="RemoveExtraDlls" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
+    <ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)..\packages\Harmony-Ref.$(Version).zip" Overwrite="true"/>
+  </Target>
+</Project>

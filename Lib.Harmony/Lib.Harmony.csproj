@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Lib.Harmony</PackageId>
+    <TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="$(Configuration.StartsWith('Release'))">
+    <Optimize>true</Optimize>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
+  </PropertyGroup>
+
+  <Import Project="..\Harmony\Harmony.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <None Include="../_._" Pack="true" Visible="false" PackagePath="lib/netstandard2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2" PrivateAssets="all" />
+    <PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Ensure the ref assemblies for .NET Core are on disk.
+      Needed by ILRepack to resolve framework references for each platform.
+      Ensures the build (ILRepack task) can work without having all these versions installed. -->
+    <PackageReference Condition="$(TargetFramework) == 'netcoreapp3.0'" Include="Microsoft.NetCore.App.Ref" Version="3.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'netcoreapp3.1'" Include="Microsoft.NetCore.App.Ref" Version="3.1.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net5.0'" Include="Microsoft.NetCore.App.Ref" Version="5.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net6.0'" Include="Microsoft.NetCore.App.Ref" Version="6.0.36" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net7.0'" Include="Microsoft.NetCore.App.Ref" Version="7.0.20" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net8.0'" Include="Microsoft.NetCore.App.Ref" Version="8.0.12" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net9.0'" Include="Microsoft.NetCore.App.Ref" Version="9.0.1" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <!-- Replace Code with reference to Lib.Harmony.Ref for netstandard2.0 -->
+  <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+    <ProjectReference Include="..\Lib.Harmony.Ref\Lib.Harmony.Ref.csproj" />
+    <Compile Remove="@(Compile)" />
+  </ItemGroup>
+  
+  <Target Name="CleanZip" AfterTargets="Clean" Condition="'$(Configuration)'=='Release'">
+    <ItemGroup>
+      <OldZipFiles Include="$(MSBuildThisFileDirectory)..\packages\Harmony-Fat.*.zip" Condition="'$(Configuration)'=='Release'" />
+    </ItemGroup>
+    <Delete Files="@(OldZipFiles)" />
+  </Target>
+
+  <Target Name="RemoveExtraDlls" AfterTargets="Pack" Condition="'$(Configuration)'=='Release'">
+    <ItemGroup>
+      <ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\MonoMod.*.*" />
+      <ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\Mono.*.*" />
+      <ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\System.*.*" />
+    </ItemGroup>
+    <Delete Files="@(ExtraDlls)" />
+    <RemoveDir Directories="$(MSBuildThisFileDirectory)bin\Release\netstandard2.0" />
+  </Target>
+
+  <Target Name="Zip" AfterTargets="RemoveExtraDlls" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
+    <ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)..\packages\Harmony-Fat.$(Version).zip" Overwrite="true"/>
+  </Target>
+</Project>
