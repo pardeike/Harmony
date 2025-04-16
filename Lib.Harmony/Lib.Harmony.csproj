@@ -55,6 +55,7 @@
       <ExtraDlls Include="$(MSBuildThisFileDirectory)bin\**\System.*.*" />
     </ItemGroup>
     <Delete Files="@(ExtraDlls)" />
+    <RemoveDir Directories="$(MSBuildThisFileDirectory)bin\Release\netstandard2.0" />
   </Target>
 
   <Target Name="Zip" AfterTargets="RemoveExtraDlls" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
