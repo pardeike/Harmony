@@ -124,7 +124,7 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Test_GenericsOriginalMethod()
 		{
-			var originalMethod = typeof(Class13<int>).GetMethod(nameof(Class13<>.Add));
+			var originalMethod = typeof(Class13<int>).GetMethod(nameof(Class13<int>.Add));
 			Assert.NotNull(originalMethod);
 
 			var patchClass = typeof(Class13Patch);
