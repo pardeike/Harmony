@@ -570,6 +570,8 @@ namespace HarmonyLib
 
 				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(emitter.CurrentPos(), block));
 			});
+
+			FileLog.FlushBuffer();
 		}
 
 		internal static void EmitCodes(this MethodCreator _, Emitter emitter, List<CodeInstruction> codeInstructions)
