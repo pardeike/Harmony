@@ -530,7 +530,7 @@ namespace HarmonyLib
 					endLabels.Add(endLabel);
 				}
 				else if (shortJumps.TryGetValue(code, out var longJump))
-					yield return new CodeInstruction(longJump, instruction.operand);
+					yield return new CodeInstruction(longJump, instruction.operand).WithBlocks(instruction.blocks);
 				else
 					yield return instruction;
 			}
