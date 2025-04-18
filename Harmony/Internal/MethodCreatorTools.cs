@@ -526,11 +526,11 @@ namespace HarmonyLib
 				if (code == OpCodes.Ret)
 				{
 					var endLabel = creator.config.DefineLabel();
-					yield return Br.WithLabels(endLabel);
+					yield return Br[endLabel].WithLabels(instruction.labels).WithBlocks(instruction.blocks);
 					endLabels.Add(endLabel);
 				}
 				else if (shortJumps.TryGetValue(code, out var longJump))
-					yield return new CodeInstruction(longJump, instruction.operand).WithBlocks(instruction.blocks);
+					yield return new CodeInstruction(longJump, instruction.operand).WithLabels(instruction.labels).WithBlocks(instruction.blocks);
 				else
 					yield return instruction;
 			}
