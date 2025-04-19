@@ -51,13 +51,10 @@ namespace HarmonyLib
 
 			if (config.AnyFixHas(InjectionType.ArgsArray))
 			{
-				if (config.returnType.IsByRef)
-				{
-					var argsArrayVariable = config.DeclareLocal(typeof(object[]));
-					config.AddLocal(InjectionType.ArgsArray, argsArrayVariable);
-					config.AddCodes(this.PrepareArgumentArray());
-					config.AddCode(Stloc[argsArrayVariable]);
-				}
+				var argsArrayVariable = config.DeclareLocal(typeof(object[]));
+				config.AddLocal(InjectionType.ArgsArray, argsArrayVariable);
+				config.AddCodes(this.PrepareArgumentArray());
+				config.AddCode(Stloc[argsArrayVariable]);
 			}
 
 			config.skipOriginalLabel = null;
