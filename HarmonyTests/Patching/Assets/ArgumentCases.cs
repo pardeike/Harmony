@@ -165,8 +165,14 @@ namespace HarmonyLibTests.Assets
 		{
 			log.Add(__state);
 		}
-		[HarmonyPostfix]
-		public static void PostfixSucceed2(object __state)
+		[HarmonyPostfix, HarmonyPriority(Priority.First)]
+		public static void PostfixSucceed2(ref object __state)
+		{
+			log.Add(__state.ToString());
+			__state = "Hello3";
+		}
+		[HarmonyPostfix, HarmonyPriority(Priority.Last)]
+		public static void PostfixSucceed3(object __state)
 		{
 			log.Add(__state.ToString());
 		}
