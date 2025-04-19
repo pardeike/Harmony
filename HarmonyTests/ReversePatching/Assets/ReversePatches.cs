@@ -35,7 +35,11 @@ namespace HarmonyLibTests.Assets
 					item => item.opcode == OpCodes.Ldarg_1,
 					item => item.opcode = OpCodes.Ldarg_0
 				).ToList();
+#if NET9_0_OR_GREATER
+				var mJoin = AccessTools.Method(typeof(string), nameof(string.Join), [typeof(string), typeof(ReadOnlySpan<string>)]);
+#else
 				var mJoin = AccessTools.Method(typeof(string), nameof(string.Join), [typeof(string), typeof(string[])]);
+#endif
 				var idx = list.FindIndex(item => item.opcode == OpCodes.Call && item.operand as MethodInfo == mJoin);
 				list.RemoveRange(idx + 1, list.Count - (idx + 1));
 				list.Add(new CodeInstruction(OpCodes.Ret));
