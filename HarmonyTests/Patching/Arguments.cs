@@ -396,6 +396,7 @@ namespace HarmonyLibTests.Patching
 			var log = RenamedArgumentsPatch.log.Join();
 			Assert.AreEqual("val1, patched, val2, hello", log);
 		}
+
 		[Test]
 		public void Test_CompatibleStateTypes()
 		{
@@ -409,6 +410,7 @@ namespace HarmonyLibTests.Patching
 			var log = DifferingStateTypesSuccessPatch.log.Join();
 			Assert.AreEqual("Hello, Hello2, Hello2", log);
 		}
+
 		[Test]
 		public void Test_IncompatibleStateTypes()
 		{

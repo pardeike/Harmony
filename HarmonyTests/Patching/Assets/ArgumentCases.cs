@@ -122,6 +122,7 @@ namespace HarmonyLibTests.Assets
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method(string name) => RenamedArgumentsPatch.log.Add(name);
 	}
+
 	[HarmonyPatch(typeof(RenamedArguments), nameof(RenamedArguments.Method))]
 	[HarmonyArgument("foo2", "__state")]
 	public static class RenamedArgumentsPatch
@@ -143,6 +144,7 @@ namespace HarmonyLibTests.Assets
 			log.Add(foo3);
 		}
 	}
+
 	public class DifferingStateTypes
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
@@ -169,6 +171,7 @@ namespace HarmonyLibTests.Assets
 			log.Add(__state.ToString());
 		}
 	}
+
 	[HarmonyPatch(typeof(DifferingStateTypes), nameof(DifferingStateTypes.Method))]
 	public static class DifferingStateTypesFailurePatch
 	{
@@ -185,6 +188,7 @@ namespace HarmonyLibTests.Assets
 			log.Add(__state.ToString());
 		}
 	}
+
 	public class NullableResults
 	{
 		private string s = "foo";
