@@ -165,7 +165,7 @@ namespace HarmonyLib
 			var original = config.original;
 			var originalIsStatic = original.IsStatic;
 			var returnType = config.returnType;
-			var injections = config.injections[patch];
+			var injections = config.injections[patch].ToList();
 
 			var isInstance = originalIsStatic is false;
 			var originalParameters = original.GetParameters();
@@ -174,7 +174,10 @@ namespace HarmonyLib
 
 			var parameters = patch.GetParameters().ToList();
 			if (allowFirsParamPassthrough && patch.ReturnType != typeof(void) && parameters.Count > 0 && parameters[0].ParameterType == patch.ReturnType)
+			{
+				injections.RemoveAt(0);
 				parameters.RemoveAt(0);
+			}
 
 			foreach (var injection in injections)
 			{
@@ -188,6 +191,15 @@ namespace HarmonyLib
 						continue;
 
 					codes.Add(Ldnull);
+					continue;
+				}
+
+				if (injectionType == InjectionType.Exception)
+				{
+					if (config.exceptionVariable != null)
+						codes.Add(Ldloc[config.exceptionVariable]);
+					else
+						codes.Add(Ldnull);
 					continue;
 				}
 
