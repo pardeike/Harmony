@@ -107,8 +107,9 @@ namespace HarmonyLib
 			var replacement = copier.Finalize(out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
 			config.AddCode(Nop["start original"]);
 			config.AddCodes(this.CleanupCodes(replacement, endLabels));
-			config.AddCode(Nop["end original" + (methodEndsInDeadCode ? " (has dead code end)" : "")]);
-			config.AddCode(Nop.WithLabels(endLabels));
+			config.AddCode(Nop["end original"]);
+			if (endLabels.Any())
+				config.AddCode(Nop.WithLabels(endLabels));
 			if (config.resultVariable is not null && hasReturnCode)
 				config.AddCode(Stloc[config.resultVariable]);
 			if (config.skipOriginalLabel.HasValue)

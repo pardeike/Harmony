@@ -565,7 +565,8 @@ namespace HarmonyLib
 				switch (code.OperandType)
 				{
 					case OperandType.InlineNone:
-						if (code == OpCodes.Nop && operand is string comment)
+						var comment = codeInstruction.IsAnnotation();
+						if (comment != null)
 							FileLog.LogILComment(emitter.CurrentPos(), comment);
 						else
 							FileLog.LogIL(emitter.CurrentPos(), code);
@@ -604,7 +605,8 @@ namespace HarmonyLib
 				switch (code.OperandType)
 				{
 					case OperandType.InlineNone:
-						emitter.Emit(code);
+						if (codeInstruction.IsAnnotation() == null)
+							emitter.Emit(code);
 						break;
 
 					case OperandType.InlineSig:
