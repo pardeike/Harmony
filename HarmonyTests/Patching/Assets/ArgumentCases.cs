@@ -145,6 +145,50 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class DifferingStateTypes
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Method() { }
+	}
+	[HarmonyPatch(typeof(DifferingStateTypes), nameof(DifferingStateTypes.Method))]
+	public static class DifferingStateTypesSuccessPatch
+	{
+		public static List<string> log = [];
+		public static bool Prefix(ref string __state)
+		{
+			log.Add("Hello");
+			__state = "Hello2";
+			return false;
+		}
+		[HarmonyPostfix]
+		public static void PostfixSucceed(string __state)
+		{
+			log.Add(__state);
+		}
+		[HarmonyPostfix]
+		public static void PostfixSucceed2(object __state)
+		{
+			log.Add(__state.ToString());
+		}
+	}
+
+	[HarmonyPatch(typeof(DifferingStateTypes), nameof(DifferingStateTypes.Method))]
+	public static class DifferingStateTypesFailurePatch
+	{
+		public static List<string> log = [];
+		public static bool Prefix(ref string __state)
+		{
+			log.Add("Hello");
+			__state = "Hello2";
+			return false;
+		}
+		[HarmonyPostfix]
+		public static void PostfixFail(int __state)
+		{
+			log.Add(__state.ToString());
+		}
+	}
+
 	public class NullableResults
 	{
 		private string s = "foo";
