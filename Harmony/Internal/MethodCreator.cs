@@ -144,7 +144,7 @@ namespace HarmonyLib
 				config.AddCode(Nop.WithLabels(noExceptionLabel1));
 
 				// end try, begin catch
-				config.AddCode(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
+				config.AddCode(this.MarkBlock(ExceptionBlockType.BeginCatchBlock));
 				config.AddCode(Stloc[exceptionVariable]);
 
 				config.AddCode(Ldloc[config.finalizedVariable]);
