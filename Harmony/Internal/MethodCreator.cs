@@ -31,7 +31,7 @@ namespace HarmonyLib
 			config.originalVariables = this.DeclareOriginalLocalVariables(config.MethodBase);
 			config.localVariables = new VariableState();
 
-			if (config.Fixes.Any() && config.returnType.IsVoid() == false)
+			if (config.Fixes.Any() && config.returnType != typeof(void))
 			{
 				config.resultVariable = config.DeclareLocal(config.returnType);
 				config.AddLocal(InjectionType.Result, config.resultVariable);
