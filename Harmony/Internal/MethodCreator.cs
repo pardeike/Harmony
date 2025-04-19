@@ -73,16 +73,25 @@ namespace HarmonyLib
 				var declaringType = fix.DeclaringType;
 				if (declaringType is null) return;
 				var varName = declaringType.AssemblyQualifiedName;
-				if (config.HasLocal(varName)) return;
+				config.localVariables.TryGetValue(varName, out var maybeLocal);
 				foreach (var injection in config.InjectionsFor(fix, InjectionType.State))
 				{
 					var parameterType = injection.parameterInfo.ParameterType;
 					var type = parameterType.IsByRef
 					 ? parameterType.GetElementType()
 					 : parameterType;
-					var privateStateVariable = config.DeclareLocal(type);
-					config.AddLocal(varName, privateStateVariable);
-					config.AddCodes(this.GenerateVariableInit(privateStateVariable));
+					if (maybeLocal != null && !type.IsAssignableFrom(maybeLocal.LocalType))
+					{
+						var message = $"__state type mismatch in patch \"{fix.DeclaringType.FullName}.{fix.Name}\": " +
+						$"previous __state was declared as \"{maybeLocal.LocalType.FullName}\" but this patch expects \"{type.FullName}\"";
+						throw new HarmonyException(message);
+					}
+					else
+					{
+						var privateStateVariable = config.DeclareLocal(type);
+						config.AddLocal(varName, privateStateVariable);
+						config.AddCodes(this.GenerateVariableInit(privateStateVariable));
+					}
 				}
 			});
 
