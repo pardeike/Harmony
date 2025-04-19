@@ -396,6 +396,26 @@ namespace HarmonyLibTests.Patching
 			var log = RenamedArgumentsPatch.log.Join();
 			Assert.AreEqual("val1, patched, val2, hello", log);
 		}
+		[Test]
+		public void Test_CompatibleStateTypes()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(DifferingStateTypesSuccessPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+			DifferingStateTypesSuccessPatch.log.Clear();
+			new DifferingStateTypes().Method();
+			var log = DifferingStateTypesSuccessPatch.log.Join();
+			Assert.AreEqual("Hello, Hello2, Hello2", log);
+		}
+		[Test]
+		public void Test_IncompatibleStateTypes()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(DifferingStateTypesFailurePatch));
+			Assert.Throws(typeof(HarmonyException), () => processor.Patch());
+		}
 
 		[Test, Explicit("Crashes and throws NRE in some configurations: see https://discord.com/channels/131466550938042369/674571535570305060/1319451813975687269")]
 		public void Test_NullableResults()
