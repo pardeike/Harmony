@@ -80,18 +80,22 @@ namespace HarmonyLib
 					var type = parameterType.IsByRef
 					 ? parameterType.GetElementType()
 					 : parameterType;
-					if (maybeLocal != null && !type.IsAssignableFrom(maybeLocal.LocalType))
+					if (maybeLocal != null)
 					{
-						var message = $"__state type mismatch in patch \"{fix.DeclaringType.FullName}.{fix.Name}\": " +
-						$"previous __state was declared as \"{maybeLocal.LocalType.FullName}\" but this patch expects \"{type.FullName}\"";
-						throw new HarmonyException(message);
+						if (!type.IsAssignableFrom(maybeLocal.LocalType))
+						{
+							var message = $"__state type mismatch in patch \"{fix.DeclaringType.FullName}.{fix.Name}\": " +
+							$"previous __state was declared as \"{maybeLocal.LocalType.FullName}\" but this patch expects \"{type.FullName}\"";
+							throw new HarmonyException(message);
+						}
+						else
+						{
+							continue;
+						}
 					}
-					else
-					{
-						var privateStateVariable = config.DeclareLocal(type);
-						config.AddLocal(varName, privateStateVariable);
-						config.AddCodes(this.GenerateVariableInit(privateStateVariable));
-					}
+					var privateStateVariable = config.DeclareLocal(type);
+					config.AddLocal(varName, privateStateVariable);
+					config.AddCodes(this.GenerateVariableInit(privateStateVariable));
 				}
 			});
 

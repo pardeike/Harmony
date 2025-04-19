@@ -408,7 +408,7 @@ namespace HarmonyLibTests.Patching
 			DifferingStateTypesSuccessPatch.log.Clear();
 			new DifferingStateTypes().Method();
 			var log = DifferingStateTypesSuccessPatch.log.Join();
-			Assert.AreEqual("Hello, Hello2, Hello2", log);
+			Assert.AreEqual("Hello, Hello2, Hello3, Hello3", log);
 		}
 
 		[Test]
