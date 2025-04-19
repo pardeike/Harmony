@@ -76,7 +76,11 @@ namespace HarmonyLib
 				if (config.HasLocal(varName)) return;
 				foreach (var injection in config.InjectionsFor(fix, InjectionType.State))
 				{
-					var privateStateVariable = config.DeclareLocal(injection.parameterInfo.ParameterType);
+					var parameterType = injection.parameterInfo.ParameterType;
+					var type = parameterType.IsByRef
+					 ? parameterType.GetElementType()
+					 : parameterType;
+					var privateStateVariable = config.DeclareLocal(type);
 					config.AddLocal(varName, privateStateVariable);
 					config.AddCodes(this.GenerateVariableInit(privateStateVariable));
 				}
