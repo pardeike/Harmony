@@ -609,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.InnerPrefix.html",
-          "hash": "Wg8YxRKeq2Ae1YzXUCXF+S/4eWXcDwcZ+gp4vAPguzU="
+          "hash": "nDmU3OCNpIyk/GcuQfPYUE2T5rgNn3kmxW0GrlnvEwk="
         }
       },
       "is_incremental": false,
@@ -717,7 +717,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchProcessor.html",
-          "hash": "jTGvOn+TvyQ/FsDl2Ud9N5qu+IrdEAu4B+qOMLS1J9s="
+          "hash": "wRdkIQ1GUxNH/KQeCtGi/VJZT1Tsvj5+sPPhcrSHkvM="
         }
       },
       "is_incremental": false,
