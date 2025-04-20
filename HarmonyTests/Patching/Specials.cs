@@ -133,29 +133,15 @@ namespace HarmonyLibTests.Patching
 			var method = AccessTools.DeclaredMethod(cls, name);
 			Assert.NotNull(method, "method");
 
-			try
-			{
-				var replacement = instance.Patch(method, new HarmonyMethod(prefix));
-				Assert.NotNull(replacement, "replacement");
-			}
-			catch (Exception ex)
-			{
-				TestTools.Log($"Test_Returning_Structs: patching {name} exception: {ex}");
-			}
+			var replacement = instance.Patch(method, new HarmonyMethod(prefix));
+			Assert.NotNull(replacement, "replacement");
 
 			var clsInstance = Activator.CreateInstance(cls);
-			try
-			{
-				var original = AccessTools.DeclaredMethod(cls, name);
-				Assert.NotNull(original, $"{name}: original");
-				var result = original.Invoke(type == "S" ? null : clsInstance, ["test"]);
-				Assert.NotNull(result, $"{name}: result");
-				Assert.AreEqual($"St{n:D2}", result.GetType().Name);
-			}
-			catch (Exception ex)
-			{
-				TestTools.Log($"Test_Returning_Structs: running {name} exception: {ex}");
-			}
+			var original = AccessTools.DeclaredMethod(cls, name);
+			Assert.NotNull(original, $"{name}: original");
+			var result = original.Invoke(type == "S" ? null : clsInstance, ["test"]);
+			Assert.NotNull(result, $"{name}: result");
+			Assert.AreEqual($"St{n:D2}", result.GetType().Name);
 		}
 
 		[Test]
@@ -339,6 +325,7 @@ namespace HarmonyLibTests.Patching
 			try
 			{
 				_ = patcher.Patch();
+				Assert.Fail("expecting exception");
 			}
 			catch (HarmonyException ex)
 			{
