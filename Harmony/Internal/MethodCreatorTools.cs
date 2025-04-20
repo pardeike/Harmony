@@ -486,7 +486,7 @@ namespace HarmonyLib
 			var vars = member.GetMethodBody()?.LocalVariables;
 			if (vars is null)
 				return [];
-			return vars.Select(lvi => creator.config.il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
+			return [.. vars.Select(lvi => creator.config.il.DeclareLocal(lvi.LocalType, lvi.IsPinned))];
 		}
 
 		internal static List<CodeInstruction> RestoreArgumentArray(this MethodCreator creator)

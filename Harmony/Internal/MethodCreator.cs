@@ -71,9 +71,10 @@ namespace HarmonyLib
 			config.WithFixes(fix =>
 			{
 				var declaringType = fix.DeclaringType;
-				if (declaringType is null) return;
+				if (declaringType is null)
+					return;
 				var varName = declaringType.AssemblyQualifiedName;
-				config.localVariables.TryGetValue(varName, out var maybeLocal);
+				_ = config.localVariables.TryGetValue(varName, out var maybeLocal);
 				foreach (var injection in config.InjectionsFor(fix, InjectionType.State))
 				{
 					var parameterType = injection.parameterInfo.ParameterType;
@@ -125,7 +126,7 @@ namespace HarmonyLib
 			config.AddCode(Nop["start original"]);
 			config.AddCodes(this.CleanupCodes(replacement, endLabels));
 			config.AddCode(Nop["end original"]);
-			if (endLabels.Any())
+			if (endLabels.Count > 0)
 				config.AddCode(Nop.WithLabels(endLabels));
 			if (config.resultVariable is not null && hasReturnCode)
 				config.AddCode(Stloc[config.resultVariable]);

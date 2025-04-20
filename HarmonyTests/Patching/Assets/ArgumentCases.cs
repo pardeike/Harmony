@@ -160,39 +160,35 @@ namespace HarmonyLibTests.Assets
 			__state = "Hello2";
 			return false;
 		}
+
 		[HarmonyPostfix]
-		public static void PostfixSucceed(string __state)
-		{
-			log.Add(__state);
-		}
+		public static void PostfixSucceed(string __state) => log.Add(__state);
+
 		[HarmonyPostfix, HarmonyPriority(Priority.First)]
 		public static void PostfixSucceed2(ref object __state)
 		{
 			log.Add(__state.ToString());
 			__state = "Hello3";
 		}
+
 		[HarmonyPostfix, HarmonyPriority(Priority.Last)]
-		public static void PostfixSucceed3(object __state)
-		{
-			log.Add(__state.ToString());
-		}
+		public static void PostfixSucceed3(object __state) => log.Add(__state.ToString());
 	}
 
 	[HarmonyPatch(typeof(DifferingStateTypes), nameof(DifferingStateTypes.Method))]
 	public static class DifferingStateTypesFailurePatch
 	{
 		public static List<string> log = [];
+
 		public static bool Prefix(ref string __state)
 		{
 			log.Add("Hello");
 			__state = "Hello2";
 			return false;
 		}
+
 		[HarmonyPostfix]
-		public static void PostfixFail(int __state)
-		{
-			log.Add(__state.ToString());
-		}
+		public static void PostfixFail(int __state) => log.Add(__state.ToString());
 	}
 
 	public class NullableResults

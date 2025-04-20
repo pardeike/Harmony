@@ -507,7 +507,7 @@ namespace HarmonyLibTests.Patching
 		{
 			var harmony = new Harmony("test");
 			var processor = new PatchClassProcessor(harmony, typeof(DifferingStateTypesFailurePatch));
-			Assert.Throws(typeof(HarmonyException), () => processor.Patch());
+			_ = Assert.Throws<HarmonyException>(() => _ = processor.Patch());
 		}
 
 		[Test, Explicit("Crashes and throws NRE in some configurations: see https://discord.com/channels/131466550938042369/674571535570305060/1319451813975687269")]
