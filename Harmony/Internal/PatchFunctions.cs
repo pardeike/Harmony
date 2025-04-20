@@ -64,7 +64,16 @@ namespace HarmonyLib
 			if (postTranspiler is not null) transpilers.Add(postTranspiler);
 
 			var empty = new List<MethodInfo>();
-			var patcher = new MethodPatcher(standin.method, original, empty, empty, transpilers, empty, empty, debug);
+			var patcher = new MethodCreator(new MethodCreatorConfig(
+				standin.method,
+				original,
+				empty,
+				empty,
+				transpilers,
+				empty,
+				empty,
+				debug
+			));
 			var (replacement, finalInstructions) = patcher.CreateReplacement();
 			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {standin.method.FullDescription()}");
 
