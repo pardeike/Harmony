@@ -615,6 +615,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.AccessTools.GetFieldNames
   nameWithType: AccessTools.GetFieldNames
+- uid: HarmonyLib.AccessTools.GetMethodByModuleAndToken(System.String,System.Int32)
+  name: GetMethodByModuleAndToken(String, Int32)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_GetMethodByModuleAndToken_System_String_System_Int32_
+  commentId: M:HarmonyLib.AccessTools.GetMethodByModuleAndToken(System.String,System.Int32)
+  fullName: HarmonyLib.AccessTools.GetMethodByModuleAndToken(System.String, System.Int32)
+  nameWithType: AccessTools.GetMethodByModuleAndToken(String, Int32)
+- uid: HarmonyLib.AccessTools.GetMethodByModuleAndToken*
+  name: GetMethodByModuleAndToken
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_GetMethodByModuleAndToken_
+  commentId: Overload:HarmonyLib.AccessTools.GetMethodByModuleAndToken
+  isSpec: "True"
+  fullName: HarmonyLib.AccessTools.GetMethodByModuleAndToken
+  nameWithType: AccessTools.GetMethodByModuleAndToken
 - uid: HarmonyLib.AccessTools.GetMethodNames(System.Object)
   name: GetMethodNames(Object)
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_GetMethodNames_System_Object_
@@ -4339,6 +4352,76 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.FileLog.LogBytes
   nameWithType: FileLog.LogBytes
+- uid: HarmonyLib.FileLog.LogIL(Mono.Cecil.Cil.VariableDefinition)
+  name: LogIL(Mono.Cecil.Cil.VariableDefinition)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogIL_Mono_Cecil_Cil_VariableDefinition_
+  commentId: M:HarmonyLib.FileLog.LogIL(Mono.Cecil.Cil.VariableDefinition)
+  fullName: HarmonyLib.FileLog.LogIL(Mono.Cecil.Cil.VariableDefinition)
+  nameWithType: FileLog.LogIL(Mono.Cecil.Cil.VariableDefinition)
+- uid: HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.Label)
+  name: LogIL(Int32, Label)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_Label_
+  commentId: M:HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.Label)
+  fullName: HarmonyLib.FileLog.LogIL(System.Int32, System.Reflection.Emit.Label)
+  nameWithType: FileLog.LogIL(Int32, Label)
+- uid: HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode)
+  name: LogIL(Int32, OpCode)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_
+  commentId: M:HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode)
+  fullName: HarmonyLib.FileLog.LogIL(System.Int32, System.Reflection.Emit.OpCode)
+  nameWithType: FileLog.LogIL(Int32, OpCode)
+- uid: HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode,System.Object)
+  name: LogIL(Int32, OpCode, Object)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_System_Object_
+  commentId: M:HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode,System.Object)
+  fullName: HarmonyLib.FileLog.LogIL(System.Int32, System.Reflection.Emit.OpCode, System.Object)
+  nameWithType: FileLog.LogIL(Int32, OpCode, Object)
+- uid: HarmonyLib.FileLog.LogIL*
+  name: LogIL
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogIL_
+  commentId: Overload:HarmonyLib.FileLog.LogIL
+  isSpec: "True"
+  fullName: HarmonyLib.FileLog.LogIL
+  nameWithType: FileLog.LogIL
+- uid: HarmonyLib.FileLog.LogILBlockBegin(System.Int32,HarmonyLib.ExceptionBlock)
+  name: LogILBlockBegin(Int32, ExceptionBlock)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogILBlockBegin_System_Int32_HarmonyLib_ExceptionBlock_
+  commentId: M:HarmonyLib.FileLog.LogILBlockBegin(System.Int32,HarmonyLib.ExceptionBlock)
+  fullName: HarmonyLib.FileLog.LogILBlockBegin(System.Int32, HarmonyLib.ExceptionBlock)
+  nameWithType: FileLog.LogILBlockBegin(Int32, ExceptionBlock)
+- uid: HarmonyLib.FileLog.LogILBlockBegin*
+  name: LogILBlockBegin
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogILBlockBegin_
+  commentId: Overload:HarmonyLib.FileLog.LogILBlockBegin
+  isSpec: "True"
+  fullName: HarmonyLib.FileLog.LogILBlockBegin
+  nameWithType: FileLog.LogILBlockBegin
+- uid: HarmonyLib.FileLog.LogILBlockEnd(System.Int32,HarmonyLib.ExceptionBlock)
+  name: LogILBlockEnd(Int32, ExceptionBlock)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogILBlockEnd_System_Int32_HarmonyLib_ExceptionBlock_
+  commentId: M:HarmonyLib.FileLog.LogILBlockEnd(System.Int32,HarmonyLib.ExceptionBlock)
+  fullName: HarmonyLib.FileLog.LogILBlockEnd(System.Int32, HarmonyLib.ExceptionBlock)
+  nameWithType: FileLog.LogILBlockEnd(Int32, ExceptionBlock)
+- uid: HarmonyLib.FileLog.LogILBlockEnd*
+  name: LogILBlockEnd
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogILBlockEnd_
+  commentId: Overload:HarmonyLib.FileLog.LogILBlockEnd
+  isSpec: "True"
+  fullName: HarmonyLib.FileLog.LogILBlockEnd
+  nameWithType: FileLog.LogILBlockEnd
+- uid: HarmonyLib.FileLog.LogILComment(System.Int32,System.String)
+  name: LogILComment(Int32, String)
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogILComment_System_Int32_System_String_
+  commentId: M:HarmonyLib.FileLog.LogILComment(System.Int32,System.String)
+  fullName: HarmonyLib.FileLog.LogILComment(System.Int32, System.String)
+  nameWithType: FileLog.LogILComment(Int32, String)
+- uid: HarmonyLib.FileLog.LogILComment*
+  name: LogILComment
+  href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogILComment_
+  commentId: Overload:HarmonyLib.FileLog.LogILComment
+  isSpec: "True"
+  fullName: HarmonyLib.FileLog.LogILComment
+  nameWithType: FileLog.LogILComment
 - uid: HarmonyLib.FileLog.LogPath
   name: LogPath
   href: api/HarmonyLib.FileLog.html#HarmonyLib_FileLog_LogPath
@@ -4680,12 +4763,12 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.Harmony.Id
   nameWithType: Harmony.Id
-- uid: HarmonyLib.Harmony.Patch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)
-  name: Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
-  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_Patch_System_Reflection_MethodBase_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_
-  commentId: M:HarmonyLib.Harmony.Patch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)
-  fullName: HarmonyLib.Harmony.Patch(System.Reflection.MethodBase, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod)
-  nameWithType: Harmony.Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+- uid: HarmonyLib.Harmony.Patch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)
+  name: Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_Patch_System_Reflection_MethodBase_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.Harmony.Patch(System.Reflection.MethodBase,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.Harmony.Patch(System.Reflection.MethodBase, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod, HarmonyLib.HarmonyMethod)
+  nameWithType: Harmony.Patch(MethodBase, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod, HarmonyMethod)
 - uid: HarmonyLib.Harmony.Patch*
   name: Patch
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_Patch_
@@ -5724,6 +5807,12 @@ references:
   commentId: F:HarmonyLib.HarmonyPatchType.Finalizer
   fullName: HarmonyLib.HarmonyPatchType.Finalizer
   nameWithType: HarmonyPatchType.Finalizer
+- uid: HarmonyLib.HarmonyPatchType.Infix
+  name: Infix
+  href: api/HarmonyLib.HarmonyPatchType.html#HarmonyLib_HarmonyPatchType_Infix
+  commentId: F:HarmonyLib.HarmonyPatchType.Infix
+  fullName: HarmonyLib.HarmonyPatchType.Infix
+  nameWithType: HarmonyPatchType.Infix
 - uid: HarmonyLib.HarmonyPatchType.Postfix
   name: Postfix
   href: api/HarmonyLib.HarmonyPatchType.html#HarmonyLib_HarmonyPatchType_Postfix
@@ -5840,6 +5929,153 @@ references:
   commentId: T:HarmonyLib.HarmonyTranspiler
   fullName: HarmonyLib.HarmonyTranspiler
   nameWithType: HarmonyTranspiler
+- uid: HarmonyLib.InnerFix
+  name: InnerFix
+  href: api/HarmonyLib.InnerFix.html
+  commentId: T:HarmonyLib.InnerFix
+  fullName: HarmonyLib.InnerFix
+  nameWithType: InnerFix
+- uid: HarmonyLib.InnerFix.InnerMethod
+  name: InnerMethod
+  href: api/HarmonyLib.InnerFix.html#HarmonyLib_InnerFix_InnerMethod
+  commentId: P:HarmonyLib.InnerFix.InnerMethod
+  fullName: HarmonyLib.InnerFix.InnerMethod
+  nameWithType: InnerFix.InnerMethod
+- uid: HarmonyLib.InnerFix.InnerMethod*
+  name: InnerMethod
+  href: api/HarmonyLib.InnerFix.html#HarmonyLib_InnerFix_InnerMethod_
+  commentId: Overload:HarmonyLib.InnerFix.InnerMethod
+  isSpec: "True"
+  fullName: HarmonyLib.InnerFix.InnerMethod
+  nameWithType: InnerFix.InnerMethod
+- uid: HarmonyLib.InnerFix.TargetFinder
+  name: TargetFinder
+  href: api/HarmonyLib.InnerFix.html#HarmonyLib_InnerFix_TargetFinder
+  commentId: P:HarmonyLib.InnerFix.TargetFinder
+  fullName: HarmonyLib.InnerFix.TargetFinder
+  nameWithType: InnerFix.TargetFinder
+- uid: HarmonyLib.InnerFix.TargetFinder*
+  name: TargetFinder
+  href: api/HarmonyLib.InnerFix.html#HarmonyLib_InnerFix_TargetFinder_
+  commentId: Overload:HarmonyLib.InnerFix.TargetFinder
+  isSpec: "True"
+  fullName: HarmonyLib.InnerFix.TargetFinder
+  nameWithType: InnerFix.TargetFinder
+- uid: HarmonyLib.InnerFixType
+  name: InnerFixType
+  href: api/HarmonyLib.InnerFixType.html
+  commentId: T:HarmonyLib.InnerFixType
+  fullName: HarmonyLib.InnerFixType
+  nameWithType: InnerFixType
+- uid: HarmonyLib.InnerFixType.Postfix
+  name: Postfix
+  href: api/HarmonyLib.InnerFixType.html#HarmonyLib_InnerFixType_Postfix
+  commentId: F:HarmonyLib.InnerFixType.Postfix
+  fullName: HarmonyLib.InnerFixType.Postfix
+  nameWithType: InnerFixType.Postfix
+- uid: HarmonyLib.InnerFixType.Prefix
+  name: Prefix
+  href: api/HarmonyLib.InnerFixType.html#HarmonyLib_InnerFixType_Prefix
+  commentId: F:HarmonyLib.InnerFixType.Prefix
+  fullName: HarmonyLib.InnerFixType.Prefix
+  nameWithType: InnerFixType.Prefix
+- uid: HarmonyLib.InnerMethod
+  name: InnerMethod
+  href: api/HarmonyLib.InnerMethod.html
+  commentId: T:HarmonyLib.InnerMethod
+  fullName: HarmonyLib.InnerMethod
+  nameWithType: InnerMethod
+- uid: HarmonyLib.InnerMethod.#ctor(System.Reflection.MethodInfo,System.Int32[])
+  name: InnerMethod(MethodInfo, Int32[])
+  href: api/HarmonyLib.InnerMethod.html#HarmonyLib_InnerMethod__ctor_System_Reflection_MethodInfo_System_Int32___
+  commentId: M:HarmonyLib.InnerMethod.#ctor(System.Reflection.MethodInfo,System.Int32[])
+  name.vb: InnerMethod(MethodInfo, Int32())
+  fullName: HarmonyLib.InnerMethod.InnerMethod(System.Reflection.MethodInfo, System.Int32[])
+  fullName.vb: HarmonyLib.InnerMethod.InnerMethod(System.Reflection.MethodInfo, System.Int32())
+  nameWithType: InnerMethod.InnerMethod(MethodInfo, Int32[])
+  nameWithType.vb: InnerMethod.InnerMethod(MethodInfo, Int32())
+- uid: HarmonyLib.InnerMethod.#ctor*
+  name: InnerMethod
+  href: api/HarmonyLib.InnerMethod.html#HarmonyLib_InnerMethod__ctor_
+  commentId: Overload:HarmonyLib.InnerMethod.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.InnerMethod.InnerMethod
+  nameWithType: InnerMethod.InnerMethod
+- uid: HarmonyLib.InnerMethod.Method
+  name: Method
+  href: api/HarmonyLib.InnerMethod.html#HarmonyLib_InnerMethod_Method
+  commentId: P:HarmonyLib.InnerMethod.Method
+  fullName: HarmonyLib.InnerMethod.Method
+  nameWithType: InnerMethod.Method
+- uid: HarmonyLib.InnerMethod.Method*
+  name: Method
+  href: api/HarmonyLib.InnerMethod.html#HarmonyLib_InnerMethod_Method_
+  commentId: Overload:HarmonyLib.InnerMethod.Method
+  isSpec: "True"
+  fullName: HarmonyLib.InnerMethod.Method
+  nameWithType: InnerMethod.Method
+- uid: HarmonyLib.InnerMethod.positions
+  name: positions
+  href: api/HarmonyLib.InnerMethod.html#HarmonyLib_InnerMethod_positions
+  commentId: F:HarmonyLib.InnerMethod.positions
+  fullName: HarmonyLib.InnerMethod.positions
+  nameWithType: InnerMethod.positions
+- uid: HarmonyLib.InnerPostfix
+  name: InnerPostfix
+  href: api/HarmonyLib.InnerPostfix.html
+  commentId: T:HarmonyLib.InnerPostfix
+  fullName: HarmonyLib.InnerPostfix
+  nameWithType: InnerPostfix
+- uid: HarmonyLib.InnerPostfix.#ctor(HarmonyLib.InnerMethod)
+  name: InnerPostfix(InnerMethod)
+  href: api/HarmonyLib.InnerPostfix.html#HarmonyLib_InnerPostfix__ctor_HarmonyLib_InnerMethod_
+  commentId: M:HarmonyLib.InnerPostfix.#ctor(HarmonyLib.InnerMethod)
+  fullName: HarmonyLib.InnerPostfix.InnerPostfix(HarmonyLib.InnerMethod)
+  nameWithType: InnerPostfix.InnerPostfix(InnerMethod)
+- uid: HarmonyLib.InnerPostfix.#ctor(System.Func{System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.InnerMethod})
+  name: InnerPostfix(Func<IEnumerable<CodeInstruction>, InnerMethod>)
+  href: api/HarmonyLib.InnerPostfix.html#HarmonyLib_InnerPostfix__ctor_System_Func_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__HarmonyLib_InnerMethod__
+  commentId: M:HarmonyLib.InnerPostfix.#ctor(System.Func{System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.InnerMethod})
+  name.vb: InnerPostfix(Func(Of IEnumerable(Of CodeInstruction), InnerMethod))
+  fullName: HarmonyLib.InnerPostfix.InnerPostfix(System.Func<System.Collections.Generic.IEnumerable<HarmonyLib.CodeInstruction>, HarmonyLib.InnerMethod>)
+  fullName.vb: HarmonyLib.InnerPostfix.InnerPostfix(System.Func(Of System.Collections.Generic.IEnumerable(Of HarmonyLib.CodeInstruction), HarmonyLib.InnerMethod))
+  nameWithType: InnerPostfix.InnerPostfix(Func<IEnumerable<CodeInstruction>, InnerMethod>)
+  nameWithType.vb: InnerPostfix.InnerPostfix(Func(Of IEnumerable(Of CodeInstruction), InnerMethod))
+- uid: HarmonyLib.InnerPostfix.#ctor*
+  name: InnerPostfix
+  href: api/HarmonyLib.InnerPostfix.html#HarmonyLib_InnerPostfix__ctor_
+  commentId: Overload:HarmonyLib.InnerPostfix.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.InnerPostfix.InnerPostfix
+  nameWithType: InnerPostfix.InnerPostfix
+- uid: HarmonyLib.InnerPrefix
+  name: InnerPrefix
+  href: api/HarmonyLib.InnerPrefix.html
+  commentId: T:HarmonyLib.InnerPrefix
+  fullName: HarmonyLib.InnerPrefix
+  nameWithType: InnerPrefix
+- uid: HarmonyLib.InnerPrefix.#ctor(HarmonyLib.InnerMethod)
+  name: InnerPrefix(InnerMethod)
+  href: api/HarmonyLib.InnerPrefix.html#HarmonyLib_InnerPrefix__ctor_HarmonyLib_InnerMethod_
+  commentId: M:HarmonyLib.InnerPrefix.#ctor(HarmonyLib.InnerMethod)
+  fullName: HarmonyLib.InnerPrefix.InnerPrefix(HarmonyLib.InnerMethod)
+  nameWithType: InnerPrefix.InnerPrefix(InnerMethod)
+- uid: HarmonyLib.InnerPrefix.#ctor(System.Func{System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.InnerMethod})
+  name: InnerPrefix(Func<IEnumerable<CodeInstruction>, InnerMethod>)
+  href: api/HarmonyLib.InnerPrefix.html#HarmonyLib_InnerPrefix__ctor_System_Func_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__HarmonyLib_InnerMethod__
+  commentId: M:HarmonyLib.InnerPrefix.#ctor(System.Func{System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.InnerMethod})
+  name.vb: InnerPrefix(Func(Of IEnumerable(Of CodeInstruction), InnerMethod))
+  fullName: HarmonyLib.InnerPrefix.InnerPrefix(System.Func<System.Collections.Generic.IEnumerable<HarmonyLib.CodeInstruction>, HarmonyLib.InnerMethod>)
+  fullName.vb: HarmonyLib.InnerPrefix.InnerPrefix(System.Func(Of System.Collections.Generic.IEnumerable(Of HarmonyLib.CodeInstruction), HarmonyLib.InnerMethod))
+  nameWithType: InnerPrefix.InnerPrefix(Func<IEnumerable<CodeInstruction>, InnerMethod>)
+  nameWithType.vb: InnerPrefix.InnerPrefix(Func(Of IEnumerable(Of CodeInstruction), InnerMethod))
+- uid: HarmonyLib.InnerPrefix.#ctor*
+  name: InnerPrefix
+  href: api/HarmonyLib.InnerPrefix.html#HarmonyLib_InnerPrefix__ctor_
+  commentId: Overload:HarmonyLib.InnerPrefix.#ctor
+  isSpec: "True"
+  fullName: HarmonyLib.InnerPrefix.InnerPrefix
+  nameWithType: InnerPrefix.InnerPrefix
 - uid: HarmonyLib.InstantiationHandler`1
   name: InstantiationHandler<T>
   href: api/HarmonyLib.InstantiationHandler-1.html
@@ -6051,6 +6287,12 @@ references:
   commentId: F:HarmonyLib.Patch.index
   fullName: HarmonyLib.Patch.index
   nameWithType: Patch.index
+- uid: HarmonyLib.Patch.innerMethod
+  name: innerMethod
+  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_innerMethod
+  commentId: F:HarmonyLib.Patch.innerMethod
+  fullName: HarmonyLib.Patch.innerMethod
+  nameWithType: Patch.innerMethod
 - uid: HarmonyLib.Patch.owner
   name: owner
   href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_owner
@@ -6140,15 +6382,15 @@ references:
   commentId: T:HarmonyLib.Patches
   fullName: HarmonyLib.Patches
   nameWithType: Patches
-- uid: HarmonyLib.Patches.#ctor(HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[])
-  name: Patches(Patch[], Patch[], Patch[], Patch[])
-  href: api/HarmonyLib.Patches.html#HarmonyLib_Patches__ctor_HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___
-  commentId: M:HarmonyLib.Patches.#ctor(HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[])
-  name.vb: Patches(Patch(), Patch(), Patch(), Patch())
-  fullName: HarmonyLib.Patches.Patches(HarmonyLib.Patch[], HarmonyLib.Patch[], HarmonyLib.Patch[], HarmonyLib.Patch[])
-  fullName.vb: HarmonyLib.Patches.Patches(HarmonyLib.Patch(), HarmonyLib.Patch(), HarmonyLib.Patch(), HarmonyLib.Patch())
-  nameWithType: Patches.Patches(Patch[], Patch[], Patch[], Patch[])
-  nameWithType.vb: Patches.Patches(Patch(), Patch(), Patch(), Patch())
+- uid: HarmonyLib.Patches.#ctor(HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[])
+  name: Patches(Patch[], Patch[], Patch[], Patch[], Patch[])
+  href: api/HarmonyLib.Patches.html#HarmonyLib_Patches__ctor_HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___
+  commentId: M:HarmonyLib.Patches.#ctor(HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[])
+  name.vb: Patches(Patch(), Patch(), Patch(), Patch(), Patch())
+  fullName: HarmonyLib.Patches.Patches(HarmonyLib.Patch[], HarmonyLib.Patch[], HarmonyLib.Patch[], HarmonyLib.Patch[], HarmonyLib.Patch[])
+  fullName.vb: HarmonyLib.Patches.Patches(HarmonyLib.Patch(), HarmonyLib.Patch(), HarmonyLib.Patch(), HarmonyLib.Patch(), HarmonyLib.Patch())
+  nameWithType: Patches.Patches(Patch[], Patch[], Patch[], Patch[], Patch[])
+  nameWithType.vb: Patches.Patches(Patch(), Patch(), Patch(), Patch(), Patch())
 - uid: HarmonyLib.Patches.#ctor*
   name: Patches
   href: api/HarmonyLib.Patches.html#HarmonyLib_Patches__ctor_
@@ -6162,6 +6404,12 @@ references:
   commentId: F:HarmonyLib.Patches.Finalizers
   fullName: HarmonyLib.Patches.Finalizers
   nameWithType: Patches.Finalizers
+- uid: HarmonyLib.Patches.Infixes
+  name: Infixes
+  href: api/HarmonyLib.Patches.html#HarmonyLib_Patches_Infixes
+  commentId: F:HarmonyLib.Patches.Infixes
+  fullName: HarmonyLib.Patches.Infixes
+  nameWithType: Patches.Infixes
 - uid: HarmonyLib.Patches.Owners
   name: Owners
   href: api/HarmonyLib.Patches.html#HarmonyLib_Patches_Owners
@@ -6218,6 +6466,12 @@ references:
   commentId: F:HarmonyLib.PatchInfo.finalizers
   fullName: HarmonyLib.PatchInfo.finalizers
   nameWithType: PatchInfo.finalizers
+- uid: HarmonyLib.PatchInfo.infixes
+  name: infixes
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_infixes
+  commentId: F:HarmonyLib.PatchInfo.infixes
+  fullName: HarmonyLib.PatchInfo.infixes
+  nameWithType: PatchInfo.infixes
 - uid: HarmonyLib.PatchInfo.postfixes
   name: postfixes
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_postfixes
@@ -6243,6 +6497,19 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchInfo.RemoveFinalizer
   nameWithType: PatchInfo.RemoveFinalizer
+- uid: HarmonyLib.PatchInfo.RemoveInfix(System.String)
+  name: RemoveInfix(String)
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_RemoveInfix_System_String_
+  commentId: M:HarmonyLib.PatchInfo.RemoveInfix(System.String)
+  fullName: HarmonyLib.PatchInfo.RemoveInfix(System.String)
+  nameWithType: PatchInfo.RemoveInfix(String)
+- uid: HarmonyLib.PatchInfo.RemoveInfix*
+  name: RemoveInfix
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_RemoveInfix_
+  commentId: Overload:HarmonyLib.PatchInfo.RemoveInfix
+  isSpec: "True"
+  fullName: HarmonyLib.PatchInfo.RemoveInfix
+  nameWithType: PatchInfo.RemoveInfix
 - uid: HarmonyLib.PatchInfo.RemovePatch(System.Reflection.MethodInfo)
   name: RemovePatch(MethodInfo)
   href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_RemovePatch_System_Reflection_MethodInfo_
@@ -6301,6 +6568,12 @@ references:
   commentId: F:HarmonyLib.PatchInfo.transpilers
   fullName: HarmonyLib.PatchInfo.transpilers
   nameWithType: PatchInfo.transpilers
+- uid: HarmonyLib.PatchInfo.VersionCount
+  name: VersionCount
+  href: api/HarmonyLib.PatchInfo.html#HarmonyLib_PatchInfo_VersionCount
+  commentId: F:HarmonyLib.PatchInfo.VersionCount
+  fullName: HarmonyLib.PatchInfo.VersionCount
+  nameWithType: PatchInfo.VersionCount
 - uid: HarmonyLib.PatchProcessor
   name: PatchProcessor
   href: api/HarmonyLib.PatchProcessor.html
@@ -6339,6 +6612,25 @@ references:
   isSpec: "True"
   fullName: HarmonyLib.PatchProcessor.AddFinalizer
   nameWithType: PatchProcessor.AddFinalizer
+- uid: HarmonyLib.PatchProcessor.AddInfix(HarmonyLib.HarmonyMethod)
+  name: AddInfix(HarmonyMethod)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddInfix_HarmonyLib_HarmonyMethod_
+  commentId: M:HarmonyLib.PatchProcessor.AddInfix(HarmonyLib.HarmonyMethod)
+  fullName: HarmonyLib.PatchProcessor.AddInfix(HarmonyLib.HarmonyMethod)
+  nameWithType: PatchProcessor.AddInfix(HarmonyMethod)
+- uid: HarmonyLib.PatchProcessor.AddInfix(System.Reflection.MethodInfo)
+  name: AddInfix(MethodInfo)
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddInfix_System_Reflection_MethodInfo_
+  commentId: M:HarmonyLib.PatchProcessor.AddInfix(System.Reflection.MethodInfo)
+  fullName: HarmonyLib.PatchProcessor.AddInfix(System.Reflection.MethodInfo)
+  nameWithType: PatchProcessor.AddInfix(MethodInfo)
+- uid: HarmonyLib.PatchProcessor.AddInfix*
+  name: AddInfix
+  href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddInfix_
+  commentId: Overload:HarmonyLib.PatchProcessor.AddInfix
+  isSpec: "True"
+  fullName: HarmonyLib.PatchProcessor.AddInfix
+  nameWithType: PatchProcessor.AddInfix
 - uid: HarmonyLib.PatchProcessor.AddPostfix(HarmonyLib.HarmonyMethod)
   name: AddPostfix(HarmonyMethod)
   href: api/HarmonyLib.PatchProcessor.html#HarmonyLib_PatchProcessor_AddPostfix_HarmonyLib_HarmonyMethod_
@@ -6721,6 +7013,22 @@ references:
   commentId: T:HarmonyLib.Transpilers
   fullName: HarmonyLib.Transpilers
   nameWithType: Transpilers
+- uid: HarmonyLib.Transpilers.ApplyInfixes(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},System.Reflection.MethodBase,HarmonyLib.InnerFix[])
+  name: ApplyInfixes(IEnumerable<CodeInstruction>, MethodBase, InnerFix[])
+  href: api/HarmonyLib.Transpilers.html#HarmonyLib_Transpilers_ApplyInfixes_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__System_Reflection_MethodBase_HarmonyLib_InnerFix___
+  commentId: M:HarmonyLib.Transpilers.ApplyInfixes(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},System.Reflection.MethodBase,HarmonyLib.InnerFix[])
+  name.vb: ApplyInfixes(IEnumerable(Of CodeInstruction), MethodBase, InnerFix())
+  fullName: HarmonyLib.Transpilers.ApplyInfixes(System.Collections.Generic.IEnumerable<HarmonyLib.CodeInstruction>, System.Reflection.MethodBase, HarmonyLib.InnerFix[])
+  fullName.vb: HarmonyLib.Transpilers.ApplyInfixes(System.Collections.Generic.IEnumerable(Of HarmonyLib.CodeInstruction), System.Reflection.MethodBase, HarmonyLib.InnerFix())
+  nameWithType: Transpilers.ApplyInfixes(IEnumerable<CodeInstruction>, MethodBase, InnerFix[])
+  nameWithType.vb: Transpilers.ApplyInfixes(IEnumerable(Of CodeInstruction), MethodBase, InnerFix())
+- uid: HarmonyLib.Transpilers.ApplyInfixes*
+  name: ApplyInfixes
+  href: api/HarmonyLib.Transpilers.html#HarmonyLib_Transpilers_ApplyInfixes_
+  commentId: Overload:HarmonyLib.Transpilers.ApplyInfixes
+  isSpec: "True"
+  fullName: HarmonyLib.Transpilers.ApplyInfixes
+  nameWithType: Transpilers.ApplyInfixes
 - uid: HarmonyLib.Transpilers.DebugLogger(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},System.String)
   name: DebugLogger(IEnumerable<CodeInstruction>, String)
   href: api/HarmonyLib.Transpilers.html#HarmonyLib_Transpilers_DebugLogger_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__System_String_

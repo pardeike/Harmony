@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Delegate AccessTools.FieldRef&lt;F&gt;
+    <title>Class InnerFix
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Delegate AccessTools.FieldRef&lt;F&gt;
+    <meta name="title" content="Class InnerFix
    ">
     <meta name="generator" content="docfx 2.59.4.0">
     
@@ -68,21 +68,47 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.AccessTools.FieldRef`1">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.InnerFix">
   
   
-  <h1 id="HarmonyLib_AccessTools_FieldRef_1" data-uid="HarmonyLib.AccessTools.FieldRef`1" class="text-break">Delegate AccessTools.FieldRef&lt;F&gt;
+  <h1 id="HarmonyLib_InnerFix" data-uid="HarmonyLib.InnerFix" class="text-break">Class InnerFix
   </h1>
-  <div class="markdown level0 summary"><p>A readable/assignable reference delegate to a static field</p>
+  <div class="markdown level0 summary"><p>The base class for InnerPrefix and InnerPostfix</p>
 </div>
   <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">InnerFix</span></div>
+      <div class="level2"><a class="xref" href="HarmonyLib.InnerPostfix.html">InnerPostfix</a></div>
+      <div class="level2"><a class="xref" href="HarmonyLib.InnerPrefix.html">InnerPrefix</a></div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_AccessTools_FieldRef_1_syntax">Syntax</h5>
+  <h5 id="HarmonyLib_InnerFix_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public delegate ref F FieldRef&lt;F&gt;();</code></pre>
+    <pre><code class="lang-csharp hljs">[Serializable]
+public abstract class InnerFix</code></pre>
   </div>
-  <h5 class="returns">Returns</h5>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_InnerFix_InnerMethod.md&amp;value=---%0Auid%3A%20HarmonyLib.InnerFix.InnerMethod%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/InnerFix.cs/#L16">View Source</a>
+  </span>
+  <a id="HarmonyLib_InnerFix_InnerMethod_" data-uid="HarmonyLib.InnerFix.InnerMethod*"></a>
+  <h4 id="HarmonyLib_InnerFix_InnerMethod" data-uid="HarmonyLib.InnerFix.InnerMethod">InnerMethod</h4>
+  <div class="markdown level1 summary"><p>The method call to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InnerMethod InnerMethod { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -92,27 +118,39 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">F</span></td>
-        <td><p>A readable/assignable reference to the field</p>
-</td>
+        <td><a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a></td>
+        <td></td>
       </tr>
     </tbody>
   </table>
-  <h5 class="typeParameters">Type Parameters</h5>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_InnerFix_TargetFinder.md&amp;value=---%0Auid%3A%20HarmonyLib.InnerFix.TargetFinder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/InnerFix.cs/#L20">View Source</a>
+  </span>
+  <a id="HarmonyLib_InnerFix_TargetFinder_" data-uid="HarmonyLib.InnerFix.TargetFinder*"></a>
+  <h4 id="HarmonyLib_InnerFix_TargetFinder" data-uid="HarmonyLib.InnerFix.TargetFinder">TargetFinder</h4>
+  <div class="markdown level1 summary"><p>If defined will be used to calculate Target from a given methods content</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;IEnumerable&lt;CodeInstruction&gt;, InnerMethod&gt; TargetFinder { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Type</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="parametername">F</span></td>
-        <td><p>The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
-a type that <span class="xref">System.Type.IsAssignableFrom(System.Type)</span> that type; or if the field's type is an enum type,
-either that type or the underlying integral type of that enum type</p>
-</td>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;, <a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a>&gt;</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -124,10 +162,10 @@ either that type or the underlying integral type of that enum type</p>
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_AccessTools_FieldRef_1.md&amp;value=---%0Auid%3A%20HarmonyLib.AccessTools.FieldRef%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_InnerFix.md&amp;value=---%0Auid%3A%20HarmonyLib.InnerFix%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/AccessTools.cs/#L1511" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/InnerFix.cs/#L9" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

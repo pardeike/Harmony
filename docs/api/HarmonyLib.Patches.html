@@ -91,19 +91,19 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_Patches__ctor_HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___.md&amp;value=---%0Auid%3A%20HarmonyLib.Patches.%23ctor(HarmonyLib.Patch%5B%5D%2CHarmonyLib.Patch%5B%5D%2CHarmonyLib.Patch%5B%5D%2CHarmonyLib.Patch%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_Patches__ctor_HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___.md&amp;value=---%0Auid%3A%20HarmonyLib.Patches.%23ctor(HarmonyLib.Patch%5B%5D%2CHarmonyLib.Patch%5B%5D%2CHarmonyLib.Patch%5B%5D%2CHarmonyLib.Patch%5B%5D%2CHarmonyLib.Patch%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patches.cs/#L49">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patches.cs/#L55">View Source</a>
   </span>
   <a id="HarmonyLib_Patches__ctor_" data-uid="HarmonyLib.Patches.#ctor*"></a>
-  <h4 id="HarmonyLib_Patches__ctor_HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___" data-uid="HarmonyLib.Patches.#ctor(HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[])">Patches(Patch[], Patch[], Patch[], Patch[])</h4>
+  <h4 id="HarmonyLib_Patches__ctor_HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___HarmonyLib_Patch___" data-uid="HarmonyLib.Patches.#ctor(HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[],HarmonyLib.Patch[])">Patches(Patch[], Patch[], Patch[], Patch[], Patch[])</h4>
   <div class="markdown level1 summary"><p>Creates a group of patches</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finalizers)</code></pre>
+    <pre><code class="lang-csharp hljs">public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finalizers, Patch[] infixes)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -139,6 +139,12 @@
         <td><p>An array of finalizeres as <a class="xref" href="HarmonyLib.Patch.html">Patch</a></p>
 </td>
       </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Patch.html">Patch</a>[]</td>
+        <td><span class="parametername">infixes</span></td>
+        <td><p>An array of infixes as <a class="xref" href="HarmonyLib.Patch.html">Patch</a></p>
+</td>
+      </tr>
     </tbody>
   </table>
   <h3 id="fields">Fields
@@ -157,6 +163,36 @@
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public readonly ReadOnlyCollection&lt;Patch&gt; Finalizers</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.ObjectModel.ReadOnlyCollection</span>&lt;<a class="xref" href="HarmonyLib.Patch.html">Patch</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_Patches_Infixes.md&amp;value=---%0Auid%3A%20HarmonyLib.Patches.Infixes%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patches.cs/#L29">View Source</a>
+  </span>
+  <h4 id="HarmonyLib_Patches_Infixes" data-uid="HarmonyLib.Patches.Infixes">Infixes</h4>
+  <div class="markdown level1 summary"><p>A collection of infix <a class="xref" href="HarmonyLib.Patch.html">Patch</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly ReadOnlyCollection&lt;Patch&gt; Infixes</code></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -270,7 +306,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_Patches_Owners.md&amp;value=---%0Auid%3A%20HarmonyLib.Patches.Owners%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patches.cs/#L30">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/Patches.cs/#L34">View Source</a>
   </span>
   <a id="HarmonyLib_Patches_Owners_" data-uid="HarmonyLib.Patches.Owners*"></a>
   <h4 id="HarmonyLib_Patches_Owners" data-uid="HarmonyLib.Patches.Owners">Owners</h4>

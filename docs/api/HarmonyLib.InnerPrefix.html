@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class MethodBaseExtensions
+    <title>Class InnerPrefix
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class MethodBaseExtensions
+    <meta name="title" content="Class InnerPrefix
    ">
     <meta name="generator" content="docfx 2.59.4.0">
     
@@ -68,42 +68,52 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.MethodBaseExtensions">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.InnerPrefix">
   
   
-  <h1 id="HarmonyLib_MethodBaseExtensions" data-uid="HarmonyLib.MethodBaseExtensions" class="text-break">Class MethodBaseExtensions
+  <h1 id="HarmonyLib_InnerPrefix" data-uid="HarmonyLib.InnerPrefix" class="text-break">Class InnerPrefix
   </h1>
-  <div class="markdown level0 summary"><p>General extensions for collections</p>
+  <div class="markdown level0 summary"><p>An inner prefix that is applied inside some method call inside a method</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><span class="xref">MethodBaseExtensions</span></div>
+    <div class="level1"><a class="xref" href="HarmonyLib.InnerFix.html">InnerFix</a></div>
+    <div class="level2"><span class="xref">InnerPrefix</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="HarmonyLib.InnerFix.html#HarmonyLib_InnerFix_InnerMethod">InnerFix.InnerMethod</a>
+    </div>
+    <div>
+      <a class="xref" href="HarmonyLib.InnerFix.html#HarmonyLib_InnerFix_TargetFinder">InnerFix.TargetFinder</a>
+    </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
   <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_MethodBaseExtensions_syntax">Syntax</h5>
+  <h5 id="HarmonyLib_InnerPrefix_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class MethodBaseExtensions</code></pre>
+    <pre><code class="lang-csharp hljs">public class InnerPrefix : InnerFix</code></pre>
   </div>
-  <h3 id="methods">Methods
+  <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodBaseExtensions_HasMethodBody_System_Reflection_MethodBase_.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_InnerPrefix__ctor_HarmonyLib_InnerMethod_.md&amp;value=---%0Auid%3A%20HarmonyLib.InnerPrefix.%23ctor(HarmonyLib.InnerMethod)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L810">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/InnerPrefix.cs/#L19">View Source</a>
   </span>
-  <a id="HarmonyLib_MethodBaseExtensions_HasMethodBody_" data-uid="HarmonyLib.MethodBaseExtensions.HasMethodBody*"></a>
-  <h4 id="HarmonyLib_MethodBaseExtensions_HasMethodBody_System_Reflection_MethodBase_" data-uid="HarmonyLib.MethodBaseExtensions.HasMethodBody(System.Reflection.MethodBase)">HasMethodBody(MethodBase)</h4>
-  <div class="markdown level1 summary"><p>Tests a class member if it has an IL method body (external methods for example don't have a body)</p>
+  <a id="HarmonyLib_InnerPrefix__ctor_" data-uid="HarmonyLib.InnerPrefix.#ctor*"></a>
+  <h4 id="HarmonyLib_InnerPrefix__ctor_HarmonyLib_InnerMethod_" data-uid="HarmonyLib.InnerPrefix.#ctor(HarmonyLib.InnerMethod)">InnerPrefix(InnerMethod)</h4>
+  <div class="markdown level1 summary"><p>Creates an infix for an implicit defined method call</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool HasMethodBody(this MethodBase member)</code></pre>
+    <pre><code class="lang-csharp hljs">public InnerPrefix(InnerMethod innerMethod)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -116,25 +126,43 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Reflection.MethodBase</span></td>
-        <td><span class="parametername">member</span></td>
-        <td><p>The member to test</p>
+        <td><a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a></td>
+        <td><span class="parametername">innerMethod</span></td>
+        <td><p>The method call to apply the fix to</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 class="returns">Returns</h5>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_InnerPrefix__ctor_System_Func_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__HarmonyLib_InnerMethod__.md&amp;value=---%0Auid%3A%20HarmonyLib.InnerPrefix.%23ctor(System.Func%7BSystem.Collections.Generic.IEnumerable%7BHarmonyLib.CodeInstruction%7D%2CHarmonyLib.InnerMethod%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/InnerPrefix.cs/#L24">View Source</a>
+  </span>
+  <a id="HarmonyLib_InnerPrefix__ctor_" data-uid="HarmonyLib.InnerPrefix.#ctor*"></a>
+  <h4 id="HarmonyLib_InnerPrefix__ctor_System_Func_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__HarmonyLib_InnerMethod__" data-uid="HarmonyLib.InnerPrefix.#ctor(System.Func{System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},HarmonyLib.InnerMethod})">InnerPrefix(Func&lt;IEnumerable&lt;CodeInstruction&gt;, InnerMethod&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates an infix for an indirectly defined method call</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InnerPrefix(Func&lt;IEnumerable&lt;CodeInstruction&gt;, InnerMethod&gt; targetFinder)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p>Returns true if the member has an IL body or false if not</p>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;, <a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a>&gt;</td>
+        <td><span class="parametername">targetFinder</span></td>
+        <td><p>Calculates Target from a given methods content</p>
 </td>
       </tr>
     </tbody>
@@ -147,10 +175,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_MethodBaseExtensions.md&amp;value=---%0Auid%3A%20HarmonyLib.MethodBaseExtensions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_InnerPrefix.md&amp;value=---%0Auid%3A%20HarmonyLib.InnerPrefix%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/Extensions.cs/#L805" class="contribution-link">View Source</a>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Public/InnerPrefix.cs/#L9" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
