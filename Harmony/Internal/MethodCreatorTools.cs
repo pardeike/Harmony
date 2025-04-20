@@ -684,33 +684,21 @@ namespace HarmonyLib
 
 		static CodeInstruction LoadIndOpCodeFor(Type type)
 		{
-			if (type.IsEnum)
-				return Ldind_I4;
+			if (PrimitivesWithObjectTypeCode.Contains(type))
+				return Ldind_I;
 
-			if (type == typeof(float))
-				return Ldind_R4;
-			if (type == typeof(double))
-				return Ldind_R8;
-
-			if (type == typeof(byte))
-				return Ldind_U1;
-			if (type == typeof(ushort))
-				return Ldind_U2;
-			if (type == typeof(uint))
-				return Ldind_U4;
-			if (type == typeof(ulong))
-				return Ldind_I8;
-
-			if (type == typeof(sbyte))
-				return Ldind_I1;
-			if (type == typeof(short))
-				return Ldind_I2;
-			if (type == typeof(int))
-				return Ldind_I4;
-			if (type == typeof(long))
-				return Ldind_I8;
-
-			return Ldind_Ref;
+			return Type.GetTypeCode(type) switch
+			{
+				TypeCode.SByte or TypeCode.Byte or TypeCode.Boolean => Ldind_I1,
+				TypeCode.Char or TypeCode.Int16 or TypeCode.UInt16 => Ldind_I2,
+				TypeCode.Int32 or TypeCode.UInt32 => Ldind_I4,
+				TypeCode.Int64 or TypeCode.UInt64 => Ldind_I8,
+				TypeCode.Single => Ldind_R4,
+				TypeCode.Double => Ldind_R8,
+				TypeCode.DateTime or TypeCode.Decimal => throw new NotSupportedException(),
+				TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.String => Ldind_Ref,
+				_ => Ldind_Ref,
+			};
 		}
 
 		static readonly MethodInfo m_GetMethodFromHandle1 = typeof(MethodBase).GetMethod("GetMethodFromHandle", [typeof(RuntimeMethodHandle)]);
@@ -731,35 +719,24 @@ namespace HarmonyLib
 			return true;
 		}
 
+		static readonly HashSet<Type> PrimitivesWithObjectTypeCode = [typeof(nint), typeof(nuint), typeof(IntPtr), typeof(UIntPtr)];
 		static CodeInstruction StoreIndOpCodeFor(Type type)
 		{
-			if (type.IsEnum)
-				return Stind_I4;
+			if (PrimitivesWithObjectTypeCode.Contains(type))
+				return Stind_I;
 
-			if (type == typeof(float))
-				return Stind_R4;
-			if (type == typeof(double))
-				return Stind_R8;
-
-			if (type == typeof(byte))
-				return Stind_I1;
-			if (type == typeof(ushort))
-				return Stind_I2;
-			if (type == typeof(uint))
-				return Stind_I4;
-			if (type == typeof(ulong))
-				return Stind_I8;
-
-			if (type == typeof(sbyte))
-				return Stind_I1;
-			if (type == typeof(short))
-				return Stind_I2;
-			if (type == typeof(int))
-				return Stind_I4;
-			if (type == typeof(long))
-				return Stind_I8;
-
-			return Stind_Ref;
+			return Type.GetTypeCode(type) switch
+			{
+				TypeCode.SByte or TypeCode.Byte or TypeCode.Boolean => Stind_I1,
+				TypeCode.Char or TypeCode.Int16 or TypeCode.UInt16 => Stind_I2,
+				TypeCode.Int32 or TypeCode.UInt32 => Stind_I4,
+				TypeCode.Int64 or TypeCode.UInt64 => Stind_I8,
+				TypeCode.Single => Stind_R4,
+				TypeCode.Double => Stind_R8,
+				TypeCode.DateTime or TypeCode.Decimal => throw new NotSupportedException(),
+				TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.String => Stind_Ref,
+				_ => Stind_Ref,
+			};
 		}
 	}
 }
