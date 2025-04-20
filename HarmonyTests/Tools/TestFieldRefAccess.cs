@@ -129,7 +129,6 @@ namespace HarmonyLibTests.Tools
 			public void Run()
 			{
 				var testSuiteLabel = $"field={field.Name}, T={typeof(T).Name}, I={instanceType.Name}, F={typeof(F).Name}";
-				TestTools.Log(testSuiteLabel + ":", indentLevel: 0);
 				Assert.Multiple(() =>
 				{
 					foreach (var pair in availableTestCases)
@@ -144,15 +143,11 @@ namespace HarmonyLibTests.Tools
 
 			void Run(string testSuiteLabel, string testCaseName, IATestCase<T, F> testCase, ReusableConstraint expectedConstraint)
 			{
-				TestTools.Log(testCaseName + ":", writeLine: false);
 				var testCaseLabel = $"{testSuiteLabel}, testCase={testCaseName}";
 
 				var resolvedConstraint = expectedConstraint.Resolve();
 				if (resolvedConstraint is SkipTestConstraint)
-				{
-					TestTools.Log(resolvedConstraint);
 					return;
-				}
 
 				var instance = field.IsStatic ? default : CloneInstancePrototype<T>(instanceType);
 				var origValue = GetOrigValue(field);
@@ -172,7 +167,6 @@ namespace HarmonyLibTests.Tools
 						testCase.Set(ref instance, testValue);
 						var newValue = field.GetValue(instance);
 						Assert.AreEqual(testValue, TryConvert(newValue), "{0}: expected Equals(testValue, field.GetValue(instance))", testCaseLabel);
-						TestTools.Log($"{field.Name}: {origValue} => {testCase.Get(ref instance)}");
 						testCase.Set(ref instance, value); // reset field value
 						if (field.FieldType.IsInstanceOfType(newValue) is false)
 							throw new IncompatibleFieldTypeException($"expected field.GetValue(instance) is {field.FieldType.Name} " +

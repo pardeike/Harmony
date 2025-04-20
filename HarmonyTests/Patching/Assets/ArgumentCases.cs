@@ -16,40 +16,40 @@ namespace HarmonyLibTests.Assets
 	public class ArgumentOriginalMethods
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Object_2_Object(ArgumentTypes.Object p) => Console.WriteLine("ok");
+		public void Object_2_Object(ArgumentTypes.Object p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Object_2_ObjectRef(ArgumentTypes.Object p) => Console.WriteLine("ok");
+		public void Object_2_ObjectRef(ArgumentTypes.Object p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void ObjectRef_2_Object(ref ArgumentTypes.Object p) => Console.WriteLine("ok");
+		public void ObjectRef_2_Object(ref ArgumentTypes.Object p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void ObjectRef_2_ObjectRef(ref ArgumentTypes.Object p) => Console.WriteLine("ok");
+		public void ObjectRef_2_ObjectRef(ref ArgumentTypes.Object p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Value_2_Value(ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void Value_2_Value(ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Value_2_Boxing(ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void Value_2_Boxing(ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Value_2_ValueRef(ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void Value_2_ValueRef(ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void Value_2_BoxingRef(ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void Value_2_BoxingRef(ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void ValueRef_2_Value(ref ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void ValueRef_2_Value(ref ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void ValueRef_2_Boxing(ref ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void ValueRef_2_Boxing(ref ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void ValueRef_2_ValueRef(ref ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void ValueRef_2_ValueRef(ref ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public void ValueRef_2_BoxingRef(ref ArgumentTypes.Value p) => Console.WriteLine("ok");
+		public void ValueRef_2_BoxingRef(ref ArgumentTypes.Value p) => TestTools.WriteLine("ok");
 	}
 
 	public static class ArgumentPatchMethods

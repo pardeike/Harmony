@@ -1219,11 +1219,11 @@ namespace HarmonyLibTests.Assets
 		{
 			try
 			{
-				Console.WriteLine("code");
+				TestTools.WriteLine("code");
 			}
 			catch (Exception e) when (flag)
 			{
-				Console.WriteLine(e.Message);
+				TestTools.WriteLine(e.Message);
 			}
 		}
 

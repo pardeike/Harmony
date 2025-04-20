@@ -28,6 +28,8 @@ namespace HarmonyLibTests
 		// Note: Must be a property rather than a field, since the specific TestContext streams can change between tests.
 		static TextWriter LogWriter => TestContext.Out;
 
+		public static void WriteLine(string _) { }
+
 		public static void Log(object obj, int indentLevel = 1, int? indentLevelAfterNewLine = null, bool writeLine = true)
 		{
 			var indentBeforeNewLine = new string('\t', indentLevel);
@@ -272,12 +274,7 @@ namespace HarmonyLibTests
 		}
 
 		[SetUp]
-		public void BaseSetUp()
-		{
-			TestTools.Log($"### {TestExecutionContext.CurrentContext.CurrentResult.FullName}", indentLevel: 0);
-
-			SkipExplicitTestIfVSTest();
-		}
+		public void BaseSetUp() => SkipExplicitTestIfVSTest();
 
 		// Workaround for [Explicit] attribute sometimes not working in the NUnit3 VS Test Adapter, which applies to both Visual Studio and
 		// vstest.console (bug: https://github.com/nunit/nunit3-vs-adapter/issues/658). It does apparently work with `dotnet test` as long
@@ -309,13 +306,6 @@ namespace HarmonyLibTests
 			var explicitAttribute = test.GetCustomAttributes<ExplicitAttribute>(true).First();
 			explicitAttribute.ApplyToTest(test);
 			return new ExplicitException((string)test.Properties.Get(PropertyNames.SkipReason) ?? "");
-		}
-
-		[TearDown]
-		public void BaseTearDown()
-		{
-			var result = TestExecutionContext.CurrentContext.CurrentResult;
-			TestTools.Log($"--- {result.FullName} => {result.ResultState}", indentLevel: 0);
 		}
 	}
 }

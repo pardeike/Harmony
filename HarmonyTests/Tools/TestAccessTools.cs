@@ -106,7 +106,7 @@ namespace HarmonyLibTests.Tools
 		{
 			Assert.NotNull(AccessTools.TypeSearch(new Regex("^HarmonyLib\\.Harmony$")), "Harmony");
 			Assert.NotNull(AccessTools.TypeSearch(new Regex(".+\\.Test_.+Tools$")), "Test_AccessTools");
-			Assert.NotNull(AccessTools.TypeSearch(new Regex("harmony.+?tests\\..+environment", RegexOptions.IgnoreCase)), "HarmonyLibTests.TestEnvironment");
+			Assert.NotNull(AccessTools.TypeSearch(new Regex("harmony.+?tests\\..+ttools", RegexOptions.IgnoreCase)), "HarmonyLibTests.TestTools");
 		}
 
 		[Test, NonParallelizable]

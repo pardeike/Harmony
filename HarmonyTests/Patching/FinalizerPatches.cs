@@ -60,7 +60,7 @@ namespace HarmonyLibTests.Patching
 	{
 		public static void Test()
 		{
-			Console.WriteLine("Test");
+			TestTools.WriteLine("Test");
 			throw new Exception("E0");
 		}
 	}
