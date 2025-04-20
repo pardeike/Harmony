@@ -15,11 +15,13 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("", "IDE0251")]
 [assembly: SuppressMessage("", "IDE0130")]
 [assembly: SuppressMessage("Style", "IDE0270")]
+[assembly: SuppressMessage("Style", "IDE0290")]
 [assembly: SuppressMessage("Usage", "CA2211")]
 [assembly: SuppressMessage("GeneratedRegex", "SYSLIB1045")]
 
 [assembly: SuppressMessage("Reliability", "CA2020:Prevent from behavioral change", Justification = "<Pending>", Scope = "member", Target = "~M:HarmonyLib.FileLog.LogBytes(System.Int64,System.Int32)")]
 [assembly: SuppressMessage("Performance", "CA1850:Prefer static 'HashData' method over 'ComputeHash'", Justification = "<Pending>", Scope = "member", Target = "~M:HarmonyLib.FileLog.LogBytes(System.Int64,System.Int32)")]
+[assembly: SuppressMessage("Style", "IDE0306:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~M:HarmonyLib.PatchSorter.Sort(System.Reflection.MethodBase)~System.Collections.Generic.List{System.Reflection.MethodInfo}")]
 
 #if NET8_0_OR_GREATER
 [assembly: SuppressMessage("Maintainability", "CA1510")]

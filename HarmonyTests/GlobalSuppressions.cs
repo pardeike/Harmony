@@ -20,8 +20,10 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0060")]
 [assembly: SuppressMessage("Style", "IDE0066")]
 [assembly: SuppressMessage("Style", "IDE0251")]
+[assembly: SuppressMessage("Style", "IDE0340")]
 
 [assembly: SuppressMessage("", "IDE0130")]
+[assembly: SuppressMessage("", "IDE0180")]
 
 [assembly: SuppressMessage("Usage", "CA2208")]
 [assembly: SuppressMessage("Usage", "CA2211")]
@@ -29,3 +31,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Code Quality", "IDE0051")]
 [assembly: SuppressMessage("Interoperability", "SYSLIB1054")]
 [assembly: SuppressMessage("Obsoletions", "SYSLIB0014")]
+[assembly: SuppressMessage("", "SYSLIB1045")]

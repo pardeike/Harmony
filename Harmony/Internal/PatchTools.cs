@@ -106,10 +106,9 @@ namespace HarmonyLib
 
 		internal static List<AttributePatch> GetPatchMethods(Type type)
 		{
-			return AccessTools.GetDeclaredMethods(type)
+			return [.. AccessTools.GetDeclaredMethods(type)
 				.Select(AttributePatch.Create)
-				.Where(attributePatch => attributePatch is not null)
-				.ToList();
+				.Where(attributePatch => attributePatch is not null)];
 		}
 
 		internal static MethodBase GetOriginalMethod(this HarmonyMethod attr)

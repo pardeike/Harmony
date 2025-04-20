@@ -23,7 +23,8 @@ namespace HarmonyLib
 
 		internal static DynamicMethodDefinition CreateDynamicMethod(MethodBase original, string suffix, bool debug)
 		{
-			if (original is null) throw new ArgumentNullException(nameof(original));
+			if (original is null)
+				throw new ArgumentNullException(nameof(original));
 
 			var patchName = $"{original.DeclaringType?.FullName ?? "GLOBALTYPE"}.{original.Name}{suffix}";
 			patchName = patchName.Replace("<>", "");
@@ -92,7 +93,7 @@ namespace HarmonyLib
 			var vars = member.GetMethodBody()?.LocalVariables;
 			if (vars is null)
 				return [];
-			return vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
+			return [.. vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned))];
 		}
 
 		internal static bool PrefixAffectsOriginal(MethodInfo fix)
@@ -106,13 +107,19 @@ namespace HarmonyLib
 				var name = pair.realName;
 				var type = p.ParameterType;
 
-				if (name == INSTANCE_PARAM) return false;
-				if (name == ORIGINAL_METHOD_PARAM) return false;
-				if (name == STATE_VAR) return false;
+				if (name == INSTANCE_PARAM)
+					return false;
+				if (name == ORIGINAL_METHOD_PARAM)
+					return false;
+				if (name == STATE_VAR)
+					return false;
 
-				if (p.IsOut || p.IsRetval) return true;
-				if (type.IsByRef) return true;
-				if (AccessTools.IsValue(type) is false && AccessTools.IsStruct(type) is false) return true;
+				if (p.IsOut || p.IsRetval)
+					return true;
+				if (type.IsByRef)
+					return true;
+				if (AccessTools.IsValue(type) is false && AccessTools.IsStruct(type) is false)
+					return true;
 
 				return false;
 			});
@@ -126,54 +133,53 @@ namespace HarmonyLib
 				emitter.Emit(OpCodes.Ldtoken, method);
 			else if (original is ConstructorInfo constructor)
 				emitter.Emit(OpCodes.Ldtoken, constructor);
-			else return false;
+			else
+				return false;
 
 			var type = original.ReflectedType;
-			if (type.IsGenericType) emitter.Emit(OpCodes.Ldtoken, type);
+			if (type.IsGenericType)
+				emitter.Emit(OpCodes.Ldtoken, type);
 			emitter.Emit(OpCodes.Call, type.IsGenericType ? m_GetMethodFromHandle2 : m_GetMethodFromHandle1);
 			return true;
 		}
 
+		static readonly HashSet<Type> PrimitivesWithObjectTypeCode = [typeof(nint), typeof(nuint), typeof(IntPtr), typeof(UIntPtr)];
 		internal static OpCode LoadIndOpCodeFor(Type type)
 		{
-			if (type.IsEnum)
-				return OpCodes.Ldind_I4;
+			if (PrimitivesWithObjectTypeCode.Contains(type))
+				return OpCodes.Ldind_I;
 
-			if (type == typeof(float)) return OpCodes.Ldind_R4;
-			if (type == typeof(double)) return OpCodes.Ldind_R8;
-
-			if (type == typeof(byte)) return OpCodes.Ldind_U1;
-			if (type == typeof(ushort)) return OpCodes.Ldind_U2;
-			if (type == typeof(uint)) return OpCodes.Ldind_U4;
-			if (type == typeof(ulong)) return OpCodes.Ldind_I8;
-
-			if (type == typeof(sbyte)) return OpCodes.Ldind_I1;
-			if (type == typeof(short)) return OpCodes.Ldind_I2;
-			if (type == typeof(int)) return OpCodes.Ldind_I4;
-			if (type == typeof(long)) return OpCodes.Ldind_I8;
-
-			return OpCodes.Ldind_Ref;
+			return Type.GetTypeCode(type) switch
+			{
+				TypeCode.SByte or TypeCode.Byte or TypeCode.Boolean => OpCodes.Ldind_I1,
+				TypeCode.Char or TypeCode.Int16 or TypeCode.UInt16 => OpCodes.Ldind_I2,
+				TypeCode.Int32 or TypeCode.UInt32 => OpCodes.Ldind_I4,
+				TypeCode.Int64 or TypeCode.UInt64 => OpCodes.Ldind_I8,
+				TypeCode.Single => OpCodes.Ldind_R4,
+				TypeCode.Double => OpCodes.Ldind_R8,
+				TypeCode.DateTime or TypeCode.Decimal => throw new NotSupportedException(),
+				TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.String => OpCodes.Ldind_Ref,
+				_ => OpCodes.Ldind_Ref,
+			};
 		}
 
 		internal static OpCode StoreIndOpCodeFor(Type type)
 		{
-			if (type.IsEnum)
-				return OpCodes.Stind_I4;
+			if (PrimitivesWithObjectTypeCode.Contains(type))
+				return OpCodes.Stind_I;
 
-			if (type == typeof(float)) return OpCodes.Stind_R4;
-			if (type == typeof(double)) return OpCodes.Stind_R8;
-
-			if (type == typeof(byte)) return OpCodes.Stind_I1;
-			if (type == typeof(ushort)) return OpCodes.Stind_I2;
-			if (type == typeof(uint)) return OpCodes.Stind_I4;
-			if (type == typeof(ulong)) return OpCodes.Stind_I8;
-
-			if (type == typeof(sbyte)) return OpCodes.Stind_I1;
-			if (type == typeof(short)) return OpCodes.Stind_I2;
-			if (type == typeof(int)) return OpCodes.Stind_I4;
-			if (type == typeof(long)) return OpCodes.Stind_I8;
-
-			return OpCodes.Stind_Ref;
+			return Type.GetTypeCode(type) switch
+			{
+				TypeCode.SByte or TypeCode.Byte or TypeCode.Boolean => OpCodes.Stind_I1,
+				TypeCode.Char or TypeCode.Int16 or TypeCode.UInt16 => OpCodes.Stind_I2,
+				TypeCode.Int32 or TypeCode.UInt32 => OpCodes.Stind_I4,
+				TypeCode.Int64 or TypeCode.UInt64 => OpCodes.Stind_I8,
+				TypeCode.Single => OpCodes.Stind_R4,
+				TypeCode.Double => OpCodes.Stind_R8,
+				TypeCode.DateTime or TypeCode.Decimal => throw new NotSupportedException(),
+				TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.String => OpCodes.Stind_Ref,
+				_ => OpCodes.Stind_Ref,
+			};
 		}
 	}
 }

@@ -198,7 +198,7 @@ namespace HarmonyLib
 			if (type == typeof(IEnumerable<CodeInstruction>))
 			{
 				unassignedValues = null;
-				return enumerable as IList<CodeInstruction> ?? (enumerable as IEnumerable<CodeInstruction> ?? enumerable.Cast<CodeInstruction>()).ToList();
+				return enumerable as IList<CodeInstruction> ?? [.. (enumerable as IEnumerable<CodeInstruction> ?? enumerable.Cast<CodeInstruction>())];
 			}
 			return ConvertInstructionsAndUnassignedValues(type, enumerable, out unassignedValues);
 		}
@@ -230,7 +230,7 @@ namespace HarmonyLib
 				// remember the order of the original input (for detection of dupped code instructions)
 				List<object> originalInstructions = null;
 				if (unassignedValues is not null)
-					originalInstructions = instructions.Cast<object>().ToList();
+					originalInstructions = [.. instructions.Cast<object>()];
 
 				// call the transpiler
 				var parameter = GetTranspilerCallParameters(generator, transpiler, method, instructions);
@@ -243,7 +243,7 @@ namespace HarmonyLib
 					instructions = ConvertToOurInstructions(instructions, typeof(CodeInstruction), originalInstructions, unassignedValues);
 			});
 
-			return instructions as List<CodeInstruction> ?? instructions.Cast<CodeInstruction>().ToList();
+			return instructions as List<CodeInstruction> ?? [.. instructions.Cast<CodeInstruction>()];
 		}
 
 		//

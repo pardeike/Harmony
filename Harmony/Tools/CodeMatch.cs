@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -19,11 +20,12 @@ namespace HarmonyLib
 		// for backwards compatibility we keep
 		/// <summary>The matched opcodes</summary>
 		[Obsolete("Use opcodeSet instead")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 #pragma warning disable IDE1006
 		public List<OpCode> opcodes
 		{
 			get => [.. opcodeSet];
-			set => opcodeSet = new HashSet<OpCode>(value);
+			set => opcodeSet = [.. value];
 		}
 #pragma warning restore IDE1006
 
@@ -43,7 +45,8 @@ namespace HarmonyLib
 		internal CodeMatch Set(object operand, string name)
 		{
 			this.operand ??= operand;
-			if (operand != null) operands.Add(operand);
+			if (operand != null)
+				operands.Add(operand);
 			this.name ??= name;
 			return this;
 		}
@@ -52,7 +55,8 @@ namespace HarmonyLib
 			this.opcode = opcode;
 			_ = opcodeSet.Add(opcode);
 			this.operand ??= operand;
-			if (operand != null) operands.Add(operand);
+			if (operand != null)
+				operands.Add(operand);
 			this.name ??= name;
 			return this;
 		}
@@ -128,23 +132,31 @@ namespace HarmonyLib
 
 		internal bool Matches(List<CodeInstruction> codes, CodeInstruction instruction)
 		{
-			if (predicate != null) return predicate(instruction);
+			if (predicate != null)
+				return predicate(instruction);
 
-			if (opcodeSet.Count > 0 && opcodeSet.Contains(instruction.opcode) == false) return false;
-			if (operands.Count > 0 && operands.Contains(instruction.operand) == false) return false;
-			if (labels.Count > 0 && labels.Intersect(instruction.labels).Any() == false) return false;
-			if (blocks.Count > 0 && blocks.Intersect(instruction.blocks).Any() == false) return false;
+			if (opcodeSet.Count > 0 && opcodeSet.Contains(instruction.opcode) == false)
+				return false;
+			if (operands.Count > 0 && operands.Contains(instruction.operand) == false)
+				return false;
+			if (labels.Count > 0 && labels.Intersect(instruction.labels).Any() == false)
+				return false;
+			if (blocks.Count > 0 && blocks.Intersect(instruction.blocks).Any() == false)
+				return false;
 
 			if (jumpsFrom.Count > 0 && jumpsFrom.Select(index => codes[index].operand).OfType<Label>()
-															.Intersect(instruction.labels).Any() == false) return false;
+															.Intersect(instruction.labels).Any() == false)
+				return false;
 
 			if (jumpsTo.Count > 0)
 			{
 				var operand = instruction.operand;
-				if (operand == null || operand.GetType() != typeof(Label)) return false;
+				if (operand == null || operand.GetType() != typeof(Label))
+					return false;
 				var label = (Label)operand;
 				var indices = Enumerable.Range(0, codes.Count).Where(idx => codes[idx].labels.Contains(label));
-				if (jumpsTo.Intersect(indices).Any() == false) return false;
+				if (jumpsTo.Intersect(indices).Any() == false)
+					return false;
 			}
 
 			return true;

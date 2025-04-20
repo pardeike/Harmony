@@ -326,12 +326,33 @@ namespace HarmonyLibTests.Patching
 			var st2 = new ArgumentArrayMethods.SomeStruct() { n = 9 };
 			var f1 = new float[] { 8f };
 			var f2 = new float[] { 9f };
+			var b1 = true;
+			var b2 = true;
+			var e1 = ArgumentArrayMethods.ShorterThanNormal.y;
+			var e2 = ArgumentArrayMethods.ShorterThanNormal.y;
+			var e4 = ArgumentArrayMethods.LongerThanNormal.z;
+			var e5 = ArgumentArrayMethods.LongerThanNormal.z;
+			var p1 = new UIntPtr(9);
+			var p2 = new UIntPtr(10);
+			var m1 = (nuint)11;
+			var m2 = (nuint)22;
+			var d1 = new DateTime(11);
+			var d2 = new DateTime(12);
+			var k1 = 1111M;
+			var k2 = 2222M;
 
 			instance.Method(
 				n1, ref n2, out var n3,
 				s1, ref s2, out var s3,
 				st1, ref st2, out var st3,
-				f1, ref f2, out var f3
+				f1, ref f2, out var f3,
+				b1, ref b2, out var b3,
+				e1, ref e2, out var e3,
+				e4, ref e5, out var e6,
+				p1, ref p2, out var p3,
+				m1, ref m2, out var m3,
+				d1, ref d2, out var d3,
+				k1, ref k2, out var k3
 			);
 
 			// prefix input
@@ -353,6 +374,34 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(9f, ((float[])r[i])[0], $"prefix[{i++}]");
 			Assert.AreEqual(null, (float[])r[i], $"prefix[{i++}]");
 
+			Assert.AreEqual(true, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(true, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(false, r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.y, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.y, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.a, r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.z, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.z, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.c, r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual(new UIntPtr(9), r[i], $"prefix[{i++}]");
+			Assert.AreEqual(new UIntPtr(10), r[i], $"prefix[{i++}]");
+			Assert.AreEqual(new UIntPtr(0), r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual((nuint)11, r[i], $"prefix[{i++}]");
+			Assert.AreEqual((nuint)22, r[i], $"prefix[{i++}]");
+			Assert.AreEqual((nuint)0, r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual(new DateTime(11), r[i], $"prefix[{i++}]");
+			Assert.AreEqual(new DateTime(12), r[i], $"prefix[{i++}]");
+			Assert.AreEqual(new DateTime(0), r[i], $"prefix[{i++}]");
+
+			Assert.AreEqual(1111M, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(2222M, r[i], $"prefix[{i++}]");
+			Assert.AreEqual(0M, r[i], $"prefix[{i++}]");
+
 			// postfix input
 			r = ArgumentArrayPatches.postfixInput;
 			i = 0;
@@ -372,6 +421,34 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(5.6f, ((float[])r[i])[2], $"postfix[{i++}]");
 			Assert.AreEqual(6.5f, ((float[])r[i])[2], $"postfix[{i++}]");
 
+			Assert.AreEqual(true, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(false, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(true, r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.y, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.a, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.b, r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.z, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.c, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.d, r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual(new UIntPtr(9), r[i], $"postfix[{i++}]");
+			Assert.AreEqual(new UIntPtr(1), r[i], $"postfix[{i++}]");
+			Assert.AreEqual(new UIntPtr(2), r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual((nuint)11, r[i], $"postfix[{i++}]");
+			Assert.AreEqual((nuint)789, r[i], $"postfix[{i++}]");
+			Assert.AreEqual((nuint)101, r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual(new DateTime(11), r[i], $"postfix[{i++}]");
+			Assert.AreEqual(new DateTime(3), r[i], $"postfix[{i++}]");
+			Assert.AreEqual(new DateTime(4), r[i], $"postfix[{i++}]");
+
+			Assert.AreEqual(1111M, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(666M, r[i], $"postfix[{i++}]");
+			Assert.AreEqual(777M, r[i], $"postfix[{i++}]");
+
 			// method output values
 			Assert.AreEqual(123, n2, "n2");
 			Assert.AreEqual(456, n3, "n3");
@@ -381,6 +458,20 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(456, st3.n, "st3");
 			Assert.AreEqual(5.6f, f2[2], "f2");
 			Assert.AreEqual(6.5f, f3[2], "f3");
+			Assert.AreEqual(false, b2, $"b2");
+			Assert.AreEqual(true, b3, $"b3");
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.a, e2, $"e2");
+			Assert.AreEqual(ArgumentArrayMethods.ShorterThanNormal.b, e3, $"e3");
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.c, e5, $"e5");
+			Assert.AreEqual(ArgumentArrayMethods.LongerThanNormal.d, e6, $"e6");
+			Assert.AreEqual(new UIntPtr(1), p2, $"p2");
+			Assert.AreEqual(new UIntPtr(2), p3, $"p3");
+			Assert.AreEqual((nuint)789, m2, $"m2");
+			Assert.AreEqual((nuint)101, m3, $"m3");
+			Assert.AreEqual(new DateTime(3), d2, $"d2");
+			Assert.AreEqual(new DateTime(4), d3, $"d3");
+			Assert.AreEqual(666M, k2, $"k2");
+			Assert.AreEqual(777M, k3, $"k3");
 		}
 
 		[Test]

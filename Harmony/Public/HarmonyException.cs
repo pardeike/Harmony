@@ -32,7 +32,8 @@ namespace HarmonyLib
 		internal static Exception Create(Exception ex, Dictionary<int, CodeInstruction> finalInstructions)
 		{
 			var match = Regex.Match(ex.Message.TrimEnd(), "Reason: Invalid IL code in.+: IL_(\\d{4}): (.+)$");
-			if (match.Success is false) return ex;
+			if (match.Success is false)
+				return ex;
 
 			var offset = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.HexNumber);
 			_ = Regex.Replace(match.Groups[2].Value, " {2,}", " ");
@@ -53,7 +54,7 @@ namespace HarmonyLib
 		/// <summary>Get a list of IL instructions without offsets</summary>
 		/// <returns>A list of <see cref="CodeInstruction"/></returns>
 		/// 
-		public List<CodeInstruction> GetInstructions() => instructions.OrderBy(ins => ins.Key).Select(ins => ins.Value).ToList();
+		public List<CodeInstruction> GetInstructions() => [.. instructions.OrderBy(ins => ins.Key).Select(ins => ins.Value)];
 
 		/// <summary>Get the error offset of the errornous IL instruction</summary>
 		/// <returns>The offset</returns>

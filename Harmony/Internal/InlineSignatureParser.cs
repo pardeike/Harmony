@@ -193,7 +193,7 @@ namespace HarmonyLib
 						var arity = (int)ReadCompressedUInt32();
 
 						return elType.MakeGenericType(
-							Enumerable.Range(0, arity).Select(_ => (Type)ReadTypeSignature()).ToArray()
+							[.. Enumerable.Range(0, arity).Select(_ => (Type)ReadTypeSignature())]
 						);
 
 					case MetadataType.Object:

@@ -49,7 +49,8 @@ namespace HarmonyLib
 				else
 					type = type.GetElementType();
 			}
-			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
+			if (type.IsEnum)
+				type = Enum.GetUnderlyingType(type);
 
 			if (AccessTools.IsClass(type))
 			{
@@ -101,7 +102,8 @@ namespace HarmonyLib
 				var argIndex = i++ + (originalIsStatic ? 0 : 1);
 				var pType = pInfo.ParameterType;
 				var paramByRef = pType.IsByRef;
-				if (paramByRef) pType = pType.GetElementType();
+				if (paramByRef)
+					pType = pType.GetElementType();
 				codes.Add(Dup);
 				codes.Add(Ldc_I4[arrayIdx++]);
 				codes.Add(Ldarg[argIndex]);
@@ -129,15 +131,21 @@ namespace HarmonyLib
 
 			return injectedParameters.Any(parameter =>
 			{
-				if (parameter.injectionType == InjectionType.Instance) return false;
-				if (parameter.injectionType == InjectionType.OriginalMethod) return false;
-				if (parameter.injectionType == InjectionType.State) return false;
+				if (parameter.injectionType == InjectionType.Instance)
+					return false;
+				if (parameter.injectionType == InjectionType.OriginalMethod)
+					return false;
+				if (parameter.injectionType == InjectionType.State)
+					return false;
 
 				var p = parameter.parameterInfo;
-				if (p.IsOut || p.IsRetval) return true;
+				if (p.IsOut || p.IsRetval)
+					return true;
 				var type = p.ParameterType;
-				if (type.IsByRef) return true;
-				if (AccessTools.IsValue(type) is false && AccessTools.IsStruct(type) is false) return true;
+				if (type.IsByRef)
+					return true;
+				if (AccessTools.IsValue(type) is false && AccessTools.IsStruct(type) is false)
+					return true;
 
 				return false;
 			});
@@ -319,7 +327,8 @@ namespace HarmonyLib
 					if (resultType.IsAssignableFrom(returnType) is false)
 						throw new Exception($"Cannot assign method return type {returnType.FullName} to {InjectedParameter.RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
 					var ldlocCode = paramType.IsByRef && returnType.IsByRef is false ? OpCodes.Ldloca : OpCodes.Ldloc;
-					if (returnType.IsValueType && paramType == typeof(object).MakeByRefType()) ldlocCode = OpCodes.Ldloc;
+					if (returnType.IsValueType && paramType == typeof(object).MakeByRefType())
+						ldlocCode = OpCodes.Ldloc;
 					codes.Add(new CodeInstruction(ldlocCode, config.GetLocal(InjectionType.Result)));
 					if (returnType.IsValueType)
 					{
@@ -475,7 +484,8 @@ namespace HarmonyLib
 		internal static LocalBuilder[] DeclareOriginalLocalVariables(this MethodCreator creator, MethodBase member)
 		{
 			var vars = member.GetMethodBody()?.LocalVariables;
-			if (vars is null) return [];
+			if (vars is null)
+				return [];
 			return vars.Select(lvi => creator.config.il.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
 		}
 
@@ -548,7 +558,7 @@ namespace HarmonyLib
 			}
 		}
 
-		internal static void LogCodes(this MethodCreator creator, Emitter emitter, List<CodeInstruction> codeInstructions)
+		internal static void LogCodes(this MethodCreator _, Emitter emitter, List<CodeInstruction> codeInstructions)
 		{
 			emitter.Variables().Do(v => FileLog.LogIL(v));
 
@@ -608,13 +618,16 @@ namespace HarmonyLib
 						break;
 
 					case OperandType.InlineSig:
-						if (operand is null) throw new Exception($"Wrong null argument: {codeInstruction}");
-						if ((operand is ICallSiteGenerator) is false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
+						if (operand is null)
+							throw new Exception($"Wrong null argument: {codeInstruction}");
+						if ((operand is ICallSiteGenerator) is false)
+							throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
 						emitter.Emit(code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
-						if (operand is null) throw new Exception($"Wrong null argument: {codeInstruction}");
+						if (operand is null)
+							throw new Exception($"Wrong null argument: {codeInstruction}");
 						emitter.DynEmit(code, operand);
 						break;
 				}
@@ -626,7 +639,8 @@ namespace HarmonyLib
 		static List<CodeInstruction> InitializeOutParameter(int argIndex, Type type)
 		{
 			var codes = new List<CodeInstruction>();
-			if (type.IsByRef) type = type.GetElementType();
+			if (type.IsByRef)
+				type = type.GetElementType();
 			codes.Add(Ldarg[argIndex]);
 			if (AccessTools.IsStruct(type))
 			{
@@ -673,18 +687,28 @@ namespace HarmonyLib
 			if (type.IsEnum)
 				return Ldind_I4;
 
-			if (type == typeof(float)) return Ldind_R4;
-			if (type == typeof(double)) return Ldind_R8;
+			if (type == typeof(float))
+				return Ldind_R4;
+			if (type == typeof(double))
+				return Ldind_R8;
 
-			if (type == typeof(byte)) return Ldind_U1;
-			if (type == typeof(ushort)) return Ldind_U2;
-			if (type == typeof(uint)) return Ldind_U4;
-			if (type == typeof(ulong)) return Ldind_I8;
+			if (type == typeof(byte))
+				return Ldind_U1;
+			if (type == typeof(ushort))
+				return Ldind_U2;
+			if (type == typeof(uint))
+				return Ldind_U4;
+			if (type == typeof(ulong))
+				return Ldind_I8;
 
-			if (type == typeof(sbyte)) return Ldind_I1;
-			if (type == typeof(short)) return Ldind_I2;
-			if (type == typeof(int)) return Ldind_I4;
-			if (type == typeof(long)) return Ldind_I8;
+			if (type == typeof(sbyte))
+				return Ldind_I1;
+			if (type == typeof(short))
+				return Ldind_I2;
+			if (type == typeof(int))
+				return Ldind_I4;
+			if (type == typeof(long))
+				return Ldind_I8;
 
 			return Ldind_Ref;
 		}
@@ -697,10 +721,12 @@ namespace HarmonyLib
 				codes.Add(Ldtoken[method]);
 			else if (original is ConstructorInfo constructor)
 				codes.Add(Ldtoken[constructor]);
-			else return false;
+			else
+				return false;
 
 			var type = original.ReflectedType;
-			if (type.IsGenericType) codes.Add(Ldtoken[type]);
+			if (type.IsGenericType)
+				codes.Add(Ldtoken[type]);
 			codes.Add(Call[type.IsGenericType ? m_GetMethodFromHandle2 : m_GetMethodFromHandle1]);
 			return true;
 		}
@@ -710,18 +736,28 @@ namespace HarmonyLib
 			if (type.IsEnum)
 				return Stind_I4;
 
-			if (type == typeof(float)) return Stind_R4;
-			if (type == typeof(double)) return Stind_R8;
+			if (type == typeof(float))
+				return Stind_R4;
+			if (type == typeof(double))
+				return Stind_R8;
 
-			if (type == typeof(byte)) return Stind_I1;
-			if (type == typeof(ushort)) return Stind_I2;
-			if (type == typeof(uint)) return Stind_I4;
-			if (type == typeof(ulong)) return Stind_I8;
+			if (type == typeof(byte))
+				return Stind_I1;
+			if (type == typeof(ushort))
+				return Stind_I2;
+			if (type == typeof(uint))
+				return Stind_I4;
+			if (type == typeof(ulong))
+				return Stind_I8;
 
-			if (type == typeof(sbyte)) return Stind_I1;
-			if (type == typeof(short)) return Stind_I2;
-			if (type == typeof(int)) return Stind_I4;
-			if (type == typeof(long)) return Stind_I8;
+			if (type == typeof(sbyte))
+				return Stind_I1;
+			if (type == typeof(short))
+				return Stind_I2;
+			if (type == typeof(int))
+				return Stind_I4;
+			if (type == typeof(long))
+				return Stind_I8;
 
 			return Stind_Ref;
 		}

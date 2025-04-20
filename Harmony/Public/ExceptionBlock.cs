@@ -32,19 +32,25 @@ namespace HarmonyLib
 	}
 
 	/// <summary>An exception block</summary>
-	/// 
-	/// <remarks>Creates an exception block</remarks>
-	/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
-	/// <param name="catchType">The catch type</param>
 	///
-	public class ExceptionBlock(ExceptionBlockType blockType, Type catchType = null)
+	public class ExceptionBlock
 	{
 		/// <summary>Block type</summary>
 		/// 
-		public ExceptionBlockType blockType = blockType;
+		public ExceptionBlockType blockType;
 
 		/// <summary>Catch type</summary>
 		/// 
-		public Type catchType = catchType ?? typeof(object);
+		public Type catchType;
+
+		/// <summary>Creates a new PatchProcessor.</summary>
+		/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
+		/// <param name="catchType">The catch type</param>
+		///
+		public ExceptionBlock(ExceptionBlockType blockType, Type catchType = null)
+		{
+			this.blockType = blockType;
+			this.catchType = catchType ?? typeof(object);
+		}
 	}
 }

@@ -17,7 +17,7 @@ namespace HarmonyLib
 		internal PatchSorter(Patch[] patches, bool debug)
 		{
 			// Build the list of all patches first to be able to create dependency relationships.
-			this.patches = patches.Select(x => new PatchSortingWrapper(x)).ToList();
+			this.patches = [.. patches.Select(x => new PatchSortingWrapper(x))];
 			this.debug = debug;
 
 			// For each node find and bidirectionally register all it's dependencies.
@@ -34,7 +34,8 @@ namespace HarmonyLib
 		internal List<MethodInfo> Sort(MethodBase original)
 		{
 			// Check if cache exists and the method was used before.
-			if (sortedPatchArray is not null) return sortedPatchArray.Select(x => x.GetMethod(original)).ToList();
+			if (sortedPatchArray is not null)
+				return [.. sortedPatchArray.Select(x => x.GetMethod(original))];
 
 			// Initialize internal structures used for sorting.
 			handledPatches = [];
@@ -55,7 +56,8 @@ namespace HarmonyLib
 					{
 						AddNodeToResult(node);
 						// If patch had some before dependencies we need to check waiting list because they may have had higher priority.
-						if (node.before.Count == 0) continue;
+						if (node.before.Count == 0)
+							continue;
 						ProcessWaitingList();
 					}
 					else
@@ -70,16 +72,17 @@ namespace HarmonyLib
 			}
 
 			// Build cache and release all other internal structures for GC.
-			sortedPatchArray = result.Select(x => x.innerPatch).ToArray();
+			sortedPatchArray = [.. result.Select(x => x.innerPatch)];
 			handledPatches = null;
 			waitingList = null;
 			patches = null;
-			return sortedPatchArray.Select(x => x.GetMethod(original)).ToList();
+			return [.. sortedPatchArray.Select(x => x.GetMethod(original))];
 		}
 
 		internal bool ComparePatchLists(Patch[] patches)
 		{
-			if (sortedPatchArray is null) _ = Sort(null);
+			if (sortedPatchArray is null)
+				_ = Sort(null);
 			return patches is not null && sortedPatchArray.Length == patches.Length
 				&& sortedPatchArray.All(x => patches.Contains(x, new PatchDetailedComparer()));
 		}

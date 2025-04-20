@@ -39,7 +39,8 @@ namespace HarmonyLib
 
 		internal static string FormatOperand(object argument)
 		{
-			if (argument is null) return "NULL";
+			if (argument is null)
+				return "NULL";
 			var type = argument.GetType();
 
 			if (argument is MethodBase method)
@@ -52,7 +53,7 @@ namespace HarmonyLib
 				return $"Label{((Label)argument).GetHashCode()}";
 
 			if (type == typeof(Label[]))
-				return $"Labels{string.Join(",", ((Label[])argument).Select(l => l.GetHashCode().ToString()).ToArray())}";
+				return $"Labels{string.Join(",", [.. ((Label[])argument).Select(l => l.GetHashCode().ToString())])}";
 
 			if (type == typeof(LocalBuilder))
 				return $"{((LocalBuilder)argument).LocalIndex} ({((LocalBuilder)argument).LocalType})";
@@ -80,7 +81,8 @@ namespace HarmonyLib
 				else
 					type = type.GetElementType();
 			}
-			if (type.IsEnum) type = Enum.GetUnderlyingType(type);
+			if (type.IsEnum)
+				type = Enum.GetUnderlyingType(type);
 
 			if (AccessTools.IsClass(type))
 			{
@@ -115,7 +117,8 @@ namespace HarmonyLib
 
 		internal void InitializeOutParameter(int argIndex, Type type)
 		{
-			if (type.IsByRef) type = type.GetElementType();
+			if (type.IsByRef)
+				type = type.GetElementType();
 			Emit(OpCodes.Ldarg, argIndex);
 
 			if (AccessTools.IsStruct(type))
@@ -176,7 +179,8 @@ namespace HarmonyLib
 				var argIndex = i++ + (original.IsStatic ? 0 : 1);
 				var pType = pInfo.ParameterType;
 				var paramByRef = pType.IsByRef;
-				if (paramByRef) pType = pType.GetElementType();
+				if (paramByRef)
+					pType = pType.GetElementType();
 				Emit(OpCodes.Dup);
 				Emit(OpCodes.Ldc_I4, arrayIdx++);
 				Emit(OpCodes.Ldarg, argIndex);

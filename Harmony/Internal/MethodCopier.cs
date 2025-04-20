@@ -18,7 +18,8 @@ namespace HarmonyLib
 
 		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
 		{
-			if (fromMethod is null) throw new ArgumentNullException(nameof(fromMethod));
+			if (fromMethod is null)
+				throw new ArgumentNullException(nameof(fromMethod));
 			reader = new MethodBodyReader(fromMethod, toILGenerator);
 			reader.DeclareVariables(existingVariables);
 			reader.GenerateInstructions();
@@ -26,7 +27,8 @@ namespace HarmonyLib
 
 		internal MethodCopier(MethodCreatorConfig config)
 		{
-			if (config.MethodBase is null) throw new ArgumentNullException("config.methodbase");
+			if (config.MethodBase is null)
+				throw new ArgumentNullException("config.methodbase");
 			reader = new MethodBodyReader(config.MethodBase, config.il);
 			reader.DeclareVariables(config.originalVariables);
 			reader.GenerateInstructions();
@@ -88,7 +90,8 @@ namespace HarmonyLib
 
 		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
 		{
-			if (method is null) throw new ArgumentNullException(nameof(method));
+			if (method is null)
+				throw new ArgumentNullException(nameof(method));
 			var reader = new MethodBodyReader(method, generator);
 			reader.DeclareVariables(null);
 			reader.GenerateInstructions();
@@ -120,13 +123,15 @@ namespace HarmonyLib
 
 			if (type is not null && type.IsGenericType)
 			{
-				try { typeArguments = type.GetGenericArguments(); }
+				try
+				{ typeArguments = type.GetGenericArguments(); }
 				catch { typeArguments = null; }
 			}
 
 			if (method.IsGenericMethod)
 			{
-				try { methodArguments = method.GetGenericArguments(); }
+				try
+				{ methodArguments = method.GetGenericArguments(); }
 				catch { methodArguments = null; }
 			}
 
@@ -160,9 +165,11 @@ namespace HarmonyLib
 		//
 		internal void HandleNativeMethod()
 		{
-			if (method is not MethodInfo methodInfo) return;
+			if (method is not MethodInfo methodInfo)
+				return;
 			var dllAttribute = methodInfo.GetCustomAttributes(false).OfType<DllImportAttribute>().FirstOrDefault();
-			if (dllAttribute == null) return;
+			if (dllAttribute == null)
+				return;
 
 			// TODO: will generate same type for overloads of methodInfo!
 			// FIXME
@@ -179,7 +186,7 @@ namespace HarmonyLib
 			var typeBuilder = dynamicModule.DefineType("NativeMethodHolder", TypeAttributes.Public | TypeAttributes.UnicodeClass);
 			var methodBuilder = typeBuilder.DefinePInvokeMethod(methodInfo.Name, dllAttribute.Value,
 				MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
-				CallingConventions.Standard, methodInfo.ReturnType, methodInfo.GetParameters().Select(x => x.ParameterType).ToArray(),
+				CallingConventions.Standard, methodInfo.ReturnType, [.. methodInfo.GetParameters().Select(x => x.ParameterType)],
 				dllAttribute.CallingConvention, dllAttribute.CharSet
 			);
 			methodBuilder.SetImplementationFlags(methodBuilder.GetMethodImplementationFlags() | MethodImplAttributes.PreserveSig);
@@ -222,11 +229,12 @@ namespace HarmonyLib
 
 		internal void DeclareVariables(LocalBuilder[] existingVariables)
 		{
-			if (generator is null) return;
+			if (generator is null)
+				return;
 			if (existingVariables is not null)
 				variables = existingVariables;
 			else
-				variables = localVariables.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned)).ToArray();
+				variables = [.. localVariables.Select(lvi => generator.DeclareLocal(lvi.LocalType, lvi.IsPinned))];
 		}
 
 		// process all jumps
@@ -331,7 +339,8 @@ namespace HarmonyLib
 		{
 			hasReturnCode = false;
 			methodEndsInDeadCode = false;
-			if (generator is null) return null;
+			if (generator is null)
+				return null;
 
 			// pass1 - define labels and add them to instructions that are target of a jump
 			//
@@ -387,7 +396,8 @@ namespace HarmonyLib
 			while (true)
 			{
 				var lastInstruction = codeInstructions.LastOrDefault();
-				if (lastInstruction is null || lastInstruction.opcode != OpCodes.Ret) break;
+				if (lastInstruction is null || lastInstruction.opcode != OpCodes.Ret)
+					break;
 
 				// remember any existing labels
 				endLabels?.AddRange(lastInstruction.labels);
@@ -400,7 +410,8 @@ namespace HarmonyLib
 
 		internal void LogCodes(Emitter emitter, List<CodeInstruction> codeInstructions)
 		{
-			if (debug == false) return;
+			if (debug == false)
+				return;
 
 			emitter.Variables().Do(v => FileLog.LogIL(v));
 			FileLog.LogILComment(emitter.CurrentPos(), "start original");
@@ -476,14 +487,17 @@ namespace HarmonyLib
 							// That is because DynamicMethod's original ILGenerator is very restrictive about the calli opcode.
 							throw new NotSupportedException();
 						}
-						if (operand is null) throw new Exception($"Wrong null argument: {codeInstruction}");
-						if ((operand is ICallSiteGenerator) is false) throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
+						if (operand is null)
+							throw new Exception($"Wrong null argument: {codeInstruction}");
+						if ((operand is ICallSiteGenerator) is false)
+							throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
 						emitter.AddInstruction(code, operand);
 						cecilGenerator.Emit(code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
-						if (operand is null) throw new Exception($"Wrong null argument: {codeInstruction}");
+						if (operand is null)
+							throw new Exception($"Wrong null argument: {codeInstruction}");
 						emitter.AddInstruction(code, operand);
 						_ = generator.DynEmit(code, operand);
 						break;
@@ -620,10 +634,6 @@ namespace HarmonyLib
 					var signature = InlineSignatureParser.ImportCallSite(module, bytes);
 					instruction.operand = signature;
 					instruction.argument = signature;
-					Debugger.Log(0, "TEST", $"METHOD {method.FullDescription()}\n");
-					Debugger.Log(0, "TEST", $"Signature Blob = {bytes.Select(b => string.Format("0x{0:x02}", b)).Aggregate((a, b) => a + " " + b)}\n");
-					Debugger.Log(0, "TEST", $"Signature = {signature}\n");
-					Debugger.Break();
 					break;
 				}
 
