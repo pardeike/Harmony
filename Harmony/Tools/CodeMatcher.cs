@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace HarmonyLib
 {
 	/// <summary>A CodeInstruction matcher</summary>
-	///
+	/// 
 	public class CodeMatcher
 	{
 		private readonly ILGenerator generator;
@@ -166,7 +166,8 @@ namespace HarmonyLib
 		///
 		public bool ReportFailure(MethodBase method, Action<string> logger)
 		{
-			if (IsValid) return false;
+			if (IsValid)
+				return false;
 			var err = lastError ?? "Unexpected code";
 			logger($"{err} in {method}");
 			return true;
@@ -178,8 +179,10 @@ namespace HarmonyLib
 		///
 		public CodeMatcher ThrowIfInvalid(string explanation)
 		{
-			if (explanation == null) throw new ArgumentNullException(nameof(explanation));
-			if (IsInvalid) throw new InvalidOperationException(explanation + " - Current state is invalid");
+			if (explanation == null)
+				throw new ArgumentNullException(nameof(explanation));
+			if (IsInvalid)
+				throw new InvalidOperationException(explanation + " - Current state is invalid");
 			return this;
 		}
 
@@ -192,7 +195,8 @@ namespace HarmonyLib
 		public CodeMatcher ThrowIfNotMatch(string explanation, params CodeMatch[] matches)
 		{
 			_ = ThrowIfInvalid(explanation);
-			if (!MatchSequence(Pos, matches)) throw new InvalidOperationException(explanation + " - Match failed");
+			if (!MatchSequence(Pos, matches))
+				throw new InvalidOperationException(explanation + " - Match failed");
 			return this;
 		}
 
@@ -243,9 +247,11 @@ namespace HarmonyLib
 		///
 		public CodeMatcher ThrowIfFalse(string explanation, Func<CodeMatcher, bool> stateCheckFunc)
 		{
-			if (stateCheckFunc == null) throw new ArgumentNullException(nameof(stateCheckFunc));
+			if (stateCheckFunc == null)
+				throw new ArgumentNullException(nameof(stateCheckFunc));
 			_ = ThrowIfInvalid(explanation);
-			if (!stateCheckFunc(this)) throw new InvalidOperationException(explanation + " - Check function returned false");
+			if (!stateCheckFunc(this))
+				throw new InvalidOperationException(explanation + " - Check function returned false");
 			return this;
 		}
 
@@ -627,7 +633,8 @@ namespace HarmonyLib
 		public CodeMatcher Advance(int offset)
 		{
 			Pos += offset;
-			if (IsValid == false) SetOutOfBounds(offset);
+			if (IsValid == false)
+				SetOutOfBounds(offset);
 			return this;
 		}
 
@@ -726,7 +733,8 @@ namespace HarmonyLib
 				{
 					if (MatchSequence(Pos, matches))
 					{
-						if (useEnd) Pos += matches.Length - 1;
+						if (useEnd)
+							Pos += matches.Length - 1;
 						break;
 					}
 
@@ -776,7 +784,8 @@ namespace HarmonyLib
 
 		private bool MatchSequence(int start, CodeMatch[] matches)
 		{
-			if (start < 0) return false;
+			if (start < 0)
+				return false;
 			lastMatches = [];
 			foreach (var match in matches)
 			{

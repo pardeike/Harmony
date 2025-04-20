@@ -1,18 +1,24 @@
 using HarmonyLib;
 using NUnit.Framework;
 using System.Linq;
+
+#if NET5_0_OR_GREATER
 using System.Text;
+#endif
 
 namespace HarmonyTests.Extras
 {
 	[TestFixture, NonParallelizable]
 	class PatchSerialization
 	{
+		static string[] fixNames = ["prefixes", "postfixes", "transpilers", "finalizers", "infixes"];
+		static Patch[][] GetFixes(PatchInfo patchInfo) => [patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.infixes];
+
 		static string ExpectedJSON()
 		{
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
 			var fix = "\"$FIX$\":[{\"index\":0,\"debug\":true,\"owner\":\"$NAME$\",\"priority\":600,\"methodToken\":$MT$,\"moduleGUID\":\"$MGUID$\",\"after\":[],\"before\":[\"p1\",null,\"p2\"]}]";
-			var fixes = new[] { "prefixes", "postfixes", "transpilers", "finalizers" }
+			var fixes = fixNames
 				.Select(name =>
 				{
 					return fix
@@ -24,7 +30,7 @@ namespace HarmonyTests.Extras
 				.ToList()
 				.Join(delimiter: ",");
 
-			return "{" + fixes + "}";
+			return "{" + fixes + ",\"VersionCount\":123}";
 		}
 
 #if NET5_0_OR_GREATER
@@ -39,6 +45,8 @@ namespace HarmonyTests.Extras
 			patchInfo.AddPostfixes("postfixes", [hMethod]);
 			patchInfo.AddTranspilers("transpilers", [hMethod]);
 			patchInfo.AddFinalizers("finalizers", [hMethod]);
+			patchInfo.AddInfixes("infixes", [hMethod]);
+			patchInfo.VersionCount = 123;
 
 			PatchInfoSerialization.useBinaryFormatter = false;
 			var result = PatchInfoSerialization.Serialize(patchInfo);
@@ -51,17 +59,19 @@ namespace HarmonyTests.Extras
 		{
 			PatchInfoSerialization.useBinaryFormatter = false;
 
+			Assert.AreEqual(GetFixes(new PatchInfo()).Length, fixNames.Length);
+
 			var data = Encoding.UTF8.GetBytes(ExpectedJSON());
 			var patchInfo = PatchInfoSerialization.Deserialize(data);
+			Assert.AreEqual(123, patchInfo.VersionCount);
 
 			var n = 0;
-			var names = new[] { "prefixes", "postfixes", "transpilers", "finalizers" };
-			new[] { patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers }
+			GetFixes(patchInfo)
 				.Do(fixes =>
 				{
 					Assert.AreEqual(1, fixes.Length);
 
-					Assert.AreEqual(names[n++], fixes[0].owner);
+					Assert.AreEqual(fixNames[n++], fixes[0].owner);
 					Assert.AreEqual(Priority.High, fixes[0].priority);
 					Assert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
 					Assert.AreEqual(0, fixes[0].after.Length);
@@ -78,23 +88,25 @@ namespace HarmonyTests.Extras
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON());
 			var hMethod = new HarmonyMethod(method, Priority.High, ["p1", null, "p2"], [], true);
 
+			Assert.AreEqual(GetFixes(new PatchInfo()).Length, fixNames.Length);
+
 			var originalPatchInfo = new PatchInfo();
 			originalPatchInfo.AddPrefixes("prefixes", [hMethod]);
 			originalPatchInfo.AddPostfixes("postfixes", [hMethod]);
 			originalPatchInfo.AddTranspilers("transpilers", [hMethod]);
 			originalPatchInfo.AddFinalizers("finalizers", [hMethod]);
+			originalPatchInfo.AddInfixes("infixes", [hMethod]);
 
 			var data = PatchInfoSerialization.Serialize(originalPatchInfo);
 			var patchInfo = PatchInfoSerialization.Deserialize(data);
 
 			var n = 0;
-			var names = new[] { "prefixes", "postfixes", "transpilers", "finalizers" };
-			new[] { patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers }
+			GetFixes(patchInfo)
 				.Do(fixes =>
 				{
 					Assert.AreEqual(1, fixes.Length);
 
-					Assert.AreEqual(names[n++], fixes[0].owner);
+					Assert.AreEqual(fixNames[n++], fixes[0].owner);
 					Assert.AreEqual(Priority.High, fixes[0].priority);
 					Assert.AreEqual(new[] { "p1", null, "p2" }, fixes[0].before);
 					Assert.AreEqual(0, fixes[0].after.Length);

@@ -134,7 +134,6 @@ namespace HarmonyLib
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
 
-
 		[SuppressMessage("Style", "IDE0305")]
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{
@@ -143,6 +142,7 @@ namespace HarmonyLib
 
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
 		{
+			patchInfo.VersionCount++;
 			var bytes = patchInfo.Serialize();
 			lock (state) state[original] = bytes;
 			lock (originals) originals[replacement.Identifiable()] = original;

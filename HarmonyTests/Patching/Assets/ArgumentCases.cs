@@ -145,6 +145,52 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class DifferingStateTypes
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Method() { }
+	}
+	[HarmonyPatch(typeof(DifferingStateTypes), nameof(DifferingStateTypes.Method))]
+	public static class DifferingStateTypesSuccessPatch
+	{
+		public static List<string> log = [];
+		public static bool Prefix(ref string __state)
+		{
+			log.Add("Hello");
+			__state = "Hello2";
+			return false;
+		}
+
+		[HarmonyPostfix]
+		public static void PostfixSucceed(string __state) => log.Add(__state);
+
+		[HarmonyPostfix, HarmonyPriority(Priority.First)]
+		public static void PostfixSucceed2(ref object __state)
+		{
+			log.Add(__state.ToString());
+			__state = "Hello3";
+		}
+
+		[HarmonyPostfix, HarmonyPriority(Priority.Last)]
+		public static void PostfixSucceed3(object __state) => log.Add(__state.ToString());
+	}
+
+	[HarmonyPatch(typeof(DifferingStateTypes), nameof(DifferingStateTypes.Method))]
+	public static class DifferingStateTypesFailurePatch
+	{
+		public static List<string> log = [];
+
+		public static bool Prefix(ref string __state)
+		{
+			log.Add("Hello");
+			__state = "Hello2";
+			return false;
+		}
+
+		[HarmonyPostfix]
+		public static void PostfixFail(int __state) => log.Add(__state.ToString());
+	}
+
 	public class NullableResults
 	{
 		private string s = "foo";
@@ -173,6 +219,7 @@ namespace HarmonyLibTests.Assets
 		{
 			public int n;
 		}
+
 		public enum ShorterThanNormal : sbyte
 		{
 			a,
@@ -185,6 +232,7 @@ namespace HarmonyLibTests.Assets
 			d,
 			z
 		}
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public void Method(
 			int n1, ref int n2, out int n3,
@@ -230,6 +278,7 @@ namespace HarmonyLibTests.Assets
 	{
 		public static object[] prefixInput;
 		public static object[] postfixInput;
+
 		public static bool Prefix(object[] __args)
 		{
 			prefixInput = (object[])Array.CreateInstance(typeof(object), __args.Length);

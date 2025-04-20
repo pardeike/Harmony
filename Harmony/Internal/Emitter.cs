@@ -1,10 +1,10 @@
+using MonoMod.Utils;
 using MonoMod.Utils.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 
 namespace HarmonyLib
 {
@@ -15,19 +15,19 @@ namespace HarmonyLib
 
 	internal class Emitter
 	{
+		readonly ILGenerator iLGenerator;
 		readonly CecilILGenerator il;
 		readonly Dictionary<int, CodeInstruction> instructions = [];
-		readonly bool debug;
 
-		internal Emitter(ILGenerator il, bool debug)
+		internal Emitter(ILGenerator il)
 		{
+			iLGenerator = il;
 			this.il = il.GetProxiedShim<CecilILGenerator>();
-			this.debug = debug;
 		}
 
 		internal Dictionary<int, CodeInstruction> GetInstructions() => instructions;
 
-		internal void AddInstruction(OpCode opcode, object operand) => instructions.Add(CurrentPos(), new CodeInstruction(opcode, operand));
+		internal void AddInstruction(OpCode opcode, object operand = null) => instructions.Add(CurrentPos(), new CodeInstruction(opcode, operand));
 
 		internal int CurrentPos() => il.ILOffset;
 
@@ -35,53 +35,16 @@ namespace HarmonyLib
 
 		internal string CodePos() => CodePos(CurrentPos());
 
-		internal void LogComment(string comment)
-		{
-			if (debug)
-			{
-				var str = string.Format("{0}// {1}", CodePos(), comment);
-				FileLog.LogBuffered(str);
-			}
-		}
+		internal IEnumerable<Mono.Cecil.Cil.VariableDefinition> Variables() => il.IL.Body.Variables;
 
-		internal void LogIL(OpCode opcode)
+		internal static string FormatOperand(object argument)
 		{
-			if (debug)
-				FileLog.LogBuffered(string.Format("{0}{1}", CodePos(), opcode));
-		}
-
-		internal void LogIL(OpCode opcode, object arg, string extra = null)
-		{
-			if (debug)
-			{
-				var argStr = FormatArgument(arg, extra);
-				var space = argStr.Length > 0 ? " " : "";
-				var opcodeName = opcode.ToString();
-				if (opcode.FlowControl == FlowControl.Branch || opcode.FlowControl == FlowControl.Cond_Branch) opcodeName += " =>";
-				opcodeName = opcodeName.PadRight(10);
-				FileLog.LogBuffered(string.Format("{0}{1}{2}{3}", CodePos(), opcodeName, space, argStr));
-			}
-		}
-
-		internal void LogAllLocalVariables()
-		{
-			if (debug is false)
-				return;
-
-			il.IL.Body.Variables.Do(v =>
-			{
-				var str = string.Format("{0}Local var {1}: {2}{3}", CodePos(0), v.Index, v.VariableType.FullName, v.IsPinned ? "(pinned)" : "");
-				FileLog.LogBuffered(str);
-			});
-		}
-
-		internal static string FormatArgument(object argument, string extra = null)
-		{
-			if (argument is null) return "NULL";
+			if (argument is null)
+				return "NULL";
 			var type = argument.GetType();
 
 			if (argument is MethodBase method)
-				return method.FullDescription() + (extra is not null ? " " + extra : "");
+				return method.FullDescription();
 
 			if (argument is FieldInfo field)
 				return $"{field.FieldType.FullDescription()} {field.DeclaringType.FullDescription()}::{field.Name}";
@@ -101,11 +64,187 @@ namespace HarmonyLib
 			return argument.ToString().Trim();
 		}
 
-		internal void MarkLabel(Label label)
+		internal LocalBuilder DeclareLocalVariable(Type type, bool isReturnValue = false)
 		{
-			if (debug) FileLog.LogBuffered(CodePos() + FormatArgument(label));
-			il.MarkLabel(label);
+			if (type.IsByRef)
+			{
+				if (isReturnValue)
+				{
+					var v = il.DeclareLocal(type);
+					Emit(OpCodes.Ldc_I4_1);
+					Emit(OpCodes.Newarr, type.GetElementType());
+					Emit(OpCodes.Ldc_I4_0);
+					Emit(OpCodes.Ldelema, type.GetElementType());
+					Emit(OpCodes.Stloc, v);
+					return v;
+				}
+				else
+					type = type.GetElementType();
+			}
+			if (type.IsEnum)
+				type = Enum.GetUnderlyingType(type);
+
+			if (AccessTools.IsClass(type))
+			{
+				var v = il.DeclareLocal(type);
+				Emit(OpCodes.Ldnull);
+				Emit(OpCodes.Stloc, v);
+				return v;
+			}
+			if (AccessTools.IsStruct(type))
+			{
+				var v = il.DeclareLocal(type);
+				Emit(OpCodes.Ldloca, v);
+				Emit(OpCodes.Initobj, type);
+				return v;
+			}
+			if (AccessTools.IsValue(type))
+			{
+				var v = il.DeclareLocal(type);
+				if (type == typeof(float))
+					Emit(OpCodes.Ldc_R4, (float)0);
+				else if (type == typeof(double))
+					Emit(OpCodes.Ldc_R8, (double)0);
+				else if (type == typeof(long) || type == typeof(ulong))
+					Emit(OpCodes.Ldc_I8, (long)0);
+				else
+					Emit(OpCodes.Ldc_I4, 0);
+				Emit(OpCodes.Stloc, v);
+				return v;
+			}
+			return null;
 		}
+
+		internal void InitializeOutParameter(int argIndex, Type type)
+		{
+			if (type.IsByRef)
+				type = type.GetElementType();
+			Emit(OpCodes.Ldarg, argIndex);
+
+			if (AccessTools.IsStruct(type))
+			{
+				Emit(OpCodes.Initobj, type);
+				return;
+			}
+
+			if (AccessTools.IsValue(type))
+			{
+				if (type == typeof(float))
+				{
+					Emit(OpCodes.Ldc_R4, (float)0);
+					Emit(OpCodes.Stind_R4);
+					return;
+				}
+				else if (type == typeof(double))
+				{
+					Emit(OpCodes.Ldc_R8, (double)0);
+					Emit(OpCodes.Stind_R8);
+					return;
+				}
+				else if (type == typeof(long))
+				{
+					Emit(OpCodes.Ldc_I8, (long)0);
+					Emit(OpCodes.Stind_I8);
+					return;
+				}
+				else
+				{
+					Emit(OpCodes.Ldc_I4, 0);
+					Emit(OpCodes.Stind_I4);
+					return;
+				}
+			}
+
+			// class or default
+			Emit(OpCodes.Ldnull);
+			Emit(OpCodes.Stind_Ref);
+		}
+
+		internal void PrepareArgumentArray(MethodBase original)
+		{
+			var parameters = original.GetParameters();
+			var i = 0;
+			foreach (var pInfo in parameters)
+			{
+				var argIndex = i++ + (original.IsStatic ? 0 : 1);
+				if (pInfo.IsOut || pInfo.IsRetval)
+					InitializeOutParameter(argIndex, pInfo.ParameterType);
+			}
+			Emit(OpCodes.Ldc_I4, parameters.Length);
+			Emit(OpCodes.Newarr, typeof(object));
+			i = 0;
+			var arrayIdx = 0;
+			foreach (var pInfo in parameters)
+			{
+				var argIndex = i++ + (original.IsStatic ? 0 : 1);
+				var pType = pInfo.ParameterType;
+				var paramByRef = pType.IsByRef;
+				if (paramByRef)
+					pType = pType.GetElementType();
+				Emit(OpCodes.Dup);
+				Emit(OpCodes.Ldc_I4, arrayIdx++);
+				Emit(OpCodes.Ldarg, argIndex);
+				if (paramByRef)
+				{
+					if (AccessTools.IsStruct(pType))
+						Emit(OpCodes.Ldobj, pType);
+					else
+						Emit(MethodPatcherTools.LoadIndOpCodeFor(pType));
+				}
+				if (pType.IsValueType)
+					Emit(OpCodes.Box, pType);
+				Emit(OpCodes.Stelem_Ref);
+			}
+		}
+
+		internal void RestoreArgumentArray(MethodBase original, LocalBuilderState localState)
+		{
+			var parameters = original.GetParameters();
+			var i = 0;
+			var arrayIdx = 0;
+			foreach (var pInfo in parameters)
+			{
+				var argIndex = i++ + (original.IsStatic ? 0 : 1);
+				var pType = pInfo.ParameterType;
+				if (pType.IsByRef)
+				{
+					pType = pType.GetElementType();
+
+					Emit(OpCodes.Ldarg, argIndex);
+					Emit(OpCodes.Ldloc, localState[MethodPatcherTools.ARGS_ARRAY_VAR]);
+					Emit(OpCodes.Ldc_I4, arrayIdx);
+					Emit(OpCodes.Ldelem_Ref);
+
+					if (pType.IsValueType)
+					{
+						Emit(OpCodes.Unbox_Any, pType);
+						if (AccessTools.IsStruct(pType))
+							Emit(OpCodes.Stobj, pType);
+						else
+							Emit(MethodPatcherTools.StoreIndOpCodeFor(pType));
+					}
+					else
+					{
+						Emit(OpCodes.Castclass, pType);
+						Emit(OpCodes.Stind_Ref);
+					}
+				}
+				else
+				{
+					Emit(OpCodes.Ldloc, localState[MethodPatcherTools.ARGS_ARRAY_VAR]);
+					Emit(OpCodes.Ldc_I4, arrayIdx);
+					Emit(OpCodes.Ldelem_Ref);
+					if (pType.IsValueType)
+						Emit(OpCodes.Unbox_Any, pType);
+					else
+						Emit(OpCodes.Castclass, pType);
+					Emit(OpCodes.Starg, argIndex);
+				}
+				arrayIdx++;
+			}
+		}
+
+		internal void MarkLabel(Label label) => il.MarkLabel(label);
 
 		internal void MarkBlockBefore(ExceptionBlock block, out Label? label)
 		{
@@ -113,78 +252,24 @@ namespace HarmonyLib
 			switch (block.blockType)
 			{
 				case ExceptionBlockType.BeginExceptionBlock:
-					if (debug)
-					{
-						FileLog.LogBuffered(".try");
-						FileLog.LogBuffered("{");
-						FileLog.ChangeIndent(1);
-					}
 					label = il.BeginExceptionBlock();
-					return;
+					break;
 
 				case ExceptionBlockType.BeginCatchBlock:
-					if (debug)
-					{
-						// fake log a LEAVE code since BeginCatchBlock() does add it
-						LogIL(OpCodes.Leave, new LeaveTry());
-
-						FileLog.ChangeIndent(-1);
-						FileLog.LogBuffered("} // end try");
-
-						FileLog.LogBuffered($".catch {block.catchType}");
-						FileLog.LogBuffered("{");
-						FileLog.ChangeIndent(1);
-					}
 					il.BeginCatchBlock(block.catchType);
-					return;
+					break;
 
 				case ExceptionBlockType.BeginExceptFilterBlock:
-					if (debug)
-					{
-						// fake log a LEAVE code since BeginCatchBlock() does add it
-						LogIL(OpCodes.Leave, new LeaveTry());
-
-						FileLog.ChangeIndent(-1);
-						FileLog.LogBuffered("} // end try");
-
-						FileLog.LogBuffered(".filter");
-						FileLog.LogBuffered("{");
-						FileLog.ChangeIndent(1);
-					}
 					il.BeginExceptFilterBlock();
-					return;
+					break;
 
 				case ExceptionBlockType.BeginFaultBlock:
-					if (debug)
-					{
-						// fake log a LEAVE code since BeginCatchBlock() does add it
-						LogIL(OpCodes.Leave, new LeaveTry());
-
-						FileLog.ChangeIndent(-1);
-						FileLog.LogBuffered("} // end try");
-
-						FileLog.LogBuffered(".fault");
-						FileLog.LogBuffered("{");
-						FileLog.ChangeIndent(1);
-					}
 					il.BeginFaultBlock();
-					return;
+					break;
 
 				case ExceptionBlockType.BeginFinallyBlock:
-					if (debug)
-					{
-						// fake log a LEAVE code since BeginCatchBlock() does add it
-						LogIL(OpCodes.Leave, new LeaveTry());
-
-						FileLog.ChangeIndent(-1);
-						FileLog.LogBuffered("} // end try");
-
-						FileLog.LogBuffered(".finally");
-						FileLog.LogBuffered("{");
-						FileLog.ChangeIndent(1);
-					}
 					il.BeginFinallyBlock();
-					return;
+					break;
 			}
 		}
 
@@ -193,170 +278,123 @@ namespace HarmonyLib
 			switch (block.blockType)
 			{
 				case ExceptionBlockType.EndExceptionBlock:
-					if (debug)
-					{
-						// fake log a LEAVE code since BeginCatchBlock() does add it
-						LogIL(OpCodes.Leave, new LeaveTry());
-
-						FileLog.ChangeIndent(-1);
-						FileLog.LogBuffered("} // end handler");
-					}
 					il.EndExceptionBlock();
-					return;
-				default:
-					// Console.WriteLine(block.ToString());
-					return;
+					break;
 			}
 		}
 
 		internal void Emit(OpCode opcode)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode));
-			LogIL(opcode);
 			il.Emit(opcode);
 		}
 
 		internal void Emit(OpCode opcode, LocalBuilder local)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, local));
-			LogIL(opcode, local);
 			il.Emit(opcode, local);
 		}
 
 		internal void Emit(OpCode opcode, FieldInfo field)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, field));
-			LogIL(opcode, field);
 			il.Emit(opcode, field);
 		}
 
 		internal void Emit(OpCode opcode, Label[] labels)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, labels));
-			LogIL(opcode, labels);
 			il.Emit(opcode, labels);
 		}
 
 		internal void Emit(OpCode opcode, Label label)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, label));
-			LogIL(opcode, label);
 			il.Emit(opcode, label);
 		}
 
 		internal void Emit(OpCode opcode, string str)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, str));
-			LogIL(opcode, str);
 			il.Emit(opcode, str);
 		}
 
 		internal void Emit(OpCode opcode, float arg)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
-			LogIL(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, byte arg)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
-			LogIL(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, sbyte arg)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
-			LogIL(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, double arg)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
-			LogIL(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, int arg)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
-			LogIL(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, MethodInfo meth)
 		{
-			if (opcode.Equals(OpCodes.Call) || opcode.Equals(OpCodes.Callvirt) || opcode.Equals(OpCodes.Newobj))
-			{
-				EmitCall(opcode, meth, null);
-				return;
-			}
-
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, meth));
-
-			LogIL(opcode, meth);
 			il.Emit(opcode, meth);
 		}
 
 		internal void Emit(OpCode opcode, short arg)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
-			LogIL(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, SignatureHelper signature)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, signature));
-			LogIL(opcode, signature);
 			il.Emit(opcode, signature);
 		}
 
 		internal void Emit(OpCode opcode, ConstructorInfo con)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, con));
-			LogIL(opcode, con);
 			il.Emit(opcode, con);
 		}
 
 		internal void Emit(OpCode opcode, Type cls)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, cls));
-			LogIL(opcode, cls);
 			il.Emit(opcode, cls);
 		}
 
 		internal void Emit(OpCode opcode, long arg)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
-			LogIL(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
-		internal void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
+		internal void Emit(OpCode opcode, ICallSiteGenerator operand)
+			=> il.Emit(opcode, operand);
+
+		internal void EmitCall(OpCode opcode, MethodInfo methodInfo)
 		{
 			instructions.Add(CurrentPos(), new CodeInstruction(opcode, methodInfo));
-			var extra = optionalParameterTypes is not null && optionalParameterTypes.Length > 0 ? optionalParameterTypes.Description() : null;
-			LogIL(opcode, methodInfo, extra);
-			il.EmitCall(opcode, methodInfo, optionalParameterTypes);
+			il.EmitCall(opcode, methodInfo, null);
 		}
 
-		internal void EmitCalli(OpCode opcode, CallingConvention unmanagedCallConv, Type returnType, Type[] parameterTypes)
-		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, unmanagedCallConv));
-			var extra = returnType.FullName + " " + parameterTypes.Description();
-			LogIL(opcode, unmanagedCallConv, extra);
-			il.EmitCalli(opcode, unmanagedCallConv, returnType, parameterTypes);
-		}
-
-		internal void EmitCalli(OpCode opcode, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type[] optionalParameterTypes)
-		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, callingConvention));
-			var extra = returnType.FullName + " " + parameterTypes.Description() + " " + optionalParameterTypes.Description();
-			LogIL(opcode, callingConvention, extra);
-			il.EmitCalli(opcode, callingConvention, returnType, parameterTypes, optionalParameterTypes);
-		}
+		internal void DynEmit(OpCode opcode, object operand)
+			=> iLGenerator.DynEmit(opcode, operand);
 	}
 }

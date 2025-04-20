@@ -10,6 +10,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using System.Threading;
+
+#if NET5_0_OR_GREATER
+using System.Threading.Tasks;
+#endif
+
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 using System.Runtime.CompilerServices;
 #endif
@@ -154,9 +159,11 @@ namespace HarmonyLib
 			while (true)
 			{
 				var result = func(type);
-				if (result is object) return result;
+				if (result is object)
+					return result;
 				type = type.BaseType;
-				if (type is null) return null;
+				if (type is null)
+					return null;
 			}
 		}
 
@@ -169,7 +176,8 @@ namespace HarmonyLib
 		public static T FindIncludingInnerTypes<T>(Type type, Func<Type, T> func) where T : class
 		{
 			var result = func(type);
-			if (result is object) return result;
+			if (result is object)
+				return result;
 			foreach (var subType in type.GetNestedTypes(all))
 			{
 				result = FindIncludingInnerTypes(subType, func);
@@ -202,7 +210,8 @@ namespace HarmonyLib
 				return null;
 			}
 			var fieldInfo = type.GetField(name, allDeclared);
-			if (fieldInfo is null) FileLog.Debug($"AccessTools.DeclaredField: Could not find field for type {type} and name {name}");
+			if (fieldInfo is null)
+				FileLog.Debug($"AccessTools.DeclaredField: Could not find field for type {type} and name {name}");
 			return fieldInfo;
 		}
 
@@ -214,7 +223,8 @@ namespace HarmonyLib
 		{
 			var info = Tools.TypColonName(typeColonName);
 			var fieldInfo = info.type.GetField(info.name, allDeclared);
-			if (fieldInfo is null) FileLog.Debug($"AccessTools.DeclaredField: Could not find field for type {info.type} and name {info.name}");
+			if (fieldInfo is null)
+				FileLog.Debug($"AccessTools.DeclaredField: Could not find field for type {info.type} and name {info.name}");
 			return fieldInfo;
 		}
 
@@ -236,7 +246,8 @@ namespace HarmonyLib
 				return null;
 			}
 			var fieldInfo = FindIncludingBaseTypes(type, t => t.GetField(name, all));
-			if (fieldInfo is null) FileLog.Debug($"AccessTools.Field: Could not find field for type {type} and name {name}");
+			if (fieldInfo is null)
+				FileLog.Debug($"AccessTools.Field: Could not find field for type {type} and name {name}");
 			return fieldInfo;
 		}
 
@@ -248,7 +259,8 @@ namespace HarmonyLib
 		{
 			var info = Tools.TypColonName(typeColonName);
 			var fieldInfo = FindIncludingBaseTypes(info.type, t => t.GetField(info.name, all));
-			if (fieldInfo is null) FileLog.Debug($"AccessTools.Field: Could not find field for type {info.type} and name {info.name}");
+			if (fieldInfo is null)
+				FileLog.Debug($"AccessTools.Field: Could not find field for type {info.type} and name {info.name}");
 			return fieldInfo;
 		}
 
@@ -265,7 +277,8 @@ namespace HarmonyLib
 				return null;
 			}
 			var fieldInfo = GetDeclaredFields(type).ElementAtOrDefault(idx);
-			if (fieldInfo is null) FileLog.Debug($"AccessTools.DeclaredField: Could not find field for type {type} and idx {idx}");
+			if (fieldInfo is null)
+				FileLog.Debug($"AccessTools.DeclaredField: Could not find field for type {type} and idx {idx}");
 			return fieldInfo;
 		}
 
@@ -287,7 +300,8 @@ namespace HarmonyLib
 				return null;
 			}
 			var property = type.GetProperty(name, allDeclared);
-			if (property is null) FileLog.Debug($"AccessTools.DeclaredProperty: Could not find property for type {type} and name {name}");
+			if (property is null)
+				FileLog.Debug($"AccessTools.DeclaredProperty: Could not find property for type {type} and name {name}");
 			return property;
 		}
 
@@ -299,7 +313,8 @@ namespace HarmonyLib
 		{
 			var info = Tools.TypColonName(typeColonName);
 			var property = info.type.GetProperty(info.name, allDeclared);
-			if (property is null) FileLog.Debug($"AccessTools.DeclaredProperty: Could not find property for type {info.type} and name {info.name}");
+			if (property is null)
+				FileLog.Debug($"AccessTools.DeclaredProperty: Could not find property for type {info.type} and name {info.name}");
 			return property;
 		}
 
@@ -323,7 +338,8 @@ namespace HarmonyLib
 					type.GetProperties(allDeclared).SingleOrDefault(property => property.GetIndexParameters().Length > 0)
 					: type.GetProperties(allDeclared).FirstOrDefault(property => property.GetIndexParameters().Select(param => param.ParameterType).SequenceEqual(parameters));
 
-				if (indexer is null) FileLog.Debug($"AccessTools.DeclaredIndexer: Could not find indexer for type {type} and parameters {parameters?.Description()}");
+				if (indexer is null)
+					FileLog.Debug($"AccessTools.DeclaredIndexer: Could not find indexer for type {type} and parameters {parameters?.Description()}");
 
 				return indexer;
 			}
@@ -391,7 +407,8 @@ namespace HarmonyLib
 				return null;
 			}
 			var property = FindIncludingBaseTypes(type, t => t.GetProperty(name, all));
-			if (property is null) FileLog.Debug($"AccessTools.Property: Could not find property for type {type} and name {name}");
+			if (property is null)
+				FileLog.Debug($"AccessTools.Property: Could not find property for type {type} and name {name}");
 			return property;
 		}
 
@@ -403,7 +420,8 @@ namespace HarmonyLib
 		{
 			var info = Tools.TypColonName(typeColonName);
 			var property = FindIncludingBaseTypes(info.type, t => t.GetProperty(info.name, all));
-			if (property is null) FileLog.Debug($"AccessTools.Property: Could not find property for type {info.type} and name {info.name}");
+			if (property is null)
+				FileLog.Debug($"AccessTools.Property: Could not find property for type {info.type} and name {info.name}");
 			return property;
 		}
 
@@ -429,7 +447,8 @@ namespace HarmonyLib
 			{
 				var indexer = FindIncludingBaseTypes(type, func);
 
-				if (indexer is null) FileLog.Debug($"AccessTools.Indexer: Could not find indexer for type {type} and parameters {parameters?.Description()}");
+				if (indexer is null)
+					FileLog.Debug($"AccessTools.Indexer: Could not find indexer for type {type} and parameters {parameters?.Description()}");
 
 				return indexer;
 			}
@@ -512,7 +531,8 @@ namespace HarmonyLib
 				return null;
 			}
 
-			if (generics is not null) result = result.MakeGenericMethod(generics);
+			if (generics is not null)
+				result = result.MakeGenericMethod(generics);
 			return result;
 		}
 
@@ -575,7 +595,8 @@ namespace HarmonyLib
 				return null;
 			}
 
-			if (generics is not null) result = result.MakeGenericMethod(generics);
+			if (generics is not null)
+				result = result.MakeGenericMethod(generics);
 			return result;
 		}
 
@@ -756,6 +777,35 @@ namespace HarmonyLib
 			};
 		}
 
+		/// <summary>Returns a <see cref="MethodInfo"/> by searching for module-id and token</summary>
+		/// <param name="moduleGUID">The module of the method</param>
+		/// <param name="token">The token of the method</param>
+		/// <returns></returns>
+		public static MethodInfo GetMethodByModuleAndToken(string moduleGUID, int token)
+		{
+#if NET5_0_OR_GREATER
+			Module module = null;
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			var moduleVersionGUID = new Guid(moduleGUID);
+			Parallel.ForEach(assemblies, (assembly) =>
+			{
+				var allModules = assembly.GetModules();
+				for (var i = 0; i < allModules.Length; i++)
+					if (allModules[i].ModuleVersionId == moduleVersionGUID)
+					{
+						module = allModules[i];
+						break;
+					}
+			});
+#else
+			var module = AppDomain.CurrentDomain.GetAssemblies()
+				.Where(a => !a.FullName.StartsWith("Microsoft.VisualStudio"))
+				.SelectMany(a => a.GetLoadedModules())
+				.First(m => m.ModuleVersionId.ToString() == moduleGUID);
+#endif
+			return module == null ? null : (MethodInfo)module.ResolveMethod(token);
+		}
+
 		/// <summary>Test if a class member is actually an concrete implementation</summary>
 		/// <param name="member">A member</param>
 		/// <returns>True if the member is a declared</returns>
@@ -888,7 +938,8 @@ namespace HarmonyLib
 				return null;
 			}
 			var constructor = methodOrConstructor as ConstructorInfo;
-			if (constructor is not null) return typeof(void);
+			if (constructor is not null)
+				return typeof(void);
 			return ((MethodInfo)methodOrConstructor).ReturnType;
 		}
 
@@ -998,7 +1049,8 @@ namespace HarmonyLib
 		///
 		public static Type[] GetTypes(object[] parameters)
 		{
-			if (parameters is null) return [];
+			if (parameters is null)
+				return [];
 			return [.. parameters.Select(p => p is null ? typeof(object) : p.GetType())];
 		}
 
@@ -1889,7 +1941,8 @@ namespace HarmonyLib
 				FileLog.Debug("AccessTools.GetDefaultValue: type is null");
 				return null;
 			}
-			if (type == typeof(void)) return null;
+			if (type == typeof(void))
+				return null;
 			if (type.IsValueType)
 				return Activator.CreateInstance(type);
 			return null;

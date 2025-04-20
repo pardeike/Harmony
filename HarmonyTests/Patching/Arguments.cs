@@ -394,7 +394,7 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual((nuint)22, r[i], $"prefix[{i++}]");
 			Assert.AreEqual((nuint)0, r[i], $"prefix[{i++}]");
 
-			Assert.AreEqual(new DateTime(11),r[i], $"prefix[{i++}]");
+			Assert.AreEqual(new DateTime(11), r[i], $"prefix[{i++}]");
 			Assert.AreEqual(new DateTime(12), r[i], $"prefix[{i++}]");
 			Assert.AreEqual(new DateTime(0), r[i], $"prefix[{i++}]");
 
@@ -486,6 +486,28 @@ namespace HarmonyLibTests.Patching
 			new RenamedArguments().Method("test");
 			var log = RenamedArgumentsPatch.log.Join();
 			Assert.AreEqual("val1, patched, val2, hello", log);
+		}
+
+		[Test]
+		public void Test_CompatibleStateTypes()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(DifferingStateTypesSuccessPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+			DifferingStateTypesSuccessPatch.log.Clear();
+			new DifferingStateTypes().Method();
+			var log = DifferingStateTypesSuccessPatch.log.Join();
+			Assert.AreEqual("Hello, Hello2, Hello3, Hello3", log);
+		}
+
+		[Test]
+		public void Test_IncompatibleStateTypes()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(DifferingStateTypesFailurePatch));
+			_ = Assert.Throws<HarmonyException>(() => _ = processor.Patch());
 		}
 
 		[Test, Explicit("Crashes and throws NRE in some configurations: see https://discord.com/channels/131466550938042369/674571535570305060/1319451813975687269")]

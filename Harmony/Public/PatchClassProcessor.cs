@@ -56,7 +56,8 @@ namespace HarmonyLib
 			foreach (var auxType in auxilaryTypes)
 			{
 				var method = PatchTools.GetPatchMethod(containerType, auxType.FullName);
-				if (method is not null) auxilaryMethods[auxType] = method;
+				if (method is not null)
+					auxilaryMethods[auxType] = method;
 			}
 
 			patchMethods = PatchTools.GetPatchMethods(containerType);
@@ -213,6 +214,7 @@ namespace HarmonyLib
 						patchInfo.AddPostfixes(instance.Id, [.. job.postfixes]);
 						patchInfo.AddTranspilers(instance.Id, [.. job.transpilers]);
 						patchInfo.AddFinalizers(instance.Id, [.. job.finalizers]);
+						patchInfo.AddInfixes(instance.Id, [.. job.infixes]);
 
 						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo);
 						HarmonySharedState.UpdatePatchInfo(job.original, replacement, patchInfo);
@@ -271,8 +273,10 @@ namespace HarmonyLib
 			{
 				string error = null;
 				result = [.. targetMethods];
-				if (result is null) error = "null";
-				else if (result.Any(m => m is null)) error = "some element was null";
+				if (result is null)
+					error = "null";
+				else if (result.Any(m => m is null))
+					error = "some element was null";
 				if (error != null)
 				{
 					if (auxilaryMethods.TryGetValue(typeof(HarmonyTargetMethods), out var method))
@@ -292,7 +296,8 @@ namespace HarmonyLib
 
 		void ReportException(Exception exception, MethodBase original)
 		{
-			if (exception is null) return;
+			if (exception is null)
+				return;
 			if ((containerAttributes.debug ?? false) || Harmony.DEBUG)
 			{
 				_ = Harmony.VersionInfo(out var currentVersion);
@@ -302,7 +307,8 @@ namespace HarmonyLib
 				FileLog.Log($"### Original: {(original?.FullDescription() ?? "NULL")}");
 				FileLog.Log($"### Patch class: {containerType.FullDescription()}");
 				var logException = exception;
-				if (logException is HarmonyException hEx) logException = hEx.InnerException;
+				if (logException is HarmonyException hEx)
+					logException = hEx.InnerException;
 				var exStr = logException.ToString();
 				while (exStr.Contains("\n\n"))
 					exStr = exStr.Replace("\n\n", "\n");
@@ -310,7 +316,8 @@ namespace HarmonyLib
 				FileLog.Log(exStr.Trim());
 			}
 
-			if (exception is HarmonyException) throw exception; // assume HarmonyException already wraps the actual exception
+			if (exception is HarmonyException)
+				throw exception; // assume HarmonyException already wraps the actual exception
 			throw new HarmonyException($"Patching exception in method {original.FullDescription()}", exception);
 		}
 
