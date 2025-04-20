@@ -187,19 +187,17 @@ namespace HarmonyLibTests.Tools
 				if (expectedExceptionType is null)
 				{
 					if (constraintResult.ActualValue is Exception ex)
-						TestTools.Log($"UNEXPECTED {ExceptionToString(ex)} (expected no exception)\n{ex.StackTrace}");
+						TestTools.Log($"Failed: got {ExceptionToString(ex)}, expected no exception\n{ex.StackTrace}");
 				}
 				else
 				{
 					if (constraintResult.ActualValue is Exception ex)
 					{
-						if (constraintResult.IsSuccess)
-							TestTools.Log($"expected {ExceptionToString(ex)} (expected {resolvedConstraint})");
-						else
-							TestTools.Log($"UNEXPECTED {ExceptionToString(ex)} (expected {resolvedConstraint})\n{ex.StackTrace}");
+						if (constraintResult.IsSuccess == false)
+							TestTools.Log($"Failed: got {ExceptionToString(ex)}, expected {resolvedConstraint}\n{ex.StackTrace}");
 					}
 					else
-						TestTools.Log($"UNEXPECTED no exception (expected {resolvedConstraint})");
+						TestTools.Log($"Failed: got no exception, expected {resolvedConstraint}");
 				}
 			}
 
