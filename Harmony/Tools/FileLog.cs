@@ -140,20 +140,27 @@ namespace HarmonyLib
 		///
 		public static void FlushBuffer()
 		{
-			if (LogWriter != null)
-			{
-				foreach (var str in buffer)
-					LogWriter.WriteLine(str);
-				buffer.Clear();
-				return;
-			}
 
-			if (LogPath == null) return;
 			lock (fileLock)
 			{
+				if (LogWriter != null)
+				{
+					foreach (var str in buffer)
+						LogWriter.WriteLine(str);
+					buffer.Clear();
+					return;
+				}
+
+				if (LogPath == null) return;
 				if (buffer.Count > 0)
 				{
-					using var writer = File.AppendText(LogPath);
+					using var fs = new FileStream(
+						 LogPath,
+						 FileMode.Append,
+						 FileAccess.Write,
+						 FileShare.ReadWrite
+					);
+					using var writer = new StreamWriter(fs);
 					foreach (var str in buffer)
 						writer.WriteLine(str);
 					buffer.Clear();
@@ -166,16 +173,23 @@ namespace HarmonyLib
 		///
 		public static void Log(string str)
 		{
-			if (LogWriter != null)
-			{
-				LogWriter.WriteLine(IndentString() + str);
-				return;
-			}
 
-			if (LogPath == null) return;
 			lock (fileLock)
 			{
-				using var writer = File.AppendText(LogPath);
+				if (LogWriter != null)
+				{
+					LogWriter.WriteLine(IndentString() + str);
+					return;
+				}
+
+				if (LogPath == null) return;
+				using var fs = new FileStream(
+						 LogPath,
+						 FileMode.Append,
+						 FileAccess.Write,
+						 FileShare.ReadWrite
+					);
+				using var writer = new StreamWriter(fs);
 				writer.WriteLine(IndentString() + str);
 			}
 		}
