@@ -2,7 +2,6 @@ using MonoMod.Utils;
 using MonoMod.Utils.Cil;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -482,9 +481,10 @@ namespace HarmonyLib
 					case OperandType.InlineSig:
 						if (operand is null)
 							throw new Exception($"Wrong null argument: {codeInstruction}");
-						if ((operand is ICallSiteGenerator) is false)
+						if (operand is ICallSiteGenerator callSiteGenerator)
+							emitter.AddInstruction(code, callSiteGenerator);
+						else
 							throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
-						emitter.AddInstruction(code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
