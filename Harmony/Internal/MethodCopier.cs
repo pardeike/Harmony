@@ -480,19 +480,11 @@ namespace HarmonyLib
 						break;
 
 					case OperandType.InlineSig:
-						var cecilGenerator = generator.GetProxiedShim<CecilILGenerator>();
-						if (cecilGenerator is null)
-						{
-							// Right now InlineSignatures can only be emitted using MonoMod and its CecilILGenerator.
-							// That is because DynamicMethod's original ILGenerator is very restrictive about the calli opcode.
-							throw new NotSupportedException();
-						}
 						if (operand is null)
 							throw new Exception($"Wrong null argument: {codeInstruction}");
 						if ((operand is ICallSiteGenerator) is false)
 							throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
-						emitter.AddInstruction(code, operand);
-						cecilGenerator.Emit(code, (ICallSiteGenerator)operand);
+						emitter.AddInstruction(code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
