@@ -550,8 +550,6 @@ namespace HarmonyLib
 
 		internal static void LogCodes(this MethodCreator creator, Emitter emitter, List<CodeInstruction> codeInstructions)
 		{
-			if (creator.config.debug == false) return;
-
 			emitter.Variables().Do(v => FileLog.LogIL(v));
 
 			codeInstructions.Do(codeInstruction =>

@@ -192,8 +192,11 @@ namespace HarmonyLib
 			if (methodEndsInDeadCode == false || config.skipOriginalLabel is not null || config.finalizers.Count > 0 || config.postfixes.Count > 0)
 				config.AddCode(Ret);
 
-			var logEmitter = new Emitter(config.il);
-			this.LogCodes(new Emitter(config.il), config.instructions);
+			if (config.debug)
+			{
+				var logEmitter = new Emitter(config.il);
+				this.LogCodes(new Emitter(config.il), config.instructions);
+			}
 
 			var codeEmitter = new Emitter(config.il);
 			this.EmitCodes(codeEmitter, config.instructions);

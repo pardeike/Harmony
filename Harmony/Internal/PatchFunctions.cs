@@ -26,7 +26,7 @@ namespace HarmonyLib
 				sortedTranspilers,
 				sortedFinalizers,
 				sortedInfixes,
-				true /* debug */
+				debug
 			));
 			var (replacement, finalInstructions) = patcher.CreateReplacement();
 
