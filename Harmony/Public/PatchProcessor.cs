@@ -227,10 +227,8 @@ namespace HarmonyLib
 		public static Patches GetPatchInfo(MethodBase method)
 		{
 			PatchInfo patchInfo;
-			lock (locker)
-			{ patchInfo = HarmonySharedState.GetPatchInfo(method); }
-			if (patchInfo is null)
-				return null;
+			lock (locker) { patchInfo = HarmonySharedState.GetPatchInfo(method); }
+			if (patchInfo is null) return null;
 			return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.infixes);
 		}
 

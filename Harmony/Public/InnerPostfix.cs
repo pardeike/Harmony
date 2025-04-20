@@ -26,6 +26,7 @@ namespace HarmonyLib
 
 		internal override IEnumerable<CodeInstruction> Apply(MethodBase original, IEnumerable<CodeInstruction> instructions)
 		{
+			// TODO: implement
 			_ = original;
 			foreach (var instruction in instructions) yield return instruction;
 		}

@@ -8,7 +8,8 @@ namespace HarmonyLib
 	/// 
 	public class InnerPrefix : InnerFix
 	{
-		internal override InnerFixType Type {
+		internal override InnerFixType Type
+		{
 			get => InnerFixType.Prefix;
 			set => throw new NotImplementedException();
 		}
@@ -25,6 +26,7 @@ namespace HarmonyLib
 
 		internal override IEnumerable<CodeInstruction> Apply(MethodBase original, IEnumerable<CodeInstruction> instructions)
 		{
+			// TODO: implement
 			_ = original;
 			foreach (var instruction in instructions) yield return instruction;
 		}
