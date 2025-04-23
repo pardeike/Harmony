@@ -9,58 +9,11 @@
     <Import_RootNamespace>HarmonyLib</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Extras\DelegateTypeFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extras\FastAccess.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\Mono.Cecil.Cil.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\Mono.Cecil.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\Mono.Cecil.Mdb.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\Mono.Cecil.Pdb.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\Mono.Cecil.Rocks.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\Mono.Collections.Generic.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\Mono.CompilerServices.SymbolWriter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\MonoMod.Utils.Cil.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\MonoMod.Utils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extras\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\*.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extras\MethodInvoker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extras\RefResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\AccessCache.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\ByteBuffer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\CodeTranspiler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\Emitter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\HarmonySharedState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\ILInstruction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\InlineSignatureParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\MethodCopier.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\MethodPatcher.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\PatchArgumentExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\PatchFunctions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\PatchModels.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\PatchSorter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\PatchTools.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\Attributes.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\CodeInstruction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\ExceptionBlock.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\Harmony.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\HarmonyException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\HarmonyMethod.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\InlineSignature.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\Patch.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\PatchClassProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\Patches.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\PatchJsonConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\PatchProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\Priority.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\ReversePatcher.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Public\Transpilers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\AccessTools.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\AccessToolsExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\Code.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\CodeMatch.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\CodeMatcher.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\Extensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\FileLog.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\SymbolExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\Tools.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\Traverse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Public\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tools\*.cs" />
   </ItemGroup>
 </Project>
