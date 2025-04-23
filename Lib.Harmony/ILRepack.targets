@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'DebugFat' Or '$(Configuration)' == 'ReleaseFat'">
+	<Target Name="ILRepacker" AfterTargets="Build">
 		<PropertyGroup>
+			<DebugInfo>true</DebugInfo>
 			<DebugInfo Condition="'$(TargetFramework)' == 'netstandard2.0'">false</DebugInfo>
-			<DebugInfo Condition="'$(TargetFramework)' != 'netstandard2.0'">true</DebugInfo>
 		</PropertyGroup>
+		
 		<ItemGroup>
 			<InputAssemblies Include="$(OutputPath)\*.dll" />
 		</ItemGroup>
+		
 		<ItemGroup>
 			<LibraryPath Condition="$(TargetFramework) == 'netcoreapp3.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\netcoreapp3.0" />
 			<LibraryPath Condition="$(TargetFramework) == 'netcoreapp3.1'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\netcoreapp3.1" />
@@ -17,6 +19,7 @@
 			<LibraryPath Condition="$(TargetFramework) == 'net8.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net8.0" />
 			<LibraryPath Condition="$(TargetFramework) == 'net9.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net9.0" />
 		</ItemGroup>
+		
 		<ILRepack
 			InputAssemblies="@(InputAssemblies)"
 			LibraryPath="@(LibraryPath)"

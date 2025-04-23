@@ -1,9 +1,92 @@
 <Project>
-
-	<PropertyGroup>
+	<PropertyGroup Label="Harmony Defines">
 		<HarmonyVersion>2.3.6.0</HarmonyVersion>
 		<HarmonyPrerelease></HarmonyPrerelease>
 		<MonoModCoreVersion>1.2.3</MonoModCoreVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Label="Lib.Harmony Properties" Condition="$(MSBuildProjectName.StartsWith('Lib.Harmony'))">
+		<Version>$(HarmonyVersion)</Version>
+		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
+		<FileVersion>$(HarmonyVersion)</FileVersion>
+		
+		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
+		<PackageVersion>$(HarmonyVersion)$(HarmonyPrerelease)</PackageVersion>
+
+		<IsLibHarmonyProject>true</IsLibHarmonyProject>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LogFile>obj/docfx-$(TargetFramework).log</LogFile>
+		<AssemblyName>0Harmony</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Build Configuration">
+		<TargetFrameworks>net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>preview</LangVersion>
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
+		<IsLibHarmonyProject Condition="'$(IsLibHarmonyProject)' == ''">false</IsLibHarmonyProject>
+		
+		<!-- Remove netstandard2.0 from /lib in NuGet -->
+		<IncludeBuildOutput Condition="$(TargetFramework)=='netstandard2.0'">false</IncludeBuildOutput>
+
+		<IsNET5OrGreater>false</IsNET5OrGreater>
+		<IsNET5OrGreater Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0' Or '$(TargetFramework)'=='net9.0'">true</IsNET5OrGreater>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Package Configuration" Condition="$(IsLibHarmonyProject)">
+		<GeneratePackageOnBuild Condition="$(Configuration) == 'Release'">true</GeneratePackageOnBuild>
+		<Product>Harmony</Product>
+		<Company>Andreas Pardeike</Company>
+		<Copyright>Copyright © 2016</Copyright>
+		<Description>A general non-destructive patch library for .NET and Mono modules.</Description>
+		<Authors>Andreas Pardeike</Authors>
+		<SignAssembly>true</SignAssembly>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageProjectUrl>https://github.com/pardeike/Harmony</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>Harmony Mono Patch Patching Runtime Detour Detours Aspect Aspects Mod Modding</PackageTags>
+		<PackageIcon>HarmonyLogo.png</PackageIcon>
+		<PackageIconUrl>https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png</PackageIconUrl>
+		<DefaultItemExcludes>$(DefaultItemExcludes);Documentation/**</DefaultItemExcludes>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<NoWarn>$(NoWarn);SYSLIB0011;NU5131</NoWarn>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<ClearOutputDirectory>True</ClearOutputDirectory>
+		<PackageOutputPath>$(MSBuildThisFileDirectory)packages</PackageOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<DefineConstants>DEBUG</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+
+		<!-- Appropriate System.Text.Json reference for each framework -->
+		<PackageReference Condition="'$(TargetFramework)'=='net5.0'" Include="System.Text.Json" Version="5.0.2" />
+		<PackageReference Condition="'$(TargetFramework)'=='net6.0'" Include="System.Text.Json" Version="6.0.11" />
+		<!-- 7.0.4 has security issues -->
+		<PackageReference Condition="'$(TargetFramework)'=='net7.0'" Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Condition="'$(TargetFramework)'=='net8.0'" Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Condition="'$(TargetFramework)'=='net9.0'" Include="System.Text.Json" Version="9.0.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsLibHarmonyProject)">
+		<None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="" />
+		<None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="" />
+		<None Include="$(MSBuildThisFileDirectory)HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="HarmonyTests" />
+		<InternalsVisibleTo Include="MonoMod.Utils.Cil.ILGeneratorProxy" />
+	</ItemGroup>
 </Project>
