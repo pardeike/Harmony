@@ -36,7 +36,7 @@ env:
 
 jobs:
   unix-net:
-    name: .NET ubuntu-arm64 ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    name: ${{ inputs.build_configuration }}
     runs-on: ubuntu-latest
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 10

@@ -37,7 +37,7 @@ env:
 
 jobs:
   build-output-cache:
-    name: Upload Test Build Output Cache
+    name: ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     if: ${{!inputs.manual_build || inputs.publish}}
     timeout-minutes: 10
