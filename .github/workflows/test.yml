@@ -89,6 +89,7 @@ jobs:
     name: Windows .NET x86/x64
     needs: [variables, build-binaries]
     strategy:
+      fail-fast: false
       matrix:
         architecture: ['x86', 'x64']
         target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS) || '[""]')}}
