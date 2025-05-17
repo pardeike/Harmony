@@ -179,6 +179,9 @@ namespace HarmonyLib
 		///
 		public PatchProcessor Unpatch(HarmonyPatchType type, string harmonyID)
 		{
+			if (original is null)
+				throw new NullReferenceException($"Null method for {instance.Id}");
+
 			lock (locker)
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
@@ -207,6 +210,9 @@ namespace HarmonyLib
 		///
 		public PatchProcessor Unpatch(MethodInfo patch)
 		{
+			if (original is null)
+				throw new NullReferenceException($"Null method for {instance.Id}");
+
 			lock (locker)
 			{
 				var patchInfo = HarmonySharedState.GetPatchInfo(original);
