@@ -409,8 +409,43 @@ namespace HarmonyLib
 
 		IEnumerable<CodeInstruction> AddInfixes(IEnumerable<CodeInstruction> instructions)
 		{
-			// TODO
-			return instructions;
+			var activeInnerPrefixes = config.innerprefixes.Where(fix => fix.OuterMethod == config.original).ToArray();
+			var activeInnerPostfixes = config.innerpostfixes.Where(fix => fix.OuterMethod == config.original).ToArray();
+
+			var callInstructions = instructions
+				.Where(ins => ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt)
+				.Where(ins => ins.operand is MethodInfo method && method != null)
+				.ToList();
+			var total = callInstructions.Count;
+
+			var replacements = new Dictionary<CodeInstruction, IEnumerable<CodeInstruction>>();
+			foreach (var callInstruction in callInstructions)
+			{
+				var innerMethod = callInstruction.operand as MethodInfo;
+				var matchingCallInstruction = callInstructions.Where(ins => ins.Calls(innerMethod)).ToList();
+				var index = matchingCallInstruction.IndexOf(callInstruction) + 1;
+
+				var matchingInnerprefixes = activeInnerPrefixes.Where(fix => fix.Matches(innerMethod, index, total));
+				var matchingInnerpostfixes = activeInnerPostfixes.Where(fix => fix.Matches(innerMethod, index, total));
+
+				var sortedInnerPrefixes = new PatchSorter([.. matchingInnerprefixes.Select(fix => fix.patch)], config.debug).Sort().Select(p => new Infix(p)).ToArray();
+				var sortedInnerPostfixes = new PatchSorter([.. matchingInnerpostfixes.Select(fix => fix.patch)], config.debug).Sort().Select(p => new Infix(p)).ToArray();
+
+				var replacement = new List<CodeInstruction>();
+				foreach(var fix in sortedInnerPrefixes) replacement.AddRange(fix.Apply(config, true));
+				replacement.Add(callInstruction);
+				foreach (var fix in sortedInnerPostfixes) replacement.AddRange(fix.Apply(config, false));
+				replacements[callInstruction] = replacement;
+			}
+
+			foreach(var instruction in instructions)
+			{
+				if (replacements.ContainsKey(instruction))
+					foreach (var replacement in replacements[instruction])
+						yield return replacement;
+				else
+					yield return instruction;
+			}
 		}
 	}
 }

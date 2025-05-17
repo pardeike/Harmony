@@ -17,8 +17,8 @@ namespace HarmonyLib
 		internal readonly List<MethodInfo> postfixes;
 		internal readonly List<MethodInfo> transpilers;
 		internal readonly List<MethodInfo> finalizers;
-		internal readonly List<MethodInfo> innerprefixes;
-		internal readonly List<MethodInfo> innerpostfixes;
+		internal readonly List<Infix> innerprefixes;
+		internal readonly List<Infix> innerpostfixes;
 		internal readonly bool debug;
 
 		internal MethodCreatorConfig(
@@ -28,8 +28,8 @@ namespace HarmonyLib
 			List<MethodInfo> postfixes,
 			List<MethodInfo> transpilers,
 			List<MethodInfo> finalizers,
-			List<MethodInfo> innerprefixes,
-			List<MethodInfo> innerpostfixes,
+			List<Infix> innerprefixes,
+			List<Infix> innerpostfixes,
 			bool debug)
 		{
 			this.original = original;
@@ -49,7 +49,7 @@ namespace HarmonyLib
 			patchIndex = patchInfo.VersionCount + 1;
 			patch = MethodPatcherTools.CreateDynamicMethod(original, $"_Patch{patchIndex}", debug);
 			if (patch == null) return false;
-			injections = Fixes.Union(InnerFixes).ToDictionary(fix => fix, fix => fix.GetParameters().Select(p => new InjectedParameter(fix, p)).ToList());
+			injections = Fixes.Union(InnerFixes.Select(fix => fix.OuterMethod)).ToDictionary(fix => fix, fix => fix.GetParameters().Select(p => new InjectedParameter(fix, p)).ToList());
 			returnType = AccessTools.GetReturnedType(original);
 			il = patch.GetILGenerator();
 			instructions = [];
@@ -87,7 +87,7 @@ namespace HarmonyLib
 		internal MethodBase MethodBase => source ?? original;
 		internal bool OriginalIsStatic => original.IsStatic;
 		internal IEnumerable<MethodInfo> Fixes => prefixes.Union(postfixes).Union(finalizers);
-		internal IEnumerable<MethodInfo> InnerFixes => innerprefixes.Union(innerpostfixes);
+		internal IEnumerable<Infix> InnerFixes => innerprefixes.Union(innerpostfixes);
 		internal IEnumerable<InjectedParameter> InjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown)
 		{
 			if (injections.TryGetValue(fix, out var list))
@@ -104,7 +104,7 @@ namespace HarmonyLib
 			foreach (var fix in Fixes)
 				action(fix);
 			foreach (var fix in InnerFixes)
-				action(fix);
+				action(fix.OuterMethod);
 		}
 	}
 }

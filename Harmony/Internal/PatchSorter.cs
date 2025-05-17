@@ -31,11 +31,11 @@ namespace HarmonyLib
 			this.patches.Sort();
 		}
 
-		internal List<MethodInfo> Sort(MethodBase original)
+		internal Patch[] Sort()
 		{
 			// Check if cache exists and the method was used before.
 			if (sortedPatchArray is not null)
-				return [.. sortedPatchArray.Select(x => x.GetMethod(original))];
+				return sortedPatchArray;
 
 			// Initialize internal structures used for sorting.
 			handledPatches = [];
@@ -76,13 +76,13 @@ namespace HarmonyLib
 			handledPatches = null;
 			waitingList = null;
 			patches = null;
-			return [.. sortedPatchArray.Select(x => x.GetMethod(original))];
+			return sortedPatchArray;
 		}
 
 		internal bool ComparePatchLists(Patch[] patches)
 		{
 			if (sortedPatchArray is null)
-				_ = Sort(null);
+				_ = Sort();
 			return patches is not null && sortedPatchArray.Length == patches.Length
 				&& sortedPatchArray.All(x => patches.Contains(x, new PatchDetailedComparer()));
 		}
