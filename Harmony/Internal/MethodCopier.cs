@@ -170,9 +170,11 @@ namespace HarmonyLib
 			if (dllAttribute == null)
 				return;
 
-			// TODO: will generate same type for overloads of methodInfo!
-			// FIXME
-			var name = $"{(methodInfo.DeclaringType?.FullName ?? "").Replace(".", "_")}_{methodInfo.Name}";
+			// Unique name, even for overloads: hash parameter types and append to type name
+			var paramTypes = methodInfo.GetParameters().Select(p => p.ParameterType.FullName ?? p.ParameterType.Name).ToArray();
+			var paramSignature = string.Join("_", paramTypes);
+			var paramHash = paramSignature.Length > 0 ? paramSignature.GetHashCode().ToString("X") : "0";
+			var name = $"{(methodInfo.DeclaringType?.FullName ?? "").Replace(".", "_")}_{methodInfo.Name}_{paramHash}";
 			var assemblyName = new AssemblyName(name);
 #if NET35
 			var dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
