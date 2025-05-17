@@ -65,7 +65,7 @@ runs:
       if: ${{inputs.manual_build == 'true'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          dotnet build Harmony.sln -c ${{inputs.build_configuration}} -f $target_framework;
+          dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework;
         }
       shell: pwsh
 
