@@ -53,7 +53,7 @@ env:
 
 jobs:
   unix-net:
-    name: .NET ${{inputs.os}}-${{inputs.architecture}} ${{ inputs.target_framework }} ${{inputs.build_configuration}}
+    name: ${{inputs.build_configuration}}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 10
