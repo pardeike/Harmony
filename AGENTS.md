@@ -17,4 +17,6 @@
   and processor architectures. You cannot test all those but keep that in mind if you 
   change code.
 
-* Respect .editorconfig when doing edits.
+* Respect .editorconfig when doing edits, especially for using whitespace
+
+* Whitespace rules are TAB, CRLF endings and longer than usual lines (~ 140 chars are ok)
