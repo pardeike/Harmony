@@ -11,8 +11,8 @@ namespace HarmonyTests.Extras
 	[TestFixture, NonParallelizable]
 	class PatchSerialization
 	{
-		static string[] fixNames = ["prefixes", "postfixes", "transpilers", "finalizers", "infixes"];
-		static Patch[][] GetFixes(PatchInfo patchInfo) => [patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.infixes];
+		static string[] fixNames = ["prefixes", "postfixes", "transpilers", "finalizers", "innerprefixes", "innerpostfixes"];
+		static Patch[][] GetFixes(PatchInfo patchInfo) => [patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.innerprefixes, patchInfo.innerpostfixes];
 
 		static string ExpectedJSON()
 		{
@@ -45,7 +45,8 @@ namespace HarmonyTests.Extras
 			patchInfo.AddPostfixes("postfixes", [hMethod]);
 			patchInfo.AddTranspilers("transpilers", [hMethod]);
 			patchInfo.AddFinalizers("finalizers", [hMethod]);
-			patchInfo.AddInfixes("infixes", [hMethod]);
+			patchInfo.AddInnerPrefixes("innerprefixes", [hMethod]);
+			patchInfo.AddInnerPostfixes("innerpostfixes", [hMethod]);
 			patchInfo.VersionCount = 123;
 
 			PatchInfoSerialization.useBinaryFormatter = false;
@@ -95,7 +96,8 @@ namespace HarmonyTests.Extras
 			originalPatchInfo.AddPostfixes("postfixes", [hMethod]);
 			originalPatchInfo.AddTranspilers("transpilers", [hMethod]);
 			originalPatchInfo.AddFinalizers("finalizers", [hMethod]);
-			originalPatchInfo.AddInfixes("infixes", [hMethod]);
+			originalPatchInfo.AddInnerPrefixes("innerprefixes", [hMethod]);
+			originalPatchInfo.AddInnerPostfixes("innerpostfixes", [hMethod]);
 
 			var data = PatchInfoSerialization.Serialize(originalPatchInfo);
 			var patchInfo = PatchInfoSerialization.Deserialize(data);

@@ -18,7 +18,8 @@ namespace HarmonyLib
 		HarmonyMethod postfix;
 		HarmonyMethod transpiler;
 		HarmonyMethod finalizer;
-		HarmonyMethod infix;
+		HarmonyMethod innerprefix;
+		HarmonyMethod innerpostfix;
 
 		internal static readonly object locker = new();
 
@@ -111,23 +112,43 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds an infix</summary>
-		/// <param name="infix">The infix as a <see cref="HarmonyMethod"/></param>
+		/// <summary>Adds an inner prefix</summary>
+		/// <param name="innerPrefix">The inner prefix as a <see cref="HarmonyMethod"/></param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
-		public PatchProcessor AddInfix(HarmonyMethod infix)
+		public PatchProcessor AddInnerPrefix(HarmonyMethod innerPrefix)
 		{
-			this.infix = infix;
+			innerprefix = innerPrefix;
 			return this;
 		}
 
-		/// <summary>Adds a postfix</summary>
-		/// <param name="fixMethod">The infix method</param>
+		/// <summary>Adds an inner prefix</summary>
+		/// <param name="fixMethod">The inner prefix method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
-		public PatchProcessor AddInfix(MethodInfo fixMethod)
+		public PatchProcessor AddInnerPrefix(MethodInfo fixMethod)
 		{
-			infix = new HarmonyMethod(fixMethod);
+			innerprefix = new HarmonyMethod(fixMethod);
+			return this;
+		}
+
+		/// <summary>Adds an inner postfix</summary>
+		/// <param name="innerPostfix">The inner postfix as a <see cref="HarmonyMethod"/></param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
+		///
+		public PatchProcessor AddInnerPostfix(HarmonyMethod innerPostfix)
+		{
+			innerpostfix = innerPostfix;
+			return this;
+		}
+
+		/// <summary>Adds an inner postfix</summary>
+		/// <param name="fixMethod">The inner postfix method</param>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
+		///
+		public PatchProcessor AddInnerPostfix(MethodInfo fixMethod)
+		{
+			innerpostfix = new HarmonyMethod(fixMethod);
 			return this;
 		}
 
@@ -164,7 +185,8 @@ namespace HarmonyLib
 				patchInfo.AddPostfixes(instance.Id, postfix);
 				patchInfo.AddTranspilers(instance.Id, transpiler);
 				patchInfo.AddFinalizers(instance.Id, finalizer);
-				patchInfo.AddInfixes(instance.Id, infix);
+				patchInfo.AddInnerPrefixes(instance.Id, innerprefix);
+				patchInfo.AddInnerPostfixes(instance.Id, innerpostfix);
 
 				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
 				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
@@ -195,8 +217,10 @@ namespace HarmonyLib
 					patchInfo.RemoveTranspiler(harmonyID);
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.Finalizer)
 					patchInfo.RemoveFinalizer(harmonyID);
-				if (type == HarmonyPatchType.All || type == HarmonyPatchType.Infix)
-					patchInfo.RemoveInfix(harmonyID);
+				if (type == HarmonyPatchType.All || type == HarmonyPatchType.InnerPrefix)
+					patchInfo.RemoveInnerPrefix(harmonyID);
+				if (type == HarmonyPatchType.All || type == HarmonyPatchType.InnerPostfix)
+					patchInfo.RemoveInnerPostfix(harmonyID);
 
 				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
 				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
@@ -235,7 +259,7 @@ namespace HarmonyLib
 			PatchInfo patchInfo;
 			lock (locker) { patchInfo = HarmonySharedState.GetPatchInfo(method); }
 			if (patchInfo is null) return null;
-			return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.infixes);
+			return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.innerprefixes, patchInfo.innerpostfixes);
 		}
 
 		/// <summary>Sort patch methods by their priority rules</summary>
@@ -262,7 +286,8 @@ namespace HarmonyLib
 				info.postfixes.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
 				info.transpilers.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
 				info.finalizers.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
-				info.infixes.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
+				info.innerprefixes.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
+				info.innerpostfixes.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
 			});
 
 			var result = new Dictionary<string, Version>();

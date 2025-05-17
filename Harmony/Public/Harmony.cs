@@ -192,8 +192,9 @@ namespace HarmonyLib
 				{
 					info.Postfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 					info.Prefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+					info.InnerPostfixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
+					info.InnerPrefixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 				}
-				info.Infixes.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 				info.Transpilers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));
 				if (hasBody)
 					info.Finalizers.DoIf(IDCheck, patchInfo => Unpatch(original, patchInfo.PatchMethod));

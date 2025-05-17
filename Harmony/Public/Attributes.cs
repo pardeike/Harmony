@@ -55,8 +55,10 @@ namespace HarmonyLib
 		Finalizer,
 		/// <summary>A reverse patch</summary>
 		ReversePatch,
-		/// <summary>An infix patch</summary>
-		Infix
+		/// <summary>An inner prefix patch</summary>
+		InnerPrefix,
+		/// <summary>An inner postfix patch</summary>
+		InnerPostfix,
 	}
 
 	/// <summary>Specifies the type of reverse patch</summary>

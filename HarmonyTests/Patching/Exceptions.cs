@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace HarmonyLibTests.Patching
 {
-	// TODO: DynamicMethod does not support 'catch .. when' and
-	//       MonoMod.Core has still a bug so for now we cannot enable
+	// DynamicMethod does not support 'catch .. when' so for now we cannot enable this test
 
 	public class TestExceptionFilterBlock
 	{

@@ -9,6 +9,9 @@ namespace HarmonyLib
 {
 	/// <summary>Occcurances of a method that is called inside some outer method</summary>
 	///
+#if NET5_0_OR_GREATER
+	[JsonConverter(typeof(InnerMethodJsonConverter))]
+#endif
 	[Serializable]
 	public class InnerMethod
 	{
@@ -31,6 +34,13 @@ namespace HarmonyLib
 			this.positions = positions;
 		}
 
+		internal InnerMethod(int methodToken, string moduleGUID, int[] positions)
+		{
+			this.methodToken = methodToken;
+			this.moduleGUID = moduleGUID;
+			this.positions = positions;
+		}
+		
 		/// <summary>The inner method</summary>
 		///
 #if NET5_0_OR_GREATER

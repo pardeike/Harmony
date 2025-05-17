@@ -67,17 +67,5 @@ namespace HarmonyLib
 			yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FileLog), nameof(FileLog.Debug)));
 			foreach (var instruction in instructions) yield return instruction;
 		}
-
-		/// <summary>Applies all infixes to a method</summary>
-		/// <param name="instructions">The instructions of the method</param>
-		/// <param name="original">The target method that gets the infixes applied to</param>
-		/// <param name="infixes">A list of infixes</param>
-		/// <returns>The new instructions of the method</returns>
-		public static IEnumerable<CodeInstruction> ApplyInfixes(this IEnumerable<CodeInstruction> instructions, MethodBase original, params InnerFix[] infixes)
-		{
-			foreach (var infix in infixes)
-				instructions = infix.Apply(original, instructions);
-			foreach (var instruction in instructions) yield return instruction;
-		}
 	}
 }

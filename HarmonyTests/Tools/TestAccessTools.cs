@@ -362,7 +362,7 @@ namespace HarmonyLibTests.Tools
 			Assert.NotNull(empty);
 			Assert.AreEqual(0, empty.Length);
 
-			// TODO: typeof(null) is ambiguous and resolves for now to <object>. is this a problem?
+			// typeof(null) is ambiguous and resolves for now to <object>. is this a problem?
 			var types = AccessTools.GetTypes(["hi", 123, null, new Test_AccessTools()]);
 			Assert.NotNull(types);
 			Assert.AreEqual(4, types.Length);

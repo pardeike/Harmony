@@ -41,19 +41,31 @@ namespace HarmonyLib
 #endif
 		public Patch[] finalizers = [];
 
-		/// <summary>Infixes as an array of <see cref="Patch"/></summary>
+		/// <summary>InnerPrefixes as an array of <see cref="Patch"/></summary>
 		///
 #if NET5_0_OR_GREATER
 		[JsonInclude]
 #endif
-		public Patch[] infixes = [];
+		public Patch[] innerprefixes = [];
+
+		/// <summary>InnerPostfixes as an array of <see cref="Patch"/></summary>
+		///
+#if NET5_0_OR_GREATER
+		[JsonInclude]
+#endif
+		public Patch[] innerpostfixes = [];
 
 		/// <summary>Returns if any of the patches wants debugging turned on</summary>
 		///
 #if NET5_0_OR_GREATER
 		[JsonIgnore]
 #endif
-		public bool Debugging => prefixes.Any(p => p.debug) || postfixes.Any(p => p.debug) || transpilers.Any(p => p.debug) || finalizers.Any(p => p.debug) || infixes.Any(p => p.debug);
+		public bool Debugging => prefixes.Any(p => p.debug)
+			|| postfixes.Any(p => p.debug)
+			|| transpilers.Any(p => p.debug)
+			|| finalizers.Any(p => p.debug)
+			|| innerprefixes.Any(p => p.debug)
+			|| innerpostfixes.Any(p => p.debug);
 
 		/// <summary>Number of replacements created</summary>
 		///
@@ -128,16 +140,27 @@ namespace HarmonyLib
 		///
 		public void RemoveFinalizer(string owner) => finalizers = Remove(owner, finalizers);
 
-		/// <summary>Adds infixes</summary>
+		/// <summary>Adds inner prefixes</summary>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
 		///
-		internal void AddInfixes(string owner, params HarmonyMethod[] methods) => infixes = Add(owner, methods, infixes);
+		internal void AddInnerPrefixes(string owner, params HarmonyMethod[] methods) => innerprefixes = Add(owner, methods, innerprefixes);
 
-		/// <summary>Removes infixes</summary>
-		/// <param name="owner">The owner of the infix, or <c>*</c> for all</param>
+		/// <summary>Removes inner prefixes</summary>
+		/// <param name="owner">The owner of the inner prefixes, or <c>*</c> for all</param>
 		///
-		public void RemoveInfix(string owner) => infixes = Remove(owner, infixes);
+		public void RemoveInnerPrefix(string owner) => innerprefixes = Remove(owner, innerprefixes);
+
+		/// <summary>Adds inner postfixes</summary>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="methods">The patch methods</param>
+		///
+		internal void AddInnerPostfixes(string owner, params HarmonyMethod[] methods) => innerpostfixes = Add(owner, methods, innerpostfixes);
+
+		/// <summary>Removes inner postfixes</summary>
+		/// <param name="owner">The owner of the inner postfixes, or <c>*</c> for all</param>
+		///
+		public void RemoveInnerPostfix(string owner) => innerpostfixes = Remove(owner, innerpostfixes);
 
 		/// <summary>Removes a patch using its method</summary>
 		/// <param name="patch">The method of the patch to remove</param>
@@ -148,7 +171,8 @@ namespace HarmonyLib
 			postfixes = [.. postfixes.Where(p => p.PatchMethod != patch)];
 			transpilers = [.. transpilers.Where(p => p.PatchMethod != patch)];
 			finalizers = [.. finalizers.Where(p => p.PatchMethod != patch)];
-			infixes = [.. infixes.Where(p => p.PatchMethod != patch)];
+			innerprefixes = [.. innerprefixes.Where(p => p.PatchMethod != patch)];
+			innerpostfixes = [.. innerpostfixes.Where(p => p.PatchMethod != patch)];
 		}
 
 		private static Patch[] Add(string owner, HarmonyMethod[] add, Patch[] current)

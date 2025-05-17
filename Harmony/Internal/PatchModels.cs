@@ -15,7 +15,8 @@ namespace HarmonyLib
 			internal List<HarmonyMethod> postfixes = [];
 			internal List<HarmonyMethod> transpilers = [];
 			internal List<HarmonyMethod> finalizers = [];
-			internal List<HarmonyMethod> infixes = [];
+			internal List<HarmonyMethod> innerprefixes = [];
+			internal List<HarmonyMethod> innerpostfixes = [];
 
 			internal void AddPatch(AttributePatch patch)
 			{
@@ -33,8 +34,11 @@ namespace HarmonyLib
 					case HarmonyPatchType.Finalizer:
 						finalizers.Add(patch.info);
 						break;
-					case HarmonyPatchType.Infix:
-						infixes.Add(patch.info);
+					case HarmonyPatchType.InnerPrefix:
+						innerprefixes.Add(patch.info);
+						break;
+					case HarmonyPatchType.InnerPostfix:
+						innerpostfixes.Add(patch.info);
 						break;
 				}
 			}
@@ -60,7 +64,9 @@ namespace HarmonyLib
 				job.postfixes.Count +
 				job.transpilers.Count +
 				job.finalizers.Count +
-				job.infixes.Count > 0
+				job.innerprefixes.Count +
+				job.innerpostfixes.Count
+				> 0
 			)];
 		}
 
@@ -77,7 +83,8 @@ namespace HarmonyLib
 			HarmonyPatchType.Transpiler,
 			HarmonyPatchType.Finalizer,
 			HarmonyPatchType.ReversePatch,
-			HarmonyPatchType.Infix
+			HarmonyPatchType.InnerPrefix,
+			HarmonyPatchType.InnerPostfix
 		];
 
 		internal HarmonyMethod info;

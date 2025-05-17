@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\*.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Public\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\*.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tools\*.cs" />
   </ItemGroup>
 </Project>

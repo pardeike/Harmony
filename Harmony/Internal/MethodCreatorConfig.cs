@@ -17,10 +17,20 @@ namespace HarmonyLib
 		internal readonly List<MethodInfo> postfixes;
 		internal readonly List<MethodInfo> transpilers;
 		internal readonly List<MethodInfo> finalizers;
-		internal readonly List<MethodInfo> infixes;
+		internal readonly List<MethodInfo> innerprefixes;
+		internal readonly List<MethodInfo> innerpostfixes;
 		internal readonly bool debug;
 
-		internal MethodCreatorConfig(MethodBase original, MethodBase source, List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> transpilers, List<MethodInfo> finalizers, List<MethodInfo> infixes, bool debug)
+		internal MethodCreatorConfig(
+			MethodBase original,
+			MethodBase source,
+			List<MethodInfo> prefixes,
+			List<MethodInfo> postfixes,
+			List<MethodInfo> transpilers,
+			List<MethodInfo> finalizers,
+			List<MethodInfo> innerprefixes,
+			List<MethodInfo> innerpostfixes,
+			bool debug)
 		{
 			this.original = original;
 			this.source = source;
@@ -28,7 +38,8 @@ namespace HarmonyLib
 			this.postfixes = postfixes;
 			this.transpilers = transpilers;
 			this.finalizers = finalizers;
-			this.infixes = infixes;
+			this.innerprefixes = innerprefixes;
+			this.innerpostfixes = innerpostfixes;
 			this.debug = debug;
 		}
 
@@ -38,7 +49,7 @@ namespace HarmonyLib
 			patchIndex = patchInfo.VersionCount + 1;
 			patch = MethodPatcherTools.CreateDynamicMethod(original, $"_Patch{patchIndex}", debug);
 			if (patch == null) return false;
-			injections = Fixes.ToDictionary(fix => fix, fix => fix.GetParameters().Select(p => new InjectedParameter(fix, p)).ToList());
+			injections = Fixes.Union(InnerFixes).ToDictionary(fix => fix, fix => fix.GetParameters().Select(p => new InjectedParameter(fix, p)).ToList());
 			returnType = AccessTools.GetReturnedType(original);
 			il = patch.GetILGenerator();
 			instructions = [];
@@ -75,7 +86,8 @@ namespace HarmonyLib
 
 		internal MethodBase MethodBase => source ?? original;
 		internal bool OriginalIsStatic => original.IsStatic;
-		internal IEnumerable<MethodInfo> Fixes => prefixes.Union(postfixes).Union(finalizers).Union(infixes);
+		internal IEnumerable<MethodInfo> Fixes => prefixes.Union(postfixes).Union(finalizers);
+		internal IEnumerable<MethodInfo> InnerFixes => innerprefixes.Union(innerpostfixes);
 		internal IEnumerable<InjectedParameter> InjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown)
 		{
 			if (injections.TryGetValue(fix, out var list))
@@ -90,6 +102,8 @@ namespace HarmonyLib
 		internal void WithFixes(Action<MethodInfo> action)
 		{
 			foreach (var fix in Fixes)
+				action(fix);
+			foreach (var fix in InnerFixes)
 				action(fix);
 		}
 	}

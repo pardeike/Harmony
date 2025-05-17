@@ -78,9 +78,7 @@ namespace HarmonyLib
 				foreach (var injection in config.InjectionsFor(fix, InjectionType.State))
 				{
 					var parameterType = injection.parameterInfo.ParameterType;
-					var type = parameterType.IsByRef
-					 ? parameterType.GetElementType()
-					 : parameterType;
+					var type = parameterType.IsByRef ? parameterType.GetElementType() : parameterType;
 					if (maybeLocal != null)
 					{
 						if (!type.IsAssignableFrom(maybeLocal.LocalType))
@@ -123,6 +121,9 @@ namespace HarmonyLib
 
 			var endLabels = new List<Label>();
 			var replacement = copier.Finalize(out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
+
+			replacement = [.. AddInfixes(replacement)];
+
 			config.AddCode(Nop["start original"]);
 			config.AddCodes(this.CleanupCodes(replacement, endLabels));
 			config.AddCode(Nop["end original"]);
@@ -404,6 +405,12 @@ namespace HarmonyLib
 			});
 
 			return rethrowPossible;
+		}
+
+		IEnumerable<CodeInstruction> AddInfixes(IEnumerable<CodeInstruction> instructions)
+		{
+			// TODO
+			return instructions;
 		}
 	}
 }
