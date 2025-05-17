@@ -237,7 +237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.FileLog.html",
-          "hash": "TL3nrxZdaJelBULLBmE1klC0RtOtddDqPErzlHqwRUE="
+          "hash": "dfp86Qi1ntXS59iEOBc7I1u0fUQ2O3hWVOFMNWQvBlc="
         }
       },
       "is_incremental": false,
@@ -633,7 +633,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.MethodBaseExtensions.html",
-          "hash": "Pt+HJd0oq1hgR34QcuEowS7ZomXDv1f4dBMZbvk5+zY="
+          "hash": "bsAqTw3t/y20ytuZmxAX+SrfXBUTSh0qBek5yIaSNdo="
         }
       },
       "is_incremental": false,
@@ -717,7 +717,7 @@
       "output": {
         ".html": {
           "relative_path": "api/HarmonyLib.PatchProcessor.html",
-          "hash": "wRdkIQ1GUxNH/KQeCtGi/VJZT1Tsvj5+sPPhcrSHkvM="
+          "hash": "nRxFb8PI2coP9Hnm3wuLe/yt/Dyz03tjzf+mDZL6Hoc="
         }
       },
       "is_incremental": false,

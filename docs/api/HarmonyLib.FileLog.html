@@ -254,7 +254,7 @@
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_Debug_System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.Debug(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L315">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L333">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_Debug_" data-uid="HarmonyLib.FileLog.Debug*"></a>
   <h4 id="HarmonyLib_FileLog_Debug_System_String_" data-uid="HarmonyLib.FileLog.Debug(System.String)">Debug(String)</h4>
@@ -358,7 +358,7 @@
   </span>
   <a id="HarmonyLib_FileLog_Log_" data-uid="HarmonyLib.FileLog.Log*"></a>
   <h4 id="HarmonyLib_FileLog_Log_System_String_" data-uid="HarmonyLib.FileLog.Log(System.String)">Log(String)</h4>
-  <div class="markdown level1 summary"><p>Log a string directly to disk. Slower method that prevents missing information in case of a crash</p>
+  <div class="markdown level1 summary"><p>Logs a string directly to disk. This method is slower but ensures that log information is not lost in case of a crash.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -458,7 +458,7 @@ or else logging information is incomplete in case of a crash</p>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogBytes_System_Int64_System_Int32_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogBytes(System.Int64%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L335">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L353">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogBytes_" data-uid="HarmonyLib.FileLog.LogBytes*"></a>
   <h4 id="HarmonyLib_FileLog_LogBytes_System_Int64_System_Int32_" data-uid="HarmonyLib.FileLog.LogBytes(System.Int64,System.Int32)">LogBytes(Int64, Int32)</h4>
@@ -498,11 +498,11 @@ or else logging information is incomplete in case of a crash</p>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogIL_Mono_Cecil_Cil_VariableDefinition_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogIL(Mono.Cecil.Cil.VariableDefinition)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L225">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L234">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogIL_" data-uid="HarmonyLib.FileLog.LogIL*"></a>
   <h4 id="HarmonyLib_FileLog_LogIL_Mono_Cecil_Cil_VariableDefinition_" data-uid="HarmonyLib.FileLog.LogIL(Mono.Cecil.Cil.VariableDefinition)">LogIL(Mono.Cecil.Cil.VariableDefinition)</h4>
-  <div class="markdown level1 summary"><p>TODO</p>
+  <div class="markdown level1 summary"><p>Logs information about a local variable in Intermediate Language (IL) code.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -522,20 +522,24 @@ or else logging information is incomplete in case of a crash</p>
       <tr>
         <td><span class="xref">Mono.Cecil.Cil.VariableDefinition</span></td>
         <td><span class="parametername">variable</span></td>
-        <td></td>
+        <td><p>The <see cref="!:Mono.Cecil.Cil.VariableDefinition"></see> representing the local variable to log. Must not be <span class="xref">null</span>.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_FileLog_LogIL_Mono_Cecil_Cil_VariableDefinition__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The logged information includes the variable's index, type, and whether it is pinned.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_Label_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogIL(System.Int32%2CSystem.Reflection.Emit.Label)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L231">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L242">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogIL_" data-uid="HarmonyLib.FileLog.LogIL*"></a>
   <h4 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_Label_" data-uid="HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.Label)">LogIL(Int32, Label)</h4>
-  <div class="markdown level1 summary"><p>TODO</p>
+  <div class="markdown level1 summary"><p>Logs the intermediate language (IL) code at the specified position with the given label operand.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -555,25 +559,30 @@ or else logging information is incomplete in case of a crash</p>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">codePos</span></td>
-        <td></td>
+        <td><p>The position in the IL code to log.</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Reflection.Emit.Label</span></td>
         <td><span class="parametername">label</span></td>
-        <td></td>
+        <td><p>The label operand associated with the IL code to log.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_Label__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Formats and logs the IL code position and label operand for detailed IL tracking or debugging.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogIL(System.Int32%2CSystem.Reflection.Emit.OpCode)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L206">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L209">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogIL_" data-uid="HarmonyLib.FileLog.LogIL*"></a>
   <h4 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_" data-uid="HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode)">LogIL(Int32, OpCode)</h4>
-  <div class="markdown level1 summary"><p>TODO</p>
+  <div class="markdown level1 summary"><p>Logs the specified Intermediate Language (IL) operation code and its position in the code stream.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -593,25 +602,30 @@ or else logging information is incomplete in case of a crash</p>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">codePos</span></td>
-        <td></td>
+        <td><p>The position of the IL operation code in the code stream.</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
-        <td></td>
+        <td><p>The IL operation code to log.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method formats the IL operation code and its position into a string and logs it.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_System_Object_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogIL(System.Int32%2CSystem.Reflection.Emit.OpCode%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L213">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L219">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogIL_" data-uid="HarmonyLib.FileLog.LogIL*"></a>
   <h4 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_System_Object_" data-uid="HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode,System.Object)">LogIL(Int32, OpCode, Object)</h4>
-  <div class="markdown level1 summary"><p>TODO</p>
+  <div class="markdown level1 summary"><p>Logs information about an Intermediate Language (IL) instruction, including its position, opcode, and operand.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -631,30 +645,37 @@ or else logging information is incomplete in case of a crash</p>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">codePos</span></td>
-        <td></td>
+        <td><p>The position of the IL instruction within the method body.</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
         <td><span class="parametername">opcode</span></td>
-        <td></td>
+        <td><p>The <span class="xref">System.Reflection.Emit.OpCode</span> representing the operation to be performed.</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Object</span></td>
         <td><span class="parametername">arg</span></td>
-        <td></td>
+        <td><p>The operand associated with the IL instruction, or <span class="xref">null</span> if the instruction has no operand.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_System_Object__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method formats and logs details about an IL instruction for debugging or analysis purposes.
+The logged output includes the instruction's position, opcode, and operand (if any).</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogILBlockBegin_System_Int32_HarmonyLib_ExceptionBlock_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogILBlockBegin(System.Int32%2CHarmonyLib.ExceptionBlock)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L237">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L252">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogILBlockBegin_" data-uid="HarmonyLib.FileLog.LogILBlockBegin*"></a>
   <h4 id="HarmonyLib_FileLog_LogILBlockBegin_System_Int32_HarmonyLib_ExceptionBlock_" data-uid="HarmonyLib.FileLog.LogILBlockBegin(System.Int32,HarmonyLib.ExceptionBlock)">LogILBlockBegin(Int32, ExceptionBlock)</h4>
-  <div class="markdown level1 summary"><p>TODO</p>
+  <div class="markdown level1 summary"><p>Logs the beginning of an intermediate language (IL) exception handling block.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -674,25 +695,32 @@ or else logging information is incomplete in case of a crash</p>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">codePos</span></td>
-        <td></td>
+        <td><p>The position of the IL code where the block begins.</p>
+</td>
       </tr>
       <tr>
         <td><a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></td>
         <td><span class="parametername">block</span></td>
-        <td></td>
+        <td><p>The <a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a> representing the type of exception handling block to log. This includes
+information about the block type (e.g., try, catch, finally) and any associated metadata.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_FileLog_LogILBlockBegin_System_Int32_HarmonyLib_ExceptionBlock__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Logs the start of an exception handling block (e.g., <code>.try</code>, <code>.catch</code>, <code>.finally</code>, <code>.fault</code>),
+adjusts indentation, and simulates a <code>LEAVE</code> opcode for consistency.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogILBlockEnd_System_Int32_HarmonyLib_ExceptionBlock_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogILBlockEnd(System.Int32%2CHarmonyLib.ExceptionBlock)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L300">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L318">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogILBlockEnd_" data-uid="HarmonyLib.FileLog.LogILBlockEnd*"></a>
   <h4 id="HarmonyLib_FileLog_LogILBlockEnd_System_Int32_HarmonyLib_ExceptionBlock_" data-uid="HarmonyLib.FileLog.LogILBlockEnd(System.Int32,HarmonyLib.ExceptionBlock)">LogILBlockEnd(Int32, ExceptionBlock)</h4>
-  <div class="markdown level1 summary"><p>TODO</p>
+  <div class="markdown level1 summary"><p>Logs the end of an intermediate language (IL) exception block.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -712,25 +740,31 @@ or else logging information is incomplete in case of a crash</p>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">codePos</span></td>
-        <td></td>
+        <td><p>The position in the IL code where the block ends.</p>
+</td>
       </tr>
       <tr>
         <td><a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></td>
         <td><span class="parametername">block</span></td>
-        <td></td>
+        <td><p>The exception block to log. Must have a valid block type.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_FileLog_LogILBlockEnd_System_Int32_HarmonyLib_ExceptionBlock__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method handles the logging of specific types of exception blocks, such as the end of a try-catch or
+similar constructs. It adjusts the indentation level and outputs relevant information about the block's conclusion.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_LogILComment_System_Int32_System_String_.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.LogILComment(System.Int32%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L200">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L201">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_LogILComment_" data-uid="HarmonyLib.FileLog.LogILComment*"></a>
   <h4 id="HarmonyLib_FileLog_LogILComment_System_Int32_System_String_" data-uid="HarmonyLib.FileLog.LogILComment(System.Int32,System.String)">LogILComment(Int32, String)</h4>
-  <div class="markdown level1 summary"><p>TODO</p>
+  <div class="markdown level1 summary"><p>Logs an inline comment at the specified code position.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -750,21 +784,26 @@ or else logging information is incomplete in case of a crash</p>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">codePos</span></td>
-        <td></td>
+        <td><p>The position in the code where the comment should be logged.</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">comment</span></td>
-        <td></td>
+        <td><p>The comment text to log. Cannot be null or empty.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="HarmonyLib_FileLog_LogILComment_System_Int32_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method formats the comment with the code position and logs it.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/pardeike/Harmony/new/master/apiSpec/new?filename=HarmonyLib_FileLog_Reset.md&amp;value=---%0Auid%3A%20HarmonyLib.FileLog.Reset%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L322">View Source</a>
+    <a href="https://github.com/pardeike/Harmony/blob/master/Harmony/Tools/FileLog.cs/#L340">View Source</a>
   </span>
   <a id="HarmonyLib_FileLog_Reset_" data-uid="HarmonyLib.FileLog.Reset*"></a>
   <h4 id="HarmonyLib_FileLog_Reset" data-uid="HarmonyLib.FileLog.Reset">Reset()</h4>
