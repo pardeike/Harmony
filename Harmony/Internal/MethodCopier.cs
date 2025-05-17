@@ -454,9 +454,8 @@ namespace HarmonyLib
 				codeInstruction.labels.Do(label => emitter.MarkLabel(label));
 
 				// start all exception blocks
-				// TODO: we ignore the resulting label because we have no way to use it
-				//
-				codeInstruction.blocks.Do(block => emitter.MarkBlockBefore(block, out var label));
+				// we ignore the resulting label because we have no way to use it
+				codeInstruction.blocks.Do(block => emitter.MarkBlockBefore(block, out var _));
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
