@@ -108,7 +108,7 @@ namespace HarmonyLib
 
 		/// <summary>Clears the type cache that <see cref="AccessTools.TypeSearch(Regex, bool)" /> uses.</summary>
 		///
-		public static void ClearTypeSearchCache() => allTypesCached = [];
+		public static void ClearTypeSearchCache() => allTypesCached = null;
 
 		/// <summary>Gets all successfully loaded types from a given assembly</summary>
 		/// <param name="assembly">The assembly</param>
