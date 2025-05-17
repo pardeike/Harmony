@@ -14,7 +14,7 @@ namespace HarmonyLib
 
 		internal MethodCreator(MethodCreatorConfig config)
 		{
-			if (config.original is null) // TODO move this to the caller of MethodCreator()
+			if (config.original is null)
 				throw new ArgumentNullException("config.original");
 			this.config = config;
 			if (config.debug)

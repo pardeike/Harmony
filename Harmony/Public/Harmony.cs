@@ -66,7 +66,7 @@ namespace HarmonyLib
 
 			Id = id;
 
-			// TODO: enable to switch to building methods with CECIL
+			// FOR TESTING: enable switch to building methods with CECIL
 			// Switches.SetSwitchValue(Switches.DMDType, "cecil");
 		}
 

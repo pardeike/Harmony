@@ -768,8 +768,7 @@ namespace HarmonyLib
 		///
 		public static T[] AddRangeToArray<T>(this T[] sequence, T[] items) => [.. (sequence ?? Enumerable.Empty<T>()), .. items];
 
-		// TODO: Should these be made public?
-		// These extension methods may collide with extension methods from other libraries users may be using,
+		// NOTE: These extension methods may collide with extension methods from other libraries users may be using,
 		// just due to their general nature and naming commonality.
 		// This is also a concern for the existing public extension methods in this file,
 		// but it's too late to make such extension method internal like these.
