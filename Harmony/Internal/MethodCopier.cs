@@ -65,7 +65,7 @@ namespace HarmonyLib
 					copier.AddTranspiler(sortedTranspilers[i]);
 			}
 
-			return copier.Finalize(out var _, out var _, null);
+			return copier.Finalize(out _, out _, null);
 		}
 	}
 

@@ -605,7 +605,7 @@ namespace HarmonyLib
 				codeInstruction.labels.Do(label => emitter.MarkLabel(label));
 
 				// start all exception blocks
-				codeInstruction.blocks.Do(block => emitter.MarkBlockBefore(block, out var _));
+				codeInstruction.blocks.Do(block => emitter.MarkBlockBefore(block, out _));
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
