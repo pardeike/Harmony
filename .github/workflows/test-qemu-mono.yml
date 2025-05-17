@@ -71,7 +71,7 @@ jobs:
             ./dotnet-install.sh --channel LTS --no-path > /dev/null;
             ./dotnet-install.sh --channel STS --no-path > /dev/null;
           run: |
-            LD_LIBRARY_PATH="/usr/local/lib"  /root/.dotnet/dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
+            LD_LIBRARY_PATH="/usr/local/lib"  /root/.dotnet/dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
 
       - name: Upload Test Result
         uses: ./.github/actions/test-upload-result

@@ -51,7 +51,7 @@ namespace HarmonyLib
 		internal void AddLocal(string name, LocalBuilder local) => localVariables.Add(name, local);
 		internal LocalBuilder GetLocal(InjectionType type) => localVariables[type];
 		internal LocalBuilder GetLocal(string name) => localVariables[name];
-		internal bool HasLocal(string name) => localVariables.TryGetValue(name, out var _);
+		internal bool HasLocal(string name) => localVariables.TryGetValue(name, out _);
 
 		internal LocalBuilder DeclareLocal(Type type, bool isPinned = false) => il.DeclareLocal(type, isPinned);
 		internal Label DefineLabel() => il.DefineLabel();

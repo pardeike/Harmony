@@ -65,7 +65,7 @@ runs:
       if: ${{inputs.manual_build == 'true'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          dotnet build Harmony.sln -c ${{inputs.build_configuration}} -f $target_framework;
+          dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework;
         }
       shell: pwsh
 
@@ -78,7 +78,7 @@ runs:
         $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
     
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" --framework:$target_framework ${{steps.test-args.outputs.vstest}} -- ${{steps.test-args.outputs.run_settings_args}};
+          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" --framework:$target_framework ${{steps.test-args.outputs.vstest}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
       
@@ -86,7 +86,7 @@ runs:
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
 
@@ -105,7 +105,7 @@ runs:
             $dotnet = '/Users/runner/.dotnet/dotnet';
           }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-            & $dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
           }
         shell: pwsh
 

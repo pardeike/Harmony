@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>8ecc3919-9f65-4a39-b57e-e99a3837dcd0</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>HarmonyLib</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Extras\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ForwardingAttributes\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Public\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tools\*.cs" />
+  </ItemGroup>
+</Project>

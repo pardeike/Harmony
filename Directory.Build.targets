@@ -1,0 +1,9 @@
+<Project>
+	<ItemGroup Condition="!$(IsNET5OrGreater)">
+		<Compile Remove="**\*.net5.cs" />
+		<Compile Remove="**\*.net6.cs" />
+		<Compile Remove="**\*.net7.cs" />
+		<Compile Remove="**\*.net8.cs" />
+		<Compile Remove="**\*.net9.cs" />
+	</ItemGroup>
+</Project>
