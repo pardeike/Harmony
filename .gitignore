@@ -202,3 +202,4 @@ ModelManifest.xml
 /Harmony/Documentation/api/*.html
 /Harmony/Documentation/api/*.yml
 /Harmony/Documentation/Documentation.dll
+.DS_Store
