@@ -409,43 +409,30 @@ namespace HarmonyLib
 
 		IEnumerable<CodeInstruction> AddInfixes(IEnumerable<CodeInstruction> instructions)
 		{
-			var callInstructions = instructions
-				.Where(ins => ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt)
-				.Where(ins => ins.operand is MethodInfo method && method != null)
-				.ToList();
-			var callsGroupedByOperand = callInstructions
-				.GroupBy(ins => (MethodInfo)ins.operand)
-				.ToDictionary(g => g.Key, g => g.ToArray());
-
-			var replacements = new Dictionary<CodeInstruction, IEnumerable<CodeInstruction>>();
-			foreach (var group in callsGroupedByOperand)
+			var callGroups = instructions
+			.Where(ins => ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt)
+			.Where(ins => ins.operand is MethodInfo)
+			.GroupBy(ins => (MethodInfo)ins.operand);
+			
+			var replacements = new Dictionary<CodeInstruction, CodeInstruction[]>();
+			foreach (var (innerMethod, calls) in callGroups.Select(g => (g.Key, Calls: g.ToList())))
 			{
-				var innerMethod = group.Key;
-				var groupList = group.Value;
-				var total = groupList.Length;
-				for (var i = 0; i < total; i++)
-				{
-					var callInstruction = groupList[i];
-
-					var sortedInnerPrefixes = config.innerprefixes.FilterAndSort(innerMethod, i + 1, total, config.debug);
-					var sortedInnerPostfixes = config.innerpostfixes.FilterAndSort(innerMethod, i + 1, total, config.debug);
-
-					var replacement = new List<CodeInstruction>();
-					foreach (var fix in sortedInnerPrefixes) replacement.AddRange(fix.Apply(config, true));
-					replacement.Add(callInstruction);
-					foreach (var fix in sortedInnerPostfixes) replacement.AddRange(fix.Apply(config, false));
-					replacements[callInstruction] = replacement;
-				}
-			}
-
-			foreach (var instruction in instructions)
+			var total = calls.Count;
+			for (var i = 0; i < total; i++)
 			{
-				if (replacements.TryGetValue(instruction, out var replacementList))
-					foreach (var replacement in replacementList)
-						yield return replacement;
-				else
-					yield return instruction;
+			var callInstruction = calls[i];
+			
+			var prefixes = config.innerprefixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
+			.SelectMany(fix => fix.Apply(config, true));
+			var postfixes = config.innerpostfixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
+			.SelectMany(fix => fix.Apply(config, false));
+			
+			replacements[callInstruction] = [.. prefixes, callInstruction, .. postfixes];
 			}
+			}
+			
+			return instructions.SelectMany(instruction =>
+			replacements.TryGetValue(instruction, out var list) ? list : [instruction]);
 		}
 	}
 }
