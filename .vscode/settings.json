@@ -1,0 +1,4 @@
+{
+	"omnisharp.dotnetPath": "/usr/local/share/dotnet/x64",
+	"dotnetAcquisitionExtension.existingDotnetPath": ["/usr/local/share/dotnet/x64"]
+}
