@@ -409,39 +409,39 @@ namespace HarmonyLib
 
 		IEnumerable<CodeInstruction> AddInfixes(IEnumerable<CodeInstruction> instructions)
 		{
-			var activeInnerPrefixes = config.innerprefixes.Where(fix => fix.OuterMethod == config.original).ToArray();
-			var activeInnerPostfixes = config.innerpostfixes.Where(fix => fix.OuterMethod == config.original).ToArray();
-
 			var callInstructions = instructions
 				.Where(ins => ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt)
 				.Where(ins => ins.operand is MethodInfo method && method != null)
 				.ToList();
-			var total = callInstructions.Count;
+			var callsGroupedByOperand = callInstructions
+				.GroupBy(ins => (MethodInfo)ins.operand)
+				.ToDictionary(g => g.Key, g => g.ToArray());
 
 			var replacements = new Dictionary<CodeInstruction, IEnumerable<CodeInstruction>>();
-			foreach (var callInstruction in callInstructions)
+			foreach (var group in callsGroupedByOperand)
 			{
-				var innerMethod = callInstruction.operand as MethodInfo;
-				var matchingCallInstruction = callInstructions.Where(ins => ins.Calls(innerMethod)).ToList();
-				var index = matchingCallInstruction.IndexOf(callInstruction) + 1;
+				var innerMethod = group.Key;
+				var groupList = group.Value;
+				var total = groupList.Length;
+				for (var i = 0; i < total; i++)
+				{
+					var callInstruction = groupList[i];
 
-				var matchingInnerprefixes = activeInnerPrefixes.Where(fix => fix.Matches(innerMethod, index, total));
-				var matchingInnerpostfixes = activeInnerPostfixes.Where(fix => fix.Matches(innerMethod, index, total));
+					var sortedInnerPrefixes = config.innerprefixes.FilterAndSort(innerMethod, i + 1, total, config.debug);
+					var sortedInnerPostfixes = config.innerpostfixes.FilterAndSort(innerMethod, i + 1, total, config.debug);
 
-				var sortedInnerPrefixes = new PatchSorter([.. matchingInnerprefixes.Select(fix => fix.patch)], config.debug).Sort().Select(p => new Infix(p)).ToArray();
-				var sortedInnerPostfixes = new PatchSorter([.. matchingInnerpostfixes.Select(fix => fix.patch)], config.debug).Sort().Select(p => new Infix(p)).ToArray();
-
-				var replacement = new List<CodeInstruction>();
-				foreach(var fix in sortedInnerPrefixes) replacement.AddRange(fix.Apply(config, true));
-				replacement.Add(callInstruction);
-				foreach (var fix in sortedInnerPostfixes) replacement.AddRange(fix.Apply(config, false));
-				replacements[callInstruction] = replacement;
+					var replacement = new List<CodeInstruction>();
+					foreach (var fix in sortedInnerPrefixes) replacement.AddRange(fix.Apply(config, true));
+					replacement.Add(callInstruction);
+					foreach (var fix in sortedInnerPostfixes) replacement.AddRange(fix.Apply(config, false));
+					replacements[callInstruction] = replacement;
+				}
 			}
 
-			foreach(var instruction in instructions)
+			foreach (var instruction in instructions)
 			{
-				if (replacements.ContainsKey(instruction))
-					foreach (var replacement in replacements[instruction])
+				if (replacements.TryGetValue(instruction, out var replacementList))
+					foreach (var replacement in replacementList)
 						yield return replacement;
 				else
 					yield return instruction;

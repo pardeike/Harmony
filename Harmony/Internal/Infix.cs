@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using static HarmonyLib.Code;
@@ -33,5 +34,17 @@ namespace HarmonyLib
 			_ = config;
 			yield return Nop[isPrefix ? "inner-prefix" : "inner-postfix"];
 		}
+	}
+
+	internal static class InfixExtensions
+	{
+		internal static Infix[] FilterAndSort(this IEnumerable<Infix> infixes, MethodInfo innerMethod, int index, int total, bool debug)
+			=> [.. new PatchSorter([..
+					infixes
+						.Where(fix => fix.Matches(innerMethod, index, total))
+						.Select(fix => fix.patch)
+				], debug)
+				.Sort()
+				.Select(p => new Infix(p))];
 	}
 }
