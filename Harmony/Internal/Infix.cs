@@ -23,7 +23,7 @@ namespace HarmonyLib
 			foreach (var pos in Positions)
 			{
 				if (pos > 0 && pos == index) return true;
-				if (pos < 0 && pos == index - total) return true;
+				if (pos < 0 && index == total + pos + 1) return true;
 			}
 			return false;
 		}
