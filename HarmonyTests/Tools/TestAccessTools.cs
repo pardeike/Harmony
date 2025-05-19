@@ -125,6 +125,25 @@ namespace HarmonyLibTests.Tools
 			Test_AccessTools_TypeByName_CurrentAssemblies();
 		}
 
+		[Test, NonParallelizable]
+		public void Test_AccessTools_TypeSearch_CacheInvalidation()
+		{
+			AccessTools.ClearTypeSearchCache();
+
+			var search = new Regex("HarmonyTestsDummyAssemblyD\\.Class1$");
+			Assert.Null(AccessTools.TypeSearch(search));
+
+			var dummy = DefineAssembly("HarmonyTestsDummyAssemblyD",
+					  module => module.DefineType("HarmonyTestsDummyAssemblyD.Class1", TypeAttributes.Public));
+			SaveAssembly(dummy);
+			TestTools.RunInIsolationContext(ctx => ctx.AssemblyLoad("HarmonyTestsDummyAssemblyD"));
+
+			Assert.Null(AccessTools.TypeSearch(search));
+
+			AccessTools.ClearTypeSearchCache();
+			Assert.NotNull(AccessTools.TypeSearch(search));
+		}
+
 		static void TestTypeByNameWithInvalidAssembly(ITestIsolationContext context)
 		{
 			// HarmonyTestsDummyAssemblyB has a dependency on HarmonyTestsDummyAssemblyA, but we've ensured that
