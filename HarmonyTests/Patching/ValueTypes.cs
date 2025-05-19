@@ -54,7 +54,7 @@ namespace HarmonyLibTests.Patching
 
 			var harmonyInstance = new Harmony("test");
 			Assert.NotNull(harmonyInstance);
-			
+
 			var result = harmonyInstance.Patch(originalMethod, null, new HarmonyMethod(postfix));
 			Assert.NotNull(result);
 
@@ -80,7 +80,7 @@ namespace HarmonyLibTests.Patching
 
 			var harmonyInstance = new Harmony("test");
 			Assert.NotNull(harmonyInstance);
-			
+
 			var result = harmonyInstance.Patch(originalMethod, null, new HarmonyMethod(postfix));
 			Assert.NotNull(result);
 

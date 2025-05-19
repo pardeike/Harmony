@@ -52,10 +52,13 @@ namespace HarmonyLibTests.Extras
 
 		internal static void PatchTarget()
 		{
-			try {
+			try
+			{
 				CheckStackTraceFor(AccessTools.Method(typeof(RetrieveOriginalMethod), nameof(PatchTarget))); // call this from within PatchTarget
 				throw new Exception();
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				_ = e;
 			}
 		}
@@ -65,13 +68,16 @@ namespace HarmonyLibTests.Extras
 		{
 		}
 
-		class NestedClass {
+		class NestedClass
+		{
 			public NestedClass(int i)
 			{
-				try {
+				try
+				{
 					CheckStackTraceFor(AccessTools.Constructor(typeof(NestedClass), [typeof(int)]));
 					throw new Exception();
-				} catch (Exception e)
+				}
+				catch (Exception e)
 				{
 					_ = e;
 				}

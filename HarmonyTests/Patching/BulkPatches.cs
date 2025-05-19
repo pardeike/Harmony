@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NUnit.Framework;
 
 namespace HarmonyLibTests.Patching

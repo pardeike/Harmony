@@ -413,24 +413,24 @@ namespace HarmonyLib
 			.Where(ins => ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt)
 			.Where(ins => ins.operand is MethodInfo)
 			.GroupBy(ins => (MethodInfo)ins.operand);
-			
+
 			var replacements = new Dictionary<CodeInstruction, CodeInstruction[]>();
 			foreach (var (innerMethod, calls) in callGroups.Select(g => (g.Key, Calls: g.ToList())))
 			{
-			var total = calls.Count;
-			for (var i = 0; i < total; i++)
-			{
-			var callInstruction = calls[i];
-			
-			var prefixes = config.innerprefixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
-			.SelectMany(fix => fix.Apply(config, true));
-			var postfixes = config.innerpostfixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
-			.SelectMany(fix => fix.Apply(config, false));
-			
-			replacements[callInstruction] = [.. prefixes, callInstruction, .. postfixes];
+				var total = calls.Count;
+				for (var i = 0; i < total; i++)
+				{
+					var callInstruction = calls[i];
+
+					var prefixes = config.innerprefixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
+					.SelectMany(fix => fix.Apply(config, true));
+					var postfixes = config.innerpostfixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
+					.SelectMany(fix => fix.Apply(config, false));
+
+					replacements[callInstruction] = [.. prefixes, callInstruction, .. postfixes];
+				}
 			}
-			}
-			
+
 			return instructions.SelectMany(instruction =>
 			replacements.TryGetValue(instruction, out var list) ? list : [instruction]);
 		}
