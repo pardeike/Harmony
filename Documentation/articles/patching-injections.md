@@ -41,7 +41,7 @@ To access or change one or several of the original methods arguments, simply rep
 
 ### __originalMethod
 
-To allow patches to identify on which method they are attachted you can inject the original methods MethodBase by using an argument called **`__originalMethod`**.
+To allow patches to identify on which method they are attached to, you can inject the original methods MethodBase by using an argument called **`__originalMethod`**.
 
 ![note] **You cannot call the original method with that**. The value is only for conditional code in your patch that can selectively run if the patch is applied to multiple methods. The original does not exist after patching and this will point to the patched version.
 
