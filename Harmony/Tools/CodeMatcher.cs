@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -20,6 +19,12 @@ namespace HarmonyLib
 
 		private readonly ILGenerator generator;
 		private readonly List<CodeInstruction> codes = [];
+
+		private enum MatchPosition
+		{
+			Start,
+			End
+		}
 
 		/// <summary>The current position</summary>
 		/// <value>The index or -1 if out of bounds</value>
@@ -127,6 +132,19 @@ namespace HarmonyLib
 				lastMatchCall = lastMatchCall,
 				errorHandler = errorHandler
 			};
+		}
+
+		/// <summary>Resets the current position to -1 and clears last matches and errors</summary>
+		/// <param name="atFirstInstruction">If true, sets position to 0, otherwise sets it to -1</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher Reset(bool atFirstInstruction = true)
+		{
+			Pos = atFirstInstruction ? 0 : -1;
+			lastMatches.Clear();
+			lastError = null;
+			lastMatchCall = null;
+			return this;
 		}
 
 		/// <summary>Gets instructions at the current position</summary>
@@ -240,7 +258,7 @@ namespace HarmonyLib
 			var tempPos = Pos;
 			try
 			{
-				if (Match(matches, direction, false, false).IsInvalid)
+				if (Match(matches, direction, MatchPosition.Start, false).IsInvalid)
 				{
 					HandleException(explanation + " - Match failed");
 					return;
@@ -743,7 +761,7 @@ namespace HarmonyLib
 		/// <param name="offset">The offset</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher Advance(int offset)
+		public CodeMatcher Advance(int offset = 1)
 		{
 			Pos += offset;
 			if (IsValid == false)
@@ -794,49 +812,49 @@ namespace HarmonyLib
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchStartForward(params CodeMatch[] matches) => Match(matches, 1, false, false);
+		public CodeMatcher MatchStartForward(params CodeMatch[] matches) => Match(matches, 1, MatchPosition.Start, false);
 
 		/// <summary>Prepares matching forward and advancing position to beginning of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher PrepareMatchStartForward(params CodeMatch[] matches) => Match(matches, 1, false, true);
+		public CodeMatcher PrepareMatchStartForward(params CodeMatch[] matches) => Match(matches, 1, MatchPosition.Start, true);
 
 		/// <summary>Matches forward and advances position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchEndForward(params CodeMatch[] matches) => Match(matches, 1, true, false);
+		public CodeMatcher MatchEndForward(params CodeMatch[] matches) => Match(matches, 1, MatchPosition.End, false);
 
 		/// <summary>Prepares matching forward and advancing position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher PrepareMatchEndForward(params CodeMatch[] matches) => Match(matches, 1, true, true);
+		public CodeMatcher PrepareMatchEndForward(params CodeMatch[] matches) => Match(matches, 1, MatchPosition.End, true);
 
 		/// <summary>Matches backwards and moves the position to beginning of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, false, false);
+		public CodeMatcher MatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, MatchPosition.Start, false);
 
 		/// <summary>Prepares matching backwards and reversing position to beginning of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher PrepareMatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, false, true);
+		public CodeMatcher PrepareMatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, MatchPosition.Start, true);
 
 		/// <summary>Matches backwards and moves the position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher MatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, true, false);
+		public CodeMatcher MatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, MatchPosition.End, false);
 
 		/// <summary>Prepares matching backwards and reversing position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
-		public CodeMatcher PrepareMatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, true, true);
+		public CodeMatcher PrepareMatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, MatchPosition.End, true);
 
 		/// <summary>Removes instructions from the current position forward until a predicate is matched. The matched instruction is not removed</summary>
 		/// <param name="predicate">A function to test each instruction for a match</param>
@@ -937,7 +955,7 @@ namespace HarmonyLib
 			return this;
 		}
 
-		private CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd, bool prepareOnly)
+		private CodeMatcher Match(CodeMatch[] matches, int direction, MatchPosition mode, bool prepareOnly)
 		{
 			lastMatchCall = delegate ()
 			{
@@ -945,7 +963,7 @@ namespace HarmonyLib
 				{
 					if (MatchSequence(Pos, matches))
 					{
-						if (useEnd)
+						if (mode == MatchPosition.End)
 							Pos += matches.Length - 1;
 						break;
 					}
