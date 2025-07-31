@@ -125,7 +125,7 @@ namespace HarmonyLibTests.Tools
 			Test_AccessTools_TypeByName_CurrentAssemblies();
 		}
 
-		[Test, NonParallelizable]
+		[Test]
 		public void Test_AccessTools_TypeSearch_CacheInvalidation()
 		{
 			AccessTools.ClearTypeSearchCache();
@@ -135,7 +135,18 @@ namespace HarmonyLibTests.Tools
 
 			var dummy = DefineAssembly("HarmonyTestsDummyAssemblyD", module => module.DefineType("HarmonyTestsDummyAssemblyD.Class1", TypeAttributes.Public));
 			SaveAssembly(dummy);
-			TestTools.RunInIsolationContext(ctx => ctx.AssemblyLoad("HarmonyTestsDummyAssemblyD"));
+
+			// ask the parent domain to load it so that it persists after the context is unloaded.
+			TestTools.RunInIsolationContext(ctx => ctx.ParentCallback<string>(name =>
+			{
+#if NETCOREAPP
+				// On .NET Core, load the DLL from its path into the default AssemblyLoadContext
+				Assembly.LoadFrom(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
+#else
+				// On .NET Framework, Assembly.Load will load from the probing path (BaseDirectory)
+				Assembly.Load(name);
+#endif
+			}, "HarmonyTestsDummyAssemblyD"));
 
 			Assert.Null(AccessTools.TypeSearch(search));
 
