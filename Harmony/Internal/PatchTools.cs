@@ -147,12 +147,105 @@ namespace HarmonyLib
 						return AccessTools.EnumeratorMoveNext(enumMethod);
 
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
-					case MethodType.Async:
+                                       case MethodType.Async:
+                                               if (string.IsNullOrEmpty(attr.methodName))
+                                                       return null;
+                                               var asyncMethod = AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
+                                               return AccessTools.AsyncMoveNext(asyncMethod);
+#endif
+					case MethodType.Finalizer:
+						return AccessTools.DeclaredFinalizer(attr.declaringType);
+
+					case MethodType.EventAdd:
 						if (string.IsNullOrEmpty(attr.methodName))
 							return null;
-						var asyncMethod = AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes);
-						return AccessTools.AsyncMoveNext(asyncMethod);
-#endif
+						return AccessTools.DeclaredEventAdder(attr.declaringType, attr.methodName);
+
+					case MethodType.EventRemove:
+						if (string.IsNullOrEmpty(attr.methodName))
+							return null;
+						return AccessTools.DeclaredEventRemover(attr.declaringType, attr.methodName);
+
+					case MethodType.OperatorImplicit:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Implicit", attr.argumentTypes);
+
+					case MethodType.OperatorExplicit:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Explicit", attr.argumentTypes);
+
+					case MethodType.OperatorUnaryPlus:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_UnaryPlus", attr.argumentTypes);
+
+					case MethodType.OperatorUnaryNegation:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_UnaryNegation", attr.argumentTypes);
+
+					case MethodType.OperatorLogicalNot:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_LogicalNot", attr.argumentTypes);
+
+					case MethodType.OperatorOnesComplement:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_OnesComplement", attr.argumentTypes);
+
+					case MethodType.OperatorIncrement:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Increment", attr.argumentTypes);
+
+					case MethodType.OperatorDecrement:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Decrement", attr.argumentTypes);
+
+					case MethodType.OperatorTrue:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_True", attr.argumentTypes);
+
+					case MethodType.OperatorFalse:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_False", attr.argumentTypes);
+
+					case MethodType.OperatorAddition:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Addition", attr.argumentTypes);
+
+					case MethodType.OperatorSubtraction:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Subtraction", attr.argumentTypes);
+
+					case MethodType.OperatorMultiply:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Multiply", attr.argumentTypes);
+
+					case MethodType.OperatorDivision:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Division", attr.argumentTypes);
+
+					case MethodType.OperatorModulus:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Modulus", attr.argumentTypes);
+
+					case MethodType.OperatorBitwiseAnd:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_BitwiseAnd", attr.argumentTypes);
+
+					case MethodType.OperatorBitwiseOr:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_BitwiseOr", attr.argumentTypes);
+
+					case MethodType.OperatorExclusiveOr:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_ExclusiveOr", attr.argumentTypes);
+
+					case MethodType.OperatorLeftShift:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_LeftShift", attr.argumentTypes);
+
+					case MethodType.OperatorRightShift:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_RightShift", attr.argumentTypes);
+
+					case MethodType.OperatorEquality:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Equality", attr.argumentTypes);
+
+					case MethodType.OperatorInequality:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Inequality", attr.argumentTypes);
+
+					case MethodType.OperatorGreaterThan:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_GreaterThan", attr.argumentTypes);
+
+					case MethodType.OperatorLessThan:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_LessThan", attr.argumentTypes);
+
+					case MethodType.OperatorGreaterThanOrEqual:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_GreaterThanOrEqual", attr.argumentTypes);
+
+					case MethodType.OperatorLessThanOrEqual:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_LessThanOrEqual", attr.argumentTypes);
+
+					case MethodType.OperatorComma:
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_Comma", attr.argumentTypes);
 				}
 			}
 			catch (AmbiguousMatchException ex)

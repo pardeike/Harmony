@@ -498,6 +498,130 @@ namespace HarmonyLib
 		///
 		public static MethodInfo IndexerSetter(Type type, Type[] parameters = null) => Indexer(type, parameters)?.GetSetMethod(true);
 
+		/// <summary>Gets the reflection information for a directly declared event</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>An event or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static EventInfo DeclaredEvent(Type type, string name)
+		{
+			if (type is null)
+			{
+				FileLog.Debug("AccessTools.DeclaredEvent: type is null");
+				return null;
+			}
+			if (string.IsNullOrEmpty(name))
+			{
+				FileLog.Debug("AccessTools.DeclaredEvent: name is null/empty");
+				return null;
+			}
+			var eventInfo = type.GetEvent(name, allDeclared);
+			if (eventInfo is null)
+				FileLog.Debug($"AccessTools.DeclaredEvent: Could not find event for type {type} and name {name}");
+			return eventInfo;
+		}
+
+		/// <summary>Gets the reflection information for a directly declared event</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>An event or null when the event cannot be found</returns>
+		///
+		public static EventInfo DeclaredEvent(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			var eventInfo = info.type.GetEvent(info.name, allDeclared);
+			if (eventInfo is null)
+				FileLog.Debug($"AccessTools.DeclaredEvent: Could not find event for type {info.type} and name {info.name}");
+			return eventInfo;
+		}
+
+		/// <summary>Gets the reflection information for an event by searching the type and all its super types</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>An event or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static EventInfo Event(Type type, string name)
+		{
+			if (type is null)
+			{
+				FileLog.Debug("AccessTools.Event: type is null");
+				return null;
+			}
+			if (string.IsNullOrEmpty(name))
+			{
+				FileLog.Debug("AccessTools.Event: name is null/empty");
+				return null;
+			}
+			var eventInfo = FindIncludingBaseTypes(type, t => t.GetEvent(name, all));
+			if (eventInfo is null)
+				FileLog.Debug($"AccessTools.Event: Could not find event for type {type} and name {name}");
+			return eventInfo;
+		}
+
+		/// <summary>Gets the reflection information for an event by searching the type and all its super types</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>An event or null when the event cannot be found</returns>
+		///
+		public static EventInfo Event(string typeColonName)
+		{
+			var info = Tools.TypColonName(typeColonName);
+			var eventInfo = FindIncludingBaseTypes(info.type, t => t.GetEvent(info.name, all));
+			if (eventInfo is null)
+				FileLog.Debug($"AccessTools.Event: Could not find event for type {info.type} and name {info.name}");
+			return eventInfo;
+		}
+
+		/// <summary>Gets the reflection information for the add method of a directly declared event</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo DeclaredEventAdder(Type type, string name) => DeclaredEvent(type, name)?.GetAddMethod(true);
+
+		/// <summary>Gets the reflection information for the add method of a directly declared event</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when the event cannot be found</returns>
+		///
+		public static MethodInfo DeclaredEventAdder(string typeColonName) => DeclaredEvent(typeColonName)?.GetAddMethod(true);
+
+		/// <summary>Gets the reflection information for the add method of an event by searching the type and all its super types</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo EventAdder(Type type, string name) => Event(type, name)?.GetAddMethod(true);
+
+		/// <summary>Gets the reflection information for the add method of an event by searching the type and all its super types</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when the event cannot be found</returns>
+		///
+		public static MethodInfo EventAdder(string typeColonName) => Event(typeColonName)?.GetAddMethod(true);
+
+		/// <summary>Gets the reflection information for the remove method of a directly declared event</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo DeclaredEventRemover(Type type, string name) => DeclaredEvent(type, name)?.GetRemoveMethod(true);
+
+		/// <summary>Gets the reflection information for the remove method of a directly declared event</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when the event cannot be found</returns>
+		///
+		public static MethodInfo DeclaredEventRemover(string typeColonName) => DeclaredEvent(typeColonName)?.GetRemoveMethod(true);
+
+		/// <summary>Gets the reflection information for the remove method of an event by searching the type and all its super types</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo EventRemover(Type type, string name) => Event(type, name)?.GetRemoveMethod(true);
+
+		/// <summary>Gets the reflection information for the remove method of an event by searching the type and all its super types</summary>
+		/// <param name="typeColonName">The member in the form <c>TypeFullName:MemberName</c>, where TypeFullName matches the form recognized by <a href="https://docs.microsoft.com/en-us/dotnet/api/system.type.gettype">Type.GetType</a> like <c>Some.Namespace.Type</c>.</param>
+		/// <returns>A method or null when the event cannot be found</returns>
+		///
+		public static MethodInfo EventRemover(string typeColonName) => Event(typeColonName)?.GetRemoveMethod(true);
+
 		/// <summary>Gets the reflection information for a directly declared method</summary>
 		/// <param name="type">The class/type where the method is declared</param>
 		/// <param name="name">The name of the method (case sensitive)</param>
@@ -650,8 +774,8 @@ namespace HarmonyLib
 		/// <param name="method">Async method that creates the state machine internally</param>
 		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
 		///
-		public static MethodInfo AsyncMoveNext(MethodBase method)
-		{
+                public static MethodInfo AsyncMoveNext(MethodBase method)
+                {
 			if (method is null)
 			{
 				FileLog.Debug("AccessTools.AsyncMoveNext: method is null");
@@ -673,9 +797,21 @@ namespace HarmonyLib
 				return null;
 			}
 
-			return asyncMethodBody;
-		}
+                        return asyncMethodBody;
+                }
 #endif
+
+		/// <summary>Gets the reflection information for a finalizer</summary>
+		/// <param name="type">The class/type that defines the finalizer</param>
+		/// <returns>A method or null when type is null or when the finalizer cannot be found</returns>
+		///
+		public static MethodInfo Finalizer(Type type) => Method(type, "Finalize");
+
+		/// <summary>Gets the reflection information for a directly declared finalizer</summary>
+		/// <param name="type">The class/type that defines the finalizer</param>
+		/// <returns>A method or null when type is null or when the finalizer cannot be found</returns>
+		///
+		public static MethodInfo DeclaredFinalizer(Type type) => DeclaredMethod(type, "Finalize");
 
 		/// <summary>Gets the names of all method that are declared in a type</summary>
 		/// <param name="type">The declaring class/type</param>

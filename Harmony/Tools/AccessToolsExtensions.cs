@@ -141,6 +141,60 @@ namespace HarmonyLib
 		///
 		public static MethodInfo IndexerSetter(this Type type, Type[] parameters = null) => AccessTools.IndexerSetter(type, parameters);
 
+		/// <summary>Gets the reflection information for a directly declared event</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>An event or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static EventInfo DeclaredEvent(this Type type, string name) => AccessTools.DeclaredEvent(type, name);
+
+		/// <summary>Gets the reflection information for an event by searching the type and all its super types</summary>
+		/// <param name="type">The class/type</param>
+		/// <param name="name">The name</param>
+		/// <returns>An event or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static EventInfo Event(this Type type, string name) => AccessTools.Event(type, name);
+
+		/// <summary>Gets the reflection information for the add method of a directly declared event</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo DeclaredEventAdder(this Type type, string name) => AccessTools.DeclaredEventAdder(type, name);
+
+		/// <summary>Gets the reflection information for the add method of an event by searching the type and all its super types</summary>
+		/// <param name="type">The class/type</param>
+		/// <param name="name">The name</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo EventAdder(this Type type, string name) => AccessTools.EventAdder(type, name);
+
+		/// <summary>Gets the reflection information for the remove method of a directly declared event</summary>
+		/// <param name="type">The class/type where the event is declared</param>
+		/// <param name="name">The name of the event (case sensitive)</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo DeclaredEventRemover(this Type type, string name) => AccessTools.DeclaredEventRemover(type, name);
+
+		/// <summary>Gets the reflection information for the remove method of an event by searching the type and all its super types</summary>
+		/// <param name="type">The class/type</param>
+		/// <param name="name">The name</param>
+		/// <returns>A method or null when type/name is null or when the event cannot be found</returns>
+		///
+		public static MethodInfo EventRemover(this Type type, string name) => AccessTools.EventRemover(type, name);
+
+		/// <summary>Gets the reflection information for a finalizer</summary>
+		/// <param name="type">The class/type that defines the finalizer</param>
+		/// <returns>A method or null when type is null or when the finalizer cannot be found</returns>
+		///
+		public static MethodInfo Finalizer(this Type type) => AccessTools.Finalizer(type);
+
+		/// <summary>Gets the reflection information for a directly declared finalizer</summary>
+		/// <param name="type">The class/type that defines the finalizer</param>
+		/// <returns>A method or null when type is null or when the finalizer cannot be found</returns>
+		///
+		public static MethodInfo DeclaredFinalizer(this Type type) => AccessTools.DeclaredFinalizer(type);
+
 		/// <summary>Gets the reflection information for a directly declared method</summary>
 		/// <param name="type">The class/type where the method is declared</param>
 		/// <param name="name">The name of the method (case sensitive)</param>
