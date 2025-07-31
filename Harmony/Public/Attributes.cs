@@ -8,21 +8,81 @@ namespace HarmonyLib
 	public enum MethodType
 	{
 		/// <summary>This is a normal method</summary>
-		Normal,
+		Normal = 0,
 		/// <summary>This is a getter</summary>
-		Getter,
+		Getter = 1,
 		/// <summary>This is a setter</summary>
-		Setter,
+		Setter = 2,
 		/// <summary>This is a constructor</summary>
-		Constructor,
+		Constructor = 3,
 		/// <summary>This is a static constructor</summary>
-		StaticConstructor,
+		StaticConstructor = 4,
 		/// <summary>This targets the MoveNext method of the enumerator result, that actually contains the method's implementation</summary>
-		Enumerator,
+		Enumerator = 5,
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 		/// <summary>This targets the MoveNext method of the async state machine, that actually contains the method's implementation</summary>
-		Async
+		Async = 6,
 #endif
+		/// <summary>Finalize</summary>
+		Finalizer = 7,
+		/// <summary>This is a add event method</summary>
+		EventAdd = 8,
+		/// <summary>This is a remove event method</summary>
+		EventRemove = 9,
+		/// <summary>This is a op_Implicit</summary>
+		OperatorImplicit = 10,
+		/// <summary>This is a op_Explicit</summary>
+		OperatorExplicit = 11,
+		/// <summary>This is a op_UnaryPlus</summary>
+		OperatorUnaryPlus = 12,
+		/// <summary>This is a op_UnaryNegation</summary>
+		OperatorUnaryNegation = 13,
+		/// <summary>This is a op_LogicalNot</summary>
+		OperatorLogicalNot = 14,
+		/// <summary>This is a op_OnesComplement</summary>
+		OperatorOnesComplement = 15,
+		/// <summary>This is a op_Increment</summary>
+		OperatorIncrement = 16,
+		/// <summary>This is a op_Decrement</summary>
+		OperatorDecrement = 17,
+		/// <summary>This is a op_True</summary>
+		OperatorTrue = 18,
+		/// <summary>This is a op_False</summary>
+		OperatorFalse = 19,
+		/// <summary>This is a op_Addition</summary>
+		OperatorAddition = 20,
+		/// <summary>This is a op_Subtraction</summary>
+		OperatorSubtraction = 21,
+		/// <summary>This is a op_Multiply</summary>
+		OperatorMultiply = 22,
+		/// <summary>This is a op_Division</summary>
+		OperatorDivision = 23,
+		/// <summary>This is a op_Modulus</summary>
+		OperatorModulus = 24,
+		/// <summary>This is a op_BitwiseAnd</summary>
+		OperatorBitwiseAnd = 25,
+		/// <summary>This is a op_BitwiseOr</summary>
+		OperatorBitwiseOr = 26,
+		/// <summary>This is a op_ExclusiveOr</summary>
+		OperatorExclusiveOr = 27,
+		/// <summary>This is a op_LeftShift</summary>
+		OperatorLeftShift = 28,
+		/// <summary>This is a op_RightShift</summary>
+		OperatorRightShift = 29,
+		/// <summary>This is a op_Equality</summary>
+		OperatorEquality = 30,
+		/// <summary>This is a op_Inequality</summary>
+		OperatorInequality = 31,
+		/// <summary>This is a op_GreaterThan</summary>
+		OperatorGreaterThan = 32,
+		/// <summary>This is a op_LessThan</summary>
+		OperatorLessThan = 33,
+		/// <summary>This is a op_GreaterThanOrEqual</summary>
+		OperatorGreaterThanOrEqual = 34,
+		/// <summary>This is a op_LessThanOrEqual</summary>
+		OperatorLessThanOrEqual = 35,
+		/// <summary>This is a op_Comma</summary>
+		OperatorComma = 36
 	}
 
 	/// <summary>Specifies the type of argument</summary>
