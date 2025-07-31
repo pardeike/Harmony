@@ -52,14 +52,14 @@ namespace HarmonyLib
 
 		static readonly Dictionary<string, InjectionType> types = new()
 		{
-			{ INSTANCE_PARAM,        InjectionType.Instance       },
+			{ INSTANCE_PARAM, InjectionType.Instance },
 			{ ORIGINAL_METHOD_PARAM, InjectionType.OriginalMethod },
-			{ ARGS_ARRAY_VAR,        InjectionType.ArgsArray      },
-			{ RESULT_VAR,            InjectionType.Result         },
-			{ RESULT_REF_VAR,        InjectionType.ResultRef      },
-			{ STATE_VAR,             InjectionType.State          },
-			{ EXCEPTION_VAR,         InjectionType.Exception      },
-			{ RUN_ORIGINAL_VAR,      InjectionType.RunOriginal    },
+			{ ARGS_ARRAY_VAR, InjectionType.ArgsArray },
+			{ RESULT_VAR, InjectionType.Result },
+			{ RESULT_REF_VAR, InjectionType.ResultRef },
+			{ STATE_VAR, InjectionType.State },
+			{ EXCEPTION_VAR, InjectionType.Exception },
+			{ RUN_ORIGINAL_VAR, InjectionType.RunOriginal },
 		};
 
 		static InjectionType Type(string name)

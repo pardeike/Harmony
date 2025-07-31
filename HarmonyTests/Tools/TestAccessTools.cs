@@ -133,8 +133,7 @@ namespace HarmonyLibTests.Tools
 			var search = new Regex("HarmonyTestsDummyAssemblyD\\.Class1$");
 			Assert.Null(AccessTools.TypeSearch(search));
 
-			var dummy = DefineAssembly("HarmonyTestsDummyAssemblyD",
-					  module => module.DefineType("HarmonyTestsDummyAssemblyD.Class1", TypeAttributes.Public));
+			var dummy = DefineAssembly("HarmonyTestsDummyAssemblyD", module => module.DefineType("HarmonyTestsDummyAssemblyD.Class1", TypeAttributes.Public));
 			SaveAssembly(dummy);
 			TestTools.RunInIsolationContext(ctx => ctx.AssemblyLoad("HarmonyTestsDummyAssemblyD"));
 
