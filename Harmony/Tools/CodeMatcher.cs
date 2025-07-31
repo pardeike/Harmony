@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 namespace HarmonyLib
 {
 	/// <summary>A CodeInstruction matcher</summary>
-	/// 
+	///
 	public class CodeMatcher
 	{
 		private readonly ILGenerator generator;
@@ -69,7 +69,7 @@ namespace HarmonyLib
 		public ref List<ExceptionBlock> Blocks => ref codes[Pos].blocks;
 
 		/// <summary>Creates an empty code matcher</summary>
-		/// 
+		///
 		public CodeMatcher()
 		{
 		}
@@ -252,6 +252,18 @@ namespace HarmonyLib
 			_ = ThrowIfInvalid(explanation);
 			if (!stateCheckFunc(this))
 				throw new InvalidOperationException(explanation + " - Check function returned false");
+			return this;
+		}
+
+		/// <summary>Runs some code when chaining <see cref="CodeMatcher"/> at the current position</summary>
+		/// <param name="action">The <see cref="Action{CodeMatcher}"/> to run</param>
+		/// <returns>The same code matcher</returns>
+		///
+		public CodeMatcher Do(Action<CodeMatcher> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+			action(this);
 			return this;
 		}
 
@@ -657,13 +669,13 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Searches forward with a predicate and advances position</summary>
-		/// <param name="predicate">The predicate</param>
+		/// <param name="predicate">A function to test each instruction for a match</param>
 		/// <returns>The same code matcher</returns>
 		///
 		public CodeMatcher SearchForward(Func<CodeInstruction, bool> predicate) => Search(predicate, 1);
 
 		/// <summary>Searches backwards with a predicate and reverses position</summary>
-		/// <param name="predicate">The predicate</param>
+		/// <param name="predicate">A function to test each instruction for a match</param>
 		/// <returns>The same code matcher</returns>
 		///
 		public CodeMatcher SearchBackwards(Func<CodeInstruction, bool> predicate) => Search(predicate, -1);
@@ -724,6 +736,101 @@ namespace HarmonyLib
 		/// <returns>The same code matcher</returns>
 		///
 		public CodeMatcher PrepareMatchEndBackwards(params CodeMatch[] matches) => Match(matches, -1, true, true);
+
+		/// <summary>Removes instructions from the current position forward until a predicate is matched. The matched instruction is not removed</summary>
+		/// <param name="predicate">A function to test each instruction for a match</param>
+		/// <returns>The same code matcher</returns>
+		public CodeMatcher RemoveSearchForward(Func<CodeInstruction, bool> predicate)
+		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+
+			var originalPos = Pos;
+			var finder = Clone().SearchForward(predicate);
+			if (finder.IsInvalid)
+			{
+				lastError = finder.lastError;
+				SetOutOfBounds(1);
+				return this;
+			}
+
+			var end = finder.Pos - 1; // stop before the matching instruction
+			if (end >= originalPos)
+				_ = RemoveInstructionsInRange(originalPos, end);
+			return this;
+		}
+
+		/// <summary>Removes instructions from the current position backward until a predicate is matched. The matched instruction is not removed</summary>
+		/// <param name="predicate">A function to test each instruction for a match</param>
+		/// <returns>The same code matcher</returns>
+		public CodeMatcher RemoveSearchBackward(Func<CodeInstruction, bool> predicate)
+		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+
+			var originalPos = Pos;
+			var finder = Clone().SearchBackwards(predicate);
+			if (finder.IsInvalid)
+			{
+				lastError = finder.lastError;
+				SetOutOfBounds(-1);
+				return this;
+			}
+
+			var matchPos = finder.Pos;
+			var start = matchPos + 1;
+			if (originalPos >= start)
+				_ = RemoveInstructionsInRange(start, originalPos);
+			Pos = matchPos;
+			return this;
+		}
+
+		/// <summary>Removes instructions from the current position up to the next match (exclusive)</summary>
+		/// <param name="matches">Some code matches</param>
+		/// <returns>The same code matcher</returns>
+		public CodeMatcher RemoveUntilForward(params CodeMatch[] matches)
+		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+
+			var originalPos = Pos;
+			var finder = Clone().MatchStartForward(matches);
+			if (finder.IsInvalid)
+			{
+				lastError = finder.lastError;
+				SetOutOfBounds(1);
+				return this;
+			}
+
+			var end = finder.Pos - 1;
+			if (end >= originalPos)
+				_ = RemoveInstructionsInRange(originalPos, end);
+			return this;
+		}
+
+		/// <summary>Removes instructions backwards from the current position to the previous match (exclusive)</summary>
+		/// <param name="matches">Some code matches</param>
+		/// <returns>The same code matcher</returns>
+		public CodeMatcher RemoveUntilBackward(params CodeMatch[] matches)
+		{
+			if (IsInvalid)
+				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+
+			var originalPos = Pos;
+			var finder = Clone().MatchEndBackwards(matches);
+			if (finder.IsInvalid)
+			{
+				lastError = finder.lastError;
+				SetOutOfBounds(-1);
+				return this;
+			}
+
+			var start = finder.Pos;
+			if (originalPos > start)
+				_ = RemoveInstructionsInRange(start + 1, originalPos);
+			Pos = start;
+			return this;
+		}
 
 		private CodeMatcher Match(CodeMatch[] matches, int direction, bool useEnd, bool prepareOnly)
 		{
