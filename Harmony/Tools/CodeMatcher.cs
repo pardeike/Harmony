@@ -11,6 +11,13 @@ namespace HarmonyLib
 	///
 	public class CodeMatcher
 	{
+		/// <summary>Delegate for error handling</summary>
+		/// <param name="matcher">The current code matcher</param>
+		/// <param name="error">The error message</param>
+		/// <returns>True if the error should be suppressed and the matcher should continue (if possible)</returns>
+		///
+		public delegate bool ErrorHandler(CodeMatcher matcher, string error);
+
 		private readonly ILGenerator generator;
 		private readonly List<CodeInstruction> codes = [];
 
@@ -23,8 +30,31 @@ namespace HarmonyLib
 		private string lastError;
 		private delegate CodeMatcher MatchDelegate();
 		private MatchDelegate lastMatchCall;
+		private ErrorHandler errorHandler;
 
 		private void FixStart() => Pos = Math.Max(0, Pos);
+
+		private T HandleException<T>(string error, T defaultValue)
+		{
+			if (errorHandler != null)
+			{
+				if (errorHandler(this, error))
+					return defaultValue;
+			}
+			lastError = error;
+			throw new InvalidOperationException(error);
+		}
+
+		private void HandleException(string error)
+		{
+			lastError = error;
+			if (errorHandler != null)
+			{
+				errorHandler(this, error);
+				return;
+			}
+			throw new InvalidOperationException(error);
+		}
 
 		private void SetOutOfBounds(int direction) => Pos = direction > 0 ? Length : -1;
 
@@ -92,9 +122,10 @@ namespace HarmonyLib
 			return new CodeMatcher(codes, generator)
 			{
 				Pos = Pos,
-				lastMatches = lastMatches,
+				lastMatches = new Dictionary<string, CodeInstruction>(lastMatches),
 				lastError = lastError,
-				lastMatchCall = lastMatchCall
+				lastMatchCall = lastMatchCall,
+				errorHandler = errorHandler
 			};
 		}
 
@@ -126,7 +157,8 @@ namespace HarmonyLib
 		public List<CodeInstruction> Instructions(int count)
 		{
 			if (Pos < 0 || Pos + count > Length)
-				throw new InvalidOperationException("Cannot retrieve instructions: range is out-of-bounds.");
+				return HandleException<List<CodeInstruction>>("Cannot retrieve instructions: range is out-of-bounds.", []);
+
 			return [.. codes.GetRange(Pos, count).Select(c => new CodeInstruction(c))];
 		}
 
@@ -140,8 +172,10 @@ namespace HarmonyLib
 			var instructions = codes;
 			if (start > end)
 				(end, start) = (start, end);
+
 			if (start < 0 || end >= Length)
-				throw new InvalidOperationException("Cannot retrieve instructions: range is out-of-bounds.");
+				return HandleException<List<CodeInstruction>>("Cannot retrieve instructions: range is out-of-bounds.", []);
+
 			instructions = instructions.GetRange(start, end - start + 1);
 			return [.. instructions.Select(c => new CodeInstruction(c))];
 		}
@@ -182,7 +216,7 @@ namespace HarmonyLib
 			if (explanation == null)
 				throw new ArgumentNullException(nameof(explanation));
 			if (IsInvalid)
-				throw new InvalidOperationException(explanation + " - Current state is invalid");
+				return HandleException(explanation + " - Current state is invalid", this);
 			return this;
 		}
 
@@ -196,7 +230,7 @@ namespace HarmonyLib
 		{
 			_ = ThrowIfInvalid(explanation);
 			if (!MatchSequence(Pos, matches))
-				throw new InvalidOperationException(explanation + " - Match failed");
+				return HandleException(explanation + " - Match failed", this);
 			return this;
 		}
 
@@ -207,7 +241,10 @@ namespace HarmonyLib
 			try
 			{
 				if (Match(matches, direction, false, false).IsInvalid)
-					throw new InvalidOperationException(explanation + " - Match failed");
+				{
+					HandleException(explanation + " - Match failed");
+					return;
+				}
 			}
 			finally
 			{
@@ -251,7 +288,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(stateCheckFunc));
 			_ = ThrowIfInvalid(explanation);
 			if (!stateCheckFunc(this))
-				throw new InvalidOperationException(explanation + " - Check function returned false");
+				return HandleException(explanation + " - Check function returned false", this);
 			return this;
 		}
 
@@ -267,6 +304,15 @@ namespace HarmonyLib
 			return this;
 		}
 
+		/// <summary>Registers an error handler that is invoked instead of throwing an exception</summary>
+		/// <param name="errorHandler">The <see cref="ErrorHandler"/> to register or <c>null</c> to remove the current handler</param>
+		/// <returns>The same code matcher</returns>
+		public CodeMatcher OnError(ErrorHandler errorHandler)
+		{
+			this.errorHandler = errorHandler;
+			return this;
+		}
+
 		/// <summary>Sets an instruction at current position</summary>
 		/// <param name="instruction">The instruction to set</param>
 		/// <returns>The same code matcher</returns>
@@ -274,7 +320,8 @@ namespace HarmonyLib
 		public CodeMatcher SetInstruction(CodeInstruction instruction)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot set instruction/opcode at invalid position.");
+				return HandleException("Cannot set instruction/opcode at invalid position.", this);
+
 			codes[Pos] = instruction;
 			return this;
 		}
@@ -298,7 +345,8 @@ namespace HarmonyLib
 		public CodeMatcher Set(OpCode opcode, object operand)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot set values at invalid position.");
+				return HandleException("Cannot set values at invalid position.", this);
+
 			Opcode = opcode;
 			Operand = operand;
 			return this;
@@ -323,7 +371,8 @@ namespace HarmonyLib
 		public CodeMatcher SetOpcodeAndAdvance(OpCode opcode)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot set values at invalid position.");
+				return HandleException("Cannot set opcode at invalid position.", this);
+
 			Opcode = opcode;
 			Pos++;
 			return this;
@@ -336,7 +385,8 @@ namespace HarmonyLib
 		public CodeMatcher SetOperandAndAdvance(object operand)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot set values at invalid position.");
+				return HandleException("Cannot set operand at invalid position.", this);
+
 			Operand = operand;
 			Pos++;
 			return this;
@@ -350,7 +400,11 @@ namespace HarmonyLib
 		public CodeMatcher DeclareLocal(Type variableType, out LocalBuilder localVariable)
 		{
 			if (generator is null)
-				throw new InvalidOperationException("Generator must be provided to use this method");
+			{
+				localVariable = default;
+				return HandleException("Generator must be provided to use this method", this);
+			}
+
 			localVariable = generator.DeclareLocal(variableType);
 			return this;
 		}
@@ -362,7 +416,11 @@ namespace HarmonyLib
 		public CodeMatcher DefineLabel(out Label label)
 		{
 			if (generator is null)
-				throw new InvalidOperationException("Generator must be provided to use this method");
+			{
+				label = default;
+				return HandleException("Generator must be provided to use this method", this);
+			}
+
 			label = generator.DefineLabel();
 			return this;
 		}
@@ -374,7 +432,11 @@ namespace HarmonyLib
 		public CodeMatcher CreateLabel(out Label label)
 		{
 			if (generator is null)
-				throw new InvalidOperationException("Generator must be provided to use this method");
+			{
+				label = default;
+				return HandleException("Generator must be provided to use this method", this);
+			}
+
 			label = generator.DefineLabel();
 			Labels.Add(label);
 			return this;
@@ -385,29 +447,35 @@ namespace HarmonyLib
 		/// <param name="label">[out] The new label</param>
 		/// <returns>The same code matcher</returns>
 		///
-		[SuppressMessage("Style", "IDE0300")]
 		public CodeMatcher CreateLabelAt(int position, out Label label)
 		{
 			if (generator is null)
-				throw new InvalidOperationException("Generator must be provided to use this method");
+			{
+				label = default;
+				return HandleException("Generator must be provided to use this method", this);
+			}
+
 			label = generator.DefineLabel();
-			_ = AddLabelsAt(position, new Label[] { label });
+			_ = AddLabelsAt(position, [label]);
 			return this;
 		}
 
-		/// <summary>Creates a label at a position</summary>
+		/// <summary>Creates a label at the given offset from the current position</summary>
 		/// <param name="offset">The offset</param>
 		/// <param name="label">[out] The new label</param>
 		/// <returns>The same code matcher</returns>
 		///
 
-		[SuppressMessage("Style", "IDE0300")]
 		public CodeMatcher CreateLabelWithOffsets(int offset, out Label label)
 		{
 			if (generator is null)
-				throw new InvalidOperationException("Generator must be provided to use this method");
+			{
+				label = default;
+				return HandleException("Generator must be provided to use this method", this);
+			}
+
 			label = generator.DefineLabel();
-			return AddLabelsAt(Pos + offset, new Label[] { label });
+			return AddLabelsAt(Pos + offset, [label]);
 		}
 
 		/// <summary>Adds an enumeration of labels to current position</summary>
@@ -428,7 +496,8 @@ namespace HarmonyLib
 		public CodeMatcher AddLabelsAt(int position, IEnumerable<Label> labels)
 		{
 			if (position < 0 || position >= Length)
-				throw new InvalidOperationException("Cannot add labels at invalid position.");
+				return HandleException("Cannot add labels at invalid position.", this);
+
 			codes[position].labels.AddRange(labels);
 			return this;
 		}
@@ -451,8 +520,12 @@ namespace HarmonyLib
 		///
 		public CodeMatcher Insert(params CodeInstruction[] instructions)
 		{
+			if (instructions == null || instructions.Any(i => i == null))
+				throw new ArgumentNullException(nameof(instructions));
+
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+				return HandleException("Cannot insert instructions at invalid position.", this);
+
 			codes.InsertRange(Pos, instructions);
 			return this;
 		}
@@ -463,8 +536,12 @@ namespace HarmonyLib
 		///
 		public CodeMatcher Insert(IEnumerable<CodeInstruction> instructions)
 		{
+			if (instructions == null || instructions.Any(i => i == null))
+				throw new ArgumentNullException(nameof(instructions));
+
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+				return HandleException("Cannot insert instructions at invalid position.", this);
+
 			codes.InsertRange(Pos, instructions);
 			return this;
 		}
@@ -477,7 +554,8 @@ namespace HarmonyLib
 		public CodeMatcher InsertBranch(OpCode opcode, int destination)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+				return HandleException("Cannot insert instructions at invalid position.", this);
+
 			_ = CreateLabelAt(destination, out var label);
 			codes.Insert(Pos, new CodeInstruction(opcode, label));
 			return this;
@@ -489,6 +567,9 @@ namespace HarmonyLib
 		///
 		public CodeMatcher InsertAndAdvance(params CodeInstruction[] instructions)
 		{
+			if (instructions == null || instructions.Any(i => i == null))
+				throw new ArgumentNullException(nameof(instructions));
+
 			foreach (var instruction in instructions)
 			{
 				_ = Insert(instruction);
@@ -504,6 +585,9 @@ namespace HarmonyLib
 		///
 		public CodeMatcher InsertAndAdvance(IEnumerable<CodeInstruction> instructions)
 		{
+			if (instructions == null || instructions.Any(i => i == null))
+				throw new ArgumentNullException(nameof(instructions));
+
 			foreach (var instruction in instructions)
 				_ = InsertAndAdvance(instruction);
 			return this;
@@ -527,8 +611,12 @@ namespace HarmonyLib
 		///
 		public CodeMatcher InsertAfter(params CodeInstruction[] instructions)
 		{
+			if (instructions == null || instructions.Any(i => i == null))
+				throw new ArgumentNullException(nameof(instructions));
+
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+				return HandleException("Cannot insert instructions at invalid position.", this);
+
 			codes.InsertRange(Pos + 1, instructions);
 			return this;
 		}
@@ -539,8 +627,12 @@ namespace HarmonyLib
 		///
 		public CodeMatcher InsertAfter(IEnumerable<CodeInstruction> instructions)
 		{
+			if (instructions == null || instructions.Any(i => i == null))
+				return HandleException("Cannot insert null instructions.", this);
+
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+				return HandleException("Cannot insert instructions at invalid position.", this);
+
 			codes.InsertRange(Pos + 1, instructions);
 			return this;
 		}
@@ -553,7 +645,8 @@ namespace HarmonyLib
 		public CodeMatcher InsertBranchAfter(OpCode opcode, int destination)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot insert instructions at invalid position.");
+				return HandleException("Cannot insert instructions at invalid position.", this);
+
 			_ = CreateLabelAt(destination, out var label);
 			codes.Insert(Pos + 1, new CodeInstruction(opcode, label));
 			return this;
@@ -576,6 +669,9 @@ namespace HarmonyLib
 		///
 		public CodeMatcher InsertAfterAndAdvance(IEnumerable<CodeInstruction> instructions)
 		{
+			if (instructions == null || instructions.Any(i => i == null))
+				return HandleException("Cannot insert null instructions.", this);
+
 			var instructionList = instructions.ToList();
 			_ = InsertAfter(instructionList);
 			Pos += instructionList.Count;
@@ -600,7 +696,8 @@ namespace HarmonyLib
 		public CodeMatcher RemoveInstruction()
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+				return HandleException("Cannot remove instructions from an invalid position.", this);
+
 			codes.RemoveAt(Pos);
 			return this;
 		}
@@ -612,7 +709,8 @@ namespace HarmonyLib
 		public CodeMatcher RemoveInstructions(int count)
 		{
 			if (IsInvalid || Pos + count > Length)
-				throw new InvalidOperationException("Cannot remove instructions from an invalid or out-of-range position.");
+				return HandleException("Cannot remove instructions from an invalid or out-of-range position.", this);
+
 			codes.RemoveRange(Pos, count);
 			return this;
 		}
@@ -627,11 +725,14 @@ namespace HarmonyLib
 			if (start > end)
 				(end, start) = (start, end);
 
+			if (start < 0 || end >= Length)
+				return HandleException("Cannot remove instructions: range is out-of-bounds.", this);
+
 			codes.RemoveRange(start, end - start + 1);
 			return this;
 		}
 
-		/// <summary>Removes the instructions in a offset range</summary>
+		/// <summary>Removes the instructions in an offset range</summary>
 		/// <param name="startOffset">The start offset</param>
 		/// <param name="endOffset">The end offset</param>
 		/// <returns>The same code matcher</returns>
@@ -674,7 +775,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher SearchForward(Func<CodeInstruction, bool> predicate) => Search(predicate, 1);
 
-		/// <summary>Searches backwards with a predicate and reverses position</summary>
+		/// <summary>Searches backwards with a predicate and moves the position</summary>
 		/// <param name="predicate">A function to test each instruction for a match</param>
 		/// <returns>The same code matcher</returns>
 		///
@@ -713,7 +814,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher PrepareMatchEndForward(params CodeMatch[] matches) => Match(matches, 1, true, true);
 
-		/// <summary>Matches backwards and reverses position to beginning of matching sequence</summary>
+		/// <summary>Matches backwards and moves the position to beginning of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
@@ -725,7 +826,7 @@ namespace HarmonyLib
 		///
 		public CodeMatcher PrepareMatchStartBackwards(params CodeMatch[] matches) => Match(matches, -1, false, true);
 
-		/// <summary>Matches backwards and reverses position to ending of matching sequence</summary>
+		/// <summary>Matches backwards and moves the position to ending of matching sequence</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
 		///
@@ -740,10 +841,11 @@ namespace HarmonyLib
 		/// <summary>Removes instructions from the current position forward until a predicate is matched. The matched instruction is not removed</summary>
 		/// <param name="predicate">A function to test each instruction for a match</param>
 		/// <returns>The same code matcher</returns>
+		///
 		public CodeMatcher RemoveSearchForward(Func<CodeInstruction, bool> predicate)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+				return HandleException("Cannot remove instructions from an invalid position.", this);
 
 			var originalPos = Pos;
 			var finder = Clone().SearchForward(predicate);
@@ -763,10 +865,11 @@ namespace HarmonyLib
 		/// <summary>Removes instructions from the current position backward until a predicate is matched. The matched instruction is not removed</summary>
 		/// <param name="predicate">A function to test each instruction for a match</param>
 		/// <returns>The same code matcher</returns>
+		///
 		public CodeMatcher RemoveSearchBackward(Func<CodeInstruction, bool> predicate)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+				return HandleException("Cannot remove instructions from an invalid position.", this);
 
 			var originalPos = Pos;
 			var finder = Clone().SearchBackwards(predicate);
@@ -788,10 +891,11 @@ namespace HarmonyLib
 		/// <summary>Removes instructions from the current position up to the next match (exclusive)</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
+		///
 		public CodeMatcher RemoveUntilForward(params CodeMatch[] matches)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+				return HandleException("Cannot remove instructions from an invalid position.", this);
 
 			var originalPos = Pos;
 			var finder = Clone().MatchStartForward(matches);
@@ -811,10 +915,11 @@ namespace HarmonyLib
 		/// <summary>Removes instructions backwards from the current position to the previous match (exclusive)</summary>
 		/// <param name="matches">Some code matches</param>
 		/// <returns>The same code matcher</returns>
+		///
 		public CodeMatcher RemoveUntilBackward(params CodeMatch[] matches)
 		{
 			if (IsInvalid)
-				throw new InvalidOperationException("Cannot remove instructions from an invalid position.");
+				return HandleException("Cannot remove instructions from an invalid position.", this);
 
 			var originalPos = Pos;
 			var finder = Clone().MatchEndBackwards(matches);
@@ -866,7 +971,7 @@ namespace HarmonyLib
 		{
 			var count = 0;
 			if (lastMatchCall == null)
-				throw new InvalidOperationException("No previous Match operation - cannot repeat");
+				return HandleException("No previous Match operation - cannot repeat", this);
 
 			while (IsValid)
 			{
