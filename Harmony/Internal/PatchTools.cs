@@ -194,8 +194,6 @@ namespace HarmonyLib
 					case MethodType.OperatorGreaterThanOrEqual:
 					case MethodType.OperatorLessThanOrEqual:
 					case MethodType.OperatorComma:
-						if (string.IsNullOrEmpty(attr.methodName))
-							return null;
 						var methodName = "op_" + attr.methodType.ToString().Replace("Operator", "");
 						return AccessTools.DeclaredMethod(attr.declaringType, methodName, attr.argumentTypes);
 				}
