@@ -774,8 +774,8 @@ namespace HarmonyLib
 		/// <param name="method">Async method that creates the state machine internally</param>
 		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
 		///
-                public static MethodInfo AsyncMoveNext(MethodBase method)
-                {
+		public static MethodInfo AsyncMoveNext(MethodBase method)
+		{
 			if (method is null)
 			{
 				FileLog.Debug("AccessTools.AsyncMoveNext: method is null");
@@ -797,8 +797,8 @@ namespace HarmonyLib
 				return null;
 			}
 
-                        return asyncMethodBody;
-                }
+			return asyncMethodBody;
+		}
 #endif
 
 		/// <summary>Gets the reflection information for a finalizer</summary>
