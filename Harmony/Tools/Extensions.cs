@@ -103,6 +103,16 @@ namespace HarmonyLib
 		///
 		public static Type[] Types(this ParameterInfo[] pinfo) => [.. pinfo.Select(pi => pi.ParameterType)];
 
+		/// <summary>Tests if a type has the <see cref="HarmonyAttribute"/></summary>
+		/// <param name="type">The class/type to test</param>
+		/// <returns>True if the type has the <see cref="HarmonyAttribute"/></returns>
+		public static bool HasHarmonyAttribute(this Type type)
+		{
+			if (type is null)
+				throw new ArgumentNullException(nameof(type));
+			return HarmonyMethodExtensions.GetFromType(type).Count > 0;
+		}
+
 		/// <summary>A helper to access a value via key from a dictionary</summary>
 		/// <typeparam name="S">The key type</typeparam>
 		/// <typeparam name="T">The value type</typeparam>
@@ -730,7 +740,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>General extensions for collections</summary>
-	/// 
+	///
 	public static class CollectionExtensions
 	{
 		/// <summary>A simple way to execute code for every element in a collection</summary>
@@ -812,7 +822,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>General extensions for collections</summary>
-	/// 
+	///
 	public static class MethodBaseExtensions
 	{
 		/// <summary>Tests a class member if it has an IL method body (external methods for example don't have a body)</summary>

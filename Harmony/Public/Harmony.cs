@@ -7,16 +7,16 @@ using System.Reflection;
 namespace HarmonyLib
 {
 	/// <summary>The Harmony instance is the main entry to Harmony. After creating one with an unique identifier, it is used to patch and query the current application domain</summary>
-	/// 
+	///
 	public class Harmony
 	{
 		/// <summary>The unique identifier</summary>
-		/// 
+		///
 		public string Id { get; private set; }
 
 		/// <summary>Set to true before instantiating Harmony to debug Harmony or use an environment variable to set HARMONY_DEBUG to '1' like this: cmd /C "set HARMONY_DEBUG=1 &amp;&amp; game.exe"</summary>
 		/// <remarks>This is for full debugging. To debug only specific patches, use the <see cref="HarmonyDebug"/> attribute</remarks>
-		/// 
+		///
 		public static bool DEBUG;
 
 		/// <summary>Creates a new Harmony instance</summary>
@@ -72,7 +72,7 @@ namespace HarmonyLib
 
 		/// <summary>Searches the current assembly for Harmony annotations and uses them to create patches</summary>
 		/// <remarks>This method can fail to use the correct assembly when being inlined. It calls StackTrace.GetFrame(1) which can point to the wrong method/assembly. If you are unsure or run into problems, use <code>PatchAll(Assembly.GetExecutingAssembly())</code> instead.</remarks>
-		/// 
+		///
 		public void PatchAll()
 		{
 			var method = new StackTrace().GetFrame(1).GetMethod();
@@ -89,7 +89,7 @@ namespace HarmonyLib
 		/// <summary>Creates a patch class processor from an annotated class</summary>
 		/// <param name="type">The class/type</param>
 		/// <returns>A new <see cref="PatchClassProcessor"/> instance</returns>
-		/// 
+		///
 		public PatchClassProcessor CreateClassProcessor(Type type) => new(this, type);
 
 		/// <summary>Creates a reverse patcher for one of your stub methods</summary>
@@ -101,11 +101,11 @@ namespace HarmonyLib
 
 		/// <summary>Searches an assembly for Harmony annotations and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
-		/// 
-		public void PatchAll(Assembly assembly) => AccessTools.GetTypesFromAssembly(assembly).Do(type => CreateClassProcessor(type).Patch());
+		///
+		public void PatchAll(Assembly assembly) => AccessTools.GetTypesFromAssembly(assembly).DoIf(type => type.HasHarmonyAttribute(), type => CreateClassProcessor(type).Patch());
 
 		/// <summary>Searches an assembly for Harmony-annotated classes without category annotations and uses them to create patches</summary>
-		/// 
+		///
 		public void PatchAllUncategorized()
 		{
 			var method = new StackTrace().GetFrame(1).GetMethod();
@@ -115,16 +115,16 @@ namespace HarmonyLib
 
 		/// <summary>Searches an assembly for Harmony-annotated classes without category annotations and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
-		/// 
+		///
 		public void PatchAllUncategorized(Assembly assembly)
 		{
-			var patchClasses = AccessTools.GetTypesFromAssembly(assembly).Select(CreateClassProcessor).ToArray();
-			patchClasses.DoIf((patchClass => string.IsNullOrEmpty(patchClass.Category)), (patchClass => patchClass.Patch()));
+			var patchClasses = AccessTools.GetTypesFromAssembly(assembly).Where(type => type.HasHarmonyAttribute()).Select(CreateClassProcessor).ToArray();
+			patchClasses.DoIf(patchClass => string.IsNullOrEmpty(patchClass.Category), patchClass => patchClass.Patch());
 		}
 
 		/// <summary>Searches the current assembly for Harmony annotations with a specific category and uses them to create patches</summary>
 		/// <param name="category">Name of patch category</param>
-		/// 
+		///
 		public void PatchCategory(string category)
 		{
 			var method = new StackTrace().GetFrame(1).GetMethod();
@@ -135,13 +135,14 @@ namespace HarmonyLib
 		/// <summary>Searches an assembly for Harmony annotations with a specific category and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
 		/// <param name="category">Name of patch category</param>
-		/// 
+		///
 		public void PatchCategory(Assembly assembly, string category)
 		{
 			AccessTools.GetTypesFromAssembly(assembly)
 				.Where(type =>
 				{
 					var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
+					if (harmonyAttributes.Count == 0) return false;
 					var containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
 					return containerAttributes.category == category;
 				})
@@ -172,7 +173,7 @@ namespace HarmonyLib
 		/// <param name="standin">Your stub method as <see cref="HarmonyMethod"/> that will become the original. Needs to have the correct signature (either original or whatever your transpilers generates)</param>
 		/// <param name="transpiler">An optional transpiler as method that will be applied during the process</param>
 		/// <returns>The replacement method that was created to patch the stub method</returns>
-		/// 
+		///
 		public static MethodInfo ReversePatch(MethodBase original, HarmonyMethod standin, MethodInfo transpiler = null) => PatchFunctions.ReversePatch(standin, original, transpiler);
 
 		/// <summary>Unpatches methods by patching them with zero patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
@@ -242,6 +243,7 @@ namespace HarmonyLib
 				.Where(type =>
 				{
 					var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
+					if (harmonyAttributes.Count == 0) return false;
 					var containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
 					return containerAttributes.category == category;
 				})

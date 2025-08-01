@@ -7,7 +7,7 @@ using System.Reflection;
 namespace HarmonyLib
 {
 	/// <summary>A PatchClassProcessor used to turn <see cref="HarmonyAttribute"/> on a class/type into patches</summary>
-	/// 
+	///
 	public class PatchClassProcessor
 	{
 		readonly Harmony instance;
@@ -31,7 +31,7 @@ namespace HarmonyLib
 
 		/// <summary>Creates a patch class processor by pointing out a class. Similar to PatchAll() but without searching through all classes.</summary>
 		/// <param name="instance">The Harmony instance</param>
-		/// <param name="type">The class to process (need to have at least a [HarmonyPatch] attribute)</param>
+		/// <param name="type">The class to process</param>
 		///
 		public PatchClassProcessor(Harmony instance, Type type)
 		{
@@ -44,9 +44,6 @@ namespace HarmonyLib
 			containerType = type;
 
 			var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
-			if (harmonyAttributes is null || harmonyAttributes.Count == 0)
-				return;
-
 			containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
 			containerAttributes.methodType ??= MethodType.Normal;
 
@@ -74,9 +71,6 @@ namespace HarmonyLib
 		///
 		public List<MethodInfo> Patch()
 		{
-			if (containerAttributes is null)
-				return null;
-
 			Exception exception = null;
 
 			var mainPrepareResult = RunMethod<HarmonyPrepare, bool>(true, false);
@@ -113,9 +107,6 @@ namespace HarmonyLib
 		///
 		public void Unpatch()
 		{
-			if (containerAttributes is null)
-				return;
-
 			var originals = GetBulkMethods();
 			MethodBase lastOriginal = null;
 			if (originals.Count > 0)
