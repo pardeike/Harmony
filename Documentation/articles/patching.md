@@ -116,7 +116,7 @@ This method defines the transpiler that modifies the code of the original method
 
 ### Finalizer
 
-A finalizer is a method that is executed after all postfixes. It will wrap the original, all prefixes and postfixes in a try/catch logic and is either called with `null` (no exception) or with an exception if one occured. It is commonly used to:
+A finalizer is a method that executes after all postfixes. It wraps the original method, all prefixes, and postfixes in try/catch logic and is called either with `null` (no exception) or with an exception if one occurred. It is commonly used to:
 
 - run a piece of code at the end that is guaranteed to be executed
 - handle exceptions and suppress them

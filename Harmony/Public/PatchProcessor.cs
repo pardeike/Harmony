@@ -23,7 +23,7 @@ namespace HarmonyLib
 
 		internal static readonly object locker = new();
 
-		/// <summary>Creates a new PatchProcessor.</summary>
+		/// <summary>Creates a new PatchProcessor</summary>
 		/// <param name="instance">The Harmony instance</param>
 		/// <param name="original">The original method/constructor</param>
 		public PatchProcessor(Harmony instance, MethodBase original)
