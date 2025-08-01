@@ -220,7 +220,7 @@ namespace HarmonyLibTests
 		{
 			readonly AppDomain parentDomain = parentDomain;
 
-			// Run an action in "isolation" (seperate AppDomain that's unloaded afterwards).
+			// Run an action in "isolation" (separate AppDomain that's unloaded afterwards)
 			// This a static method and thus is run in the AppDomain of the caller (the main AppDomain).
 			public static void RunInIsolationContext(Action<ITestIsolationContext> action)
 			{

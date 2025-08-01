@@ -84,7 +84,7 @@ namespace HarmonyLib
 			return null;
 		}
 
-		/// <summary>Searches a type by regular expression. For exact searching, use <see cref="AccessTools.TypeByName(string)"/>.</summary>
+		/// <summary>Searches a type by regular expression; for exact searching, use <see cref="AccessTools.TypeByName(string)"/></summary>
 		/// <param name="search">The regular expression that matches against Type.FullName or Type.Name</param>
 		/// <param name="invalidateCache">Refetches the cached types if set to true</param>
 		/// <returns>The first type where FullName or Name matches the search</returns>
@@ -106,7 +106,7 @@ namespace HarmonyLib
 			return null;
 		}
 
-		/// <summary>Clears the type cache that <see cref="AccessTools.TypeSearch(Regex, bool)" /> uses.</summary>
+		/// <summary>Clears the type cache that <see cref="AccessTools.TypeSearch(Regex, bool)" /> uses</summary>
 		///
 		public static void ClearTypeSearchCache() => allTypesCached = null;
 

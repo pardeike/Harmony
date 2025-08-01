@@ -43,7 +43,7 @@ namespace HarmonyLib
 		/// 
 		public Type catchType;
 
-		/// <summary>Creates a new PatchProcessor.</summary>
+		/// <summary>Creates a new ExceptionBlock</summary>
 		/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
 		/// <param name="catchType">The catch type</param>
 		///

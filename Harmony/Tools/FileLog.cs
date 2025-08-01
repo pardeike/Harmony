@@ -168,7 +168,7 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Logs a string directly to disk. This method is slower but ensures that log information is not lost in case of a crash.</summary>
+		/// <summary>Logs a string directly to disk to avoid losing information in case of a crash</summary>
 		/// <param name="str">The string to log.</param>
 		/// 
 		public static void Log(string str)
@@ -193,7 +193,7 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Logs an inline comment at the specified code position.</summary>
+		/// <summary>Logs an inline comment at the specified code position</summary>
 		/// <remarks>This method formats the comment with the code position and logs it.</remarks>
 		/// <param name="codePos">The position in the code where the comment should be logged.</param>
 		/// <param name="comment">The comment text to log. Cannot be null or empty.</param>
@@ -201,7 +201,7 @@ namespace HarmonyLib
 		public static void LogILComment(int codePos, string comment)
 			=> LogBuffered(string.Format("{0}// {1}", CodePos(codePos), comment));
 
-		/// <summary>Logs the specified Intermediate Language (IL) operation code and its position in the code stream.</summary>
+		/// <summary>Logs the specified Intermediate Language (IL) operation code and its position in the code stream</summary>
 		/// <remarks>This method formats the IL operation code and its position into a string and logs it.</remarks>
 		/// <param name="codePos">The position of the IL operation code in the code stream.</param>
 		/// <param name="opcode">The IL operation code to log.</param>
@@ -209,7 +209,7 @@ namespace HarmonyLib
 		public static void LogIL(int codePos, OpCode opcode)
 			=> LogBuffered(string.Format("{0}{1}", CodePos(codePos), opcode));
 
-		/// <summary>Logs information about an Intermediate Language (IL) instruction, including its position, opcode, and operand.</summary>
+		/// <summary>Logs information about an Intermediate Language (IL) instruction, including its position, opcode, and operand</summary>
 		/// <remarks>This method formats and logs details about an IL instruction for debugging or analysis purposes. 
 		/// The logged output includes the instruction's position, opcode, and operand (if any).</remarks>
 		/// <param name="codePos">The position of the IL instruction within the method body.</param>
@@ -226,7 +226,7 @@ namespace HarmonyLib
 			LogBuffered(string.Format("{0}{1}{2}{3}", CodePos(codePos), opcodeName, space, argStr));
 		}
 
-		/// <summary>Logs information about a local variable in Intermediate Language (IL) code.</summary>
+		/// <summary>Logs information about a local variable in Intermediate Language (IL) code</summary>
 		/// <remarks>The logged information includes the variable's index, type, and whether it is pinned.</remarks>
 		/// <param name="variable">The <see cref="Mono.Cecil.Cil.VariableDefinition"/> representing the local variable to log. Must not be <see
 		/// langword="null"/>.</param>
@@ -234,7 +234,7 @@ namespace HarmonyLib
 		public static void LogIL(Mono.Cecil.Cil.VariableDefinition variable)
 			=> LogBuffered(string.Format("{0}Local var {1}: {2}{3}", CodePos(0), variable.Index, variable.VariableType.FullName, variable.IsPinned ? "(pinned)" : ""));
 
-		/// <summary>Logs the intermediate language (IL) code at the specified position with the given label operand.</summary>
+		/// <summary>Logs the intermediate language (IL) code at the specified position with the given label operand</summary>
 		/// <remarks>Formats and logs the IL code position and label operand for detailed IL tracking or debugging.</remarks>
 		/// <param name="codePos">The position in the IL code to log.</param>
 		/// <param name="label">The label operand associated with the IL code to log.</param>
@@ -242,7 +242,7 @@ namespace HarmonyLib
 		public static void LogIL(int codePos, Label label)
 			=> LogBuffered(CodePos(codePos) + Emitter.FormatOperand(label));
 
-		/// <summary>Logs the beginning of an intermediate language (IL) exception handling block.</summary>
+		/// <summary>Logs the beginning of an intermediate language (IL) exception handling block</summary>
 		/// <remarks>Logs the start of an exception handling block (e.g., <c>.try</c>, <c>.catch</c>, <c>.finally</c>, <c>.fault</c>),
 		/// adjusts indentation, and simulates a <c>LEAVE</c> opcode for consistency.</remarks>
 		/// <param name="codePos">The position of the IL code where the block begins.</param>
@@ -309,7 +309,7 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Logs the end of an intermediate language (IL) exception block.</summary>
+		/// <summary>Logs the end of an intermediate language (IL) exception block</summary>
 		/// <remarks>This method handles the logging of specific types of exception blocks, such as the end of a try-catch or 
 		/// similar constructs. It adjusts the indentation level and outputs relevant information about the block's conclusion.</remarks>
 		/// <param name="codePos">The position in the IL code where the block ends.</param>
