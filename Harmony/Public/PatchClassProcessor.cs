@@ -32,6 +32,7 @@ namespace HarmonyLib
 		/// <summary>Creates a patch class processor by pointing out a class; similar to PatchAll() but without searching through all classes</summary>
 		/// <param name="instance">The Harmony instance</param>
 		/// <param name="type">The class to process</param>
+		/// <note>Use this if you want to patch a class that is not annotated with HarmonyPatch</note>
 		///
 		public PatchClassProcessor(Harmony instance, Type type)
 		{

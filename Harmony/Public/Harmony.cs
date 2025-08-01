@@ -86,7 +86,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor CreateProcessor(MethodBase original) => new(this, original);
 
-		/// <summary>Creates a patch class processor from an annotated class</summary>
+		/// <summary>Creates a patch class processor from a class</summary>
 		/// <param name="type">The class/type</param>
 		/// <returns>A new <see cref="PatchClassProcessor"/> instance</returns>
 		///
