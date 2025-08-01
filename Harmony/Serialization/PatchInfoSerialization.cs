@@ -19,6 +19,10 @@ namespace HarmonyLib
 		{
 			get
 			{
+#if NET9_0_OR_GREATER
+				// BinaryFormatter is obsolete in .NET 9, so we always use JSON serialization
+				return false;
+#else
 				if (!useBinaryFormatter.HasValue)
 				{
 					// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
@@ -32,6 +36,7 @@ namespace HarmonyLib
 					}
 				}
 				return useBinaryFormatter.Value;
+#endif
 			}
 		}
 #endif

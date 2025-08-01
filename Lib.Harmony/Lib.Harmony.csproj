@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2" PrivateAssets="all" />
-    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="..\..\LocalMonoMod\MonoMod.Core\MonoMod.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="../LocalMonoMod/src/MonoMod.Core/MonoMod.Core.csproj" PrivateAssets="all" />
     <PackageReference Condition="'$(HarmonyPrerelease)' == ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
   </ItemGroup>
 

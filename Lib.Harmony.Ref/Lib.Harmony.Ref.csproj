@@ -15,7 +15,7 @@
     <!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
 
-    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="..\..\LocalMonoMod\MonoMod.Core\MonoMod.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="../LocalMonoMod/src/MonoMod.Core/MonoMod.Core.csproj" PrivateAssets="all" />
     <PackageReference Condition="'$(HarmonyPrerelease)' == ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
   </ItemGroup>
 
