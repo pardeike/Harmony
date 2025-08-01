@@ -3,7 +3,7 @@
     <PackageId>Lib.Harmony</PackageId>
     <TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="$(Configuration.StartsWith('Release'))">
     <Optimize>true</Optimize>
     <DebugType>portable</DebugType>
@@ -19,7 +19,8 @@
 
   <ItemGroup>
     <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2" PrivateAssets="all" />
-    <PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
+    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="..\..\LocalMonoMod\MonoMod.Core\MonoMod.Core.csproj" PrivateAssets="all" />
+    <PackageReference Condition="'$(HarmonyPrerelease)' == ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,7 +41,7 @@
     <ProjectReference Include="..\Lib.Harmony.Ref\Lib.Harmony.Ref.csproj" />
     <Compile Remove="@(Compile)" />
   </ItemGroup>
-  
+
   <Target Name="CleanZip" AfterTargets="Clean" Condition="'$(Configuration)'=='Release'">
     <ItemGroup>
       <OldZipFiles Include="$(MSBuildThisFileDirectory)..\packages\Harmony-Fat.*.zip" Condition="'$(Configuration)'=='Release'" />

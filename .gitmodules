@@ -1,0 +1,3 @@
+[submodule "LocalMonoMod"]
+	path = LocalMonoMod
+	url = git@github.com:pardeike/MonoMod.git

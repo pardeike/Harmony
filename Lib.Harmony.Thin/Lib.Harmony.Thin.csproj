@@ -3,7 +3,7 @@
     <PackageId>Lib.Harmony.Thin</PackageId>
     <TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="$(Configuration.StartsWith('Release'))">
     <Optimize>true</Optimize>
     <DebugType>portable</DebugType>
@@ -17,7 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
+    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="..\..\LocalMonoMod\MonoMod.Core\MonoMod.Core.csproj" />
+    <PackageReference Condition="'$(HarmonyPrerelease)' == ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
   </ItemGroup>
 
   <!-- Replace Code with reference to Lib.Harmony.Ref for netstandard2.0 -->

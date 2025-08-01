@@ -10,7 +10,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lib.Harmony\Lib.Harmony.csproj" />
-    <PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
+    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="..\..\LocalMonoMod\MonoMod.Core\MonoMod.Core.csproj" />
+    <PackageReference Condition="'$(HarmonyPrerelease)' == ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
   </ItemGroup>
 
 </Project>
