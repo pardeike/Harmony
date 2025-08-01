@@ -176,7 +176,7 @@ namespace HarmonyLib
 
 	/// <summary>Annotation to define a category for use with PatchCategory</summary>
 	///
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
 	public class HarmonyPatchCategory : HarmonyAttribute
 	{
 		/// <summary>Annotation specifying the category</summary>
@@ -187,7 +187,7 @@ namespace HarmonyLib
 
 	/// <summary>Annotation to define your Harmony patch methods</summary>
 	///
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Delegate | AttributeTargets.Method, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Delegate | AttributeTargets.Method, AllowMultiple = true)]
 	public class HarmonyPatch : HarmonyAttribute
 	{
 		/// <summary>An empty annotation can be used together with TargetMethod(s)</summary>
@@ -549,7 +549,7 @@ namespace HarmonyLib
 
 	/// <summary>Annotation to define your standin methods for reverse patching</summary>
 	///
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method, AllowMultiple = true)]
 	public class HarmonyReversePatch : HarmonyAttribute
 	{
 		/// <summary>An annotation that specifies the type of reverse patching</summary>
@@ -560,14 +560,14 @@ namespace HarmonyLib
 
 	/// <summary>A Harmony annotation to define that all methods in a class are to be patched</summary>
 	///
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 	public class HarmonyPatchAll : HarmonyAttribute
 	{
 	}
 
 	/// <summary>A Harmony annotation</summary>
 	///
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method)]
 	public class HarmonyPriority : HarmonyAttribute
 	{
 		/// <summary>A Harmony annotation to define patch priority</summary>
@@ -578,7 +578,7 @@ namespace HarmonyLib
 
 	/// <summary>A Harmony annotation</summary>
 	///
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method)]
 	public class HarmonyBefore : HarmonyAttribute
 	{
 		/// <summary>A Harmony annotation to define that a patch comes before another patch</summary>
@@ -588,7 +588,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>A Harmony annotation</summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method)]
 	public class HarmonyAfter : HarmonyAttribute
 	{
 		/// <summary>A Harmony annotation to define that a patch comes after another patch</summary>
@@ -598,7 +598,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>A Harmony annotation</summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method)]
 	public class HarmonyDebug : HarmonyAttribute
 	{
 		/// <summary>A Harmony annotation to debug a patch (output uses <see cref="FileLog"/> to log to your Desktop)</summary>
@@ -664,7 +664,7 @@ namespace HarmonyLib
 
 	/// <summary>A Harmony annotation</summary>
 	///
-	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 	public class HarmonyArgument : Attribute
 	{
 		/// <summary>The name of the original argument</summary>

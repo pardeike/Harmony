@@ -99,12 +99,12 @@ namespace HarmonyLib
 		///
 		public ReversePatcher CreateReversePatcher(MethodBase original, HarmonyMethod standin) => new(this, original, standin);
 
-		/// <summary>Searches an assembly for Harmony annotations and uses them to create patches</summary>
+		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
 		///
 		public void PatchAll(Assembly assembly) => AccessTools.GetTypesFromAssembly(assembly).DoIf(type => type.HasHarmonyAttribute(), type => CreateClassProcessor(type).Patch());
 
-		/// <summary>Searches an assembly for Harmony-annotated classes without category annotations and uses them to create patches</summary>
+		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs without category annotations and uses them to create patches</summary>
 		///
 		public void PatchAllUncategorized()
 		{
@@ -113,7 +113,7 @@ namespace HarmonyLib
 			PatchAllUncategorized(assembly);
 		}
 
-		/// <summary>Searches an assembly for Harmony-annotated classes without category annotations and uses them to create patches</summary>
+		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs without category annotations and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
 		///
 		public void PatchAllUncategorized(Assembly assembly)
@@ -132,7 +132,7 @@ namespace HarmonyLib
 			PatchCategory(assembly, category);
 		}
 
-		/// <summary>Searches an assembly for Harmony annotations with a specific category and uses them to create patches</summary>
+		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs with a specific category and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
 		/// <param name="category">Name of patch category</param>
 		///
@@ -233,7 +233,7 @@ namespace HarmonyLib
 			UnpatchCategory(assembly, category);
 		}
 
-		/// <summary>Searches an assembly for types with a specific category annotation and uses them to unpatch existing patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
+		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs with a specific category annotation and uses them to unpatch existing patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
 		/// <param name="assembly">The assembly</param>
 		/// <param name="category">Name of patch category</param>
 		///
