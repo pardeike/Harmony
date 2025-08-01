@@ -46,7 +46,7 @@ env:
 jobs:
   windows-net-framework:
     name: ${{ inputs.build_configuration }}
-    runs-on: windows-2019
+    runs-on: windows-2022
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 10
     steps:
