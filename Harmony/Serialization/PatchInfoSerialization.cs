@@ -71,7 +71,6 @@ namespace HarmonyLib
 #endif
 			using var streamMemory = new MemoryStream();
 			binaryFormatter.Serialize(streamMemory, patchInfo);
-			// Return only the used portion of the buffer
 			return streamMemory.ToArray();
 #if NET5_0_OR_GREATER
 			}
