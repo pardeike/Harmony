@@ -7,7 +7,6 @@ namespace HarmonyLib
 {
 	/// <summary>Under Mono, HarmonyException wraps IL compile errors with detailed information about the failure</summary>
 	/// 
-	[Serializable]
 	public class HarmonyException : Exception
 	{
 		Dictionary<int, CodeInstruction> instructions;
@@ -16,12 +15,6 @@ namespace HarmonyLib
 		internal HarmonyException() { }
 		internal HarmonyException(string message) : base(message) { }
 		internal HarmonyException(string message, Exception innerException) : base(message, innerException) { }
-
-		/// <summary>Default serialization constructor (not implemented)</summary>
-		/// <param name="serializationInfo">The info</param>
-		/// <param name="streamingContext">The context</param>
-		/// 
-		protected HarmonyException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) => throw new NotImplementedException();
 
 		internal HarmonyException(Exception innerException, Dictionary<int, CodeInstruction> instructions, int errorOffset) : base("IL Compile Error", innerException)
 		{
