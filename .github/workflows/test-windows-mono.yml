@@ -51,8 +51,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      with:
-        submodules: recursive
+        with:
+          submodules: recursive
 
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v4
