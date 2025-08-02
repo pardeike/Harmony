@@ -15,8 +15,8 @@
     <!-- Adding System.Reflection.Emit.* because there are public types exposed from its's package -->
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" IncludeAssets="compile" />
 
-    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="../LocalMonoMod/src/MonoMod.Core/MonoMod.Core.csproj" PrivateAssets="all" />
-    <PackageReference Condition="'$(HarmonyPrerelease)' == ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
+    <ProjectReference Condition="'$(MonoModCoreVersion)' == ''" Include="../LocalMonoMod/src/MonoMod.Core/MonoMod.Core.csproj" PrivateAssets="all" />
+    <PackageReference Condition="'$(MonoModCoreVersion)' != ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <Target Name="AddRefAssemblyToPackage">
@@ -46,6 +46,6 @@
   </Target>
 
   <Target Name="Zip" AfterTargets="RemoveExtraDlls" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
-    <ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)..\packages\Harmony-Ref.$(Version).zip" Overwrite="true"/>
+    <ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)..\packages\Harmony-Ref.$(PackageVersion).zip" Overwrite="true"/>
   </Target>
 </Project>

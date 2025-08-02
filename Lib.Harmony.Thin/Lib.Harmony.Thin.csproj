@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Condition="'$(HarmonyPrerelease)' != ''" Include="../LocalMonoMod/src/MonoMod.Core/MonoMod.Core.csproj" />
-    <PackageReference Condition="'$(HarmonyPrerelease)' == ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
+    <ProjectReference Condition="'$(MonoModCoreVersion)' == ''" Include="../LocalMonoMod/src/MonoMod.Core/MonoMod.Core.csproj" />
+    <PackageReference Condition="'$(MonoModCoreVersion)' != ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
   </ItemGroup>
 
   <!-- Replace Code with reference to Lib.Harmony.Ref for netstandard2.0 -->
@@ -45,6 +45,6 @@
   </Target>
 
   <Target Name="Zip" AfterTargets="RemoveExtraDlls" DependsOnTargets="CleanZip" Condition="'$(Configuration)'=='Release'">
-    <ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)..\packages\Harmony-Thin.$(Version).zip" Overwrite="true"/>
+    <ZipDirectory SourceDirectory="$(MSBuildThisFileDirectory)bin\$(Configuration)" DestinationFile="$(MSBuildThisFileDirectory)..\packages\Harmony-Thin.$(PackageVersion).zip" Overwrite="true"/>
   </Target>
 </Project>
