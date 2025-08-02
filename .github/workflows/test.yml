@@ -13,7 +13,7 @@ on:
     paths-ignore:
       - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'
-  workflow_dispatch: 
+  workflow_dispatch:
 
 concurrency:
   group: ${{github.workflow}}-${{github.event.pull_request.number || github.ref}}
@@ -176,10 +176,30 @@ jobs:
       build_configuration: ${{matrix.build_configuration}}
       manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
+  ubuntu-macos-arm64-mono:
+    name: ${{ matrix.image.os == 'ubuntu' && 'Ubuntu' || 'macOS' }} Mono ${{ matrix.architecture }}${{ matrix.build_configuration && '' }}
+    needs: [variables, build-binaries]
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
+        architecture: ['arm64']
+        target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
+        build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
+    uses: ./.github/workflows/test-unix-mono.yml
+    with:
+      os: ${{matrix.image.os}}
+      image: ${{matrix.image.code}}
+      architecture: ${{matrix.architecture}}
+      target_framework: ${{matrix.target_framework}}
+      target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
+      build_configuration: ${{matrix.build_configuration}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
+
 
   test-results:
     name: Test Results
-    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono]
+    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono]
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
 
