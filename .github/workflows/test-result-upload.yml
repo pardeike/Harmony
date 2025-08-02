@@ -16,7 +16,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-     
+        with:
+          submodules: recursive
+
       - name: Download Test Results
         uses: actions/download-artifact@v4
         with:

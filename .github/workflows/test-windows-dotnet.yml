@@ -51,6 +51,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Setup .NET Latest/${{inputs.target_framework}} ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
@@ -68,7 +70,7 @@ jobs:
         with:
           os: windows
           build_configuration: ${{inputs.build_configuration}}
-          
+
       - name: Test .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-execute-test
         with:
