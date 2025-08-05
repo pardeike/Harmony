@@ -120,7 +120,7 @@ namespace HarmonyLib
 			copier.AddTranspiler(PatchTools.m_GetExecutingAssemblyReplacementTranspiler);
 
 			var endLabels = new List<Label>();
-			var replacement = copier.Finalize(out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
+			var replacement = copier.Finalize(true, out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
 
 			replacement = [.. AddInfixes(replacement)];
 

@@ -38,8 +38,8 @@ namespace HarmonyLib
 
 		internal void AddTranspiler(MethodInfo transpiler) => transpilers.Add(transpiler);
 
-		internal List<CodeInstruction> Finalize(out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
-			=> reader.FinalizeILCodes(transpilers, out hasReturnCode, out methodEndsInDeadCode, endLabels);
+		internal List<CodeInstruction> Finalize(bool stripLastReturn, out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
+			=> reader.FinalizeILCodes(transpilers, stripLastReturn, out hasReturnCode, out methodEndsInDeadCode, endLabels);
 
 		internal void LogCodes(Emitter emitter, List<CodeInstruction> codeInstructions)
 			=> reader.LogCodes(emitter, codeInstructions);
@@ -65,7 +65,7 @@ namespace HarmonyLib
 					copier.AddTranspiler(sortedTranspilers[i]);
 			}
 
-			return copier.Finalize(out _, out _, null);
+			return copier.Finalize(false, out _, out _, null);
 		}
 	}
 
@@ -336,7 +336,7 @@ namespace HarmonyLib
 			return list.GetRange(0, n - 1).All(code => code.opcode != OpCodes.Ret);
 		}
 
-		internal List<CodeInstruction> FinalizeILCodes(List<MethodInfo> transpilers, out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
+		internal List<CodeInstruction> FinalizeILCodes(List<MethodInfo> transpilers, bool stripLastReturn, out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
 		{
 			hasReturnCode = false;
 			methodEndsInDeadCode = false;
@@ -394,7 +394,7 @@ namespace HarmonyLib
 
 			// pass4 - remove RET if it appears at the end
 			//
-			while (true)
+			while (stripLastReturn)
 			{
 				var lastInstruction = codeInstructions.LastOrDefault();
 				if (lastInstruction is null || lastInstruction.opcode != OpCodes.Ret)
