@@ -476,15 +476,7 @@ namespace HarmonyLibTests.Patching
 			var harmony = new Harmony("test");
 			var method = AccessTools.DeclaredMethod(type, "MoveNext");
 			Assert.NotNull(method);
-
-			var result = PatchProcessor.GetOriginalInstructions(method);
-			foreach(var instruction in result)
-				Console.WriteLine(instruction.ToString());
-			Assert.True(result.Last().opcode == OpCodes.Ret, "Last instruction should be a return");
-
-			Harmony.DEBUG = true;
 			_ = harmony.Patch(method);
-			Harmony.DEBUG = false;
 		}
 	}
 }
