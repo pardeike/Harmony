@@ -194,6 +194,8 @@ namespace HarmonyLib
 			if (methodEndsInDeadCode == false || config.skipOriginalLabel is not null || config.finalizers.Count > 0 || config.postfixes.Count > 0)
 				config.AddCode(Ret);
 
+			config.instructions = FaultBlockRewriter.Rewrite(config.instructions, config.il);
+
 			if (config.debug)
 			{
 				var logEmitter = new Emitter(config.il);

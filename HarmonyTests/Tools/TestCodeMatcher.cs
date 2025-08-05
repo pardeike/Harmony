@@ -21,12 +21,10 @@ namespace HarmonyLibTests.Tools
 		static Test_CodeMatcher()
 		{
 			// make sure Debug and Release both return the same instructions
-			// also re-insert the last RET instruction since it is removed by GetOriginalInstructions
 			var method = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Method());
 			testInstructions = [.. PatchProcessor
 				.GetOriginalInstructions(method)
 				.Where(instr => instr.opcode != OpCodes.Nop)];
-			testInstructions.Add(Ret);
 			testInstructionsCount = testInstructions.Count;
 			// 00: CALL		Foo()
 			// 01: LDSTR	"A"
