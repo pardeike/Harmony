@@ -4,7 +4,7 @@
 		<HarmonyPrerelease>-prerelease</HarmonyPrerelease>
 
 		<!-- set empty to build from local LocalMonoMod submodule -->
-		<MonoModCoreVersion>1.2.3</MonoModCoreVersion>
+		<MonoModCoreVersion></MonoModCoreVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Lib.Harmony Properties" Condition="$(MSBuildProjectName.StartsWith('Lib.Harmony'))">
