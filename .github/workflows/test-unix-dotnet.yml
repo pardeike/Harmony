@@ -56,7 +56,7 @@ jobs:
     name: ${{inputs.build_configuration}}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
