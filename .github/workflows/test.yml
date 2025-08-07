@@ -3,13 +3,13 @@ name: Platform Tests
 on:
   push:
     branches:
-      - master
+      - '**'
     paths-ignore:
       - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'
   pull_request:
     branches:
-      - master
+      - '**'
     paths-ignore:
       - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'
@@ -45,7 +45,7 @@ jobs:
 
   # https://stackoverflow.com/a/77549656
   variables:
-    name: Variable Accessibility Workaround for Jobs
+    name: Preparing # variable accessibility workaround for jobs
     runs-on: ubuntu-latest
     outputs:
       EXPERIMENTAL: ${{env.EXPERIMENTAL}}
@@ -71,7 +71,7 @@ jobs:
   # Ideally we should be able to build binaries on Ubuntu to all platforms to test
   # and have a job that will create binaries on each platform and compare the output dll's
   build-binaries:
-    name: Build
+    name: Build ${{ matrix.build_configuration }}
     needs: variables
     strategy:
       matrix:

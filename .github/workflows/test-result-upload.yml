@@ -24,6 +24,7 @@ jobs:
         with:
           pattern: ${{(inputs.experimental && 'experimental-') || ''}}test-results-*
           path: test-results
+          merge-multiple: true
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2

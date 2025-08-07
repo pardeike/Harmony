@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
@@ -71,14 +71,15 @@ jobs:
           dockerRunArgs: |
             --volume "${PWD}/src:/src"
           install: |
-            apt-get update
-            apt-get install -y wget libc6 libgcc-s1 libgssapi-krb5-2 libicu70 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g
+            apt-get -yqq update
+            apt-get -yqq install --no-install-recommends \
+              wget libc6 libgcc-s1 libgssapi-krb5-2 libicu70 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g
+            rm -rf /var/lib/apt/lists/*
 
-            wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh;
-            chmod +x dotnet-install.sh;
-            ./dotnet-install.sh --channel LTS --no-path > /dev/null;
-            ./dotnet-install.sh --channel STS --no-path > /dev/null;
-            ./dotnet-install.sh --channel ${{steps.get_channel.outputs.channel}} --no-path > /dev/null;
+            wget -q https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh
+            chmod +x dotnet-install.sh
+            # Install only the required channel computed above; avoid redundant LTS/STS installs.
+            ./dotnet-install.sh --channel ${{steps.get_channel.outputs.channel}} --no-path > /dev/null
           run: |
             LD_LIBRARY_PATH="/usr/local/lib"  /root/.dotnet/dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
 
