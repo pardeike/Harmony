@@ -58,7 +58,7 @@ jobs:
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
-          path: ~/.nuget/packages
+          path: ${{ env.USERPROFILE }}\.nuget\packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
