@@ -14,9 +14,12 @@ inputs:
 
 runs:
   using: "composite"
-  steps:
-    - name: Setup .NET Sdk
-      uses: actions/setup-dotnet@v4
+    steps:
+      - name: Setup .NET Sdk
+        uses: actions/setup-dotnet@v4
+        with:
+          cache: true
+          cache-dependency-path: '**/*.csproj'
 
     - name: Get .NET Channels
       uses: ./.github/actions/get-dotnet-channel
@@ -25,9 +28,11 @@ runs:
         target_framework: ${{inputs.target_framework}}
         target_framework_array: ${{inputs.target_framework_array}}
 
-    - name: Setup .NET ${{steps.get_channels.outputs.channels_multiline}}
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          ${{steps.get_channels.outputs.channel}}
-          ${{steps.get_channels.outputs.channels_multiline}}
+      - name: Setup .NET ${{steps.get_channels.outputs.channels_multiline}}
+        uses: actions/setup-dotnet@v4
+        with:
+          cache: true
+          cache-dependency-path: '**/*.csproj'
+          dotnet-version: |
+            ${{steps.get_channels.outputs.channel}}
+            ${{steps.get_channels.outputs.channels_multiline}}

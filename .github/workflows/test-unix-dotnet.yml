@@ -61,6 +61,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 1
 
       - name: Install Rosetta 2 on macOS
         if: ${{inputs.image == 'macos-14' && inputs.architecture == 'x64'}}

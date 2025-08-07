@@ -52,56 +52,59 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  unix-mono:
-    name: ${{ inputs.build_configuration }}
-    runs-on: ${{inputs.image}}
-    continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+    unix-mono:
+      name: ${{ inputs.build_configuration }}
+      runs-on: ${{inputs.image}}
+      continue-on-error: ${{inputs.experimental}}
+      timeout-minutes: 10
+      steps:
+        - uses: actions/checkout@v4
+          with:
+            submodules: recursive
+            fetch-depth: 1
 
-      - name: Install Rosetta 2 on macOS
-        if: ${{ inputs.image == 'macos-14' && inputs.architecture == 'x64' }}
-        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+        - name: Install Rosetta 2 on macOS
+          if: ${{ inputs.image == 'macos-14' && inputs.architecture == 'x64' }}
+          run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
 
-      - name: Install Mono on Ubuntu
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gnupg ca-certificates
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-          echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-          sudo apt-get update
-          sudo apt-get install -y mono-complete
+        - name: Install Mono on Ubuntu
+          if: runner.os == 'Linux'
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y gnupg ca-certificates
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+            echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+            sudo apt-get update
+            sudo apt-get install -y mono-complete
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.102'
-        env:
-          DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
+        - name: Setup .NET SDK
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: '9.0.102'
+            cache: true
+            cache-dependency-path: '**/*.csproj'
+          env:
+            DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
 
-      - name: Get Installed .NET SDK Information
-        run: dotnet --info
+        - name: Get Installed .NET SDK Information
+          run: dotnet --info
 
-      - name: Download Build Cache
-        uses: ./.github/actions/test-build-cache
-        if: ${{!inputs.manual_build}}
-        with:
-          os: ${{inputs.os}}
-          build_configuration: ${{inputs.build_configuration}}
+        - name: Download Build Cache
+          uses: ./.github/actions/test-build-cache
+          if: ${{!inputs.manual_build}}
+          with:
+            os: ${{inputs.os}}
+            build_configuration: ${{inputs.build_configuration}}
 
-      - name: Test Mono ${{inputs.architecture}}
-        uses: ./.github/actions/test-execute-test
-        with:
-          os: ${{inputs.os}}
-          architecture: ${{inputs.architecture}}
-          runtime-type: mono
-          target_framework: ${{inputs.target_framework}}
-          target_framework_array: ${{inputs.target_framework_array}}
-          build_configuration: ${{inputs.build_configuration}}
-          manual_build: ${{inputs.manual_build}}
-          upload_tests: ${{inputs.upload_tests}}
-          experimental: ${{inputs.experimental}}
+        - name: Test Mono ${{inputs.architecture}}
+          uses: ./.github/actions/test-execute-test
+          with:
+            os: ${{inputs.os}}
+            architecture: ${{inputs.architecture}}
+            runtime-type: mono
+            target_framework: ${{inputs.target_framework}}
+            target_framework_array: ${{inputs.target_framework_array}}
+            build_configuration: ${{inputs.build_configuration}}
+            manual_build: ${{inputs.manual_build}}
+            upload_tests: ${{inputs.upload_tests}}
+            experimental: ${{inputs.experimental}}

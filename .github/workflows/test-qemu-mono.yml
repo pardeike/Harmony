@@ -37,13 +37,14 @@ env:
 jobs:
   ubuntu-mono-arm64:
     name: ${{ inputs.build_configuration }}
-    runs-on: ubuntu-latest
-    continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+      runs-on: ubuntu-latest
+      continue-on-error: ${{inputs.experimental}}
+      timeout-minutes: 10
+      steps:
+        - uses: actions/checkout@v4
+          with:
+            submodules: recursive
+            fetch-depth: 1
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
