@@ -3,7 +3,8 @@ name: Platform Tests
 on:
   push:
     branches:
-      - '**'
+      - main
+      - master
     paths-ignore:
       - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'
