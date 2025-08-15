@@ -414,13 +414,14 @@ namespace HarmonyLib
 			if (debug == false)
 				return;
 
+			var codePos = emitter.CurrentPos();
 			emitter.Variables().Do(v => FileLog.LogIL(v));
-			FileLog.LogILComment(emitter.CurrentPos(), "start original");
+			FileLog.LogILComment(codePos, "start original");
 
 			codeInstructions.Do(codeInstruction =>
 			{
-				codeInstruction.labels.Do(label => FileLog.LogIL(emitter.CurrentPos(), label));
-				codeInstruction.blocks.Do(block => FileLog.LogILBlockBegin(emitter.CurrentPos(), block));
+				codeInstruction.labels.Do(label => FileLog.LogIL(codePos, label));
+				codeInstruction.blocks.Do(block => FileLog.LogILBlockBegin(codePos, block));
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
@@ -428,19 +429,20 @@ namespace HarmonyLib
 				switch (code.OperandType)
 				{
 					case OperandType.InlineNone:
-						FileLog.LogIL(emitter.CurrentPos(), code);
+						FileLog.LogIL(codePos, code);
 						break;
 
 					case OperandType.InlineSig:
-						FileLog.LogIL(emitter.CurrentPos(), code, (ICallSiteGenerator)operand);
+						FileLog.LogIL(codePos, code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
-						FileLog.LogIL(emitter.CurrentPos(), code, operand);
+						FileLog.LogIL(codePos, code, operand);
 						break;
 				}
 
-				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(emitter.CurrentPos(), block));
+				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(codePos, block));
+				codePos += codeInstruction.GetSize();
 			});
 		}
 

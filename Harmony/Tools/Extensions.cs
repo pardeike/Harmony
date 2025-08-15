@@ -293,23 +293,64 @@ namespace HarmonyLib
 
 		static readonly HashSet<OpCode> constantLoadingCodes =
 		[
-			OpCodes.Ldc_I4_M1,
-			OpCodes.Ldc_I4_0,
-			OpCodes.Ldc_I4_1,
-			OpCodes.Ldc_I4_2,
-			OpCodes.Ldc_I4_3,
-			OpCodes.Ldc_I4_4,
-			OpCodes.Ldc_I4_5,
-			OpCodes.Ldc_I4_6,
-			OpCodes.Ldc_I4_7,
-			OpCodes.Ldc_I4_8,
-			OpCodes.Ldc_I4,
-			OpCodes.Ldc_I4_S,
-			OpCodes.Ldc_I8,
-			OpCodes.Ldc_R4,
-			OpCodes.Ldc_R8,
-			OpCodes.Ldstr
+		OpCodes.Ldc_I4_M1,
+OpCodes.Ldc_I4_0,
+OpCodes.Ldc_I4_1,
+OpCodes.Ldc_I4_2,
+OpCodes.Ldc_I4_3,
+OpCodes.Ldc_I4_4,
+OpCodes.Ldc_I4_5,
+OpCodes.Ldc_I4_6,
+OpCodes.Ldc_I4_7,
+OpCodes.Ldc_I4_8,
+OpCodes.Ldc_I4,
+OpCodes.Ldc_I4_S,
+OpCodes.Ldc_I8,
+OpCodes.Ldc_R4,
+OpCodes.Ldc_R8,
+OpCodes.Ldstr
 		];
+
+		internal static int GetSize(this CodeInstruction instruction)
+		{
+			var size = instruction.opcode.Size;
+
+			switch (instruction.opcode.OperandType)
+			{
+				case OperandType.InlineSwitch:
+					size += (1 + ((Array)instruction.operand).Length) * 4;
+					break;
+
+				case OperandType.InlineI8:
+				case OperandType.InlineR:
+					size += 8;
+					break;
+
+				case OperandType.InlineBrTarget:
+				case OperandType.InlineField:
+				case OperandType.InlineI:
+				case OperandType.InlineMethod:
+				case OperandType.InlineSig:
+				case OperandType.InlineString:
+				case OperandType.InlineTok:
+				case OperandType.InlineType:
+				case OperandType.ShortInlineR:
+					size += 4;
+					break;
+
+				case OperandType.InlineVar:
+					size += 2;
+					break;
+
+				case OperandType.ShortInlineBrTarget:
+				case OperandType.ShortInlineI:
+				case OperandType.ShortInlineVar:
+					size += 1;
+					break;
+			}
+
+			return size;
+		}
 
 		/// <summary>Returns if an <see cref="OpCode"/> is initialized and valid</summary>
 		/// <param name="code">The <see cref="OpCode"/></param>

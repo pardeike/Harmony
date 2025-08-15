@@ -560,12 +560,13 @@ namespace HarmonyLib
 
 		internal static void LogCodes(this MethodCreator _, Emitter emitter, List<CodeInstruction> codeInstructions)
 		{
+			var codePos = emitter.CurrentPos();
 			emitter.Variables().Do(v => FileLog.LogIL(v));
 
 			codeInstructions.Do(codeInstruction =>
 			{
-				codeInstruction.labels.Do(label => FileLog.LogIL(emitter.CurrentPos(), label));
-				codeInstruction.blocks.Do(block => FileLog.LogILBlockBegin(emitter.CurrentPos(), block));
+				codeInstruction.labels.Do(label => FileLog.LogIL(codePos, label));
+				codeInstruction.blocks.Do(block => FileLog.LogILBlockBegin(codePos, block));
 
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
@@ -575,21 +576,22 @@ namespace HarmonyLib
 					case OperandType.InlineNone:
 						var comment = codeInstruction.IsAnnotation();
 						if (comment != null)
-							FileLog.LogILComment(emitter.CurrentPos(), comment);
+							FileLog.LogILComment(codePos, comment);
 						else
-							FileLog.LogIL(emitter.CurrentPos(), code);
+							FileLog.LogIL(codePos, code);
 						break;
 
 					case OperandType.InlineSig:
-						FileLog.LogIL(emitter.CurrentPos(), code, (ICallSiteGenerator)operand);
+						FileLog.LogIL(codePos, code, (ICallSiteGenerator)operand);
 						break;
 
 					default:
-						FileLog.LogIL(emitter.CurrentPos(), code, operand);
+						FileLog.LogIL(codePos, code, operand);
 						break;
 				}
 
-				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(emitter.CurrentPos(), block));
+				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(codePos, block));
+				codePos += codeInstruction.GetSize();
 			});
 
 			FileLog.FlushBuffer();
