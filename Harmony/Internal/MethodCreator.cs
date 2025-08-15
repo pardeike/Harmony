@@ -199,7 +199,7 @@ namespace HarmonyLib
 			if (config.debug)
 			{
 				var logEmitter = new Emitter(config.il);
-				this.LogCodes(new Emitter(config.il), config.instructions);
+				this.LogCodes(logEmitter, config.instructions);
 			}
 
 			var codeEmitter = new Emitter(config.il);

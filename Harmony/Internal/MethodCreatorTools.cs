@@ -571,12 +571,16 @@ namespace HarmonyLib
 				var code = codeInstruction.opcode;
 				var operand = codeInstruction.operand;
 
+				var realCode = true;
 				switch (code.OperandType)
 				{
 					case OperandType.InlineNone:
 						var comment = codeInstruction.IsAnnotation();
 						if (comment != null)
+						{
 							FileLog.LogILComment(codePos, comment);
+							realCode = false;
+						}
 						else
 							FileLog.LogIL(codePos, code);
 						break;
@@ -591,7 +595,7 @@ namespace HarmonyLib
 				}
 
 				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(codePos, block));
-				codePos += codeInstruction.GetSize();
+				if (realCode) codePos += codeInstruction.GetSize();
 			});
 
 			FileLog.FlushBuffer();
