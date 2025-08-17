@@ -120,7 +120,7 @@ namespace HarmonyLib
 			copier.AddTranspiler(PatchTools.m_GetExecutingAssemblyReplacementTranspiler);
 
 			var endLabels = new List<Label>();
-			var replacement = copier.Finalize(out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
+			var replacement = copier.Finalize(true, out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
 
 			replacement = [.. AddInfixes(replacement)];
 
@@ -194,10 +194,12 @@ namespace HarmonyLib
 			if (methodEndsInDeadCode == false || config.skipOriginalLabel is not null || config.finalizers.Count > 0 || config.postfixes.Count > 0)
 				config.AddCode(Ret);
 
+			config.instructions = FaultBlockRewriter.Rewrite(config.instructions, config.il);
+
 			if (config.debug)
 			{
 				var logEmitter = new Emitter(config.il);
-				this.LogCodes(new Emitter(config.il), config.instructions);
+				this.LogCodes(logEmitter, config.instructions);
 			}
 
 			var codeEmitter = new Emitter(config.il);

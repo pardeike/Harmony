@@ -55,7 +55,7 @@ namespace HarmonyLib
 			lastError = error;
 			if (errorHandler != null)
 			{
-				errorHandler(this, error);
+				_ = errorHandler(this, error);
 				return;
 			}
 			throw new InvalidOperationException(error);

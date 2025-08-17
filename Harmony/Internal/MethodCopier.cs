@@ -1,5 +1,4 @@
 using MonoMod.Utils;
-using MonoMod.Utils.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,18 +33,10 @@ namespace HarmonyLib
 			reader.SetDebugging(config.debug);
 		}
 
-		internal void SetDebugging(bool debug) => reader.SetDebugging(debug);
-
 		internal void AddTranspiler(MethodInfo transpiler) => transpilers.Add(transpiler);
 
-		internal List<CodeInstruction> Finalize(out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
-			=> reader.FinalizeILCodes(transpilers, out hasReturnCode, out methodEndsInDeadCode, endLabels);
-
-		internal void LogCodes(Emitter emitter, List<CodeInstruction> codeInstructions)
-			=> reader.LogCodes(emitter, codeInstructions);
-
-		internal void EmitCodes(Emitter emitter, List<CodeInstruction> codeInstructions, List<Label> endLabels)
-			=> reader.EmitCodes(emitter, codeInstructions, endLabels);
+		internal List<CodeInstruction> Finalize(bool stripLastReturn, out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
+			=> reader.FinalizeILCodes(transpilers, stripLastReturn, out hasReturnCode, out methodEndsInDeadCode, endLabels);
 
 		internal static List<CodeInstruction> GetInstructions(ILGenerator generator, MethodBase method, int maxTranspilers)
 		{
@@ -65,7 +56,7 @@ namespace HarmonyLib
 					copier.AddTranspiler(sortedTranspilers[i]);
 			}
 
-			return copier.Finalize(out _, out _, null);
+			return copier.Finalize(false, out _, out _, null);
 		}
 	}
 
@@ -219,15 +210,6 @@ namespace HarmonyLib
 			ilInstructions.Add(new ILInstruction(OpCodes.Ret, null) { offset = argCount + 5 });
 		}
 
-		/*private TypeReference Resolve(ModuleDefinition module, TypeReference baseType)
-		{
-			var typeDefinition = baseType.Resolve();
-			var typeReference = module.ImportReference(typeDefinition);
-			if (baseType is ArrayType)
-				return new ArrayType(typeReference);
-			return typeReference;
-		}*/
-
 		internal void DeclareVariables(LocalBuilder[] existingVariables)
 		{
 			if (generator is null)
@@ -309,25 +291,6 @@ namespace HarmonyLib
 			}
 		}
 
-		// used in FinalizeILCodes to convert short jumps to long ones
-		static readonly Dictionary<OpCode, OpCode> shortJumps = new()
-		{
-			{ OpCodes.Leave_S, OpCodes.Leave },
-			{ OpCodes.Brfalse_S, OpCodes.Brfalse },
-			{ OpCodes.Brtrue_S, OpCodes.Brtrue },
-			{ OpCodes.Beq_S, OpCodes.Beq },
-			{ OpCodes.Bge_S, OpCodes.Bge },
-			{ OpCodes.Bgt_S, OpCodes.Bgt },
-			{ OpCodes.Ble_S, OpCodes.Ble },
-			{ OpCodes.Blt_S, OpCodes.Blt },
-			{ OpCodes.Bne_Un_S, OpCodes.Bne_Un },
-			{ OpCodes.Bge_Un_S, OpCodes.Bge_Un },
-			{ OpCodes.Bgt_Un_S, OpCodes.Bgt_Un },
-			{ OpCodes.Ble_Un_S, OpCodes.Ble_Un },
-			{ OpCodes.Br_S, OpCodes.Br },
-			{ OpCodes.Blt_Un_S, OpCodes.Blt_Un }
-		};
-
 		bool EndsInDeadCode(List<CodeInstruction> list)
 		{
 			var n = list.Count;
@@ -336,7 +299,7 @@ namespace HarmonyLib
 			return list.GetRange(0, n - 1).All(code => code.opcode != OpCodes.Ret);
 		}
 
-		internal List<CodeInstruction> FinalizeILCodes(List<MethodInfo> transpilers, out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
+		internal List<CodeInstruction> FinalizeILCodes(List<MethodInfo> transpilers, bool stripLastReturn, out bool hasReturnCode, out bool methodEndsInDeadCode, List<Label> endLabels)
 		{
 			hasReturnCode = false;
 			methodEndsInDeadCode = false;
@@ -394,7 +357,7 @@ namespace HarmonyLib
 
 			// pass4 - remove RET if it appears at the end
 			//
-			while (true)
+			while (stripLastReturn)
 			{
 				var lastInstruction = codeInstructions.LastOrDefault();
 				if (lastInstruction is null || lastInstruction.opcode != OpCodes.Ret)
@@ -407,97 +370,6 @@ namespace HarmonyLib
 			}
 
 			return codeInstructions;
-		}
-
-		internal void LogCodes(Emitter emitter, List<CodeInstruction> codeInstructions)
-		{
-			if (debug == false)
-				return;
-
-			emitter.Variables().Do(v => FileLog.LogIL(v));
-			FileLog.LogILComment(emitter.CurrentPos(), "start original");
-
-			codeInstructions.Do(codeInstruction =>
-			{
-				codeInstruction.labels.Do(label => FileLog.LogIL(emitter.CurrentPos(), label));
-				codeInstruction.blocks.Do(block => FileLog.LogILBlockBegin(emitter.CurrentPos(), block));
-
-				var code = codeInstruction.opcode;
-				var operand = codeInstruction.operand;
-
-				switch (code.OperandType)
-				{
-					case OperandType.InlineNone:
-						FileLog.LogIL(emitter.CurrentPos(), code);
-						break;
-
-					case OperandType.InlineSig:
-						FileLog.LogIL(emitter.CurrentPos(), code, (ICallSiteGenerator)operand);
-						break;
-
-					default:
-						FileLog.LogIL(emitter.CurrentPos(), code, operand);
-						break;
-				}
-
-				codeInstruction.blocks.Do(block => FileLog.LogILBlockEnd(emitter.CurrentPos(), block));
-			});
-		}
-
-		internal void EmitCodes(Emitter emitter, List<CodeInstruction> codeInstructions, List<Label> endLabels)
-		{
-			// pass5 - mark labels and exceptions and emit codes
-			//
-			codeInstructions.Do(codeInstruction =>
-			{
-				// mark all labels
-				codeInstruction.labels.Do(label => emitter.MarkLabel(label));
-
-				// start all exception blocks
-				// we ignore the resulting label because we have no way to use it
-				codeInstruction.blocks.Do(block => emitter.MarkBlockBefore(block, out var _));
-
-				var code = codeInstruction.opcode;
-				var operand = codeInstruction.operand;
-
-				// replace RET with a jump to the end (outside this code)
-				if (code == OpCodes.Ret)
-				{
-					var endLabel = generator.DefineLabel();
-					code = OpCodes.Br;
-					operand = endLabel;
-					endLabels.Add(endLabel);
-				}
-
-				// replace short jumps with long ones (can be optimized but requires byte counting, not instruction counting)
-				if (shortJumps.TryGetValue(code, out var longJump))
-					code = longJump;
-
-				switch (code.OperandType)
-				{
-					case OperandType.InlineNone:
-						emitter.Emit(code);
-						break;
-
-					case OperandType.InlineSig:
-						if (operand is null)
-							throw new Exception($"Wrong null argument: {codeInstruction}");
-						if (operand is ICallSiteGenerator callSiteGenerator)
-							emitter.AddInstruction(code, callSiteGenerator);
-						else
-							throw new Exception($"Wrong Emit argument type {operand.GetType()} in {codeInstruction}");
-						break;
-
-					default:
-						if (operand is null)
-							throw new Exception($"Wrong null argument: {codeInstruction}");
-						emitter.AddInstruction(code, operand);
-						_ = generator.DynEmit(code, operand);
-						break;
-				}
-
-				codeInstruction.blocks.Do(block => emitter.MarkBlockAfter(block));
-			});
 		}
 
 		// interpret member info value

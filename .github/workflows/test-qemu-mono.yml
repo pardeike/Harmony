@@ -42,6 +42,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
@@ -63,9 +65,11 @@ jobs:
           dockerRunArgs: |
             --volume "${PWD}/src:/src"
           install: |
-            apt-get update
-            apt-get install -y wget libc6 libgcc-s1 libgssapi-krb5-2 libicu70 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g mono-devel
-            
+            apt-get -yqq update
+            apt-get -yqq install --no-install-recommends \
+              wget libc6 libgcc-s1 libgssapi-krb5-2 libicu70 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g mono-devel
+            rm -rf /var/lib/apt/lists/*
+
             wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh;
             chmod +x dotnet-install.sh;
             ./dotnet-install.sh --channel LTS --no-path > /dev/null;

@@ -311,6 +311,46 @@ namespace HarmonyLib
 			OpCodes.Ldstr
 		];
 
+		internal static int GetSize(this CodeInstruction instruction)
+		{
+			var size = instruction.opcode.Size;
+			switch (instruction.opcode.OperandType)
+			{
+				case OperandType.InlineSwitch:
+					size += (1 + ((Array)instruction.operand).Length) * 4;
+					break;
+
+				case OperandType.InlineI8:
+				case OperandType.InlineR:
+					size += 8;
+					break;
+
+				case OperandType.InlineBrTarget:
+				case OperandType.InlineField:
+				case OperandType.InlineI:
+				case OperandType.InlineMethod:
+				case OperandType.InlineSig:
+				case OperandType.InlineString:
+				case OperandType.InlineTok:
+				case OperandType.InlineType:
+				case OperandType.ShortInlineR:
+					size += 4;
+					break;
+
+				case OperandType.InlineVar:
+					size += 2;
+					break;
+
+				case OperandType.ShortInlineBrTarget:
+				case OperandType.ShortInlineI:
+				case OperandType.ShortInlineVar:
+					size += 1;
+					break;
+			}
+
+			return size;
+		}
+
 		/// <summary>Returns if an <see cref="OpCode"/> is initialized and valid</summary>
 		/// <param name="code">The <see cref="OpCode"/></param>
 		/// <returns></returns>

@@ -407,4 +407,13 @@ namespace HarmonyLibTests.Assets
 		public CodeInstruction WIthoutContext() => CodeInstruction.CallClosure<Func<string, string>>(input => { return $"[{input}]"; });
 		public CodeInstruction WithContext() => CodeInstruction.CallClosure(() => { field2 = field1; });
 	}
+
+	public class ClassTestingIEnumerable
+	{
+		public static IEnumerable<string> IEnumerable1(List<string> input)
+		{
+			foreach (var i in input)
+				yield return i;
+		}
+	}
 }

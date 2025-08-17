@@ -15,5 +15,6 @@ runs:
     - name: Download Build Cache
       uses: actions/download-artifact@v4
       with:
-        name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
+        pattern: build-output-${{inputs.os}}-${{inputs.build_configuration}}*
         path: HarmonyTests/bin/
+        merge-multiple: true

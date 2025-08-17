@@ -3,6 +3,9 @@ using HarmonyLibTests.Assets;
 using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 #if NET6_0_OR_GREATER
 using System.Net.Http;
 using System.Reflection.Emit;
@@ -463,6 +466,17 @@ namespace HarmonyLibTests.Patching
 
 			_ = instance.WithContext();
 			Assert.AreEqual(CodeInstruction.State.closureCache.Count, 2);
+		}
+
+		[Test]
+		public void Test_PatchEnumerables()
+		{
+			var type = AccessTools.InnerTypes(typeof(ClassTestingIEnumerable)).FirstOrDefault();
+			Assert.NotNull(type);
+			var harmony = new Harmony("test");
+			var method = AccessTools.DeclaredMethod(type, "MoveNext");
+			Assert.NotNull(method);
+			_ = harmony.Patch(method);
 		}
 	}
 }

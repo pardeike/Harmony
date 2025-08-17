@@ -1,15 +1,17 @@
 <Project>
 	<PropertyGroup Label="Harmony Defines">
-		<HarmonyVersion>2.3.6.0</HarmonyVersion>
-		<HarmonyPrerelease></HarmonyPrerelease>
-		<MonoModCoreVersion>1.2.3</MonoModCoreVersion>
+		<HarmonyVersion>2.3.7.0</HarmonyVersion>
+		<HarmonyPrerelease>-prerelease</HarmonyPrerelease>
+
+		<!-- set empty to build from local LocalMonoMod submodule -->
+		<MonoModCoreVersion></MonoModCoreVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Lib.Harmony Properties" Condition="$(MSBuildProjectName.StartsWith('Lib.Harmony'))">
 		<Version>$(HarmonyVersion)</Version>
 		<AssemblyVersion>$(HarmonyVersion)</AssemblyVersion>
 		<FileVersion>$(HarmonyVersion)</FileVersion>
-		
+
 		<InformationalVersion>$(HarmonyVersion)$(HarmonyPrerelease)</InformationalVersion>
 		<PackageVersion>$(HarmonyVersion)$(HarmonyPrerelease)</PackageVersion>
 
@@ -25,7 +27,7 @@
 		<LangVersion>preview</LangVersion>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 		<IsLibHarmonyProject Condition="'$(IsLibHarmonyProject)' == ''">false</IsLibHarmonyProject>
-		
+
 		<!-- Remove netstandard2.0 from /lib in NuGet -->
 		<IncludeBuildOutput Condition="$(TargetFramework)=='netstandard2.0'">false</IncludeBuildOutput>
 

@@ -56,9 +56,11 @@ jobs:
     name: ${{inputs.build_configuration}}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 10
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install Rosetta 2 on macOS
         if: ${{inputs.image == 'macos-14' && inputs.architecture == 'x64'}}
@@ -81,7 +83,8 @@ jobs:
           target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
 
-      - name: Get Installed .NET Sdk Information
+      - name: Dotnet info (only if previous steps failed)
+        if: ${{ failure() }}
         run: dotnet --info
         shell: pwsh
 

@@ -2,6 +2,10 @@
   <PropertyGroup>
     <!-- Not set by default for net3.5 -->
     <IsTestProject>true</IsTestProject>
+    <!-- for testing in 32bit
+	 <PlatformTarget>x86</PlatformTarget>
+    <UseX86Host>true</UseX86Host>
+	 -->
   </PropertyGroup>
   
   <ItemGroup>
@@ -16,7 +20,7 @@
     <!-- end force -->
     
     <PackageReference Condition="!$(IsNET5OrGreater)" Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Condition="$(IsNET5OrGreater)"  Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Condition="$(IsNET5OrGreater)" Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
