@@ -156,7 +156,7 @@ namespace HarmonyLib
 				var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
 				if (harmonyAttributes.Count == 0) continue;
 				var containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
-				string? category = containerAttributes.category;
+				var category = containerAttributes.category;
 				if (!string.IsNullOrEmpty(category))
 				{
 					if (!toBuild.TryGetValue(category, out var typeList))
