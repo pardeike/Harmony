@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
@@ -132,21 +133,41 @@ namespace HarmonyLib
 			PatchCategory(assembly, category);
 		}
 
+		private static readonly ConditionalWeakTable<Assembly, Dictionary<string, List<Type>>> AssemblyCachedCategories = new();
+
 		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs with a specific category and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
 		/// <param name="category">Name of patch category</param>
 		///
 		public void PatchCategory(Assembly assembly, string category)
 		{
-			AccessTools.GetTypesFromAssembly(assembly)
-				.Where(type =>
+			var categoryCache = AssemblyCachedCategories.GetValue(assembly, BuildCategoryCache);
+			if (categoryCache.TryGetValue(category, out var toPatch))
+			{
+				toPatch.Do(type => CreateClassProcessor(type).Patch());
+			}
+		}
+
+		private static Dictionary<string, List<Type>> BuildCategoryCache(Assembly assembly)
+		{
+			Dictionary<string, List<Type>> toBuild = [];
+			foreach (var type in AccessTools.GetTypesFromAssembly(assembly))
+			{
+				var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
+				if (harmonyAttributes.Count == 0) continue;
+				var containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
+				string? category = containerAttributes.category;
+				if (!string.IsNullOrEmpty(category))
 				{
-					var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
-					if (harmonyAttributes.Count == 0) return false;
-					var containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
-					return containerAttributes.category == category;
-				})
-				.Do(type => CreateClassProcessor(type).Patch());
+					if (!toBuild.TryGetValue(category, out var typeList))
+					{
+						typeList ??= [];
+					}
+					typeList.Add(type);
+					toBuild[category] = typeList;
+				}
+			}
+			return toBuild;
 		}
 
 		/// <summary>Creates patches by manually specifying the methods</summary>
@@ -239,15 +260,11 @@ namespace HarmonyLib
 		///
 		public void UnpatchCategory(Assembly assembly, string category)
 		{
-			AccessTools.GetTypesFromAssembly(assembly)
-				.Where(type =>
-				{
-					var harmonyAttributes = HarmonyMethodExtensions.GetFromType(type);
-					if (harmonyAttributes.Count == 0) return false;
-					var containerAttributes = HarmonyMethod.Merge(harmonyAttributes);
-					return containerAttributes.category == category;
-				})
-				.Do(type => CreateClassProcessor(type).Unpatch());
+			var categoryCache = AssemblyCachedCategories.GetValue(assembly, BuildCategoryCache);
+			if (categoryCache.TryGetValue(category, out var toPatch))
+			{
+				toPatch.Do(type => CreateClassProcessor(type).Unpatch());
+			}
 		}
 
 		/// <summary>Test for patches from a specific Harmony ID</summary>
