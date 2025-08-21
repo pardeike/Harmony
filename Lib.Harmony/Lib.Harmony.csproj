@@ -33,7 +33,6 @@
     <PackageReference Condition="$(TargetFramework) == 'net6.0'" Include="Microsoft.NetCore.App.Ref" Version="6.0.36" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Condition="$(TargetFramework) == 'net7.0'" Include="Microsoft.NetCore.App.Ref" Version="7.0.20" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Condition="$(TargetFramework) == 'net8.0'" Include="Microsoft.NetCore.App.Ref" Version="8.0.12" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Condition="$(TargetFramework) == 'net9.0'" Include="Microsoft.NetCore.App.Ref" Version="9.0.1" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
   </ItemGroup>
 
   <!-- Replace Code with reference to Lib.Harmony.Ref for netstandard2.0 -->
