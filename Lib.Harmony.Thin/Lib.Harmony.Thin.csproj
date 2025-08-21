@@ -2,6 +2,7 @@
   <PropertyGroup>
     <PackageId>Lib.Harmony.Thin</PackageId>
     <TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
+    <DefineConstants>$(DefineConstants);HARMONY_THIN</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Configuration.StartsWith('Release'))">
