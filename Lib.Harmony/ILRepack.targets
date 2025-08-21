@@ -7,7 +7,7 @@
 		</PropertyGroup>
 		
 		<ItemGroup>
-			<InputAssemblies Include="$(OutputPath)\0Harmony.dll" />
+			<PrimaryAssembly Include="$(OutputPath)\0Harmony.dll" />
 			<InputAssemblies Include="$(OutputPath)\Mono*.dll" />
 			<InputAssemblies Include="$(OutputPath)\System*.dll" />
 		</ItemGroup>
@@ -22,14 +22,13 @@
 		</ItemGroup>
 		
 		<ILRepack
-			InputAssemblies="@(InputAssemblies)"
+			InputAssemblies="@(PrimaryAssembly);@(InputAssemblies)"
 			LibraryPath="@(LibraryPath)"
 			OutputFile="$(OutputPath)\$(AssemblyName).dll"
 			DebugInfo="$(DebugInfo)"
 			CopyAttributes="false"
 			XmlDocumentation="true"
 			Internalize="true"
-			InternalizeExclude="$(MSBuildThisFileDirectory)internalize.txt"
 			Parallel="true"
 			TargetKind="Dll"
 			Wildcards="true"
