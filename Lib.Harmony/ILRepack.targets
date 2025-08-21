@@ -7,7 +7,9 @@
 		</PropertyGroup>
 		
 		<ItemGroup>
-			<InputAssemblies Include="$(OutputPath)\*.dll" />
+			<InputAssemblies Include="$(OutputPath)\0Harmony.dll" />
+			<InputAssemblies Include="$(OutputPath)\Mono*.dll" />
+			<InputAssemblies Include="$(OutputPath)\System*.dll" />
 		</ItemGroup>
 		
 		<ItemGroup>
@@ -27,6 +29,7 @@
 			CopyAttributes="false"
 			XmlDocumentation="true"
 			Internalize="true"
+			InternalizeExclude="$(MSBuildThisFileDirectory)internalize.txt"
 			Parallel="true"
 			TargetKind="Dll"
 			Wildcards="true"

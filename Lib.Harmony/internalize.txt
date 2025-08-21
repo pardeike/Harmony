@@ -1,0 +1,7 @@
+# ILRepack internalization exclusion file
+# Types matching these patterns will remain PUBLIC (not internalized)
+# All other types will be internalized
+
+# Keep HarmonyLib types public
+HarmonyLib
+HarmonyLib.*
