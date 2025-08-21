@@ -228,11 +228,20 @@ namespace HarmonyLib
 
 		/// <summary>Logs information about a local variable in Intermediate Language (IL) code</summary>
 		/// <remarks>The logged information includes the variable's index, type, and whether it is pinned.</remarks>
+		/// <param name="index">The index of the local variable</param>
+		/// <param name="variableTypeFullName">The full name of the variable type</param>
+		/// <param name="isPinned">Whether the variable is pinned</param>
+		/// 
+		public static void LogIL(int index, string variableTypeFullName, bool isPinned)
+			=> LogBuffered(string.Format("{0}Local var {1}: {2}{3}", CodePos(0), index, variableTypeFullName, isPinned ? "(pinned)" : ""));
+
+		/// <summary>Logs information about a local variable in Intermediate Language (IL) code</summary>
+		/// <remarks>The logged information includes the variable's index, type, and whether it is pinned.</remarks>
 		/// <param name="variable">The <see cref="Mono.Cecil.Cil.VariableDefinition"/> representing the local variable to log. Must not be <see
 		/// langword="null"/>.</param>
 		/// 
 		public static void LogIL(Mono.Cecil.Cil.VariableDefinition variable)
-			=> LogBuffered(string.Format("{0}Local var {1}: {2}{3}", CodePos(0), variable.Index, variable.VariableType.FullName, variable.IsPinned ? "(pinned)" : ""));
+			=> LogIL(variable.Index, variable.VariableType.FullName, variable.IsPinned);
 
 		/// <summary>Logs the intermediate language (IL) code at the specified position with the given label operand</summary>
 		/// <remarks>Formats and logs the IL code position and label operand for detailed IL tracking or debugging.</remarks>
