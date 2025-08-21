@@ -374,9 +374,13 @@ namespace HarmonyLib
 				}
 
 				var arr = new byte[len];
-				Marshal.Copy((IntPtr)ptr, arr, 0, len);
+				Marshal.Copy(checked((IntPtr)ptr), arr, 0, len);
+#if NET6_0_OR_GREATER
+				var hash = MD5.HashData(arr);
+#else
 				var md5Hash = MD5.Create();
 				var hash = md5Hash.ComputeHash(arr);
+#endif
 				var sBuilder = new StringBuilder();
 				for (var i = 0; i < hash.Length; i++)
 					_ = sBuilder.Append(hash[i].ToString("X2"));

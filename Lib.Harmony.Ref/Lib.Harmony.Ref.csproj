@@ -9,7 +9,6 @@
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 
     <PackageId>Lib.Harmony.Ref</PackageId>
-    <DefineConstants>$(DefineConstants);HARMONY_THIN</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

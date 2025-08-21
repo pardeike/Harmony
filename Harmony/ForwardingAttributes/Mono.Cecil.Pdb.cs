@@ -1,4 +1,4 @@
-#if HARMONY_THIN && (NETFRAMEWORK || NETSTANDARD)
+#if NETFRAMEWORK || NETSTANDARD
 using System.Runtime.CompilerServices;
 
 [assembly: TypeForwardedTo(typeof(Mono.Cecil.Pdb.NativePdbReader))]
