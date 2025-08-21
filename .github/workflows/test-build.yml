@@ -48,11 +48,13 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.101'
 
       - name: Build
         run: |
           if [[ "${{inputs.build_configuration}}" == 'ReleaseRef' ]]; then
-            dotnet build -c ${{inputs.build_configuration}} Harmony/Harmony.csproj
+            dotnet build -c Release Lib.Harmony.Ref/Lib.Harmony.Ref.csproj
           else
             dotnet build -c ${{inputs.build_configuration}} Harmony.sln
           fi
@@ -64,8 +66,8 @@ jobs:
           path: HarmonyTests/bin/**/*
 
       - name: Upload Harmony zip
-        if: ${{inputs.publish}}
+        if: ${{inputs.publish && inputs.build_configuration == 'Release'}}
         uses: actions/upload-artifact@v4
         with:
           name: Harmony-${{inputs.build_configuration}}-${{inputs.os}}
-          path: Harmony/bin/*.zip
+          path: packages/*.zip

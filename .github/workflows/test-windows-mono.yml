@@ -46,7 +46,7 @@ env:
 jobs:
   windows-mono:
     name: ${{ inputs.build_configuration }}
-    runs-on: windows-latest
+    runs-on: windows-2025
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 10
     steps:
@@ -56,6 +56,8 @@ jobs:
 
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.101'
 
       - name: Get Installed .NET Sdk Information
         run: dotnet --info

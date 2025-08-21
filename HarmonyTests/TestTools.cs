@@ -290,7 +290,7 @@ namespace HarmonyLibTests
 				// Indirect ways to determine whether the adapter is used in various ways:
 				// 1) process name starts with "testhost" (e.g. testhost.x86)
 				// 2) process name starts with "vstest" (e.g. vstest.console)
-				var process = Process.GetCurrentProcess();
+				using var process = Process.GetCurrentProcess();
 				if (process.ProcessName.StartsWith("testhost") || process.ProcessName.StartsWith("vstest"))
 					throw GetExplicitException(test);
 				// 3) process modules include a *VisualStudio* dll
