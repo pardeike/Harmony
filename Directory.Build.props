@@ -22,7 +22,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Label="Build Configuration">
-		<TargetFrameworks>net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>net35;net452;net472;net48;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>preview</LangVersion>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
@@ -32,7 +32,7 @@
 		<IncludeBuildOutput Condition="$(TargetFramework)=='netstandard2.0'">false</IncludeBuildOutput>
 
 		<IsNET5OrGreater>false</IsNET5OrGreater>
-		<IsNET5OrGreater Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0' Or '$(TargetFramework)'=='net9.0'">true</IsNET5OrGreater>
+		<IsNET5OrGreater Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0' Or '$(TargetFramework)'=='net8.0'">true</IsNET5OrGreater>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Package Configuration" Condition="$(IsLibHarmonyProject)">
@@ -78,7 +78,6 @@
 		<!-- 7.0.4 has security issues -->
 		<PackageReference Condition="'$(TargetFramework)'=='net7.0'" Include="System.Text.Json" Version="8.0.5" />
 		<PackageReference Condition="'$(TargetFramework)'=='net8.0'" Include="System.Text.Json" Version="8.0.5" />
-		<PackageReference Condition="'$(TargetFramework)'=='net9.0'" Include="System.Text.Json" Version="9.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsLibHarmonyProject)">
