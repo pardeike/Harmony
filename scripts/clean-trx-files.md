@@ -20,8 +20,8 @@ lxml.etree.XMLSyntaxError: Extra content at the end of the document, line 1687, 
 The `scripts/clean-trx-files.py` script:
 
 1. **Sanitizes XML content** by properly escaping special characters in `<StdOut>` sections
-2. **Removes extra content** after the `</TestRun>` closing tag
-3. **Preserves XML validity** while cleaning problematic content
+2. **Trims extra content** after the final `</TestRun>` closing tag
+3. **Validates cleaned XML** and deletes files that remain invalid to prevent parser errors
 
 ## Integration
 
