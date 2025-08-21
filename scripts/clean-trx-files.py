@@ -4,10 +4,11 @@ Script to clean TRX files by sanitizing XML content and removing extra content.
 This fixes XML parsing errors caused by invalid characters or extra content in TRX files.
 """
 
-import os
 import glob
-import sys
+import os
 import re
+import sys
+import xml.etree.ElementTree as ET
 import xml.sax.saxutils
 
 def sanitize_xml_content(content):
@@ -38,50 +39,61 @@ def sanitize_xml_content(content):
     return content
 
 def clean_trx_file(file_path):
-    """Clean a single TRX file by sanitizing content and removing extra content after </TestRun>"""
+    """Clean a single TRX file and remove it if it cannot be fixed."""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
+        with open(file_path, 'rb') as f:
+            raw = f.read()
+        try:
+            content = raw.decode('utf-8')
+        except UnicodeDecodeError:
+            content = raw.decode('utf-16')
+
         original_content = content
         modified = False
-        
-        # First, sanitize XML content
+
+        # Sanitize XML content
         content = sanitize_xml_content(content)
         if content != original_content:
             modified = True
             print(f"Sanitized XML content in {file_path}")
-        
-        # Find the closing TestRun tag
+
+        # Remove anything after the last </TestRun>
         end_tag = '</TestRun>'
-        end_index = content.find(end_tag)
-        
+        end_index = content.rfind(end_tag)
         if end_index == -1:
-            print(f"Warning: {file_path} does not contain {end_tag} tag")
-            return False
-        
-        # Check if there's extra content after the closing tag (whitespace is OK)
+            print(f"Warning: {file_path} missing {end_tag}; removing file")
+            os.remove(file_path)
+            return True
+
         expected_end = end_index + len(end_tag)
-        remaining_content = content[expected_end:].strip()
-        
-        if remaining_content:
-            # Trim everything after the closing tag
+        if content[expected_end:].strip():
             content = content[:expected_end]
             modified = True
-            print(f"Removed extra content after {end_tag} in {file_path}")
-        
-        # Write the cleaned content back if modified
+            print(f"Trimmed content after {end_tag} in {file_path}")
+
+        # Validate XML; delete file if still invalid
+        try:
+            ET.fromstring(content)
+        except ET.ParseError as e:
+            print(f"Invalid XML in {file_path}: {e}; removing file")
+            os.remove(file_path)
+            return True
+
         if modified:
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             return True
-        else:
-            print(f"No cleaning needed for {file_path}")
-            return False
-            
-    except Exception as e:
-        print(f"Error cleaning {file_path}: {e}")
+
+        print(f"No cleaning needed for {file_path}")
         return False
+
+    except Exception as e:
+        print(f"Error cleaning {file_path}: {e}; removing file")
+        try:
+            os.remove(file_path)
+        except Exception:
+            pass
+        return True
 
 def main():
     """Clean all TRX files found recursively"""
