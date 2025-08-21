@@ -231,7 +231,7 @@ namespace HarmonyLib
 		/// <param name="variable">The <see cref="Mono.Cecil.Cil.VariableDefinition"/> representing the local variable to log. Must not be <see
 		/// langword="null"/>.</param>
 		/// 
-		public static void LogIL(Mono.Cecil.Cil.VariableDefinition variable)
+		internal static void LogIL(Mono.Cecil.Cil.VariableDefinition variable)
 			=> LogBuffered(string.Format("{0}Local var {1}: {2}{3}", CodePos(0), variable.Index, variable.VariableType.FullName, variable.IsPinned ? "(pinned)" : ""));
 
 		/// <summary>Logs the intermediate language (IL) code at the specified position with the given label operand</summary>

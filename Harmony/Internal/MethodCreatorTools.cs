@@ -561,7 +561,7 @@ namespace HarmonyLib
 		internal static void LogCodes(this MethodCreator _, Emitter emitter, List<CodeInstruction> codeInstructions)
 		{
 			var codePos = emitter.CurrentPos();
-			emitter.Variables().Do(v => FileLog.LogIL(v));
+			emitter.Variables().Do(FileLog.LogIL);
 
 			codeInstructions.Do(codeInstruction =>
 			{
