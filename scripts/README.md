@@ -1,44 +1,46 @@
-# TRX File Cleanup Script
+# Scripts Directory
 
-This script fixes XML parsing errors in TRX test result files caused by problematic content in the `<StdOut>` sections or extra content after the closing `</TestRun>` tag.
+This directory contains utility scripts for building, testing, and maintaining the Harmony project.
 
-## Problem
+## Scripts Overview
 
-The Platform Tests were generating TRX files that caused XML parsing errors:
-```
-Error processing result file: Extra content at the end of the document, line 1684, column 11
-lxml.etree.XMLSyntaxError: Extra content at the end of the document, line 1687, column 11
-```
+### `build-with-local-monomod.sh`
+Build script that cleans, restores, and builds the project with local MonoMod configuration.
 
-## Root Cause
-
-1. **XML Character Escaping**: NUnit console output within `<StdOut>` sections contained special characters (like single quotes) that weren't properly escaped for XML
-2. **Extra Content**: Potential for content to be appended after the `</TestRun>` closing tag
-
-## Solution
-
-The `scripts/clean-trx-files.py` script:
-
-1. **Sanitizes XML content** by properly escaping special characters in `<StdOut>` sections
-2. **Removes extra content** after the `</TestRun>` closing tag
-3. **Preserves XML validity** while cleaning problematic content
-
-## Integration
-
-The script is automatically run before test result upload in `.github/actions/test-upload-result/action.yml`:
-
-```yaml
-- name: Clean TRX files
-  run: python3 scripts/clean-trx-files.py
-  shell: bash
-  if: ${{success() || failure()}}
+**Usage:**
+```bash
+./scripts/build-with-local-monomod.sh
 ```
 
-## Usage
+### `clean-trx-files.py`
+Python script that fixes XML parsing errors in TRX test result files by sanitizing problematic content and removing extra content after closing tags.
 
-To run manually:
+**Usage:**
 ```bash
 python3 scripts/clean-trx-files.py
 ```
 
-The script will find all `*.trx` files recursively and clean them as needed.
+**Details:** See [clean-trx-files.md](clean-trx-files.md) for comprehensive documentation.
+
+### `pack.ps1`
+PowerShell script for packaging and creating release builds of the Harmony library across multiple configurations.
+
+**Usage:**
+```powershell
+.\scripts\pack.ps1
+```
+
+### `test.sh`
+Simple test runner script that executes the project's test suite with optimized settings.
+
+**Usage:**
+```bash
+./scripts/test.sh
+```
+
+## Requirements
+
+- **Bash scripts**: Require bash shell (Linux/macOS/WSL)
+- **PowerShell scripts**: Require PowerShell (Windows/PowerShell Core)
+- **Python scripts**: Require Python 3.x
+- **All scripts**: Require .NET SDK and should be run from the project root directory
