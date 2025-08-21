@@ -25,10 +25,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Clean TRX files
-      run: python3 scripts/clean-trx-files.py
-      shell: bash
-      if: ${{success() || failure()}}
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
       if: ${{success() || failure()}}

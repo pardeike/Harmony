@@ -12,16 +12,6 @@ Build script that cleans, restores, and builds the project with local MonoMod co
 ./scripts/build-with-local-monomod.sh
 ```
 
-### `clean-trx-files.py`
-Python script that fixes XML parsing errors in TRX test result files by sanitizing problematic content and removing extra content after closing tags.
-
-**Usage:**
-```bash
-python3 scripts/clean-trx-files.py
-```
-
-**Details:** See [clean-trx-files.md](clean-trx-files.md) for comprehensive documentation.
-
 ### `pack.ps1`
 PowerShell script for packaging and creating release builds of the Harmony library across multiple configurations.
 

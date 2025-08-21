@@ -24,9 +24,9 @@ namespace HarmonyLibTests
 
 	public static class TestTools
 	{
-		// Change this from TestContext.Out to TestContext.Error for immediate output to stderr to help diagnose crashes.
+		// Using TestContext.Error for immediate output to stderr to prevent TRX file corruption.
 		// Note: Must be a property rather than a field, since the specific TestContext streams can change between tests.
-		static TextWriter LogWriter => TestContext.Out;
+		static TextWriter LogWriter => TestContext.Error;
 
 		public static void WriteLine(string _) { }
 
