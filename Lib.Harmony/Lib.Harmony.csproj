@@ -12,6 +12,9 @@
   </PropertyGroup>
 
   <Import Project="..\Harmony\Harmony.projitems" Label="Shared" />
+	<ItemGroup>
+		<Compile Remove="..\Harmony\ForwardingAttributes\*.cs" />
+	</ItemGroup>
 
   <ItemGroup>
     <None Include="../_._" Pack="true" Visible="false" PackagePath="lib/netstandard2.0" />
