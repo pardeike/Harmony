@@ -46,7 +46,7 @@ env:
 jobs:
   unix-net:
     name: ${{ inputs.build_configuration }}
-    runs-on: windows-latest
+    runs-on: windows-2025
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 10
     steps:
