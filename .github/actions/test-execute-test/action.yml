@@ -112,6 +112,64 @@ runs:
           }
         shell: pwsh
 
+    # Debug step to locate TRX files
+    - name: Debug - Find TRX files
+      if: ${{always() || failure()}}
+      run: |
+        echo "Searching for TRX files in current directory and subdirectories..."
+        
+        if ('${{runner.os}}' -eq 'Windows') {
+          Get-ChildItem -Path . -Include *.trx -Recurse | ForEach-Object { $_.FullName }
+          
+          echo "Checking TestResults directories:"
+          Get-ChildItem -Path . -Include TestResults -Directory -Recurse | ForEach-Object {
+            $dir = $_.FullName
+            echo "Files in $dir:"
+            Get-ChildItem -Path $dir -Recurse | ForEach-Object { $_.FullName }
+          }
+        } else {
+          find . -name "*.trx" -type f
+          
+          echo "Checking TestResults directories:"
+          find . -type d -name "TestResults" | while read dir; do
+            echo "Files in $dir:"
+            find "$dir" -type f
+          done
+        }
+      shell: pwsh
+
+    # Copy TRX files to a common location to ensure they're found
+    - name: Copy TRX files to common location
+      if: ${{always() || failure()}}
+      run: |
+        # Create a directory for all TRX files
+        mkdir -p test_results_collection
+        
+        if ('${{runner.os}}' -eq 'Windows') {
+          # Find and copy all TRX files to the collection directory
+          Get-ChildItem -Path . -Include *.trx -Recurse | ForEach-Object {
+            $destFile = Join-Path "test_results_collection" $_.Name
+            Copy-Item -Path $_.FullName -Destination $destFile -Force
+            echo "Copied $($_.FullName) to $destFile"
+          }
+        } else {
+          # Find and copy all TRX files to the collection directory
+          find . -name "*.trx" -type f | while read file; do
+            filename=$(basename "$file")
+            cp "$file" "test_results_collection/$filename"
+            echo "Copied $file to test_results_collection/$filename"
+          done
+        }
+        
+        # List files in collection directory
+        echo "Files in collection directory:"
+        if ('${{runner.os}}' -eq 'Windows') {
+          Get-ChildItem -Path test_results_collection
+        } else {
+          ls -la test_results_collection
+        }
+      shell: pwsh
+
     - name: Upload Test Result
       uses: ./.github/actions/test-upload-result
       if: ${{(inputs.upload_tests == 'true') && (always() || failure())}}

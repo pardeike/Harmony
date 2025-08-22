@@ -19,6 +19,14 @@ jobs:
         with:
           submodules: recursive
 
+      # Extensive debugging to find TRX files
+      - name: Search for TRX files in GitHub workspace
+        if: always()
+        run: |
+          echo "Searching for TRX files in all artifact directories..."
+          find $GITHUB_WORKSPACE -name "*.trx" -type f | sort
+        shell: bash
+
       - name: Download Test Results
         uses: actions/download-artifact@v4
         with:
@@ -31,6 +39,21 @@ jobs:
         run: |
           echo "Listing files in test-results directory:"
           find test-results -type f | sort
+          
+          echo "Checking for any TRX files in test-results:"
+          find test-results -name "*.trx" -type f | sort
+          
+          echo "Contents of test-results directory:"
+          ls -la test-results
+        shell: bash
+
+      - name: List All Artifacts
+        if: always()
+        run: |
+          echo "Available artifacts:"
+          # Unfortunately, we can't directly list available artifacts in GitHub Actions
+          # So we'll check what was downloaded
+          find . -type d -maxdepth 2 | sort
         shell: bash
 
       - name: Publish Test Results
@@ -46,8 +69,17 @@ jobs:
       - name: Debug Info
         if: always()
         run: |
-          echo "Experimential flag is set to '${{ inputs.experimental }}'"
+          echo "Experimental flag is set to '${{ inputs.experimental }}'"
           echo "GITHUB_WORKSPACE is '${{ github.workspace }}'"
           echo "Current directory contents:"
           ls -la
+          
+          echo "Testing alternative TRX file paths for EnricoMi action:"
+          find . -name "*.trx" -type f > trx_files.txt
+          if [ -s trx_files.txt ]; then
+            echo "Found TRX files in current directory structure:"
+            cat trx_files.txt
+          else
+            echo "No TRX files found in current directory structure."
+          fi
         shell: bash
