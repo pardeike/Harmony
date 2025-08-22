@@ -20,20 +20,17 @@ inputs:
   experimental:
     description: 'Whether the tests are mandatory for the build to pass'
     required: true
-    #type: boolean # We don't have boolean types in composites https://github.com/actions/runner/issues/2238
 
 runs:
   using: "composite"
   steps:
-    - name: Clean TRX files
-      run: python3 scripts/clean-trx-files.py
-      shell: bash
-      if: ${{success() || failure()}}
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
-      if: ${{success() || failure()}}
+      if: success() || failure()
       with:
-        name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-        path: '**/*.trx'
-        if-no-files-found: ${{(inputs.experimental == 'true' && 'ignore') || 'warn'}}
+        name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
+        path: |
+          TestResults/*.trx
+        if-no-files-found: warn
+        retention-days: 1
         compression-level: 0

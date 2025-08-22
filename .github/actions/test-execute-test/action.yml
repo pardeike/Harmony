@@ -47,12 +47,6 @@ runs:
         $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}';
         "run_settings_args=$run_settings_args" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        $vstest = "--logger:trx --logger:'console;verbosity=normal' --blame";
-        "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
-        
-        $dotnet = "-l trx -l 'console;verbosity=normal' --blame";
-        "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
-        
         $target_framework = "${{inputs.target_framework}}";
         $target_frameworks = "${{inputs.target_framework_array}}";
         if ($target_frameworks -eq '') {
@@ -61,24 +55,41 @@ runs:
         "target_frameworks=$target_frameworks" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh
 
+    - name: Clean TestResults (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        if (Test-Path "TestResults") {
+          Remove-Item -Path "TestResults" -Recurse -Force
+        }
+        New-Item -Path "TestResults" -ItemType Directory
+      shell: pwsh
+
+    - name: Clean TestResults (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        rm -rf TestResults
+        mkdir -p TestResults
+      shell: bash
+
     - name: Build if required
       if: ${{inputs.manual_build == 'true'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework;
+          dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework
         }
       shell: pwsh
 
     - name: Perform Tests Windows FX/Mono
       if: ${{inputs.os == 'windows' && (inputs.runtime-type == 'fx' || inputs.runtime-type == 'mono')}}
       run: |
-        $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
+        $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe"
        
-        $vspath = vswhere -latest -property installationPath;
-        $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
+        $vspath = vswhere -latest -property installationPath
+        $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
     
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" --framework:$target_framework ${{steps.test-args.outputs.vstest}} -- ${{steps.test-args.outputs.run_settings_args}};
+          $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" --framework:$target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" --blame -- ${{steps.test-args.outputs.run_settings_args}}
         }
       shell: pwsh
       
@@ -86,11 +97,11 @@ runs:
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+          $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
         }
       shell: pwsh
 
-    # Not sure if continue_on_error: true is needed
     - name: Perform Tests MacOS/MacOS-arm64 .NET/Mono
       uses: nick-fields/retry@v3
       if: ${{inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
@@ -100,12 +111,13 @@ runs:
         retry_on: timeout
         command: |
           if ('${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64' && inputs.runtime-type == 'dotnet'}}' -eq 'true') {
-            $dotnet = '/Users/runner/.dotnet/x64/dotnet';
+            $dotnet = '/Users/runner/.dotnet/x64/dotnet'
           } else {
-            $dotnet = '/Users/runner/.dotnet/dotnet';
+            $dotnet = '/Users/runner/.dotnet/dotnet'
           }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+            $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
           }
         shell: pwsh
 

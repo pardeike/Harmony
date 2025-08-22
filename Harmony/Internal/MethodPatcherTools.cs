@@ -75,7 +75,7 @@ namespace HarmonyLib
 		{
 			var baseArgs = method.GetArgumentAttributes();
 			if (method.DeclaringType is not null)
-				baseArgs = baseArgs.Union(method.DeclaringType.GetArgumentAttributes());
+				baseArgs = baseArgs.Union(method.DeclaringType.GetArgumentAttributes()).OfType<HarmonyArgument>();
 			return method.GetParameters().Select(p =>
 			{
 				var arg = p.GetArgumentAttribute();
