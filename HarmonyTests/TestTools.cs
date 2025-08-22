@@ -24,21 +24,9 @@ namespace HarmonyLibTests
 
 	public static class TestTools
 	{
-		// Using TestContext.Error for immediate output to stderr to prevent TRX file corruption.
-		// Note: Must be a property rather than a field, since the specific TestContext streams can change between tests.
-		static TextWriter LogWriter => TestContext.Error;
-
-		public static void WriteLine(string _) { }
-
-		public static void Log(object obj, int indentLevel = 1, int? indentLevelAfterNewLine = null, bool writeLine = true)
+		public static void WriteLine(string _)
 		{
-			var indentBeforeNewLine = new string('\t', indentLevel);
-			var indentAfterNewLine = new string('\t', indentLevelAfterNewLine ?? indentLevel + 1);
-			var text = $"{indentBeforeNewLine}{obj?.ToString().Replace("\n", "\n" + indentAfterNewLine) ?? "null"}";
-			if (writeLine)
-				LogWriter.WriteLine(text);
-			else
-				LogWriter.Write(text);
+			// for more verbose logging, use Console.WriteLine or TestContext.Error
 		}
 
 		// Guarantees that assertion failures throw AssertionException, regardless of whether in Assert.Multiple mode.

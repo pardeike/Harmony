@@ -30,9 +30,8 @@ namespace HarmonyLibTests.Tools
 				{
 					File.Delete(dummyAssemblyFileName);
 				}
-				catch (Exception ex)
+				catch
 				{
-					Console.Error.WriteLine($"Could not delete {dummyAssemblyFileName} during {nameof(DeleteTestDummyAssemblies)} due to {ex}");
 				}
 			}
 		}
