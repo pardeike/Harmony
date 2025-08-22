@@ -29,19 +29,12 @@ runs:
       if: runner.os == 'Windows'
       run: |
         Write-Host "Finding TRX files before upload (Windows)..."
-        $rootFiles = Get-ChildItem -Path "TestResults" -Filter "*.trx" -ErrorAction SilentlyContinue
-        $nestedFiles = Get-ChildItem -Path "TestResults" -Recurse -Filter "*.trx" -ErrorAction SilentlyContinue
-        
-        $totalFiles = @()
-        if ($rootFiles) { $totalFiles += $rootFiles }
-        if ($nestedFiles) { $totalFiles += $nestedFiles }
-        
-        Write-Host "Found $($totalFiles.Count) total TRX files"
-        
-        if ($totalFiles.Count -gt 0) {
-          $totalFiles | ForEach-Object { Write-Host $_.FullName }
+        if (Test-Path -Path "TestResults") {
+          $files = Get-ChildItem -Path "TestResults" -Filter "*.trx" -File
+          Write-Host "Found $($files.Count) TRX files in TestResults directory:"
+          $files | ForEach-Object { Write-Host $_.Name }
         } else {
-          Write-Host "No TRX files found"
+          Write-Host "TestResults directory not found"
         }
       shell: pwsh
 
@@ -50,8 +43,8 @@ runs:
       run: |
         echo "Finding TRX files before upload (Unix)..."
         if [ -d "TestResults" ]; then
-          FILES=$(find TestResults -name "*.trx" -type f)
-          COUNT=$(find TestResults -name "*.trx" -type f | wc -l)
+          FILES=$(find TestResults -maxdepth 1 -name "*.trx" -type f)
+          COUNT=$(find TestResults -maxdepth 1 -name "*.trx" -type f | wc -l)
           echo "Found $COUNT TRX files in TestResults directory:"
           echo "$FILES"
         else
@@ -65,7 +58,7 @@ runs:
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: |
-          TestResults/**/*.trx
+          TestResults/*.trx
         if-no-files-found: warn
         retention-days: 1
         compression-level: 0
