@@ -49,10 +49,10 @@ runs:
         
         # Ensure TRX files go to a predictable location
         $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx";
-        $vstest = "--logger:""trx;LogFileName=$trxFileName"" --logger:'console;verbosity=normal' --blame";
+        $vstest = "--logger:trx;LogFileName=$trxFileName --logger:'console;verbosity=normal' --blame";
         "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        $dotnet = "--logger:""trx;LogFileName=$trxFileName"" --logger:console;verbosity=normal --blame";
+        $dotnet = "--logger:trx;LogFileName=$trxFileName --logger:console;verbosity=normal --blame";
         "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $target_framework = "${{inputs.target_framework}}";
@@ -92,9 +92,8 @@ runs:
         New-Item -ItemType Directory -Force -Path "TestResults"
         
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          $loggerArg = "${{steps.test-args.outputs.dotnet}}".Replace("{framework}", $target_framework);
           $resultsFile = "TestResults/${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:console;verbosity=normal -- ${{steps.test-args.outputs.run_settings_args}};
+          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
         }
       shell: pwsh
 
@@ -116,7 +115,7 @@ runs:
           }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
             $resultsFile = "TestResults/${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:console;verbosity=normal -- ${{steps.test-args.outputs.run_settings_args}};
+            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
           }
         shell: pwsh
         
