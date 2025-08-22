@@ -21,10 +21,41 @@ jobs:
 
       - name: Download Test Results
         uses: actions/download-artifact@v4
+        continue-on-error: true
+        id: download-results
         with:
           pattern: ${{(inputs.experimental && 'experimental-') || ''}}test-results-*
           path: test-results
           merge-multiple: true
+
+      - name: Validate Downloaded Test Results
+        run: |
+          echo "Checking for downloaded test result files..."
+          if [ -d "test-results" ]; then
+            echo "Test results directory exists"
+            find test-results -name "*.trx" -type f | head -10
+            
+            trx_count=$(find test-results -name "*.trx" -type f | wc -l)
+            echo "Found $trx_count TRX files"
+            
+            if [ "$trx_count" -eq 0 ]; then
+              echo "⚠️ No TRX files found in downloaded artifacts"
+              echo "This may indicate that test artifacts were not uploaded or were empty"
+            else
+              echo "Validating TRX content..."
+              for file in $(find test-results -name "*.trx" -type f | head -5); do
+                if [ -f "$file" ]; then
+                  total_count=$(grep -o 'total="[0-9]*"' "$file" | head -1 | grep -o '[0-9]*' || echo "0")
+                  echo "$(basename "$file"): $total_count total tests"
+                fi
+              done
+            fi
+          else
+            echo "❌ Test results directory does not exist"
+            echo "Available files in current directory:"
+            ls -la
+          fi
+        shell: bash
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2

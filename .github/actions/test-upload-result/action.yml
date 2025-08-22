@@ -25,13 +25,38 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Check for TRX files
+    - name: Check for TRX files and validate test results
       id: check-trx
       run: |
-        if find . -name "*.trx" -type f | grep -q .; then
-          echo "files-found=true" >> $GITHUB_OUTPUT
-        else
+        trx_files=$(find . -name "*.trx" -type f)
+        if [ -z "$trx_files" ]; then
+          echo "No TRX files found"
           echo "files-found=false" >> $GITHUB_OUTPUT
+          echo "valid-results=false" >> $GITHUB_OUTPUT
+        else
+          echo "TRX files found:"
+          echo "$trx_files"
+          echo "files-found=true" >> $GITHUB_OUTPUT
+          
+          # Check if any TRX file has actual test results (total > 0)
+          valid_found=false
+          for file in $trx_files; do
+            if [ -f "$file" ]; then
+              total_count=$(grep -o 'total="[0-9]*"' "$file" | head -1 | grep -o '[0-9]*' || echo "0")
+              echo "File $file has $total_count total tests"
+              if [ "$total_count" -gt 0 ]; then
+                valid_found=true
+                break
+              fi
+            fi
+          done
+          
+          if [ "$valid_found" = true ]; then
+            echo "valid-results=true" >> $GITHUB_OUTPUT
+          else
+            echo "All TRX files have 0 tests - likely due to runtime issues"
+            echo "valid-results=false" >> $GITHUB_OUTPUT
+          fi
         fi
       shell: bash
       if: ${{success() || failure()}}
@@ -43,3 +68,12 @@ runs:
         path: '**/*.trx'
         if-no-files-found: ignore
         compression-level: 0
+        
+    - name: Log test result validation
+      run: |
+        if [ "${{steps.check-trx.outputs.valid-results}}" = "false" ]; then
+          echo "⚠️ Warning: TRX files found but contain 0 tests. This may indicate runtime dependency issues."
+          echo "This could cause empty test results in the final report."
+        fi
+      shell: bash
+      if: ${{(success() || failure()) && steps.check-trx.outputs.files-found == 'true'}}

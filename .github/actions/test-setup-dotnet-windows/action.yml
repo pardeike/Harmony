@@ -28,21 +28,14 @@ runs:
       with:
         architecture: ${{inputs.architecture}}
 
-    - name: Setup .NET ${{inputs.architecture}}
+    - name: Setup .NET SDK and Runtimes ${{inputs.architecture}}
       run: |
         Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-        .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel LTS -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
-        .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel STS -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
         
-        $channel = "${{steps.get_channel.outputs.channel}}";
-        if ($channel -ne '') {
-          .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel $channel -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
-        }
-        
-        $channels = "${{steps.get_channel.outputs.channels_multiline}}";
-        if ($channels -ne '') {
-          foreach ($channel in ($channels -split "[\r\n]+")) {
-            .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel $channel -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
-          }
+        # Install all required .NET runtime versions
+        $versions = @('9.0', '8.0', '7.0', '6.0', '5.0', '3.1', '3.0');
+        foreach ($version in $versions) {
+          Write-Host "Installing .NET $version runtime for ${{inputs.architecture}}";
+          .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel $version -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
         }
       shell: pwsh

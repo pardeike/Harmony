@@ -212,9 +212,13 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - uses: joutvhu/delete-artifact@v2
+      - name: Delete build output artifacts
+        uses: joutvhu/delete-artifact@v2
+        continue-on-error: true
         with:
           pattern: build-output-*
-      - uses: joutvhu/delete-artifact@v2
+      - name: Delete test result artifacts  
+        uses: joutvhu/delete-artifact@v2
+        continue-on-error: true
         with:
           pattern: test-results-*

@@ -27,9 +27,14 @@ runs:
         target_framework: ${{inputs.target_framework}}
         target_framework_array: ${{inputs.target_framework_array}}
 
-    - name: Setup .NET ${{steps.get_channels.outputs.channels_multiline}}
+    - name: Setup .NET SDK and Runtimes
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-          ${{steps.get_channels.outputs.channel}}
-          ${{steps.get_channels.outputs.channels_multiline}}
+          9.0.x
+          8.0.x
+          7.0.x
+          6.0.x
+          5.0.x
+          3.1.x
+          3.0.x
