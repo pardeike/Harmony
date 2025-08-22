@@ -1,0 +1,94 @@
+#logo {
+	width: 50px;
+	height: 50px;
+	opacity: 0;
+}
+
+code {
+	tab-size: 3;
+	background-color: #dadada;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0;
+	padding-bottom: 0;
+	color: black;
+}
+
+.h1, h1 {
+	font-size: 24px !important;
+}
+
+.h2, h2 {
+	font-size: 20px !important;
+}
+
+.h3, h3 {
+	font-size: 18px !important;
+}
+
+.h4, h4 {
+	font-size: 16px !important;
+}
+
+.h5, h5 {
+	font-size: 14px !important;
+}
+
+.h6, h6 {
+	font-size: 12px !important;
+}
+
+.h1, h1, .h2, h2, .h3, h3, .h4, h4, .h5, h5, .h6, h6 {
+	border-bottom: 0 !important;
+	margin-bottom: 10px !important;
+}
+
+pre {
+	padding-top: 5px !important;
+    padding-bottom: 3px !important;
+}
+
+div.navbar-header a.navbar-brand {
+	background-image: url(https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png);
+	background-size: 48px 36px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.bs-docs-sidenav {
+	height: auto !important;
+}
+
+.sidetoc {
+	position: fixed;
+	width: 260px;
+	top: 150px;
+	bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: #f1f1f1;
+	border-left: 1px solid #e7e7e7;
+	border-right: 1px solid #e7e7e7;
+	z-index: 1;
+}
+
+.bs-docs-sidebar {
+	height: unset;
+}
+
+.sideaffix {
+	bottom: 0;
+	overflow-y: auto;
+}
+
+.sideaffix.shiftup {
+	bottom: 70px;
+}
+
+pre code {
+	white-space: unset;
+}
+
+code {
+	display: inline-block !important;
+}
