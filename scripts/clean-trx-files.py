@@ -40,7 +40,7 @@ def sanitize_xml_content(content):
 def clean_trx_file(file_path):
     """Clean a single TRX file by sanitizing content and removing extra content after </TestRun>"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
             content = f.read()
         
         original_content = content
