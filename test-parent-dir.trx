@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ba63f4be-9809-4d8e-9055-e52b4f014804" name="@pkrvmqc4gcfdwos 2025-08-22 14:53:19" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-08-22T14:53:19.3074852+00:00" queuing="2025-08-22T14:53:19.3074853+00:00" start="2025-08-22T14:53:18.4055939+00:00" finish="2025-08-22T14:53:19.3139514+00:00" />
+  <TestSettings name="default" id="7473bc90-25dc-4e47-bee9-c7075177b9df">
+    <Deployment runDeploymentRoot="_pkrvmqc4gcfdwos_2025-08-22_14_53_19" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="2518bdaf-0dea-4b27-852b-0126bfe8a465" testId="1d59fbf8-66ba-fa16-a58d-f511a00c21eb" testName="Test_Method8" computerName="pkrvmqc4gcfdwos" duration="00:00:00.2816810" startTime="2025-08-22T14:53:18.9045774+00:00" endTime="2025-08-22T14:53:19.1861315+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2518bdaf-0dea-4b27-852b-0126bfe8a465" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Test_Method8" storage="/home/runner/work/harmony/harmony/harmonytests/bin/debug/net9.0/harmonytests.dll" id="1d59fbf8-66ba-fa16-a58d-f511a00c21eb">
+      <Execution id="2518bdaf-0dea-4b27-852b-0126bfe8a465" />
+      <TestMethod codeBase="/home/runner/work/Harmony/Harmony/HarmonyTests/bin/Debug/net9.0/HarmonyTests.dll" adapterTypeName="executor://nunit3testexecutor/" className="HarmonyLibTests.Patching.Arguments" name="Test_Method8" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1d59fbf8-66ba-fa16-a58d-f511a00c21eb" executionId="2518bdaf-0dea-4b27-852b-0126bfe8a465" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>NUnit Adapter 3.17.0.0: Test execution started
+Running all tests in /home/runner/work/Harmony/Harmony/HarmonyTests/bin/Debug/net9.0/HarmonyTests.dll
+   NUnit3TestExecutor discovered 271 of 271 NUnit test cases
+NUnit Adapter 3.17.0.0: Test execution complete
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
