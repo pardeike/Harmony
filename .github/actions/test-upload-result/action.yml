@@ -25,10 +25,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Clean TRX files
-      run: python3 scripts/clean-trx-files.py
-      shell: bash
-      if: ${{success() || failure()}}
     - name: Check for TRX files
       id: check-trx
       run: |
@@ -43,7 +39,7 @@ runs:
       uses: actions/upload-artifact@v4
       if: ${{(success() || failure()) && steps.check-trx.outputs.files-found == 'true'}}
       with:
-        name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
+        name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: '**/*.trx'
         if-no-files-found: ignore
         compression-level: 0
