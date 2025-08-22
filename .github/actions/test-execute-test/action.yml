@@ -50,7 +50,7 @@ runs:
         $vstest = "--logger:trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx --logger:'console;verbosity=normal' --blame";
         "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        $dotnet = "-l \"trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx\" -l 'console;verbosity=normal' --blame";
+        $dotnet = "-l trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx -l 'console;verbosity=normal' --blame";
         "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $target_framework = "${{inputs.target_framework}}";
