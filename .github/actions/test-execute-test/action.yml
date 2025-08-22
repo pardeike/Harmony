@@ -47,6 +47,7 @@ runs:
         $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}';
         "run_settings_args=$run_settings_args" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
+        # Ensure TRX files go to a predictable location: ./TestResults
         $vstest = "--logger:trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx --logger:'console;verbosity=normal' --blame";
         "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
@@ -110,6 +111,43 @@ runs:
             & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework $loggerArg -- ${{steps.test-args.outputs.run_settings_args}};
           }
         shell: pwsh
+        
+    # Debug step to show the location of TRX files
+    - name: List TRX files
+      if: ${{success() || failure()}}
+      run: |
+        Write-Host "Searching for TRX files..."
+        
+        if ('${{runner.os}}' -eq 'Windows') {
+          # On Windows
+          Write-Host "TRX files in current directory:"
+          Get-ChildItem -Path . -Filter *.trx -Recurse | Select-Object -Property FullName
+          
+          Write-Host "TRX files in TestResults directory (if exists):"
+          if (Test-Path -Path .\TestResults) {
+            Get-ChildItem -Path .\TestResults -Filter *.trx -Recurse | Select-Object -Property FullName
+          } else {
+            Write-Host "TestResults directory not found"
+          }
+          
+          Write-Host "Content of the current directory:"
+          Get-ChildItem -Path . | Select-Object -Property Name
+        } else {
+          # On Unix-based systems
+          echo "TRX files in current directory:"
+          find . -name "*.trx" -type f | sort
+          
+          echo "TRX files in TestResults directory (if exists):"
+          if [ -d "./TestResults" ]; then
+            find ./TestResults -name "*.trx" -type f | sort
+          else
+            echo "TestResults directory not found"
+          fi
+          
+          echo "Content of the current directory:"
+          ls -la
+        }
+      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
 
     - name: Upload Test Result
       uses: ./.github/actions/test-upload-result
