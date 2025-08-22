@@ -55,28 +55,22 @@ runs:
         "target_frameworks=$target_frameworks" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh
 
-    # Create TestResults directory with absolute path to prevent nesting
-    - name: Set up TestResults directory
-      uses: actions/github-script@v7
-      id: test-results-dir
-      with:
-        script: |
-          const fs = require('fs');
-          const path = require('path');
-          
-          // Get the absolute path to the current directory
-          const workspaceDir = process.cwd();
-          const testResultsDir = path.join(workspaceDir, 'TestResults');
-          
-          // Clean up and recreate the directory
-          if (fs.existsSync(testResultsDir)) {
-            fs.rmSync(testResultsDir, { recursive: true, force: true });
-          }
-          fs.mkdirSync(testResultsDir);
-          
-          // Output the absolute path for use in later steps
-          core.setOutput('path', testResultsDir);
-          return testResultsDir;
+    # Create clean TestResults directory using simple platform-specific commands
+    - name: Clean TestResults (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        if (Test-Path "TestResults") {
+          Remove-Item -Path "TestResults" -Recurse -Force
+        }
+        New-Item -Path "TestResults" -ItemType Directory
+      shell: pwsh
+
+    - name: Clean TestResults (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        rm -rf TestResults
+        mkdir -p TestResults
+      shell: bash
 
     - name: Build if required
       if: ${{inputs.manual_build == 'true'}}
@@ -95,8 +89,8 @@ runs:
         $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
     
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          $resultsFile = "${{steps.test-results-dir.outputs.path}}\${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" --framework:$target_framework --logger:"trx;LogFileName=$resultsFile" --logger:"console;verbosity=normal" --blame -- ${{steps.test-args.outputs.run_settings_args}}
+          $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" --framework:$target_framework --logger:"trx;LogFileName=TestResults/$trxFileName" --logger:"console;verbosity=normal" --blame -- ${{steps.test-args.outputs.run_settings_args}}
         }
       shell: pwsh
       
@@ -104,8 +98,8 @@ runs:
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          $resultsFile = "${{steps.test-results-dir.outputs.path}}\${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
+          $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
         }
       shell: pwsh
 
@@ -123,10 +117,31 @@ runs:
             $dotnet = '/Users/runner/.dotnet/dotnet'
           }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-            $resultsFile = "${{steps.test-results-dir.outputs.path}}/${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
+            $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
           }
         shell: pwsh
+        
+    # Copy any TRX files that might have ended up in a nested directory
+    - name: Fix any nested TRX files (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        $nestedDirs = Get-ChildItem -Path "TestResults" -Directory
+        foreach ($dir in $nestedDirs) {
+          $trxFiles = Get-ChildItem -Path $dir.FullName -Filter "*.trx" -File
+          foreach ($file in $trxFiles) {
+            Copy-Item -Path $file.FullName -Destination "TestResults\" -Force
+          }
+        }
+      shell: pwsh
+      continue-on-error: true
+
+    - name: Fix any nested TRX files (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        find TestResults -mindepth 2 -name "*.trx" -type f -exec cp {} TestResults/ \;
+      shell: bash
+      continue-on-error: true
         
     # Debug step for Windows
     - name: List TRX files (Windows)
@@ -135,7 +150,7 @@ runs:
         Write-Host "Searching for TRX files on Windows..."
         Write-Host "TRX files in TestResults directory:"
         if (Test-Path -Path "TestResults") {
-          Get-ChildItem -Path "TestResults" -Filter "*.trx" | ForEach-Object { Write-Host $_.FullName }
+          Get-ChildItem -Path "TestResults" -Filter "*.trx" -Recurse | ForEach-Object { Write-Host $_.FullName }
         } else {
           Write-Host "TestResults directory not found"
         }
@@ -148,11 +163,19 @@ runs:
         echo "Searching for TRX files on Unix..."
         echo "TRX files in TestResults directory:"
         if [ -d "TestResults" ]; then
-          find TestResults -maxdepth 1 -name "*.trx" -type f | sort
+          find TestResults -name "*.trx" -type f | sort
         else
           echo "TestResults directory not found"
         fi
       shell: bash
+
+    # Ensure permissions are correct on Unix systems
+    - name: Set permissions (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        chmod -R 755 TestResults
+      shell: bash
+      continue-on-error: true
 
     - name: Upload Test Result
       uses: ./.github/actions/test-upload-result

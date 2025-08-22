@@ -24,33 +24,48 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # Debug step to find TRX files before upload
-    - name: Find TRX files (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        Write-Host "Finding TRX files before upload (Windows)..."
-        if (Test-Path -Path "TestResults") {
-          $files = Get-ChildItem -Path "TestResults" -Filter "*.trx" -File
-          Write-Host "Found $($files.Count) TRX files in TestResults directory:"
-          $files | ForEach-Object { Write-Host $_.Name }
-        } else {
-          Write-Host "TestResults directory not found"
-        }
-      shell: pwsh
-
-    - name: Find TRX files (Unix)
-      if: runner.os != 'Windows'
-      run: |
-        echo "Finding TRX files before upload (Unix)..."
-        if [ -d "TestResults" ]; then
-          FILES=$(find TestResults -maxdepth 1 -name "*.trx" -type f)
-          COUNT=$(find TestResults -maxdepth 1 -name "*.trx" -type f | wc -l)
-          echo "Found $COUNT TRX files in TestResults directory:"
-          echo "$FILES"
-        else
-          echo "TestResults directory not found"
-        fi
-      shell: bash
+    # Use github-script to check files before upload (platform-independent)
+    - name: Check TRX Files
+      id: check-files
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          try {
+            if (!fs.existsSync('TestResults')) {
+              console.log('TestResults directory not found');
+              return { count: 0, files: [] };
+            }
+            
+            // Helper function to find all TRX files recursively
+            function findTrxFiles(dir) {
+              let results = [];
+              const entries = fs.readdirSync(dir, { withFileTypes: true });
+              
+              for (const entry of entries) {
+                const fullPath = path.join(dir, entry.name);
+                
+                if (entry.isDirectory()) {
+                  results = results.concat(findTrxFiles(fullPath));
+                } else if (entry.isFile() && entry.name.endsWith('.trx')) {
+                  results.push(fullPath);
+                }
+              }
+              
+              return results;
+            }
+            
+            const trxFiles = findTrxFiles('TestResults');
+            console.log(`Found ${trxFiles.length} TRX files:`);
+            trxFiles.slice(0, 10).forEach(f => console.log(f));
+            
+            return { count: trxFiles.length, files: trxFiles.slice(0, 10) };
+          } catch (error) {
+            console.log(`Error checking TRX files: ${error.message}`);
+            return { count: 0, files: [] };
+          }
 
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
@@ -58,7 +73,7 @@ runs:
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: |
-          TestResults/*.trx
+          TestResults/**/*.trx
         if-no-files-found: warn
         retention-days: 1
         compression-level: 0
