@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Introduction </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Introduction ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="introduction">Introduction</h1>
+
+<p><em>Harmony - a library for patching, replacing and decorating .NET methods during runtime.</em></p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Harmony works with all languages that compile to <a href="https://wikipedia.org/wiki/Common_Intermediate_Language">CIL</a>, Microsofts intermediate byte code language. This is foremost the <a href="https://wikipedia.org/wiki/Portal:.NET_Framework">.NET Framework</a> and of course <a href="https://wikipedia.org/wiki/Mono_(software)">Mono</a> - used by the game engine Unity.</p>
+<p>The exception is probably <a href="https://docs.unity3d.com/2019.1/Documentation/Manual/dotnetProfileSupport.html">Unity .NET Standard profile</a>, which does not provide the functionality to fully create methods on the fly at runtime.</p>
+<h3 id="bootstrapping-and-injection">Bootstrapping and Injection</h3>
+<p>Harmony does not provide you with a way to run your own code within an application that is not designed to execute foreign code. You need a way to inject at least the few lines that start the Harmony patching and this is usually done with a loader. Here are some common examples of loaders (incomplete):</p>
+<ul>
+<li><a href="https://github.com/NeighTools/UnityDoorstop">Unity Doorstop</a></li>
+<li><a href="https://github.com/BepInEx/BepInEx">BepInEx</a></li>
+<li><a href="https://github.com/avail/UnityAssemblyInjector">UnityAssemblyInjector</a></li>
+<li><a href="https://github.com/wledfor2/MonoJunkie">MonoJunkie</a></li>
+<li><a href="https://github.com/EquiFox/MInjector">MInjector</a></li>
+<li><a href="https://github.com/StackOverflowExcept1on/net-core-injector">net-core-injector</a></li>
+<li>and more...</li>
+</ul>
+<p>You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld (<a href="https://rimworldwiki.com/wiki/Modding_Tutorials/">Wiki</a>).</p>
+<h3 id="dependencies">Dependencies</h3>
+<p>It has no other dependencies and will most likely work in other environments too. Harmony was tested on PC, Mac and Linux and support 32- and 64-bit. For a typical Unity target, simply set your project to .Net 3.5 or Mono 2.x and include the Harmony dll.</p>
+<h2 id="altering-functionality-patching">Altering functionality (Patching)</h2>
+<p>In general, if you want to change how an exising C# application like a game works and you don't have the source code for that application, you have basically two principles to do that:</p>
+<ol>
+<li>Alter dll files on disk</li>
+<li>Re-point method implementations (hooking)</li>
+</ol>
+<p>Depending on the needs and situation, altering dll files is not always a desirable solution. For example</p>
+<ul>
+<li>it has legal implications</li>
+<li>it might be blocked by an anti-cheat system</li>
+<li>it does not coordinate nicely with multiple concurrent changes</li>
+<li>it has to be done before and outside the original application</li>
+</ul>
+<p>Harmony uses a variation of hooking and focuses only on runtime changes that don't affect files on disk:</p>
+<ul>
+<li>less conflicts with multiple mods</li>
+<li>supports existing mod loaders</li>
+<li>changes can be made dynamically/conditionally</li>
+<li>the patch order can be flexible</li>
+<li>other mods can be patched too</li>
+<li>less legal issues</li>
+</ul>
+<h2 id="how-harmony-works">How Harmony works</h2>
+<p>Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:</p>
+<ul>
+<li>A way to keep the original method intact</li>
+<li>Execute your code before and/or after the original method</li>
+<li>Modify the original with IL code processors</li>
+<li>Multiple Harmony patches co-exist and don't conflict with each other</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/patch-logic.svg?sanitize=true" alt=""></p>
+<h2 id="limits-of-runtime-patching">Limits of runtime patching</h2>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> Harmony can't do everything. Make sure you understand the following:</p>
+<ul>
+<li><p>With Harmony, you only manipulate <strong>methods</strong>. This includes constructors and getters/setters.</p>
+</li>
+<li><p>You can only work with methods that have an actual IL code body, which means that they appear in a dissassembler like <a href="https://github.com/0xd4d/dnSpy">dnSpy</a>.</p>
+</li>
+<li><p>Methods that are too small might get <a href="https://wikipedia.org/wiki/Inline_expansion">inlined</a> and your patches will not run.</p>
+</li>
+<li><p>You cannot add fields to classes and you cannot extend enums (they get compiled into ints).</p>
+</li>
+<li><p>Patching generic methods or methods in generic classes is tricky and might not work as expected.</p>
+</li>
+</ul>
+<h2 id="hello-world-example">Hello World Example</h2>
+<p>Original game code:</p>
+<pre><code class="lang-csharp" name="example">public class SomeGameClass
+{
+    public bool isRunning;
+    public int counter;
+
+    private int DoSomething()
+    {
+        if (isRunning)
+        {
+            counter++;
+        }
+        return counter * 10;
+    }
+}
+</code></pre>
+<p>Patching with Harmony annotations:</p>
+<pre><code class="lang-csharp" name="example">// your code, most likely in your own dll
+
+using HarmonyLib;
+using Intro_SomeGame;
+
+public class MyPatcher
+{
+    // make sure DoPatching() is called at start either by
+    // the mod loader or by your injector
+
+    public static void DoPatching()
+    {
+        var harmony = new Harmony(&quot;com.example.patch&quot;);
+        harmony.PatchAll();
+    }
+}
+
+[HarmonyPatch(typeof(SomeGameClass))]
+[HarmonyPatch(&quot;DoSomething&quot;)] // if possible use nameof() here
+class Patch01
+{
+    static AccessTools.FieldRef&lt;SomeGameClass, bool&gt; isRunningRef =
+        AccessTools.FieldRefAccess&lt;SomeGameClass, bool&gt;(&quot;isRunning&quot;);
+
+    static bool Prefix(SomeGameClass __instance, ref int ___counter)
+    {
+        isRunningRef(__instance) = true;
+        if (___counter &gt; 100)
+            return false;
+        ___counter = 0;
+        return true;
+    }
+
+    static void Postfix(ref int __result) =&gt; __result *= 2;
+}
+</code></pre>
+<p>Alternatively, manual patching with reflection:</p>
+<pre><code class="lang-csharp" name="example">// your code, most likely in your own dll
+
+using HarmonyLib;
+using Intro_SomeGame;
+
+public class MyPatcher
+{
+    // make sure DoPatching() is called at start either by
+    // the mod loader or by your injector
+
+    public static void DoPatching()
+    {
+        var harmony = new Harmony(&quot;com.example.patch&quot;);
+
+        var mOriginal = AccessTools.Method(typeof(SomeGameClass), &quot;DoSomething&quot;); // if possible use nameof() here
+        var mPrefix = SymbolExtensions.GetMethodInfo(() =&gt; MyPrefix());
+        var mPostfix = SymbolExtensions.GetMethodInfo(() =&gt; MyPostfix());
+        // in general, add null checks here (new HarmonyMethod() does it for you too)
+
+        harmony.Patch(mOriginal, new HarmonyMethod(mPrefix), new HarmonyMethod(mPostfix));
+    }
+
+    public static void MyPrefix()
+    {
+        // ...
+    }
+
+    public static void MyPostfix()
+    {
+        // ...
+    }
+}
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/intro.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

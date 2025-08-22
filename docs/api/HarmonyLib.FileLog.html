@@ -1,0 +1,749 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class FileLog
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class FileLog
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.FileLog">
+  
+  
+  <h1 id="HarmonyLib_FileLog" data-uid="HarmonyLib.FileLog" class="text-break">Class FileLog
+  </h1>
+  <div class="markdown level0 summary"><p>A file log for debugging</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">FileLog</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_FileLog_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class FileLog</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="HarmonyLib_FileLog_indentChar" data-uid="HarmonyLib.FileLog.indentChar">indentChar</h4>
+  <div class="markdown level1 summary"><p>The indent character. The default is <code>tab</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static char indentChar</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Char</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_FileLog_indentLevel" data-uid="HarmonyLib.FileLog.indentLevel">indentLevel</h4>
+  <div class="markdown level1 summary"><p>The current indent level</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int indentLevel</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="HarmonyLib_FileLog_LogPath_" data-uid="HarmonyLib.FileLog.LogPath*"></a>
+  <h4 id="HarmonyLib_FileLog_LogPath" data-uid="HarmonyLib.FileLog.LogPath">LogPath</h4>
+  <div class="markdown level1 summary"><p>Full pathname of the log file, defaults to a file called <code>harmony.log.txt</code> on your Desktop</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string LogPath { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_LogWriter_" data-uid="HarmonyLib.FileLog.LogWriter*"></a>
+  <h4 id="HarmonyLib_FileLog_LogWriter" data-uid="HarmonyLib.FileLog.LogWriter">LogWriter</h4>
+  <div class="markdown level1 summary"><p>Set this to make Harmony write its log content to this stream</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static StreamWriter LogWriter { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.IO.StreamWriter</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_FileLog_ChangeIndent_" data-uid="HarmonyLib.FileLog.ChangeIndent*"></a>
+  <h4 id="HarmonyLib_FileLog_ChangeIndent_System_Int32_" data-uid="HarmonyLib.FileLog.ChangeIndent(System.Int32)">ChangeIndent(Int32)</h4>
+  <div class="markdown level1 summary"><p>Changes the indentation level</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ChangeIndent(int delta)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">delta</span></td>
+        <td><p>The value to add to the indentation level</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_Debug_" data-uid="HarmonyLib.FileLog.Debug*"></a>
+  <h4 id="HarmonyLib_FileLog_Debug_System_String_" data-uid="HarmonyLib.FileLog.Debug(System.String)">Debug(String)</h4>
+  <div class="markdown level1 summary"><p>Log a string directly to disk if Harmony.DEBUG is true. Slower method that prevents missing information in case of a crash</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Debug(string str)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">str</span></td>
+        <td><p>The string to log.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_FlushBuffer_" data-uid="HarmonyLib.FileLog.FlushBuffer*"></a>
+  <h4 id="HarmonyLib_FileLog_FlushBuffer" data-uid="HarmonyLib.FileLog.FlushBuffer">FlushBuffer()</h4>
+  <div class="markdown level1 summary"><p>Flushes the log buffer to disk (use in combination with LogBuffered)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void FlushBuffer()</code></pre>
+  </div>
+  
+  
+  <a id="HarmonyLib_FileLog_GetBuffer_" data-uid="HarmonyLib.FileLog.GetBuffer*"></a>
+  <h4 id="HarmonyLib_FileLog_GetBuffer_System_Boolean_" data-uid="HarmonyLib.FileLog.GetBuffer(System.Boolean)">GetBuffer(Boolean)</h4>
+  <div class="markdown level1 summary"><p>Returns the log buffer and optionally empties it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;string&gt; GetBuffer(bool clear)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">clear</span></td>
+        <td><p>True to empty the buffer</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>The buffer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_Log_" data-uid="HarmonyLib.FileLog.Log*"></a>
+  <h4 id="HarmonyLib_FileLog_Log_System_String_" data-uid="HarmonyLib.FileLog.Log(System.String)">Log(String)</h4>
+  <div class="markdown level1 summary"><p>Logs a string directly to disk to avoid losing information in case of a crash</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Log(string str)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">str</span></td>
+        <td><p>The string to log.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_LogBuffered_" data-uid="HarmonyLib.FileLog.LogBuffered*"></a>
+  <h4 id="HarmonyLib_FileLog_LogBuffered_System_Collections_Generic_List_System_String__" data-uid="HarmonyLib.FileLog.LogBuffered(System.Collections.Generic.List{System.String})">LogBuffered(List&lt;String&gt;)</h4>
+  <div class="markdown level1 summary"><p>Logs a list of string in a buffered way. Use this method only if you are sure that FlushBuffer will be called
+or else logging information is incomplete in case of a crash</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogBuffered(List&lt;string&gt; strings)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">strings</span></td>
+        <td><p>A list of strings to log (they will not be re-indented)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_LogBuffered_" data-uid="HarmonyLib.FileLog.LogBuffered*"></a>
+  <h4 id="HarmonyLib_FileLog_LogBuffered_System_String_" data-uid="HarmonyLib.FileLog.LogBuffered(System.String)">LogBuffered(String)</h4>
+  <div class="markdown level1 summary"><p>Log a string in a buffered way. Use this method only if you are sure that FlushBuffer will be called
+or else logging information is incomplete in case of a crash</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogBuffered(string str)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">str</span></td>
+        <td><p>The string to log</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_LogBytes_" data-uid="HarmonyLib.FileLog.LogBytes*"></a>
+  <h4 id="HarmonyLib_FileLog_LogBytes_System_Int64_System_Int32_" data-uid="HarmonyLib.FileLog.LogBytes(System.Int64,System.Int32)">LogBytes(Int64, Int32)</h4>
+  <div class="markdown level1 summary"><p>Logs some bytes as hex values</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogBytes(long ptr, int len)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int64</span></td>
+        <td><span class="parametername">ptr</span></td>
+        <td><p>The pointer to some memory</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">len</span></td>
+        <td><p>The length of bytes to log</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_FileLog_LogIL_" data-uid="HarmonyLib.FileLog.LogIL*"></a>
+  <h4 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_Label_" data-uid="HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.Label)">LogIL(Int32, Label)</h4>
+  <div class="markdown level1 summary"><p>Logs the intermediate language (IL) code at the specified position with the given label operand</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogIL(int codePos, Label label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">codePos</span></td>
+        <td><p>The position in the IL code to log.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
+        <td><span class="parametername">label</span></td>
+        <td><p>The label operand associated with the IL code to log.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_Label__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Formats and logs the IL code position and label operand for detailed IL tracking or debugging.</p>
+</div>
+  
+  
+  <a id="HarmonyLib_FileLog_LogIL_" data-uid="HarmonyLib.FileLog.LogIL*"></a>
+  <h4 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_" data-uid="HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode)">LogIL(Int32, OpCode)</h4>
+  <div class="markdown level1 summary"><p>Logs the specified Intermediate Language (IL) operation code and its position in the code stream</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogIL(int codePos, OpCode opcode)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">codePos</span></td>
+        <td><p>The position of the IL operation code in the code stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The IL operation code to log.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method formats the IL operation code and its position into a string and logs it.</p>
+</div>
+  
+  
+  <a id="HarmonyLib_FileLog_LogIL_" data-uid="HarmonyLib.FileLog.LogIL*"></a>
+  <h4 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_System_Object_" data-uid="HarmonyLib.FileLog.LogIL(System.Int32,System.Reflection.Emit.OpCode,System.Object)">LogIL(Int32, OpCode, Object)</h4>
+  <div class="markdown level1 summary"><p>Logs information about an Intermediate Language (IL) instruction, including its position, opcode, and operand</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogIL(int codePos, OpCode opcode, object arg)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">codePos</span></td>
+        <td><p>The position of the IL instruction within the method body.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The <span class="xref">System.Reflection.Emit.OpCode</span> representing the operation to be performed.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">arg</span></td>
+        <td><p>The operand associated with the IL instruction, or <span class="xref">null</span> if the instruction has no operand.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_FileLog_LogIL_System_Int32_System_Reflection_Emit_OpCode_System_Object__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method formats and logs details about an IL instruction for debugging or analysis purposes.
+The logged output includes the instruction's position, opcode, and operand (if any).</p>
+</div>
+  
+  
+  <a id="HarmonyLib_FileLog_LogILBlockBegin_" data-uid="HarmonyLib.FileLog.LogILBlockBegin*"></a>
+  <h4 id="HarmonyLib_FileLog_LogILBlockBegin_System_Int32_HarmonyLib_ExceptionBlock_" data-uid="HarmonyLib.FileLog.LogILBlockBegin(System.Int32,HarmonyLib.ExceptionBlock)">LogILBlockBegin(Int32, ExceptionBlock)</h4>
+  <div class="markdown level1 summary"><p>Logs the beginning of an intermediate language (IL) exception handling block</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogILBlockBegin(int codePos, ExceptionBlock block)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">codePos</span></td>
+        <td><p>The position of the IL code where the block begins.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></td>
+        <td><span class="parametername">block</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a> representing the type of exception handling block to log. This includes
+information about the block type (e.g., try, catch, finally) and any associated metadata.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_FileLog_LogILBlockBegin_System_Int32_HarmonyLib_ExceptionBlock__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Logs the start of an exception handling block (e.g., <code>.try</code>, <code>.catch</code>, <code>.finally</code>, <code>.fault</code>),
+adjusts indentation, and simulates a <code>LEAVE</code> opcode for consistency.</p>
+</div>
+  
+  
+  <a id="HarmonyLib_FileLog_LogILBlockEnd_" data-uid="HarmonyLib.FileLog.LogILBlockEnd*"></a>
+  <h4 id="HarmonyLib_FileLog_LogILBlockEnd_System_Int32_HarmonyLib_ExceptionBlock_" data-uid="HarmonyLib.FileLog.LogILBlockEnd(System.Int32,HarmonyLib.ExceptionBlock)">LogILBlockEnd(Int32, ExceptionBlock)</h4>
+  <div class="markdown level1 summary"><p>Logs the end of an intermediate language (IL) exception block</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogILBlockEnd(int codePos, ExceptionBlock block)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">codePos</span></td>
+        <td><p>The position in the IL code where the block ends.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></td>
+        <td><span class="parametername">block</span></td>
+        <td><p>The exception block to log. Must have a valid block type.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_FileLog_LogILBlockEnd_System_Int32_HarmonyLib_ExceptionBlock__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method handles the logging of specific types of exception blocks, such as the end of a try-catch or
+similar constructs. It adjusts the indentation level and outputs relevant information about the block's conclusion.</p>
+</div>
+  
+  
+  <a id="HarmonyLib_FileLog_LogILComment_" data-uid="HarmonyLib.FileLog.LogILComment*"></a>
+  <h4 id="HarmonyLib_FileLog_LogILComment_System_Int32_System_String_" data-uid="HarmonyLib.FileLog.LogILComment(System.Int32,System.String)">LogILComment(Int32, String)</h4>
+  <div class="markdown level1 summary"><p>Logs an inline comment at the specified code position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogILComment(int codePos, string comment)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">codePos</span></td>
+        <td><p>The position in the code where the comment should be logged.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">comment</span></td>
+        <td><p>The comment text to log. Cannot be null or empty.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_FileLog_LogILComment_System_Int32_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This method formats the comment with the code position and logs it.</p>
+</div>
+  
+  
+  <a id="HarmonyLib_FileLog_Reset_" data-uid="HarmonyLib.FileLog.Reset*"></a>
+  <h4 id="HarmonyLib_FileLog_Reset" data-uid="HarmonyLib.FileLog.Reset">Reset()</h4>
+  <div class="markdown level1 summary"><p>Resets and deletes the log</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Reset()</code></pre>
+  </div>
+  
+  
+  <a id="HarmonyLib_FileLog_SetBuffer_" data-uid="HarmonyLib.FileLog.SetBuffer*"></a>
+  <h4 id="HarmonyLib_FileLog_SetBuffer_System_Collections_Generic_List_System_String__" data-uid="HarmonyLib.FileLog.SetBuffer(System.Collections.Generic.List{System.String})">SetBuffer(List&lt;String&gt;)</h4>
+  <div class="markdown level1 summary"><p>Replaces the buffer with new lines</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetBuffer(List&lt;string&gt; buffer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">buffer</span></td>
+        <td><p>The lines to store</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

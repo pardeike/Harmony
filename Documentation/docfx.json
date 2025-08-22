@@ -3,15 +3,15 @@
     {
       "src": [
         {
-          "src": "../Lib.Harmony",
-          "files": [ "Lib.Harmony.csproj" ]
+          "src": "..",
+          "files": [ "Lib.Harmony/bin/Debug/net35/0Harmony.dll" ],
+          "exclude": [ "**/obj/**", "**/bin/Release/**" ]
         }
       ],
       "dest": "api",
       "filter": "filterConfig.yml",
-      "properties": {
-        "TargetFramework": "net35"
-      }
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
     }
   ],
   "build": {

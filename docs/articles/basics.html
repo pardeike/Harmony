@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Basics </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Basics ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="basics">Basics</h1>
+
+<p>In order to use Harmony to change the original applications functionality, you need to</p>
+<ol>
+<li>find a way to excute code inside the application or game (Injection or Mod support)</li>
+<li>have the 0Harmony.dll file on disk</li>
+<li>reference the 0Harmony.dll from your project to use the API</li>
+<li>write patches in your code</li>
+<li>create a Harmony instance early in your code</li>
+<li>use it to apply the patches you wrote</li>
+<li>compile your code and make sure 0Harmony.dll is available at runtime (package with your release)</li>
+</ol>
+<h2 id="runtime-dependency">Runtime dependency</h2>
+<p>Some games or applications already supply Harmony from either a loader or another mod. While this seems easier, it requires that the version of Harmony you compile against is the same as the one available at runtime or else your code will not run (missing dependency). It also ties the release cycle of that solution to yours. Harmony can co-exist in multiple versions with itself so it is totally fine that each user packs their own 0Harmony.dll with their mod.</p>
+<p><em>Note for application/game makers: it seems you can embed multiple versions of Harmony at once which will avoid the issue described above.</em></p>
+<h3 id="manual-dll-adding">Manual dll adding</h3>
+<p>To add Harmony manually to your Visual Studio project, you right-click on <code>References</code> in your solution explorer and choose <code>Add Reference</code> to open the Reference Manager. There, browse for 0Harmony.dll and select add it.</p>
+<h3 id="adding-using-nuget">Adding using nuget</h3>
+<p>To add Harmony manually to your Visual Studio project, you right-click on <code>References</code> in your solution explorer and choose <code>Manage NuGet Packages</code>, then search for &quot;Harmony Library&quot; and install it.</p>
+<h3 id="import">Import</h3>
+<p>Once you reference Harmony correctly, you should be able to import it by adding Harmony to your imports. That gives you code completion so you can discover the API:</p>
+<pre><code class="lang-csharp" name="example">using HarmonyLib;
+</code></pre><h2 id="creating-a-harmony-instance">Creating a Harmony instance</h2>
+<p>Most patch operations require a Harmony instance. To instantiate Harmony, you simply call</p>
+<pre><code class="lang-csharp" name="example">var harmony = new Harmony(&quot;com.company.project.product&quot;);
+</code></pre>
+<p>The id should be in reverse domain notation and must be unique. In order to understand and react on existing patches of others, all patches in Harmony are bound to that id. This allows other authors to execute their patches before or after a specific patch by referring to this id.</p>
+<h3 id="debug-log">Debug Log</h3>
+<p>If you want to know more about the patching or the IL code Harmony produces, you can enable the debug log. Harmony offers and uses a class called <code>FileLog</code> that will create a log file on your systems Desktop called &quot;harmony.log.txt&quot;.</p>
+<p>You can set Harmony's global DEBUG flag to true, which will make Harmony log out many details that can help you while debugging your usage of Harmony:</p>
+<pre><code class="lang-csharp" name="example">Harmony.DEBUG = true;
+</code></pre>
+<p>You can also use Harmony's file logger in your own code:</p>
+<pre><code class="lang-csharp" name="example">FileLog.Log(&quot;something&quot;);
+// or buffered:
+FileLog.LogBuffered(&quot;A&quot;);
+FileLog.LogBuffered(&quot;B&quot;);
+FileLog.FlushBuffer(); /* don't forget to flush */
+</code></pre><h3 id="patching-using-annotations">Patching using annotations</h3>
+<p>If you prefer annotations to organize your patches, you instruct Harmony to search for them by using <code>PatchAll()</code>:</p>
+<pre><code class="lang-csharp" name="example">var assembly = Assembly.GetExecutingAssembly();
+harmony.PatchAll(assembly);
+
+// or implying current assembly:
+harmony.PatchAll();
+</code></pre>
+<p>which will search the given assembly for all classes that are decorated with Harmony annotations. All patches are registered automatically and Harmony will do the rest.</p>
+<p>If you need to apply different patches at different times, you can use <code>PatchCategory()</code> and the <code>[HarmonyPatchCategory()]</code> annotation to exclude them (by default) from <code>PatchAll()</code>.</p>
+<h3 id="manual-patching">Manual patching</h3>
+<p>For more control, you use <code>Patch()</code>. It takes an original and a combination of Prefix, Postfix or Transpiler methods, which are optional HarmonyMethod objects (pass null to <code>Patch()</code> to skip one type of patch):</p>
+<pre><code class="lang-csharp" name="example">// add null checks to the following lines, they are omitted for clarity
+// when possible, don't use string and instead use nameof(...)
+var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
+var prefix = typeof(MyPatchClass1).GetMethod(&quot;SomeMethod&quot;);
+var postfix = typeof(MyPatchClass2).GetMethod(&quot;SomeMethod&quot;);
+
+harmony.Patch(original, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
+
+// You can use named arguments to specify certain patch types only:
+harmony.Patch(original, postfix: new HarmonyMethod(postfix));
+harmony.Patch(original, prefix: new HarmonyMethod(prefix), transpiler: new HarmonyMethod(transpiler));
+</code></pre>
+<p>The use of an extra HarmonyMethod is to allow for you to define extra properties like priority and such together with the method pointer. HarmonyMethod is the common class shared by manual and annotation patching.</p>
+<pre><code class="lang-csharp" name="example">var harmonyPostfix = new HarmonyMethod(postfix)
+{
+    priority = Priority.Low,
+    before = [&quot;that.other.harmony.user&quot;]
+};
+</code></pre>
+<p>A common mistake here is to fail to retrieve a valid reference for original or your patches resulting in a <code>null</code> value which when passed to HarmonyMethod will throw an error. You can use standard <code>System.Reflection</code> to get the MethodInfo of the original and your HarmonyMethods. See the Utilities section for the various ways Harmony can make Reflection easier.</p>
+<h3 id="checking-for-existing-patches">Checking for existing patches</h3>
+<p>To get a list of all patched methods in the current appdomain (yours and others), call GetAllPatchedMethods:</p>
+<pre><code class="lang-csharp" name="example">var originalMethods = Harmony.GetAllPatchedMethods();
+foreach (var method in originalMethods) { }
+</code></pre>
+<p>If you are only interested in your own patched methods, use GetPatchedMethods:</p>
+<pre><code class="lang-csharp" name="example">var myOriginalMethods = harmony.GetPatchedMethods();
+foreach (var method in myOriginalMethods) { }
+</code></pre>
+<p>If you want to know more about all existing patches (yours or others) on a specific original method, you can call GetPatchInfo:</p>
+<pre><code class="lang-csharp" name="example">// get the MethodBase of the original
+var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
+
+// retrieve all patches
+var patches = Harmony.GetPatchInfo(original);
+if (patches is null) return; // not patched
+
+// get a summary of all different Harmony ids involved
+FileLog.Log(&quot;all owners: &quot; + patches.Owners);
+
+// get info about all Prefixes/Postfixes/Transpilers
+foreach (var patch in patches.Prefixes)
+{
+    FileLog.Log(&quot;index: &quot; + patch.index);
+    FileLog.Log(&quot;owner: &quot; + patch.owner);
+    FileLog.Log(&quot;patch method: &quot; + patch.PatchMethod);
+    FileLog.Log(&quot;priority: &quot; + patch.priority);
+    FileLog.Log(&quot;before: &quot; + patch.before);
+    FileLog.Log(&quot;after: &quot; + patch.after);
+}
+</code></pre>
+<p>Sometimes it is necessary to test if another mod is loaded. This is best done by resolving one of their types by name. However, if you want to know if a specific Harmony has applied any patches so far, you can use HasAnyPatches:</p>
+<pre><code class="lang-csharp" name="example">if (Harmony.HasAnyPatches(&quot;their.harmony.id&quot;)) { }
+</code></pre>
+<p>Finally, to retrieve an overview of which assemblies use which version of Harmony you can use (based on actice patches only)</p>
+<pre><code class="lang-csharp" name="example">var dict = Harmony.VersionInfo(out var myVersion);
+FileLog.Log(&quot;My version: &quot; + myVersion);
+foreach (var entry in dict)
+{
+    var id = entry.Key;
+    var version = entry.Value;
+    FileLog.Log(&quot;Mod &quot; + id + &quot; uses Harmony version &quot; + version);
+}
+</code></pre><h3 id="unpatching">Unpatching</h3>
+<p>Once a method is patched, the original method is destroyed and all future version will all come from Harmony (using the original IL code). In that sense, you cannot <em>unpatch</em> a method. You can only patch it with zero patches.</p>
+<p>At any time, a change of patches to a method will replay all existing patches. <code>Unpatch()</code> is just a synonym of &quot;remove all patches and excute patching&quot;.</p>
+<p>You can unpatch every patch from an existing harmony instance or even all harmony patches all together:</p>
+<pre><code class="lang-csharp" name="example">// every patch on every method ever patched (including others patches):
+var harmony = new Harmony(&quot;my.harmony.id&quot;);
+harmony.UnpatchAll();
+
+// only the patches that one specific Harmony instance did:
+harmony.UnpatchAll(&quot;their.harmony.id&quot;);
+</code></pre>
+<p>Besides that, you can unpatch specific patches too:</p>
+<pre><code class="lang-csharp" name="example">var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
+
+// all prefixes on the original method:
+harmony.Unpatch(original, HarmonyPatchType.Prefix);
+
+// all prefixes from that other Harmony user on the original method:
+harmony.Unpatch(original, HarmonyPatchType.Prefix, &quot;their.harmony.id&quot;);
+
+// all patches from that other Harmony user:
+harmony.Unpatch(original, HarmonyPatchType.All, &quot;their.harmony.id&quot;);
+
+// removing a specific patch:
+var patch = typeof(TheClass).GetMethod(&quot;SomePrefix&quot;);
+harmony.Unpatch(original, patch);
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/basics.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

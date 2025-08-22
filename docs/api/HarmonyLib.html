@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Namespace HarmonyLib
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Namespace HarmonyLib
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib">
+  
+  <h1 id="HarmonyLib" data-uid="HarmonyLib" class="text-break">Namespace HarmonyLib
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">Classes
+  </h3>
+      <h4><a class="xref" href="HarmonyLib.AccessTools.html">AccessTools</a></h4>
+      <section><p>A helper class for reflection related functions</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.AccessToolsExtensions.html">AccessToolsExtensions</a></h4>
+      <section><p>Adds extensions to Type for a lot of AccessTools methods</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Code.html">Code</a></h4>
+      <section><p>By adding the following using statement to your source code: <code>using static HarmonyLib.Code;</code>
+you can for example start using <code>Ldarg_1</code> in you code instead of <code>new CodeMatch(OpCodes.Ldarg_1)</code>
+and then you can use array notation to add an operand and/or a name: <code>Call[myMethodInfo]</code> instead of <code>new CodeMatch(OpCodes.Call, myMethodInfo)</code></p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></h4>
+      <section><p>An abstract wrapper around OpCode and their operands. Used by transpilers</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.CodeInstructionExtensions.html">CodeInstructionExtensions</a></h4>
+      <section><p>Extensions for <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.CodeInstructionsExtensions.html">CodeInstructionsExtensions</a></h4>
+      <section><p>Extensions for a sequence of <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></h4>
+      <section><p>A CodeInstruction match</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></h4>
+      <section><p>A CodeInstruction matcher</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.CollectionExtensions.html">CollectionExtensions</a></h4>
+      <section><p>General extensions for collections</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.DelegateTypeFactory.html">DelegateTypeFactory</a></h4>
+      <section><p>A factory to create delegate types</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></h4>
+      <section><p>An exception block</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.FastAccess.html">FastAccess</a></h4>
+      <section><p>A helper class for fast access to getters and setters</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.FileLog.html">FileLog</a></h4>
+      <section><p>A file log for debugging</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.GeneralExtensions.html">GeneralExtensions</a></h4>
+      <section><p>General extensions for common cases</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Harmony.html">Harmony</a></h4>
+      <section><p>The Harmony instance is the main entry to Harmony. After creating one with an unique identifier, it is used to patch and query the current application domain</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyAfter.html">HarmonyAfter</a></h4>
+      <section><p>A Harmony annotation</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyArgument.html">HarmonyArgument</a></h4>
+      <section><p>A Harmony annotation</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></h4>
+      <section><p>The base class for all Harmony annotations (not meant to be used directly)</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyBefore.html">HarmonyBefore</a></h4>
+      <section><p>A Harmony annotation</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyCleanup.html">HarmonyCleanup</a></h4>
+      <section><p>Specifies the Cleanup function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyDebug.html">HarmonyDebug</a></h4>
+      <section><p>A Harmony annotation</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyDelegate.html">HarmonyDelegate</a></h4>
+      <section><p>Annotation to define the original method for delegate injection</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyException.html">HarmonyException</a></h4>
+      <section><p>Under Mono, HarmonyException wraps IL compile errors with detailed information about the failure</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyFinalizer.html">HarmonyFinalizer</a></h4>
+      <section><p>Specifies the Finalizer function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></h4>
+      <section><p>A wrapper around a method to use it as a patch (for example a Prefix)</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyMethodExtensions.html">HarmonyMethodExtensions</a></h4>
+      <section><p>Annotation extensions</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPatch.html">HarmonyPatch</a></h4>
+      <section><p>Annotation to define your Harmony patch methods</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPatchAll.html">HarmonyPatchAll</a></h4>
+      <section><p>A Harmony annotation to define that all methods in a class are to be patched</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPatchCategory.html">HarmonyPatchCategory</a></h4>
+      <section><p>Annotation to define a category for use with PatchCategory</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPostfix.html">HarmonyPostfix</a></h4>
+      <section><p>Specifies the Postfix function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPrefix.html">HarmonyPrefix</a></h4>
+      <section><p>Specifies the Prefix function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPrepare.html">HarmonyPrepare</a></h4>
+      <section><p>Specifies the Prepare function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPriority.html">HarmonyPriority</a></h4>
+      <section><p>A Harmony annotation</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyReversePatch.html">HarmonyReversePatch</a></h4>
+      <section><p>Annotation to define your standin methods for reverse patching</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyTargetMethod.html">HarmonyTargetMethod</a></h4>
+      <section><p>Specifies the TargetMethod function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyTargetMethods.html">HarmonyTargetMethods</a></h4>
+      <section><p>Specifies the TargetMethods function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyTranspiler.html">HarmonyTranspiler</a></h4>
+      <section><p>Specifies the Transpiler function in a patch class</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a></h4>
+      <section><p>Occcurances of a method that is called inside some outer method</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.MethodBaseExtensions.html">MethodBaseExtensions</a></h4>
+      <section><p>General extensions for collections</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.MethodInvoker.html">MethodInvoker</a></h4>
+      <section><p>A helper class to invoke method with delegates</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Patch.html">Patch</a></h4>
+      <section><p>A serializable patch</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.PatchClassProcessor.html">PatchClassProcessor</a></h4>
+      <section><p>A PatchClassProcessor used to turn <a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a> on a class/type into patches</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Patches.html">Patches</a></h4>
+      <section><p>A group of patches</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.PatchInfo.html">PatchInfo</a></h4>
+      <section><p>Serializable patch information</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></h4>
+      <section><p>A PatchProcessor handles patches on a method/constructor</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Priority.html">Priority</a></h4>
+      <section><p>A patch priority</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.ReversePatcher.html">ReversePatcher</a></h4>
+      <section><p>A reverse patcher</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.SymbolExtensions.html">SymbolExtensions</a></h4>
+      <section><p>A helper class to retrieve reflection info for non-private methods</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Transpilers.html">Transpilers</a></h4>
+      <section><p>A collection of commonly used transpilers</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></h4>
+      <section><p>A reflection helper to read and write private elements</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.Traverse-1.html">Traverse&lt;T&gt;</a></h4>
+      <section><p>A reflection helper to read and write private elements</p>
+</section>
+    <h3 id="enums">Enums
+  </h3>
+      <h4><a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a></h4>
+      <section><p>Specifies the type of argument</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.ExceptionBlockType.html">ExceptionBlockType</a></h4>
+      <section><p>Exception block types</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyPatchType.html">HarmonyPatchType</a></h4>
+      <section><p>Specifies the type of patch</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.HarmonyReversePatchType.html">HarmonyReversePatchType</a></h4>
+      <section><p>Specifies the type of reverse patch</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></h4>
+      <section><p>Specifies the type of method call dispatching mechanics</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.MethodType.html">MethodType</a></h4>
+      <section><p>Specifies the type of method</p>
+</section>
+    <h3 id="delegates">Delegates
+  </h3>
+      <h4><a class="xref" href="HarmonyLib.AccessTools.FieldRef-1.html">AccessTools.FieldRef&lt;F&gt;</a></h4>
+      <section><p>A readable/assignable reference delegate to a static field</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.AccessTools.FieldRef-2.html">AccessTools.FieldRef&lt;T, F&gt;</a></h4>
+      <section><p>A readable/assignable reference delegate to an instance field of a class or static field (NOT an instance field of a struct)</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.AccessTools.StructFieldRef-2.html">AccessTools.StructFieldRef&lt;T, F&gt;</a></h4>
+      <section><p>A readable/assignable reference delegate to an instance field of a struct</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.CodeMatcher.ErrorHandler.html">CodeMatcher.ErrorHandler</a></h4>
+      <section><p>Delegate for error handling</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.FastInvokeHandler.html">FastInvokeHandler</a></h4>
+      <section><p>A delegate to invoke a method</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.InstantiationHandler-1.html">InstantiationHandler&lt;T&gt;</a></h4>
+      <section><p>A constructor delegate type</p>
+</section>
+      <h4><a class="xref" href="HarmonyLib.RefResult-1.html">RefResult&lt;T&gt;</a></h4>
+      <section><p>Delegate type for &quot;ref return&quot; injections</p>
+</section>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

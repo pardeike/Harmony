@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="codeinstruction">CodeInstruction</h2>
+<p>The workhorse of a transpiler is the type <a href="../api/HarmonyLib.CodeInstruction.html">CodeInstruction</a>.</p>
+<p><code>CodeInstruction</code> is an abstraction around the .NET <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit">Emit namespace</a>. The idea is to abstract most of the specific things you can do in order to help multiple mods that patch/manipulate the same method to coexist. As such, specific instructions like &quot;jump 4 instructions forward&quot; are not possible and instead there are a couple of concepts that differ from the arguments that you know from the ordinary Emit arguments.</p>
+<p>Every transpiler will receive a list of <code>CodeInstruction</code> and is expected to return a modified list of <code>CodeInstruction</code>. In addition, you can inject an <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator">ILGenerator</a> into the transpiler to create one or more <code>Label</code> and instances of <code>LocalBuilder</code> which represent local variables.</p>
+<p>Most arguments from <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.emit">Emit()</a> are used in the same way:</p>
+<ul>
+<li>Emit takes an <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcode">OpCode</a> and so does CodeInstruction</li>
+<li>Operands are mostly the same:
+<ul>
+<li>Type</li>
+<li>FieldInfo,</li>
+<li>MethodInfo,</li>
+<li>ConstructorInfo,</li>
+<li>Int64/Int32/Int16/Single/Double/String/Byte</li>
+</ul>
+</li>
+</ul>
+<p>Some things though will be restricted:</p>
+<ul>
+<li>Operands of jumps cannot be numeric, use <code>Label</code> instead</li>
+<li><code>SignatureHelper</code> support is experimental at best</li>
+<li>You should avoid using indices when referring to local variables</li>
+</ul>
+<p>Do <strong>not</strong> use <code>ILGenerator.Emit()</code>. While it does create IL code, Harmony is an abstraction over it. Harmony takes the returned <code>IEnumerable&lt;CodeInstruction&gt;</code> and after some manipulation, calls <code>Emit()</code> itself. <code>ILGenerator</code> should only be used for its methods to define blocks and labels. See <a href="#labels">Labels</a> and <a href="#trycatch-boundaries">Try/catch boundaries</a> for more information.</p>
+<p>In general, it is advised to reuse and to copy existing operands for things like labels and local variables. Search for a significant and unique location in the existing codes and grab the operand from there. This will allow you to refer to local variables and labels in a change-resistant way.</p>
+<h4 id="local-variables">Local variables</h4>
+<p>The instructions that your transpiler will receive will contain existing local variables and Harmony will not alter the original operands of instructions. This means that you need to be prepared to deal with instructions that refer to local variables either with a number (like &quot;2nd local variable&quot;) or with a <code>LocalBuilder</code> object. A LocalBuilder object is an opaque representation of a local variable and you can create a new one using the <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.declarelocal">DeclareLocal</a> method for <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator">ILGenerator</a> or copy the operand of an existing instruction.</p>
+<h4 id="labels">Labels</h4>
+<p>All original labels (or those generated by a previous transpiling) are represented by a <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.definelabel">Label</a> object. They are used in operands of a <code>CodeInstruction</code> or in the <code>labels</code> field (of type <code>Label[]</code>) of it. When you want to create a jump, you specify the jump Opcode and the label as the operand. Then you append the label to the destinations labels.</p>
+<p>To create a new label to jump to, use <code>ILGenerator.DefineLabel()</code> and put that label into the <code>labels</code> field of the <em>target</em> <code>CodeInstruction</code>. Use that label as the argument for a jump opcode as described above.</p>
+<h4 id="trycatch-boundaries">Try/catch boundaries</h4>
+<p>When constructing methods with instructions, you need to specify the exception block boundaries. Harmony will automatically create the necessary meta information from them. Use the <code>blocks</code> field of an instruction (of type <code>ExceptionBlock[]</code>) to mark the different types of boundaries. They are named in correspondence to the actual names. Please note that <strong>filter blocks are unsupported</strong> because it's not possible to build them dynamically into a method as of now.</p>
+<h4 id="convenience-methods">Convenience methods</h4>
+<p>To create, search and compare instructions, Harmony defines a number of extension methods on <code>CodeInstruction</code>. Those methods make it easier to compare operands (which are defined as type <code>object</code>) with specific values as well as to find specific instructions easier.</p>
+<p>You will find more information about those methods in the <a href="../api/HarmonyLib.CodeInstructionExtensions.html">API documentation</a>.</p>
+<h4 id="pitfalls">Pitfalls</h4>
+<p>A common error is to remove instructions that contain labels or exception blocks without dealing with the corresponding pair. You end up with a dynamic method compile error because an instruction will want to jump to a label that is not assigned to any other instruction. Another common case is if you copy an existing instruction and thus copy the labels and blocks fields with it. You end up with multiple defined labels/block boundaries. Makes you you clear those or use proper duplication.</p>
+<p>To avoid such cases, it is important to keep an eye on the <code>labels</code> and <code>blocks</code> fields. CIL is quite sensitive to undefined or duplicate labels. Normally it is enough to move the contents of those fields around if you insert new instructions. One of the typical cases is inserting a new instruction at a place and pushing the old one one index up thus moving the labels on that instruction with it. Moving the labels/blocks from the old instruction to the newly inserted one usually solves the problem.</p>
+<p>In general, it is useful to turn the Harmony debug log output on (set <code>Harmony.DEBUG = true</code> or use <code>[HarmonyDebug]</code>). The log will contain all your generated instructions, labels and blocks so you can verify the error more informed.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-transpiler-codes.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

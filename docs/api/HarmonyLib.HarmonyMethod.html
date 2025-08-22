@@ -1,0 +1,849 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class HarmonyMethod
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class HarmonyMethod
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.HarmonyMethod">
+  
+  
+  <h1 id="HarmonyLib_HarmonyMethod" data-uid="HarmonyLib.HarmonyMethod" class="text-break">Class HarmonyMethod
+  </h1>
+  <div class="markdown level0 summary"><p>A wrapper around a method to use it as a patch (for example a Prefix)</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">HarmonyMethod</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_HarmonyMethod_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class HarmonyMethod</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod__ctor_" data-uid="HarmonyLib.HarmonyMethod.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod__ctor" data-uid="HarmonyLib.HarmonyMethod.#ctor">HarmonyMethod()</h4>
+  <div class="markdown level1 summary"><p>Default constructor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyMethod()</code></pre>
+  </div>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod__ctor_" data-uid="HarmonyLib.HarmonyMethod.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod__ctor_System_Delegate_" data-uid="HarmonyLib.HarmonyMethod.#ctor(System.Delegate)">HarmonyMethod(Delegate)</h4>
+  <div class="markdown level1 summary"><p>Creates a patch from a given method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyMethod(Delegate delegate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">delegate</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod__ctor_" data-uid="HarmonyLib.HarmonyMethod.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod__ctor_System_Delegate_System_Int32_System_String___System_String___System_Nullable_System_Boolean__" data-uid="HarmonyLib.HarmonyMethod.#ctor(System.Delegate,System.Int32,System.String[],System.String[],System.Nullable{System.Boolean})">HarmonyMethod(Delegate, Int32, String[], String[], Nullable&lt;Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates a patch from a given method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyMethod(Delegate delegate, int priority = -1, string[] before = null, string[] after = null, bool? debug = default(bool? ))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">delegate</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">priority</span></td>
+        <td><p>The patch <a class="xref" href="HarmonyLib.Priority.html">Priority</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span>[]</td>
+        <td><span class="parametername">before</span></td>
+        <td><p>A list of harmony IDs that should come after this patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span>[]</td>
+        <td><span class="parametername">after</span></td>
+        <td><p>A list of harmony IDs that should come before this patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">debug</span></td>
+        <td><p>Set to true to generate debug output</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod__ctor_" data-uid="HarmonyLib.HarmonyMethod.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod__ctor_System_Reflection_MethodInfo_" data-uid="HarmonyLib.HarmonyMethod.#ctor(System.Reflection.MethodInfo)">HarmonyMethod(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Creates a patch from a given method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyMethod(MethodInfo method)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod__ctor_" data-uid="HarmonyLib.HarmonyMethod.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod__ctor_System_Reflection_MethodInfo_System_Int32_System_String___System_String___System_Nullable_System_Boolean__" data-uid="HarmonyLib.HarmonyMethod.#ctor(System.Reflection.MethodInfo,System.Int32,System.String[],System.String[],System.Nullable{System.Boolean})">HarmonyMethod(MethodInfo, Int32, String[], String[], Nullable&lt;Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates a patch from a given method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyMethod(MethodInfo method, int priority = -1, string[] before = null, string[] after = null, bool? debug = default(bool? ))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">priority</span></td>
+        <td><p>The patch <a class="xref" href="HarmonyLib.Priority.html">Priority</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span>[]</td>
+        <td><span class="parametername">before</span></td>
+        <td><p>A list of harmony IDs that should come after this patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span>[]</td>
+        <td><span class="parametername">after</span></td>
+        <td><p>A list of harmony IDs that should come before this patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">debug</span></td>
+        <td><p>Set to true to generate debug output</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod__ctor_" data-uid="HarmonyLib.HarmonyMethod.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod__ctor_System_Type_System_String_System_Type___" data-uid="HarmonyLib.HarmonyMethod.#ctor(System.Type,System.String,System.Type[])">HarmonyMethod(Type, String, Type[])</h4>
+  <div class="markdown level1 summary"><p>Creates a patch from a given method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyMethod(Type methodType, string methodName, Type[] argumentTypes = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">methodType</span></td>
+        <td><p>The patch class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The patch method name</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>The optional argument types of the patch method (for overloaded methods)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_after" data-uid="HarmonyLib.HarmonyMethod.after">after</h4>
+  <div class="markdown level1 summary"><p>Install this patch after patches with these Harmony IDs</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string[] after</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span>[]</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_argumentTypes" data-uid="HarmonyLib.HarmonyMethod.argumentTypes">argumentTypes</h4>
+  <div class="markdown level1 summary"><p>Array of argument types of the patch method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type[] argumentTypes</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_before" data-uid="HarmonyLib.HarmonyMethod.before">before</h4>
+  <div class="markdown level1 summary"><p>Install this patch before patches with these Harmony IDs</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string[] before</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span>[]</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_category" data-uid="HarmonyLib.HarmonyMethod.category">category</h4>
+  <div class="markdown level1 summary"><p>Patch Category</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string category</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_debug" data-uid="HarmonyLib.HarmonyMethod.debug">debug</h4>
+  <div class="markdown level1 summary"><p>Create debug output for this patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? debug</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_declaringType" data-uid="HarmonyLib.HarmonyMethod.declaringType">declaringType</h4>
+  <div class="markdown level1 summary"><p>Class/type declaring this patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type declaringType</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_method" data-uid="HarmonyLib.HarmonyMethod.method">method</h4>
+  <div class="markdown level1 summary"><p>The original method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MethodInfo method</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_methodName" data-uid="HarmonyLib.HarmonyMethod.methodName">methodName</h4>
+  <div class="markdown level1 summary"><p>Patch method name</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string methodName</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_methodType" data-uid="HarmonyLib.HarmonyMethod.methodType">methodType</h4>
+  <div class="markdown level1 summary"><p>Optional patch <a class="xref" href="HarmonyLib.MethodType.html">MethodType</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MethodType? methodType</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="HarmonyLib.MethodType.html">MethodType</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_nonVirtualDelegate" data-uid="HarmonyLib.HarmonyMethod.nonVirtualDelegate">nonVirtualDelegate</h4>
+  <div class="markdown level1 summary"><p>Whether to use <a class="xref" href="HarmonyLib.MethodDispatchType.html#HarmonyLib_MethodDispatchType_Call">Call</a> (<code>true</code>) or <a class="xref" href="HarmonyLib.MethodDispatchType.html#HarmonyLib_MethodDispatchType_VirtualCall">VirtualCall</a> (<code>false</code>) mechanics
+for <a class="xref" href="HarmonyLib.HarmonyDelegate.html">HarmonyDelegate</a>-attributed delegate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool nonVirtualDelegate</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_priority" data-uid="HarmonyLib.HarmonyMethod.priority">priority</h4>
+  <div class="markdown level1 summary"><p><a class="xref" href="HarmonyLib.Priority.html">Priority</a> of the patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int priority</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="HarmonyLib_HarmonyMethod_reversePatchType" data-uid="HarmonyLib.HarmonyMethod.reversePatchType">reversePatchType</h4>
+  <div class="markdown level1 summary"><p>Reverse patch type, see <a class="xref" href="HarmonyLib.HarmonyReversePatchType.html">HarmonyReversePatchType</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyReversePatchType? reversePatchType</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="HarmonyLib.HarmonyReversePatchType.html">HarmonyReversePatchType</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod_HarmonyFields_" data-uid="HarmonyLib.HarmonyMethod.HarmonyFields*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod_HarmonyFields" data-uid="HarmonyLib.HarmonyMethod.HarmonyFields">HarmonyFields()</h4>
+  <div class="markdown level1 summary"><p>Gets the names of all internal patch info fields</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;string&gt; HarmonyFields()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>A list of field names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod_Merge_" data-uid="HarmonyLib.HarmonyMethod.Merge*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod_Merge_System_Collections_Generic_List_HarmonyLib_HarmonyMethod__" data-uid="HarmonyLib.HarmonyMethod.Merge(System.Collections.Generic.List{HarmonyLib.HarmonyMethod})">Merge(List&lt;HarmonyMethod&gt;)</h4>
+  <div class="markdown level1 summary"><p>Merges annotations</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HarmonyMethod Merge(List&lt;HarmonyMethod&gt; attributes)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a>&gt;</td>
+        <td><span class="parametername">attributes</span></td>
+        <td><p>The list of <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a> to merge</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><p>The merged <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod_ToString_" data-uid="HarmonyLib.HarmonyMethod.ToString*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod_ToString" data-uid="HarmonyLib.HarmonyMethod.ToString">ToString()</h4>
+  <div class="markdown level1 summary"><p>Returns a string that represents the annotation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><p>A string representation</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Object.ToString()</span></div>
+  <h3 id="operators">Operators
+  </h3>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod_op_Implicit_" data-uid="HarmonyLib.HarmonyMethod.op_Implicit*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod_op_Implicit_System_Delegate__HarmonyLib_HarmonyMethod" data-uid="HarmonyLib.HarmonyMethod.op_Implicit(System.Delegate)~HarmonyLib.HarmonyMethod">Implicit(Delegate to HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Creates a patch from a given method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator HarmonyMethod(Delegate delegate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">delegate</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyMethod_op_Implicit_" data-uid="HarmonyLib.HarmonyMethod.op_Implicit*"></a>
+  <h4 id="HarmonyLib_HarmonyMethod_op_Implicit_System_Reflection_MethodInfo__HarmonyLib_HarmonyMethod" data-uid="HarmonyLib.HarmonyMethod.op_Implicit(System.Reflection.MethodInfo)~HarmonyLib.HarmonyMethod">Implicit(MethodInfo to HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Creates a patch from a given method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator HarmonyMethod(MethodInfo method)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="HarmonyLib.HarmonyMethodExtensions.html#HarmonyLib_HarmonyMethodExtensions_CopyTo_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_">HarmonyMethodExtensions.CopyTo(HarmonyMethod, HarmonyMethod)</a>
+  </div>
+  <div>
+      <a class="xref" href="HarmonyLib.HarmonyMethodExtensions.html#HarmonyLib_HarmonyMethodExtensions_Clone_HarmonyLib_HarmonyMethod_">HarmonyMethodExtensions.Clone(HarmonyMethod)</a>
+  </div>
+  <div>
+      <a class="xref" href="HarmonyLib.HarmonyMethodExtensions.html#HarmonyLib_HarmonyMethodExtensions_Merge_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_">HarmonyMethodExtensions.Merge(HarmonyMethod, HarmonyMethod)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

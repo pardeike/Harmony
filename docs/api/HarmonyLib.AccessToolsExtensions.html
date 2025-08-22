@@ -1,0 +1,2924 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class AccessToolsExtensions
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class AccessToolsExtensions
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.AccessToolsExtensions">
+  
+  
+  <h1 id="HarmonyLib_AccessToolsExtensions" data-uid="HarmonyLib.AccessToolsExtensions" class="text-break">Class AccessToolsExtensions
+  </h1>
+  <div class="markdown level0 summary"><p>Adds extensions to Type for a lot of AccessTools methods</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">AccessToolsExtensions</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_AccessToolsExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class AccessToolsExtensions</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Constructor_" data-uid="HarmonyLib.AccessToolsExtensions.Constructor*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Constructor_System_Type_System_Type___System_Boolean_" data-uid="HarmonyLib.AccessToolsExtensions.Constructor(System.Type,System.Type[],System.Boolean)">Constructor(Type, Type[], Boolean)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a constructor by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConstructorInfo Constructor(this Type type, Type[] parameters = null, bool searchForStatic = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the constructor is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of the method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">searchForStatic</span></td>
+        <td><p>Optional parameters to only consider static constructors</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.ConstructorInfo</span></td>
+        <td><p>A constructor info or null when type is null or when the method cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_CreateInstance_" data-uid="HarmonyLib.AccessToolsExtensions.CreateInstance*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_CreateInstance_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.CreateInstance(System.Type)">CreateInstance(Type)</h4>
+  <div class="markdown level1 summary"><p>Creates an (possibly uninitialized) instance of a given type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static object CreateInstance(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><p>The new instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredConstructor_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredConstructor*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredConstructor_System_Type_System_Type___System_Boolean_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredConstructor(System.Type,System.Type[],System.Boolean)">DeclaredConstructor(Type, Type[], Boolean)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a directly declared constructor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConstructorInfo DeclaredConstructor(this Type type, Type[] parameters = null, bool searchForStatic = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the constructor is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of the constructor</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">searchForStatic</span></td>
+        <td><p>Optional parameters to only consider static constructors</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.ConstructorInfo</span></td>
+        <td><p>A constructor info or null when type is null or when the constructor cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredEvent_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredEvent*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredEvent_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredEvent(System.Type,System.String)">DeclaredEvent(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a directly declared event</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventInfo DeclaredEvent(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the event is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the event (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.EventInfo</span></td>
+        <td><p>An event or null when type/name is null or when the event cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredEventAdder_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredEventAdder*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredEventAdder_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredEventAdder(System.Type,System.String)">DeclaredEventAdder(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the add method of a directly declared event</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredEventAdder(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the event is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the event (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the event cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredEventRemover_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredEventRemover*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredEventRemover_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredEventRemover(System.Type,System.String)">DeclaredEventRemover(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the remove method of a directly declared event</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredEventRemover(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the event is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the event (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the event cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredField_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredField*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredField_System_Type_System_Int32_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type,System.Int32)">DeclaredField(Type, Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FieldInfo DeclaredField(this Type type, int idx)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the field is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">idx</span></td>
+        <td><p>The zero-based index of the field inside the class definition</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.FieldInfo</span></td>
+        <td><p>A field or null when type is null or when the field cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredField_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredField*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredField_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredField(System.Type,System.String)">DeclaredField(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a directly declared field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FieldInfo DeclaredField(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the field is defined</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.FieldInfo</span></td>
+        <td><p>A field or null when type/name is null or when the field cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredFinalizer_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredFinalizer*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredFinalizer_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredFinalizer(System.Type)">DeclaredFinalizer(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a directly declared finalizer</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredFinalizer(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type that defines the finalizer</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type is null or when the finalizer cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredIndexer_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredIndexer*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredIndexer_System_Type_System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredIndexer(System.Type,System.Type[])">DeclaredIndexer(Type, Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a directly declared indexer property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo DeclaredIndexer(this Type type, Type[] parameters = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the indexer property is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of multiple indexers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.PropertyInfo</span></td>
+        <td><p>An indexer property or null when type is null or when it cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredIndexerGetter_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredIndexerGetter_System_Type_System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredIndexerGetter(System.Type,System.Type[])">DeclaredIndexerGetter(Type, Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the getter method of a directly declared indexer property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredIndexerGetter(this Type type, Type[] parameters = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the indexer property is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of multiple indexers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type is null or when indexer property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredIndexerSetter_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredIndexerSetter_System_Type_System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredIndexerSetter(System.Type,System.Type[])">DeclaredIndexerSetter(Type, Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the setter method of a directly declared indexer property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredIndexerSetter(this Type type, Type[] parameters)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the indexer property is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of multiple indexers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type is null or when indexer property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredMethod_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredMethod*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredMethod_System_Type_System_String_System_Type___System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredMethod(System.Type,System.String,System.Type[],System.Type[])">DeclaredMethod(Type, String, Type[], Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a directly declared method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredMethod(this Type type, string name, Type[] parameters = null, Type[] generics = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the method is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the method (case sensitive)</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of the method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">generics</span></td>
+        <td><p>Optional list of types that define the generic version of the method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the method cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredProperty_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredProperty*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredProperty_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredProperty(System.Type,System.String)">DeclaredProperty(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a directly declared property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo DeclaredProperty(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the property is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the property (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.PropertyInfo</span></td>
+        <td><p>A property or null when type/name is null or when the property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredPropertyGetter_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredPropertyGetter_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredPropertyGetter(System.Type,System.String)">DeclaredPropertyGetter(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the getter method of a directly declared property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredPropertyGetter(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the property is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the property (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_DeclaredPropertySetter_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_DeclaredPropertySetter_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.DeclaredPropertySetter(System.Type,System.String)">DeclaredPropertySetter(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the setter method of a directly declared property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo DeclaredPropertySetter(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the property is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the property (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Event_" data-uid="HarmonyLib.AccessToolsExtensions.Event*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Event_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.Event(System.Type,System.String)">Event(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for an event by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EventInfo Event(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.EventInfo</span></td>
+        <td><p>An event or null when type/name is null or when the event cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_EventAdder_" data-uid="HarmonyLib.AccessToolsExtensions.EventAdder*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_EventAdder_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.EventAdder(System.Type,System.String)">EventAdder(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the add method of an event by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo EventAdder(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the event cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_EventRemover_" data-uid="HarmonyLib.AccessToolsExtensions.EventRemover*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_EventRemover_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.EventRemover(System.Type,System.String)">EventRemover(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the remove method of an event by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo EventRemover(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the event cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Field_" data-uid="HarmonyLib.AccessToolsExtensions.Field*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Field_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.Field(System.Type,System.String)">Field(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a field by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FieldInfo Field(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the field is defined</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the field (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.FieldInfo</span></td>
+        <td><p>A field or null when type/name is null or when the field cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_FieldRefAccess_" data-uid="HarmonyLib.AccessToolsExtensions.FieldRefAccess*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_FieldRefAccess__1_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.FieldRefAccess``1(System.Type,System.String)">FieldRefAccess&lt;F&gt;(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Creates a field reference delegate for an instance field of a class or static field (NOT an instance field of a struct)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AccessTools.FieldRef&lt;object, F&gt; FieldRefAccess&lt;F&gt;(this Type type, string fieldName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type that defines the field, or derived class of this type; must not be a struct type unless the field is static</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">fieldName</span></td>
+        <td><p>The name of the field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.AccessTools.FieldRef-2.html">AccessTools.FieldRef</a>&lt;<span class="xref">System.Object</span>, F&gt;</td>
+        <td><p>A readable/assignable <a class="xref" href="HarmonyLib.AccessTools.FieldRef-2.html">AccessTools.FieldRef&lt;T, F&gt;</a> delegate with <code>T=object</code>
+(for static fields, the <code>instance</code> delegate parameter is ignored)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">F</span></td>
+        <td><p>The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+a type that <span class="xref">System.Type.IsAssignableFrom(System.Type)</span> that type; or if the field's type is an enum type,
+either that type or the underlying integral type of that enum type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_AccessToolsExtensions_FieldRefAccess__1_System_Type_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>
+This method is meant for cases where the given type is only known at runtime and thus can&apos;t be used as a type parameter <code>T</code>
+in e.g. <a class="xref" href="HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_FieldRefAccess__2_System_String_">FieldRefAccess&lt;T, F&gt;(String)</a>.
+</p>
+<p>
+This method supports static fields, even those defined in structs, for legacy reasons.
+Consider using <a class="xref" href="HarmonyLib.AccessToolsExtensions.html#HarmonyLib_AccessToolsExtensions_StaticFieldRefAccess__1_System_Type_System_String_">StaticFieldRefAccess&lt;F&gt;(Type, String)</a> (and other overloads) instead for static fields.
+</p>
+</div>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Finalizer_" data-uid="HarmonyLib.AccessToolsExtensions.Finalizer*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Finalizer_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.Finalizer(System.Type)">Finalizer(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a finalizer</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo Finalizer(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type that defines the finalizer</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type is null or when the finalizer cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_FindIncludingBaseTypes_" data-uid="HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_FindIncludingBaseTypes__1_System_Type_System_Func_System_Type___0__" data-uid="HarmonyLib.AccessToolsExtensions.FindIncludingBaseTypes``1(System.Type,System.Func{System.Type,``0})">FindIncludingBaseTypes&lt;T&gt;(Type, Func&lt;Type, T&gt;)</h4>
+  <div class="markdown level1 summary"><p>Applies a function going up the type hierarchy and stops at the first non-<code>null</code> result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T FindIncludingBaseTypes&lt;T&gt;(this Type type, Func&lt;Type, T&gt; func)
+    where T : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start with</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Type</span>, T&gt;</td>
+        <td><span class="parametername">func</span></td>
+        <td><p>The evaluation function returning T</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td><p>The first non-<code>null</code> result, or <code>null</code> if no match</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>Result type of func()</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_AccessToolsExtensions_FindIncludingBaseTypes__1_System_Type_System_Func_System_Type___0___remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The type hierarchy of a class or value type (including struct) does NOT include implemented interfaces,
+and the type hierarchy of an interface is only itself (regardless of whether that interface implements other interfaces).
+The top-most type in the type hierarchy of all non-interface types (including value types) is <span class="xref">System.Object</span>.</p>
+</div>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_FindIncludingInnerTypes_" data-uid="HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_FindIncludingInnerTypes__1_System_Type_System_Func_System_Type___0__" data-uid="HarmonyLib.AccessToolsExtensions.FindIncludingInnerTypes``1(System.Type,System.Func{System.Type,``0})">FindIncludingInnerTypes&lt;T&gt;(Type, Func&lt;Type, T&gt;)</h4>
+  <div class="markdown level1 summary"><p>Applies a function going into inner types and stops at the first non-<code>null</code> result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T FindIncludingInnerTypes&lt;T&gt;(this Type type, Func&lt;Type, T&gt; func)
+    where T : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start with</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Type</span>, T&gt;</td>
+        <td><span class="parametername">func</span></td>
+        <td><p>The evaluation function returning T</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td><p>The first non-<code>null</code> result, or <code>null</code> if no match</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>Generic type parameter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_FirstConstructor_" data-uid="HarmonyLib.AccessToolsExtensions.FirstConstructor*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_FirstConstructor_System_Type_System_Func_System_Reflection_ConstructorInfo_System_Boolean__" data-uid="HarmonyLib.AccessToolsExtensions.FirstConstructor(System.Type,System.Func{System.Reflection.ConstructorInfo,System.Boolean})">FirstConstructor(Type, Func&lt;ConstructorInfo, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Given a type, returns the first constructor matching a predicate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConstructorInfo FirstConstructor(this Type type, Func&lt;ConstructorInfo, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start searching at</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Reflection.ConstructorInfo</span>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>The predicate to search with</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.ConstructorInfo</span></td>
+        <td><p>The constructor info or null if type/predicate is null or if a type with that name cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_FirstInner_" data-uid="HarmonyLib.AccessToolsExtensions.FirstInner*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_FirstInner_System_Type_System_Func_System_Type_System_Boolean__" data-uid="HarmonyLib.AccessToolsExtensions.FirstInner(System.Type,System.Func{System.Type,System.Boolean})">FirstInner(Type, Func&lt;Type, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Given a type, returns the first inner type matching a recursive search with a predicate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Type FirstInner(this Type type, Func&lt;Type, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start searching at</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Type</span>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>The predicate to search with</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><p>The inner type or null if type/predicate is null or if a type with that name cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_FirstMethod_" data-uid="HarmonyLib.AccessToolsExtensions.FirstMethod*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_FirstMethod_System_Type_System_Func_System_Reflection_MethodInfo_System_Boolean__" data-uid="HarmonyLib.AccessToolsExtensions.FirstMethod(System.Type,System.Func{System.Reflection.MethodInfo,System.Boolean})">FirstMethod(Type, Func&lt;MethodInfo, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Given a type, returns the first method matching a predicate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo FirstMethod(this Type type, Func&lt;MethodInfo, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start searching at</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Reflection.MethodInfo</span>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>The predicate to search with</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>The method or null if type/predicate is null or if a type with that name cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_FirstProperty_" data-uid="HarmonyLib.AccessToolsExtensions.FirstProperty*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_FirstProperty_System_Type_System_Func_System_Reflection_PropertyInfo_System_Boolean__" data-uid="HarmonyLib.AccessToolsExtensions.FirstProperty(System.Type,System.Func{System.Reflection.PropertyInfo,System.Boolean})">FirstProperty(Type, Func&lt;PropertyInfo, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Given a type, returns the first property matching a predicate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo FirstProperty(this Type type, Func&lt;PropertyInfo, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start searching at</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<span class="xref">System.Reflection.PropertyInfo</span>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>The predicate to search with</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.PropertyInfo</span></td>
+        <td><p>The property or null if type/predicate is null or if a type with that name cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetDeclaredConstructors_" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetDeclaredConstructors_System_Type_System_Nullable_System_Boolean__" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredConstructors(System.Type,System.Nullable{System.Boolean})">GetDeclaredConstructors(Type, Nullable&lt;Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Gets reflection information for all declared constructors</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;ConstructorInfo&gt; GetDeclaredConstructors(this Type type, bool? searchForStatic = default(bool? ))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the constructors are declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">searchForStatic</span></td>
+        <td><p>Optional parameters to only consider static constructors</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.ConstructorInfo</span>&gt;</td>
+        <td><p>A list of constructor infos</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetDeclaredFields_" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredFields*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetDeclaredFields_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredFields(System.Type)">GetDeclaredFields(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets reflection information for all declared fields</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;FieldInfo&gt; GetDeclaredFields(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the fields are declared</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.FieldInfo</span>&gt;</td>
+        <td><p>A list of fields</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetDeclaredMethods_" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredMethods*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetDeclaredMethods_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredMethods(System.Type)">GetDeclaredMethods(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets reflection information for all declared methods</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;MethodInfo&gt; GetDeclaredMethods(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the methods are declared</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.MethodInfo</span>&gt;</td>
+        <td><p>A list of methods</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetDeclaredProperties_" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredProperties*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetDeclaredProperties_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.GetDeclaredProperties(System.Type)">GetDeclaredProperties(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets reflection information for all declared properties</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;PropertyInfo&gt; GetDeclaredProperties(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the properties are declared</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.PropertyInfo</span>&gt;</td>
+        <td><p>A list of properties</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetDefaultValue_" data-uid="HarmonyLib.AccessToolsExtensions.GetDefaultValue*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetDefaultValue_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.GetDefaultValue(System.Type)">GetDefaultValue(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets default value for a specific type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static object GetDefaultValue(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><p>The default value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetFieldNames_" data-uid="HarmonyLib.AccessToolsExtensions.GetFieldNames*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetFieldNames_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.GetFieldNames(System.Type)">GetFieldNames(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets the names of all fields that are declared in a type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;string&gt; GetFieldNames(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>A list of field names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetMethodNames_" data-uid="HarmonyLib.AccessToolsExtensions.GetMethodNames*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetMethodNames_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.GetMethodNames(System.Type)">GetMethodNames(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets the names of all method that are declared in a type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;string&gt; GetMethodNames(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>A list of method names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_GetPropertyNames_" data-uid="HarmonyLib.AccessToolsExtensions.GetPropertyNames*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_GetPropertyNames_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.GetPropertyNames(System.Type)">GetPropertyNames(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets the names of all properties that are declared in a type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;string&gt; GetPropertyNames(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>A list of property names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Indexer_" data-uid="HarmonyLib.AccessToolsExtensions.Indexer*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Indexer_System_Type_System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.Indexer(System.Type,System.Type[])">Indexer(Type, Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for an indexer property by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo Indexer(this Type type, Type[] parameters = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of multiple indexers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.PropertyInfo</span></td>
+        <td><p>An indexer property or null when type is null or when it cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IndexerGetter_" data-uid="HarmonyLib.AccessToolsExtensions.IndexerGetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IndexerGetter_System_Type_System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.IndexerGetter(System.Type,System.Type[])">IndexerGetter(Type, Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the getter method of an indexer property by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo IndexerGetter(this Type type, Type[] parameters = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of multiple indexers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type is null or when the indexer property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IndexerSetter_" data-uid="HarmonyLib.AccessToolsExtensions.IndexerSetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IndexerSetter_System_Type_System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.IndexerSetter(System.Type,System.Type[])">IndexerSetter(Type, Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the setter method of an indexer property by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo IndexerSetter(this Type type, Type[] parameters = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of multiple indexers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type is null or when the indexer property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Inner_" data-uid="HarmonyLib.AccessToolsExtensions.Inner*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Inner_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.Inner(System.Type,System.String)">Inner(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Given a type, returns the first inner type matching a recursive search by name</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Type Inner(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start searching at</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the inner type (case sensitive)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><p>The inner type or null if type/name is null or if a type with that name cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_InnerTypes_" data-uid="HarmonyLib.AccessToolsExtensions.InnerTypes*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_InnerTypes_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.InnerTypes(System.Type)">InnerTypes(Type)</h4>
+  <div class="markdown level1 summary"><p>Enumerates all inner types (non-recursive)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Type&gt; InnerTypes(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type to start with</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Type</span>&gt;</td>
+        <td><p>An enumeration of all inner <span class="xref">System.Type</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsClass_" data-uid="HarmonyLib.AccessToolsExtensions.IsClass*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsClass_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsClass(System.Type)">IsClass(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests if a type is a class</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsClass(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type is a class</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsFloatingPoint_" data-uid="HarmonyLib.AccessToolsExtensions.IsFloatingPoint*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsFloatingPoint_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsFloatingPoint(System.Type)">IsFloatingPoint(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests if a type is a floating point type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsFloatingPoint(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type represents some floating point</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsInteger_" data-uid="HarmonyLib.AccessToolsExtensions.IsInteger*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsInteger_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsInteger(System.Type)">IsInteger(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests if a type is an integer type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsInteger(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type represents some integer</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsNumber_" data-uid="HarmonyLib.AccessToolsExtensions.IsNumber*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsNumber_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsNumber(System.Type)">IsNumber(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests if a type is a numerical type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNumber(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type represents some number</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsStatic_" data-uid="HarmonyLib.AccessToolsExtensions.IsStatic*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsStatic_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsStatic(System.Type)">IsStatic(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests whether a type is static, as defined in C#</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStatic(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type is static</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsStruct_" data-uid="HarmonyLib.AccessToolsExtensions.IsStruct*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsStruct_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsStruct(System.Type)">IsStruct(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests if a type is a struct</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStruct(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type is a struct</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsValue_" data-uid="HarmonyLib.AccessToolsExtensions.IsValue*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsValue_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsValue(System.Type)">IsValue(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests if a type is a value type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValue(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type is a value type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_IsVoid_" data-uid="HarmonyLib.AccessToolsExtensions.IsVoid*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_IsVoid_System_Type_" data-uid="HarmonyLib.AccessToolsExtensions.IsVoid(System.Type)">IsVoid(Type)</h4>
+  <div class="markdown level1 summary"><p>Tests if a type is void</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsVoid(this Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the type is void</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Method_" data-uid="HarmonyLib.AccessToolsExtensions.Method*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Method_System_Type_System_String_System_Type___System_Type___" data-uid="HarmonyLib.AccessToolsExtensions.Method(System.Type,System.String,System.Type[],System.Type[])">Method(Type, String, Type[], Type[])</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a method by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo Method(this Type type, string name, Type[] parameters = null, Type[] generics = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type where the method is declared</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the method (case sensitive)</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">parameters</span></td>
+        <td><p>Optional parameters to target a specific overload of the method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">generics</span></td>
+        <td><p>Optional list of types that define the generic version of the method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the method cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_Property_" data-uid="HarmonyLib.AccessToolsExtensions.Property*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_Property_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.Property(System.Type,System.String)">Property(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for a property by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo Property(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.PropertyInfo</span></td>
+        <td><p>A property or null when type/name is null or when the property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_PropertyGetter_" data-uid="HarmonyLib.AccessToolsExtensions.PropertyGetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_PropertyGetter_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.PropertyGetter(System.Type,System.String)">PropertyGetter(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the getter method of a property by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo PropertyGetter(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_PropertySetter_" data-uid="HarmonyLib.AccessToolsExtensions.PropertySetter*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_PropertySetter_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.PropertySetter(System.Type,System.String)">PropertySetter(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Gets the reflection information for the setter method of a property by searching the type and all its super types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo PropertySetter(this Type type, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>A method or null when type/name is null or when the property cannot be found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_StaticFieldRefAccess_" data-uid="HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_StaticFieldRefAccess__1_System_Type_System_String_" data-uid="HarmonyLib.AccessToolsExtensions.StaticFieldRefAccess``1(System.Type,System.String)">StaticFieldRefAccess&lt;F&gt;(Type, String)</h4>
+  <div class="markdown level1 summary"><p>Creates a static field reference</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static F StaticFieldRefAccess&lt;F&gt;(this Type type, string fieldName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type (can be class or struct) the field is defined in</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">fieldName</span></td>
+        <td><p>The name of the field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">F</span></td>
+        <td><p>A readable/assignable reference to the field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">F</span></td>
+        <td><p>The type of the field; or if the field's type is a reference type (a class or interface, NOT a struct or other value type),
+a type that <span class="xref">System.Type.IsAssignableFrom(System.Type)</span> that type; or if the field's type is an enum type,
+either that type or the underlying integral type of that enum type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_AccessToolsExtensions_ThrowMissingMemberException_" data-uid="HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException*"></a>
+  <h4 id="HarmonyLib_AccessToolsExtensions_ThrowMissingMemberException_System_Type_System_String___" data-uid="HarmonyLib.AccessToolsExtensions.ThrowMissingMemberException(System.Type,System.String[])">ThrowMissingMemberException(Type, String[])</h4>
+  <div class="markdown level1 summary"><p>Throws a missing member runtime exception</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ThrowMissingMemberException(this Type type, params string[] names)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The type that is involved</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span>[]</td>
+        <td><span class="parametername">names</span></td>
+        <td><p>A list of names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

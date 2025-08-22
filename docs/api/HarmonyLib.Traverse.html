@@ -1,0 +1,1552 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Traverse
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Traverse
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.Traverse">
+  
+  
+  <h1 id="HarmonyLib_Traverse" data-uid="HarmonyLib.Traverse" class="text-break">Class Traverse
+  </h1>
+  <div class="markdown level0 summary"><p>A reflection helper to read and write private elements</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Traverse</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_Traverse_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Traverse</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="HarmonyLib_Traverse__ctor_" data-uid="HarmonyLib.Traverse.#ctor*"></a>
+  <h4 id="HarmonyLib_Traverse__ctor_System_Object_" data-uid="HarmonyLib.Traverse.#ctor(System.Object)">Traverse(Object)</h4>
+  <div class="markdown level1 summary"><p>Creates a new traverse instance from an instance</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse(object root)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">root</span></td>
+        <td><p>The object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse__ctor_" data-uid="HarmonyLib.Traverse.#ctor*"></a>
+  <h4 id="HarmonyLib_Traverse__ctor_System_Type_" data-uid="HarmonyLib.Traverse.#ctor(System.Type)">Traverse(Type)</h4>
+  <div class="markdown level1 summary"><p>Creates a new traverse instance from a class/type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse(Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="HarmonyLib_Traverse_CopyFields" data-uid="HarmonyLib.Traverse.CopyFields">CopyFields</h4>
+  <div class="markdown level1 summary"><p>A default field action that copies fields to fields</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Action&lt;Traverse, Traverse&gt; CopyFields</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>, <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="HarmonyLib_Traverse_IsField_" data-uid="HarmonyLib.Traverse.IsField*"></a>
+  <h4 id="HarmonyLib_Traverse_IsField" data-uid="HarmonyLib.Traverse.IsField">IsField</h4>
+  <div class="markdown level1 summary"><p>Checks if the current traverse instance is for a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsField { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if its a field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IsProperty_" data-uid="HarmonyLib.Traverse.IsProperty*"></a>
+  <h4 id="HarmonyLib_Traverse_IsProperty" data-uid="HarmonyLib.Traverse.IsProperty">IsProperty</h4>
+  <div class="markdown level1 summary"><p>Checks if the current traverse instance is for a property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsProperty { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if its a property</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IsWriteable_" data-uid="HarmonyLib.Traverse.IsWriteable*"></a>
+  <h4 id="HarmonyLib_Traverse_IsWriteable" data-uid="HarmonyLib.Traverse.IsWriteable">IsWriteable</h4>
+  <div class="markdown level1 summary"><p>Checks if the current field or property is writeable</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsWriteable { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if writing is possible</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_Traverse_Create_" data-uid="HarmonyLib.Traverse.Create*"></a>
+  <h4 id="HarmonyLib_Traverse_Create_System_Object_" data-uid="HarmonyLib.Traverse.Create(System.Object)">Create(Object)</h4>
+  <div class="markdown level1 summary"><p>Creates a new traverse instance from an instance</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Traverse Create(object root)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">root</span></td>
+        <td><p>The object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Create_" data-uid="HarmonyLib.Traverse.Create*"></a>
+  <h4 id="HarmonyLib_Traverse_Create_System_Type_" data-uid="HarmonyLib.Traverse.Create(System.Type)">Create(Type)</h4>
+  <div class="markdown level1 summary"><p>Creates a new traverse instance from a class/type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Traverse Create(Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Create_" data-uid="HarmonyLib.Traverse.Create*"></a>
+  <h4 id="HarmonyLib_Traverse_Create__1" data-uid="HarmonyLib.Traverse.Create``1">Create&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Creates a new traverse instance from a class T</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Traverse Create&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The class</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_CreateWithType_" data-uid="HarmonyLib.Traverse.CreateWithType*"></a>
+  <h4 id="HarmonyLib_Traverse_CreateWithType_System_String_" data-uid="HarmonyLib.Traverse.CreateWithType(System.String)">CreateWithType(String)</h4>
+  <div class="markdown level1 summary"><p>Creates a new traverse instance from a named type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Traverse CreateWithType(string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The type name, for format see <a class="xref" href="HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_TypeByName_System_String_">TypeByName(String)</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Field_" data-uid="HarmonyLib.Traverse.Field*"></a>
+  <h4 id="HarmonyLib_Traverse_Field_System_String_" data-uid="HarmonyLib.Traverse.Field(System.String)">Field(String)</h4>
+  <div class="markdown level1 summary"><p>Moves the current traverse instance to a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse Field(string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The type name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Field_" data-uid="HarmonyLib.Traverse.Field*"></a>
+  <h4 id="HarmonyLib_Traverse_Field__1_System_String_" data-uid="HarmonyLib.Traverse.Field``1(System.String)">Field&lt;T&gt;(String)</h4>
+  <div class="markdown level1 summary"><p>Moves the current traverse instance to a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse&lt;T&gt; Field&lt;T&gt;(string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The type name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse-1.html">Traverse</a>&lt;T&gt;</td>
+        <td><p>A traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of the field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_FieldExists_" data-uid="HarmonyLib.Traverse.FieldExists*"></a>
+  <h4 id="HarmonyLib_Traverse_FieldExists" data-uid="HarmonyLib.Traverse.FieldExists">FieldExists()</h4>
+  <div class="markdown level1 summary"><p>Checks if the current traverse instance is for a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool FieldExists()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if its a field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Fields_" data-uid="HarmonyLib.Traverse.Fields*"></a>
+  <h4 id="HarmonyLib_Traverse_Fields" data-uid="HarmonyLib.Traverse.Fields">Fields()</h4>
+  <div class="markdown level1 summary"><p>Gets all fields of the current type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;string&gt; Fields()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>A list of field names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_GetValue_" data-uid="HarmonyLib.Traverse.GetValue*"></a>
+  <h4 id="HarmonyLib_Traverse_GetValue" data-uid="HarmonyLib.Traverse.GetValue">GetValue()</h4>
+  <div class="markdown level1 summary"><p>Gets the current value</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object GetValue()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><p>The value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_GetValue_" data-uid="HarmonyLib.Traverse.GetValue*"></a>
+  <h4 id="HarmonyLib_Traverse_GetValue_System_Object___" data-uid="HarmonyLib.Traverse.GetValue(System.Object[])">GetValue(Object[])</h4>
+  <div class="markdown level1 summary"><p>Invokes the current method with arguments and returns the result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object GetValue(params object[] arguments)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">arguments</span></td>
+        <td><p>The method arguments</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><p>The value returned by the method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_GetValue_" data-uid="HarmonyLib.Traverse.GetValue*"></a>
+  <h4 id="HarmonyLib_Traverse_GetValue__1" data-uid="HarmonyLib.Traverse.GetValue``1">GetValue&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"><p>Gets the current value</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T GetValue&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td><p>The value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of the value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_GetValue_" data-uid="HarmonyLib.Traverse.GetValue*"></a>
+  <h4 id="HarmonyLib_Traverse_GetValue__1_System_Object___" data-uid="HarmonyLib.Traverse.GetValue``1(System.Object[])">GetValue&lt;T&gt;(Object[])</h4>
+  <div class="markdown level1 summary"><p>Invokes the current method with arguments and returns the result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T GetValue&lt;T&gt;(params object[] arguments)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">arguments</span></td>
+        <td><p>The method arguments</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td><p>The value returned by the method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of the value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_GetValueType_" data-uid="HarmonyLib.Traverse.GetValueType*"></a>
+  <h4 id="HarmonyLib_Traverse_GetValueType" data-uid="HarmonyLib.Traverse.GetValueType">GetValueType()</h4>
+  <div class="markdown level1 summary"><p>Gets the type of the current field or property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type GetValueType()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><p>The type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IterateFields_" data-uid="HarmonyLib.Traverse.IterateFields*"></a>
+  <h4 id="HarmonyLib_Traverse_IterateFields_System_Object_System_Action_HarmonyLib_Traverse__" data-uid="HarmonyLib.Traverse.IterateFields(System.Object,System.Action{HarmonyLib.Traverse})">IterateFields(Object, Action&lt;Traverse&gt;)</h4>
+  <div class="markdown level1 summary"><p>Iterates over all fields of the current type and executes a traverse action</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IterateFields(object source, Action&lt;Traverse&gt; action)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>Original object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>&gt;</td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The action receiving a <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instance for each field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IterateFields_" data-uid="HarmonyLib.Traverse.IterateFields*"></a>
+  <h4 id="HarmonyLib_Traverse_IterateFields_System_Object_System_Object_System_Action_HarmonyLib_Traverse_HarmonyLib_Traverse__" data-uid="HarmonyLib.Traverse.IterateFields(System.Object,System.Object,System.Action{HarmonyLib.Traverse,HarmonyLib.Traverse})">IterateFields(Object, Object, Action&lt;Traverse, Traverse&gt;)</h4>
+  <div class="markdown level1 summary"><p>Iterates over all fields of the current type and executes a traverse action</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IterateFields(object source, object target, Action&lt;Traverse, Traverse&gt; action)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>Original object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">target</span></td>
+        <td><p>Target object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>, <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>&gt;</td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The action receiving a pair of <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instances for each field pair</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IterateFields_" data-uid="HarmonyLib.Traverse.IterateFields*"></a>
+  <h4 id="HarmonyLib_Traverse_IterateFields_System_Object_System_Object_System_Action_System_String_HarmonyLib_Traverse_HarmonyLib_Traverse__" data-uid="HarmonyLib.Traverse.IterateFields(System.Object,System.Object,System.Action{System.String,HarmonyLib.Traverse,HarmonyLib.Traverse})">IterateFields(Object, Object, Action&lt;String, Traverse, Traverse&gt;)</h4>
+  <div class="markdown level1 summary"><p>Iterates over all fields of the current type and executes a traverse action</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IterateFields(object source, object target, Action&lt;string, Traverse, Traverse&gt; action)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>Original object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">target</span></td>
+        <td><p>Target object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.String</span>, <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>, <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>&gt;</td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The action receiving a dot path representing the field pair and the <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instances</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IterateProperties_" data-uid="HarmonyLib.Traverse.IterateProperties*"></a>
+  <h4 id="HarmonyLib_Traverse_IterateProperties_System_Object_System_Action_HarmonyLib_Traverse__" data-uid="HarmonyLib.Traverse.IterateProperties(System.Object,System.Action{HarmonyLib.Traverse})">IterateProperties(Object, Action&lt;Traverse&gt;)</h4>
+  <div class="markdown level1 summary"><p>Iterates over all properties of the current type and executes a traverse action</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IterateProperties(object source, Action&lt;Traverse&gt; action)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>Original object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>&gt;</td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The action receiving a <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instance for each property</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IterateProperties_" data-uid="HarmonyLib.Traverse.IterateProperties*"></a>
+  <h4 id="HarmonyLib_Traverse_IterateProperties_System_Object_System_Object_System_Action_HarmonyLib_Traverse_HarmonyLib_Traverse__" data-uid="HarmonyLib.Traverse.IterateProperties(System.Object,System.Object,System.Action{HarmonyLib.Traverse,HarmonyLib.Traverse})">IterateProperties(Object, Object, Action&lt;Traverse, Traverse&gt;)</h4>
+  <div class="markdown level1 summary"><p>Iterates over all properties of the current type and executes a traverse action</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IterateProperties(object source, object target, Action&lt;Traverse, Traverse&gt; action)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>Original object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">target</span></td>
+        <td><p>Target object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>, <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>&gt;</td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The action receiving a pair of <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instances for each property pair</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_IterateProperties_" data-uid="HarmonyLib.Traverse.IterateProperties*"></a>
+  <h4 id="HarmonyLib_Traverse_IterateProperties_System_Object_System_Object_System_Action_System_String_HarmonyLib_Traverse_HarmonyLib_Traverse__" data-uid="HarmonyLib.Traverse.IterateProperties(System.Object,System.Object,System.Action{System.String,HarmonyLib.Traverse,HarmonyLib.Traverse})">IterateProperties(Object, Object, Action&lt;String, Traverse, Traverse&gt;)</h4>
+  <div class="markdown level1 summary"><p>Iterates over all properties of the current type and executes a traverse action</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IterateProperties(object source, object target, Action&lt;string, Traverse, Traverse&gt; action)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>Original object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">target</span></td>
+        <td><p>Target object</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.String</span>, <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>, <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a>&gt;</td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The action receiving a dot path representing the property pair and the <a class="xref" href="HarmonyLib.Traverse.html">Traverse</a> instances</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Method_" data-uid="HarmonyLib.Traverse.Method*"></a>
+  <h4 id="HarmonyLib_Traverse_Method_System_String_System_Object___" data-uid="HarmonyLib.Traverse.Method(System.String,System.Object[])">Method(String, Object[])</h4>
+  <div class="markdown level1 summary"><p>Moves the current traverse instance to a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse Method(string name, params object[] arguments)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">arguments</span></td>
+        <td><p>The arguments defining the argument types of the method overload</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Method_" data-uid="HarmonyLib.Traverse.Method*"></a>
+  <h4 id="HarmonyLib_Traverse_Method_System_String_System_Type___System_Object___" data-uid="HarmonyLib.Traverse.Method(System.String,System.Type[],System.Object[])">Method(String, Type[], Object[])</h4>
+  <div class="markdown level1 summary"><p>Moves the current traverse instance to a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse Method(string name, Type[] paramTypes, object[] arguments = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">paramTypes</span></td>
+        <td><p>The argument types of the method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">arguments</span></td>
+        <td><p>The arguments for the method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_MethodExists_" data-uid="HarmonyLib.Traverse.MethodExists*"></a>
+  <h4 id="HarmonyLib_Traverse_MethodExists" data-uid="HarmonyLib.Traverse.MethodExists">MethodExists()</h4>
+  <div class="markdown level1 summary"><p>Checks if the current traverse instance is for a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool MethodExists()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if its a method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Methods_" data-uid="HarmonyLib.Traverse.Methods*"></a>
+  <h4 id="HarmonyLib_Traverse_Methods" data-uid="HarmonyLib.Traverse.Methods">Methods()</h4>
+  <div class="markdown level1 summary"><p>Gets all methods of the current type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;string&gt; Methods()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>A list of method names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Properties_" data-uid="HarmonyLib.Traverse.Properties*"></a>
+  <h4 id="HarmonyLib_Traverse_Properties" data-uid="HarmonyLib.Traverse.Properties">Properties()</h4>
+  <div class="markdown level1 summary"><p>Gets all properties of the current type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;string&gt; Properties()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>A list of property names</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Property_" data-uid="HarmonyLib.Traverse.Property*"></a>
+  <h4 id="HarmonyLib_Traverse_Property_System_String_System_Object___" data-uid="HarmonyLib.Traverse.Property(System.String,System.Object[])">Property(String, Object[])</h4>
+  <div class="markdown level1 summary"><p>Moves the current traverse instance to a property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse Property(string name, object[] index = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The type name</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">index</span></td>
+        <td><p>Optional property index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_Property_" data-uid="HarmonyLib.Traverse.Property*"></a>
+  <h4 id="HarmonyLib_Traverse_Property__1_System_String_System_Object___" data-uid="HarmonyLib.Traverse.Property``1(System.String,System.Object[])">Property&lt;T&gt;(String, Object[])</h4>
+  <div class="markdown level1 summary"><p>Moves the current traverse instance to a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse&lt;T&gt; Property&lt;T&gt;(string name, object[] index = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The type name</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">index</span></td>
+        <td><p>Optional property index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse-1.html">Traverse</a>&lt;T&gt;</td>
+        <td><p>A traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of the property</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_PropertyExists_" data-uid="HarmonyLib.Traverse.PropertyExists*"></a>
+  <h4 id="HarmonyLib_Traverse_PropertyExists" data-uid="HarmonyLib.Traverse.PropertyExists">PropertyExists()</h4>
+  <div class="markdown level1 summary"><p>Checks if the current traverse instance is for a property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool PropertyExists()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if its a property</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_SetValue_" data-uid="HarmonyLib.Traverse.SetValue*"></a>
+  <h4 id="HarmonyLib_Traverse_SetValue_System_Object_" data-uid="HarmonyLib.Traverse.SetValue(System.Object)">SetValue(Object)</h4>
+  <div class="markdown level1 summary"><p>Sets a value of the current field or property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse SetValue(object value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>The same traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_ToString_" data-uid="HarmonyLib.Traverse.ToString*"></a>
+  <h4 id="HarmonyLib_Traverse_ToString" data-uid="HarmonyLib.Traverse.ToString">ToString()</h4>
+  <div class="markdown level1 summary"><p>Returns a string that represents the current traverse</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><p>A string representation</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.Object.ToString()</span></div>
+  
+  
+  <a id="HarmonyLib_Traverse_Type_" data-uid="HarmonyLib.Traverse.Type*"></a>
+  <h4 id="HarmonyLib_Traverse_Type_System_String_" data-uid="HarmonyLib.Traverse.Type(System.String)">Type(String)</h4>
+  <div class="markdown level1 summary"><p>Moves the current traverse instance to a inner type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Traverse Type(string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The type name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Traverse.html">Traverse</a></td>
+        <td><p>A traverse instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_Traverse_TypeExists_" data-uid="HarmonyLib.Traverse.TypeExists*"></a>
+  <h4 id="HarmonyLib_Traverse_TypeExists" data-uid="HarmonyLib.Traverse.TypeExists">TypeExists()</h4>
+  <div class="markdown level1 summary"><p>Checks if the current traverse instance is for a type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TypeExists()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if its a type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

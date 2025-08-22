@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="codematcher">CodeMatcher</h2>
+<p>One of the most useful tool for transpiler is the <a href="../api/HarmonyLib.CodeMatcher.html">CodeMatcher</a>.</p>
+<p><code>CodeMatcher</code> is like a cursor that can move through the IL code. Using matching methods, you can find specific set of instructions and then insert, remove or replace instructions. To find matching IL you need to use <a href="../api/HarmonyLib.CodeMatch.html">CodeMatch</a> and <a href="../api/HarmonyLib.Code.html">Code</a></p>
+<h3 id="use-case">Use case</h3>
+<p>Here is an example of use, we are in the context of an API providing events to mods. In the game, there is a base class <code>DamageHandler</code> which manages damage and death animation. A virtual method <code>DamageHandler.Apply()</code> provides basic damage handling. This method calls another method <code>DamageHandler.Kill()</code> which is called when the character dies. We want to replace the <code>Kill()</code> call with an API method which will invoke an <code>OnDeath</code> event. It is not possible to directly patch <code>Kill()</code> because this method is used in other API methods and we do not want to trigger the event.</p>
+<p>In our case, let's find the call to <code>Kill()</code> and replace it with our method <code>MyDeathHandler()</code>. <code>CodeMatcher.ThrowIfInvalid()</code> will throw an exception if the code does not match. There is also <code>ReportFailure</code> which returns a boolink. Using these methods can help maintain code between updates. Indicating where and which patches should have revisions.</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch]
+public static class DamageHandler_Apply_Patch
+{
+    // See &quot;Auxiliary methods&quot;
+    static IEnumerable&lt;MethodBase&gt; TargetMethods()
+    {
+        var result = new List&lt;MethodBase&gt;();
+        // ... (targeting all DamageHandler.Apply derived)
+        return result;
+    }
+
+    static void MyDeathHandler(DamageHandler handler, Player player)
+    {
+        // ...
+    }
+
+    static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions /*, ILGenerator generator*/)
+    {
+        // Without ILGenerator, the CodeMatcher will not be able to create labels
+        var codeMatcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
+
+        codeMatcher.MatchStartForward(
+                CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default))
+            )
+            .ThrowIfInvalid(&quot;Could not find call to DamageHandler.Kill&quot;)
+            .RemoveInstruction()
+            .InsertAndAdvance(
+                CodeInstruction.Call(() =&gt; MyDeathHandler(default, default))
+            );
+
+        return codeMatcher.Instructions();
+    }
+}
+</code></pre>
+<p>Using <code>ThrowIfInvalid</code> is for an example purposes. There is <code>ThrowIfNotMatchForward</code> which summarizes the successive calls of <code>MatchStartForward</code> and <code>ThrowIfInvalid</code>.</p>
+<pre><code class="lang-csharp" name="example">codeMatcher.ThrowIfNotMatchForward(&quot;Could not find call to DamageHandler.Kill&quot;,
+        CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default))
+    )
+    .RemoveInstruction()
+    .InsertAndAdvance(
+        CodeInstruction.Call(() =&gt; MyDeathHandler(default, default))
+    );
+</code></pre>
+<p>Furthermore, in this context, it is very likely that not all patcher methods call <code>Kill()</code>. It is possible to check the match validation in the following way. When a Match is a failure, the <code>CodeMatcher</code> pointer finds it at the end of the list of instructions. With the <code>Start()</code> method this will return the cursor to the start.</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch]
+public static class DamageHandler_Apply_Patch
+{
+    static IEnumerable&lt;MethodBase&gt; TargetMethods()
+    {
+        var result = new List&lt;MethodBase&gt;();
+        // ... (targeting all DamageHandler.Apply derived)
+        return result;
+    }
+
+    static void MyDeathHandler(DamageHandler handler, Player player)
+    {
+        // ...
+    }
+
+    static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions /*, ILGenerator generator*/)
+    {
+        var codeMatcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
+        codeMatcher.MatchStartForward(
+                CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default))
+            );
+
+        if (codeMatcher.IsValid)
+        {
+            codeMatcher.RemoveInstruction()
+                .InsertAndAdvance(
+                    CodeInstruction.Call(() =&gt; MyDeathHandler(default, default))
+                );
+        }
+
+        codeMatcher.Start();
+        // Other match...
+
+        return codeMatcher.Instructions();
+    }
+}
+</code></pre>
+<p>The <code>Kill()</code> method might be called more than once. For this it is possible to use <code>CodeMatcher.Repeat()</code>, the method will pass the current matcher code to the action. If no Match is successful, it is possible to define an optional action which takes an error message as a parameter, it is called if no match takes place.</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch]
+public static class DamageHandler_Apply_Patch
+{
+    static IEnumerable&lt;MethodBase&gt; TargetMethods()
+    {
+        var result = new List&lt;MethodBase&gt;();
+        // ... (targeting all DamageHandler.Apply derived)
+        return result;
+    }
+
+    static void MyDeathHandler(DamageHandler handler, Player player)
+    {
+        // ...
+    }
+
+    static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions /*, ILGenerator generator*/)
+    {
+        var codeMatcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
+        codeMatcher.MatchStartForward(
+                CodeMatch.Calls(() =&gt; default(DamageHandler).Kill(default))
+            )
+            // Only take the last Matching condition.
+            .Repeat(matchAction: cm =&gt;
+            {
+                cm.RemoveInstruction();
+                cm.InsertAndAdvance(
+                    CodeInstruction.Call(() =&gt; MyDeathHandler(default, default))
+                );
+            });
+
+        return codeMatcher.Instructions();
+    }
+}
+</code></pre>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> <code>Repeat</code> will not use a <code>CodeMatcher.Search...()</code>, only <code>Match...()</code> methods can be repeated. If you consider using another method <code>Match...()</code> in the &quot;matchAction&quot;, clone your <code>CodeMatcher</code> into the match action via <code>CodeMatcher.Clone()</code>. This is to not replace the old match used by <code>Repeat</code>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-transpiler-matcher.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

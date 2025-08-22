@@ -1,0 +1,1379 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class PatchProcessor
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class PatchProcessor
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.PatchProcessor">
+  
+  
+  <h1 id="HarmonyLib_PatchProcessor" data-uid="HarmonyLib.PatchProcessor" class="text-break">Class PatchProcessor
+  </h1>
+  <div class="markdown level0 summary"><p>A PatchProcessor handles patches on a method/constructor</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">PatchProcessor</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_PatchProcessor_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class PatchProcessor</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="HarmonyLib_PatchProcessor__ctor_" data-uid="HarmonyLib.PatchProcessor.#ctor*"></a>
+  <h4 id="HarmonyLib_PatchProcessor__ctor_HarmonyLib_Harmony_System_Reflection_MethodBase_" data-uid="HarmonyLib.PatchProcessor.#ctor(HarmonyLib.Harmony,System.Reflection.MethodBase)">PatchProcessor(Harmony, MethodBase)</h4>
+  <div class="markdown level1 summary"><p>Creates a new PatchProcessor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor(Harmony instance, MethodBase original)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Harmony.html">Harmony</a></td>
+        <td><span class="parametername">instance</span></td>
+        <td><p>The Harmony instance</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method/constructor</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddFinalizer_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddFinalizer_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer(HarmonyLib.HarmonyMethod)">AddFinalizer(HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Adds a finalizer</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddFinalizer(HarmonyMethod finalizer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><span class="parametername">finalizer</span></td>
+        <td><p>The finalizer as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddFinalizer_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddFinalizer_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddFinalizer(System.Reflection.MethodInfo)">AddFinalizer(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Adds a finalizer</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddFinalizer(MethodInfo fixMethod)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">fixMethod</span></td>
+        <td><p>The finalizer method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddInnerPostfix_" data-uid="HarmonyLib.PatchProcessor.AddInnerPostfix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddInnerPostfix_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddInnerPostfix(HarmonyLib.HarmonyMethod)">AddInnerPostfix(HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Adds an inner postfix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddInnerPostfix(HarmonyMethod innerPostfix)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><span class="parametername">innerPostfix</span></td>
+        <td><p>The inner postfix as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddInnerPostfix_" data-uid="HarmonyLib.PatchProcessor.AddInnerPostfix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddInnerPostfix_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddInnerPostfix(System.Reflection.MethodInfo)">AddInnerPostfix(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Adds an inner postfix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddInnerPostfix(MethodInfo fixMethod)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">fixMethod</span></td>
+        <td><p>The inner postfix method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddInnerPrefix_" data-uid="HarmonyLib.PatchProcessor.AddInnerPrefix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddInnerPrefix_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddInnerPrefix(HarmonyLib.HarmonyMethod)">AddInnerPrefix(HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Adds an inner prefix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddInnerPrefix(HarmonyMethod innerPrefix)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><span class="parametername">innerPrefix</span></td>
+        <td><p>The inner prefix as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddInnerPrefix_" data-uid="HarmonyLib.PatchProcessor.AddInnerPrefix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddInnerPrefix_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddInnerPrefix(System.Reflection.MethodInfo)">AddInnerPrefix(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Adds an inner prefix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddInnerPrefix(MethodInfo fixMethod)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">fixMethod</span></td>
+        <td><p>The inner prefix method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddPostfix_" data-uid="HarmonyLib.PatchProcessor.AddPostfix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddPostfix_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddPostfix(HarmonyLib.HarmonyMethod)">AddPostfix(HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Adds a postfix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddPostfix(HarmonyMethod postfix)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><span class="parametername">postfix</span></td>
+        <td><p>The postfix as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddPostfix_" data-uid="HarmonyLib.PatchProcessor.AddPostfix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddPostfix_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddPostfix(System.Reflection.MethodInfo)">AddPostfix(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Adds a postfix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddPostfix(MethodInfo fixMethod)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">fixMethod</span></td>
+        <td><p>The postfix method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddPrefix_" data-uid="HarmonyLib.PatchProcessor.AddPrefix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddPrefix_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddPrefix(HarmonyLib.HarmonyMethod)">AddPrefix(HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Adds a prefix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddPrefix(HarmonyMethod prefix)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><span class="parametername">prefix</span></td>
+        <td><p>The prefix as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddPrefix_" data-uid="HarmonyLib.PatchProcessor.AddPrefix*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddPrefix_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddPrefix(System.Reflection.MethodInfo)">AddPrefix(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Adds a prefix</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddPrefix(MethodInfo fixMethod)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">fixMethod</span></td>
+        <td><p>The prefix method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddTranspiler_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddTranspiler_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler(HarmonyLib.HarmonyMethod)">AddTranspiler(HarmonyMethod)</h4>
+  <div class="markdown level1 summary"><p>Adds a transpiler</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddTranspiler(HarmonyMethod transpiler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
+        <td><span class="parametername">transpiler</span></td>
+        <td><p>The transpiler as a <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_AddTranspiler_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_AddTranspiler_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.AddTranspiler(System.Reflection.MethodInfo)">AddTranspiler(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Adds a transpiler</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor AddTranspiler(MethodInfo fixMethod)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">fixMethod</span></td>
+        <td><p>The transpiler method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_CreateILGenerator_" data-uid="HarmonyLib.PatchProcessor.CreateILGenerator*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_CreateILGenerator" data-uid="HarmonyLib.PatchProcessor.CreateILGenerator">CreateILGenerator()</h4>
+  <div class="markdown level1 summary"><p>Creates a new empty <span class="xref">System.Reflection.Emit.ILGenerator</span> to use when reading method bodies</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ILGenerator CreateILGenerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><p>A new <span class="xref">System.Reflection.Emit.ILGenerator</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_CreateILGenerator_" data-uid="HarmonyLib.PatchProcessor.CreateILGenerator*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_CreateILGenerator_System_Reflection_MethodBase_" data-uid="HarmonyLib.PatchProcessor.CreateILGenerator(System.Reflection.MethodBase)">CreateILGenerator(MethodBase)</h4>
+  <div class="markdown level1 summary"><p>Creates a new <span class="xref">System.Reflection.Emit.ILGenerator</span> matching the method/constructor to use when reading method bodies</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ILGenerator CreateILGenerator(MethodBase original)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method/constructor to copy method information from</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><p>A new <span class="xref">System.Reflection.Emit.ILGenerator</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_GetAllPatchedMethods_" data-uid="HarmonyLib.PatchProcessor.GetAllPatchedMethods*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_GetAllPatchedMethods" data-uid="HarmonyLib.PatchProcessor.GetAllPatchedMethods">GetAllPatchedMethods()</h4>
+  <div class="markdown level1 summary"><p>Gets all patched original methods in the appdomain</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;MethodBase&gt; GetAllPatchedMethods()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.MethodBase</span>&gt;</td>
+        <td><p>An enumeration of patched method/constructor</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_GetCurrentInstructions_" data-uid="HarmonyLib.PatchProcessor.GetCurrentInstructions*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_GetCurrentInstructions_System_Reflection_MethodBase_System_Int32_System_Reflection_Emit_ILGenerator_" data-uid="HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase,System.Int32,System.Reflection.Emit.ILGenerator)">GetCurrentInstructions(MethodBase, Int32, ILGenerator)</h4>
+  <div class="markdown level1 summary"><p>Returns the methods current list of code instructions after all existing transpilers have been applied</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;CodeInstruction&gt; GetCurrentInstructions(MethodBase original, int maxTranspilers = 2147483647, ILGenerator generator = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method/constructor</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">maxTranspilers</span></td>
+        <td><p>Apply only the first count of transpilers</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><span class="parametername">generator</span></td>
+        <td><p>Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list of <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_GetCurrentInstructions_" data-uid="HarmonyLib.PatchProcessor.GetCurrentInstructions*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_GetCurrentInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator__System_Int32_" data-uid="HarmonyLib.PatchProcessor.GetCurrentInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@,System.Int32)">GetCurrentInstructions(MethodBase, out ILGenerator, Int32)</h4>
+  <div class="markdown level1 summary"><p>Returns the methods current list of code instructions after all existing transpilers have been applied</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;CodeInstruction&gt; GetCurrentInstructions(MethodBase original, out ILGenerator generator, int maxTranspilers = 2147483647)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method/constructor</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><span class="parametername">generator</span></td>
+        <td><p>A new generator that now contains all local variables and labels contained in the result</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">maxTranspilers</span></td>
+        <td><p>Apply only the first count of transpilers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list of <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_GetOriginalInstructions_" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator_" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)">GetOriginalInstructions(MethodBase, ILGenerator)</h4>
+  <div class="markdown level1 summary"><p>Returns the methods unmodified list of code instructions</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;CodeInstruction&gt; GetOriginalInstructions(MethodBase original, ILGenerator generator = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method/constructor</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><span class="parametername">generator</span></td>
+        <td><p>Optionally an existing generator that will be used to create all local variables and labels contained in the result (if not specified, an internal generator is used)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list containing all the original <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_GetOriginalInstructions_" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_GetOriginalInstructions_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator__" data-uid="HarmonyLib.PatchProcessor.GetOriginalInstructions(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator@)">GetOriginalInstructions(MethodBase, out ILGenerator)</h4>
+  <div class="markdown level1 summary"><p>Returns the methods unmodified list of code instructions</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;CodeInstruction&gt; GetOriginalInstructions(MethodBase original, out ILGenerator generator)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method/constructor</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><span class="parametername">generator</span></td>
+        <td><p>A new generator that now contains all local variables and labels contained in the result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list containing all the original <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_GetPatchInfo_" data-uid="HarmonyLib.PatchProcessor.GetPatchInfo*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_GetPatchInfo_System_Reflection_MethodBase_" data-uid="HarmonyLib.PatchProcessor.GetPatchInfo(System.Reflection.MethodBase)">GetPatchInfo(MethodBase)</h4>
+  <div class="markdown level1 summary"><p>Gets patch information on an original</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Patches GetPatchInfo(MethodBase method)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The original method/constructor</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Patches.html">Patches</a></td>
+        <td><p>The patch information as <a class="xref" href="HarmonyLib.Patches.html">Patches</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_GetSortedPatchMethods_" data-uid="HarmonyLib.PatchProcessor.GetSortedPatchMethods*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_GetSortedPatchMethods_System_Reflection_MethodBase_HarmonyLib_Patch___" data-uid="HarmonyLib.PatchProcessor.GetSortedPatchMethods(System.Reflection.MethodBase,HarmonyLib.Patch[])">GetSortedPatchMethods(MethodBase, Patch[])</h4>
+  <div class="markdown level1 summary"><p>Sort patch methods by their priority rules</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;MethodInfo&gt; GetSortedPatchMethods(MethodBase original, Patch[] patches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">original</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.Patch.html">Patch</a>[]</td>
+        <td><span class="parametername">patches</span></td>
+        <td><p>Patches to sort</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.MethodInfo</span>&gt;</td>
+        <td><p>The sorted patch methods</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_Patch_" data-uid="HarmonyLib.PatchProcessor.Patch*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_Patch" data-uid="HarmonyLib.PatchProcessor.Patch">Patch()</h4>
+  <div class="markdown level1 summary"><p>Applies all registered patches</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MethodInfo Patch()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><p>The generated replacement method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_ReadMethodBody_" data-uid="HarmonyLib.PatchProcessor.ReadMethodBody*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_ReadMethodBody_System_Reflection_MethodBase_" data-uid="HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase)">ReadMethodBody(MethodBase)</h4>
+  <div class="markdown level1 summary"><p>A low level way to read the body of a method. Used for quick searching in methods</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;KeyValuePair&lt;OpCode, object&gt;&gt; ReadMethodBody(MethodBase method)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Collections.Generic.KeyValuePair</span>&lt;<span class="xref">System.Reflection.Emit.OpCode</span>, <span class="xref">System.Object</span>&gt;&gt;</td>
+        <td><p>All instructions as opcode/operand pairs</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_ReadMethodBody_" data-uid="HarmonyLib.PatchProcessor.ReadMethodBody*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_ReadMethodBody_System_Reflection_MethodBase_System_Reflection_Emit_ILGenerator_" data-uid="HarmonyLib.PatchProcessor.ReadMethodBody(System.Reflection.MethodBase,System.Reflection.Emit.ILGenerator)">ReadMethodBody(MethodBase, ILGenerator)</h4>
+  <div class="markdown level1 summary"><p>A low level way to read the body of a method. Used for quick searching in methods</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;KeyValuePair&lt;OpCode, object&gt;&gt; ReadMethodBody(MethodBase method, ILGenerator generator)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The original method</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><span class="parametername">generator</span></td>
+        <td><p>An existing generator that will be used to create all local variables and labels contained in the result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Collections.Generic.KeyValuePair</span>&lt;<span class="xref">System.Reflection.Emit.OpCode</span>, <span class="xref">System.Object</span>&gt;&gt;</td>
+        <td><p>All instructions as opcode/operand pairs</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_Unpatch_" data-uid="HarmonyLib.PatchProcessor.Unpatch*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_Unpatch_HarmonyLib_HarmonyPatchType_System_String_" data-uid="HarmonyLib.PatchProcessor.Unpatch(HarmonyLib.HarmonyPatchType,System.String)">Unpatch(HarmonyPatchType, String)</h4>
+  <div class="markdown level1 summary"><p>Unpatches patches of a given type and/or Harmony ID</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor Unpatch(HarmonyPatchType type, string harmonyID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.HarmonyPatchType.html">HarmonyPatchType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.HarmonyPatchType.html">HarmonyPatchType</a> patch type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">harmonyID</span></td>
+        <td><p>Harmony ID or <code>*</code> for any</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_Unpatch_" data-uid="HarmonyLib.PatchProcessor.Unpatch*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_Unpatch_System_Reflection_MethodInfo_" data-uid="HarmonyLib.PatchProcessor.Unpatch(System.Reflection.MethodInfo)">Unpatch(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Unpatches a specific patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PatchProcessor Unpatch(MethodInfo patch)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">patch</span></td>
+        <td><p>The method of the patch</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></td>
+        <td><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_PatchProcessor_VersionInfo_" data-uid="HarmonyLib.PatchProcessor.VersionInfo*"></a>
+  <h4 id="HarmonyLib_PatchProcessor_VersionInfo_System_Version__" data-uid="HarmonyLib.PatchProcessor.VersionInfo(System.Version@)">VersionInfo(out Version)</h4>
+  <div class="markdown level1 summary"><p>Gets Harmony version for all active Harmony instances</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Dictionary&lt;string, Version&gt; VersionInfo(out Version currentVersion)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Version</span></td>
+        <td><span class="parametername">currentVersion</span></td>
+        <td><p>[out] The current Harmony version</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.Dictionary</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Version</span>&gt;</td>
+        <td><p>A dictionary containing assembly version keyed by Harmony ID</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

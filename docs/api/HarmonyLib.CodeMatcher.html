@@ -1,0 +1,3445 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class CodeMatcher
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class CodeMatcher
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.CodeMatcher">
+  
+  
+  <h1 id="HarmonyLib_CodeMatcher" data-uid="HarmonyLib.CodeMatcher" class="text-break">Class CodeMatcher
+  </h1>
+  <div class="markdown level0 summary"><p>A CodeInstruction matcher</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">CodeMatcher</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_CodeMatcher_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CodeMatcher</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="HarmonyLib_CodeMatcher__ctor_" data-uid="HarmonyLib.CodeMatcher.#ctor*"></a>
+  <h4 id="HarmonyLib_CodeMatcher__ctor" data-uid="HarmonyLib.CodeMatcher.#ctor">CodeMatcher()</h4>
+  <div class="markdown level1 summary"><p>Creates an empty code matcher</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher()</code></pre>
+  </div>
+  
+  
+  <a id="HarmonyLib_CodeMatcher__ctor_" data-uid="HarmonyLib.CodeMatcher.#ctor*"></a>
+  <h4 id="HarmonyLib_CodeMatcher__ctor_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__System_Reflection_Emit_ILGenerator_" data-uid="HarmonyLib.CodeMatcher.#ctor(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction},System.Reflection.Emit.ILGenerator)">CodeMatcher(IEnumerable&lt;CodeInstruction&gt;, ILGenerator)</h4>
+  <div class="markdown level1 summary"><p>Creates a code matcher from an enumeration of instructions</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher(IEnumerable&lt;CodeInstruction&gt; instructions, ILGenerator generator = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions (transpiler argument)</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.ILGenerator</span></td>
+        <td><span class="parametername">generator</span></td>
+        <td><p>An optional IL generator</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Blocks_" data-uid="HarmonyLib.CodeMatcher.Blocks*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Blocks" data-uid="HarmonyLib.CodeMatcher.Blocks">Blocks</h4>
+  <div class="markdown level1 summary"><p>Gets the exception blocks at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;ExceptionBlock&gt; Blocks { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
+        <td><p>The blocks</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Instruction_" data-uid="HarmonyLib.CodeMatcher.Instruction*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Instruction" data-uid="HarmonyLib.CodeMatcher.Instruction">Instruction</h4>
+  <div class="markdown level1 summary"><p>Gets instructions at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeInstruction Instruction { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_IsInvalid_" data-uid="HarmonyLib.CodeMatcher.IsInvalid*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_IsInvalid" data-uid="HarmonyLib.CodeMatcher.IsInvalid">IsInvalid</h4>
+  <div class="markdown level1 summary"><p>Checks whether the position of this CodeMatcher is outside its bounds</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsInvalid { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if this CodeMatcher is invalid</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_IsValid_" data-uid="HarmonyLib.CodeMatcher.IsValid*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_IsValid" data-uid="HarmonyLib.CodeMatcher.IsValid">IsValid</h4>
+  <div class="markdown level1 summary"><p>Checks whether the position of this CodeMatcher is within bounds</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsValid { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if this CodeMatcher is valid</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Labels_" data-uid="HarmonyLib.CodeMatcher.Labels*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Labels" data-uid="HarmonyLib.CodeMatcher.Labels">Labels</h4>
+  <div class="markdown level1 summary"><p>Gets the labels at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;Label&gt; Labels { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><p>The labels</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Length_" data-uid="HarmonyLib.CodeMatcher.Length*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Length" data-uid="HarmonyLib.CodeMatcher.Length">Length</h4>
+  <div class="markdown level1 summary"><p>Gets the number of code instructions in this matcher</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Length { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The count</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Opcode_" data-uid="HarmonyLib.CodeMatcher.Opcode*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Opcode" data-uid="HarmonyLib.CodeMatcher.Opcode">Opcode</h4>
+  <div class="markdown level1 summary"><p>Gets the opcode at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OpCode Opcode { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><p>The opcode</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Operand_" data-uid="HarmonyLib.CodeMatcher.Operand*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Operand" data-uid="HarmonyLib.CodeMatcher.Operand">Operand</h4>
+  <div class="markdown level1 summary"><p>Gets the operand at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object Operand { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><p>The operand</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Pos_" data-uid="HarmonyLib.CodeMatcher.Pos*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Pos" data-uid="HarmonyLib.CodeMatcher.Pos">Pos</h4>
+  <div class="markdown level1 summary"><p>The current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Pos { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The index or -1 if out of bounds</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Remaining_" data-uid="HarmonyLib.CodeMatcher.Remaining*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Remaining" data-uid="HarmonyLib.CodeMatcher.Remaining">Remaining</h4>
+  <div class="markdown level1 summary"><p>Gets the remaining code instructions</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Remaining { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The remaining count</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_AddLabels_" data-uid="HarmonyLib.CodeMatcher.AddLabels*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_AddLabels_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.AddLabels(System.Collections.Generic.IEnumerable{System.Reflection.Emit.Label})">AddLabels(IEnumerable&lt;Label&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds an enumeration of labels to current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher AddLabels(IEnumerable&lt;Label&gt; labels)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><span class="parametername">labels</span></td>
+        <td><p>The labels</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_AddLabelsAt_" data-uid="HarmonyLib.CodeMatcher.AddLabelsAt*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_AddLabelsAt_System_Int32_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.AddLabelsAt(System.Int32,System.Collections.Generic.IEnumerable{System.Reflection.Emit.Label})">AddLabelsAt(Int32, IEnumerable&lt;Label&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds an enumeration of labels at a position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher AddLabelsAt(int position, IEnumerable&lt;Label&gt; labels)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>The position</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><span class="parametername">labels</span></td>
+        <td><p>The labels</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Advance_" data-uid="HarmonyLib.CodeMatcher.Advance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Advance_System_Int32_" data-uid="HarmonyLib.CodeMatcher.Advance(System.Int32)">Advance(Int32)</h4>
+  <div class="markdown level1 summary"><p>Advances the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Advance(int offset = 1)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">offset</span></td>
+        <td><p>The offset</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Clone_" data-uid="HarmonyLib.CodeMatcher.Clone*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Clone" data-uid="HarmonyLib.CodeMatcher.Clone">Clone()</h4>
+  <div class="markdown level1 summary"><p>Makes a clone of this instruction matcher</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Clone()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>A copy of this matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_CreateLabel_" data-uid="HarmonyLib.CodeMatcher.CreateLabel*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_CreateLabel_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.CreateLabel(System.Reflection.Emit.Label@)">CreateLabel(out Label)</h4>
+  <div class="markdown level1 summary"><p>Creates a label at current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher CreateLabel(out Label label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
+        <td><span class="parametername">label</span></td>
+        <td><p>[out] The label</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_CreateLabelAt_" data-uid="HarmonyLib.CodeMatcher.CreateLabelAt*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_CreateLabelAt_System_Int32_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.CreateLabelAt(System.Int32,System.Reflection.Emit.Label@)">CreateLabelAt(Int32, out Label)</h4>
+  <div class="markdown level1 summary"><p>Creates a label at a position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher CreateLabelAt(int position, out Label label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>The position</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
+        <td><span class="parametername">label</span></td>
+        <td><p>[out] The new label</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_CreateLabelWithOffsets_" data-uid="HarmonyLib.CodeMatcher.CreateLabelWithOffsets*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_CreateLabelWithOffsets_System_Int32_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.CreateLabelWithOffsets(System.Int32,System.Reflection.Emit.Label@)">CreateLabelWithOffsets(Int32, out Label)</h4>
+  <div class="markdown level1 summary"><p>Creates a label at the given offset from the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher CreateLabelWithOffsets(int offset, out Label label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">offset</span></td>
+        <td><p>The offset</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
+        <td><span class="parametername">label</span></td>
+        <td><p>[out] The new label</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_DeclareLocal_" data-uid="HarmonyLib.CodeMatcher.DeclareLocal*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_DeclareLocal_System_Type_System_Reflection_Emit_LocalBuilder__" data-uid="HarmonyLib.CodeMatcher.DeclareLocal(System.Type,System.Reflection.Emit.LocalBuilder@)">DeclareLocal(Type, out LocalBuilder)</h4>
+  <div class="markdown level1 summary"><p>Declares a local variable but does not add it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher DeclareLocal(Type variableType, out LocalBuilder localVariable)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">variableType</span></td>
+        <td><p>The variable type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.LocalBuilder</span></td>
+        <td><span class="parametername">localVariable</span></td>
+        <td><p>[out] The new local variable</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_DefineLabel_" data-uid="HarmonyLib.CodeMatcher.DefineLabel*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_DefineLabel_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.DefineLabel(System.Reflection.Emit.Label@)">DefineLabel(out Label)</h4>
+  <div class="markdown level1 summary"><p>Declares a new label but does not add it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher DefineLabel(out Label label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
+        <td><span class="parametername">label</span></td>
+        <td><p>[out] The new label</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_DistinctLabels_" data-uid="HarmonyLib.CodeMatcher.DistinctLabels*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_DistinctLabels_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.DistinctLabels(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">DistinctLabels(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <div class="markdown level1 summary"><p>Gets a list of all distinct labels</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;Label&gt; DistinctLabels(IEnumerable&lt;CodeInstruction&gt; instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions (transpiler argument)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><p>A list of Labels</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Do_" data-uid="HarmonyLib.CodeMatcher.Do*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Do_System_Action_HarmonyLib_CodeMatcher__" data-uid="HarmonyLib.CodeMatcher.Do(System.Action{HarmonyLib.CodeMatcher})">Do(Action&lt;CodeMatcher&gt;)</h4>
+  <div class="markdown level1 summary"><p>Runs some code when chaining <a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a> at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Do(Action&lt;CodeMatcher&gt; action)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a>&gt;</td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The <span class="xref">System.Action&lt;T&gt;</span> to run</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_End_" data-uid="HarmonyLib.CodeMatcher.End*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_End" data-uid="HarmonyLib.CodeMatcher.End">End()</h4>
+  <div class="markdown level1 summary"><p>Moves the current position to the end</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher End()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Insert_" data-uid="HarmonyLib.CodeMatcher.Insert*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Insert_HarmonyLib_CodeInstruction___" data-uid="HarmonyLib.CodeMatcher.Insert(HarmonyLib.CodeInstruction[])">Insert(CodeInstruction[])</h4>
+  <div class="markdown level1 summary"><p>Inserts some instructions at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Insert(params CodeInstruction[] instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>[]</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Insert_" data-uid="HarmonyLib.CodeMatcher.Insert*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Insert_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.Insert(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">Insert(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <div class="markdown level1 summary"><p>Inserts an enumeration of instructions at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Insert(IEnumerable&lt;CodeInstruction&gt; instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertAfter_" data-uid="HarmonyLib.CodeMatcher.InsertAfter*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertAfter_HarmonyLib_CodeInstruction___" data-uid="HarmonyLib.CodeMatcher.InsertAfter(HarmonyLib.CodeInstruction[])">InsertAfter(CodeInstruction[])</h4>
+  <div class="markdown level1 summary"><p>Inserts instructions immediately after the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertAfter(params CodeInstruction[] instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>[]</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertAfter_" data-uid="HarmonyLib.CodeMatcher.InsertAfter*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertAfter_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.InsertAfter(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">InsertAfter(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <div class="markdown level1 summary"><p>Inserts an enumeration of instructions immediately after the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertAfter(IEnumerable&lt;CodeInstruction&gt; instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertAfterAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertAfterAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertAfterAndAdvance_HarmonyLib_CodeInstruction___" data-uid="HarmonyLib.CodeMatcher.InsertAfterAndAdvance(HarmonyLib.CodeInstruction[])">InsertAfterAndAdvance(CodeInstruction[])</h4>
+  <div class="markdown level1 summary"><p>Inserts instructions immediately after the current position and advances to the last inserted instruction</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertAfterAndAdvance(params CodeInstruction[] instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>[]</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertAfterAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertAfterAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertAfterAndAdvance_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.InsertAfterAndAdvance(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">InsertAfterAndAdvance(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <div class="markdown level1 summary"><p>Inserts an enumeration of instructions immediately after the current position and advances to the last inserted instruction</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertAfterAndAdvance(IEnumerable&lt;CodeInstruction&gt; instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertAndAdvance_HarmonyLib_CodeInstruction___" data-uid="HarmonyLib.CodeMatcher.InsertAndAdvance(HarmonyLib.CodeInstruction[])">InsertAndAdvance(CodeInstruction[])</h4>
+  <div class="markdown level1 summary"><p>Inserts some instructions at the current position and advances it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertAndAdvance(params CodeInstruction[] instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>[]</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertAndAdvance_System_Collections_Generic_IEnumerable_HarmonyLib_CodeInstruction__" data-uid="HarmonyLib.CodeMatcher.InsertAndAdvance(System.Collections.Generic.IEnumerable{HarmonyLib.CodeInstruction})">InsertAndAdvance(IEnumerable&lt;CodeInstruction&gt;)</h4>
+  <div class="markdown level1 summary"><p>Inserts an enumeration of instructions at the current position and advances it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertAndAdvance(IEnumerable&lt;CodeInstruction&gt; instructions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><span class="parametername">instructions</span></td>
+        <td><p>The instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertBranch_" data-uid="HarmonyLib.CodeMatcher.InsertBranch*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertBranch_System_Reflection_Emit_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranch(System.Reflection.Emit.OpCode,System.Int32)">InsertBranch(OpCode, Int32)</h4>
+  <div class="markdown level1 summary"><p>Inserts a branch at the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertBranch(OpCode opcode, int destination)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The branch opcode</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">destination</span></td>
+        <td><p>Branch destination</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertBranchAfter_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAfter*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertBranchAfter_System_Reflection_Emit_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAfter(System.Reflection.Emit.OpCode,System.Int32)">InsertBranchAfter(OpCode, Int32)</h4>
+  <div class="markdown level1 summary"><p>Inserts a branch instruction immediately after the current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertBranchAfter(OpCode opcode, int destination)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The branch opcode</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">destination</span></td>
+        <td><p>Branch destination index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertBranchAfterAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertBranchAfterAndAdvance_System_Reflection_Emit_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAfterAndAdvance(System.Reflection.Emit.OpCode,System.Int32)">InsertBranchAfterAndAdvance(OpCode, Int32)</h4>
+  <div class="markdown level1 summary"><p>Inserts a branch instruction immediately after the current position and advances the position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertBranchAfterAndAdvance(OpCode opcode, int destination)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The branch opcode</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">destination</span></td>
+        <td><p>Branch destination index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InsertBranchAndAdvance_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InsertBranchAndAdvance_System_Reflection_Emit_OpCode_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InsertBranchAndAdvance(System.Reflection.Emit.OpCode,System.Int32)">InsertBranchAndAdvance(OpCode, Int32)</h4>
+  <div class="markdown level1 summary"><p>Inserts a branch at the current position and advances it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher InsertBranchAndAdvance(OpCode opcode, int destination)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The branch opcode</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">destination</span></td>
+        <td><p>Branch destination</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InstructionAt_" data-uid="HarmonyLib.CodeMatcher.InstructionAt*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InstructionAt_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InstructionAt(System.Int32)">InstructionAt(Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets instructions at the current position with offset</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeInstruction InstructionAt(int offset)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">offset</span></td>
+        <td><p>The offset</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InstructionEnumeration_" data-uid="HarmonyLib.CodeMatcher.InstructionEnumeration*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InstructionEnumeration" data-uid="HarmonyLib.CodeMatcher.InstructionEnumeration">InstructionEnumeration()</h4>
+  <div class="markdown level1 summary"><p>Gets all instructions as an enumeration</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;CodeInstruction&gt; InstructionEnumeration()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list of instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Instructions_" data-uid="HarmonyLib.CodeMatcher.Instructions*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Instructions" data-uid="HarmonyLib.CodeMatcher.Instructions">Instructions()</h4>
+  <div class="markdown level1 summary"><p>Gets all instructions</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;CodeInstruction&gt; Instructions()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list of instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Instructions_" data-uid="HarmonyLib.CodeMatcher.Instructions*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Instructions_System_Int32_" data-uid="HarmonyLib.CodeMatcher.Instructions(System.Int32)">Instructions(Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets some instructions counting from current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;CodeInstruction&gt; Instructions(int count)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">count</span></td>
+        <td><p>Number of instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list of instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InstructionsInRange_" data-uid="HarmonyLib.CodeMatcher.InstructionsInRange*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InstructionsInRange_System_Int32_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InstructionsInRange(System.Int32,System.Int32)">InstructionsInRange(Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets all instructions within a range</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;CodeInstruction&gt; InstructionsInRange(int start, int end)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">start</span></td>
+        <td><p>The start index</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">end</span></td>
+        <td><p>The end index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list of instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_InstructionsWithOffsets_" data-uid="HarmonyLib.CodeMatcher.InstructionsWithOffsets*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_InstructionsWithOffsets_System_Int32_System_Int32_" data-uid="HarmonyLib.CodeMatcher.InstructionsWithOffsets(System.Int32,System.Int32)">InstructionsWithOffsets(Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets all instructions within a range (relative to current position)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;CodeInstruction&gt; InstructionsWithOffsets(int startOffset, int endOffset)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">startOffset</span></td>
+        <td><p>The start offset</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">endOffset</span></td>
+        <td><p>The end offset</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>&gt;</td>
+        <td><p>A list of instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_MatchEndBackwards_" data-uid="HarmonyLib.CodeMatcher.MatchEndBackwards*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_MatchEndBackwards_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.MatchEndBackwards(HarmonyLib.CodeMatch[])">MatchEndBackwards(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Matches backwards and moves the position to ending of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher MatchEndBackwards(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_MatchEndForward_" data-uid="HarmonyLib.CodeMatcher.MatchEndForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_MatchEndForward_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.MatchEndForward(HarmonyLib.CodeMatch[])">MatchEndForward(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Matches forward and advances position to ending of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher MatchEndForward(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_MatchStartBackwards_" data-uid="HarmonyLib.CodeMatcher.MatchStartBackwards*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_MatchStartBackwards_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.MatchStartBackwards(HarmonyLib.CodeMatch[])">MatchStartBackwards(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Matches backwards and moves the position to beginning of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher MatchStartBackwards(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_MatchStartForward_" data-uid="HarmonyLib.CodeMatcher.MatchStartForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_MatchStartForward_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.MatchStartForward(HarmonyLib.CodeMatch[])">MatchStartForward(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Matches forward and advances position to beginning of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher MatchStartForward(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_NamedMatch_" data-uid="HarmonyLib.CodeMatcher.NamedMatch*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_NamedMatch_System_String_" data-uid="HarmonyLib.CodeMatcher.NamedMatch(System.String)">NamedMatch(String)</h4>
+  <div class="markdown level1 summary"><p>Gets a match by its name</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeInstruction NamedMatch(string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The match name</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>An instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_OnError_" data-uid="HarmonyLib.CodeMatcher.OnError*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_OnError_HarmonyLib_CodeMatcher_ErrorHandler_" data-uid="HarmonyLib.CodeMatcher.OnError(HarmonyLib.CodeMatcher.ErrorHandler)">OnError(CodeMatcher.ErrorHandler)</h4>
+  <div class="markdown level1 summary"><p>Registers an error handler that is invoked instead of throwing an exception</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher OnError(CodeMatcher.ErrorHandler errorHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.ErrorHandler.html">CodeMatcher.ErrorHandler</a></td>
+        <td><span class="parametername">errorHandler</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeMatcher.ErrorHandler.html">CodeMatcher.ErrorHandler</a> to register or <code>null</code> to remove the current handler</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_PrepareMatchEndBackwards_" data-uid="HarmonyLib.CodeMatcher.PrepareMatchEndBackwards*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_PrepareMatchEndBackwards_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.PrepareMatchEndBackwards(HarmonyLib.CodeMatch[])">PrepareMatchEndBackwards(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Prepares matching backwards and reversing position to ending of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher PrepareMatchEndBackwards(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_PrepareMatchEndForward_" data-uid="HarmonyLib.CodeMatcher.PrepareMatchEndForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_PrepareMatchEndForward_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.PrepareMatchEndForward(HarmonyLib.CodeMatch[])">PrepareMatchEndForward(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Prepares matching forward and advancing position to ending of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher PrepareMatchEndForward(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_PrepareMatchStartBackwards_" data-uid="HarmonyLib.CodeMatcher.PrepareMatchStartBackwards*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_PrepareMatchStartBackwards_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.PrepareMatchStartBackwards(HarmonyLib.CodeMatch[])">PrepareMatchStartBackwards(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Prepares matching backwards and reversing position to beginning of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher PrepareMatchStartBackwards(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_PrepareMatchStartForward_" data-uid="HarmonyLib.CodeMatcher.PrepareMatchStartForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_PrepareMatchStartForward_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.PrepareMatchStartForward(HarmonyLib.CodeMatch[])">PrepareMatchStartForward(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Prepares matching forward and advancing position to beginning of matching sequence</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher PrepareMatchStartForward(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveInstruction_" data-uid="HarmonyLib.CodeMatcher.RemoveInstruction*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveInstruction" data-uid="HarmonyLib.CodeMatcher.RemoveInstruction">RemoveInstruction()</h4>
+  <div class="markdown level1 summary"><p>Removes current instruction</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveInstruction()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveInstructions_" data-uid="HarmonyLib.CodeMatcher.RemoveInstructions*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveInstructions_System_Int32_" data-uid="HarmonyLib.CodeMatcher.RemoveInstructions(System.Int32)">RemoveInstructions(Int32)</h4>
+  <div class="markdown level1 summary"><p>Removes some instruction from current position by count</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveInstructions(int count)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">count</span></td>
+        <td><p>Number of instructions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveInstructionsInRange_" data-uid="HarmonyLib.CodeMatcher.RemoveInstructionsInRange*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveInstructionsInRange_System_Int32_System_Int32_" data-uid="HarmonyLib.CodeMatcher.RemoveInstructionsInRange(System.Int32,System.Int32)">RemoveInstructionsInRange(Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Removes the instructions in a range</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveInstructionsInRange(int start, int end)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">start</span></td>
+        <td><p>The start</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">end</span></td>
+        <td><p>The end</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveInstructionsWithOffsets_" data-uid="HarmonyLib.CodeMatcher.RemoveInstructionsWithOffsets*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveInstructionsWithOffsets_System_Int32_System_Int32_" data-uid="HarmonyLib.CodeMatcher.RemoveInstructionsWithOffsets(System.Int32,System.Int32)">RemoveInstructionsWithOffsets(Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Removes the instructions in an offset range</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveInstructionsWithOffsets(int startOffset, int endOffset)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">startOffset</span></td>
+        <td><p>The start offset</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">endOffset</span></td>
+        <td><p>The end offset</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveSearchBackward_" data-uid="HarmonyLib.CodeMatcher.RemoveSearchBackward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveSearchBackward_System_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.RemoveSearchBackward(System.Func{HarmonyLib.CodeInstruction,System.Boolean})">RemoveSearchBackward(Func&lt;CodeInstruction, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Removes instructions from the current position backward until a predicate is matched. The matched instruction is not removed</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveSearchBackward(Func&lt;CodeInstruction, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>A function to test each instruction for a match</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveSearchForward_" data-uid="HarmonyLib.CodeMatcher.RemoveSearchForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveSearchForward_System_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.RemoveSearchForward(System.Func{HarmonyLib.CodeInstruction,System.Boolean})">RemoveSearchForward(Func&lt;CodeInstruction, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Removes instructions from the current position forward until a predicate is matched. The matched instruction is not removed</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveSearchForward(Func&lt;CodeInstruction, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>A function to test each instruction for a match</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveUntilBackward_" data-uid="HarmonyLib.CodeMatcher.RemoveUntilBackward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveUntilBackward_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.RemoveUntilBackward(HarmonyLib.CodeMatch[])">RemoveUntilBackward(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Removes instructions backwards from the current position to the previous match (exclusive)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveUntilBackward(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_RemoveUntilForward_" data-uid="HarmonyLib.CodeMatcher.RemoveUntilForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_RemoveUntilForward_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.RemoveUntilForward(HarmonyLib.CodeMatch[])">RemoveUntilForward(CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Removes instructions from the current position up to the next match (exclusive)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher RemoveUntilForward(params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Repeat_" data-uid="HarmonyLib.CodeMatcher.Repeat*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Repeat_System_Action_HarmonyLib_CodeMatcher__System_Action_System_String__" data-uid="HarmonyLib.CodeMatcher.Repeat(System.Action{HarmonyLib.CodeMatcher},System.Action{System.String})">Repeat(Action&lt;CodeMatcher&gt;, Action&lt;String&gt;)</h4>
+  <div class="markdown level1 summary"><p>Repeats a match action until boundaries are met</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Repeat(Action&lt;CodeMatcher&gt; matchAction, Action&lt;string&gt; notFoundAction = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a>&gt;</td>
+        <td><span class="parametername">matchAction</span></td>
+        <td><p>The match action</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">notFoundAction</span></td>
+        <td><p>An optional action that is executed when no match is found</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_ReportFailure_" data-uid="HarmonyLib.CodeMatcher.ReportFailure*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_ReportFailure_System_Reflection_MethodBase_System_Action_System_String__" data-uid="HarmonyLib.CodeMatcher.ReportFailure(System.Reflection.MethodBase,System.Action{System.String})">ReportFailure(MethodBase, Action&lt;String&gt;)</h4>
+  <div class="markdown level1 summary"><p>Reports a failure</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ReportFailure(MethodBase method, Action&lt;string&gt; logger)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodBase</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The method involved</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>The logger</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if current position is invalid and error was logged</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Reset_" data-uid="HarmonyLib.CodeMatcher.Reset*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Reset_System_Boolean_" data-uid="HarmonyLib.CodeMatcher.Reset(System.Boolean)">Reset(Boolean)</h4>
+  <div class="markdown level1 summary"><p>Resets the current position to -1 and clears last matches and errors</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Reset(bool atFirstInstruction = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">atFirstInstruction</span></td>
+        <td><p>If true, sets position to 0, otherwise sets it to -1</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SearchBackwards_" data-uid="HarmonyLib.CodeMatcher.SearchBackwards*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SearchBackwards_System_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.SearchBackwards(System.Func{HarmonyLib.CodeInstruction,System.Boolean})">SearchBackwards(Func&lt;CodeInstruction, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Searches backwards with a predicate and moves the position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SearchBackwards(Func&lt;CodeInstruction, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>A function to test each instruction for a match</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SearchForward_" data-uid="HarmonyLib.CodeMatcher.SearchForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SearchForward_System_Func_HarmonyLib_CodeInstruction_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.SearchForward(System.Func{HarmonyLib.CodeInstruction,System.Boolean})">SearchForward(Func&lt;CodeInstruction, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Searches forward with a predicate and advances position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SearchForward(Func&lt;CodeInstruction, bool&gt; predicate)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">predicate</span></td>
+        <td><p>A function to test each instruction for a match</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Set_" data-uid="HarmonyLib.CodeMatcher.Set*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Set_System_Reflection_Emit_OpCode_System_Object_" data-uid="HarmonyLib.CodeMatcher.Set(System.Reflection.Emit.OpCode,System.Object)">Set(OpCode, Object)</h4>
+  <div class="markdown level1 summary"><p>Sets opcode and operand at current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Set(OpCode opcode, object operand)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The opcode</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">operand</span></td>
+        <td><p>The operand</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SetAndAdvance_" data-uid="HarmonyLib.CodeMatcher.SetAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SetAndAdvance_System_Reflection_Emit_OpCode_System_Object_" data-uid="HarmonyLib.CodeMatcher.SetAndAdvance(System.Reflection.Emit.OpCode,System.Object)">SetAndAdvance(OpCode, Object)</h4>
+  <div class="markdown level1 summary"><p>Sets opcode and operand at current position and advances</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SetAndAdvance(OpCode opcode, object operand)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The opcode</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">operand</span></td>
+        <td><p>The operand</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SetInstruction_" data-uid="HarmonyLib.CodeMatcher.SetInstruction*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SetInstruction_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeMatcher.SetInstruction(HarmonyLib.CodeInstruction)">SetInstruction(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Sets an instruction at current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SetInstruction(CodeInstruction instruction)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">instruction</span></td>
+        <td><p>The instruction to set</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SetInstructionAndAdvance_" data-uid="HarmonyLib.CodeMatcher.SetInstructionAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SetInstructionAndAdvance_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeMatcher.SetInstructionAndAdvance(HarmonyLib.CodeInstruction)">SetInstructionAndAdvance(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Sets instruction at current position and advances</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SetInstructionAndAdvance(CodeInstruction instruction)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">instruction</span></td>
+        <td><p>The instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SetJumpTo_" data-uid="HarmonyLib.CodeMatcher.SetJumpTo*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SetJumpTo_System_Reflection_Emit_OpCode_System_Int32_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeMatcher.SetJumpTo(System.Reflection.Emit.OpCode,System.Int32,System.Reflection.Emit.Label@)">SetJumpTo(OpCode, Int32, out Label)</h4>
+  <div class="markdown level1 summary"><p>Sets jump to</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SetJumpTo(OpCode opcode, int destination, out Label label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>Branch instruction</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">destination</span></td>
+        <td><p>Destination for the jump</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span></td>
+        <td><span class="parametername">label</span></td>
+        <td><p>[out] The created label</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SetOpcodeAndAdvance_" data-uid="HarmonyLib.CodeMatcher.SetOpcodeAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SetOpcodeAndAdvance_System_Reflection_Emit_OpCode_" data-uid="HarmonyLib.CodeMatcher.SetOpcodeAndAdvance(System.Reflection.Emit.OpCode)">SetOpcodeAndAdvance(OpCode)</h4>
+  <div class="markdown level1 summary"><p>Sets opcode at current position and advances</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SetOpcodeAndAdvance(OpCode opcode)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The opcode</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_SetOperandAndAdvance_" data-uid="HarmonyLib.CodeMatcher.SetOperandAndAdvance*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_SetOperandAndAdvance_System_Object_" data-uid="HarmonyLib.CodeMatcher.SetOperandAndAdvance(System.Object)">SetOperandAndAdvance(Object)</h4>
+  <div class="markdown level1 summary"><p>Sets operand at current position and advances</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher SetOperandAndAdvance(object operand)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">operand</span></td>
+        <td><p>The operand</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_Start_" data-uid="HarmonyLib.CodeMatcher.Start*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_Start" data-uid="HarmonyLib.CodeMatcher.Start">Start()</h4>
+  <div class="markdown level1 summary"><p>Moves the current position to the start</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher Start()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_ThrowIfFalse_" data-uid="HarmonyLib.CodeMatcher.ThrowIfFalse*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_ThrowIfFalse_System_String_System_Func_HarmonyLib_CodeMatcher_System_Boolean__" data-uid="HarmonyLib.CodeMatcher.ThrowIfFalse(System.String,System.Func{HarmonyLib.CodeMatcher,System.Boolean})">ThrowIfFalse(String, Func&lt;CodeMatcher, Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Throw an InvalidOperationException if current state is invalid (position out of bounds / last match failed),
+or if the check function returns false</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher ThrowIfFalse(string explanation, Func&lt;CodeMatcher, bool&gt; stateCheckFunc)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">explanation</span></td>
+        <td><p>Explanation of where/why the exception was thrown that will be added to the exception message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a>, <span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">stateCheckFunc</span></td>
+        <td><p>Function that checks validity of current state. If it returns false, an exception is thrown</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_ThrowIfInvalid_" data-uid="HarmonyLib.CodeMatcher.ThrowIfInvalid*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_ThrowIfInvalid_System_String_" data-uid="HarmonyLib.CodeMatcher.ThrowIfInvalid(System.String)">ThrowIfInvalid(String)</h4>
+  <div class="markdown level1 summary"><p>Throw an InvalidOperationException if current state is invalid (position out of bounds / last match failed)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher ThrowIfInvalid(string explanation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">explanation</span></td>
+        <td><p>Explanation of where/why the exception was thrown that will be added to the exception message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_ThrowIfNotMatch_" data-uid="HarmonyLib.CodeMatcher.ThrowIfNotMatch*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_ThrowIfNotMatch_System_String_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.ThrowIfNotMatch(System.String,HarmonyLib.CodeMatch[])">ThrowIfNotMatch(String, CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Throw an InvalidOperationException if current state is invalid (position out of bounds / last match failed),
+or if the matches do not match at current position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher ThrowIfNotMatch(string explanation, params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">explanation</span></td>
+        <td><p>Explanation of where/why the exception was thrown that will be added to the exception message</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_ThrowIfNotMatchBack_" data-uid="HarmonyLib.CodeMatcher.ThrowIfNotMatchBack*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_ThrowIfNotMatchBack_System_String_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.ThrowIfNotMatchBack(System.String,HarmonyLib.CodeMatch[])">ThrowIfNotMatchBack(String, CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Throw an InvalidOperationException if current state is invalid (position out of bounds / last match failed),
+or if the matches do not match at any point between current position and the start</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher ThrowIfNotMatchBack(string explanation, params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">explanation</span></td>
+        <td><p>Explanation of where/why the exception was thrown that will be added to the exception message</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeMatcher_ThrowIfNotMatchForward_" data-uid="HarmonyLib.CodeMatcher.ThrowIfNotMatchForward*"></a>
+  <h4 id="HarmonyLib_CodeMatcher_ThrowIfNotMatchForward_System_String_HarmonyLib_CodeMatch___" data-uid="HarmonyLib.CodeMatcher.ThrowIfNotMatchForward(System.String,HarmonyLib.CodeMatch[])">ThrowIfNotMatchForward(String, CodeMatch[])</h4>
+  <div class="markdown level1 summary"><p>Throw an InvalidOperationException if current state is invalid (position out of bounds / last match failed),
+or if the matches do not match at any point between current position and the end</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatcher ThrowIfNotMatchForward(string explanation, params CodeMatch[] matches)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">explanation</span></td>
+        <td><p>Explanation of where/why the exception was thrown that will be added to the exception message</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a>[]</td>
+        <td><span class="parametername">matches</span></td>
+        <td><p>Some code matches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeMatcher.html">CodeMatcher</a></td>
+        <td><p>The same code matcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

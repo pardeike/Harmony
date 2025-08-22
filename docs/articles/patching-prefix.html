@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="prefix">Prefix</h2>
+<p>A prefix is a method that is executed before the original method. It is commonly used to:</p>
+<ul>
+<li>access and edit the arguments of the original method</li>
+<li>set the result of the original method</li>
+<li>skip the original method and prefixes that alter its input/result</li>
+<li>set custom state that can be recalled in the postfix</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> The first prefix that returns false will skip all remaining prefixes unless they have no side effects (no return value, no ref arguments) and will skip the original too. Postfixes and Finalizers are not affected.</p>
+<h3 id="reading-and-changing-arguments">Reading and changing arguments</h3>
+<pre><code class="lang-csharp" name="example">public class OriginalCode
+{
+    public void Test(int counter, string name)
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
+class Patch
+{
+    static void Prefix(int counter, ref string name)
+    {
+        FileLog.Log(&quot;counter = &quot; + counter); // read
+        name = &quot;test&quot;; // write with ref keyword
+    }
+}
+</code></pre><h3 id="changing-the-result-and-skipping-the-original">Changing the result and skipping the original</h3>
+<p>To change the result of the original, use <code>__result</code> as an argument of your prefix. It must match the return type or be assignable from it. Changing the result of the original does not make sense if you let the original run so skipping the original is necessary too.</p>
+<p>To stop executing prefixes and skip the original, let the prefix return a bool that returns false. To let the original run after all prefixes, return a bool that returns true.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> It is not recommended to skip the original unless you want to completely change the way it works. If you only want a small change or a side effect, using a postfix or a transpiler is always preferred since it allows for multiple users changing the original without each implementation fighting over how the original should behave.</p>
+<pre><code class="lang-csharp" name="example">public class OriginalCode
+{
+    public string GetName() =&gt; name; // ...
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
+class Patch
+{
+    static bool Prefix(ref string __result)
+    {
+        __result = &quot;test&quot;;
+        return true; // make sure you only skip if really necessary
+    }
+}
+</code></pre>
+<p>Here is another example showing the difference between what the original method returns and what the Prefix returns. it illustrate that the boolean return value of the Prefix only determines if the original gets executed or not.</p>
+<pre><code class="lang-csharp" name="example">public class OriginalCode
+{
+    public bool IsFullAfterTakingIn(int i) =&gt; DoSomeExpensiveCalculation() &gt; i;
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.IsFullAfterTakingIn))]
+class Patch
+{
+    static bool Prefix(ref bool __result, int i)
+    {
+        if (i &gt; 5)
+        {
+            __result = true; // any call to IsFullAfterTakingIn(i) where i &gt; 5 now immediately returns true
+            return false; // skips the original and its expensive calculations
+        }
+        return true; // make sure you only skip if really necessary
+    }
+}
+</code></pre><h3 id="passing-state-between-prefix-and-postfix">Passing state between prefix and postfix</h3>
+<p>If you want to share state between your prefix and the corresponding postfix, you can use <code>__state</code> (with the <code>ref</code> or <code>out</code> keyword). If you need more than one value you can create your own type and pass it instead.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> This only works if Prefix and Postfix are defined in the same class since Harmony internally uses the declaring type as a key to store the information.</p>
+<pre><code class="lang-csharp" name="example">public class OriginalCode
+{
+    public void Test(int counter, string name)
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
+class Patch
+{
+    // this example uses a Stopwatch type to measure
+    // and share state between prefix and postfix
+
+    static void Prefix(out Stopwatch __state)
+    {
+        __state = new Stopwatch(); // assign your own state
+        __state.Start();
+    }
+
+    static void Postfix(Stopwatch __state)
+    {
+        __state.Stop();
+        FileLog.Log(__state.Elapsed.ToString());
+    }
+}
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-prefix.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

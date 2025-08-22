@@ -1,0 +1,354 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="transpiler">Transpiler</h2>
+<p>A transpiler is not a patch method that is executed at runtime when the Original method is called. Instead, you can see it more as a post-compiler stage that can alter the source code of the original method. Except that at runtime, it's not C# but IL code that you change.</p>
+<p>Use this in the advanced case where a normal Prefix or Postfix won't work and where you want to modify the original method in detail. This is usually done by inserting carefully crafted static method calls or by taking out certain parts of the original or changing values or method calls. In general you want to change as little as possible in a way that is flexible and allows others to use transpilers too so don't depend on fixed counts or structures. Keep it dynamic to ensure future compatibility and co-existance with others.</p>
+<p>The basic API of a transpiler looks like this:</p>
+<pre><code class="lang-csharp">static IEnumerable&lt;CodeInstruction&gt; Transpiler(&lt;arguments&gt;)
+// or
+[HarmonyTranspiler]
+static IEnumerable&lt;CodeInstruction&gt; MyTranspiler(&lt;arguments&gt;)
+
+// Arguments are identified by their type and can have any name:
+IEnumerable&lt;CodeInstruction&gt; instructions // [REQUIRED]
+ILGenerator generator // [OPTIONAL]
+MethodBase original // [OPTIONAL]
+</code></pre>
+<p>A typical transpiler looks like this:</p>
+<pre><code class="lang-csharp" name="example">static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), nameof(SomeType.someField));
+static MethodInfo m_MyExtraMethod = SymbolExtensions.GetMethodInfo(() =&gt; Tools.MyExtraMethod());
+
+// looks for STDFLD someField and inserts CALL MyExtraMethod before it
+static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    var found = false;
+    foreach (var instruction in instructions)
+    {
+        if (instruction.StoresField(f_someField))
+        {
+            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+            found = true;
+        }
+        yield return instruction;
+    }
+    if (found is false)
+        ReportError(&quot;Cannot find &lt;Stdfld someField&gt; in OriginalType.OriginalMethod&quot;);
+}
+</code></pre>
+<p>A transpiler is executed only once before the original is run. It can therefore not have access to any runtime state. Harmony will run it once when you patch the method and <em>again</em> every time someone else adds a transpiler for the same methods. Transpilers are chained to produce the final output.</p>
+<h2 id="basic-transpiler-tutorial">Basic Transpiler Tutorial</h2>
+<p><em>Note: this tutorial uses the game Rimworld as an example but applies equally to any other game too.</em></p>
+<p>Writing transpilers is like writing a book about how to rewrite a cookbook to make it work for the age of microwave even if that cookbook was written before microwave ovens were invented. It requires good knowledge about the language the cookbook is written in and the topics and information models the cookbook author uses.</p>
+<p>As such, writing a transpiler is way more complex and low level than writing a simple method that prefixes, postfixes or replaces an existing method. It is required to have good understanding in general C# programming and how to manipulate abstract data structures with respect to references and relative positioning. It also requires to know the language, in this case CIL, so you can manipulate the instructions without it to get into an illegal state.</p>
+<p>In this tutorial a typical case is introduced, first with some practical tips on how to get to the CIL of an existing method and how to read the basics of it. Followed by some general links to CIL releated information and tutorials. The links in chapter 6 are almost mandantory and without the understanding of the topics discussed there, you will find transpilers utterly confusing.</p>
+<p><strong>Tutorial</strong></p>
+<p>Rimworld has a method called <code>Dialog_FormCaravan.CheckForErrors()</code>. In this tutorial, the goal is to remove a few lines of code in it that we don't want.</p>
+<p><strong>1) Decompilers: ILSpy or dnSpy</strong></p>
+<p>Get yourself the ILSpy that Zhentar has modified so it generates better code:
+<a href="https://github.com/Zhentar/ILSpy/releases">https://github.com/Zhentar/ILSpy/releases</a> (mad props to <strong>Zhentar</strong>!)</p>
+<p>Another free alternative that is quite good and in active development is 0xd4d's <a href="https://github.com/0xd4d/dnSpy">dnSpy</a></p>
+<p><strong>2) Decompile</strong></p>
+<p>Start the decompiler and open the rimworld DLL. It is located in
+<code>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\Assembly-CSharp.dll</code></p>
+<p><strong>3) The original method</strong></p>
+<p>Now search for <code>CheckForErrors</code> and find the one from <code>RimWorld.Dialog_FormCaravan</code>, double click it. You should see the source in the window with yellow background.</p>
+<p><strong>4) Viewing IL Code</strong></p>
+<p>I guess you knew those steps already, so lets go into uncharted teritories now. Choose <code>IL</code> instead of <code>C#</code> in the dropdown menu at the top and you should see something like that:</p>
+<pre><code>.method private hidebysig
+	instance bool CheckForErrors (
+		class [mscorlib]System.Collections.Generic.List`1&lt;class Verse.Pawn&gt; pawns
+	) cil managed
+{
+	// Method begins at RVA 0xbb290
+	// Code size 617 (0x269)
+	.maxstack 64
+	.locals init (
+		[0] class Verse.Pawn,
+		[1] int32,
+		[2] int32,
+		[3] int32,
+		[4] int32,
+		[5] class RimWorld.Dialog_FormCaravan/'&lt;CheckForErrors&gt;c__AnonStorey3F6',
+		[6] class RimWorld.Dialog_FormCaravan/'&lt;CheckForErrors&gt;c__AnonStorey3F8'
+	)
+
+	IL_0000: newobj instance void RimWorld.Dialog_FormCaravan/'&lt;CheckForErrors&gt;c__AnonStorey3F6'::.ctor()
+	IL_0005: stloc.s 5
+	...
+</code></pre>
+<p>Switch between IL and C# so you get a feeling of how the two roughly compare to each other. Most of the time, the structure is quite similar but sometimes the compiler moves things around, mainly the contents of IF statements where it does switch the logic around and places code at the end of the IL code and jumps to it.</p>
+<p><strong>5) IL Code Basics</strong></p>
+<p>Now this looks scary but it is actually a simple code. Beside the mumbo jumbo at the beginning, each row starting with IL_ is a one-part or two-parts code. The first part is the <strong>operation</strong> and the optional second part the <strong>value</strong> that operation works with. The value can be a lot of different things: int, Type, FieldInfo, MethodInfo, Label etc.</p>
+<p>The cool thing is, that the whole IL code system works like a stack, basically a deck of cards where you only deal with the top by adding or removing a card. Whether you add numbers or call subroutines, almost everything happens on the stack. So lets ignore for now that you don't know jack of the different operations and just look at this section that contains the worlds <code>reform</code>, <code>MassUsage</code> and <code>Message</code> in that order (that's how I found it):</p>
+<pre><code>IL_0078: ldarg.0
+IL_0079: ldfld bool RimWorld.Dialog_FormCaravan::reform
+IL_007e: brtrue IL_00ac
+IL_0083: ldarg.0
+IL_0084: call instance float32 RimWorld.Dialog_FormCaravan::get_MassUsage()
+IL_0089: ldarg.0
+IL_008a: call instance float32 RimWorld.Dialog_FormCaravan::get_MassCapacity()
+IL_008f: ble.un IL_00ac
+IL_0094: ldarg.0
+IL_0095: call instance void RimWorld.Dialog_FormCaravan::FlashMass()
+IL_009a: ldstr &quot;TooBigCaravanMassUsage&quot;
+IL_009f: call string Verse.Translator::Translate(string)
+IL_00a4: ldc.i4.2
+IL_00a5: call void Verse.Messages::Message(string, valuetype Verse.MessageSound)
+IL_00aa: ldc.i4.0
+IL_00ab: ret
+</code></pre>
+<p>That corresponds to your C# code:</p>
+<pre><code class="lang-csharp">if (!this.reform &amp;&amp; this.MassUsage &gt; this.MassCapacity)
+{
+	this.FlashMass();
+	Messages.Message(&quot;TooBigCaravanMassUsage&quot;.Translate(), MessageSound.RejectInput);
+	return false;
+}
+</code></pre>
+<p>Let's analyze:</p>
+<ul>
+<li><p><code>this.reform</code> - we need the field <code>reform</code> from <code>this</code>. So we load <code>this</code> onto the stack (topmost now is <code>this</code>). Then we load the field <code>reform</code> onto it: The load field operation will first take the topmost element from the stack (the <code>this</code> we just put on it) leaving it empty, then do it's operation and put the result back onto the stack. So now, the stacks topmost element is the field <code>reform</code>.</p>
+</li>
+<li><p>the <code>!</code> on this.reform - the compiler thinks that testing the field for <code>true</code> and jumping over the code (to a much later line <strong>IL_00ac</strong>) is the way to go here. Bailing out if this.reform is <code>true</code>. The thing to easy overlook is again, that the comparison must consume (remove) the topmost value from the stack to compare it to true so now the stack is empty again!</p>
+</li>
+<li><p>now for <code>this.MassUsage &gt; this.MassCapacity</code> - this is again the same drill:</p>
+<ul>
+<li><code>this</code> onto the stack</li>
+<li><code>MassUsage</code> call consumes one element and leaves result on stack</li>
+<li><code>this</code> onto the stack again</li>
+<li><code>MassCapacity</code> call consumes one element and leaves result on stack
+Which leaves us at this point with two elements on the stack so we can call the compare which will consume both elements and jump. The compiler again switched the logic and tests for <code>&lt;=</code> which is <strong>ble</strong> (branch when less equal) to the same bail out line as before (<strong>IL_00ac</strong>).</li>
+</ul>
+</li>
+</ul>
+<p>Since we now have completed the IF statement, it is time to do some work. But again, this is just stack operations: putting stuff onto the stack and consuming it which may result into another thing put onto it again.</p>
+<p>At this point, I would ask two things: Where can I possibly know all the IL code operations and how they work? And: how does method calling work exactly? Which leads us to:</p>
+<p><strong>6) IL Code reference</strong></p>
+<p>Overview on Wikipedia:
+<a href="https://en.wikipedia.org/wiki/Common_Intermediate_Language">Common Intermediate Language</a> and <a href="https://en.wikipedia.org/wiki/List_of_CIL_instructions">List of CIL instructions</a></p>
+<p>Microsoft page about the class <code>OpCodes</code> (part of Harmonys <code>CodeInstruction</code>). Has links to each code and the argument types that Harmony reuses since it has to emit them to create the replacement method:
+<a href="https://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes(v=vs.110).aspx">OpCodes Class</a></p>
+<p>Pretty good tutorial on CodeProject:
+<a href="https://www.codeproject.com/Articles/3778/Introduction-to-IL-Assembly-Language">Introduction to IL Assembly Language</a></p>
+<p>And for all the nitty gritty details in pdf format:
+<a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf">Common Language Infrastructure (CLI) - Partitions I to VI</a></p>
+<p><strong>7) Method calling</strong></p>
+<p>I would start with pointing out the difference between static and non-static methods. Since all you have is the stack and your opcodes, there is no big difference. Remember how to do extension methods where you put &quot;this&quot; as the first argument to a method when you define it? It's a hint that instance methods have an invisible first parameter that represents <code>this</code>.</p>
+<p>Back to the beginning of our code</p>
+<pre><code>IL_0078: ldarg.0
+IL_0079: ldfld bool RimWorld.Dialog_FormCaravan::reform
+IL_007e: brtrue IL_00ac
+</code></pre>
+<p>We use <code>LDARG 0</code> to load the argument number 0 (zero based it is the first) onto the stack. That is <code>this</code>. Which is of type <code>Dialog_FormCaravan</code>. So after that operation, the topmost element on our stack is the object instance of type <code>Dialog_FormCaravan</code>.</p>
+<p>So in order to call an instance method, you have to add the object that this method is called on onto the stack (with ST... opcodes), then all the arguments that method takes. Then you call the method with the CALL opcode. That's what happened in our code when we called <code>MassUsage</code></p>
+<pre><code>IL_0083: ldarg.0
+IL_0084: call instance float32 RimWorld.Dialog_FormCaravan::get_MassUsage()
+</code></pre>
+<p>It is a property and you already guessed that their accessor methods start internally with &quot;get*&quot; or &quot;set*&quot;. The getter of course takes no extra arguments but you still need to load the object instance onto the stack. In this case &quot;this&quot; but it could of course be anything. This allows for cool chaining of calls. A fake example:</p>
+<pre><code>ldfld Foo SomeStaticClass::theFoo
+ldfld Bar Foo::theBar
+call instance void Bar::Cool()
+</code></pre>
+<p>which would be this line in C#:</p>
+<pre><code class="lang-csharp">SomeStaticClass.theFoo.theBar.Cool()
+</code></pre>
+<p>Please note that the first ldfld does not need a stack element since it is a static field. The next ldfld just pops/pushes the stack and the last call will consume that element again to call Cool on it. This leaves the stack empty (or in the same state as before).</p>
+<p>Which leads to me saying <strong>the single most important</strong> thing to remember with IL code (CIL as Microsoft calls it):</p>
+<p>You mess with the stack you mess with the devil. So never shall you leave unnecessary elements on the stack as I will punish you with errors when you try to compile that shit. Same goes of course for underflows where you put an opcode somewhere where there isn't enough (or the wrong) elements on the stack. The interesting thing here is that since CIL is so simple, the compiler can do most of those checks during compile time!</p>
+<p>Now, to make some progress, we switch to Harmony and how to deal with all this. Again, it looks complicated but in essence, it is simple data processing. Since all we do is to rewrite code, we have not access to runtime state. That leaves us with a simple black box: codes in, do something, codes out. That's what Harmony calls a Transpiler.</p>
+<p><strong>8) Harmony Transpiler</strong></p>
+<p>The basic patch looks like this. Let's take our example:</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(Dialog_FormCaravan))]
+[HarmonyPatch(&quot;CheckForErrors&quot;)]
+public static class Dialog_FormCaravan_CheckForErrors_Patch
+{
+	static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+	{
+		// do something
+	}
+}
+</code></pre>
+<p>The name of the method is <code>Transpiler</code> so Harmony knows it is a transpiler. The methods signature must be that it returns <code>IEnumerable&lt;CodeInstruction&gt; instructions</code> and the arguments must contain at least one that is of type <code>IEnumerable&lt;CodeInstruction&gt;</code> and you can also inject the code generator with <code>ILGenerator generator</code> and the original method info with <code>MethodBase method</code>.</p>
+<p>So how does one define what the transpiler does? I strongly recommend reading up on how to use &quot;yield&quot; with methods returning IEnumerable but you can also go old fashion and convert anything to a list and at the end back to an IEnumerable. Here is a nice tutorial on yield: <a href="https://www.kenneth-truyers.net/2016/05/12/yield-return-in-c/">https://www.kenneth-truyers.net/2016/05/12/yield-return-in-c/</a></p>
+<p><strong>9) The patch</strong></p>
+<p>Luckily for us, your change is rather simple. We just need to remove that code or make it not execute. We could do this by &quot;nulling it out&quot; with a <code>OpCodes.Nop</code> (no operation) or we add a non-conditional jump somewhere. Or we could remove that section of the code all together. Let's have a look again at our code, this time with some extra rows before and after:</p>
+<pre><code>IL_0077: ret
+
+IL_0078: ...codes...
+IL_007e: brtrue IL_00ac
+IL_0083: ...codes...
+IL_008f: ble.un IL_00ac
+IL_0094: ...codes...
+IL_00ab: ret
+
+IL_00ac: ...codes...
+</code></pre>
+<p>I just removed all the codes that do not change execution flow. Starting with 0077 which is the end of the code just above <code>if (!this.reform &amp;&amp; this.MassUsage &gt; this.MassCapacity)</code>. As we saw before, it jumps twice to 00AC and finally ends with the return at 00AB.</p>
+<p>This looks simple. We could replace the codes from 0078 - 00AB with NOPs or we could insert an extra jump right between 0077 and 0078.</p>
+<p>Now, normally, I would do this in a way that minimizes the risk of it breaking in case RimWorld changes the code of this particular method. It usually involves finding some anchors that are unique in the code and referencing everything from there. I.e. if we would know the start of 0078 in the above example, I would look for the first jump and use the 00AC I find to determine the end. But the main problem with this part of the code is that it isn't that unique. One could go overkill and match each and every opcode to find the correct sequence but that would break with code changes anyway, so I take the easy way out and just check if we can find the RET at position 0077 then insert an unconditional jump to 00AC.</p>
+<p>Here, we have a few choices again. The simplest way would be to count the opcodes from the start of the method and just when the count indicates we are at 0077 (those are not the number of opcodes but the actual byte count that operation starts). A better approach is to find a nice pattern and in fact, we have it. If you look at just the RET codes, you will see that they divide the whole code into sections. We could look for a section containing a call to get_MassUsage() and then remove it from the code. Let's do that.</p>
+<p><strong>11) The execution</strong></p>
+<p>Strategy: <em>Search for RET codes. For every code found, search until the next RET and look for the usage of the string &quot;TooBigCaravanMassUsage&quot;. If found, continue to find the following RET and remove everything from right after the first RET to including the second RET</em>:</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch(typeof(Dialog_FormCaravan))]
+[HarmonyPatch(nameof(Dialog_FormCaravan.CheckForErrors))]
+public static class Dialog_FormCaravan_CheckForErrors_Patch
+{
+    static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+    {
+        var foundMassUsageMethod = false;
+        var startIndex = -1;
+        var endIndex = -1;
+
+        var codes = new List&lt;CodeInstruction&gt;(instructions);
+        for (var i = 0; i &lt; codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Ret)
+            {
+                if (foundMassUsageMethod)
+                {
+                    Log.Error(&quot;END &quot; + i);
+
+                    endIndex = i; // include current 'ret'
+                    break;
+                }
+                else
+                {
+                    Log.Error(&quot;START &quot; + (i + 1));
+
+                    startIndex = i + 1; // exclude current 'ret'
+
+                    for (var j = startIndex; j &lt; codes.Count; j++)
+                    {
+                        if (codes[j].opcode == OpCodes.Ret)
+                            break;
+                        var strOperand = codes[j].operand as string;
+                        if (strOperand == &quot;TooBigCaravanMassUsage&quot;)
+                        {
+                            foundMassUsageMethod = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (startIndex &gt; -1 &amp;&amp; endIndex &gt; -1)
+        {
+            // we cannot remove the first code of our range since some jump actually jumps to
+            // it, so we replace it with a no-op instead of fixing that jump (easier).
+            codes[startIndex].opcode = OpCodes.Nop;
+            codes.RemoveRange(startIndex + 1, endIndex - startIndex - 1);
+        }
+
+        return codes.AsEnumerable();
+    }
+}
+</code></pre>
+<p>There it is. Add this to your code and use the normal Harmony bootstrapping and you have just done your first Harmony Transpiler!</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-transpiler.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

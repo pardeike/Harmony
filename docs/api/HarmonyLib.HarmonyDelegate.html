@@ -1,0 +1,797 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class HarmonyDelegate
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class HarmonyDelegate
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.HarmonyDelegate">
+  
+  
+  <h1 id="HarmonyLib_HarmonyDelegate" data-uid="HarmonyLib.HarmonyDelegate" class="text-break">Class HarmonyDelegate
+  </h1>
+  <div class="markdown level0 summary"><p>Annotation to define the original method for delegate injection</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">System.Attribute</span></div>
+    <div class="level2"><a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></div>
+    <div class="level3"><a class="xref" href="HarmonyLib.HarmonyPatch.html">HarmonyPatch</a></div>
+    <div class="level4"><span class="xref">HarmonyDelegate</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="HarmonyLib.HarmonyAttribute.html#HarmonyLib_HarmonyAttribute_info">HarmonyAttribute.info</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_HarmonyDelegate_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[AttributeUsage(AttributeTargets.Delegate, AllowMultiple = true)]
+public class HarmonyDelegate : HarmonyPatch, _Attribute</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodDispatchType_" data-uid="HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodDispatchType)">HarmonyDelegate(MethodDispatchType)</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies call dispatching mechanics for the delegate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(MethodDispatchType methodDispatchType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodDispatchType_System_Type___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodDispatchType,System.Type[])">HarmonyDelegate(MethodDispatchType, Type[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(MethodDispatchType methodDispatchType, params Type[] argumentTypes)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_HarmonyLib_MethodDispatchType_System_Type___HarmonyLib_ArgumentType___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(HarmonyLib.MethodDispatchType,System.Type[],HarmonyLib.ArgumentType[])">HarmonyDelegate(MethodDispatchType, Type[], ArgumentType[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a>[]</td>
+        <td><span class="parametername">argumentVariations</span></td>
+        <td><p>An array of <a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_String_" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.String)">HarmonyDelegate(String)</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(string methodName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_String_HarmonyLib_MethodDispatchType_" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.String,HarmonyLib.MethodDispatchType)">HarmonyDelegate(String, MethodDispatchType)</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(string methodName, MethodDispatchType methodDispatchType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_String_System_Type___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.String,System.Type[])">HarmonyDelegate(String, Type[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(string methodName, params Type[] argumentTypes)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_String_System_Type___HarmonyLib_ArgumentType___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.String,System.Type[],HarmonyLib.ArgumentType[])">HarmonyDelegate(String, Type[], ArgumentType[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a>[]</td>
+        <td><span class="parametername">argumentVariations</span></td>
+        <td><p>An array of <a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type)">HarmonyDelegate(Type)</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a class to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodDispatchType_" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodDispatchType)">HarmonyDelegate(Type, MethodDispatchType)</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodDispatchType_System_Type___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodDispatchType,System.Type[])">HarmonyDelegate(Type, MethodDispatchType, Type[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, params Type[] argumentTypes)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_HarmonyLib_MethodDispatchType_System_Type___HarmonyLib_ArgumentType___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,HarmonyLib.MethodDispatchType,System.Type[],HarmonyLib.ArgumentType[])">HarmonyDelegate(Type, MethodDispatchType, Type[], ArgumentType[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, MethodDispatchType methodDispatchType, Type[] argumentTypes, ArgumentType[] argumentVariations)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a>[]</td>
+        <td><span class="parametername">argumentVariations</span></td>
+        <td><p>Array of <a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String)">HarmonyDelegate(Type, String)</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, string methodName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_HarmonyLib_MethodDispatchType_" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,HarmonyLib.MethodDispatchType)">HarmonyDelegate(Type, String, MethodDispatchType)</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, string methodName, MethodDispatchType methodDispatchType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></td>
+        <td><span class="parametername">methodDispatchType</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.MethodDispatchType.html">MethodDispatchType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_System_Type___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,System.Type[])">HarmonyDelegate(Type, String, Type[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, string methodName, params Type[] argumentTypes)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_System_String_System_Type___HarmonyLib_ArgumentType___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.String,System.Type[],HarmonyLib.ArgumentType[])">HarmonyDelegate(Type, String, Type[], ArgumentType[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">methodName</span></td>
+        <td><p>The name of the method, property or constructor to patch</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a>[]</td>
+        <td><span class="parametername">argumentVariations</span></td>
+        <td><p>Array of <a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type_System_Type___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type,System.Type[])">HarmonyDelegate(Type, Type[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type declaringType, Type[] argumentTypes)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">declaringType</span></td>
+        <td><p>The declaring class/type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>The argument types of the method or constructor to patch</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type[])">HarmonyDelegate(Type[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type[] argumentTypes)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_HarmonyDelegate__ctor_" data-uid="HarmonyLib.HarmonyDelegate.#ctor*"></a>
+  <h4 id="HarmonyLib_HarmonyDelegate__ctor_System_Type___HarmonyLib_ArgumentType___" data-uid="HarmonyLib.HarmonyDelegate.#ctor(System.Type[],HarmonyLib.ArgumentType[])">HarmonyDelegate(Type[], ArgumentType[])</h4>
+  <div class="markdown level1 summary"><p>An annotation that specifies a method, property or constructor to patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HarmonyDelegate(Type[] argumentTypes, ArgumentType[] argumentVariations)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span>[]</td>
+        <td><span class="parametername">argumentTypes</span></td>
+        <td><p>An array of argument types to target overloads</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a>[]</td>
+        <td><span class="parametername">argumentVariations</span></td>
+        <td><p>An array of <a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

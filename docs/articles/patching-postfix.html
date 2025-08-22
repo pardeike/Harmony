@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="postfix">Postfix</h2>
+<p>A postfix is a method that is executed after the original method. It is commonly used to:</p>
+<ul>
+<li>read or change the result of the original method</li>
+<li>access the arguments of the original method</li>
+<li>make sure your code is always executed</li>
+<li>read custom state from the prefix</li>
+</ul>
+<h3 id="reading-or-changing-the-result">Reading or changing the result</h3>
+<p>Since the postfix has access to the result of the original (or a prefix that has skipped the original), it can read or alter the result by using the argument <code>__result</code>. It must match the return type of the original or be assignable from it.</p>
+<pre><code class="lang-csharp" name="example">public class OriginalCode
+{
+    public string GetName() =&gt; name; // ...
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
+class Patch
+{
+    static void Postfix(ref string __result)
+    {
+        if (__result == &quot;foo&quot;)
+            __result = &quot;bar&quot;;
+    }
+}
+</code></pre><h3 id="pass-through-postfixes">Pass through postfixes</h3>
+<p>An alternative way to change the result of an original method is to use a <strong>pass through</strong> postfix. A pass through postfix has a non-void return type that matches the type of the first argument (normal rules apply to the remaining arguments).</p>
+<p>Harmony will call the postfix with the result of the original and will use the result of the postfix to continue. Since this works for all types, it is especially useful for types like <code>IEnumerable&lt;T&gt;</code> that cannot be combined with <code>ref</code>. This allows for changing the result with <code>yield</code> operations.</p>
+<pre><code class="lang-csharp" name="example">public class OriginalCode
+{
+    public string GetName() =&gt; &quot;David&quot;;
+
+    public IEnumerable&lt;int&gt; GetNumbers()
+    {
+        yield return 1;
+        yield return 2;
+        yield return 3;
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetName))]
+class Patch1
+{
+    static string Postfix(string name) =&gt; &quot;Hello &quot; + name;
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.GetNumbers))]
+class Patch2
+{
+    static IEnumerable&lt;int&gt; Postfix(IEnumerable&lt;int&gt; values)
+    {
+        yield return 0;
+        foreach (var value in values)
+            if (value &gt; 1)
+                yield return value * 10;
+        yield return 99;
+    }
+}
+
+// will make GetNumbers() return [0, 20, 30, 99] instead of [1, 2, 3]
+</code></pre><h3 id="reading-original-arguments">Reading original arguments</h3>
+<p>There are many ways to access original arguments and even private fields: by name convention and by attributes. You can read more about that in the <a href="patching-injections.html">Injections</a> chapter. Here is a simple example:</p>
+<pre><code class="lang-csharp" name="example">public class OriginalCode
+{
+    public void Test(int counter)
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch(typeof(OriginalCode), nameof(OriginalCode.Test))]
+class Patch
+{
+    static void Prefix(int counter) =&gt; FileLog.Log(&quot;counter = &quot; + counter);
+}
+</code></pre><h3 id="postfixes-always-run">Postfixes always run</h3>
+<p>Harmony will not skip any postfix regardless of what any prefix or the original method do. It is good style to use postfixes as much as possible since they lead to more compatible code.</p>
+<h3 id="passing-state-between-prefix-and-postfix">Passing state between prefix and postfix</h3>
+<p>See prefix</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-postfix.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

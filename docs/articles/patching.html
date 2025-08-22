@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="concept">Concept</h2>
+<p>In order to provide your own code to Harmony, you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.</p>
+<h4 id="types-of-patches">Types of patches</h4>
+<p>Two of them, the <strong>Prefix</strong> patch and the <strong>Postfix</strong> patch are easy to understand and you can write them as simple static methods.</p>
+<p><strong>Transpiler</strong> patches are not methods that are executed together with the original but instead are called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.</p>
+<p>A <strong>Finalizer</strong> patch is a static method that handles exceptions and can change them. It is the only patch type that is immune to exceptions thrown by the original method or by any applied patches. The other patch types are considered part of the original and may not get executed when an exception occurs.</p>
+<p>Finally, there is the <strong>Reverse Patch</strong>. It is different from the previous types in that it patches your methods instead of foreign original methods. To use it, you define a stub that looks like the original in some way and patch the original onto your stub which you can easily call from your own code. You can even transpile the result during the process.</p>
+<h4 id="patches-need-to-be-static">Patches need to be static</h4>
+<p>Patch methods need to be static because Harmony works with multiple users in different assemblies in mind. In order to guarantee the correct patching order, patches are always re-applied as soon as someone wants to change the original. Since it is hard to serialize data in a generic way across assemblies in .NET, Harmony only stores a method pointer to your patch methods so it can use and apply them at a later point again.</p>
+<p>If you need custom state in your patches, it is recommended to use a static variable and store all your patch state in there. Keep in mind that Transpilers are only executed to generate the method so they don't &quot;run&quot; when the original is executed.</p>
+<h4 id="commonly-unsupported-use-cases">Commonly unsupported use cases</h4>
+<p>Harmony works only in the current AppDomain. Accessing other app domains requires xpc and serialization which is not supported.</p>
+<p>Currently, support for generic types and methods is experimental and can give unexpected results. See <a href="patching-edgecases.html#generics">Edge Cases</a> for more information.</p>
+<p>When a method is inlined and the code that tries to mark in for not inlining does not work, your patches are not called because there is no method to patch.</p>
+<h2 id="patch-class">Patch Class</h2>
+<p>With manual patching, you can put your patches anywhere you like since you will refer to them yourself. Patching by annotations simplifies patching by assuming that you set up annotated classes and define your patch methods inside them.</p>
+<p><strong>Layout</strong>
+The class can be static or not, public or private, it doesn't matter. However, in order to make Harmony find it, it must have at least one <code>[HarmonyPatch]</code> attribute. Inside the class you define patches as static methods that either have special names like Prefix or Transpiler or use attributes to define their type. Usually they also include annotations that define their target (the original method you want to patch). It also common to have fields and other helper methods in the class.</p>
+<p><strong>Attribute Inheritance</strong>
+The attributes of the methods in the class inherit the attributes of the class.</p>
+<h2 id="patch-methods">Patch methods</h2>
+<p>Harmony identifies your patch methods and their helper methods <strong>by name</strong>. If you prefer to name your methods differently, you can use attributes to tell Harmony what your methods are.</p>
+<pre><code class="lang-csharp">[HarmonyPatch(...)]
+class Patch
+{
+	static void Prefix()
+	{
+		// this method uses the name &quot;Prefix&quot;, no annotation necessary
+	}
+
+	[HarmonyPostfix]
+	static void MyOwnName()
+	{
+		// this method is a Postfix as defined by the attribute
+	}
+}
+</code></pre>
+<p>If you prefer manual patching, you can use any method name or class structure you want. You are responsible to retrieve the MethodInfo for the different patch methods and supply them to the Patch() method by wrapping them into HarmonyMethod objects.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> Patch methods <em>must</em> be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.</p>
+<pre><code class="lang-csharp">[HarmonyPatch(...)]
+class Patch
+{
+	// the return type of factory methods can be either MethodInfo or DynamicMethod
+	[HarmonyPrefix]
+	static MethodInfo PrefixFactory(MethodBase originalMethod)
+	{
+		// return an instance of MethodInfo or an instance of DynamicMethod
+	}
+
+	[HarmonyPostfix]
+	static MethodInfo PostfixFactory(MethodBase originalMethod)
+	{
+		// return an instance of MethodInfo or an instance of DynamicMethod
+	}
+}
+</code></pre>
+<h3 id="method-names">Method names</h3>
+<p>Manual patching knows four main patch types: <strong>Prefix</strong>, <strong>Postfix</strong>, <strong>Transpiler</strong> and <strong>Finalizer</strong>. If you use attributes for patching, you can also use the helper methods: <strong>Prepare</strong>, <strong>TargetMethod</strong>, <strong>TargetMethods</strong> and <strong>Cleanup</strong> as explained below.</p>
+<p>Each of those names has a corresponding attribute starting with [Harmony...]. So instead of calling one of your methods &quot;Prepare&quot;, you can call it anything and decorate it with a <code>[HarmonyPrepare]</code> attribute.</p>
+<h2 id="patch-method-types">Patch method types</h2>
+<p>Both prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments.</p>
+<h3 id="prefix">Prefix</h3>
+<p>A prefix is a method that is executed before the original method. It is commonly used to:</p>
+<ul>
+<li>access and edit the arguments of the original method</li>
+<li>set the result of the original method</li>
+<li>skip the original method</li>
+<li>set custom state that can be recalled in the postfix</li>
+<li>run a piece of code at the beginning that is guaranteed to be executed</li>
+</ul>
+<h3 id="postfix">Postfix</h3>
+<p>A postfix is a method that is executed after the original method. It is commonly used to:</p>
+<ul>
+<li>read or change the result of the original method</li>
+<li>access the arguments of the original method</li>
+<li>read custom state from the prefix</li>
+</ul>
+<h3 id="transpiler">Transpiler</h3>
+<p>This method defines the transpiler that modifies the code of the original method. Use this in the advanced case where you want to modify the original methods IL codes.</p>
+<h3 id="finalizer">Finalizer</h3>
+<p>A finalizer is a method that executes after all postfixes. It wraps the original method, all prefixes, and postfixes in try/catch logic and is called either with <code>null</code> (no exception) or with an exception if one occurred. It is commonly used to:</p>
+<ul>
+<li>run a piece of code at the end that is guaranteed to be executed</li>
+<li>handle exceptions and suppress them</li>
+<li>handle exceptions and alter them</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

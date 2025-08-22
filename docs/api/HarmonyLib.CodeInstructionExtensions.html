@@ -1,0 +1,1705 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class CodeInstructionExtensions
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class CodeInstructionExtensions
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.CodeInstructionExtensions">
+  
+  
+  <h1 id="HarmonyLib_CodeInstructionExtensions" data-uid="HarmonyLib.CodeInstructionExtensions" class="text-break">Class CodeInstructionExtensions
+  </h1>
+  <div class="markdown level0 summary"><p>Extensions for <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">CodeInstructionExtensions</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_CodeInstructionExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CodeInstructionExtensions</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_ArgumentIndex_" data-uid="HarmonyLib.CodeInstructionExtensions.ArgumentIndex*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_ArgumentIndex_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.ArgumentIndex(HarmonyLib.CodeInstruction)">ArgumentIndex(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Returns the index targeted by this <code>ldarg</code>, <code>ldarga</code>, or <code>starg</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int ArgumentIndex(this CodeInstruction code)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The index it targets</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_CodeInstructionExtensions_ArgumentIndex_HarmonyLib_CodeInstruction__seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadArgument_System_Int32_System_Boolean_">LoadArgument</a>(<span class="xref">System.Int32</span>, <span class="xref">System.Boolean</span>)</div>
+      <div><a class="xref" href="HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreArgument_System_Int32_">StoreArgument</a>(<span class="xref">System.Int32</span>)</div>
+  </div>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_Branches_" data-uid="HarmonyLib.CodeInstructionExtensions.Branches*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_Branches_HarmonyLib_CodeInstruction_System_Nullable_System_Reflection_Emit_Label___" data-uid="HarmonyLib.CodeInstructionExtensions.Branches(HarmonyLib.CodeInstruction,System.Nullable{System.Reflection.Emit.Label}@)">Branches(CodeInstruction, out Nullable&lt;Label&gt;)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction branches</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Branches(this CodeInstruction code, out Label? label)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><span class="parametername">label</span></td>
+        <td><p>The label if the instruction is a branch operation or <span class="xref">null</span> if not</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction branches</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_Calls_" data-uid="HarmonyLib.CodeInstructionExtensions.Calls*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_Calls_HarmonyLib_CodeInstruction_System_Reflection_MethodInfo_" data-uid="HarmonyLib.CodeInstructionExtensions.Calls(HarmonyLib.CodeInstruction,System.Reflection.MethodInfo)">Calls(CodeInstruction, MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction calls the method/constructor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Calls(this CodeInstruction code, MethodInfo method)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>The method</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction calls the method or constructor</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_ExtractBlocks_" data-uid="HarmonyLib.CodeInstructionExtensions.ExtractBlocks*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_ExtractBlocks_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.ExtractBlocks(HarmonyLib.CodeInstruction)">ExtractBlocks(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Extracts all ExceptionBlocks from the code instruction and returns them</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;ExceptionBlock&gt; ExtractBlocks(this CodeInstruction code)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
+        <td><p>A list of <a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_ExtractLabels_" data-uid="HarmonyLib.CodeInstructionExtensions.ExtractLabels*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_ExtractLabels_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.ExtractLabels(HarmonyLib.CodeInstruction)">ExtractLabels(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Extracts all labels from the code instruction and returns them</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;Label&gt; ExtractLabels(this CodeInstruction code)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><p>A list of <span class="xref">System.Reflection.Emit.Label</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_Is_" data-uid="HarmonyLib.CodeInstructionExtensions.Is*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Object_" data-uid="HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction,System.Reflection.Emit.OpCode,System.Object)">Is(CodeInstruction, OpCode, Object)</h4>
+  <div class="markdown level1 summary"><p>Shortcut for <pre><code>code.opcode == opcode &amp;&amp; code.OperandIs(operand)</code></pre></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Is(this CodeInstruction code, OpCode opcode, object operand)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The <span class="xref">System.Reflection.Emit.OpCode</span></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">operand</span></td>
+        <td><p>The operand value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the opcode is equal to the given opcode and the operand has the same type and is equal to the given operand</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_Is_" data-uid="HarmonyLib.CodeInstructionExtensions.Is*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Reflection_MemberInfo_" data-uid="HarmonyLib.CodeInstructionExtensions.Is(HarmonyLib.CodeInstruction,System.Reflection.Emit.OpCode,System.Reflection.MemberInfo)">Is(CodeInstruction, OpCode, MemberInfo)</h4>
+  <div class="markdown level1 summary"><p>Shortcut for <pre><code>code.opcode == opcode &amp;&amp; code.OperandIs(operand)</code></pre></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Is(this CodeInstruction code, OpCode opcode, MemberInfo operand)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">opcode</span></td>
+        <td><p>The <span class="xref">System.Reflection.Emit.OpCode</span></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.MemberInfo</span></td>
+        <td><span class="parametername">operand</span></td>
+        <td><p>The <span class="xref">System.Reflection.MemberInfo</span> operand value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the opcode is equal to the given opcode and the operand is equal to the given operand</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Reflection_MemberInfo__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This is an optimized version of <a class="xref" href="HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_Is_HarmonyLib_CodeInstruction_System_Reflection_Emit_OpCode_System_Object_">Is(CodeInstruction, OpCode, Object)</a> for <span class="xref">System.Reflection.MemberInfo</span></p>
+</div>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_IsLdarg_" data-uid="HarmonyLib.CodeInstructionExtensions.IsLdarg*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_IsLdarg_HarmonyLib_CodeInstruction_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeInstructionExtensions.IsLdarg(HarmonyLib.CodeInstruction,System.Nullable{System.Int32})">IsLdarg(CodeInstruction, Nullable&lt;Int32&gt;)</h4>
+  <div class="markdown level1 summary"><p>Tests for any form of Ldarg*</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLdarg(this CodeInstruction code, int? n = default(int? ))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
+        <td><span class="parametername">n</span></td>
+        <td><p>The (optional) index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if it matches one of the variations</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_IsLdarga_" data-uid="HarmonyLib.CodeInstructionExtensions.IsLdarga*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_IsLdarga_HarmonyLib_CodeInstruction_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeInstructionExtensions.IsLdarga(HarmonyLib.CodeInstruction,System.Nullable{System.Int32})">IsLdarga(CodeInstruction, Nullable&lt;Int32&gt;)</h4>
+  <div class="markdown level1 summary"><p>Tests for Ldarga/Ldarga_S</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLdarga(this CodeInstruction code, int? n = default(int? ))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
+        <td><span class="parametername">n</span></td>
+        <td><p>The (optional) index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if it matches one of the variations</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_IsLdloc_" data-uid="HarmonyLib.CodeInstructionExtensions.IsLdloc*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_IsLdloc_HarmonyLib_CodeInstruction_System_Reflection_Emit_LocalBuilder_" data-uid="HarmonyLib.CodeInstructionExtensions.IsLdloc(HarmonyLib.CodeInstruction,System.Reflection.Emit.LocalBuilder)">IsLdloc(CodeInstruction, LocalBuilder)</h4>
+  <div class="markdown level1 summary"><p>Tests for any form of Ldloc*</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLdloc(this CodeInstruction code, LocalBuilder variable = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.LocalBuilder</span></td>
+        <td><span class="parametername">variable</span></td>
+        <td><p>The optional local variable</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if it matches one of the variations</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_IsStarg_" data-uid="HarmonyLib.CodeInstructionExtensions.IsStarg*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_IsStarg_HarmonyLib_CodeInstruction_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeInstructionExtensions.IsStarg(HarmonyLib.CodeInstruction,System.Nullable{System.Int32})">IsStarg(CodeInstruction, Nullable&lt;Int32&gt;)</h4>
+  <div class="markdown level1 summary"><p>Tests for Starg/Starg_S</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStarg(this CodeInstruction code, int? n = default(int? ))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
+        <td><span class="parametername">n</span></td>
+        <td><p>The (optional) index</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if it matches one of the variations</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_IsStloc_" data-uid="HarmonyLib.CodeInstructionExtensions.IsStloc*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_IsStloc_HarmonyLib_CodeInstruction_System_Reflection_Emit_LocalBuilder_" data-uid="HarmonyLib.CodeInstructionExtensions.IsStloc(HarmonyLib.CodeInstruction,System.Reflection.Emit.LocalBuilder)">IsStloc(CodeInstruction, LocalBuilder)</h4>
+  <div class="markdown level1 summary"><p>Tests for any form of Stloc*</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStloc(this CodeInstruction code, LocalBuilder variable = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.LocalBuilder</span></td>
+        <td><span class="parametername">variable</span></td>
+        <td><p>The optional local variable</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if it matches one of the variations</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_IsValid_" data-uid="HarmonyLib.CodeInstructionExtensions.IsValid*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_IsValid_System_Reflection_Emit_OpCode_" data-uid="HarmonyLib.CodeInstructionExtensions.IsValid(System.Reflection.Emit.OpCode)">IsValid(OpCode)</h4>
+  <div class="markdown level1 summary"><p>Returns if an <span class="xref">System.Reflection.Emit.OpCode</span> is initialized and valid</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValid(this OpCode code)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.OpCode</span></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <span class="xref">System.Reflection.Emit.OpCode</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction)">LoadsConstant(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool LoadsConstant(this CodeInstruction code)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction loads a constant</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_Double_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Double)">LoadsConstant(CodeInstruction, Double)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a floating point constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool LoadsConstant(this CodeInstruction code, double number)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">number</span></td>
+        <td><p>The floating point constant</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction loads the constant</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_Enum_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Enum)">LoadsConstant(CodeInstruction, Enum)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads an enum constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool LoadsConstant(this CodeInstruction code, Enum e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Enum</span></td>
+        <td><span class="parametername">e</span></td>
+        <td><p>The enum</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction loads the constant</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_Int64_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.Int64)">LoadsConstant(CodeInstruction, Int64)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads an integer constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool LoadsConstant(this CodeInstruction code, long number)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int64</span></td>
+        <td><span class="parametername">number</span></td>
+        <td><p>The integer constant</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction loads the constant</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_LoadsConstant_HarmonyLib_CodeInstruction_System_String_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsConstant(HarmonyLib.CodeInstruction,System.String)">LoadsConstant(CodeInstruction, String)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a string constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool LoadsConstant(this CodeInstruction code, string str)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">str</span></td>
+        <td><p>The string</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction loads the constant</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_LoadsField_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsField*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_LoadsField_HarmonyLib_CodeInstruction_System_Reflection_FieldInfo_System_Boolean_" data-uid="HarmonyLib.CodeInstructionExtensions.LoadsField(HarmonyLib.CodeInstruction,System.Reflection.FieldInfo,System.Boolean)">LoadsField(CodeInstruction, FieldInfo, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool LoadsField(this CodeInstruction code, FieldInfo field, bool byAddress = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.FieldInfo</span></td>
+        <td><span class="parametername">field</span></td>
+        <td><p>The field</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">byAddress</span></td>
+        <td><p>Set to true if the address of the field is loaded</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction loads the field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_LocalIndex_" data-uid="HarmonyLib.CodeInstructionExtensions.LocalIndex*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_LocalIndex_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.LocalIndex(HarmonyLib.CodeInstruction)">LocalIndex(CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Returns the index targeted by this <code>ldloc</code>, <code>ldloca</code>, or <code>stloc</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int LocalIndex(this CodeInstruction code)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The index it targets</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_CodeInstructionExtensions_LocalIndex_HarmonyLib_CodeInstruction__seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_LoadLocal_System_Int32_System_Boolean_">LoadLocal</a>(<span class="xref">System.Int32</span>, <span class="xref">System.Boolean</span>)</div>
+      <div><a class="xref" href="HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_StoreLocal_System_Int32_">StoreLocal</a>(<span class="xref">System.Int32</span>)</div>
+  </div>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_MoveBlocksFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBlocksFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)">MoveBlocksFrom(CodeInstruction, CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Moves all ExceptionBlocks from another code instruction to the current one</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction MoveBlocksFrom(this CodeInstruction code, CodeInstruction other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the ExceptionBlocks to</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">other</span></td>
+        <td><p>The other <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the ExceptionBlocks from</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The code instruction that received the blocks</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_MoveBlocksTo_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBlocksTo*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_MoveBlocksTo_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveBlocksTo(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)">MoveBlocksTo(CodeInstruction, CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Moves all ExceptionBlocks from the code instruction to another one</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction MoveBlocksTo(this CodeInstruction code, CodeInstruction other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the ExceptionBlocks from</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">other</span></td>
+        <td><p>The other <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the ExceptionBlocks to</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The code instruction blocks were moved from (now empty)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_MoveLabelsFrom_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveLabelsFrom*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_MoveLabelsFrom_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveLabelsFrom(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)">MoveLabelsFrom(CodeInstruction, CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Moves all labels from another code instruction to the current one</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction MoveLabelsFrom(this CodeInstruction code, CodeInstruction other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the labels to</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">other</span></td>
+        <td><p>The other <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the labels from</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The code instruction that received the labels</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_MoveLabelsTo_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveLabelsTo*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_MoveLabelsTo_HarmonyLib_CodeInstruction_HarmonyLib_CodeInstruction_" data-uid="HarmonyLib.CodeInstructionExtensions.MoveLabelsTo(HarmonyLib.CodeInstruction,HarmonyLib.CodeInstruction)">MoveLabelsTo(CodeInstruction, CodeInstruction)</h4>
+  <div class="markdown level1 summary"><p>Moves all labels from the code instruction to another one</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction MoveLabelsTo(this CodeInstruction code, CodeInstruction other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the labels from</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">other</span></td>
+        <td><p>The other <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a> to move the labels to</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The code instruction labels were moved from (now empty)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_OperandIs_" data-uid="HarmonyLib.CodeInstructionExtensions.OperandIs*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_OperandIs_HarmonyLib_CodeInstruction_System_Object_" data-uid="HarmonyLib.CodeInstructionExtensions.OperandIs(HarmonyLib.CodeInstruction,System.Object)">OperandIs(CodeInstruction, Object)</h4>
+  <div class="markdown level1 summary"><p>Shortcut for testing whether the operand is equal to a non-null value</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool OperandIs(this CodeInstruction code, object value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the operand has the same type and is equal to the value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_OperandIs_" data-uid="HarmonyLib.CodeInstructionExtensions.OperandIs*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_OperandIs_HarmonyLib_CodeInstruction_System_Reflection_MemberInfo_" data-uid="HarmonyLib.CodeInstructionExtensions.OperandIs(HarmonyLib.CodeInstruction,System.Reflection.MemberInfo)">OperandIs(CodeInstruction, MemberInfo)</h4>
+  <div class="markdown level1 summary"><p>Shortcut for testing whether the operand is equal to a non-null value</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool OperandIs(this CodeInstruction code, MemberInfo value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.MemberInfo</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The <span class="xref">System.Reflection.MemberInfo</span> value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the operand is equal to the value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_CodeInstructionExtensions_OperandIs_HarmonyLib_CodeInstruction_System_Reflection_MemberInfo__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This is an optimized version of <a class="xref" href="HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_OperandIs_HarmonyLib_CodeInstruction_System_Object_">OperandIs(CodeInstruction, Object)</a> for <span class="xref">System.Reflection.MemberInfo</span></p>
+</div>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_StoresField_" data-uid="HarmonyLib.CodeInstructionExtensions.StoresField*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_StoresField_HarmonyLib_CodeInstruction_System_Reflection_FieldInfo_" data-uid="HarmonyLib.CodeInstructionExtensions.StoresField(HarmonyLib.CodeInstruction,System.Reflection.FieldInfo)">StoresField(CodeInstruction, FieldInfo)</h4>
+  <div class="markdown level1 summary"><p>Tests if the code instruction stores a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool StoresField(this CodeInstruction code, FieldInfo field)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.FieldInfo</span></td>
+        <td><span class="parametername">field</span></td>
+        <td><p>The field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if the instruction stores this field</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_WithBlocks_" data-uid="HarmonyLib.CodeInstructionExtensions.WithBlocks*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_WithBlocks_HarmonyLib_CodeInstruction_HarmonyLib_ExceptionBlock___" data-uid="HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction,HarmonyLib.ExceptionBlock[])">WithBlocks(CodeInstruction, ExceptionBlock[])</h4>
+  <div class="markdown level1 summary"><p>Adds ExceptionBlocks to the code instruction and return it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction WithBlocks(this CodeInstruction code, params ExceptionBlock[] blocks)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a>[]</td>
+        <td><span class="parametername">blocks</span></td>
+        <td><p>One or several <a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a> to add</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The same code instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_WithBlocks_" data-uid="HarmonyLib.CodeInstructionExtensions.WithBlocks*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_WithBlocks_HarmonyLib_CodeInstruction_System_Collections_Generic_IEnumerable_HarmonyLib_ExceptionBlock__" data-uid="HarmonyLib.CodeInstructionExtensions.WithBlocks(HarmonyLib.CodeInstruction,System.Collections.Generic.IEnumerable{HarmonyLib.ExceptionBlock})">WithBlocks(CodeInstruction, IEnumerable&lt;ExceptionBlock&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds ExceptionBlocks to the code instruction and return it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction WithBlocks(this CodeInstruction code, IEnumerable&lt;ExceptionBlock&gt; blocks)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a>&gt;</td>
+        <td><span class="parametername">blocks</span></td>
+        <td><p>An enumeration of <a class="xref" href="HarmonyLib.ExceptionBlock.html">ExceptionBlock</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The same code instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_WithLabels_" data-uid="HarmonyLib.CodeInstructionExtensions.WithLabels*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_WithLabels_HarmonyLib_CodeInstruction_System_Collections_Generic_IEnumerable_System_Reflection_Emit_Label__" data-uid="HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction,System.Collections.Generic.IEnumerable{System.Reflection.Emit.Label})">WithLabels(CodeInstruction, IEnumerable&lt;Label&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds labels to the code instruction and return it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction WithLabels(this CodeInstruction code, IEnumerable&lt;Label&gt; labels)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Reflection.Emit.Label</span>&gt;</td>
+        <td><span class="parametername">labels</span></td>
+        <td><p>An enumeration of <span class="xref">System.Reflection.Emit.Label</span></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The same code instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="HarmonyLib_CodeInstructionExtensions_WithLabels_" data-uid="HarmonyLib.CodeInstructionExtensions.WithLabels*"></a>
+  <h4 id="HarmonyLib_CodeInstructionExtensions_WithLabels_HarmonyLib_CodeInstruction_System_Reflection_Emit_Label___" data-uid="HarmonyLib.CodeInstructionExtensions.WithLabels(HarmonyLib.CodeInstruction,System.Reflection.Emit.Label[])">WithLabels(CodeInstruction, Label[])</h4>
+  <div class="markdown level1 summary"><p>Adds labels to the code instruction and return it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeInstruction WithLabels(this CodeInstruction code, params Label[] labels)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>The <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Reflection.Emit.Label</span>[]</td>
+        <td><span class="parametername">labels</span></td>
+        <td><p>One or several <span class="xref">System.Reflection.Emit.Label</span> to add</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
+        <td><p>The same code instruction</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

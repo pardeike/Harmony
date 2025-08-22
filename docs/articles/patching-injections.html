@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="common-injected-values">Common injected values</h2>
+<p>Each patch method (except a transpiler) can get all the arguments of the original method as well as the instance if the original method is not static and the return value.</p>
+<p>You only need to define the parameters you want to access.</p>
+<h3 id="__instance">__instance</h3>
+<p>Patches can use an argument called <strong><code>__instance</code></strong> to access the instance value if original method is not static. This is similar to the C# keyword <code>this</code> when used in the original method.</p>
+<h3 id="__result">__result</h3>
+<p>Patches can use an argument called <strong><code>__result</code></strong> to access the returned value. The type must match the return type of the original or be assignable from it. For prefixes, as the original method hasn't run yet, the value of <code>__result</code> is the default for that type. For most reference types, that would be <code>null</code>. If you wish to <strong>alter</strong> the <code>__result</code>, you need to define it <strong>by reference</strong> like <code>ref string name</code>.</p>
+<h3 id="__resultref">__resultRef</h3>
+<p>Patches can use an argument called <strong><code>__resultRef</code></strong> to alter the &quot;<strong>ref return</strong>&quot; reference itself. The type must be <code>RefResult&lt;T&gt;</code> by reference, where <code>T</code> must match the return type of the original, without <code>ref</code> modifier. For example <code>ref RefResult&lt;string&gt; __resultRef</code>.</p>
+<h3 id="__state">__state</h3>
+<p>Patches can use an argument called <strong><code>__state</code></strong> to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix. <strong>Note:</strong> It only works if both patches are defined in the same class.</p>
+<h3 id="___fields">___fields</h3>
+<p>Argument names starting with <strong>three</strong> underscores like <strong><code>___someField</code></strong> can be used to read/write private fields that have that name minus the underscores. To write to field you need to use the <strong><code>ref</code></strong> keyword like <code>ref string ___name</code>.</p>
+<h3 id="__args">__args</h3>
+<p>To access all arguments at once, you can let Harmony inject <strong><code>object[] __args</code></strong> that will contain all arguments in the order they appear. Editing the contents of that array (no ref needed) will automatically update the values of the corresponding arguments.</p>
+<p><strong>Note:</strong> This way of manipulation comes with some small overhead so if possible use normal argument injection</p>
+<h3 id="method-arguments">method arguments</h3>
+<p>To access or change one or several of the original methods arguments, simply repeat them with the same name in your patch. Some restrictions are placed on the types and names of arguments in the patched method:</p>
+<ul>
+<li>The type of an injected argument must be assignable from the original argument (or just use <code>object</code>)</li>
+<li>The name of a given argument (that is to be matched to the argument of the original method) must either be the same name or of the form <strong><code>__n</code></strong>, where <code>n</code> is the zero-based index of the argument in the orignal method (you can also use argument annotations to map to custom names).</li>
+</ul>
+<h3 id="__originalmethod">__originalMethod</h3>
+<p>To allow patches to identify on which method they are attached to, you can inject the original methods MethodBase by using an argument called <strong><code>__originalMethod</code></strong>.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> <strong>You cannot call the original method with that</strong>. The value is only for conditional code in your patch that can selectively run if the patch is applied to multiple methods. The original does not exist after patching and this will point to the patched version.</p>
+<h3 id="__runoriginal">__runOriginal</h3>
+<p>To learn if the original is/was skipped you can inject <strong><code>bool __runOriginal</code></strong>. This is a readonly injection to understand if the original will be run (in a Prefix) or was run (in a Postfix).</p>
+<h3 id="transpilers">Transpilers</h3>
+<p>In transpilers, arguments are only matched by their type so you can choose any argument name you like.</p>
+<p>An argument of type <strong><code>IEnumerable&lt;CodeInstruction&gt;</code></strong> is required and will be used to pass the IL codes to the transpiler
+An argument of type <strong><code>ILGenerator</code></strong> will be set to the current IL code generator
+An argument of type <strong><code>MethodBase</code></strong> will be set to the current original method being patched</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-injections.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

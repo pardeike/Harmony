@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Priorities </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Priorities ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="priorities">Priorities</h1>
+
+<p>With Harmony, the order of patches is not linear. A plugin/mod that comes last can still add patches that execute first. For this to work, patches need to be annotated with method annotations:</p>
+<ul>
+<li><p><strong>[HarmonyPriority(int)]</strong>
+Sets the priority of this Prefix/Postfix. Defaults to Priority.Normal (400)</p>
+</li>
+<li><p><strong>[HarmonyBefore(string[])]</strong>
+Indicates that this Prefix/Postfix should be executed before any of the ID's given</p>
+</li>
+<li><p><strong>[HarmonyAfter(string[])]</strong>
+Indicates that this Prefix/Postfix should be executed after any of the ID's given</p>
+</li>
+</ul>
+<p>Example:</p>
+<p>Given the following method:</p>
+<pre><code class="lang-csharp" name="example">class Foo
+{
+    static string Bar() =&gt; &quot;secret&quot;;
+}
+</code></pre>
+<p>and <strong>Plugin 1</strong></p>
+<pre><code class="lang-csharp" name="example">void Main_Plugin1()
+{
+    var harmony = new Harmony(&quot;net.example.plugin1&quot;);
+    harmony.PatchAll(Assembly.GetExecutingAssembly());
+}
+
+[HarmonyPatch(typeof(Foo))]
+[HarmonyPatch(&quot;Bar&quot;)]
+class MyPatch
+{
+    static void Postfix(ref string result) =&gt; result = &quot;new secret 1&quot;;
+}
+</code></pre>
+<p>and <strong>Plugin 2</strong></p>
+<pre><code class="lang-csharp" name="example">void Main_Plugin2()
+{
+    var harmony = new Harmony(&quot;net.example.plugin2&quot;);
+    harmony.PatchAll(Assembly.GetExecutingAssembly());
+}
+
+[HarmonyPatch(typeof(Foo))]
+[HarmonyPatch(&quot;Bar&quot;)]
+class MyPatch
+{
+    static void Postfix(ref string result) =&gt; result = &quot;new secret 2&quot;;
+}
+</code></pre>
+<p>a call to <code>Foo.Bar()</code> would return &quot;new secret 2&quot; because both plugins register their Postfix with the same priority and so the second Postfix overrides the result of the first one. As an author of Plugin 1, you could rewrite your code to</p>
+<pre><code class="lang-csharp" name="example">void Main_Plugin1b()
+{
+    var harmony = new Harmony(&quot;net.example.plugin1&quot;);
+    harmony.PatchAll(Assembly.GetExecutingAssembly());
+}
+
+[HarmonyPatch(typeof(Foo))]
+[HarmonyPatch(&quot;Bar&quot;)]
+class MyPatch
+{
+    [HarmonyAfter([&quot;net.example.plugin2&quot;])]
+    static void Postfix(ref string result) =&gt; result = &quot;new secret 1&quot;;
+}
+</code></pre>
+<p>and would be executed after net.example.plugin2 which gives you (for a Postfix) the chance to change the result last. Alternatively, you could annotate with [HarmonyPriority(Priority.Low)] to come after plugin1.</p>
+<p>All priority annotations are also valid on the class. This will define the priorities for all contained patch methods at the same time.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/priorities.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

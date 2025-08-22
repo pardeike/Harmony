@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class MethodInvoker
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class MethodInvoker
+   ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="HarmonyLib.MethodInvoker">
+  
+  
+  <h1 id="HarmonyLib_MethodInvoker" data-uid="HarmonyLib.MethodInvoker" class="text-break">Class MethodInvoker
+  </h1>
+  <div class="markdown level0 summary"><p>A helper class to invoke method with delegates</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">MethodInvoker</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
+  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
+  <h5 id="HarmonyLib_MethodInvoker_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class MethodInvoker</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="HarmonyLib_MethodInvoker_GetHandler_" data-uid="HarmonyLib.MethodInvoker.GetHandler*"></a>
+  <h4 id="HarmonyLib_MethodInvoker_GetHandler_System_Reflection_MethodInfo_System_Boolean_" data-uid="HarmonyLib.MethodInvoker.GetHandler(System.Reflection.MethodInfo,System.Boolean)">GetHandler(MethodInfo, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Creates a fast invocation handler from a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FastInvokeHandler GetHandler(MethodInfo methodInfo, bool directBoxValueAccess = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Reflection.MethodInfo</span></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td><p>The method to invoke</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">directBoxValueAccess</span></td>
+        <td><p>Controls if boxed value object is accessed/updated directly</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="HarmonyLib.FastInvokeHandler.html">FastInvokeHandler</a></td>
+        <td><p>The <a class="xref" href="HarmonyLib.FastInvokeHandler.html">FastInvokeHandler</a></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="HarmonyLib_MethodInvoker_GetHandler_System_Reflection_MethodInfo_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>
+The <code>directBoxValueAccess</code> option controls how value types passed by reference (e.g. ref int, out my_struct) are handled in the arguments array
+passed to the fast invocation handler.
+Since the arguments array is an object array, any value types contained within it are actually references to a boxed value object.
+Like any other object, there can be other references to such boxed value objects, other than the reference within the arguments array.
+<example>For example,
+<pre><code>var val = 5;
+var box = (object)val;
+var arr = new object[] { box };
+handler(arr); // for a method with parameter signature: ref/out/in int</code></pre></example></p>
+<p>
+If <code>directBoxValueAccess</code> is <code>true</code>, the boxed value object is accessed (and potentially updated) directly when the handler is called,
+such that all references to the boxed object reflect the potentially updated value.
+In the above example, if the method associated with the handler updates the passed (boxed) value to 10, both <code>box</code> and <code>arr[0]</code>
+now reflect the value 10. Note that the original <code>val</code> is not updated, since boxing always copies the value into the new boxed value object.
+</p>
+<p>
+If <code>directBoxValueAccess</code> is <code>false</code> (default), the boxed value object in the arguments array is replaced with a &quot;reboxed&quot; value object,
+such that potential updates to the value are reflected only in the arguments array.
+In the above example, if the method associated with the handler updates the passed (boxed) value to 10, only <code>arr[0]</code> now reflects the value 10.
+</p>
+</div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

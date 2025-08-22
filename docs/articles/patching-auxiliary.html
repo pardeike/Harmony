@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Patching </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Patching ">
+    <meta name="generator" content="docfx 2.48.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="auxiliary-patch-methods">Auxiliary patch methods</h2>
+<p>If you use manual patching, you are in full control of your state and the execution and handling of extra resources and logic. For annotation patching, Harmony offers you a number of methods you can implement on a patch class that allow you to execute code before and after patching on that class as well as methods that combine annotations with manually defining which methods should be patched.</p>
+<p>Each of those methods can take up to three optional arguments that are injected by type so you can call them anything you like:</p>
+<ul>
+<li><code>MethodBase original</code> - the current original being patched</li>
+<li><code>Harmony harmony</code> - the current Harmony instance</li>
+<li><code>Exception ex</code> - only valid in <code>Cleanup</code> and receives a possible exception</li>
+</ul>
+<p>Here is a simple example that patches a method inside a private type:</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch] // at least one Harmony annotation makes Harmony not skip this patch class when calling PatchAll()
+class MyPatch
+{
+    // here, inside the patch class, you can place the auxiliary patch methods
+    // for example TargetMethod:
+
+    public static MethodBase TargetMethod()
+    {
+        // use normal reflection or helper methods in &lt;AccessTools&gt; to find the method/constructor
+        // you want to patch and return its MethodInfo/ConstructorInfo
+        //
+        var type = AccessTools.FirstInner(typeof(TheClass), t =&gt; t.Name.Contains(&quot;Stuff&quot;));
+        return AccessTools.FirstMethod(type, method =&gt; method.Name.Contains(&quot;SomeMethod&quot;));
+    }
+
+    // your patches
+    public static void Prefix()
+    {
+        // ...
+    }
+}
+</code></pre><h3 id="prepare">Prepare</h3>
+<p>Before the patching, Harmony gives you a chance to prepare your state. For this, Harmony searches for a method called</p>
+<pre><code class="lang-csharp">static void Prepare(...)
+static void Prepare(MethodBase original, ...)
+static bool Prepare(MethodBase original, ...)
+// or
+[HarmonyPrepare]
+static void MyInitializer(...)
+static void MyInitializer(MethodBase original, ...)
+static bool MyInitializer(MethodBase original, ...)
+</code></pre>
+<p>By returning <code>false</code> it can skip the patching in this class. It is recommended to inject <code>original</code> into Prepare because <strong>Harmony calls it at least twice</strong>: once before patching in the class starts (original is <code>null</code>) and once for each method being patched (original indicates which method is currently patched).</p>
+<h3 id="targetmethod">TargetMethod</h3>
+<p>Most of the times, you will use a combination of <code>HarmonyPatch()</code> annotations on the class to define the method you want to patch. Sometimes though, it is necessary to calculate the method with code. For this, Harmony searches for a method called</p>
+<pre><code class="lang-csharp">static MethodBase TargetMethod(...)
+// or
+[HarmonyTargetMethod]
+static MethodBase CalculateMethod(...)
+</code></pre>
+<p>That method, if it exists, is expected to return a <code>MethodBase</code> of the method to be patched. The return cannot be null. If you want to conditionally skip patching, use a <code>Prepare()</code> method.</p>
+<h3 id="targetmethods">TargetMethods</h3>
+<p>If you want to patch multiple methods with the same patch, you can use <code>TargetMethods</code>. It has the same behaviour as <code>TargetMethod</code> except that it returns an enumeration of <code>MethodBase</code> instead of a single <code>MethodBase</code>:</p>
+<pre><code class="lang-csharp">static IEnumerable&lt;MethodBase&gt; TargetMethods(...)
+// or
+[HarmonyTargetMethods]
+static IEnumerable&lt;MethodBase&gt; CalculateMethods(...)
+</code></pre>
+<p>A typical implementation would <code>yield</code> the results like this:</p>
+<pre><code class="lang-csharp" name="example">static IEnumerable&lt;MethodBase&gt; TargetMethods()
+{
+    // if possible use nameof() or SymbolExtensions.GetMethodInfo() here
+    yield return AccessTools.Method(typeof(Foo), &quot;Method1&quot;);
+    yield return AccessTools.Method(typeof(Bar), &quot;Method2&quot;);
+
+    // you could also iterate using reflections over many methods
+}
+</code></pre>
+<p>Similar to <code>TargetMethod</code>, the implementation cannot return zero results. If you want to conditionally skip patching, use a <code>Prepare()</code> method.</p>
+<h3 id="cleanup">Cleanup</h3>
+<p>After patching, Harmony gives you a chance to clean up your state. For this, Harmony searches for a method called</p>
+<pre><code class="lang-csharp">static void Cleanup(...)
+static void Cleanup(MethodBase original, ...)
+static Exception Cleanup(MethodBase original, ...)
+// or
+[HarmonyCleanup]
+static void MyCleanup(...)
+static void MyCleanup(MethodBase original, ...)
+static Exception MyCleanup(MethodBase original, ...)
+</code></pre>
+<p>Similar to <code>Prepare()</code> this method is called with <code>original</code> set to the method that just has been patched and then finally one more time before ending the overall patching (original will be <code>null</code>).</p>
+<p>Additionally, you can intercept exceptions that are thrown while patching. Use the injection of <code>exception</code> to learn what happened and check if you can cast it to <code>HarmonyException</code> to get more information. Finally, you can return <code>Exception</code> to replace the exception or <code>null</code> to suppress it.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-auxiliary.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
