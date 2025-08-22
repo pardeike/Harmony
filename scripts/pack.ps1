@@ -27,6 +27,5 @@ New-Item -ItemType Directory -Path Lib.Harmony.Thin\bin | Out-Null
 dotnet clean --nologo --verbosity minimal
 
 # Build Solution 
-Write-Host "Processing configuration: $config"
 dotnet build --nologo --configuration Release --verbosity minimal
 dotnet pack --nologo --configuration Release --verbosity minimal --no-restore --no-build

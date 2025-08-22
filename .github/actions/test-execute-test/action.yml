@@ -55,7 +55,6 @@ runs:
         "target_frameworks=$target_frameworks" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh
 
-    # Create clean TestResults directory using simple platform-specific commands
     - name: Clean TestResults (Windows)
       if: runner.os == 'Windows'
       run: |
@@ -121,32 +120,6 @@ runs:
             & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
           }
         shell: pwsh
-        
-    # Debug step for Windows
-    - name: List TRX files (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        Write-Host "Searching for TRX files on Windows..."
-        Write-Host "TRX files in TestResults directory:"
-        if (Test-Path -Path "TestResults") {
-          Get-ChildItem -Path "TestResults" -Filter "*.trx" -Recurse | ForEach-Object { Write-Host $_.FullName }
-        } else {
-          Write-Host "TestResults directory not found"
-        }
-      shell: pwsh
-      
-    # Debug step for Unix-based systems (macOS/Linux)
-    - name: List TRX files (Unix)
-      if: runner.os != 'Windows'
-      run: |
-        echo "Searching for TRX files on Unix..."
-        echo "TRX files in TestResults directory:"
-        if [ -d "TestResults" ]; then
-          find TestResults -name "*.trx" -type f | sort
-        else
-          echo "TestResults directory not found"
-        fi
-      shell: bash
 
     - name: Upload Test Result
       uses: ./.github/actions/test-upload-result
