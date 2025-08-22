@@ -29,11 +29,19 @@ runs:
       if: runner.os == 'Windows'
       run: |
         Write-Host "Finding TRX files before upload (Windows)..."
-        if (Test-Path -Path "TestResults") {
-          $files = Get-ChildItem -Path "TestResults" -Filter "*.trx"
-          Write-Host "Found $($files.Count) TRX files in TestResults directory"
+        $rootFiles = Get-ChildItem -Path "TestResults" -Filter "*.trx" -ErrorAction SilentlyContinue
+        $nestedFiles = Get-ChildItem -Path "TestResults" -Recurse -Filter "*.trx" -ErrorAction SilentlyContinue
+        
+        $totalFiles = @()
+        if ($rootFiles) { $totalFiles += $rootFiles }
+        if ($nestedFiles) { $totalFiles += $nestedFiles }
+        
+        Write-Host "Found $($totalFiles.Count) total TRX files"
+        
+        if ($totalFiles.Count -gt 0) {
+          $totalFiles | ForEach-Object { Write-Host $_.FullName }
         } else {
-          Write-Host "TestResults directory not found"
+          Write-Host "No TRX files found"
         }
       shell: pwsh
 
@@ -43,9 +51,9 @@ runs:
         echo "Finding TRX files before upload (Unix)..."
         if [ -d "TestResults" ]; then
           FILES=$(find TestResults -name "*.trx" -type f)
-          echo "Found TRX files in TestResults directory:"
+          COUNT=$(find TestResults -name "*.trx" -type f | wc -l)
+          echo "Found $COUNT TRX files in TestResults directory:"
           echo "$FILES"
-          echo "Count: $(find TestResults -name "*.trx" -type f | wc -l)"
         else
           echo "TestResults directory not found"
         fi
@@ -57,7 +65,7 @@ runs:
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: |
-          TestResults/*.trx
+          TestResults/**/*.trx
         if-no-files-found: warn
         retention-days: 1
         compression-level: 0
