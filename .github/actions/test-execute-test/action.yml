@@ -47,11 +47,12 @@ runs:
         $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}';
         "run_settings_args=$run_settings_args" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        # Ensure TRX files go to a predictable location: ./TestResults
-        $vstest = "--logger:trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx --logger:'console;verbosity=normal' --blame";
+        # Ensure TRX files go to a predictable location
+        $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx";
+        $vstest = "--logger:""trx;LogFileName=$trxFileName"" --logger:'console;verbosity=normal' --blame";
         "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        $dotnet = "--logger:trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx --logger:console;verbosity=normal --blame";
+        $dotnet = "--logger:""trx;LogFileName=$trxFileName"" --logger:console;verbosity=normal --blame";
         "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $target_framework = "${{inputs.target_framework}}";
@@ -87,9 +88,13 @@ runs:
     - name: Perform Tests Windows .NET | Ubuntu .NET/Mono
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
+        # Create results directory explicitly
+        New-Item -ItemType Directory -Force -Path "TestResults"
+        
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           $loggerArg = "${{steps.test-args.outputs.dotnet}}".Replace("{framework}", $target_framework);
-          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework $loggerArg -- ${{steps.test-args.outputs.run_settings_args}};
+          $resultsFile = "TestResults/${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:console;verbosity=normal -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
 
@@ -101,14 +106,17 @@ runs:
         max_attempts: 3
         retry_on: timeout
         command: |
+          # Create results directory explicitly
+          New-Item -ItemType Directory -Force -Path "TestResults"
+          
           if ('${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64' && inputs.runtime-type == 'dotnet'}}' -eq 'true') {
             $dotnet = '/Users/runner/.dotnet/x64/dotnet';
           } else {
             $dotnet = '/Users/runner/.dotnet/dotnet';
           }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-            $loggerArg = "${{steps.test-args.outputs.dotnet}}".Replace("{framework}", $target_framework);
-            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework $loggerArg -- ${{steps.test-args.outputs.run_settings_args}};
+            $resultsFile = "TestResults/${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=$resultsFile" --logger:console;verbosity=normal -- ${{steps.test-args.outputs.run_settings_args}};
           }
         shell: pwsh
         
@@ -117,18 +125,12 @@ runs:
       if: runner.os == 'Windows'
       run: |
         Write-Host "Searching for TRX files on Windows..."
-        Write-Host "TRX files in current directory:"
-        Get-ChildItem -Path . -Filter *.trx -Recurse | ForEach-Object { Write-Host $_.FullName }
-        
-        Write-Host "TRX files in TestResults directory (if exists):"
-        if (Test-Path -Path .\TestResults) {
-          Get-ChildItem -Path .\TestResults -Filter *.trx -Recurse | ForEach-Object { Write-Host $_.FullName }
+        Write-Host "TRX files in TestResults directory:"
+        if (Test-Path -Path "TestResults") {
+          Get-ChildItem -Path "TestResults" -Filter "*.trx" | ForEach-Object { Write-Host $_.Name }
         } else {
           Write-Host "TestResults directory not found"
         }
-        
-        Write-Host "Content of the current directory:"
-        Get-ChildItem -Path . | ForEach-Object { Write-Host $_.Name }
       shell: pwsh
       
     # Debug step for Unix-based systems (macOS/Linux)
@@ -136,18 +138,12 @@ runs:
       if: runner.os != 'Windows'
       run: |
         echo "Searching for TRX files on Unix..."
-        echo "TRX files in current directory:"
-        find . -name "*.trx" -type f | sort
-        
-        echo "TRX files in TestResults directory (if exists):"
-        if [ -d "./TestResults" ]; then
-          find ./TestResults -name "*.trx" -type f | sort
+        echo "TRX files in TestResults directory:"
+        if [ -d "TestResults" ]; then
+          find TestResults -name "*.trx" -type f
         else
           echo "TestResults directory not found"
         fi
-        
-        echo "Content of the current directory:"
-        ls -la
       shell: bash
 
     - name: Upload Test Result

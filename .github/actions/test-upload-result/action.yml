@@ -25,29 +25,29 @@ runs:
   using: "composite"
   steps:
     # Debug step to find TRX files before upload
-    - name: Find TRX files
+    - name: Find TRX files (Windows)
       if: runner.os == 'Windows'
       run: |
-        Write-Host "Finding TRX files before upload..."
-        $files = Get-ChildItem -Path . -Filter *.trx -Recurse
-        if ($files.Count -gt 0) {
-          Write-Host "Found $($files.Count) TRX files:"
-          $files | ForEach-Object { Write-Host $_.FullName }
+        Write-Host "Finding TRX files before upload (Windows)..."
+        if (Test-Path -Path "TestResults") {
+          $files = Get-ChildItem -Path "TestResults" -Filter "*.trx"
+          Write-Host "Found $($files.Count) TRX files in TestResults directory"
         } else {
-          Write-Host "No TRX files found"
+          Write-Host "TestResults directory not found"
         }
       shell: pwsh
 
     - name: Find TRX files (Unix)
       if: runner.os != 'Windows'
       run: |
-        echo "Finding TRX files before upload..."
-        files=$(find . -name "*.trx" -type f)
-        if [ -n "$files" ]; then
-          echo "Found TRX files:"
-          echo "$files"
+        echo "Finding TRX files before upload (Unix)..."
+        if [ -d "TestResults" ]; then
+          FILES=$(find TestResults -name "*.trx" -type f)
+          echo "Found TRX files in TestResults directory:"
+          echo "$FILES"
+          echo "Count: $(find TestResults -name "*.trx" -type f | wc -l)"
         else
-          echo "No TRX files found"
+          echo "TestResults directory not found"
         fi
       shell: bash
 
@@ -57,7 +57,7 @@ runs:
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: |
-          **/*.trx
+          TestResults/*.trx
         if-no-files-found: warn
         retention-days: 1
         compression-level: 0
