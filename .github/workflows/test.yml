@@ -204,15 +204,15 @@ jobs:
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
 
-  cleanup-build-output:
-    name: Cleanup Build Output
-    needs: [test-results]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - uses: joutvhu/delete-artifact@v2
-        with:
-          pattern: build-output-*
-      - uses: joutvhu/delete-artifact@v2
-        with:
-          pattern: test-results-*
+  #cleanup-build-output:
+  #  name: Cleanup Build Output
+  #  needs: [test-results]
+  #  runs-on: ubuntu-latest
+  #  if: always()
+  #  steps:
+  #    - uses: joutvhu/delete-artifact@v2
+  #      with:
+  #        pattern: build-output-*
+  #    - uses: joutvhu/delete-artifact@v2
+  #      with:
+  #        pattern: test-results-*
