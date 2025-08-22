@@ -17,6 +17,8 @@ namespace HarmonyLibTests.Tools
 	[TestFixture, NonParallelizable]
 	public class Test_AccessTools : TestLogger
 	{
+		private static readonly string TempAssemblyDirectory = TestTools.GetAssemblyTempDirectory();
+
 		[OneTimeSetUp]
 		public void CreateAndUnloadTestDummyAssemblies() => TestTools.RunInIsolationContext(CreateTestDummyAssemblies);
 
@@ -24,7 +26,7 @@ namespace HarmonyLibTests.Tools
 		[OneTimeTearDown]
 		public void DeleteTestDummyAssemblies()
 		{
-			foreach (var dummyAssemblyFileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "HarmonyTestsDummyAssembly*"))
+			foreach (var dummyAssemblyFileName in Directory.GetFiles(TempAssemblyDirectory, "HarmonyTestsDummyAssembly*"))
 			{
 				try
 				{
@@ -34,6 +36,16 @@ namespace HarmonyLibTests.Tools
 				{
 					TestTools.WriteLine($"Could not delete {dummyAssemblyFileName} during {nameof(DeleteTestDummyAssemblies)} due to {ex}", true);
 				}
+			}
+
+			// Clean up the temp directory
+			try
+			{
+				Directory.Delete(TempAssemblyDirectory, true);
+			}
+			catch (Exception ex)
+			{
+				TestTools.WriteLine($"Could not delete temp directory {TempAssemblyDirectory} during {nameof(DeleteTestDummyAssemblies)} due to {ex}", true);
 			}
 		}
 
@@ -61,7 +73,7 @@ namespace HarmonyLibTests.Tools
 			var moduleBuilder = assemblyBuilder.DefineDynamicModule("module");
 #else
 			var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.Save,
-				AppDomain.CurrentDomain.BaseDirectory);
+				TempAssemblyDirectory);
 			var moduleBuilder = assemblyBuilder.DefineDynamicModule("module", assemblyName + ".dll");
 #endif
 			foreach (var defineTypeFunc in defineTypeFuncs)
@@ -83,7 +95,7 @@ namespace HarmonyLibTests.Tools
 			// rather than reference assembly (System.Runtime). This causes issues for decompilers, but is fine for loading via Assembly.Load et all,
 			// since the .NET Core runtime assemblies are definitely already accessible and loaded.
 			new Lokad.ILPack.AssemblyGenerator().GenerateAssembly(assemblyBuilder, referencedDynamicAssemblies,
-				Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyFileName));
+				Path.Combine(TempAssemblyDirectory, assemblyFileName));
 #else
 			assemblyBuilder.Save(assemblyFileName);
 #endif
@@ -141,10 +153,10 @@ namespace HarmonyLibTests.Tools
 			{
 #if NETCOREAPP
 				// On .NET Core, load the DLL from its path into the default AssemblyLoadContext
-				Assembly.LoadFrom(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
+				Assembly.LoadFrom(Path.Combine(TempAssemblyDirectory, name + ".dll"));
 #else
 				// On .NET Framework, Assembly.Load will load from the probing path (BaseDirectory)
-				Assembly.Load(name);
+				Assembly.LoadFrom(Path.Combine(TempAssemblyDirectory, name + ".dll"));
 #endif
 			}, "HarmonyTestsDummyAssemblyD"));
 

@@ -117,6 +117,13 @@ namespace HarmonyLibTests
 			}
 		}
 
+		public static string GetAssemblyTempDirectory()
+		{
+			var path = Path.Combine(Path.GetTempPath(), "HarmonyTests_" + Guid.NewGuid().ToString("N"));
+			_ = Directory.CreateDirectory(path);
+			return path;
+		}
+
 		// Run an action in a test isolation context.
 
 		public static void RunInIsolationContext(Action<ITestIsolationContext> action) =>
@@ -161,7 +168,22 @@ namespace HarmonyLibTests
 				// Defer loading of assembly's dependencies to parent (AssemblyLoadContext.Default) assembly load context.
 				null;
 
-			public void AssemblyLoad(string name) => _ = LoadFromAssemblyPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
+			public void AssemblyLoad(string name)
+			{
+				// First check if the assembly is in a temp directory used by our tests
+				foreach (var dir in Directory.GetDirectories(Path.GetTempPath(), "HarmonyTests_*"))
+				{
+					var possiblePath = Path.Combine(dir, name + ".dll");
+					if (File.Exists(possiblePath))
+					{
+						_ = LoadFromAssemblyPath(possiblePath);
+						return;
+					}
+				}
+
+				// Fallback to base directory
+				_ = LoadFromAssemblyPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ".dll"));
+			}
 
 			// There's no separate AppDomain, so this is just an alias for callback(arg).
 			public void ParentCallback<T>(Action<T> callback, T arg) => callback(arg);
@@ -215,7 +237,22 @@ namespace HarmonyLibTests
 				public void Call() => action(arg);
 			}
 
-			public void AssemblyLoad(string assemblyName) => _ = Assembly.Load(assemblyName);
+			public void AssemblyLoad(string assemblyName)
+			{
+				// First check if the assembly is in a temp directory used by our tests
+				foreach (var dir in Directory.GetDirectories(Path.GetTempPath(), "HarmonyTests_*"))
+				{
+					var possiblePath = Path.Combine(dir, assemblyName + ".dll");
+					if (File.Exists(possiblePath))
+					{
+						_ = Assembly.LoadFile(possiblePath);
+						return;
+					}
+				}
+
+				// Fallback to regular load
+				_ = Assembly.Load(assemblyName);
+			}
 		}
 #endif
 	}
