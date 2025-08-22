@@ -24,22 +24,11 @@ namespace HarmonyLibTests
 
 	public static class TestTools
 	{
-		// Change this from TestContext.Out to TestContext.Error for immediate output to stderr to help diagnose crashes.
-		// Note: Must be a property rather than a field, since the specific TestContext streams can change between tests.
-		static TextWriter LogWriter => TestContext.Out;
+		// Note: This must be a property rather than a field, since the specific TestContext streams can change between tests.
+		static TextWriter LogWriterOut => TestContext.Out;
+		static TextWriter LogWriterError => TestContext.Error;
 
-		public static void WriteLine(string _) { }
-
-		public static void Log(object obj, int indentLevel = 1, int? indentLevelAfterNewLine = null, bool writeLine = true)
-		{
-			var indentBeforeNewLine = new string('\t', indentLevel);
-			var indentAfterNewLine = new string('\t', indentLevelAfterNewLine ?? indentLevel + 1);
-			var text = $"{indentBeforeNewLine}{obj?.ToString().Replace("\n", "\n" + indentAfterNewLine) ?? "null"}";
-			if (writeLine)
-				LogWriter.WriteLine(text);
-			else
-				LogWriter.Write(text);
-		}
+		public static void WriteLine(string text, bool isError) => (isError ? LogWriterError : LogWriterOut).WriteLine(text);
 
 		// Guarantees that assertion failures throw AssertionException, regardless of whether in Assert.Multiple mode.
 		public static void AssertImmediate(TestDelegate testDelegate)
@@ -64,45 +53,10 @@ namespace HarmonyLibTests
 		// Also includes a workaround for Throws constraints reporting failed assertions within the test delegate as an unexpected
 		// AssertionException rather than just reporting the assertion failure message itself.
 
-		public static ConstraintResult AssertThat<TActual>(TActual actual, IResolveConstraint expression, string message = null, params object[] args)
-		{
-			var capture = new CaptureResultConstraint(expression);
-			Assert.That(actual, capture, message, args);
-			return capture.capturedResult;
-		}
-
-		public static ConstraintResult AssertThat<TActual>(TActual actual, IResolveConstraint expression, Func<string> getExceptionMessage)
-		{
-			var capture = new CaptureResultConstraint(expression);
-			Assert.That(actual, capture, getExceptionMessage);
-			return capture.capturedResult;
-		}
-
-		public static ConstraintResult AssertThat<TActual>(ActualValueDelegate<TActual> del, IResolveConstraint expr, string message = null, params object[] args)
-		{
-			var capture = new CaptureResultConstraint(expr);
-			Assert.That(del, capture, message, args);
-			return capture.capturedResult;
-		}
-
-		public static ConstraintResult AssertThat<TActual>(ActualValueDelegate<TActual> del, IResolveConstraint expr, Func<string> getExceptionMessage)
-		{
-			var capture = new CaptureResultConstraint(expr);
-			Assert.That(del, capture, getExceptionMessage);
-			return capture.capturedResult;
-		}
-
 		public static ConstraintResult AssertThat(TestDelegate code, IResolveConstraint constraint, string message = null, params object[] args)
 		{
 			var capture = new CaptureResultConstraint(constraint);
 			Assert.That(code, capture, message, args);
-			return capture.capturedResult;
-		}
-
-		public static ConstraintResult AssertThat(TestDelegate code, IResolveConstraint constraint, Func<string> getExceptionMessage)
-		{
-			var capture = new CaptureResultConstraint(constraint);
-			Assert.That(code, capture, getExceptionMessage);
 			return capture.capturedResult;
 		}
 

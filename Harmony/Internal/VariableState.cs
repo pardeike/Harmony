@@ -21,8 +21,7 @@ namespace HarmonyLib
 			{
 				if (injected.TryGetValue(type, out var local))
 					return local;
-				Console.WriteLine($"VariableState: variable of type {type} not found");
-				return null;
+				throw new ArgumentException($"VariableState: variable of type {type} not found");
 			}
 			set => injected[type] = value;
 		}
@@ -33,8 +32,7 @@ namespace HarmonyLib
 			{
 				if (other.TryGetValue(name, out var local))
 					return local;
-				Console.WriteLine($"VariableState: variable named '{name}' not found");
-				return null;
+				throw new ArgumentException($"VariableState: variable named '{name}' not found");
 			}
 			set => other[name] = value;
 		}

@@ -198,7 +198,7 @@ namespace HarmonyLibTests.Assets
 			switch (i)
 			{
 				case 0:
-					TestTools.WriteLine("Test");
+					TestTools.WriteLine("Test", false);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
@@ -273,21 +273,21 @@ namespace HarmonyLibTests.Assets
 
 		public void Run()
 		{
-			TestTools.WriteLine("EventHandlerTestClass.Run called");
+			TestTools.WriteLine("EventHandlerTestClass.Run called", false);
 			OnTestEvent += Handler;
 			_ = OnTestEvent.Method;
-			TestTools.WriteLine("EventHandlerTestClass.Run done");
+			TestTools.WriteLine("EventHandlerTestClass.Run done", false);
 		}
 
 		public void Handler()
 		{
 			try
 			{
-				TestTools.WriteLine("MarshalledTestClass.Handler called");
+				TestTools.WriteLine("MarshalledTestClass.Handler called", false);
 			}
 			catch
 			{
-				TestTools.WriteLine("MarshalledTestClass.Handler exception");
+				TestTools.WriteLine("MarshalledTestClass.Handler exception", false);
 			}
 		}
 	}
@@ -304,20 +304,20 @@ namespace HarmonyLibTests.Assets
 	{
 		public void Run()
 		{
-			TestTools.WriteLine("MarshalledTestClass.Run called");
+			TestTools.WriteLine("MarshalledTestClass.Run called", false);
 			Handler();
-			TestTools.WriteLine("MarshalledTestClass.Run called");
+			TestTools.WriteLine("MarshalledTestClass.Run called", false);
 		}
 
 		public void Handler()
 		{
 			try
 			{
-				TestTools.WriteLine("MarshalledTestClass.Handler called");
+				TestTools.WriteLine("MarshalledTestClass.Handler called", false);
 			}
 			catch
 			{
-				TestTools.WriteLine("MarshalledTestClass.Handler exception");
+				TestTools.WriteLine("MarshalledTestClass.Handler exception", true);
 			}
 		}
 	}
@@ -339,20 +339,20 @@ namespace HarmonyLibTests.Assets
 
 		public void Run()
 		{
-			TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Run called");
+			TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Run called", false);
 			OnTestEvent += Handler;
-			TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Run called");
+			TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Run called", false);
 		}
 
 		public void Handler()
 		{
 			try
 			{
-				TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Handler called");
+				TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Handler called", false);
 			}
 			catch
 			{
-				TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Handler exception");
+				TestTools.WriteLine("MarshalledWithEventHandlerTest1Class.Handler exception", true);
 			}
 		}
 	}
@@ -372,21 +372,21 @@ namespace HarmonyLibTests.Assets
 
 		public void Run()
 		{
-			TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Run called");
+			TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Run called", false);
 			OnTestEvent += Handler;
 			_ = OnTestEvent.Method;
-			TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Run called");
+			TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Run called", false);
 		}
 
 		public void Handler()
 		{
 			try
 			{
-				TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Handler called");
+				TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Handler called", false);
 			}
 			catch
 			{
-				TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Handler exception");
+				TestTools.WriteLine("MarshalledWithEventHandlerTest2Class.Handler exception", true);
 			}
 		}
 	}
