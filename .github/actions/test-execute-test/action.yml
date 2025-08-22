@@ -50,7 +50,7 @@ runs:
         $vstest = "--logger:trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx --logger:'console;verbosity=normal' --blame";
         "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        $dotnet = "-l trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx -l 'console;verbosity=normal' --blame";
+        $dotnet = "--logger:trx;LogFileName=${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-{framework}.trx --logger:console;verbosity=normal --blame";
         "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $target_framework = "${{inputs.target_framework}}";
@@ -78,7 +78,7 @@ runs:
         $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
     
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          $loggerArg = $(${{steps.test-args.outputs.vstest}} -replace "{framework}", $target_framework);
+          $loggerArg = "${{steps.test-args.outputs.vstest}}".Replace("{framework}", $target_framework);
           & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" --framework:$target_framework $loggerArg -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
@@ -87,7 +87,7 @@ runs:
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-          $loggerArg = $(${{steps.test-args.outputs.dotnet}} -replace "{framework}", $target_framework);
+          $loggerArg = "${{steps.test-args.outputs.dotnet}}".Replace("{framework}", $target_framework);
           dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework $loggerArg -- ${{steps.test-args.outputs.run_settings_args}};
         }
       shell: pwsh
@@ -107,7 +107,7 @@ runs:
             $dotnet = '/Users/runner/.dotnet/dotnet';
           }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
-            $loggerArg = $(${{steps.test-args.outputs.dotnet}} -replace "{framework}", $target_framework);
+            $loggerArg = "${{steps.test-args.outputs.dotnet}}".Replace("{framework}", $target_framework);
             & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework $loggerArg -- ${{steps.test-args.outputs.run_settings_args}};
           }
         shell: pwsh
