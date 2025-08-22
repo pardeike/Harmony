@@ -30,8 +30,6 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
         with:
-          root_log_level: DEBUG
-          log_level: DEBUG
           check_name: Test Results ${{(inputs.experimental && '(Experimental)') || ''}}
           files: test-results/**/*.trx
           fail_on: ${{(inputs.experimental && 'nothing') || 'test failures'}}
