@@ -212,18 +212,12 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      # Clean only build output artifacts first, leave test results for later
+      # Delete build output artifacts
       - uses: joutvhu/delete-artifact@v2
         with:
           pattern: build-output-*
-          
-      # Add a delay to ensure test results are fully processed before deletion
-      - name: Wait for test results processing
-        run: |
-          echo "Waiting for test results to be fully processed..."
-          sleep 30
-        
-      # Now delete the test result artifacts
+      
+      # Delete test result artifacts
       - uses: joutvhu/delete-artifact@v2
         with:
           pattern: test-results-*
