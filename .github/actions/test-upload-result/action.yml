@@ -29,9 +29,19 @@ runs:
       run: python3 scripts/clean-trx-files.py
       shell: bash
       if: ${{success() || failure()}}
+    - name: Check for TRX files
+      id: check-trx
+      run: |
+        if find . -name "*.trx" -type f | grep -q .; then
+          echo "files-found=true" >> $GITHUB_OUTPUT
+        else
+          echo "files-found=false" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+      if: ${{success() || failure()}}
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
-      if: ${{success() || failure()}}
+      if: ${{(success() || failure()) && steps.check-trx.outputs.files-found == 'true'}}
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
         path: '**/*.trx'
