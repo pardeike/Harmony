@@ -26,12 +26,28 @@ jobs:
           path: test-results
           merge-multiple: true
 
+      - name: List Downloaded Files
+        if: always()
+        run: |
+          echo "Listing files in test-results directory:"
+          find test-results -type f | sort
+        shell: bash
+
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           check_name: Test Results ${{(inputs.experimental && '(Experimental)') || ''}}
-          files: test-results/**/*.trx
+          files: "test-results/**/*.trx"
           fail_on: ${{(inputs.experimental && 'nothing') || 'test failures'}}
           check_run: ${{!inputs.experimental}}
           comment_mode: ${{(inputs.experimental && 'off') || 'always'}}
+
+      - name: Debug Info
+        if: always()
+        run: |
+          echo "Experimential flag is set to '${{ inputs.experimental }}'"
+          echo "GITHUB_WORKSPACE is '${{ github.workspace }}'"
+          echo "Current directory contents:"
+          ls -la
+        shell: bash

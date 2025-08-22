@@ -28,18 +28,37 @@ runs:
     - name: Check for TRX files
       id: check-trx
       run: |
-        if find . -name "*.trx" -type f | grep -q .; then
+        echo "Current directory: $(pwd)"
+        echo "Searching for TRX files..."
+        
+        # Find all TRX files and display them
+        TRX_FILES=$(find . -name "*.trx" -type f)
+        
+        if [ -n "$TRX_FILES" ]; then
+          echo "Found TRX files:"
+          echo "$TRX_FILES"
           echo "files-found=true" >> $GITHUB_OUTPUT
+          
+          # Count the number of TRX files
+          COUNT=$(echo "$TRX_FILES" | wc -l)
+          echo "Total TRX files found: $COUNT"
         else
+          echo "No TRX files found in $(pwd)"
           echo "files-found=false" >> $GITHUB_OUTPUT
+          
+          # List directories to help diagnose the issue
+          echo "Listing directory structure:"
+          find . -type d | sort
         fi
       shell: bash
       if: ${{success() || failure()}}
+      
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
       if: ${{(success() || failure()) && steps.check-trx.outputs.files-found == 'true'}}
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
-        path: '**/*.trx'
-        if-no-files-found: ignore
+        path: './**/*.trx'
+        if-no-files-found: warn
+        retention-days: 1
         compression-level: 0
