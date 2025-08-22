@@ -73,7 +73,7 @@ runs:
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: |
-          TestResults/**/*.trx
+          TestResults/*.trx
         if-no-files-found: warn
         retention-days: 1
         compression-level: 0
