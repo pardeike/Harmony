@@ -20,20 +20,41 @@ namespace HarmonyLib
 
 		internal static HarmonyArgument GetArgumentAttribute(this ParameterInfo parameter)
 		{
-			var attributes = parameter.GetCustomAttributes(true);
-			return AllHarmonyArguments(attributes).FirstOrDefault();
+			try
+			{
+				var attributes = parameter.GetCustomAttributes(true);
+				return AllHarmonyArguments(attributes).FirstOrDefault();
+			}
+			catch (NotSupportedException)
+			{
+				return null;
+			}
 		}
 
 		internal static IEnumerable<HarmonyArgument> GetArgumentAttributes(this MethodInfo method)
 		{
-			var attributes = method.GetCustomAttributes(true);
-			return AllHarmonyArguments(attributes);
+			try
+			{
+				var attributes = method.GetCustomAttributes(true);
+				return AllHarmonyArguments(attributes);
+			}
+			catch (NotSupportedException)
+			{
+				return [];
+			}
 		}
 
 		internal static IEnumerable<HarmonyArgument> GetArgumentAttributes(this Type type)
 		{
-			var attributes = type.GetCustomAttributes(true);
-			return AllHarmonyArguments(attributes);
+			try
+			{
+				var attributes = type.GetCustomAttributes(true);
+				return AllHarmonyArguments(attributes);
+			}
+			catch (NotSupportedException)
+			{
+				return [];
+			}
 		}
 
 		internal static string GetRealName(this IEnumerable<HarmonyArgument> attributes, string name, string[] originalParameterNames)
