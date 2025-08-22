@@ -47,10 +47,10 @@ runs:
         $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}';
         "run_settings_args=$run_settings_args" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        $vstest = "--logger:trx --logger:'console;verbosity=normal' --blame";
+        $vstest = "--logger:trx --blame";
         "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
-        $dotnet = "-l trx -l 'console;verbosity=normal' --blame";
+        $dotnet = "-l trx --blame";
         "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $target_framework = "${{inputs.target_framework}}";
