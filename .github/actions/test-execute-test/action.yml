@@ -116,25 +116,27 @@ runs:
     - name: Debug - Find TRX files
       if: ${{always() || failure()}}
       run: |
-        echo "Searching for TRX files in current directory and subdirectories..."
+        Write-Host "Searching for TRX files in current directory and subdirectories..."
         
         if ('${{runner.os}}' -eq 'Windows') {
           Get-ChildItem -Path . -Include *.trx -Recurse | ForEach-Object { $_.FullName }
           
-          echo "Checking TestResults directories:"
+          Write-Host "Checking TestResults directories:"
           Get-ChildItem -Path . -Include TestResults -Directory -Recurse | ForEach-Object {
-            $dir = $_.FullName
-            echo "Files in $dir:"
-            Get-ChildItem -Path $dir -Recurse | ForEach-Object { $_.FullName }
+            $testDir = $_.FullName
+            Write-Host "Files in $testDir:"
+            Get-ChildItem -Path $testDir -Recurse | ForEach-Object { $_.FullName }
           }
         } else {
-          find . -name "*.trx" -type f
+          # For non-Windows systems using PowerShell
+          Get-ChildItem -Path . -Include *.trx -Recurse | ForEach-Object { $_.FullName }
           
-          echo "Checking TestResults directories:"
-          find . -type d -name "TestResults" | while read dir; do
-            echo "Files in $dir:"
-            find "$dir" -type f
-          done
+          Write-Host "Checking TestResults directories:"
+          Get-ChildItem -Path . -Include TestResults -Directory -Recurse | ForEach-Object {
+            $testDir = $_.FullName
+            Write-Host "Files in $testDir:"
+            Get-ChildItem -Path $testDir -Recurse | ForEach-Object { $_.FullName }
+          }
         }
       shell: pwsh
 
@@ -143,31 +145,27 @@ runs:
       if: ${{always() || failure()}}
       run: |
         # Create a directory for all TRX files
-        mkdir -p test_results_collection
+        New-Item -Path "test_results_collection" -ItemType Directory -Force
         
         if ('${{runner.os}}' -eq 'Windows') {
           # Find and copy all TRX files to the collection directory
           Get-ChildItem -Path . -Include *.trx -Recurse | ForEach-Object {
             $destFile = Join-Path "test_results_collection" $_.Name
             Copy-Item -Path $_.FullName -Destination $destFile -Force
-            echo "Copied $($_.FullName) to $destFile"
+            Write-Host "Copied $($_.FullName) to $destFile"
           }
         } else {
-          # Find and copy all TRX files to the collection directory
-          find . -name "*.trx" -type f | while read file; do
-            filename=$(basename "$file")
-            cp "$file" "test_results_collection/$filename"
-            echo "Copied $file to test_results_collection/$filename"
-          done
+          # For non-Windows systems using PowerShell
+          Get-ChildItem -Path . -Include *.trx -Recurse | ForEach-Object {
+            $destFile = Join-Path "test_results_collection" $_.Name
+            Copy-Item -Path $_.FullName -Destination $destFile -Force
+            Write-Host "Copied $($_.FullName) to $destFile"
+          }
         }
         
         # List files in collection directory
-        echo "Files in collection directory:"
-        if ('${{runner.os}}' -eq 'Windows') {
-          Get-ChildItem -Path test_results_collection
-        } else {
-          ls -la test_results_collection
-        }
+        Write-Host "Files in collection directory:"
+        Get-ChildItem -Path test_results_collection
       shell: pwsh
 
     - name: Upload Test Result

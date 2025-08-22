@@ -25,8 +25,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Check for TRX files
-      id: check-trx
+    - name: Check for TRX files (Bash)
+      id: check-trx-bash
+      if: runner.os != 'Windows'
       run: |
         echo "Current directory: $(pwd)"
         echo "Searching for TRX files..."
@@ -40,7 +41,6 @@ runs:
             echo "Found TRX files in collection directory:"
             echo "$COLLECTION_FILES"
             echo "files-found=true" >> $GITHUB_OUTPUT
-            echo "trx-location=collection" >> $GITHUB_OUTPUT
             
             # Count the number of TRX files
             COUNT=$(echo "$COLLECTION_FILES" | wc -l)
@@ -61,7 +61,6 @@ runs:
           echo "Found TRX files:"
           echo "$TRX_FILES"
           echo "files-found=true" >> $GITHUB_OUTPUT
-          echo "trx-location=standard" >> $GITHUB_OUTPUT
           
           # Count the number of TRX files
           COUNT=$(echo "$TRX_FILES" | wc -l)
@@ -70,37 +69,66 @@ runs:
           echo "No TRX files found in $(pwd) or subdirectories"
           echo "files-found=false" >> $GITHUB_OUTPUT
           
-          # Look for TestResults directory, common for .NET test output
-          echo "Searching for TestResults directories:"
-          TEST_RESULTS_DIRS=$(find . -type d -name "TestResults")
-          
-          if [ -n "$TEST_RESULTS_DIRS" ]; then
-            echo "Found TestResults directories:"
-            echo "$TEST_RESULTS_DIRS"
-            
-            echo "Checking TestResults directories for TRX files:"
-            for dir in $TEST_RESULTS_DIRS; do
-              echo "Checking $dir for TRX files:"
-              find "$dir" -name "*.trx" -type f
-            done
-          else
-            echo "No TestResults directories found"
-          fi
-          
           # List directories to help diagnose the issue
           echo "Listing top-level directories:"
           find . -maxdepth 1 -type d | sort
         fi
       shell: bash
-      if: ${{success() || failure()}}
+      
+    - name: Check for TRX files (PowerShell)
+      id: check-trx-powershell
+      if: runner.os == 'Windows'
+      run: |
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Searching for TRX files..."
+        
+        # First check the collection directory created by the test-execute-test action
+        if (Test-Path "test_results_collection") {
+          Write-Host "Checking test_results_collection directory:"
+          $collectionFiles = Get-ChildItem -Path "test_results_collection" -Filter "*.trx" -File
+          
+          if ($collectionFiles.Count -gt 0) {
+            Write-Host "Found TRX files in collection directory:"
+            $collectionFiles | ForEach-Object { Write-Host $_.FullName }
+            "files-found=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            
+            Write-Host "Total TRX files found in collection: $($collectionFiles.Count)"
+            exit 0
+          } else {
+            Write-Host "No TRX files found in collection directory"
+          }
+        } else {
+          Write-Host "test_results_collection directory not found"
+        }
+        
+        # Find all TRX files recursively and display them if collection directory failed
+        Write-Host "Searching in current directory and subdirectories:"
+        $trxFiles = Get-ChildItem -Path . -Filter "*.trx" -File -Recurse
+        
+        if ($trxFiles.Count -gt 0) {
+          Write-Host "Found TRX files:"
+          $trxFiles | ForEach-Object { Write-Host $_.FullName }
+          "files-found=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          
+          Write-Host "Total TRX files found: $($trxFiles.Count)"
+        } else {
+          Write-Host "No TRX files found in current directory or subdirectories"
+          "files-found=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          
+          # List directories to help diagnose the issue
+          Write-Host "Listing top-level directories:"
+          Get-ChildItem -Path . -Directory | Select-Object FullName
+        }
+      shell: pwsh
       
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
-      if: ${{(success() || failure()) && steps.check-trx.outputs.files-found == 'true'}}
+      if: ${{(success() || failure()) && (steps.check-trx-bash.outputs.files-found == 'true' || steps.check-trx-powershell.outputs.files-found == 'true')}}
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: |
-          ${{steps.check-trx.outputs.trx-location == 'collection' && 'test_results_collection/*.trx' || './**/*.trx'}}
+          test_results_collection/*.trx
+          **/*.trx
         if-no-files-found: warn
         retention-days: 1
         compression-level: 0
