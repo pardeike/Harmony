@@ -35,5 +35,5 @@ runs:
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
         path: '**/*.trx'
-        if-no-files-found: ${{(inputs.experimental == 'true' && 'ignore') || 'warn'}}
+        if-no-files-found: ignore
         compression-level: 0
