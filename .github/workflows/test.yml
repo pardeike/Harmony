@@ -200,9 +200,11 @@ jobs:
 
   test-results:
     name: Test Results
-    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono]
+    needs: [variables, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono]
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
+    with:
+      experimental: ${{fromJson(needs.variables.outputs.EXPERIMENTAL)}}
 
   cleanup-build-output:
     name: Cleanup Build Output
