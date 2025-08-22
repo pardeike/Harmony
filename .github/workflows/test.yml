@@ -204,7 +204,7 @@ jobs:
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
     with:
-      experimental: ${{fromJson(needs.variables.outputs.EXPERIMENTAL)}}
+      experimental: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
 
   cleanup-build-output:
     name: Cleanup Build Output
