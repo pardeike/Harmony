@@ -24,15 +24,40 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Debug step to find TRX files before upload
+    - name: Find TRX files
+      if: runner.os == 'Windows'
+      run: |
+        Write-Host "Finding TRX files before upload..."
+        $files = Get-ChildItem -Path . -Filter *.trx -Recurse
+        if ($files.Count -gt 0) {
+          Write-Host "Found $($files.Count) TRX files:"
+          $files | ForEach-Object { Write-Host $_.FullName }
+        } else {
+          Write-Host "No TRX files found"
+        }
+      shell: pwsh
+
+    - name: Find TRX files (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        echo "Finding TRX files before upload..."
+        files=$(find . -name "*.trx" -type f)
+        if [ -n "$files" ]; then
+          echo "Found TRX files:"
+          echo "$files"
+        else
+          echo "No TRX files found"
+        fi
+      shell: bash
+
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
-      if: ${{success() || failure()}}
+      if: success() || failure()
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}
         path: |
-          ./**/*.trx
-          ./TestResults/*.trx
-          ./TestResults/**/*.trx
+          **/*.trx
         if-no-files-found: warn
         retention-days: 1
         compression-level: 0

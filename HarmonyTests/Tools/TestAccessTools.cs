@@ -149,15 +149,10 @@ namespace HarmonyLibTests.Tools
 			SaveAssembly(dummy);
 
 			// ask the parent domain to load it so that it persists after the context is unloaded.
-			TestTools.RunInIsolationContext(ctx => ctx.ParentCallback<string>(name =>
+			TestTools.RunInIsolationContext(ctx => ctx.ParentCallback(name =>
 			{
-#if NETCOREAPP
-				// On .NET Core, load the DLL from its path into the default AssemblyLoadContext
-				Assembly.LoadFrom(Path.Combine(TempAssemblyDirectory, name + ".dll"));
-#else
-				// On .NET Framework, Assembly.Load will load from the probing path (BaseDirectory)
-				Assembly.LoadFrom(Path.Combine(TempAssemblyDirectory, name + ".dll"));
-#endif
+				var asmBytes = File.ReadAllBytes(Path.Combine(TempAssemblyDirectory, name + ".dll"));
+				_ = Assembly.Load(asmBytes);
 			}, "HarmonyTestsDummyAssemblyD"));
 
 			Assert.Null(AccessTools.TypeSearch(search));

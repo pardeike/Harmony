@@ -112,42 +112,43 @@ runs:
           }
         shell: pwsh
         
-    # Debug step to show the location of TRX files
-    - name: List TRX files
-      if: ${{success() || failure()}}
+    # Debug step for Windows
+    - name: List TRX files (Windows)
+      if: runner.os == 'Windows'
       run: |
-        Write-Host "Searching for TRX files..."
+        Write-Host "Searching for TRX files on Windows..."
+        Write-Host "TRX files in current directory:"
+        Get-ChildItem -Path . -Filter *.trx -Recurse | ForEach-Object { Write-Host $_.FullName }
         
-        if ('${{runner.os}}' -eq 'Windows') {
-          # On Windows
-          Write-Host "TRX files in current directory:"
-          Get-ChildItem -Path . -Filter *.trx -Recurse | Select-Object -Property FullName
-          
-          Write-Host "TRX files in TestResults directory (if exists):"
-          if (Test-Path -Path .\TestResults) {
-            Get-ChildItem -Path .\TestResults -Filter *.trx -Recurse | Select-Object -Property FullName
-          } else {
-            Write-Host "TestResults directory not found"
-          }
-          
-          Write-Host "Content of the current directory:"
-          Get-ChildItem -Path . | Select-Object -Property Name
+        Write-Host "TRX files in TestResults directory (if exists):"
+        if (Test-Path -Path .\TestResults) {
+          Get-ChildItem -Path .\TestResults -Filter *.trx -Recurse | ForEach-Object { Write-Host $_.FullName }
         } else {
-          # On Unix-based systems
-          echo "TRX files in current directory:"
-          find . -name "*.trx" -type f | sort
-          
-          echo "TRX files in TestResults directory (if exists):"
-          if [ -d "./TestResults" ]; then
-            find ./TestResults -name "*.trx" -type f | sort
-          else
-            echo "TestResults directory not found"
-          fi
-          
-          echo "Content of the current directory:"
-          ls -la
+          Write-Host "TestResults directory not found"
         }
-      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+        
+        Write-Host "Content of the current directory:"
+        Get-ChildItem -Path . | ForEach-Object { Write-Host $_.Name }
+      shell: pwsh
+      
+    # Debug step for Unix-based systems (macOS/Linux)
+    - name: List TRX files (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        echo "Searching for TRX files on Unix..."
+        echo "TRX files in current directory:"
+        find . -name "*.trx" -type f | sort
+        
+        echo "TRX files in TestResults directory (if exists):"
+        if [ -d "./TestResults" ]; then
+          find ./TestResults -name "*.trx" -type f | sort
+        else
+          echo "TestResults directory not found"
+        fi
+        
+        echo "Content of the current directory:"
+        ls -la
+      shell: bash
 
     - name: Upload Test Result
       uses: ./.github/actions/test-upload-result

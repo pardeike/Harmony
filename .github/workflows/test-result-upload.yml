@@ -29,11 +29,8 @@ jobs:
       - name: List Downloaded Files
         if: always()
         run: |
-          echo "TRX files count:"
+          echo "TRX files found:"
           find test-results -name "*.trx" -type f | wc -l
-          
-          echo "First 10 TRX files (if any):"
-          find test-results -name "*.trx" -type f | head -10
         shell: bash
         continue-on-error: true
 
