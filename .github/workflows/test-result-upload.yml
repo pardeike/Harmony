@@ -20,7 +20,7 @@ jobs:
           submodules: recursive
 
       - name: Download Test Results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: ${{(inputs.experimental && 'experimental-') || ''}}test-results-*
           path: test-results
@@ -28,8 +28,10 @@ jobs:
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        if: (!cancelled())
         with:
+          root_log_level: DEBUG
+          log_level: DEBUG
           check_name: Test Results ${{(inputs.experimental && '(Experimental)') || ''}}
           files: test-results/**/*.trx
           fail_on: ${{(inputs.experimental && 'nothing') || 'test failures'}}
