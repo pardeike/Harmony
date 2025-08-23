@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for tags
+
+      - name: Parse version & validate against tag
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"           # e.g. v2.3.4
+          if ($tag -notmatch '^v(.+)') { throw "Tag must be v<version>" }
+          $tagver = $Matches[1]
+
+          [xml]$xml = Get-Content "Directory.Build.props"
+          $filever = ($xml.SelectSingleNode('//HarmonyVersion')).InnerText
+
+          if ($filever -ne $tagver) {
+            throw "Version mismatch: props=$filever tag=$tagver"
+          }
+
+          # Optional: ensure this tag points to the commit that changed the version file
+          $prev = (git describe --tags --abbrev=0 HEAD^ 2>$null)
+          if ($LASTEXITCODE -eq 0) {
+            $changed = git diff --name-only $prev HEAD
+            if ($changed -notcontains 'Directory.Build.props') {
+              Write-Warning "Tagged commit did not change Directory.Build.props"
+            }
+          }
+
+          "VERSION=$tagver" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore Harmony.sln
+
+      - name: Build
+        run: dotnet build Harmony.sln -c Release --no-restore
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          dotnet test HarmonyTests/HarmonyTests.csproj -c Release --no-build --verbosity normal --framework net452
+          dotnet test HarmonyTests/HarmonyTests.csproj -c Release --no-build --verbosity normal --framework net472
+          dotnet test HarmonyTests/HarmonyTests.csproj -c Release --no-build --verbosity normal --framework net48
+          dotnet test HarmonyTests/HarmonyTests.csproj -c Release --no-build --verbosity normal --framework net6.0
+          dotnet test HarmonyTests/HarmonyTests.csproj -c Release --no-build --verbosity normal --framework net7.0
+          dotnet test HarmonyTests/HarmonyTests.csproj -c Release --no-build --verbosity normal --framework net8.0
+
+      - name: Pack NuGet packages
+        run: |
+          dotnet pack Lib.Harmony/Lib.Harmony.csproj -c Release -o out --no-build
+          dotnet pack Lib.Harmony.Thin/Lib.Harmony.Thin.csproj -c Release -o out --no-build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Harmony ${{ env.VERSION }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true
+          files: |
+            out/*.nupkg
+            out/*.snupkg
+
+      - name: Publish to NuGet
+        if: success() && !contains(github.ref_name, '-')  # Skip pre-releases
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        shell: pwsh
+        run: |
+          foreach ($file in Get-ChildItem -Path out -Filter *.nupkg) {
+            dotnet nuget push $file.FullName `
+              --api-key "$env:NUGET_API_KEY" `
+              --source https://api.nuget.org/v3/index.json `
+              --skip-duplicate
+          }
