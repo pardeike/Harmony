@@ -1,0 +1,47 @@
+name: Generate API Overview
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'Harmony/Public/**'
+      - 'Harmony/Tools/**'
+      - 'Harmony/Internal/**'
+      - '.github/workflows/api-overview.yml'
+      - '.github/scripts/generate-api-overview.py'
+  workflow_dispatch:
+
+jobs:
+  generate-api-overview:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Generate API Overview
+      run: python .github/scripts/generate-api-overview.py
+    
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Commit API Overview
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add API_OVERVIEW.md
+        git commit -m "Update API overview for AI consumption"
+        git push

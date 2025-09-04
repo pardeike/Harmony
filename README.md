@@ -46,6 +46,8 @@ If you instead want to supply the dependencies yourself, you should use the [Lib
 
 Please check out the [documentation](https://harmony.pardeike.net) and join the official [discord server](https://discord.gg/xXgghXR).
 
+For AI assistants and automated support, a dense API overview is automatically maintained in [API_OVERVIEW.md](API_OVERVIEW.md).
+
 ### Contribute
 
 I put thousands of hours into this project and its support. So every little action helps:
