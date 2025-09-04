@@ -1,6 +1,6 @@
 # Harmony API Complete Reference
 
-Generated: 2025-09-04 20:58:39 UTC
+Generated: 2025-09-04 21:02:34 UTC
 Purpose: Complete API reference for AI consumption
 Source: Harmony 2.4.1.0
 URL: https://github.com/pardeike/Harmony

@@ -7,9 +7,10 @@ a condensed reference suitable for AI context windows.
 
 import os
 import re
+import json
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from datetime import datetime
 
 @dataclass
@@ -284,6 +285,77 @@ class HarmonyApiExtractor:
             return self.examples[example_name].code
         return None
 
+    def generate_json_overview(self, include_examples: bool = False) -> str:
+        """Generate a compact JSON format for maximum AI efficiency."""
+        # Organize all data in a compact structure
+        api_data = {
+            "meta": {
+                "generated": datetime.now().isoformat(),
+                "purpose": "Complete Harmony API for AI consumption",
+                "version": self.get_version(),
+                "url": "https://github.com/pardeike/Harmony",
+                "classes": len(self.api_classes)
+            },
+            "concepts": [
+                "Harmony Instance: Entry point for patching operations",
+                "Patches: Prefix, Postfix, Transpiler, Finalizer modifications",
+                "Attributes: Declarative patches using C# attributes", 
+                "AccessTools: Reflection utilities for private member access",
+                "Traverse: Safe reflection wrapper for data access",
+                "CodeMatcher: IL manipulation for transpilers"
+            ],
+            "api": {}
+        }
+        
+        # Only include examples if requested (they take up a lot of space)
+        if include_examples:
+            api_data["examples"] = {name: ex.code for name, ex in self.examples.items()}
+        
+        # Group classes by category
+        categories = {}
+        for cls in self.api_classes:
+            cat = cls.category
+            if cat not in categories:
+                categories[cat] = []
+            categories[cat].append(cls)
+        
+        # Add categories in order
+        category_order = ["Core", "Patching", "Attributes", "Transpiling", "Utilities", "Exceptions", "Other"]
+        
+        for category in category_order:
+            if category not in categories:
+                continue
+                
+            api_data["api"][category] = {}
+            
+            for cls in sorted(categories[category], key=lambda x: x.name):
+                class_data = {
+                    "type": cls.type,
+                    "namespace": cls.namespace,
+                    "summary": cls.summary or "",
+                    "methods": [],
+                    "properties": [],
+                    "fields": []
+                }
+                
+                for member in (cls.members or []):
+                    member_data = {
+                        "name": member.name,
+                        "signature": member.signature,
+                        "summary": member.summary or ""
+                    }
+                    
+                    if member.type == "method":
+                        class_data["methods"].append(member_data)
+                    elif member.type == "property":
+                        class_data["properties"].append(member_data)
+                    elif member.type == "field":
+                        class_data["fields"].append(member_data)
+                
+                api_data["api"][category][cls.name] = class_data
+        
+        return json.dumps(api_data, separators=(',', ':'), ensure_ascii=False)
+
     def generate_overview(self) -> str:
         """Generate the AI-optimized API overview in a dense format."""
         overview = f"""# Harmony API Complete Reference
@@ -462,6 +534,12 @@ https://harmony.pardeike.net | https://github.com/pardeike/Harmony
 
 def main():
     """Main entry point."""
+    import sys
+    
+    # Parse command line arguments
+    generate_json = "--json" in sys.argv
+    include_examples = "--examples" in sys.argv
+    
     # Get the repository root
     repo_root = Path(__file__).parent.parent.parent
     
@@ -479,17 +557,32 @@ def main():
     extractor.extract_from_directory(repo_root / "Harmony" / "Tools")
     extractor.extract_from_directory(repo_root / "Harmony" / "Extras")
     
-    # Generate overview
+    # Generate markdown overview (default)
     print("Generating complete API overview...")
     overview = extractor.generate_overview()
     
-    # Write to file
+    # Write markdown file
     output_file = repo_root / "API_OVERVIEW.md"
     output_file.write_text(overview, encoding='utf-8')
     
-    print(f"Complete API overview generated: {output_file}")
+    print(f"Markdown API overview: {output_file} ({len(overview)} chars)")
+    
+    # Generate JSON version if requested or always as comparison
+    if generate_json or True:  # Always generate for comparison
+        print("Generating compact JSON version...")
+        json_overview = extractor.generate_json_overview(include_examples=include_examples)
+        json_output_file = repo_root / "API_OVERVIEW.json"
+        json_output_file.write_text(json_overview, encoding='utf-8')
+        
+        print(f"JSON API overview: {json_output_file} ({len(json_overview)} chars)")
+        print(f"Compression ratio: {len(json_overview)/len(overview):.2f}")
+        compression_pct = 100 * (1 - len(json_overview)/len(overview))
+        if compression_pct > 0:
+            print(f"JSON is {compression_pct:.0f}% smaller than markdown")
+        else:
+            print(f"JSON is {-compression_pct:.0f}% larger than markdown")
+    
     print(f"Extracted {len(extractor.api_classes)} classes")
-    print(f"Total size: {len(overview)} characters")
 
 if __name__ == "__main__":
     main()

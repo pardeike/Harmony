@@ -207,4 +207,9 @@ ModelManifest.xml
 # Python cache files
 __pycache__/
 *.pyc
+*.py[cod]
+*$py.class
+
+# API overview JSON (generated but not committed by default)
+API_OVERVIEW.json
 *.pyo

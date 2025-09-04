@@ -44,5 +44,9 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add API_OVERVIEW.md
+        # Only commit the JSON file if it was specifically requested
+        if [ -f API_OVERVIEW.json ]; then
+          git add API_OVERVIEW.json
+        fi
         git commit -m "Update API overview for AI consumption"
         git push
