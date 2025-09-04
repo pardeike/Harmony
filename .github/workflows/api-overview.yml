@@ -6,6 +6,7 @@ on:
     paths:
       - 'Harmony/Public/**'
       - 'Harmony/Tools/**'
+      - 'Harmony/Extras/**'
       - 'Harmony/Internal/**'
       - '.github/workflows/api-overview.yml'
       - '.github/scripts/generate-api-overview.py'

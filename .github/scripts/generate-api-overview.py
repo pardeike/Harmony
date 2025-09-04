@@ -31,10 +31,63 @@ class ApiClass:
     members: List[ApiMember] = None
     category: str = ""
 
+@dataclass
+class CodeExample:
+    name: str
+    code: str
+    source_file: str
+
 class HarmonyApiExtractor:
     def __init__(self):
         self.api_classes: List[ApiClass] = []
+        self.examples: Dict[str, CodeExample] = {}
         self.current_file = ""
+        
+    def extract_examples_from_documentation(self, docs_path: Path):
+        """Extract code examples from documentation files."""
+        examples_dir = docs_path / "examples"
+        if not examples_dir.exists():
+            return
+            
+        for cs_file in examples_dir.glob("*.cs"):
+            try:
+                with open(cs_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # Find all named sections in the format // <name> ... // </name>
+                pattern = r'// <(\w+)>\s*\n(.*?)\n\s*// </\1>'
+                matches = re.finditer(pattern, content, re.DOTALL)
+                
+                for match in matches:
+                    section_name = match.group(1)
+                    section_code = match.group(2).strip()
+                    
+                    # Clean up the code - remove excessive indentation
+                    lines = section_code.split('\n')
+                    if lines:
+                        # Find minimum indentation
+                        min_indent = float('inf')
+                        for line in lines:
+                            if line.strip():
+                                indent = len(line) - len(line.lstrip())
+                                min_indent = min(min_indent, indent)
+                        
+                        if min_indent != float('inf'):
+                            cleaned_lines = []
+                            for line in lines:
+                                if line.strip():
+                                    cleaned_lines.append(line[min_indent:])
+                                else:
+                                    cleaned_lines.append('')
+                            section_code = '\n'.join(cleaned_lines)
+                    
+                    self.examples[section_name] = CodeExample(
+                        name=section_name,
+                        code=section_code,
+                        source_file=cs_file.name
+                    )
+            except Exception as e:
+                print(f"Error reading example file {cs_file}: {e}")
         
     def extract_xml_doc(self, lines: List[str], start_idx: int) -> Tuple[str, Dict[str, str]]:
         """Extract XML documentation comments preceding a declaration."""
@@ -91,9 +144,9 @@ class HarmonyApiExtractor:
             return "Core"
         elif "patch" in name_lower or name_lower in ["patches", "patchinfo", "patchprocessor", "patchclassprocessor"]:
             return "Patching"
-        elif "code" in name_lower or "transpiler" in name_lower or name_lower in ["transpilers"]:
+        elif "code" in name_lower or "transpiler" in name_lower or name_lower in ["transpilers", "codematch", "codematcher", "codeinstruction"]:
             return "Transpiling"
-        elif "access" in name_lower or "traverse" in name_lower or name_lower in ["filelog", "fastaccess", "generalextensions", "symbolextensions"]:
+        elif "access" in name_lower or "traverse" in name_lower or name_lower in ["filelog", "fastaccess", "generalextensions", "symbolextensions", "methodinvoker", "delegatetypefactory", "refresult"]:
             return "Utilities"
         elif "exception" in name_lower or "error" in name_lower:
             return "Exceptions"
@@ -225,25 +278,56 @@ class HarmonyApiExtractor:
         for cs_file in directory.glob("**/*.cs"):
             self.parse_csharp_file(cs_file)
 
+    def get_example_code(self, example_name: str) -> Optional[str]:
+        """Get example code by name."""
+        if example_name in self.examples:
+            return self.examples[example_name].code
+        return None
+
     def generate_overview(self) -> str:
-        """Generate the AI-optimized API overview."""
-        overview = f"""# Harmony API Overview for AI
+        """Generate the AI-optimized API overview in a dense format."""
+        overview = f"""# Harmony API Complete Reference
 
-> **Generated on:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}
-> **Purpose:** Dense API reference optimized for AI context windows
-> **Source:** Harmony {self.get_version()} - https://github.com/pardeike/Harmony
+Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}
+Purpose: Complete API reference for AI consumption
+Source: Harmony {self.get_version()}
+URL: https://github.com/pardeike/Harmony
 
-## Quick Reference
+## Summary
 
-Harmony is a .NET library for runtime patching of methods. Key concepts:
-- **Harmony Instance**: Entry point for all patching operations
-- **Patches**: Prefix, Postfix, Transpiler, and Finalizer modifications
-- **Attributes**: Declarative patch definitions using C# attributes
-- **AccessTools**: Reflection utilities for accessing private members
-- **Traverse**: Safe reflection wrapper for reading/writing private data
-- **CodeMatcher**: IL manipulation for transpilers
+Harmony is a .NET library for runtime method patching. Core concepts:
+- Harmony Instance: Entry point for patching operations
+- Patches: Prefix, Postfix, Transpiler, Finalizer modifications  
+- Attributes: Declarative patches using C# attributes
+- AccessTools: Reflection utilities for private member access
+- Traverse: Safe reflection wrapper for data access
+- CodeMatcher: IL manipulation for transpilers
 
-## Core Categories
+## Quick Start
+
+### Basic Usage
+```csharp
+{self.get_example_code('create') or 'var harmony = new Harmony("com.example.mod");'}
+{self.get_example_code('patch_annotation') or 'harmony.PatchAll();  // Apply all [HarmonyPatch] attributes'}
+```
+
+### Manual Patching  
+```csharp
+{self.get_example_code('patch_manual') or '''var original = typeof(TargetClass).GetMethod("TargetMethod");
+var prefix = typeof(PatchClass).GetMethod("PrefixMethod");
+harmony.Patch(original, new HarmonyMethod(prefix));'''}
+```
+
+### Attribute-Based Patching
+```csharp
+[HarmonyPatch(typeof(TargetClass), "TargetMethod")]
+class PatchClass {{
+    static bool Prefix() => true;  // Allow original to run
+    static void Postfix() {{ }}      // Run after original
+}}
+```
+
+## Complete API Reference
 
 """
         
@@ -267,7 +351,7 @@ Harmony is a .NET library for runtime patching of methods. Key concepts:
             for cls in sorted(categories[category], key=lambda x: x.name):
                 overview += f"#### {cls.name}\n"
                 if cls.summary:
-                    overview += f"*{cls.summary}*\n\n"
+                    overview += f"{cls.summary}\n\n"
                 
                 # Group members by type
                 methods = [m for m in (cls.members or []) if m.type == "method"]
@@ -275,26 +359,17 @@ Harmony is a .NET library for runtime patching of methods. Key concepts:
                 fields = [m for m in (cls.members or []) if m.type == "field"]
                 
                 if methods:
-                    # Filter out less important methods (getters, setters, ToString, etc.)
-                    important_methods = [m for m in methods if not (
-                        m.name.lower() in ["tostring", "equals", "gethashcode", "gettype"] or
-                        m.signature.startswith("string ToString") or
-                        m.signature.startswith("bool Equals") or
-                        m.signature.startswith("int GetHashCode")
-                    )]
-                    
-                    overview += "**Key Methods:**\n"
-                    for method in important_methods[:8]:  # Show fewer but more important methods
+                    # Include ALL methods - no filtering for completeness
+                    overview += "Methods:\n"
+                    for method in methods:
                         overview += f"- `{method.signature}`"
                         if method.summary:
                             overview += f" - {method.summary}"
                         overview += "\n"
-                    if len(important_methods) > 8:
-                        overview += f"- *...and {len(important_methods) - 8} more methods*\n"
                     overview += "\n"
                 
                 if properties:
-                    overview += "**Properties:**\n"
+                    overview += "Properties:\n"
                     for prop in properties:
                         overview += f"- `{prop.signature}`"
                         if prop.summary:
@@ -303,7 +378,7 @@ Harmony is a .NET library for runtime patching of methods. Key concepts:
                     overview += "\n"
                 
                 if fields:
-                    overview += "**Fields:**\n"
+                    overview += "Fields:\n"
                     for field in fields:
                         overview += f"- `{field.signature}`"
                         if field.summary:
@@ -311,68 +386,64 @@ Harmony is a .NET library for runtime patching of methods. Key concepts:
                         overview += "\n"
                     overview += "\n"
         
-        # Add usage patterns and FAQ section
-        overview += """## Common Usage Patterns
-
-### Basic Patching
-```csharp
-var harmony = new Harmony("com.example.mod");
-harmony.PatchAll();  // Apply all [HarmonyPatch] attributes in assembly
-```
-
-### Manual Patching
-```csharp
-var original = typeof(TargetClass).GetMethod("TargetMethod");
-var prefix = typeof(PatchClass).GetMethod("PrefixMethod");
-harmony.Patch(original, new HarmonyMethod(prefix));
-```
-
-### Attribute-Based Patching
-```csharp
-[HarmonyPatch(typeof(TargetClass), "TargetMethod")]
-class PatchClass {
-    static bool Prefix() => true;  // Allow original to run
-    static void Postfix() { }      // Run after original
-}
-```
+        # Add comprehensive usage patterns with real examples
+        overview += f"""## Usage Patterns
 
 ### Accessing Private Members
 ```csharp
-var traverse = Traverse.Create(instance);
+{self.get_example_code('patch_getall') or '''var traverse = Traverse.Create(instance);
 var privateField = traverse.Field("privateFieldName").GetValue<int>();
-traverse.Method("privateMethod", args).GetValue();
+traverse.Method("privateMethod", args).GetValue();'''}
 ```
 
-### Transpilers (IL Manipulation)
+### Postfix Examples
 ```csharp
-[HarmonyTranspiler]
-static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-    var codes = new CodeMatcher(instructions);
-    return codes.MatchForward(/* pattern */).SetAndAdvance(/* replacement */).InstructionEnumeration();
-}
+{self.get_example_code('result') or '''static void Postfix(ref string __result) {
+    if (__result == "foo") __result = "bar";
+}'''}
 ```
 
-## Patch Types Quick Reference
-- **Prefix**: Runs before original method, can skip original if returns false
-- **Postfix**: Runs after original method, can access and modify results
-- **Transpiler**: Modifies IL code of original method for advanced patching
-- **Finalizer**: Runs after original method regardless of exceptions (like finally)
-- **Reverse Patch**: Copy and modify original method logic into your own method
+### Transpiler Example
+```csharp
+{self.get_example_code('typical') or '''static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+    foreach (var instruction in instructions) {
+        if (instruction.StoresField(someField)) {
+            yield return new CodeInstruction(OpCodes.Call, myMethod);
+        }
+        yield return instruction;
+    }
+}'''}
+```
 
-## AI Assistant Guidelines
-When helping with Harmony:
+### Debug and Logging
+```csharp
+{self.get_example_code('debug') or 'Harmony.DEBUG = true;'}
+{self.get_example_code('log') or 'FileLog.Log("message");'}
+```
+
+### Patch Management
+```csharp
+{self.get_example_code('patch_info') or '''var patches = Harmony.GetPatchInfo(original);
+foreach (var patch in patches.Prefixes) { /* ... */ }'''}
+```
+
+## Patch Types Reference
+- **Prefix**: Runs before original, can skip original if returns false
+- **Postfix**: Runs after original, can access/modify results  
+- **Transpiler**: Modifies IL code of original for advanced patching
+- **Finalizer**: Runs after original regardless of exceptions
+- **Reverse Patch**: Copy/modify original method logic
+
+## Important Notes for AI Assistants
 1. Always create unique Harmony IDs (e.g., "com.yourname.yourmod")
-2. Use try-catch around Harmony operations in production code
+2. Use try-catch around Harmony operations in production
 3. Prefer attribute-based patches for maintainability
 4. Use AccessTools for reflection instead of raw Reflection API
 5. Test patches thoroughly - wrong patches can crash applications
 6. Use HarmonyDebug attribute for debugging specific patches
 
-## Documentation Links
-- Full Documentation: https://harmony.pardeike.net
-- GitHub Repository: https://github.com/pardeike/Harmony
-- API Reference: https://harmony.pardeike.net/api/
-
+## Full Documentation
+https://harmony.pardeike.net | https://github.com/pardeike/Harmony
 """
         return overview
     
@@ -397,21 +468,28 @@ def main():
     # Initialize extractor
     extractor = HarmonyApiExtractor()
     
-    # Extract from main API directories
+    # Extract examples from documentation first
+    print("Extracting examples from documentation...")
+    extractor.extract_examples_from_documentation(repo_root / "Documentation")
+    print(f"Found {len(extractor.examples)} code examples")
+    
+    # Extract from main API directories (including Extras now)
     print("Extracting API information...")
     extractor.extract_from_directory(repo_root / "Harmony" / "Public")
     extractor.extract_from_directory(repo_root / "Harmony" / "Tools")
+    extractor.extract_from_directory(repo_root / "Harmony" / "Extras")
     
     # Generate overview
-    print("Generating API overview...")
+    print("Generating complete API overview...")
     overview = extractor.generate_overview()
     
     # Write to file
     output_file = repo_root / "API_OVERVIEW.md"
     output_file.write_text(overview, encoding='utf-8')
     
-    print(f"API overview generated: {output_file}")
+    print(f"Complete API overview generated: {output_file}")
     print(f"Extracted {len(extractor.api_classes)} classes")
+    print(f"Total size: {len(overview)} characters")
 
 if __name__ == "__main__":
     main()
