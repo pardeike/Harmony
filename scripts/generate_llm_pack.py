@@ -23,8 +23,12 @@ for path in Path('Documentation/api').rglob('*.yml'):
 		signature = item.get('syntax', {}).get('content')
 		remarks = item.get('remarks')
 		parent = item.get('parent')
-		doc_page = uid if not parent or parent == 'HarmonyLib' else parent
-		doc_url = f'https://harmony.pardeike.net/docs/api/{doc_page}.html'
+		href = item.get('href')
+		if href:
+			doc_url = f'https://harmony.pardeike.net/docs/{href.lstrip("/")}'
+		else:
+			doc_page = uid if not parent or parent == 'HarmonyLib' else parent
+			doc_url = f'https://harmony.pardeike.net/docs/api/{doc_page}.html'
 		cards.append({
 			'id': uid,
 			'kind': kind,
