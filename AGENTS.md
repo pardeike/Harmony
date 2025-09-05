@@ -1,13 +1,9 @@
 # Harmony rules for Codex
 
-* This is the only AGENTS.md file in the repository
-
 * Relevant drafts and information are located in `./drafts/` and is named according to the topic.
 
 * For simple edits, limit testing to net9 and x64.
 
-* Respect .editorconfig when doing edits, especially for using whitespace
+* Use the latest C# language features, like `var`, shorter array syntax etc. Longer than usual lines (~ 140 chars are ok)
 
-* Whitespace rules are TAB, CRLF endings. Longer than usual lines (~ 140 chars are ok)
-
-* User dotnet format to format the code - it will respect the .editorconfig file.
+* During editing C# files, don't bother with formatting. Instead, run `dotnet format` at the end to format the code - it will respect the .editorconfig file.

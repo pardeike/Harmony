@@ -157,6 +157,11 @@ namespace HarmonyLib
 		{
 			if (method is not MethodInfo methodInfo)
 				return;
+
+			// when we load reflection only, we don't need to do anything
+			if (methodInfo.ReflectedType is not null)
+				return;
+
 			var dllAttribute = methodInfo.GetCustomAttributes(false).OfType<DllImportAttribute>().FirstOrDefault();
 			if (dllAttribute == null)
 				return;
