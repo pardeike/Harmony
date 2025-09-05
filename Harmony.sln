@@ -28,6 +28,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestLibrary", "TestLibrary\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{9A886F28-B059-46CC-BE43-EA234CE1DD78}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\generate_llm_pack.py = scripts\generate_llm_pack.py
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "get-dotnet-channel", "get-dotnet-channel", "{B0927B75-AE86-460B-9C42-6DED427304C6}"
 	ProjectSection(SolutionItems) = preProject
 		.github\actions\get-dotnet-channel\action.yml = .github\actions\get-dotnet-channel\action.yml
@@ -136,6 +141,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9A886F28-B059-46CC-BE43-EA234CE1DD78} = {887FC7DA-9A29-4130-92E7-66E21E76CAC4}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {887FC7DA-9A29-4130-92E7-66E21E76CAC4}
 		{B0927B75-AE86-460B-9C42-6DED427304C6} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 		{685B28DF-D62E-4A68-842D-C3E6D4CFB24B} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 		{BBEC08CE-1F26-46B3-9EC2-F1BC7B692A56} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
