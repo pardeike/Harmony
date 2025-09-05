@@ -1,6 +1,6 @@
-name: Build and Deploy Documentation
-
-on:
+name: Build and Deploy Documentation
+
+on:
   push:
     branches: [ master ]
     paths:
@@ -8,22 +8,41 @@ on:
       - 'Harmony/**'
       - 'scripts/generate_llm_pack.py'
       - '.github/workflows/docs.yml'
-
-jobs:
-  build:
-    runs-on: windows-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-    
-    - name: Install DocFX
-      run: dotnet tool install -g docfx
-      
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    
+    - name: Install DocFX
+      run: dotnet tool install -g docfx
+      
+    - name: Build Library
+      run: dotnet build -c Debug -f net35 .\Lib.Harmony\Lib.Harmony.csproj
+      
+    - name: Build Documentation
+      run: docfx Documentation/docfx.json
+      
+    - name: Install Python dependencies
+      run: pip install pyyaml
+      
+    - name: Generate LLM Pack
+      run: python scripts/generate_llm_pack.py
+      
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/master'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
+        force_orphan: true
     - name: Build Library
       run: dotnet build -c Debug -f net35 .\Lib.Harmony\Lib.Harmony.csproj
       
@@ -42,4 +61,4 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs
-        force_orphan: true
+        force_orphan: true
