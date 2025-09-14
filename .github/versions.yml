@@ -3,7 +3,7 @@
 
 versions:
   # GABS (GitHub Actions Build Server) Version
-  gabs_server: "0.1.0"
+  gabs_server: "0.2.0"
   
   # GitHub Actions Versions
   actions:
