@@ -5,6 +5,9 @@
 
 		<!-- set empty to build from local LocalMonoMod submodule -->
 		<MonoModCoreVersion>1.3.0</MonoModCoreVersion>
+		
+		<!-- GABS (GitHub Actions Build Server) version centralization -->
+		<GABSServerVersion>0.1.0</GABSServerVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Lib.Harmony Properties" Condition="$(MSBuildProjectName.StartsWith('Lib.Harmony'))">

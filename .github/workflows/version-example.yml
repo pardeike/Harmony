@@ -1,0 +1,38 @@
+name: Version Management Example
+
+on:
+  workflow_dispatch:
+
+jobs:
+  demonstrate-version-usage:
+    name: Demonstrate Centralized Version Usage
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get GABS Server Version
+        id: gabs-version
+        uses: ./.github/actions/get-version
+        with:
+          component: gabs_server
+          output-variable: gabs_version
+      
+      - name: Get Test Execute Action Version
+        id: test-version
+        uses: ./.github/actions/get-version
+        with:
+          component: actions.test_execute
+          output-variable: test_execute_version
+      
+      - name: Display Versions
+        run: |
+          echo "GABS Server Version: ${{ steps.gabs-version.outputs.version }}"
+          echo "Test Execute Version: ${{ steps.test-version.outputs.version }}"
+          echo "These versions come from the centralized .github/versions.yml file"
+        
+      - name: Example of using version in a hypothetical GABS server deployment
+        run: |
+          echo "Deploying GABS Server version ${{ steps.gabs-version.outputs.version }}"
+          echo "This could be used to tag Docker images, set deployment versions, etc."

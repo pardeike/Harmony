@@ -1,0 +1,24 @@
+# Centralized Version Management for GitHub Actions and Server Components
+# This file provides a single point of control for all server and action version numbers
+
+versions:
+  # GABS (GitHub Actions Build Server) Version
+  gabs_server: "0.1.0"
+  
+  # GitHub Actions Versions
+  actions:
+    test_execute: "1.0.0"
+    test_upload_result: "1.0.0"
+    test_build_cache: "1.0.0"
+    
+  # Third-party Dependencies
+  dependencies:
+    retry_action: "v3"
+    upload_artifact: "v4"
+    download_artifact: "v4"
+    checkout: "v4"
+    
+  # Build Tools
+  tools:
+    dotnet_version: "9.0.101"
+    node_version: "18.x"

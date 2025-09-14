@@ -1,0 +1,26 @@
+name: Get Version
+description: Get version from centralized version management file
+
+inputs:
+  component:
+    description: 'Component name to get version for (e.g., gabs_server, actions.test_execute)'
+    required: true
+  output-variable:
+    description: 'Name of the output variable'
+    required: false
+    default: 'version'
+
+outputs:
+  version:
+    description: 'The version number for the requested component'
+    value: ${{ steps.get-version.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Version
+      id: get-version
+      run: |
+        $version = & ./.github/scripts/get-version.ps1 -Component "${{ inputs.component }}" -OutputVariable "${{ inputs.output-variable }}"
+        "${{ inputs.output-variable }}=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      shell: pwsh
