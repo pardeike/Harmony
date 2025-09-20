@@ -15,8 +15,7 @@ namespace HarmonyLib
 			internal List<HarmonyMethod> postfixes = [];
 			internal List<HarmonyMethod> transpilers = [];
 			internal List<HarmonyMethod> finalizers = [];
-			internal List<HarmonyMethod> innerprefixes = [];
-			internal List<HarmonyMethod> innerpostfixes = [];
+			internal List<AttributePatch> innerpatches = [];
 
 			internal void AddPatch(AttributePatch patch)
 			{
@@ -35,13 +34,19 @@ namespace HarmonyLib
 						finalizers.Add(patch.info);
 						break;
 					case HarmonyPatchType.InnerPrefix:
-						innerprefixes.Add(patch.info);
-						break;
 					case HarmonyPatchType.InnerPostfix:
-						innerpostfixes.Add(patch.info);
+						innerpatches.Add(patch);
 						break;
 				}
 			}
+
+			// Get inner prefixes as HarmonyMethod array for backwards compatibility
+			internal HarmonyMethod[] GetInnerPrefixes() => 
+				innerpatches.Where(p => p.type == HarmonyPatchType.InnerPrefix).Select(p => p.info).ToArray();
+			
+			// Get inner postfixes as HarmonyMethod array for backwards compatibility  
+			internal HarmonyMethod[] GetInnerPostfixes() =>
+				innerpatches.Where(p => p.type == HarmonyPatchType.InnerPostfix).Select(p => p.info).ToArray();
 		}
 
 		internal Dictionary<MethodBase, Job> state = [];
@@ -64,8 +69,7 @@ namespace HarmonyLib
 				job.postfixes.Count +
 				job.transpilers.Count +
 				job.finalizers.Count +
-				job.innerprefixes.Count +
-				job.innerpostfixes.Count
+				job.innerpatches.Count
 				> 0
 			)];
 		}
@@ -89,6 +93,7 @@ namespace HarmonyLib
 
 		internal HarmonyMethod info;
 		internal HarmonyPatchType? type;
+		internal InnerMethod innerMethod;
 
 		internal static AttributePatch Create(MethodInfo patch)
 		{
@@ -116,7 +121,20 @@ namespace HarmonyLib
 			var info = HarmonyMethod.Merge(list);
 			info.method = patch;
 
-			return new AttributePatch() { info = info, type = type };
+			// Extract inner method from HarmonyInfixTarget attribute for infix patches
+			InnerMethod innerMethod = null;
+			if (type == HarmonyPatchType.InnerPrefix || type == HarmonyPatchType.InnerPostfix)
+			{
+				var infixTargetAttr = allAttributes
+					.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInfixTarget") as HarmonyInfixTarget;
+				if (infixTargetAttr != null)
+				{
+					var positions = infixTargetAttr.index == -1 ? new int[0] : new int[] { infixTargetAttr.index };
+					innerMethod = new InnerMethod((MethodInfo)infixTargetAttr.method, positions);
+				}
+			}
+
+			return new AttributePatch() { info = info, type = type, innerMethod = innerMethod };
 		}
 
 		static HarmonyPatchType? GetPatchType(string methodName, object[] allAttributes)
