@@ -189,39 +189,19 @@ namespace HarmonyLib
 			return processor.Patch();
 		}
 
-		/// <summary>Patches the source with the given patches including inner patches</summary>
+		/// <summary>Patches the source with infix patches that wrap inner method calls</summary>
 		/// <param name="original">The original method/constructor</param>
-		/// <param name="prefix">An optional prefix method wrapped in a <see cref="HarmonyMethod"/> object</param>
-		/// <param name="postfix">An optional postfix method wrapped in a <see cref="HarmonyMethod"/> object</param>
-		/// <param name="transpiler">An optional transpiler method wrapped in a <see cref="HarmonyMethod"/> object</param>
-		/// <param name="finalizer">An optional finalizer method wrapped in a <see cref="HarmonyMethod"/> object</param>
-		/// <param name="innerprefixes">Optional inner prefix methods for infix patches</param>
-		/// <param name="innerpostfixes">Optional inner postfix methods for infix patches</param>
+		/// <param name="innerPrefix">An optional inner prefix method for infix patching</param>
+		/// <param name="innerPostfix">An optional inner postfix method for infix patching</param>
 		/// <returns>The generated replacement method</returns>
 		///
-		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null, HarmonyMethod[] innerprefixes = null, HarmonyMethod[] innerpostfixes = null)
+		public MethodInfo PatchWithInfix(MethodBase original, HarmonyMethod innerPrefix = null, HarmonyMethod innerPostfix = null)
 		{
 			var processor = CreateProcessor(original);
-			_ = processor.AddPrefix(prefix);
-			_ = processor.AddPostfix(postfix);
-			_ = processor.AddTranspiler(transpiler);
-			_ = processor.AddFinalizer(finalizer);
-			
-			// For now, only support single inner patches due to PatchProcessor design limitations
-			// TODO: Extend PatchProcessor to handle multiple inner patches properly
-			if (innerprefixes != null && innerprefixes.Length > 0)
-			{
-				if (innerprefixes.Length > 1)
-					throw new NotSupportedException("Multiple inner prefixes not yet supported by PatchProcessor");
-				_ = processor.AddInnerPrefix(innerprefixes[0]);
-			}
-			if (innerpostfixes != null && innerpostfixes.Length > 0)
-			{
-				if (innerpostfixes.Length > 1)
-					throw new NotSupportedException("Multiple inner postfixes not yet supported by PatchProcessor");
-				_ = processor.AddInnerPostfix(innerpostfixes[0]);
-			}
-			
+			if (innerPrefix != null)
+				_ = processor.AddInnerPrefix(innerPrefix);
+			if (innerPostfix != null)
+				_ = processor.AddInnerPostfix(innerPostfix);
 			return processor.Patch();
 		}
 

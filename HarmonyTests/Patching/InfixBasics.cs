@@ -1,5 +1,6 @@
 using HarmonyLib;
 using NUnit.Framework;
+using System.Reflection;
 
 namespace HarmonyLibTests.Patching
 {
@@ -7,7 +8,7 @@ namespace HarmonyLibTests.Patching
 	public class InfixBasics : TestLogger
 	{
 		// Test class and methods for infix functionality
-		class TestClass
+		public class TestClass
 		{
 			public static int TestMethod(int input)
 			{
@@ -25,31 +26,10 @@ namespace HarmonyLibTests.Patching
 			}
 		}
 
-		class HelperClass
+		public class HelperClass
 		{
 			public int Add(int a, int b) => a + b;
 			public string Process(string input) => $"[{input}]";
-		}
-
-		// Basic infix prefix test
-		[HarmonyInfixTarget(typeof(HelperClass), nameof(HelperClass.Add))]
-		[HarmonyInfixPrefix]
-		static bool InfixPrefix_Add(int a, int b, ref int __result)
-		{
-			if (a < 0)
-			{
-				__result = -1;
-				return false; // Skip original call
-			}
-			return true; // Continue with original call
-		}
-
-		// Basic infix postfix test  
-		[HarmonyInfixTarget(typeof(HelperClass), nameof(HelperClass.Add))]
-		[HarmonyInfixPostfix]
-		static void InfixPostfix_Add(int a, int b, ref int __result)
-		{
-			__result += 100; // Modify result after the call
 		}
 
 		[Test]
@@ -60,9 +40,11 @@ namespace HarmonyLibTests.Patching
 
 			var harmony = new Harmony("test-infix-basic");
 			
-			// Apply infix prefix that should skip when input is negative
-			harmony.Patch(originalMethod, 
-				innerprefixes: new[] { new HarmonyMethod(typeof(InfixBasics).GetMethod(nameof(InfixPrefix_Add))) });
+			// Use PatchClassProcessor to process the attribute-based infix patches
+			var processor = new PatchClassProcessor(harmony, typeof(InfixPrefixPatch));
+			var replacements = processor.Patch();
+			
+			Assert.That(replacements, Is.Not.Null.And.Not.Empty, "No replacement methods created");
 
 			try
 			{
@@ -90,9 +72,11 @@ namespace HarmonyLibTests.Patching
 
 			var harmony = new Harmony("test-infix-postfix");
 			
-			// Apply infix postfix that adds 100 to result
-			harmony.Patch(originalMethod,
-				innerpostfixes: new[] { new HarmonyMethod(typeof(InfixBasics).GetMethod(nameof(InfixPostfix_Add))) });
+			// Use PatchClassProcessor to process the attribute-based infix patches
+			var processor = new PatchClassProcessor(harmony, typeof(InfixPostfixPatch));
+			var replacements = processor.Patch();
+			
+			Assert.That(replacements, Is.Not.Null.And.Not.Empty, "No replacement methods created");
 
 			try
 			{
@@ -104,6 +88,34 @@ namespace HarmonyLibTests.Patching
 			{
 				harmony.UnpatchAll();
 			}
+		}
+	}
+
+	// Separate patch classes with proper attributes
+	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
+	class InfixPrefixPatch
+	{
+		[HarmonyInfixTarget(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInfixPrefix]
+		static bool InfixPrefix_Add(int a, int b, ref int __result)
+		{
+			if (a < 0)
+			{
+				__result = -1;
+				return false; // Skip original call
+			}
+			return true; // Continue with original call
+		}
+	}
+
+	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
+	class InfixPostfixPatch
+	{
+		[HarmonyInfixTarget(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInfixPostfix]
+		static void InfixPostfix_Add(int a, int b, ref int __result)
+		{
+			__result += 100; // Modify result after the call
 		}
 	}
 }
