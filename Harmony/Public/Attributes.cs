@@ -682,6 +682,29 @@ namespace HarmonyLib
 			this.method = method ?? throw new ArgumentNullException(nameof(method));
 			this.index = index;
 		}
+
+		/// <summary>Creates an infix target attribute using type and method name</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
+		public HarmonyInfixTarget(Type declaringType, string methodName, int index = -1)
+		{
+			this.method = AccessTools.Method(declaringType, methodName) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
+			this.index = index;
+		}
+
+		/// <summary>Creates an infix target attribute using type, method name, and parameter types</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="argumentTypes">The parameter types of the method</param>
+		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
+		public HarmonyInfixTarget(Type declaringType, string methodName, Type[] argumentTypes, int index = -1)
+		{
+			this.method = AccessTools.Method(declaringType, methodName, argumentTypes) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' with specified argument types in type '{declaringType?.FullName}'");
+			this.index = index;
+		}
 	}
 
 	/// <summary>Specifies an inner prefix function in a patch class</summary>

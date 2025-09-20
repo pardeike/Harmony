@@ -189,6 +189,42 @@ namespace HarmonyLib
 			return processor.Patch();
 		}
 
+		/// <summary>Patches the source with the given patches including inner patches</summary>
+		/// <param name="original">The original method/constructor</param>
+		/// <param name="prefix">An optional prefix method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="postfix">An optional postfix method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="transpiler">An optional transpiler method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="finalizer">An optional finalizer method wrapped in a <see cref="HarmonyMethod"/> object</param>
+		/// <param name="innerprefixes">Optional inner prefix methods for infix patches</param>
+		/// <param name="innerpostfixes">Optional inner postfix methods for infix patches</param>
+		/// <returns>The generated replacement method</returns>
+		///
+		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null, HarmonyMethod[] innerprefixes = null, HarmonyMethod[] innerpostfixes = null)
+		{
+			var processor = CreateProcessor(original);
+			_ = processor.AddPrefix(prefix);
+			_ = processor.AddPostfix(postfix);
+			_ = processor.AddTranspiler(transpiler);
+			_ = processor.AddFinalizer(finalizer);
+			
+			// For now, only support single inner patches due to PatchProcessor design limitations
+			// TODO: Extend PatchProcessor to handle multiple inner patches properly
+			if (innerprefixes != null && innerprefixes.Length > 0)
+			{
+				if (innerprefixes.Length > 1)
+					throw new NotSupportedException("Multiple inner prefixes not yet supported by PatchProcessor");
+				_ = processor.AddInnerPrefix(innerprefixes[0]);
+			}
+			if (innerpostfixes != null && innerpostfixes.Length > 0)
+			{
+				if (innerpostfixes.Length > 1)
+					throw new NotSupportedException("Multiple inner postfixes not yet supported by PatchProcessor");
+				_ = processor.AddInnerPostfix(innerpostfixes[0]);
+			}
+			
+			return processor.Patch();
+		}
+
 		/// <summary>Patches a foreign method onto a stub method of yours and optionally applies transpilers during the process</summary>
 		/// <param name="original">The original method/constructor you want to duplicate</param>
 		/// <param name="standin">Your stub method as <see cref="HarmonyMethod"/> that will become the original. Needs to have the correct signature (either original or whatever your transpilers generates)</param>
