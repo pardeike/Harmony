@@ -95,9 +95,9 @@ namespace HarmonyLibTests.Patching
 	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
 	class InfixPrefixPatch
 	{
-		[HarmonyInfixTarget(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
-		[HarmonyInfixPrefix]
-		static bool InfixPrefix_Add(int a, int b, ref int __result)
+		[HarmonyInfixPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPrefix]
+		static bool InnerPrefix(int a, int b, ref int __result)
 		{
 			if (a < 0)
 			{
@@ -111,9 +111,9 @@ namespace HarmonyLibTests.Patching
 	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
 	class InfixPostfixPatch
 	{
-		[HarmonyInfixTarget(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
-		[HarmonyInfixPostfix]
-		static void InfixPostfix_Add(int a, int b, ref int __result)
+		[HarmonyInfixPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPostfix]
+		static void InnerPostfix(int a, int b, ref int __result)
 		{
 			__result += 100; // Modify result after the call
 		}

@@ -663,10 +663,10 @@ namespace HarmonyLib
 	{
 	}
 
-	/// <summary>Specifies the target method and call sites for infix patches</summary>
+	/// <summary>Specifies the target inner method and call sites for infix patches</summary>
 	///
 	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyInfixTarget : Attribute
+	public class HarmonyInfixPatch : Attribute
 	{
 		/// <summary>The inner method to target</summary>
 		public readonly MethodBase method;
@@ -674,32 +674,32 @@ namespace HarmonyLib
 		/// <summary>The 1-based index of the call site to target, or -1 for all occurrences</summary>
 		public readonly int index;
 
-		/// <summary>Creates an infix target attribute</summary>
+		/// <summary>Creates an infix patch attribute</summary>
 		/// <param name="method">The method to target for infix patching</param>
 		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInfixTarget(MethodBase method, int index = -1)
+		public HarmonyInfixPatch(MethodBase method, int index = -1)
 		{
 			this.method = method ?? throw new ArgumentNullException(nameof(method));
 			this.index = index;
 		}
 
-		/// <summary>Creates an infix target attribute using type and method name</summary>
+		/// <summary>Creates an infix patch attribute using type and method name</summary>
 		/// <param name="declaringType">The declaring type of the method</param>
 		/// <param name="methodName">The name of the method</param>
 		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInfixTarget(Type declaringType, string methodName, int index = -1)
+		public HarmonyInfixPatch(Type declaringType, string methodName, int index = -1)
 		{
 			this.method = AccessTools.Method(declaringType, methodName) ?? 
 				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
 			this.index = index;
 		}
 
-		/// <summary>Creates an infix target attribute using type, method name, and parameter types</summary>
+		/// <summary>Creates an infix patch attribute using type, method name, and parameter types</summary>
 		/// <param name="declaringType">The declaring type of the method</param>
 		/// <param name="methodName">The name of the method</param>
 		/// <param name="argumentTypes">The parameter types of the method</param>
 		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInfixTarget(Type declaringType, string methodName, Type[] argumentTypes, int index = -1)
+		public HarmonyInfixPatch(Type declaringType, string methodName, Type[] argumentTypes, int index = -1)
 		{
 			this.method = AccessTools.Method(declaringType, methodName, argumentTypes) ?? 
 				throw new ArgumentException($"Cannot find method '{methodName}' with specified argument types in type '{declaringType?.FullName}'");
@@ -710,15 +710,61 @@ namespace HarmonyLib
 	/// <summary>Specifies an inner prefix function in a patch class</summary>
 	///
 	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyInfixPrefix : Attribute
+	public class HarmonyInnerPrefix : Attribute
 	{
+		/// <summary>The inner method to target</summary>
+		public readonly MethodBase method;
+
+		/// <summary>The 1-based index of the call site to target, or -1 for all occurrences</summary>
+		public readonly int index;
+
+		/// <summary>Creates an inner prefix attribute</summary>
+		public HarmonyInnerPrefix()
+		{
+			this.method = null;
+			this.index = -1;
+		}
+
+		/// <summary>Creates an inner prefix attribute with target method</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
+		public HarmonyInnerPrefix(Type declaringType, string methodName, int index = -1)
+		{
+			this.method = AccessTools.Method(declaringType, methodName) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
+			this.index = index;
+		}
 	}
 
 	/// <summary>Specifies an inner postfix function in a patch class</summary>
 	///
 	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyInfixPostfix : Attribute
+	public class HarmonyInnerPostfix : Attribute
 	{
+		/// <summary>The inner method to target</summary>
+		public readonly MethodBase method;
+
+		/// <summary>The 1-based index of the call site to target, or -1 for all occurrences</summary>
+		public readonly int index;
+
+		/// <summary>Creates an inner postfix attribute</summary>
+		public HarmonyInnerPostfix()
+		{
+			this.method = null;
+			this.index = -1;
+		}
+
+		/// <summary>Creates an inner postfix attribute with target method</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
+		public HarmonyInnerPostfix(Type declaringType, string methodName, int index = -1)
+		{
+			this.method = AccessTools.Method(declaringType, methodName) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
+			this.index = index;
+		}
 	}
 
 	/// <summary>A Harmony annotation</summary>

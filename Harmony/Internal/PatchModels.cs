@@ -125,12 +125,38 @@ namespace HarmonyLib
 			InnerMethod innerMethod = null;
 			if (type == HarmonyPatchType.InnerPrefix || type == HarmonyPatchType.InnerPostfix)
 			{
-				var infixTargetAttr = allAttributes
-					.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInfixTarget") as HarmonyInfixTarget;
-				if (infixTargetAttr != null)
+				// Look for HarmonyInfixPatch attribute first
+				var infixPatchAttr = allAttributes
+					.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInfixPatch") as HarmonyInfixPatch;
+				
+				if (infixPatchAttr != null)
 				{
-					var positions = infixTargetAttr.index == -1 ? new int[0] : new int[] { infixTargetAttr.index };
-					innerMethod = new InnerMethod((MethodInfo)infixTargetAttr.method, positions);
+					var positions = infixPatchAttr.index == -1 ? new int[0] : new int[] { infixPatchAttr.index };
+					innerMethod = new InnerMethod((MethodInfo)infixPatchAttr.method, positions);
+				}
+				else
+				{
+					// Fall back to checking HarmonyInnerPrefix/HarmonyInnerPostfix attributes for method info
+					if (type == HarmonyPatchType.InnerPrefix)
+					{
+						var innerPrefixAttr = allAttributes
+							.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInnerPrefix") as HarmonyInnerPrefix;
+						if (innerPrefixAttr?.method != null)
+						{
+							var positions = innerPrefixAttr.index == -1 ? new int[0] : new int[] { innerPrefixAttr.index };
+							innerMethod = new InnerMethod((MethodInfo)innerPrefixAttr.method, positions);
+						}
+					}
+					else if (type == HarmonyPatchType.InnerPostfix)
+					{
+						var innerPostfixAttr = allAttributes
+							.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInnerPostfix") as HarmonyInnerPostfix;
+						if (innerPostfixAttr?.method != null)
+						{
+							var positions = innerPostfixAttr.index == -1 ? new int[0] : new int[] { innerPostfixAttr.index };
+							innerMethod = new InnerMethod((MethodInfo)innerPostfixAttr.method, positions);
+						}
+					}
 				}
 			}
 
@@ -143,6 +169,13 @@ namespace HarmonyLib
 				.Select(attr => attr.GetType().FullName)
 				.Where(name => name.StartsWith("Harmony")));
 
+			// Check for inner prefix/postfix attributes first
+			if (harmonyAttributes.Contains("HarmonyLib.HarmonyInnerPrefix"))
+				return HarmonyPatchType.InnerPrefix;
+			if (harmonyAttributes.Contains("HarmonyLib.HarmonyInnerPostfix"))
+				return HarmonyPatchType.InnerPostfix;
+
+			// Fall back to standard method name or attribute-based detection
 			HarmonyPatchType? type = null;
 			foreach (var patchType in allPatchTypes)
 			{
