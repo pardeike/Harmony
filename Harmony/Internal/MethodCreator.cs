@@ -592,7 +592,7 @@ namespace HarmonyLib
 				var paramType = patchParam.ParameterType;
 				var paramName = patchParam.Name;
 				
-				// Handle special injection parameters
+				// Handle special injection parameters for inner context
 				if (paramName == "__instance")
 				{
 					if (instanceLocal != null)
@@ -618,16 +618,20 @@ namespace HarmonyLib
 				}
 
 				// Handle outer context parameters (o_ prefix)
+				// Note: Full outer context support requires more complex integration with existing parameter binding
+				// For now, documenting limitation
 				if (paramName.StartsWith("o_"))
 				{
-					// For now, throw an exception - this needs more complex implementation
-					throw new NotImplementedException($"Outer context parameter '{paramName}' not yet implemented for infix patches");
+					throw new NotSupportedException($"Outer context parameter '{paramName}' not yet supported. " +
+						"Current implementation supports inner context (__instance, __result, inner method parameters) only.");
 				}
 
 				// Handle synthetic locals (__var_ prefix)
+				// Note: Synthetic locals require outer method local variable tracking
 				if (paramName.StartsWith("__var_"))
 				{
-					throw new NotImplementedException($"Synthetic local parameter '{paramName}' not yet implemented for infix patches");
+					throw new NotSupportedException($"Synthetic local parameter '{paramName}' not yet supported. " +
+						"Current implementation supports inner context (__instance, __result, inner method parameters) only.");
 				}
 
 				// Try to match inner method parameter by name

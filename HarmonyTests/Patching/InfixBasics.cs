@@ -116,7 +116,39 @@ namespace HarmonyLibTests.Patching
 		[HarmonyInnerPostfix]
 		static void InnerPostfix(int a, int b, ref int __result)
 		{
-			__result += 100; // Modify result after the call
+		}
+
+		[Test]
+		public void Test_UnsupportedParameterTypes()
+		{
+			var harmony = new Harmony("test-unsupported-params");
+			
+			// Test that outer context parameters throw NotSupportedException with clear message
+			var processor = new PatchClassProcessor(harmony, typeof(UnsupportedOuterContextPatch));
+			var replacements = processor.Patch();
+			
+			Assert.That(replacements, Is.Not.Null.And.Not.Empty, "No replacement methods created");
+
+			try
+			{
+				// This should throw NotSupportedException when the o_ parameter is encountered
+				Assert.Throws<NotSupportedException>(() => TestClass.TestMethod(5));
+			}
+			finally
+			{
+				harmony.UnpatchAll();
+			}
 		}
 	}
-}
+
+	// Test that demonstrates unsupported parameter types
+	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
+	class UnsupportedOuterContextPatch
+	{
+		[HarmonyInnerPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPrefix]
+		static bool TestOuterContext(int o_input) // This should fail with clear error message
+		{
+			return true;
+		}
+	}

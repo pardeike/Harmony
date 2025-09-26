@@ -28,12 +28,7 @@ namespace HarmonyLib
 			return false;
 		}
 
-		internal IEnumerable<CodeInstruction> Apply(MethodCreatorConfig config, bool isPrefix)
-		{
-			// TODO: implement
-			_ = config;
-			yield return Nop[isPrefix ? "inner-prefix" : "inner-postfix"];
-		}
+		// Note: Apply method removed as it's unused - infix IL generation happens in MethodCreator.GenerateInfixBlock
 	}
 
 	internal static class InfixExtensions
