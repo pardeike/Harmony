@@ -663,47 +663,47 @@ namespace HarmonyLib
 	{
 	}
 
-	/// <summary>Specifies the target inner method and call sites for infix patches</summary>
+	/// <summary>Specifies the target inner method and call sites for inner patches</summary>
 	///
 	[AttributeUsage(AttributeTargets.Method)]
-	public class HarmonyInfixPatch : Attribute
+	public class HarmonyInnerPatch : Attribute
 	{
 		/// <summary>The inner method to target</summary>
 		public readonly MethodBase method;
 
-		/// <summary>The 1-based index of the call site to target, or -1 for all occurrences</summary>
-		public readonly int index;
+		/// <summary>The call site indices to target (1-based), or empty for all occurrences</summary>
+		public readonly int[] indices;
 
-		/// <summary>Creates an infix patch attribute</summary>
-		/// <param name="method">The method to target for infix patching</param>
-		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInfixPatch(MethodBase method, int index = -1)
+		/// <summary>Creates an inner patch attribute</summary>
+		/// <param name="method">The method to target for inner patching</param>
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPatch(MethodBase method, params int[] indices)
 		{
 			this.method = method ?? throw new ArgumentNullException(nameof(method));
-			this.index = index;
+			this.indices = indices ?? new int[0];
 		}
 
-		/// <summary>Creates an infix patch attribute using type and method name</summary>
+		/// <summary>Creates an inner patch attribute using type and method name</summary>
 		/// <param name="declaringType">The declaring type of the method</param>
 		/// <param name="methodName">The name of the method</param>
-		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInfixPatch(Type declaringType, string methodName, int index = -1)
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPatch(Type declaringType, string methodName, params int[] indices)
 		{
 			this.method = AccessTools.Method(declaringType, methodName) ?? 
 				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
-			this.index = index;
+			this.indices = indices ?? new int[0];
 		}
 
-		/// <summary>Creates an infix patch attribute using type, method name, and parameter types</summary>
+		/// <summary>Creates an inner patch attribute using type, method name, and parameter types</summary>
 		/// <param name="declaringType">The declaring type of the method</param>
 		/// <param name="methodName">The name of the method</param>
 		/// <param name="argumentTypes">The parameter types of the method</param>
-		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInfixPatch(Type declaringType, string methodName, Type[] argumentTypes, int index = -1)
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPatch(Type declaringType, string methodName, Type[] argumentTypes, params int[] indices)
 		{
 			this.method = AccessTools.Method(declaringType, methodName, argumentTypes) ?? 
 				throw new ArgumentException($"Cannot find method '{methodName}' with specified argument types in type '{declaringType?.FullName}'");
-			this.index = index;
+			this.indices = indices ?? new int[0];
 		}
 	}
 
@@ -715,25 +715,25 @@ namespace HarmonyLib
 		/// <summary>The inner method to target</summary>
 		public readonly MethodBase method;
 
-		/// <summary>The 1-based index of the call site to target, or -1 for all occurrences</summary>
-		public readonly int index;
+		/// <summary>The call site indices to target (1-based), or empty for all occurrences</summary>
+		public readonly int[] indices;
 
 		/// <summary>Creates an inner prefix attribute</summary>
 		public HarmonyInnerPrefix()
 		{
 			this.method = null;
-			this.index = -1;
+			this.indices = new int[0];
 		}
 
 		/// <summary>Creates an inner prefix attribute with target method</summary>
 		/// <param name="declaringType">The declaring type of the method</param>
 		/// <param name="methodName">The name of the method</param>
-		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInnerPrefix(Type declaringType, string methodName, int index = -1)
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPrefix(Type declaringType, string methodName, params int[] indices)
 		{
 			this.method = AccessTools.Method(declaringType, methodName) ?? 
 				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
-			this.index = index;
+			this.indices = indices ?? new int[0];
 		}
 	}
 
@@ -745,25 +745,25 @@ namespace HarmonyLib
 		/// <summary>The inner method to target</summary>
 		public readonly MethodBase method;
 
-		/// <summary>The 1-based index of the call site to target, or -1 for all occurrences</summary>
-		public readonly int index;
+		/// <summary>The call site indices to target (1-based), or empty for all occurrences</summary>
+		public readonly int[] indices;
 
 		/// <summary>Creates an inner postfix attribute</summary>
 		public HarmonyInnerPostfix()
 		{
 			this.method = null;
-			this.index = -1;
+			this.indices = new int[0];
 		}
 
 		/// <summary>Creates an inner postfix attribute with target method</summary>
 		/// <param name="declaringType">The declaring type of the method</param>
 		/// <param name="methodName">The name of the method</param>
-		/// <param name="index">1-based call site index, or -1 for all occurrences</param>
-		public HarmonyInnerPostfix(Type declaringType, string methodName, int index = -1)
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPostfix(Type declaringType, string methodName, params int[] indices)
 		{
 			this.method = AccessTools.Method(declaringType, methodName) ?? 
 				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
-			this.index = index;
+			this.indices = indices ?? new int[0];
 		}
 	}
 

@@ -17,12 +17,13 @@ namespace HarmonyLibTests.Patching
 				return result * 2;
 			}
 
-			public static string TestMethodWithMultipleCalls(string input)
+						public static string TestMethodWithMultipleCalls(string input)
 			{
 				var helper = new HelperClass();
-				var result1 = helper.Process(input); // First call
-				var result2 = helper.Process(result1); // Second call  
-				return result2;
+				var result1 = helper.Process(input); // First call (index 1)
+				var result2 = helper.Process(result1); // Second call (index 2)  
+				var result3 = helper.Process(result2); // Third call (index 3)
+				return result3;
 			}
 		}
 
@@ -95,7 +96,7 @@ namespace HarmonyLibTests.Patching
 	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
 	class InfixPrefixPatch
 	{
-		[HarmonyInfixPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
 		[HarmonyInnerPrefix]
 		static bool InnerPrefix(int a, int b, ref int __result)
 		{
@@ -111,7 +112,7 @@ namespace HarmonyLibTests.Patching
 	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
 	class InfixPostfixPatch
 	{
-		[HarmonyInfixPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
 		[HarmonyInnerPostfix]
 		static void InnerPostfix(int a, int b, ref int __result)
 		{

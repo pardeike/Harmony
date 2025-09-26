@@ -125,14 +125,14 @@ namespace HarmonyLib
 			InnerMethod innerMethod = null;
 			if (type == HarmonyPatchType.InnerPrefix || type == HarmonyPatchType.InnerPostfix)
 			{
-				// Look for HarmonyInfixPatch attribute first
-				var infixPatchAttr = allAttributes
-					.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInfixPatch") as HarmonyInfixPatch;
+				// Look for HarmonyInnerPatch attribute first
+				var innerPatchAttr = allAttributes
+					.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInnerPatch") as HarmonyInnerPatch;
 				
-				if (infixPatchAttr != null)
+				if (innerPatchAttr != null)
 				{
-					var positions = infixPatchAttr.index == -1 ? new int[0] : new int[] { infixPatchAttr.index };
-					innerMethod = new InnerMethod((MethodInfo)infixPatchAttr.method, positions);
+					var positions = innerPatchAttr.indices.Length == 0 ? new int[0] : innerPatchAttr.indices;
+					innerMethod = new InnerMethod((MethodInfo)innerPatchAttr.method, positions);
 				}
 				else
 				{
@@ -143,7 +143,7 @@ namespace HarmonyLib
 							.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInnerPrefix") as HarmonyInnerPrefix;
 						if (innerPrefixAttr?.method != null)
 						{
-							var positions = innerPrefixAttr.index == -1 ? new int[0] : new int[] { innerPrefixAttr.index };
+							var positions = innerPrefixAttr.indices.Length == 0 ? new int[0] : innerPrefixAttr.indices;
 							innerMethod = new InnerMethod((MethodInfo)innerPrefixAttr.method, positions);
 						}
 					}
@@ -153,7 +153,7 @@ namespace HarmonyLib
 							.FirstOrDefault(attr => attr.GetType().FullName == "HarmonyLib.HarmonyInnerPostfix") as HarmonyInnerPostfix;
 						if (innerPostfixAttr?.method != null)
 						{
-							var positions = innerPostfixAttr.index == -1 ? new int[0] : new int[] { innerPostfixAttr.index };
+							var positions = innerPostfixAttr.indices.Length == 0 ? new int[0] : innerPostfixAttr.indices;
 							innerMethod = new InnerMethod((MethodInfo)innerPostfixAttr.method, positions);
 						}
 					}
