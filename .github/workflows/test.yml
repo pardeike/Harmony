@@ -47,7 +47,7 @@ jobs:
   # https://stackoverflow.com/a/77549656
   variables:
     name: Preparing # variable accessibility workaround for jobs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       EXPERIMENTAL: ${{env.EXPERIMENTAL}}
       PARALLEL: ${{env.PARALLEL}}
@@ -76,7 +76,7 @@ jobs:
     needs: variables
     strategy:
       matrix:
-        image: [ { os: 'ubuntu', code: 'ubuntu-latest' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' } ]
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS_WITH_REF)}}
     uses: ./.github/workflows/test-build.yml
     with:
@@ -143,7 +143,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
         target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
@@ -163,7 +163,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
         target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
@@ -183,7 +183,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['arm64']
         target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
@@ -209,7 +209,7 @@ jobs:
   cleanup-build-output:
     name: Cleanup Build Output
     needs: [test-results]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: always()
     steps:
       # Delete build output artifacts

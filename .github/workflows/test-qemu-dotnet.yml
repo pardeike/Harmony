@@ -37,7 +37,7 @@ env:
 jobs:
   unix-net:
     name: ${{ inputs.build_configuration }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 10
     steps:
