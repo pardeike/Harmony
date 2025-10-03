@@ -143,7 +143,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' }, { os: 'macos', code: 'macos-14' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' }, { os: 'macos-arm64', code: 'macos-14' } ]
         architecture: ['x64']
         target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
@@ -163,7 +163,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' }, { os: 'macos', code: 'macos-14' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-22.04' }, { os: 'macos-arm64', code: 'macos-14' } ]
         architecture: ['x64']
         target_framework: ${{fromJson((needs.variables.outputs.PARALLEL == 'true' && needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) || '[""]')}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
