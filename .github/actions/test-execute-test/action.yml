@@ -110,7 +110,7 @@ runs:
         max_attempts: 3
         retry_on: timeout
         command: |
-          if ('${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64'}}' -eq 'true') {
+          if ('${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64' && inputs.runtime-type == 'dotnet'}}' -eq 'true') {
             $dotnet = '/Users/runner/.dotnet/x64/dotnet'
           } else {
             $dotnet = '/Users/runner/.dotnet/dotnet'

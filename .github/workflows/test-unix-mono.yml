@@ -72,17 +72,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mono-complete
 
-      - name: Setup .NET MacOS Rosetta x64
-        uses: ./.github/actions/test-setup-dotnet-macos-rosetta
-        if: ${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64'}}
-        with:
-          architecture: ${{inputs.architecture}}
-          target_framework: ${{inputs.target_framework}}
-          target_framework_array: ${{inputs.target_framework_array}}
-
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
-        if: ${{!(inputs.os == 'macos-arm64' && inputs.architecture == 'x64')}}
         with:
           dotnet-version: '9.0.101'
         env:
