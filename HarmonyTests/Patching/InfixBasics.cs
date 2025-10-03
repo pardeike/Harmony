@@ -1,0 +1,154 @@
+using HarmonyLib;
+using NUnit.Framework;
+using System.Reflection;
+
+namespace HarmonyLibTests.Patching
+{
+	[TestFixture, NonParallelizable]
+	public class InfixBasics : TestLogger
+	{
+		// Test class and methods for infix functionality
+		public class TestClass
+		{
+			public static int TestMethod(int input)
+			{
+				var helper = new HelperClass();
+				var result = helper.Add(input, 10); // This call will be infixed
+				return result * 2;
+			}
+
+						public static string TestMethodWithMultipleCalls(string input)
+			{
+				var helper = new HelperClass();
+				var result1 = helper.Process(input); // First call (index 1)
+				var result2 = helper.Process(result1); // Second call (index 2)  
+				var result3 = helper.Process(result2); // Third call (index 3)
+				return result3;
+			}
+		}
+
+		public class HelperClass
+		{
+			public int Add(int a, int b) => a + b;
+			public string Process(string input) => $"[{input}]";
+		}
+
+		[Test]
+		public void Test_BasicInfixPrefixSkip()
+		{
+			var originalMethod = typeof(TestClass).GetMethod(nameof(TestClass.TestMethod));
+			Assert.That(originalMethod, Is.Not.Null);
+
+			var harmony = new Harmony("test-infix-basic");
+			
+			// Use PatchClassProcessor to process the attribute-based infix patches
+			var processor = new PatchClassProcessor(harmony, typeof(InfixPrefixPatch));
+			var replacements = processor.Patch();
+			
+			Assert.That(replacements, Is.Not.Null.And.Not.Empty, "No replacement methods created");
+
+			try
+			{
+				// Test normal execution (should call original Add method)
+				var result1 = TestClass.TestMethod(5);
+				// Normal: Add(5, 10) = 15, then * 2 = 30
+				Assert.That(result1, Is.EqualTo(30));
+
+				// Test skip execution (should skip Add and use __result = -1)
+				var result2 = TestClass.TestMethod(-3);
+				// Skipped: Add not called, __result = -1, then -1 * 2 = -2  
+				Assert.That(result2, Is.EqualTo(-2));
+			}
+			finally
+			{
+				harmony.UnpatchAll();
+			}
+		}
+
+		[Test]
+		public void Test_BasicInfixPostfix()
+		{
+			var originalMethod = typeof(TestClass).GetMethod(nameof(TestClass.TestMethod));
+			Assert.That(originalMethod, Is.Not.Null);
+
+			var harmony = new Harmony("test-infix-postfix");
+			
+			// Use PatchClassProcessor to process the attribute-based infix patches
+			var processor = new PatchClassProcessor(harmony, typeof(InfixPostfixPatch));
+			var replacements = processor.Patch();
+			
+			Assert.That(replacements, Is.Not.Null.And.Not.Empty, "No replacement methods created");
+
+			try
+			{
+				var result = TestClass.TestMethod(5);
+				// Normal: Add(5, 10) = 15, then +100 = 115, then * 2 = 230
+				Assert.That(result, Is.EqualTo(230));
+			}
+			finally
+			{
+				harmony.UnpatchAll();
+			}
+		}
+	}
+
+	// Separate patch classes with proper attributes
+	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
+	class InfixPrefixPatch
+	{
+		[HarmonyInnerPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPrefix]
+		static bool InnerPrefix(int a, int b, ref int __result)
+		{
+			if (a < 0)
+			{
+				__result = -1;
+				return false; // Skip original call
+			}
+			return true; // Continue with original call
+		}
+	}
+
+	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
+	class InfixPostfixPatch
+	{
+		[HarmonyInnerPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPostfix]
+		static void InnerPostfix(int a, int b, ref int __result)
+		{
+		}
+
+		[Test]
+		public void Test_UnsupportedParameterTypes()
+		{
+			var harmony = new Harmony("test-unsupported-params");
+			
+			// Test that outer context parameters throw NotSupportedException with clear message
+			var processor = new PatchClassProcessor(harmony, typeof(UnsupportedOuterContextPatch));
+			var replacements = processor.Patch();
+			
+			Assert.That(replacements, Is.Not.Null.And.Not.Empty, "No replacement methods created");
+
+			try
+			{
+				// This should throw NotSupportedException when the o_ parameter is encountered
+				Assert.Throws<NotSupportedException>(() => TestClass.TestMethod(5));
+			}
+			finally
+			{
+				harmony.UnpatchAll();
+			}
+		}
+	}
+
+	// Test that demonstrates unsupported parameter types
+	[HarmonyPatch(typeof(InfixBasics.TestClass), nameof(InfixBasics.TestClass.TestMethod))]
+	class UnsupportedOuterContextPatch
+	{
+		[HarmonyInnerPatch(typeof(InfixBasics.HelperClass), nameof(InfixBasics.HelperClass.Add))]
+		[HarmonyInnerPrefix]
+		static bool TestOuterContext(int o_input) // This should fail with clear error message
+		{
+			return true;
+		}
+	}

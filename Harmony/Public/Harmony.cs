@@ -189,6 +189,22 @@ namespace HarmonyLib
 			return processor.Patch();
 		}
 
+		/// <summary>Patches the source with infix patches that wrap inner method calls</summary>
+		/// <param name="original">The original method/constructor</param>
+		/// <param name="innerPrefix">An optional inner prefix method for infix patching</param>
+		/// <param name="innerPostfix">An optional inner postfix method for infix patching</param>
+		/// <returns>The generated replacement method</returns>
+		///
+		public MethodInfo PatchWithInfix(MethodBase original, HarmonyMethod innerPrefix = null, HarmonyMethod innerPostfix = null)
+		{
+			var processor = CreateProcessor(original);
+			if (innerPrefix != null)
+				_ = processor.AddInnerPrefix(innerPrefix);
+			if (innerPostfix != null)
+				_ = processor.AddInnerPostfix(innerPostfix);
+			return processor.Patch();
+		}
+
 		/// <summary>Patches a foreign method onto a stub method of yours and optionally applies transpilers during the process</summary>
 		/// <param name="original">The original method/constructor you want to duplicate</param>
 		/// <param name="standin">Your stub method as <see cref="HarmonyMethod"/> that will become the original. Needs to have the correct signature (either original or whatever your transpilers generates)</param>

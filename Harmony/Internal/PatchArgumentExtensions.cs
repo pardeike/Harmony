@@ -122,5 +122,22 @@ namespace HarmonyLib
 
 			return -1;
 		}
+
+		internal static int GetArgumentIndex(this MethodInfo patch, string[] originalParameterNames, ParameterInfo patchParam, string customParameterName)
+		{
+			if (patch is DynamicMethod)
+				return Array.IndexOf(originalParameterNames, customParameterName);
+
+			var originalName = patchParam.GetRealParameterName(originalParameterNames);
+			if (originalName is not null)
+				return Array.IndexOf(originalParameterNames, originalName);
+
+			originalName = patch.GetRealParameterName(originalParameterNames, customParameterName);
+			if (originalName is not null)
+				return Array.IndexOf(originalParameterNames, originalName);
+
+			// Direct lookup by custom name
+			return Array.IndexOf(originalParameterNames, customParameterName);
+		}
 	}
 }

@@ -363,6 +363,179 @@ namespace HarmonyLib
 					continue;
 				}
 
+				// Handle infix-specific injection types
+				if (injectionType == InjectionType.InnerInstance)
+				{
+					// For inner instance, this should be implemented in the infix application context
+					// This is a placeholder that will be handled by infix-specific parameter emission
+					throw new NotImplementedException("InnerInstance injection should be handled by infix application context");
+				}
+
+				if (injectionType == InjectionType.InnerResult)
+				{
+					// For inner result, this should be implemented in the infix application context  
+					// This is a placeholder that will be handled by infix-specific parameter emission
+					throw new NotImplementedException("InnerResult injection should be handled by infix application context");
+				}
+
+				if (injectionType == InjectionType.InnerArg)
+				{
+					// For inner args, this should be implemented in the infix application context
+					// This is a placeholder that will be handled by infix-specific parameter emission  
+					throw new NotImplementedException("InnerArg injection should be handled by infix application context");
+				}
+
+				if (injectionType == InjectionType.OuterInstance)
+				{
+					// Handle o___instance - same as regular instance but explicit outer context
+					if (originalIsStatic)
+						codes.Add(Ldnull);
+					else
+					{
+						var parameterIsRef = paramType.IsByRef;
+						var parameterIsObject = paramType == typeof(object) || paramType == typeof(object).MakeByRefType();
+
+						if (AccessTools.IsStruct(originalType))
+						{
+							if (parameterIsRef)
+								codes.Add(Ldarg_0);
+							else
+								codes.Add(Ldobj[originalType]);
+						}
+						else
+						{
+							codes.Add(Ldarg_0);
+							if (parameterIsObject && parameterIsRef)
+							{
+								tmpInstanceBoxingVar ??= config.DeclareLocal(typeof(object));
+								codes.Add(Stloc[tmpInstanceBoxingVar]);
+								codes.Add(Ldloca[tmpInstanceBoxingVar]);
+							}
+						}
+					}
+					continue;
+				}
+
+				if (injectionType == InjectionType.OuterResult)
+				{
+					// Handle o___result - same as regular result 
+					if (returnType == typeof(void))
+						throw new Exception($"Cannot get result from void method {original.FullDescription()}");
+					var resultType = paramType;
+					if (resultType.IsByRef && returnType.IsByRef is false)
+						resultType = resultType.GetElementType();
+					if (resultType.IsAssignableFrom(returnType) is false)
+						throw new Exception($"Cannot assign method return type {returnType.FullName} to outer result type {resultType.FullName} for method {original.FullDescription()}");
+					var ldlocCode = paramType.IsByRef && returnType.IsByRef is false ? OpCodes.Ldloca : OpCodes.Ldloc;
+					if (returnType.IsValueType && paramType == typeof(object).MakeByRefType())
+					{
+						tmpObjectVar ??= config.DeclareLocal(typeof(object));
+						codes.Add(Ldloc[config.resultVariable]);
+						codes.Add(Box[returnType]);
+						codes.Add(Stloc[tmpObjectVar]);
+						codes.Add(Ldloca[tmpObjectVar]);
+					}
+					else
+					{
+						if (config.resultVariable != null)
+							codes.Add(new CodeInstruction(ldlocCode, config.resultVariable));
+						else
+							codes.Add(Ldnull);
+					}
+					continue;
+				}
+
+				if (injectionType == InjectionType.OuterArg)
+				{
+					// Handle outer argument by name (e.g., o_myParam)
+					var outerParamName = paramRealName.Substring(2); // Remove o_ prefix
+					var outerArgumentIdx = patch.GetArgumentIndex(originalParameterNames, injection.parameterInfo, outerParamName);
+					if (outerArgumentIdx != -1)
+					{
+						var outerPatchArgIndex = outerArgumentIdx + (originalIsStatic ? 0 : 1);
+						var outerOriginalParam = originalParameters[outerArgumentIdx];
+						var outerOriginalParamType = outerOriginalParam.ParameterType;
+						var outerOriginalParamElementType = outerOriginalParamType.IsByRef ? outerOriginalParamType.GetElementType() : outerOriginalParamType;
+						var outerNeedsBoxing = paramType == typeof(object) && outerOriginalParamElementType.IsValueType;
+						
+						if (paramType.IsByRef && !outerOriginalParamType.IsByRef)
+						{
+							var tmpBoxVar = tmpBoxVars.FirstOrDefault(pair => pair.Value == outerOriginalParamElementType).Key;
+							if (tmpBoxVar == null)
+							{
+								tmpBoxVar = config.DeclareLocal(outerOriginalParamElementType);
+								tmpBoxVars.Add(new KeyValuePair<LocalBuilder, Type>(tmpBoxVar, outerOriginalParamElementType));
+								codes.Add(Ldarg[outerPatchArgIndex]);
+								codes.Add(Stloc[tmpBoxVar]);
+							}
+							codes.Add(Ldloca_S[tmpBoxVar]);
+						}
+						else
+							codes.Add(Ldarg[outerPatchArgIndex]);
+						
+						if (outerNeedsBoxing && !outerOriginalParamType.IsByRef)
+							codes.Add(Box[outerOriginalParamElementType]);
+						
+						continue;
+					}
+					// If not found, fall through to regular parameter resolution
+				}
+
+				if (injectionType == InjectionType.OuterField)
+				{
+					// Handle o___fieldName patterns
+					var fieldName = paramRealName.Substring(4); // Remove o___ prefix
+					var fieldInfo = AccessTools.Field(originalType, fieldName);
+					if (fieldInfo == null)
+						throw new ArgumentException($"No such field defined in class {originalType?.AssemblyQualifiedName ?? "null"}", fieldName);
+
+					if (fieldInfo.IsStatic)
+						codes.Add(paramType.IsByRef ? Ldsflda[fieldInfo] : Ldsfld[fieldInfo]);
+					else
+					{
+						codes.Add(Ldarg_0);
+						codes.Add(paramType.IsByRef ? Ldflda[fieldInfo] : Ldfld[fieldInfo]);
+					}
+					continue;
+				}
+
+				if (injectionType == InjectionType.OuterLocal)
+				{
+					// Handle __var_<index> patterns
+					var indexStr = paramRealName.Substring(6); // Remove __var_ prefix
+					if (int.TryParse(indexStr, out var localIndex))
+					{
+						if (localIndex < 0 || localIndex >= config.originalVariables.Length)
+							throw new Exception($"Local variable index {localIndex} is out of range");
+						
+						var localVar = config.originalVariables[localIndex];
+						var ldlocCode = paramType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
+						codes.Add(new CodeInstruction(ldlocCode, localVar));
+						continue;
+					}
+					throw new Exception($"Invalid local variable index format: {paramRealName}");
+				}
+
+				if (injectionType == InjectionType.SyntheticLocal)
+				{
+					// Handle __var_<name> patterns - synthetic locals shared across patches
+					var localName = paramRealName.Substring(6); // Remove __var_ prefix
+					if (!config.localVariables.TryGetValue(paramRealName, out var syntheticLocal))
+					{
+						// Create the synthetic local if it doesn't exist
+						var localType = paramType.IsByRef ? paramType.GetElementType() : paramType;
+						syntheticLocal = config.DeclareLocal(localType);
+						config.AddLocal(paramRealName, syntheticLocal);
+						
+						// Initialize the local to default value
+						codes.AddRange(creator.GenerateVariableInit(syntheticLocal, false));
+					}
+					
+					var ldlocCode = paramType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
+					codes.Add(new CodeInstruction(ldlocCode, syntheticLocal));
+					continue;
+				}
+
 				if (config.localVariables.TryGetValue(paramRealName, out var localBuilder))
 				{
 					var ldlocCode = paramType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;

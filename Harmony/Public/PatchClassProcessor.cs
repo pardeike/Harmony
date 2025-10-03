@@ -206,8 +206,11 @@ namespace HarmonyLib
 						patchInfo.AddPostfixes(instance.Id, [.. job.postfixes]);
 						patchInfo.AddTranspilers(instance.Id, [.. job.transpilers]);
 						patchInfo.AddFinalizers(instance.Id, [.. job.finalizers]);
-						patchInfo.AddInnerPrefixes(instance.Id, [.. job.innerprefixes]);
-						patchInfo.AddInnerPostfixes(instance.Id, [.. job.innerpostfixes]);
+						
+						var innerPrefixes = job.innerpatches.Where(p => p.type == HarmonyPatchType.InnerPrefix).ToArray();
+						var innerPostfixes = job.innerpatches.Where(p => p.type == HarmonyPatchType.InnerPostfix).ToArray();
+						patchInfo.AddInnerPrefixes(instance.Id, innerPrefixes);
+						patchInfo.AddInnerPostfixes(instance.Id, innerPostfixes);
 
 						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo);
 						HarmonySharedState.UpdatePatchInfo(job.original, replacement, patchInfo);
