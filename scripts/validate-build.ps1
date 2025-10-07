@@ -71,7 +71,7 @@ if ($failedValidations.Count -gt 0) {
 	$failedValidations | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
 	Write-Host ""
 	Write-Host "These builds have metadata corruption that will cause issues with Unity Burst compiler." -ForegroundColor Red
-	Write-Host "See https://github.com/pardeike/Harmony/issues/XXX for more information." -ForegroundColor Yellow
+	Write-Host "For Unity/Burst projects, use Lib.Harmony.Thin instead." -ForegroundColor Yellow
 	exit 1
 }
 
