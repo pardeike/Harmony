@@ -28,7 +28,7 @@
 			CopyAttributes="false"
 			XmlDocumentation="true"
 			Internalize="true"
-			Parallel="true"
+			Parallel="false"
 			TargetKind="Dll"
 			Wildcards="true"
 		/>

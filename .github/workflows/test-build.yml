@@ -59,6 +59,16 @@ jobs:
             dotnet build -c ${{inputs.build_configuration}} Harmony.sln
           fi
 
+      - name: Validate Metadata (Unity Burst Compatibility Check)
+        if: inputs.build_configuration == 'Release'
+        shell: pwsh
+        run: |
+          Write-Host "Validating build metadata for Unity Burst compatibility..." -ForegroundColor Cyan
+          & ./scripts/validate-build.ps1 -BuildPath "Lib.Harmony/bin/Release"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "`n::warning::Lib.Harmony fat builds have known metadata issues with Unity Burst compiler. Use Lib.Harmony.Thin for Unity projects." -ForegroundColor Yellow
+          }
+
       - name: Upload Test Build Output Cache
         uses: actions/upload-artifact@v4
         with:

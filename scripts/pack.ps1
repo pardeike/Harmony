@@ -29,3 +29,13 @@ dotnet clean --nologo --verbosity minimal
 # Build Solution 
 dotnet build --nologo --configuration Release --verbosity minimal
 dotnet pack --nologo --configuration Release --verbosity minimal --no-restore --no-build
+
+# Validate build outputs for metadata integrity
+Write-Host "`nValidating build outputs for Unity Burst compatibility..." -ForegroundColor Cyan
+& "$PSScriptRoot/validate-build.ps1" -BuildPath "Lib.Harmony/bin/Release"
+if ($LASTEXITCODE -ne 0) {
+	Write-Host "`nWARNING: Build validation detected metadata issues that may cause problems with Unity Burst compiler." -ForegroundColor Yellow
+	Write-Host "The fat builds (Lib.Harmony) are known to have metadata compatibility issues with Unity's Burst compiler." -ForegroundColor Yellow
+	Write-Host "For Unity/Burst projects, use Lib.Harmony.Thin instead, which ships dependencies separately." -ForegroundColor Yellow
+	Write-Host "See: https://github.com/pardeike/Harmony/issues for more information.`n" -ForegroundColor Yellow
+}
