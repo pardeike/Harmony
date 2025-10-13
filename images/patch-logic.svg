@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="392px" height="226px" viewBox="0 0 392 226" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.2 (39069) - http://www.bohemiancoding.com/sketch -->
+    <title>patch-logic</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="284" y="63" width="91" height="43"></rect>
+        <rect id="path-2" x="284" y="166" width="91" height="43"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="patch-logic">
+            <g id="Group-Copy-2" transform="translate(294.000000, 73.000000)">
+                <text id="prefix-code" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="7" y="17">prefix</tspan>
+                    <tspan x="7" y="31">code</tspan>
+                </text>
+                <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="90" height="42"></rect>
+            </g>
+            <g id="Group-Copy-3" transform="translate(294.000000, 176.000000)">
+                <text id="prefix-code" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="7" y="17">prefix</tspan>
+                    <tspan x="7" y="31">code</tspan>
+                </text>
+                <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="90" height="42"></rect>
+            </g>
+            <text id="OriginalMethod()" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                <tspan x="6" y="16">OriginalMethod()</tspan>
+            </text>
+            <text id="Dynamic-method" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                <tspan x="146" y="57">Dynamic method</tspan>
+            </text>
+            <text id="Transpilers" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                <tspan x="11.3935547" y="144">Transpilers</tspan>
+            </text>
+            <path d="M52,23.5 L52,59" id="Line" stroke="#D0D0D0" stroke-width="2" fill="#D0D0D0" stroke-linecap="square"></path>
+            <path id="Line-decoration-1" d="M52,59 L55,48.2 L49,48.2 L52,59 Z" stroke="#D0D0D0" stroke-width="2" fill="#D0D0D0" stroke-linecap="square"></path>
+            <path d="M71,23 L129,61" id="Line" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path id="Line-decoration-1" d="M129,61 L121.610299,52.571933 L118.322141,57.5906998 L129,61 Z" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path d="M250,84.5 L277.225907,84.5" id="Line-Copy" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path id="Line-Copy-decoration-1" d="M277.225907,84.5 L266.425907,81.5 L266.425907,87.5 L277.225907,84.5 Z" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path d="M95.9975491,140.5 L147,140.5" id="Line-Copy-3" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path id="Line-Copy-3-decoration-1" d="M147,140.5 L136.2,137.5 L136.2,143.5 L147,140.5 Z" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path d="M51.2259068,105.998914 L51.2259068,129.5" id="Line-Copy-3" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path id="Line-Copy-3-decoration-1" d="M51.2259068,129.5 L54.2259068,118.7 L48.2259068,118.7 L51.2259068,129.5 Z" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path d="M250,187.5 L277.225907,187.5" id="Line-Copy-2" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <path id="Line-Copy-2-decoration-1" d="M277.225907,187.5 L266.425907,184.5 L266.425907,190.5 L277.225907,187.5 Z" stroke="#000000" stroke-width="2" fill="#000000" stroke-linecap="square"></path>
+            <g id="Group" transform="translate(6.000000, 63.000000)">
+                <text id="original-code" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="7" y="17">original</tspan>
+                    <tspan x="7" y="31">code</tspan>
+                </text>
+                <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="90" height="42"></rect>
+            </g>
+            <g id="Group-Copy" transform="translate(131.000000, 63.000000)" stroke="#000000">
+                <rect id="Rectangle" x="0.5" y="0.5" width="128" height="142"></rect>
+            </g>
+            <g id="Group-Copy-2" transform="translate(140.000000, 94.000000)">
+                <text id="skip-logic" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="8.38461538" y="17.0533516">skip logic</tspan>
+                </text>
+                <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="108" height="74"></rect>
+            </g>
+            <g id="Group-Copy-2" transform="translate(148.000000, 119.000000)">
+                <text id="modified-code" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="10.575" y="18">modified</tspan>
+                    <tspan x="10.575" y="32">code</tspan>
+                </text>
+                <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="91.825" height="41"></rect>
+            </g>
+            <g id="Group-Copy-2" transform="translate(140.000000, 73.000000)">
+                <text id="Prefix-calls" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="8.38461538" y="14.0697674">Prefix calls</tspan>
+                </text>
+                <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="108" height="21"></rect>
+            </g>
+            <g id="Group-Copy-4" transform="translate(140.000000, 176.000000)">
+                <text id="Postfix-calls" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="8.38461538" y="14.0697674">Postfix calls</tspan>
+                </text>
+                <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="108" height="21"></rect>
+            </g>
+            <g id="Rectangle">
+                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                <rect stroke="#000000" stroke-width="1" x="284.5" y="63.5" width="90" height="42"></rect>
+            </g>
+            <g id="Rectangle-Copy">
+                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-2"></use>
+                <rect stroke="#000000" stroke-width="1" x="284.5" y="166.5" width="90" height="42"></rect>
+            </g>
+            <text id="prefix-code" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                <tspan x="291" y="80">prefix</tspan>
+                <tspan x="291" y="94">code</tspan>
+            </text>
+            <text id="postfix-code" font-family="Courier" font-size="12" font-weight="normal" fill="#000000">
+                <tspan x="291" y="184">postfix</tspan>
+                <tspan x="291" y="198">code</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
