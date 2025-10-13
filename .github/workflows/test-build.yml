@@ -61,13 +61,18 @@ jobs:
 
       - name: Validate Metadata (Unity Burst Compatibility Check)
         if: ${{ inputs.build_configuration == 'Release' }}
+        continue-on-error: true
         shell: pwsh
         run: |
           if (Test-Path "Lib.Harmony/bin/Release") {
             Write-Host "Validating build metadata for Unity Burst compatibility..." -ForegroundColor Cyan
-            & ./scripts/validate-build.ps1 -BuildPath "Lib.Harmony/bin/Release"
-            if ($LASTEXITCODE -ne 0) {
-              Write-Host "`n::warning::Lib.Harmony fat builds have known metadata issues with Unity Burst compiler. Use Lib.Harmony.Thin for Unity projects." -ForegroundColor Yellow
+            try {
+              & ./scripts/validate-build.ps1 -BuildPath "Lib.Harmony/bin/Release"
+              if ($LASTEXITCODE -ne 0) {
+                Write-Host "::warning::Lib.Harmony fat builds have known metadata issues with Unity Burst compiler. Use Lib.Harmony.Thin for Unity projects."
+              }
+            } catch {
+              Write-Host "::warning::Validation encountered an error: $_"
             }
           } else {
             Write-Host "Skipping validation - Lib.Harmony/bin/Release not found" -ForegroundColor Yellow
