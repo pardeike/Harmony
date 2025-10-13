@@ -339,21 +339,13 @@ namespace HarmonyLib
 		/// <param name="value">The value to set (bool, string, etc.)</param>
 		///
 		public static void SetSwitch(string name, object value)
-		{
-			var switchesType = AccessTools.TypeByName("MonoMod.Switches");
-			var method = AccessTools.Method(switchesType, "SetSwitchValue");
-			method.Invoke(null, [name, value]);
-		}
+			=> MonoMod.Switches.SetSwitchValue(name, value);
 
 		/// <summary>Clears a MonoMod switch value</summary>
 		/// <param name="name">The switch name</param>
 		///
 		public static void ClearSwitch(string name)
-		{
-			var switchesType = AccessTools.TypeByName("MonoMod.Switches");
-			var method = AccessTools.Method(switchesType, "ClearSwitchValue");
-			method.Invoke(null, [name]);
-		}
+			=> MonoMod.Switches.ClearSwitchValue(name);
 
 		/// <summary>Tries to get a MonoMod switch value</summary>
 		/// <param name="name">The switch name</param>
@@ -361,14 +353,7 @@ namespace HarmonyLib
 		/// <returns>True if the switch was found, false otherwise</returns>
 		///
 		public static bool TryGetSwitch(string name, out object value)
-		{
-			var switchesType = AccessTools.TypeByName("MonoMod.Switches");
-			var method = AccessTools.Method(switchesType, "TryGetSwitchValue");
-			var args = new object[] { name, null };
-			var result = (bool)method.Invoke(null, args);
-			value = args[1];
-			return result;
-		}
+			=> MonoMod.Switches.TryGetSwitchValue(name, out value);
 
 		/// <summary>Tries to determine if a MonoMod switch is enabled</summary>
 		/// <param name="name">The switch name</param>
@@ -376,13 +361,6 @@ namespace HarmonyLib
 		/// <returns>True if the switch enablement state could be determined, false otherwise</returns>
 		///
 		public static bool TryIsSwitchEnabled(string name, out bool isEnabled)
-		{
-			var switchesType = AccessTools.TypeByName("MonoMod.Switches");
-			var method = AccessTools.Method(switchesType, "TryGetSwitchEnabled");
-			var args = new object[] { name, false };
-			var result = (bool)method.Invoke(null, args);
-			isEnabled = (bool)args[1];
-			return result;
-		}
+			=> MonoMod.Switches.TryGetSwitchEnabled(name, out isEnabled);
 	}
 }
