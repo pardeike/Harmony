@@ -146,6 +146,12 @@ namespace HarmonyLib
 		///
 		internal void AddInnerPrefixes(string owner, params HarmonyMethod[] methods) => innerprefixes = Add(owner, methods, innerprefixes);
 
+		/// <summary>Adds inner prefixes from AttributePatch objects</summary>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="patches">The AttributePatch objects</param>
+		///
+		internal void AddInnerPrefixes(string owner, AttributePatch[] patches) => innerprefixes = AddInnerPatches(owner, patches, innerprefixes);
+
 		/// <summary>Removes inner prefixes</summary>
 		/// <param name="owner">The owner of the inner prefixes, or <c>*</c> for all</param>
 		///
@@ -156,6 +162,12 @@ namespace HarmonyLib
 		/// <param name="methods">The patch methods</param>
 		///
 		internal void AddInnerPostfixes(string owner, params HarmonyMethod[] methods) => innerpostfixes = Add(owner, methods, innerpostfixes);
+
+		/// <summary>Adds inner postfixes from AttributePatch objects</summary>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="patches">The AttributePatch objects</param>
+		///
+		internal void AddInnerPostfixes(string owner, AttributePatch[] patches) => innerpostfixes = AddInnerPatches(owner, patches, innerpostfixes);
 
 		/// <summary>Removes inner postfixes</summary>
 		/// <param name="owner">The owner of the inner postfixes, or <c>*</c> for all</param>
@@ -199,6 +211,26 @@ namespace HarmonyLib
 			return owner == "*"
 				? []
 				: [.. current.Where(patch => patch.owner != owner)];
+		}
+
+		private static Patch[] AddInnerPatches(string owner, AttributePatch[] add, Patch[] current)
+		{
+			// avoid copy if no patch added
+			if (add.Length == 0)
+				return current;
+
+			// concat lists
+			var initialIndex = current.Length;
+			return
+			[
+				.. current
+,
+				.. add
+					.Where(patch => patch != null)
+					.Select((patch, i) => new Patch(patch.info.method, i + initialIndex, owner, 
+						patch.info.priority, patch.info.before, patch.info.after, patch.info.debug ?? false, patch.innerMethod))
+,
+			];
 		}
 	}
 }

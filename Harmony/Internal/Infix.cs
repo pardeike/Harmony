@@ -13,8 +13,8 @@ namespace HarmonyLib
 		internal Infix(Patch patch) => this.patch = patch;
 
 		internal MethodInfo OuterMethod => patch.PatchMethod;
-		internal MethodBase InnerMethod => patch.innerMethod.Method;
-		internal int[] Positions => patch.innerMethod.positions; // multiple 1-based positions, or empty array for all positions
+		internal MethodBase InnerMethod => patch.innerMethod?.Method;
+		internal int[] Positions => patch.innerMethod?.positions ?? new int[0]; // multiple 1-based positions, or empty array for all positions
 
 		internal bool Matches(MethodBase method, int index, int total) // index is 1-based
 		{
@@ -28,12 +28,7 @@ namespace HarmonyLib
 			return false;
 		}
 
-		internal IEnumerable<CodeInstruction> Apply(MethodCreatorConfig config, bool isPrefix)
-		{
-			// TODO: implement
-			_ = config;
-			yield return Nop[isPrefix ? "inner-prefix" : "inner-postfix"];
-		}
+		// Note: Apply method removed as it's unused - infix IL generation happens in MethodCreator.GenerateInfixBlock
 	}
 
 	internal static class InfixExtensions

@@ -411,30 +411,252 @@ namespace HarmonyLib
 
 		IEnumerable<CodeInstruction> AddInfixes(IEnumerable<CodeInstruction> instructions)
 		{
-			var callGroups = instructions
-			.Where(ins => ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt)
-			.Where(ins => ins.operand is MethodInfo)
-			.GroupBy(ins => (MethodInfo)ins.operand);
-
-			var replacements = new Dictionary<CodeInstruction, CodeInstruction[]>();
-			foreach (var (innerMethod, calls) in callGroups.Select(g => (g.Key, Calls: g.ToList())))
+			var instructionList = instructions.ToList();
+			var callOccurrences = new Dictionary<MethodInfo, int>();
+			
+			// First pass: count call occurrences to determine indices
+			foreach (var instruction in instructionList)
 			{
-				var total = calls.Count;
-				for (var i = 0; i < total; i++)
+				if ((instruction.opcode == OpCodes.Call || instruction.opcode == OpCodes.Callvirt) && 
+					instruction.operand is MethodInfo method)
 				{
-					var callInstruction = calls[i];
-
-					var prefixes = config.innerprefixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
-					.SelectMany(fix => fix.Apply(config, true));
-					var postfixes = config.innerpostfixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
-					.SelectMany(fix => fix.Apply(config, false));
-
-					replacements[callInstruction] = [.. prefixes, callInstruction, .. postfixes];
+					callOccurrences[method] = callOccurrences.GetValueOrDefault(method, 0) + 1;
 				}
 			}
 
-			return instructions.SelectMany(instruction =>
-			replacements.TryGetValue(instruction, out var list) ? list : [instruction]);
+			var replacements = new Dictionary<CodeInstruction, List<CodeInstruction>>();
+			callOccurrences.Clear(); // Reset for second pass
+
+			// Second pass: generate infix replacements
+			foreach (var instruction in instructionList)
+			{
+				if ((instruction.opcode == OpCodes.Call || instruction.opcode == OpCodes.Callvirt) && 
+					instruction.operand is MethodInfo innerMethod)
+				{
+					var currentIndex = callOccurrences[innerMethod] = callOccurrences.GetValueOrDefault(innerMethod, 0) + 1;
+					var totalOccurrences = instructionList.Count(ins => 
+						(ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt) && 
+						ins.operand is MethodInfo m && m == innerMethod);
+
+					// Find matching infix patches for this call site
+					var prefixes = config.innerprefixes.FilterAndSort(innerMethod, currentIndex, totalOccurrences, config.debug);
+					var postfixes = config.innerpostfixes.FilterAndSort(innerMethod, currentIndex, totalOccurrences, config.debug);
+
+					if (prefixes.Length > 0 || postfixes.Length > 0)
+					{
+						// Generate infix replacement for this call site
+						var infixBlock = GenerateInfixBlock(instruction, innerMethod, prefixes, postfixes);
+						replacements[instruction] = infixBlock.ToList();
+					}
+				}
+			}
+
+			// Apply replacements
+			return instructionList.SelectMany(instruction =>
+				replacements.TryGetValue(instruction, out var replacement) ? (IEnumerable<CodeInstruction>)replacement : new[] { instruction });
+		}
+
+		List<CodeInstruction> GenerateInfixBlock(CodeInstruction originalCall, MethodInfo innerMethod, Infix[] prefixes, Infix[] postfixes)
+		{
+			var codes = new List<CodeInstruction>();
+			var parameters = innerMethod.GetParameters();
+			var hasInstance = !innerMethod.IsStatic;
+			var hasResult = innerMethod.ReturnType != typeof(void);
+
+			// Step 1: Capture stack operands into locals (in reverse order)
+			var capturedLocals = new List<LocalBuilder>();
+			
+			// Capture arguments in reverse order (argN, ..., arg1, instance?)
+			for (int i = parameters.Length - 1; i >= 0; i--)
+			{
+				var param = parameters[i];
+				var local = config.DeclareLocal(param.ParameterType);
+				capturedLocals.Insert(0, local); // Insert at beginning to maintain order
+				codes.Add(Stloc[local]);
+			}
+
+			// Capture instance if not static
+			LocalBuilder instanceLocal = null;
+			if (hasInstance)
+			{
+				instanceLocal = config.DeclareLocal(innerMethod.DeclaringType);
+				codes.Add(Stloc[instanceLocal]);
+			}
+
+			// Step 2: Initialize per-site locals
+			var runOriginalLocal = config.DeclareLocal(typeof(bool));
+			codes.Add(Ldc_I4_1); // true
+			codes.Add(Stloc[runOriginalLocal]);
+
+			LocalBuilder resultLocal = null;
+			if (hasResult)
+			{
+				resultLocal = config.DeclareLocal(innerMethod.ReturnType);
+				codes.AddRange(this.GenerateVariableInit(resultLocal, true));
+			}
+
+			// Step 3: Inner prefixes
+			var afterPrefixesLabel = config.DefineLabel();
+			var canSkip = prefixes.Any(p => this.AffectsOriginal(p.OuterMethod));
+
+			foreach (var prefix in prefixes)
+			{
+				if (canSkip)
+				{
+					codes.Add(Ldloc[runOriginalLocal]);
+					codes.Add(Brfalse[afterPrefixesLabel]);
+				}
+
+				// Generate parameter loading for inner prefix with inner context
+				codes.AddRange(GenerateInnerPatchParameters(prefix.OuterMethod, innerMethod, instanceLocal, capturedLocals, resultLocal, runOriginalLocal));
+				codes.Add(Call[prefix.OuterMethod]);
+
+				// Handle boolean return (skip semantics)
+				if (prefix.OuterMethod.ReturnType == typeof(bool))
+				{
+					codes.Add(Stloc[runOriginalLocal]);
+				}
+				else if (prefix.OuterMethod.ReturnType != typeof(void))
+				{
+					codes.Add(Pop); // Discard non-bool return value
+				}
+			}
+
+			codes.Add(Nop.WithLabels(afterPrefixesLabel));
+
+			// Step 4: Conditional original call
+			var afterCallLabel = config.DefineLabel();
+			codes.Add(Ldloc[runOriginalLocal]);
+			codes.Add(Brfalse[afterCallLabel]);
+
+			// Reload instance and arguments for original call
+			if (hasInstance)
+			{
+				codes.Add(Ldloc[instanceLocal]);
+			}
+			foreach (var argLocal in capturedLocals)
+			{
+				codes.Add(Ldloc[argLocal]);
+			}
+
+			// Emit the original call (preserving labels/blocks from original instruction)
+			codes.Add(originalCall.Clone());
+
+			// Store result if non-void
+			if (hasResult)
+			{
+				codes.Add(Stloc[resultLocal]);
+			}
+
+			codes.Add(Nop.WithLabels(afterCallLabel));
+
+			// Step 5: Inner postfixes
+			foreach (var postfix in postfixes)
+			{
+				codes.AddRange(GenerateInnerPatchParameters(postfix.OuterMethod, innerMethod, instanceLocal, capturedLocals, resultLocal, runOriginalLocal));
+				codes.Add(Call[postfix.OuterMethod]);
+
+				// Handle result passthrough
+				if (hasResult && postfix.OuterMethod.ReturnType == innerMethod.ReturnType)
+				{
+					var firstParam = postfix.OuterMethod.GetParameters().FirstOrDefault();
+					if (firstParam?.ParameterType == innerMethod.ReturnType)
+					{
+						codes.Add(Stloc[resultLocal]);
+					}
+				}
+				else if (postfix.OuterMethod.ReturnType != typeof(void))
+				{
+					codes.Add(Pop); // Discard return value
+				}
+			}
+
+			// Step 6: Restore stack effect
+			if (hasResult)
+			{
+				codes.Add(Ldloc[resultLocal]);
+			}
+
+			return codes;
+		}
+
+		List<CodeInstruction> GenerateInnerPatchParameters(MethodInfo patchMethod, MethodInfo innerMethod, 
+			LocalBuilder instanceLocal, List<LocalBuilder> argumentLocals, LocalBuilder resultLocal, LocalBuilder runOriginalLocal)
+		{
+			var codes = new List<CodeInstruction>();
+			var patchParams = patchMethod.GetParameters();
+			var innerParams = innerMethod.GetParameters();
+			
+			foreach (var patchParam in patchParams)
+			{
+				var paramType = patchParam.ParameterType;
+				var paramName = patchParam.Name;
+				
+				// Handle special injection parameters for inner context
+				if (paramName == "__instance")
+				{
+					if (instanceLocal != null)
+						codes.Add(paramType.IsByRef ? Ldloca[instanceLocal] : Ldloc[instanceLocal]);
+					else
+						codes.Add(Ldnull);
+					continue;
+				}
+
+				if (paramName == "__result")
+				{
+					if (resultLocal != null)
+						codes.Add(paramType.IsByRef ? Ldloca[resultLocal] : Ldloc[resultLocal]);
+					else
+						codes.Add(Ldnull);
+					continue;
+				}
+
+				if (paramName == "__runOriginal")
+				{
+					codes.Add(paramType.IsByRef ? Ldloca[runOriginalLocal] : Ldloc[runOriginalLocal]);
+					continue;
+				}
+
+				// Handle outer context parameters (o_ prefix)
+				// Note: Full outer context support requires more complex integration with existing parameter binding
+				// For now, documenting limitation
+				if (paramName.StartsWith("o_"))
+				{
+					throw new NotSupportedException($"Outer context parameter '{paramName}' not yet supported. " +
+						"Current implementation supports inner context (__instance, __result, inner method parameters) only.");
+				}
+
+				// Handle synthetic locals (__var_ prefix)
+				// Note: Synthetic locals require outer method local variable tracking
+				if (paramName.StartsWith("__var_"))
+				{
+					throw new NotSupportedException($"Synthetic local parameter '{paramName}' not yet supported. " +
+						"Current implementation supports inner context (__instance, __result, inner method parameters) only.");
+				}
+
+				// Try to match inner method parameter by name
+				var paramIndex = -1;
+				for (int i = 0; i < innerParams.Length; i++)
+				{
+					if (innerParams[i].Name == paramName)
+					{
+						paramIndex = i;
+						break;
+					}
+				}
+				
+				if (paramIndex >= 0 && paramIndex < argumentLocals.Count)
+				{
+					var argLocal = argumentLocals[paramIndex];
+					codes.Add(paramType.IsByRef ? Ldloca[argLocal] : Ldloc[argLocal]);
+				}
+				else
+				{
+					throw new Exception($"Cannot resolve parameter '{paramName}' for infix patch {patchMethod.FullDescription()}");
+				}
+			}
+
+			return codes;
 		}
 	}
 }

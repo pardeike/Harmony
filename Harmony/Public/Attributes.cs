@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace HarmonyLib
 {
@@ -660,6 +661,110 @@ namespace HarmonyLib
 	[AttributeUsage(AttributeTargets.Method)]
 	public class HarmonyFinalizer : Attribute
 	{
+	}
+
+	/// <summary>Specifies the target inner method and call sites for inner patches</summary>
+	///
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyInnerPatch : Attribute
+	{
+		/// <summary>The inner method to target</summary>
+		public readonly MethodBase method;
+
+		/// <summary>The call site indices to target (1-based), or empty for all occurrences</summary>
+		public readonly int[] indices;
+
+		/// <summary>Creates an inner patch attribute</summary>
+		/// <param name="method">The method to target for inner patching</param>
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPatch(MethodBase method, params int[] indices)
+		{
+			this.method = method ?? throw new ArgumentNullException(nameof(method));
+			this.indices = indices ?? new int[0];
+		}
+
+		/// <summary>Creates an inner patch attribute using type and method name</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPatch(Type declaringType, string methodName, params int[] indices)
+		{
+			this.method = AccessTools.Method(declaringType, methodName) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
+			this.indices = indices ?? new int[0];
+		}
+
+		/// <summary>Creates an inner patch attribute using type, method name, and parameter types</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="argumentTypes">The parameter types of the method</param>
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPatch(Type declaringType, string methodName, Type[] argumentTypes, params int[] indices)
+		{
+			this.method = AccessTools.Method(declaringType, methodName, argumentTypes) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' with specified argument types in type '{declaringType?.FullName}'");
+			this.indices = indices ?? new int[0];
+		}
+	}
+
+	/// <summary>Specifies an inner prefix function in a patch class</summary>
+	///
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyInnerPrefix : Attribute
+	{
+		/// <summary>The inner method to target</summary>
+		public readonly MethodBase method;
+
+		/// <summary>The call site indices to target (1-based), or empty for all occurrences</summary>
+		public readonly int[] indices;
+
+		/// <summary>Creates an inner prefix attribute</summary>
+		public HarmonyInnerPrefix()
+		{
+			this.method = null;
+			this.indices = new int[0];
+		}
+
+		/// <summary>Creates an inner prefix attribute with target method</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPrefix(Type declaringType, string methodName, params int[] indices)
+		{
+			this.method = AccessTools.Method(declaringType, methodName) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
+			this.indices = indices ?? new int[0];
+		}
+	}
+
+	/// <summary>Specifies an inner postfix function in a patch class</summary>
+	///
+	[AttributeUsage(AttributeTargets.Method)]
+	public class HarmonyInnerPostfix : Attribute
+	{
+		/// <summary>The inner method to target</summary>
+		public readonly MethodBase method;
+
+		/// <summary>The call site indices to target (1-based), or empty for all occurrences</summary>
+		public readonly int[] indices;
+
+		/// <summary>Creates an inner postfix attribute</summary>
+		public HarmonyInnerPostfix()
+		{
+			this.method = null;
+			this.indices = new int[0];
+		}
+
+		/// <summary>Creates an inner postfix attribute with target method</summary>
+		/// <param name="declaringType">The declaring type of the method</param>
+		/// <param name="methodName">The name of the method</param>
+		/// <param name="indices">1-based call site indices, or empty for all occurrences</param>
+		public HarmonyInnerPostfix(Type declaringType, string methodName, params int[] indices)
+		{
+			this.method = AccessTools.Method(declaringType, methodName) ?? 
+				throw new ArgumentException($"Cannot find method '{methodName}' in type '{declaringType?.FullName}'");
+			this.indices = indices ?? new int[0];
+		}
 	}
 
 	/// <summary>A Harmony annotation</summary>

@@ -88,6 +88,31 @@ namespace HarmonyLib
 			this.before = before ?? [];
 			this.after = after ?? [];
 			this.debug = debug;
+			this.innerMethod = null;
+			PatchMethod = patch;
+		}
+
+		/// <summary>Creates a patch with inner method target</summary>
+		/// <param name="patch">The method of the patch</param>
+		/// <param name="index">Zero-based index</param>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="priority">The priority, see <see cref="Priority"/></param>
+		/// <param name="before">A list of Harmony IDs for patches that should run after this patch</param>
+		/// <param name="after">A list of Harmony IDs for patches that should run before this patch</param>
+		/// <param name="debug">A flag that will log the replacement method via <see cref="FileLog"/> every time this patch is used to build the replacement, even in the future</param>
+		/// <param name="innerMethod">The inner method target for infix patches</param>
+		///
+		public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after, bool debug, InnerMethod innerMethod)
+		{
+			if (patch is DynamicMethod) throw new Exception($"Cannot directly reference dynamic method \"{patch.FullDescription()}\" in Harmony. Use a factory method instead that will return the dynamic method.");
+
+			this.index = index;
+			this.owner = owner;
+			this.priority = priority == -1 ? Priority.Normal : priority;
+			this.before = before ?? [];
+			this.after = after ?? [];
+			this.debug = debug;
+			this.innerMethod = innerMethod;
 			PatchMethod = patch;
 		}
 
@@ -106,6 +131,7 @@ namespace HarmonyLib
 			this.before = before ?? [];
 			this.after = after ?? [];
 			this.debug = debug;
+			this.innerMethod = null;
 			this.methodToken = methodToken;
 			this.moduleGUID = moduleGUID;
 		}
