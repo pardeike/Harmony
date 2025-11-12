@@ -72,10 +72,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mono-complete
 
+      - name: Install Mono on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install mono || (brew link --overwrite --force mono && brew install mono)
+          brew link --overwrite --force mono
+        shell: bash
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+          architecture: ${{inputs.architecture}}
         env:
           DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
 

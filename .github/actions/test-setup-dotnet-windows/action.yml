@@ -15,6 +15,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup .NET SDK ${{inputs.architecture}}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
     - name: Get .NET Channel for ${{inputs.target_framework}}
       uses: ./.github/actions/get-dotnet-channel
       id: get_channel
@@ -33,16 +38,21 @@ runs:
         Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
         .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel LTS -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
         .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel STS -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
-        
+
         $channel = "${{steps.get_channel.outputs.channel}}";
         if ($channel -ne '') {
           .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel $channel -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
         }
-        
+
         $channels = "${{steps.get_channel.outputs.channels_multiline}}";
         if ($channels -ne '') {
           foreach ($channel in ($channels -split "[\r\n]+")) {
             .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -NoPath -Channel $channel -Architecture ${{inputs.architecture}} -InstallDir "${{steps.get-program-files.outputs.path}}/dotnet";
           }
+        }
+
+        $installRoot = (Resolve-Path (Join-Path "${{steps.get-program-files.outputs.path}}" 'dotnet')).Path;
+        if ('${{ inputs.architecture == 'x86'}}' -eq 'true') {
+          Add-Content -Path $env:GITHUB_ENV -Value "DOTNET_ROOT(x86)=$installRoot";
         }
       shell: pwsh

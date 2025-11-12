@@ -110,10 +110,28 @@ runs:
         max_attempts: 3
         retry_on: timeout
         command: |
+          $dotnetCandidates = @()
           if ('${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64' && inputs.runtime-type == 'dotnet'}}' -eq 'true') {
-            $dotnet = '/Users/runner/.dotnet/x64/dotnet'
-          } else {
-            $dotnet = '/Users/runner/.dotnet/dotnet'
+            $dotnetCandidates += '/Users/runner/.dotnet/x64/dotnet'
+          }
+
+          if ($env:DOTNET_ROOT) {
+            $dotnetCandidates += (Join-Path $env:DOTNET_ROOT 'dotnet')
+          }
+
+          $dotnetCandidates += '/Users/runner/.dotnet/dotnet'
+          $dotnetCandidates += 'dotnet'
+
+          $dotnet = $null
+          foreach ($candidate in $dotnetCandidates) {
+            if ($candidate -eq 'dotnet' -or (Test-Path $candidate)) {
+              $dotnet = $candidate
+              break
+            }
+          }
+
+          if (-not $dotnet) {
+            throw 'Unable to locate a dotnet executable.'
           }
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
             $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
