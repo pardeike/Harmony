@@ -66,6 +66,12 @@ jobs:
         if: ${{ inputs.image == 'macos-14' && inputs.architecture == 'x64' }}
         run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
 
+      - name: Install Mono on macOS
+        if: ${{ startsWith(inputs.os, 'macos') }}
+        run: |
+          brew update
+          brew install mono
+
       - name: Install Mono on Ubuntu
         if: runner.os == 'Linux'
         run: |
