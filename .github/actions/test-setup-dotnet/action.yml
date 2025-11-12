@@ -18,7 +18,9 @@ runs:
     - name: Setup .NET Sdk
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.101'
+        dotnet-version: |
+          9.0.x
+          10.0.x
 
     - name: Get .NET Channels
       uses: ./.github/actions/get-dotnet-channel

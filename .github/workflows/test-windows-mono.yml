@@ -57,7 +57,9 @@ jobs:
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.100'
+          dotnet-version: |
+            9.0.x
+            10.0.x
 
       - name: Get Installed .NET Sdk Information
         run: dotnet --info
