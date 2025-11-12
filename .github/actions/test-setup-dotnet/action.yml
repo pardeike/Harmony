@@ -19,6 +19,7 @@ runs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
+        architecture: ${{inputs.architecture}}
 
     - name: Get .NET Channels
       uses: ./.github/actions/get-dotnet-channel
