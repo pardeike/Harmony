@@ -9,6 +9,7 @@
 
 Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is well established in titles like
 
+• **Genshin Impact Miliastra Wonderland**
 • **Rust**
 • **Rimworld**
 • **7 Days To Die**
