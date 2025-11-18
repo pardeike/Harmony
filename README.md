@@ -9,7 +9,6 @@
 
 Harmony gives you an elegant and high level way to alter the functionality in applications written in C#. It works great in games and is well established in titles like
 
-• **Genshin Impact Miliastra Wonderland**
 • **Rust**
 • **Rimworld**
 • **7 Days To Die**
@@ -22,6 +21,7 @@ Harmony gives you an elegant and high level way to alter the functionality in ap
 • **Resonite**
 • **BattleTech**
 • **Slime Rancher**
+• **Genshin Impact Miliastra Wonderland**
 
 and others like Ravenfield, Sheltered, Staxel, The Ultimate Nerd Game, Total Miner, Unturned, SCP: Secret Laboratory ...
 
