@@ -43,6 +43,8 @@ If you want a single file, dependency-merged assembly, you should use the [Lib.H
 
 If you instead want to supply the dependencies yourself, you should use the [Lib.Harmony.Thin](https://www.nuget.org/packages/Lib.Harmony.Thin) nuget package. You get more control but you are responsible to make all references available at runtime.
 
+> **Note for Unity/Burst Users**: If you're using Unity with the Burst compiler, you should use [Lib.Harmony.Thin](https://www.nuget.org/packages/Lib.Harmony.Thin) instead of Lib.Harmony. The fat build (Lib.Harmony) uses ILRepack to merge dependencies, which can produce metadata that's incompatible with Unity's Burst IL analyzer. The thin build ships dependencies separately and doesn't have this issue.
+
 ### Documentation
 
 Please check out the [documentation](https://harmony.pardeike.net) and join the official [discord server](https://discord.gg/xXgghXR).
