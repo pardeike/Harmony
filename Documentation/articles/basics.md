@@ -50,6 +50,22 @@ You can also use Harmony's file logger in your own code:
 
 [!code-csharp[example](../examples/basics.cs?name=log)]
 
+#### Controlling FileLog with Environment Variables
+
+FileLog can be configured using environment variables:
+
+- **`HARMONY_NO_LOG`**: Set to any non-empty value to disable file logging entirely.
+- **`HARMONY_LOG_FILE`**: Set to a custom file path to change where the log file is written.
+
+Example:
+```bash
+# Disable logging
+export HARMONY_NO_LOG=1
+
+# Or use a custom log path
+export HARMONY_LOG_FILE=/path/to/harmony.log.txt
+```
+
 ### Patching using annotations
 
 If you prefer annotations to organize your patches, you instruct Harmony to search for them by using `PatchAll()`:

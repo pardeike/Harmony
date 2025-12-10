@@ -71,3 +71,20 @@ public static void Reset()
 public static unsafe void LogBytes(long ptr, int len)
 // Same as Log(string str) but logs a hex dump and md5 hash.
 ```
+
+#### Environment Variables
+
+FileLog can be configured using the following environment variables:
+
+- **`HARMONY_NO_LOG`**: Set this to any non-empty value to disable file logging entirely. When set, all logging calls will be silently ignored and no log file will be created.
+
+- **`HARMONY_LOG_FILE`**: Set this to a custom file path to change where the log file is written. By default, the log file is created at `harmony.log.txt` on your Desktop. Setting this variable allows you to specify an alternative location.
+
+Example usage:
+```bash
+# Disable logging
+export HARMONY_NO_LOG=1
+
+# Or specify a custom log file path
+export HARMONY_LOG_FILE=/path/to/custom/harmony.log.txt
+```
