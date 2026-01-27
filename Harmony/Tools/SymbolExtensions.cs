@@ -50,5 +50,23 @@ namespace HarmonyLib
 
 			return method;
 		}
+
+		/// <summary>Given a lambda expression that accesses a field, returns the field info</summary>
+		/// <typeparam name="T">The generic type</typeparam>
+		/// <param name="expression">The lambda expression using the field</param>
+		/// <returns>The field in the lambda expression</returns>
+		///
+		public static FieldInfo GetFieldInfo<T>(Expression<Func<T>> expression) => GetFieldInfo((LambdaExpression)expression);
+
+		/// <summary>Given a lambda expression that accesses a field, returns the field info</summary>
+		/// <param name="expression">The lambda expression using the field</param>
+		/// <returns>The field in the lambda expression</returns>
+		///
+		public static FieldInfo GetFieldInfo(LambdaExpression expression)
+		{
+			if (expression.Body is MemberExpression memberExpression && memberExpression.Member is FieldInfo field)
+				return field;
+			throw new ArgumentException("Invalid Expression. Expression should consist of a field access only.");
+		}
 	}
 }

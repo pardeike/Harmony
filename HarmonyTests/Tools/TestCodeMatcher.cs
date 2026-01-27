@@ -285,5 +285,117 @@ namespace HarmonyLibTests.Tools
 				.RemoveUntilBackward(Ldstr["X"], Ldstr["Y"])
 				.Do(m => Assert.True(m.IsInvalid));
 		}
+
+		[Test]
+		public void Test_SymbolExtensions_GetFieldInfo_Static()
+		{
+			var fieldInfo = SymbolExtensions.GetFieldInfo(() => CodeMatcherClass.StaticField);
+			Assert.IsNotNull(fieldInfo);
+			Assert.AreEqual(nameof(CodeMatcherClass.StaticField), fieldInfo.Name);
+			Assert.IsTrue(fieldInfo.IsStatic);
+			Assert.AreEqual(typeof(int), fieldInfo.FieldType);
+		}
+
+		[Test]
+		public void Test_SymbolExtensions_GetFieldInfo_Instance()
+		{
+			var instance = new CodeMatcherClass();
+			var fieldInfo = SymbolExtensions.GetFieldInfo(() => instance.InstanceField);
+			Assert.IsNotNull(fieldInfo);
+			Assert.AreEqual(nameof(CodeMatcherClass.InstanceField), fieldInfo.Name);
+			Assert.IsFalse(fieldInfo.IsStatic);
+			Assert.AreEqual(typeof(int), fieldInfo.FieldType);
+		}
+
+		[Test]
+		public void Test_CodeMatch_LoadsField_Expression_Static()
+		{
+			var staticField = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.StaticField));
+			var loadFieldInstr = new CodeInstruction(OpCodes.Ldsfld, staticField);
+
+			var match = CodeMatch.LoadsField(() => CodeMatcherClass.StaticField);
+			Assert.IsTrue(match.predicate(loadFieldInstr));
+		}
+
+		[Test]
+		public void Test_CodeMatch_LoadsField_Expression_Instance()
+		{
+			var instance = new CodeMatcherClass();
+			var instanceField = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.InstanceField));
+			var loadFieldInstr = new CodeInstruction(OpCodes.Ldfld, instanceField);
+
+			var match = CodeMatch.LoadsField(() => instance.InstanceField);
+			Assert.IsTrue(match.predicate(loadFieldInstr));
+		}
+
+		[Test]
+		public void Test_CodeMatch_StoresField_Expression_Static()
+		{
+			var staticField = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.StaticField));
+			var storeFieldInstr = new CodeInstruction(OpCodes.Stsfld, staticField);
+
+			var match = CodeMatch.StoresField(() => CodeMatcherClass.StaticField);
+			Assert.IsTrue(match.predicate(storeFieldInstr));
+		}
+
+		[Test]
+		public void Test_CodeMatch_StoresField_Expression_Instance()
+		{
+			var instance = new CodeMatcherClass();
+			var instanceField = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.InstanceField));
+			var storeFieldInstr = new CodeInstruction(OpCodes.Stfld, instanceField);
+
+			var match = CodeMatch.StoresField(() => instance.InstanceField);
+			Assert.IsTrue(match.predicate(storeFieldInstr));
+		}
+
+		[Test]
+		public void Test_CodeInstruction_LoadField_Expression_Static()
+		{
+			var instr = CodeInstruction.LoadField(() => CodeMatcherClass.StaticField);
+			Assert.AreEqual(OpCodes.Ldsfld, instr.opcode);
+			var fieldInfo = instr.operand as FieldInfo;
+			Assert.IsNotNull(fieldInfo);
+			Assert.AreEqual(nameof(CodeMatcherClass.StaticField), fieldInfo.Name);
+		}
+
+		[Test]
+		public void Test_CodeInstruction_LoadField_Expression_Instance()
+		{
+			var instance = new CodeMatcherClass();
+			var instr = CodeInstruction.LoadField(() => instance.InstanceField);
+			Assert.AreEqual(OpCodes.Ldfld, instr.opcode);
+			var fieldInfo = instr.operand as FieldInfo;
+			Assert.IsNotNull(fieldInfo);
+			Assert.AreEqual(nameof(CodeMatcherClass.InstanceField), fieldInfo.Name);
+		}
+
+		[Test]
+		public void Test_CodeInstruction_LoadField_Expression_ByAddress()
+		{
+			var instr = CodeInstruction.LoadField(() => CodeMatcherClass.StaticField, useAddress: true);
+			Assert.AreEqual(OpCodes.Ldsflda, instr.opcode);
+		}
+
+		[Test]
+		public void Test_CodeInstruction_StoreField_Expression_Static()
+		{
+			var instr = CodeInstruction.StoreField(() => CodeMatcherClass.StaticField);
+			Assert.AreEqual(OpCodes.Stsfld, instr.opcode);
+			var fieldInfo = instr.operand as FieldInfo;
+			Assert.IsNotNull(fieldInfo);
+			Assert.AreEqual(nameof(CodeMatcherClass.StaticField), fieldInfo.Name);
+		}
+
+		[Test]
+		public void Test_CodeInstruction_StoreField_Expression_Instance()
+		{
+			var instance = new CodeMatcherClass();
+			var instr = CodeInstruction.StoreField(() => instance.InstanceField);
+			Assert.AreEqual(OpCodes.Stfld, instr.opcode);
+			var fieldInfo = instr.operand as FieldInfo;
+			Assert.IsNotNull(fieldInfo);
+			Assert.AreEqual(nameof(CodeMatcherClass.InstanceField), fieldInfo.Name);
+		}
 	}
 }

@@ -25,5 +25,9 @@ namespace HarmonyTests.Tools.Assets
 			Bar("H");
 			Foo();
 		}
+
+		// Fields for testing expression-based field access
+		public static int StaticField = 42;
+		public int InstanceField = 123;
 	}
 }

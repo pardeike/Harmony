@@ -77,7 +77,7 @@ namespace HarmonyLibTests.Patching
 			[HarmonyPatch(typeof(CategoryPatches), nameof(GetHelloWorld)), HarmonyPostfix]
 			public static void GetHelloWorldPatch(ref string __result)
 			{
-				__result = __result + "!";
+				__result += "!";
 			}
 			[HarmonyPatch(typeof(CategoryPatches), nameof(Multiply)), HarmonyPrefix]
 			public static void Multiply(ref int a)
