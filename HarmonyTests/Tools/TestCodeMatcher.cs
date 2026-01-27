@@ -397,5 +397,23 @@ namespace HarmonyLibTests.Tools
 			Assert.IsNotNull(fieldInfo);
 			Assert.AreEqual(nameof(CodeMatcherClass.InstanceField), fieldInfo.Name);
 		}
+
+		[Test]
+		public void Test_CodeInstruction_LoadField_FieldInfo()
+		{
+			var fieldInfo = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.StaticField));
+			var instr = CodeInstruction.LoadField(fieldInfo);
+			Assert.AreEqual(OpCodes.Ldsfld, instr.opcode);
+			Assert.AreEqual(fieldInfo, instr.operand);
+		}
+
+		[Test]
+		public void Test_CodeInstruction_StoreField_FieldInfo()
+		{
+			var fieldInfo = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.StaticField));
+			var instr = CodeInstruction.StoreField(fieldInfo);
+			Assert.AreEqual(OpCodes.Stsfld, instr.opcode);
+			Assert.AreEqual(fieldInfo, instr.operand);
+		}
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace HarmonyLib
@@ -200,6 +201,16 @@ namespace HarmonyLib
 		// --- FIELDS
 
 		/// <summary>Creates a CodeInstruction loading a field (LD[S]FLD[A])</summary>
+		/// <param name="field">The field</param>
+		/// <param name="useAddress">Use address of field</param>
+		/// <returns>A new Codeinstruction</returns>
+		public static CodeInstruction LoadField(FieldInfo field, bool useAddress = false)
+		{
+			if (field is null) throw new ArgumentNullException(nameof(field));
+			return new CodeInstruction(useAddress ? (field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda) : (field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld), field);
+		}
+
+		/// <summary>Creates a CodeInstruction loading a field (LD[S]FLD[A])</summary>
 		/// <param name="type">The class/type where the field is defined</param>
 		/// <param name="name">The name of the field (case sensitive)</param>
 		/// <param name="useAddress">Use address of field</param>
@@ -208,7 +219,7 @@ namespace HarmonyLib
 		{
 			var field = AccessTools.Field(type, name);
 			if (field is null) throw new ArgumentException($"No field found for {type} and {name}");
-			return new CodeInstruction(useAddress ? (field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda) : (field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld), field);
+			return LoadField(field, useAddress);
 		}
 
 		/// <summary>Creates a CodeInstruction loading a field (LD[S]FLD[A])</summary>
@@ -216,10 +227,15 @@ namespace HarmonyLib
 		/// <param name="expression">The lambda expression using the field</param>
 		/// <param name="useAddress">Use address of field</param>
 		/// <returns>A new Codeinstruction</returns>
-		public static CodeInstruction LoadField<T>(Expression<Func<T>> expression, bool useAddress = false)
+		public static CodeInstruction LoadField<T>(Expression<Func<T>> expression, bool useAddress = false) => LoadField(SymbolExtensions.GetFieldInfo(expression), useAddress);
+
+		/// <summary>Creates a CodeInstruction storing to a field (ST[S]FLD)</summary>
+		/// <param name="field">The field</param>
+		/// <returns>A new Codeinstruction</returns>
+		public static CodeInstruction StoreField(FieldInfo field)
 		{
-			var field = SymbolExtensions.GetFieldInfo(expression);
-			return new CodeInstruction(useAddress ? (field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda) : (field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld), field);
+			if (field is null) throw new ArgumentNullException(nameof(field));
+			return new CodeInstruction(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
 		}
 
 		/// <summary>Creates a CodeInstruction storing to a field (ST[S]FLD)</summary>
@@ -230,18 +246,14 @@ namespace HarmonyLib
 		{
 			var field = AccessTools.Field(type, name);
 			if (field is null) throw new ArgumentException($"No field found for {type} and {name}");
-			return new CodeInstruction(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
+			return StoreField(field);
 		}
 
 		/// <summary>Creates a CodeInstruction storing to a field (ST[S]FLD)</summary>
 		/// <typeparam name="T">The type of the field</typeparam>
 		/// <param name="expression">The lambda expression using the field</param>
 		/// <returns>A new Codeinstruction</returns>
-		public static CodeInstruction StoreField<T>(Expression<Func<T>> expression)
-		{
-			var field = SymbolExtensions.GetFieldInfo(expression);
-			return new CodeInstruction(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
-		}
+		public static CodeInstruction StoreField<T>(Expression<Func<T>> expression) => StoreField(SymbolExtensions.GetFieldInfo(expression));
 
 		// --- LOCALS
 
