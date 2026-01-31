@@ -213,6 +213,13 @@ namespace HarmonyLib
 			OpCodes.Callvirt
 		];
 
+		internal static readonly HashSet<OpCode> opcodesCallingOrNewobj =
+		[
+			OpCodes.Call,
+			OpCodes.Callvirt,
+			OpCodes.Newobj
+		];
+
 		internal static readonly HashSet<OpCode> opcodesLoadingLocalByAddress =
 		[
 			OpCodes.Ldloca_S,

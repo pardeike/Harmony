@@ -26,4 +26,17 @@ namespace HarmonyTests.Tools.Assets
 			Foo();
 		}
 	}
+
+	public class TestClass
+	{
+		public TestClass(int value) { }
+	}
+
+	public class MethodWithConstructorCall
+	{
+		public static object CreateTestClass()
+		{
+			return new TestClass(42);
+		}
+	}
 }

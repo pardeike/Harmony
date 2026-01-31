@@ -92,7 +92,7 @@ namespace HarmonyLib
 		///
 		public CodeMatch(Expression<Action> expression, string name = null)
 		{
-			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCalling);
+			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCallingOrNewobj);
 			operand = SymbolExtensions.GetMethodInfo(expression);
 			if (operand != null)
 				operands.Add(operand);
@@ -105,7 +105,7 @@ namespace HarmonyLib
 		///
 		public CodeMatch(LambdaExpression expression, string name = null)
 		{
-			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCalling);
+			opcodeSet.UnionWith(CodeInstructionExtensions.opcodesCallingOrNewobj);
 			operand = SymbolExtensions.GetMethodInfo(expression);
 			if (operand != null)
 				operands.Add(operand);
@@ -196,7 +196,13 @@ namespace HarmonyLib
 		/// <param name="method">The method</param>
 		/// <returns>A new code match</returns>
 		///
-		public static CodeMatch Calls(MethodInfo method) => WithOpcodes(CodeInstructionExtensions.opcodesCalling, method);
+		public static CodeMatch Calls(MethodInfo method) => WithOpcodes(CodeInstructionExtensions.opcodesCallingOrNewobj, method);
+
+		/// <summary>Tests if the code instruction calls the constructor</summary>
+		/// <param name="constructor">The constructor</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch Calls(ConstructorInfo constructor) => WithOpcodes(CodeInstructionExtensions.opcodesCallingOrNewobj, constructor);
 
 		/// <summary>Tests if the code instruction loads a constant</summary>
 		/// <returns>A new code match</returns>

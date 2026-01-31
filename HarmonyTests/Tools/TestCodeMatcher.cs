@@ -285,5 +285,47 @@ namespace HarmonyLibTests.Tools
 				.RemoveUntilBackward(Ldstr["X"], Ldstr["Y"])
 				.Do(m => Assert.True(m.IsInvalid));
 		}
+
+		[Test]
+		public void Test_CodeMatch_Calls_ConstructorInfo()
+		{
+			var method = SymbolExtensions.GetMethodInfo(() => MethodWithConstructorCall.CreateTestClass());
+			var instructions = PatchProcessor.GetOriginalInstructions(method)
+				.Where(instr => instr.opcode != OpCodes.Nop)
+				.ToList();
+
+			var ctorInfo = typeof(TestClass).GetConstructor([typeof(int)]);
+			Assert.IsNotNull(ctorInfo, "Constructor not found");
+
+			var matcher = new CodeMatcher(instructions)
+				.MatchStartForward(CodeMatch.Calls(ctorInfo));
+			Assert.IsTrue(matcher.IsValid, "Constructor match should be valid");
+			Assert.AreEqual(OpCodes.Newobj, matcher.Opcode, "Matched instruction should be Newobj");
+			Assert.AreEqual(ctorInfo, matcher.Operand, "Matched operand should be the constructor");
+		}
+
+		[Test]
+		public void Test_CodeMatch_Calls_MethodInfo_MatchesNewobj()
+		{
+			var method = SymbolExtensions.GetMethodInfo(() => MethodWithConstructorCall.CreateTestClass());
+			var instructions = PatchProcessor.GetOriginalInstructions(method)
+				.Where(instr => instr.opcode != OpCodes.Nop)
+				.ToList();
+
+			// Test that Calls(MethodInfo) with null matches Newobj opcodes as well
+			var matcher = new CodeMatcher(instructions)
+				.MatchStartForward(CodeMatch.Calls((MethodInfo)null));
+			Assert.IsTrue(matcher.IsValid, "Calls with null should match instructions");
+
+			// Find all instructions that match Call, Callvirt, or Newobj
+			var callOrNewobjInstructions = instructions
+				.Where(i => i.opcode == OpCodes.Call || i.opcode == OpCodes.Callvirt || i.opcode == OpCodes.Newobj)
+				.ToList();
+			Assert.IsTrue(callOrNewobjInstructions.Count > 0, "There should be call or newobj instructions");
+
+			// Verify the matcher finds the first one
+			var firstMatch = callOrNewobjInstructions.First();
+			Assert.AreEqual(firstMatch.opcode, matcher.Opcode, "First match should have correct opcode");
+		}
 	}
 }
