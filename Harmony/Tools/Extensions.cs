@@ -496,10 +496,10 @@ namespace HarmonyLib
 			return false;
 		}
 
-		/// <summary>Tests if the code instruction calls the method/constructor</summary>
+		/// <summary>Tests if the code instruction calls the specified method (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="method">The method</param>
-		/// <returns>True if the instruction calls the method or constructor</returns>
+		/// <param name="method">The method to match (must not be <c>null</c>)</param>
+		/// <returns>True if the instruction calls the method</returns>
 		///
 		public static bool Calls(this CodeInstruction code, MethodInfo method)
 		{
@@ -510,9 +510,9 @@ namespace HarmonyLib
 			return Equals(code.operand, method);
 		}
 
-		/// <summary>Tests if the code instruction calls the constructor</summary>
+		/// <summary>Tests if the code instruction calls the specified constructor (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
-		/// <param name="constructor">The constructor</param>
+		/// <param name="constructor">The constructor to match (must not be <c>null</c>)</param>
 		/// <returns>True if the instruction calls the constructor</returns>
 		///
 		public static bool Calls(this CodeInstruction code, ConstructorInfo constructor)

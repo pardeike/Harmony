@@ -86,7 +86,7 @@ namespace HarmonyLib
 		///
 		public static CodeMatch WithOpcodes(HashSet<OpCode> opcodes, object operand = null, string name = null) => new(null, operand, name) { opcodeSet = opcodes };
 
-		/// <summary>Creates a code match that calls a method</summary>
+		/// <summary>Creates a code match that calls a method (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <param name="name">The optional name</param>
 		///
@@ -99,7 +99,7 @@ namespace HarmonyLib
 			this.name = name;
 		}
 
-		/// <summary>Creates a code match that calls a method</summary>
+		/// <summary>Creates a code match that calls a method (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <param name="name">The optional name</param>
 		///
@@ -192,20 +192,20 @@ namespace HarmonyLib
 		///
 		public static CodeMatch IsStloc(LocalBuilder variable = null) => new(instruction => instruction.IsStloc(variable));
 
-		/// <summary>Tests if the code instruction calls the method/constructor</summary>
-		/// <param name="method">The method</param>
+		/// <summary>Tests if the code instruction calls a method or constructor (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
+		/// <param name="method">The method to match, or <c>null</c> to match any method/constructor call</param>
 		/// <returns>A new code match</returns>
 		///
 		public static CodeMatch Calls(MethodInfo method) => WithOpcodes(CodeInstructionExtensions.opcodesCallingOrNewobj, method);
 
-		/// <summary>Tests if the code instruction calls the constructor</summary>
-		/// <param name="constructor">The constructor</param>
+		/// <summary>Tests if the code instruction calls a constructor (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
+		/// <param name="constructor">The constructor to match, or <c>null</c> to match any method/constructor call</param>
 		/// <returns>A new code match</returns>
 		///
 		public static CodeMatch Calls(ConstructorInfo constructor) => WithOpcodes(CodeInstructionExtensions.opcodesCallingOrNewobj, constructor);
 
-		/// <summary>Tests if the code instruction calls the method or constructor</summary>
-		/// <param name="member">The method or constructor</param>
+		/// <summary>Tests if the code instruction calls a method or constructor (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
+		/// <param name="member">The method or constructor to match, or <c>null</c> to match any method/constructor call</param>
 		/// <returns>A new code match</returns>
 		///
 		public static CodeMatch Calls(MethodBase member) => WithOpcodes(CodeInstructionExtensions.opcodesCallingOrNewobj, member);
@@ -252,12 +252,12 @@ namespace HarmonyLib
 		///
 		public static CodeMatch StoresField(FieldInfo field) => new(instruction => instruction.StoresField(field));
 
-		/// <summary>Creates a code match that calls a method</summary>
+		/// <summary>Creates a code match that calls a method (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>A new code match</returns>
 		public static CodeMatch Calls(Expression<Action> expression) => new(expression);
 
-		/// <summary>Creates a code match that calls a method</summary>
+		/// <summary>Creates a code match that calls a method (matches <c>Call</c>, <c>Callvirt</c>, and <c>Newobj</c> opcodes)</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>A new code match</returns>
 		///
