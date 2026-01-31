@@ -204,6 +204,12 @@ namespace HarmonyLib
 		///
 		public static CodeMatch Calls(ConstructorInfo constructor) => WithOpcodes(CodeInstructionExtensions.opcodesCallingOrNewobj, constructor);
 
+		/// <summary>Tests if the code instruction calls the method or constructor</summary>
+		/// <param name="member">The method or constructor</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch Calls(MethodBase member) => WithOpcodes(CodeInstructionExtensions.opcodesCallingOrNewobj, member);
+
 		/// <summary>Tests if the code instruction loads a constant</summary>
 		/// <returns>A new code match</returns>
 		///

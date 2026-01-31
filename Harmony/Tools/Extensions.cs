@@ -207,12 +207,6 @@ namespace HarmonyLib
 	///
 	public static class CodeInstructionExtensions
 	{
-		internal static readonly HashSet<OpCode> opcodesCalling =
-		[
-			OpCodes.Call,
-			OpCodes.Callvirt
-		];
-
 		internal static readonly HashSet<OpCode> opcodesCallingOrNewobj =
 		[
 			OpCodes.Call,
@@ -511,9 +505,23 @@ namespace HarmonyLib
 		{
 			if (method is null)
 				throw new ArgumentNullException(nameof(method));
-			if (code.opcode != OpCodes.Call && code.opcode != OpCodes.Callvirt)
+			if (opcodesCallingOrNewobj.Contains(code.opcode) == false)
 				return false;
 			return Equals(code.operand, method);
+		}
+
+		/// <summary>Tests if the code instruction calls the constructor</summary>
+		/// <param name="code">The <see cref="CodeInstruction"/></param>
+		/// <param name="constructor">The constructor</param>
+		/// <returns>True if the instruction calls the constructor</returns>
+		///
+		public static bool Calls(this CodeInstruction code, ConstructorInfo constructor)
+		{
+			if (constructor is null)
+				throw new ArgumentNullException(nameof(constructor));
+			if (opcodesCallingOrNewobj.Contains(code.opcode) == false)
+				return false;
+			return Equals(code.operand, constructor);
 		}
 
 		/// <summary>Tests if the code instruction loads a constant</summary>

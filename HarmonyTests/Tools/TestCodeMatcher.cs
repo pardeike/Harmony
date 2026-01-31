@@ -312,7 +312,7 @@ namespace HarmonyLibTests.Tools
 				.Where(instr => instr.opcode != OpCodes.Nop)
 				.ToList();
 
-			// Test that Calls(MethodInfo) with null matches Newobj opcodes as well
+			// Test that CodeMatch.Calls with null operand matches any Call/Callvirt/Newobj opcode
 			var matcher = new CodeMatcher(instructions)
 				.MatchStartForward(CodeMatch.Calls((MethodInfo)null));
 			Assert.IsTrue(matcher.IsValid, "Calls with null should match instructions");
@@ -326,6 +326,65 @@ namespace HarmonyLibTests.Tools
 			// Verify the matcher finds the first one
 			var firstMatch = callOrNewobjInstructions.First();
 			Assert.AreEqual(firstMatch.opcode, matcher.Opcode, "First match should have correct opcode");
+		}
+
+		[Test]
+		public void Test_CodeMatch_Calls_MethodBase()
+		{
+			var method = SymbolExtensions.GetMethodInfo(() => MethodWithConstructorCall.CreateTestClass());
+			var instructions = PatchProcessor.GetOriginalInstructions(method)
+				.Where(instr => instr.opcode != OpCodes.Nop)
+				.ToList();
+
+			// Test with ConstructorInfo passed as MethodBase
+			MethodBase ctorAsMethodBase = typeof(TestClass).GetConstructor([typeof(int)]);
+			Assert.IsNotNull(ctorAsMethodBase, "Constructor not found");
+
+			var matcher = new CodeMatcher(instructions)
+				.MatchStartForward(CodeMatch.Calls(ctorAsMethodBase));
+			Assert.IsTrue(matcher.IsValid, "MethodBase match should be valid");
+			Assert.AreEqual(OpCodes.Newobj, matcher.Opcode, "Matched instruction should be Newobj");
+			Assert.AreEqual(ctorAsMethodBase, matcher.Operand, "Matched operand should be the constructor");
+		}
+
+		[Test]
+		public void Test_CodeInstruction_Calls_ConstructorInfo()
+		{
+			var method = SymbolExtensions.GetMethodInfo(() => MethodWithConstructorCall.CreateTestClass());
+			var instructions = PatchProcessor.GetOriginalInstructions(method)
+				.Where(instr => instr.opcode != OpCodes.Nop)
+				.ToList();
+
+			var ctorInfo = typeof(TestClass).GetConstructor([typeof(int)]);
+			Assert.IsNotNull(ctorInfo, "Constructor not found");
+
+			// Find the Newobj instruction
+			var newobjInstruction = instructions.First(i => i.opcode == OpCodes.Newobj);
+
+			// Test the extension method
+			Assert.IsTrue(newobjInstruction.Calls(ctorInfo), "Newobj instruction should match constructor");
+
+			// Test that a Call instruction does not match the constructor
+			var callInstruction = instructions.FirstOrDefault(i => i.opcode == OpCodes.Call);
+			if (callInstruction != null)
+				Assert.IsFalse(callInstruction.Calls(ctorInfo), "Call instruction should not match constructor");
+		}
+
+		[Test]
+		public void Test_CodeInstruction_Calls_MethodInfo_MatchesNewobj()
+		{
+			var method = SymbolExtensions.GetMethodInfo(() => MethodWithConstructorCall.CreateTestClass());
+			var instructions = PatchProcessor.GetOriginalInstructions(method)
+				.Where(instr => instr.opcode != OpCodes.Nop)
+				.ToList();
+
+			// Get a method that's called in CreateTestClass (if any)
+			var callInstruction = instructions.FirstOrDefault(i => i.opcode == OpCodes.Call && i.operand is MethodInfo);
+			if (callInstruction != null)
+			{
+				var calledMethod = (MethodInfo)callInstruction.operand;
+				Assert.IsTrue(callInstruction.Calls(calledMethod), "Call instruction should match the method");
+			}
 		}
 	}
 }
