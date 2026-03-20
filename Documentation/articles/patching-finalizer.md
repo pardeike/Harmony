@@ -14,23 +14,28 @@ Finalizers are commonly used to:
 
 ### Suppressing any exceptions
 
-```csharp
-static Exception Finalizer()
-{
-	return null;
-}
-```
+To suppress all exceptions, return `null` from a finalizer with return type `Exception`. This prevents any exception from being rethrown.
+
+[!code-csharp[example](../examples/patching-finalizer.cs?name=suppress)]
 
 ### Observing exceptions
 
-```csharp
-static void Finalizer(Exception __exception)
-{
-}
-```
+To observe an exception without altering it, use a `void` finalizer with `Exception __exception` as a parameter. The special `__exception` parameter will be `null` if no exception occurred.
+
+[!code-csharp[example](../examples/patching-finalizer.cs?name=observe)]
 
 ### Changing and rethrowing exceptions
 
+To remap exceptions, return a new exception from the finalizer. This replaces the original exception with a new one.
+
 [!code-csharp[example](../examples/patching-finalizer.cs?name=rethrow)]
 
+### Running cleanup code
+
+Finalizers are ideal for cleanup or resource management logic that must execute regardless of success or failure - similar to a `finally` block in standard C#.
+
+[!code-csharp[example](../examples/patching-finalizer.cs?name=cleanup)]
+
 Beside their handling of exceptions they can receive the same arguments as Postfixes.
+
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
