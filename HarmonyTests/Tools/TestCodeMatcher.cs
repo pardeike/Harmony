@@ -2,6 +2,7 @@ using HarmonyLib;
 using HarmonyTests.Tools.Assets;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,8 @@ namespace HarmonyLibTests.Tools
 		static int testInstructionsCount = 0;
 		static MethodInfo mFoo = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Foo());
 		static MethodInfo mBar = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
+		static ConstructorInfo cObject = typeof(object).GetConstructor(Type.EmptyTypes);
+		static ConstructorInfo cCodeMatcher = typeof(CodeMatcherClass).GetConstructor(Type.EmptyTypes);
 
 		static Test_CodeMatcher()
 		{
@@ -51,6 +54,8 @@ namespace HarmonyLibTests.Tools
 
 		static List<CodeInstruction> Instructions => [.. testInstructions];
 
+		static bool Matches(CodeInstruction instruction, CodeMatch match) => new CodeMatcher(new[] { instruction }).MatchStartForward(match).IsValid;
+
 		[Test]
 		public void Test_CodeMatch_Setup() => Assert.AreEqual(testInstructionsCount, 21);
 
@@ -63,6 +68,50 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual(match.operand, mBar);
 			Assert.AreEqual(match.operands, new[] { mBar });
 			Assert.AreEqual(match.name, "something");
+		}
+
+		[Test]
+		public void Test_CodeMatch_Calls_MethodInfo_Null_Preserves_Call_And_Callvirt_Matching()
+		{
+			var match = CodeMatch.Calls((MethodInfo)null);
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Call, mFoo), match));
+			Assert.True(Matches(new CodeInstruction(OpCodes.Callvirt, mFoo), match));
+			Assert.True(Matches(new CodeInstruction(OpCodes.Call, cObject), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Newobj, cObject), match));
+		}
+
+		[Test]
+		public void Test_CodeInstruction_Calls_MethodInfo_Null_Still_Throws()
+		{
+			_ = Assert.Throws<ArgumentNullException>(() => new CodeInstruction(OpCodes.Call, mFoo).Calls((MethodInfo)null));
+		}
+
+		[Test]
+		public void Test_CodeMatch_Calls_ConstructorInfo()
+		{
+			var match = CodeMatch.Calls(cObject);
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Newobj, cObject), match));
+			Assert.True(Matches(new CodeInstruction(OpCodes.Call, cObject), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Callvirt, cObject), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Newobj, cCodeMatcher), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Call, mFoo), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Newobj), match));
+		}
+
+		[Test]
+		public void Test_CodeMatch_Calls_ConstructorInfo_Null_Matches_Any_Constructor()
+		{
+			var match = CodeMatch.Calls((ConstructorInfo)null);
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Newobj, cObject), match));
+			Assert.True(Matches(new CodeInstruction(OpCodes.Call, cObject), match));
+			Assert.True(Matches(new CodeInstruction(OpCodes.Newobj, cCodeMatcher), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Callvirt, cObject), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Call, mFoo), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Newobj, mFoo), match));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Newobj), match));
 		}
 
 		[Test]

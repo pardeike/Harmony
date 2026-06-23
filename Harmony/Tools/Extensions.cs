@@ -495,10 +495,10 @@ namespace HarmonyLib
 			return false;
 		}
 
-		/// <summary>Tests if the code instruction calls the method/constructor</summary>
+		/// <summary>Tests if the code instruction calls the method</summary>
 		/// <param name="code">The <see cref="CodeInstruction"/></param>
 		/// <param name="method">The method</param>
-		/// <returns>True if the instruction calls the method or constructor</returns>
+		/// <returns>True if the instruction calls the method</returns>
 		///
 		public static bool Calls(this CodeInstruction code, MethodInfo method)
 		{

@@ -192,11 +192,20 @@ namespace HarmonyLib
 		///
 		public static CodeMatch IsStloc(LocalBuilder variable = null) => new(instruction => instruction.IsStloc(variable));
 
-		/// <summary>Tests if the code instruction calls the method/constructor</summary>
+		/// <summary>Tests if the code instruction calls the method</summary>
 		/// <param name="method">The method</param>
 		/// <returns>A new code match</returns>
 		///
 		public static CodeMatch Calls(MethodInfo method) => WithOpcodes(CodeInstructionExtensions.opcodesCalling, method);
+
+		/// <summary>Tests if the code instruction calls the constructor</summary>
+		/// <param name="constructor">The constructor</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch Calls(ConstructorInfo constructor) => new(instruction =>
+			(instruction.opcode == OpCodes.Newobj || instruction.opcode == OpCodes.Call)
+			&& instruction.operand is ConstructorInfo ctor
+			&& (constructor is null || Equals(ctor, constructor)));
 
 		/// <summary>Tests if the code instruction loads a constant</summary>
 		/// <returns>A new code match</returns>
