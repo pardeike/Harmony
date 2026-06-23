@@ -49,7 +49,9 @@ namespace HarmonyTests.Extras
 			patchInfo.AddInnerPostfixes("innerpostfixes", [hMethod]);
 			patchInfo.VersionCount = 123;
 
+#if !NET9_0_OR_GREATER
 			PatchInfoSerialization.useBinaryFormatter = false;
+#endif
 			var result = PatchInfoSerialization.Serialize(patchInfo);
 			var resString = Encoding.UTF8.GetString(result, 0, result.Length);
 			Assert.AreEqual(ExpectedJSON(), resString);
@@ -58,7 +60,9 @@ namespace HarmonyTests.Extras
 		[Test]
 		public void Deserialize()
 		{
+#if !NET9_0_OR_GREATER
 			PatchInfoSerialization.useBinaryFormatter = false;
+#endif
 
 			Assert.AreEqual(GetFixes(new PatchInfo()).Length, fixNames.Length);
 

@@ -1,7 +1,9 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+#if !NET9_0_OR_GREATER
 using System.Runtime.Serialization.Formatters.Binary;
+#endif
 #if NET5_0_OR_GREATER
 using System.Text.Json;
 #endif
@@ -14,15 +16,13 @@ namespace HarmonyLib
 	{
 #if NET5_0_OR_GREATER
 		static readonly JsonSerializerOptions serializerOptions = new() { IncludeFields = true };
+#endif
+#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
 		internal static bool? useBinaryFormatter = null;
 		internal static bool UseBinaryFormatter
 		{
 			get
 			{
-#if NET9_0_OR_GREATER
-				// BinaryFormatter is obsolete in .NET 9, so we always use JSON serialization
-				return false;
-#else
 				if (!useBinaryFormatter.HasValue)
 				{
 					// https://github.com/dotnet/runtime/blob/208e377a5329ad6eb1db5e5fb9d4590fa50beadd/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/LocalAppContextSwitches.cs#L14
@@ -36,11 +36,11 @@ namespace HarmonyLib
 					}
 				}
 				return useBinaryFormatter.Value;
-#endif
 			}
 		}
 #endif
 
+#if !NET9_0_OR_GREATER
 		class Binder : SerializationBinder
 		{
 			/// <summary>Control the binding of a serialized object to a type</summary>
@@ -63,6 +63,7 @@ namespace HarmonyLib
 			}
 		}
 		internal static readonly BinaryFormatter binaryFormatter = new() { Binder = new Binder() };
+#endif
 
 		/// <summary>Serializes a patch info</summary>
 		/// <param name="patchInfo">The <see cref="PatchInfo"/></param>
@@ -70,17 +71,21 @@ namespace HarmonyLib
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
-#if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
 			if (UseBinaryFormatter)
 			{
 #endif
+#if !NET9_0_OR_GREATER
 			using var streamMemory = new MemoryStream();
 			binaryFormatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.ToArray();
-#if NET5_0_OR_GREATER
+#endif
+#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
 			}
 			else
-				return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
+#endif
+#if NET5_0_OR_GREATER
+			return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
 #endif
 		}
 
@@ -90,15 +95,19 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
-#if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
 			if (UseBinaryFormatter)
 			{
 #endif
+#if !NET9_0_OR_GREATER
 			using var streamMemory = new MemoryStream(bytes);
 			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
-#if NET5_0_OR_GREATER
+#endif
+#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
 			}
 			else
+#endif
+#if NET5_0_OR_GREATER
 			{
 				return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
 			}
