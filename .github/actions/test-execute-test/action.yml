@@ -90,9 +90,74 @@ runs:
           'NUnit.DefaultTestNamePattern={C}:{m}{a}'
           'RunConfiguration.TargetPlatform=${{inputs.architecture}}'
         )
+        $testTimeout = if ("${{inputs.runtime-type}}" -eq "mono") {
+          [TimeSpan]::FromMinutes(3)
+        } else {
+          [TimeSpan]::FromMinutes(5)
+        }
+
+        function Test-TrxSucceeded($trxPath) {
+          if (-not (Test-Path $trxPath)) {
+            return $false
+          }
+          try {
+            [xml]$trx = Get-Content $trxPath
+            $resultSummary = $trx.SelectSingleNode('//*[local-name()="ResultSummary"]')
+            if ($null -eq $resultSummary -or $resultSummary.GetAttribute('outcome') -ne 'Completed') {
+              return $false
+            }
+            $counters = $resultSummary.SelectSingleNode('*[local-name()="Counters"]')
+            if ($null -eq $counters) {
+              return $false
+            }
+            return [int]$counters.GetAttribute('failed') -eq 0 `
+              -and [int]$counters.GetAttribute('error') -eq 0 `
+              -and [int]$counters.GetAttribute('timeout') -eq 0 `
+              -and [int]$counters.GetAttribute('aborted') -eq 0
+          } catch {
+            Write-Warning "Unable to read test result file '$trxPath': $_"
+            return $false
+          }
+        }
+
+        function Invoke-VSTest($fileName, [string[]]$arguments, $trxPath, $targetFramework) {
+          $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
+          $startInfo.FileName = $fileName
+          $startInfo.UseShellExecute = $false
+          foreach ($argument in $arguments) {
+            [void]$startInfo.ArgumentList.Add($argument)
+          }
+
+          $process = [System.Diagnostics.Process]::Start($startInfo)
+          if (-not $process.WaitForExit([int]$testTimeout.TotalMilliseconds)) {
+            if ("${{inputs.runtime-type}}" -eq "mono" -and (Test-TrxSucceeded $trxPath)) {
+              Write-Warning "Mono VSTest did not exit after successful $targetFramework test run; terminating the stuck process and continuing."
+              try {
+                $process.Kill($true)
+              } catch {
+                $process.Kill()
+              }
+              $process.WaitForExit()
+              return
+            }
+
+            try {
+              $process.Kill($true)
+            } catch {
+              $process.Kill()
+            }
+            $process.WaitForExit()
+            throw "Timed out after $($testTimeout.TotalMinutes) minutes waiting for $targetFramework tests."
+          }
+
+          if ($process.ExitCode -ne 0) {
+            exit $process.ExitCode
+          }
+        }
     
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
+          $trxPath = Join-Path "TestResults" $trxFileName
           $testCommand = $vstest
           $testArguments = @(
             "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll"
@@ -109,10 +174,7 @@ runs:
             $testCommand = $mono
             $testArguments = @($vstest) + $testArguments
           }
-          & $testCommand @testArguments
-          if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-          }
+          Invoke-VSTest -fileName $testCommand -arguments $testArguments -trxPath $trxPath -targetFramework $target_framework
         }
       shell: pwsh
       
