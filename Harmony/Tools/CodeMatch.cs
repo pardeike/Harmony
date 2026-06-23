@@ -243,11 +243,26 @@ namespace HarmonyLib
 		///
 		public static CodeMatch LoadsField(FieldInfo field, bool byAddress = false) => new(instruction => instruction.LoadsField(field, byAddress));
 
+		/// <summary>Tests if the code instruction loads a field</summary>
+		/// <typeparam name="T">The field type</typeparam>
+		/// <param name="expression">The lambda expression using the field</param>
+		/// <param name="byAddress">Set to true if the address of the field is loaded</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch LoadsField<T>(Expression<Func<T>> expression, bool byAddress = false) => LoadsField(SymbolExtensions.GetFieldInfo(expression), byAddress);
+
 		/// <summary>Tests if the code instruction stores a field</summary>
 		/// <param name="field">The field</param>
 		/// <returns>A new code match</returns>
 		///
 		public static CodeMatch StoresField(FieldInfo field) => new(instruction => instruction.StoresField(field));
+
+		/// <summary>Tests if the code instruction stores a field</summary>
+		/// <typeparam name="T">The field type</typeparam>
+		/// <param name="expression">The lambda expression using the field</param>
+		/// <returns>A new code match</returns>
+		///
+		public static CodeMatch StoresField<T>(Expression<Func<T>> expression) => StoresField(SymbolExtensions.GetFieldInfo(expression));
 
 		/// <summary>Creates a code match that calls a method</summary>
 		/// <param name="expression">The lambda expression using the method</param>

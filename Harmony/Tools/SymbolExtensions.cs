@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace HarmonyLib
 {
-	/// <summary>A helper class to retrieve reflection info for non-private methods</summary>
+	/// <summary>A helper class to retrieve reflection info for non-private methods and fields</summary>
 	/// 
 	public static class SymbolExtensions
 	{
@@ -49,6 +49,31 @@ namespace HarmonyLib
 				throw new Exception($"Cannot find method for expression {expression}");
 
 			return method;
+		}
+
+		/// <summary>Given a lambda expression that accesses a field, returns the field info</summary>
+		/// <typeparam name="T">The generic field type</typeparam>
+		/// <param name="expression">The lambda expression using the field</param>
+		/// <returns>The field in the lambda expression</returns>
+		///
+		public static FieldInfo GetFieldInfo<T>(Expression<Func<T>> expression) => GetFieldInfo((LambdaExpression)expression);
+
+		/// <summary>Given a lambda expression that accesses a field, returns the field info</summary>
+		/// <param name="expression">The lambda expression using the field</param>
+		/// <returns>The field in the lambda expression</returns>
+		///
+		public static FieldInfo GetFieldInfo(LambdaExpression expression)
+		{
+			if (expression is null)
+				throw new ArgumentNullException(nameof(expression));
+
+			var body = expression.Body;
+			while (body is UnaryExpression { NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked } unaryExpression)
+				body = unaryExpression.Operand;
+
+			if (body is MemberExpression memberExpression && memberExpression.Member is FieldInfo field)
+				return field;
+			throw new ArgumentException("Invalid Expression. Expression should consist of a field access only.", nameof(expression));
 		}
 	}
 }

@@ -5,6 +5,7 @@ using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using static HarmonyLib.Code;
@@ -20,6 +21,9 @@ namespace HarmonyLibTests.Tools
 		static MethodInfo mBar = SymbolExtensions.GetMethodInfo(() => CodeMatcherClass.Bar(""));
 		static ConstructorInfo cObject = typeof(object).GetConstructor(Type.EmptyTypes);
 		static ConstructorInfo cCodeMatcher = typeof(CodeMatcherClass).GetConstructor(Type.EmptyTypes);
+		static FieldInfo fStatic = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.StaticField));
+		static FieldInfo fOtherStatic = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.OtherStaticField));
+		static FieldInfo fInstance = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.InstanceField));
 
 		static Test_CodeMatcher()
 		{
@@ -112,6 +116,76 @@ namespace HarmonyLibTests.Tools
 			Assert.False(Matches(new CodeInstruction(OpCodes.Call, mFoo), match));
 			Assert.False(Matches(new CodeInstruction(OpCodes.Newobj, mFoo), match));
 			Assert.False(Matches(new CodeInstruction(OpCodes.Newobj), match));
+		}
+
+		[Test]
+		public void Test_SymbolExtensions_GetFieldInfo()
+		{
+			var instance = new CodeMatcherClass();
+			Expression<Func<object>> boxedStaticField = () => CodeMatcherClass.StaticField;
+
+			Assert.AreEqual(fStatic, SymbolExtensions.GetFieldInfo(() => CodeMatcherClass.StaticField));
+			Assert.AreEqual(fInstance, SymbolExtensions.GetFieldInfo(() => default(CodeMatcherClass).InstanceField));
+			Assert.AreEqual(fInstance, SymbolExtensions.GetFieldInfo(() => instance.InstanceField));
+			Assert.AreEqual(fStatic, SymbolExtensions.GetFieldInfo(boxedStaticField));
+		}
+
+		[Test]
+		public void Test_SymbolExtensions_GetFieldInfo_Invalid()
+		{
+			Expression<Action> methodCall = () => CodeMatcherClass.Foo();
+
+			_ = Assert.Throws<ArgumentNullException>(() => SymbolExtensions.GetFieldInfo((LambdaExpression)null));
+			_ = Assert.Throws<ArgumentException>(() => SymbolExtensions.GetFieldInfo(() => 123));
+			_ = Assert.Throws<ArgumentException>(() => SymbolExtensions.GetFieldInfo(methodCall));
+		}
+
+		[Test]
+		public void Test_CodeMatch_LoadsField_Expression()
+		{
+			var instance = new CodeMatcherClass();
+			var staticMatch = CodeMatch.LoadsField(() => CodeMatcherClass.StaticField);
+			var instanceMatch = CodeMatch.LoadsField(() => instance.InstanceField);
+			var staticAddressMatch = CodeMatch.LoadsField(() => CodeMatcherClass.StaticField, byAddress: true);
+			var instanceAddressMatch = CodeMatch.LoadsField(() => default(CodeMatcherClass).InstanceField, byAddress: true);
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Ldsfld, fStatic), staticMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldsflda, fStatic), staticMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldsfld, fOtherStatic), staticMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Stsfld, fStatic), staticMatch));
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Ldfld, fInstance), instanceMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldflda, fInstance), instanceMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldsfld, fStatic), instanceMatch));
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Ldsflda, fStatic), staticAddressMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldsfld, fStatic), staticAddressMatch));
+			Assert.True(Matches(new CodeInstruction(OpCodes.Ldflda, fInstance), instanceAddressMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldfld, fInstance), instanceAddressMatch));
+		}
+
+		[Test]
+		public void Test_CodeMatch_StoresField_Expression()
+		{
+			var instance = new CodeMatcherClass();
+			var staticMatch = CodeMatch.StoresField(() => CodeMatcherClass.StaticField);
+			var instanceMatch = CodeMatch.StoresField(() => instance.InstanceField);
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Stsfld, fStatic), staticMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldsfld, fStatic), staticMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Stsfld, fOtherStatic), staticMatch));
+
+			Assert.True(Matches(new CodeInstruction(OpCodes.Stfld, fInstance), instanceMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Ldfld, fInstance), instanceMatch));
+			Assert.False(Matches(new CodeInstruction(OpCodes.Stsfld, fStatic), instanceMatch));
+		}
+
+		[Test]
+		public void Test_CodeMatch_FieldInfo_Null_Still_Binds_To_FieldInfo_Overloads()
+		{
+			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.LoadsField(null).Matches([], new CodeInstruction(OpCodes.Ldsfld, fStatic)));
+			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.LoadsField(null, true).Matches([], new CodeInstruction(OpCodes.Ldsflda, fStatic)));
+			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.StoresField(null).Matches([], new CodeInstruction(OpCodes.Stsfld, fStatic)));
 		}
 
 		[Test]

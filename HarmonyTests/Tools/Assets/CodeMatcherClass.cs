@@ -7,6 +7,10 @@ namespace HarmonyTests.Tools.Assets
 
 	public class CodeMatcherClass
 	{
+		public static int StaticField;
+		public static int OtherStaticField;
+		public int InstanceField;
+
 		public static void Foo() { }
 		public static void Bar(string s) { }
 
