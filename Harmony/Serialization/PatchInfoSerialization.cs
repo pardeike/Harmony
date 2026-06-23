@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using System.Runtime.Serialization;
 #if !NET9_0_OR_GREATER
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
 #if NET5_0_OR_GREATER
@@ -71,21 +71,17 @@ namespace HarmonyLib
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
-#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
-			if (UseBinaryFormatter)
-			{
+#if NET9_0_OR_GREATER
+			return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
+#elif NET5_0_OR_GREATER
+			if (!UseBinaryFormatter)
+				return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
 #endif
+
 #if !NET9_0_OR_GREATER
 			using var streamMemory = new MemoryStream();
 			binaryFormatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.ToArray();
-#endif
-#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
-			}
-			else
-#endif
-#if NET5_0_OR_GREATER
-			return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
 #endif
 		}
 
@@ -95,22 +91,16 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
-#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
-			if (UseBinaryFormatter)
-			{
+#if NET9_0_OR_GREATER
+			return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
+#elif NET5_0_OR_GREATER
+			if (!UseBinaryFormatter)
+				return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
 #endif
+
 #if !NET9_0_OR_GREATER
 			using var streamMemory = new MemoryStream(bytes);
 			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
-#endif
-#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
-			}
-			else
-#endif
-#if NET5_0_OR_GREATER
-			{
-				return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
-			}
 #endif
 		}
 

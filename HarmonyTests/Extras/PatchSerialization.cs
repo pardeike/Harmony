@@ -33,6 +33,19 @@ namespace HarmonyTests.Extras
 			return "{" + fixes + ",\"VersionCount\":123}";
 		}
 
+#if NET9_0_OR_GREATER
+		[Test]
+		public void DoesNotReferenceBinaryFormatterAssembly()
+		{
+			var referencedAssemblyNames = typeof(Harmony).Assembly
+				.GetReferencedAssemblies()
+				.Select(assemblyName => assemblyName.Name)
+				.ToArray();
+
+			Assert.False(referencedAssemblyNames.Contains("System.Runtime.Serialization.Formatters"), string.Join("\n", referencedAssemblyNames));
+		}
+#endif
+
 #if NET5_0_OR_GREATER
 		[Test]
 		public void Serialize()
