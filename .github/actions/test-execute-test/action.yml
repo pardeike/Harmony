@@ -86,10 +86,33 @@ runs:
        
         $vspath = vswhere -latest -property installationPath
         $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
+        $runSettingsArgs = @(
+          'NUnit.DefaultTestNamePattern={C}:{m}{a}'
+          'RunConfiguration.TargetPlatform=${{inputs.architecture}}'
+        )
     
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-          & ${{(inputs.runtime-type == 'mono' && '"$mono"') || ''}} "$vstest" "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" --framework:$target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" --blame -- ${{steps.test-args.outputs.run_settings_args}}
+          $testCommand = $vstest
+          $testArguments = @(
+            "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll"
+            "--framework:$target_framework"
+            "--logger:trx;LogFileName=../TestResults/$trxFileName"
+            "--logger:console;verbosity=normal"
+          )
+          if ("${{inputs.runtime-type}}" -ne "mono") {
+            $testArguments += "--blame"
+          }
+          $testArguments += "--"
+          $testArguments += $runSettingsArgs
+          if ("${{inputs.runtime-type}}" -eq "mono") {
+            $testCommand = $mono
+            $testArguments = @($vstest) + $testArguments
+          }
+          & $testCommand @testArguments
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
         }
       shell: pwsh
       
