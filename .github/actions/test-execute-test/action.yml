@@ -164,10 +164,8 @@ runs:
             "--framework:$target_framework"
             "--logger:trx;LogFileName=../TestResults/$trxFileName"
             "--logger:console;verbosity=normal"
+            "--blame"
           )
-          if ("${{inputs.runtime-type}}" -ne "mono") {
-            $testArguments += "--blame"
-          }
           $testArguments += "--"
           $testArguments += $runSettingsArgs
           if ("${{inputs.runtime-type}}" -eq "mono") {
