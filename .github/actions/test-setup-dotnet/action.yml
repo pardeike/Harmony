@@ -16,7 +16,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup .NET Sdk
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: '10.0.x'
 
@@ -28,7 +28,7 @@ runs:
         target_framework_array: ${{inputs.target_framework_array}}
 
     - name: Setup .NET ${{steps.get_channels.outputs.channels_multiline}}
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: |
           ${{steps.get_channels.outputs.channel}}

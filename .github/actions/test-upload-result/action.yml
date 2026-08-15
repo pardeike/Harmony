@@ -25,7 +25,7 @@ runs:
   using: "composite"
   steps:
     - name: Upload Test Results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: success() || failure()
       with:
         name: ${{(inputs.experimental == 'true' && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}${{inputs.target_framework && format('-{0}', inputs.target_framework) || ''}}-${{inputs.build_configuration}}

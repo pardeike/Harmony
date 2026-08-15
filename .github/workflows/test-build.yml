@@ -42,12 +42,12 @@ jobs:
     if: ${{!inputs.manual_build || inputs.publish}}
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
@@ -60,7 +60,7 @@ jobs:
           fi
 
       - name: Upload Test Build Output Cache
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
           path: HarmonyTests/bin/**/*

@@ -211,13 +211,18 @@ jobs:
     needs: [test-results]
     runs-on: ubuntu-22.04
     if: always()
+    permissions:
+      actions: write
+      contents: read
     steps:
-      # Delete build output artifacts
-      - uses: joutvhu/delete-artifact@v2
-        with:
-          pattern: build-output-*
-      
-      # Delete test result artifacts
-      - uses: joutvhu/delete-artifact@v2
-        with:
-          pattern: test-results-*
+      - name: Delete transient workflow artifacts
+        env:
+          GH_TOKEN: ${{github.token}}
+          GH_REPO: ${{github.repository}}
+          RUN_ID: ${{github.run_id}}
+        run: |
+          gh api "repos/$GH_REPO/actions/runs/$RUN_ID/artifacts" --paginate \
+            --jq '.artifacts[] | select((.name | startswith("build-output-")) or (.name | startswith("test-results-"))) | .id' |
+            while read -r artifact_id; do
+              gh api --method DELETE "repos/$GH_REPO/actions/artifacts/$artifact_id"
+            done
