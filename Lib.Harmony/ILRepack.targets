@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Target Name="ILRepacker" AfterTargets="Build">
+	<Target Name="ILRepacker" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
 		<PropertyGroup>
 			<DebugInfo>true</DebugInfo>
 			<DebugInfo Condition="'$(TargetFramework)' == 'netstandard2.0'">false</DebugInfo>
@@ -18,6 +18,7 @@
 			<LibraryPath Condition="$(TargetFramework) == 'net7.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net7.0" />
 			<LibraryPath Condition="$(TargetFramework) == 'net8.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net8.0" />
 			<LibraryPath Condition="$(TargetFramework) == 'net9.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net9.0" />
+			<LibraryPath Condition="$(TargetFramework) == 'net10.0'" Include="$(PkgMicrosoft_NetCore_App_Ref)\ref\net10.0" />
 		</ItemGroup>
 		
 		<ILRepack

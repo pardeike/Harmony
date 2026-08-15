@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2" PrivateAssets="all" />
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.46" PrivateAssets="all" />
     <ProjectReference Condition="'$(MonoModCoreVersion)' == ''" Include="../LocalMonoMod/src/MonoMod.Core/MonoMod.Core.csproj" PrivateAssets="all" />
     <PackageReference Condition="'$(MonoModCoreVersion)' != ''" Include="MonoMod.Core" Version="$(MonoModCoreVersion)" PrivateAssets="all" />
   </ItemGroup>
@@ -26,14 +26,14 @@
     <!-- Ensure the ref assemblies for .NET Core are on disk.
       Needed by ILRepack to resolve framework references for each platform.
       Ensures the build (ILRepack task) can work without having all these versions installed. -->
-    <PackageReference Condition="$(TargetFramework) == 'netcoreapp3.0'" Include="Microsoft.NetCore.App.Ref" Version="3.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'netcoreapp3.0'" Include="Microsoft.NetCore.App.Ref" Version="3.0.1" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Condition="$(TargetFramework) == 'netcoreapp3.1'" Include="Microsoft.NetCore.App.Ref" Version="3.1.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Condition="$(TargetFramework) == 'net5.0'" Include="Microsoft.NetCore.App.Ref" Version="5.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Condition="$(TargetFramework) == 'net6.0'" Include="Microsoft.NetCore.App.Ref" Version="6.0.36" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Condition="$(TargetFramework) == 'net7.0'" Include="Microsoft.NetCore.App.Ref" Version="7.0.20" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Condition="$(TargetFramework) == 'net8.0'" Include="Microsoft.NetCore.App.Ref" Version="8.0.12" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Condition="$(TargetFramework) == 'net9.0'" Include="Microsoft.NetCore.App.Ref" Version="9.0.1" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Condition="$(TargetFramework) == 'net10.0'" Include="Microsoft.NetCore.App.Ref" Version="10.0.0" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net8.0'" Include="Microsoft.NetCore.App.Ref" Version="8.0.30" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net9.0'" Include="Microsoft.NetCore.App.Ref" Version="9.0.19" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Condition="$(TargetFramework) == 'net10.0'" Include="Microsoft.NetCore.App.Ref" Version="10.0.11" ExcludeAssets="all" PrivateAssets="all" GeneratePathProperty="true" />
   </ItemGroup>
 
   <!-- Replace Code with reference to Lib.Harmony.Ref for netstandard2.0 -->

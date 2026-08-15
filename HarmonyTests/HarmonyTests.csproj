@@ -15,15 +15,21 @@
 
   <ItemGroup>
     <!-- force newer versions due to vulnerability -->
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Condition="'$(TargetFramework)'!='net35'" Include="System.Text.RegularExpressions" Version="4.3.1" />
     <!-- end force -->
     
+    <!-- Newer test SDK and adapter releases drop older targets; use the newest compatible version for each group. -->
     <PackageReference Condition="!$(IsNET5OrGreater)" Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Condition="$(IsNET5OrGreater)" Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Condition="'$(TargetFramework)'=='net5.0' Or '$(TargetFramework)'=='net6.0' Or '$(TargetFramework)'=='net7.0'" Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Condition="'$(TargetFramework)'=='net8.0' Or '$(TargetFramework)'=='net9.0' Or '$(TargetFramework)'=='net10.0'" Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     
     <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
+    <PackageReference Condition="'$(TargetFramework)'=='netcoreapp3.0'" Include="NUnit3TestAdapter" Version="4.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Condition="'$(TargetFramework)'!='netcoreapp3.0'" Include="NUnit3TestAdapter" Version="4.3.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
