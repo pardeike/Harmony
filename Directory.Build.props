@@ -88,8 +88,14 @@
 		<None Include="$(MSBuildThisFileDirectory)HarmonyLogo.png" Pack="true" Visible="false" PackagePath="" />
 	</ItemGroup>
 
+	<PropertyGroup Label="Strong Naming">
+		<!-- Public key of SignKey.snk. A strong-name signed assembly must name a public key in every
+		     InternalsVisibleTo declaration it emits, otherwise the compiler reports CS1726. -->
+		<HarmonyPublicKey>0024000004800000940000000602000000240000525341310004000001000100518ef14d1a0c9efc88ac39397509c94a703ec7a674ed0414a18d3bad86b3618863d9d20204b50c28a13c56df0493d2943f2013a9b4f2bd5a829217698fa2444fbbebd449d6a8942a1278c87fe9ccba10535b9b2b1f47295168308a2b2a85af1fc655f8c736b51fe1d457d1b7be6c807516f58d5d981b112929c5c24f3ff1c0ce</HarmonyPublicKey>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<InternalsVisibleTo Include="HarmonyTests" />
-		<InternalsVisibleTo Include="MonoMod.Utils.Cil.ILGeneratorProxy" />
+		<InternalsVisibleTo Include="HarmonyTests" PublicKey="$(HarmonyPublicKey)" />
+		<InternalsVisibleTo Include="MonoMod.Utils.Cil.ILGeneratorProxy" PublicKey="$(HarmonyPublicKey)" />
 	</ItemGroup>
 </Project>

@@ -1,25 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <AssemblyName>TestLibrary</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lib.Harmony\Lib.Harmony.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<AssemblyName>TestLibrary</AssemblyName>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\SignKey.snk</AssemblyOriginatorKeyFile>
+		<DelaySign>false</DelaySign>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Lib.Harmony\Lib.Harmony.csproj" />
+	</ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <Optimize>false</Optimize>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<DefineConstants>DEBUG</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <Optimize>true</Optimize>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<Optimize>true</Optimize>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
 
 </Project>

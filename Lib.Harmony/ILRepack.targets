@@ -4,6 +4,11 @@
 		<PropertyGroup>
 			<DebugInfo>true</DebugInfo>
 			<DebugInfo Condition="'$(TargetFramework)' == 'netstandard2.0'">false</DebugInfo>
+
+			<!-- Re-sign the merged assembly: ILRepack emits a brand new assembly, so without the
+			     originator key the strong name produced by the compiler is dropped from the output. -->
+			<ILRepackKeyFile Condition="'$(SignAssembly)' == 'true'">$(KeyOriginatorFile)</ILRepackKeyFile>
+			<ILRepackKeyFile Condition="'$(SignAssembly)' == 'true' And '$(ILRepackKeyFile)' == '' And '$(AssemblyOriginatorKeyFile)' != ''">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\$(AssemblyOriginatorKeyFile)'))</ILRepackKeyFile>
 		</PropertyGroup>
 		
 		<ItemGroup>
@@ -32,6 +37,7 @@
 			Parallel="true"
 			TargetKind="Dll"
 			Wildcards="true"
+			KeyFile="$(ILRepackKeyFile)"
 		/>
 	</Target>
 </Project>
