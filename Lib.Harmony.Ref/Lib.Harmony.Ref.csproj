@@ -8,7 +8,7 @@
 		<!-- Add our target for packing -->
 		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddRefAssemblyToPackage</TargetsForTfmSpecificContentInPackage>
 
-		<PackageId>Net4x.Lib.Harmony.Ref</PackageId>
+		<PackageId>Lib.Harmony.Ref</PackageId>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\SignKey.snk</AssemblyOriginatorKeyFile>
 		<DelaySign>false</DelaySign>

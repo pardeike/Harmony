@@ -3,7 +3,7 @@
     <PropertyGroup>
         <PackageOutputPath>$(SolutionDir)Packages/</PackageOutputPath>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <PackageId>Net4x.Lib.Harmony</PackageId>
+        <PackageId>Lib.Harmony</PackageId>
         <TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>..\SignKey.snk</AssemblyOriginatorKeyFile>

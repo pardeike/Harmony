@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<PackageId>Net4x.Lib.Harmony.Thin</PackageId>
+		<PackageId>Lib.Harmony.Thin</PackageId>
 		<TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\SignKey.snk</AssemblyOriginatorKeyFile>
