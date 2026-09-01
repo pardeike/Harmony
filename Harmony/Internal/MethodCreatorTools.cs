@@ -280,7 +280,7 @@ namespace HarmonyLib
 					continue;
 				}
 
-				if (paramRealName.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal))
+				if (injection.argumentMode != ArgumentMode.Original && paramRealName.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal))
 				{
 					var fieldName = paramRealName.Substring(INSTANCE_FIELD_PREFIX.Length);
 					FieldInfo fieldInfo;
@@ -363,7 +363,7 @@ namespace HarmonyLib
 					continue;
 				}
 
-				if (config.localVariables.TryGetValue(paramRealName, out var localBuilder))
+				if (injection.argumentMode != ArgumentMode.Original && config.localVariables.TryGetValue(paramRealName, out var localBuilder))
 				{
 					var ldlocCode = paramType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					codes.Add(new CodeInstruction(ldlocCode, localBuilder));
@@ -371,7 +371,13 @@ namespace HarmonyLib
 				}
 
 				int argumentIdx;
-				if (paramRealName.StartsWith(PARAM_INDEX_PREFIX, StringComparison.Ordinal))
+				if (injection.argumentMode == ArgumentMode.Original)
+				{
+					argumentIdx = Array.IndexOf(originalParameterNames, paramRealName);
+					if (argumentIdx == -1)
+						throw new Exception($"Parameter \"{paramRealName}\" not found in method {original.FullDescription()}");
+				}
+				else if (paramRealName.StartsWith(PARAM_INDEX_PREFIX, StringComparison.Ordinal))
 				{
 					var val = paramRealName.Substring(PARAM_INDEX_PREFIX.Length);
 					if (!int.TryParse(val, out argumentIdx))

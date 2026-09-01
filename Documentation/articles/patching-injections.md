@@ -39,6 +39,12 @@ To access or change one or several of the original methods arguments, simply rep
 - The type of an injected argument must be assignable from the original argument (or just use `object`)
 - The name of a given argument (that is to be matched to the argument of the original method) must either be the same name or of the form **`__n`**, where `n` is the zero-based index of the argument in the orignal method (you can also use argument annotations to map to custom names).
 
+If an original argument name conflicts with a Harmony injection name or naming convention, use `ArgumentMode.Original` to match its exact, case-sensitive name without interpreting it:
+
+```csharp
+static void Prefix([HarmonyArgument("__result", ArgumentMode.Original)] ref bool result)
+```
+
 ### __originalMethod
 
 To allow patches to identify on which method they are attached to, you can inject the original methods MethodBase by using an argument called **`__originalMethod`**.

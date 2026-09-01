@@ -489,6 +489,28 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+		public void Test_OriginalArgumentNames()
+		{
+			var harmony = new Harmony("test");
+			var processor = new PatchClassProcessor(harmony, typeof(OriginalArgumentNamesPatch));
+			var patches = processor.Patch();
+			Assert.NotNull(patches, "patches");
+			Assert.AreEqual(1, patches.Count);
+
+			var state = new object[] { "original state" };
+			var result = false;
+			var index = 0;
+			OriginalArgumentNames.log = null;
+			OriginalArgumentNamesPatch.gotInstance = false;
+			new OriginalArgumentNames().Method(state, ref result, "original field", ref index);
+
+			Assert.AreEqual("patched state, True, patched field, 42", OriginalArgumentNames.log);
+			Assert.IsTrue(result);
+			Assert.AreEqual(42, index);
+			Assert.IsTrue(OriginalArgumentNamesPatch.gotInstance);
+		}
+
+		[Test]
 		public void Test_CompatibleStateTypes()
 		{
 			var harmony = new Harmony("test");

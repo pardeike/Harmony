@@ -22,6 +22,7 @@ namespace HarmonyLib
 		internal ParameterInfo parameterInfo;
 		internal string realName;
 		internal InjectionType injectionType;
+		internal ArgumentMode argumentMode;
 
 		internal const string INSTANCE_PARAM = "__instance";
 		internal const string ORIGINAL_METHOD_PARAM = "__originalMethod";
@@ -35,16 +36,25 @@ namespace HarmonyLib
 		internal InjectedParameter(MethodInfo method, ParameterInfo parameterInfo)
 		{
 			this.parameterInfo = parameterInfo;
-			realName = CalculateRealName(method);
-			injectionType = Type(realName);
+			var arg = parameterInfo.GetArgumentAttribute();
+			argumentMode = arg?.Mode ?? ArgumentMode.Default;
+			if (argumentMode == ArgumentMode.Original)
+			{
+				realName = arg.NewName;
+				injectionType = InjectionType.Unknown;
+			}
+			else
+			{
+				realName = CalculateRealName(method, arg);
+				injectionType = Type(realName);
+			}
 		}
 
-		string CalculateRealName(MethodInfo method)
+		string CalculateRealName(MethodInfo method, HarmonyArgument arg)
 		{
 			var baseArgs = method.GetArgumentAttributes();
 			if (method.DeclaringType is not null)
 				baseArgs = baseArgs.Union(method.DeclaringType.GetArgumentAttributes());
-			var arg = parameterInfo.GetArgumentAttribute();
 			if (arg != null)
 				return arg.OriginalName ?? parameterInfo.Name;
 			return baseArgs.GetRealName(parameterInfo.Name, null) ?? parameterInfo.Name;

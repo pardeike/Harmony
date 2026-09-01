@@ -99,6 +99,16 @@ namespace HarmonyLib
 		Pointer
 	}
 
+	/// <summary>Specifies how Harmony resolves an argument name</summary>
+	///
+	public enum ArgumentMode
+	{
+		/// <summary>Use Harmony's default argument name handling</summary>
+		Default = 0,
+		/// <summary>Match an original method argument by its exact name</summary>
+		Original = 1
+	}
+
 	/// <summary>Specifies the type of patch</summary>
 	///
 	public enum HarmonyPatchType
@@ -667,6 +677,9 @@ namespace HarmonyLib
 	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 	public class HarmonyArgument : Attribute
 	{
+		// Older Harmony versions copy the existing fields and reject this name instead of silently treating the argument as a special injection
+		const string LEGACY_REJECTION_NAME = "__HarmonyArgumentOriginal";
+
 		/// <summary>The name of the original argument</summary>
 		///
 		public string OriginalName { get; private set; }
@@ -679,10 +692,29 @@ namespace HarmonyLib
 		///
 		public string NewName { get; private set; }
 
+		internal ArgumentMode Mode { get; private set; }
+
 		/// <summary>An annotation to declare injected arguments by name</summary>
 		///
 		public HarmonyArgument(string originalName) : this(originalName, null)
 		{
+		}
+
+		/// <summary>An annotation to declare an injected argument using the selected name handling</summary>
+		/// <param name="originalName">Name of the original argument</param>
+		/// <param name="mode">How Harmony resolves the argument name</param>
+		///
+		public HarmonyArgument(string originalName, ArgumentMode mode) : this(originalName)
+		{
+			Mode = mode;
+			if (mode == ArgumentMode.Original)
+			{
+				OriginalName = LEGACY_REJECTION_NAME;
+				Index = int.MinValue;
+				NewName = originalName;
+			}
+			else if (mode != ArgumentMode.Default)
+				throw new ArgumentOutOfRangeException(nameof(mode));
 		}
 
 		/// <summary>An annotation to declare injected arguments by index</summary>

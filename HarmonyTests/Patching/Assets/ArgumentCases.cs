@@ -145,6 +145,37 @@ namespace HarmonyLibTests.Assets
 		}
 	}
 
+	public class OriginalArgumentNames
+	{
+		public static string log;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void Method(object[] __state, ref bool __result, string ___field, ref int __0)
+		{
+			log = $"{__state[0]}, {__result}, {___field}, {__0}";
+		}
+	}
+
+	[HarmonyPatch(typeof(OriginalArgumentNames), nameof(OriginalArgumentNames.Method))]
+	public static class OriginalArgumentNamesPatch
+	{
+		public static bool gotInstance;
+
+		public static void Prefix(
+			[HarmonyArgument("__state", ArgumentMode.Original)] object[] state,
+			[HarmonyArgument("__result", ArgumentMode.Original)] ref bool result,
+			[HarmonyArgument("___field", ArgumentMode.Original)] ref string field,
+			[HarmonyArgument("__0", ArgumentMode.Original)] ref int index,
+			[HarmonyArgument("__instance", ArgumentMode.Default)] OriginalArgumentNames instance)
+		{
+			state[0] = "patched state";
+			result = true;
+			field = "patched field";
+			index = 42;
+			gotInstance = instance is not null;
+		}
+	}
+
 	public class DifferingStateTypes
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
