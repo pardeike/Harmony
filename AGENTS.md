@@ -2,6 +2,8 @@
 
 * Relevant drafts and information are located in `./drafts/` and is named according to the topic.
 
+* The Infix implementation specification is `drafts/INFIX-NEW-IMPL-V3.md`. It is the sole design reference for this feature.
+
 * For simple edits, limit testing to net9 and x64.
 
 * Use the latest C# language features, like `var`, shorter array syntax etc. Longer than usual lines (~ 140 chars are ok)
