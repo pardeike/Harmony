@@ -125,7 +125,7 @@ namespace HarmonyLibTests.Patching
 		static void Mark(int value) => trace.Add("patch:" + value);
 		static IEnumerable<TestCaseData> Positions()
 		{
-			yield return new TestCaseData(Array.Empty<int>(), new[] { 1, 2, 3 });
+			yield return new TestCaseData(new int[0], new[] { 1, 2, 3 });
 			for (var position = -3; position <= 3; position++)
 				if (position != 0) yield return new TestCaseData(new[] { position }, new[] { position > 0 ? position : 4 + position });
 			yield return new TestCaseData(new[] { 1, 1, -3, 3, -1 }, new[] { 1, 3 });
@@ -143,7 +143,7 @@ namespace HarmonyLibTests.Patching
 		{
 			for (var count = 0; count <= 5; count++)
 				foreach (var positions in Enumerable.Range(-7, 15).Concat([int.MinValue, int.MaxValue]).Select(position => new[] { position })
-					.Concat(new[] { Array.Empty<int>(), new[] { 1, 1, -1 }, new[] { 2, -2 } }))
+						.Concat(new[] { new int[0], new[] { 1, 1, -1 }, new[] { 2, -2 } }))
 				{
 					var valid = count > 0 && positions.All(position => position != 0 && Math.Abs((long)position) <= count);
 					if (!valid) Assert.Throws<ArgumentException>(() => Infix.ResolvePositions(count, positions));
