@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace HarmonyLib
 {
@@ -13,10 +14,10 @@ namespace HarmonyLib
 		Patch[] sortedPatchArray;
 		readonly bool debug;
 
-		internal PatchSorter(Patch[] patches, bool debug)
+		internal PatchSorter(Patch[] patches, bool debug, bool preserveOccurrences = false)
 		{
 			// Build the list of all patches first to be able to create dependency relationships.
-			this.patches = [.. patches.Select(x => new PatchSortingWrapper(x))];
+			this.patches = [.. patches.Select(x => new PatchSortingWrapper(x, preserveOccurrences))];
 			this.debug = debug;
 
 			// For each node find and bidirectionally register all it's dependencies.
@@ -144,10 +145,12 @@ namespace HarmonyLib
 			internal readonly HashSet<PatchSortingWrapper> after;
 			internal readonly HashSet<PatchSortingWrapper> before;
 			internal readonly Patch innerPatch;
+			readonly bool preserveOccurrence;
 
-			internal PatchSortingWrapper(Patch patch)
+			internal PatchSortingWrapper(Patch patch, bool preserveOccurrence = false)
 			{
 				innerPatch = patch;
+				this.preserveOccurrence = preserveOccurrence;
 				before = [];
 				after = [];
 			}
@@ -158,9 +161,10 @@ namespace HarmonyLib
 				return PatchInfoSerialization.PriorityComparer(p?.innerPatch, innerPatch.index, innerPatch.priority);
 			}
 
-			public override bool Equals(object obj) => obj is PatchSortingWrapper wrapper && innerPatch.PatchMethod == wrapper.innerPatch.PatchMethod;
+			public override bool Equals(object obj) => preserveOccurrence ? ReferenceEquals(this, obj)
+				: obj is PatchSortingWrapper wrapper && !wrapper.preserveOccurrence && innerPatch.PatchMethod == wrapper.innerPatch.PatchMethod;
 
-			public override int GetHashCode() => innerPatch.PatchMethod.GetHashCode();
+			public override int GetHashCode() => preserveOccurrence ? RuntimeHelpers.GetHashCode(this) : innerPatch.PatchMethod.GetHashCode();
 
 			internal void AddBeforeDependency(IEnumerable<PatchSortingWrapper> dependencies)
 			{

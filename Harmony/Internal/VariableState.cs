@@ -9,6 +9,9 @@ namespace HarmonyLib
 		readonly Dictionary<InjectionType, LocalBuilder> injected = [];
 		readonly Dictionary<string, LocalBuilder> other = [];
 
+		internal VariableState() { }
+		internal VariableState(VariableState sharedNamedVariables) => other = sharedNamedVariables.other;
+
 		public void Add(InjectionType type, LocalBuilder local) => injected[type] = local;
 		public void Add(string name, LocalBuilder local) => other[name] = local;
 

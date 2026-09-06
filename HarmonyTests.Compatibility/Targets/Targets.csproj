@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>HarmonyCompatibility.Targets</AssemblyName>
+  </PropertyGroup>
+</Project>

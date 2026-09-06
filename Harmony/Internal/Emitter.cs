@@ -18,6 +18,17 @@ namespace HarmonyLib
 		readonly ILGenerator iLGenerator;
 		readonly CecilILGenerator il;
 		readonly Dictionary<int, CodeInstruction> instructions = [];
+		readonly List<Label> pendingLabels = [];
+		readonly Stack<ExceptionRegion> exceptionRegions = [];
+
+		sealed class ExceptionRegion
+		{
+			internal Mono.Cecil.Cil.Instruction start;
+			internal Mono.Cecil.Cil.Instruction tryEnd;
+			internal Mono.Cecil.Cil.ExceptionHandler handler;
+			internal Label end;
+			internal bool inFilter;
+		}
 
 		internal Emitter(ILGenerator il)
 		{
@@ -27,7 +38,11 @@ namespace HarmonyLib
 
 		internal Dictionary<int, CodeInstruction> GetInstructions() => instructions;
 
-		internal void AddInstruction(OpCode opcode, object operand = null) => instructions.Add(CurrentPos(), new CodeInstruction(opcode, operand));
+		internal void AddInstruction(OpCode opcode, object operand = null)
+		{
+			FlushLabels();
+			instructions.Add(CurrentPos(), new CodeInstruction(opcode, operand));
+		}
 
 		internal int CurrentPos() => il.ILOffset;
 
@@ -244,157 +259,216 @@ namespace HarmonyLib
 			}
 		}
 
-		internal void MarkLabel(Label label) => il.MarkLabel(label);
+		internal void MarkLabel(Label label) => pendingLabels.Add(label);
+
+		void FlushLabels()
+		{
+			foreach (var label in pendingLabels) il.MarkLabel(label);
+			pendingLabels.Clear();
+		}
 
 		internal void MarkBlockBefore(ExceptionBlock block, out Label? label)
 		{
 			label = null;
-			switch (block.blockType)
+			if (block.blockType == ExceptionBlockType.EndExceptionBlock) return;
+			if (block.blockType == ExceptionBlockType.BeginExceptionBlock)
 			{
-				case ExceptionBlockType.BeginExceptionBlock:
-					label = il.BeginExceptionBlock();
-					break;
-
-				case ExceptionBlockType.BeginCatchBlock:
-					il.BeginCatchBlock(block.catchType);
-					break;
-
-				case ExceptionBlockType.BeginExceptFilterBlock:
-					il.BeginExceptFilterBlock();
-					break;
-
-				case ExceptionBlockType.BeginFaultBlock:
-					il.BeginFaultBlock();
-					break;
-
-				case ExceptionBlockType.BeginFinallyBlock:
-					il.BeginFinallyBlock();
-					break;
+				var end = il.DefineLabel();
+				exceptionRegions.Push(new ExceptionRegion { start = ExceptionBoundary(), end = end });
+				label = end;
+				return;
 			}
+			if (exceptionRegions.Count == 0) throw new InvalidOperationException($"{block.blockType} has no enclosing exception block");
+			var region = exceptionRegions.Peek();
+			if (region.inFilter)
+			{
+				if (block.blockType != ExceptionBlockType.BeginCatchBlock || block.catchType is not null)
+					throw new InvalidOperationException("An exception filter requires BeginCatchBlock with a null catch type");
+				EmitTerminator(OpCodes.Endfilter);
+				region.handler.HandlerStart = ExceptionBoundary();
+				region.inFilter = false;
+				return;
+			}
+			FinishHandler(region);
+			var boundary = ExceptionBoundary();
+			if (region.handler is not null) region.handler.HandlerEnd = boundary;
+			region.tryEnd ??= boundary;
+			var kind = block.blockType switch
+			{
+				ExceptionBlockType.BeginCatchBlock => Mono.Cecil.Cil.ExceptionHandlerType.Catch,
+				ExceptionBlockType.BeginExceptFilterBlock => Mono.Cecil.Cil.ExceptionHandlerType.Filter,
+				ExceptionBlockType.BeginFaultBlock => Mono.Cecil.Cil.ExceptionHandlerType.Fault,
+				ExceptionBlockType.BeginFinallyBlock => Mono.Cecil.Cil.ExceptionHandlerType.Finally,
+				_ => throw new InvalidOperationException($"Unsupported exception marker {block.blockType}")
+			};
+			// A finally following catch clauses protects their execution too, matching ILGenerator's block contract.
+			var tryEnd = kind == Mono.Cecil.Cil.ExceptionHandlerType.Finally ? boundary : region.tryEnd;
+			region.handler = new Mono.Cecil.Cil.ExceptionHandler(kind)
+			{
+				TryStart = region.start,
+				TryEnd = tryEnd,
+				FilterStart = kind == Mono.Cecil.Cil.ExceptionHandlerType.Filter ? boundary : null,
+				HandlerStart = kind == Mono.Cecil.Cil.ExceptionHandlerType.Filter ? null : boundary,
+				CatchType = kind == Mono.Cecil.Cil.ExceptionHandlerType.Catch && block.catchType is not null
+					? il.IL.Body.Method.Module.ImportReference(block.catchType) : null
+			};
+			region.inFilter = kind == Mono.Cecil.Cil.ExceptionHandlerType.Filter;
+			il.IL.Body.ExceptionHandlers.Add(region.handler);
 		}
 
 		internal void MarkBlockAfter(ExceptionBlock block)
 		{
-			switch (block.blockType)
+			if (block.blockType != ExceptionBlockType.EndExceptionBlock) return;
+			if (exceptionRegions.Count == 0) throw new InvalidOperationException("EndExceptionBlock has no enclosing exception block");
+			var region = exceptionRegions.Pop();
+			if (region.handler is null || region.inFilter) throw new InvalidOperationException("An exception block requires a complete handler");
+			FinishHandler(region);
+			il.MarkLabel(region.end);
+			region.handler.HandlerEnd = ExceptionBoundary();
+		}
+
+		Mono.Cecil.Cil.Instruction ExceptionBoundary()
+		{
+			FlushLabels();
+			il.Emit(OpCodes.Nop);
+			return il.IL.Body.Instructions.Last();
+		}
+
+		void EmitTerminator(OpCode code)
+		{
+			if (il.IL.Body.Instructions.Last().OpCode.Value != code.Value) il.Emit(code);
+		}
+
+		void FinishHandler(ExceptionRegion region)
+		{
+			if (region.handler?.HandlerType is Mono.Cecil.Cil.ExceptionHandlerType.Finally or Mono.Cecil.Cil.ExceptionHandlerType.Fault)
 			{
-				case ExceptionBlockType.EndExceptionBlock:
-					il.EndExceptionBlock();
-					break;
+				EmitTerminator(OpCodes.Endfinally);
+				return;
 			}
+			var flow = il.IL.Body.Instructions.Last().OpCode.FlowControl;
+			if (flow != Mono.Cecil.Cil.FlowControl.Branch && flow != Mono.Cecil.Cil.FlowControl.Return && flow != Mono.Cecil.Cil.FlowControl.Throw)
+				il.Emit(OpCodes.Leave, region.end);
 		}
 
 		internal void Emit(OpCode opcode)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode));
+			AddInstruction(opcode);
 			il.Emit(opcode);
 		}
 
 		internal void Emit(OpCode opcode, LocalBuilder local)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, local));
+			AddInstruction(opcode, local);
 			il.Emit(opcode, local);
 		}
 
 		internal void Emit(OpCode opcode, FieldInfo field)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, field));
+			AddInstruction(opcode, field);
 			il.Emit(opcode, field);
 		}
 
 		internal void Emit(OpCode opcode, Label[] labels)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, labels));
+			AddInstruction(opcode, labels);
 			il.Emit(opcode, labels);
 		}
 
 		internal void Emit(OpCode opcode, Label label)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, label));
+			AddInstruction(opcode, label);
 			il.Emit(opcode, label);
 		}
 
 		internal void Emit(OpCode opcode, string str)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, str));
+			AddInstruction(opcode, str);
 			il.Emit(opcode, str);
 		}
 
 		internal void Emit(OpCode opcode, float arg)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
+			AddInstruction(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, byte arg)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
+			AddInstruction(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, sbyte arg)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
+			AddInstruction(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, double arg)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
+			AddInstruction(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, int arg)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
+			AddInstruction(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, MethodInfo meth)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, meth));
+			AddInstruction(opcode, meth);
 			il.Emit(opcode, meth);
 		}
 
 		internal void Emit(OpCode opcode, short arg)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
+			AddInstruction(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, SignatureHelper signature)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, signature));
+			AddInstruction(opcode, signature);
 			il.Emit(opcode, signature);
 		}
 
 		internal void Emit(OpCode opcode, ConstructorInfo con)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, con));
+			AddInstruction(opcode, con);
 			il.Emit(opcode, con);
 		}
 
 		internal void Emit(OpCode opcode, Type cls)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, cls));
+			AddInstruction(opcode, cls);
 			il.Emit(opcode, cls);
 		}
 
 		internal void Emit(OpCode opcode, long arg)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, arg));
+			AddInstruction(opcode, arg);
 			il.Emit(opcode, arg);
 		}
 
 		internal void Emit(OpCode opcode, ICallSiteGenerator operand)
-			=> il.Emit(opcode, operand);
+		{
+			FlushLabels();
+			il.Emit(opcode, operand);
+		}
 
 		internal void EmitCall(OpCode opcode, MethodInfo methodInfo)
 		{
-			instructions.Add(CurrentPos(), new CodeInstruction(opcode, methodInfo));
+			AddInstruction(opcode, methodInfo);
 			il.EmitCall(opcode, methodInfo, null);
 		}
 
 		internal void DynEmit(OpCode opcode, object operand)
-			=> iLGenerator.DynEmit(opcode, operand);
+		{
+			FlushLabels();
+			iLGenerator.DynEmit(opcode, operand);
+		}
 	}
 }

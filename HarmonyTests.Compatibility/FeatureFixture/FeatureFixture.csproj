@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>HarmonyCompatibility.Feature</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Targets/Targets.csproj" />
+    <Reference Include="0Harmony" HintPath="$(HarmonyReference)" Private="false" />
+  </ItemGroup>
+  <Import Project="../FixtureReference.targets" />
+</Project>

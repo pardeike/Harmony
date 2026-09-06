@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <FixtureName Condition="'$(FixtureName)' == ''">Current</FixtureName>
+    <AssemblyName>HarmonyCompatibility.Ordinary.$(FixtureName)</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Targets/Targets.csproj" GlobalPropertiesToRemove="FixtureName" />
+    <Reference Include="0Harmony" HintPath="$(HarmonyReference)" Private="false" />
+  </ItemGroup>
+  <Import Project="../FixtureReference.targets" />
+</Project>

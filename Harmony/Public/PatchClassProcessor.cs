@@ -210,7 +210,6 @@ namespace HarmonyLib
 						patchInfo.AddInnerPostfixes(instance.Id, [.. job.innerpostfixes]);
 
 						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo);
-						HarmonySharedState.UpdatePatchInfo(job.original, replacement, patchInfo);
 					}
 					catch (Exception ex)
 					{
@@ -225,20 +224,24 @@ namespace HarmonyLib
 
 		void ProcessUnpatchJob(PatchJobs<MethodInfo>.Job job)
 		{
-			var patchInfo = HarmonySharedState.GetPatchInfo(job.original) ?? new PatchInfo();
-
-			var hasBody = job.original.HasMethodBody();
-			if (hasBody)
+			lock (PatchProcessor.locker)
 			{
-				job.postfixes.Do(patch => patchInfo.RemovePatch(patch.method));
-				job.prefixes.Do(patch => patchInfo.RemovePatch(patch.method));
-			}
-			job.transpilers.Do(patch => patchInfo.RemovePatch(patch.method));
-			if (hasBody)
-				job.finalizers.Do(patch => patchInfo.RemovePatch(patch.method));
+				var patchInfo = HarmonySharedState.GetPatchInfo(job.original) ?? new PatchInfo();
 
-			var replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo);
-			HarmonySharedState.UpdatePatchInfo(job.original, replacement, patchInfo);
+				var hasBody = job.original.HasMethodBody();
+				if (hasBody)
+				{
+					job.postfixes.Do(patch => patchInfo.RemovePatch(patch.method));
+					job.prefixes.Do(patch => patchInfo.RemovePatch(patch.method));
+				}
+				job.transpilers.Do(patch => patchInfo.RemovePatch(patch.method));
+				if (hasBody)
+					job.finalizers.Do(patch => patchInfo.RemovePatch(patch.method));
+				job.innerprefixes.Do(patch => patchInfo.RemovePatch(patch.method));
+				job.innerpostfixes.Do(patch => patchInfo.RemovePatch(patch.method));
+
+				_ = PatchFunctions.UpdateWrapper(job.original, patchInfo);
+			}
 		}
 
 		List<MethodBase> GetBulkMethods()

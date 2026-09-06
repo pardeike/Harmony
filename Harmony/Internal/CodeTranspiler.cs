@@ -146,11 +146,8 @@ namespace HarmonyLib
 
 		internal static IEnumerable ConvertInstructionsAndUnassignedValues(Type type, IEnumerable enumerable, out Dictionary<object, Dictionary<string, object>> unassignedValues)
 		{
-			var enumerableAssembly = type.GetGenericTypeDefinition().Assembly;
-			var genericListType = enumerableAssembly.GetType(typeof(List<>).FullName);
 			var elementType = type.GetGenericArguments()[0];
-			var genericListTypeWithElement = genericListType.MakeGenericType([elementType]);
-			var listType = enumerableAssembly.GetType(genericListTypeWithElement.FullName);
+			var listType = typeof(List<>).MakeGenericType(elementType);
 			var list = Activator.CreateInstance(listType);
 			var listAdd = list.GetType().GetMethod("Add");
 			unassignedValues = [];

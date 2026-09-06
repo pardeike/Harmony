@@ -1,0 +1,60 @@
+{
+  "packageId": "Lib.Harmony",
+  "source": "https://api.nuget.org/v3-flatcontainer/lib.harmony/{version}/lib.harmony.{version}.nupkg",
+  "packaging": "Published Fat NuGet assets, unchanged",
+  "versions": {
+    "2.4.2": {
+      "assemblyVersion": "2.4.2.0",
+      "packageSha256": "d64592e53090464559fce48612c9ca7c8dc73113841376b7aa3455f46fc5d579",
+      "mvids": {
+        "net472": "024a0e6e-c8c2-437e-ad04-7b6279389c23",
+        "net8.0": "84dabb8a-78b0-41a8-b317-6acc5db1d68c",
+        "net9.0": "c62e7196-1ad0-49f0-8f32-2ede6343e90b"
+      },
+      "assets": {
+        "net472": "7b9e756306fa3d7620e02a857c8927a6ab04973f9bd8a77d3866700a6deac55c",
+        "net8.0": "2b0496067bda368ff35c383d80421401c57a3acc091dcb3e5a8f15636104987f",
+        "net9.0": "a849b726e1f9248d71aabbed8114deaf79beb7acc25e8344ff92a27ad8ac87ab"
+      }
+    },
+    "2.4.1": {
+      "assemblyVersion": "2.4.1.0",
+      "packageSha256": "ff0183a1f27167f3543a0e095b4930a96c833ce783453e85a1e8a8ed33cd2f6d",
+      "mvids": {
+        "net472": "e5339928-9d9b-419d-83f9-f5b02c5cf609",
+        "net8.0": "294667ec-2570-4ec9-8f16-055f3af56033"
+      },
+      "assets": {
+        "net472": "353daafec180bb8e7bbe4da78f2a7cdc78067392e3a4e79dc8e7af295f2371e6",
+        "net8.0": "360a6b2884bfd63b2484768f2750a0899326ab4dc6d5b71558c32f3546c1c5c4",
+        "net9.0": "98e92f1b47a831a36db6808b77d3e4dfd20606de222c3a50ebbf111bfd1583ba"
+      }
+    },
+    "2.4.0": {
+      "assemblyVersion": "2.4.0.0",
+      "packageSha256": "f2fc995e86f636f370d77b8d951d894c3625ed5afc070fed9b8b0b0a95c25209",
+      "mvids": {
+        "net472": "7d173b5c-1572-4e30-91f1-e8ddff8e2abc",
+        "net8.0": "3a514b51-f7db-4be6-a375-cae8b6e8e569"
+      },
+      "assets": {
+        "net472": "7aa9d208e9b4c42c65bd816038dcad85c15fb59d8362963f6b538de8f3e56469",
+        "net8.0": "9fd0a533ee3ef0ca07f9ee7a1b535426c3badf2a5aea550126eacee2003cabe5",
+        "net9.0": "81bb9e42e053309c3f000e9cd22895081f155e43e1e4074fcae681832afb5ede"
+      }
+    },
+    "2.3.6": {
+      "assemblyVersion": "2.3.6.0",
+      "packageSha256": "498f99c5ca97cfec0e6cb277d721c242071ea9d9f019312cf9eaf015762de075",
+      "mvids": {
+        "net472": "8124cc12-bdf2-42ea-b0a5-f7e7edecf387",
+        "net8.0": "dc9d5043-2650-4f94-a106-f1014729e8c2"
+      },
+      "assets": {
+        "net472": "339c3f53f0873b2385638fe15743e1a8e04123d5d93b063d8118c59cf16bbec8",
+        "net8.0": "9514a5c06980b2d2b84e6b6429453eb31b7d904832f14d645e69754e0aaf902e",
+        "net9.0": "817b0127f0f512122a0e0f8cab1d89c6431f6533898e473bbecdc61846cf945c"
+      }
+    }
+  }
+}

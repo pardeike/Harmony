@@ -30,6 +30,7 @@ namespace HarmonyLib
 		{
 			config.originalVariables = this.DeclareOriginalLocalVariables(config.MethodBase);
 			config.localVariables = new VariableState();
+			config.bindingContext = new PatchBindingContext(config.original, config.localVariables);
 
 			if (config.Fixes.Any() && config.returnType != typeof(void))
 			{
@@ -53,9 +54,11 @@ namespace HarmonyLib
 			{
 				var argsArrayVariable = config.DeclareLocal(typeof(object[]));
 				config.AddLocal(InjectionType.ArgsArray, argsArrayVariable);
-				config.AddCodes(this.PrepareArgumentArray());
+				config.AddCodes(this.PrepareArgumentArray(config.bindingContext));
 				config.AddCode(Stloc[argsArrayVariable]);
 			}
+			else if (config.AnyInfixHasOuter(InjectionType.ArgsArray))
+				config.AddCodes(this.InitializeOutArguments(config.bindingContext));
 
 			config.skipOriginalLabel = null;
 			var prefixAffectsOriginal = config.prefixes.Any(this.AffectsOriginal);
@@ -63,6 +66,7 @@ namespace HarmonyLib
 			if (prefixAffectsOriginal || anyFixHasRunOriginal)
 			{
 				config.runOriginalVariable = config.DeclareLocal(typeof(bool));
+				config.AddLocal(InjectionType.RunOriginal, config.runOriginalVariable);
 				config.AddCodes([Ldc_I4_1, Stloc[config.runOriginalVariable]]);
 				if (prefixAffectsOriginal)
 					config.skipOriginalLabel = config.DefineLabel();
@@ -75,13 +79,13 @@ namespace HarmonyLib
 					return;
 				var varName = declaringType.AssemblyQualifiedName;
 				_ = config.localVariables.TryGetValue(varName, out var maybeLocal);
-				foreach (var injection in config.InjectionsFor(fix, InjectionType.State))
+				foreach (var injection in config.OuterInjectionsFor(fix, InjectionType.State))
 				{
 					var parameterType = injection.parameterInfo.ParameterType;
 					var type = parameterType.IsByRef ? parameterType.GetElementType() : parameterType;
 					if (maybeLocal != null)
 					{
-						if (!type.IsAssignableFrom(maybeLocal.LocalType))
+						if (injection.outer ? type != maybeLocal.LocalType : !type.IsAssignableFrom(maybeLocal.LocalType))
 						{
 							var message = $"__state type mismatch in patch \"{fix.DeclaringType.FullName}.{fix.Name}\": " +
 							$"previous __state was declared as \"{maybeLocal.LocalType.FullName}\" but this patch expects \"{type.FullName}\"";
@@ -95,6 +99,7 @@ namespace HarmonyLib
 					var privateStateVariable = config.DeclareLocal(type);
 					config.AddLocal(varName, privateStateVariable);
 					config.AddCodes(this.GenerateVariableInit(privateStateVariable));
+					maybeLocal = privateStateVariable;
 				}
 			});
 
@@ -194,8 +199,6 @@ namespace HarmonyLib
 			if (methodEndsInDeadCode == false || config.skipOriginalLabel is not null || config.finalizers.Count > 0 || config.postfixes.Count > 0)
 				config.AddCode(Ret);
 
-			config.instructions = FaultBlockRewriter.Rewrite(config.instructions, config.il);
-
 			if (config.debug)
 			{
 				var logEmitter = new Emitter(config.il);
@@ -204,7 +207,7 @@ namespace HarmonyLib
 
 			var codeEmitter = new Emitter(config.il);
 			this.EmitCodes(codeEmitter, config.instructions);
-			var replacementMethod = config.patch.Generate();
+			var replacementMethod = config.GenerateMethod();
 
 			if (config.debug)
 			{
@@ -216,121 +219,55 @@ namespace HarmonyLib
 			return (replacementMethod, codeEmitter.GetInstructions());
 		}
 
-		internal void AddPrefixes()
+		internal void AddPrefixes() => config.AddCodes(EmitPrefixes(config.prefixes, config.bindingContext));
+
+		internal List<CodeInstruction> EmitPrefixes(IEnumerable<MethodInfo> prefixes, PatchBindingContext context, PatchBindingContext outerContext = null)
 		{
-			foreach (var fix in config.prefixes)
+			var codes = new List<CodeInstruction>();
+			foreach (var fix in prefixes)
 			{
 				var skipLabel = this.AffectsOriginal(fix) ? config.DefineLabel() : (Label?)null;
 				if (skipLabel.HasValue)
-					config.AddCodes([Ldloc[config.runOriginalVariable], Brfalse[skipLabel.Value]]);
+					codes.AddRange([Ldloc[context.variables[InjectionType.RunOriginal]], Brfalse[skipLabel.Value]]);
 
-				var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-				config.AddCodes(this.EmitCallParameter(fix, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, out var refResultUsed, tmpBoxVars));
-				config.AddCode(Call[fix]);
-				if (MethodPatcherTools.OriginalParameters(fix).Any(pair => pair.realName == MethodPatcherTools.ARGS_ARRAY_VAR))
-					config.AddCodes(this.RestoreArgumentArray());
-				if (tmpInstanceBoxingVar != null)
-				{
-					config.AddCode(Ldarg_0);
-					config.AddCode(Ldloc[tmpInstanceBoxingVar]);
-					config.AddCode(Unbox_Any[config.original.DeclaringType]);
-					config.AddCode(Stobj[config.original.DeclaringType]);
-				}
-				if (refResultUsed)
-				{
-					var label = config.DefineLabel();
-					config.AddCode(Ldloc[config.GetLocal(InjectionType.ResultRef)]);
-					config.AddCode(Brfalse_S[label]);
-
-					config.AddCode(Ldloc[config.GetLocal(InjectionType.ResultRef)]);
-					config.AddCode(Callvirt[AccessTools.Method(config.GetLocal(InjectionType.ResultRef).LocalType, "Invoke")]);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.Result)]);
-					config.AddCode(Ldnull);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.ResultRef)]);
-
-					config.AddCode(Nop.WithLabels(label));
-				}
-				else if (tmpObjectVar != null)
-				{
-					config.AddCode(Ldloc[tmpObjectVar]);
-					config.AddCode(Unbox_Any[AccessTools.GetReturnedType(config.original)]);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.Result)]);
-				}
-				tmpBoxVars.Do(tmpBoxVar =>
-				{
-					config.AddCode(new CodeInstruction(config.OriginalIsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1));
-					config.AddCode(Ldloc[tmpBoxVar.Key]);
-					config.AddCode(Unbox_Any[tmpBoxVar.Value]);
-					config.AddCode(Stobj[tmpBoxVar.Value]);
-				});
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext));
 
 				var returnType = fix.ReturnType;
 				if (returnType != typeof(void))
 				{
 					if (returnType != typeof(bool))
 						throw new Exception($"Prefix patch {fix} has not \"bool\" or \"void\" return type: {fix.ReturnType}");
-					config.AddCode(Stloc[config.runOriginalVariable]);
+					codes.Add(Stloc[context.variables[InjectionType.RunOriginal]]);
 				}
 
 				if (skipLabel.HasValue)
-					config.AddCode(Nop.WithLabels(skipLabel.Value));
+					codes.Add(Nop.WithLabels(skipLabel.Value));
 			}
+			return codes;
 		}
 
 		internal bool AddPostfixes(bool passthroughPatches)
 		{
-			var result = false;
-			var original = config.original;
-			var originalIsStatic = original.IsStatic;
-			foreach (var fix in config.postfixes.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void))))
+			config.AddCodes(EmitPostfixes(config.postfixes, config.bindingContext, passthroughPatches));
+			return passthroughPatches && config.postfixes.Any(fix => fix.ReturnType != typeof(void));
+		}
+
+		internal List<CodeInstruction> EmitPostfixes(IEnumerable<MethodInfo> postfixes, PatchBindingContext context, bool passthroughPatches, PatchBindingContext outerContext = null)
+		{
+			var codes = new List<CodeInstruction>();
+			foreach (var fix in postfixes.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void))))
 			{
-				var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-				config.AddCodes(this.EmitCallParameter(fix, true, out var tmpInstanceBoxingVar, out var tmpObjectVar, out var refResultUsed, tmpBoxVars));
-				config.AddCode(Call[fix]);
-				if (MethodPatcherTools.OriginalParameters(fix).Any(pair => pair.realName == MethodPatcherTools.ARGS_ARRAY_VAR))
-					config.AddCodes(this.RestoreArgumentArray());
-				if (tmpInstanceBoxingVar != null)
-				{
-					config.AddCode(Ldarg_0);
-					config.AddCode(Ldloc[tmpInstanceBoxingVar]);
-					config.AddCode(Unbox_Any[original.DeclaringType]);
-					config.AddCode(Stobj[original.DeclaringType]);
-				}
-				if (refResultUsed)
-				{
-					var label = config.DefineLabel();
-					config.AddCode(Ldloc[config.GetLocal(InjectionType.ResultRef)]);
-					config.AddCode(Brfalse_S[label]);
-
-					config.AddCode(Ldloc[config.GetLocal(InjectionType.ResultRef)]);
-					config.AddCode(Callvirt[AccessTools.Method(config.GetLocal(InjectionType.ResultRef).LocalType, "Invoke")]);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.Result)]);
-					config.AddCode(Ldnull);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.ResultRef)]);
-
-					config.AddCode(Nop.WithLabels(label));
-				}
-				else if (tmpObjectVar != null)
-				{
-					config.AddCode(Ldloc[tmpObjectVar]);
-					config.AddCode(Unbox_Any[AccessTools.GetReturnedType(original)]);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.Result)]);
-				}
-				tmpBoxVars.Do(tmpBoxVar =>
-				{
-					config.AddCode(new CodeInstruction(originalIsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1));
-					config.AddCode(Ldloc[tmpBoxVar.Key]);
-					config.AddCode(Unbox_Any[tmpBoxVar.Value]);
-					config.AddCode(Stobj[tmpBoxVar.Value]);
-				});
+				if (outerContext != null && passthroughPatches && (fix.ReturnType != context.returnType
+					|| fix.GetParameters().FirstOrDefault()?.ParameterType != context.returnType))
+					throw new ArgumentException($"Infix passthrough postfix {fix.FullDescription()} must return and take a first parameter of exactly {context.returnType.FullDescription()}, "
+						+ $"the result type of {context.method.FullDescription()}; actual return is {fix.ReturnType.FullDescription()} and first parameter is {fix.GetParameters().FirstOrDefault()?.ParameterType.FullDescription() ?? "missing"}.");
+				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext));
 
 				if (fix.ReturnType != typeof(void))
 				{
 					var firstFixParam = fix.GetParameters().FirstOrDefault();
 					var hasPassThroughResultParam = firstFixParam is not null && fix.ReturnType == firstFixParam.ParameterType;
-					if (hasPassThroughResultParam)
-						result = true;
-					else
+					if (!hasPassThroughResultParam)
 					{
 						if (firstFixParam is not null)
 							throw new Exception($"Return type of pass through postfix {fix} does not match type of its first parameter");
@@ -339,58 +276,18 @@ namespace HarmonyLib
 					}
 				}
 			}
-			return result;
+			return codes;
 		}
 
 		internal bool AddFinalizers(bool catchExceptions)
 		{
 			var rethrowPossible = true;
-			var original = config.original;
-			var originalIsStatic = original.IsStatic;
 			config.finalizers.Do(fix =>
 			{
 				if (catchExceptions)
 					config.AddCode(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
 
-				var tmpBoxVars = new List<KeyValuePair<LocalBuilder, Type>>();
-				config.AddCodes(this.EmitCallParameter(fix, false, out var tmpInstanceBoxingVar, out var tmpObjectVar, out var refResultUsed, tmpBoxVars));
-				config.AddCode(Call[fix]);
-				if (MethodPatcherTools.OriginalParameters(fix).Any(pair => pair.realName == MethodPatcherTools.ARGS_ARRAY_VAR))
-					config.AddCodes(this.RestoreArgumentArray());
-				if (tmpInstanceBoxingVar != null)
-				{
-					config.AddCode(Ldarg_0);
-					config.AddCode(Ldloc[tmpInstanceBoxingVar]);
-					config.AddCode(Unbox_Any[original.DeclaringType]);
-					config.AddCode(Stobj[original.DeclaringType]);
-				}
-				if (refResultUsed)
-				{
-					var label = config.DefineLabel();
-					config.AddCode(Ldloc[config.GetLocal(InjectionType.ResultRef)]);
-					config.AddCode(Brfalse_S[label]);
-
-					config.AddCode(Ldloc[config.GetLocal(InjectionType.ResultRef)]);
-					config.AddCode(Callvirt[AccessTools.Method(config.GetLocal(InjectionType.ResultRef).LocalType, "Invoke")]);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.Result)]);
-					config.AddCode(Ldnull);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.ResultRef)]);
-
-					config.AddCode(Nop.WithLabels(label));
-				}
-				else if (tmpObjectVar != null)
-				{
-					config.AddCode(Ldloc[tmpObjectVar]);
-					config.AddCode(Unbox_Any[AccessTools.GetReturnedType(original)]);
-					config.AddCode(Stloc[config.GetLocal(InjectionType.Result)]);
-				}
-				tmpBoxVars.Do(tmpBoxVar =>
-				{
-					config.AddCode(new CodeInstruction(originalIsStatic ? OpCodes.Ldarg_0 : OpCodes.Ldarg_1));
-					config.AddCode(Ldloc[tmpBoxVar.Key]);
-					config.AddCode(Unbox_Any[tmpBoxVar.Value]);
-					config.AddCode(Stobj[tmpBoxVar.Value]);
-				});
+				config.AddCodes(this.EmitPatchCall(fix, config.bindingContext, false));
 
 				if (fix.ReturnType != typeof(void))
 				{
@@ -410,31 +307,6 @@ namespace HarmonyLib
 		}
 
 		IEnumerable<CodeInstruction> AddInfixes(IEnumerable<CodeInstruction> instructions)
-		{
-			var callGroups = instructions
-			.Where(ins => ins.opcode == OpCodes.Call || ins.opcode == OpCodes.Callvirt)
-			.Where(ins => ins.operand is MethodInfo)
-			.GroupBy(ins => (MethodInfo)ins.operand);
-
-			var replacements = new Dictionary<CodeInstruction, CodeInstruction[]>();
-			foreach (var (innerMethod, calls) in callGroups.Select(g => (g.Key, Calls: g.ToList())))
-			{
-				var total = calls.Count;
-				for (var i = 0; i < total; i++)
-				{
-					var callInstruction = calls[i];
-
-					var prefixes = config.innerprefixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
-					.SelectMany(fix => fix.Apply(config, true));
-					var postfixes = config.innerpostfixes.FilterAndSort(innerMethod, i + 1, total, config.debug)
-					.SelectMany(fix => fix.Apply(config, false));
-
-					replacements[callInstruction] = [.. prefixes, callInstruction, .. postfixes];
-				}
-			}
-
-			return instructions.SelectMany(instruction =>
-			replacements.TryGetValue(instruction, out var list) ? list : [instruction]);
-		}
+			=> Infix.Rewrite(this, instructions);
 	}
 }

@@ -1,3 +1,4 @@
+using MonoMod.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +24,7 @@ namespace HarmonyLib
 		internal string realName;
 		internal InjectionType injectionType;
 		internal ArgumentMode argumentMode;
+		internal bool outer;
 
 		internal const string INSTANCE_PARAM = "__instance";
 		internal const string ORIGINAL_METHOD_PARAM = "__originalMethod";
@@ -36,6 +38,8 @@ namespace HarmonyLib
 		internal InjectedParameter(MethodInfo method, ParameterInfo parameterInfo)
 		{
 			this.parameterInfo = parameterInfo;
+			// Dynamic patch methods cannot carry HarmonyOuter, and Mono cannot inspect their parameter attributes.
+			outer = !method.IsDynamicMethod() && parameterInfo.GetCustomAttributes(true).Any(attribute => attribute.GetType().FullName == "HarmonyLib.HarmonyOuter");
 			var arg = parameterInfo.GetArgumentAttribute();
 			argumentMode = arg?.Mode ?? ArgumentMode.Default;
 			if (argumentMode == ArgumentMode.Original)

@@ -1,0 +1,12 @@
+<Project>
+  <Target Name="RecordHarmonyCompileReference" BeforeTargets="GetAssemblyAttributes">
+    <Error Condition="!Exists('$(HarmonyReference)')" Text="Supply HarmonyReference as an absolute path to the exact published or current 0Harmony.dll." />
+    <GetFileHash Files="$(HarmonyReference)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="HarmonyCompileReference" />
+    </GetFileHash>
+    <ItemGroup>
+      <AssemblyMetadata Include="HarmonyCompileReferencePath" Value="$(HarmonyReference)" />
+      <AssemblyMetadata Include="HarmonyCompileReferenceSha256" Value="%(HarmonyCompileReference.FileHash)" />
+    </ItemGroup>
+  </Target>
+</Project>

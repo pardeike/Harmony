@@ -10,48 +10,29 @@ namespace HarmonyLib
 	{
 		public override Patch Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			_ = reader.Read(); // start object
+			using var document = JsonDocument.ParseValue(ref reader);
+			var values = ReadProperties(document.RootElement, ["index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before", "innerMethod"]);
+			foreach (var name in new[] { "index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before" })
+				if (!values.ContainsKey(name)) throw new JsonException($"Missing Patch property {name}");
+			var innerMethod = values.TryGetValue("innerMethod", out var inner) && inner.ValueKind != JsonValueKind.Null
+				? JsonSerializer.Deserialize<InnerMethod>(inner.GetRawText(), options) : null;
+			return new Patch(values["index"].GetInt32(), values["owner"].GetString(), values["priority"].GetInt32(),
+				JsonSerializer.Deserialize<string[]>(values["before"].GetRawText(), options), JsonSerializer.Deserialize<string[]>(values["after"].GetRawText(), options),
+				values["debug"].GetBoolean(), values["methodToken"].GetInt32(), values["moduleGUID"].GetString(), innerMethod);
+		}
 
-			_ = reader.Read(); // index
-			var index = reader.GetInt32();
-			_ = reader.Read();
-
-			_ = reader.Read(); // debug
-			var debug = reader.GetBoolean();
-			_ = reader.Read();
-
-			_ = reader.Read(); // owner
-			var owner = reader.GetString();
-			_ = reader.Read();
-
-			_ = reader.Read(); // priority
-			var priority = reader.GetInt32();
-			_ = reader.Read();
-
-			_ = reader.Read(); // methodToken
-			var methodToken = reader.GetInt32();
-			_ = reader.Read();
-
-			_ = reader.Read(); // moduleGUID
-			var moduleGUID = reader.GetString();
-			_ = reader.Read();
-
-			_ = reader.Read(); // after
-			var after = new List<string>();
-			while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-				after.Add(reader.GetString());
-			_ = reader.Read();
-
-			_ = reader.Read(); // before
-			var before = new List<string>();
-			while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-				before.Add(reader.GetString());
-			_ = reader.Read();
-
-			// we shall not read end object here
-			//_ = reader.Read();
-
-			return new Patch(index, owner, priority, [.. before], [.. after], debug, methodToken, moduleGUID);
+		internal static Dictionary<string, JsonElement> ReadProperties(JsonElement element, string[] known)
+		{
+			if (element.ValueKind != JsonValueKind.Object) throw new JsonException("Expected a patch metadata object");
+			var names = new HashSet<string>(known);
+			var values = new Dictionary<string, JsonElement>();
+			foreach (var property in element.EnumerateObject())
+			{
+				if (!names.Contains(property.Name)) continue;
+				if (values.ContainsKey(property.Name)) throw new JsonException($"Duplicate patch metadata property {property.Name}");
+				values.Add(property.Name, property.Value);
+			}
+			return values;
 		}
 
 		public override void Write(Utf8JsonWriter writer, Patch patchValue, JsonSerializerOptions options)
@@ -65,6 +46,11 @@ namespace HarmonyLib
 			writer.WriteString("moduleGUID", patchValue.PatchMethod.Module.ModuleVersionId.ToString());
 			WriteStringArray(writer, "after", patchValue.after);
 			WriteStringArray(writer, "before", patchValue.before);
+			if (patchValue.innerMethod is not null)
+			{
+				writer.WritePropertyName("innerMethod");
+				JsonSerializer.Serialize(writer, patchValue.innerMethod, options);
+			}
 			writer.WriteEndObject();
 		}
 

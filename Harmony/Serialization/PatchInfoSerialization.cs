@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-#if !NET9_0_OR_GREATER
+using System.Linq;
 using System.Runtime.Serialization;
+#if !NET9_0_OR_GREATER
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
+using System.Text;
 #if NET5_0_OR_GREATER
 using System.Text.Json;
 #endif
@@ -14,6 +17,7 @@ namespace HarmonyLib
 	///
 	internal static class PatchInfoSerialization
 	{
+		static readonly byte[] infixHeader = Encoding.ASCII.GetBytes("HARMONY-INFIX\0");
 #if NET5_0_OR_GREATER
 		static readonly JsonSerializerOptions serializerOptions = new() { IncludeFields = true };
 #endif
@@ -53,7 +57,8 @@ namespace HarmonyLib
 				var types = new Type[] {
 					typeof(PatchInfo),
 					typeof(Patch[]),
-					typeof(Patch)
+					typeof(Patch),
+					typeof(InnerMethod)
 				};
 				foreach (var type in types)
 					if (typeName == type.FullName)
@@ -71,17 +76,43 @@ namespace HarmonyLib
 		///
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
-#if NET9_0_OR_GREATER
-			return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
-#elif NET5_0_OR_GREATER
-			if (!UseBinaryFormatter)
-				return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
-#endif
+			patchInfo.ValidateSurvivingMetadata();
+			var backend = CurrentBackend;
+			var payload = SerializePayload(patchInfo, backend);
+			if (!patchInfo.HasInfixes) return payload;
+			var bytes = new byte[infixHeader.Length + 2 + payload.Length];
+			Buffer.BlockCopy(infixHeader, 0, bytes, 0, infixHeader.Length);
+			bytes[infixHeader.Length] = 1;
+			bytes[infixHeader.Length + 1] = backend;
+			Buffer.BlockCopy(payload, 0, bytes, infixHeader.Length + 2, payload.Length);
+			return bytes;
+		}
 
+		static byte CurrentBackend
+		{
+			get
+			{
+#if NET9_0_OR_GREATER
+				return 1;
+#elif NET5_0_OR_GREATER
+				return UseBinaryFormatter ? (byte)2 : (byte)1;
+#else
+				return 2;
+#endif
+			}
+		}
+
+		static byte[] SerializePayload(PatchInfo patchInfo, byte backend)
+		{
+#if NET5_0_OR_GREATER
+			if (backend == 1) return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
+#endif
 #if !NET9_0_OR_GREATER
 			using var streamMemory = new MemoryStream();
 			binaryFormatter.Serialize(streamMemory, patchInfo);
 			return streamMemory.ToArray();
+#else
+			throw new SerializationException("BinaryFormatter is unavailable on this runtime");
 #endif
 		}
 
@@ -91,16 +122,74 @@ namespace HarmonyLib
 		///
 		internal static PatchInfo Deserialize(byte[] bytes)
 		{
-#if NET9_0_OR_GREATER
-			return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
-#elif NET5_0_OR_GREATER
-			if (!UseBinaryFormatter)
-				return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
+			if (bytes is null || bytes.Length == 0) throw new SerializationException("Patch state is empty");
+			var backend = CurrentBackend;
+			var enveloped = bytes[0] == infixHeader[0];
+			if (enveloped)
+			{
+				if (bytes.Length <= infixHeader.Length + 2 || !bytes.Take(infixHeader.Length).SequenceEqual(infixHeader))
+					throw new SerializationException("Malformed or truncated Harmony Infix state header");
+				if (bytes[infixHeader.Length] != 1) throw new SerializationException($"Unsupported Harmony Infix state version {bytes[infixHeader.Length]}");
+				backend = bytes[infixHeader.Length + 1];
+				if (backend != 1 && backend != 2) throw new SerializationException($"Unsupported Harmony Infix serializer {backend}");
+				var payload = new byte[bytes.Length - infixHeader.Length - 2];
+				Buffer.BlockCopy(bytes, infixHeader.Length + 2, payload, 0, payload.Length);
+				bytes = payload;
+			}
+#if NET5_0_OR_GREATER
+			if (enveloped && backend == 1) ValidateJsonEnvelope(bytes);
+#endif
+			var result = DeserializePayload(bytes, backend);
+			if (result is null) throw new SerializationException("Patch state cannot be null");
+			result.NormalizeLegacyArrays();
+			if (enveloped && !result.HasInfixes) throw new SerializationException("Harmony Infix state must contain at least one inner patch");
+			foreach (var patch in result.prefixes.Concat(result.postfixes).Concat(result.transpilers).Concat(result.finalizers).Concat(result.innerprefixes).Concat(result.innerpostfixes))
+				patch.innerMethod?.ValidateVersionedIdentity();
+			return result;
+		}
+
+#if NET5_0_OR_GREATER
+		static void ValidateJsonEnvelope(byte[] bytes)
+		{
+			using var document = JsonDocument.Parse(bytes);
+			if (document.RootElement.ValueKind != JsonValueKind.Object) throw new SerializationException("Harmony Infix state must be a JSON object");
+			string[] required = ["prefixes", "postfixes", "transpilers", "finalizers", "innerprefixes", "innerpostfixes", "VersionCount"];
+			var found = new HashSet<string>();
+			foreach (var property in document.RootElement.EnumerateObject())
+			{
+				if (!required.Contains(property.Name)) continue;
+				if (!found.Add(property.Name)) throw new SerializationException($"Duplicate Harmony Infix state property '{property.Name}'");
+				if (property.Name == "VersionCount")
+				{
+					if (property.Value.ValueKind != JsonValueKind.Number || !property.Value.TryGetInt32(out _))
+						throw new SerializationException("Harmony Infix state VersionCount must be an integer");
+				}
+				else if (property.Value.ValueKind != JsonValueKind.Array)
+					throw new SerializationException($"Harmony Infix state property '{property.Name}' must be an array");
+			}
+			var missing = required.Where(name => !found.Contains(name)).ToArray();
+			if (missing.Length != 0) throw new SerializationException($"Harmony Infix state is missing required properties: {string.Join(", ", missing)}");
+		}
 #endif
 
+		static PatchInfo DeserializePayload(byte[] bytes, byte backend)
+		{
+			if (backend == 1)
+			{
+#if NET5_0_OR_GREATER
+				return JsonSerializer.Deserialize<PatchInfo>(bytes, serializerOptions);
+#else
+				throw new SerializationException("The JSON Infix serializer is unavailable on this runtime");
+#endif
+			}
+#if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
+			if (!UseBinaryFormatter) throw new SerializationException("The BinaryFormatter Infix serializer is disabled on this runtime");
+#endif
 #if !NET9_0_OR_GREATER
 			using var streamMemory = new MemoryStream(bytes);
 			return (PatchInfo)binaryFormatter.Deserialize(streamMemory);
+#else
+			throw new SerializationException("The BinaryFormatter Infix serializer is unavailable on this runtime");
 #endif
 		}
 

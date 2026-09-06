@@ -1,6 +1,6 @@
 # Infix: implementation specification
 
-> **Status:** Implementation baseline, 2026-09-05. This is the sole Infix design reference. It specifies the implementation to build; it is not a claim that the current code implements or passes it.
+> **Status:** Unreleased implementation contract, 2026-09-05. This is the sole Infix design reference. See the [implementation and local validation status](../docs/infix/README.md) for executed checks and their runtime boundaries.
 
 ## 1. The feature in one page
 
@@ -89,7 +89,7 @@ Select the outer method on the patch class or with `TargetMethod`/`TargetMethods
 
 For class discovery, `HarmonyInfix` requires exactly one prefix or postfix role, either by the ordinary attribute or by the supported `Prefix`/`Postfix`/`InnerPrefix`/`InnerPostfix` naming convention. Normalize equivalent names and attributes to one role; reject genuinely conflicting roles, and combinations with transpiler, finalizer, or reverse-patch roles. An inner role without a target is an error. Keep normal declared-method discovery; `Inherited = true` does not introduce inherited patch-method scanning.
 
-Infix patch code consists of static, nongeneric methods on nongeneric patch types with stable metadata. There is no automatic generic specialization of patch code and no Infix factory returning a `MethodInfo` or `DynamicMethod`. This restriction concerns the patch methods, not their generic call targets. It avoids promising patch identities that the existing `Patch` serialization cannot preserve.
+Infix patch code consists of static, nongeneric methods on nongeneric patch types with stable metadata. There is no automatic generic specialization of patch code and no Infix patch factory. Use ordinary Harmony's complete factory signature to identify one: a static method returning `MethodInfo` or `DynamicMethod` with exactly one parameter of type `MethodBase`. Those return types alone do not make a factory: `MethodInfo After(MethodInfo value)` and `DynamicMethod After(DynamicMethod value)` are valid passthrough postfixes for matching call results. The stable-metadata restriction concerns the patch methods, not their generic call targets. It avoids promising patch identities that the existing `Patch` serialization cannot preserve.
 
 Discover the two new attributes by exact full type name, as Harmony already does for cross-assembly annotations. Keep inner-target constructor data out of the `HarmonyMethod` fields that select the outer method. New discovery recognizes the declaration and clears its old-engine marker, but resolves the target only after the applicable class and per-original `HarmonyPrepare` calls accept the patch job. The patch `MethodInfo` retains the attribute; re-read that declaration when resolving it instead of adding persistent unresolved-target state.
 
@@ -167,7 +167,7 @@ Changing an Infix's `ref int x` when the callee takes `int x` changes the captur
 
 A prefix returns `void` or `bool`. Use the existing `AffectsOriginal` classification and prefix scheduling. Once a prefix returns false, skip the selected call and later prefixes that Harmony classifies as affecting it. Prefixes exempt from that guard still run. Do not substitute a new test based only on the presence of `ref` or a bool return, and do not skip a postfix because some prefix did not run. On normal completion of the prefix phase or call, all postfixes run in their normal phases, including after the call was skipped.
 
-There is one result for the selected call, with normal Harmony result and passthrough behavior. It starts at the normal default where a prefix or skipping can expose it; prefixes can modify it; executing the call supplies its return value; and postfixes can transform the result. A skipped call leaves the default or prefix-provided result for postfix processing. Void calls have no result injections. Reuse ordinary passthrough signature checking and result threading, rather than inventing another chain of result locals.
+There is one result for the selected call, with normal Harmony result and passthrough behavior. It starts at the normal default where a prefix or skipping can expose it; prefixes can modify it; executing the call supplies its return value; and postfixes can transform the result. A skipped call leaves the default or prefix-provided result for postfix processing. Void calls have no result injections. Reuse ordinary result threading, rather than inventing another chain of result locals. An Infix passthrough postfix's return and first-parameter types must exactly match the actual selected call's return type. Its first parameter is always the previous result, not an injection: ignore its name and injection annotations during both storage setup and emission.
 
 The by-value `bool __runOriginal` observes the one site-local run flag. It begins true. Later prefixes that still run observe false after an earlier prefix skips, and all postfixes observe the same final flag. It controls whether the selected call instruction executes; it does not report whether the callee's own Harmony prefixes allowed that callee's body to run. It is an observation, not a writable control flag; skip by returning false from a prefix.
 
@@ -273,6 +273,8 @@ Use inline generated IL, not runtime delegates or separately detoured helper met
 
 Support ordinary `call`/`callvirt` with stable `MethodInfo` operands, including static/reference/struct instances and concrete `constrained. T; callvirt` instance dispatch. Typed pointer/byref-like arguments or returns are allowed only where the existing binder and runtime can emit the requested conversion; `object` boxing is not universally available.
 
+The bundled MonoMod signature importer cannot represent C# function-pointer types (`delegate*`) correctly. Reject function-pointer-containing selected call or patch signatures, including by-reference forms, with a clear error before installation. Native pointers remain supported. Replacing the underlying importer is outside this feature.
+
 Reject selected constructor calls, `newobj`, `calli`, varargs, `tail.`, malformed/unsupported call prefixes, constrained static-interface calls, and unresolved open storage. These exclusions are about the selected site, not unrelated instructions in the outer body. No automatic async/iterator state-machine targeting is added; users may select a supported generated outer method explicitly using existing facilities.
 
 Keep the complete generated block in the same surrounding exception region as the original call:
@@ -286,6 +288,8 @@ Respect existing marker ordering when a boundary carries multiple markers. Cover
 ## 7. Durable target identity
 
 Shared patch state must remember the same selector after another compatible Harmony assembly reads it. A metadata token identifies a member definition, not `Container<int>` versus `Container<string>`. Store those closed constructions explicitly and recursively.
+
+An Infix patch method's existing module/token identity must also identify exactly one loaded module. Check uniqueness for both cold resolution and cached candidates before rebuilding; a cached `MethodInfo` cannot make a later reader's ambiguous identity safe. Reuse the target module resolver, retain ordinary patch lookup behavior, and allow owner removal before validating survivors.
 
 Extend `InnerMethod`'s existing fields with this private serialized data, using the same meanings in both backends:
 
@@ -345,6 +349,8 @@ Remove the envelope after the last Infix is removed. Keep using the existing sha
 
 For the payload, extend `Patch` JSON with `innerMethod` only for Infix records. Read `Patch` and `InnerMethod` properties by name, tolerate property order, skip unknown noncritical properties, and reject duplicate or missing identity-defining properties. Do not reorder or add properties in ordinary patch JSON output.
 
+For a version-1 JSON envelope, require all six role arrays and `VersionCount` exactly once with their expected value types. Do not let duplicate top-level fields replace active arrays or missing fields normalize a versioned payload to empty state. Any envelope, in either backend, must contain at least one inner record. Keep absent-field normalization for actual unenveloped legacy payloads.
+
 For BinaryFormatter, add `InnerMethod` to the existing type binder's remapping into the reading Harmony assembly. Retain existing formatter settings. Mark newly added serialized identity fields optional where that backend requires version tolerance, then validate their semantic completeness separately. Normalize absent legacy inner arrays to empty. Do not assume every absent field throws: [.NET's formatter source](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/Formatters/Binary/BinaryObjectInfo.cs) makes its missing-field check conditional on assembly-format mode. Actual old-assembly tests, not a blanket claim about `OptionalField`, decide compatibility.
 
 ### Removal must work even when an old entry lacks its target
@@ -363,6 +369,8 @@ Within the existing patch-update lock, for one outer method:
 4. Install its detour, then publish the already-serialized bytes and replacement mapping. Do not serialize again or increment the version twice after installation.
 
 No predictable selector, binding, or serialization failure introduced by Infix may happen after the new detour is installed. Preserve the existing distinction between the original/source method during generation. This is not process-crash atomicity, nor rollback of side effects inside user prepare/transpiler code. A class targeting several outer methods still has Harmony's normal job-by-job behavior.
+
+The existing lock is per Harmony assembly and is reentrant. Hosts must serialize updates to the same original across assemblies and must not reenter that original's update from prepare/transpiler callbacks. Otherwise an operation holding an earlier candidate can overwrite a later nested/concurrent update, for ordinary patches as well as Infixes. The envelope guards operations that read already-published Infix state; it cannot intercept an old operation that consumed legacy bytes before activation. Keep a deterministic compatibility diagnostic for that inherited race, separate from the sequential no-drop tests. Do not add a cross-version locking protocol to this feature.
 
 ## 9. Implementation pass
 
@@ -401,8 +409,10 @@ Use generated cases where they increase coverage cheaply. Do not take a full cro
 
 Mixed-version proof uses actual released Harmony assemblies: 2.4.0.0, 2.4.1.0, 2.4.2.0, and a pre-inner-array version such as 2.3.6.0. Run compile-old/use-new and compile-new/use-old checks, side-by-side declaration discovery, legacy-to-new state reads, new-to-old active-state rejection, and two new-compatible assemblies reading each other's cold identities. Exercise JSON and BinaryFormatter where available, including missing legacy fields and unavailable-backend errors. A user transpiler with a counter must not run when old Harmony rejects active Infix state.
 
+The supporting [compatibility test strategy](INFIX-COMPATIBILITY-TESTS.md) defines the loading arrangements, ordinary cross-engine controls, pinned artifacts, and expected failure stages. Prove which assemblies actually loaded and whether they share patch state before drawing conclusions about Infix compatibility.
+
 Use net9/x64 for the focused edit loop. Before release, run relevant normal argument/patching/reverse-patch suites and these Infix cases on representative supported CoreCLR and Mono targets, plus API/package compatibility checks. Report runtime availability honestly: a built x64 test assembly is not an executed x64 test run.
 
 Public documentation should contain a small working example; exact versus family selection and positions; the scope table; ordinary independent prefix/postfix ordering, skipping, and exceptions; the by-value/ref distinction; safe dual arrays and their mutable nature; exact original-name binding; supported call forms; and actionable failures. Explain the concept before internal names. Include high/low priority examples and a skip example showing later exempt prefixes and postfixes observing the site-local `__runOriginal`. Compile documentation examples through test fixtures or an existing docs-example check.
 
-The implementation is complete when those contracts hold, existing ordinary behavior remains unchanged, and actual mixed-version tests show that no old engine can silently reinterpret supported declarations or drop active Infixes. A plan, generated instruction listing, or serializer-only test is not a substitute for the applicable runtime proof.
+The implementation is complete when those contracts hold, existing ordinary behavior remains unchanged, and actual mixed-version tests show that no old engine can silently reinterpret supported declarations or drop already-published Infixes within the serialized-update boundary above. A plan, generated instruction listing, or serializer-only test is not a substitute for the applicable runtime proof.

@@ -10,6 +10,8 @@
 
 ## [Postfix](patching-postfix.md)
 
+## [Infix](patching-infix.md)
+
 ## [Transpiler](patching-transpiler.md)
 
 ## [Transpiler - CodeInstruction](patching-transpiler-codes.md)

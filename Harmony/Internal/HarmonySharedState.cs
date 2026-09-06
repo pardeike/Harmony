@@ -48,6 +48,7 @@ namespace HarmonyLib
 		{
 			// create singleton type
 			var type = GetOrCreateSharedStateType();
+			AppDomain.CurrentDomain.TypeResolve += (_, args) => args.Name == name ? type.Assembly : null;
 
 			// this field is useed to find methods from stackframes in Mono
 			if (AccessTools.IsMonoRuntime && AccessTools.Field(typeof(StackFrame), "methodAddress") is FieldInfo field)
@@ -91,8 +92,11 @@ namespace HarmonyLib
 		// creates a dynamic 'global' type if it does not exist
 		static Type GetOrCreateSharedStateType()
 		{
-			var type = Type.GetType(name, false);
-			if (type != null) return type;
+			var existing = AppDomain.CurrentDomain.GetAssemblies()
+				.Where(assembly => assembly.GetName().Name == name)
+				.Select(assembly => assembly.GetType(name, false)).Where(type => type is not null).Distinct().ToArray();
+			if (existing.Length > 1) throw new InvalidOperationException("Multiple loaded HarmonySharedState types prevent safe shared patch updates");
+			if (existing.Length == 1) return existing[0];
 
 			using var module = ModuleDefinition.CreateModule(name, new ModuleParameters() { Kind = ModuleKind.Dll, ReflectionImporterProvider = MMReflectionImporter.Provider });
 			var attr = Mono.Cecil.TypeAttributes.Public | Mono.Cecil.TypeAttributes.Abstract | Mono.Cecil.TypeAttributes.Sealed | Mono.Cecil.TypeAttributes.Class;
@@ -140,10 +144,8 @@ namespace HarmonyLib
 			lock (state) return state.Keys.ToArray();
 		}
 
-		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, PatchInfo patchInfo)
+		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, byte[] bytes)
 		{
-			patchInfo.VersionCount++;
-			var bytes = patchInfo.Serialize();
 			lock (state) state[original] = bytes;
 			lock (originals) originals[replacement.Identifiable()] = original;
 			if (AccessTools.IsMonoRuntime)

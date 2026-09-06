@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Lib.Harmony\Lib.Harmony.csproj" />
     <ProjectReference Include="..\TestLibrary\TestLibrary.csproj" />
+    <Compile Include="..\Documentation\examples\patching-infix.cs" Link="Patching\Examples\Infix.cs" />
   </ItemGroup>
 
   <ItemGroup>

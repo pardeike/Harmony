@@ -184,6 +184,39 @@ namespace HarmonyLib
 		public HarmonyMethod info = new();
 	}
 
+	/// <summary>Selects calls inside the outer patched method for an inner prefix or postfix</summary>
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+	public sealed class HarmonyInfix : HarmonyAttribute
+	{
+		internal readonly Type innerDeclaringType;
+		internal readonly string innerName;
+		internal readonly Type[] innerArguments;
+		internal readonly ArgumentType[] innerVariations;
+
+		/// <summary>One-based call positions; negative positions count from the end and an empty array selects all calls</summary>
+		public int[] Positions { get; set; } = [];
+
+		/// <summary>Selects an unambiguous named method</summary>
+		public HarmonyInfix(Type declaringType, string methodName) : this(declaringType, methodName, (Type[])null, null) { }
+
+		/// <summary>Selects a named method with the supplied argument types</summary>
+		public HarmonyInfix(Type declaringType, string methodName, params Type[] argumentTypes) : this(declaringType, methodName, argumentTypes, null) { }
+
+		/// <summary>Selects a named method with ref, out, or pointer argument variations</summary>
+		public HarmonyInfix(Type declaringType, string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)
+		{
+			info.methodType = (MethodType)int.MinValue;
+			innerDeclaringType = declaringType;
+			innerName = methodName;
+			innerArguments = argumentTypes;
+			innerVariations = argumentVariations;
+		}
+	}
+
+	/// <summary>Binds an Infix parameter to the containing outer method</summary>
+	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+	public sealed class HarmonyOuter : Attribute { }
+
 	/// <summary>Annotation to define a category for use with PatchCategory</summary>
 	///
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]

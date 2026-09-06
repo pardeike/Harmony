@@ -38,6 +38,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddPrefix(HarmonyMethod prefix)
 		{
+			AttributePatch.ValidateOrdinary(prefix);
 			this.prefix = prefix;
 			return this;
 		}
@@ -48,8 +49,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddPrefix(MethodInfo fixMethod)
 		{
-			prefix = new HarmonyMethod(fixMethod);
-			return this;
+			return AddPrefix(new HarmonyMethod(fixMethod));
 		}
 
 		/// <summary>Adds a postfix</summary>
@@ -58,6 +58,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddPostfix(HarmonyMethod postfix)
 		{
+			AttributePatch.ValidateOrdinary(postfix);
 			this.postfix = postfix;
 			return this;
 		}
@@ -68,8 +69,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddPostfix(MethodInfo fixMethod)
 		{
-			postfix = new HarmonyMethod(fixMethod);
-			return this;
+			return AddPostfix(new HarmonyMethod(fixMethod));
 		}
 
 		/// <summary>Adds a transpiler</summary>
@@ -78,6 +78,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddTranspiler(HarmonyMethod transpiler)
 		{
+			AttributePatch.ValidateOrdinary(transpiler);
 			this.transpiler = transpiler;
 			return this;
 		}
@@ -88,8 +89,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddTranspiler(MethodInfo fixMethod)
 		{
-			transpiler = new HarmonyMethod(fixMethod);
-			return this;
+			return AddTranspiler(new HarmonyMethod(fixMethod));
 		}
 
 		/// <summary>Adds a finalizer</summary>
@@ -98,6 +98,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddFinalizer(HarmonyMethod finalizer)
 		{
+			AttributePatch.ValidateOrdinary(finalizer);
 			this.finalizer = finalizer;
 			return this;
 		}
@@ -108,8 +109,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddFinalizer(MethodInfo fixMethod)
 		{
-			finalizer = new HarmonyMethod(fixMethod);
-			return this;
+			return AddFinalizer(new HarmonyMethod(fixMethod));
 		}
 
 		/// <summary>Adds an inner prefix</summary>
@@ -189,7 +189,6 @@ namespace HarmonyLib
 				patchInfo.AddInnerPostfixes(instance.Id, innerpostfix);
 
 				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
-				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
 				return replacement;
 			}
 		}
@@ -222,8 +221,7 @@ namespace HarmonyLib
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.InnerPostfix)
 					patchInfo.RemoveInnerPostfix(harmonyID);
 
-				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
-				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
+				_ = PatchFunctions.UpdateWrapper(original, patchInfo);
 				return this;
 			}
 		}
@@ -244,8 +242,7 @@ namespace HarmonyLib
 
 				patchInfo.RemovePatch(patch);
 
-				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
-				HarmonySharedState.UpdatePatchInfo(original, replacement, patchInfo);
+				_ = PatchFunctions.UpdateWrapper(original, patchInfo);
 				return this;
 			}
 		}

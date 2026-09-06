@@ -254,44 +254,43 @@ namespace HarmonyLib
 		//
 		void ParseExceptions()
 		{
-			foreach (var exception in exceptions)
+			var groups = exceptions.GroupBy(exception => new { exception.TryOffset, exception.TryLength })
+				.OrderBy(group => group.Key.TryOffset).ThenByDescending(group => group.Key.TryLength);
+			foreach (var group in groups)
 			{
-				var try_start = exception.TryOffset;
-				// var try_end = exception.TryOffset + exception.TryLength - 1;
-
-				var handler_start = exception.HandlerOffset;
-				var handler_end = exception.HandlerOffset + exception.HandlerLength - 1;
-
-				var instr1 = GetInstruction(try_start, false);
-				instr1.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock, null));
-
-				var instr2 = GetInstruction(handler_end, true);
-				instr2.blocks.Add(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock, null));
-
-				// The FilterOffset property is meaningful only for Filter clauses.
-				// The CatchType property is not meaningful for Filter or Finally clauses.
-				//
-				switch (exception.Flags)
+				GetInstruction(group.Key.TryOffset, false).blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock));
+				var lastHandler = group.Max(exception => exception.HandlerOffset + exception.HandlerLength - 1);
+				GetInstruction(lastHandler, true).blocks.Add(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+				foreach (var exception in group.OrderBy(exception => exception.HandlerOffset))
 				{
-					case ExceptionHandlingClauseOptions.Filter:
-						var instr3 = GetInstruction(exception.FilterOffset, false);
-						instr3.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginExceptFilterBlock, null));
-						break;
+					var handler_start = exception.HandlerOffset;
 
-					case ExceptionHandlingClauseOptions.Finally:
-						var instr4 = GetInstruction(handler_start, false);
-						instr4.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginFinallyBlock, null));
-						break;
+					// The FilterOffset property is meaningful only for Filter clauses.
+					// The CatchType property is not meaningful for Filter or Finally clauses.
+					//
+					switch (exception.Flags)
+					{
+						case ExceptionHandlingClauseOptions.Filter:
+							var instr3 = GetInstruction(exception.FilterOffset, false);
+							instr3.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginExceptFilterBlock, null));
+							GetInstruction(handler_start, false).blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock) { catchType = null });
+							break;
 
-					case ExceptionHandlingClauseOptions.Clause:
-						var instr5 = GetInstruction(handler_start, false);
-						instr5.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock, exception.CatchType));
-						break;
+						case ExceptionHandlingClauseOptions.Finally:
+							var instr4 = GetInstruction(handler_start, false);
+							instr4.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginFinallyBlock, null));
+							break;
 
-					case ExceptionHandlingClauseOptions.Fault:
-						var instr6 = GetInstruction(handler_start, false);
-						instr6.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginFaultBlock, null));
-						break;
+						case ExceptionHandlingClauseOptions.Clause:
+							var instr5 = GetInstruction(handler_start, false);
+							instr5.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginCatchBlock, exception.CatchType));
+							break;
+
+						case ExceptionHandlingClauseOptions.Fault:
+							var instr6 = GetInstruction(handler_start, false);
+							instr6.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginFaultBlock, null));
+							break;
+					}
 				}
 			}
 		}

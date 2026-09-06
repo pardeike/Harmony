@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 #if NET5_0_OR_GREATER
 using System.Text.Json.Serialization;
 #endif
@@ -46,6 +47,7 @@ namespace HarmonyLib
 #if NET5_0_OR_GREATER
 		[JsonInclude]
 #endif
+		[OptionalField]
 		public Patch[] innerprefixes = [];
 
 		/// <summary>InnerPostfixes as an array of <see cref="Patch"/></summary>
@@ -53,6 +55,7 @@ namespace HarmonyLib
 #if NET5_0_OR_GREATER
 		[JsonInclude]
 #endif
+		[OptionalField]
 		public Patch[] innerpostfixes = [];
 
 		/// <summary>Returns if any of the patches wants debugging turned on</summary>
@@ -78,7 +81,7 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
 		///
-		internal void AddPrefixes(string owner, params HarmonyMethod[] methods) => prefixes = Add(owner, methods, prefixes);
+		internal void AddPrefixes(string owner, params HarmonyMethod[] methods) => prefixes = Add(owner, methods, prefixes, HarmonyPatchType.Prefix);
 
 		/// <summary>Adds a prefix</summary>
 		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
@@ -94,7 +97,7 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
 		///
-		internal void AddPostfixes(string owner, params HarmonyMethod[] methods) => postfixes = Add(owner, methods, postfixes);
+		internal void AddPostfixes(string owner, params HarmonyMethod[] methods) => postfixes = Add(owner, methods, postfixes, HarmonyPatchType.Postfix);
 
 		/// <summary>Adds a postfix</summary>
 		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
@@ -110,7 +113,7 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
 		///
-		internal void AddTranspilers(string owner, params HarmonyMethod[] methods) => transpilers = Add(owner, methods, transpilers);
+		internal void AddTranspilers(string owner, params HarmonyMethod[] methods) => transpilers = Add(owner, methods, transpilers, HarmonyPatchType.Transpiler);
 
 		/// <summary>Adds a transpiler</summary>
 		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
@@ -128,7 +131,7 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
 		///
-		internal void AddFinalizers(string owner, params HarmonyMethod[] methods) => finalizers = Add(owner, methods, finalizers);
+		internal void AddFinalizers(string owner, params HarmonyMethod[] methods) => finalizers = Add(owner, methods, finalizers, HarmonyPatchType.Finalizer);
 
 		/// <summary>Adds a finalizer</summary>
 		[Obsolete("This method only exists for backwards compatibility since the class is public.")]
@@ -144,7 +147,7 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
 		///
-		internal void AddInnerPrefixes(string owner, params HarmonyMethod[] methods) => innerprefixes = Add(owner, methods, innerprefixes);
+		internal void AddInnerPrefixes(string owner, params HarmonyMethod[] methods) => innerprefixes = Add(owner, methods, innerprefixes, HarmonyPatchType.InnerPrefix);
 
 		/// <summary>Removes inner prefixes</summary>
 		/// <param name="owner">The owner of the inner prefixes, or <c>*</c> for all</param>
@@ -155,7 +158,7 @@ namespace HarmonyLib
 		/// <param name="owner">An owner (Harmony ID)</param>
 		/// <param name="methods">The patch methods</param>
 		///
-		internal void AddInnerPostfixes(string owner, params HarmonyMethod[] methods) => innerpostfixes = Add(owner, methods, innerpostfixes);
+		internal void AddInnerPostfixes(string owner, params HarmonyMethod[] methods) => innerpostfixes = Add(owner, methods, innerpostfixes, HarmonyPatchType.InnerPostfix);
 
 		/// <summary>Removes inner postfixes</summary>
 		/// <param name="owner">The owner of the inner postfixes, or <c>*</c> for all</param>
@@ -175,7 +178,35 @@ namespace HarmonyLib
 			innerpostfixes = [.. innerpostfixes.Where(p => p.PatchMethod != patch)];
 		}
 
-		private static Patch[] Add(string owner, HarmonyMethod[] add, Patch[] current)
+		internal void NormalizeLegacyArrays()
+		{
+			innerprefixes ??= [];
+			innerpostfixes ??= [];
+		}
+
+		internal bool HasInfixes => innerprefixes.Length != 0 || innerpostfixes.Length != 0;
+
+		internal void ValidateSurvivingMetadata()
+		{
+			NormalizeLegacyArrays();
+			foreach (var patch in prefixes.Concat(postfixes).Concat(transpilers).Concat(finalizers))
+				AttributePatch.ValidateOrdinary(new HarmonyMethod() { method = patch.PatchMethod, innerMethod = patch.innerMethod });
+			foreach (var patch in innerprefixes.Concat(innerpostfixes))
+			{
+				try
+				{
+					if (patch.innerMethod is null) throw new ArgumentException("The stored inner patch has no target");
+					AttributePatch.ValidateInfixPatchMethod(patch.GetValidatedInfixPatchMethod());
+					patch.innerMethod.Validate();
+				}
+				catch (Exception ex)
+				{
+					throw new ArgumentException($"Cannot rebuild while Infix owner '{patch.owner}', patch {patch.MethodIdentity} has invalid metadata. Remove this inner patch using normal unpatching. {ex.Message}", ex);
+				}
+			}
+		}
+
+		private static Patch[] Add(string owner, HarmonyMethod[] add, Patch[] current, HarmonyPatchType role)
 		{
 			// avoid copy if no patch added
 			if (add.Length == 0)
@@ -189,7 +220,7 @@ namespace HarmonyLib
 ,
 				.. add
 					.Where(method => method != null)
-					.Select((method, i) => new Patch(method, i + initialIndex, owner))
+					.Select((method, i) => new Patch(AttributePatch.PrepareRegistration(method, role), i + initialIndex, owner))
 ,
 			];
 		}

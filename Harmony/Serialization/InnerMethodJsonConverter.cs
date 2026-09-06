@@ -10,34 +10,37 @@ namespace HarmonyLib
 	{
 		public override InnerMethod Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			_ = reader.Read(); // start object
-
-			_ = reader.Read(); // methodToken
-			var methodToken = reader.GetInt32();
-			_ = reader.Read();
-
-			_ = reader.Read(); // moduleGUID
-			var moduleGUID = reader.GetString();
-			_ = reader.Read();
-
-			_ = reader.Read(); // positions
-			var positions = new List<int>();
-			while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-				positions.Add(reader.GetInt32());
-			_ = reader.Read();
-
-			// we shall not read end object here
-			//_ = reader.Read();
-
-			return new InnerMethod(methodToken, moduleGUID, [.. positions]);
+			using var document = JsonDocument.ParseValue(ref reader);
+			var values = PatchJsonConverter.ReadProperties(document.RootElement,
+				["methodToken", "moduleGUID", "positions", "identityVersion", "targetKind", "declaringTypeArguments", "methodArguments"]);
+			foreach (var name in new[] { "methodToken", "moduleGUID", "positions" })
+				if (!values.ContainsKey(name)) throw new JsonException($"Missing InnerMethod property {name}");
+			var versioned = values.ContainsKey("identityVersion");
+			foreach (var name in new[] { "targetKind", "declaringTypeArguments", "methodArguments" })
+				if (values.ContainsKey(name) != versioned) throw new JsonException($"Incomplete Infix identity property {name}");
+			if (versioned && values["identityVersion"].GetInt32() != 1) throw new JsonException("Unsupported Infix identity version");
+			var result = new InnerMethod(values["methodToken"].GetInt32(), values["moduleGUID"].GetString(),
+				JsonSerializer.Deserialize<int[]>(values["positions"].GetRawText(), options), versioned ? 1 : 0,
+				versioned ? values["targetKind"].GetInt32() : null,
+				versioned ? JsonSerializer.Deserialize<string[]>(values["declaringTypeArguments"].GetRawText(), options) : null,
+				versioned ? JsonSerializer.Deserialize<string[]>(values["methodArguments"].GetRawText(), options) : null);
+			result.ValidateVersionedIdentity();
+			return result;
 		}
 
 		public override void Write(Utf8JsonWriter writer, InnerMethod innerMethodValue, JsonSerializerOptions options)
 		{
+			innerMethodValue.Validate();
 			writer.WriteStartObject();
-			writer.WriteNumber("methodToken", innerMethodValue.Method.MetadataToken);
-			writer.WriteString("moduleGUID", innerMethodValue.Method.Module.ModuleVersionId.ToString());
+			writer.WriteNumber("methodToken", innerMethodValue.MethodToken);
+			writer.WriteString("moduleGUID", innerMethodValue.ModuleGUID);
 			WriteInt32Array(writer, "positions", innerMethodValue.positions);
+			writer.WriteNumber("identityVersion", innerMethodValue.IdentityVersion);
+			writer.WriteNumber("targetKind", innerMethodValue.TargetKind.Value);
+			writer.WritePropertyName("declaringTypeArguments");
+			JsonSerializer.Serialize(writer, innerMethodValue.DeclaringTypeArguments, options);
+			writer.WritePropertyName("methodArguments");
+			JsonSerializer.Serialize(writer, innerMethodValue.MethodArguments, options);
 			writer.WriteEndObject();
 		}
 

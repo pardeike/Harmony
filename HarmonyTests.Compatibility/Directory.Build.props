@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <CompatibilityTargetFramework Condition="'$(CompatibilityTargetFramework)' == ''">net9.0</CompatibilityTargetFramework>
+    <TargetFramework>$(CompatibilityTargetFramework)</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Optimize>true</Optimize>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <BaseIntermediateOutputPath>obj/$(TargetFramework)/$(FixtureName)/</BaseIntermediateOutputPath>
+    <BaseOutputPath Condition="'$(FixtureName)' != ''">bin/$(FixtureName)/</BaseOutputPath>
+    <RestoreIgnoreFailedSources>false</RestoreIgnoreFailedSources>
+    <NuGetAudit>false</NuGetAudit>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(CompatibilityTargetFramework)' == 'net472'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

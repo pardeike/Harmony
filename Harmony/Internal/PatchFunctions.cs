@@ -13,6 +13,9 @@ namespace HarmonyLib
 
 		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo)
 		{
+			patchInfo.ValidateSurvivingMetadata();
+			patchInfo.VersionCount++;
+			var bytes = patchInfo.Serialize();
 			var debug = patchInfo.Debugging || Harmony.DEBUG;
 
 			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes, debug);
@@ -44,6 +47,7 @@ namespace HarmonyLib
 			{
 				throw HarmonyException.Create(ex, finalInstructions);
 			}
+			HarmonySharedState.UpdatePatchInfo(original, replacement, bytes);
 			return replacement;
 		}
 
@@ -53,6 +57,7 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(standin));
 			if (standin.method is null)
 				throw new ArgumentNullException(nameof(standin), $"{nameof(standin)}.{nameof(standin.method)} is NULL");
+			AttributePatch.ValidateOrdinary(standin);
 
 			var debug = (standin.debug ?? false) || Harmony.DEBUG;
 

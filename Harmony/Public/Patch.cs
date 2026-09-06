@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.Serialization;
 
 #if NET5_0_OR_GREATER
 using System.Text.Json.Serialization;
@@ -47,6 +48,7 @@ namespace HarmonyLib
 
 		/// <summary>For an infix patch, this defines the inner method that we will apply the patch to</summary>
 		///
+		[OptionalField]
 		public readonly InnerMethod innerMethod;
 
 		/// <summary>The method of the static patch method</summary>
@@ -58,7 +60,9 @@ namespace HarmonyLib
 		{
 			get
 			{
-				patchMethod ??= AccessTools.GetMethodByModuleAndToken(moduleGUID, methodToken);
+				patchMethod ??= innerMethod is null
+					? AccessTools.GetMethodByModuleAndToken(moduleGUID, methodToken)
+					: GetValidatedInfixPatchMethod();
 				return patchMethod;
 			}
 			set
@@ -96,9 +100,22 @@ namespace HarmonyLib
 		/// <param name="index">Zero-based index</param>
 		/// <param name="owner">An owner (Harmony ID)</param>
 		public Patch(HarmonyMethod method, int index, string owner)
-			: this(method.method, index, owner, method.priority, method.before, method.after, method.debug ?? false) { }
+			: this(method.method, index, owner, method.priority, method.before, method.after, method.debug ?? false)
+		{
+			innerMethod = method.innerMethod?.Snapshot();
+		}
 
-		internal Patch(int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID)
+		internal string MethodIdentity => $"{moduleGUID}:0x{methodToken:X8}";
+
+		internal MethodInfo GetValidatedInfixPatchMethod()
+		{
+			// A cached MethodInfo cannot make an ambiguous durable identity safe for a later rebuild.
+			var module = InnerMethod.ResolveModule(moduleGUID);
+			return patchMethod ??= module.ResolveMethod(methodToken) as MethodInfo
+				?? throw new SerializationException($"Infix patch {MethodIdentity} does not identify a method");
+		}
+
+		internal Patch(int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID, InnerMethod innerMethod = null)
 		{
 			this.index = index;
 			this.owner = owner;
@@ -108,6 +125,7 @@ namespace HarmonyLib
 			this.debug = debug;
 			this.methodToken = methodToken;
 			this.moduleGUID = moduleGUID;
+			this.innerMethod = innerMethod;
 		}
 
 		/// <summary>Get the patch method or a DynamicMethod if original patch method is a patch factory</summary>
@@ -117,14 +135,14 @@ namespace HarmonyLib
 		public MethodInfo GetMethod(MethodBase original)
 		{
 			var method = PatchMethod;
-			if (method.ReturnType != typeof(DynamicMethod) && method.ReturnType != typeof(MethodInfo)) return method;
-			if (method.IsStatic is false) return method;
-			var parameters = method.GetParameters();
-			if (parameters.Length != 1) return method;
-			if (parameters[0].ParameterType != typeof(MethodBase)) return method;
+			return IsFactory(method) ? method.Invoke(null, [original]) as MethodInfo : method;
+		}
 
-			// we have a DynamicMethod factory, let's use it
-			return method.Invoke(null, [original]) as MethodInfo;
+		internal static bool IsFactory(MethodInfo method)
+		{
+			if (!method.IsStatic || (method.ReturnType != typeof(DynamicMethod) && method.ReturnType != typeof(MethodInfo))) return false;
+			var parameters = method.GetParameters();
+			return parameters.Length == 1 && parameters[0].ParameterType == typeof(MethodBase);
 		}
 
 		/// <summary>Determines whether patches are equal</summary>

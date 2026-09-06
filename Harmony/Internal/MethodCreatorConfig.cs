@@ -66,6 +66,27 @@ namespace HarmonyLib
 
 		internal LocalBuilder DeclareLocal(Type type, bool isPinned = false) => il.DeclareLocal(type, isPinned);
 		internal Label DefineLabel() => il.DefineLabel();
+		internal MethodInfo GenerateMethod()
+		{
+			var body = patch.Definition.Body;
+			// Match DynamicMethod's default for transpiler-declared and Harmony-generated locals on either backend.
+			body.InitLocals = true;
+			if (body.ExceptionHandlers.Count == 0) return patch.Generate();
+			var proxies = new Dictionary<MethodInfo, Mono.Cecil.MethodReference>();
+			foreach (var instruction in body.Instructions)
+			{
+				if (instruction.Operand is not DynamicMethodReference dynamicReference) continue;
+				var method = dynamicReference.DynamicMethod;
+				if (!proxies.TryGetValue(method, out var proxy))
+				{
+					proxy = patch.Definition.Module.ImportReference(DynamicMethodProxy.Create(method));
+					proxies.Add(method, proxy);
+				}
+				instruction.Operand = proxy;
+			}
+			// Preserve the emitted exception table instead of reconstructing ranges and handler-entry labels through reflection emission.
+			return DMDCecilGenerator.Generate(patch);
+		}
 
 		// prepared by Prepare()
 		internal int patchIndex;
@@ -78,6 +99,7 @@ namespace HarmonyLib
 		// added by MethodCreator
 		internal LocalBuilder[] originalVariables;
 		internal VariableState localVariables;
+		internal PatchBindingContext bindingContext;
 		internal LocalBuilder resultVariable;
 		internal Label? skipOriginalLabel;
 		internal LocalBuilder runOriginalVariable;
@@ -85,20 +107,25 @@ namespace HarmonyLib
 		internal LocalBuilder finalizedVariable;
 
 		internal MethodBase MethodBase => source ?? original;
-		internal bool OriginalIsStatic => original.IsStatic;
 		internal IEnumerable<MethodInfo> Fixes => prefixes.Union(postfixes).Union(finalizers);
 		internal IEnumerable<Infix> InnerFixes => innerprefixes.Union(innerpostfixes);
-		internal IEnumerable<InjectedParameter> InjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown)
+		internal IEnumerable<InjectedParameter> InjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown, bool skipFirst = false)
 		{
 			if (injections.TryGetValue(fix, out var list))
 			{
+				var parameters = skipFirst ? list.Skip(1) : list;
 				if (type != InjectionType.Unknown)
-					return list.Where(pair => pair.injectionType == type);
-				return list;
+					return parameters.Where(pair => pair.injectionType == type);
+				return parameters;
 			}
 			return [];
 		}
-		internal bool AnyFixHas(InjectionType type) => injections.Values.SelectMany(list => list).Any(pair => pair.injectionType == type);
+		internal bool AnyFixHas(InjectionType type) => Fixes.SelectMany(fix => InjectionsFor(fix, type)).Any();
+		internal IEnumerable<InjectedParameter> OuterInjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown)
+			=> Fixes.Contains(fix) ? InjectionsFor(fix, type) : InfixInjectionsFor(fix, type).Where(injection => injection.outer);
+		IEnumerable<InjectedParameter> InfixInjectionsFor(MethodInfo fix, InjectionType type)
+			=> InjectionsFor(fix, type, fix.ReturnType != typeof(void) && !innerprefixes.Any(prefix => prefix.OuterMethod == fix));
+		internal bool AnyInfixHasOuter(InjectionType type) => InnerFixes.Any(fix => InfixInjectionsFor(fix.OuterMethod, type).Any(injection => injection.outer));
 		internal void WithFixes(Action<MethodInfo> action)
 		{
 			foreach (var fix in Fixes)

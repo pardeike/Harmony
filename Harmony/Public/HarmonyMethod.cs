@@ -14,6 +14,9 @@ namespace HarmonyLib
 		/// 
 		public MethodInfo method; // need to be called 'method'
 
+		/// <summary>The selected inner call for an inner prefix or postfix</summary>
+		public InnerMethod innerMethod;
+
 		/// <summary>Patch Category</summary>
 		/// 
 		public string category = null;
@@ -73,6 +76,7 @@ namespace HarmonyLib
 				var infos = HarmonyMethodExtensions.GetFromMethod(method);
 				if (infos is not null)
 					Merge(infos).CopyTo(this);
+				AttributePatch.ClearInfixMarker(this, method.GetCustomAttributes(true));
 			}
 		}
 

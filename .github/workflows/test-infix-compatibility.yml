@@ -1,0 +1,119 @@
+name: Infix Compatibility
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'Harmony/**'
+      - 'Lib.Harmony/**'
+      - 'HarmonyTests.Compatibility/**'
+      - 'Directory.Build.*'
+      - '.github/workflows/test-infix-compatibility.yml'
+  pull_request:
+    paths:
+      - 'Harmony/**'
+      - 'Lib.Harmony/**'
+      - 'HarmonyTests.Compatibility/**'
+      - 'Directory.Build.*'
+      - '.github/workflows/test-infix-compatibility.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  coreclr:
+    name: ${{ matrix.framework }} ${{ matrix.backend }} / old ${{ matrix.old }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        framework: [net8.0]
+        backend: [json, binary]
+        old: ['2.3.6', '2.4.0', '2.4.1', '2.4.2']
+        include:
+          - framework: net9.0
+            backend: json
+            old: '2.4.2'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            10.0.x
+            9.0.x
+            8.0.x
+      - name: Build current Fat assembly
+        run: dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=${{ matrix.framework }} -p:PlatformTarget=x64 --nologo -v:q
+      - name: Run actual old/new child processes
+        env:
+          FRAMEWORK: ${{ matrix.framework }}
+          BACKEND: ${{ matrix.backend }}
+          OLD_HARMONY_VERSION: ${{ matrix.old }}
+        run: |
+          export RUNTIME_HOST="$(command -v dotnet)"
+          export CURRENT_HARMONY="$GITHUB_WORKSPACE/Lib.Harmony/bin/Debug/$FRAMEWORK/0Harmony.dll"
+          bash HarmonyTests.Compatibility/run.sh
+      - name: Upload compatibility evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: infix-compatibility-${{ matrix.framework }}-${{ matrix.backend }}-${{ matrix.old }}
+          path: |
+            HarmonyTests.Compatibility/reports/
+            HarmonyTests.Compatibility/published-artifacts.json
+          if-no-files-found: error
+          retention-days: 14
+
+  mono:
+    name: Mono binding and loading boundaries / old ${{ matrix.old }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        old: ['2.3.6', '2.4.0', '2.4.1', '2.4.2']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Install Mono runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mono-complete
+      - name: Build isolated current assemblies with test-only versions
+        run: |
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
+      - name: Run Mono controls and explicit loading-boundary probes
+        env:
+          FRAMEWORK: net472
+          BACKEND: binary
+          OLD_HARMONY_VERSION: ${{ matrix.old }}
+        run: |
+          export RUNTIME_HOST="$(command -v mono)"
+          export CURRENT_HARMONY="$RUNNER_TEMP/compat-first/bin/Lib.Harmony/debug_net472/0Harmony.dll"
+          export SECOND_CURRENT_HARMONY="$RUNNER_TEMP/compat-second/bin/Lib.Harmony/debug_net472/0Harmony.dll"
+          bash HarmonyTests.Compatibility/run.sh
+          MONO_PLUGIN_LOAD_MODE=bytes CASE_FILTER=ordinary REPORT_DIRECTORY="$GITHUB_WORKSPACE/HarmonyTests.Compatibility/reports/mono-byte-loader" bash HarmonyTests.Compatibility/run.sh
+      - name: Upload Mono evidence including unproven coexistence boundaries
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: infix-compatibility-mono-net472-${{ matrix.old }}
+          path: |
+            HarmonyTests.Compatibility/reports/
+            HarmonyTests.Compatibility/published-artifacts.json
+          if-no-files-found: error
+          retention-days: 14
