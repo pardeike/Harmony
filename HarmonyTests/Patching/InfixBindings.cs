@@ -407,6 +407,30 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
+		static IntPtr NativeIntegerCall(ref IntPtr value, UIntPtr unsigned)
+		{
+			value = new IntPtr(value.ToInt64() + (long)unsigned.ToUInt64());
+			return value;
+		}
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static IntPtr NativeIntegerOuter(IntPtr value, UIntPtr unsigned) => NativeIntegerCall(ref value, unsigned);
+		static void NativeIntegerPrefix(ref IntPtr value, UIntPtr unsigned)
+		{
+			value = new IntPtr(value.ToInt64() + 1);
+			values.Add((int)unsigned.ToUInt32());
+		}
+		static IntPtr NativeIntegerPostfix(IntPtr result) => new(result.ToInt64() + 10);
+
+		[Test]
+		public void Native_integer_arguments_refs_and_results_are_not_function_pointers()
+		{
+			Apply(nameof(NativeIntegerOuter), nameof(NativeIntegerCall), nameof(NativeIntegerPrefix));
+			Apply(nameof(NativeIntegerOuter), nameof(NativeIntegerCall), nameof(NativeIntegerPostfix), true);
+			Assert.AreEqual(new IntPtr(18), NativeIntegerOuter(new IntPtr(4), new UIntPtr(3)));
+			Assert.AreEqual(new[] { 3 }, values);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		static unsafe int PointerCall(int* value) => *value;
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static unsafe int PointerOuter(int* value) => PointerCall(value);
@@ -538,7 +562,7 @@ namespace HarmonyLibTests.Patching
 			Assert.IsFalse(creator.EmitPatchCall(patch, inner, false, outer).Any(code => code.opcode == OpCodes.Newarr));
 		}
 
-#if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER || NETFRAMEWORK
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static unsafe void ManagedFunctionPointer(delegate*<int> __state) { }
 		[MethodImpl(MethodImplOptions.NoInlining)]
@@ -557,7 +581,8 @@ namespace HarmonyLibTests.Patching
 		{
 			foreach (var parameter in functionPointerTarget.GetParameters())
 				if (parameter.ParameterType.IsByRef)
-					yield return Ldloca[generator.DeclareLocal(parameter.ParameterType.GetElementType())];
+					// Supply native-sized storage without importing the function-pointer type before Infix can reject the call.
+					yield return Ldloca[generator.DeclareLocal(typeof(IntPtr))];
 				else
 				{
 					yield return Ldc_I4_0;
@@ -613,6 +638,9 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(before, HarmonySharedState.GetPatchInfo(Method(nameof(ValueOuter))).Serialize());
 		}
 
+#endif
+
+#if NET5_0_OR_GREATER
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int SpanCall(Span<int> value) => value[0];
 		[MethodImpl(MethodImplOptions.NoInlining)]

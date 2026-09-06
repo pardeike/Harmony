@@ -11,6 +11,89 @@ namespace HarmonyLib
 	{
 		// Based on code of MonoMod, which is based on https://github.com/jbevain/cecil/blob/96026325ee1cb6627a3e4a32b924ab2905f02553/Mono.Cecil/AssemblyReader.cs#L3448
 
+		// Inspect metadata directly: older runtimes expose function-pointer types as IntPtr through reflection.
+		internal static bool ContainsFunctionPointer(byte[] signature)
+		{
+			using var stream = new MemoryStream(signature, false);
+			using var reader = new BinaryReader(stream);
+			var convention = reader.ReadByte();
+			if ((convention & 0x10) != 0) _ = ReadCompressedUInt32(reader);
+			var parameters = ReadCompressedUInt32(reader);
+			if (ReadType()) return true;
+			for (var i = 0u; i < parameters; i++)
+				if (ReadType()) return true;
+			return false;
+
+			bool ReadType()
+			{
+				var type = (MetadataType)reader.ReadByte();
+				switch (type)
+				{
+					case MetadataType.FunctionPointer:
+						return true;
+					case MetadataType.Pointer:
+					case MetadataType.ByReference:
+					case (MetadataType)0x1d: // SzArray
+					case MetadataType.Pinned:
+					case MetadataType.Sentinel:
+						return ReadType();
+					case MetadataType.OptionalModifier:
+					case MetadataType.RequiredModifier:
+						_ = ReadCompressedUInt32(reader);
+						return ReadType();
+					case MetadataType.ValueType:
+					case MetadataType.Class:
+					case MetadataType.Var:
+					case MetadataType.MVar:
+						_ = ReadCompressedUInt32(reader);
+						return false;
+					case MetadataType.GenericInstance:
+						if (ReadType()) return true;
+						var arguments = ReadCompressedUInt32(reader);
+						for (var i = 0u; i < arguments; i++)
+							if (ReadType()) return true;
+						return false;
+					case MetadataType.Array:
+						if (ReadType()) return true;
+						_ = ReadCompressedUInt32(reader); // rank
+						var sizes = ReadCompressedUInt32(reader);
+						for (var i = 0u; i < sizes; i++) _ = ReadCompressedUInt32(reader);
+						var bounds = ReadCompressedUInt32(reader);
+						for (var i = 0u; i < bounds; i++) _ = ReadCompressedUInt32(reader);
+						return false;
+					case MetadataType.Void:
+					case MetadataType.Boolean:
+					case MetadataType.Char:
+					case MetadataType.SByte:
+					case MetadataType.Byte:
+					case MetadataType.Int16:
+					case MetadataType.UInt16:
+					case MetadataType.Int32:
+					case MetadataType.UInt32:
+					case MetadataType.Int64:
+					case MetadataType.UInt64:
+					case MetadataType.Single:
+					case MetadataType.Double:
+					case MetadataType.String:
+					case MetadataType.TypedByReference:
+					case MetadataType.IntPtr:
+					case MetadataType.UIntPtr:
+					case MetadataType.Object:
+						return false;
+					default:
+						throw new NotSupportedException($"Unsupported method signature element: {type}");
+				}
+			}
+		}
+
+		static uint ReadCompressedUInt32(BinaryReader reader)
+		{
+			var first = reader.ReadByte();
+			if ((first & 0x80) == 0) return first;
+			if ((first & 0x40) == 0) return ((uint)(first & ~0x80) << 8) | reader.ReadByte();
+			return ((uint)(first & ~0xc0) << 24) | (uint)reader.ReadByte() << 16 | (uint)reader.ReadByte() << 8 | reader.ReadByte();
+		}
+
 		internal static InlineSignature ImportCallSite(Module moduleFrom, byte[] data)
 		{
 			var callsite = new InlineSignature();
@@ -57,21 +140,7 @@ namespace HarmonyLib
 			}
 
 
-			uint ReadCompressedUInt32()
-			{
-				var first = reader.ReadByte();
-				if ((first & 0x80) == 0)
-					return first;
-
-				if ((first & 0x40) == 0)
-					return ((uint)(first & ~0x80) << 8)
-						| reader.ReadByte();
-
-				return ((uint)(first & ~0xc0) << 24)
-					| (uint)reader.ReadByte() << 16
-					| (uint)reader.ReadByte() << 8
-					| reader.ReadByte();
-			}
+			uint ReadCompressedUInt32() => InlineSignatureParser.ReadCompressedUInt32(reader);
 
 
 			int ReadCompressedInt32()

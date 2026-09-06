@@ -74,9 +74,12 @@ runs:
     - name: Build if required
       if: ${{inputs.manual_build == 'true'}}
       run: |
+        $failedFrameworks = @()
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework
+          if ($LASTEXITCODE -ne 0) { $failedFrameworks += $target_framework }
         }
+        if ($failedFrameworks.Count -gt 0) { throw "Build failed for: $($failedFrameworks -join ', ')" }
       shell: pwsh
 
     - name: Perform Tests Windows FX/Mono
@@ -179,10 +182,13 @@ runs:
     - name: Perform Tests Windows .NET | Ubuntu .NET/Mono
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
+        $failedFrameworks = @()
         foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
           $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
           dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
+          if ($LASTEXITCODE -ne 0) { $failedFrameworks += $target_framework }
         }
+        if ($failedFrameworks.Count -gt 0) { throw "Tests failed for: $($failedFrameworks -join ', ')" }
       shell: pwsh
 
     - name: Perform Tests MacOS/MacOS-arm64 .NET/Mono
@@ -216,10 +222,13 @@ runs:
           if (-not $dotnet) {
             throw 'Unable to locate a dotnet executable.'
           }
+          $failedFrameworks = @()
           foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
             $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
             & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
+            if ($LASTEXITCODE -ne 0) { $failedFrameworks += $target_framework }
           }
+          if ($failedFrameworks.Count -gt 0) { throw "Tests failed for: $($failedFrameworks -join ', ')" }
         shell: pwsh
 
     - name: Upload Test Result

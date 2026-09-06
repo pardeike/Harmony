@@ -4,13 +4,17 @@ using HarmonyLibTests.Assets.Methods;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
 #if NET6_0_OR_GREATER
 using System.Net.Http;
 using System.Reflection.Emit;
 #else
-using System.Net;
 using System.Reflection.Emit;
 #endif
 
@@ -40,19 +44,55 @@ namespace HarmonyLibTests.Patching
 
 			HttpWebRequestPatches.ResetTest();
 
+			// Exercise the real HTTP implementation without depending on DNS, proxies or an external server.
+			var listener = new TcpListener(IPAddress.Loopback, 0);
+			listener.Start();
+			var url = $"http://127.0.0.1:{((IPEndPoint)listener.LocalEndpoint).Port}/";
+			Exception serverError = null;
+			var server = new Thread(() =>
+			{
+				try
+				{
+					using var connection = listener.AcceptTcpClient();
+					connection.ReceiveTimeout = 10000;
+					connection.SendTimeout = 10000;
+					using var stream = connection.GetStream();
+					using var reader = new StreamReader(stream);
+					while (!string.IsNullOrEmpty(reader.ReadLine())) { }
+					var reply = Encoding.ASCII.GetBytes("HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n");
+					stream.Write(reply, 0, reply.Length);
+				}
+				catch (Exception ex) { serverError = ex; }
+			})
+			{ IsBackground = true };
+			server.Start();
+			try
+			{
 #if NET6_0_OR_GREATER
-			var client = new HttpClient();
-			var webRequest = new HttpRequestMessage(HttpMethod.Get, "http://google.com");
-			var response = client.Send(webRequest);
+				using var client = new HttpClient(new HttpClientHandler { UseProxy = false }) { Timeout = TimeSpan.FromSeconds(10) };
+				using var webRequest = new HttpRequestMessage(HttpMethod.Get, url);
+				using var response = client.Send(webRequest);
+				Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
 #else
-			var request = WebRequest.Create("http://google.com");
-			Assert.AreEqual(request.GetType(), t_WebRequest);
-			var response = request.GetResponse();
+				var request = WebRequest.Create(url);
+				Assert.AreEqual(request.GetType(), t_WebRequest);
+				request.Proxy = null;
+				request.Timeout = 10000;
+				using var response = request.GetResponse();
+				Assert.AreEqual(HttpStatusCode.NoContent, ((HttpWebResponse)response).StatusCode);
 #endif
 
-			Assert.NotNull(response);
-			Assert.True(HttpWebRequestPatches.prefixCalled, "Prefix not called");
-			Assert.True(HttpWebRequestPatches.postfixCalled, "Postfix not called");
+				Assert.True(HttpWebRequestPatches.prefixCalled, "Prefix not called");
+				Assert.True(HttpWebRequestPatches.postfixCalled, "Postfix not called");
+			}
+			finally
+			{
+				listener.Stop();
+				var stopped = server.Join(10000);
+				instance.Unpatch(original, HarmonyPatchType.All, instance.Id);
+				Assert.True(stopped, "Loopback HTTP server did not stop");
+			}
+			Assert.IsNull(serverError, "Loopback HTTP server failed");
 		}
 
 		[Test]

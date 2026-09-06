@@ -45,7 +45,9 @@ namespace HarmonyLib
 			}
 			catch (Exception ex)
 			{
-				throw HarmonyException.Create(ex, finalInstructions);
+				var enriched = HarmonyException.Create(ex, finalInstructions);
+				if (ReferenceEquals(enriched, ex)) throw;
+				throw enriched;
 			}
 			HarmonySharedState.UpdatePatchInfo(original, replacement, bytes);
 			return replacement;
@@ -91,7 +93,9 @@ namespace HarmonyLib
 			}
 			catch (Exception ex)
 			{
-				throw HarmonyException.Create(ex, finalInstructions);
+				var enriched = HarmonyException.Create(ex, finalInstructions);
+				if (ReferenceEquals(enriched, ex)) throw;
+				throw enriched;
 			}
 
 			return replacement;

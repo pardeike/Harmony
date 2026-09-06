@@ -310,12 +310,17 @@ namespace HarmonyLib
 		static Type ElementType(Type type) => type.IsByRef ? type.GetElementType() : type;
 		static readonly PropertyInfo isFunctionPointer = typeof(Type).GetProperty("IsFunctionPointer");
 		static bool IsNativePointer(Type type) => type.IsPointer || isFunctionPointer?.GetValue(type, null) is true;
+		// Mono exposes a synthetic corelib type and cannot resolve method-definition signature tokens.
 		static bool ContainsFunctionPointer(Type type) => isFunctionPointer?.GetValue(type, null) is true
-			|| type.HasElementType && ContainsFunctionPointer(type.GetElementType());
+			|| AccessTools.IsMonoRuntime && type.Assembly == typeof(object).Assembly && type.FullName == "System.MonoFNPtrFakeClass"
+			|| type.HasElementType && ContainsFunctionPointer(type.GetElementType())
+			|| type.IsGenericType && type.GetGenericArguments().Any(ContainsFunctionPointer);
 
 		internal static void ValidateInfixSignature(MethodInfo method, string role)
 		{
-			if (ContainsFunctionPointer(method.ReturnType) || method.GetParameters().Any(parameter => ContainsFunctionPointer(parameter.ParameterType)))
+			if (ContainsFunctionPointer(method.ReturnType) || method.GetParameters().Any(parameter => ContainsFunctionPointer(parameter.ParameterType))
+				|| isFunctionPointer is null && !AccessTools.IsMonoRuntime && method is not DynamicMethod
+					&& InlineSignatureParser.ContainsFunctionPointer(method.Module.ResolveSignature(method.MetadataToken)))
 				throw new ArgumentException($"Infix cannot emit function-pointer signatures with the current runtime importer: {role} {InfixMethodIdentity(method)}.");
 		}
 
