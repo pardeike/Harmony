@@ -12,7 +12,7 @@ using System.Text.Json.Serialization;
 
 namespace HarmonyLib
 {
-	/// <summary>Occurrences of a method that is called inside some outer method</summary>
+	/// <summary>Selects call occurrences of an exact method or explicit generic family inside an outer method</summary>
 #if NET5_0_OR_GREATER
 	[JsonConverter(typeof(InnerMethodJsonConverter))]
 #endif

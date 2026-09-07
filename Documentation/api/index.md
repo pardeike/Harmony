@@ -6,55 +6,67 @@ Here is a selected list of classes:
 
 ### Basics
 
-- [Harmony](HarmonyLib.Harmony.html)
-- [PatchClassProcessor](HarmonyLib.PatchClassProcessor.html)
-- [PatchProcessor](HarmonyLib.PatchProcessor.html)
-- [HarmonyPatch](HarmonyLib.HarmonyPatch.html)
-- [PatchInfo](HarmonyLib.PatchInfo.html)
-- [Patches](HarmonyLib.Patches.html)
-- [Patch](HarmonyLib.Patch.html)
+- [Harmony](xref:HarmonyLib.Harmony)
+- [PatchClassProcessor](xref:HarmonyLib.PatchClassProcessor)
+- [PatchProcessor](xref:HarmonyLib.PatchProcessor)
+- [HarmonyPatch](xref:HarmonyLib.HarmonyPatch)
+- [PatchInfo](xref:HarmonyLib.PatchInfo)
+- [Patches](xref:HarmonyLib.Patches)
+- [Patch](xref:HarmonyLib.Patch)
 
 ### Targeting
 
-- [HarmonyMethod](HarmonyLib.HarmonyMethod.html)
-- [HarmonyMethodExtensions](HarmonyLib.HarmonyMethodExtensions.html)
-- [MethodType](HarmonyLib.MethodType.html)
+- [HarmonyMethod](xref:HarmonyLib.HarmonyMethod)
+- [HarmonyMethodExtensions](xref:HarmonyLib.HarmonyMethodExtensions)
+- [MethodType](xref:HarmonyLib.MethodType)
 
 ### Attributes
 
-- [HarmonyAttribute](HarmonyLib.HarmonyAttribute.html)
-- [HarmonyPrefix](HarmonyLib.HarmonyPrefix.html)
-- [HarmonyPostfix](HarmonyLib.HarmonyPostfix.html)
-- [HarmonyTranspiler](HarmonyLib.HarmonyTranspiler.html)
-- [HarmonyFinalizer](HarmonyLib.HarmonyFinalizer.html)
-- [HarmonyDebug](HarmonyLib.HarmonyDebug.html)
+- [HarmonyAttribute](xref:HarmonyLib.HarmonyAttribute)
+- [HarmonyPrefix](xref:HarmonyLib.HarmonyPrefix)
+- [HarmonyPostfix](xref:HarmonyLib.HarmonyPostfix)
+- [HarmonyTranspiler](xref:HarmonyLib.HarmonyTranspiler)
+- [HarmonyFinalizer](xref:HarmonyLib.HarmonyFinalizer)
+- [HarmonyDebug](xref:HarmonyLib.HarmonyDebug)
+
+### Infix
+
+- [HarmonyInfix](xref:HarmonyLib.HarmonyInfix)
+- [HarmonyOuter](xref:HarmonyLib.HarmonyOuter)
+- [InnerMethod](xref:HarmonyLib.InnerMethod)
+- [InnerTarget](xref:HarmonyLib.InnerTarget)
+- [InnerTargetKind](xref:HarmonyLib.InnerTargetKind)
+- [InfixOuterBody](xref:HarmonyLib.InfixOuterBody)
+- [HarmonyInline](xref:HarmonyLib.HarmonyInline)
 
 ### Additional patch class annotations
 
-- [HarmonyTargetMethod](HarmonyLib.HarmonyTargetMethod.html)
-- [HarmonyTargetMethods](HarmonyLib.HarmonyTargetMethods.html)
-- [HarmonyPrepare](HarmonyLib.HarmonyPrepare.html)
-- [HarmonyCleanup](HarmonyLib.HarmonyCleanup.html)
-- [HarmonyArgument](HarmonyLib.HarmonyArgument.html)
+- [HarmonyTargetMethod](xref:HarmonyLib.HarmonyTargetMethod)
+- [HarmonyTargetMethods](xref:HarmonyLib.HarmonyTargetMethods)
+- [HarmonyPrepare](xref:HarmonyLib.HarmonyPrepare)
+- [HarmonyCleanup](xref:HarmonyLib.HarmonyCleanup)
+- [HarmonyArgument](xref:HarmonyLib.HarmonyArgument)
+- [ArgumentMode](xref:HarmonyLib.ArgumentMode)
 
 ### Transpiling
 
-- [Transpilers](HarmonyLib.Transpilers.html)
-- [CodeInstruction](HarmonyLib.CodeInstruction.html)
-- [CodeInstructionExtensions](HarmonyLib.CodeInstructionExtensions.html)
-- [CodeInstructionsExtensions](HarmonyLib.CodeInstructionsExtensions.html)
-- [CodeMatcher](HarmonyLib.CodeMatcher.html)
-- [CodeMatch](HarmonyLib.CodeMatch.html)
-- [Code](HarmonyLib.Code.html)
+- [Transpilers](xref:HarmonyLib.Transpilers)
+- [CodeInstruction](xref:HarmonyLib.CodeInstruction)
+- [CodeInstructionExtensions](xref:HarmonyLib.CodeInstructionExtensions)
+- [CodeInstructionsExtensions](xref:HarmonyLib.CodeInstructionsExtensions)
+- [CodeMatcher](xref:HarmonyLib.CodeMatcher)
+- [CodeMatch](xref:HarmonyLib.CodeMatch)
+- [Code](xref:HarmonyLib.Code)
+- [InlineSignature](xref:HarmonyLib.InlineSignature)
 
 
 ### Helper classes
 
-- [AccessTools](HarmonyLib.AccessTools.html)
-- [AccessToolsExtensions](HarmonyLib.AccessToolsExtensions.html)
-- [SymbolExtensions](HarmonyLib.SymbolExtensions.html)
-- [FastAccess](HarmonyLib.FastAccess.html)
-- [FileLog](HarmonyLib.FileLog.html)
-- [Traverse](HarmonyLib.Traverse.html)
-- [GeneralExtensions](HarmonyLib.GeneralExtensions.html)
-- [HarmonyDelegate](HarmonyLib.HarmonyDelegate.html)
+- [AccessTools](xref:HarmonyLib.AccessTools)
+- [AccessToolsExtensions](xref:HarmonyLib.AccessToolsExtensions)
+- [SymbolExtensions](xref:HarmonyLib.SymbolExtensions)
+- [FastAccess](xref:HarmonyLib.FastAccess)
+- [FileLog](xref:HarmonyLib.FileLog)
+- [Traverse](xref:HarmonyLib.Traverse)
+- [GeneralExtensions](xref:HarmonyLib.GeneralExtensions)
+- [HarmonyDelegate](xref:HarmonyLib.HarmonyDelegate)

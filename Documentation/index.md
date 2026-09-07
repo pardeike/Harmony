@@ -21,7 +21,7 @@ If you instead want to supply the dependencies yourself, you should use the [Lib
 
 # Documentation
 
-You can learn more about Harmony by using the top menu links. The main section [[Harmony](articles/intro.html)] brings you to the full documentation that explains everything about Harmony and gives you lots of high level examples. In the second section [[API Documentation](api/index.html)] you can browse the public API and all its methods and classes.
+You can learn more about Harmony by using the top menu links. The main section [[Harmony](articles/intro.md)] brings you to the full documentation that explains everything about Harmony and gives you lots of high level examples. In the second section [[API Documentation](api/index.md)] you can browse the public API and all its methods and classes.
 
 If you find a factual error or if you have feedback about the documentation you are welcome to
 

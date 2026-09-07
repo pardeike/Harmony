@@ -1,6 +1,7 @@
 name: Build and Deploy Documentation
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
     paths:

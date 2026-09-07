@@ -15,6 +15,9 @@
     }
   ],
   "build": {
+    "overwrite": [
+      { "files": [ "overwrites/HarmonyLib.md" ] }
+    ],
     "content": [
       { "files": [ "api/**.yml", "api/index.md" ] },
       { "files": [ "articles/**.md", "toc.yml", "index.md" ] }
