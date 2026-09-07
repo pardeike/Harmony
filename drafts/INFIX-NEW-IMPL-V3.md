@@ -1,10 +1,10 @@
 # Infix: implementation specification
 
-> **Status:** Unreleased implementation contract. The [operation-target addendum](INFIX-OPERATIONS-ADDENDUM.md) and [feature-completion contract](INFIX-FEATURE-COMPLETION.md), 2026-09-07, define the implemented extensions, including accumulating processor calls, inner finalizers, and automatic body selection. Read these as one specification, with the completion contract overriding earlier restrictions only where stated. See the [implementation and local validation status](../docs/infix/README.md) for executed checks and their runtime boundaries.
+> **Status:** Implemented, unreleased specification. This document defines the core binding, ordering, identity and installation contracts. The [operation-target addendum](INFIX-OPERATIONS-ADDENDUM.md) specifies fields, construction, literals and indirect-call metadata; the [feature-completion contract](INFIX-FEATURE-COMPLETION.md) specifies inner finalizers, generated-body selection, captured variables and optional inlining. Together they describe the current feature, not successive implementation plans. See [validation status](../docs/infix/README.md) for executed checks and runtime boundaries.
 
 ## 1. The feature in one page
 
-An **Infix** applies a prefix or postfix to a selected method call inside another method. The **outer method** contains that call; the **inner method** is the method being called. A **site** is one occurrence of that call in the outer method's instructions.
+An **Infix** applies prefixes, postfixes or finalizers to a selected operation inside another method. The **outer method** contains the operation. For a method call, the **inner method** is the method being called. A **site** is one matching instruction in the outer method. Calls are the core example below; property accessors, field reads/writes, construction and literal loads use the same per-site rules within their documented boundaries.
 
 The rule is ordinary Harmony behavior at the selected call. For two prefixes and two void postfixes with high and low priorities, without additional ordering constraints or skipping:
 
@@ -18,16 +18,16 @@ low-priority void postfix
 continue the outer method
 ```
 
-Prefixes and postfixes are independent patches, not fixed pairs. Sort each role using Harmony's existing priority, before/after, and registration-index rules. Preserve its prefix skip policy and its separate later phase for postfixes that return a replacement result. Exact and generic-family selectors feed these same lists at a site; neither gets special precedence.
+Prefixes, postfixes and finalizers are independent patches, not fixed pairs. Sort each role using Harmony's existing priority, before/after, and registration-index rules. Preserve its prefix skip policy and its separate later phase for postfixes that return a replacement result. Exact and generic-family selectors feed these same lists at a site; neither gets special precedence. The example above has no finalizers; when present, they use ordinary finalizer behavior.
 
 The public feature is small:
 
-- `[HarmonyInfix]` selects the called method and its occurrences; existing prefix/postfix roles select when patch code runs.
+- `[HarmonyInfix]` selects the operation and its occurrences; existing prefix/postfix/finalizer roles select when patch code runs.
 - Parameters refer to the inner call by default. `[HarmonyOuter]` selects the containing method explicitly.
 - A closed target means exactly that target. An explicit generic definition means all constructions in that generic family.
-- Existing `Inner*` registration and inspection APIs remain. No second binder, new patch processor, selector callbacks, or inner finalizers are introduced.
+- Existing `Inner*` registration and inspection APIs remain, with the corresponding inner-finalizer role. Repeated `AddInner...` calls accumulate. There is no second binder, new patch processor or selector callback API.
 
-The significant decisions from the final review are:
+The central decisions are:
 
 | Question | Decision |
 | --- | --- |
@@ -64,7 +64,7 @@ static class DecidePatch
 }
 ```
 
-API shape; constructor bodies and validation are omitted here:
+Core call-selector API shape; constructor bodies and validation are omitted here. Extended selectors and body-selection options are specified in the linked contracts:
 
 ```csharp
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
@@ -83,11 +83,11 @@ public sealed class HarmonyOuter : Attribute { }
 public InnerMethod innerMethod;
 ```
 
-Reuse Harmony's existing argument-variation transformation for `ref`, `out`, and pointer overload lookup. Accessors use their actual method names, such as `get_Value`. Do not add constructor, state-machine, string-type-name, or target-factory overloads.
+Reuse Harmony's existing argument-variation transformation for `ref`, `out`, and pointer overload lookup. Accessors can use their actual method names, such as `get_Value`, or the property selector. Constructor targets and `OuterBody.Auto` use the explicit forms in the linked contracts. There are no string-type-name or target-factory overloads.
 
 Select the outer method on the patch class or with `TargetMethod`/`TargetMethods`. A method-level `[HarmonyPatch]` on an Infix method is rejected: older Harmony can merge it over the declaration safeguard described in section 8. Different outer targets use separate patch classes or manual registration. Priority and before/after annotations remain supported.
 
-For class discovery, `HarmonyInfix` requires exactly one prefix or postfix role, either by the ordinary attribute or by the supported `Prefix`/`Postfix`/`InnerPrefix`/`InnerPostfix` naming convention. Normalize equivalent names and attributes to one role; reject genuinely conflicting roles, and combinations with transpiler, finalizer, or reverse-patch roles. An inner role without a target is an error. Keep normal declared-method discovery; `Inherited = true` does not introduce inherited patch-method scanning.
+For class discovery, `HarmonyInfix` requires exactly one prefix, postfix or finalizer role, either by the ordinary attribute or by the supported `Prefix`/`Postfix`/`Finalizer` and `InnerPrefix`/`InnerPostfix`/`InnerFinalizer` naming conventions. Normalize equivalent names and attributes to one role; reject genuinely conflicting roles, and combinations with transpiler or reverse-patch roles. An inner role without a target is an error. Keep normal declared-method discovery; `Inherited = true` does not introduce inherited patch-method scanning.
 
 Infix patch code consists of static, nongeneric methods on nongeneric patch types with stable metadata. There is no automatic generic specialization of patch code and no Infix patch factory. Use ordinary Harmony's complete factory signature to identify one: a static method returning `MethodInfo` or `DynamicMethod` with exactly one parameter of type `MethodBase`. Those return types alone do not make a factory: `MethodInfo After(MethodInfo value)` and `DynamicMethod After(DynamicMethod value)` are valid passthrough postfixes for matching call results. The stable-metadata restriction concerns the patch methods, not their generic call targets. It avoids promising patch identities that the existing `Patch` serialization cannot preserve.
 
@@ -105,13 +105,13 @@ var prefix = new HarmonyMethod(prefixMethod)
 harmony.CreateProcessor(outerMethod).AddInnerPrefix(prefix).Patch();
 ```
 
-Complete the existing `AddInnerPrefix`/`AddInnerPostfix` overloads. Their `MethodInfo` form can obtain the target from `[HarmonyInfix]`; their `HarmonyMethod` form can supply it explicitly. The manual entry point supplies the role, so another role annotation is optional but must agree if present. Share annotation recognition with `HarmonyMethod.ImportMethod()` so importing an annotated method neither resolves a missing target too early nor leaves the invalid marker active in a new engine. If explicit and attributed targets are both supplied, require equivalent targets and positions rather than choosing one silently.
+`AddInnerPrefix`, `AddInnerPostfix` and `AddInnerFinalizer` accumulate pending registrations. Their `MethodInfo` form can obtain the target from `[HarmonyInfix]`; their `HarmonyMethod` form can supply it explicitly. The manual entry point supplies the role, so another role annotation is optional but must agree if present. Share annotation recognition with `HarmonyMethod.ImportMethod()` so importing an annotated method neither resolves a missing target too early nor leaves the invalid marker active in a new engine. If explicit and attributed targets are both supplied, require equivalent targets and positions rather than choosing one silently. Calling `Patch()` again on the same processor adds its pending registrations again; it is not an update or replacement operation.
 
 Passing target-bearing or `[HarmonyInfix]` patch metadata to ordinary `AddPrefix`, `AddPostfix`, or another ordinary role is an error. Attribute processing deliberately remaps the roles; manual registration must use its explicitly named inner operation.
 
 `Patch(HarmonyMethod, ...)` copies a snapshot into the existing readonly `Patch.innerMethod`. Snapshot the full target and positions, not only the outer reference. Later edits to the input `InnerMethod.Method`, positions, or arrays must not change an installed patch.
 
-Keep `InnerMethod`, `HarmonyPatchType.InnerPrefix/InnerPostfix`, `PatchInfo.innerprefixes/innerpostfixes`, and `Patches.InnerPrefixes/InnerPostfixes`. These names already shipped. Do not add aliases or enlarge `Harmony.Patch()` merely to rename the feature consistently.
+Keep `InnerMethod`, `HarmonyPatchType.InnerPrefix/InnerPostfix`, `PatchInfo.innerprefixes/innerpostfixes`, and `Patches.InnerPrefixes/InnerPostfixes`. These names already shipped. The finalizer role has corresponding enum, storage and inspection members. Do not add aliases or enlarge `Harmony.Patch()` merely to rename the feature consistently.
 
 ## 3. Calls, families, and positions
 
@@ -141,11 +141,11 @@ Count after all ordinary transpilers, independently for each selector, in instru
 
 ## 4. Ordinary Harmony execution at a call site
 
-### Independent prefixes and postfixes
+### Independent patch roles
 
 First resolve all selectors and positions against the same finalized, post-transpiler body. Then group matches by physical instruction index. Generated Infix instructions are never scanned as new targets.
 
-At each site, collect every matching prefix into one list and every matching postfix into another. A selector and its positions decide only where its patch participates. Prefix and postfix counts, targets, priorities, and before/after sets are independent. Multiple prefixes or postfixes from one class are valid; there is no pair key, one-per-half restriction, or requirement for matching metadata.
+At each site, collect every matching prefix, postfix and finalizer into its own role list. A selector and its positions decide only where its patch participates. Role counts, targets, priorities, and before/after sets are independent. Multiple patches of one role from one class are valid; there is no pair key, one-per-half restriction, or requirement for matching metadata.
 
 Sort each list with the existing `PatchSorter`, retaining the records' normal registration indexes. Higher priorities normally execute earlier, explicit before/after dependencies use their existing meaning, and ties use the current priority/index comparer. Preserve dependency-cycle handling and diagnostics. Do not add identity-based tie order or interpret successive registration as wrapping outside previously installed patches.
 
@@ -171,9 +171,9 @@ There is one result for the selected call, with normal Harmony result and passth
 
 The by-value `bool __runOriginal` observes the one site-local run flag. It begins true. Later prefixes that still run observe false after an earlier prefix skips, and all postfixes observe the same final flag. It controls whether the selected call instruction executes; it does not report whether the callee's own Harmony prefixes allowed that callee's body to run. It is an observation, not a writable control flag; skip by returning false from a prefix.
 
-For ref returns, preserve the existing safe dummy-reference and `__resultRef` replacement rules at the site. Create a default reference only when a prefix can expose a pre-call result or skip the call; a postfix-only site can use the returned address directly. Reject a demanded default that its element type cannot represent safely. Reset demanded result, run flag, ref-replacement temporary, and state on every site execution, including loop iterations. There are no per-patch default-result allocations.
+For ref returns, preserve the existing safe dummy-reference and `__resultRef` replacement rules at the site. Create a default reference when a prefix can expose a pre-call result or skip the call, or when an inner finalizer can suppress a failure before a result exists; a postfix-only site can use the returned address directly. Reject a demanded default that its element type cannot represent safely. Reset demanded result, run flag, ref-replacement temporary, and state on every site execution, including loop iterations. There are no per-patch default-result allocations.
 
-A prefix, call, or postfix exception leaves the Infix pipeline immediately. Remaining postfixes do not run: they are not finalizers. Existing surrounding outer-method handlers and ordinary Harmony finalizers retain their behavior. Re-emit the original call instruction so callee patches, virtual dispatch, and null checking stay intact. A prefix may replace a null receiver or skip the call before its `callvirt` null check.
+A prefix, call, or postfix exception stops normal site execution. Remaining postfixes do not run: they are not finalizers. Inner finalizers, when registered, can observe, replace or suppress that failure using the ordinary finalizer contract described in the completion contract. An escaping exception reaches the existing surrounding outer-method handlers and ordinary Harmony finalizers. Re-emit the original call instruction so callee patches, virtual dispatch, and null checking stay intact. A prefix may replace a null receiver or skip the call before its `callvirt` null check.
 
 ## 5. Injection and state
 
@@ -189,7 +189,7 @@ Use Harmony's existing argument conversions and exact-name behavior, with an exp
 | `__result`, `__resultRef` | Site result/replacement | Rejected: outer result is not available here |
 | `__runOriginal` | Site run flag, as for an ordinary patched method | Rejected: the outer body is already running |
 | `__state` | This patch type and site execution | This patch type and outer invocation |
-| `__exception` | Rejected: no inner finalizer contract | Rejected: not an outer finalizer |
+| `__exception` | Site exception in an inner finalizer | Rejected: not an outer finalizer |
 | Harmony delegate | Resolve against inner context/receiver | Resolve against outer context/receiver |
 | `__var_N` | Rejected | Original outer local slot N |
 | `__var_name` | Rejected | Named synthetic local for this patch type and outer invocation |
@@ -216,7 +216,7 @@ For a static context, a reference-typed by-value `__instance` receives null as i
 
 For `constrained. T; callvirt`, use concrete T as the effective receiver type and retain the managed pointer. Direct struct instance calls likewise preserve their address. Box only where the existing requested conversion requires it; reject an unresolved or incompatible receiver binding.
 
-Inner `__state` follows ordinary Harmony's patch-declaring-type grouping, with a separate lifetime for each site execution. Prefixes and postfixes in the same patch type share it when they participate at that site, without becoming a fixed pair. An exact selector and a family selector in the same class do not create separate state slots. Use separate patch types when separate state is needed. All declarations sharing a slot must agree on its element type. Reset it at each site execution; a patch observes default until an earlier executed prefix or postfix writes it. Different sites and recursive invocations are isolated.
+Inner `__state` follows ordinary Harmony's patch-declaring-type grouping, with a separate lifetime for each site execution. Prefixes, postfixes and finalizers in the same patch type share it when they participate at that site, without becoming a fixed pair. An exact selector and a family selector in the same class do not create separate state slots. Use separate patch types when separate state is needed. All declarations sharing a slot must agree on its element type. Reset it at each site execution; a patch observes default until an earlier executed patch writes it. Different sites and recursive invocations are isolated.
 
 Outer `__state` intentionally shares normal outer patch state for the same patch declaring type. `[HarmonyOuter] __var_name` similarly shares a default-initialized named slot across that type's selected sites for one outer invocation. Conflicting element types fail. `[HarmonyOuter] __var_N` uses the original body's local numbering, not locals introduced by transpilers or Harmony. Exact-mode real arguments that look like these names must not request any special storage.
 
@@ -259,23 +259,23 @@ Inside a single array, preserve normal Harmony's argument-index restoration orde
 
 Keep one binder. Separate `EmitCallParameter()`'s conversion rules from its assumption that sources are outer argument slots. A small storage descriptor supplies load-value, load-address, and store operations for an argument slot or local. A method context supplies the selected method, receiver, arguments, and special/state storage. Normal patches use the outer context; all matching Infixes at a site share its inner context, captured locals, and managed-pointer operands.
 
-Scope demand checks too: an inner `__args` or `__state` must not accidentally allocate the same-named outer storage through global `AnyFixHas()`/`WithFixes()` checks. Preserve reverse-patch source/original distinctions. Reuse normal prefix scheduling and both postfix phases against the selected context, as well as shared parameter emission and cleanup. Finalizer control flow stays outer-only. Characterize normal boxing/copy-back before moving it; do not silently change unrelated behavior during extraction.
+Scope demand checks too: an inner `__args` or `__state` must not accidentally allocate the same-named outer storage through global `AnyFixHas()`/`WithFixes()` checks. Preserve reverse-patch source/original distinctions. Reuse normal prefix scheduling, both postfix phases and finalizer control flow against the selected context, as well as shared parameter emission and cleanup. Inner finalizers use the typed helper boundary in the completion contract. Do not silently change ordinary boxing/copy-back behavior.
 
 Construct and validate every selected site before installation:
 
 1. Materialize the post-transpiler instructions as indexed occurrences, cloning each occurrence's labels/block lists. Repeated references to one `CodeInstruction` object are still different occurrences.
-2. Resolve selectors and positions; collect all records by physical call index; sort matching prefixes and postfixes independently.
+2. Resolve selectors and positions; collect all records by physical instruction index; sort matching prefixes, postfixes and finalizers independently.
 3. Resolve the complete supported prefix/call unit, actual receiver/parameter/return types, shared site storage, and each patch's binding plan.
 4. Emit one block per site. Capture original operands in reverse stack order, initialize demanded site state, and execute prefixes under the ordinary skip rules. If the run flag remains true, reload operands in declaration order and re-emit the original call.
-5. Execute the ordinary void and passthrough postfix phases, performing demanded array refresh and shared patch-call cleanup. Leave exactly the original call's stack effect.
+5. Execute the ordinary void and passthrough postfix phases, performing demanded array refresh and shared patch-call cleanup. When finalizers are present, run this pipeline inside its typed helper with ordinary finalization. Leave exactly the original operation's stack effect.
 
-Use inline generated IL, not runtime delegates or separately detoured helper methods per patch. Values below the call operands remain on the stack. A zero-argument static void call still needs a real first/last instruction anchor when carrying labels or region markers; use a `nop` where necessary.
+Use inline generated IL for sites without finalizers, and one typed helper per site requiring finalization. Do not use runtime delegates or separately detoured helpers per patch. Values below the call operands remain on the caller's stack. A zero-argument static void call still needs a real first/last instruction anchor when carrying labels or region markers; use a `nop` where necessary.
 
 Support ordinary `call`/`callvirt` with stable `MethodInfo` operands, including static/reference/struct instances and concrete `constrained. T; callvirt` instance dispatch. Typed pointer/byref-like arguments or returns are allowed only where the existing binder and runtime can emit the requested conversion; `object` boxing is not universally available.
 
 The bundled MonoMod signature importer cannot represent C# function-pointer types (`delegate*`) correctly. Reject function-pointer-containing selected call or patch signatures, including by-reference forms, with a clear error before installation. Native pointers remain supported. Replacing the underlying importer is outside this feature.
 
-Reject selected constructor calls, `newobj`, `calli`, varargs, `tail.`, malformed/unsupported call prefixes, constrained static-interface calls, and unresolved open storage. These exclusions are about the selected site, not unrelated instructions in the outer body. No automatic async/iterator state-machine targeting is added; users may select a supported generated outer method explicitly using existing facilities.
+Reject selected constructor-initialization calls using `call`, `calli`, varargs, `tail.`, malformed/unsupported call prefixes, constrained static-interface calls, and unresolved open storage. Construction using `newobj` and other extended targets follow the operation-target contract. These exclusions are about the selected site, not unrelated instructions in the outer body. Generated outer bodies can be selected explicitly or through the opt-in `OuterBody.Auto` behavior in the completion contract.
 
 Keep the complete generated block in the same surrounding exception region as the original call:
 
@@ -338,10 +338,12 @@ For a method with no inner records, preserve legacy serialization, including byt
 
 ```text
 ASCII "HARMONY-INFIX\0"
-format version byte: 1
+format version byte: minimum required version (1, 2 or 3)
 serializer byte: 1 = JSON, 2 = BinaryFormatter
 payload for that serializer
 ```
+
+Version 1 covers method-only Infixes; version 2 adds extended targets and `__originalMember`; version 3 adds inner finalizers and captured-variable binding. Derive the minimum version from the surviving records and downgrade when demanding records are removed. The linked contracts define each extension's payload and declaration safeguards.
 
 The leading byte is invalid for the old JSON and BinaryFormatter entry formats. An old engine fails while reading state, before it can run transpilers or rebuild without Infixes. New readers check the full header, version, and available backend before decoding. Unknown or truncated headers and unavailable backends fail explicitly; do not attempt a second backend or treat malformed versioned data as legacy data.
 
@@ -357,7 +359,9 @@ For BinaryFormatter, add `InnerMethod` to the existing type binder's remapping i
 
 An old entry may say “this is an inner prefix” without saying which call to wrap. The user must be able to remove it. Deserialization and inspection may expose that structurally readable entry; ordinary unpatching removes the requested records first; validation then checks only the survivors. If an invalid entry remains, explain which owner/method must be removed and refuse the rebuild. Do not guess, silently delete, or create a recovery API. Syntactically corrupt serializer input is still an error, not something to repair heuristically.
 
-Complete class unpatching, remove-by-method, remove-by-owner, remove-by-role, and remove-all paths for both inner roles. Route class unpatch updates through the existing patch-update lock as well. Surviving records retain their targets and snapshots. Inspection returns the existing `Patch.innerMethod` through the normal detached read path. No invalid surviving entry may be serialized as a successful candidate simply because it would otherwise avoid the envelope.
+The same rule applies to a complete stored target whose assembly is missing or has become ambiguous after another copy was loaded. Reading validates the identity's format without requiring it to resolve. Removal filters the requested records first; every survivor must then resolve exactly before serialization or any transpiler runs. Incorrect token kinds, malformed type identities and incomplete fields remain read errors. No name fallback or first-loaded-module choice is allowed.
+
+Class unpatching, remove-by-method, remove-by-owner, remove-by-role, and remove-all paths cover all three inner roles. Route class unpatch updates through the existing patch-update lock as well. Surviving records retain their targets and snapshots. Inspection returns the stored target through the normal detached read path. No invalid surviving entry may be serialized as a successful candidate simply because it would otherwise avoid the envelope.
 
 ### Installation boundary
 
@@ -372,16 +376,9 @@ No predictable selector, binding, or serialization failure introduced by Infix m
 
 The existing lock is per Harmony assembly and is reentrant. Hosts must serialize updates to the same original across assemblies and must not reenter that original's update from prepare/transpiler callbacks. Otherwise an operation holding an earlier candidate can overwrite a later nested/concurrent update, for ordinary patches as well as Infixes. The envelope guards operations that read already-published Infix state; it cannot intercept an old operation that consumed legacy bytes before activation. Keep a deterministic compatibility diagnostic for that inherited race, separate from the sequential no-drop tests. Do not add a cross-version locking protocol to this feature.
 
-## 9. Implementation pass
+## 9. Maintenance boundaries
 
-Implement in four coherent slices, delivered together before exposing the public feature:
-
-1. **Shared binding:** characterize the normal conversion/write-back branches being moved; introduce argument/local storage and method context; extract common patch-call cleanup without changing normal role scheduling or reverse patches.
-2. **Call-site engine:** replace the incomplete `Infix.Apply()` path with indexed matching, ordinary Harmony scheduling over a shared site context, scoped binding/state, selective arrays, and boundary-preserving emission. Exercise internal target-bearing records before wiring public discovery.
-3. **Public lifecycle and persistence:** add the two attributes and `HarmonyMethod.innerMethod`; deferred resolution and manual parity; recursive identity; sorter node identity; unpatch completeness; declaration guard, envelope, named-property readers, and prevalidated state publication.
-4. **Tests and user documentation:** complete the cases below, compile the examples, and document the same scheduling/argument rules users actually receive.
-
-Expected production touch points are the current `MethodCreator*`, `InjectedParameter`, `Infix`, `PatchSorter`, `PatchModels`, and `PatchFunctions` internals; public attributes, `HarmonyMethod`, `InnerMethod`, `Patch`, `PatchInfo`, and the existing processors; and the three existing serializers plus the prevalidated write in `HarmonySharedState`. `Patches`, `Harmony.Patch()` signatures, and the generated shared-state type need no new concepts.
+The implementation uses `MethodCreator*` for shared binding and emission, `Infix` for indexed selection and site assembly, existing processors and patch records for registration, and existing serializers/shared state for persistence and publication. Operation-specific selector details and generated-body/finalizer support stay in their linked contracts; no parallel patch registry or shared-state layout is needed.
 
 Keep one storage descriptor, one context, one shared binder/cleanup path, and one site emitter. No provider interfaces, separate inner/outer injection enums, general pipeline framework, alias analyzer, or per-call target lookup. Separate an independently discovered ordinary-patch bug from this feature unless fixing it is a demonstrated prerequisite.
 

@@ -29,7 +29,7 @@ namespace HarmonyLib
 				member ? values["typeFamily"].GetBoolean() : null,
 				member ? JsonSerializer.Deserialize<string[]>(values["typeArguments"].GetRawText(), options) : null,
 				constant ? values["constantType"].GetString() : null, constant ? values["constantData"].GetString() : null);
-			result.Validate();
+			result.ValidateStoredIdentity();
 			return result;
 		}
 

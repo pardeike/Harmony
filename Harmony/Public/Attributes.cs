@@ -212,7 +212,10 @@ namespace HarmonyLib
 		internal readonly string bodyInnerMemberName;
 		internal readonly InnerTargetKind bodyInnerTargetKind;
 
-		/// <summary>One-based call positions; negative positions count from the end and an empty array selects all calls</summary>
+		/// <summary>One-based matching operation positions; negative positions count from the end and an empty array selects all matches</summary>
+		/// <remarks>Positions count after ordinary transpilers and before any Infix code is inserted. Other Infixes do not shift them.
+		/// Zero and null are invalid. At least one match is required, and every requested position must exist. Installation copies the positions;
+		/// changing this array afterwards does not change an installed patch.</remarks>
 		public int[] Positions { get; set; } = [];
 
 		/// <summary>Whether to search the selected method or its recognized state-machine body</summary>

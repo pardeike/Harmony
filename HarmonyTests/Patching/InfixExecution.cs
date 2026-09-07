@@ -128,6 +128,34 @@ namespace HarmonyLibTests.Patching
 		}
 
 		static void Mark(int value) => trace.Add("patch:" + value);
+		static void CallFromFinalizer(ref int __result) => __result = Call(__result);
+
+		[Test]
+		public void Positions_ignore_other_infix_generated_calls_and_helpers([Values] bool helper, [Values] bool reverse, [Values(2, -2)] int position)
+		{
+			var outer = Method(nameof(ThreeCalls));
+			var callback = helper ? nameof(CallFromFinalizer) : nameof(Call);
+			void AddFirst()
+			{
+				var processor = harmony.CreateProcessor(outer);
+				var first = Fix(callback, Method(nameof(Call)), Priority.Normal, 1);
+				if (helper) processor.AddInnerFinalizer(first); else processor.AddInnerPostfix(first);
+				processor.Patch();
+			}
+			void AddSecond() => harmony.CreateProcessor(outer).AddInnerPrefix(Fix(nameof(Mark), Method(nameof(Call)), Priority.Normal, position)).Patch();
+			if (reverse) { AddSecond(); AddFirst(); }
+			else { AddFirst(); AddSecond(); }
+			for (var rebuild = 0; rebuild < 3; rebuild++)
+			{
+				trace.Clear();
+				Assert.AreEqual(rebuild == 1 ? 12 : 14, ThreeCalls(1));
+				Assert.AreEqual(rebuild == 1
+					? new[] { "call:1", "patch:2", "call:2", "call:3" }
+					: new[] { "call:1", "call:2", "patch:2", "call:2", "call:3" }, trace);
+				if (rebuild == 0) harmony.Unpatch(outer, Method(callback));
+				else if (rebuild == 1) AddFirst();
+			}
+		}
 		static IEnumerable<TestCaseData> Positions()
 		{
 			yield return new TestCaseData(new int[0], new[] { 1, 2, 3 });
@@ -167,11 +195,49 @@ namespace HarmonyLibTests.Patching
 			var outer = Method(nameof(ThreeCalls));
 			harmony.CreateProcessor(outer).AddInnerPrefix(Fix(nameof(Mark), Method(nameof(Call)), Priority.Normal, 1)).Patch();
 			var before = PatchInfoSerialization.Serialize(HarmonySharedState.GetPatchInfo(outer));
-			Assert.Throws<HarmonyException>(() => harmony.CreateProcessor(outer)
+			var error = Assert.Throws<HarmonyException>(() => harmony.CreateProcessor(outer)
 				.AddInnerPostfix(Fix(nameof(Mark), Method(nameof(Call)), Priority.Normal, position)).Patch());
+			Assert.That(error.Message, Does.Contain($"{typeof(InfixExecution).FullName}::Call(System.Int32)"));
+			Assert.That(error.Message, Does.Contain($"positions [{position}]"));
+			Assert.That(error.Message, Does.Contain("Found 3 matching operations"));
 			Assert.That(PatchInfoSerialization.Serialize(HarmonySharedState.GetPatchInfo(outer)), Is.EqualTo(before));
 			_ = ThreeCalls(1);
 			Assert.That(trace.Count(item => item.StartsWith("patch:", StringComparison.Ordinal)), Is.EqualTo(1));
+		}
+
+		[Test]
+		public void Missing_target_errors_distinguish_selectors_reusing_the_same_callback()
+		{
+			foreach (var (target, expected) in new[]
+			{
+				(new InnerTarget(Method(nameof(Observe))), $"{typeof(InfixExecution).FullName}::Observe(System.Int32, System.Boolean)"),
+				(InnerTarget.Constant("missing marker"), "Constant string \"missing marker\"")
+			})
+			{
+				var patch = new HarmonyMethod(Method(nameof(Mark))) { innerTarget = target };
+				var error = Assert.Throws<HarmonyException>(() => harmony.CreateProcessor(Method(nameof(ThreeCalls))).AddInnerPrefix(patch).Patch());
+				Assert.That(error.Message, Does.Contain(expected));
+				Assert.That(error.Message, Does.Contain("positions []"));
+				Assert.That(error.Message, Does.Contain("Found 0 matching operations"));
+				Assert.That(error.Message, Does.Contain("after ordinary transpilers"));
+				Assert.That(error.Message, Does.Contain($"{typeof(InfixExecution).FullName}::ThreeCalls(System.Int32)"));
+			}
+		}
+
+		class IdentityA { public class Patch { public static void Before(int value) { } public static void Before(string value) { } } }
+		class IdentityB { public class Patch { public static void Before(int value) { } public static void Before(string value) { } } }
+
+		[Test]
+		public void Diagnostic_method_names_distinguish_nested_classes_and_overloads()
+		{
+			var identities = new HashSet<string>();
+			foreach (var type in new[] { typeof(IdentityA.Patch), typeof(IdentityB.Patch) })
+				foreach (var argument in new[] { typeof(int), typeof(string) })
+				{
+					var identity = MethodCreatorTools.InfixMethodIdentity(AccessTools.Method(type, "Before", [argument]));
+					Assert.That(identity, Does.Contain(type.FullName).And.Contain(argument.FullName));
+					Assert.That(identities.Add(identity), Is.True, identity);
+				}
 		}
 
 		static IEnumerable<CodeInstruction> DuplicateCall(IEnumerable<CodeInstruction> source)

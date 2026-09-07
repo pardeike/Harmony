@@ -23,6 +23,8 @@ namespace HarmonyLib
 
 		/// <summary>The calling convention. <see cref="CallingConvention.Winapi"/> represents the default managed convention in this signature model;
 		/// the other named values represent their corresponding unmanaged conventions. Other metadata conventions retain their numeric value plus one.</summary>
+		/// <remarks>This historical mapping differs from native interop: Winapi does not select the platform's default unmanaged convention here.
+		/// Preserve this value when re-emitting a parsed operand. For a new unmanaged call, specify its actual convention, such as Cdecl or StdCall.</remarks>
 		///
 		public CallingConvention CallingConvention { get; set; } = CallingConvention.Winapi;
 

@@ -105,11 +105,20 @@ namespace HarmonyLib
 			{
 				foreach (var fix in fixes)
 				{
+					var description = "unresolved target";
+					var positions = "unknown";
+					int? matchCount = null;
 					try
 					{
 						var target = fix.patch.Target ?? throw new ArgumentException("The inner patch has no target. Remove it before rebuilding this method.");
+						positions = target.Positions is null ? "null" : string.Join(", ", target.Positions.Select(position => position.ToString()).ToArray());
 						target.Validate();
+						description = target.Kind == InnerTargetKind.Constant
+							? $"Constant {target.ConstantType} \"{target.ConstantData.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "\\r").Replace("\n", "\\n")}\""
+							: $"{target.Kind} " + (target.Member is MethodBase method ? MethodCreatorTools.InfixMethodIdentity(method)
+								: $"{target.Member.DeclaringType?.FullName}::{target.Member.Name}");
 						var matches = Enumerable.Range(0, instructions.Count).Where(index => target.Matches(instructions[index])).ToList();
+						matchCount = matches.Count;
 						foreach (var position in ResolvePositions(matches.Count, fix.Positions))
 						{
 							var index = matches[position];
@@ -119,8 +128,9 @@ namespace HarmonyLib
 					}
 					catch (Exception ex)
 					{
-						throw new HarmonyException($"Cannot select inner calls in {MethodCreatorTools.InfixMethodIdentity(config.original)} for {fix.patch.owner}:"
-							+ $"{MethodCreatorTools.InfixMethodIdentity(fix.OuterMethod)}: {ex.Message}", ex);
+						throw new HarmonyException($"Cannot select {description}, positions [{positions}], in {MethodCreatorTools.InfixMethodIdentity(config.original)}"
+							+ $" after ordinary transpilers for {fix.patch.owner}:{MethodCreatorTools.InfixMethodIdentity(fix.OuterMethod)}."
+							+ (matchCount.HasValue ? $" Found {matchCount.Value} matching operations. " : " ") + ex.Message, ex);
 					}
 				}
 			}

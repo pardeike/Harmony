@@ -1,8 +1,8 @@
 # Infix operation targets
 
-**Decision, 2026-09-07.** This addendum is part of [V3](INFIX-NEW-IMPL-V3.md). It replaces V3's method-only target restrictions; its ordering, argument binding, state lifetimes, atomic installation, and compatibility requirements remain in force. The [testing strategy](../docs/infix/TESTING-STRATEGY.md) separates new coverage from runtime checks actually executed.
+**Implemented, unreleased contract.** This is the operation-selection part of [V3](INFIX-NEW-IMPL-V3.md). All targets share its ordering, argument binding, state lifetimes, installation and compatibility requirements. The [testing strategy](../docs/infix/TESTING-STRATEGY.md) defines coverage; [validation status](../docs/infix/README.md) records executed checks.
 
-**Completion:** the [feature-completion contract](INFIX-FEATURE-COMPLETION.md) adds implemented, unreleased support for accumulated `AddInner...` calls, inner finalizers, automatic iterator/async body selection, and generated-code authoring support. It overrides this addendum's exclusions only where stated.
+The [feature-completion contract](INFIX-FEATURE-COMPLETION.md) specifies accumulated `AddInner...` calls, inner finalizers, automatic iterator/async body selection, and generated-code authoring support. Those features apply to these targets too.
 
 ## 1. The useful generalization
 
@@ -23,7 +23,7 @@ Every target uses the same positions convention and independent prefix/postfix o
 
 ### Why constants are worth supporting
 
-xylthixlm's example captures a newly created `StringBuilder`, then intercepts a distinctive string literal later in the same method to append to that builder. The literal is an insertion point, not necessarily a value to replace. This avoids guessing the original compiler's local-variable numbering.
+A useful example captures a newly created `StringBuilder`, then intercepts a distinctive string literal later in the same method to append to that builder. The literal is an insertion point, not necessarily a value to replace. This avoids guessing the original compiler's local-variable numbering.
 
 That is a legitimate use case. It also explains the limit: a literal is identified by its value, not by the source expression that produced it. A compiler may fold, remove, or duplicate it. Selecting `1` also finds unrelated boolean and small-integer loads. There is no promise that a source-level `const` declaration survives as a selectable instruction.
 
@@ -45,7 +45,7 @@ new InnerTarget(constructorInfo)
 InnerTarget.Constant("StatsReport_FinalValue", -1)
 ```
 
-Each accepts trailing signed occurrence positions. Install it with the existing `AddInnerPrefix` or `AddInnerPostfix` and a `HarmonyMethod` whose `innerTarget` is set. Keep manual and attribute registration equivalent.
+Each accepts trailing signed occurrence positions. Install it with `AddInnerPrefix`, `AddInnerPostfix` or `AddInnerFinalizer` and a `HarmonyMethod` whose `innerTarget` is set. Keep manual and attribute registration equivalent.
 
 Attribute forms extend `HarmonyInfix`, not a new patch role:
 
@@ -101,17 +101,17 @@ The constructor postfix in the motivating example can store its `__result` into 
 
 Each outer invocation starts with default values, including recursive and simultaneous invocations. The later patch must handle a default when its writer did not execute. Do not introduce hidden cross-invocation state, infer that every control-flow path reaches the writer, or make prefix/postfix declarations into fixed pairs. A struct in `__state` remains the simple choice for several values belonging to one site.
 
-## 5. Current boundaries and accepted next work
+## 5. Execution boundaries
 
-**Iterator/async redirection:** the current implementation uses explicit outer targeting (`MethodType.Enumerator`, `MethodType.Async`, or the appropriate generated method). The completion draft adds an automatic body-selection option while preserving that explicit behavior. Its arguments, receiver, and invocation lifetime differ from the factory method's; each `MoveNext` call is its own outer invocation. State that must survive across yields belongs to the iterator object or another explicitly owned location, not an Infix local.
+**Iterator/async redirection:** explicit outer targeting (`MethodType.Enumerator`, `MethodType.Async`, or the appropriate generated method) and opt-in `OuterBody.Auto` are supported. The execution body's arguments, receiver and invocation lifetime differ from the factory method's; each `MoveNext` call is its own outer invocation. State that must survive across yields belongs to the generated object or another explicitly owned location, not an Infix local. Captured-variable binding accesses supported generated fields as defined in the completion contract.
 
-**Inner finalizers:** accepted in the completion draft, using ordinary finalizer semantics and a typed helper only at sites that need them. That design handles pending stack values and enclosing exception handlers without adding whole-method stack analysis. Until implemented, existing outer finalizers and surrounding handlers still handle escaping Infix exceptions; an inner postfix is not exception cleanup.
+**Inner finalizers:** use ordinary finalizer semantics and a typed helper only at sites that need them. The helper preserves pending caller stack values and enclosing exception handlers without whole-method stack analysis. Outer finalizers and surrounding handlers still handle escaping Infix exceptions; an inner postfix is not exception cleanup.
 
 **Indirect calls:** public `InlineSignature` helps transpiler authors understand `calli`; it does not make a runtime function-pointer value into a stable Infix target. Constructor initialization via `call`, `tail.`, varargs, open storage, and unsupported prefixes remain excluded.
 
 ## 6. Compatibility without a parallel protocol
 
-Preserve existing method-only shared state and its version-1 envelope. A payload containing any extended target or demanding the new `__originalMember` binding uses version 2. Exact-name real arguments and the first passthrough-result parameter do not demand that binding. Derive this requirement from the patch records; do not store a second capability flag. Readers accept both versions and reject new-capability metadata under version 1 or without an envelope. Removing the last new-capability patch returns to version 1 if ordinary call Infixes remain; removing the last Infix returns to the ordinary legacy format.
+Method-only shared state can retain its version-1 envelope. A payload containing an extended target or demanding `__originalMember` binding requires at least version 2; inner finalizers or captured-variable binding require version 3. Exact-name real arguments and the first passthrough-result parameter do not demand the metadata injection. Derive the highest requirement from all surviving records; do not store a second capability flag. Current readers accept versions 1–3 and reject metadata under an insufficient version or without its required envelope. Removal lowers the version only when no surviving record still requires it; removing the last Infix returns to the ordinary legacy format.
 
 This prevents an earlier Infix engine from ignoring a field/constructor/literal selector while rebuilding a method. It must fail while reading the version, before any user transpiler runs. Do not create guard transpilers, shadow arrays, or cross-assembly side dictionaries.
 
@@ -119,7 +119,7 @@ New declaration constructors must also fail loudly in earlier engines. Keep the 
 
 For declarations using `__originalMember` on a method call, use the explicit `InnerTargetKind.Method` form to gain that same early declaration rejection. A legacy method-form declaration carrying the new parameter still fails in the previous, unreleased V3 engine, but at binding time; no format header can protect a patch that has not been published yet. Published new-capability state rejects old V3 readers before user patch code regardless of its original declaration form.
 
-For fields and constructors, persist module ID, metadata-definition token, explicit declaring-type family flag, and recursively encoded closed generic arguments. Reuse the existing type-identity codec. Reconstruct exact closed members; never broaden a closed target to all constructions. Reject unknown versions, malformed/duplicate data, conflicting target representations, ambiguous module copies, and mismatched token kinds. The same rules apply to JSON and BinaryFormatter.
+For fields and constructors, persist module ID, metadata-definition token, explicit declaring-type family flag, and recursively encoded closed generic arguments. Reuse the existing type-identity codec. Reconstruct exact closed members; never broaden a closed target to all constructions. Reject unknown versions, malformed/duplicate data, conflicting target representations, and mismatched token kinds while reading. Well-formed missing or ambiguous members remain inspectable for owner removal; every survivor must resolve uniquely before rebuilding or publication. The same rules apply to JSON and BinaryFormatter.
 
 ## 7. InlineSignature: useful independently
 
@@ -146,8 +146,6 @@ Tests must cover the user-visible combinations, not just constructors of metadat
 
 Record runtime/architecture and exact binaries for executed checks. A passing macOS CoreCLR run is not proof of Windows Framework, Mono, Unity, or mixed-loader behavior.
 
-## Evidence behind the decisions
-
-The capture/anchor example and feature claims come from [xylthixlm's Discord discussion](https://discord.com/channels/214523379766525963/215496692047413249/1546307390541140018). The public [Disharmony attributes](https://github.com/RossM/RimworldMods/blob/ba7d90c7da2fa8743ae230478dde910fc12ee612/Disharmony/Attributes.cs) confirm explicit literal selection and its IL-category limitations. These motivate the use cases; Harmony's implementation retains its own binding and lifecycle contracts.
+## Instruction contracts
 
 The [CLI `ldfld` contract](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.ldfld) permits a value-type value or address as receiver. The [`calli` contract](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.calli) defines its function-pointer/argument stack consumption.

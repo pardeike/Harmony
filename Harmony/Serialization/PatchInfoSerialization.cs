@@ -153,13 +153,13 @@ namespace HarmonyLib
 				throw new SerializationException("Inner finalizers and captured-variable binding require Harmony Infix state version 3");
 			if (version < 2 && (allPatches.Any(patch => patch.innerTarget is not null) || result.RequiresInfixV2(allowUnresolvedCallbacks: true)))
 				throw new SerializationException("Extended Infix targets and __originalMember binding require Harmony Infix state version 2");
-			// A newer envelope can carry only method selectors. Unresolvable callbacks remain removable;
-			// ValidateSurvivingMetadata still rejects rebuilding them before any transpiler can run.
+			// Reading must not require resolvable targets or callbacks: valid stored identities may no longer resolve uniquely.
+			// Normal unpatching removes the requested records before ValidateSurvivingMetadata checks the survivors.
 			foreach (var patch in allPatches)
 			{
 				patch.ValidateTargetRepresentation();
-				patch.innerMethod?.ValidateVersionedIdentity();
-				patch.innerTarget?.Validate();
+				patch.innerMethod?.ValidateStoredIdentity();
+				patch.innerTarget?.ValidateStoredIdentity();
 			}
 			return result;
 		}

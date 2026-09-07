@@ -33,6 +33,9 @@ namespace HarmonyLib
 		private string[] methodArguments;
 
 		/// <summary>One-based occurrences; negative positions count from the end, and an empty array selects all occurrences</summary>
+		/// <remarks>Counts matching calls after ordinary transpilers and before any Infix code is inserted. Other Infixes do not shift these positions.
+		/// Zero and null are invalid. At least one match is required, and every requested occurrence must exist. Installation copies the selector and its positions;
+		/// changing this array afterwards does not change an installed patch.</remarks>
 		public int[] positions;
 
 		/// <summary>Creates an inner call selector</summary>
@@ -108,13 +111,20 @@ namespace HarmonyLib
 			method = Resolve();
 		}
 
-		internal void ValidateVersionedIdentity()
+		internal void ValidateStoredIdentity()
 		{
-			if (identityVersion != 0 || targetKind.HasValue || declaringTypeArguments is not null || methodArguments is not null)
-			{
-				ValidatePositions(positions);
-				_ = Resolve();
-			}
+			ValidatePositions(positions);
+			_ = ValidateModuleIdentifier(moduleGUID);
+			ValidateToken(methodToken, 0x06000000);
+			if (identityVersion == 0 && (targetKind.HasValue || declaringTypeArguments is not null || methodArguments is not null))
+				throw new SerializationException("An Infix identity with new fields must specify identityVersion 1");
+			if (identityVersion == 0) return;
+			if (identityVersion != 1) throw new SerializationException($"Unsupported Infix identity version {identityVersion}");
+			if (targetKind is null || targetKind < 0 || targetKind > 3 || declaringTypeArguments is null || methodArguments is null)
+				throw new SerializationException("Infix identity version 1 requires a valid targetKind and both argument lists");
+			if (((targetKind.Value & 1) != 0 && declaringTypeArguments.Length != 0) || ((targetKind.Value & 2) != 0 && methodArguments.Length != 0))
+				throw new SerializationException("An Infix family identity cannot contain arguments for its open dimension");
+			foreach (var argument in declaringTypeArguments.Concat(methodArguments)) ValidateTypeIdentity(argument);
 		}
 
 		internal InnerMethod Snapshot()
@@ -165,9 +175,7 @@ namespace HarmonyLib
 
 		MethodInfo Resolve()
 		{
-			if (identityVersion == 0 && (targetKind.HasValue || declaringTypeArguments is not null || methodArguments is not null))
-				throw new SerializationException("An Infix identity with new fields must specify identityVersion 1");
-			if (identityVersion != 0 && identityVersion != 1) throw new SerializationException($"Unsupported Infix identity version {identityVersion}");
+			ValidateStoredIdentity();
 			var definition = ResolveModule(moduleGUID).ResolveMethod(methodToken) as MethodInfo;
 			if (definition is null || (methodToken & unchecked((int)0xff000000)) != 0x06000000 || definition.DeclaringType is null)
 				throw new SerializationException("The Infix target token does not identify a method definition");
@@ -182,8 +190,6 @@ namespace HarmonyLib
 				methodArguments = [];
 				return definition;
 			}
-			if (targetKind is null || targetKind < 0 || targetKind > 3 || declaringTypeArguments is null || methodArguments is null)
-				throw new SerializationException("Infix identity version 1 requires a valid targetKind and both argument lists");
 			var typeFamily = (targetKind.Value & 1) != 0;
 			var methodFamily = (targetKind.Value & 2) != 0;
 			ValidateDimension(typeFamily, declaringType.IsGenericTypeDefinition, declaringTypeArguments,
@@ -207,13 +213,25 @@ namespace HarmonyLib
 
 		internal static Module ResolveModule(string mvid)
 		{
+			var guid = ValidateModuleIdentifier(mvid);
+			var modules = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetModules()).Where(m => m.ModuleVersionId == guid).Distinct().ToArray();
+			if (modules.Length != 1) throw new SerializationException($"Infix module {mvid} has {modules.Length} loaded matches; exactly one is required");
+			return modules[0];
+		}
+
+		internal static Guid ValidateModuleIdentifier(string mvid)
+		{
 			Guid guid;
 			try { guid = new Guid(mvid); }
 			catch (Exception ex) { throw new SerializationException("Invalid Infix module identifier", ex); }
 			if (guid.ToString("D") != mvid) throw new SerializationException("Infix module identifiers must use canonical lower-case GUID format");
-			var modules = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetModules()).Where(m => m.ModuleVersionId == guid).Distinct().ToArray();
-			if (modules.Length != 1) throw new SerializationException($"Infix module {mvid} has {modules.Length} loaded matches; exactly one is required");
-			return modules[0];
+			return guid;
+		}
+
+		internal static void ValidateToken(int token, int kind)
+		{
+			if ((token & unchecked((int)0xff000000)) != kind || (token & 0x00ffffff) == 0)
+				throw new SerializationException("An Infix identity has the wrong metadata token kind or an empty row identifier");
 		}
 
 		static string EncodeDefinition(Type type) => $"D({type.Module.ModuleVersionId:D};{type.MetadataToken.ToString(CultureInfo.InvariantCulture)})";
@@ -233,7 +251,11 @@ namespace HarmonyLib
 			return EncodeDefinition(type);
 		}
 
-		internal static Type DecodeType(string text)
+		internal static Type DecodeType(string text) => ReadTypeIdentity(text, true);
+
+		internal static void ValidateTypeIdentity(string text) => _ = ReadTypeIdentity(text, false);
+
+		static Type ReadTypeIdentity(string text, bool resolve)
 		{
 			if (text is null) throw new SerializationException("An Infix generic argument identity cannot be null");
 			var position = 0;
@@ -242,11 +264,12 @@ namespace HarmonyLib
 				Expect('D'); Expect('(');
 				var start = position;
 				while (position < text.Length && text[position] != ';') position++;
-				var module = ResolveModule(text.Substring(start, position - start));
+				var mvid = text.Substring(start, position - start);
+				_ = ValidateModuleIdentifier(mvid);
 				Expect(';');
 				var token = ReadNumber(); Expect(')');
-				if ((token & unchecked((int)0xff000000)) != 0x02000000) throw new SerializationException("Infix type identity requires a type-definition token");
-				return module.ResolveType(token);
+				ValidateToken(token, 0x02000000);
+				return resolve ? ResolveModule(mvid).ResolveType(token) : null;
 			}
 			void Expect(char expected)
 			{
@@ -267,7 +290,7 @@ namespace HarmonyLib
 				if (text[position] == 'D')
 				{
 					var named = ReadDefinition();
-					if (named.IsGenericType || named.HasElementType || named == typeof(void)) throw new SerializationException("A named Infix argument must be a nongeneric type");
+					if (resolve && (named.IsGenericType || named.HasElementType || named == typeof(void))) throw new SerializationException("A named Infix argument must be a nongeneric type");
 					return named;
 				}
 				var kind = text[position++]; Expect('(');
@@ -277,18 +300,23 @@ namespace HarmonyLib
 					var arguments = new List<Type>();
 					while (position < text.Length && text[position] == ';') { position++; arguments.Add(ReadType()); }
 					Expect(')');
-					if (!generic.IsGenericTypeDefinition || generic.GetGenericArguments().Length != arguments.Count)
+					if (arguments.Count == 0 || (resolve && (!generic.IsGenericTypeDefinition || generic.GetGenericArguments().Length != arguments.Count)))
 						throw new SerializationException("Invalid constructed Infix generic type argument count");
-					return generic.MakeGenericType(arguments.ToArray());
+					return resolve ? generic.MakeGenericType(arguments.ToArray()) : null;
 				}
-				if (kind == 'V') { var element = ReadType(); Expect(')'); return element.MakeArrayType(); }
-				if (kind == 'A') { var rank = ReadNumber(); Expect(';'); var element = ReadType(); Expect(')'); return element.MakeArrayType(rank); }
+				if (kind == 'V') { var element = ReadType(); Expect(')'); return resolve ? element.MakeArrayType() : null; }
+				if (kind == 'A')
+				{
+					var rank = ReadNumber(); Expect(';'); var element = ReadType(); Expect(')');
+					if (rank > 32) throw new SerializationException("An Infix array identity cannot exceed 32 dimensions");
+					return resolve ? element.MakeArrayType(rank) : null;
+				}
 				throw new SerializationException($"Unknown Infix type identity kind {kind}");
 			}
 			try
 			{
 				var type = ReadType();
-				if (position != text.Length || EncodeType(type) != text) throw new SerializationException("Noncanonical or trailing data in Infix type identity");
+				if (position != text.Length || (resolve && EncodeType(type) != text)) throw new SerializationException("Noncanonical or trailing data in Infix type identity");
 				return type;
 			}
 			catch (SerializationException) { throw; }

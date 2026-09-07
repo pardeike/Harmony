@@ -2,6 +2,8 @@
 
 Use an Infix when you want prefixes, postfixes, or finalizers around a selected operation with Harmony's argument binding. For a pattern of instructions that must be inserted, replaced, or removed, use an ordinary [transpiler](patching-transpiler.md) with [CodeMatcher](patching-transpiler-matcher.md). Both participate in the existing patch ordering; these recipes introduce no extra processing phases.
 
+Each transpiler sees the instructions passed to it at its position in ordinary transpiler order. Infix selection happens after all those transpilers, before any Infix-generated code is inserted. A transpiler with `Priority.Last` still belongs to the ordinary transpiler pass; it does not run after Infix emission.
+
 The examples below are compiled with the documentation and exercised by tests. `Probe.Tick()`, `Before()`, `After()`, `Replacement()`, `Enter()`, and `Exit()` are static methods taking no arguments and returning void. Each records its own name. `Recipes.Method(name)` finds a method on `Probe`; `Recipes.Call(name)` creates its call instruction.
 
 ## Scope of these examples
@@ -38,7 +40,7 @@ This recipe rejects a body with fewer than two `Tick` instructions, then replace
 
 [!code-csharp[minimum](../examples/patching-infix-authoring.cs?name=minimum)]
 
-The count describes compiled instructions, so one call inside a loop still counts once. A minimum count can catch a changed method shape, but it cannot prove that each match still means what your patch expects after a game update.
+The count describes instructions visible to this transpiler, so one call inside a loop still counts once. Later transpilers can still change that body. This is not a final-body match-count option for Infix. A minimum count can catch a changed method shape, but it cannot prove that each match still means what your patch expects after a game update.
 
 ## Process at most N matches
 

@@ -364,7 +364,9 @@ namespace HarmonyLibTests.Patching
 			Assert.Throws<SerializationException>(() => DeserializeInner(json.Replace("\"targetKind\":0", "\"targetKind\":4")));
 			var reversed = "{" + string.Join(",", doc.RootElement.EnumerateObject().Reverse().Select(p => $"\"{p.Name}\":{p.Value.GetRawText()}")) + "}";
 			Assert.That(DeserializeInner(reversed).Method, Is.EqualTo(target.Method));
-			foreach (var malformedArgument in new[] { "D(bad;1)", "V(D(bad;1))", "D(00000000-0000-0000-0000-000000000000;33554433)", "T", "", "D(00000000-0000-0000-0000-000000000000;033554433)" })
+			foreach (var malformedArgument in new[] { "D(bad;1)", "V(D(bad;1))", "T", "", "D(00000000-0000-0000-0000-000000000000;033554433)",
+				"D(00000000-0000-0000-0000-000000000000;33554432)", "G(D(00000000-0000-0000-0000-000000000000;33554433))",
+				"A(33;D(00000000-0000-0000-0000-000000000000;33554433))", "V(D(00000000-0000-0000-0000-000000000000;33554433))trailing" })
 			{
 				var changed = "{" + string.Join(",", doc.RootElement.EnumerateObject().Select(p => p.Name == "methodArguments"
 					? "\"methodArguments\":[\"" + malformedArgument + "\"]" : $"\"{p.Name}\":{p.Value.GetRawText()}")) + "}";

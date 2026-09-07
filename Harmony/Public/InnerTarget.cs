@@ -49,6 +49,9 @@ namespace HarmonyLib
 		MemberInfo member;
 
 		/// <summary>One-based occurrences; negative positions count from the end, and empty selects all occurrences</summary>
+		/// <remarks>Counts matching operations after ordinary transpilers and before any Infix code is inserted. Other Infixes do not shift these positions.
+		/// Zero and null are invalid. At least one match is required, and every requested occurrence must exist. Installation copies the selector and its positions;
+		/// changing this array afterwards does not change an installed patch.</remarks>
 		public int[] positions;
 
 		/// <summary>Selects an exact method or explicit generic method family</summary>
@@ -173,13 +176,21 @@ namespace HarmonyLib
 
 		internal void Validate()
 		{
+			ValidateStoredIdentity();
+			if (kind == InnerTargetKind.Method) { methodSelector.Validate(); return; }
+			if (kind == InnerTargetKind.Constant) return;
+			ResolveMember();
+		}
+
+		internal void ValidateStoredIdentity()
+		{
 			InnerMethod.ValidatePositions(positions);
 			if (identityVersion != 1) throw new SerializationException($"Unsupported inner-target identity version {identityVersion}");
 			if (kind == InnerTargetKind.Method)
 			{
 				if (methodSelector is null || memberToken != 0 || moduleGUID is not null || typeFamily.HasValue || typeArguments is not null || constantType is not null || constantData is not null)
 					throw new SerializationException("A method target requires only its method selector");
-				methodSelector.Validate();
+				methodSelector.ValidateStoredIdentity();
 				return;
 			}
 			if (methodSelector is not null) throw new SerializationException("A non-method target cannot contain a method selector");
@@ -194,10 +205,16 @@ namespace HarmonyLib
 				throw new SerializationException($"Unsupported normalized inner-target kind {kind}");
 			if (constantType is not null || constantData is not null || !typeFamily.HasValue || typeArguments is null)
 				throw new SerializationException("A member target requires its complete declaring-type identity and no literal identity");
+			_ = InnerMethod.ValidateModuleIdentifier(moduleGUID);
+			InnerMethod.ValidateToken(memberToken, kind == InnerTargetKind.Constructor ? 0x06000000 : 0x04000000);
+			if (typeFamily.Value && typeArguments.Length != 0) throw new SerializationException("An inner-target family identity cannot contain type arguments");
+			foreach (var argument in typeArguments) InnerMethod.ValidateTypeIdentity(argument);
+		}
+
+		void ResolveMember()
+		{
 			var module = InnerMethod.ResolveModule(moduleGUID);
 			var constructor = kind == InnerTargetKind.Constructor;
-			if ((memberToken & unchecked((int)0xff000000)) != (constructor ? 0x06000000 : 0x04000000))
-				throw new SerializationException("The inner-target token has the wrong metadata member kind");
 			member = constructor ? module.ResolveMethod(memberToken) as ConstructorInfo : module.ResolveField(memberToken);
 			if (member?.DeclaringType is null) throw new SerializationException("The inner-target token does not identify the requested member");
 			var declaringType = member.DeclaringType;

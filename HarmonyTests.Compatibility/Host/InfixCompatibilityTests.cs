@@ -158,16 +158,48 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 
 	private void DuplicateModule(Engine a, Engine b)
 	{
-		SetStage("duplicate-target-module");
+		SetStage("duplicate-target-module-setup");
 		var feature = a.LoadFixture(options.Feature);
 		var selector = typeof(Container<int>).GetMethod(nameof(Container<int>.Use))!.MakeGenericMethod(typeof(string));
 		var bytes = a.Serialize(a.FeatureCall(feature, "IdentityRecord", selector, Array.Empty<int>())!);
+		a.Call("AddTranspiler", target, "survivor");
+		a.FeatureCall(feature, "Install", target, "duplicate-target", false);
+		a.FeatureCall(feature, "Install", target, "duplicate-target", true);
+		Execute(123, "infix-prefix", "called:11", "infix-postfix");
+		var cached = a.ReadState(target);
+		var cachedPatch = ((Array)cached.GetType().GetField("innerprefixes")!.GetValue(cached)!).GetValue(0)!;
+		var cachedSelector = cachedPatch.GetType().GetField("innerMethod")!.GetValue(cachedPatch)!;
+		Check.That(cachedSelector.GetType().GetProperty("Method")!.GetValue(cachedSelector) is MethodInfo, "Cached-reader setup did not resolve the selected method.");
+		var before = CaptureState(a);
+		SetStage("duplicate-target-module");
 		var duplicate = Assembly.Load(File.ReadAllBytes(typeof(Targets).Assembly.Location));
 		Check.That(!ReferenceEquals(duplicate, typeof(Targets).Assembly), "Duplicate-module fixture unified onto the original module.");
 		Check.Equal(typeof(Targets).Module.ModuleVersionId, duplicate.ManifestModule.ModuleVersionId, "Duplicate target MVID.");
-		var failure = Capture(() => b.Deserialize(bytes));
-		Check.That(failure is System.Runtime.Serialization.SerializationException && failure.Message.Contains("loaded matches", StringComparison.Ordinal), "Ambiguous target module did not fail explicitly.");
-		events.Add(new { Stage, Duplicate = Engine.Identity(duplicate), ExpectedRejection = failure!.ToString() });
+		var decoded = b.Deserialize(bytes);
+		var identityPatch = ((Array)decoded.GetType().GetField("innerprefixes")!.GetValue(decoded)!).GetValue(0)!;
+		var inner = identityPatch.GetType().GetField("innerMethod")!.GetValue(identityPatch)!;
+		void Reject(Action operation)
+		{
+			var failure = Capture(operation);
+			Check.That(failure is not null && Chain(failure).Any(x => x is System.Runtime.Serialization.SerializationException && x.Message.Contains("loaded matches", StringComparison.Ordinal)), "Ambiguous target module did not reject explicitly: " + failure);
+			events.Add(new { Stage, Duplicate = Engine.Identity(duplicate), ExpectedRejection = failure!.ToString() });
+			Unchanged(before, a);
+		}
+		Reject(() => inner.GetType().GetProperty("Method")!.GetValue(inner));
+		Owners(b, "duplicate-target", "survivor");
+		SetStage("duplicate-target-module-cached-rebuild");
+		Reject(() => a.StaticCall("PatchFunctions", "UpdateWrapper", target, cached));
+		SetStage("duplicate-target-module-cold-rebuild");
+		Reject(() => b.Call("Rebuild", target));
+		SetStage("duplicate-target-module-partial-removal");
+		Reject(() => b.UnpatchRole(target, "InnerPrefix", "duplicate-target"));
+		Execute(123, "infix-prefix", "called:11", "infix-postfix");
+		SetStage("duplicate-target-module-owner-recovery");
+		b.Call("UnpatchOwner", target, "duplicate-target");
+		Owners(b, "survivor");
+		CheckEnvelope(b.Bytes(target)!, false);
+		Execute(3, "called:1");
+		b.Call("UnpatchAll", target);
 		Outcome = "expected-compatibility-rejection";
 		SetStage("complete");
 	}
@@ -493,8 +525,7 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 			["unknown-kind"] = inner => inner["targetKind"] = 99,
 			["null-type-arguments"] = inner => inner["declaringTypeArguments"] = null,
 			["missing-method-arguments"] = inner => inner.Remove("methodArguments"),
-			["wrong-type-argument-count"] = inner => inner["declaringTypeArguments"] = new System.Text.Json.Nodes.JsonArray(),
-			["invalid-module"] = inner => inner["moduleGUID"] = Guid.Empty.ToString("D"),
+			["invalid-module"] = inner => inner["moduleGUID"] = "not-a-guid",
 			["invalid-token"] = inner => inner["methodToken"] = 0,
 			["malformed-canonical-type"] = inner => inner["methodArguments"] = new System.Text.Json.Nodes.JsonArray("T(0)"),
 			["null-positions"] = inner => inner["positions"] = null,
@@ -509,6 +540,16 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 			var failure = Capture(() => reader.Deserialize(invalid));
 			Check.That(failure is not null, "Malformed identity was accepted: " + change.Key);
 			events.Add(new { Stage, Variant = change.Key, Exception = failure!.ToString() });
+		}
+		foreach (var unavailable in new[] { "missing-module", "wrong-type-argument-count" })
+		{
+			var root = System.Text.Json.Nodes.JsonNode.Parse(payload)!;
+			var inner = root["innerprefixes"]![0]!["innerMethod"]!.AsObject();
+			if (unavailable == "missing-module") inner["moduleGUID"] = Guid.Empty.ToString("D");
+			else inner["declaringTypeArguments"] = new System.Text.Json.Nodes.JsonArray();
+			var unresolved = prefix.Concat(Encoding.UTF8.GetBytes(root.ToJsonString())).ToArray();
+			var state = reader.Deserialize(unresolved);
+			Check.That(Capture(() => reader.Serialize(state)) is not null, "A readable unresolved target must not be publishable: " + unavailable);
 		}
 		var duplicate = prefix.Concat(Encoding.UTF8.GetBytes(payload.Replace("\"identityVersion\":1", "\"identityVersion\":1,\"identityVersion\":1"))).ToArray();
 		Check.That(Capture(() => reader.Deserialize(duplicate)) is not null, "Duplicate identity property was accepted.");

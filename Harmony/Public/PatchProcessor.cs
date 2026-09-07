@@ -34,7 +34,7 @@ namespace HarmonyLib
 			this.original = original;
 		}
 
-		/// <summary>Adds a prefix</summary>
+		/// <summary>Sets the pending prefix, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="prefix">The prefix as a <see cref="HarmonyMethod"/></param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -45,7 +45,7 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds a prefix</summary>
+		/// <summary>Sets the pending prefix, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="fixMethod">The prefix method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -54,7 +54,7 @@ namespace HarmonyLib
 			return AddPrefix(new HarmonyMethod(fixMethod));
 		}
 
-		/// <summary>Adds a postfix</summary>
+		/// <summary>Sets the pending postfix, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="postfix">The postfix as a <see cref="HarmonyMethod"/></param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -65,7 +65,7 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds a postfix</summary>
+		/// <summary>Sets the pending postfix, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="fixMethod">The postfix method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -74,7 +74,7 @@ namespace HarmonyLib
 			return AddPostfix(new HarmonyMethod(fixMethod));
 		}
 
-		/// <summary>Adds a transpiler</summary>
+		/// <summary>Sets the pending transpiler, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="transpiler">The transpiler as a <see cref="HarmonyMethod"/></param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -85,7 +85,7 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds a transpiler</summary>
+		/// <summary>Sets the pending transpiler, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="fixMethod">The transpiler method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -94,7 +94,7 @@ namespace HarmonyLib
 			return AddTranspiler(new HarmonyMethod(fixMethod));
 		}
 
-		/// <summary>Adds a finalizer</summary>
+		/// <summary>Sets the pending finalizer, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="finalizer">The finalizer as a <see cref="HarmonyMethod"/></param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -105,7 +105,7 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds a finalizer</summary>
+		/// <summary>Sets the pending finalizer, replacing this processor's previous selection without replacing installed patches</summary>
 		/// <param name="fixMethod">The finalizer method</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
@@ -114,8 +114,8 @@ namespace HarmonyLib
 			return AddFinalizer(new HarmonyMethod(fixMethod));
 		}
 
-		/// <summary>Adds an inner prefix</summary>
-		/// <param name="innerPrefix">The inner prefix as a <see cref="HarmonyMethod"/></param>
+		/// <summary>Appends an inner prefix to this processor's pending registrations</summary>
+		/// <param name="innerPrefix">The inner prefix with an explicit target or a <see cref="HarmonyInfix"/> declaration on its callback</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddInnerPrefix(HarmonyMethod innerPrefix)
@@ -124,8 +124,8 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds an inner prefix</summary>
-		/// <param name="fixMethod">The inner prefix method</param>
+		/// <summary>Appends an inner prefix to this processor's pending registrations</summary>
+		/// <param name="fixMethod">The inner prefix callback with a <see cref="HarmonyInfix"/> declaration specifying its target</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddInnerPrefix(MethodInfo fixMethod)
@@ -133,8 +133,8 @@ namespace HarmonyLib
 			return AddInnerPrefix(new HarmonyMethod(fixMethod));
 		}
 
-		/// <summary>Adds an inner postfix</summary>
-		/// <param name="innerPostfix">The inner postfix as a <see cref="HarmonyMethod"/></param>
+		/// <summary>Appends an inner postfix to this processor's pending registrations</summary>
+		/// <param name="innerPostfix">The inner postfix with an explicit target or a <see cref="HarmonyInfix"/> declaration on its callback</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddInnerPostfix(HarmonyMethod innerPostfix)
@@ -143,8 +143,8 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds an inner postfix</summary>
-		/// <param name="fixMethod">The inner postfix method</param>
+		/// <summary>Appends an inner postfix to this processor's pending registrations</summary>
+		/// <param name="fixMethod">The inner postfix callback with a <see cref="HarmonyInfix"/> declaration specifying its target</param>
 		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
 		///
 		public PatchProcessor AddInnerPostfix(MethodInfo fixMethod)
@@ -152,8 +152,8 @@ namespace HarmonyLib
 			return AddInnerPostfix(new HarmonyMethod(fixMethod));
 		}
 
-		/// <summary>Adds an inner finalizer</summary>
-		/// <param name="innerFinalizer">The finalizer and its selected inner operation</param>
+		/// <summary>Appends an inner finalizer to this processor's pending registrations</summary>
+		/// <param name="innerFinalizer">The inner finalizer with an explicit target or a <see cref="HarmonyInfix"/> declaration on its callback</param>
 		/// <returns>This processor for chaining calls</returns>
 		public PatchProcessor AddInnerFinalizer(HarmonyMethod innerFinalizer)
 		{
@@ -161,8 +161,8 @@ namespace HarmonyLib
 			return this;
 		}
 
-		/// <summary>Adds an attributed inner finalizer</summary>
-		/// <param name="fixMethod">The inner finalizer method</param>
+		/// <summary>Appends an attributed inner finalizer to this processor's pending registrations</summary>
+		/// <param name="fixMethod">The inner finalizer callback with a <see cref="HarmonyInfix"/> declaration specifying its target</param>
 		/// <returns>This processor for chaining calls</returns>
 		public PatchProcessor AddInnerFinalizer(MethodInfo fixMethod) => AddInnerFinalizer(new HarmonyMethod(fixMethod));
 
@@ -177,7 +177,8 @@ namespace HarmonyLib
 			}
 		}
 
-		/// <summary>Applies all registered patches</summary>
+		/// <summary>Installs the pending configuration alongside existing patches and rebuilds the method</summary>
+		/// <remarks>The configuration is retained. Calling this method again adds those registrations again; it does not replace the previous installation.</remarks>
 		/// <returns>The generated replacement method</returns>
 		///
 		public MethodInfo Patch()

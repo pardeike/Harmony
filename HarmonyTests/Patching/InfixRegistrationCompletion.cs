@@ -28,6 +28,35 @@ namespace HarmonyLibTests.Patching
 		static Exception FinalB(Exception __exception) { trace.Add("finalB"); return __exception; }
 		static void Ordinary() => trace.Add("factory");
 		static void Missing() { }
+		static void Multiply(ref int value) { trace.Add("multiply"); value *= 3; }
+
+		[TestCase(false), TestCase(true)]
+		public void Removal_does_not_move_new_equal_priority_patches_before_survivors(bool inner)
+		{
+			var early = new Harmony(harmony.Id + ".early");
+			var late = new Harmony(harmony.Id + ".late");
+			var original = Method(nameof(Outer));
+			void Add(Harmony owner, string name)
+			{
+				if (inner) owner.CreateProcessor(original).AddInnerPrefix(Fix(name)).Patch();
+				else owner.CreateProcessor(original).AddPrefix(Method(name)).Patch();
+			}
+			try
+			{
+				Add(early, nameof(Missing));
+				Add(early, nameof(Missing));
+				Add(harmony, nameof(First));
+				early.Unpatch(original, inner ? HarmonyPatchType.InnerPrefix : HarmonyPatchType.Prefix, early.Id);
+				Add(late, nameof(Multiply));
+				Assert.AreEqual(12, Outer(1));
+				Assert.AreEqual(new[] { "first", "multiply", "call" }, trace);
+			}
+			finally
+			{
+				early.UnpatchAll(early.Id);
+				late.UnpatchAll(late.Id);
+			}
+		}
 
 		[Test]
 		public void Pending_inner_roles_accumulate_in_order_and_remove_by_role()

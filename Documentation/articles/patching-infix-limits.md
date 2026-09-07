@@ -51,6 +51,22 @@ class Counter
 
 Instance fields declared on structs remain unsupported because their receivers can be values or addresses. Static fields on structs and supported struct method calls remain usable. A property target selects its accessor call, not its internal field accesses.
 
+## Be careful with indices
+
+`Positions = new[] { 2 }` selects the second matching instruction, not instruction number two in the whole method. `-1` selects the last match. Method calls, field operations, construction and literals use the same rule.
+
+All Infixes count against the same original instruction body for that rebuild, after ordinary transpilers have finished and before any Infix changes are inserted. Adding or removing another Infix does not shift those positions. Calls copied from an inlined patch body and calls moved into an inner-finalizer helper do not change the count either.
+
+```csharp
+Total(); // Match 1
+Total(); // Match 2: Positions = new[] { 2 } selects this call
+Total(); // Match 3
+```
+
+An Infix on the first call can skip it, change its result, or invoke `Total` again from its callback. The second Infix still selects the original second call. Every rebuild starts from the original method and reruns its ordinary transpilers; it does not patch the previous Infix-generated wrapper.
+
+That stability does not extend across changes to the original code or ordinary transpilers. If an update inserts another `Total()` before these calls, the old first call becomes match 2. The patch can then install successfully at the wrong place. A no-match or out-of-range error catches a missing position, not a changed meaning. Review positional targets after updates. If surrounding instructions determine which occurrence you mean, use a transpiler with `CodeMatcher` and explicit match checks.
+
 ## Literal positions count instructions
 
 ```csharp
@@ -60,7 +76,7 @@ for (var i = 0; i < 10; i++)
 
 There is one `"marker"` load here, executed repeatedly. Position `1` selects that instruction on every iteration; position `2` does not mean the second iteration.
 
-Literal targets match compiled values after transpilers. Constant folding can turn `2 * 3` into one `6` load. Common values such as `0` may belong to unrelated expressions. An update or transpiler can insert a matching value before your intended position. The patch may then install successfully on the wrong operation. Prefer distinctive values and check the compiled location after updates.
+Literal targets match compiled values after transpilers. Constant folding can turn `2 * 3` into one `6` load. Common values such as `0` may belong to unrelated expressions. Prefer distinctive values; the [position caveats above](#be-careful-with-indices) apply to literals too.
 
 ## Generic observation and replacement differ
 
@@ -137,8 +153,18 @@ static void Finish(Exception __exception)
 
 Returning postfixes commit only when their whole phase succeeds. If the operation returns `1`, postfix A returns `2`, and postfix B throws, a suppressing finalizer sees `__result == 1`. Execution resumes with `1` unless the finalizer changes it.
 
+## Indirect-call signatures use a historical convention mapping
+
+`InlineSignature` describes a `calli` instruction, which calls through a function pointer. Its `PopCount` includes the pointer and any implicit receiver; `PushCount` is zero for a void return and one otherwise.
+
+Its `CallingConvention` property retains Harmony's historical encoding: `CallingConvention.Winapi` means the default **managed** convention here, not the platform's default unmanaged convention. When inspecting and re-emitting an existing operand, preserve its convention. When constructing an unmanaged call, name its actual convention, such as `Cdecl` or `StdCall`; do not copy `Winapi` from a native interop declaration and expect the same meaning.
+
+Public signature inspection does not make indirect calls selectable Infix targets or remove the documented function-pointer import restrictions.
+
 ## Assemblies that look identical to the loader
 
 Suppose two plugins load different `Patch.dll` files, both advertising assembly version `1.0.0.0`. A direct generated call can retain the exact method object. A generated assembly that must refer to both files by their identical assembly identity cannot reliably distinguish them. Exception-handling outer wrappers can need this form of generation.
 
-Harmony resolves dependencies only for the wrapper it generated and checks that the actual assemblies match. If the runtime would substitute the wrong copy, or one wrapper needs both indistinguishable identities, installation fails and the previous patch stays active. On Framework/Mono, competing loaded identities are rejected for these wrappers because the runtime cannot verify an isolated binding. Use distinct assembly names or versions for independently loaded builds. Loading the very same target/patch binary twice is also ambiguous for saved Infix records, even before this loader limitation applies.
+Harmony resolves dependencies only for the wrapper it generated and checks that the actual assemblies match. If the runtime would substitute the wrong copy, or one wrapper needs both indistinguishable identities, installation fails and the previous patch stays active. On Framework/Mono, competing loaded identities are rejected for these wrappers because the runtime cannot verify an isolated binding. Use distinct assembly names or versions for independently loaded builds.
+
+Loading the very same target/patch binary twice also makes its saved Infix identity ambiguous. A previously installed record can become unusable for rebuilding, but its owner can still be inspected and removed through the normal APIs. The same applies if its assembly is no longer available. Harmony validates the remaining records before rebuilding; it never guesses which copy you meant. Malformed stored data is still an error, not a recoverable member lookup.

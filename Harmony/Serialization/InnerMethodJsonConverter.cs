@@ -24,7 +24,7 @@ namespace HarmonyLib
 				versioned ? values["targetKind"].GetInt32() : null,
 				versioned ? JsonSerializer.Deserialize<string[]>(values["declaringTypeArguments"].GetRawText(), options) : null,
 				versioned ? JsonSerializer.Deserialize<string[]>(values["methodArguments"].GetRawText(), options) : null);
-			result.ValidateVersionedIdentity();
+			result.ValidateStoredIdentity();
 			return result;
 		}
 

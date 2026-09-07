@@ -20,7 +20,7 @@ namespace HarmonyLib
 			if (convention == 0x06) return ReadType(); // FieldSig contains one type, without a parameter count.
 			if ((convention & 0x10) != 0) _ = ReadCompressedUInt32(reader);
 			var parameters = ReadCompressedUInt32(reader);
-			if (ReadType()) return true;
+			if (convention != 0x07 && ReadType()) return true; // LocalSig has a local count but no return type.
 			for (var i = 0u; i < parameters; i++)
 				if (ReadType()) return true;
 			return false;
@@ -82,7 +82,7 @@ namespace HarmonyLib
 					case MetadataType.Object:
 						return false;
 					default:
-						throw new NotSupportedException($"Unsupported method signature element: {type}");
+						throw new NotSupportedException($"Unsupported signature element: {type}");
 				}
 			}
 		}

@@ -325,7 +325,7 @@ namespace HarmonyLib
 		static readonly PropertyInfo isFunctionPointer = typeof(Type).GetProperty("IsFunctionPointer");
 		static bool IsNativePointer(Type type) => type.IsPointer || isFunctionPointer?.GetValue(type, null) is true;
 		// Mono exposes a synthetic corelib type and cannot resolve method-definition signature tokens.
-		static bool ContainsFunctionPointer(Type type) => isFunctionPointer?.GetValue(type, null) is true
+		internal static bool ContainsFunctionPointer(Type type) => isFunctionPointer?.GetValue(type, null) is true
 			|| AccessTools.IsMonoRuntime && type.Assembly == typeof(object).Assembly && type.FullName == "System.MonoFNPtrFakeClass"
 			|| type.HasElementType && ContainsFunctionPointer(type.GetElementType())
 			|| type.IsGenericType && type.GetGenericArguments().Any(ContainsFunctionPointer);
@@ -346,7 +346,15 @@ namespace HarmonyLib
 		}
 
 		// Reading signature type names can itself fail for by-ref function pointers on CoreCLR.
-		internal static string InfixMethodIdentity(MethodBase method) => $"{method.DeclaringType?.FullName ?? "<global>"}::{method.Name}";
+		internal static string InfixMethodIdentity(MethodBase method)
+		{
+			var identity = $"{method.DeclaringType?.FullName ?? "<global>"}::{method.Name}";
+			try { return $"{identity}({method.GetParameters().Join(parameter => parameter.ParameterType.FullDescription())})"; }
+			catch (Exception error) when (error is not OutOfMemoryException and not System.Threading.ThreadAbortException)
+			{
+				return identity;
+			}
+		}
 
 		internal static bool CanStoreInObjectArray(Type type)
 		{

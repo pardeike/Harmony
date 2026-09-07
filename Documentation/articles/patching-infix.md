@@ -48,6 +48,8 @@ For calls, the attribute accepts a declaring type, method name, optional argumen
 
 Zero, null, an out-of-range position, or no matching calls is an error. Each requested position must exist. A family selector counts all its matching constructions together.
 
+All Infixes select from that same body before any Infix changes are inserted. Other Infixes cannot shift these indices, but original-code changes and ordinary transpilers can. See [Be careful with indices](patching-infix-limits.md#be-careful-with-indices).
+
 ### Exact targets and generic families
 
 A closed method is exact. Selecting `Container<int>.Use` does not select `Container<string>.Use`.
@@ -108,6 +110,8 @@ Named outer locals already support multiple captured values without depending on
 [!code-csharp[capture](../examples/patching-infix.cs?name=capture)]
 
 Both postfixes belong to the same patch class. The first saves a constructed builder; the second uses it at a later string-literal load. Each outer invocation has its own default-initialized slot, including recursive and simultaneous invocations. Handle the default if execution may reach the reader without the writer. Use different `__var_name` names for additional captures, or a state struct for several values belonging to one site's `__state`.
+
+Named slots require `[HarmonyOuter]` on an Infix parameter; ordinary patches cannot inject `__var_name`. To share several values between ordinary and inner patches in the same patch class, use a struct in ordinary `__state` and access it from the Infix as `[HarmonyOuter] __state`.
 
 The capture saves the result reference at that postfix's position. A later returning postfix can replace the builder delivered to the outer code; see [captured results](patching-infix-limits.md#a-captured-result-can-later-be-replaced).
 
@@ -191,11 +195,11 @@ Typed native pointers such as `int*` and byref-like values such as `Span<int>` a
 
 Invalid targets, positions, bindings, or surviving metadata fail before the replacement is installed. The previously installed patch remains active. A missing target is only resolved after the relevant `Prepare` callbacks accept the job.
 
-If a host loads the identical target or patch assembly twice, saved Infix records cannot distinguish those copies. Harmony rejects that ambiguous operation. Different assemblies containing the same type names remain valid.
+If a host loads the identical target or patch assembly twice, saved Infix records cannot distinguish those copies. Harmony rejects rebuilding while an ambiguous record remains. For a well-formed record whose assembly is missing or ambiguous, owner inspection and removal still work: remove the affected owner's patches, then rebuild using the valid survivors. This does not make the missing or ambiguous member resolvable. Different assemblies containing the same type names remain valid.
 
 There is a separate runtime limit when different assemblies advertise exactly the same assembly identity (name, version, culture, and public key). DynamicMethod calls can retain their exact runtime targets, but a wrapper emitted as a metadata assembly—for example, to preserve an outer method's exception handlers—cannot name both identities distinctly. Harmony rejects that combination, or a conflicting default-context binding, before installation. Give independently loaded builds distinct assembly identities; see [loader limits](patching-infix-limits.md#assemblies-that-look-identical-to-the-loader).
 
-Normal inspection and unpatch APIs include inner prefixes, postfixes, and finalizers. Older Harmony versions cannot safely inspect or rebuild a method with newer Infix state and will fail before running user transpilers. Finalizers and captured-variable bindings require state version 3; operation targets require version 2; method-only Infixes require version 1. Removing the last registration requiring a capability restores the lowest remaining format, eventually the legacy ordinary-patch format. Supported declarations also carry an old-engine rejection marker so an old engine cannot silently install an Infix as an outer patch. A binary requiring new API types cannot run against an old-only Harmony installation.
+Normal inspection and unpatch APIs include all three inner roles. An older Harmony that cannot understand the installed feature set fails before running user transpilers; it does not rebuild a partial patch set. Removing patches automatically lowers the required state format when possible, returning to ordinary-patch format after the last Infix is removed. Supported declarations also make an old engine reject them instead of silently installing them as outer patches. A binary requiring new API types cannot run against an old-only Harmony installation.
 
 As with ordinary Harmony patches, serialize updates to the same method across different Harmony assemblies, and do not start another update to that method from its own prepare/transpiler callbacks. The old-version safeguard applies when an operation reads already-published Infix state; it cannot stop an old operation that read an earlier state and is still rebuilding it.
 
@@ -205,7 +209,7 @@ An iterator or async method has an entry point and a compiler-generated `MoveNex
 
 `Auto` selects one execution body, not its generated helpers or entire call graph. Iterator cleanup, local functions, and lambdas may need separate targets. An inner finalizer on a call returning `Task<T>` handles a synchronous failure of that call, not a later task fault observed by an awaiter's `GetResult`. Select the operation whose failure you need to handle.
 
-`ArgumentMode.Captured` binds a live source variable stored in a compiler-generated field. It is different from both a normal argument and Harmony's new `__var_name` slot:
+`ArgumentMode.Captured` binds a live source variable stored in a compiler-generated field. It currently requires an Infix; an ordinary patch targeting `MoveNext` must access the field explicitly instead. A captured variable is different from both a normal argument and a Harmony-owned `__var_name` slot:
 
 [!code-csharp[generated](../examples/patching-infix.cs?name=generated)]
 
@@ -221,6 +225,6 @@ Inspection and direct `Unpatch` use the resolved physical method. A processor re
 
 `[HarmonyInline]` asks Harmony to copy a small patch body into the generated Infix pipeline. It is optional: unsupported bodies keep a normal call with the same bindings, cleanup, and exception behavior. No global switch or persistent optimization setting is added. Debug logging explains a fallback when patch debugging or `Harmony.DEBUG` is enabled.
 
-Bodies with exception regions, pinned locals, stack allocation, lifetime-sensitive signatures, explicit `NoInlining`, or a declaring-type initializer keep a call. Copied locals are initialized on every execution, including loop iterations. Existing Harmony patches on the patch method also force a normal call. If you change that method's patches later, rebuild the affected outer method to refresh its copied body. The hint can change stack traces and is not a guarantee of faster code; measure the actual workload.
+Bodies with exception regions, pinned locals, stack allocation, lifetime-sensitive signatures, explicit `NoInlining`, or a declaring-type initializer keep a call. Calls whose original calling context cannot be preserved also prevent copying the body. Copied locals are initialized on every execution, including loop iterations. Existing Harmony patches on the patch method also force a normal call. If you change that method's patches later, rebuild the affected outer method to refresh its copied body. The hint can change stack traces and is not a guarantee of faster code; measure the actual workload.
 
 See [manual registration](#manual-registration) for accumulating targets, [capture at one operation](#capture-at-one-operation-use-at-another) for named state, and [Infix authoring recipes](patching-infix-authoring.md) for removable owner groups and `CodeMatcher` insertion/replacement examples. Public `InlineSignature` exposes indirect-call signatures for transpiler analysis; it does not make a runtime function pointer a stable Infix target.

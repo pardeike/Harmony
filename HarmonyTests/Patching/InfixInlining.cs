@@ -121,18 +121,97 @@ namespace HarmonyLibTests.Patching
 		[HarmonyInline] static int Recursive(int value) => value == 0 ? 0 : Recursive(value - 1);
 		[HarmonyInline] static MethodBase CallerContext() => MethodBase.GetCurrentMethod();
 		[HarmonyInline] static int UserCallee(int value) => Identity(value);
+		[HarmonyInline] static int LocalUserCallee(int result) { var value = result; return AddSeven(ref value); }
+		[HarmonyInline(false)] static int LocalUserCalleeNormally(int result) { var value = result; return AddSeven(ref value); }
+		static int AddSeven(ref int value) => value += 7;
+		static void ObserveFinalizer() { }
 		[HarmonyInline] static StringBuilder Callback(StringBuilder builder, object value) => builder.Append(value);
 		[HarmonyInline] static unsafe int StackAllocation(int value) { int* values = stackalloc int[1]; values[0] = value; return values[0]; }
 		[HarmonyInline] static unsafe char Pinned(string value) { fixed (char* chars = value) return *chars; }
 
+#if NET5_0_OR_GREATER || NETFRAMEWORK
+		[HarmonyInline]
+		static unsafe int FunctionPointerCall(int result)
+		{
+			delegate*<int, int> pointer = &Identity;
+			return pointer(result) + 7;
+		}
+		[HarmonyInline(false)]
+		static unsafe int FunctionPointerCallNormally(int result)
+		{
+			delegate*<int, int> pointer = &Identity;
+			return pointer(result) + 7;
+		}
+		[HarmonyInline]
+		static unsafe int FunctionPointerLocal(int result)
+		{
+			delegate*<int, int> pointer = null;
+			for (var i = 0; i < result; i++) pointer = &Identity;
+			return pointer != null ? result + 7 : result;
+		}
+		[HarmonyInline(false)]
+		static unsafe int FunctionPointerLocalNormally(int result)
+		{
+			delegate*<int, int> pointer = null;
+			for (var i = 0; i < result; i++) pointer = &Identity;
+			return pointer != null ? result + 7 : result;
+		}
+		static unsafe delegate*<int, int> functionPointerField;
+		[HarmonyInline] static unsafe bool FunctionPointerOperand() { functionPointerField = null; return functionPointerField != null; }
+
+		[Test]
+		public void Function_pointer_local_storage_is_detected_without_an_indirect_call()
+		{
+			var patch = Method(nameof(FunctionPointerLocal));
+			Assert.That(MethodBodyReader.GetInstructions(null, patch).Any(instruction => instruction.opcode == OpCodes.Calli), Is.False);
+			var body = patch.GetMethodBody();
+			Assert.That(body.LocalVariables.Any(local => MethodCreatorTools.ContainsFunctionPointer(local.LocalType))
+				|| !AccessTools.IsMonoRuntime && InlineSignatureParser.ContainsFunctionPointer(patch.Module.ResolveSignature(body.LocalSignatureMetadataToken)), Is.True);
+		}
+#endif
+
 		[TestCase(nameof(AddOneNormally)), TestCase(nameof(Disabled)), TestCase(nameof(NoInlining)), TestCase(nameof(Synchronized)), TestCase(nameof(ExceptionRegion))]
 		[TestCase(nameof(Recursive)), TestCase(nameof(CallerContext)), TestCase(nameof(UserCallee)), TestCase(nameof(Callback))]
+		[TestCase(nameof(LocalUserCallee))]
 		[TestCase(nameof(StackAllocation)), TestCase(nameof(Pinned))]
+#if NET5_0_OR_GREATER || NETFRAMEWORK
+		[TestCase(nameof(FunctionPointerCall)), TestCase(nameof(FunctionPointerLocal)), TestCase(nameof(FunctionPointerOperand))]
+#endif
 		public void Unsupported_or_context_sensitive_bodies_keep_the_normal_call(string name)
 		{
 			var method = new DynamicMethod("InliningProbe", typeof(void), Type.EmptyTypes);
-			Assert.That(HarmonyLib.InfixInlining.TryInline(Method(name), method.GetILGenerator(), out var body), Is.False);
+			var generator = method.GetILGenerator();
+			_ = generator.DeclareLocal(typeof(int));
+			Assert.That(HarmonyLib.InfixInlining.TryInline(Method(name), generator, out var body), Is.False);
 			Assert.That(body, Is.Null);
+			Assert.That(generator.DeclareLocal(typeof(int)).LocalIndex, Is.EqualTo(1), "A refused optimization must not add wrapper locals");
+		}
+
+		static IEnumerable<string> FallbackBodies()
+		{
+			yield return nameof(LocalUserCallee);
+#if NET5_0_OR_GREATER || NETFRAMEWORK
+			yield return nameof(FunctionPointerCall);
+			yield return nameof(FunctionPointerLocal);
+#endif
+		}
+
+		[Test]
+		public void Refused_optimization_preserves_invocation_with_and_without_finalizers(
+			[ValueSource(nameof(FallbackBodies))] string name, [Values] bool inline, [Values] bool finalizer)
+		{
+			var patch = Method(inline ? name : name + "Normally");
+			Assert.That(patch.GetMethodBody().LocalVariables.Count, Is.GreaterThan(0), "This regression requires patch-local storage");
+			var harmony = new Harmony("test.infix.inlining.fallback." + Guid.NewGuid());
+			try
+			{
+				var processor = harmony.CreateProcessor(Method(nameof(Outer)))
+					.AddInnerPostfix(new HarmonyMethod(patch) { innerMethod = new InnerMethod(Method(nameof(Identity))) });
+				if (finalizer) processor.AddInnerFinalizer(Fix(nameof(ObserveFinalizer)));
+				Assert.That(processor.Patch().Invoke(null, [2]), Is.EqualTo(20));
+				Assert.That(Outer(2), Is.EqualTo(20));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
 		}
 
 		static class InitializedPatch

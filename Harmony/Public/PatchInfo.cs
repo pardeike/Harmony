@@ -256,18 +256,18 @@ namespace HarmonyLib
 		private static Patch[] Add(string owner, HarmonyMethod[] add, Patch[] current, HarmonyPatchType role)
 		{
 			// avoid copy if no patch added
-			if (add.Length == 0)
+			if (!add.Any(method => method is not null))
 				return current;
 
 			// concat lists
-			var initialIndex = current.Length;
+			var initialIndex = current.Length == 0 ? 0 : checked(current.Max(patch => patch.index) + 1);
 			return
 			[
 				.. current
 ,
 				.. add
 					.Where(method => method != null)
-					.Select((method, i) => new Patch(AttributePatch.PrepareRegistration(method, role), i + initialIndex, owner))
+					.Select((method, i) => new Patch(AttributePatch.PrepareRegistration(method, role), checked(i + initialIndex), owner))
 ,
 			];
 		}

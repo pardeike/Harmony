@@ -29,6 +29,12 @@ namespace HarmonyLibTests.Patching
 		static int transpilerRuns;
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) { transpilerRuns++; return instructions; }
 		static MethodInfo Method(string name) => AccessTools.DeclaredMethod(typeof(InfixCapabilities), name);
+		class RecoveryTarget<T>
+		{
+			public static int Field = 1;
+			public RecoveryTarget() { }
+			public static void Call() { }
+		}
 
 		[TestCase(nameof(Noop), false, 1)]
 		[TestCase(nameof(Member), false, 2)]
@@ -78,6 +84,74 @@ namespace HarmonyLibTests.Patching
 		}
 
 #if NET5_0_OR_GREATER
+		[TestCase(InnerTargetKind.Method, "module")]
+		[TestCase(InnerTargetKind.Method, "member-token")]
+		[TestCase(InnerTargetKind.Method, "argument")]
+		[TestCase(InnerTargetKind.FieldRead, "module")]
+		[TestCase(InnerTargetKind.FieldRead, "member-token")]
+		[TestCase(InnerTargetKind.FieldRead, "argument")]
+		[TestCase(InnerTargetKind.Constructor, "module")]
+		[TestCase(InnerTargetKind.Constructor, "member-token")]
+		[TestCase(InnerTargetKind.Constructor, "argument")]
+		public void UnresolvableTargetsRemainOwnerRemovableWithoutPublishingInvalidSurvivors(InnerTargetKind kind, string corruption)
+		{
+			if (new PatchInfo().Serialize()[0] != (byte)'{') Assert.Ignore("This stored-state fixture uses JSON");
+			var harmony = new Harmony("infix.capabilities.target-recovery");
+			var outer = Method(nameof(Outer));
+			var shared = (Dictionary<MethodBase, byte[]>)AccessTools.Field(typeof(HarmonySharedState), "state").GetValue(null);
+			try
+			{
+				harmony.CreateProcessor(outer).AddTranspiler(Method(nameof(Transpiler))).Patch();
+				var state = HarmonySharedState.GetPatchInfo(outer);
+				var type = typeof(RecoveryTarget<Dictionary<string, int[]>>);
+				var target = kind switch
+				{
+					InnerTargetKind.Method => new InnerTarget(type.GetMethod(nameof(RecoveryTarget<int>.Call))),
+					InnerTargetKind.FieldRead => new InnerTarget(type.GetField(nameof(RecoveryTarget<int>.Field)), kind),
+					_ => new InnerTarget(type.GetConstructor(Type.EmptyTypes))
+				};
+				var patch = new HarmonyMethod(Method(nameof(Noop))) { innerTarget = target };
+				state.AddInnerPrefixes("missing-target", patch);
+				state.AddInnerPostfixes("missing-target", patch);
+				var stored = state.Serialize();
+				var payload = Encoding.UTF8.GetString(stored.Skip(16).ToArray());
+				using var document = JsonDocument.Parse(payload);
+				var targetJson = document.RootElement.GetProperty("innerprefixes")[0]
+					.GetProperty(kind == InnerTargetKind.Method ? "innerMethod" : "innerTarget").GetRawText();
+				var member = target.Member;
+				var missingModule = Guid.NewGuid().ToString("D");
+				var changedTarget = corruption switch
+				{
+					"module" => targetJson.Replace($"\"moduleGUID\":\"{member.Module.ModuleVersionId:D}\"", $"\"moduleGUID\":\"{missingModule}\""),
+					"member-token" => targetJson.Replace($"\"{(kind == InnerTargetKind.Method ? "methodToken" : "memberToken")}\":{member.MetadataToken}",
+						$"\"{(kind == InnerTargetKind.Method ? "methodToken" : "memberToken")}\":{(member.MetadataToken & unchecked((int)0xff000000)) | 0x00ffffff}"),
+					_ => targetJson.Replace($"D({typeof(string).Module.ModuleVersionId:D};{typeof(string).MetadataToken})", $"D({missingModule};{typeof(string).MetadataToken})")
+				};
+				Assert.AreNotEqual(targetJson, changedTarget, "The fixture must change the selected identity.");
+				var bytes = stored.Take(16).Concat(Encoding.UTF8.GetBytes(payload.Replace(targetJson, changedTarget))).ToArray();
+				lock (shared) shared[outer] = bytes;
+				Assert.That(Harmony.GetPatchInfo(outer).Owners, Does.Contain("missing-target"));
+				var runs = transpilerRuns;
+				foreach (var action in new TestDelegate[]
+				{
+					() => harmony.CreateProcessor(outer).Patch(),
+					() => harmony.Unpatch(outer, HarmonyPatchType.InnerPrefix, "missing-target")
+				})
+				{
+					Assert.Throws<ArgumentException>(action);
+					Assert.AreEqual(runs, transpilerRuns);
+					Assert.AreEqual(bytes, shared[outer]);
+					Assert.AreEqual(2, Outer(1));
+				}
+				harmony.Unpatch(outer, HarmonyPatchType.All, "missing-target");
+				Assert.That(Harmony.GetPatchInfo(outer).Owners, Does.Not.Contain("missing-target"));
+				Assert.AreEqual((byte)'{', shared[outer][0]);
+				Assert.AreEqual(runs + 1, transpilerRuns);
+				Assert.AreEqual(2, Outer(1));
+			}
+			finally { harmony.Unpatch(outer, HarmonyPatchType.All, "*"); }
+		}
+
 		[TestCase(1, "module")]
 		[TestCase(2, "module")]
 		[TestCase(1, "method-token")]

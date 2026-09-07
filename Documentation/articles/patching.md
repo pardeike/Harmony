@@ -2,7 +2,7 @@
 
 ## Concept
 
-In order to provide your own code to Harmony, you need to define methods that run in the context of the original method. Harmony provides three types of methods that each offer different possibilities.
+To provide your own code to Harmony, define patch methods. The patch type determines when your code runs and what it can change.
 
 #### Types of patches
 
@@ -12,7 +12,7 @@ Two of them, the **Prefix** patch and the **Postfix** patch are easy to understa
 
 A **Finalizer** patch is a static method that handles exceptions and can change them. It is the only patch type that is immune to exceptions thrown by the original method or by any applied patches. The other patch types are considered part of the original and may not get executed when an exception occurs.
 
-An [Infix](patching-infix.md) applies an ordinary prefix or postfix to selected calls inside an outer method. It changes those call occurrences without patching every caller of the inner method.
+An [Infix](patching-infix.md) applies ordinary prefixes, postfixes, or finalizers to selected operations inside an outer method. It can target method/property calls, field reads or writes, construction, and literal loads. Other callers and unselected operations remain unchanged.
 
 Finally, there is the **Reverse Patch**. It is different from the previous types in that it patches your methods instead of foreign original methods. To use it, you define a stub that looks like the original in some way and patch the original onto your stub which you can easily call from your own code. You can even transpile the result during the process.
 
@@ -20,7 +20,7 @@ Finally, there is the **Reverse Patch**. It is different from the previous types
 
 Patch methods need to be static because Harmony works with multiple users in different assemblies in mind. In order to guarantee the correct patching order, patches are always re-applied as soon as someone wants to change the original. Since it is hard to serialize data in a generic way across assemblies in .NET, Harmony only stores a method pointer to your patch methods so it can use and apply them at a later point again.
 
-If you need custom state in your patches, it is recommended to use a static variable and store all your patch state in there. Keep in mind that Transpilers are only executed to generate the method so they don't "run" when the original is executed.
+Use `__state` for values that belong to one patched invocation and need to pass between patches in the same class. Static fields are appropriate for deliberately shared state, not independent per-call values. Transpilers run when Harmony generates the replacement method, not each time the original is called.
 
 #### Commonly unsupported use cases
 

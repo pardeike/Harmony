@@ -75,6 +75,44 @@ namespace HarmonyLibTests.Tools
 		public void External_consumer_can_construct_modified_explicit_instance_signatures()
 			=> Assert.AreEqual(new[] { 3, 0 }, InlineSignatureConsumer.GetStackEffect(InlineSignatureConsumer.CreateCall()));
 
+		[TestCase(0, CallingConvention.Winapi), TestCase(1, CallingConvention.Cdecl), TestCase(2, CallingConvention.StdCall)]
+		[TestCase(3, CallingConvention.ThisCall), TestCase(4, CallingConvention.FastCall)]
+		public void Parsed_calling_conventions_preserve_the_historical_metadata_mapping(byte metadata, CallingConvention expected)
+		{
+			var signature = InlineSignatureParser.ImportCallSite(typeof(Test_InlineSignature).Module, [metadata, 1, 8, 8]);
+			Assert.AreEqual(expected, signature.CallingConvention);
+			Assert.AreEqual(new[] { 2, 1 }, new[] { signature.PopCount, signature.PushCount });
+		}
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate int NativeCallback(int value);
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int Scalar(int value) => value + 3;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ScalarCaller(IntPtr target, int value) => value;
+
+		[Test]
+		public void Parsed_managed_and_unmanaged_calli_operands_execute_after_reemission([Values] bool unmanaged, [Values] bool dynamicPrefix)
+		{
+			referenceCall = InlineSignatureConsumer.ReadCall(unmanaged); referenceReturn = false;
+			NativeCallback callback = Scalar;
+			var target = unmanaged ? Marshal.GetFunctionPointerForDelegate(callback) : AccessTools.Method(typeof(Test_InlineSignature), nameof(Scalar)).MethodHandle.GetFunctionPointer();
+			var original = AccessTools.Method(typeof(Test_InlineSignature), nameof(ScalarCaller));
+			var harmony = new Harmony("test.inline.signature.scalar." + Guid.NewGuid());
+			try
+			{
+				var replacement = harmony.Patch(original,
+					prefix: dynamicPrefix ? new HarmonyMethod(AccessTools.Method(typeof(Test_InlineSignature), nameof(ReferencePrefixFactory))) : null,
+					transpiler: new HarmonyMethod(AccessTools.Method(typeof(Test_InlineSignature), nameof(ReferenceCallBody))));
+				GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+				var expected = dynamicPrefix ? 17 : 7;
+				Assert.AreEqual(expected, replacement.Invoke(null, [target, 4]));
+				Assert.AreEqual(expected, ScalarCaller(target, 4));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); GC.KeepAlive(callback); }
+			Assert.AreEqual(4, ScalarCaller(target, 4));
+		}
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int Increment(ref int value) => value += 3;
 		[MethodImpl(MethodImplOptions.NoInlining)]
@@ -168,13 +206,17 @@ namespace HarmonyLibTests.Tools
 			yield return new TestCaseData(new byte[] { 0x10, 28, 0, 0x1e, 0x1b }, false).SetName("Raw_signature_function_pointer_byte_inside_generic_index_is_not_a_type");
 			yield return new TestCaseData(new byte[] { 0, 1, 1, 0x14, 8, 1, 1, 0x1b, 1, 0x1b }, false).SetName("Raw_signature_array_sizes_and_bounds_are_not_types");
 			yield return new TestCaseData(new byte[] { 0, 0x1b, 1 }.Concat(Enumerable.Repeat((byte)0x18, 27)).ToArray(), false).SetName("Raw_signature_parameter_count_is_not_a_type");
+			yield return new TestCaseData(new byte[] { 0x07, 0 }, false).SetName("Raw_signature_empty_local_list_has_no_return_type");
+			yield return new TestCaseData(new byte[] { 0x07, 1, 8 }, false).SetName("Raw_signature_single_integer_local_has_no_return_type");
+			yield return new TestCaseData(new byte[] { 0x07, 2, 0x45, 0x0f, 8, 0x18 }, false).SetName("Raw_signature_pinned_pointer_and_native_integer_locals_are_not_function_pointers");
+			yield return new TestCaseData(new byte[] { 0x07, 0x1b }.Concat(Enumerable.Repeat((byte)0x18, 27)).ToArray(), false).SetName("Raw_signature_local_count_is_not_a_type");
 			byte[][] wrappers = [[], [0x10], [0x0f], [0x1d], [0x1f, 5], [0x20, 5], [0x15, 0x12, 5, 1, 0x1d]];
 			foreach (var type in new byte[][] { [0x18], [0x19], [0x0f, 8], [0x12, 0xc0, 0x1b, 0, 1] })
 				yield return new TestCaseData(new byte[] { 0x06 }.Concat(type).ToArray(), false).SetName($"Raw_signature_native_field_{BitConverter.ToString(type)}");
 			foreach (var wrapper in wrappers)
-				foreach (var position in new[] { "return", "parameter", "field" })
+				foreach (var position in new[] { "return", "parameter", "field", "first local", "last local" })
 				{
-					byte[] header = position switch { "parameter" => [0, 1, 1], "field" => [0x06], _ => [0, 0] };
+					byte[] header = position switch { "parameter" => [0, 1, 1], "field" => [0x06], "first local" => [0x07, 1], "last local" => [0x07, 2, 8], _ => [0, 0] };
 					byte[] signature = [.. header, .. wrapper, 0x1b, 0, 0, 1];
 					yield return new TestCaseData(signature, true).SetName($"Raw_signature_function_pointer_{position}_{BitConverter.ToString(wrapper)}");
 				}

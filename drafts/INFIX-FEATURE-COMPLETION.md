@@ -1,6 +1,6 @@
 # Infix feature completion
 
-**Implementation contract, 2026-09-07. Implemented, not released.** This completes the [V3 specification](INFIX-NEW-IMPL-V3.md) and its [operation-target addendum](INFIX-OPERATIONS-ADDENDUM.md). It overrides their exclusions of inner finalizers and automatic state-machine targeting, and the processor's single pending slot for each inner role. Other binding, ordering, identity, and compatibility rules remain unchanged. The public [odd cases and limits chapter](../Documentation/articles/patching-infix-limits.md) describes the resulting behavior. See [validation status](../docs/infix/README.md) for executed checks; implementation does not imply every runtime lane has been validated.
+**Implemented, unreleased contract.** This part of the [V3 specification](INFIX-NEW-IMPL-V3.md) covers accumulating registration, inner finalizers, generated methods, captured variables and optional inlining. It shares the core binding, ordering, identity and compatibility rules with V3 and the [operation-target contract](INFIX-OPERATIONS-ADDENDUM.md). The public [odd cases and limits chapter](../Documentation/articles/patching-infix-limits.md) describes the resulting behavior. See [validation status](../docs/infix/README.md) for executed checks and runtime boundaries.
 
 ## 1. The model to preserve
 
@@ -8,30 +8,30 @@ An Infix is ordinary Harmony patching at one selected operation inside an outer 
 
 Adding a patch adds a registration. Removing a patch removes its registrations. In either case Harmony rebuilds the outer method from its original instructions, applies the transpilers, finds the sites, and combines all surviving patches at each site. This already works, including multiple patches from the same owner. Do not replace it with one registration per owner or selector.
 
-Prefixes, postfixes, and the new finalizers are independent lists. Use ordinary Harmony's sorting and execution rules for each role. Exact and generic-family selectors that meet at one instruction share that pipeline. There are no paired wrappers, special family priority, or extra "last capture" phase.
+Prefixes, postfixes and finalizers are independent lists. Use ordinary Harmony's sorting and execution rules for each role. Exact and generic-family selectors that meet at one instruction share that pipeline. There are no paired wrappers, special family priority, or extra "last capture" phase.
 
 The capability decisions are:
 
 | User capability | Decision |
 | --- | --- |
-| Calls, properties, fields, construction, literals | Already implemented within the operation addendum's boundaries. |
-| Several installed patches at the same site | Already implemented. Correct the explanation, not the engine. |
+| Calls, properties, fields, construction, literals | Supported within the operation contract's boundaries. |
+| Several installed patches at the same site | Independent registrations share one sorted site pipeline. |
 | Several `AddInner...` calls before one `Patch()` | Accumulate them; section 2. |
-| Inner exception observation, recovery, and cleanup | Add ordinary-style inner finalizers; section 3. |
+| Inner exception observation, recovery, and cleanup | Ordinary-style inner finalizers; section 3. |
 | Several named state values | Use the existing named slots, not another state store; section 4. |
-| Iterator and async body selection | Add automatic body resolution as an explicit option; section 5. |
-| Local functions, lambdas, and their captured variables | Add focused method resolvers and explicit captured-variable binding; sections 4–5. |
+| Iterator and async body selection | Automatic body resolution is an explicit option; section 5. |
+| Local functions, lambdas, and their captured variables | Focused method resolvers and explicit captured-variable binding; sections 4–5. |
 | Several targets or every overload | Resolve an explicit method set, then register ordinary selectors; section 5. |
 | Arbitrary instruction insertion/replacement | Existing transpilers and `CodeMatcher`; supply equivalent examples, not a competing rules language. |
 | Runtime configuration and removable groups | Existing processors and Harmony owner IDs; document group ownership. |
-| Inlining small patch bodies | Add an optional optimization with a normal-call fallback; section 6. |
+| Inlining small patch bodies | Optional optimization with a normal-call fallback; section 6. |
 | Understanding indirect calls | Public `InlineSignature` is implemented; it does not make a runtime function pointer a stable Infix target. |
 
-This is capability coverage, not a promise to copy another library's spellings, sorting, implicit argument lookup, or experimental optimizer. Differences that affect users must be stated in examples.
+The public guide and executable examples must describe these same contracts, including ordinary Harmony scheduling and explicit scope selection.
 
 ## 2. Repeated `AddInner...` calls accumulate
 
-The pending processor configuration should follow what its `Add` names suggest:
+The pending processor configuration follows what its `Add` names suggest:
 
 ```csharp
 var processor = harmony.CreateProcessor(outer);
@@ -44,7 +44,7 @@ processor.Patch(); // Installs all four, alongside existing registrations.
 
 Here `a` through `d` are `HarmonyMethod` objects with their own selectors. They may select the same site or different sites. Both overloads of every `AddInner...` method append. Keep the fluent return type.
 
-Replace the pending inner-prefix/postfix fields with lists and add the finalizer list. Pass each list to the existing `PatchInfo` append operation once, then build and publish one replacement per actual outer method. No second registry, deduplication, or replace-by-owner rule is needed. Preserve insertion order as the input to Harmony's registration-index ordering; priority and before/after dependencies still govern execution.
+Keep one pending list per inner role. Pass each list to the existing `PatchInfo` append operation once, then build and publish one replacement per actual outer method. No second registry, deduplication, or replace-by-owner rule is needed. Preserve insertion order as the input to Harmony's registration-index ordering; priority and before/after dependencies still govern execution.
 
 One `Patch()` is one installation attempt for that method. Validate the complete candidate, including all selected sites, before replacing its working wrapper or publishing state. If `b` is invalid, `a` must not become partially installed. Existing registrations remain intact.
 
@@ -202,7 +202,7 @@ Selecting all overloads or several explicit methods needs no new selector protoc
 
 ## 6. Parity without a second patch framework
 
-**Instruction rules.** Disharmony also has a lower-level pattern/replacement engine, separate from its semantic inner patches. Harmony's equivalent is a transpiler using `CodeMatcher` and `CodeInstruction`, with ordinary ordering, locals, and labels. Add short worked translations for insertion before/after a match, replacement/deletion, method-entry/exit insertion, a required minimum match count, and a first-N match limit. Explain that "process at most N" differs from "reject more than N". Retain Harmony's existing transpiler ordering and branch/exception-label responsibilities rather than copying a phase scheduler.
+**Instruction rules.** Harmony's lower-level instruction editing uses a transpiler with `CodeMatcher` and `CodeInstruction`, with ordinary ordering, locals, and labels. Add short worked recipes for insertion before/after a match, replacement/deletion, method-entry/exit insertion, a required minimum match count, and a first-N match limit. Explain that "process at most N" differs from "reject more than N". Retain Harmony's existing transpiler ordering and branch/exception-label responsibilities.
 
 **Runtime groups.** Existing runtime selectors plus a dedicated Harmony owner ID provide a group that can be installed and removed together. Document one owner per independently removable group; do not imply that `UnpatchAll` removes only the last processor's additions. A group spanning methods has existing per-method installation semantics, not a new transaction across all methods.
 
@@ -210,7 +210,7 @@ Selecting all overloads or several explicit methods needs no new selector protoc
 
 **Optional patch-body inlining.** Add a method-level `[HarmonyInline]` hint for inner patch methods. Without it, emit the ordinary call; with it, allow copying a suitable small static patch body into the generated pipeline. Manual registration uses the same annotated patch `MethodInfo`. Read the hint from that method on rebuild, so no new per-record optimization flag or serialized field is needed. This changes code generation, not which patches run, their bindings, or their exception protection. It is not a request to inline the selected original operation or recursively inline its callees.
 
-Implement this after finalizer semantics are proven. Reuse the existing IL reader and label/local remapping. Bind parameters first using the shared binder, preserve the patch's private by-value parameter slots, and run the same write-back cleanup afterward. Initialize copied locals on every execution when the patch's `InitLocals` requires it, including repeated visits to a loop site. Wrapper-entry initialization alone is not equivalent to a fresh patch call. Remap returns to a local continuation; carry a returned value through the same prefix/postfix/finalizer handling as a normal call. For bodies with exception regions, recursion, pinned locals, stack allocation, unsupported operands/signatures, or context-sensitive operations, fall back to the normal call and explain why in debug output. Do not reject an otherwise valid patch because its optimization is unavailable.
+Reuse the existing IL reader and label/local remapping. Bind parameters first using the shared binder, preserve the patch's private by-value parameter slots, and run the same write-back cleanup afterward. Initialize copied locals on every execution when the patch's `InitLocals` requires it, including repeated visits to a loop site. Wrapper-entry initialization alone is not equivalent to a fresh patch call. Remap returns to a local continuation; carry a returned value through the same prefix/postfix/finalizer handling as a normal call. For bodies with exception regions, recursion, pinned locals, stack allocation, unsupported operands/signatures, or context-sensitive operations, fall back to the normal call and explain why in debug output. Do not reject an otherwise valid patch because its optimization is unavailable.
 
 The optimized and normal forms must have identical binding, ordering, results, and exception behavior. Document two opt-in limits: stack traces/profiling can differ, and copied code is a snapshot until the outer wrapper is rebuilt. Do not inline a patch method that is itself already Harmony-patched. If another patch later changes that method, the author must rebuild the affected outer wrappers or leave this hint off; do not add a dependency-tracking registry just for this optimization. Respect `NoInlining`, explicit stack-crawl behavior, and static type-initialization semantics. If the importer cannot preserve a required context, do not inline. One-level body copying needs no transitive recursion analyzer. Benchmark a representative hot-site case before recommending the hint; no speculative general optimizer is part of this plan.
 
@@ -241,12 +241,12 @@ Do not change DynamicMethod factory support for ordinary patches, exact-name bin
 
 Generated wrappers must retain exact runtime dependencies across plugin load contexts. Use DynamicMethod emission for synthetic helpers' structured finalization and retain Cecil for imported outer exception tables. Cecil wrappers and their DynamicMethod proxies share a narrowly scoped dependency resolver, verified against separately loaded callback assemblies and patch-owned state types. Never use a process-wide first-match name fallback. If one metadata scope requires distinct actual assemblies with the same full assembly identity, or the runtime cannot bind the exact selected dependency, reject before publication. On runtimes without isolated load contexts, conservatively reject competing loaded identities for demanded dependencies. This is an explicit loader limit, not permission to run a different callback.
 
-## 8. Implementation order and acceptance
+## 8. Acceptance and regression coverage
 
-Each stage updates executable documentation examples and its focused tests. The new public APIs are not documented as available until their stage is implemented.
+Keep executable documentation examples and focused tests aligned with these implemented contracts. A local passing fixture is not proof of every supported runtime arrangement.
 
 1. **Accumulate pending inner patches.** Test both overloads, same/different sites and owners, duplicate methods, insertion-order ties, nulls, reused processors, rollback on one bad member, and removal/rebuild. Characterize ordinary `Add...` behavior unchanged.
-2. **Share finalizer emission, then add the inner role.** First prove unchanged ordinary behavior. Compare ordinary and inner event traces for success, skip, exceptions in each phase, suppression/replacement, and finalizers that throw on both paths. Include the exact result-commit case: original returns 1, returning postfix A returns 2, returning postfix B throws, suppressing finalizer observes 1. Include finalizer-only sites, default/explicit/ref results, named state, arrays and aliasing, and outer writes visible on escaping exceptions.
+2. **Shared finalizer behavior.** Prove unchanged ordinary behavior. Compare ordinary and inner event traces for success, skip, exceptions in each phase, suppression/replacement, and finalizers that throw on both paths. Include the exact result-commit case: original returns 1, returning postfix A returns 2, returning postfix B throws, suppressing finalizer observes 1. Include finalizer-only sites, default/explicit/ref results, named state, arrays and aliasing, and outer writes visible on escaping exceptions.
 3. **Prove helper boundaries.** Generate pending stack values of different types, including live managed references, structs, `calli` results, and function pointers used later. Exercise try/catch/filter/finally/fault and nested/branch-boundary sites. Test every supported operation kind, original dispatch, GC retention, and removal of the last finalizer.
 4. **Resolve generated bodies and captures.** Cover iterator, async, and available async-iterator fixtures; Debug/Release compiler layouts; calls before/after suspension; explicit/default/automatic selection; preserved factory patches; generic identity; mixed manual rejection; `Prepare(false)`; processor patch-then-unpatch; factory/body target aliases; inspection and all removal routes. Test working versus saved iterator fields, nested closures, captured `this`, colliding magic names, missing/ambiguous values, and real writes across suspension. Prove that synthetic state still resets per body invocation.
 5. **Complete authoring parity.** Cover nested local functions/lambda selection, overloaded parents, several explicit inner targets, named-state examples, raw-rule translations, and independent owner groups. Do not use method enumeration order as a silent first-match policy.
@@ -255,8 +255,6 @@ Each stage updates executable documentation examples and its focused tests. The 
 
 Prefer small generated case matrices over one fixture per combination. Keep an independent ordinary-patching oracle for scheduling and exception behavior, and compare actual callback traces/results rather than only generated instruction shapes. Reuse the [testing strategy](../docs/infix/TESTING-STRATEGY.md); a passing focused net9/x64 run is a development checkpoint, not proof of the full matrix.
 
-## Source comparison and limits of the evidence
+## Design scope
 
-The Disharmony inventory is pinned to RossM/RimworldMods commit `ba7d90c7da2fa8743ae230478dde910fc12ee612`. Its source implements automatic iterator/async body selection, named state, generated-function selection, captured-field binding, and always-run postfixes that can recover an inner exception. These informed this draft; its tests were not executed during this review. See [body selection](https://github.com/RossM/RimworldMods/blob/ba7d90c7da2fa8743ae230478dde910fc12ee612/Disharmony/PatchRegistry.cs#L303-L315), [state and captures](https://github.com/RossM/RimworldMods/blob/ba7d90c7da2fa8743ae230478dde910fc12ee612/Disharmony/ParameterBinder.cs#L140-L211), and [exception handling](https://github.com/RossM/RimworldMods/blob/ba7d90c7da2fa8743ae230478dde910fc12ee612/Disharmony/RuleBuilders/PrefixPostfixRuleBuilder.cs#L39-L115).
-
-The additional authoring capabilities are visible in its [generated-member resolver](https://github.com/RossM/RimworldMods/blob/ba7d90c7da2fa8743ae230478dde910fc12ee612/Disharmony/ReflectionTools.cs#L34-L120), [public instruction rules](https://github.com/RossM/RimworldMods/blob/ba7d90c7da2fa8743ae230478dde910fc12ee612/Disharmony/RulesEngine/Ruleset.cs#L11-L187), and [patch inlining](https://github.com/RossM/RimworldMods/blob/ba7d90c7da2fa8743ae230478dde910fc12ee612/Disharmony/RuleBuilders/InlineRuleBuilder.cs#L25-L149). Its automatic state-machine path rejects state, and its finalization/ordering rules differ from Harmony's. Supporting the use cases does not require inheriting those limitations or changing ordinary Harmony behavior.
+These contracts define Harmony's behavior. Any alternative can suggest useful workflows, but does not define Harmony's ordering, state lifetime, or exception semantics. The acceptance tests above must establish those properties directly, including preservation of ordinary patching behavior.
