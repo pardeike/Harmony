@@ -39,16 +39,24 @@ verify_hash() {
 }
 
 mkdir -p "$package_dir"
-v3_args=(--v3-baseline 0)
-if [[ -n ${V3_HARMONY:-} ]]; then
-  v3_dir=$(cd "$(dirname "$V3_HARMONY")" && pwd)
-  v3_stage=$(mktemp -d "$compat_dir/artifacts/v3-$framework-XXXXXX")
-  cp "$v3_dir"/*.dll "$v3_stage/"
-  old_engine="$v3_stage/0Harmony.dll"
-  old_fixture=V3
-  v3_args=(--v3-baseline 1)
-  # The V3 source fixture is not a published pre-Infix release; run only its matching cases.
-  if [[ -z ${CASE_FILTER:-} ]]; then CASE_FILTER=extensions-; fi
+prior_args=(--prior-infix-state-version 0)
+prior_input=${PRIOR_INFIX_HARMONY:-${V3_HARMONY:-}}
+if [[ -n "$prior_input" ]]; then
+  prior_version=${PRIOR_INFIX_STATE_VERSION:-1}
+  if [[ "$prior_version" != 1 && "$prior_version" != 2 ]]; then
+    printf 'PRIOR_INFIX_STATE_VERSION must be 1 (method-only) or 2 (operation targets).\n' >&2
+    exit 2
+  fi
+  prior_dir=$(cd "$(dirname "$prior_input")" && pwd)
+  prior_stage=$(mktemp -d "$compat_dir/artifacts/prior-v$prior_version-$framework-XXXXXX")
+  cp "$prior_dir"/*.dll "$prior_stage/"
+  old_engine="$prior_stage/0Harmony.dll"
+  old_fixture="InfixV$prior_version"
+  prior_args=(--prior-infix-state-version "$prior_version")
+  # Source baselines have their own focused cases, not the published-release assumptions.
+  if [[ -z ${CASE_FILTER:-} ]]; then
+    if [[ "$prior_version" == 1 ]]; then CASE_FILTER=extensions-; else CASE_FILTER=completion-; fi
+  fi
 else
   package_hash=$(jq -er --arg version "$old_version" '.versions[$version].packageSha256' "$manifest")
   asset_hash=$(jq -er --arg version "$old_version" --arg framework "$framework" '.versions[$version].assets[$framework]' "$manifest")
@@ -86,12 +94,20 @@ for fixture in "$old_fixture" Current CurrentSecond; do
 done
 
 feature_args=(--feature "")
+second_feature_args=(--second-feature "")
 if [[ ${FEATURE_TESTS:-1} == 1 ]]; then
   feature_reference="$current_engine"
   if command -v cygpath >/dev/null; then feature_reference=$(cygpath -w "$feature_reference"); fi
   "$sdk_host" build "$compat_dir/FeatureFixture/FeatureFixture.csproj" -c Release -p:CompatibilityTargetFramework="$framework" \
     -p:HarmonyReference="$feature_reference" --nologo -v:q >&2
   feature_args=(--feature "$compat_dir/FeatureFixture/bin/Release/$framework/HarmonyCompatibility.Feature.dll")
+  if [[ -n "$prior_input" ]]; then
+    second_feature_reference="$second_engine"
+    if command -v cygpath >/dev/null; then second_feature_reference=$(cygpath -w "$second_feature_reference"); fi
+    "$sdk_host" build "$compat_dir/FeatureFixture/FeatureFixture.csproj" -c Release -p:CompatibilityTargetFramework="$framework" \
+      -p:FixtureName=CompletionSecond -p:CompatibilityFeatureIdentity=second -p:HarmonyReference="$second_feature_reference" --nologo -v:q >&2
+    second_feature_args=(--second-feature "$compat_dir/FeatureFixture/bin/CompletionSecond/Release/$framework/HarmonyCompatibility.Feature.dll")
+  fi
 fi
 
 launcher=("$runtime_host" "$compat_dir/Host/bin/Release/$framework/HarmonyCompatibility.Host.$host_extension")
@@ -103,4 +119,4 @@ DOTNET_ROLL_FORWARD=LatestPatch "${launcher[@]}" run \
   --new-fixture "$compat_dir/OrdinaryFixture/bin/Current/Release/$framework/HarmonyCompatibility.Ordinary.Current.dll" \
   --second-fixture "$compat_dir/OrdinaryFixture/bin/CurrentSecond/Release/$framework/HarmonyCompatibility.Ordinary.CurrentSecond.dll" \
   --framework "$framework" --backend "$backend" --output "$output_dir" --filter "${CASE_FILTER:-}" \
-  --require-coexistence "${REQUIRE_COEXISTENCE:-0}" "${feature_args[@]}" "${v3_args[@]}"
+  --require-coexistence "${REQUIRE_COEXISTENCE:-0}" "${feature_args[@]}" "${second_feature_args[@]}" "${prior_args[@]}"

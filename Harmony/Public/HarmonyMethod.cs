@@ -20,6 +20,9 @@ namespace HarmonyLib
 		/// <summary>The selected member operation or literal for an inner prefix or postfix</summary>
 		public InnerTarget innerTarget;
 
+		/// <summary>For an Infix, optionally search a recognized state-machine body; null keeps the declared method</summary>
+		public InfixOuterBody? infixOuterBody;
+
 		/// <summary>Patch Category</summary>
 		/// 
 		public string category = null;
@@ -224,7 +227,7 @@ namespace HarmonyLib
 			if (val is null)
 				return;
 			var fld = trv.Field(name);
-			if (name == nameof(HarmonyMethod.methodType) || name == nameof(HarmonyMethod.reversePatchType))
+			if (name == nameof(HarmonyMethod.methodType) || name == nameof(HarmonyMethod.reversePatchType) || name == nameof(HarmonyMethod.infixOuterBody))
 			{
 				var enumType = Nullable.GetUnderlyingType(fld.GetValueType());
 				val = Enum.ToObject(enumType, (int)val);

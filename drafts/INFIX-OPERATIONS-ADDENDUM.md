@@ -2,6 +2,8 @@
 
 **Decision, 2026-09-07.** This addendum is part of [V3](INFIX-NEW-IMPL-V3.md). It replaces V3's method-only target restrictions; its ordering, argument binding, state lifetimes, atomic installation, and compatibility requirements remain in force. The [testing strategy](../docs/infix/TESTING-STRATEGY.md) separates new coverage from runtime checks actually executed.
 
+**Completion:** the [feature-completion contract](INFIX-FEATURE-COMPLETION.md) adds implemented, unreleased support for accumulated `AddInner...` calls, inner finalizers, automatic iterator/async body selection, and generated-code authoring support. It overrides this addendum's exclusions only where stated.
+
 ## 1. The useful generalization
 
 An Infix surrounds one operation inside a chosen outer method. That operation consumes some values and may produce one value. Capture its inputs once, run the ordinary prefix list, optionally execute the original instruction, and run the ordinary postfix phases. Other instructions and other callers remain unchanged.
@@ -99,11 +101,11 @@ The constructor postfix in the motivating example can store its `__result` into 
 
 Each outer invocation starts with default values, including recursive and simultaneous invocations. The later patch must handle a default when its writer did not execute. Do not introduce hidden cross-invocation state, infer that every control-flow path reaches the writer, or make prefix/postfix declarations into fixed pairs. A struct in `__state` remains the simple choice for several values belonging to one site.
 
-## 5. Features that stay separate
+## 5. Current boundaries and accepted next work
 
-**Iterator/async redirection:** use existing explicit outer targeting (`MethodType.Enumerator`, `AccessTools.EnumeratorMoveNext`, or the appropriate generated method). Do not silently switch the selected outer method. Its arguments, receiver, and invocation lifetime differ from the factory method's; each `MoveNext` call is its own outer invocation. State that must survive across yields belongs to the iterator object or another explicitly owned location, not an Infix local.
+**Iterator/async redirection:** the current implementation uses explicit outer targeting (`MethodType.Enumerator`, `MethodType.Async`, or the appropriate generated method). The completion draft adds an automatic body-selection option while preserving that explicit behavior. Its arguments, receiver, and invocation lifetime differ from the factory method's; each `MoveNext` call is its own outer invocation. State that must survive across yields belongs to the iterator object or another explicitly owned location, not an Infix local.
 
-**Inner finalizers:** not part of this extension. Handling exceptions around an inner operation requires rules for arguments already below it on the evaluation stack, exception replacement/suppression, result defaults, and interaction with enclosing handlers. Adding a target kind does not solve those control-flow questions. Existing outer finalizers and surrounding handlers still observe exceptions from Infixes.
+**Inner finalizers:** accepted in the completion draft, using ordinary finalizer semantics and a typed helper only at sites that need them. That design handles pending stack values and enclosing exception handlers without adding whole-method stack analysis. Until implemented, existing outer finalizers and surrounding handlers still handle escaping Infix exceptions; an inner postfix is not exception cleanup.
 
 **Indirect calls:** public `InlineSignature` helps transpiler authors understand `calli`; it does not make a runtime function-pointer value into a stable Infix target. Constructor initialization via `call`, `tail.`, varargs, open storage, and unsupported prefixes remain excluded.
 

@@ -111,8 +111,8 @@ namespace HarmonyLib
 			{
 				var argument = context.arguments[i];
 				var pType = context.parameters[i].ParameterType;
-				var paramByRef = pType.IsByRef;
-				if (paramByRef)
+				var paramByRef = argument.type.IsByRef;
+				if (pType.IsByRef)
 					pType = pType.GetElementType();
 				codes.Add(Dup);
 				codes.Add(Ldc_I4[i]);
@@ -132,12 +132,13 @@ namespace HarmonyLib
 		}
 
 		internal static List<CodeInstruction> SetupInfixBindings(this MethodCreator creator, PatchBindingContext inner,
-			PatchBindingContext outer, IList<MethodInfo> prefixes, IList<MethodInfo> postfixes)
+			PatchBindingContext outer, IList<MethodInfo> prefixes, IList<MethodInfo> postfixes, IList<MethodInfo> finalizers)
 		{
 			var scheduled = prefixes.Select(patch => (patch, passthrough: false))
 				.Concat(new[] { (patch: (MethodInfo)null, passthrough: false) })
 				.Concat(postfixes.Where(patch => patch.ReturnType == typeof(void)).Select(patch => (patch, passthrough: false)))
-				.Concat(postfixes.Where(patch => patch.ReturnType != typeof(void)).Select(patch => (patch, passthrough: true))).ToList();
+				.Concat(postfixes.Where(patch => patch.ReturnType != typeof(void)).Select(patch => (patch, passthrough: true)))
+				.Concat(finalizers.Select(patch => (patch, passthrough: false))).ToList();
 			var writes = new List<BindingWrite>[scheduled.Count];
 			var innerReceivers = new List<int>();
 			var outerReceivers = new List<int>();
@@ -157,6 +158,10 @@ namespace HarmonyLib
 				{
 					ValidateScope(patch, injection, true);
 					var context = injection.outer ? outer : inner;
+					if (injection.injectionType == InjectionType.Exception && (!finalizers.Contains(patch)
+						|| i < scheduled.Count - finalizers.Count || injection.parameterInfo.ParameterType.IsByRef
+						|| !injection.parameterInfo.ParameterType.IsAssignableFrom(typeof(Exception))))
+						throw BindingError(patch, injection, context, "Inner __exception requires a compatible by-value finalizer parameter");
 					if (IsLocalInjection(injection))
 						_ = creator.InfixLocal(patch, injection, context);
 					if (injection.injectionType == InjectionType.ArgsArray)
@@ -193,10 +198,11 @@ namespace HarmonyLib
 				context.variables[InjectionType.ArgsArray] = creator.config.DeclareLocal(typeof(object[]));
 				codes.Add(Ldnull);
 				codes.Add(Stloc[context.variables[InjectionType.ArgsArray]]);
-				context.refreshArgumentArray = false;
+				// A finalizer may run again after a finalizer throws, including after an uncommitted array edit.
+				context.refreshArgumentArray = context.parameters.Length != 0 && receivers.Any(receiver => receiver >= scheduled.Count - finalizers.Count);
 				if (receivers.Count > 1)
 				{
-					context.refreshArgumentArray = context.parameters.Any(parameter => parameter.ParameterType.IsByRef);
+					context.refreshArgumentArray |= context.parameters.Any(parameter => parameter.ParameterType.IsByRef);
 					var arrayWrites = ArrayWrites(context, context == inner).ToList();
 					for (var i = receivers[0] + 1; i < receivers[receivers.Count - 1]; i++)
 					{
@@ -225,7 +231,8 @@ namespace HarmonyLib
 		}
 
 		static IEnumerable<BindingWrite> ArrayWrites(PatchBindingContext context, bool inner)
-			=> context.arguments.Select((argument, index) => new BindingWrite(context, index, argument.type.IsByRef, inner && !argument.type.IsByRef, true, true));
+			=> context.parameters.Select((parameter, index) => new BindingWrite(context, index, parameter.ParameterType.IsByRef,
+				inner && !parameter.ParameterType.IsByRef, true, true));
 
 		static bool MayOverlap(BindingWrite first, BindingWrite second)
 		{
@@ -247,7 +254,7 @@ namespace HarmonyLib
 			{
 				if (context.receiver is null) throw BindingError(patch, injection, context, "A static method has no receiver");
 				key = "receiver";
-				sourceType = context.receiver.Value.type;
+				sourceType = context.receiverParameterType;
 				isolated = inner && !sourceType.IsByRef;
 			}
 			else if (injection.injectionType is InjectionType.Result or InjectionType.ResultRef or InjectionType.State)
@@ -260,8 +267,13 @@ namespace HarmonyLib
 			{
 				var local = creator.InfixLocal(patch, injection, context);
 				key = local;
-				sourceType = local.LocalType;
-				isolated = !int.TryParse(injection.realName.Substring(6), out _);
+				isolated = !int.TryParse(injection.realName.Substring(6), out var localIndex);
+				sourceType = isolated ? ElementType(local.type) : creator.config.originalVariables[localIndex].LocalType;
+			}
+			else if (injection.argumentMode == ArgumentMode.Captured)
+			{
+				var capture = CapturedVariableResolver.Resolve(context, injection.realName);
+				return new BindingWrite(context, capture.fields[capture.fields.Length - 1], true, false, false);
 			}
 			else if (IsFieldInjection(injection))
 			{
@@ -273,7 +285,7 @@ namespace HarmonyLib
 				var index = ResolveArgumentIndex(patch, injection, context);
 				if (index < 0) return null;
 				key = index;
-				sourceType = context.arguments[index].type;
+				sourceType = context.parameters[index].ParameterType;
 				isolated = inner && !sourceType.IsByRef;
 			}
 			else return null;
@@ -298,8 +310,10 @@ namespace HarmonyLib
 		{
 			if (injection.outer && !infix)
 				throw new ArgumentException($"[HarmonyOuter] on {patch.FullDescription()} parameter {injection.parameterInfo.Name} requires an Infix patch");
+			if (injection.argumentMode == ArgumentMode.Captured && !infix)
+				throw new ArgumentException($"Captured argument binding requires an Infix patch: {patch.FullDescription()}");
 			if (!infix) return;
-			if (injection.injectionType == InjectionType.Exception || injection.outer && injection.injectionType is InjectionType.Result or InjectionType.ResultRef or InjectionType.RunOriginal)
+			if (injection.outer && injection.injectionType is InjectionType.Exception or InjectionType.Result or InjectionType.ResultRef or InjectionType.RunOriginal)
 				throw new ArgumentException($"{injection.realName} is not available in the requested Infix scope for {patch.FullDescription()}");
 			if (injection.injectionType == InjectionType.RunOriginal && injection.parameterInfo.ParameterType != typeof(bool))
 				throw new ArgumentException($"Infix __runOriginal must be a by-value bool in {patch.FullDescription()}");
@@ -343,18 +357,26 @@ namespace HarmonyLib
 		static ArgumentException BindingError(MethodInfo patch, InjectedParameter injection, PatchBindingContext context, string reason)
 			=> new($"{reason}: {patch.FullDescription()} parameter {injection.parameterInfo.Name}, {(injection.outer ? "outer" : "inner")} operation {context.Description}, requested {injection.parameterInfo.ParameterType.FullDescription()}");
 
-		static bool IsFieldInjection(InjectedParameter injection) => injection.argumentMode != ArgumentMode.Original && injection.realName.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal);
-		static bool IsLocalInjection(InjectedParameter injection) => injection.argumentMode != ArgumentMode.Original && injection.realName.StartsWith("__var_", StringComparison.Ordinal);
+		static bool IsFieldInjection(InjectedParameter injection) => injection.argumentMode == ArgumentMode.Default && injection.realName.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal);
+		static bool IsLocalInjection(InjectedParameter injection) => injection.argumentMode == ArgumentMode.Default && injection.realName.StartsWith("__var_", StringComparison.Ordinal);
 
-		static LocalBuilder InfixLocal(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context)
+		internal static void PrepareInfixOuterLocals(this MethodCreator creator, IEnumerable<MethodInfo> fixes, PatchBindingContext outer, bool postfix = false)
+		{
+			foreach (var fix in fixes)
+				foreach (var injection in creator.config.InjectionsFor(fix, skipFirst: postfix && fix.ReturnType != typeof(void))
+					.Where(injection => injection.outer && IsLocalInjection(injection)))
+					_ = creator.InfixLocal(fix, injection, outer);
+		}
+
+		static InjectionStorage InfixLocal(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context)
 		{
 			var name = injection.realName.Substring(6);
-			LocalBuilder local;
+			InjectionStorage local;
 			if (int.TryParse(name, out var index))
 			{
 				if (index < 0 || index >= creator.config.originalVariables.Length)
 					throw BindingError(patch, injection, context, "The requested original local index does not exist");
-				return creator.config.originalVariables[index];
+				return context.originalLocals?[index] ?? new InjectionStorage(creator.config.originalVariables[index]);
 			}
 			else
 			{
@@ -363,13 +385,13 @@ namespace HarmonyLib
 				var key = $"{patch.DeclaringType?.AssemblyQualifiedName}:{injection.realName}";
 				if (!context.variables.TryGetValue(key, out local))
 				{
-					local = creator.config.DeclareLocal(ElementType(injection.parameterInfo.ParameterType));
+					local = new InjectionStorage(creator.config.DeclareLocal(ElementType(injection.parameterInfo.ParameterType)));
 					context.variables[key] = local;
 					creator.config.patch.Definition.Body.InitLocals = true;
 				}
 			}
-			if (local.LocalType != ElementType(injection.parameterInfo.ParameterType))
-				throw BindingError(patch, injection, context, $"Local type {local.LocalType.FullDescription()} does not match");
+			if (ElementType(local.type) != ElementType(injection.parameterInfo.ParameterType))
+				throw BindingError(patch, injection, context, $"Local type {local.type.FullDescription()} does not match");
 			return local;
 		}
 
@@ -451,7 +473,8 @@ namespace HarmonyLib
 			}
 			codes.AddRange(creator.EmitCallParameter(patch, context, outerContext, allowFirstParamPassthrough,
 				out var boxedResult, out var refResultUsed, boxedInstances, boxedArguments));
-			codes.Add(Call[patch]);
+			if (outerContext != null && InfixInlining.TryInline(patch, creator.config.il, out var inlined, creator.config.debug)) codes.AddRange(inlined);
+			else codes.Add(Call[patch]);
 			if (innerArray)
 				codes.AddRange(creator.RestoreArgumentArray(context));
 			if (outerArray && outerContext != null)
@@ -533,6 +556,12 @@ namespace HarmonyLib
 				var paramRealName = injection.realName;
 				var paramType = injection.parameterInfo.ParameterType;
 
+				if (injection.argumentMode == ArgumentMode.Captured)
+				{
+					codes.AddRange(EmitCapturedVariable(patch, injection, context));
+					continue;
+				}
+
 				if (injectionType == InjectionType.OriginalMethod)
 				{
 					if (original is null) throw BindingError(patch, injection, context, "This operation is not a method; use __originalMember for a field");
@@ -558,6 +587,9 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.Exception)
 				{
+					if (outerContext != null && (!context.variables.TryGetValue(InjectionType.Exception, out _)
+						|| paramType.IsByRef || !paramType.IsAssignableFrom(typeof(Exception))))
+						throw BindingError(patch, injection, context, "Inner __exception requires a compatible by-value finalizer parameter");
 					if (context.variables.TryGetValue(InjectionType.Exception, out var exception))
 						codes.Add(Ldloc[exception]);
 					else
@@ -673,9 +705,11 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.State)
 				{
-					var ldlocCode = paramType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
 					if (context.variables.TryGetValue(patch.DeclaringType?.AssemblyQualifiedName ?? "null", out var stateVar))
-						codes.Add(new CodeInstruction(ldlocCode, stateVar));
+					{
+						if (outerContext != null) codes.AddRange(creator.EmitStorage(patch, injection, context, stateVar, true, tmpBoxVars));
+						else codes.Add(paramType.IsByRef ? stateVar.LoadAddress() : stateVar.Load());
+					}
 					else
 						codes.Add(Ldnull);
 					continue;
@@ -684,7 +718,7 @@ namespace HarmonyLib
 				if (outerContext != null && IsLocalInjection(injection))
 				{
 					var local = creator.InfixLocal(patch, injection, context);
-					codes.AddRange(creator.EmitStorage(patch, injection, context, new InjectionStorage(local), true, tmpBoxVars));
+					codes.AddRange(creator.EmitStorage(patch, injection, context, local, true, tmpBoxVars));
 					continue;
 				}
 
@@ -738,10 +772,9 @@ namespace HarmonyLib
 					continue;
 				}
 
-				if (injection.argumentMode != ArgumentMode.Original && context.variables.TryGetValue(paramRealName, out var localBuilder))
+				if (injection.argumentMode == ArgumentMode.Default && context.variables.TryGetValue(paramRealName, out var localBuilder))
 				{
-					var ldlocCode = paramType.IsByRef ? OpCodes.Ldloca : OpCodes.Ldloc;
-					codes.Add(new CodeInstruction(ldlocCode, localBuilder));
+					codes.Add(paramType.IsByRef ? localBuilder.LoadAddress() : localBuilder.Load());
 					continue;
 				}
 
@@ -792,6 +825,28 @@ namespace HarmonyLib
 				}
 				codes.AddRange(creator.EmitStorage(patch, injection, context, context.arguments[argumentIdx], outerContext != null, tmpBoxVars));
 			}
+			return codes;
+		}
+
+		static List<CodeInstruction> EmitCapturedVariable(MethodInfo patch, InjectedParameter injection, PatchBindingContext context)
+		{
+			var capture = CapturedVariableResolver.Resolve(context, injection.realName);
+			var writable = injection.parameterInfo.ParameterType.IsByRef;
+			ValidateStorageType(patch, injection, context, capture.Type, false);
+			foreach (var field in capture.fields) ValidateInfixField(field);
+			if (writable && capture.fields.Where((field, index) => index == capture.fields.Length - 1 || field.FieldType.IsValueType).Any(field => field.IsInitOnly))
+				throw BindingError(patch, injection, context, "A captured readonly value cannot be written");
+			var root = capture.root;
+			var rootType = ElementType(root.type);
+			var codes = new List<CodeInstruction> { rootType.IsValueType && !root.type.IsByRef ? root.LoadAddress() : root.Load() };
+			if (!rootType.IsValueType && root.type.IsByRef) codes.Add(Ldobj[rootType]);
+			for (var index = 0; index < capture.fields.Length; index++)
+			{
+				var field = capture.fields[index];
+				var address = index == capture.fields.Length - 1 ? writable : field.FieldType.IsValueType;
+				codes.Add(address ? Ldflda[field] : Ldfld[field]);
+			}
+			if (!writable && capture.Type.IsValueType && !injection.parameterInfo.ParameterType.IsValueType) codes.Add(Box[capture.Type]);
 			return codes;
 		}
 
@@ -892,9 +947,9 @@ namespace HarmonyLib
 			{
 				var argument = context.arguments[i++];
 				var pType = pInfo.ParameterType;
-				if (pType.IsByRef)
+				if (argument.type.IsByRef)
 				{
-					pType = pType.GetElementType();
+					pType = ElementType(pType);
 
 					codes.Add(argument.Load());
 					codes.Add(Ldloc[context.variables[InjectionType.ArgsArray]]);

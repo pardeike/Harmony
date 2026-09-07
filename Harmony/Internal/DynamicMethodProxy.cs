@@ -54,7 +54,7 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ret);
 			// Load through the same resolver as other Cecil-generated methods. A unique assembly identity prevents
 			// separate Harmony copies from binding each other's callbacks. The field retains the target's lifetime.
-			var assembly = ReflectionHelper.Load(module);
+			var assembly = GeneratedAssemblyLoader.Load(module);
 			if (AccessTools.IsMonoRuntime) assembly.SetMonoCorlibInternal(true);
 			var typeProxy = assembly.GetType(holder.FullName);
 			typeProxy.GetField(field.Name, BindingFlags.NonPublic | BindingFlags.Static)

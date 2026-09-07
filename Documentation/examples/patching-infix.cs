@@ -1,6 +1,7 @@
 namespace Patching_Infix
 {
 	using HarmonyLib;
+	using System;
 	using System.Collections.Generic;
 	using System.Runtime.CompilerServices;
 	using System.Text;
@@ -94,4 +95,52 @@ namespace Patching_Infix
 			=> __var_builder?.Append(name).Append(": ");
 	}
 	// </capture>
+
+	// <finalizer>
+	public static class Parser
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static int Parse(string text) => int.Parse(text);
+	}
+
+	public static class RecoveringOuter
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static int Total(string text) => 5 + Parser.Parse(text);
+	}
+
+	[HarmonyPatch(typeof(RecoveringOuter), nameof(RecoveringOuter.Total))]
+	public static class RecoverPatch
+	{
+		[HarmonyFinalizer, HarmonyInfix(typeof(Parser), nameof(Parser.Parse), typeof(string))]
+		static Exception Recover(Exception __exception, ref int __result)
+		{
+			if (__exception is not FormatException) return __exception;
+			__result = 0;
+			return null;
+		}
+	}
+	// </finalizer>
+
+	// <generated>
+	public static class Sequence
+	{
+		public static IEnumerable<int> Count(int limit)
+		{
+			while (limit > 0) yield return Visit(limit--);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static int Visit(int value) => value;
+	}
+
+	[HarmonyPatch(typeof(Sequence), nameof(Sequence.Count))]
+	public static class SequencePatch
+	{
+		[HarmonyPrefix, HarmonyInfix(typeof(Sequence), nameof(Sequence.Visit), typeof(int), OuterBody = InfixOuterBody.Auto)]
+		static void LimitRemaining(
+			[HarmonyOuter, HarmonyArgument("limit", ArgumentMode.Captured)] ref int remaining)
+			=> remaining = Math.Min(remaining, 1);
+	}
+	// </generated>
 }

@@ -13,13 +13,15 @@ namespace HarmonyLib
 	{
 		readonly Harmony instance;
 		readonly MethodBase original;
+		MethodBase installedOriginal;
 
 		HarmonyMethod prefix;
 		HarmonyMethod postfix;
 		HarmonyMethod transpiler;
 		HarmonyMethod finalizer;
-		HarmonyMethod innerprefix;
-		HarmonyMethod innerpostfix;
+		readonly List<HarmonyMethod> innerprefixes = [];
+		readonly List<HarmonyMethod> innerpostfixes = [];
+		readonly List<HarmonyMethod> innerfinalizers = [];
 
 		internal static readonly object locker = new();
 
@@ -118,7 +120,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddInnerPrefix(HarmonyMethod innerPrefix)
 		{
-			innerprefix = innerPrefix;
+			if (innerPrefix is not null) innerprefixes.Add(innerPrefix);
 			return this;
 		}
 
@@ -128,8 +130,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddInnerPrefix(MethodInfo fixMethod)
 		{
-			innerprefix = new HarmonyMethod(fixMethod);
-			return this;
+			return AddInnerPrefix(new HarmonyMethod(fixMethod));
 		}
 
 		/// <summary>Adds an inner postfix</summary>
@@ -138,7 +139,7 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddInnerPostfix(HarmonyMethod innerPostfix)
 		{
-			innerpostfix = innerPostfix;
+			if (innerPostfix is not null) innerpostfixes.Add(innerPostfix);
 			return this;
 		}
 
@@ -148,9 +149,22 @@ namespace HarmonyLib
 		///
 		public PatchProcessor AddInnerPostfix(MethodInfo fixMethod)
 		{
-			innerpostfix = new HarmonyMethod(fixMethod);
+			return AddInnerPostfix(new HarmonyMethod(fixMethod));
+		}
+
+		/// <summary>Adds an inner finalizer</summary>
+		/// <param name="innerFinalizer">The finalizer and its selected inner operation</param>
+		/// <returns>This processor for chaining calls</returns>
+		public PatchProcessor AddInnerFinalizer(HarmonyMethod innerFinalizer)
+		{
+			if (innerFinalizer is not null) innerfinalizers.Add(innerFinalizer);
 			return this;
 		}
+
+		/// <summary>Adds an attributed inner finalizer</summary>
+		/// <param name="fixMethod">The inner finalizer method</param>
+		/// <returns>This processor for chaining calls</returns>
+		public PatchProcessor AddInnerFinalizer(MethodInfo fixMethod) => AddInnerFinalizer(new HarmonyMethod(fixMethod));
 
 		/// <summary>Gets all patched original methods in the appdomain</summary>
 		/// <returns>An enumeration of patched method/constructor</returns>
@@ -179,18 +193,45 @@ namespace HarmonyLib
 
 			lock (locker)
 			{
-				var patchInfo = HarmonySharedState.GetPatchInfo(original) ?? new PatchInfo();
-
-				patchInfo.AddPrefixes(instance.Id, prefix);
-				patchInfo.AddPostfixes(instance.Id, postfix);
-				patchInfo.AddTranspilers(instance.Id, transpiler);
-				patchInfo.AddFinalizers(instance.Id, finalizer);
-				patchInfo.AddInnerPrefixes(instance.Id, innerprefix);
-				patchInfo.AddInnerPostfixes(instance.Id, innerpostfix);
-
-				var replacement = PatchFunctions.UpdateWrapper(original, patchInfo);
+				var target = ResolvePendingOriginal();
+				if (installedOriginal is not null && installedOriginal != target)
+					throw new ArgumentException($"This processor already targets {installedOriginal.FullDescription()} and cannot move to {target.FullDescription()}. Use separate processors.");
+				MethodInfo replacement;
+				try
+				{
+					var patchInfo = HarmonySharedState.GetPatchInfo(target) ?? new PatchInfo();
+					patchInfo.AddPrefixes(instance.Id, prefix);
+					patchInfo.AddPostfixes(instance.Id, postfix);
+					patchInfo.AddTranspilers(instance.Id, transpiler);
+					patchInfo.AddFinalizers(instance.Id, finalizer);
+					patchInfo.AddInnerPrefixes(instance.Id, [.. innerprefixes]);
+					patchInfo.AddInnerPostfixes(instance.Id, [.. innerpostfixes]);
+					patchInfo.AddInnerFinalizers(instance.Id, [.. innerfinalizers]);
+					replacement = PatchFunctions.UpdateWrapper(target, patchInfo);
+				}
+				catch (Exception exception) when (target != original)
+				{
+					throw new HarmonyException($"Cannot patch generated body {target.FullDescription()} selected from {original.FullDescription()}: {exception.Message}", exception);
+				}
+				installedOriginal = target;
 				return replacement;
 			}
+		}
+
+		MethodBase ResolvePendingOriginal()
+		{
+			MethodBase target = null;
+			if (prefix is not null || postfix is not null || transpiler is not null || finalizer is not null) target = original;
+			foreach (var entry in innerprefixes.Select(patch => (patch, role: HarmonyPatchType.InnerPrefix))
+				.Concat(innerpostfixes.Select(patch => (patch, role: HarmonyPatchType.InnerPostfix)))
+				.Concat(innerfinalizers.Select(patch => (patch, role: HarmonyPatchType.InnerFinalizer))))
+			{
+				var actual = AttributePatch.ResolveOuterMethod(original, entry.patch, entry.role);
+				if (target is not null && target != actual)
+					throw new ArgumentException($"Pending patches target both {target.FullDescription()} and {actual.FullDescription()}. Use separate processors for different method bodies.");
+				target = actual;
+			}
+			return target ?? installedOriginal ?? original;
 		}
 
 		/// <summary>Unpatches patches of a given type and/or Harmony ID</summary>
@@ -205,7 +246,8 @@ namespace HarmonyLib
 
 			lock (locker)
 			{
-				var patchInfo = HarmonySharedState.GetPatchInfo(original);
+				var target = installedOriginal ?? original;
+				var patchInfo = HarmonySharedState.GetPatchInfo(target);
 				patchInfo ??= new PatchInfo();
 
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.Prefix)
@@ -220,8 +262,10 @@ namespace HarmonyLib
 					patchInfo.RemoveInnerPrefix(harmonyID);
 				if (type == HarmonyPatchType.All || type == HarmonyPatchType.InnerPostfix)
 					patchInfo.RemoveInnerPostfix(harmonyID);
+				if (type == HarmonyPatchType.All || type == HarmonyPatchType.InnerFinalizer)
+					patchInfo.RemoveInnerFinalizer(harmonyID);
 
-				_ = PatchFunctions.UpdateWrapper(original, patchInfo);
+				_ = PatchFunctions.UpdateWrapper(target, patchInfo);
 				return this;
 			}
 		}
@@ -237,12 +281,13 @@ namespace HarmonyLib
 
 			lock (locker)
 			{
-				var patchInfo = HarmonySharedState.GetPatchInfo(original);
+				var target = installedOriginal ?? original;
+				var patchInfo = HarmonySharedState.GetPatchInfo(target);
 				patchInfo ??= new PatchInfo();
 
 				patchInfo.RemovePatch(patch);
 
-				_ = PatchFunctions.UpdateWrapper(original, patchInfo);
+				_ = PatchFunctions.UpdateWrapper(target, patchInfo);
 				return this;
 			}
 		}
@@ -256,7 +301,7 @@ namespace HarmonyLib
 			PatchInfo patchInfo;
 			lock (locker) { patchInfo = HarmonySharedState.GetPatchInfo(method); }
 			if (patchInfo is null) return null;
-			return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.innerprefixes, patchInfo.innerpostfixes);
+			return new Patches(patchInfo.prefixes, patchInfo.postfixes, patchInfo.transpilers, patchInfo.finalizers, patchInfo.innerprefixes, patchInfo.innerpostfixes, patchInfo.innerfinalizers);
 		}
 
 		/// <summary>Sort patch methods by their priority rules</summary>
@@ -285,6 +330,7 @@ namespace HarmonyLib
 				info.finalizers.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
 				info.innerprefixes.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
 				info.innerpostfixes.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
+				info.innerfinalizers.Do(fix => assemblies[fix.owner] = fix.PatchMethod.DeclaringType.Assembly);
 			});
 
 			var result = new Dictionary<string, Version>();

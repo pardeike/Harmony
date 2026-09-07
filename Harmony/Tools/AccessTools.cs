@@ -29,7 +29,7 @@ namespace HarmonyLib
 
 	/// <summary>A helper class for reflection related functions</summary>
 	///
-	public static class AccessTools
+	public static partial class AccessTools
 	{
 		private static Type[] allTypesCached = null;
 

@@ -17,6 +17,8 @@ namespace HarmonyLib
 			internal List<HarmonyMethod> finalizers = [];
 			internal List<HarmonyMethod> innerprefixes = [];
 			internal List<HarmonyMethod> innerpostfixes = [];
+			internal List<HarmonyMethod> innerfinalizers = [];
+			internal readonly HashSet<MethodBase> requestedOriginals = [];
 
 			internal void AddPatch(AttributePatch patch)
 			{
@@ -39,6 +41,9 @@ namespace HarmonyLib
 						break;
 					case HarmonyPatchType.InnerPostfix:
 						innerpostfixes.Add(patch.info);
+						break;
+					case HarmonyPatchType.InnerFinalizer:
+						innerfinalizers.Add(patch.info);
 						break;
 				}
 			}
@@ -65,7 +70,8 @@ namespace HarmonyLib
 				job.transpilers.Count +
 				job.finalizers.Count +
 				job.innerprefixes.Count +
-				job.innerpostfixes.Count
+				job.innerpostfixes.Count +
+				job.innerfinalizers.Count
 				> 0
 			)];
 		}
@@ -84,13 +90,25 @@ namespace HarmonyLib
 			HarmonyPatchType.Finalizer,
 			HarmonyPatchType.ReversePatch,
 			HarmonyPatchType.InnerPrefix,
-			HarmonyPatchType.InnerPostfix
+			HarmonyPatchType.InnerPostfix,
+			HarmonyPatchType.InnerFinalizer
 		];
 
 		internal HarmonyMethod info;
 		internal HarmonyPatchType? type;
 
 		internal static object GetInfixDeclaration(object[] attributes) => attributes.SingleOrDefault(a => a.GetType().FullName == typeof(HarmonyInfix).FullName);
+
+		internal static bool IsInner(HarmonyPatchType? role) => role is HarmonyPatchType.InnerPrefix or HarmonyPatchType.InnerPostfix or HarmonyPatchType.InnerFinalizer;
+
+		internal static MethodBase ResolveOuterMethod(MethodBase original, HarmonyMethod info, HarmonyPatchType? role)
+		{
+			if (!IsInner(role)) return original;
+			var mode = info.infixOuterBody ?? InfixOuterBody.Declared;
+			if (mode is not InfixOuterBody.Declared and not InfixOuterBody.Auto)
+				throw new ArgumentException($"Unknown Infix outer body selection {mode} for {info.method?.FullDescription()}");
+			return mode == InfixOuterBody.Auto ? AccessTools.StateMachineMoveNext(original) ?? original : original;
+		}
 
 		internal static void ClearInfixMarker(HarmonyMethod info, object[] attributes)
 		{
@@ -104,6 +122,7 @@ namespace HarmonyLib
 		{
 			HarmonyPatchType.InnerPrefix => HarmonyPatchType.Prefix,
 			HarmonyPatchType.InnerPostfix => HarmonyPatchType.Postfix,
+			HarmonyPatchType.InnerFinalizer => HarmonyPatchType.Finalizer,
 			_ => type
 		};
 
@@ -127,20 +146,23 @@ namespace HarmonyLib
 			if (info is null) return;
 			var attributes = info.method?.GetCustomAttributes(true) ?? [];
 			if (info.innerMethod is not null || info.innerTarget is not null || GetInfixDeclaration(attributes) is not null
-				|| info.method?.Name is "InnerPrefix" or "InnerPostfix")
-				throw new ArgumentException($"Infix patch {info.method?.FullDescription()} requires AddInnerPrefix or AddInnerPostfix");
+				|| info.infixOuterBody.HasValue || info.method?.Name is "InnerPrefix" or "InnerPostfix" or "InnerFinalizer")
+				throw new ArgumentException($"Infix patch {info.method?.FullDescription()} requires AddInnerPrefix, AddInnerPostfix, or AddInnerFinalizer");
 			if (info.method is not null && info.method.GetParameters().Any(p => p.GetCustomAttributes(true).Any(a => a.GetType().FullName == typeof(HarmonyOuter).FullName)))
 				throw new ArgumentException($"HarmonyOuter is valid only on Infix parameters: {info.method.FullDescription()}");
 		}
 
 		internal static HarmonyMethod PrepareRegistration(HarmonyMethod info, HarmonyPatchType role)
 		{
-			if (role != HarmonyPatchType.InnerPrefix && role != HarmonyPatchType.InnerPostfix)
+			if (!IsInner(role))
 			{
 				ValidateOrdinary(info);
 				return info;
 			}
 			ValidateInfixPatchMethod(info.method);
+			if (role == HarmonyPatchType.InnerFinalizer) ValidateInnerFinalizer(info.method);
+			if (info.infixOuterBody.HasValue && info.infixOuterBody is not InfixOuterBody.Declared and not InfixOuterBody.Auto)
+				throw new ArgumentException($"Unknown Infix outer body selection {info.infixOuterBody} for {info.method.FullDescription()}");
 			var attributes = info.method.GetCustomAttributes(true);
 			var roles = GetRoles(info.method, attributes);
 			if (roles.Any(r => r != NormalizeRole(role)))
@@ -170,16 +192,26 @@ namespace HarmonyLib
 			return result;
 		}
 
+		internal static void ValidateInnerFinalizer(MethodInfo method)
+		{
+			if (method.ReturnType != typeof(void) && !typeof(Exception).IsAssignableFrom(method.ReturnType))
+				throw new ArgumentException($"Inner finalizer {method.FullDescription()} must return void or an Exception");
+		}
+
 		static InnerTarget ResolveInfixTarget(MethodInfo patch, object declaration)
 		{
 			var attributeType = declaration.GetType();
 			object Read(string name) => AccessTools.Field(attributeType, name)?.GetValue(declaration);
-			var kindValue = Read("innerTargetKind");
+			var bodyProperty = AccessTools.Property(attributeType, nameof(HarmonyInfix.OuterBody));
+			var automaticBody = bodyProperty is not null && Convert.ToInt32(bodyProperty.GetValue(declaration, null)) == (int)InfixOuterBody.Auto;
+			var kindValue = Read(automaticBody ? "bodyInnerTargetKind" : "innerTargetKind");
+			if (automaticBody && kindValue is null) throw new ArgumentException($"Infix patch {patch.FullDescription()} has an incomplete automatic-body declaration");
 			var kind = kindValue is null ? InnerTargetKind.Method : (InnerTargetKind)Convert.ToInt32(kindValue);
 			var positions = (int[])AccessTools.Property(attributeType, nameof(HarmonyInfix.Positions)).GetValue(declaration, null);
 			if (kind == InnerTargetKind.Constant) return InnerTarget.Constant(Read("innerConstant"), positions);
 			var declaringType = (Type)Read("innerDeclaringType");
-			var name = (string)Read("innerMemberName") ?? (string)Read("innerName");
+			var name = automaticBody ? (string)Read("bodyInnerMemberName") ?? (string)Read("bodyInnerName")
+				: (string)Read("innerMemberName") ?? (string)Read("innerName");
 			var arguments = (Type[])Read("innerArguments");
 			var variations = (Array)Read("innerVariations");
 			if (declaringType is null || kind != InnerTargetKind.Constructor && string.IsNullOrEmpty(name))
@@ -232,9 +264,14 @@ namespace HarmonyLib
 			if (isInfix)
 			{
 				var roles = GetRoles(patch, allAttributes);
-				if (roles.Length != 1 || roles[0] != HarmonyPatchType.Prefix && roles[0] != HarmonyPatchType.Postfix)
-					throw new ArgumentException($"Infix patch {patch.FullDescription()} requires exactly one prefix or postfix role");
-				type = roles[0] == HarmonyPatchType.Prefix ? HarmonyPatchType.InnerPrefix : HarmonyPatchType.InnerPostfix;
+				if (roles.Length != 1 || roles[0] is not HarmonyPatchType.Prefix and not HarmonyPatchType.Postfix and not HarmonyPatchType.Finalizer)
+					throw new ArgumentException($"Infix patch {patch.FullDescription()} requires exactly one prefix, postfix, or finalizer role");
+				type = roles[0] switch
+				{
+					HarmonyPatchType.Prefix => HarmonyPatchType.InnerPrefix,
+					HarmonyPatchType.Postfix => HarmonyPatchType.InnerPostfix,
+					_ => HarmonyPatchType.InnerFinalizer
+				};
 				ValidateInfixPatchMethod(patch);
 			}
 			if (type is null)

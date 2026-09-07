@@ -12,6 +12,9 @@ namespace HarmonyLib
 	/// <summary>Serializable patch information</summary>
 	///
 	[Serializable]
+#if NET5_0_OR_GREATER
+	[JsonConverter(typeof(PatchInfoJsonConverter))]
+#endif
 	public class PatchInfo
 	{
 		/// <summary>Prefixes as an array of <see cref="Patch"/></summary>
@@ -58,6 +61,10 @@ namespace HarmonyLib
 		[OptionalField]
 		public Patch[] innerpostfixes = [];
 
+		/// <summary>Inner finalizers as an array of patches</summary>
+		[OptionalField]
+		public Patch[] innerfinalizers = [];
+
 		/// <summary>Returns if any of the patches wants debugging turned on</summary>
 		///
 #if NET5_0_OR_GREATER
@@ -68,7 +75,8 @@ namespace HarmonyLib
 			|| transpilers.Any(p => p.debug)
 			|| finalizers.Any(p => p.debug)
 			|| innerprefixes.Any(p => p.debug)
-			|| innerpostfixes.Any(p => p.debug);
+			|| innerpostfixes.Any(p => p.debug)
+			|| innerfinalizers.Any(p => p.debug);
 
 		/// <summary>Number of replacements created</summary>
 		///
@@ -165,6 +173,13 @@ namespace HarmonyLib
 		///
 		public void RemoveInnerPostfix(string owner) => innerpostfixes = Remove(owner, innerpostfixes);
 
+		/// <summary>Adds inner finalizers</summary>
+		internal void AddInnerFinalizers(string owner, params HarmonyMethod[] methods) => innerfinalizers = Add(owner, methods, innerfinalizers, HarmonyPatchType.InnerFinalizer);
+
+		/// <summary>Removes inner finalizers</summary>
+		/// <param name="owner">The owner, or <c>*</c> for all owners</param>
+		public void RemoveInnerFinalizer(string owner) => innerfinalizers = Remove(owner, innerfinalizers);
+
 		/// <summary>Removes a patch using its method</summary>
 		/// <param name="patch">The method of the patch to remove</param>
 		///
@@ -176,15 +191,30 @@ namespace HarmonyLib
 			finalizers = [.. finalizers.Where(p => p.PatchMethod != patch)];
 			innerprefixes = [.. innerprefixes.Where(p => p.PatchMethod != patch)];
 			innerpostfixes = [.. innerpostfixes.Where(p => p.PatchMethod != patch)];
+			innerfinalizers = [.. innerfinalizers.Where(p => p.PatchMethod != patch)];
 		}
 
 		internal void NormalizeLegacyArrays()
 		{
 			innerprefixes ??= [];
 			innerpostfixes ??= [];
+			innerfinalizers ??= [];
 		}
 
-		internal bool HasInfixes => innerprefixes.Length != 0 || innerpostfixes.Length != 0;
+		internal bool HasInfixes => innerprefixes.Length != 0 || innerpostfixes.Length != 0 || innerfinalizers.Length != 0;
+		internal bool RequiresInfixV3(bool allowUnresolvedCallbacks = false)
+		{
+			if (innerfinalizers.Length != 0) return true;
+			bool Requires(Patch patch, bool postfix)
+			{
+				MethodInfo method;
+				try { method = patch.GetValidatedInfixPatchMethod(); }
+				catch (Exception exception) when (allowUnresolvedCallbacks && exception is SerializationException or ArgumentException) { return false; }
+				return method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0)
+					.Any(parameter => new InjectedParameter(method, parameter).argumentMode == ArgumentMode.Captured);
+			}
+			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true));
+		}
 		internal bool RequiresInfixV2(bool allowUnresolvedCallbacks = false)
 		{
 			bool Requires(Patch patch, bool postfix)
@@ -197,7 +227,8 @@ namespace HarmonyLib
 				return method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0)
 					.Any(parameter => new InjectedParameter(method, parameter).injectionType == InjectionType.OriginalMember);
 			}
-			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true));
+			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true))
+				|| innerfinalizers.Any(patch => Requires(patch, false));
 		}
 
 		internal void ValidateSurvivingMetadata()
@@ -205,13 +236,14 @@ namespace HarmonyLib
 			NormalizeLegacyArrays();
 			foreach (var patch in prefixes.Concat(postfixes).Concat(transpilers).Concat(finalizers))
 				AttributePatch.ValidateOrdinary(new HarmonyMethod() { method = patch.PatchMethod, innerMethod = patch.innerMethod, innerTarget = patch.innerTarget });
-			foreach (var patch in innerprefixes.Concat(innerpostfixes))
+			foreach (var patch in innerprefixes.Concat(innerpostfixes).Concat(innerfinalizers))
 			{
 				try
 				{
 					patch.ValidateTargetRepresentation();
 					if (patch.Target is null) throw new ArgumentException("The stored inner patch has no target");
 					AttributePatch.ValidateInfixPatchMethod(patch.GetValidatedInfixPatchMethod());
+					if (innerfinalizers.Any(finalizer => ReferenceEquals(finalizer, patch))) AttributePatch.ValidateInnerFinalizer(patch.GetValidatedInfixPatchMethod());
 					patch.Target.Validate();
 				}
 				catch (Exception ex)

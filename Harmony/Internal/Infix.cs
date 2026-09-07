@@ -52,9 +52,10 @@ namespace HarmonyLib
 			if (!config.InnerFixes.Any()) return source;
 			// Instruction identity is its position, even when a transpiler reuses the same object.
 			var instructions = source.Select(instruction => new CodeInstruction(instruction)).ToList();
-			var sites = new Dictionary<int, (List<Patch> prefixes, List<Patch> postfixes)>();
-			Collect(config.innerprefixes, true);
-			Collect(config.innerpostfixes, false);
+			var sites = new Dictionary<int, (List<Patch> prefixes, List<Patch> postfixes, List<Patch> finalizers)>();
+			Collect(config.innerprefixes, HarmonyPatchType.InnerPrefix);
+			Collect(config.innerpostfixes, HarmonyPatchType.InnerPostfix);
+			Collect(config.innerfinalizers, HarmonyPatchType.InnerFinalizer);
 			var branches = new HashSet<Label>(instructions.SelectMany(instruction => instruction.operand is Label label
 				? [label] : instruction.operand as Label[] ?? []));
 			var replacements = new Dictionary<int, (int end, List<CodeInstruction> codes)>();
@@ -71,7 +72,9 @@ namespace HarmonyLib
 						throw new ArgumentException("A branch or exception boundary enters the call without its preceding call prefix.");
 					var prefixes = Sort(pair.Value.prefixes);
 					var postfixes = Sort(pair.Value.postfixes);
-					var codes = EmitSite(creator, instructions, start, index, prefixes, postfixes);
+					var finalizers = Sort(pair.Value.finalizers);
+					var codes = finalizers.Count == 0 ? EmitSite(creator, instructions, start, index, prefixes, postfixes, finalizers)
+						: EmitHelperSite(creator, instructions, start, index, prefixes, postfixes, finalizers);
 					codes[0].labels.AddRange(instructions[start].labels);
 					if (start != index) codes[0].labels.AddRange(instructions[index].labels);
 					for (var i = start; i <= index; i++)
@@ -81,7 +84,7 @@ namespace HarmonyLib
 				}
 				catch (Exception ex)
 				{
-					var records = pair.Value.prefixes.Concat(pair.Value.postfixes);
+					var records = pair.Value.prefixes.Concat(pair.Value.postfixes).Concat(pair.Value.finalizers);
 					throw new HarmonyException($"Cannot wrap inner call {instructions[index].operand} at instruction {index} in {MethodCreatorTools.InfixMethodIdentity(config.original)} "
 						+ $"for {string.Join(", ", records.Select(patch => patch.owner + ":" + MethodCreatorTools.InfixMethodIdentity(patch.PatchMethod)).ToArray())}: {ex.Message}", ex);
 				}
@@ -98,7 +101,7 @@ namespace HarmonyLib
 
 			List<MethodInfo> Sort(List<Patch> patches) => [.. new PatchSorter([.. patches], config.debug, true).Sort().Select(patch => patch.PatchMethod)];
 
-			void Collect(List<Infix> fixes, bool prefix)
+			void Collect(List<Infix> fixes, HarmonyPatchType role)
 			{
 				foreach (var fix in fixes)
 				{
@@ -110,8 +113,8 @@ namespace HarmonyLib
 						foreach (var position in ResolvePositions(matches.Count, fix.Positions))
 						{
 							var index = matches[position];
-							if (!sites.TryGetValue(index, out var site)) sites.Add(index, site = ([], []));
-							(prefix ? site.prefixes : site.postfixes).Add(fix.patch);
+							if (!sites.TryGetValue(index, out var site)) sites.Add(index, site = ([], [], []));
+							(role == HarmonyPatchType.InnerPrefix ? site.prefixes : role == HarmonyPatchType.InnerPostfix ? site.postfixes : site.finalizers).Add(fix.patch);
 						}
 					}
 					catch (Exception ex)
@@ -124,24 +127,32 @@ namespace HarmonyLib
 		}
 
 		static List<CodeInstruction> EmitSite(MethodCreator creator, List<CodeInstruction> instructions, int start, int index,
-			List<MethodInfo> prefixes, List<MethodInfo> postfixes)
+			List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> finalizers,
+			PatchBindingContext context = null, PatchBindingContext outer = null)
 		{
 			var config = creator.config;
-			var call = instructions[index];
-			var fixes = prefixes.Concat(postfixes).Distinct().ToList();
+			var fixes = prefixes.Concat(postfixes).Concat(finalizers).Distinct().ToList();
 			foreach (var fix in fixes) MethodCreatorTools.ValidateInfixSignature(fix, "patch");
-			var context = CreateContext(config, instructions, start, index);
+			var inputsOnStack = context is null;
+			context ??= CreateContext(config, instructions, start, index);
 			var returnType = context.returnType;
 			var arguments = context.arguments;
 			var receiver = context.receiver;
 			var variables = context.variables;
-			var outer = new PatchBindingContext(config.original, new VariableState(config.localVariables));
+			outer ??= new PatchBindingContext(config.original, new VariableState(config.localVariables))
+			{
+				originalLocals = config.bindingContext.originalLocals
+			};
 			var codes = new List<CodeInstruction> { Nop["start inner call"] };
-			for (var i = arguments.Length - 1; i >= 0; i--) codes.Add(arguments[i].Store());
-			if (receiver.HasValue) codes.Add(receiver.Value.Store());
+			if (inputsOnStack)
+			{
+				for (var i = arguments.Length - 1; i >= 0; i--) codes.Add(arguments[i].Store());
+				if (receiver.HasValue) codes.Add(receiver.Value.Store());
+			}
 
 			IEnumerable<InjectedParameter> Injections(MethodInfo fix, InjectionType type)
-				=> config.InjectionsFor(fix, type, fix.ReturnType != typeof(void) && !prefixes.Contains(fix));
+				=> config.InjectionsFor(fix, type, fix.ReturnType != typeof(void) && postfixes.Contains(fix)
+					&& !prefixes.Contains(fix) && !finalizers.Contains(fix));
 			bool Has(InjectionType injectionType) => fixes.Any(fix => Injections(fix, injectionType).Any(injection => !injection.outer));
 			var canSkip = prefixes.Any(fix => fix.ReturnType == typeof(bool));
 			LocalBuilder result = null;
@@ -149,7 +160,8 @@ namespace HarmonyLib
 			{
 				result = config.DeclareLocal(returnType);
 				variables.Add(InjectionType.Result, result);
-				var needsDefault = canSkip || prefixes.Any(fix => config.InjectionsFor(fix).Any(injection => !injection.outer
+				var needsDefault = canSkip || finalizers.Any(fix => fix.ReturnType != typeof(void))
+					|| prefixes.Concat(finalizers).Any(fix => config.InjectionsFor(fix).Any(injection => !injection.outer
 					&& (injection.injectionType == InjectionType.Result || injection.injectionType == InjectionType.ResultRef)));
 				if (needsDefault)
 				{
@@ -180,14 +192,23 @@ namespace HarmonyLib
 					if (type.IsByRef) type = type.GetElementType();
 					if (variables.TryGetValue(name, out var state))
 					{
-						if (state.LocalType != type) throw new ArgumentException($"Inner __state for {fix.DeclaringType} has conflicting types {state.LocalType} and {type}.");
+						if (state.type != type) throw new ArgumentException($"Inner __state for {fix.DeclaringType} has conflicting types {state.type} and {type}.");
 						continue;
 					}
-					state = config.DeclareLocal(type);
-					variables.Add(name, state);
-					codes.AddRange(creator.GenerateVariableInit(state));
+					var stateLocal = config.DeclareLocal(type);
+					variables.Add(name, stateLocal);
+					codes.AddRange(creator.GenerateVariableInit(stateLocal));
 				}
-			codes.AddRange(creator.SetupInfixBindings(context, outer, prefixes, postfixes));
+			LocalBuilder finalized = null;
+			if (finalizers.Count != 0)
+			{
+				finalized = config.DeclareLocal(typeof(bool));
+				var exception = config.DeclareLocal(typeof(Exception));
+				variables.Add(InjectionType.Exception, exception);
+				codes.AddRange([Ldc_I4_0, Stloc[finalized], Ldnull, Stloc[exception]]);
+			}
+			codes.AddRange(creator.SetupInfixBindings(context, outer, prefixes, postfixes, finalizers));
+			if (finalized != null) codes.Add(creator.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
 			codes.AddRange(creator.EmitPrefixes(prefixes, context, outer));
 			var afterCall = config.DefineLabel();
 			if (canSkip) codes.AddRange([Ldloc[run], Brfalse[afterCall]]);
@@ -200,12 +221,71 @@ namespace HarmonyLib
 			if (result is not null) codes.Add(Ldloc[result]);
 			else if (postfixes.Any(fix => fix.ReturnType != typeof(void))) throw new ArgumentException("A void inner call cannot have a passthrough postfix.");
 			codes.AddRange(creator.EmitPostfixes(postfixes, context, true, outer));
+			if (finalized != null)
+			{
+				// Match ordinary Harmony's phase-wide passthrough result commit before finalization.
+				if (result != null) codes.Add(Stloc[result]);
+				codes.AddRange(creator.EmitFinalization(finalizers, context, finalized, outer));
+				if (result != null) codes.Add(Ldloc[result]);
+			}
 			codes.Add(Nop["end inner call"]);
 			return codes;
 		}
 
+		static List<CodeInstruction> EmitHelperSite(MethodCreator creator, List<CodeInstruction> instructions, int start, int index,
+			List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> finalizers)
+		{
+			var parent = creator.config;
+			var inner = CreateContext(parent, instructions, start, index, true);
+			var outer = new PatchBindingContext(parent.original, new VariableState(parent.localVariables))
+			{
+				originalLocals = parent.bindingContext.originalLocals
+			};
+			creator.PrepareInfixOuterLocals(prefixes.Concat(finalizers), outer);
+			creator.PrepareInfixOuterLocals(postfixes, outer, true);
+			var helperConfig = new MethodCreatorConfig(parent, parent.patch.Definition.Name + "_Infix" + index, inner.returnType);
+			var helper = new MethodCreator(helperConfig, false);
+			var parameterTypes = new List<Type>();
+			if (inner.receiver is InjectionStorage receiver) parameterTypes.Add(receiver.type);
+			parameterTypes.AddRange(inner.parameters.Select(parameter => parameter.ParameterType));
+			var callerLoads = new List<CodeInstruction>();
+			var variables = new VariableState();
+			foreach (var pair in outer.variables.Named) variables[pair.Key] = Transport(pair.Value);
+			var transported = new PatchBindingContext(outer.member, outer.returnType, outer.parameters, outer.receiverType,
+				outer.receiver is InjectionStorage originalReceiver ? Transport(originalReceiver) : null,
+				[.. outer.arguments.Select(Transport)], variables)
+			{
+				receiverParameterType = outer.receiverParameterType,
+				originalLocals = [.. outer.originalLocals.Select(Transport)]
+			};
+			var codes = EmitSite(helper, instructions, start, index, prefixes, postfixes, finalizers, inner, transported);
+			codes.Add(Ret);
+			foreach (var type in parameterTypes)
+				helperConfig.patch.Definition.Parameters.Add(new Mono.Cecil.ParameterDefinition(helperConfig.patch.Definition.Module.ImportReference(type)));
+			if (parent.debug) helper.LogCodes(new Emitter(helperConfig.il), codes);
+			helper.EmitCodes(new Emitter(helperConfig.il), codes);
+			var method = helperConfig.GenerateMethod(structuredHelper: true);
+			return [Nop["start inner helper"], .. callerLoads, Call[method], Nop["end inner helper"]];
+
+			InjectionStorage Transport(InjectionStorage storage)
+			{
+				var type = storage.type.IsByRef ? storage.type : storage.type.MakeByRefType();
+				InjectionStorage? parameter = null;
+				return new InjectionStorage(type, () =>
+				{
+					if (parameter is null)
+					{
+						parameter = new InjectionStorage(type, parameterTypes.Count);
+						parameterTypes.Add(type);
+						callerLoads.Add(storage.type.IsByRef ? storage.Load() : storage.LoadAddress());
+					}
+					return parameter.Value;
+				});
+			}
+		}
+
 		// Describe the operands of the original instruction, then use the same binder and scheduling for every kind.
-		static PatchBindingContext CreateContext(MethodCreatorConfig config, List<CodeInstruction> instructions, int start, int index)
+		static PatchBindingContext CreateContext(MethodCreatorConfig config, List<CodeInstruction> instructions, int start, int index, bool parameterStorage = false)
 		{
 			var instruction = instructions[index];
 			var member = instruction.operand as MemberInfo;
@@ -264,8 +344,11 @@ namespace HarmonyLib
 			}
 			if (receiverType?.ContainsGenericParameters == true || returnType.ContainsGenericParameters || parameters.Any(parameter => parameter.ParameterType.ContainsGenericParameters))
 				throw new ArgumentException("The selected operation has unresolved generic storage. Select a closed outer method and concrete operands.");
-			var arguments = parameters.Select(parameter => new InjectionStorage(config.DeclareLocal(parameter.ParameterType))).ToArray();
-			InjectionStorage? receiver = receiverStorage is null ? null : new InjectionStorage(config.DeclareLocal(receiverStorage));
+			var arguments = parameters.Select((parameter, argumentIndex) => parameterStorage
+				? new InjectionStorage(parameter.ParameterType, argumentIndex + (receiverStorage is null ? 0 : 1))
+				: new InjectionStorage(config.DeclareLocal(parameter.ParameterType))).ToArray();
+			InjectionStorage? receiver = receiverStorage is null ? null : parameterStorage
+				? new InjectionStorage(receiverStorage, 0) : new InjectionStorage(config.DeclareLocal(receiverStorage));
 			return new PatchBindingContext(member, returnType, parameters, receiverType, receiver, arguments, new VariableState());
 		}
 	}

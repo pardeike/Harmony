@@ -373,7 +373,7 @@ namespace HarmonyLibTests.Patching
 			var inner = new PatchBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
 				[new InjectionStorage(config.DeclareLocal(typeof(int)))], new VariableState());
 			var outer = new PatchBindingContext(Method(nameof(ValueOuter)), new VariableState());
-			_ = creator.SetupInfixBindings(inner, outer, prefixes, postfixes);
+			_ = creator.SetupInfixBindings(inner, outer, prefixes, postfixes, []);
 			Assert.AreEqual(refresh, inner.refreshArgumentArray);
 			Assert.IsFalse(outer.variables.TryGetValue(InjectionType.ArgsArray, out _));
 		}
@@ -608,7 +608,7 @@ namespace HarmonyLibTests.Patching
 			var inner = new PatchBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
 				[new InjectionStorage(config.DeclareLocal(typeof(int)))], new VariableState());
 			var outer = new PatchBindingContext(Method(nameof(ValueOuter)), new VariableState());
-			Assert.IsEmpty(creator.SetupInfixBindings(inner, outer, [patch], []));
+			Assert.IsEmpty(creator.SetupInfixBindings(inner, outer, [patch], [], []));
 			Assert.IsFalse(inner.variables.TryGetValue(InjectionType.ArgsArray, out _));
 			Assert.IsFalse(outer.variables.TryGetValue(InjectionType.ArgsArray, out _));
 			Assert.IsFalse(creator.EmitPatchCall(patch, inner, false, outer).Any(code => code.opcode == OpCodes.Newarr));

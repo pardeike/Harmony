@@ -106,7 +106,18 @@ namespace HarmonyLib
 		/// <summary>Use Harmony's default argument name handling</summary>
 		Default = 0,
 		/// <summary>Match an original method argument by its exact name</summary>
-		Original = 1
+		Original = 1,
+		/// <summary>Match a preserved compiler-generated captured variable in an Infix scope</summary>
+		Captured = 2
+	}
+
+	/// <summary>Selects the containing method body searched by an Infix</summary>
+	public enum InfixOuterBody
+	{
+		/// <summary>Search the explicitly selected method</summary>
+		Declared = 0,
+		/// <summary>Search a recognized state machine's execution body, or the selected method otherwise</summary>
+		Auto = 1
 	}
 
 	/// <summary>Specifies the type of patch</summary>
@@ -129,6 +140,8 @@ namespace HarmonyLib
 		InnerPrefix,
 		/// <summary>An inner postfix patch</summary>
 		InnerPostfix,
+		/// <summary>An inner finalizer patch</summary>
+		InnerFinalizer,
 	}
 
 	/// <summary>Specifies the type of reverse patch</summary>
@@ -184,20 +197,39 @@ namespace HarmonyLib
 		public HarmonyMethod info = new();
 	}
 
-	/// <summary>Selects calls inside the outer patched method for an inner prefix or postfix</summary>
+	/// <summary>Selects operations inside the outer patched method for an inner prefix, postfix, or finalizer</summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 	public sealed class HarmonyInfix : HarmonyAttribute
 	{
 		internal readonly Type innerDeclaringType;
-		internal readonly string innerName;
+		internal string innerName;
 		internal readonly Type[] innerArguments;
 		internal readonly ArgumentType[] innerVariations;
-		internal readonly InnerTargetKind innerTargetKind;
-		internal readonly string innerMemberName;
+		internal InnerTargetKind innerTargetKind;
+		internal string innerMemberName;
 		internal readonly object innerConstant;
+		internal readonly string bodyInnerName;
+		internal readonly string bodyInnerMemberName;
+		internal readonly InnerTargetKind bodyInnerTargetKind;
 
 		/// <summary>One-based call positions; negative positions count from the end and an empty array selects all calls</summary>
 		public int[] Positions { get; set; } = [];
+
+		/// <summary>Whether to search the selected method or its recognized state-machine body</summary>
+		public InfixOuterBody OuterBody
+		{
+			get => info.infixOuterBody ?? InfixOuterBody.Declared;
+			set
+			{
+				if (value is not InfixOuterBody.Declared and not InfixOuterBody.Auto) throw new ArgumentOutOfRangeException(nameof(value));
+				info.infixOuterBody = value;
+				// Method-only readers require innerName; operation readers require a recognized kind.
+				// Neither may silently install an Auto declaration against the factory method.
+				innerName = value == InfixOuterBody.Auto ? null : bodyInnerName;
+				innerMemberName = value == InfixOuterBody.Auto ? null : bodyInnerMemberName;
+				innerTargetKind = value == InfixOuterBody.Auto ? (InnerTargetKind)int.MinValue : bodyInnerTargetKind;
+			}
+		}
 
 		/// <summary>Selects an unambiguous named method</summary>
 		public HarmonyInfix(Type declaringType, string methodName) : this(declaringType, methodName, (Type[])null, null) { }
@@ -210,7 +242,7 @@ namespace HarmonyLib
 		{
 			info.methodType = (MethodType)int.MinValue;
 			innerDeclaringType = declaringType;
-			innerName = methodName;
+			innerName = bodyInnerName = methodName;
 			innerArguments = argumentTypes;
 			innerVariations = argumentVariations;
 		}
@@ -224,8 +256,8 @@ namespace HarmonyLib
 		{
 			info.methodType = (MethodType)int.MinValue;
 			innerDeclaringType = declaringType;
-			innerMemberName = memberName;
-			innerTargetKind = kind;
+			innerMemberName = bodyInnerMemberName = memberName;
+			innerTargetKind = bodyInnerTargetKind = kind;
 			innerArguments = argumentTypes;
 			// V3 readers require innerName, so they reject generalized declarations before selecting a method of the wrong kind.
 		}
@@ -242,7 +274,7 @@ namespace HarmonyLib
 		public HarmonyInfix(object constant)
 		{
 			info.methodType = (MethodType)int.MinValue;
-			innerTargetKind = InnerTargetKind.Constant;
+			innerTargetKind = bodyInnerTargetKind = InnerTargetKind.Constant;
 			innerConstant = constant;
 		}
 	}
@@ -250,6 +282,18 @@ namespace HarmonyLib
 	/// <summary>Binds an Infix parameter to the containing outer method</summary>
 	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
 	public sealed class HarmonyOuter : Attribute { }
+
+	/// <summary>Allows copying a suitable inner patch body into the generated site; unsupported bodies retain a normal call</summary>
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+	public sealed class HarmonyInline : Attribute
+	{
+		/// <summary>Whether eligible inner patch bodies may be copied</summary>
+		public bool Enabled { get; }
+
+		/// <summary>Sets the optional inner patch inlining hint</summary>
+		/// <param name="enabled">True permits inlining; false keeps the normal call</param>
+		public HarmonyInline(bool enabled = true) => Enabled = enabled;
+	}
 
 	/// <summary>Annotation to define a category for use with PatchCategory</summary>
 	///
@@ -774,7 +818,7 @@ namespace HarmonyLib
 		public HarmonyArgument(string originalName, ArgumentMode mode) : this(originalName)
 		{
 			Mode = mode;
-			if (mode == ArgumentMode.Original)
+			if (mode is ArgumentMode.Original or ArgumentMode.Captured)
 			{
 				OriginalName = LEGACY_REJECTION_NAME;
 				Index = int.MinValue;

@@ -12,6 +12,10 @@
 
 ## [Infix](patching-infix.md)
 
+### [Odd cases and limits](patching-infix-limits.md)
+
+### [Infix and instruction edits](patching-infix-authoring.md)
+
 ## [Transpiler](patching-transpiler.md)
 
 ## [Transpiler - CodeInstruction](patching-transpiler-codes.md)

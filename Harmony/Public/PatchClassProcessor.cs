@@ -136,10 +136,10 @@ namespace HarmonyLib
 		List<MethodInfo> BulkPatch(List<MethodBase> originals, ref MethodBase lastOriginal, bool unpatch)
 		{
 			var jobs = new PatchJobs<MethodInfo>();
+			var seen = new HashSet<(MethodBase, AttributePatch)>();
 			for (var i = 0; i < originals.Count; i++)
 			{
 				lastOriginal = originals[i];
-				var job = jobs.GetJob(lastOriginal);
 				foreach (var patchMethod in patchMethods)
 				{
 					var note = "You cannot combine TargetMethod, TargetMethods or [HarmonyPatchAll] with individual annotations";
@@ -151,7 +151,7 @@ namespace HarmonyLib
 					if (info.argumentTypes is not null)
 						throw new ArgumentException($"{note} [{info.argumentTypes.Description()}]");
 
-					job.AddPatch(patchMethod);
+					AddJobPatch(jobs, lastOriginal, patchMethod, seen);
 				}
 			}
 			foreach (var job in jobs.GetJobs())
@@ -168,14 +168,14 @@ namespace HarmonyLib
 		List<MethodInfo> PatchWithAttributes(ref MethodBase lastOriginal, bool unpatch)
 		{
 			var jobs = new PatchJobs<MethodInfo>();
+			var seen = new HashSet<(MethodBase, AttributePatch)>();
 			foreach (var patchMethod in patchMethods)
 			{
 				lastOriginal = patchMethod.info.GetOriginalMethod();
 				if (lastOriginal is null)
 					throw new ArgumentException($"Undefined target method for patch method {patchMethod.info.method.FullDescription()}");
 
-				var job = jobs.GetJob(lastOriginal);
-				job.AddPatch(patchMethod);
+				AddJobPatch(jobs, lastOriginal, patchMethod, seen);
 			}
 			foreach (var job in jobs.GetJobs())
 			{
@@ -186,6 +186,15 @@ namespace HarmonyLib
 					ProcessPatchJob(job);
 			}
 			return jobs.GetReplacements();
+		}
+
+		static void AddJobPatch(PatchJobs<MethodInfo> jobs, MethodBase requested, AttributePatch patch, HashSet<(MethodBase, AttributePatch)> seen)
+		{
+			var actual = AttributePatch.ResolveOuterMethod(requested, patch.info, patch.type);
+			var job = jobs.GetJob(actual);
+			job.requestedOriginals.Add(requested);
+			// Only Auto coalesces aliases of one physical body; ordinary and declared targets retain their existing multiplicity.
+			if (patch.info.infixOuterBody != InfixOuterBody.Auto || seen.Add((actual, patch))) job.AddPatch(patch);
 		}
 
 		void ProcessPatchJob(PatchJobs<MethodInfo>.Job job)
@@ -208,6 +217,7 @@ namespace HarmonyLib
 						patchInfo.AddFinalizers(instance.Id, [.. job.finalizers]);
 						patchInfo.AddInnerPrefixes(instance.Id, [.. job.innerprefixes]);
 						patchInfo.AddInnerPostfixes(instance.Id, [.. job.innerpostfixes]);
+						patchInfo.AddInnerFinalizers(instance.Id, [.. job.innerfinalizers]);
 
 						replacement = PatchFunctions.UpdateWrapper(job.original, patchInfo);
 					}
@@ -218,6 +228,10 @@ namespace HarmonyLib
 				}
 			}
 			RunMethod<HarmonyCleanup>(ref exception, job.original, exception);
+			if (exception is not null && job.requestedOriginals.Any(method => method != job.original))
+				exception = new HarmonyException($"Cannot patch generated body {job.original.FullDescription()} selected from "
+					+ string.Join(", ", job.requestedOriginals.Where(method => method != job.original).Select(method => method.FullDescription()).ToArray())
+					+ $": {exception.Message}", exception);
 			ReportException(exception, job.original);
 			job.replacement = replacement;
 		}
@@ -239,6 +253,7 @@ namespace HarmonyLib
 					job.finalizers.Do(patch => patchInfo.RemovePatch(patch.method));
 				job.innerprefixes.Do(patch => patchInfo.RemovePatch(patch.method));
 				job.innerpostfixes.Do(patch => patchInfo.RemovePatch(patch.method));
+				job.innerfinalizers.Do(patch => patchInfo.RemovePatch(patch.method));
 
 				_ = PatchFunctions.UpdateWrapper(job.original, patchInfo);
 			}

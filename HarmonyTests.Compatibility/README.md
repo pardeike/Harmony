@@ -87,6 +87,31 @@ That state protection starts after publication. A pre-extension V3 engine discov
 
 Local x64 execution passes all three children on net9/JSON and net8/BinaryFormatter, with no known-limit classifications. The published-2.4.2 net9/JSON matrix also includes one `extensions-released` child covering all three declarations, rejection of extended state before its transpiler runs, and recovery after removal; it passes locally too. Local current/current probes load the same completed binary into two real contexts; CI additionally builds distinct current test identities. A real workflow run is still needed for that exact CI configuration and the Windows lane.
 
+## Feature completion and version-3 state
+
+The completion cases reuse the source-baseline lane. Supply `PRIOR_INFIX_HARMONY` and `PRIOR_INFIX_STATE_VERSION=2` for the operation-capable commit `22d4069`, or version `1` for the method-only baseline above. `V3_HARMONY` remains an alias for the earlier method-only setup. Build the pinned source into a separate output directory; the runner snapshots that completed engine and records its actual hash and identity, but does not build or silently select the baseline source.
+
+```bash
+PRIOR_INFIX_HARMONY=/path/to/22d4069/0Harmony.dll \
+PRIOR_INFIX_STATE_VERSION=2 \
+CURRENT_HARMONY=/path/to/current/0Harmony.dll \
+SECOND_CURRENT_HARMONY=/path/to/second-current/0Harmony.dll \
+RUNTIME_HOST=/path/to/x64/dotnet FRAMEWORK=net9.0 BACKEND=json \
+CASE_FILTER=completion- bash HarmonyTests.Compatibility/run.sh
+```
+
+Run the same `completion-` filter with the method-only source baseline as well. The existing source-baseline workflow job is configured to run completion cases against both pinned baselines on net9/JSON and net8/BinaryFormatter. Each baseline has old-first and current-first children preceded by the ordinary coexistence control. A separate current/current child checks cold version-3 decoding, selector identity, rebuilding and removal.
+
+The tests publish actual inner-finalizer and `ArgumentMode.Captured` patches on a generated lambda body, then require the previous reader to reject version 3 during deserialization, rebuild and removal before the installed counter transpiler runs. Bytes, replacement mappings, version and callback counters must remain unchanged, and the installed body still executes. Removing the last version-3 record restores version 2 when an operation selector survives, then version 1 when only the method selector survives, then unframed ordinary state. The old engine must rebuild and execute each state it supports.
+
+Separate declaration cases materialize the current attributes before asking an older Infix engine to discover them. `AutoMethod` and `AutoConstant` must reject through their old-known selector fields; `FinalizerDeclaration` must reject its unsupported role, and `CapturedDeclaration` must reject its argument marker. Loader errors do not count as these deliberate rejections. Each failure must leave state and execution unchanged. The current engine must then install and execute the same declaration; Auto must publish against the actual iterator body, not the factory.
+
+The current/current child also uses an outer body with a real `finally` and a state type owned by the privately loaded callback assembly. An ordinary prefix creates that state, an inner finalizer changes it, and an ordinary postfix observes the change after the original `finally`. Ordinary processor rebuilds by both engines must preserve the result and trace; removal restores the unpatched body.
+
+The runner builds a second callback fixture with the same assembly full name but a different module version ID (MVID). Both inner-finalizer callbacks must execute their own implementations, including after rebuilds by either engine. A separate ordinary-finalizer case deliberately puts both callback identities into a wrapper with a real exception table, where Cecil's assembly references cannot distinguish them. The second registration must reject rather than bind the wrong callback, leaving the published state, mappings, counters and previously installed wrapper intact. This is distinct from the duplicate-MVID rejection tested elsewhere.
+
+These are executable assertions, not a claim that the new lanes have already passed on every runtime. Consult the generated reports for the tested engines, backends and runtime hosts.
+
 ## Mono and .NET Framework
 
 The host also builds for net472 and uses one application domain with explicit `Assembly.LoadFile` plugin loading and owning-plugin dependency resolution. `MONO_PLUGIN_LOAD_MODE=bytes` selects the separately recorded `Assembly.Load(byte[])` probe. It reports the actual provider assemblies, so runtime assembly unification cannot stand in for two-engine proof. There is no CoreCLR contextual-reflection setting on this path.

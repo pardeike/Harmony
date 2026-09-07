@@ -19,6 +19,7 @@ namespace HarmonyLib
 		internal readonly List<MethodInfo> finalizers;
 		internal readonly List<Infix> innerprefixes;
 		internal readonly List<Infix> innerpostfixes;
+		internal readonly List<Infix> innerfinalizers;
 		internal readonly bool debug;
 
 		internal MethodCreatorConfig(
@@ -30,6 +31,7 @@ namespace HarmonyLib
 			List<MethodInfo> finalizers,
 			List<Infix> innerprefixes,
 			List<Infix> innerpostfixes,
+			List<Infix> innerfinalizers,
 			bool debug)
 		{
 			this.original = original;
@@ -40,7 +42,24 @@ namespace HarmonyLib
 			this.finalizers = finalizers;
 			this.innerprefixes = innerprefixes;
 			this.innerpostfixes = innerpostfixes;
+			this.innerfinalizers = innerfinalizers;
 			this.debug = debug;
+		}
+
+		internal MethodCreatorConfig(MethodBase original, MethodBase source, List<MethodInfo> prefixes, List<MethodInfo> postfixes,
+			List<MethodInfo> transpilers, List<MethodInfo> finalizers, List<Infix> innerprefixes, List<Infix> innerpostfixes, bool debug)
+			: this(original, source, prefixes, postfixes, transpilers, finalizers, innerprefixes, innerpostfixes, [], debug) { }
+
+		internal MethodCreatorConfig(MethodCreatorConfig parent, string name, Type returnType)
+			: this(parent.original, null, [], [], [], [], parent.innerprefixes, parent.innerpostfixes, parent.innerfinalizers, parent.debug)
+		{
+			patch = new DynamicMethodDefinition(name, returnType, []);
+			il = patch.GetILGenerator();
+			this.returnType = returnType;
+			injections = parent.injections;
+			instructions = [];
+			originalVariables = parent.originalVariables;
+			localVariables = new VariableState();
 		}
 
 		internal bool Prepare()
@@ -61,35 +80,41 @@ namespace HarmonyLib
 		internal void AddLocal(InjectionType type, LocalBuilder local) => localVariables.Add(type, local);
 		internal void AddLocal(string name, LocalBuilder local) => localVariables.Add(name, local);
 		internal LocalBuilder GetLocal(InjectionType type) => localVariables[type];
-		internal LocalBuilder GetLocal(string name) => localVariables[name];
+		internal InjectionStorage GetLocal(string name) => localVariables[name];
 		internal bool HasLocal(string name) => localVariables.TryGetValue(name, out _);
 
 		internal LocalBuilder DeclareLocal(Type type, bool isPinned = false) => il.DeclareLocal(type, isPinned);
 		internal Label DefineLabel() => il.DefineLabel();
-		internal MethodInfo GenerateMethod()
+		internal MethodInfo GenerateMethod(bool structuredHelper = false)
 		{
 			var body = patch.Definition.Body;
 			// Match DynamicMethod's default for transpiler-declared and Harmony-generated locals on either backend.
 			body.InitLocals = true;
+			// Synthetic helpers contain only Harmony's structured finalizer regions, not imported outer handlers.
+			// DynamicMethod tokens retain the exact runtime members, including callbacks in private load contexts.
+			if (structuredHelper) return DMDEmitDynamicMethodGenerator.Generate(patch);
 			// MonoMod's DynamicMethod calli emitter subtracts the arguments but omits the returned stack value.
 			// Cecil calculates the complete stack depth, which older JITs require even when newer JITs accept the undercount.
 			var returnsFromCalli = body.Instructions.Any(instruction => instruction.OpCode == Mono.Cecil.Cil.OpCodes.Calli
 				&& instruction.Operand is Mono.Cecil.CallSite call && ReturnsValue(call));
 			if (body.ExceptionHandlers.Count == 0 && !returnsFromCalli) return patch.Generate();
 			var proxies = new Dictionary<MethodInfo, Mono.Cecil.MethodReference>();
+			var proxyAssemblies = new List<Assembly>();
 			foreach (var instruction in body.Instructions)
 			{
 				if (instruction.Operand is not DynamicMethodReference dynamicReference) continue;
 				var method = dynamicReference.DynamicMethod;
 				if (!proxies.TryGetValue(method, out var proxy))
 				{
-					proxy = patch.Definition.Module.ImportReference(DynamicMethodProxy.Create(method));
+					var proxyMethod = DynamicMethodProxy.Create(method);
+					proxy = patch.Definition.Module.ImportReference(proxyMethod);
+					proxyAssemblies.Add(proxyMethod.Module.Assembly);
 					proxies.Add(method, proxy);
 				}
 				instruction.Operand = proxy;
 			}
 			// Preserve the emitted exception table instead of reconstructing ranges and handler-entry labels through reflection emission.
-			return DMDCecilGenerator.Generate(patch);
+			return GeneratedAssemblyLoader.Generate(patch, proxyAssemblies);
 
 			static bool ReturnsValue(Mono.Cecil.CallSite call)
 			{
@@ -120,7 +145,7 @@ namespace HarmonyLib
 
 		internal MethodBase MethodBase => source ?? original;
 		internal IEnumerable<MethodInfo> Fixes => prefixes.Union(postfixes).Union(finalizers);
-		internal IEnumerable<Infix> InnerFixes => innerprefixes.Union(innerpostfixes);
+		internal IEnumerable<Infix> InnerFixes => innerprefixes.Union(innerpostfixes).Union(innerfinalizers);
 		internal IEnumerable<InjectedParameter> InjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown, bool skipFirst = false)
 		{
 			if (injections.TryGetValue(fix, out var list))
@@ -136,7 +161,8 @@ namespace HarmonyLib
 		internal IEnumerable<InjectedParameter> OuterInjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown)
 			=> Fixes.Contains(fix) ? InjectionsFor(fix, type) : InfixInjectionsFor(fix, type).Where(injection => injection.outer);
 		IEnumerable<InjectedParameter> InfixInjectionsFor(MethodInfo fix, InjectionType type)
-			=> InjectionsFor(fix, type, fix.ReturnType != typeof(void) && !innerprefixes.Any(prefix => prefix.OuterMethod == fix));
+			=> InjectionsFor(fix, type, fix.ReturnType != typeof(void) && innerpostfixes.Any(postfix => postfix.OuterMethod == fix)
+				&& !innerprefixes.Any(prefix => prefix.OuterMethod == fix) && !innerfinalizers.Any(finalizer => finalizer.OuterMethod == fix));
 		internal bool AnyInfixHasOuter(InjectionType type) => InnerFixes.Any(fix => InfixInjectionsFor(fix.OuterMethod, type).Any(injection => injection.outer));
 		internal void WithFixes(Action<MethodInfo> action)
 		{

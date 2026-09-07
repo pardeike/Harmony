@@ -262,7 +262,7 @@ namespace HarmonyLib
 			{ OpCodes.Br_S, OpCodes.Br },
 			{ OpCodes.Leave_S, OpCodes.Leave }
 		};
-		static OpCode ReplaceShortJumps(OpCode opcode)
+		internal static OpCode ReplaceShortJumps(OpCode opcode)
 		{
 			foreach (var pair in allJumpCodes)
 				if (opcode == pair.Key)

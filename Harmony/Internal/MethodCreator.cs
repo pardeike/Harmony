@@ -12,7 +12,7 @@ namespace HarmonyLib
 	{
 		internal MethodCreatorConfig config;
 
-		internal MethodCreator(MethodCreatorConfig config)
+		internal MethodCreator(MethodCreatorConfig config, bool prepare = true)
 		{
 			if (config.original is null)
 				throw new ArgumentNullException("config.original");
@@ -22,7 +22,7 @@ namespace HarmonyLib
 				FileLog.LogBuffered($"### Patch: {config.original.FullDescription()}");
 				FileLog.FlushBuffer();
 			}
-			if (config.Prepare() == false)
+			if (prepare && config.Prepare() == false)
 				throw new Exception("Could not create replacement method");
 		}
 
@@ -31,6 +31,7 @@ namespace HarmonyLib
 			config.originalVariables = this.DeclareOriginalLocalVariables(config.MethodBase);
 			config.localVariables = new VariableState();
 			config.bindingContext = new PatchBindingContext(config.original, config.localVariables);
+			config.bindingContext.originalLocals = [.. config.originalVariables.Select(local => new InjectionStorage(local))];
 
 			if (config.Fixes.Any() && config.returnType != typeof(void))
 			{
@@ -78,17 +79,17 @@ namespace HarmonyLib
 				if (declaringType is null)
 					return;
 				var varName = declaringType.AssemblyQualifiedName;
-				_ = config.localVariables.TryGetValue(varName, out var maybeLocal);
+				var hasLocal = config.localVariables.TryGetValue(varName, out var maybeLocal);
 				foreach (var injection in config.OuterInjectionsFor(fix, InjectionType.State))
 				{
 					var parameterType = injection.parameterInfo.ParameterType;
 					var type = parameterType.IsByRef ? parameterType.GetElementType() : parameterType;
-					if (maybeLocal != null)
+					if (hasLocal)
 					{
-						if (injection.outer ? type != maybeLocal.LocalType : !type.IsAssignableFrom(maybeLocal.LocalType))
+						if (injection.outer ? type != maybeLocal.type : !type.IsAssignableFrom(maybeLocal.type))
 						{
 							var message = $"__state type mismatch in patch \"{fix.DeclaringType.FullName}.{fix.Name}\": " +
-							$"previous __state was declared as \"{maybeLocal.LocalType.FullName}\" but this patch expects \"{type.FullName}\"";
+								$"previous __state was declared as \"{maybeLocal.type.FullName}\" but this patch expects \"{type.FullName}\"";
 							throw new HarmonyException(message);
 						}
 						else
@@ -99,7 +100,8 @@ namespace HarmonyLib
 					var privateStateVariable = config.DeclareLocal(type);
 					config.AddLocal(varName, privateStateVariable);
 					config.AddCodes(this.GenerateVariableInit(privateStateVariable));
-					maybeLocal = privateStateVariable;
+					maybeLocal = new InjectionStorage(privateStateVariable);
+					hasLocal = true;
 				}
 			});
 
@@ -147,50 +149,13 @@ namespace HarmonyLib
 
 			if (config.finalizers.Count > 0)
 			{
-				var exceptionVariable = config.GetLocal(InjectionType.Exception);
-
 				if (needsToStorePassthroughResult)
 				{
 					config.AddCode(Stloc[config.resultVariable]);
 					config.AddCode(Ldloc[config.resultVariable]);
 				}
 
-				_ = AddFinalizers(false);
-				config.AddCode(Ldc_I4_1);
-				config.AddCode(Stloc[config.finalizedVariable]);
-				var noExceptionLabel1 = config.DefineLabel();
-				config.AddCode(Ldloc[exceptionVariable]);
-				config.AddCode(Brfalse[noExceptionLabel1]);
-				config.AddCode(Ldloc[exceptionVariable]);
-				config.AddCode(Throw);
-				config.AddCode(Nop.WithLabels(noExceptionLabel1));
-
-				// end try, begin catch
-				config.AddCode(this.MarkBlock(ExceptionBlockType.BeginCatchBlock));
-				config.AddCode(Stloc[exceptionVariable]);
-
-				config.AddCode(Ldloc[config.finalizedVariable]);
-				var endFinalizerLabel = config.DefineLabel();
-				config.AddCode(Brtrue[endFinalizerLabel]);
-
-				var rethrowPossible = AddFinalizers(true);
-
-				config.AddCode(Nop.WithLabels(endFinalizerLabel));
-
-				var noExceptionLabel2 = config.DefineLabel();
-				config.AddCode(Ldloc[exceptionVariable]);
-				config.AddCode(Brfalse[noExceptionLabel2]);
-				if (rethrowPossible)
-					config.AddCode(Rethrow);
-				else
-				{
-					config.AddCode(Ldloc[exceptionVariable]);
-					config.AddCode(Throw);
-				}
-				config.AddCode(Nop.WithLabels(noExceptionLabel2));
-
-				// end catch
-				config.AddCode(this.MarkBlock(ExceptionBlockType.EndExceptionBlock));
+				config.AddCodes(EmitFinalization(config.finalizers, config.bindingContext, config.finalizedVariable));
 
 				if (config.resultVariable is not null)
 					config.AddCode(Ldloc[config.resultVariable]);
@@ -279,31 +244,55 @@ namespace HarmonyLib
 			return codes;
 		}
 
-		internal bool AddFinalizers(bool catchExceptions)
+		internal List<CodeInstruction> EmitFinalization(IList<MethodInfo> finalizers, PatchBindingContext context,
+			LocalBuilder finalized, PatchBindingContext outerContext = null)
 		{
-			var rethrowPossible = true;
-			config.finalizers.Do(fix =>
-			{
-				if (catchExceptions)
-					config.AddCode(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
+			var exception = context.variables[InjectionType.Exception];
+			var noException = config.DefineLabel();
+			var endFinalizers = config.DefineLabel();
+			var suppressed = config.DefineLabel();
+			var (codes, _) = EmitFinalizers(finalizers, context, false, outerContext);
+			codes.AddRange([Ldc_I4_1, Stloc[finalized], Ldloc[exception], Brfalse[noException], Ldloc[exception], Throw,
+				Nop.WithLabels(noException), this.MarkBlock(ExceptionBlockType.BeginCatchBlock), Stloc[exception],
+				Ldloc[finalized], Brtrue[endFinalizers]]);
+			var (catchCodes, rethrowPossible) = EmitFinalizers(finalizers, context, true, outerContext);
+			codes.AddRange(catchCodes);
+			codes.AddRange([Nop.WithLabels(endFinalizers), Ldloc[exception], Brfalse[suppressed]]);
+			if (rethrowPossible) codes.Add(Rethrow);
+			else codes.AddRange([Ldloc[exception], Throw]);
+			codes.AddRange([Nop.WithLabels(suppressed), this.MarkBlock(ExceptionBlockType.EndExceptionBlock)]);
+			return codes;
+		}
 
-				config.AddCodes(this.EmitPatchCall(fix, config.bindingContext, false));
+		internal (List<CodeInstruction> codes, bool rethrowPossible) EmitFinalizers(IEnumerable<MethodInfo> finalizers,
+			PatchBindingContext context, bool catchExceptions, PatchBindingContext outerContext = null)
+		{
+			var codes = new List<CodeInstruction>();
+			var rethrowPossible = true;
+			foreach (var fix in finalizers)
+			{
+				if (outerContext != null && fix.ReturnType != typeof(void) && !typeof(Exception).IsAssignableFrom(fix.ReturnType))
+					throw new ArgumentException($"Infix finalizer {fix.FullDescription()} must return void or an Exception.");
+				if (catchExceptions)
+					codes.Add(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
+
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext));
 
 				if (fix.ReturnType != typeof(void))
 				{
-					config.AddCode(Stloc[config.GetLocal(InjectionType.Exception)]);
+					codes.Add(Stloc[context.variables[InjectionType.Exception]]);
 					rethrowPossible = false;
 				}
 
 				if (catchExceptions)
 				{
-					config.AddCode(this.MarkBlock(ExceptionBlockType.BeginCatchBlock));
-					config.AddCode(Pop);
-					config.AddCode(this.MarkBlock(ExceptionBlockType.EndExceptionBlock));
+					codes.Add(this.MarkBlock(ExceptionBlockType.BeginCatchBlock));
+					codes.Add(Pop);
+					codes.Add(this.MarkBlock(ExceptionBlockType.EndExceptionBlock));
 				}
-			});
+			}
 
-			return rethrowPossible;
+			return (codes, rethrowPossible);
 		}
 
 		IEnumerable<CodeInstruction> AddInfixes(IEnumerable<CodeInstruction> instructions)

@@ -84,7 +84,7 @@ namespace HarmonyLib
 			if (!patchInfo.HasInfixes) return payload;
 			var bytes = new byte[infixHeader.Length + 2 + payload.Length];
 			Buffer.BlockCopy(infixHeader, 0, bytes, 0, infixHeader.Length);
-			bytes[infixHeader.Length] = patchInfo.RequiresInfixV2() ? (byte)2 : (byte)1;
+			bytes[infixHeader.Length] = patchInfo.RequiresInfixV3() ? (byte)3 : patchInfo.RequiresInfixV2() ? (byte)2 : (byte)1;
 			bytes[infixHeader.Length + 1] = backend;
 			Buffer.BlockCopy(payload, 0, bytes, infixHeader.Length + 2, payload.Length);
 			return bytes;
@@ -133,7 +133,7 @@ namespace HarmonyLib
 				if (bytes.Length <= infixHeader.Length + 2 || !bytes.Take(infixHeader.Length).SequenceEqual(infixHeader))
 					throw new SerializationException("Malformed or truncated Harmony Infix state header");
 				version = bytes[infixHeader.Length];
-				if (version != 1 && version != 2) throw new SerializationException($"Unsupported Harmony Infix state version {version}");
+				if (version is < 1 or > 3) throw new SerializationException($"Unsupported Harmony Infix state version {version}");
 				backend = bytes[infixHeader.Length + 1];
 				if (backend != 1 && backend != 2) throw new SerializationException($"Unsupported Harmony Infix serializer {backend}");
 				var payload = new byte[bytes.Length - infixHeader.Length - 2];
@@ -141,14 +141,17 @@ namespace HarmonyLib
 				bytes = payload;
 			}
 #if NET5_0_OR_GREATER
-			if (enveloped && backend == 1) ValidateJsonEnvelope(bytes);
+			if (enveloped && backend == 1) ValidateJsonEnvelope(bytes, version);
 #endif
 			var result = DeserializePayload(bytes, backend);
 			if (result is null) throw new SerializationException("Patch state cannot be null");
 			result.NormalizeLegacyArrays();
 			if (enveloped && !result.HasInfixes) throw new SerializationException("Harmony Infix state must contain at least one inner patch");
-			var allPatches = result.prefixes.Concat(result.postfixes).Concat(result.transpilers).Concat(result.finalizers).Concat(result.innerprefixes).Concat(result.innerpostfixes).ToArray();
-			if (version != 2 && (allPatches.Any(patch => patch.innerTarget is not null) || result.RequiresInfixV2(allowUnresolvedCallbacks: true)))
+			var allPatches = result.prefixes.Concat(result.postfixes).Concat(result.transpilers).Concat(result.finalizers)
+				.Concat(result.innerprefixes).Concat(result.innerpostfixes).Concat(result.innerfinalizers).ToArray();
+			if (version < 3 && result.RequiresInfixV3(allowUnresolvedCallbacks: true))
+				throw new SerializationException("Inner finalizers and captured-variable binding require Harmony Infix state version 3");
+			if (version < 2 && (allPatches.Any(patch => patch.innerTarget is not null) || result.RequiresInfixV2(allowUnresolvedCallbacks: true)))
 				throw new SerializationException("Extended Infix targets and __originalMember binding require Harmony Infix state version 2");
 			// A newer envelope can carry only method selectors. Unresolvable callbacks remain removable;
 			// ValidateSurvivingMetadata still rejects rebuilding them before any transpiler can run.
@@ -162,15 +165,20 @@ namespace HarmonyLib
 		}
 
 #if NET5_0_OR_GREATER
-		static void ValidateJsonEnvelope(byte[] bytes)
+		static void ValidateJsonEnvelope(byte[] bytes, int version)
 		{
 			using var document = JsonDocument.Parse(bytes);
 			if (document.RootElement.ValueKind != JsonValueKind.Object) throw new SerializationException("Harmony Infix state must be a JSON object");
 			string[] required = ["prefixes", "postfixes", "transpilers", "finalizers", "innerprefixes", "innerpostfixes", "VersionCount"];
+			if (version == 3) required = [.. required, "innerfinalizers"];
 			var found = new HashSet<string>();
 			foreach (var property in document.RootElement.EnumerateObject())
 			{
-				if (!required.Contains(property.Name)) continue;
+				if (!required.Contains(property.Name))
+				{
+					if (version == 3) throw new SerializationException($"Unknown Harmony Infix state property '{property.Name}'");
+					continue;
+				}
 				if (!found.Add(property.Name)) throw new SerializationException($"Duplicate Harmony Infix state property '{property.Name}'");
 				if (property.Name == "VersionCount")
 				{

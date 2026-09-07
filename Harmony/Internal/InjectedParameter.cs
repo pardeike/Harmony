@@ -45,7 +45,7 @@ namespace HarmonyLib
 			outer = !method.IsDynamicMethod() && parameterInfo.GetCustomAttributes(true).Any(attribute => attribute.GetType().FullName == "HarmonyLib.HarmonyOuter");
 			var arg = parameterInfo.GetArgumentAttribute();
 			argumentMode = arg?.Mode ?? ArgumentMode.Default;
-			if (argumentMode == ArgumentMode.Original)
+			if (argumentMode is ArgumentMode.Original or ArgumentMode.Captured)
 			{
 				realName = arg.NewName;
 				injectionType = InjectionType.Unknown;
@@ -63,8 +63,8 @@ namespace HarmonyLib
 			if (method.DeclaringType is not null)
 				baseArgs = baseArgs.Union(method.DeclaringType.GetArgumentAttributes());
 			if (arg != null)
-				return arg.OriginalName ?? parameterInfo.Name;
-			return baseArgs.GetRealName(parameterInfo.Name, null) ?? parameterInfo.Name;
+				return arg.OriginalName ?? parameterInfo.Name ?? string.Empty;
+			return baseArgs.GetRealName(parameterInfo.Name, null) ?? parameterInfo.Name ?? string.Empty;
 		}
 
 		static readonly Dictionary<string, InjectionType> types = new()

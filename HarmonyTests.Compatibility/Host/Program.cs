@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace HarmonyCompatibility;
 
-internal sealed record Options(string Case, string EngineA, string FixtureA, string EngineB = "", string FixtureB = "", string Backend = "json", string Feature = "", string Framework = "net9.0", string Variant = "", string Loader = "private", bool ContextualReflection = false, bool RequireCoexistence = false);
+internal sealed record Options(string Case, string EngineA, string FixtureA, string EngineB = "", string FixtureB = "", string Backend = "json", string Feature = "", string Framework = "net9.0", string Variant = "", string Loader = "private", bool ContextualReflection = false, bool RequireCoexistence = false, int PriorInfixStateVersion = 0, string SecondFeature = "");
 
 internal static class Program
 {
@@ -87,6 +87,7 @@ internal static class Program
 		var newFixture = Path.GetFullPath(values["--new-fixture"]);
 		var secondFixture = values.GetValueOrDefault("--second-fixture", newFixture);
 		var feature = values.GetValueOrDefault("--feature", "");
+		var secondFeature = values.GetValueOrDefault("--second-feature", "");
 		var framework = values["--framework"];
 		var backend = values.GetValueOrDefault("--backend", "json");
 		var directory = Path.GetFullPath(values["--output"]);
@@ -119,11 +120,19 @@ internal static class Program
 			cases.Add(("duplicate-module", new("duplicate-module", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
 			foreach (var variant in new[] { "before-registration", "after-install" })
 				cases.Add(("duplicate-patch-module-" + variant, new("duplicate-patch-module", current, newFixture, secondCurrent, secondFixture, backend, feature, framework, variant)));
-			if (values.GetValueOrDefault("--v3-baseline", "0") == "1")
+			var priorInfixVersion = values.GetValueOrDefault("--prior-infix-state-version", values.GetValueOrDefault("--v3-baseline", "0"));
+			if (priorInfixVersion != "0")
 			{
+				Check.That(priorInfixVersion is "1" or "2", "The prior Infix baseline state version must be 1 or 2.");
 				cases.Add(("extensions-cold", new("extensions-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
-				cases.Add(("extensions-v3-old-first", new("extensions-v3", old, oldFixture, current, newFixture, backend, feature, framework)));
-				cases.Add(("extensions-v3-new-first", new("extensions-v3", current, newFixture, old, oldFixture, backend, feature, framework, "new-first")));
+				if (priorInfixVersion == "1")
+				{
+					cases.Add(("extensions-v3-old-first", new("extensions-v3", old, oldFixture, current, newFixture, backend, feature, framework)));
+					cases.Add(("extensions-v3-new-first", new("extensions-v3", current, newFixture, old, oldFixture, backend, feature, framework, "new-first")));
+				}
+				cases.Add(("completion-cold", new("completion-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework, SecondFeature: secondFeature)));
+				cases.Add(("completion-prior-v" + priorInfixVersion + "-old-first", new("completion-prior", old, oldFixture, current, newFixture, backend, feature, framework, PriorInfixStateVersion: int.Parse(priorInfixVersion))));
+				cases.Add(("completion-prior-v" + priorInfixVersion + "-new-first", new("completion-prior", current, newFixture, old, oldFixture, backend, feature, framework, "new-first", PriorInfixStateVersion: int.Parse(priorInfixVersion))));
 			}
 			else if (framework == "net9.0" && backend == "json" && AssemblyName.GetAssemblyName(old).Version == new Version(2, 4, 2, 0))
 				cases.Add(("extensions-released", new("extensions-released", old, oldFixture, current, newFixture, backend, feature, framework)));

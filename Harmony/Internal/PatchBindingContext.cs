@@ -13,12 +13,14 @@ namespace HarmonyLib
 		internal readonly Type type;
 		readonly int argumentIndex;
 		readonly LocalBuilder local;
+		readonly Func<InjectionStorage> resolve;
 
 		internal InjectionStorage(Type type, int argumentIndex)
 		{
 			this.type = type;
 			this.argumentIndex = argumentIndex;
 			local = null;
+			resolve = null;
 		}
 
 		internal InjectionStorage(LocalBuilder local)
@@ -26,11 +28,21 @@ namespace HarmonyLib
 			type = local.LocalType;
 			argumentIndex = -1;
 			this.local = local;
+			resolve = null;
 		}
 
-		internal CodeInstruction Load() => local is null ? Ldarg[argumentIndex] : Ldloc[local];
-		internal CodeInstruction LoadAddress() => local is null ? Ldarga[argumentIndex] : Ldloca[local];
-		internal CodeInstruction Store() => local is null ? Starg[argumentIndex] : Stloc[local];
+		// A helper materializes a caller-backed parameter only when the binder actually uses its storage.
+		internal InjectionStorage(Type type, Func<InjectionStorage> resolve)
+		{
+			this.type = type;
+			this.resolve = resolve;
+			argumentIndex = -1;
+			local = null;
+		}
+
+		internal CodeInstruction Load() => resolve != null ? resolve().Load() : local is null ? Ldarg[argumentIndex] : Ldloc[local];
+		internal CodeInstruction LoadAddress() => resolve != null ? resolve().LoadAddress() : local is null ? Ldarga[argumentIndex] : Ldloca[local];
+		internal CodeInstruction Store() => resolve != null ? resolve().Store() : local is null ? Starg[argumentIndex] : Stloc[local];
 	}
 
 	internal readonly struct BindingParameter(string name, Type type, bool isOut = false, bool isRetval = false)
@@ -53,9 +65,11 @@ namespace HarmonyLib
 		internal readonly BindingParameter[] parameters;
 		internal readonly string[] parameterNames;
 		internal readonly InjectionStorage? receiver;
+		internal Type receiverParameterType;
 		internal readonly InjectionStorage[] arguments;
 		internal readonly VariableState variables;
 		internal bool refreshArgumentArray;
+		internal InjectionStorage[] originalLocals;
 		internal string Description => member is MethodBase method ? method.FullDescription() : member?.ToString() ?? "constant load";
 
 		internal PatchBindingContext(MethodBase method, VariableState variables)
@@ -70,6 +84,7 @@ namespace HarmonyLib
 			arguments = [.. parameters.Select((parameter, index) => new InjectionStorage(parameter.ParameterType, index + (method.IsStatic ? 0 : 1)))];
 			if (!method.IsStatic)
 				receiver = new InjectionStorage(receiverType.IsValueType ? receiverType.MakeByRefType() : receiverType, 0);
+			receiverParameterType = receiver?.type;
 		}
 
 		internal PatchBindingContext(MethodBase method, Type receiverType, InjectionStorage? receiver, InjectionStorage[] arguments, VariableState variables)
@@ -82,6 +97,7 @@ namespace HarmonyLib
 			isStatic = receiver is null;
 			this.receiverType = receiverType;
 			this.receiver = receiver;
+			receiverParameterType = receiver?.type;
 			this.arguments = arguments;
 			this.variables = variables;
 			this.returnType = returnType;

@@ -2,12 +2,41 @@ using HarmonyLib;
 using NUnit.Framework;
 using Patching_Infix;
 using System;
+using System.Linq;
 
 namespace HarmonyLibTests.Patching
 {
 	[TestFixture, NonParallelizable]
 	public class InfixDocumentation : TestLogger
 	{
+		[Test]
+		public void Compiled_finalizer_example_preserves_the_waiting_outer_value()
+		{
+			var harmony = new Harmony("test.infix.docs.finalizer." + Guid.NewGuid());
+			try
+			{
+				harmony.CreateClassProcessor(typeof(RecoverPatch)).Patch();
+				Assert.AreEqual(8, RecoveringOuter.Total("3"));
+				Assert.AreEqual(5, RecoveringOuter.Total("invalid"));
+				Assert.Throws<ArgumentNullException>(() => RecoveringOuter.Total(null));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
+		public void Compiled_auto_example_changes_the_live_iterator_field()
+		{
+			var harmony = new Harmony("test.infix.docs.generated." + Guid.NewGuid());
+			try
+			{
+				harmony.CreateClassProcessor(typeof(SequencePatch)).Patch();
+				Assert.That(Sequence.Count(5).ToArray(), Is.EqualTo(new[] { 5, 1 }));
+				Assert.That(Sequence.Count(3).ToArray(), Is.EqualTo(new[] { 3, 1 }));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+			Assert.That(Sequence.Count(3).ToArray(), Is.EqualTo(new[] { 3, 2, 1 }));
+		}
+
 		[Test]
 		public void Compiled_capture_example_bridges_constructor_and_literal_sites()
 		{
