@@ -5,9 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-#if NET5_0_OR_GREATER
-using System.Text.Json;
-#endif
 
 namespace HarmonyLibTests.Patching
 {
@@ -138,34 +135,58 @@ namespace HarmonyLibTests.Patching
 		}
 
 #if NET5_0_OR_GREATER
+		static byte[] SerializeJson(PatchInfo state)
+		{
+#if !NET9_0_OR_GREATER
+			var previous = PatchInfoSerialization.useBinaryFormatter;
+			try
+			{
+				PatchInfoSerialization.useBinaryFormatter = false;
+#endif
+				// Use Harmony's serializer, including its internalized JSON attributes in the fat assembly.
+				return state.Serialize();
+#if !NET9_0_OR_GREATER
+			}
+			finally
+			{
+				PatchInfoSerialization.useBinaryFormatter = previous;
+			}
+#endif
+		}
+
 		[Test]
 		public void Ordinary_json_retains_its_exact_shape_and_captured_state_includes_the_empty_third_role()
 		{
 			Assert.AreEqual("{\"prefixes\":[],\"postfixes\":[],\"transpilers\":[],\"finalizers\":[],\"innerprefixes\":[],\"innerpostfixes\":[],\"VersionCount\":0}",
-				JsonSerializer.Serialize(new PatchInfo()));
+				Encoding.UTF8.GetString(SerializeJson(new PatchInfo())));
 			var state = new PatchInfo();
 			state.AddInnerPrefixes("owner", Fix(nameof(Capture)));
-			Assert.That(JsonSerializer.Serialize(state), Does.Contain("\"innerfinalizers\":[]"));
+			Assert.That(Encoding.UTF8.GetString(SerializeJson(state)), Does.Contain("\"innerfinalizers\":[]"));
 			state.RemoveInnerPrefix("owner");
-			Assert.That(JsonSerializer.Serialize(state), Does.Not.Contain("innerfinalizers"));
+			Assert.That(Encoding.UTF8.GetString(SerializeJson(state)), Does.Not.Contain("innerfinalizers"));
 		}
 
-		[TestCase("missing")]
-		[TestCase("null")]
-		[TestCase("unknown-role")]
-		public void Version_three_json_rejects_missing_or_invalid_role_data(string damage)
+		[TestCase("missing", "Harmony Infix state is missing required properties: innerfinalizers")]
+		[TestCase("null", "Harmony Infix state property 'innerfinalizers' must be an array")]
+		[TestCase("unknown-role", "Unknown Harmony Infix state property 'innertranspilers'")]
+		public void Version_three_json_rejects_missing_or_invalid_role_data(string damage, string expectedMessage)
 		{
 			var state = new PatchInfo();
 			state.AddInnerPrefixes("owner", Fix(nameof(Capture)));
-			var json = JsonSerializer.Serialize(state);
-			json = damage switch
+			var bytes = SerializeJson(state);
+			Assert.AreEqual(3, bytes[14]);
+			Assert.AreEqual(1, bytes[15]);
+			Assert.AreEqual(Method(nameof(Capture)), PatchInfoSerialization.Deserialize(bytes).innerprefixes.Single().PatchMethod);
+			var json = Encoding.UTF8.GetString(bytes, 16, bytes.Length - 16);
+			var damagedJson = damage switch
 			{
 				"missing" => json.Replace("\"innerfinalizers\":[],", ""),
 				"null" => json.Replace("\"innerfinalizers\":[]", "\"innerfinalizers\":null"),
 				_ => json.Replace("\"innerfinalizers\":[]", "\"innerfinalizers\":[],\"innertranspilers\":[]")
 			};
-			var bytes = Encoding.ASCII.GetBytes("HARMONY-INFIX\0").Concat(new byte[] { 3, 1 }).Concat(Encoding.UTF8.GetBytes(json)).ToArray();
-			Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(bytes));
+			Assert.AreNotEqual(json, damagedJson, "The fixture must damage the intended role data.");
+			bytes = bytes.Take(16).Concat(Encoding.UTF8.GetBytes(damagedJson)).ToArray();
+			Assert.AreEqual(expectedMessage, Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(bytes)).Message);
 		}
 #endif
 	}

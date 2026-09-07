@@ -92,7 +92,14 @@ namespace HarmonyLib
 			body.InitLocals = true;
 			// Synthetic helpers contain only Harmony's structured finalizer regions, not imported outer handlers.
 			// DynamicMethod tokens retain the exact runtime members, including callbacks in private load contexts.
-			if (structuredHelper) return DMDEmitDynamicMethodGenerator.Generate(patch);
+			if (structuredHelper)
+			{
+				var method = (DynamicMethod)DMDEmitDynamicMethodGenerator.Generate(patch);
+				// Helpers explicitly initialize every local that can be read before assignment.
+				// Older optimized JITs otherwise expose an uninitialized result after a caught operation fault.
+				method.InitLocals = false;
+				return method;
+			}
 			// MonoMod's DynamicMethod calli emitter subtracts the arguments but omits the returned stack value.
 			// Cecil calculates the complete stack depth, which older JITs require even when newer JITs accept the undercount.
 			var returnsFromCalli = body.Instructions.Any(instruction => instruction.OpCode == Mono.Cecil.Cil.OpCodes.Calli

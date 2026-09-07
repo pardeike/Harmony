@@ -91,7 +91,14 @@ namespace HarmonyLibTests.Patching
 		{
 			[MethodImpl(MethodImplOptions.NoInlining)] public override int Read() => 17;
 		}
-		[MethodImpl(MethodImplOptions.NoInlining)] static int Constrained<T>(ref T receiver) where T : struct, IValue => 5 + receiver.Read();
+		[MethodImpl(MethodImplOptions.NoInlining)] static int Constrained(ref StructReceiver receiver) => 5 + receiver.Read();
+		// A nongeneric outer avoids MonoMod's unimplemented .NET Framework generic-detour path.
+		static IEnumerable<CodeInstruction> ConstrainedBody(IEnumerable<CodeInstruction> _) =>
+		[
+			new(OpCodes.Ldc_I4_5), new(OpCodes.Ldarg_0),
+				new(OpCodes.Constrained, typeof(StructReceiver)), new(OpCodes.Callvirt, AccessTools.Method(typeof(IValue), nameof(IValue.Read))),
+				new(OpCodes.Add), new(OpCodes.Ret)
+		];
 		[MethodImpl(MethodImplOptions.NoInlining)] static int Virtual(VirtualReceiver receiver) => 5 + receiver.Read();
 		static Exception FinalizeStruct(Exception __exception, ref StructReceiver __instance, ref int __result)
 		{
@@ -102,9 +109,10 @@ namespace HarmonyLibTests.Patching
 		public void Constrained_struct_dispatch_and_receiver_mutation_survive_finalization(bool fail)
 		{
 			operationFails = fail;
-			var original = Method(nameof(Constrained)).MakeGenericMethod(typeof(StructReceiver));
-			Assert.IsTrue(PatchProcessor.GetOriginalInstructions(original).Any(code => code.opcode == OpCodes.Constrained));
-			harmony.CreateProcessor(original).AddInnerFinalizer(Fix(nameof(FinalizeStruct), AccessTools.Method(typeof(IValue), nameof(IValue.Read)))).Patch();
+			var original = Method(nameof(Constrained));
+			Assert.IsTrue(ConstrainedBody([]).Any(code => code.opcode == OpCodes.Constrained && Equals(code.operand, typeof(StructReceiver))));
+			harmony.CreateProcessor(original).AddTranspiler(Method(nameof(ConstrainedBody)))
+				.AddInnerFinalizer(Fix(nameof(FinalizeStruct), AccessTools.Method(typeof(IValue), nameof(IValue.Read)))).Patch();
 			var receiver = new StructReceiver { Value = 3 };
 			Assert.AreEqual(fail ? 15 : 19, Constrained(ref receiver));
 			Assert.AreEqual(14, receiver.Value);
