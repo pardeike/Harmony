@@ -21,27 +21,26 @@ namespace HarmonyLib
 		///
 		public bool ExplicitThis { get; set; } = false;
 
-		/// <summary>The calling convention. <see cref="CallingConvention.Winapi"/> represents the default managed convention in this signature model;
-		/// the other named values represent their corresponding unmanaged conventions. Other metadata conventions retain their numeric value plus one.</summary>
-		/// <remarks>This historical mapping differs from native interop: Winapi does not select the platform's default unmanaged convention here.
-		/// Preserve this value when re-emitting a parsed operand. For a new unmanaged call, specify its actual convention, such as Cdecl or StdCall.</remarks>
+		/// <summary>The calling convention. <see cref="CallingConvention.Winapi"/> means default managed, not default unmanaged.
+		/// Other named values mean their unmanaged conventions; other metadata conventions use their numeric value plus one.</summary>
+		/// <remarks>Preserve this historical encoding when re-emitting an operand. For new unmanaged calls, specify the actual convention, such as Cdecl or StdCall.</remarks>
 		///
 		public CallingConvention CallingConvention { get; set; } = CallingConvention.Winapi;
 
-		/// <summary>The list of all parameter types or function pointer signatures received by the call site</summary>
+		/// <summary>The parameter types or function-pointer signatures</summary>
 		///
 		public List<object> Parameters { get; set; } = [];
 
-		/// <summary>The return type or function pointer signature returned by the call site</summary>
+		/// <summary>The return type or function-pointer signature</summary>
 		///
 		public object ReturnType { get; set; } = typeof(void);
 
-		/// <summary>The number of evaluation-stack values consumed by <c>calli</c>, including the function pointer and any implicit instance.</summary>
-		/// <remarks>An explicitly listed instance is already included in <see cref="Parameters"/> and is not counted twice.</remarks>
+		/// <summary>Stack values consumed by <c>calli</c>, including the function pointer and any implicit instance.</summary>
+		/// <remarks>An explicit instance is counted once, through <see cref="Parameters"/>.</remarks>
 		public int PopCount => Parameters.Count + (HasThis && !ExplicitThis ? 1 : 0) + 1;
 
-		/// <summary>The number of evaluation-stack values produced by <c>calli</c>: zero for <see cref="void"/>, otherwise one.</summary>
-		/// <remarks>Type modifiers do not change the count. A nested function-pointer signature describes one returned pointer, not its own return value.</remarks>
+		/// <summary>Stack values produced by <c>calli</c>: zero for <see cref="void"/>, otherwise one.</summary>
+		/// <remarks>Modifiers do not change the count. A function-pointer return counts as one pointer, regardless of its signature.</remarks>
 		public int PushCount
 		{
 			get
@@ -100,8 +99,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>
-		/// A mutable representation of a parameter type with an attached type modifier,
-		/// similar to Mono.Cecil's OptionalModifierType / RequiredModifierType and C#'s modopt / modreq
+		/// A mutable type with an optional <c>modopt</c> or required <c>modreq</c> modifier.
 		/// </summary>
 		/// 
 		public class ModifierType

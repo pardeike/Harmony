@@ -1,6 +1,6 @@
 # Priorities
 
-With Harmony, the order of patches is not linear. A plugin/mod that comes last can still add patches that execute first. For this to work, patches need to be annotated with method annotations:
+Load order is not execution order. A mod loaded last can add a patch that runs first. Use these annotations to control ordering:
 
 - **[HarmonyPriority(int)]**
   Sets the priority of this Prefix/Postfix. Defaults to Priority.Normal (400)
@@ -29,6 +29,6 @@ a call to `Foo.Bar()` would return "new secret 2" because both plugins register 
 
 [!code-csharp[example](../examples/priorities.cs?name=plugin1b)]
 
-and would be executed after net.example.plugin2 which gives you (for a Postfix) the chance to change the result last. Alternatively, you could annotate with [HarmonyPriority(Priority.Low)] to come after plugin1.
+This runs after `net.example.plugin2`, changing the result last. Alternatively, `[HarmonyPriority(Priority.Low)]` puts Plugin 1 after Plugin 2's normal-priority postfix.
 
 All priority annotations are also valid on the class. This will define the priorities for all contained patch methods at the same time.

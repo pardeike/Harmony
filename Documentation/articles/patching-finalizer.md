@@ -4,13 +4,13 @@
 
 A finalizer is a method that makes Harmony wrap the original and all other patches in a try/catch block. It can receive a thrown exception and even suppress it or return a different one.
 
-It is a very good candidate for code that has to run regardless of what happens. Its counterpart is a Prefix with no side effects (void return type and no ref/out arguments). These are never skipped and thus serve as a way to run code guaranteed at the start of a method.
+Unlike a postfix, it also runs when a prefix, the original, or a postfix throws.
 
 Finalizers are commonly used to:
 
 - suppress exceptions
 - remap exceptions
-- make sure your code is always executed
+- run cleanup on success or failure
 
 ### Suppressing any exceptions
 
@@ -36,6 +36,6 @@ Finalizers are ideal for cleanup or resource management logic that must execute 
 
 [!code-csharp[example](../examples/patching-finalizer.cs?name=cleanup)]
 
-Beside their handling of exceptions they can receive the same arguments as Postfixes.
+Finalizers can receive the same injected arguments as postfixes, plus `__exception`.
 
 [note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png

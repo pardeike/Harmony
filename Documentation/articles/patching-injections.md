@@ -2,42 +2,38 @@
 
 ## Common injected values
 
-Each patch method (except a transpiler) can get all the arguments of the original method as well as the instance if the original method is not static and the return value.  
-
-You only need to define the parameters you want to access.
+Prefixes, postfixes, and finalizers can receive the original's arguments, instance, and result. Declare only the parameters you need.
 
 ### __instance
 
-Patches can use an argument called **`__instance`** to access the instance value if original method is not static. This is similar to the C# keyword `this` when used in the original method.
+**`__instance`** is the original method's `this`. It is available for instance methods, not static methods.
 
 ### __result
 
-Patches can use an argument called **`__result`** to access the returned value. The type must match the return type of the original or be assignable from it. For prefixes, as the original method hasn't run yet, the value of `__result` is the default for that type. For most reference types, that would be `null`. If you wish to **alter** the `__result`, you need to define it **by reference** like `ref string name`.
+**`__result`** holds the returned value. Its type must match the original return type or be assignable from it. It starts with that type's default value before prefixes run. To change it, use `ref`, for example `ref string __result`.
 
 ### __resultRef
 
-Patches can use an argument called **`__resultRef`** to alter the "**ref return**" reference itself. The type must be `RefResult<T>` by reference, where `T` must match the return type of the original, without `ref` modifier. For example `ref RefResult<string> __resultRef`.
+**`__resultRef`** changes the reference itself for a **ref return**. Declare it as `ref RefResult<T> __resultRef`, where `T` is the returned element type; for `ref string`, use `ref RefResult<string>`.
 
 ### __state
 
-Patches can use an argument called **`__state`** to store information in the prefix method that can be accessed again in the postfix method. Think of it as a local variable. It can be any type and you are responsible to initialize its value in the prefix. **Note:** It only works if both patches are defined in the same class.
+**`__state`** passes a per-call value from prefix to postfix or finalizer. Set it in the prefix using `ref` or `out`. It can be any type, but the patches sharing it must be in the same class.
 
 ### ___fields
 
-Argument names starting with **three** underscores like **`___someField`** can be used to read/write private fields that have that name minus the underscores. To write to field you need to use the **`ref`** keyword like `ref string ___name`.
+**Three** underscores select a field: `___someField` reads `someField`, including private fields. Use `ref` to write it, for example `ref string ___name`.
 
 ### __args
 
-To access all arguments at once, you can let Harmony inject **`object[] __args`** that will contain all arguments in the order they appear. Editing the contents of that array (no ref needed) will automatically update the values of the corresponding arguments.  
-
-**Note:** This way of manipulation comes with some small overhead so if possible use normal argument injection
+**`object[] __args`** contains all arguments in declaration order. Editing its elements updates the corresponding arguments; `ref` is not needed. It has more overhead than typed argument injection.
 
 ### method arguments
 
-To access or change one or several of the original methods arguments, simply repeat them with the same name in your patch. Some restrictions are placed on the types and names of arguments in the patched method:
+To read an original argument, declare a matching patch parameter; add `ref` to change it:
 
 - The type of an injected argument must be assignable from the original argument (or just use `object`)
-- The name of a given argument (that is to be matched to the argument of the original method) must either be the same name or of the form **`__n`**, where `n` is the zero-based index of the argument in the orignal method (you can also use argument annotations to map to custom names).
+- Use its original name or **`__n`**, where `n` is its zero-based argument index. Argument annotations can map custom names.
 
 If an original argument name conflicts with a Harmony injection name or naming convention, use `ArgumentMode.Original` to match its exact, case-sensitive name without interpreting it:
 
@@ -47,13 +43,13 @@ static void Prefix([HarmonyArgument("__result", ArgumentMode.Original)] ref bool
 
 ### __originalMethod
 
-To allow patches to identify on which method they are attached to, you can inject the original methods MethodBase by using an argument called **`__originalMethod`**.
+**`MethodBase __originalMethod`** identifies the method being patched, useful when one patch targets several methods.
 
-![note] **You cannot call the original method with that**. The value is only for conditional code in your patch that can selectively run if the patch is applied to multiple methods. The original does not exist after patching and this will point to the patched version.
+![note] Calling it invokes the **patched** method, not the unmodified original. Use a [reverse patch](reverse-patching.md) for a callable copy of the original.
 
 ### __runOriginal
 
-To learn if the original is/was skipped you can inject **`bool __runOriginal`**. This is a readonly injection to understand if the original will be run (in a Prefix) or was run (in a Postfix).
+**`bool __runOriginal`** is read-only. In a prefix it tells you whether the original is still scheduled to run; a later prefix can still skip it. In a postfix it tells you whether the original ran.
 
 ### Transpilers
 

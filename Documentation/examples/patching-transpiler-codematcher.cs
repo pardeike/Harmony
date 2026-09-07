@@ -54,9 +54,10 @@ namespace patching_transpiler_codematcher
 				var codeMatcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
 
 				//  <replacement_alt>
-				codeMatcher.ThrowIfNotMatchForward("Could not find call to DamageHandler.Kill",
+				codeMatcher.Start().ThrowIfNotMatchForward("Could not find call to DamageHandler.Kill",
 						CodeMatch.Calls(() => default(DamageHandler).Kill(default))
 					)
+					.MatchStartForward(CodeMatch.Calls(() => default(DamageHandler).Kill(default)))
 					.RemoveInstruction()
 					.InsertAndAdvance(
 						CodeInstruction.Call(() => MyDeathHandler(default, default))

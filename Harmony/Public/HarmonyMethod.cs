@@ -14,13 +14,13 @@ namespace HarmonyLib
 		/// 
 		public MethodInfo method; // need to be called 'method'
 
-		/// <summary>The selected inner call for an inner prefix, postfix, or finalizer</summary>
+		/// <summary>The Infix call selector</summary>
 		public InnerMethod innerMethod;
 
-		/// <summary>The selected member operation or literal for an inner prefix, postfix, or finalizer</summary>
+		/// <summary>The Infix member-operation or literal selector</summary>
 		public InnerTarget innerTarget;
 
-		/// <summary>For an Infix, optionally search a recognized state-machine body; null keeps the declared method</summary>
+		/// <summary>The body searched by an Infix; null keeps the declared method</summary>
 		public InfixOuterBody? infixOuterBody;
 
 		/// <summary>Patch Category</summary>

@@ -212,10 +212,9 @@ namespace HarmonyLib
 		internal readonly string bodyInnerMemberName;
 		internal readonly InnerTargetKind bodyInnerTargetKind;
 
-		/// <summary>One-based matching operation positions; negative positions count from the end and an empty array selects all matches</summary>
-		/// <remarks>Positions count after ordinary transpilers and before any Infix code is inserted. Other Infixes do not shift them.
-		/// Zero and null are invalid. At least one match is required, and every requested position must exist. Installation copies the positions;
-		/// changing this array afterwards does not change an installed patch.</remarks>
+		/// <summary>One-based matches; negative positions count from the end, and empty selects all</summary>
+		/// <remarks>Counts after transpilers, before Infix insertion. Zero, null and missing positions are invalid; at least one match is required.
+		/// Installation copies the positions, so later edits do not affect installed patches.</remarks>
 		public int[] Positions { get; set; } = [];
 
 		/// <summary>Whether to search the selected method or its recognized state-machine body</summary>
@@ -250,11 +249,11 @@ namespace HarmonyLib
 			innerVariations = argumentVariations;
 		}
 
-		/// <summary>Selects a method, property accessor, or field operation. Property argument types are the index parameters, excluding a setter's value</summary>
+		/// <summary>Selects a method, property accessor, or field operation</summary>
 		/// <param name="declaringType">The member's declaring type</param>
 		/// <param name="memberName">The member name</param>
 		/// <param name="kind">Method, Getter, Setter, FieldRead, or FieldWrite</param>
-		/// <param name="argumentTypes">Method parameters or property index parameters; fields require no argument types</param>
+		/// <param name="argumentTypes">Method or property index parameters, excluding a setter's value; empty for fields</param>
 		public HarmonyInfix(Type declaringType, string memberName, InnerTargetKind kind, params Type[] argumentTypes)
 		{
 			info.methodType = (MethodType)int.MinValue;
@@ -286,7 +285,7 @@ namespace HarmonyLib
 	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
 	public sealed class HarmonyOuter : Attribute { }
 
-	/// <summary>Allows copying a suitable inner patch body into the generated site; unsupported bodies retain a normal call</summary>
+	/// <summary>Allows inlining an inner patch body; unsupported bodies keep a normal call</summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 	public sealed class HarmonyInline : Attribute
 	{
@@ -814,7 +813,7 @@ namespace HarmonyLib
 		{
 		}
 
-		/// <summary>An annotation to declare an injected argument using the selected name handling</summary>
+		/// <summary>Binds an argument using the selected name handling</summary>
 		/// <param name="originalName">Name of the original argument</param>
 		/// <param name="mode">How Harmony resolves the argument name</param>
 		///

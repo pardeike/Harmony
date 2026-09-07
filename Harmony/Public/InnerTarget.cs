@@ -48,10 +48,9 @@ namespace HarmonyLib
 		[NonSerialized]
 		MemberInfo member;
 
-		/// <summary>One-based occurrences; negative positions count from the end, and empty selects all occurrences</summary>
-		/// <remarks>Counts matching operations after ordinary transpilers and before any Infix code is inserted. Other Infixes do not shift these positions.
-		/// Zero and null are invalid. At least one match is required, and every requested occurrence must exist. Installation copies the selector and its positions;
-		/// changing this array afterwards does not change an installed patch.</remarks>
+		/// <summary>One-based matches; negative positions count from the end, and empty selects all</summary>
+		/// <remarks>Counts operations after transpilers, before Infix insertion. Zero, null and missing positions are invalid; at least one match is required.
+		/// Installation copies the selector and positions, so later edits do not affect installed patches.</remarks>
 		public int[] positions;
 
 		/// <summary>Selects an exact method or explicit generic method family</summary>

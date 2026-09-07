@@ -2,7 +2,7 @@
 
 ### AccessTools
 
-To simplify reflections, Harmony has a helper class called AccessTools. Here are the most commonly used methods:
+`AccessTools` simplifies reflection. Common methods include:
 
 ```csharp
 public static BindingFlags all = ....
@@ -15,11 +15,11 @@ public static Type Inner(Type type, string name)
 public static Type FirstInner(Type type, Func<Type, bool> predicate)
 ```
 
-Any of these methods use the **all** BindingFlags definition and thus work on anything regardless if it is public, private, static or else.
+These lookups include public, private, static, and instance members.
 
 ### Traverse
 
-In order to access fields, properties and methods from classes via reflection, Harmony contains a utility called Traverse. Think of it as LINQ for classes. Here are the main methods:
+`Traverse` chains reflection lookups for fields, properties, and methods. Think of it as LINQ for classes:
 
 ```csharp
 // starting from a type or instance
@@ -55,11 +55,11 @@ Example:
 
 [!code-csharp[example](../examples/utilities.cs?name=example)]
 
-Although most fields, properties and methods in that class hierarchy are private, Traverse can easily access anything. It has build-in null protection and propagates null as a result if any of the intermediates would encounter null. It works with static types and caches lookups which makes it pretty fast.
+`Traverse` accesses private members, handles static members, and caches lookups. If an intermediate lookup encounters `null`, it propagates `null`.
 
 ### FileLog
 
-For simple and quick logging, Harmony uses a tool class FileLog. It has three methods:
+`FileLog` provides simple file logging. Common methods include:
 
 ```csharp
 public static void Log(string str)
@@ -76,9 +76,9 @@ public static unsafe void LogBytes(long ptr, int len)
 
 FileLog can be configured using the following environment variables:
 
-- **`HARMONY_NO_LOG`**: Set this to any non-empty value to disable file logging entirely. When set, all logging calls will be silently ignored and no log file will be created.
+- **`HARMONY_NO_LOG`**: Any non-empty value disables file logging.
 
-- **`HARMONY_LOG_FILE`**: Set this to a custom file path to change where the log file is written. By default, the log file is created at `harmony.log.txt` on your Desktop. Setting this variable allows you to specify an alternative location.
+- **`HARMONY_LOG_FILE`**: Overrides the default path, `harmony.log.txt` on your Desktop.
 
 Example usage:
 ```bash

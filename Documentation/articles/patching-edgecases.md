@@ -2,17 +2,17 @@
 
 ## Edge Cases
 
-Patching at runtime is very flexible. But it comes with its downsides. This section describes edge cases that need workarounds, are hard to solve or sometimes impossible.
+Some runtime behavior needs a workaround; some cannot be patched. Here are the common cases.
 
 ### Inlining
 
-This [Article](https://mattwarren.org/2016/03/09/adventures-in-benchmarking-method-inlining) describes the details pretty good. An inlined method is no longer a method and is not called in the normal way. As a result, Harmony cannot patch these methods and your patches will simply be non-functional.
+When the runtime [inlines a method](https://mattwarren.org/2016/03/09/adventures-in-benchmarking-method-inlining), it copies its code into the caller. That call site no longer calls the method, so patching the method does not affect it.
 
-The solution is highly dependent on your situation. If you have control over the host application, you could run it in debug mode, but that would come with a large speed penalty. Besides that, you can only resort to some clever redesign of your patch and find a spot higher up in the call chain that is not inlined. This sometimes requires mass-patching all occurances of all methods that call the inlined method and patching there (`TargetMethods()` is your friend).
+If you control the host, disabling inlining may help. Otherwise, patch a caller that has not been inlined. You may need `TargetMethods()` to cover several callers.
 
 ### Calling Base Methods
 
-When the class you want to patch overrides a method in its base class, calling the base implementation with `base.SomeMethod()` does not work as you expected, when you call it from your patch code.
+`base.SomeMethod()` in your patch refers to your patch class's base, not the patched class's base:
 
 [!code-csharp[example](../examples/patching-edgecases.cs?name=example)]
 
@@ -29,7 +29,7 @@ Generics can be difficult to patch. In general, expect generic methods and metho
 
 ### Changing the type returned by a constructor
 
-It seems to be easy to make a constructor return a different type. Unfortunately, C# and the intermediate bytecode (CIL) doesn’t work like that. A constructor in C# is compiled into the following IL code:
+Constructors initialize an object; they do not choose its type. A C# construction uses IL like:
 
 ```
 newobj instance void Test::.ctor();
@@ -38,7 +38,7 @@ newobj instance void Test::.ctor();
 And the newobj IL code is described by Microsoft as
 > The newobj instruction allocates a new instance of the class associated with ctor and initializes all the fields in the new instance to 0 (of the proper type) or null references as appropriate. It then calls the constructor ctor with the given arguments along with the newly created instance. After the constructor has been called, the now initialized object reference (type O) is pushed on the stack.
 
-So a constructor is just an initialiser method that gets the newly empty obj as an argument to set the values of fields. All the "create object of type T" logic is in the IL code and the internal logic of the C# runtime. Which means you cannot change the type from within the constructor method. All you can do is to manipulate the place where the constructor is called (the operand of newobj or some extra IL after it that changes the value on the stack).
+By the time the constructor runs, the object already exists. To change what is created, patch the caller's `newobj` operation or replace the value it produces, not the constructor body.
 
 ### Static Constructors
 
@@ -48,9 +48,7 @@ As a result, you cannot patch static constructors unless you plan to run them ag
 
 ### Native (External) Methods
 
-A method that has only an external implementation (like a native Unity method) can normally not be patched. Harmony requires access to the original IL code to build the replacement. Thus adding Prefix or Postfix to it does not work. This leaves only one possibility: using a transpiler to create your own implementation.
-
-As a result, you can patch native methods with a transpiler-only patch that ignores the (empty) input and returns a new implementation that will replace the original. **Beware:** after patching, the original implemenation is lost and you cannot call it anymore, making this approach less useful.
+A native method has no IL body for Harmony to copy, so ordinary prefixes and postfixes do not work. A transpiler-only patch can supply a new body from the empty input. **Beware:** this replaces the native implementation; it does not give you a way to call it.
 
 ### MarshalByRefObject
 
@@ -58,7 +56,7 @@ Methods inheriting from `MarshalByRefObject` are kind of special and patching th
 
 ### Special Classes
 
-Related to the problem with marshalled classes, .NET contains classes like [HttpRequest](https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest) that exhibit strange side effects when patching methods in them. Sometimes, its necessary to patch some methods with identity patches (no prefix, postfix or transpiler, but still patched) to make patches on other methods in the same class work. Details are sparse and it really depends on your architecture, your .NET version, the runtime environment and the class you are patching. There is no simple solution but sometimes, experimenting gives results.
+Some framework classes, such as [HttpRequest](https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest), have runtime-dependent patching quirks. An identity patch (patching with no callbacks or transpilers) on one method has sometimes been needed before patching another in the same class. There is no general workaround; results depend on the runtime, architecture, and class.
 
 ### Methods With Dead Code
 
@@ -75,9 +73,7 @@ That method has no `RET` IL code in its body and if you try to patch it, Harmony
 
 ### Patching too early: MissingMethodException in Unity
 
-When patching too early, for example on the injected assemblys entry point, Unity will throw a `MissingMethodException: Attempted to access a missing method`.
-
-This situation occurs when the original method directly or indirectly calls an `external` UnityEngine method. 
+Patching during early Unity startup can throw `MissingMethodException: Attempted to access a missing method` when the target directly or indirectly calls an external UnityEngine method.
 
 In the following example code, patching either `SomeMethod()` or `SomeOtherMethod()` will cause the exception:
 
@@ -91,8 +87,6 @@ In the following example code, patching either `SomeMethod()` or `SomeOtherMetho
 public static extern void DontDestroyOnLoad(Object target);
 ```
 
-To prevent this issue, make sure UnityEngine has finished its startup phase (dynamically linking external methods to actual binary) before patching such methods.
-
-One way to do so is to execute patching only after Unity has loaded the first scene, for example by using the `SceneManager.sceneLoaded` event:
+Wait until UnityEngine has linked its external methods. One option is to patch after the first scene loads, using `SceneManager.sceneLoaded`:
 
 [!code-csharp[example](../examples/patching-edgecases.cs?name=early2)]

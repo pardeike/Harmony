@@ -1,69 +1,69 @@
 # Infix and instruction edits
 
-Use an Infix when you want prefixes, postfixes, or finalizers around a selected operation with Harmony's argument binding. For a pattern of instructions that must be inserted, replaced, or removed, use an ordinary [transpiler](patching-transpiler.md) with [CodeMatcher](patching-transpiler-matcher.md). Both participate in the existing patch ordering; these recipes introduce no extra processing phases.
+Use an Infix for prefixes, postfixes or finalizers around a selected operation. To insert, replace or remove instruction patterns, use a [transpiler](patching-transpiler.md) with [CodeMatcher](patching-transpiler-matcher.md).
 
-Each transpiler sees the instructions passed to it at its position in ordinary transpiler order. Infix selection happens after all those transpilers, before any Infix-generated code is inserted. A transpiler with `Priority.Last` still belongs to the ordinary transpiler pass; it does not run after Infix emission.
+Transpilers run in their usual order. Infix selects from their finished output, before inserting its own code. Even `Priority.Last` transpilers run before Infix.
 
-The examples below are compiled with the documentation and exercised by tests. `Probe.Tick()`, `Before()`, `After()`, `Replacement()`, `Enter()`, and `Exit()` are static methods taking no arguments and returning void. Each records its own name. `Recipes.Method(name)` finds a method on `Probe`; `Recipes.Call(name)` creates its call instruction.
+These examples are compiled and tested. `Probe.Tick()`, `Before()`, `After()`, `Replacement()`, `Enter()` and `Exit()` are static, take no arguments and return void. Each records its name. `Recipes.Method(name)` finds a `Probe` method; `Recipes.Call(name)` creates its call instruction.
 
 ## Scope of these examples
 
-These small recipes accept bodies without exception regions or instruction prefixes such as `constrained.` and `tail.`. The shared helper makes that boundary explicit:
+These recipes reject exception regions and instruction prefixes such as `constrained.` and `tail.`:
 
 [!code-csharp[scope](../examples/patching-infix-authoring.cs?name=scope)]
 
-Real transpilers can handle those bodies, but they must preserve the intended exception regions, branch destinations, and instruction prefixes. Moving every exception marker to an inserted instruction is not a general solution. Use an Infix for supported operations when you need Harmony to handle these details.
+Handling those bodies requires preserving exception regions, branch destinations and prefixes. Moving every exception marker onto an inserted instruction is not enough. Use Infix for supported operations if you want Harmony to handle this.
 
 ## Insert before and after a match
 
-This surrounds the first `Tick` call:
+Surround the first `Tick` call:
 
 [!code-csharp[around](../examples/patching-infix-authoring.cs?name=around)]
 
-Moving the target's labels to `Before` makes branches to that call execute `Before` too. `After` runs only when the call returns normally. A branch that already targets the next instruction continues to bypass this pair. Because the inserted methods consume no arguments and return no value, they leave any existing stack values alone.
+Moving the call's labels to `Before` makes incoming branches run it too. `After` runs only on normal return. Branches to the next instruction still bypass the pair. The inserted void, zero-argument calls leave existing stack values alone.
 
 ## Replace or remove an operation
 
-Replace the first call with another call having the same stack behavior:
+Replace the first call with one that has the same stack behavior:
 
 [!code-csharp[replace](../examples/patching-infix-authoring.cs?name=replace)]
 
-`Set` changes the existing instruction's opcode and operand while keeping its labels. To remove this particular operation, replace it with `nop`:
+`Set` replaces the opcode and operand but keeps labels. To remove this call, use `nop`:
 
 [!code-csharp[delete](../examples/patching-infix-authoring.cs?name=delete)]
 
-This works because `Tick()` takes no arguments and returns void. Deleting a call that consumes arguments or produces a result requires an appropriate replacement for those stack effects. The `nop` preserves any branch destination at the old call.
+This works for the void, zero-argument `Tick()`. Other calls need a replacement that accounts for their arguments and result. The `nop` keeps the old branch destination.
 
 ## Require enough matches
 
-This recipe rejects a body with fewer than two `Tick` instructions, then replaces every match:
+Reject fewer than two `Tick` instructions, then replace every match:
 
 [!code-csharp[minimum](../examples/patching-infix-authoring.cs?name=minimum)]
 
-The count describes instructions visible to this transpiler, so one call inside a loop still counts once. Later transpilers can still change that body. This is not a final-body match-count option for Infix. A minimum count can catch a changed method shape, but it cannot prove that each match still means what your patch expects after a game update.
+This counts instructions at this transpiler's turn, not final Infix matches. A call in a loop counts once; later transpilers can change the body. Enough matches does not prove they still mean the same thing after an update.
 
 ## Process at most N matches
 
-This changes the first two matches and leaves further matches alone:
+Change the first two matches and leave the rest:
 
 [!code-csharp[first](../examples/patching-infix-authoring.cs?name=first)]
 
-Zero or one match is also accepted. "Process at most two" differs from "reject more than two"; the latter requires counting all matches and checking that count before applying changes.
+Zero or one match is accepted. To *reject* more than two, count all matches before changing anything.
 
 ## Insert at entry and normal exits
 
-An ordinary prefix/postfix is usually the direct way to run code at method entry and exit. A transpiler can also insert instructions there:
+Usually, use an ordinary prefix/postfix for entry and exit. A transpiler can do it too:
 
 [!code-csharp[entry-exit](../examples/patching-infix-authoring.cs?name=entry-exit)]
 
-The entry call precedes the original first instruction without taking its labels, so a loop back to that instruction does not repeat entry logic. Moving a return's labels to the exit call makes branches to the return run exit logic. The void exit call leaves an existing return value on the stack.
+The entry call leaves labels on the original first instruction, so loops back to it do not repeat entry logic. Return labels move to the exit call so incoming branches run it. The void exit call preserves any return value on the stack.
 
-This recipe handles normal returns in the accepted bodies. It does not run exit logic after an exception and does not demonstrate inserting calls into exception handlers. Use an ordinary finalizer when exception completion is part of the requirement.
+This covers normal returns only, not exceptions or exception handlers. Use an ordinary finalizer for exception completion.
 
 ## Install and remove a runtime group
 
-A dedicated Harmony owner ID groups patches for removal, including patches on different outer methods:
+Give each independently removable group its own Harmony owner ID:
 
 [!code-csharp[group](../examples/patching-infix-authoring.cs?name=group)]
 
-Use one owner ID per independently removable group. `RemoveGroup` removes all patches with that owner, including any installed elsewhere with the same ID. Patches owned by other IDs remain. Repeated installation adds registrations; it does not toggle a group or replace its previous installation. Installation across several methods uses ordinary per-method updates, so an error on a later method does not undo successful earlier installations.
+`RemoveGroup` removes every patch with that owner, even on other methods, and leaves other owners alone. Repeated installation adds registrations. It does not toggle or replace the group. Updates are per method; a later failure does not undo earlier installations.

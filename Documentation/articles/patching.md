@@ -6,43 +6,43 @@ To provide your own code to Harmony, define patch methods. The patch type determ
 
 #### Types of patches
 
-Two of them, the **Prefix** patch and the **Postfix** patch are easy to understand and you can write them as simple static methods.
+**Prefixes** run before the original; **postfixes** run after it completes or is skipped.
 
-**Transpiler** patches are not methods that are executed together with the original but instead are called in an earlier stage where the instructions of the original are fed into the transpiler so it can process and change them, to finally output the instructions that will build the new original.
+**Transpilers** change the original's IL instructions when Harmony builds the replacement method, not on each call.
 
-A **Finalizer** patch is a static method that handles exceptions and can change them. It is the only patch type that is immune to exceptions thrown by the original method or by any applied patches. The other patch types are considered part of the original and may not get executed when an exception occurs.
+**Finalizers** handle exceptions from prefixes, the original, or postfixes. They can observe, replace, or suppress an exception. Without one, an exception skips the remaining patches and reaches the caller.
 
 An [Infix](patching-infix.md) applies ordinary prefixes, postfixes, or finalizers to selected operations inside an outer method. It can target method/property calls, field reads or writes, construction, and literal loads. Other callers and unselected operations remain unchanged.
 
-Finally, there is the **Reverse Patch**. It is different from the previous types in that it patches your methods instead of foreign original methods. To use it, you define a stub that looks like the original in some way and patch the original onto your stub which you can easily call from your own code. You can even transpile the result during the process.
+A **Reverse Patch** copies the original into a stub method you can call from your own code. You can also transpile that copy.
 
 #### Patches need to be static
 
-Patch methods need to be static because Harmony works with multiple users in different assemblies in mind. In order to guarantee the correct patching order, patches are always re-applied as soon as someone wants to change the original. Since it is hard to serialize data in a generic way across assemblies in .NET, Harmony only stores a method pointer to your patch methods so it can use and apply them at a later point again.
+Harmony stores references to static patch methods so it can reapply everyone's patches whenever registrations change. It does not create or store patch-class instances.
 
 Use `__state` for values that belong to one patched invocation and need to pass between patches in the same class. Static fields are appropriate for deliberately shared state, not independent per-call values. Transpilers run when Harmony generates the replacement method, not each time the original is called.
 
 #### Commonly unsupported use cases
 
-Harmony works only in the current AppDomain. Accessing other app domains requires xpc and serialization which is not supported.
+Harmony patches only within the current AppDomain.
 
 Currently, support for generic types and methods is experimental and can give unexpected results. See [Edge Cases](patching-edgecases.md#generics) for more information.
 
-When a method is inlined and the code that tries to mark in for not inlining does not work, your patches are not called because there is no method to patch.
+Calls already inlined into another method can bypass your patch. See [Inlining](patching-edgecases.md#inlining).
 
 ## Patch Class
 
-With manual patching, you can put your patches anywhere you like since you will refer to them yourself. Patching by annotations simplifies patching by assuming that you set up annotated classes and define your patch methods inside them.
+Manual patching lets you supply methods from any class. Annotation patching groups them in a patch class.
 
 **Layout**
-The class can be static or not, public or private, it doesn't matter. However, in order to make Harmony find it, it must have at least one `[HarmonyPatch]` attribute. Inside the class you define patches as static methods that either have special names like Prefix or Transpiler or use attributes to define their type. Usually they also include annotations that define their target (the original method you want to patch). It also common to have fields and other helper methods in the class.
+The class can be public or private, static or not. Mark it with `[HarmonyPatch]` and describe the target using annotations. Its static patch methods use recognized names such as `Prefix`, or attributes such as `[HarmonyPrefix]`. Helper methods and fields are fine too.
 
 **Attribute Inheritance**
 The attributes of the methods in the class inherit the attributes of the class.
 
 ## Patch methods
 
-Harmony identifies your patch methods and their helper methods **by name**. If you prefer to name your methods differently, you can use attributes to tell Harmony what your methods are.
+Harmony recognizes patch and helper methods **by name**, or by their attributes:
 
 ```csharp
 [HarmonyPatch(...)]
@@ -61,7 +61,7 @@ class Patch
 }
 ```
 
-If you prefer manual patching, you can use any method name or class structure you want. You are responsible to retrieve the MethodInfo for the different patch methods and supply them to the Patch() method by wrapping them into HarmonyMethod objects.
+For manual patching, wrap each patch's `MethodInfo` in a `HarmonyMethod` and pass it to `Patch()`. Method names do not matter.
 
 ![note] Patch methods _must_ be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.
 
@@ -86,13 +86,11 @@ class Patch
 
 ### Method names
 
-Manual patching knows four main patch types: **Prefix**, **Postfix**, **Transpiler** and **Finalizer**. If you use attributes for patching, you can also use the helper methods: **Prepare**, **TargetMethod**, **TargetMethods** and **Cleanup** as explained below.
-
-Each of those names has a corresponding attribute starting with [Harmony...]. So instead of calling one of your methods "Prepare", you can call it anything and decorate it with a `[HarmonyPrepare]` attribute.
+The patch names are **Prefix**, **Postfix**, **Transpiler**, and **Finalizer**. Annotation patching also recognizes the [helpers](patching-auxiliary.md) **Prepare**, **TargetMethod**, **TargetMethods**, and **Cleanup**. Each name has a corresponding attribute, such as `[HarmonyPrepare]`.
 
 ## Patch method types
 
-Both prefix and postfix have specific semantics that are unique to them. They do however share the ability to use a range of injected values as arguments.
+Prefixes, postfixes, and finalizers share the [injected values](patching-injections.md) available as parameters.
 
 ### Prefix
 
@@ -102,11 +100,11 @@ A prefix is a method that is executed before the original method. It is commonly
 - set the result of the original method
 - skip the original method
 - set custom state that can be recalled in the postfix
-- run a piece of code at the beginning that is guaranteed to be executed
+- run code before the original
 
 ### Postfix
 
-A postfix is a method that is executed after the original method. It is commonly used to:
+A postfix runs after the original completes or is skipped, but not after an exception. It is commonly used to:
 
 - read or change the result of the original method
 - access the arguments of the original method
@@ -114,13 +112,13 @@ A postfix is a method that is executed after the original method. It is commonly
 
 ### Transpiler
 
-This method defines the transpiler that modifies the code of the original method. Use this in the advanced case where you want to modify the original methods IL codes.
+A transpiler edits the original method's IL instructions.
 
 ### Finalizer
 
 A finalizer is a method that executes after all postfixes. It wraps the original method, all prefixes, and postfixes in try/catch logic and is called either with `null` (no exception) or with an exception if one occurred. It is commonly used to:
 
-- run a piece of code at the end that is guaranteed to be executed
+- run cleanup on success or failure
 - handle exceptions and suppress them
 - handle exceptions and alter them
 

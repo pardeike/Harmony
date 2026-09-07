@@ -1,6 +1,6 @@
 # Infix: implementation specification
 
-> **Status:** Implemented, unreleased specification. This document defines the core binding, ordering, identity and installation contracts. The [operation-target addendum](INFIX-OPERATIONS-ADDENDUM.md) specifies fields, construction, literals and indirect-call metadata; the [feature-completion contract](INFIX-FEATURE-COMPLETION.md) specifies inner finalizers, generated-body selection, captured variables and optional inlining. Together they describe the current feature, not successive implementation plans. See [validation status](../docs/infix/README.md) for executed checks and runtime boundaries.
+> **Implemented, unreleased specification.** This core contract covers binding, ordering, identity and installation. Read it with the [operation-target addendum](INFIX-OPERATIONS-ADDENDUM.md) for fields, construction, literals and indirect-call metadata, and the [feature-completion contract](INFIX-FEATURE-COMPLETION.md) for inner finalizers, generated-body selection, captured variables and optional inlining. See [validation status](../docs/infix/README.md) for executed checks and runtime boundaries.
 
 ## 1. The feature in one page
 
@@ -20,22 +20,12 @@ continue the outer method
 
 Prefixes, postfixes and finalizers are independent patches, not fixed pairs. Sort each role using Harmony's existing priority, before/after, and registration-index rules. Preserve its prefix skip policy and its separate later phase for postfixes that return a replacement result. Exact and generic-family selectors feed these same lists at a site; neither gets special precedence. The example above has no finalizers; when present, they use ordinary finalizer behavior.
 
-The public feature is small:
+Public API:
 
 - `[HarmonyInfix]` selects the operation and its occurrences; existing prefix/postfix/finalizer roles select when patch code runs.
 - Parameters refer to the inner call by default. `[HarmonyOuter]` selects the containing method explicitly.
 - A closed target means exactly that target. An explicit generic definition means all constructions in that generic family.
 - Existing `Inner*` registration and inspection APIs remain, with the corresponding inner-finalizer role. Repeated `AddInner...` calls accumulate. There is no second binder, new patch processor or selector callback API.
-
-The central decisions are:
-
-| Question | Decision |
-| --- | --- |
-| Must every argument array be copied repeatedly? | No. Allocate only requested scopes; reuse within a site execution; refresh only scopes that can become stale between receiving patches. |
-| How do exact and family Infixes interact? | Resolve both against the same site, then sort their prefixes and postfixes independently using ordinary Harmony rules. |
-| How is a generic target remembered? | Preserve its exact closed parts recursively. Only explicitly open definition dimensions are wildcards. |
-| What if old Harmony stored an inner entry without its target? | Let the user remove it with normal unpatching. Do not guess its target or rebuild while it remains. |
-| How do tests become more complete without multiplying fixtures? | Use generated cases for positions, scheduling, binding, and serialization. Compare Infix execution with equivalent ordinary Harmony patches, plus focused instruction-boundary tests. |
 
 ## 2. Declaration and registration
 
@@ -79,7 +69,7 @@ public sealed class HarmonyInfix : HarmonyAttribute
 [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
 public sealed class HarmonyOuter : Attribute { }
 
-// Add to HarmonyMethod:
+// HarmonyMethod field:
 public InnerMethod innerMethod;
 ```
 
@@ -89,7 +79,7 @@ Select the outer method on the patch class or with `TargetMethod`/`TargetMethods
 
 For class discovery, `HarmonyInfix` requires exactly one prefix, postfix or finalizer role, either by the ordinary attribute or by the supported `Prefix`/`Postfix`/`Finalizer` and `InnerPrefix`/`InnerPostfix`/`InnerFinalizer` naming conventions. Normalize equivalent names and attributes to one role; reject genuinely conflicting roles, and combinations with transpiler or reverse-patch roles. An inner role without a target is an error. Keep normal declared-method discovery; `Inherited = true` does not introduce inherited patch-method scanning.
 
-Infix patch code consists of static, nongeneric methods on nongeneric patch types with stable metadata. There is no automatic generic specialization of patch code and no Infix patch factory. Use ordinary Harmony's complete factory signature to identify one: a static method returning `MethodInfo` or `DynamicMethod` with exactly one parameter of type `MethodBase`. Those return types alone do not make a factory: `MethodInfo After(MethodInfo value)` and `DynamicMethod After(DynamicMethod value)` are valid passthrough postfixes for matching call results. The stable-metadata restriction concerns the patch methods, not their generic call targets. It avoids promising patch identities that the existing `Patch` serialization cannot preserve.
+Infix patch methods must be static and nongeneric, on nongeneric patch types with stable metadata. No automatic specialization or Infix patch factories are supported. A factory has ordinary Harmony's complete signature: a static method returning `MethodInfo` or `DynamicMethod` with exactly one `MethodBase` parameter. The return type alone is not enough: `MethodInfo After(MethodInfo value)` and `DynamicMethod After(DynamicMethod value)` are valid passthrough postfixes for matching results. These restrictions preserve serializable patch identity; call targets may be generic.
 
 Discover the two new attributes by exact full type name, as Harmony already does for cross-assembly annotations. Keep inner-target constructor data out of the `HarmonyMethod` fields that select the outer method. New discovery recognizes the declaration and clears its old-engine marker, but resolves the target only after the applicable class and per-original `HarmonyPrepare` calls accept the patch job. The patch `MethodInfo` retains the attribute; re-read that declaration when resolving it instead of adding persistent unresolved-target state.
 
@@ -153,7 +143,7 @@ Execute prefixes in their sorted order. Execute postfixes exactly as ordinary Ha
 
 Thus two methods that sort as 1 then 2 on both sides give `12x12` for void postfixes, not `12x21`. Before/after annotations on a postfix refer to that postfix's execution, not to another method's prefix. This follows [ordinary sorting](../Harmony/Internal/PatchFunctions.cs) and [postfix phase execution](../Harmony/Internal/MethodCreator.cs).
 
-Preserve each distinct registered record, including reuse of a patch method under different owners or selectors. Deduplicate overlapping positions within a record, not independent registrations. If the sorter's current method-based node equality merges distinct Infix records during dependency handling, use record-occurrence identity internally for this path without changing the comparer or tie policy. Do not change public `Patch` equality or introduce synthetic records.
+Preserve distinct registered records, including reuse of a patch method under different owners or selectors. Deduplicate overlapping positions within a record, not independent registrations. Use record-occurrence identity during Infix dependency handling without changing the comparer, tie policy or public `Patch` equality. Do not introduce synthetic records.
 
 ### One argument set for the selected call
 
@@ -169,7 +159,7 @@ A prefix returns `void` or `bool`. Use the existing `AffectsOriginal` classifica
 
 There is one result for the selected call, with normal Harmony result and passthrough behavior. It starts at the normal default where a prefix or skipping can expose it; prefixes can modify it; executing the call supplies its return value; and postfixes can transform the result. A skipped call leaves the default or prefix-provided result for postfix processing. Void calls have no result injections. Reuse ordinary result threading, rather than inventing another chain of result locals. An Infix passthrough postfix's return and first-parameter types must exactly match the actual selected call's return type. Its first parameter is always the previous result, not an injection: ignore its name and injection annotations during both storage setup and emission.
 
-The by-value `bool __runOriginal` observes the one site-local run flag. It begins true. Later prefixes that still run observe false after an earlier prefix skips, and all postfixes observe the same final flag. It controls whether the selected call instruction executes; it does not report whether the callee's own Harmony prefixes allowed that callee's body to run. It is an observation, not a writable control flag; skip by returning false from a prefix.
+By-value `bool __runOriginal` observes the site-local run flag, initially true. After a prefix skips, later prefixes that still run and all postfixes observe false. It reports whether the selected call instruction executes, not whether the callee's own prefixes allow its body to run. It is read-only; skip by returning false from a prefix.
 
 For ref returns, preserve the existing safe dummy-reference and `__resultRef` replacement rules at the site. Create a default reference when a prefix can expose a pre-call result or skip the call, or when an inner finalizer can suppress a failure before a result exists; a postfix-only site can use the returned address directly. Reject a demanded default that its element type cannot represent safely. Reset demanded result, run flag, ref-replacement temporary, and state on every site execution, including loop iterations. There are no per-patch default-result allocations.
 
@@ -198,7 +188,7 @@ Use Harmony's existing argument conversions and exact-name behavior, with an exp
 
 ### Preserve exact argument names
 
-Commit `50896dd` already established `ArgumentMode.Original`. Keep it unchanged:
+`ArgumentMode.Original` preserves exact argument-name binding:
 
 ```csharp
 static void Before(
@@ -208,7 +198,7 @@ static void Before(
 
 These are real arguments literally named `__result` and `__state`, not special injections. Scope selection supplies the method context; the existing exact-mode path then performs direct, case-sensitive name lookup. It bypasses aliases, special names, fields, numeric forms, generated locals, and delegate fallback. A missing exact name is an error. Default `[HarmonyArgument("__result")]` still has its existing special-name behavior.
 
-The existing `InjectedParameter` cache describes names and annotations and can remain keyed by patch method. Only the resulting argument indexes, concrete types, conversions, and destinations must be bound separately for each actual outer method and call site. Do not turn a safe lexical cache into a larger target cache unnecessarily.
+Keep the `InjectedParameter` name/annotation cache keyed by patch method. Bind argument indexes, concrete types, conversions and destinations separately for each actual outer method and call site.
 
 ### Receiver and lifetime rules
 
@@ -222,7 +212,7 @@ Outer `__state` intentionally shares normal outer patch state for the same patch
 
 ### Mutable argument arrays: pay only for the applicable case
 
-`object[] __args` is mutable without `ref`: a patch can assign `__args[0]`. The `ref` keyword on an array parameter would allow replacing the whole array, a different operation. Reject `ref object[]` for Infix; ordinary `object[]` retains element write-back. Arrays exclude the receiver. Values that cannot be represented in `object[]`, such as byref-like structs or pointers, reject that array injection, not an otherwise valid typed Infix.
+`object[] __args` permits element writes such as `__args[0] = value`. Reject `ref object[]`, which would replace the whole array. Arrays exclude the receiver. Values unrepresentable in `object[]`, such as byref-like structs or pointers, reject that array injection, not an otherwise valid typed Infix.
 
 Use at most one array per requested scope per site execution. Share it between that site's receiving patches, not across later loop iterations or invocations. Allocate it on the first receiving patch that actually runs; a postfix-only request is first prepared after the call or prefix skip. Restore immediately after each receiving patch, before the next patch or call. An unrequested scope needs no array, and a skipped receiving prefix does not force allocation. A demanded array local can start null with an allocation check at its receiving calls; do not assume that an earlier conditional prefix initialized it.
 
@@ -247,7 +237,7 @@ static void Before(object[] __args,
     [HarmonyOuter, HarmonyArgument("__args")] object[] outerArgs) { }
 ```
 
-Allow this when their write-back destinations are provably disjoint. The initial implementation needs two simple proofs: the inner signature has no managed-pointer parameters, or the outer method has no arguments. In the first case, inner element replacement writes captured call locals while outer replacement writes outer slots; referencing the same object does not make those slots identical. A managed-pointer receiver is not an element of the inner array and does not by itself invalidate this proof.
+Allow this with either disjointness proof: the inner signature has no managed-pointer parameters, or the outer method has no arguments. In the first case, inner element replacement writes captured locals and outer replacement writes outer slots; references to the same object do not make those slots identical. A managed-pointer receiver is not an inner-array element and does not invalidate this proof.
 
 If inner parameters include managed pointers and the outer method has arguments, the two arrays may write the same storage. Reject that dual request and suggest typed by-value observations for one scope, or typed refs instead of arrays when both scopes must write. Absence of `ref` on the patch's array parameter is not a read-only guarantee. An explicit read-only array API is outside this version. For accepted dual arrays, restore inner then outer; their proven disjointness, not that order or patch-parameter order, makes the result safe.
 
@@ -291,7 +281,7 @@ Shared patch state must remember the same selector after another compatible Harm
 
 An Infix patch method's existing module/token identity must also identify exactly one loaded module. Check uniqueness for both cold resolution and cached candidates before rebuilding; a cached `MethodInfo` cannot make a later reader's ambiguous identity safe. Reuse the target module resolver, retain ordinary patch lookup behavior, and allow owner removal before validating survivors.
 
-Extend `InnerMethod`'s existing fields with this private serialized data, using the same meanings in both backends:
+`InnerMethod` stores this private serialized data with the same meanings in both backends:
 
 | Field | Meaning |
 | --- | --- |
@@ -349,15 +339,15 @@ The leading byte is invalid for the old JSON and BinaryFormatter entry formats. 
 
 Remove the envelope after the last Infix is removed. Keep using the existing shared-state dictionary and its current layout/version. No guard transpiler, reserved patch owner, parallel target arrays, or side dictionary is required. Old inspection of a method with active Infixes also fails: returning a partial view would let old code make decisions from missing patches.
 
-For the payload, extend `Patch` JSON with `innerMethod` only for Infix records. Read `Patch` and `InnerMethod` properties by name, tolerate property order, skip unknown noncritical properties, and reject duplicate or missing identity-defining properties. Do not reorder or add properties in ordinary patch JSON output.
+`Patch` JSON includes `innerMethod` only for Infix records. Read `Patch` and `InnerMethod` properties by name, tolerate property order, skip unknown noncritical properties, and reject duplicate or missing identity-defining properties. Do not reorder or add properties in ordinary patch JSON output.
 
 For a version-1 JSON envelope, require all six role arrays and `VersionCount` exactly once with their expected value types. Do not let duplicate top-level fields replace active arrays or missing fields normalize a versioned payload to empty state. Any envelope, in either backend, must contain at least one inner record. Keep absent-field normalization for actual unenveloped legacy payloads.
 
-For BinaryFormatter, add `InnerMethod` to the existing type binder's remapping into the reading Harmony assembly. Retain existing formatter settings. Mark newly added serialized identity fields optional where that backend requires version tolerance, then validate their semantic completeness separately. Normalize absent legacy inner arrays to empty. Do not assume every absent field throws: [.NET's formatter source](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/Formatters/Binary/BinaryObjectInfo.cs) makes its missing-field check conditional on assembly-format mode. Actual old-assembly tests, not a blanket claim about `OptionalField`, decide compatibility.
+BinaryFormatter's type binder remaps `InnerMethod` into the reading Harmony assembly. Retain formatter settings and mark new identity fields optional where version tolerance requires it; validate semantic completeness separately. Normalize absent legacy inner arrays to empty. Missing fields do not always throw: [.NET's formatter source](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/Formatters/Binary/BinaryObjectInfo.cs) conditions that check on assembly-format mode. Actual old-assembly tests, not a blanket claim about `OptionalField`, decide compatibility.
 
 ### Removal must work even when an old entry lacks its target
 
-An old entry may say “this is an inner prefix” without saying which call to wrap. The user must be able to remove it. Deserialization and inspection may expose that structurally readable entry; ordinary unpatching removes the requested records first; validation then checks only the survivors. If an invalid entry remains, explain which owner/method must be removed and refuse the rebuild. Do not guess, silently delete, or create a recovery API. Syntactically corrupt serializer input is still an error, not something to repair heuristically.
+Structurally readable old entries without targets must remain inspectable and removable. Ordinary unpatching removes requested records before validating survivors. If an invalid entry remains, identify the owner/method to remove and refuse the rebuild. Do not guess, silently delete or add a recovery API. Syntactically corrupt input remains a read error.
 
 The same rule applies to a complete stored target whose assembly is missing or has become ambiguous after another copy was loaded. Reading validates the identity's format without requiring it to resolve. Removal filters the requested records first; every survivor must then resolve exactly before serialization or any transpiler runs. Incorrect token kinds, malformed type identities and incomplete fields remain read errors. No name fallback or first-loaded-module choice is allowed.
 
@@ -412,4 +402,4 @@ Use net9/x64 for the focused edit loop. Before release, run relevant normal argu
 
 Public documentation should contain a small working example; exact versus family selection and positions; the scope table; ordinary independent prefix/postfix ordering, skipping, and exceptions; the by-value/ref distinction; safe dual arrays and their mutable nature; exact original-name binding; supported call forms; and actionable failures. Explain the concept before internal names. Include high/low priority examples and a skip example showing later exempt prefixes and postfixes observing the site-local `__runOriginal`. Compile documentation examples through test fixtures or an existing docs-example check.
 
-The implementation is complete when those contracts hold, existing ordinary behavior remains unchanged, and actual mixed-version tests show that no old engine can silently reinterpret supported declarations or drop already-published Infixes within the serialized-update boundary above. A plan, generated instruction listing, or serializer-only test is not a substitute for the applicable runtime proof.
+Acceptance requires these contracts, unchanged ordinary behavior, and actual mixed-version tests proving that old engines cannot silently reinterpret supported declarations or drop published Infixes within the serialized-update boundary above. Generated IL and serializer-only tests do not replace runtime proof.

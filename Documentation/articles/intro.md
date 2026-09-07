@@ -4,13 +4,13 @@ _Harmony - a library for patching, replacing and decorating .NET methods during 
 
 ## Prerequisites
 
-Harmony works with all languages that compile to [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), Microsofts intermediate byte code language. This is foremost the [.NET Framework](https://wikipedia.org/wiki/Portal:.NET_Framework) and of course [Mono](<https://wikipedia.org/wiki/Mono_(software)>) - used by the game engine Unity.
+Harmony patches [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), the intermediate language used by .NET and [Mono](<https://wikipedia.org/wiki/Mono_(software)>). Your source language does not have to be C#.
 
 The exception is probably [Unity .NET Standard profile](https://docs.unity3d.com/2019.1/Documentation/Manual/dotnetProfileSupport.html), which does not provide the functionality to fully create methods on the fly at runtime.
 
 ### Bootstrapping and Injection
 
-Harmony does not provide you with a way to run your own code within an application that is not designed to execute foreign code. You need a way to inject at least the few lines that start the Harmony patching and this is usually done with a loader. Here are some common examples of loaders (incomplete):
+Harmony does not load your code into an application. You need mod support or a loader to run the few lines that apply your patches. Some loaders include:
 
 - [Unity Doorstop](https://github.com/NeighTools/UnityDoorstop)
 - [BepInEx](https://github.com/BepInEx/BepInEx)
@@ -20,20 +20,20 @@ Harmony does not provide you with a way to run your own code within an applicati
 - [net-core-injector](https://github.com/StackOverflowExcept1on/net-core-injector)
 - and more...
 
-You need to find your own injection method or choose a game that supports user dll loading (usually called Mods) like for example RimWorld ([Wiki](https://rimworldwiki.com/wiki/Modding_Tutorials/)).
+Games with built-in mod support, such as [RimWorld](https://rimworldwiki.com/wiki/Modding_Tutorials/), can load your assembly themselves.
 
 ### Dependencies
 
-It has no other dependencies and will most likely work in other environments too. Harmony was tested on PC, Mac and Linux and support 32- and 64-bit. For a typical Unity target, simply set your project to .Net 3.5 or Mono 2.x and include the Harmony dll.
+The standard `Lib.Harmony` package merges its dependencies into one DLL. `Lib.Harmony.Thin` keeps them separate. Choose a target framework supported by your application; see [Getting Started](../index.md#getting-started).
 
 ## Altering functionality (Patching)
 
-In general, if you want to change how an exising C# application like a game works and you don't have the source code for that application, you have basically two principles to do that:
+There are two common ways to change an application without its source code:
 
 1. Alter dll files on disk
 2. Re-point method implementations (hooking)
 
-Depending on the needs and situation, altering dll files is not always a desirable solution. For example
+Editing DLL files has drawbacks:
 
 - it has legal implications
 - it might be blocked by an anti-cheat system
@@ -51,12 +51,12 @@ Harmony uses a variation of hooking and focuses only on runtime changes that don
 
 ## How Harmony works
 
-Where other patch libraries simply allow you to replace the original method, Harmony goes one step further and gives you:
+Harmony lets you:
 
-- A way to keep the original method intact
-- Execute your code before and/or after the original method
-- Modify the original with IL code processors
-- Multiple Harmony patches co-exist and don't conflict with each other
+- Keep the original method's code
+- Execute your code before and/or after it
+- Modify its IL instructions
+- Combine patches from multiple authors on the same method
 
 ![](https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/patch-logic.svg?sanitize=true)
 
@@ -64,9 +64,9 @@ Where other patch libraries simply allow you to replace the original method, Har
 
 ![note] Harmony can't do everything. Make sure you understand the following:
 
-- With Harmony, you only manipulate **methods**. This includes constructors and getters/setters.
+- Harmony rewrites **method bodies**, including constructors and getters/setters.
 
-- You can only work with methods that have an actual IL code body, which means that they appear in a dissassembler like [dnSpy](https://github.com/0xd4d/dnSpy).
+- Most patches need an IL body. [Native methods](patching-edgecases.md#native-external-methods) need a replacement implementation.
 
 - Methods that are too small might get [inlined](https://wikipedia.org/wiki/Inline_expansion) and your patches will not run.
 

@@ -1,30 +1,26 @@
 # Annotations
 
-Instead of writing a lot of reflection code you can use annotations to define your original and patch methods in a declarative way. Harmony uses annotations in a hierarchical way on classes and methods in those classes to determine which original methods you want to patch with which patch methods and with which properties like priorities and such.
+Annotations describe the original method, your patch methods, and settings such as priority. Usually, each original gets a "patch class" marked with `[HarmonyPatch]`.
 
-To simplify things, each original method you want to patch is usually represented by a "patch class", that is, a class that has at least one harmony patch annotation `[HarmonyPatch]`.
-
-When you call harmony.**PatchAll()**, Harmony will search through all classes and methods inside the given assembly looking for specific Harmony annotations, applying all patch classes that it finds.
-
-To selectively apply certain patch classes, harmony.**PatchCategory()** can be used with `[HarmonyPatchCategory]` to mark specific patch classes to apply. Alongside this, harmony.**PatchAllUncategorized()** can be used to apply patch classes not marked with a specific category. Note that harmony.**PatchAll()** ignores categories.
+`PatchAll()` finds and applies every annotated patch class in an assembly. To apply selected groups, mark classes with `[HarmonyPatchCategory]` and call `PatchCategory()`. `PatchAllUncategorized()` applies classes without a category. `PatchAll()` ignores categories.
 
 A typical patch consists of a class with annotations that looks like this:
 
 [!code-csharp[example](../examples/annotations_basic.cs?name=example)]
 
-This example annotates the class with enough information to identify the method to patch. Inside that class, you define a combination of **Prefix**, **Postfix**, **Finalizer** or **Transpiler** methods. Harmony will find them by their name and if you annotate those methods you can even have different names.
+The class annotations identify the original. Inside it, define **Prefix**, **Postfix**, **Finalizer**, or **Transpiler** methods. Harmony recognizes these names; use method annotations if you prefer other names.
 
 ### Patch classes
 
-**Patch classes** can be public, private, static or not. **Patch methods** can be public or private but **must be static** since the patched original method does not have any reference to an instance of your patch class. If you use the manual way to specify the patch methods, your patch methods can even be DynamicMethod's.
+**Patch classes** can be public, private, static or not. **Patch methods** can be public or private but **must be static**. Ordinary patches can also use a static [factory method](patching.md#patch-methods) that returns a `DynamicMethod`; Infix patches cannot.
 
 ##### Limitations
 
-The only limitation is that annotations are not ordered (even if they appear so). At runtime, the order of methods or multiple annotations on something is undefined. The consequence of this is that you cannot rely on order when you define multiple annotations that theoretically could overwrite each other like with normal inheritance. This normally isn't a problem unless you annotate multiple Prefix methods in a class and expect the order of the prefixes to be as in the source code (use priority annotations in this case).
+Declaration order is not execution order. Do not rely on the order of methods or annotations, or on conflicting annotations overwriting each other. Use [priorities](priorities.md) to order patches.
 
 ### Annotation alternatives
 
-To indicate that a class contains patch methods it needs to be annotated with at lease one annotations.
+Mark a patch class with at least one `[HarmonyPatch]` annotation.
 
 #### Basic annotations
 
@@ -82,7 +78,7 @@ Basic annotations need to be combined to define all aspects of your original met
 
 #### Combination annotations
 
-Beside combining the basic annotations you can also pick from the many combination annotations to express things more compact:
+These overloads combine the basic annotations more compactly:
 
 ```csharp
 [HarmonyPatch(Type, string)]
@@ -156,7 +152,7 @@ To patch a property you use the annotations that contain a `MethodType` argument
 
 #### Generic Methods
 
-To patch methods with generic signatures, you need to patch specific versions of the method. It is not possible to patch an open generic method. Example: AddItem(**T** item) cannot be patched directly but you can define one patch for i.e. AddItem(**string** item) and one for AddItem(**int** item):
+Ordinary patches need a constructed generic target, not an open definition. For example, target `TestClass<string>.AddItem` rather than `TestClass<T>.AddItem`. See [generic sharing limits](patching-edgecases.md#generics).
 
 ```csharp
 [HarmonyPatch(typeof(TestClass<string>), "AddItem")]

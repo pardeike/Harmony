@@ -6,9 +6,7 @@ The [feature-completion contract](INFIX-FEATURE-COMPLETION.md) specifies accumul
 
 ## 1. The useful generalization
 
-An Infix surrounds one operation inside a chosen outer method. That operation consumes some values and may produce one value. Capture its inputs once, run the ordinary prefix list, optionally execute the original instruction, and run the ordinary postfix phases. Other instructions and other callers remain unchanged.
-
-This works for more than method calls without creating a second patch engine:
+All targets use the core per-site pipeline: capture inputs once, run prefixes, optionally execute the operation, then run postfixes and any finalizers. Other instructions and callers remain unchanged.
 
 | Target | Inputs, excluding receiver | Result | Selection |
 | --- | --- | --- | --- |
@@ -23,15 +21,13 @@ Every target uses the same positions convention and independent prefix/postfix o
 
 ### Why constants are worth supporting
 
-A useful example captures a newly created `StringBuilder`, then intercepts a distinctive string literal later in the same method to append to that builder. The literal is an insertion point, not necessarily a value to replace. This avoids guessing the original compiler's local-variable numbering.
+A constructor postfix can capture a `StringBuilder`; a later distinctive literal provides an insertion point to append to it without guessing compiler local numbers.
 
-That is a legitimate use case. It also explains the limit: a literal is identified by its value, not by the source expression that produced it. A compiler may fold, remove, or duplicate it. Selecting `1` also finds unrelated boolean and small-integer loads. There is no promise that a source-level `const` declaration survives as a selectable instruction.
-
-Expose this explicitly, with existing occurrence positions and a no-match error. Do not claim source-expression tracking, automatic relocation, or semantic uniqueness. Applications should prefer member identities where those express the intended point equally well.
+Literals match values, not source expressions. A compiler may fold, remove or duplicate them. Selecting `1` includes unrelated boolean and small-integer loads; a source-level `const` may leave no selectable instruction. Positions and no-match errors expose the compiled matches, without promising source tracking, relocation or semantic uniqueness. Prefer member identities when they express the intended point equally well.
 
 ## 2. Public API and normalization
 
-Add a compact `InnerTarget` selector and `HarmonyMethod.innerTarget`. Keep the existing `InnerMethod`, `HarmonyMethod.innerMethod`, and `Patch.innerMethod` APIs unchanged.
+`InnerTarget` and `HarmonyMethod.innerTarget` select extended operations. Existing `InnerMethod`, `HarmonyMethod.innerMethod`, and `Patch.innerMethod` APIs remain unchanged.
 
 Manual forms:
 
@@ -64,7 +60,7 @@ The operation kind is part of identity: selecting a field read never also select
 
 ## 3. Binding and execution
 
-Generalize the internal binding context from a method plus `ParameterInfo[]` to an optional member, explicit result/receiver information, and a small logical parameter description. A logical parameter has only the name, type, and out/retval flags the binder already needs. Do not manufacture fake reflection methods or emit adapter methods for fields or constants.
+The binding context contains an optional member, explicit result/receiver information, and logical parameters with name, type and out/retval flags. Do not manufacture reflection methods or emit adapters for fields or constants.
 
 The existing storage abstraction continues to capture operands into typed locals, preserving real managed references. The original operation executes with those same operands. Expressions supplying the receiver and arguments execute exactly once, even when a prefix skips the operation.
 
@@ -72,7 +68,7 @@ The existing storage abstraction continues to capture operands into typed locals
 - Field accesses have their actual receiver; static fields have none. Preserve original null-check timing unless a prefix replaces the receiver or skips the operation.
 - Construction has no incoming object receiver. `__instance` is null; the newly constructed object or struct is `__result`. A prefix may supply a replacement result and skip construction. Argument evaluation has already happened, but allocation and constructor side effects have not.
 - Literal loads have no receiver, arguments, or metadata member. Their result follows the same prefix/default/skip/postfix rules as any other value-producing operation.
-- Keep `__originalMethod` method-only, including `ConstructorInfo` for construction. Add Infix-only `__originalMember` for the actual `MethodInfo`, `ConstructorInfo`, or `FieldInfo`. Require a compatible by-value parameter. Both metadata injections reject literal sites; `[HarmonyOuter]` still identifies the outer method there. Do not change ordinary patch-name binding or skip classification; the same patch method may participate in both execution contexts.
+- Keep `__originalMethod` method-only, including `ConstructorInfo` for construction. Infix-only `__originalMember` supplies the actual `MethodInfo`, `ConstructorInfo`, or `FieldInfo` through a compatible by-value parameter. Both reject literal sites; `[HarmonyOuter]` still identifies the outer method there. Ordinary patch-name binding and skip classification remain unchanged; one patch method may participate in both contexts.
 - Exact-name argument binding bypasses all magic names, including the new `__originalMember` name, in the selected scope.
 
 Do not add new array rules. Reads and literals have zero inner arguments; field writes have a captured value slot, so their inner and outer arrays are disjoint. Constructor arguments with managed references retain V3's selective alias rejection. The absence of `ref` on `object[]` does not make element replacement read-only.
@@ -83,7 +79,7 @@ Support static fields using `ldsfld`/`stsfld` and instance fields on reference t
 
 Preserve `volatile.` and valid `unaligned.` prefixes adjacent to the original field instruction. Patches are not part of an atomic field access and do not add locking or change the memory ordering promised by that instruction.
 
-**Reject instance fields on value types for this implementation.** A legal `ldfld` can consume an unboxed struct value or an address. Declaring a spill local as `T&` based only on the field's declaring type corrupts the value case; declaring it as `T` corrupts the address case and loses mutation semantics. No current Harmony component proves which stack form arrives at every control-flow path. This is a specific unsupported operation, not a blanket ban on structs: static struct fields, construction of structs, and existing supported struct method calls remain valid. Supporting these instance fields later requires actual stack-type analysis and both value/address receiver tests, not a heuristic based on the preceding instruction.
+**Instance fields on value types are unsupported.** Legal `ldfld` receivers include both unboxed values and addresses. Spilling to `T&` corrupts the value case; spilling to `T` corrupts the address case and loses mutation semantics. Harmony has no stack-type analysis proving which form reaches each path. Static struct fields, struct construction and supported struct method calls remain valid. Supporting instance fields requires that analysis and both value/address receiver tests, not a preceding-instruction heuristic.
 
 Keep function-pointer signature rejection before emission, including field signatures on older runtimes that erase these types in reflection. Native pointers retain their existing typed support.
 
@@ -123,9 +119,9 @@ For fields and constructors, persist module ID, metadata-definition token, expli
 
 ## 7. InlineSignature: useful independently
 
-Make the existing `InlineSignature` and its existing public nested modifier representation public. Keep Cecil conversion methods nonpublic. Expose stack pop/push counts: include the function pointer and implicit receiver when present, count an explicit receiver only once, and count a non-void result once. Account for modified return types. Do not create another signature parser or change the model's existing calling-convention encoding incidentally.
+`InlineSignature` and its nested modifier representation are public; Cecil conversion methods remain nonpublic. Stack pop/push counts include the function pointer and implicit receiver when present, count an explicit receiver only once, and count a non-void result once, accounting for modified return types. Retain the existing parser and calling-convention encoding.
 
-Correct the parser's by-reference type representation with a real managed-ref `calli` regression, not only a constructed-object test. Prove external consumption from an assembly without friend access and exercise a read/re-emit round trip. Public visibility alone would conceal incorrect `T*` versus `T&` metadata from the consumer who requested it.
+Verify correct `T&` rather than `T*` parsing with a real managed-ref `calli`, not only a constructed-object test. Prove external consumption without friend access and a read/re-emit round trip.
 
 Returning `calli` instructions also need a correct emitted maximum stack depth. The current MonoMod DynamicMethod emitter omits their returned value from its calculation; .NET 5 rejects a reproduced ref-return case that newer JITs accept. Route these wrappers through the existing Cecil backend and DynamicMethod-proxy handling, with tests both with and without a dynamic prefix factory. Do not add a guessed stack allowance. Keep the reader's existing unsupported generic entries, varargs sentinels, and wrappers around nested function-pointer types documented separately from public stack counting.
 

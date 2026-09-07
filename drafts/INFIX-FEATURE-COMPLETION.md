@@ -6,7 +6,7 @@
 
 An Infix is ordinary Harmony patching at one selected operation inside an outer method. An **operation** is a call, field read/write, construction, or literal load. A **site** is one matching instruction, not one loop iteration.
 
-Adding a patch adds a registration. Removing a patch removes its registrations. In either case Harmony rebuilds the outer method from its original instructions, applies the transpilers, finds the sites, and combines all surviving patches at each site. This already works, including multiple patches from the same owner. Do not replace it with one registration per owner or selector.
+Adding or removing registrations rebuilds the outer method from its original instructions: apply transpilers, find sites, and combine surviving patches at each site. Multiple registrations from one owner remain independent; do not collapse them by owner or selector.
 
 Prefixes, postfixes and finalizers are independent lists. Use ordinary Harmony's sorting and execution rules for each role. Exact and generic-family selectors that meet at one instruction share that pipeline. There are no paired wrappers, special family priority, or extra "last capture" phase.
 
@@ -44,7 +44,7 @@ processor.Patch(); // Installs all four, alongside existing registrations.
 
 Here `a` through `d` are `HarmonyMethod` objects with their own selectors. They may select the same site or different sites. Both overloads of every `AddInner...` method append. Keep the fluent return type.
 
-Keep one pending list per inner role. Pass each list to the existing `PatchInfo` append operation once, then build and publish one replacement per actual outer method. No second registry, deduplication, or replace-by-owner rule is needed. Preserve insertion order as the input to Harmony's registration-index ordering; priority and before/after dependencies still govern execution.
+Keep one pending list per inner role. Append each list to `PatchInfo` once, then build and publish one replacement per actual outer method. Preserve insertion order for registration indexes; priority and before/after dependencies still govern execution. No second registry, deduplication or replace-by-owner rule.
 
 One `Patch()` is one installation attempt for that method. Validate the complete candidate, including all selected sites, before replacing its working wrapper or publishing state. If `b` is invalid, `a` must not become partially installed. Existing registrations remain intact.
 
@@ -52,11 +52,11 @@ Match ordinary processor reuse: pending configuration remains after `Patch()`. C
 
 A null `HarmonyMethod` contributes no patch and must not clear earlier additions. A null passed to the `MethodInfo` overload retains its current `ArgumentNullException`, before appending anything. Invalid non-null metadata still fails validation. Test both overloads; do not turn invalid patch metadata into a successful empty installation.
 
-**Do not change ordinary `AddPrefix`, `AddPostfix`, `AddTranspiler`, or `AddFinalizer`.** Their existing single pending selections are outside this feature. Class processing already collects lists; manual inner configuration should now be equally capable.
+**Do not change ordinary `AddPrefix`, `AddPostfix`, `AddTranspiler`, or `AddFinalizer`.** They retain single pending selections. Class processing and manual inner configuration both collect lists.
 
 ## 3. Inner finalizers use ordinary finalizer behavior
 
-Add `[HarmonyFinalizer]` as the third role accepted with `[HarmonyInfix]`, plus both `AddInnerFinalizer` overloads, `HarmonyPatchType.InnerFinalizer`, and matching inspection/removal support. Append enum values; preserve existing public overloads and constructors.
+`[HarmonyFinalizer]` is the third role accepted with `[HarmonyInfix]`, with both `AddInnerFinalizer` overloads, `HarmonyPatchType.InnerFinalizer`, and matching inspection/removal support. New enum values are appended; existing public overloads and constructors remain unchanged.
 
 Example: the outer method contains `var total = BaseValue() + Parse(text);`.
 
@@ -84,9 +84,9 @@ Keep the result in typed storage for finalization, preserving ordinary Harmony's
 
 ### One small helper where exception handling needs it
 
-Keep today's inline site emission when there are no inner finalizers. For a site with finalizers, generate one typed static helper containing that site's complete pipeline and call it at the original instruction's position.
+Emit sites without inner finalizers inline. For a site with finalizers, generate one typed static helper containing the complete pipeline and call it at the original instruction's position.
 
-Why: in `BaseValue() + Parse(text)`, the value of `BaseValue()` is still waiting on the outer method's evaluation stack. Catching an exception inline would discard it. A helper handles its own exception while that pending value remains in the caller. A helper also works when the selected operation is inside an exception filter; inserting a new protected region directly in a filter is invalid. No whole-method stack-type analyzer is needed for these cases. The [CLI specification, I.12.4.2.7–8 and III.3.34](https://ecma-international.org/wp-content/uploads/ECMA-335_6th_edition_june_2012.pdf) defines these boundaries.
+In `BaseValue() + Parse(text)`, an inline catch would discard the pending `BaseValue()` result. A helper handles its exception while leaving that value in the caller. It also works inside a filter, where a new protected region is invalid. Neither case needs whole-method stack-type analysis. See [CLI I.12.4.2.7–8 and III.3.34](https://ecma-international.org/wp-content/uploads/ECMA-335_6th_edition_june_2012.pdf).
 
 The helper is an emission detail, not a new public patch target:
 
@@ -97,7 +97,7 @@ The helper is an emission detail, not a new public patch target:
 - Use the existing DynamicMethod emitter for the helper's structured finalizer regions so callback tokens retain their exact runtime assembly identity across private loaders. Keep Cecil emission for outer bodies that need their original exception table, including the existing typed DynamicMethod proxy support. A direct typed helper call needs no reflection invocation or per-patch delegate dispatch. Retain generated helpers with the outer wrapper; they are not serialized.
 - Keep original branches and exception-region boundaries around the replacement call unit in the outer method. A remaining exception reaches its surrounding handlers at that location. Do not split or widen the outer exception regions.
 
-Extract ordinary finalizer emission to accept a finalizer list and binding contexts, as prefix/postfix emission already does. Adapt existing state/local storage to use the same storage representation as arguments. Do not add another binder. Classify roles explicitly: a returning finalizer's first parameter is an injection, not a passthrough-result parameter.
+Shared finalizer emission accepts a finalizer list and binding contexts, like prefix/postfix emission. State, locals and arguments use the same storage representation and binder. Classify roles explicitly: a returning finalizer's first parameter is an injection, not a passthrough result.
 
 Argument arrays remain demand-driven. Allocate only requested scopes and retain the existing selective alias checks. Refresh a demanded array before a receiving finalizer invocation when earlier writes or a different exception path could have made it stale; do not assume a preceding prefix/postfix ran. Preserve ordinary cleanup behavior if the receiving patch throws. No arrays or refresh work are introduced at sites that do not request them.
 
@@ -105,9 +105,7 @@ Unsupported signatures remain local restrictions. An unrelated managed reference
 
 ## 4. Several state values and captured source variables
 
-These solve different problems and must not share a misleading name:
-
-**Patch-owned state** is storage Harmony creates. Multiple named slots already exist:
+**Patch-owned state** is storage Harmony creates, with multiple named slots:
 
 ```csharp
 static void Capture(StringBuilder __result,
@@ -128,11 +126,11 @@ static void Later([HarmonyOuter] StringBuilder __var_builder,
 
 Use these slots for any number of named values shared across operations in one outer invocation. Use an inner `__state` struct for several values shared during one site's execution; named `__var_*` slots require `[HarmonyOuter]`. Retain patch-declaring-type isolation and reject conflicting types for one slot. Do not silently extend their lifetime across iterator yields or async suspensions. A captured object reference is a snapshot of which object was seen, not a promise that later postfixes will leave that result unchanged.
 
-No `[HarmonyState]` attribute or second store is needed for multiple Infix state values. Where a friendlier parameter name is useful, exercise the existing `HarmonyArgument` alias machinery against `__var_name`; add an example once verified. Exact `ArgumentMode.Original` must continue to bypass these synthetic names. Numeric `__var_0` refers to an existing IL local, not a new named slot; do not present its compiler-sensitive numbering as source-local discovery.
+Use existing `HarmonyArgument` aliases for friendlier `__var_name` parameter names, with executable example coverage. No `[HarmonyState]` attribute or second store is needed. `ArgumentMode.Original` bypasses synthetic names. Numeric `__var_0` refers to an existing IL local, not a named slot; its compiler-sensitive numbering is not source-local discovery.
 
-Two differences are intentional. Named Infix slots are scoped to the patch declaring type, not a runtime registration group spanning classes. Keep cooperating methods in one patch class or use explicitly owned shared storage. Ordinary patches currently cannot bind these named Infix slots: retain ordinary `__state` with a struct when several values must be shared between ordinary and inner patches in the same outer invocation. Do not claim that an existing `__var_name` example already works in an ordinary prefix.
+Named Infix slots belong to the patch declaring type, not a registration group spanning classes. Keep cooperating methods in one class or use explicitly owned shared storage. Ordinary patches cannot bind these slots; use an outer `__state` struct to share several values between ordinary and inner patches in one invocation.
 
-**A captured source variable** is storage the compiler created, for example a parameter retained on an iterator object or a variable retained by a lambda. Add `ArgumentMode.Captured` to the existing parameter annotation:
+**A captured source variable** is compiler-created storage, such as an iterator parameter or lambda capture. Select it with `ArgumentMode.Captured`:
 
 ```csharp
 static void Before(
@@ -140,19 +138,19 @@ static void Before(
     => limit = Math.Max(limit, 1);
 ```
 
-Choose inner/outer scope first. This mode resolves a known compiler-generated field path reachable from that scope's receiver or a proven compiler-supplied closure argument, then uses ordinary typed field storage. A closure held only in an unrelated local is not automatically reachable. It does not search the other scope, fall back to a special injection, or guess an ordinary IL-local number. The mode is Infix-only initially; ordinary patches retain their current binding behavior.
+Choose inner/outer scope first. This mode resolves a known compiler-generated field path from that scope's receiver or a proven compiler-supplied closure argument, then uses ordinary typed field storage. An unrelated local's closure is not automatically reachable. There is no other-scope search, special-injection fallback or IL-local guessing. The mode is Infix-only; ordinary binding remains unchanged.
 
-Only `ArgumentMode.Default` performs magic-name, numeric, field-prefix, or synthetic-local classification. Both explicit source modes bypass it. A captured variable literally named `__state`, `___field`, `__var_name`, or `__0` must still mean that captured variable. Audit existing `mode != Original` checks when adding this third mode; merely adding a new enum value is insufficient.
+Only `ArgumentMode.Default` performs magic-name, numeric, field-prefix or synthetic-local classification. Both explicit source modes bypass it. Captures literally named `__state`, `___field`, `__var_name` or `__0` still mean those variables. Classification checks must test `mode == Default`, not `mode != Original`.
 
 Resolve actual working fields, not an iterator's saved parameter template. A write changes the live captured storage. Follow reference fields normally and value-type fields by address when required; do not mutate a boxed copy. Evaluate a field path once per parameter binding and do not retain an address beyond the patch call. Null intermediate objects fail normally. Reject readonly writes, unsupported types, ambiguous captures, and variables that the compiler did not preserve. Source names are a convenience over recognized compiler layouts, not a promise to reconstruct optimized-away variables.
 
-Limit discovery to verified compiler-generated layouts and report the candidates on ambiguity. Explicit existing field injection/reflection remains available when the user knows the generated field. Add compile-time fixtures for closure nesting, captured `this`, iterator parameters, and async variables before claiming a compiler layout is supported. This is field-path resolution feeding the shared binder, not a general object-graph search.
+Limit discovery to verified compiler-generated layouts and report candidates on ambiguity. Explicit field injection/reflection remains available for known generated fields. Support claims require compile-time fixtures for closure nesting, captured `this`, iterator parameters and async variables. Resolve field paths through the shared binder, not a general object-graph search.
 
 ## 5. Select the body and methods users mean
 
 ### Iterator and async methods
 
-Add `InfixOuterBody.Declared` and `InfixOuterBody.Auto`, exposed as `HarmonyInfix.OuterBody` and `HarmonyMethod.infixOuterBody`. Keep `Declared` as the compatibility default. `Auto` means "use the generated body for a recognized state-machine method, otherwise this declared method":
+`HarmonyInfix.OuterBody` and `HarmonyMethod.infixOuterBody` select `InfixOuterBody.Declared` (the compatibility default) or `Auto`. `Auto` uses a recognized state machine's generated body, otherwise the declared method:
 
 ```csharp
 [HarmonyPatch(typeof(Worker), nameof(Worker.RunAsync))]
@@ -169,7 +167,7 @@ This is automatic resolution, not a requirement for users to find `MoveNext`. Ma
 
 Resolve the actual method before job grouping and per-method `Prepare`, without resolving the inner selector until `Prepare` accepts the job. Prefer recognized iterator/async state-machine attributes; support the existing iterator fallback only when its generated-type relationship is unambiguous. Resolve closed generic state-machine types without broadening their identity. A recognized but invalid/ambiguous generated body is an error, not permission to patch the factory instead. Never choose a body based on which one happens to contain a match today.
 
-Add one shared `AccessTools.StateMachineMoveNext(MethodBase)` resolver. Return the method unchanged when it is already a recognized body, null when there is no recognized relationship, and an error for malformed or ambiguous recognized metadata. The existing async helper does not close generic state-machine types, and the iterator helper's single-`newobj` heuristic is insufficient for automatic recognition: do not merely combine them. Resolve the appropriate interface implementation, including explicit implementations. Handle async iterators where their metadata and runtime exist: their execution body is the internal `IAsyncStateMachine.MoveNext`, not public `MoveNextAsync`. Use metadata-name checks on legacy framework targets and compile-time fixtures for each supported layout.
+The shared `AccessTools.StateMachineMoveNext(MethodBase)` resolver returns recognized bodies unchanged, null for no recognized relationship, and an error for malformed or ambiguous recognized metadata. Resolve closed generic state-machine types and the appropriate interface implementation, including explicit implementations; the older iterator helper's single-`newobj` heuristic is insufficient. For async iterators, where metadata and runtime support exist, select internal `IAsyncStateMachine.MoveNext`, not public `MoveNextAsync`. Use metadata-name checks on legacy targets and compile-time fixtures for every supported layout.
 
 Automatic resolution applies only to inner roles. Ordinary roles retain the target explicitly selected by existing Harmony facilities, including `MethodType.Enumerator`, `MethodType.Async`, and direct `MoveNext` targeting. Class processing groups inner and ordinary declarations into separate existing jobs only when their actual methods differ. Keep class-level `Prepare` before discovery; per-method `Prepare`, `Cleanup`, replacement results, and diagnostics identify the actual method. Diagnostics also show the requested factory when redirected. Atomic installation remains per actual method, not across a class.
 
@@ -177,7 +175,7 @@ If a class's target list contains both a factory and its explicit body, add the 
 
 Manual `PatchProcessor.Patch()` continues to produce one method replacement. If its pending patches resolve to different actual methods, reject before any installation and ask the caller to use separate processors. Do not silently move ordinary patches or expand its return contract to hide two installations. Several pending inner patches resolving to the same body still install in one batch.
 
-After a successful installation, retain the actual method on that processor. Both processor `Unpatch` overloads use it; later additions must not silently move that same processor elsewhere. A failed attempt must not change the remembered target. This one processor field makes patch-then-unpatch symmetric without creating a global alias registry.
+After successful installation, retain the actual method on the processor for both `Unpatch` overloads. Later additions must not silently move it elsewhere; failed attempts must not change it. No global alias registry is needed.
 
 Store registrations under the actual method. Existing inspection and explicit method-based unpatching address that method; examples must show obtaining it with `StateMachineMoveNext`. Class unpatching must repeat the same body selection, and owner-wide unpatching must remove all of that owner's registrations normally. No durable factory-to-body alias registry is needed. This physical-method rule is an intentional difference from adding an implicit alias to every Harmony inspection/unpatch API.
 
@@ -187,7 +185,7 @@ Inside a redirected body, `[HarmonyOuter] __instance` is the state-machine recei
 
 ### Local functions, lambdas, and sets of methods
 
-Add focused `AccessTools` resolvers returning real `MethodInfo` objects:
+Focused `AccessTools` resolvers return real `MethodInfo` objects:
 
 ```csharp
 MethodInfo LocalFunction(MethodBase containingMethod, string name, Type[] parameters = null);
@@ -202,17 +200,17 @@ Selecting all overloads or several explicit methods needs no new selector protoc
 
 ## 6. Parity without a second patch framework
 
-**Instruction rules.** Harmony's lower-level instruction editing uses a transpiler with `CodeMatcher` and `CodeInstruction`, with ordinary ordering, locals, and labels. Add short worked recipes for insertion before/after a match, replacement/deletion, method-entry/exit insertion, a required minimum match count, and a first-N match limit. Explain that "process at most N" differs from "reject more than N". Retain Harmony's existing transpiler ordering and branch/exception-label responsibilities.
+**Instruction rules.** Lower-level editing uses a transpiler with `CodeMatcher` and `CodeInstruction`. Keep short recipes for insertion before/after a match, replacement/deletion, method-entry/exit insertion, a required minimum match count, and a first-N limit. Distinguish "process at most N" from "reject more than N". Existing transpiler ordering, locals, and branch/exception-label responsibilities still apply.
 
 **Runtime groups.** Existing runtime selectors plus a dedicated Harmony owner ID provide a group that can be installed and removed together. Document one owner per independently removable group; do not imply that `UnpatchAll` removes only the last processor's additions. A group spanning methods has existing per-method installation semantics, not a new transaction across all methods.
 
-**Delegates and bypass.** Preserve existing method/base delegate injections and normal bool-prefix skip rules. Harmony's observer-prefix behavior and before/after dependencies remain authoritative even where the alternative differs. Explicit `[HarmonyOuter]` is preferable to silently binding an inner typo to an outer parameter.
+**Delegates and bypass.** Preserve method/base delegate injections, bool-prefix skip rules, observer-prefix behavior and before/after dependencies. Require explicit `[HarmonyOuter]`; never silently bind an inner typo to an outer parameter.
 
-**Optional patch-body inlining.** Add a method-level `[HarmonyInline]` hint for inner patch methods. Without it, emit the ordinary call; with it, allow copying a suitable small static patch body into the generated pipeline. Manual registration uses the same annotated patch `MethodInfo`. Read the hint from that method on rebuild, so no new per-record optimization flag or serialized field is needed. This changes code generation, not which patches run, their bindings, or their exception protection. It is not a request to inline the selected original operation or recursively inline its callees.
+**Optional patch-body inlining.** Method-level `[HarmonyInline]` permits copying a suitable small static inner patch body into the pipeline; without it, emit the ordinary call. Manual registration uses the same annotated `MethodInfo`. Read the hint on rebuild, without per-record flags or serialized fields. It changes code generation, not patch selection, binding or exception protection. It does not inline the original operation or recursively inline callees.
 
 Reuse the existing IL reader and label/local remapping. Bind parameters first using the shared binder, preserve the patch's private by-value parameter slots, and run the same write-back cleanup afterward. Initialize copied locals on every execution when the patch's `InitLocals` requires it, including repeated visits to a loop site. Wrapper-entry initialization alone is not equivalent to a fresh patch call. Remap returns to a local continuation; carry a returned value through the same prefix/postfix/finalizer handling as a normal call. For bodies with exception regions, recursion, pinned locals, stack allocation, unsupported operands/signatures, or context-sensitive operations, fall back to the normal call and explain why in debug output. Do not reject an otherwise valid patch because its optimization is unavailable.
 
-The optimized and normal forms must have identical binding, ordering, results, and exception behavior. Document two opt-in limits: stack traces/profiling can differ, and copied code is a snapshot until the outer wrapper is rebuilt. Do not inline a patch method that is itself already Harmony-patched. If another patch later changes that method, the author must rebuild the affected outer wrappers or leave this hint off; do not add a dependency-tracking registry just for this optimization. Respect `NoInlining`, explicit stack-crawl behavior, and static type-initialization semantics. If the importer cannot preserve a required context, do not inline. One-level body copying needs no transitive recursion analyzer. Benchmark a representative hot-site case before recommending the hint; no speculative general optimizer is part of this plan.
+The optimized and normal forms must have identical binding, ordering, results and exception behavior. Two opt-in limits apply: stack traces/profiling can differ, and copied code is a snapshot until the outer wrapper is rebuilt. Do not inline an already Harmony-patched patch method. If it is patched later, rebuild affected outer wrappers or leave the hint off; no dependency-tracking registry is provided. Respect `NoInlining`, explicit stack-crawl behavior and static type initialization. Fall back if the importer cannot preserve a required context. One-level copying needs no transitive recursion analyzer or general optimizer. Benchmark a representative hot site before recommending the hint.
 
 ## 7. Refactor and compatibility boundaries
 
@@ -249,12 +247,12 @@ Keep executable documentation examples and focused tests aligned with these impl
 2. **Shared finalizer behavior.** Prove unchanged ordinary behavior. Compare ordinary and inner event traces for success, skip, exceptions in each phase, suppression/replacement, and finalizers that throw on both paths. Include the exact result-commit case: original returns 1, returning postfix A returns 2, returning postfix B throws, suppressing finalizer observes 1. Include finalizer-only sites, default/explicit/ref results, named state, arrays and aliasing, and outer writes visible on escaping exceptions.
 3. **Prove helper boundaries.** Generate pending stack values of different types, including live managed references, structs, `calli` results, and function pointers used later. Exercise try/catch/filter/finally/fault and nested/branch-boundary sites. Test every supported operation kind, original dispatch, GC retention, and removal of the last finalizer.
 4. **Resolve generated bodies and captures.** Cover iterator, async, and available async-iterator fixtures; Debug/Release compiler layouts; calls before/after suspension; explicit/default/automatic selection; preserved factory patches; generic identity; mixed manual rejection; `Prepare(false)`; processor patch-then-unpatch; factory/body target aliases; inspection and all removal routes. Test working versus saved iterator fields, nested closures, captured `this`, colliding magic names, missing/ambiguous values, and real writes across suspension. Prove that synthetic state still resets per body invocation.
-5. **Complete authoring parity.** Cover nested local functions/lambda selection, overloaded parents, several explicit inner targets, named-state examples, raw-rule translations, and independent owner groups. Do not use method enumeration order as a silent first-match policy.
-6. **Add optional inlining.** Run the same behavioral tests with the hint off/on, including supported copies and fallback cases. Verify mutation, cleanup, type initialization, return handling, finalizer protection, and mixed patches; record a small performance comparison.
+5. **Authoring parity.** Cover nested local functions/lambda selection, overloaded parents, several explicit inner targets, named-state examples, raw-rule translations, and independent owner groups. Do not use method enumeration order as a silent first-match policy.
+6. **Optional inlining.** Run the same behavioral tests with the hint off/on, including supported copies and fallback cases. Verify mutation, cleanup, type initialization, return handling, finalizer protection, and mixed patches; record a small performance comparison.
 7. **Run compatibility and release coverage.** Exercise JSON and BinaryFormatter round trips, downgrade/removal, old/new declaration discovery, and old/new published-state rebuilds in both load orders. Assert that a user transpiler never runs after a rejected state header. Run the existing runtime/architecture matrix and report loader limitations separately from real coexistence success.
 
 Prefer small generated case matrices over one fixture per combination. Keep an independent ordinary-patching oracle for scheduling and exception behavior, and compare actual callback traces/results rather than only generated instruction shapes. Reuse the [testing strategy](../docs/infix/TESTING-STRATEGY.md); a passing focused net9/x64 run is a development checkpoint, not proof of the full matrix.
 
 ## Design scope
 
-These contracts define Harmony's behavior. Any alternative can suggest useful workflows, but does not define Harmony's ordering, state lifetime, or exception semantics. The acceptance tests above must establish those properties directly, including preservation of ordinary patching behavior.
+These contracts and acceptance tests define Harmony's ordering, state lifetime and exception semantics, including preservation of ordinary patching behavior.
