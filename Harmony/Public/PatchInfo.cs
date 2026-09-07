@@ -185,19 +185,34 @@ namespace HarmonyLib
 		}
 
 		internal bool HasInfixes => innerprefixes.Length != 0 || innerpostfixes.Length != 0;
+		internal bool RequiresInfixV2(bool allowUnresolvedCallbacks = false)
+		{
+			bool Requires(Patch patch, bool postfix)
+			{
+				if (patch.innerTarget is not null) return true;
+				if (patch.innerMethod is null) return false; // Incomplete legacy records remain removable without binding.
+				MethodInfo method;
+				try { method = patch.GetValidatedInfixPatchMethod(); }
+				catch (Exception exception) when (allowUnresolvedCallbacks && exception is SerializationException or ArgumentException) { return false; }
+				return method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0)
+					.Any(parameter => new InjectedParameter(method, parameter).injectionType == InjectionType.OriginalMember);
+			}
+			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true));
+		}
 
 		internal void ValidateSurvivingMetadata()
 		{
 			NormalizeLegacyArrays();
 			foreach (var patch in prefixes.Concat(postfixes).Concat(transpilers).Concat(finalizers))
-				AttributePatch.ValidateOrdinary(new HarmonyMethod() { method = patch.PatchMethod, innerMethod = patch.innerMethod });
+				AttributePatch.ValidateOrdinary(new HarmonyMethod() { method = patch.PatchMethod, innerMethod = patch.innerMethod, innerTarget = patch.innerTarget });
 			foreach (var patch in innerprefixes.Concat(innerpostfixes))
 			{
 				try
 				{
-					if (patch.innerMethod is null) throw new ArgumentException("The stored inner patch has no target");
+					patch.ValidateTargetRepresentation();
+					if (patch.Target is null) throw new ArgumentException("The stored inner patch has no target");
 					AttributePatch.ValidateInfixPatchMethod(patch.GetValidatedInfixPatchMethod());
-					patch.innerMethod.Validate();
+					patch.Target.Validate();
 				}
 				catch (Exception ex)
 				{

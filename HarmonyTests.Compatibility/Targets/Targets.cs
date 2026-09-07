@@ -22,6 +22,13 @@ public static class Targets
 	public static int LegacyRun(int value) => Called(value) + 1;
 
 	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+	public static int OperationRun(int value)
+	{
+		var box = new OperationBox(value);
+		return Called(value) + box.Value + 7;
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
 	public static int ScopedRun(int value)
 	{
 		var result = Called(value);
@@ -55,6 +62,18 @@ public static class Targets
 		Trace.Clear();
 		var result = Run(1);
 		return (result, Trace.ToArray());
+	}
+}
+
+public sealed class OperationBox
+{
+	public int Value;
+
+	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+	public OperationBox(int value)
+	{
+		Targets.Trace.Add("construct:" + value);
+		Value = value;
 	}
 }
 

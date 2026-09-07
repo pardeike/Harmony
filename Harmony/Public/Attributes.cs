@@ -192,6 +192,9 @@ namespace HarmonyLib
 		internal readonly string innerName;
 		internal readonly Type[] innerArguments;
 		internal readonly ArgumentType[] innerVariations;
+		internal readonly InnerTargetKind innerTargetKind;
+		internal readonly string innerMemberName;
+		internal readonly object innerConstant;
 
 		/// <summary>One-based call positions; negative positions count from the end and an empty array selects all calls</summary>
 		public int[] Positions { get; set; } = [];
@@ -210,6 +213,37 @@ namespace HarmonyLib
 			innerName = methodName;
 			innerArguments = argumentTypes;
 			innerVariations = argumentVariations;
+		}
+
+		/// <summary>Selects a method, property accessor, or field operation. Property argument types are the index parameters, excluding a setter's value</summary>
+		/// <param name="declaringType">The member's declaring type</param>
+		/// <param name="memberName">The member name</param>
+		/// <param name="kind">Method, Getter, Setter, FieldRead, or FieldWrite</param>
+		/// <param name="argumentTypes">Method parameters or property index parameters; fields require no argument types</param>
+		public HarmonyInfix(Type declaringType, string memberName, InnerTargetKind kind, params Type[] argumentTypes)
+		{
+			info.methodType = (MethodType)int.MinValue;
+			innerDeclaringType = declaringType;
+			innerMemberName = memberName;
+			innerTargetKind = kind;
+			innerArguments = argumentTypes;
+			// V3 readers require innerName, so they reject generalized declarations before selecting a method of the wrong kind.
+		}
+
+		/// <summary>Selects newobj instructions for an instance constructor</summary>
+		/// <param name="declaringType">The constructed type</param>
+		/// <param name="kind">Constructor</param>
+		/// <param name="argumentTypes">The constructor parameter types</param>
+		public HarmonyInfix(Type declaringType, InnerTargetKind kind, params Type[] argumentTypes)
+			: this(declaringType, null, kind, argumentTypes) { }
+
+		/// <summary>Selects a non-null string, int, long, float, or double literal load</summary>
+		/// <param name="constant">The exact literal value; its CLR type selects the corresponding IL literal category</param>
+		public HarmonyInfix(object constant)
+		{
+			info.methodType = (MethodType)int.MinValue;
+			innerTargetKind = InnerTargetKind.Constant;
+			innerConstant = constant;
 		}
 	}
 

@@ -119,6 +119,14 @@ internal static class Program
 			cases.Add(("duplicate-module", new("duplicate-module", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
 			foreach (var variant in new[] { "before-registration", "after-install" })
 				cases.Add(("duplicate-patch-module-" + variant, new("duplicate-patch-module", current, newFixture, secondCurrent, secondFixture, backend, feature, framework, variant)));
+			if (values.GetValueOrDefault("--v3-baseline", "0") == "1")
+			{
+				cases.Add(("extensions-cold", new("extensions-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
+				cases.Add(("extensions-v3-old-first", new("extensions-v3", old, oldFixture, current, newFixture, backend, feature, framework)));
+				cases.Add(("extensions-v3-new-first", new("extensions-v3", current, newFixture, old, oldFixture, backend, feature, framework, "new-first")));
+			}
+			else if (framework == "net9.0" && backend == "json" && AssemblyName.GetAssemblyName(old).Version == new Version(2, 4, 2, 0))
+				cases.Add(("extensions-released", new("extensions-released", old, oldFixture, current, newFixture, backend, feature, framework)));
 			if (AssemblyName.GetAssemblyName(old).Version! >= new Version(2, 4, 0, 0))
 				foreach (var variant in new[] { "prefix-role", "postfix-role", "prefix-method", "postfix-method" })
 					cases.Add(("legacy-recovery-" + variant, new("legacy-recovery", old, oldFixture, current, newFixture, backend, feature, framework, variant)));
@@ -150,7 +158,11 @@ internal static class Program
 				RedirectStandardError = true,
 				UseShellExecute = false
 			};
+#if NETFRAMEWORK
+			Platform.Arguments(start, Platform.MonoVersion is null ? ["child", requestFile] : [typeof(Program).Assembly.Location, "child", requestFile]);
+#else
 			Platform.Arguments(start, typeof(Program).Assembly.Location, "child", requestFile);
+#endif
 			start.EnvironmentVariables["DOTNET_ROLL_FORWARD"] = "LatestPatch";
 			start.EnvironmentVariables["DOTNET_TieredCompilation"] = "0";
 			using var child = Process.Start(start)!;

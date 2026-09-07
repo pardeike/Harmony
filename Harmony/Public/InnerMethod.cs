@@ -218,7 +218,7 @@ namespace HarmonyLib
 
 		static string EncodeDefinition(Type type) => $"D({type.Module.ModuleVersionId:D};{type.MetadataToken.ToString(CultureInfo.InvariantCulture)})";
 
-		static string EncodeType(Type type)
+		internal static string EncodeType(Type type)
 		{
 			if (type is null || type.ContainsGenericParameters || type.IsPointer || type.IsByRef || type == typeof(void))
 				throw new ArgumentException($"Infix generic arguments must be fully closed types, got {type}");
@@ -233,7 +233,7 @@ namespace HarmonyLib
 			return EncodeDefinition(type);
 		}
 
-		static Type DecodeType(string text)
+		internal static Type DecodeType(string text)
 		{
 			if (text is null) throw new SerializationException("An Infix generic argument identity cannot be null");
 			var position = 0;

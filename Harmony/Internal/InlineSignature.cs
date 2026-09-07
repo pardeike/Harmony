@@ -7,21 +7,22 @@ using System.Runtime.InteropServices;
 namespace HarmonyLib
 {
 	/// <summary>
-	/// A mutable representation of an inline signature, similar to Mono.Cecil's CallSite.
-	/// Used by the calli instruction, can be used by transpilers
+	/// A mutable signature used as the operand of a <c>calli</c> instruction.
+	/// Parameter and return entries are <see cref="Type"/>, nested <see cref="InlineSignature"/>, or <see cref="ModifierType"/> objects.
 	/// </summary>
 	///
-	internal class InlineSignature : ICallSiteGenerator
+	public class InlineSignature : ICallSiteGenerator
 	{
-		/// <summary>See <see cref="System.Reflection.CallingConventions.HasThis"/></summary>
+		/// <summary>Whether the call receives an instance. Unless <see cref="ExplicitThis"/> is set, the instance is not listed in <see cref="Parameters"/>.</summary>
 		///
 		public bool HasThis { get; set; } = false;
 
-		/// <summary>See <see cref="System.Reflection.CallingConventions.ExplicitThis"/></summary>
+		/// <summary>Whether the first entry in <see cref="Parameters"/> explicitly describes the instance. Requires <see cref="HasThis"/>.</summary>
 		///
 		public bool ExplicitThis { get; set; } = false;
 
-		/// <summary>See <see cref="System.Runtime.InteropServices.CallingConvention"/></summary>
+		/// <summary>The calling convention. <see cref="CallingConvention.Winapi"/> represents the default managed convention in this signature model;
+		/// the other named values represent their corresponding unmanaged conventions. Other metadata conventions retain their numeric value plus one.</summary>
 		///
 		public CallingConvention CallingConvention { get; set; } = CallingConvention.Winapi;
 
@@ -32,6 +33,22 @@ namespace HarmonyLib
 		/// <summary>The return type or function pointer signature returned by the call site</summary>
 		///
 		public object ReturnType { get; set; } = typeof(void);
+
+		/// <summary>The number of evaluation-stack values consumed by <c>calli</c>, including the function pointer and any implicit instance.</summary>
+		/// <remarks>An explicitly listed instance is already included in <see cref="Parameters"/> and is not counted twice.</remarks>
+		public int PopCount => Parameters.Count + (HasThis && !ExplicitThis ? 1 : 0) + 1;
+
+		/// <summary>The number of evaluation-stack values produced by <c>calli</c>: zero for <see cref="void"/>, otherwise one.</summary>
+		/// <remarks>Type modifiers do not change the count. A nested function-pointer signature describes one returned pointer, not its own return value.</remarks>
+		public int PushCount
+		{
+			get
+			{
+				var type = ReturnType;
+				while (type is ModifierType modifier) type = modifier.Type;
+				return type is Type returnType && returnType == typeof(void) ? 0 : 1;
+			}
+		}
 
 		/// <summary>Returns a string representation of the inline signature</summary>
 		/// <returns>A string representation of the inline signature</returns>

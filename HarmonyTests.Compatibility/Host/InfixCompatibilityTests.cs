@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HarmonyCompatibility;
 
-internal sealed class InfixCompatibilityTests(Options options, List<object> events)
+internal sealed partial class InfixCompatibilityTests(Options options, List<object> events)
 {
 	private readonly MethodInfo target = typeof(Targets).GetMethod(nameof(Targets.Run))!;
 	internal string Stage { get; private set; } = "startup";
@@ -41,6 +41,14 @@ internal sealed class InfixCompatibilityTests(Options options, List<object> even
 		SetStage("load-b");
 		var b = new Engine("B", options.EngineB, options.FixtureB, events, options.Loader == "b-default", options.ContextualReflection, options.Loader == "reflection-routed");
 		Backend(b);
+		if (options.Case.StartsWith("extensions-", StringComparison.Ordinal))
+		{
+			OrdinaryControl(a, b);
+			if (options.Case == "extensions-cold") ExtendedCold(a, b);
+			else if (options.Case == "extensions-released") ExtendedReleased(a, b);
+			else ExtendedV3(options.Variant == "new-first" ? b : a, options.Variant == "new-first" ? a : b);
+			return;
+		}
 		if (options.Case == "foreign-transpiler")
 		{
 			ForeignTranspiler(a, b);
@@ -564,10 +572,11 @@ internal sealed class InfixCompatibilityTests(Options options, List<object> even
 		return string.Join("\n", entries.OrderBy(x => x, StringComparer.Ordinal));
 	}
 
-	private Snapshot CaptureState(Engine engine)
+	private Snapshot CaptureState(Engine engine, MethodBase? selected = null)
 	{
-		var bytes = engine.Bytes(target);
-		var info = bytes is null ? null : engine.ReadState(target);
+		selected ??= target;
+		var bytes = engine.Bytes(selected);
+		var info = bytes is null ? null : engine.ReadState(selected);
 		var version = info is null ? null : (int?)info.GetType().GetField("VersionCount")?.GetValue(info);
 		var result = new Snapshot(bytes is null ? null : Engine.Hash(bytes), MappingSnapshot((IDictionary)engine.StateField("originals")!),
 			MappingSnapshot((IDictionary)engine.StateField("originalsMono")!), Targets.TranspilerEntries, Targets.TranspilerEnumerations, Targets.PatchCalls, version);
@@ -575,7 +584,7 @@ internal sealed class InfixCompatibilityTests(Options options, List<object> even
 		return result;
 	}
 
-	private void Unchanged(Snapshot before, Engine engine) => Check.Equal(before, CaptureState(engine), "Rejected operation changed published state, mappings, version, or entered user patch code.");
+	private void Unchanged(Snapshot before, Engine engine, MethodBase? selected = null) => Check.Equal(before, CaptureState(engine, selected), "Rejected operation changed published state, mappings, version, or entered user patch code.");
 
 	private static void CheckEnvelope(byte[] bytes, bool present)
 	{

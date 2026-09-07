@@ -22,11 +22,29 @@ namespace HarmonyCompatibility
 		internal static void Arguments(ProcessStartInfo start, params string[] arguments)
 		{
 #if NETFRAMEWORK
-			start.Arguments = string.Join(" ", arguments.Select(x => "\"" + x.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""));
+			start.Arguments = string.Join(" ", arguments.Select(QuoteArgument));
 #else
 			foreach (var argument in arguments) start.ArgumentList.Add(argument);
 #endif
 		}
+
+#if NETFRAMEWORK
+		private static string QuoteArgument(string value)
+		{
+			if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+				return "\"" + value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+			var result = new System.Text.StringBuilder("\"");
+			var backslashes = 0;
+			foreach (var character in value)
+			{
+				if (character == '\\') { backslashes++; continue; }
+				result.Append('\\', character == '"' ? backslashes * 2 + 1 : backslashes);
+				result.Append(character);
+				backslashes = 0;
+			}
+			return result.Append('\\', backslashes * 2).Append('"').ToString();
+		}
+#endif
 
 		internal static void Kill(Process process)
 		{

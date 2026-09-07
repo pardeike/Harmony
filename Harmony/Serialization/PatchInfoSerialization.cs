@@ -58,7 +58,9 @@ namespace HarmonyLib
 					typeof(PatchInfo),
 					typeof(Patch[]),
 					typeof(Patch),
-					typeof(InnerMethod)
+					typeof(InnerMethod),
+					typeof(InnerTarget),
+					typeof(InnerTargetKind)
 				};
 				foreach (var type in types)
 					if (typeName == type.FullName)
@@ -82,7 +84,7 @@ namespace HarmonyLib
 			if (!patchInfo.HasInfixes) return payload;
 			var bytes = new byte[infixHeader.Length + 2 + payload.Length];
 			Buffer.BlockCopy(infixHeader, 0, bytes, 0, infixHeader.Length);
-			bytes[infixHeader.Length] = 1;
+			bytes[infixHeader.Length] = patchInfo.RequiresInfixV2() ? (byte)2 : (byte)1;
 			bytes[infixHeader.Length + 1] = backend;
 			Buffer.BlockCopy(payload, 0, bytes, infixHeader.Length + 2, payload.Length);
 			return bytes;
@@ -125,11 +127,13 @@ namespace HarmonyLib
 			if (bytes is null || bytes.Length == 0) throw new SerializationException("Patch state is empty");
 			var backend = CurrentBackend;
 			var enveloped = bytes[0] == infixHeader[0];
+			var version = 0;
 			if (enveloped)
 			{
 				if (bytes.Length <= infixHeader.Length + 2 || !bytes.Take(infixHeader.Length).SequenceEqual(infixHeader))
 					throw new SerializationException("Malformed or truncated Harmony Infix state header");
-				if (bytes[infixHeader.Length] != 1) throw new SerializationException($"Unsupported Harmony Infix state version {bytes[infixHeader.Length]}");
+				version = bytes[infixHeader.Length];
+				if (version != 1 && version != 2) throw new SerializationException($"Unsupported Harmony Infix state version {version}");
 				backend = bytes[infixHeader.Length + 1];
 				if (backend != 1 && backend != 2) throw new SerializationException($"Unsupported Harmony Infix serializer {backend}");
 				var payload = new byte[bytes.Length - infixHeader.Length - 2];
@@ -143,8 +147,17 @@ namespace HarmonyLib
 			if (result is null) throw new SerializationException("Patch state cannot be null");
 			result.NormalizeLegacyArrays();
 			if (enveloped && !result.HasInfixes) throw new SerializationException("Harmony Infix state must contain at least one inner patch");
-			foreach (var patch in result.prefixes.Concat(result.postfixes).Concat(result.transpilers).Concat(result.finalizers).Concat(result.innerprefixes).Concat(result.innerpostfixes))
+			var allPatches = result.prefixes.Concat(result.postfixes).Concat(result.transpilers).Concat(result.finalizers).Concat(result.innerprefixes).Concat(result.innerpostfixes).ToArray();
+			if (version != 2 && (allPatches.Any(patch => patch.innerTarget is not null) || result.RequiresInfixV2(allowUnresolvedCallbacks: true)))
+				throw new SerializationException("Extended Infix targets and __originalMember binding require Harmony Infix state version 2");
+			// A newer envelope can carry only method selectors. Unresolvable callbacks remain removable;
+			// ValidateSurvivingMetadata still rejects rebuilding them before any transpiler can run.
+			foreach (var patch in allPatches)
+			{
+				patch.ValidateTargetRepresentation();
 				patch.innerMethod?.ValidateVersionedIdentity();
+				patch.innerTarget?.Validate();
+			}
 			return result;
 		}
 

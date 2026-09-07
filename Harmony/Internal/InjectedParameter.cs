@@ -10,6 +10,7 @@ namespace HarmonyLib
 		Unknown,
 		Instance,
 		OriginalMethod,
+		OriginalMember,
 		ArgsArray,
 		Result,
 		ResultRef,
@@ -25,6 +26,8 @@ namespace HarmonyLib
 		internal InjectionType injectionType;
 		internal ArgumentMode argumentMode;
 		internal bool outer;
+
+		internal InjectionType TypeFor(bool infix) => !infix && injectionType == InjectionType.OriginalMember ? InjectionType.Unknown : injectionType;
 
 		internal const string INSTANCE_PARAM = "__instance";
 		internal const string ORIGINAL_METHOD_PARAM = "__originalMethod";
@@ -68,6 +71,7 @@ namespace HarmonyLib
 		{
 			{ INSTANCE_PARAM, InjectionType.Instance },
 			{ ORIGINAL_METHOD_PARAM, InjectionType.OriginalMethod },
+			{ "__originalMember", InjectionType.OriginalMember },
 			{ ARGS_ARRAY_VAR, InjectionType.ArgsArray },
 			{ RESULT_VAR, InjectionType.Result },
 			{ RESULT_REF_VAR, InjectionType.ResultRef },

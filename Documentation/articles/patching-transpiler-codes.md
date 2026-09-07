@@ -28,6 +28,28 @@ Do **not** use `ILGenerator.Emit()`. While it does create IL code, Harmony is an
 
 In general, it is advised to reuse and to copy existing operands for things like labels and local variables. Search for a significant and unique location in the existing codes and grab the operand from there. This will allow you to refer to local variables and labels in a change-resistant way.
 
+#### Indirect calls
+
+For a `calli` instruction read from a method body, Harmony supplies an [InlineSignature](../api/HarmonyLib.InlineSignature.yml) operand. Transpilers can inspect its parameter types, return type, calling convention, and instance flags without accessing Harmony internals.
+
+Use its `PopCount` and `PushCount` properties when calculating evaluation-stack depth:
+
+```csharp
+if (instruction.opcode == OpCodes.Calli && instruction.operand is InlineSignature signature)
+{
+    stackDepth -= signature.PopCount;
+    stackDepth += signature.PushCount;
+}
+```
+
+`PopCount` includes the function pointer, every listed parameter, and an implicit instance when `HasThis` is true. When `ExplicitThis` is also true, the first listed parameter already represents that instance, so it is not counted twice. `PushCount` is zero for `void` and one for any returned value. These are counts of evaluation-stack values, not bytes or native calling-convention registers. See the [calli stack behavior](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.calli) and [instance-signature flags](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.callingconventions).
+
+Parameter and return entries are `Type` objects, nested `InlineSignature` objects for function pointers, or `InlineSignature.ModifierType` objects for optional/required type modifiers. Modifiers do not change the stack count; returning a function pointer pushes one value even if that function itself returns `void`. The counts follow changes to the mutable signature.
+
+The existing calling-convention representation uses `CallingConvention.Winapi` for the default managed convention; its other named values denote their corresponding unmanaged conventions. Stack counting does not depend on this encoding. The computed counts describe a valid signature; they do not validate whether the runtime can emit an arbitrary signature assembled by a transpiler.
+
+Making this model public does not expand the reader's existing signature support. Generic type/method parameter entries, varargs sentinels, and pointer/by-reference/array wrappers around a nested function-pointer signature are not currently supported by the reader.
+
 #### Local variables
 
 The instructions that your transpiler will receive will contain existing local variables and Harmony will not alter the original operands of instructions. This means that you need to be prepared to deal with instructions that refer to local variables either with a number (like "2nd local variable") or with a `LocalBuilder` object. A LocalBuilder object is an opaque representation of a local variable and you can create a new one using the [DeclareLocal](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.declarelocal) method for [ILGenerator](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator) or copy the operand of an existing instruction.
@@ -40,7 +62,7 @@ To create a new label to jump to, use `ILGenerator.DefineLabel()` and put that l
 
 #### Try/catch boundaries
 
-When constructing methods with instructions, you need to specify the exception block boundaries. Harmony will automatically create the necessary meta information from them. Use the `blocks` field of an instruction (of type `ExceptionBlock[]`) to mark the different types of boundaries. They are named in correspondence to the actual names. Please note that **filter blocks are unsupported** because it's not possible to build them dynamically into a method as of now.
+When constructing methods with instructions, you need to specify the exception block boundaries. Harmony will automatically create the necessary metadata from them. Use the `blocks` field of an instruction (of type `ExceptionBlock[]`) to mark the different types of boundaries, including exception filters. Preserve the original boundary ordering and keep handler-entry labels on their handler instructions when moving or inserting code.
 
 #### Convenience methods
 

@@ -51,6 +51,12 @@ namespace HarmonyLib
 		[OptionalField]
 		public readonly InnerMethod innerMethod;
 
+		/// <summary>The selected extended operation; method-call patches retain their existing innerMethod representation</summary>
+		[OptionalField]
+		public readonly InnerTarget innerTarget;
+
+		internal InnerTarget Target => innerTarget ?? (innerMethod is null ? null : new InnerTarget(innerMethod));
+
 		/// <summary>The method of the static patch method</summary>
 		///
 #if NET5_0_OR_GREATER
@@ -60,7 +66,7 @@ namespace HarmonyLib
 		{
 			get
 			{
-				patchMethod ??= innerMethod is null
+				patchMethod ??= innerMethod is null && innerTarget is null
 					? AccessTools.GetMethodByModuleAndToken(moduleGUID, methodToken)
 					: GetValidatedInfixPatchMethod();
 				return patchMethod;
@@ -102,7 +108,11 @@ namespace HarmonyLib
 		public Patch(HarmonyMethod method, int index, string owner)
 			: this(method.method, index, owner, method.priority, method.before, method.after, method.debug ?? false)
 		{
-			innerMethod = method.innerMethod?.Snapshot();
+			if (method.innerTarget is not null && method.innerMethod is not null && !method.innerTarget.EquivalentTo(new InnerTarget(method.innerMethod)))
+				throw new ArgumentException("Explicit innerMethod and innerTarget selectors disagree");
+			var target = method.innerTarget ?? (method.innerMethod is null ? null : new InnerTarget(method.innerMethod));
+			if (target?.Kind == InnerTargetKind.Method) innerMethod = target.MethodSelector.Snapshot();
+			else innerTarget = target?.Snapshot();
 		}
 
 		internal string MethodIdentity => $"{moduleGUID}:0x{methodToken:X8}";
@@ -115,7 +125,7 @@ namespace HarmonyLib
 				?? throw new SerializationException($"Infix patch {MethodIdentity} does not identify a method");
 		}
 
-		internal Patch(int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID, InnerMethod innerMethod = null)
+		internal Patch(int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID, InnerMethod innerMethod = null, InnerTarget innerTarget = null)
 		{
 			this.index = index;
 			this.owner = owner;
@@ -126,6 +136,13 @@ namespace HarmonyLib
 			this.methodToken = methodToken;
 			this.moduleGUID = moduleGUID;
 			this.innerMethod = innerMethod;
+			this.innerTarget = innerTarget;
+		}
+
+		internal void ValidateTargetRepresentation()
+		{
+			if (innerTarget is not null && (innerMethod is not null || innerTarget.Kind == InnerTargetKind.Method))
+				throw new SerializationException("Stored Infix targets require exactly one canonical representation; methods use innerMethod");
 		}
 
 		/// <summary>Get the patch method or a DynamicMethod if original patch method is a patch factory</summary>

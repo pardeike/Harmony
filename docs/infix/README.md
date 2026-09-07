@@ -2,13 +2,28 @@
 
 Read the [Infix user guide](../../Documentation/articles/patching-infix.md) for examples, target selection, scope, ordering, and argument write-back.
 
-The [implementation specification](../../drafts/INFIX-NEW-IMPL-V3.md) remains the sole design reference for maintainers.
+The [implementation specification](../../drafts/INFIX-NEW-IMPL-V3.md) and its [operation-target addendum](../../drafts/INFIX-OPERATIONS-ADDENDUM.md) form the design reference for maintainers. The addendum extends selection to properties, fields, construction, and literal loads. The [testing strategy](TESTING-STRATEGY.md) describes coverage and remaining runtime risks.
 
 The supporting [compatibility test strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) explains how to test released and new Harmony versions together, including cases where compilation and runtime use different versions.
 
 The older design notes have been removed to avoid conflicting instructions. This work has not been released.
 
-## Review-fix validation, 2026-09-05
+## Operation-target validation, 2026-09-07
+
+The extended targets, public `InlineSignature`, and their ordinary-patching regression tests pass the complete local suites:
+
+| Runtime / configuration | Passed | Failed | Exclusions |
+| --- | ---: | ---: | --- |
+| .NET 9.0.19/x64, Debug | 727 | 0 | The existing explicit nullable-results test is not selected by default. |
+| .NET 9.0.19/x64, Release | 727 | 0 | The same explicit test is not selected by default. |
+| .NET 5.0.17/x64, Debug | 714 | 0 | 12 JSON-format cases require the newer JSON-enabled build; the explicit test is not selected. |
+| Mono 6.12.0.206/x64, net452 Debug assembly | 704 | 0 | Six existing Mono finalizer ignores and one explicit test. |
+
+The new cases exercise field reads/writes, property accessors, construction, literal identity, the constructor-capture/string-anchor workflow, recursion and concurrent calls, exception boundaries, repeated rebuild/removal with garbage collection, exact-name binding, capability-version recovery, and public signature consumption from a non-friend assembly. The .NET 5 run exposed and now covers an underlying emitter's stack-size undercount for returning `calli` instructions.
+
+Debug and Release test projects and the documentation project build successfully. Release repacking reports mismatched debug symbols in the existing `MonoMod.ILHelpers` dependency; this does not prevent assembly generation or the Release test run. The PowerShell CI-report gate has 36 passing regression cases, including skipped tests and incomplete reports. Mixed-version and remote workflow results are recorded separately in the [testing strategy](TESTING-STRATEGY.md); earlier successful binaries below do not validate these changes.
+
+## Review-fix validation, 2026-09-05 (before operation targets)
 
 The review fixes preserve dynamic-method calls in exception-handling wrappers and distinguish genuine patch factories from method-valued postfix results. The Mono run also caught and fixed an unsupported attribute lookup on dynamic patch parameters.
 

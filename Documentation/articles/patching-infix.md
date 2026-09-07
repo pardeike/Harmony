@@ -1,6 +1,6 @@
 # Infix
 
-An Infix applies a prefix or postfix to a particular call inside another method. The containing method is the **outer method**. The method being called is the **inner method**. Other callers of that inner method are unaffected.
+An Infix applies a prefix or postfix to a selected operation inside another method: a call, property access, field read/write, object construction, or literal load. The containing method is the **outer method**. For calls, the method being called is the **inner method**. Other callers and unselected instructions are unaffected.
 
 ## A working example
 
@@ -35,7 +35,7 @@ The examples are compiled and exercised by the test project.
 
 Put the outer target on the patch class, or use its existing `TargetMethod` or `TargetMethods` callback. Put `[HarmonyInfix]` on each inner prefix or postfix. Do not put a method-level `[HarmonyPatch]` on that same Infix method.
 
-The attribute accepts a declaring type, method name, optional argument types, and the usual `ArgumentType[]` variations for overloads taking `ref`, `out`, or pointers. Property accessors use their real method names, such as `get_Value`.
+For calls, the attribute accepts a declaring type, method name, optional argument types, and the usual `ArgumentType[]` variations for overloads taking `ref`, `out`, or pointers. Property accessors can use their real method names, such as `get_Value`, or the explicit forms below.
 
 `Positions` selects occurrences after ordinary transpilers have finished:
 
@@ -65,6 +65,45 @@ Use the existing `AddInnerPrefix` or `AddInnerPostfix` operations:
 The `MethodInfo` overload can read `[HarmonyInfix]` from the patch method. An explicit target and an attributed target must agree, including positions. Ordinary `AddPrefix` and `AddPostfix` reject Infix metadata.
 
 Patch methods must be static, nongeneric methods on nongeneric patch types. Dynamic patch methods and patch factories are not supported for Infix. Target and position inputs are copied when registered; changing those inputs later does not change the installed patch.
+
+### Properties, fields, constructors, and literals
+
+Select the operation explicitly:
+
+```csharp
+[HarmonyInfix(typeof(Thing), "Value", InnerTargetKind.Getter)]
+[HarmonyInfix(typeof(Thing), "Value", InnerTargetKind.Setter)]
+[HarmonyInfix(typeof(Thing), "count", InnerTargetKind.FieldRead)]
+[HarmonyInfix(typeof(Thing), "count", InnerTargetKind.FieldWrite)]
+[HarmonyInfix(typeof(StringBuilder), InnerTargetKind.Constructor)]
+[HarmonyInfix("StatsReport_FinalValue", Positions = new[] { -1 })]
+```
+
+These are separate example declarations, each combined with its own `[HarmonyPrefix]` or `[HarmonyPostfix]`. Getter/setter argument types identify indexer parameters, excluding the setter's value parameter. Constructor argument types identify its overload; no argument types select the parameterless constructor.
+
+For manual registration, set `HarmonyMethod.innerTarget` to `new InnerTarget(methodInfo)`, `new InnerTarget(propertyInfo, InnerTargetKind.Getter)`, `new InnerTarget(fieldInfo, InnerTargetKind.FieldWrite)`, `new InnerTarget(constructorInfo)`, or `InnerTarget.Constant("marker")`. Trailing positions work as with `InnerMethod`. Existing `innerMethod` registrations remain valid. If multiple input forms are supplied they must agree.
+
+| Operation | Inner arguments | Inner result and receiver |
+| --- | --- | --- |
+| Property getter/setter | Actual accessor arguments | Same as calling its accessor method |
+| Field read | None | Field value; actual instance for instance fields |
+| Field write | `value` or `__0` | Void; actual instance for instance fields |
+| `newobj` | Constructor arguments | New object or struct; no incoming `__instance` |
+| Literal load | None | The loaded literal; no receiver |
+
+A field-write prefix can change `ref int value` or skip the store. A field-read postfix can change `ref int __result`. Construction exposes its new value as `__result`, not `__instance`; skipping construction suppresses allocation and constructor effects, but not argument evaluation. Reads and writes are separate selectors. Property targets are ordinary accessor calls and do not bypass accessor behavior or its other Harmony patches.
+
+`__originalMember` is an Infix-only injection. For method-call declarations that use it, prefer the explicit `[HarmonyInfix(typeof(Thing), "Method", InnerTargetKind.Method)]` form: the previous, unreleased method-only Infix engine rejects that declaration early. That engine rejects the older attribute form with this new parameter later, during binding. Published state using the new binding is always protected by the newer state format.
+
+Literal selectors accept non-null `string`, `int`, `long`, `float`, or `double`, without coercing other source-language types. All short/special `ldc.i4` encodings match the same integer. Numeric categories remain distinct; floating-point matching preserves bits, including negative zero and NaN payloads. A distinctive literal can be useful as an insertion point even when the patch never changes its result. Common values such as `0` or `1` can match unrelated expressions. Compiler folding can remove a source constant entirely; positions describe the actual instructions after transpilers, not source lines.
+
+### Capture at one operation, use at another
+
+Named outer locals already support multiple captured values without depending on the original method's local numbers:
+
+[!code-csharp[capture](../examples/patching-infix.cs?name=capture)]
+
+Both postfixes belong to the same patch class. The first saves a constructed builder; the second uses it at a later string-literal load. Each outer invocation has its own default-initialized slot, including recursive and simultaneous invocations. Handle the default if execution may reach the reader without the writer. Use different `__var_name` names for additional captures, or a state struct for several values belonging to one site's `__state`.
 
 ## Ordering, skipping, and exceptions
 
@@ -96,6 +135,7 @@ If the inner method takes `int value`, an Infix's `ref int value` changes the ca
 | `__instance` | Call receiver | Outer receiver |
 | `___field` | Field on the call's effective receiver type | Field on the outer type |
 | `__originalMethod` | Actual called method, including generic arguments | Outer original method |
+| `__originalMember` | Actual method, constructor, or field; not available for literals | Outer original method |
 | `__args` | Mutable array of call arguments | Mutable array of outer arguments |
 | `__result`, `__resultRef` | Call result or ref-return replacement | Not available |
 | `__runOriginal` | Call's run flag | Not available |
@@ -123,9 +163,13 @@ Only requested arrays are allocated, when a receiving patch actually runs. Recei
 
 ## Supported calls and failures
 
-Infix supports ordinary `call` and `callvirt`, static and instance methods, concrete struct/reference receivers, and concrete `constrained.` instance calls. The original instruction still performs virtual dispatch and executes any patches on the callee. A prefix can replace a null receiver or skip before a `callvirt` null check.
+Infix supports ordinary `call` and `callvirt`, static and instance methods, concrete struct/reference receivers, and concrete `constrained.` instance calls. The original instruction still performs virtual dispatch and executes any patches on the callee. A prefix can replace a null receiver or skip before a `callvirt` null check. It also supports `newobj`, the listed literal loads, and static/reference-type instance fields. `__originalMethod` remains method-only; use `__originalMember` for field metadata. Neither exists for a literal, although their outer-scoped forms remain available.
 
-Constructor calls, `newobj`, `calli`, varargs, `tail.`, unsupported call prefixes, constrained static-interface calls, and unresolved open storage are not supported targets. Unrelated instructions are left alone. Async and iterator bodies need an explicitly selected supported generated outer method.
+Constructor initialization via `call`, `calli`, varargs, `tail.`, unsupported call prefixes, constrained static-interface calls, and unresolved open storage are not supported targets. Unrelated instructions are left alone.
+
+Field targets preserve `volatile.` and valid `unaligned.` prefixes on the original instruction; patches add no locking or atomicity. Readonly reads are valid, but readonly writes, literal-field metadata, and field address operations (`ldflda`/`ldsflda`) are not supported targets. Static fields require `ldsfld`/`stsfld`, instance fields `ldfld`/`stfld`. Instance fields on structs are rejected: their receiver can be either a value or an address, and the current engine cannot reliably distinguish these stack forms. This does not prevent static fields on structs or existing supported struct method calls.
+
+Async and iterator bodies need an explicitly selected generated outer method, for example an iterator target using existing `MethodType.Enumerator` or `AccessTools.EnumeratorMoveNext`. Harmony does not silently redirect an outer target. Each `MoveNext` invocation has separate outer state; named outer locals do not persist across yields.
 
 Typed native pointers such as `int*` and byref-like values such as `Span<int>` are supported when no boxing is required. C# function-pointer signatures (`delegate*`) are not supported by the bundled signature importer and are rejected for Infix targets and patch methods, including references to those pointer types.
 

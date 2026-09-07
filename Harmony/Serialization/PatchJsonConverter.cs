@@ -11,14 +11,18 @@ namespace HarmonyLib
 		public override Patch Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
 			using var document = JsonDocument.ParseValue(ref reader);
-			var values = ReadProperties(document.RootElement, ["index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before", "innerMethod"]);
+			var values = ReadProperties(document.RootElement, ["index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before", "innerMethod", "innerTarget"]);
 			foreach (var name in new[] { "index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before" })
 				if (!values.ContainsKey(name)) throw new JsonException($"Missing Patch property {name}");
 			var innerMethod = values.TryGetValue("innerMethod", out var inner) && inner.ValueKind != JsonValueKind.Null
 				? JsonSerializer.Deserialize<InnerMethod>(inner.GetRawText(), options) : null;
-			return new Patch(values["index"].GetInt32(), values["owner"].GetString(), values["priority"].GetInt32(),
+			var innerTarget = values.TryGetValue("innerTarget", out var target) && target.ValueKind != JsonValueKind.Null
+				? JsonSerializer.Deserialize<InnerTarget>(target.GetRawText(), options) : null;
+			var result = new Patch(values["index"].GetInt32(), values["owner"].GetString(), values["priority"].GetInt32(),
 				JsonSerializer.Deserialize<string[]>(values["before"].GetRawText(), options), JsonSerializer.Deserialize<string[]>(values["after"].GetRawText(), options),
-				values["debug"].GetBoolean(), values["methodToken"].GetInt32(), values["moduleGUID"].GetString(), innerMethod);
+				values["debug"].GetBoolean(), values["methodToken"].GetInt32(), values["moduleGUID"].GetString(), innerMethod, innerTarget);
+			result.ValidateTargetRepresentation();
+			return result;
 		}
 
 		internal static Dictionary<string, JsonElement> ReadProperties(JsonElement element, string[] known)
@@ -37,6 +41,7 @@ namespace HarmonyLib
 
 		public override void Write(Utf8JsonWriter writer, Patch patchValue, JsonSerializerOptions options)
 		{
+			patchValue.ValidateTargetRepresentation();
 			writer.WriteStartObject();
 			writer.WriteNumber("index", patchValue.index);
 			writer.WriteBoolean("debug", patchValue.debug);
@@ -50,6 +55,11 @@ namespace HarmonyLib
 			{
 				writer.WritePropertyName("innerMethod");
 				JsonSerializer.Serialize(writer, patchValue.innerMethod, options);
+			}
+			if (patchValue.innerTarget is not null)
+			{
+				writer.WritePropertyName("innerTarget");
+				JsonSerializer.Serialize(writer, patchValue.innerTarget, options);
 			}
 			writer.WriteEndObject();
 		}

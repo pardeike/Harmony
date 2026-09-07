@@ -44,6 +44,16 @@ env:
 
 jobs:
 
+  ci-contract:
+    name: CI result completeness
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Exercise real PowerShell framework and report failures
+        run: ./.github/tests/Test-CI.ps1
+        shell: pwsh
+
   # https://stackoverflow.com/a/77549656
   variables:
     name: Preparing # variable accessibility workaround for jobs
@@ -208,7 +218,7 @@ jobs:
 
   cleanup-build-output:
     name: Cleanup Build Output
-    needs: [test-results]
+    needs: [test-results, build-binaries, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono]
     runs-on: ubuntu-22.04
     if: always()
     permissions:
@@ -220,7 +230,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           GH_REPO: ${{github.repository}}
           RUN_ID: ${{github.run_id}}
-          TEST_RESULTS_SUCCEEDED: ${{needs.test-results.result == 'success'}}
+          TEST_RESULTS_SUCCEEDED: ${{needs.test-results.result == 'success' && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')}}
         run: |
           gh api "repos/$GH_REPO/actions/runs/$RUN_ID/artifacts" --paginate \
             --jq '.artifacts[] | select((.name | startswith("build-output-")) or ((env.TEST_RESULTS_SUCCEEDED == "true") and (.name | startswith("test-results-")))) | .id' |

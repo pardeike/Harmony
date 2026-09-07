@@ -152,7 +152,7 @@ namespace HarmonyLib
 				if (innerArray) innerReceivers.Add(i);
 				if (outerArray) outerReceivers.Add(i);
 				if (innerArray && outerArray && inner.parameters.Any(parameter => parameter.ParameterType.IsByRef) && outer.parameters.Length != 0)
-					throw new ArgumentException($"Both argument arrays in {patch.FullDescription()} may write the same value because {inner.method.FullDescription()} takes arguments by reference. Use typed by-value observations or typed refs for one scope.");
+					throw new ArgumentException($"Both argument arrays in {patch.FullDescription()} may write the same value because {inner.Description} takes arguments by reference. Use typed by-value observations or typed refs for one scope.");
 				foreach (var injection in injections)
 				{
 					ValidateScope(patch, injection, true);
@@ -316,12 +316,19 @@ namespace HarmonyLib
 			|| type.HasElementType && ContainsFunctionPointer(type.GetElementType())
 			|| type.IsGenericType && type.GetGenericArguments().Any(ContainsFunctionPointer);
 
-		internal static void ValidateInfixSignature(MethodInfo method, string role)
+		internal static void ValidateInfixSignature(MethodBase method, string role)
 		{
-			if (ContainsFunctionPointer(method.ReturnType) || method.GetParameters().Any(parameter => ContainsFunctionPointer(parameter.ParameterType))
+			if (method is MethodInfo info && ContainsFunctionPointer(info.ReturnType) || method.GetParameters().Any(parameter => ContainsFunctionPointer(parameter.ParameterType))
 				|| isFunctionPointer is null && !AccessTools.IsMonoRuntime && method is not DynamicMethod
 					&& InlineSignatureParser.ContainsFunctionPointer(method.Module.ResolveSignature(method.MetadataToken)))
 				throw new ArgumentException($"Infix cannot emit function-pointer signatures with the current runtime importer: {role} {InfixMethodIdentity(method)}.");
+		}
+
+		internal static void ValidateInfixField(FieldInfo field)
+		{
+			if (ContainsFunctionPointer(field.FieldType)
+				|| isFunctionPointer is null && !AccessTools.IsMonoRuntime && InlineSignatureParser.ContainsFunctionPointer(field.Module.ResolveSignature(field.MetadataToken)))
+				throw new ArgumentException($"Infix cannot emit a function-pointer field with the current runtime importer: {field}.");
 		}
 
 		// Reading signature type names can itself fail for by-ref function pointers on CoreCLR.
@@ -334,7 +341,7 @@ namespace HarmonyLib
 		}
 
 		static ArgumentException BindingError(MethodInfo patch, InjectedParameter injection, PatchBindingContext context, string reason)
-			=> new($"{reason}: {patch.FullDescription()} parameter {injection.parameterInfo.Name}, {(injection.outer ? "outer" : "inner")} method {context.method.FullDescription()}, requested {injection.parameterInfo.ParameterType.FullDescription()}");
+			=> new($"{reason}: {patch.FullDescription()} parameter {injection.parameterInfo.Name}, {(injection.outer ? "outer" : "inner")} operation {context.Description}, requested {injection.parameterInfo.ParameterType.FullDescription()}");
 
 		static bool IsFieldInjection(InjectedParameter injection) => injection.argumentMode != ArgumentMode.Original && injection.realName.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal);
 		static bool IsLocalInjection(InjectedParameter injection) => injection.argumentMode != ArgumentMode.Original && injection.realName.StartsWith("__var_", StringComparison.Ordinal);
@@ -391,7 +398,9 @@ namespace HarmonyLib
 			return patch.GetArgumentIndex(context.parameterNames, injection.parameterInfo);
 		}
 
-		internal static bool AffectsOriginal(this MethodCreator creator, MethodInfo fix)
+		internal static bool AffectsOriginal(this MethodCreator creator, MethodInfo fix) => creator.AffectsOriginal(fix, false);
+
+		internal static bool AffectsOriginal(this MethodCreator creator, MethodInfo fix, bool infix)
 		{
 			if (fix.ReturnType == typeof(bool))
 				return true;
@@ -401,11 +410,12 @@ namespace HarmonyLib
 
 			return injectedParameters.Any(parameter =>
 			{
-				if (parameter.injectionType == InjectionType.Instance)
+				var injectionType = parameter.TypeFor(infix);
+				if (injectionType == InjectionType.Instance)
 					return false;
-				if (parameter.injectionType == InjectionType.OriginalMethod)
+				if (injectionType is InjectionType.OriginalMethod or InjectionType.OriginalMember)
 					return false;
-				if (parameter.injectionType == InjectionType.State)
+				if (injectionType == InjectionType.State)
 					return false;
 
 				var p = parameter.parameterInfo;
@@ -515,22 +525,34 @@ namespace HarmonyLib
 			{
 				ValidateScope(patch, injection, outerContext != null);
 				var context = injection.outer ? outerContext : innerContext;
-				var original = context.method;
-				var originalIsStatic = original.IsStatic;
+				var original = context.member as MethodBase;
+				var originalIsStatic = context.isStatic;
 				var returnType = context.returnType;
 				var originalType = context.receiverType;
-				var injectionType = injection.injectionType;
+				var injectionType = injection.TypeFor(outerContext != null);
 				var paramRealName = injection.realName;
 				var paramType = injection.parameterInfo.ParameterType;
 
 				if (injectionType == InjectionType.OriginalMethod)
 				{
+					if (original is null) throw BindingError(patch, injection, context, "This operation is not a method; use __originalMember for a field");
 					if (outerContext != null && (paramType.IsByRef || !paramType.IsAssignableFrom(original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo))))
 						throw BindingError(patch, injection, context, "__originalMethod requires a compatible by-value method type");
 					if (EmitOriginalBaseMethod(original, codes))
 						continue;
 
 					codes.Add(Ldnull);
+					continue;
+				}
+
+				if (injectionType == InjectionType.OriginalMember)
+				{
+					var memberType = context.member switch { FieldInfo => typeof(FieldInfo), ConstructorInfo => typeof(ConstructorInfo), MethodInfo => typeof(MethodInfo), _ => null };
+					if (memberType is null || paramType.IsByRef || !paramType.IsAssignableFrom(memberType))
+						throw BindingError(patch, injection, context, "__originalMember requires a compatible by-value member type; constants have no member");
+					if (context.member is FieldInfo field)
+						codes.AddRange([Ldtoken[field], Ldtoken[field.DeclaringType], Call[AccessTools.Method(typeof(FieldInfo), nameof(FieldInfo.GetFieldFromHandle), [typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle)])]]);
+					else if (!EmitOriginalBaseMethod(original, codes)) codes.Add(Ldnull);
 					continue;
 				}
 
@@ -669,12 +691,12 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.Result)
 				{
 					if (returnType == typeof(void))
-						throw new Exception($"Cannot get result from void method {original.FullDescription()}");
+						throw new Exception($"Cannot get result from void operation {context.Description}");
 					var resultType = paramType;
 					if (resultType.IsByRef && returnType.IsByRef is false)
 						resultType = resultType.GetElementType();
 					if (resultType.IsAssignableFrom(returnType) is false)
-						throw new Exception($"Cannot assign method return type {returnType.FullName} to {InjectedParameter.RESULT_VAR} type {resultType.FullName} for method {original.FullDescription()}");
+						throw new Exception($"Cannot assign return type {returnType.FullName} to {InjectedParameter.RESULT_VAR} type {resultType.FullName} for {context.Description}");
 					if (outerContext != null && !returnType.IsByRef)
 						ValidateStorageType(patch, injection, context, returnType, true);
 					var ldlocCode = paramType.IsByRef && returnType.IsByRef is false ? OpCodes.Ldloca : OpCodes.Ldloc;
@@ -702,13 +724,13 @@ namespace HarmonyLib
 				{
 					if (!returnType.IsByRef)
 						throw new Exception(
-							 $"Cannot use {InjectionType.ResultRef} with non-ref return type {returnType.FullName} of method {original.FullDescription()}");
+							 $"Cannot use {InjectionType.ResultRef} with non-ref return type {returnType.FullName} of {context.Description}");
 
 					var resultType = paramType;
 					var expectedTypeRef = typeof(RefResult<>).MakeGenericType(returnType.GetElementType()).MakeByRefType();
 					if (resultType != expectedTypeRef)
 						throw new Exception(
-							 $"Wrong type of {InjectedParameter.RESULT_REF_VAR} for method {original.FullDescription()}. Expected {expectedTypeRef.FullName}, got {resultType.FullName}");
+							 $"Wrong type of {InjectedParameter.RESULT_REF_VAR} for {context.Description}. Expected {expectedTypeRef.FullName}, got {resultType.FullName}");
 
 					codes.Add(Ldloca[context.variables[InjectionType.ResultRef]]);
 
@@ -766,7 +788,7 @@ namespace HarmonyLib
 						}
 					}
 
-					throw new Exception($"Parameter \"{paramRealName}\" not found in method {original.FullDescription()}");
+					throw new Exception($"Parameter \"{paramRealName}\" not found in {context.Description}");
 				}
 				codes.AddRange(creator.EmitStorage(patch, injection, context, context.arguments[argumentIdx], outerContext != null, tmpBoxVars));
 			}

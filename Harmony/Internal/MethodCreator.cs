@@ -226,7 +226,7 @@ namespace HarmonyLib
 			var codes = new List<CodeInstruction>();
 			foreach (var fix in prefixes)
 			{
-				var skipLabel = this.AffectsOriginal(fix) ? config.DefineLabel() : (Label?)null;
+				var skipLabel = this.AffectsOriginal(fix, outerContext != null) ? config.DefineLabel() : (Label?)null;
 				if (skipLabel.HasValue)
 					codes.AddRange([Ldloc[context.variables[InjectionType.RunOriginal]], Brfalse[skipLabel.Value]]);
 
@@ -260,7 +260,7 @@ namespace HarmonyLib
 				if (outerContext != null && passthroughPatches && (fix.ReturnType != context.returnType
 					|| fix.GetParameters().FirstOrDefault()?.ParameterType != context.returnType))
 					throw new ArgumentException($"Infix passthrough postfix {fix.FullDescription()} must return and take a first parameter of exactly {context.returnType.FullDescription()}, "
-						+ $"the result type of {context.method.FullDescription()}; actual return is {fix.ReturnType.FullDescription()} and first parameter is {fix.GetParameters().FirstOrDefault()?.ParameterType.FullDescription() ?? "missing"}.");
+						+ $"the result type of {context.Description}; actual return is {fix.ReturnType.FullDescription()} and first parameter is {fix.GetParameters().FirstOrDefault()?.ParameterType.FullDescription() ?? "missing"}.");
 				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext));
 
 				if (fix.ReturnType != typeof(void))

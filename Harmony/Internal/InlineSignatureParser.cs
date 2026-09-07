@@ -17,6 +17,7 @@ namespace HarmonyLib
 			using var stream = new MemoryStream(signature, false);
 			using var reader = new BinaryReader(stream);
 			var convention = reader.ReadByte();
+			if (convention == 0x06) return ReadType(); // FieldSig contains one type, without a parameter count.
 			if ((convention & 0x10) != 0) _ = ReadCompressedUInt32(reader);
 			var parameters = ReadCompressedUInt32(reader);
 			if (ReadType()) return true;
@@ -202,7 +203,7 @@ namespace HarmonyLib
 						return fptr;
 
 					case MetadataType.ByReference:
-						return ((Type)ReadTypeSignature()).MakePointerType();
+						return ((Type)ReadTypeSignature()).MakeByRefType();
 
 					// System.Reflection lacks PinnedType.
 					/*

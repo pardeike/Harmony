@@ -71,7 +71,11 @@ namespace HarmonyLib
 			var body = patch.Definition.Body;
 			// Match DynamicMethod's default for transpiler-declared and Harmony-generated locals on either backend.
 			body.InitLocals = true;
-			if (body.ExceptionHandlers.Count == 0) return patch.Generate();
+			// MonoMod's DynamicMethod calli emitter subtracts the arguments but omits the returned stack value.
+			// Cecil calculates the complete stack depth, which older JITs require even when newer JITs accept the undercount.
+			var returnsFromCalli = body.Instructions.Any(instruction => instruction.OpCode == Mono.Cecil.Cil.OpCodes.Calli
+				&& instruction.Operand is Mono.Cecil.CallSite call && ReturnsValue(call));
+			if (body.ExceptionHandlers.Count == 0 && !returnsFromCalli) return patch.Generate();
 			var proxies = new Dictionary<MethodInfo, Mono.Cecil.MethodReference>();
 			foreach (var instruction in body.Instructions)
 			{
@@ -86,6 +90,14 @@ namespace HarmonyLib
 			}
 			// Preserve the emitted exception table instead of reconstructing ranges and handler-entry labels through reflection emission.
 			return DMDCecilGenerator.Generate(patch);
+
+			static bool ReturnsValue(Mono.Cecil.CallSite call)
+			{
+				var type = call.ReturnType;
+				while (type is Mono.Cecil.RequiredModifierType or Mono.Cecil.OptionalModifierType)
+					type = ((Mono.Cecil.TypeSpecification)type).ElementType;
+				return type.MetadataType != Mono.Cecil.MetadataType.Void;
+			}
 		}
 
 		// prepared by Prepare()

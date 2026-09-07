@@ -2,7 +2,7 @@
 
 This suite runs released Harmony binaries and the current Fat assembly in fresh child processes. It distinguishes a fixture compiled against another version from two engines updating the same patch state. The feature contract is [INFIX-NEW-IMPL-V3.md](../drafts/INFIX-NEW-IMPL-V3.md); the full case rationale is [INFIX-COMPATIBILITY-TESTS.md](../drafts/INFIX-COMPATIBILITY-TESTS.md).
 
-The dedicated [Infix Compatibility workflow](../.github/workflows/test-infix-compatibility.yml) builds and runs the CoreCLR matrix and Mono binding/loading probes independently of the ordinary NUnit process. Native detours, assembly loading and serializer switches stay confined to each child. A child timeout, crash, unexpected exception or assertion failure fails the runner.
+The dedicated [Infix Compatibility workflow](../.github/workflows/test-infix-compatibility.yml) builds and runs the CoreCLR matrix, Mono binding/loading probes, and a Windows .NET Framework lane independently of the ordinary NUnit process. Native detours, assembly loading and serializer switches stay confined to each child. A child timeout, crash, unexpected exception or assertion failure fails the runner.
 
 Final-candidate execution on 2026-09-05 met all 388 expectations across the nine CoreCLR lanes: 44 per lane, or 40 for pre-inner 2.3.6. Of those, 289 are successful behavior or intended API/compatibility boundaries; 99 characterize known loading/concurrency limits. The final Mono 2.4.2 run met 35 diagnostic expectations, but only 7 are executable behavior/API controls and none establishes mixed-engine Infix operation. Exact counts, hashes and local report locations are in [the execution notes](../drafts/INFIX-COMPATIBILITY-TESTS.md#1-what-has-been-checked). The workflow has not yet run on GitHub Actions.
 
@@ -38,7 +38,7 @@ for old_version in 2.4.2 2.4.1 2.4.0 2.3.6; do
 done
 ```
 
-Set `REPORT_DIRECTORY` to retain a separately named run. `CASE_FILTER` selects child names containing the supplied text, such as `cold-identity`, `active-state` or `foreign-`. `FEATURE_TESTS=0` runs the binding and ordinary-engine cases before a new API build is available. `SDK_HOST` overrides the SDK executable. The shell requires `curl`, `unzip`, `jq` and `shasum`.
+Set `REPORT_DIRECTORY` to retain a separately named run. `CASE_FILTER` selects child names containing the supplied text, such as `cold-identity`, `active-state` or `foreign-`. `FEATURE_TESTS=0` runs the binding and ordinary-engine cases before a new API build is available. `SDK_HOST` overrides the SDK executable. The shell requires `curl`, `unzip`, `jq` and either `sha256sum` or `shasum`.
 
 Standard output is the JSON summary. Build and progress diagnostics go to standard error. Each run retains the exact child request, complete result and diagnostic log under `reports/`; package downloads and current-engine snapshots stay in ignored `artifacts/` directories. Those files are not production patches or releases.
 
@@ -72,6 +72,20 @@ Putting one same-identity Fat Harmony in the default context exposes another ord
 These are independently diagnosed loading limits. `Passed: true` means the requested test expectations held. `HasPublishedLimitations: true` means at least one explicit diagnostic encountered a known loading or inherited concurrent-update limit. Read both fields; passing the suite does not claim that every loader policy permits arbitrary old/new transpiler composition.
 
 Cross-engine host updates must be serialized. The envelope protects an old operation that reads already-published Infix state; it cannot invalidate an old engine's candidate that was read before the Infix existed. The concurrent diagnostic uses explicit gates and bounded waits, not timing sleeps, to reproduce that distinction.
+
+## Pre-extension V3 and extended targets
+
+The dedicated `v3` workflow job checks out commit `573914745451f8278720257db37a4a4ebaae853d` as the pre-extension source fixture. It builds that source and two current engines into isolated directories with test-only versions 2.4.3.0, 2.4.4.0 and 2.4.5.0. The commit check prevents a moving branch from silently replacing the baseline; child reports also retain each binary's hash and actual provider identity. This runs only on net9/JSON and net8/BinaryFormatter, not throughout the released-version matrix.
+
+Set `V3_HARMONY=/path/to/v3/0Harmony.dll` with the usual `CURRENT_HARMONY`, `SECOND_CURRENT_HARMONY`, runtime and framework settings to run the same focused cases locally. The launcher snapshots all three engines and defaults to the `extensions-` case filter. This mode does not download or substitute a published old release.
+
+The cases loop constructor, field-read and integer-constant selectors through cold decoding, opposite-engine rebuilds and removal. Both V3/current load orders must first pass the ordinary coexistence control. They then prove that generalized declarations reject before user callbacks/transpilers or installed state change, extended version-2 state blocks V3 reads/rebuilds/removals, and removing the last extended target restores readable version-1 method-Infix state. V3 must successfully rebuild that state and remove the remaining method Infix, leaving ordinary unframed state. Separate current/current cases verify that a reader uses its own selector type with the exact shared member/value and snapshotted positions.
+
+Version 2 describes required behavior, not just target kinds. Method-only Infixes using the new `__originalMember` injection also require it, in either inner or outer scope; the V3 cases explicitly verify rejection before its transpiler runs. An exact original-argument binding or a passthrough postfix's first result parameter does not request that injection. Readers accept method-only version-2 records, and successful writes select the required version afresh. Missing or ambiguous callback metadata remains owner-removable: only resolvable callbacks are classified while reading old state, while rebuilding still validates every surviving callback before running transpilers.
+
+That state protection starts after publication. A pre-extension V3 engine discovering the old method-style attribute plus the new injection can reach binding before rejecting it; this is not the generalized-declaration marker guarantee. The generalized `InnerTargetKind.Method` declaration deliberately remains distinguishable to that reader. V3 is an unreleased source baseline, and these tests do not claim a new parameter marker or a pre-publication guarantee for the old declaration form.
+
+Local x64 execution passes all three children on net9/JSON and net8/BinaryFormatter, with no known-limit classifications. The published-2.4.2 net9/JSON matrix also includes one `extensions-released` child covering all three declarations, rejection of extended state before its transpiler runs, and recovery after removal; it passes locally too. Local current/current probes load the same completed binary into two real contexts; CI additionally builds distinct current test identities. A real workflow run is still needed for that exact CI configuration and the Windows lane.
 
 ## Mono and .NET Framework
 
@@ -111,4 +125,4 @@ RUNTIME_HOST=/path/to/mono-sgen64 FRAMEWORK=net472 BACKEND=binary \
 REQUIRE_COEXISTENCE=1 bash HarmonyTests.Compatibility/run.sh
 ```
 
-Windows .NET Framework and release-wide platform coverage remain separate gates. A portable host build or a Mono process launch alone is not executable patching proof.
+On Windows, use Git Bash with `RUNTIME_HOST=native FRAMEWORK=net472 BACKEND=binary`. The script builds an x64 host and executes its EXE directly; its children do the same. The Windows CI lane uses test-only current versions 2.4.3.0 and 2.4.4.0, published old 2.4.2, and `REQUIRE_COEXISTENCE=1`. It must execute the ordinary coexistence control before counting Infix cases. Its report directory contains a space to exercise native child argument quoting. This newly added lane still requires a successful Windows run; a portable build or Mono process launch is not Framework execution proof.

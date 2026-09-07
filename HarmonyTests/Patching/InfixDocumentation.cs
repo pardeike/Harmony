@@ -8,6 +8,18 @@ namespace HarmonyLibTests.Patching
 	[TestFixture, NonParallelizable]
 	public class InfixDocumentation : TestLogger
 	{
+		[Test]
+		public void Compiled_capture_example_bridges_constructor_and_literal_sites()
+		{
+			var harmony = new Harmony("test.infix.docs.capture." + Guid.NewGuid());
+			try
+			{
+				harmony.CreateClassProcessor(typeof(ReportPatch)).Patch();
+				Assert.AreEqual("summary: Alice: StatsReport_FinalValue", Report.Build("Alice"));
+				Assert.AreEqual("summary: Bob: StatsReport_FinalValue", Report.Build("Bob"));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
 		[TestCase(0), TestCase(1)]
 		public void Compiled_attribute_example_has_documented_trace(int mode)
 		{

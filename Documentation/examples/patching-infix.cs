@@ -3,6 +3,7 @@ namespace Patching_Infix
 	using HarmonyLib;
 	using System.Collections.Generic;
 	using System.Runtime.CompilerServices;
+	using System.Text;
 
 	// <example>
 	public static class Helper
@@ -67,4 +68,30 @@ namespace Patching_Infix
 		}
 		// </manual>
 	}
+
+	public static class Report
+	{
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static string Build(string name)
+		{
+			var builder = new StringBuilder();
+			builder.Append("summary: ");
+			builder.Append("StatsReport_FinalValue");
+			return builder.ToString();
+		}
+	}
+
+	// <capture>
+	[HarmonyPatch(typeof(Report), nameof(Report.Build))]
+	public static class ReportPatch
+	{
+		[HarmonyPostfix, HarmonyInfix(typeof(StringBuilder), InnerTargetKind.Constructor)]
+		static void Capture(StringBuilder __result, [HarmonyOuter] out StringBuilder __var_builder)
+			=> __var_builder = __result;
+
+		[HarmonyPostfix, HarmonyInfix("StatsReport_FinalValue")]
+		static void AddName([HarmonyOuter] string name, [HarmonyOuter] StringBuilder __var_builder)
+			=> __var_builder?.Append(name).Append(": ");
+	}
+	// </capture>
 }

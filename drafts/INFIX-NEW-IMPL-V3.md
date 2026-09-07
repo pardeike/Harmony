@@ -1,6 +1,6 @@
 # Infix: implementation specification
 
-> **Status:** Unreleased implementation contract, 2026-09-05. This is the sole Infix design reference. See the [implementation and local validation status](../docs/infix/README.md) for executed checks and their runtime boundaries.
+> **Status:** Unreleased implementation contract. The [operation-target addendum](INFIX-OPERATIONS-ADDENDUM.md), 2026-09-07, extends this contract and overrides its method-only target restrictions. Read both as one specification. See the [implementation and local validation status](../docs/infix/README.md) for executed checks and their runtime boundaries.
 
 ## 1. The feature in one page
 

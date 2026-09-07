@@ -50,8 +50,12 @@ runs:
         $target_framework = "${{inputs.target_framework}}";
         $target_frameworks = "${{inputs.target_framework_array}}";
         if ($target_frameworks -eq '') {
-          $target_frameworks = "'['$target_framework']'";
+          if ([string]::IsNullOrWhiteSpace($target_framework)) { throw 'No target framework selected' }
+          $frameworks = @($target_framework)
+        } else {
+          $frameworks = @(ConvertFrom-Json $target_frameworks)
         }
+        $target_frameworks = ConvertTo-Json -InputObject $frameworks -Compress
         "target_frameworks=$target_frameworks" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh
 
@@ -74,17 +78,18 @@ runs:
     - name: Build if required
       if: ${{inputs.manual_build == 'true'}}
       run: |
-        $failedFrameworks = @()
-        foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
+        . ./.github/scripts/Test-Frameworks.ps1
+        Invoke-FrameworkChecks -Frameworks (ConvertFrom-Json '${{steps.test-args.outputs.target_frameworks}}') -Operation Build -Action {
+          param($target_framework)
           dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework
-          if ($LASTEXITCODE -ne 0) { $failedFrameworks += $target_framework }
+          if ($LASTEXITCODE -ne 0) { throw "dotnet build exited $LASTEXITCODE" }
         }
-        if ($failedFrameworks.Count -gt 0) { throw "Build failed for: $($failedFrameworks -join ', ')" }
       shell: pwsh
 
     - name: Perform Tests Windows FX/Mono
       if: ${{inputs.os == 'windows' && (inputs.runtime-type == 'fx' || inputs.runtime-type == 'mono')}}
       run: |
+        . ./.github/scripts/Test-Frameworks.ps1
         $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe"
        
         $vspath = vswhere -latest -property installationPath
@@ -97,30 +102,6 @@ runs:
           [TimeSpan]::FromMinutes(3)
         } else {
           [TimeSpan]::FromMinutes(5)
-        }
-
-        function Test-TrxSucceeded($trxPath) {
-          if (-not (Test-Path $trxPath)) {
-            return $false
-          }
-          try {
-            [xml]$trx = Get-Content $trxPath
-            $resultSummary = $trx.SelectSingleNode('//*[local-name()="ResultSummary"]')
-            if ($null -eq $resultSummary -or $resultSummary.GetAttribute('outcome') -ne 'Completed') {
-              return $false
-            }
-            $counters = $resultSummary.SelectSingleNode('*[local-name()="Counters"]')
-            if ($null -eq $counters) {
-              return $false
-            }
-            return [int]$counters.GetAttribute('failed') -eq 0 `
-              -and [int]$counters.GetAttribute('error') -eq 0 `
-              -and [int]$counters.GetAttribute('timeout') -eq 0 `
-              -and [int]$counters.GetAttribute('aborted') -eq 0
-          } catch {
-            Write-Warning "Unable to read test result file '$trxPath': $_"
-            return $false
-          }
         }
 
         function Invoke-VSTest($fileName, [string[]]$arguments, $trxPath, $targetFramework) {
@@ -154,11 +135,12 @@ runs:
           }
 
           if ($process.ExitCode -ne 0) {
-            exit $process.ExitCode
+            throw "VSTest exited $($process.ExitCode) for $targetFramework"
           }
         }
     
-        foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
+        Invoke-FrameworkChecks -Frameworks (ConvertFrom-Json '${{steps.test-args.outputs.target_frameworks}}') -ResultPrefix '${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}' -Action {
+          param($target_framework)
           $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
           $trxPath = Join-Path "TestResults" $trxFileName
           $testCommand = $vstest
@@ -182,13 +164,13 @@ runs:
     - name: Perform Tests Windows .NET | Ubuntu .NET/Mono
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
-        $failedFrameworks = @()
-        foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
+        . ./.github/scripts/Test-Frameworks.ps1
+        Invoke-FrameworkChecks -Frameworks (ConvertFrom-Json '${{steps.test-args.outputs.target_frameworks}}') -ResultPrefix '${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}' -Action {
+          param($target_framework)
           $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
           dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
-          if ($LASTEXITCODE -ne 0) { $failedFrameworks += $target_framework }
+          if ($LASTEXITCODE -ne 0) { throw "dotnet test exited $LASTEXITCODE" }
         }
-        if ($failedFrameworks.Count -gt 0) { throw "Tests failed for: $($failedFrameworks -join ', ')" }
       shell: pwsh
 
     - name: Perform Tests MacOS/MacOS-arm64 .NET/Mono
@@ -199,6 +181,7 @@ runs:
         max_attempts: 3
         retry_on: timeout
         command: |
+          . ./.github/scripts/Test-Frameworks.ps1
           $dotnetCandidates = @()
           if ('${{inputs.os == 'macos-arm64' && inputs.architecture == 'x64' && inputs.runtime-type == 'dotnet'}}' -eq 'true') {
             $dotnetCandidates += '/Users/runner/.dotnet/x64/dotnet'
@@ -222,13 +205,12 @@ runs:
           if (-not $dotnet) {
             throw 'Unable to locate a dotnet executable.'
           }
-          $failedFrameworks = @()
-          foreach ($target_framework in ConvertFrom-Json "${{steps.test-args.outputs.target_frameworks}}") {
+          Invoke-FrameworkChecks -Frameworks (ConvertFrom-Json '${{steps.test-args.outputs.target_frameworks}}') -ResultPrefix '${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}' -Action {
+            param($target_framework)
             $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
             & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
-            if ($LASTEXITCODE -ne 0) { $failedFrameworks += $target_framework }
+            if ($LASTEXITCODE -ne 0) { throw "dotnet test exited $LASTEXITCODE" }
           }
-          if ($failedFrameworks.Count -gt 0) { throw "Tests failed for: $($failedFrameworks -join ', ')" }
         shell: pwsh
 
     - name: Upload Test Result

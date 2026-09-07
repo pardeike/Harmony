@@ -100,6 +100,58 @@ namespace HarmonyLibTests.Patching
 		static void StaticRefReceiver(ref object __instance) { }
 		static void StaticValueReceiver(int __instance) { }
 		static void StaticNullReceiver(object __instance) => Assert.IsNull(__instance);
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int RefNoArgumentsOuter() { var value = 2; return RefCall(ref value); }
+		static void BothArraysWithEmptyOuter(object[] __args, [HarmonyOuter, HarmonyArgument("__args")] object[] outer)
+		{ Assert.IsEmpty(outer); __args[0] = 5; }
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ExactSpecialCall(int __args, int __0, int ___field, int __var_0, int __var_name, int __originalMember)
+			=> __args + __0 + ___field + __var_0 + __var_name + __originalMember;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ExactSpecialOuter(int __args, int __0, int ___field, int __var_0, int __var_name, int __originalMember)
+			=> ExactSpecialCall(__args + 10, __0 + 10, ___field + 10, __var_0 + 10, __var_name + 10, __originalMember + 10);
+		static void ExactSpecialNames(
+			[HarmonyArgument("__args", ArgumentMode.Original)] int a,
+			[HarmonyArgument("__0", ArgumentMode.Original)] int b,
+			[HarmonyArgument("___field", ArgumentMode.Original)] int c,
+			[HarmonyArgument("__var_0", ArgumentMode.Original)] int d,
+			[HarmonyArgument("__var_name", ArgumentMode.Original)] int e,
+			[HarmonyArgument("__originalMember", ArgumentMode.Original)] int f,
+			[HarmonyOuter, HarmonyArgument("__args", ArgumentMode.Original)] int oa,
+			[HarmonyOuter, HarmonyArgument("__0", ArgumentMode.Original)] int ob,
+			[HarmonyOuter, HarmonyArgument("___field", ArgumentMode.Original)] int oc,
+			[HarmonyOuter, HarmonyArgument("__var_0", ArgumentMode.Original)] int od,
+			[HarmonyOuter, HarmonyArgument("__var_name", ArgumentMode.Original)] int oe,
+			[HarmonyOuter, HarmonyArgument("__originalMember", ArgumentMode.Original)] int of)
+		{
+			Assert.AreEqual(new[] { 11, 12, 13, 14, 15, 16 }, new[] { a, b, c, d, e, f });
+			Assert.AreEqual(new[] { 1, 2, 3, 4, 5, 6 }, new[] { oa, ob, oc, od, oe, of });
+		}
+
+		[Test]
+		public void Every_special_name_category_can_be_a_real_argument_in_both_scopes()
+		{
+			Apply(nameof(ExactSpecialOuter), nameof(ExactSpecialCall), nameof(ExactSpecialNames));
+			Assert.AreEqual(81, ExactSpecialOuter(1, 2, 3, 4, 5, 6));
+		}
+
+		[Test]
+		public void Dual_arrays_are_safe_with_inner_refs_when_outer_has_no_arguments()
+		{
+			Apply(nameof(RefNoArgumentsOuter), nameof(RefCall), nameof(BothArraysWithEmptyOuter));
+			Assert.AreEqual(15, RefNoArgumentsOuter());
+		}
+
+		[Test]
+		public void Postfix_can_be_the_first_array_receiver_after_prefix_skip()
+		{
+			Apply(nameof(ValueOuter), nameof(ValueCall), nameof(Skip), priority: Priority.First);
+			Apply(nameof(ValueOuter), nameof(ValueCall), nameof(NeverArray));
+			Apply(nameof(ValueOuter), nameof(ValueCall), nameof(ReadArray), true);
+			Assert.AreEqual(9, ValueOuter(2));
+			Assert.AreEqual(new[] { 2 }, values);
+			Assert.AreEqual(1, arrays.Count);
+		}
 		static string WrongPassthrough(string prior) => prior;
 		static int IntPassthrough(int prior) => prior + 10;
 		[MethodImpl(MethodImplOptions.NoInlining)]

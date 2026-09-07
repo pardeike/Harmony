@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace HarmonyCompatibility.Feature;
 
-public static class Entry
+public static partial class Entry
 {
 	private static InnerMethod? input;
 

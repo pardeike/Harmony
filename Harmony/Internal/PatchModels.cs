@@ -126,7 +126,7 @@ namespace HarmonyLib
 		{
 			if (info is null) return;
 			var attributes = info.method?.GetCustomAttributes(true) ?? [];
-			if (info.innerMethod is not null || GetInfixDeclaration(attributes) is not null
+			if (info.innerMethod is not null || info.innerTarget is not null || GetInfixDeclaration(attributes) is not null
 				|| info.method?.Name is "InnerPrefix" or "InnerPostfix")
 				throw new ArgumentException($"Infix patch {info.method?.FullDescription()} requires AddInnerPrefix or AddInnerPostfix");
 			if (info.method is not null && info.method.GetParameters().Any(p => p.GetCustomAttributes(true).Any(a => a.GetType().FullName == typeof(HarmonyOuter).FullName)))
@@ -146,29 +146,17 @@ namespace HarmonyLib
 			if (roles.Any(r => r != NormalizeRole(role)))
 				throw new ArgumentException($"Infix patch {info.method.FullDescription()} has a role conflicting with {role}");
 			var declaration = GetInfixDeclaration(attributes);
-			var target = info.innerMethod;
+			var target = info.innerTarget;
+			if (info.innerMethod is not null)
+			{
+				var legacyTarget = new InnerTarget(info.innerMethod);
+				if (target is not null && !target.EquivalentTo(legacyTarget))
+					throw new ArgumentException($"Explicit innerMethod and innerTarget selectors disagree for {info.method.FullDescription()}");
+				target ??= legacyTarget;
+			}
 			if (declaration is not null)
 			{
-				var declaringType = (Type)AccessTools.Field(declaration.GetType(), "innerDeclaringType").GetValue(declaration);
-				var name = (string)AccessTools.Field(declaration.GetType(), "innerName").GetValue(declaration);
-				var arguments = (Type[])AccessTools.Field(declaration.GetType(), "innerArguments").GetValue(declaration);
-				var variations = (Array)AccessTools.Field(declaration.GetType(), "innerVariations").GetValue(declaration);
-				if (declaringType is null || string.IsNullOrEmpty(name)) throw new ArgumentException($"Infix patch {info.method.FullDescription()} requires a declaring type and method name");
-				if (variations is not null)
-					arguments = new HarmonyPatch(arguments, variations.Cast<object>().Select(v => (ArgumentType)Convert.ToInt32(v)).ToArray()).info.argumentTypes;
-				MethodInfo called;
-				try
-				{
-					called = AccessTools.FindIncludingBaseTypes(declaringType, type => arguments is null
-						? type.GetMethod(name, AccessTools.all) : type.GetMethod(name, AccessTools.all, null, arguments, null));
-				}
-				catch (AmbiguousMatchException ex)
-				{
-					throw new AmbiguousMatchException($"Infix patch {info.method.FullDescription()} has an ambiguous target {declaringType.FullName}.{name}; supply argument types or register its MethodInfo manually", ex);
-				}
-				if (called is null) throw new MissingMethodException($"Infix patch {info.method.FullDescription()} cannot find {declaringType.FullName}.{name}({arguments?.Description()})");
-				var positions = (int[])AccessTools.Property(declaration.GetType(), nameof(HarmonyInfix.Positions)).GetValue(declaration, null);
-				var attributedTarget = new InnerMethod(called, positions);
+				var attributedTarget = ResolveInfixTarget(info.method, declaration);
 				if (target is not null && !target.EquivalentTo(attributedTarget))
 					throw new ArgumentException($"Explicit and attributed Infix targets or positions disagree for {info.method.FullDescription()}");
 				target ??= attributedTarget;
@@ -177,8 +165,59 @@ namespace HarmonyLib
 			var result = info.Clone();
 			result.method = info.method;
 			ClearInfixMarker(result, attributes);
-			result.innerMethod = target;
+			result.innerMethod = target.MethodSelector;
+			result.innerTarget = target.Kind == InnerTargetKind.Method ? null : target;
 			return result;
+		}
+
+		static InnerTarget ResolveInfixTarget(MethodInfo patch, object declaration)
+		{
+			var attributeType = declaration.GetType();
+			object Read(string name) => AccessTools.Field(attributeType, name)?.GetValue(declaration);
+			var kindValue = Read("innerTargetKind");
+			var kind = kindValue is null ? InnerTargetKind.Method : (InnerTargetKind)Convert.ToInt32(kindValue);
+			var positions = (int[])AccessTools.Property(attributeType, nameof(HarmonyInfix.Positions)).GetValue(declaration, null);
+			if (kind == InnerTargetKind.Constant) return InnerTarget.Constant(Read("innerConstant"), positions);
+			var declaringType = (Type)Read("innerDeclaringType");
+			var name = (string)Read("innerMemberName") ?? (string)Read("innerName");
+			var arguments = (Type[])Read("innerArguments");
+			var variations = (Array)Read("innerVariations");
+			if (declaringType is null || kind != InnerTargetKind.Constructor && string.IsNullOrEmpty(name))
+				throw new ArgumentException($"Infix patch {patch.FullDescription()} requires a declaring type and member name");
+			if (variations is not null)
+				arguments = new HarmonyPatch(arguments, variations.Cast<object>().Select(value => (ArgumentType)Convert.ToInt32(value)).ToArray()).info.argumentTypes;
+			try
+			{
+				if (kind == InnerTargetKind.Constructor)
+				{
+					if (name is not null) throw new ArgumentException("Constructor Infix declarations do not take a member name");
+					var constructor = declaringType.GetConstructor(AccessTools.all, null, arguments ?? [], null)
+						?? throw new MissingMethodException($"Cannot find constructor {declaringType.FullName}({arguments?.Description()})");
+					return new InnerTarget(constructor, positions);
+				}
+				if (kind is InnerTargetKind.FieldRead or InnerTargetKind.FieldWrite)
+				{
+					if (arguments?.Length > 0) throw new ArgumentException("A field Infix declaration does not take argument types");
+					var field = AccessTools.Field(declaringType, name) ?? throw new MissingFieldException(declaringType.FullName, name);
+					return new InnerTarget(field, kind, positions);
+				}
+				if (kind is InnerTargetKind.Getter or InnerTargetKind.Setter)
+				{
+					var property = AccessTools.FindIncludingBaseTypes(declaringType, type => arguments is null
+						? type.GetProperty(name, AccessTools.all) : type.GetProperty(name, AccessTools.all, null, null, arguments, null));
+					if (property is null) throw new MissingMemberException(declaringType.FullName, name);
+					return new InnerTarget(property, kind, positions);
+				}
+				if (kind != InnerTargetKind.Method) throw new ArgumentException($"Unsupported Infix target kind {kind}");
+				var called = AccessTools.FindIncludingBaseTypes(declaringType, type => arguments is null
+					? type.GetMethod(name, AccessTools.all) : type.GetMethod(name, AccessTools.all, null, arguments, null));
+				if (called is null) throw new MissingMethodException($"Infix patch {patch.FullDescription()} cannot find {declaringType.FullName}.{name}({arguments?.Description()})");
+				return new InnerTarget(called, positions);
+			}
+			catch (AmbiguousMatchException ex)
+			{
+				throw new AmbiguousMatchException($"Infix patch {patch.FullDescription()} has an ambiguous target {declaringType.FullName}.{name}; supply argument types or register its reflected member manually", ex);
+			}
 		}
 
 		internal static AttributePatch Create(MethodInfo patch)

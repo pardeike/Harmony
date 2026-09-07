@@ -398,7 +398,7 @@ namespace HarmonyLibTests.Patching
 			var bytes = info.Serialize();
 			for (var length = 1; length <= 16; length++)
 				Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(bytes.Take(length).ToArray()));
-			var unknownVersion = (byte[])bytes.Clone(); unknownVersion[14] = 2;
+			var unknownVersion = (byte[])bytes.Clone(); unknownVersion[14] = 3;
 			Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(unknownVersion));
 			var unknownBackend = (byte[])bytes.Clone(); unknownBackend[15] = 3;
 			Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(unknownBackend));

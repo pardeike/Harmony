@@ -2,7 +2,7 @@
 
 * Relevant drafts and information are located in `./drafts/` and is named according to the topic.
 
-* The Infix implementation specification is `drafts/INFIX-NEW-IMPL-V3.md`. It is the sole design reference for this feature.
+* The Infix implementation specification is `drafts/INFIX-NEW-IMPL-V3.md`, including its linked operation-target addendum. These form one design reference; the addendum overrides the V3 method-only target restrictions.
 
 * For simple edits, limit testing to net9 and x64.
 

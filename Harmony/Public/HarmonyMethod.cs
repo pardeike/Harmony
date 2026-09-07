@@ -17,6 +17,9 @@ namespace HarmonyLib
 		/// <summary>The selected inner call for an inner prefix or postfix</summary>
 		public InnerMethod innerMethod;
 
+		/// <summary>The selected member operation or literal for an inner prefix or postfix</summary>
+		public InnerTarget innerTarget;
+
 		/// <summary>Patch Category</summary>
 		/// 
 		public string category = null;

@@ -15,12 +15,12 @@ namespace HarmonyLib
 		internal Infix(Patch patch) => this.patch = patch;
 
 		internal MethodInfo OuterMethod => patch.PatchMethod;
-		internal MethodBase InnerMethod => patch.innerMethod.Method;
-		internal int[] Positions => patch.innerMethod.positions; // multiple 1-based positions, or empty array for all positions
+		internal MethodBase InnerMethod => patch.Target.Member as MethodBase;
+		internal int[] Positions => patch.Target.Positions; // multiple 1-based positions, or empty array for all positions
 
 		internal bool Matches(MethodBase method, int index, int total) // index is 1-based
 		{
-			if (method is not MethodInfo operand || !patch.innerMethod.Matches(operand)) return false;
+			if (method is not MethodInfo operand || !patch.Target.Matches(new CodeInstruction(OpCodes.Call, operand))) return false;
 			if (Positions.Length == 0) return true;
 			foreach (var pos in Positions)
 			{
@@ -33,7 +33,7 @@ namespace HarmonyLib
 		internal static HashSet<int> ResolvePositions(int count, int[] positions)
 		{
 			if (positions is null) throw new ArgumentNullException(nameof(positions));
-			if (count == 0) throw new ArgumentException("The inner target has no matching call after transpilers.");
+			if (count == 0) throw new ArgumentException("The inner target has no matching operation after transpilers.");
 			if (positions.Length == 0) return new HashSet<int>(Enumerable.Range(0, count));
 			var selected = new HashSet<int>();
 			foreach (var position in positions)
@@ -104,11 +104,9 @@ namespace HarmonyLib
 				{
 					try
 					{
-						if (fix.patch.innerMethod is null) throw new ArgumentException("The inner patch has no target. Remove it before rebuilding this method.");
-						fix.patch.innerMethod.Validate();
-						var matches = Enumerable.Range(0, instructions.Count).Where(index =>
-							(instructions[index].opcode == OpCodes.Call || instructions[index].opcode == OpCodes.Callvirt)
-							&& instructions[index].operand is MethodInfo operand && fix.patch.innerMethod.Matches(operand)).ToList();
+						var target = fix.patch.Target ?? throw new ArgumentException("The inner patch has no target. Remove it before rebuilding this method.");
+						target.Validate();
+						var matches = Enumerable.Range(0, instructions.Count).Where(index => target.Matches(instructions[index])).ToList();
 						foreach (var position in ResolvePositions(matches.Count, fix.Positions))
 						{
 							var index = matches[position];
@@ -130,31 +128,13 @@ namespace HarmonyLib
 		{
 			var config = creator.config;
 			var call = instructions[index];
-			var method = (MethodInfo)call.operand;
 			var fixes = prefixes.Concat(postfixes).Distinct().ToList();
-			MethodCreatorTools.ValidateInfixSignature(method, "selected inner call");
 			foreach (var fix in fixes) MethodCreatorTools.ValidateInfixSignature(fix, "patch");
-			if ((method.CallingConvention & CallingConventions.VarArgs) != 0)
-				throw new ArgumentException("Varargs inner calls are not supported.");
-			Type constrainedType = null;
-			if (start != index)
-			{
-				if (index - start != 1 || instructions[start].opcode != OpCodes.Constrained || call.opcode != OpCodes.Callvirt
-					|| instructions[start].operand is not Type type || method.IsStatic)
-					throw new ArgumentException("Only a concrete constrained. prefix on an instance callvirt is supported; tail. and other call prefixes cannot be wrapped.");
-				constrainedType = type;
-			}
-			if (method.IsStatic && call.opcode == OpCodes.Callvirt) throw new ArgumentException("A static method cannot be called with callvirt.");
-			var receiverType = constrainedType ?? method.DeclaringType;
-			var parameterTypes = method.GetParameters().Select(parameter => parameter.ParameterType).ToArray();
-			if (method.ContainsGenericParameters || receiverType?.ContainsGenericParameters == true
-				|| parameterTypes.Any(type => type.ContainsGenericParameters) || method.ReturnType.ContainsGenericParameters)
-				throw new ArgumentException("The selected call has unresolved generic storage. Select a closed outer method and concrete call operands.");
-			var arguments = parameterTypes.Select(type => new InjectionStorage(config.DeclareLocal(type))).ToArray();
-			InjectionStorage? receiver = method.IsStatic ? null : new InjectionStorage(config.DeclareLocal(
-				constrainedType is not null || receiverType.IsValueType ? receiverType.MakeByRefType() : receiverType));
-			var variables = new VariableState();
-			var context = new PatchBindingContext(method, receiverType, receiver, arguments, variables);
+			var context = CreateContext(config, instructions, start, index);
+			var returnType = context.returnType;
+			var arguments = context.arguments;
+			var receiver = context.receiver;
+			var variables = context.variables;
 			var outer = new PatchBindingContext(config.original, new VariableState(config.localVariables));
 			var codes = new List<CodeInstruction> { Nop["start inner call"] };
 			for (var i = arguments.Length - 1; i >= 0; i--) codes.Add(arguments[i].Store());
@@ -165,28 +145,28 @@ namespace HarmonyLib
 			bool Has(InjectionType injectionType) => fixes.Any(fix => Injections(fix, injectionType).Any(injection => !injection.outer));
 			var canSkip = prefixes.Any(fix => fix.ReturnType == typeof(bool));
 			LocalBuilder result = null;
-			if (method.ReturnType != typeof(void))
+			if (returnType != typeof(void))
 			{
-				result = config.DeclareLocal(method.ReturnType);
+				result = config.DeclareLocal(returnType);
 				variables.Add(InjectionType.Result, result);
 				var needsDefault = canSkip || prefixes.Any(fix => config.InjectionsFor(fix).Any(injection => !injection.outer
 					&& (injection.injectionType == InjectionType.Result || injection.injectionType == InjectionType.ResultRef)));
 				if (needsDefault)
 				{
-					var elementType = method.ReturnType.GetElementType();
-					if (method.ReturnType.IsByRef && !MethodCreatorTools.CanStoreInObjectArray(elementType))
+					var elementType = returnType.GetElementType();
+					if (returnType.IsByRef && !MethodCreatorTools.CanStoreInObjectArray(elementType))
 						throw new ArgumentException($"Skipping or exposing a pre-call result requires a default reference, which cannot hold {elementType}.");
 					codes.AddRange(creator.GenerateVariableInit(result, true));
 				}
 			}
-			if (Has(InjectionType.ResultRef) && method.ReturnType.IsByRef)
+			if (Has(InjectionType.ResultRef) && returnType.IsByRef)
 			{
-				var resultRef = config.DeclareLocal(typeof(RefResult<>).MakeGenericType(method.ReturnType.GetElementType()));
+				var resultRef = config.DeclareLocal(typeof(RefResult<>).MakeGenericType(returnType.GetElementType()));
 				variables.Add(InjectionType.ResultRef, resultRef);
 				codes.AddRange([Ldnull, Stloc[resultRef]]);
 			}
 			LocalBuilder run = null;
-			if (prefixes.Any(creator.AffectsOriginal) || Has(InjectionType.RunOriginal))
+			if (prefixes.Any(fix => creator.AffectsOriginal(fix, true)) || Has(InjectionType.RunOriginal))
 			{
 				run = config.DeclareLocal(typeof(bool));
 				variables.Add(InjectionType.RunOriginal, run);
@@ -222,6 +202,71 @@ namespace HarmonyLib
 			codes.AddRange(creator.EmitPostfixes(postfixes, context, true, outer));
 			codes.Add(Nop["end inner call"]);
 			return codes;
+		}
+
+		// Describe the operands of the original instruction, then use the same binder and scheduling for every kind.
+		static PatchBindingContext CreateContext(MethodCreatorConfig config, List<CodeInstruction> instructions, int start, int index)
+		{
+			var instruction = instructions[index];
+			var member = instruction.operand as MemberInfo;
+			Type returnType;
+			Type receiverStorage = null;
+			var receiverType = member?.DeclaringType;
+			BindingParameter[] parameters;
+			if (member is MethodBase method)
+			{
+				MethodCreatorTools.ValidateInfixSignature(method, "selected inner call");
+				if ((method.CallingConvention & CallingConventions.VarArgs) != 0)
+					throw new ArgumentException("Varargs inner calls are not supported.");
+				if (method.ContainsGenericParameters) throw new ArgumentException("The selected call has unresolved generic storage.");
+				var construction = instruction.opcode == OpCodes.Newobj;
+				returnType = construction ? method.DeclaringType : AccessTools.GetReturnedType(method);
+				parameters = BindingParameter.From(method);
+				if (!construction && !method.IsStatic)
+					receiverStorage = receiverType.IsValueType ? receiverType.MakeByRefType() : receiverType;
+				if (method.IsStatic && instruction.opcode == OpCodes.Callvirt)
+					throw new ArgumentException("A static method cannot be called with callvirt.");
+				if (start != index)
+				{
+					if (index - start != 1 || instructions[start].opcode != OpCodes.Constrained || instruction.opcode != OpCodes.Callvirt
+						|| instructions[start].operand is not Type type || method.IsStatic)
+						throw new ArgumentException("Only a concrete constrained. prefix on an instance callvirt is supported; tail. and other call prefixes cannot be wrapped.");
+					receiverType = type;
+					receiverStorage = type.MakeByRefType();
+				}
+			}
+			else if (member is FieldInfo field)
+			{
+				MethodCreatorTools.ValidateInfixField(field);
+				if (field.IsStatic != (instruction.opcode == OpCodes.Ldsfld || instruction.opcode == OpCodes.Stsfld))
+					throw new ArgumentException("Field targets require ldsfld/stsfld for static fields and ldfld/stfld for instance fields.");
+				var write = instruction.opcode == OpCodes.Stfld || instruction.opcode == OpCodes.Stsfld;
+				parameters = write ? [new BindingParameter("value", field.FieldType)] : [];
+				returnType = write ? typeof(void) : field.FieldType;
+				if (!field.IsStatic)
+				{
+					if (receiverType.IsValueType) throw new ArgumentException("Instance fields on structs require distinguishing value and address receivers and are not supported.");
+					receiverStorage = receiverType;
+				}
+				var prefixes = instructions.Skip(start).Take(index - start).ToArray();
+				if (prefixes.Any(prefix => prefix.opcode != OpCodes.Volatile && prefix.opcode != OpCodes.Unaligned)
+					|| prefixes.Select(prefix => prefix.opcode).Distinct().Count() != prefixes.Length
+					|| prefixes.Any(prefix => prefix.opcode == OpCodes.Unaligned && (field.IsStatic || Convert.ToInt32(prefix.operand) is not (1 or 2 or 4))))
+					throw new ArgumentException("A field access supports only one volatile. and one valid unaligned. prefix.");
+			}
+			else
+			{
+				if (start != index) throw new ArgumentException("A constant load cannot have instruction prefixes.");
+				parameters = [];
+				returnType = instruction.opcode == OpCodes.Ldstr ? typeof(string)
+					: instruction.opcode == OpCodes.Ldc_I8 ? typeof(long) : instruction.opcode == OpCodes.Ldc_R4 ? typeof(float)
+					: instruction.opcode == OpCodes.Ldc_R8 ? typeof(double) : typeof(int);
+			}
+			if (receiverType?.ContainsGenericParameters == true || returnType.ContainsGenericParameters || parameters.Any(parameter => parameter.ParameterType.ContainsGenericParameters))
+				throw new ArgumentException("The selected operation has unresolved generic storage. Select a closed outer method and concrete operands.");
+			var arguments = parameters.Select(parameter => new InjectionStorage(config.DeclareLocal(parameter.ParameterType))).ToArray();
+			InjectionStorage? receiver = receiverStorage is null ? null : new InjectionStorage(config.DeclareLocal(receiverStorage));
+			return new PatchBindingContext(member, returnType, parameters, receiverType, receiver, arguments, new VariableState());
 		}
 	}
 }

@@ -31,6 +31,60 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
+  v3:
+    name: Extended targets / V3 / ${{ matrix.framework }} ${{ matrix.backend }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - framework: net9.0
+            backend: json
+          - framework: net8.0
+            backend: binary
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check out exact pre-extension V3 source
+        uses: actions/checkout@v7
+        with:
+          ref: 573914745451f8278720257db37a4a4ebaae853d
+          path: HarmonyTests.Compatibility/artifacts/v3-source
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            10.0.x
+            9.0.x
+            8.0.x
+      - name: Build isolated V3 and current test identities
+        env:
+          FRAMEWORK: ${{ matrix.framework }}
+        run: |
+          test "$(git -C HarmonyTests.Compatibility/artifacts/v3-source rev-parse HEAD)" = 573914745451f8278720257db37a4a4ebaae853d
+          dotnet build HarmonyTests.Compatibility/artifacts/v3-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-v3" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.5.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
+      - name: Run cold extended identities and actual V3 rejection and recovery
+        env:
+          FRAMEWORK: ${{ matrix.framework }}
+          BACKEND: ${{ matrix.backend }}
+          REQUIRE_COEXISTENCE: '1'
+        run: |
+          export RUNTIME_HOST="$(command -v dotnet)"
+          export V3_HARMONY="$RUNNER_TEMP/compat-v3/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          export CURRENT_HARMONY="$RUNNER_TEMP/compat-first/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          export SECOND_CURRENT_HARMONY="$RUNNER_TEMP/compat-second/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          export REPORT_DIRECTORY="$GITHUB_WORKSPACE/HarmonyTests.Compatibility/reports/v3-$FRAMEWORK-$BACKEND"
+          bash HarmonyTests.Compatibility/run.sh
+      - name: Upload V3 compatibility evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: infix-compatibility-v3-${{ matrix.framework }}-${{ matrix.backend }}
+          path: HarmonyTests.Compatibility/reports/
+          if-no-files-found: error
+          retention-days: 14
+
   coreclr:
     name: ${{ matrix.framework }} ${{ matrix.backend }} / old ${{ matrix.old }}
     runs-on: ubuntu-22.04
@@ -115,5 +169,41 @@ jobs:
           path: |
             HarmonyTests.Compatibility/reports/
             HarmonyTests.Compatibility/published-artifacts.json
+          if-no-files-found: error
+          retention-days: 14
+
+  framework:
+    name: Windows .NET Framework x64 / old 2.4.2
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Build isolated current assemblies with test-only versions
+        shell: bash
+        run: |
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
+      - name: Run actual Framework old/new engines with mandatory coexistence
+        shell: bash
+        env:
+          FRAMEWORK: net472
+          BACKEND: binary
+          OLD_HARMONY_VERSION: 2.4.2
+          RUNTIME_HOST: native
+          REQUIRE_COEXISTENCE: '1'
+        run: |
+          export CURRENT_HARMONY="$RUNNER_TEMP/compat-first/bin/Lib.Harmony/debug_net472/0Harmony.dll"
+          export SECOND_CURRENT_HARMONY="$RUNNER_TEMP/compat-second/bin/Lib.Harmony/debug_net472/0Harmony.dll"
+          export REPORT_DIRECTORY="$GITHUB_WORKSPACE/HarmonyTests.Compatibility/reports/windows framework"
+          bash HarmonyTests.Compatibility/run.sh
+      - name: Upload Framework evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: infix-compatibility-windows-net472-2.4.2
+          path: HarmonyTests.Compatibility/reports/
           if-no-files-found: error
           retention-days: 14

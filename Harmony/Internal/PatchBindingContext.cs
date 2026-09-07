@@ -33,25 +33,39 @@ namespace HarmonyLib
 		internal CodeInstruction Store() => local is null ? Starg[argumentIndex] : Stloc[local];
 	}
 
+	internal readonly struct BindingParameter(string name, Type type, bool isOut = false, bool isRetval = false)
+	{
+		internal readonly string Name = name;
+		internal readonly Type ParameterType = type;
+		internal readonly bool IsOut = isOut;
+		internal readonly bool IsRetval = isRetval;
+
+		internal static BindingParameter[] From(MethodBase method) => [.. method.GetParameters()
+			.Select(parameter => new BindingParameter(parameter.Name, parameter.ParameterType, parameter.IsOut, parameter.IsRetval))];
+	}
+
 	internal sealed class PatchBindingContext
 	{
-		internal readonly MethodBase method;
+		internal readonly MemberInfo member;
+		internal readonly bool isStatic;
 		internal readonly Type returnType;
 		internal readonly Type receiverType;
-		internal readonly ParameterInfo[] parameters;
+		internal readonly BindingParameter[] parameters;
 		internal readonly string[] parameterNames;
 		internal readonly InjectionStorage? receiver;
 		internal readonly InjectionStorage[] arguments;
 		internal readonly VariableState variables;
 		internal bool refreshArgumentArray;
+		internal string Description => member is MethodBase method ? method.FullDescription() : member?.ToString() ?? "constant load";
 
 		internal PatchBindingContext(MethodBase method, VariableState variables)
 		{
-			this.method = method;
+			member = method;
+			isStatic = method.IsStatic;
 			this.variables = variables;
 			returnType = AccessTools.GetReturnedType(method);
 			receiverType = method.DeclaringType;
-			parameters = method.GetParameters();
+			parameters = BindingParameter.From(method);
 			parameterNames = [.. parameters.Select(parameter => parameter.Name)];
 			arguments = [.. parameters.Select((parameter, index) => new InjectionStorage(parameter.ParameterType, index + (method.IsStatic ? 0 : 1)))];
 			if (!method.IsStatic)
@@ -59,14 +73,19 @@ namespace HarmonyLib
 		}
 
 		internal PatchBindingContext(MethodBase method, Type receiverType, InjectionStorage? receiver, InjectionStorage[] arguments, VariableState variables)
+			: this(method, AccessTools.GetReturnedType(method), BindingParameter.From(method), receiverType, receiver, arguments, variables) { }
+
+		internal PatchBindingContext(MemberInfo member, Type returnType, BindingParameter[] parameters, Type receiverType,
+			InjectionStorage? receiver, InjectionStorage[] arguments, VariableState variables)
 		{
-			this.method = method;
+			this.member = member;
+			isStatic = receiver is null;
 			this.receiverType = receiverType;
 			this.receiver = receiver;
 			this.arguments = arguments;
 			this.variables = variables;
-			returnType = AccessTools.GetReturnedType(method);
-			parameters = method.GetParameters();
+			this.returnType = returnType;
+			this.parameters = parameters;
 			parameterNames = [.. parameters.Select(parameter => parameter.Name)];
 		}
 	}
