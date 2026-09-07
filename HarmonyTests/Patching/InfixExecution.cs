@@ -98,18 +98,23 @@ namespace HarmonyLibTests.Patching
 			foreach (var name in prefixNames)
 				harmony.Patch(Method(nameof(Adapter)), prefix: new HarmonyMethod(Method(name)) { priority = PriorityFor(name) });
 			harmony.Patch(Method(nameof(Adapter)), prefix: new HarmonyMethod(Method(nameof(Observe))) { priority = Priority.Last });
+			MethodInfo ordinaryReplacement = null;
 			foreach (var name in postfixNames.Concat([nameof(PassA), nameof(PassB)]))
-				harmony.Patch(Method(nameof(Adapter)), postfix: new HarmonyMethod(Method(name)) { priority = PriorityFor(name) });
-			var expected = Adapter(1);
+				ordinaryReplacement = harmony.Patch(Method(nameof(Adapter)), postfix: new HarmonyMethod(Method(name)) { priority = PriorityFor(name) });
+			// Compare the generated schedules through the same entrypoint; native detour lifecycle has separate coverage.
+			var expected = ordinaryReplacement.Invoke(null, [1]);
 			var expectedTrace = trace.ToArray();
+			Assert.That(expectedTrace.Count(item => item.StartsWith("pass", StringComparison.Ordinal)), Is.EqualTo(2),
+				"The ordinary control must execute both passthrough postfixes");
 			harmony.UnpatchAll(harmony.Id);
 			trace.Clear();
 			foreach (var name in prefixNames)
 				harmony.CreateProcessor(Method(nameof(Adapter))).AddInnerPrefix(Fix(name, Method(nameof(Call)), PriorityFor(name))).Patch();
 			harmony.CreateProcessor(Method(nameof(Adapter))).AddInnerPrefix(Fix(nameof(Observe), Method(nameof(Call)), Priority.Last)).Patch();
+			MethodInfo innerReplacement = null;
 			foreach (var name in postfixNames.Concat([nameof(PassA), nameof(PassB)]))
-				harmony.CreateProcessor(Method(nameof(Adapter))).AddInnerPostfix(Fix(name, Method(nameof(Call)), PriorityFor(name))).Patch();
-			Assert.That(Adapter(1), Is.EqualTo(expected));
+				innerReplacement = harmony.CreateProcessor(Method(nameof(Adapter))).AddInnerPostfix(Fix(name, Method(nameof(Call)), PriorityFor(name))).Patch();
+			Assert.That(innerReplacement.Invoke(null, [1]), Is.EqualTo(expected));
 			Assert.That(trace, Is.EqualTo(expectedTrace));
 		}
 

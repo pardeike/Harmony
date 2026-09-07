@@ -169,7 +169,13 @@ namespace HarmonyLibTests.Patching
 			Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(downgraded));
 			Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(bytes.Skip(16).ToArray()));
 			state.RemoveInnerPrefix("target");
-			Assert.That(state.Serialize(), Is.EqualTo(new PatchInfo().Serialize()));
+			var ordinaryBytes = state.Serialize();
+			// BinaryFormatter preserves shared-array identities; equal empty state need not have identical bytes.
+			Assert.That(ordinaryBytes[0], Is.EqualTo(new PatchInfo().Serialize()[0]), "The last Infix removal must restore the unframed legacy format");
+			var ordinary = (PatchInfo)AccessTools.DeclaredMethod(typeof(PatchInfoSerialization), "DeserializePayload").Invoke(null, [ordinaryBytes, bytes[15]]);
+			foreach (var patches in new[] { ordinary.prefixes, ordinary.postfixes, ordinary.transpilers, ordinary.finalizers, ordinary.innerprefixes, ordinary.innerpostfixes })
+				Assert.That(patches, Is.Empty);
+			Assert.That(ordinary.VersionCount, Is.EqualTo(state.VersionCount));
 			var methods = State(new InnerTarget(PatchMethod)).Serialize();
 			methods[14] = 2;
 			Assert.That(PatchInfoSerialization.Deserialize(methods).Serialize()[14], Is.EqualTo(1));

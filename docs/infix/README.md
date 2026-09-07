@@ -23,6 +23,8 @@ The new cases exercise field reads/writes, property accessors, construction, lit
 
 Debug and Release test projects and the documentation project build successfully. Release repacking reports mismatched debug symbols in the existing `MonoMod.ILHelpers` dependency; this does not prevent assembly generation or the Release test run. The PowerShell CI-report gate has 36 passing regression cases, including skipped tests and incomplete reports. Mixed-version and remote workflow results are recorded separately in the [testing strategy](TESTING-STRATEGY.md); earlier successful binaries below do not validate these changes.
 
+[Compatibility CI](https://github.com/pardeike/Harmony/actions/runs/34093242634) passed all 16 jobs for `cde7122`, including actual Windows Framework coexistence and both previous-Infix-version lanes. The first platform run exposed an overly strict empty-state byte comparison on Windows and one non-reproducing ordinary-entry-point bypass in the macOS .NET 3.1 scheduling control. The test corrections and remaining runtime proof boundary are described in the testing strategy; neither issue justified changing production serialization or scheduling behavior.
+
 ## Review-fix validation, 2026-09-05 (before operation targets)
 
 The review fixes preserve dynamic-method calls in exception-handling wrappers and distinguish genuine patch factories from method-valued postfix results. The Mono run also caught and fixed an unsupported attribute lookup on dynamic patch parameters.
