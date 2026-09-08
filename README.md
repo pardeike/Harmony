@@ -47,7 +47,7 @@ If you instead want to supply the dependencies yourself, you should use the [Lib
 
 ### Documentation
 
-Browse the [v3 documentation](Documentation/index.md), including the [Infix guide](Documentation/articles/patching-infix.md). The published [documentation site](https://harmony.pardeike.net) covers Harmony 2.x. Join the official [discord server](https://discord.gg/xXgghXR) for discussion.
+Browse the [v3 documentation](https://harmony.pardeike.net/v3/), including the [Infix guide](Documentation/articles/patching-infix.md). The published [documentation site](https://harmony.pardeike.net/v2/) covers Harmony 2.x. Join the official [discord server](https://discord.gg/xXgghXR) for discussion.
 
 ### Contribute
 

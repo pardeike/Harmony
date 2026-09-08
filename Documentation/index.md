@@ -1,6 +1,10 @@
 <p align="center"><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="128" /></p>
 
-# Harmony 2
+# Harmony 3 Preview
+
+You are reading the Harmony 3 preview documentation. Infix patching is developed on the v3 branch.
+
+[Harmony 2.x documentation](https://harmony.pardeike.net/v2/) · [Harmony 3 preview documentation](https://harmony.pardeike.net/v3/)
 
 ## Introduction
 

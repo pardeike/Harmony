@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import argparse
 import json
+from urllib.parse import urljoin
+import xml.etree.ElementTree as ET
 
 import yaml
+
+major = ET.parse('Directory.Build.props').findtext('.//HarmonyVersion').split('.')[0]
+parser = argparse.ArgumentParser(description='Generate documentation cards with links to the selected major version.')
+parser.add_argument('--base-url', default=f'https://harmony.pardeike.net/v{major}/')
+base_url = parser.parse_args().base_url.rstrip('/') + '/'
 
 OUT_DIR = Path('docs', 'llm-pack')
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -25,10 +33,10 @@ for path in Path('Documentation/api').rglob('*.yml'):
 		parent = item.get('parent')
 		href = item.get('href')
 		if href:
-			doc_url = f'https://harmony.pardeike.net/docs/{href.lstrip("/")}'
+			doc_url = urljoin(base_url, href.lstrip("/"))
 		else:
 			doc_page = uid if not parent or parent == 'HarmonyLib' else parent
-			doc_url = f'https://harmony.pardeike.net/docs/api/{doc_page}.html'
+			doc_url = urljoin(base_url, f'api/{doc_page}.html')
 		cards.append({
 			'id': uid,
 			'kind': kind,
@@ -50,7 +58,7 @@ for path in Path('Documentation/articles').rglob('*.md'):
 	remarks = '\n'.join(lines[1:5]) if len(lines) > 1 else None
 	rel = path.relative_to('Documentation')
 	slug = rel.with_suffix('').as_posix()
-	doc_url = f'https://harmony.pardeike.net/docs/{slug}.html'
+	doc_url = urljoin(base_url, f'{slug}.html')
 	cards.append({
 		'id': slug,
 		'kind': 'article',
