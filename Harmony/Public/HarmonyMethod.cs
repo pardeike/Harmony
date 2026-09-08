@@ -82,7 +82,6 @@ namespace HarmonyLib
 				var infos = HarmonyMethodExtensions.GetFromMethod(method);
 				if (infos is not null)
 					Merge(infos).CopyTo(this);
-				AttributePatch.ClearInfixMarker(this, method.GetCustomAttributes(true));
 			}
 		}
 
@@ -336,9 +335,12 @@ namespace HarmonyLib
 		///
 		public static List<HarmonyMethod> GetFromMethod(MethodBase method)
 		{
-			return [.. method.GetCustomAttributes(true)
+			var attributes = method.GetCustomAttributes(true);
+			var infos = attributes
 						.Select(GetHarmonyMethodInfo)
-						.Where(info => info is not null)];
+						.Where(info => info is not null).ToList();
+			foreach (var info in infos) AttributePatch.ClearInfixMarker(info, attributes);
+			return infos;
 		}
 
 		/// <summary>Gets merged annotations on a method</summary>

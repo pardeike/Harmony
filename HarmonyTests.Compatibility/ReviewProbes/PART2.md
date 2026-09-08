@@ -23,6 +23,8 @@ The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the sam
 
 - T12: discovery, creation, and field initialization now share the AppDomain lock across Harmony copies. Fresh-process concurrent and sequential compatibility cases pass on .NET 9 x64, including ordinary patch/rebuild/removal and a later third copy sharing all three dictionaries. These cases also run in compatibility CI. Already split state remains rejected; older copies without this lock still need host coordination.
 
+- T13: the public annotation reader clears the marker on copied metadata. The raw attribute still carries it, and missing or ambiguous inner targets remain deferred until registration. Public list/merge/import paths retain the class target; all 29 metadata and target tests pass on .NET 9 x64.
+
 ## Claims not added to TODO
 
 | Report item | Disposition |

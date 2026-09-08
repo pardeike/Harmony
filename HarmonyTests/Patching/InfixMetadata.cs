@@ -108,6 +108,16 @@ namespace HarmonyLibTests.Patching
 		{
 			var patch = Method(nameof(MissingTarget));
 			Assert.That(patch.GetCustomAttributes(true).OfType<HarmonyInfix>().Single().info.methodType, Is.EqualTo((MethodType)int.MinValue));
+			var parent = new HarmonyMethod { declaringType = typeof(InfixMetadata), methodName = nameof(Outer), methodType = MethodType.Normal };
+			foreach (var metadata in new[] { HarmonyMethod.Merge(HarmonyMethodExtensions.GetFromMethod(patch)), HarmonyMethodExtensions.GetMergedFromMethod(patch), new HarmonyMethod(patch) })
+			{
+				Assert.That(metadata.methodType, Is.Null);
+				var merged = parent.Merge(metadata);
+				Assert.That(merged.methodType, Is.EqualTo(MethodType.Normal));
+				Assert.That(merged.GetOriginalMethod(), Is.EqualTo(Method(nameof(Outer))));
+			}
+			Assert.That(patch.GetCustomAttributes(true).OfType<HarmonyInfix>().Single().info.methodType, Is.EqualTo((MethodType)int.MinValue), "Raw declarations must still reject old readers");
+			Assert.Throws<ArgumentException>(() => HarmonyMethodExtensions.GetFromMethod(Method(nameof(MethodOuterTarget))));
 			var imported = new HarmonyMethod(patch);
 			Assert.That(imported.methodType, Is.Null);
 			Assert.That(imported.declaringType, Is.Null);
