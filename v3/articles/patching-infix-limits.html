@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Infix odd cases and limits </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Infix odd cases and limits ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="infix-odd-cases-and-limits">Infix odd cases and limits</h1>
+
+<p>An Infix selects compiled operations, not C# expressions. See the <a href="patching-infix.html">Infix guide</a> for registration and signatures. These fragments need static, nongeneric patch classes, target attributes and imports.</p>
+<h2 id="adding-another-patch">Adding another patch</h2>
+<p>Separate <code>Patch()</code> calls add registrations, even with the same owner. Both forms install targeted <code>HarmonyMethod</code> objects <code>a</code> and <code>b</code>:</p>
+<pre><code class="lang-csharp">harmony.CreateProcessor(outer).AddInnerPrefix(a).Patch();
+harmony.CreateProcessor(outer).AddInnerPrefix(b).Patch();
+// Or accumulate both before installing:
+harmony.CreateProcessor(outer).AddInnerPrefix(a).AddInnerPrefix(b).Patch();
+</code></pre>
+<p>All <code>AddInner...</code> methods append. Calling <code>Patch()</code> again installs the pending lists again. Ordinary <code>AddPrefix</code> has one slot, so adding twice before installation keeps only the second.</p>
+<h2 id="a-captured-result-can-later-be-replaced">A captured result can later be replaced</h2>
+<p>All void postfixes run before returning postfixes, which chain replacement results.</p>
+<pre><code class="lang-csharp">static void Capture(StringBuilder __result,
+    [HarmonyOuter] out StringBuilder __var_builder)
+    =&gt; __var_builder = __result;
+
+static StringBuilder Replace(StringBuilder result)
+    =&gt; new StringBuilder(&quot;replacement&quot;);
+</code></pre>
+<p>For the same construction, the capture keeps the first builder while the outer code receives the replacement. It saves a reference, not a clone, so later object edits remain visible.</p>
+<p>Even <code>Priority.Last</code> cannot move this capture past returning postfixes. Capture at a later operation or coordinate with the other patch author.</p>
+<h2 id="a-field-expression-may-take-an-address">A field expression may take an address</h2>
+<pre><code class="lang-csharp">class Counter
+{
+    public int count;
+    public int Read() =&gt; count;
+    public string Text() =&gt; count.ToString();
+}
+</code></pre>
+<p><code>Read</code> loads the value. <code>Text</code> may take its address. <code>FieldRead</code> selects <code>ldfld</code> and <code>ldsfld</code>, not <code>ldflda</code> or <code>ldsflda</code>.</p>
+<p>Struct instance fields are unsupported because their receivers can be values or addresses. Struct static fields and supported method calls work. Property targets select accessor calls, not the fields inside them.</p>
+<h2 id="be-careful-with-indices">Be careful with indices</h2>
+<p><code>Positions = new[] { 2 }</code> selects the second match, not instruction number two. <code>-1</code> selects the last match. This applies to every operation kind.</p>
+<p>Positions count after ordinary transpilers, before any Infix code. Other Infixes, inlined callbacks and finalizer helpers do not shift them.</p>
+<pre><code class="lang-csharp">Total(); // Match 1
+Total(); // Match 2: Positions = new[] { 2 } selects this call
+Total(); // Match 3
+</code></pre>
+<p>The first Infix can skip its call or call <code>Total</code> again. The second still selects the original second call. Rebuilds start from the original method and rerun its transpilers.</p>
+<p>Source or transpiler updates can change what a position means without causing an error. Review targets after updates. If surrounding instructions identify your match, use a transpiler with <code>CodeMatcher</code> and explicit checks.</p>
+<h2 id="literal-positions-count-instructions">Literal positions count instructions</h2>
+<pre><code class="lang-csharp">for (var i = 0; i &lt; 10; i++)
+    Console.WriteLine(&quot;marker&quot;);
+</code></pre>
+<p>This is one load, repeated ten times. Position <code>1</code> selects every execution; position <code>2</code> is not the second iteration.</p>
+<p>Literals match compiled values after transpilers. <code>2 * 3</code> can become one <code>6</code> load, and common values like <code>0</code> may occur elsewhere. Prefer distinctive values; the <a href="#be-careful-with-indices">position caveats</a> still apply.</p>
+<h2 id="generic-observation-and-replacement-differ">Generic observation and replacement differ</h2>
+<p><code>Container&lt;int&gt;.Use</code> selects that exact construction. The member on <code>Container&lt;&gt;</code> selects all constructions. Your patch signature must fit every match.</p>
+<pre><code class="lang-csharp">static void Observe(object __result) =&gt; Console.WriteLine(__result);
+static int Transform(int result) =&gt; result + 1;
+</code></pre>
+<p>The observer accepts integer and string results; the transformer requires integers. Returning <code>object</code> is not universal. A returning postfix's return type and first parameter must exactly match the result type. Unboxable values such as <code>Span&lt;int&gt;</code> need typed observations.</p>
+<h2 id="inner-arguments-are-already-evaluated">Inner arguments are already evaluated</h2>
+<p>For <code>Inner(value)</code>, an Infix's <code>ref int value</code> changes the captured argument, not the outer variable. If <code>Inner</code> itself takes <code>ref int value</code>, the patch and callee write the original storage.</p>
+<p><code>[HarmonyOuter]</code> selects the containing method's scope, with no fallback for missing names. To bind a real argument named <code>__result</code>:</p>
+<pre><code class="lang-csharp">static void Before(
+    [HarmonyArgument(&quot;__result&quot;, ArgumentMode.Original)] int innerValue,
+    [HarmonyOuter, HarmonyArgument(&quot;__result&quot;, ArgumentMode.Original)] int outerValue)
+    =&gt; Console.WriteLine(innerValue + outerValue);
+</code></pre>
+<p>Names are case-sensitive. Without <code>ArgumentMode.Original</code>, Harmony's special injection names still apply.</p>
+<h2 id="an-argument-array-is-writable-without-ref">An argument array is writable without <code>ref</code></h2>
+<pre><code class="lang-csharp">static void Edit(object[] __args) =&gt; __args[0] = 7;
+static void Observe(int value, bool __runOriginal)
+    =&gt; Console.WriteLine($&quot;{value}: {__runOriginal}&quot;);
+</code></pre>
+<p><code>Edit</code> writes back the first argument. Use typed values to observe arguments, though passing a mutable object by value still allows mutation.</p>
+<p>After a prefix returns false, Harmony skips later prefixes according to their signatures. <code>Observe</code> is exempt. A void return alone is not enough; argument arrays and writable parameters affect that classification.</p>
+<h2 id="outer-captures-keep-the-last-value-in-that-invocation">Outer captures keep the last value in that invocation</h2>
+<p>An outer local such as <code>__var_builder</code> starts at its default each invocation. Each write replaces it. A loop iteration that skips the writer can leave the previous iteration's value, so reset or check captures as needed.</p>
+<p>Inner <code>__state</code> resets on each operation. Recursive and concurrent invocations have separate locals. In iterator/async <code>MoveNext</code>, outer locals last one invocation, not across suspension.</p>
+<h2 id="persistent-state-follows-one-generated-execution">Persistent state follows one generated execution</h2>
+<p><code>[HarmonyOuter, HarmonyArgument(&quot;name&quot;, ArgumentMode.Persistent)]</code> explicitly extends a named slot across <code>await</code> and <code>yield</code>. It requires an Infix and a heap-storable value: ordinary objects and structs work; pointers, byref-like structs such as <code>Span&lt;T&gt;</code>, and open generic storage do not. <code>ref int</code> is supported because it refers to the stored <code>int</code>, rather than storing a managed reference.</p>
+<p>Persistence follows the recognized generated <code>MoveNext</code> body. It does not automatically follow calls into lambdas, local functions, or separate iterator cleanup helpers. For an ordinary method, its lifetime is one invocation. Installing a patch after an execution has started begins with default state at its next patched body entry; removing and reinstalling persistence starts fresh. A compatible rebuild preserves suspended state. If a replacement patch changes a slot's type, that slot starts at the new type's default on its next binding; an already executing wrapper can finish with its original typed storage.</p>
+<p>Async persistence adapts the public <code>AwaitOnCompleted</code> / <code>AwaitUnsafeOnCompleted</code> and awaiter completion interfaces. It preserves the original builder, state-machine type, task and awaiter's result handling. Standard Task, ValueTask, async void, pooled ValueTask builders, and notification-only awaiters have focused coverage. A custom builder must honor those public contracts without depending on a specific concrete awaiter type. Extra generic constraints are rejected during installation; arbitrary custom behavior or a future compiler using a different protocol is outside this guarantee. Infixes on the builder's suspension or completion bookkeeping cannot be combined with persistent state; select the work surrounding those operations instead.</p>
+<p>Iterators must be reference types. Synchronous iterator disposal gets an ordinary Harmony finalizer, visible under the internal owner <code>Harmony.Infix.PersistentState</code>; the finalizer is removed with the body's last persistent patch. Do not remove that cleanup owner independently. Async iterators must expose recognizable <code>AsyncIteratorMethodBuilder.Complete</code> calls, including their disposal path; an unrecognized completion layout is rejected.</p>
+<p>Completion releases Harmony's references; stored objects are not automatically disposed. A still-suspended execution keeps its values. Cancellation only releases them when the method actually observes it and completes. An abandoned enumerator can be collected, even if a slot refers back to it, but a retained, undisposed enumerator intentionally keeps its state. This feature adds allocations and continuation indirection, so keep ordinary <code>__var_name</code> locals for values that need only one body invocation.</p>
+<p>On the original CLR 2.0 used by .NET 3.5, the weak-table backport cannot collect a cycle from a saved value back to its enumerator. Complete or explicitly dispose those enumerators, or remove their persistent patch. A .NET 3.5 Harmony binary hosted by CLR 4 or modern Mono uses that runtime's native weak table and has the normal collection behavior. Use the corresponding CoreCLR asset on .NET Core / .NET 5 and later; this feature does not make the net35 DLL a substitute for it.</p>
+<p>Installed persistent state requires envelope version 4. Earlier Infix readers reject it before rebuilding; older engines also reject the declaration marker. This explicit binding mode avoids a new attribute property that an older reader could silently ignore. Existing loader and serialized cross-engine update boundaries still apply.</p>
+<h2 id="automatic-body-selection-is-opt-in">Automatic body selection is opt-in</h2>
+<p><code>[HarmonyInfix(typeof(Helper), &quot;Decide&quot;, OuterBody = InfixOuterBody.Auto)]</code> searches a supported iterator or async method's generated <code>MoveNext</code>; other methods keep their declared bodies. Manual registration uses <code>HarmonyMethod.infixOuterBody</code>. The default is <code>Declared</code>.</p>
+<p>Ordinary patches still target the supplied method. Use separate processors if the bodies differ. Resolve <code>MoveNext</code> with <code>AccessTools.StateMachineMoveNext(source)</code> for <code>GetPatchInfo</code> or direct unpatching. These calls do not redirect from the source factory. The installing processor remembers its target; <code>UnpatchAll(owner)</code> includes generated bodies.</p>
+<h2 id="construction-has-a-result-not-an-incoming-object">Construction has a result, not an incoming object</h2>
+<p>In <code>new Widget(NextId())</code>, <code>NextId()</code> runs before the Infix. Skipping prevents allocation and constructor effects, not argument evaluation. The new object is <code>__result</code>; there is no incoming <code>__instance</code>. Supply a replacement if later code needs one. Base-constructor initialization through <code>call</code> is not a <code>newobj</code> target.</p>
+<h2 id="virtual-dispatch-and-exceptions-still-matter">Virtual dispatch and exceptions still matter</h2>
+<p>If the instruction names <code>Base.Draw</code>, select that method even when the receiver is a <code>Derived</code>. The call still dispatches to its runtime override and runs that method's Harmony patches.</p>
+<p>Postfixes run after normal or skipped operations. An exception stops remaining postfixes. Finalizers cover the prefix/operation/postfix pipeline and can preserve, replace or suppress <code>__exception</code>. They also run on success, with a null exception. Suppression does not resume postfixes; supply <code>__result</code> if the operation produced none.</p>
+<p>Receiver and argument evaluation happen before this protection. Outer handlers and finalizers still apply, but do not receive exceptions already caught or suppressed.</p>
+<h3 id="finalizers-can-run-again-and-see-an-earlier-result">Finalizers can run again and see an earlier result</h3>
+<p>This throws on success, then runs again with the unsuppressed exception:</p>
+<pre><code class="lang-csharp">static void Finish(Exception __exception)
+{
+    if (__exception is null) throw new InvalidOperationException();
+}
+</code></pre>
+<p>Returning postfixes commit only when their whole phase succeeds. If the operation returns <code>1</code>, postfix A returns <code>2</code>, and B throws, a suppressing finalizer sees <code>__result == 1</code>. Execution resumes with <code>1</code> unless the finalizer changes it.</p>
+<h2 id="indirect-call-signatures-use-a-historical-convention-mapping">Indirect-call signatures use a historical convention mapping</h2>
+<p><code>InlineSignature</code> describes a <code>calli</code> function-pointer call. <code>PopCount</code> includes the pointer and any implicit receiver. <code>PushCount</code> is zero for void, otherwise one.</p>
+<p>Its historical encoding uses <code>CallingConvention.Winapi</code> for the default <strong>managed</strong> convention, not the platform's default unmanaged convention. Preserve a parsed operand's convention. For new unmanaged calls, specify the actual convention, such as <code>Cdecl</code> or <code>StdCall</code>; do not copy <code>Winapi</code> from native interop.</p>
+<p>This does not make <code>calli</code> an Infix target or remove function-pointer import restrictions.</p>
+<h2 id="assemblies-that-look-identical-to-the-loader">Assemblies that look identical to the loader</h2>
+<p>Two different <code>Patch.dll</code> files can advertise the same name and version. Direct generated calls can retain exact method objects, but generated assemblies may need names to resolve dependencies. Exception-handling wrappers can use that path.</p>
+<p>If a wrapper would bind the wrong copy, or needs both indistinguishable identities, installation fails and the previous patch stays active. Framework/Mono rejects competing loaded identities for these wrappers. Give independently loaded builds distinct names or versions.</p>
+<p>Loading the same target/patch binary twice, or losing its assembly, can make a saved Infix record unrebuildable. You can still inspect and remove its owner through the normal APIs. Harmony validates surviving records instead of guessing. Malformed stored data remains an error.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-infix-limits.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

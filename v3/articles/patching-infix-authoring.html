@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Infix and instruction edits </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Infix and instruction edits ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="infix-and-instruction-edits">Infix and instruction edits</h1>
+
+<p>Use an Infix for prefixes, postfixes or finalizers around a selected operation. To insert, replace or remove instruction patterns, use a <a href="patching-transpiler.html">transpiler</a> with <a href="patching-transpiler-matcher.html">CodeMatcher</a>.</p>
+<p>Transpilers run in their usual order. Infix selects from their finished output, before inserting its own code. Even <code>Priority.Last</code> transpilers run before Infix.</p>
+<p>These examples are compiled and tested. <code>Probe.Tick()</code>, <code>Before()</code>, <code>After()</code>, <code>Replacement()</code>, <code>Enter()</code> and <code>Exit()</code> are static, take no arguments and return void. Each records its name. <code>Recipes.Method(name)</code> finds a <code>Probe</code> method; <code>Recipes.Call(name)</code> creates its call instruction.</p>
+<h2 id="scope-of-these-examples">Scope of these examples</h2>
+<p>These recipes reject exception regions and instruction prefixes such as <code>constrained.</code> and <code>tail.</code>:</p>
+<pre><code class="lang-csharp" name="scope">static List&lt;CodeInstruction&gt; SimpleBody(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    var codes = instructions.Select(instruction =&gt; new CodeInstruction(instruction)).ToList();
+    if (codes.Any(instruction =&gt; instruction.blocks.Count != 0 || instruction.opcode.OpCodeType == OpCodeType.Prefix))
+        throw new InvalidOperationException(&quot;These examples require a body without exception regions or instruction prefixes.&quot;);
+    return codes;
+}
+</code></pre>
+<p>Handling those bodies requires preserving exception regions, branch destinations and prefixes. Moving every exception marker onto an inserted instruction is not enough. Use Infix for supported operations if you want Harmony to handle this.</p>
+<h2 id="insert-before-and-after-a-match">Insert before and after a match</h2>
+<p>Surround the first <code>Tick</code> call:</p>
+<pre><code class="lang-csharp" name="around">public static IEnumerable&lt;CodeInstruction&gt; AroundFirst(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    var matcher = new CodeMatcher(SimpleBody(instructions))
+        .MatchStartForward(CodeMatch.Calls(Method(nameof(Probe.Tick))))
+        .ThrowIfInvalid(&quot;Expected a Tick call&quot;);
+    var before = Call(nameof(Probe.Before)).MoveLabelsFrom(matcher.Instruction);
+    matcher.InsertAndAdvance(before).InsertAfter(Call(nameof(Probe.After)));
+    return matcher.InstructionEnumeration();
+}
+</code></pre>
+<p>Moving the call's labels to <code>Before</code> makes incoming branches run it too. <code>After</code> runs only on normal return. Branches to the next instruction still bypass the pair. The inserted void, zero-argument calls leave existing stack values alone.</p>
+<h2 id="replace-or-remove-an-operation">Replace or remove an operation</h2>
+<p>Replace the first call with one that has the same stack behavior:</p>
+<pre><code class="lang-csharp" name="replace">public static IEnumerable&lt;CodeInstruction&gt; ReplaceFirst(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    return new CodeMatcher(SimpleBody(instructions))
+        .MatchStartForward(CodeMatch.Calls(Method(nameof(Probe.Tick))))
+        .ThrowIfInvalid(&quot;Expected a Tick call&quot;)
+        .Set(OpCodes.Call, Method(nameof(Probe.Replacement)))
+        .InstructionEnumeration();
+}
+</code></pre>
+<p><code>Set</code> replaces the opcode and operand but keeps labels. To remove this call, use <code>nop</code>:</p>
+<pre><code class="lang-csharp" name="delete">public static IEnumerable&lt;CodeInstruction&gt; DeleteFirst(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    return new CodeMatcher(SimpleBody(instructions))
+        .MatchStartForward(CodeMatch.Calls(Method(nameof(Probe.Tick))))
+        .ThrowIfInvalid(&quot;Expected a Tick call&quot;)
+        .Set(OpCodes.Nop, null)
+        .InstructionEnumeration();
+}
+</code></pre>
+<p>This works for the void, zero-argument <code>Tick()</code>. Other calls need a replacement that accounts for their arguments and result. The <code>nop</code> keeps the old branch destination.</p>
+<h2 id="require-enough-matches">Require enough matches</h2>
+<p>Reject fewer than two <code>Tick</code> instructions, then replace every match:</p>
+<pre><code class="lang-csharp" name="minimum">public static IEnumerable&lt;CodeInstruction&gt; RequireTwoCalls(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    var codes = SimpleBody(instructions);
+    var target = Method(nameof(Probe.Tick));
+    if (codes.Count(instruction =&gt; instruction.Calls(target)) &lt; 2)
+        throw new InvalidOperationException(&quot;Expected at least two Tick calls&quot;);
+    var matcher = new CodeMatcher(codes);
+    while (matcher.MatchStartForward(CodeMatch.Calls(target)).IsValid)
+        matcher.Set(OpCodes.Call, Method(nameof(Probe.Replacement))).Advance(1);
+    return matcher.InstructionEnumeration();
+}
+</code></pre>
+<p>This counts instructions at this transpiler's turn, not final Infix matches. A call in a loop counts once; later transpilers can change the body. Enough matches does not prove they still mean the same thing after an update.</p>
+<h2 id="process-at-most-n-matches">Process at most N matches</h2>
+<p>Change the first two matches and leave the rest:</p>
+<pre><code class="lang-csharp" name="first">public static IEnumerable&lt;CodeInstruction&gt; FirstTwoCalls(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    var matcher = new CodeMatcher(SimpleBody(instructions));
+    for (var count = 0; count &lt; 2 &amp;&amp; matcher.MatchStartForward(CodeMatch.Calls(Method(nameof(Probe.Tick)))).IsValid; count++)
+        matcher.Set(OpCodes.Call, Method(nameof(Probe.Replacement))).Advance(1);
+    return matcher.InstructionEnumeration();
+}
+</code></pre>
+<p>Zero or one match is accepted. To <em>reject</em> more than two, count all matches before changing anything.</p>
+<h2 id="insert-at-entry-and-normal-exits">Insert at entry and normal exits</h2>
+<p>Usually, use an ordinary prefix/postfix for entry and exit. A transpiler can do it too:</p>
+<pre><code class="lang-csharp" name="entry-exit">public static IEnumerable&lt;CodeInstruction&gt; EntryAndExit(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    var codes = SimpleBody(instructions);
+    var result = new List&lt;CodeInstruction&gt; { Call(nameof(Probe.Enter)) };
+    foreach (var instruction in codes)
+    {
+        if (instruction.opcode == OpCodes.Ret)
+            result.Add(Call(nameof(Probe.Exit)).MoveLabelsFrom(instruction));
+        result.Add(instruction);
+    }
+    return result;
+}
+</code></pre>
+<p>The entry call leaves labels on the original first instruction, so loops back to it do not repeat entry logic. Return labels move to the exit call so incoming branches run it. The void exit call preserves any return value on the stack.</p>
+<p>This covers normal returns only, not exceptions or exception handlers. Use an ordinary finalizer for exception completion.</p>
+<h2 id="install-and-remove-a-runtime-group">Install and remove a runtime group</h2>
+<p>Give each independently removable group its own Harmony owner ID:</p>
+<pre><code class="lang-csharp" name="group">public const string GroupId = &quot;example.metrics&quot;;
+public static void InstallGroup()
+{
+    var harmony = new Harmony(GroupId);
+    foreach (var name in new[] { nameof(Probe.OneCall), nameof(Probe.ThreeCalls) })
+    {
+        var prefix = new HarmonyMethod(Method(nameof(Probe.Group)))
+        {
+            innerMethod = new InnerMethod(Method(nameof(Probe.Tick)))
+        };
+        harmony.CreateProcessor(Method(name)).AddInnerPrefix(prefix).Patch();
+    }
+}
+public static void RemoveGroup() =&gt; new Harmony(GroupId).UnpatchAll(GroupId);
+</code></pre>
+<p><code>RemoveGroup</code> removes every patch with that owner, even on other methods, and leaves other owners alone. Repeated installation adds registrations. It does not toggle or replace the group. Updates are per method; a later failure does not undo earlier installations.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-infix-authoring.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

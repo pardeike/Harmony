@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Annotations </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Annotations ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="annotations">Annotations</h1>
+
+<p>Annotations describe the original method, your patch methods, and settings such as priority. Usually, each original gets a &quot;patch class&quot; marked with <code>[HarmonyPatch]</code>.</p>
+<p><code>PatchAll()</code> finds and applies every annotated patch class in an assembly. To apply selected groups, mark classes with <code>[HarmonyPatchCategory]</code> and call <code>PatchCategory()</code>. <code>PatchAllUncategorized()</code> applies classes without a category. <code>PatchAll()</code> ignores categories.</p>
+<p>A typical patch consists of a class with annotations that looks like this:</p>
+<pre><code class="lang-csharp" name="example">using HarmonyLib;
+
+[HarmonyPatch(typeof(SomeTypeHere))]
+[HarmonyPatch(&quot;SomeMethodName&quot;)] // if possible use nameof() here
+class MyPatches
+{
+    static void Postfix(/*...*/)
+    {
+        //...
+    }
+}
+</code></pre>
+<p>The class annotations identify the original. Inside it, define <strong>Prefix</strong>, <strong>Postfix</strong>, <strong>Finalizer</strong>, or <strong>Transpiler</strong> methods. Harmony recognizes these names; use method annotations if you prefer other names.</p>
+<h3 id="patch-classes">Patch classes</h3>
+<p><strong>Patch classes</strong> can be public, private, static or not. <strong>Patch methods</strong> can be public or private but <strong>must be static</strong>. Ordinary patches can also use a static <a href="patching.html#patch-methods">factory method</a> that returns a <code>DynamicMethod</code>; Infix patches cannot.</p>
+<h5 id="limitations">Limitations</h5>
+<p>Declaration order is not execution order. Do not rely on the order of methods or annotations, or on conflicting annotations overwriting each other. Use <a href="priorities.html">priorities</a> to order patches.</p>
+<h3 id="annotation-alternatives">Annotation alternatives</h3>
+<p>Mark a patch class with at least one <code>[HarmonyPatch]</code> annotation.</p>
+<h4 id="basic-annotations">Basic annotations</h4>
+<p>Basic annotations need to be combined to define all aspects of your original method:</p>
+<p><strong>Empty annotation</strong></p>
+<pre><code class="lang-csharp">// The empty annotation marks the class as a patch class. Harmony will consider the class and its methods.
+[HarmonyPatch]
+</code></pre>
+<p><strong>Class/Type annotation</strong></p>
+<pre><code class="lang-csharp">// Use the type annotation to define the class/type that contains your original method/property/constructor
+[HarmonyPatch(Type declaringType)]
+</code></pre>
+<p><strong>Name annotation</strong></p>
+<pre><code class="lang-csharp">// Use the string annotation to define the name of the method or property
+[HarmonyPatch(string methodName)]
+
+// or for methods with overloads add an optional argument type array:
+[HarmonyPatch(string methodName, params Type[] argumentTypes)]
+</code></pre>
+<p><strong>Method Type annotation</strong></p>
+<pre><code class="lang-csharp">// Defines the type (Method, Getter, Setter, Constructor) to be patched
+[HarmonyPatch(MethodType methodType)]
+</code></pre>
+<p><strong>Arguments annotation</strong></p>
+<pre><code class="lang-csharp">// For overloads this defines the argument types of the method/constructor
+[HarmonyPatch(Type[] argumentTypes)]
+
+// Since annotations cannot contain code and you cannot use .MakeByRefType(), the second
+// form allows for a ArgumentType array defining the type of each argument type
+// Normal, Ref, Out or Pointer. Both arrays need to have the same number of elements:
+[HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)]
+</code></pre>
+<p><strong>Category annotation</strong></p>
+<pre><code class="lang-csharp">// Use with Harmony.PatchCategory()
+[HarmonyPatchCategory(string category)]
+</code></pre>
+<h4 id="combination-annotations">Combination annotations</h4>
+<p>These overloads combine the basic annotations more compactly:</p>
+<pre><code class="lang-csharp">[HarmonyPatch(Type, string)]
+[HarmonyPatch(Type declaringType, Type[] argumentTypes)]
+[HarmonyPatch(Type declaringType, string methodName)]
+[HarmonyPatch(Type declaringType, string methodName, params Type[] argumentTypes)]
+[HarmonyPatch(Type declaringType, string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+[HarmonyPatch(Type declaringType, MethodType methodType)]
+[HarmonyPatch(Type declaringType, MethodType methodType, params Type[] argumentTypes)]
+[HarmonyPatch(Type declaringType, MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+[HarmonyPatch(string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+[HarmonyPatch(string methodName, MethodType methodType)]
+[HarmonyPatch(MethodType methodType, params Type[] argumentTypes)]
+[HarmonyPatch(MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)]
+</code></pre>
+<h4 id="examples">Examples</h4>
+<p>To patch method <strong>String.ToUpper()</strong> :</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(String))]
+[HarmonyPatch(&quot;ToUpper&quot;)]
+</code></pre>
+<p>To patch the setter for a property <strong>Account</strong> in class <strong>MyClass</strong> :</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(MyClass))]
+[HarmonyPatch(&quot;Account&quot;, MethodType.Setter)]
+</code></pre>
+<p>To patch method <strong>String.IndexOf(char, int)</strong> :</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(String))]
+[HarmonyPatch(&quot;IndexOf&quot;)]
+[HarmonyPatch(new Type[] { typeof(char), typeof(int) })]
+
+//or
+
+[HarmonyPatch(typeof(String), &quot;IndexOf&quot;, new Type[] { typeof(char), typeof(int) })]
+</code></pre>
+<h4 id="constructors">Constructors</h4>
+<p>To patch constructors, you use the annotations that contain a <code>MethodType</code> argument and set it to <code>MethodType.Constructor</code>:</p>
+<pre><code class="lang-csharp">// default constructor:
+[HarmonyPatch(typeof(TestClass), MethodType.Constructor)]
+// or with an overload:
+[HarmonyPatch(typeof(TestClass), MethodType.Constructor, new Type[] { typeof(int) })]
+// same with multiple rows:
+[HarmonyPatch(typeof(TestClass))]
+[HarmonyPatch(MethodType.Constructor)]
+[HarmonyPatch(new Type[] { typeof(int) })]
+</code></pre>
+<h4 id="getterssetters">Getters/Setters</h4>
+<p>To patch a property you use the annotations that contain a <code>MethodType</code> argument and set it to <code>MethodType.Getter</code> or <code>MethodType.Setter</code>:</p>
+<pre><code class="lang-csharp">// in one row:
+[HarmonyPatch(typeof(TestClass), &quot;GameInstance&quot;, MethodType.Getter)]
+// in two rows:
+[HarmonyPatch(typeof(TestClass))]
+[HarmonyPatch(&quot;GameInstance&quot;, MethodType.Getter)]
+</code></pre>
+<h4 id="generic-methods">Generic Methods</h4>
+<p>Ordinary patches need a constructed generic target, not an open definition. For example, target <code>TestClass&lt;string&gt;.AddItem</code> rather than <code>TestClass&lt;T&gt;.AddItem</code>. See <a href="patching-edgecases.html#generics">generic sharing limits</a>.</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(TestClass&lt;string&gt;), &quot;AddItem&quot;)]
+</code></pre>
+<h4 id="patching-multiple-methods">Patching multiple methods</h4>
+<p>To simplify multiple patches while still using annotations, you can combine annotations with <code>TargetMethod()</code> and <code>TargetMethods()</code>:</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch] // make sure Harmony inspects the class
+class MyPatches
+{
+    static IEnumerable&lt;MethodBase&gt; TargetMethods()
+    {
+        return AccessTools.GetTypesFromAssembly(someAssembly)
+            .SelectMany(type =&gt; type.GetMethods())
+            .Where(method =&gt; method.ReturnType != typeof(void) &amp;&amp; method.Name.StartsWith(&quot;Player&quot;))
+            .Cast&lt;MethodBase&gt;();
+    }
+
+    // prefix all methods in someAssembly with a non-void return type and beginning with &quot;Player&quot;
+    static void Prefix(object[] __args, MethodBase __originalMethod)
+    {
+        // use dynamic code to handle all method calls
+        var parameters = __originalMethod.GetParameters();
+        FileLog.Log($&quot;Method {__originalMethod.FullDescription()}:&quot;);
+        for (var i = 0; i &lt; __args.Length; i++)
+            FileLog.Log($&quot;{parameters[i].Name} of type {parameters[i].ParameterType} is {__args[i]}&quot;);
+    }
+}
+</code></pre><h3 id="combining-annotations">Combining annotations</h3>
+<p>The combination of those annotations defines the target method. Annotations are <strong>inherited</strong> from class to method so you can use <code>[HarmonyPatch(Type)]</code> on the class and <code>[HarmonyPatch(String)]</code> on one of its methods to combine both.</p>
+<pre><code class="lang-csharp" name="example">using HarmonyLib;
+
+[HarmonyPatch(typeof(SomeType))]
+class MyPatches1
+{
+    [HarmonyPostfix]
+    [HarmonyPatch(&quot;SomeMethod1&quot;)]
+    static void Postfix1() { }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(&quot;SomeMethod2&quot;)]
+    static void Postfix2() { }
+}
+
+[HarmonyPatch(typeof(TypeA))]
+class MyPatches2
+{
+    [HarmonyPrefix]
+    [HarmonyPatch(&quot;SomeMethod1&quot;)]
+    static void Prefix1() { }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(&quot;SomeMethod2&quot;)]
+    static void Prefix2() { }
+
+    [HarmonyPatch(typeof(TypeB), &quot;SomeMethod1&quot;)]
+    static void Postfix() { }
+}
+
+[HarmonyPatch]
+class MyPatches3
+{
+    [HarmonyPatch(typeof(TypeA), &quot;SomeMethod1&quot;)]
+    static void Prefix() { }
+
+    [HarmonyPatch(typeof(TypeB), &quot;SomeMethod2&quot;)]
+    static void Postfix() { }
+
+    [HarmonyPatch(typeof(TypeC), &quot;SomeMethod3&quot;)]
+    static void Finalizer() { }
+}
+</code></pre>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/annotations.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

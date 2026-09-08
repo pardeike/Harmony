@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Patching </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Patching ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="reverse-patch">Reverse Patch</h2>
+<p>A reverse patch copies the original, or part of it, into your own callable stub. Typical uses are:</p>
+<ul>
+<li>easily call private methods</li>
+<li>no reflection, no delegate, native performance</li>
+<li>you can cherry-pick part of the original method by using a transpiler</li>
+<li>can give you the unmodified original</li>
+<li>will freeze the implementation to the time you reverse patch</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> A reverse patch is a frozen copy. Use a delegate or reflection if you want calls to follow later patches instead.</p>
+<h3 id="defining-a-reverse-patch">Defining a reverse patch</h3>
+<p>Mark your stub with <code>[HarmonyReversePatch]</code> and identify the original with patch annotations:</p>
+<p>Match the original's signature. A static stub for an instance method takes that instance as its first argument.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> An instance stub's <code>this</code> must have the type expected by the copied IL. An unrelated patch-class instance will not work.</p>
+<pre><code class="lang-csharp" name="example">private class OriginalCode
+{
+    private void Test(int counter, string name)
+    {
+        // ...
+    }
+}
+
+[HarmonyPatch]
+public class Patch
+{
+    [HarmonyReversePatch]
+    [HarmonyPatch(typeof(OriginalCode), &quot;Test&quot;)]
+    public static void MyTest(object instance, int counter, string name) =&gt;
+        // its a stub so it has no initial content
+        throw new NotImplementedException(&quot;It's a stub&quot;);
+}
+
+class Main
+{
+    void Test() =&gt;
+        // here we call OriginalCode.Test()
+        Patch.MyTest(originalInstance, 100, &quot;hello&quot;);
+}
+</code></pre><h3 id="types-of-reverse-patches">Types of reverse patches</h3>
+<p>The HarmonyReversePatch attribute comes in two alternatives:</p>
+<pre><code class="lang-cs">[HarmonyReversePatch(HarmonyReversePatchType.Original)]
+[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+</code></pre>
+<p>The default is <code>Original</code> so you can simply write <code>[HarmonyReversePatch]</code>.</p>
+<p><strong>Original</strong> gives you the unmodified original method as defined in the dll. No patches or transpilers have touched it.</p>
+<p><strong>Snapshot</strong> includes the ordinary transpilers registered at that moment, but no prefixes, postfixes, finalizers, or Infixes. Later patches do not update your stub.</p>
+<h3 id="changing-the-content-of-the-original">Changing the content of the original</h3>
+<p>A <strong>reverse patch transpiler</strong> edits the IL copied into your stub. You can use it to extract just the part you need.</p>
+<p><strong>Example</strong>
+Suppose a long method calculates a checksum. Copy it to a <code>Checksum(...)</code> stub and use a transpiler to remove the unrelated code.</p>
+<p>The remaining IL must match the stub's inputs and output. If it consumes a string and leaves an integer, the stub could be <code>static int Checksum(string txt)</code>.</p>
+<p>To define a reverse patch transpiler, you simply put a transpiler <strong>into</strong> your stub:</p>
+<pre><code class="lang-csharp" name="example">private class OriginalClass
+{
+    private string SpecialCalculation(string original, int n)
+    {
+        var parts = original.Split('-');
+        var str = string.Join(&quot;&quot;, parts) + n;
+        return str + &quot;Prolog&quot;;
+    }
+}
+
+[HarmonyPatch]
+public class Patch
+{
+    // When reverse patched, StringOperation will contain all the
+    // code from the original including the Join() but not the +n
+    //
+    // Basically
+    // var parts = original.Split('-');
+    // return string.Join(&quot;&quot;, parts)
+    //
+    [HarmonyReversePatch]
+    [HarmonyPatch(typeof(OriginalClass), &quot;SpecialCalculation&quot;)]
+    public static string StringOperation(string original)
+    {
+        // This inner transpiler will be applied to the original and
+        // the result will replace this method
+        //
+        // That will allow this method to have a different signature
+        // than the original and it must match the transpiled result
+        //
+        IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+        {
+            var list = Transpilers.Manipulator(instructions,
+                item =&gt; item.opcode == OpCodes.Ldarg_1,
+                item =&gt; item.opcode = OpCodes.Ldarg_0
+            ).ToList();
+            var mJoin = SymbolExtensions.GetMethodInfo(() =&gt; string.Join(null, null));
+            var idx = list.FindIndex(item =&gt; item.opcode == OpCodes.Call &amp;&amp; item.operand as MethodInfo == mJoin);
+            list.RemoveRange(idx + 1, list.Count - (idx + 1));
+            return list.AsEnumerable();
+        }
+
+        // make compiler happy
+        _ = Transpiler(null);
+        return original;
+    }
+}
+</code></pre>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/reverse-patching.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

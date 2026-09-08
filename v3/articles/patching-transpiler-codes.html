@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Patching </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Patching ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="codeinstruction">CodeInstruction</h2>
+<p>The workhorse of a transpiler is the type <a href="../api/HarmonyLib.CodeInstruction.html">CodeInstruction</a>.</p>
+<p><code>CodeInstruction</code> wraps the .NET <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit">Emit API</a> so transpilers can share and edit instructions. Some details differ: jumps use labels, for example, not numeric offsets such as &quot;four instructions forward&quot;.</p>
+<p>A transpiler receives and returns <code>IEnumerable&lt;CodeInstruction&gt;</code>. An optional <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator">ILGenerator</a> lets you define labels and local variables.</p>
+<p>Most arguments from <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.emit">Emit()</a> are used in the same way:</p>
+<ul>
+<li>Emit takes an <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcode">OpCode</a> and so does CodeInstruction</li>
+<li>Operands are mostly the same:
+<ul>
+<li>Type</li>
+<li>FieldInfo,</li>
+<li>MethodInfo,</li>
+<li>ConstructorInfo,</li>
+<li>Int64/Int32/Int16/Single/Double/String/Byte</li>
+</ul>
+</li>
+</ul>
+<p>Some things though will be restricted:</p>
+<ul>
+<li>Operands of jumps cannot be numeric, use <code>Label</code> instead</li>
+<li><code>SignatureHelper</code> support is experimental at best</li>
+<li>You should avoid using indices when referring to local variables</li>
+</ul>
+<p>Do <strong>not</strong> call <code>ILGenerator.Emit()</code>: return instructions and let Harmony emit them. Use the generator to declare locals and labels; describe <a href="#trycatch-boundaries">exception boundaries</a> on the instructions themselves.</p>
+<p>Prefer reusing existing operands for labels and locals. Find a distinctive instruction and take its operand instead of hard-coding an index.</p>
+<h4 id="indirect-calls">Indirect calls</h4>
+<p>For a <code>calli</code> instruction read from a method body, Harmony supplies an <a href="../api/HarmonyLib.InlineSignature.html">InlineSignature</a> operand. Transpilers can inspect its parameter types, return type, calling convention, and instance flags without accessing Harmony internals.</p>
+<p>Use its <code>PopCount</code> and <code>PushCount</code> properties when calculating evaluation-stack depth:</p>
+<pre><code class="lang-csharp">if (instruction.opcode == OpCodes.Calli &amp;&amp; instruction.operand is InlineSignature signature)
+{
+    stackDepth -= signature.PopCount;
+    stackDepth += signature.PushCount;
+}
+</code></pre>
+<p><code>PopCount</code> includes the function pointer, every listed parameter, and an implicit instance when <code>HasThis</code> is true. When <code>ExplicitThis</code> is also true, the first listed parameter already represents that instance, so it is not counted twice. <code>PushCount</code> is zero for <code>void</code> and one for any returned value. These are counts of evaluation-stack values, not bytes or native calling-convention registers. See the <a href="https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.calli">calli stack behavior</a> and <a href="https://learn.microsoft.com/en-us/dotnet/api/system.reflection.callingconventions">instance-signature flags</a>.</p>
+<p>Parameter and return entries are <code>Type</code> objects, nested <code>InlineSignature</code> objects for function pointers, or <code>InlineSignature.ModifierType</code> objects for optional/required type modifiers. Modifiers do not change the stack count; returning a function pointer pushes one value even if that function itself returns <code>void</code>. The counts follow changes to the mutable signature.</p>
+<p>The existing calling-convention representation uses <code>CallingConvention.Winapi</code> for the default managed convention; its other named values denote their corresponding unmanaged conventions. Stack counting does not depend on this encoding. The computed counts describe a valid signature; they do not validate whether the runtime can emit an arbitrary signature assembled by a transpiler.</p>
+<p>Making this model public does not expand the reader's existing signature support. Generic type/method parameter entries, varargs sentinels, and pointer/by-reference/array wrappers around a nested function-pointer signature are not currently supported by the reader.</p>
+<h4 id="local-variables">Local variables</h4>
+<p>Existing local operands can be numeric indices or <code>LocalBuilder</code> objects. Handle both. To add a local, call <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.declarelocal">ILGenerator.DeclareLocal</a>; to reuse one, copy its existing operand.</p>
+<h4 id="labels">Labels</h4>
+<p>Jumps use a <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.definelabel">Label</a> operand. The destination instruction holds that label in its <code>labels</code> list. To add a jump, call <code>ILGenerator.DefineLabel()</code>, attach the label to the destination, and use it as the jump's operand.</p>
+<h4 id="trycatch-boundaries">Try/catch boundaries</h4>
+<p>An instruction's <code>blocks</code> list marks exception boundaries, including filters. Harmony builds the exception metadata from these markers. When moving or inserting code, preserve boundary order and keep handler-entry labels on their handler instructions.</p>
+<h4 id="convenience-methods">Convenience methods</h4>
+<p><a href="../api/HarmonyLib.CodeInstructionExtensions.html">CodeInstruction extension methods</a> help create, find, and compare instructions and their operands.</p>
+<h4 id="pitfalls">Pitfalls</h4>
+<p>Removing an instruction can orphan its labels or exception boundaries. Copying one can duplicate them. Both can produce invalid IL.</p>
+<p>When inserting before an instruction, decide whether jumps should reach your new code or the old instruction. Move labels accordingly. Treat exception boundaries separately: moving one changes which code is inside the handler or protected region.</p>
+<p>Set <code>Harmony.DEBUG = true</code> or use <code>[HarmonyDebug]</code> to inspect generated instructions, labels, and exception boundaries in the log.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-transpiler-codes.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
