@@ -47,6 +47,8 @@ namespace HarmonyLib
 		readonly string constantData;
 		[NonSerialized]
 		MemberInfo member;
+		[NonSerialized]
+		object constantValue;
 
 		/// <summary>One-based matches; negative positions count from the end, and empty selects all</summary>
 		/// <remarks>Counts operations after transpilers, before Infix insertion. Zero, null and missing positions are invalid; at least one match is required.
@@ -251,7 +253,15 @@ namespace HarmonyLib
 				return (instruction.opcode == OpCodes.Call || instruction.opcode == OpCodes.Callvirt)
 					&& instruction.operand is MethodInfo method && methodSelector.Matches(method);
 			if (kind == InnerTargetKind.Constant)
-				return TryReadConstant(instruction, out var value) && EncodeConstant(value) == (constantType, constantData);
+			{
+				if (!TryReadConstant(instruction, out var value)) return false;
+				return DecodeConstant() switch
+				{
+					float expected => value is float actual && FloatBits(expected) == FloatBits(actual),
+					double expected => value is double actual && BitConverter.DoubleToInt64Bits(expected) == BitConverter.DoubleToInt64Bits(actual),
+					var expected => Equals(expected, value)
+				};
+			}
 			if (kind == InnerTargetKind.Constructor ? instruction.opcode != OpCodes.Newobj
 				: kind == InnerTargetKind.FieldRead ? instruction.opcode != OpCodes.Ldfld && instruction.opcode != OpCodes.Ldsfld
 				: instruction.opcode != OpCodes.Stfld && instruction.opcode != OpCodes.Stsfld) return false;
@@ -297,18 +307,22 @@ namespace HarmonyLib
 				?? throw new ArgumentException($"Property {property.Name} has no requested accessor", nameof(property));
 		}
 
+		// SingleToInt32Bits is unavailable on older supported frameworks.
+		static unsafe uint FloatBits(float value) => *(uint*)&value;
+
 		static (string type, string data) EncodeConstant(object value) => value switch
 		{
 			string text => ("string", text),
 			int number => ("int32", number.ToString(CultureInfo.InvariantCulture)),
 			long number => ("int64", number.ToString(CultureInfo.InvariantCulture)),
-			float number => ("float32", BitConverter.ToUInt32(BitConverter.GetBytes(number), 0).ToString("X8", CultureInfo.InvariantCulture)),
-			double number => ("float64", BitConverter.ToUInt64(BitConverter.GetBytes(number), 0).ToString("X16", CultureInfo.InvariantCulture)),
+			float number => ("float32", FloatBits(number).ToString("X8", CultureInfo.InvariantCulture)),
+			double number => ("float64", BitConverter.DoubleToInt64Bits(number).ToString("X16", CultureInfo.InvariantCulture)),
 			_ => throw new ArgumentException("An Infix literal must be a non-null string, int, long, float, or double", nameof(value))
 		};
 
 		object DecodeConstant()
 		{
+			if (constantValue is not null) return constantValue;
 			if (constantData is null) throw new SerializationException("An Infix literal requires a value");
 			object value = constantType switch
 			{
@@ -320,7 +334,7 @@ namespace HarmonyLib
 				_ => throw new SerializationException($"Unsupported Infix literal category {constantType}")
 			};
 			if (EncodeConstant(value) != (constantType, constantData)) throw new SerializationException("An Infix literal requires canonical value encoding");
-			return value;
+			return constantValue = value;
 		}
 
 		internal static bool TryReadConstant(CodeInstruction instruction, out object value)

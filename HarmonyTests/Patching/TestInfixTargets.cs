@@ -118,7 +118,7 @@ namespace HarmonyLibTests.Patching
 			var nan1 = BitConverter.ToSingle(BitConverter.GetBytes(0x7fc00001u), 0);
 			var nan2 = BitConverter.ToSingle(BitConverter.GetBytes(0x7fc00002u), 0);
 			var doubleNan = BitConverter.ToDouble(BitConverter.GetBytes(0x7ff8000000000001ul), 0);
-			object[] values = ["", "Confirm\0\nå", int.MinValue, long.MaxValue, 0f, negativeZero, nan1, nan2, doubleNan, double.NegativeInfinity];
+			object[] values = ["", "Confirm\0\nå", int.MinValue, long.MaxValue, 0f, negativeZero, nan1, nan2, doubleNan, double.NegativeInfinity, 0d, BitConverter.Int64BitsToDouble(long.MinValue)];
 			foreach (var value in values)
 			{
 				var target = InnerTarget.Constant(value, -1);
@@ -127,6 +127,9 @@ namespace HarmonyLibTests.Patching
 				Assert.That(cold.Member, Is.Null);
 				Assert.That(cold.ConstantValue.GetType(), Is.EqualTo(value.GetType()));
 				Assert.That(cold.positions, Is.EqualTo(new[] { -1 }));
+				var opcode = value switch { string => OpCodes.Ldstr, int => OpCodes.Ldc_I4, long => OpCodes.Ldc_I8, float => OpCodes.Ldc_R4, _ => OpCodes.Ldc_R8 };
+				foreach (var candidate in values.Where(candidate => candidate.GetType() == value.GetType()))
+					Assert.That(cold.Matches(new CodeInstruction(opcode, candidate)), Is.EqualTo(target.Equals(InnerTarget.Constant(candidate))), "Matching must preserve exact literal identity after serialization");
 			}
 			Assert.That(InnerTarget.Constant(negativeZero).Equals(InnerTarget.Constant(0f)), Is.False);
 			Assert.That(InnerTarget.Constant(nan1).Equals(InnerTarget.Constant(nan2)), Is.False);

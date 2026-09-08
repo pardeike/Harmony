@@ -29,6 +29,8 @@ The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the sam
 
 - T15: one rebuild now validates surviving metadata once and determines the required format version once, reusing that version for the payload and envelope. The same instrumented registration dropped from 15 to 9 module resolutions, with one validation and one capability scan. No cross-rebuild cache was added. All 79 focused metadata, target, captured/persistent-state, and serialization tests pass on .NET 9 x64. This measures work removed, not elapsed-time savings.
 
+- T16: immutable literal metadata caches its decoded value; matching compares values or exact floating-point bits without formatting candidates. The same warmed 10,000-double probe now allocates zero bytes (previously 880,000), and its control remains zero. All 72 operation and target tests pass on .NET 9 x64, including signed zero and distinct NaN payloads after serialization. Compact integer opcodes still use the existing boxed normalization path; no claim of zero allocation for every opcode.
+
 ## Claims not added to TODO
 
 | Report item | Disposition |
