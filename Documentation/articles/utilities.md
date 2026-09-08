@@ -74,17 +74,4 @@ public static unsafe void LogBytes(long ptr, int len)
 
 #### Environment Variables
 
-FileLog can be configured using the following environment variables:
-
-- **`HARMONY_NO_LOG`**: Any non-empty value disables file logging.
-
-- **`HARMONY_LOG_FILE`**: Overrides the default path, `harmony.log.txt` on your Desktop.
-
-Example usage:
-```bash
-# Disable logging
-export HARMONY_NO_LOG=1
-
-# Or specify a custom log file path
-export HARMONY_LOG_FILE=/path/to/custom/harmony.log.txt
-```
+See [Controlling FileLog with Environment Variables](basics.md#controlling-filelog-with-environment-variables) for all Harmony environment variables, including `HARMONY_DEBUG`, `HARMONY_NO_LOG`, and `HARMONY_LOG_FILE`.

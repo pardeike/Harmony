@@ -48,18 +48,33 @@ You can also use Harmony's file logger in your own code:
 
 #### Controlling FileLog with Environment Variables
 
-FileLog can be configured using environment variables:
+Harmony reads these environment variables. Set them before starting the application:
 
-- **`HARMONY_NO_LOG`**: Set to any non-empty value to disable file logging entirely.
-- **`HARMONY_LOG_FILE`**: Set to a custom file path to change where the log file is written.
+| Variable | Effect |
+| --- | --- |
+| `HARMONY_DEBUG` | Set to `1` or `true` to enable `Harmony.DEBUG`, logging patching details and generated IL. Set to `false` to disable it. Harmony reads this whenever a Harmony instance is created. |
+| `HARMONY_NO_LOG` | Any non-empty value disables the default file output, even when `HARMONY_DEBUG` is enabled. Unset it or leave it empty to allow file logging. |
+| `HARMONY_LOG_FILE` | Sets the log file path. If unset or empty, the default is `harmony.log.txt` on your Desktop. This does not enable debug logging by itself. |
 
-Example:
+`FileLog` reads its settings once, when its log path is first accessed. A custom `FileLog.LogWriter` bypasses these file settings.
+
+For example, enable debug logging and choose a log file in Bash or Zsh, then launch the application from the same shell:
+
 ```bash
-# Disable logging
-export HARMONY_NO_LOG=1
-
-# Or use a custom log path
+export HARMONY_DEBUG=1
 export HARMONY_LOG_FILE=/path/to/harmony.log.txt
+```
+
+Or enable debug logging when launching a game from Windows Command Prompt:
+
+```cmd
+cmd /C "set HARMONY_DEBUG=1 && game.exe"
+```
+
+To disable the default file output instead:
+
+```bash
+export HARMONY_NO_LOG=1
 ```
 
 ### Patching using annotations
