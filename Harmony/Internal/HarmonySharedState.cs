@@ -39,6 +39,8 @@ namespace HarmonyLib
 		static readonly Dictionary<MethodBase, byte[]> state;
 		static readonly Dictionary<MethodInfo, MethodBase> originals;
 		static readonly Dictionary<long, MethodBase[]> originalsMono;
+		static readonly PropertyInfo isCollectible = typeof(Assembly).GetProperty("IsCollectible");
+		static int originalUpdates;
 
 		static readonly AccessTools.FieldRef<StackFrame, long> methodAddressRef;
 
@@ -147,7 +149,13 @@ namespace HarmonyLib
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, byte[] bytes)
 		{
 			lock (state) state[original] = bytes;
-			lock (originals) originals[replacement.Identifiable()] = original;
+			lock (originals)
+			{
+				var identifiable = replacement.Identifiable();
+				originals[isCollectible?.GetValue(identifiable.Module.Assembly, null) is true ? new WeakMethodInfo(identifiable) : identifiable] = original;
+				if (++originalUpdates % 64 == 0)
+					foreach (var key in originals.Keys.Where(key => key is WeakMethodInfo weak && !weak.IsAlive).ToArray()) originals.Remove(key);
+			}
 			if (AccessTools.IsMonoRuntime)
 			{
 				var methodAddress = (long)replacement.MethodHandle.GetFunctionPointer();

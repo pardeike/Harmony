@@ -100,6 +100,34 @@ namespace HarmonyLibTests.Patching
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static bool Filter(Exception exception) { trace.Add("filter"); return exception is InvalidOperationException; }
+
+		static IEnumerable<CodeInstruction> AuthoredHandler(IEnumerable<CodeInstruction> _, ILGenerator generator)
+		{
+			var result = generator.DeclareLocal(typeof(int));
+			yield return new CodeInstruction(OpCodes.Call, Method(nameof(ThrowInTry)))
+				.WithBlocks(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock));
+			if (handler == ExceptionBlockType.BeginExceptFilterBlock)
+			{
+				yield return new CodeInstruction(OpCodes.Pop).WithBlocks(new ExceptionBlock(ExceptionBlockType.BeginExceptFilterBlock));
+				yield return new CodeInstruction(OpCodes.Ldc_I4_1);
+			}
+			yield return new CodeInstruction(OpCodes.Pop).WithBlocks(handler == ExceptionBlockType.BeginCatchBlock
+				? new ExceptionBlock(ExceptionBlockType.BeginCatchBlock) : new ExceptionBlock(ExceptionBlockType.BeginCatchBlock, null));
+			yield return new CodeInstruction(OpCodes.Ldc_I4_7);
+			yield return new CodeInstruction(OpCodes.Stloc, result).WithBlocks(new ExceptionBlock(ExceptionBlockType.EndExceptionBlock));
+			yield return new CodeInstruction(OpCodes.Ldloc, result);
+			yield return new CodeInstruction(OpCodes.Ret);
+		}
+
+		[TestCase(ExceptionBlockType.BeginCatchBlock)]
+		[TestCase(ExceptionBlockType.BeginExceptFilterBlock)]
+		public void Public_exception_blocks_support_default_catches_and_explicit_filter_handlers(ExceptionBlockType block)
+		{
+			handler = block;
+			harmony.CreateProcessor(Method(nameof(Filtered))).AddTranspiler(Method(nameof(AuthoredHandler))).Patch();
+			Assert.That(Filtered(), Is.EqualTo(7));
+		}
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int Filtered()
 		{

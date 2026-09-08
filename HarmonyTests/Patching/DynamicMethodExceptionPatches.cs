@@ -77,6 +77,51 @@ namespace HarmonyLibTests.Patching
 			return method;
 		}
 
+		static MethodInfo EmittedFactory(MethodBase original) => EmitCallback("value");
+		static MethodInfo EmittedPostfixFactory(MethodBase original) => EmitCallback("__result");
+
+		static MethodInfo EmitCallback(string parameter)
+		{
+			var assembly = PatchTools.DefineDynamicAssembly("EmittedCallback_" + Guid.NewGuid().ToString("N"));
+			var type = assembly.DefineDynamicModule("Callbacks").DefineType("Patch", TypeAttributes.Public);
+			var method = type.DefineMethod("Increment", MethodAttributes.Public | MethodAttributes.Static, typeof(void), [typeof(int).MakeByRefType()]);
+			method.DefineParameter(1, ParameterAttributes.None, parameter);
+			var il = method.GetILGenerator();
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Dup);
+			il.Emit(OpCodes.Ldind_I4);
+			il.Emit(OpCodes.Ldc_I4_1);
+			il.Emit(OpCodes.Add);
+			il.Emit(OpCodes.Stind_I4);
+			il.Emit(OpCodes.Ret);
+			return type.CreateType().GetMethod(method.Name);
+		}
+
+		[Test]
+		public void Emitted_method_factories_work_with_exception_wrappers([Values] bool postfix, [Values] bool fail)
+		{
+			var patch = new HarmonyMethod(Method(postfix ? nameof(EmittedPostfixFactory) : nameof(EmittedFactory)));
+			var processor = harmony.CreateProcessor(Method(nameof(Catching)));
+			(postfix ? processor.AddPostfix(patch) : processor.AddPrefix(patch)).Patch();
+			Assert.That(Catching(42, fail ? 1 : 0), Is.EqualTo(postfix ? (fail ? -41 : 43) : (fail ? -43 : 43)));
+			Assert.That(trace, Is.EqualTo(fail ? new[] { "first" } : []));
+		}
+
+		static IEnumerable<CodeInstruction> EmittedCall(IEnumerable<CodeInstruction> instructions)
+		{
+			yield return new CodeInstruction(OpCodes.Ldarga_S, (byte)0);
+			yield return new CodeInstruction(OpCodes.Call, EmitCallback("value"));
+			foreach (var instruction in instructions) yield return instruction;
+		}
+
+		[Test]
+		public void Transpilers_can_call_emitted_methods_inside_exception_wrappers([Values] bool fail)
+		{
+			harmony.CreateProcessor(Method(nameof(Catching))).AddTranspiler(Method(nameof(EmittedCall))).Patch();
+			Assert.That(Catching(42, fail ? 1 : 0), Is.EqualTo(fail ? -43 : 43));
+			Assert.That(trace, Is.EqualTo(fail ? new[] { "first" } : []));
+		}
+
 		static IEnumerable<CodeInstruction> DynamicCall(IEnumerable<CodeInstruction> instructions)
 		{
 			var method = new DynamicMethod("Increment", typeof(int), [typeof(int)], typeof(DynamicMethodExceptionPatches), true);

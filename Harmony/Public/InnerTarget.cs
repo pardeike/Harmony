@@ -264,11 +264,12 @@ namespace HarmonyLib
 			&& positions.Distinct().OrderBy(position => position).SequenceEqual(other.positions.Distinct().OrderBy(position => position));
 
 		/// <summary>Compares operation selectors independently of occurrence positions</summary>
+		/// <remarks>Compares stored identities without resolving loaded modules. Registration validates live targets separately.</remarks>
 		public override bool Equals(object obj)
 		{
 			if (obj is not InnerTarget other) return false;
-			Validate();
-			other.Validate();
+			ValidateStoredIdentity();
+			other.ValidateStoredIdentity();
 			return kind == other.kind && (kind == InnerTargetKind.Method ? methodSelector.Equals(other.methodSelector)
 				: kind == InnerTargetKind.Constant ? constantType == other.constantType && constantData == other.constantData
 				: memberToken == other.memberToken && moduleGUID == other.moduleGUID && typeFamily == other.typeFamily && typeArguments.SequenceEqual(other.typeArguments));
@@ -277,7 +278,7 @@ namespace HarmonyLib
 		/// <summary>Returns the operation selector hash independently of occurrence positions</summary>
 		public override int GetHashCode()
 		{
-			Validate();
+			ValidateStoredIdentity();
 			unchecked
 			{
 				if (kind == InnerTargetKind.Method) return methodSelector.GetHashCode();

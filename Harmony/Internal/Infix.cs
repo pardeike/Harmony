@@ -197,7 +197,7 @@ namespace HarmonyLib
 			foreach (var fix in fixes)
 				foreach (var injection in Injections(fix, InjectionType.State).Where(injection => !injection.outer))
 				{
-					var name = fix.DeclaringType.AssemblyQualifiedName;
+					var name = fix.DeclaringType;
 					var type = injection.parameterInfo.ParameterType;
 					if (type.IsByRef) type = type.GetElementType();
 					if (variables.TryGetValue(name, out var state))

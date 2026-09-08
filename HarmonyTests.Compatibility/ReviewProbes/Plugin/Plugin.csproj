@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>ReviewPatchPlugin</AssemblyName>
+    <DefineConstants Condition="'$(Variant)' == 'Second'">$(DefineConstants);SECOND</DefineConstants>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">../../../Lib.Harmony/bin/Debug/net9.0/0Harmony.dll</HarmonyPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony" HintPath="$(HarmonyPath)" />
+  </ItemGroup>
+</Project>

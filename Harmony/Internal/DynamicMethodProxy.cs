@@ -12,7 +12,8 @@ namespace HarmonyLib
 {
 	internal static class DynamicMethodProxy
 	{
-		// A DynamicMethod has no metadata token that Cecil can write. Forward through an exact-signature delegate:
+		// DynamicMethods and methods in emitted assemblies cannot be bound through assembly metadata.
+		// Forward through an exact-signature delegate:
 		// no boxing, copied ref arguments, native pointers, or reflection-wrapped exceptions.
 		internal static MethodInfo Create(MethodInfo target)
 		{

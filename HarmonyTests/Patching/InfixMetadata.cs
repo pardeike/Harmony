@@ -35,6 +35,36 @@ namespace HarmonyLibTests.Patching
 		static void Overloaded(int value) { }
 		static void OrdinaryAfter(ref int __result) => __result += 10;
 		static int transpilerRuns;
+
+		[Test]
+		public void Legacy_selector_keys_stay_equal_after_identity_normalization()
+		{
+			var method = Method(nameof(Call));
+			var legacy = new InnerMethod(method.MetadataToken, method.Module.ModuleVersionId.ToString("D"), []);
+			var current = new InnerMethod(method, 1);
+			var values = new Dictionary<InnerMethod, string> { [legacy] = "present" };
+			Assert.That(legacy.Equals(current), Is.True);
+			Assert.That(values[current], Is.EqualTo("present"));
+			Assert.That(legacy.IdentityVersion, Is.Zero, "Equality must not resolve or normalize the stored identity");
+			Assert.That(legacy.Method, Is.EqualTo(method));
+			Assert.That(legacy.IdentityVersion, Is.EqualTo(1));
+			Assert.That(values[current], Is.EqualTo("present"));
+		}
+
+		[Test]
+		public void Method_removal_does_not_resolve_unrelated_invalid_callbacks()
+		{
+			var callback = Method(nameof(Noop));
+			var target = new InnerMethod(Method(nameof(Call)));
+			var missing = new Patch(1, "missing", Priority.Normal, [], [], false, callback.MetadataToken, Guid.NewGuid().ToString("D"), target);
+			var state = new PatchInfo();
+			state.AddInnerPrefixes("remove", new HarmonyMethod(callback) { innerMethod = target });
+			state.innerprefixes = [state.innerprefixes[0], missing];
+			state.RemovePatch(callback);
+			Assert.That(state.innerprefixes, Is.EqualTo(new[] { missing }));
+			Assert.Throws<ArgumentException>(state.ValidateSurvivingMetadata);
+		}
+
 		static IEnumerable<CodeInstruction> CountTranspiler(IEnumerable<CodeInstruction> instructions)
 		{
 			transpilerRuns++;

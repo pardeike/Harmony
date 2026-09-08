@@ -309,8 +309,8 @@ namespace HarmonyLib
 				TryEnd = tryEnd,
 				FilterStart = kind == Mono.Cecil.Cil.ExceptionHandlerType.Filter ? boundary : null,
 				HandlerStart = kind == Mono.Cecil.Cil.ExceptionHandlerType.Filter ? null : boundary,
-				CatchType = kind == Mono.Cecil.Cil.ExceptionHandlerType.Catch && block.catchType is not null
-					? il.IL.Body.Method.Module.ImportReference(block.catchType) : null
+				CatchType = kind == Mono.Cecil.Cil.ExceptionHandlerType.Catch
+					? il.IL.Body.Method.Module.ImportReference(block.catchType ?? typeof(object)) : null
 			};
 			region.inFilter = kind == Mono.Cecil.Cil.ExceptionHandlerType.Filter;
 			il.IL.Body.ExceptionHandlers.Add(region.handler);

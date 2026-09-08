@@ -1,0 +1,591 @@
+{
+  "recorded": "2026-09-08",
+  "sourceRevisions": {
+    "current": "7700fd5628e22c005678d6b2cb52e3cc5da282f4",
+    "baseline": "2bece8f8466a38fa2b591bd17dfd733c52acdedc"
+  },
+  "configuration": {
+    "harmonyBuild": "Debug net9.0 x64",
+    "probeBuild": "Release net9.0 x64",
+    "sdk": "10.0.301",
+    "tieredCompilation": false,
+    "rollForward": "LatestPatch"
+  },
+  "inputs": {
+    "current": {
+      "sha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903"
+    },
+    "baseline": {
+      "sha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c"
+    }
+  },
+  "results": [
+    {
+      "case": "emitted-callback",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "Plain": {
+          "value": 99
+        },
+        "Handlers": {
+          "errors": [
+            "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+            "System.IO.FileLoadException: Could not load file or assembly 'ReviewEmittedCallback, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null'. An operation is not legal in the current state. (0x80131509)",
+            "System.InvalidOperationException: Dynamically emitted assemblies are unsupported for AssemblyLoadContext resolution."
+          ]
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "emitted-callback",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "Plain": {
+          "value": 99
+        },
+        "Handlers": {
+          "value": 99
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "filter-constructor",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "result": {
+          "errors": [
+            "System.InvalidOperationException: An exception filter requires BeginCatchBlock with a null catch type"
+          ]
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "filter-constructor",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "result": {
+          "errors": [
+            "System.InvalidOperationException: Incorrect code generation for exception block."
+          ]
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "filter-initializer",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "result": {
+          "value": 7
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "filter-initializer",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "result": {
+          "errors": [
+            "System.InvalidOperationException: Incorrect code generation for exception block."
+          ]
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "ordinary-names",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "Prefix": {
+          "errors": [
+            "System.ArgumentException: Infix patch static System.Boolean BareNames::InnerPrefix(System.Int32& __result) requires AddInnerPrefix, AddInnerPostfix, or AddInnerFinalizer"
+          ]
+        },
+        "Postfix": {
+          "errors": [
+            "System.ArgumentException: Infix patch static System.Void BareNames::InnerPostfix(System.Int32& __result) requires AddInnerPrefix, AddInnerPostfix, or AddInnerFinalizer"
+          ]
+        },
+        "Finalizer": {
+          "errors": [
+            "System.ArgumentException: Infix patch static System.Exception BareNames::InnerFinalizer(System.Exception __exception) requires AddInnerPrefix, AddInnerPostfix, or AddInnerFinalizer"
+          ]
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "ordinary-names",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "Prefix": {
+          "value": 42
+        },
+        "Postfix": {
+          "value": 3
+        },
+        "Finalizer": {
+          "value": 0
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "ordinary-control",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "Prefix": {
+          "value": 42
+        },
+        "Postfix": {
+          "value": 3
+        },
+        "Finalizer": {
+          "value": 0
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "ordinary-control",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "Prefix": {
+          "value": 42
+        },
+        "Postfix": {
+          "value": 3
+        },
+        "Finalizer": {
+          "value": 0
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "reverse-name",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "result": {
+          "errors": [
+            "System.ArgumentException: Infix patch static System.Int32 Standins::InnerFinalizer() requires AddInnerPrefix, AddInnerPostfix, or AddInnerFinalizer"
+          ]
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "reverse-name",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "result": {
+          "value": 1
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "reverse-control",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "result": {
+          "value": 1
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "reverse-control",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "result": {
+          "value": 1
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "assembly-retention",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "after10Cycles": 20,
+        "after20Cycles": 40,
+        "collectible": 0,
+        "sampleNames": [
+          "DMDASM.29115E97.Cecil",
+          "DMDASM.3EF4A329.Cecil",
+          "DMDASM.DAE7A9E5.Cecil"
+        ]
+      },
+      "engine": "current"
+    },
+    {
+      "case": "assembly-retention",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "after10Cycles": 0,
+        "after20Cycles": 0,
+        "collectible": 0,
+        "sampleNames": []
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "exception-markers",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "beginMarkers": 1,
+        "result": {
+          "value": [
+            7,
+            11,
+            3
+          ]
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "exception-markers",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "beginMarkers": 2,
+        "result": {
+          "value": [
+            7,
+            11,
+            3
+          ]
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "extern-unpatch",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "directWithTranspiler": 3,
+        "reflectionWithTranspiler": [
+          -3,
+          3,
+          3,
+          3
+        ],
+        "unpatchNotExercised": "The replacement body is not stable before removal on this runtime."
+      },
+      "engine": "current"
+    },
+    {
+      "case": "extern-unpatch",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "directWithTranspiler": 3,
+        "reflectionWithTranspiler": [
+          -3,
+          3,
+          3,
+          3
+        ],
+        "unpatchNotExercised": "The replacement body is not stable before removal on this runtime."
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "json-unloaded",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "readableOwner": "review.json",
+        "callbackUnavailable": true,
+        "reserialize": {
+          "errors": [
+            "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+            "System.NullReferenceException: Object reference not set to an instance of an object."
+          ]
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "json-unloaded",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "readableOwner": "review.json",
+        "callbackUnavailable": true,
+        "reserialize": {
+          "errors": [
+            "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+            "System.NullReferenceException: Object reference not set to an instance of an object."
+          ]
+        }
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "method-selector-equality",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "lookup": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "equalsSelf": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "positionsUnchanged": true
+      },
+      "engine": "current"
+    },
+    {
+      "case": "method-selector-equality",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+      "observations": {
+        "lookup": {
+          "value": "present"
+        },
+        "equalsSelf": {
+          "value": true
+        },
+        "positionsUnchanged": true
+      },
+      "engine": "baseline"
+    },
+    {
+      "case": "inner-state",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "moduleIds": [
+          "02351e14-b7a3-4d92-bc52-e2d1a024f063",
+          "6cc31984-5999-403d-94dc-417ec6424a0c"
+        ],
+        "expected": 3,
+        "actual": 4
+      },
+      "engine": "current"
+    },
+    {
+      "case": "named-state",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "moduleIds": [
+          "02351e14-b7a3-4d92-bc52-e2d1a024f063",
+          "6cc31984-5999-403d-94dc-417ec6424a0c"
+        ],
+        "expected": 3,
+        "actual": 4
+      },
+      "engine": "current"
+    },
+    {
+      "case": "remove-prefix",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "beforeRemoval": 11,
+        "removeByMethod": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "afterMethodRemoval": 11,
+        "removeByOwner": {
+          "value": 10
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "remove-postfix",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "beforeRemoval": 11,
+        "removeByMethod": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "afterMethodRemoval": 11,
+        "removeByOwner": {
+          "value": 10
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "remove-finalizer",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "beforeRemoval": 11,
+        "removeByMethod": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "afterMethodRemoval": 11,
+        "removeByOwner": {
+          "value": 10
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "selector-equality",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "innerMethodLookup": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "innerTargetLookup": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "innerMethodEqualsSelf": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "innerTargetEqualsSelf": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 02351e14-b7a3-4d92-bc52-e2d1a024f063 has 2 loaded matches; exactly one is required"
+          ]
+        },
+        "positionsUnchanged": true
+      },
+      "engine": "current"
+    },
+    {
+      "case": "json-public-unloaded",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "readableOwner": "review.json",
+        "callbackUnavailable": true,
+        "reserialize": {
+          "errors": [
+            "System.NullReferenceException: Object reference not set to an instance of an object."
+          ]
+        }
+      },
+      "engine": "current"
+    },
+    {
+      "case": "shared-state-current",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "engine0": {
+          "value": 0
+        },
+        "engine1": {
+          "value": 0
+        },
+        "engine2": {
+          "errors": [
+            "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+            "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.",
+            "System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates"
+          ]
+        },
+        "sharedStateAssemblyCounts": [
+          1,
+          2,
+          2
+        ]
+      },
+      "engine": "current"
+    },
+    {
+      "case": "shared-state-baseline",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "98a0ed2278a896f4e5feda601476eb90316cac5073e7b9041ddefa6ca5afb903",
+      "observations": {
+        "engine0": {
+          "value": 0
+        },
+        "engine1": {
+          "value": 0
+        },
+        "engine2": {
+          "value": 0
+        },
+        "sharedStateAssemblyCounts": [
+          1,
+          2,
+          3
+        ]
+      },
+      "engine": "current"
+    }
+  ]
+}

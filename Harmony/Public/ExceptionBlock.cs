@@ -39,18 +39,23 @@ namespace HarmonyLib
 		/// 
 		public ExceptionBlockType blockType;
 
-		/// <summary>Catch type</summary>
+		/// <summary>Catch type, or null for a filter handler</summary>
 		/// 
 		public Type catchType;
 
+		/// <summary>Creates a new ExceptionBlock with the default catch-all type</summary>
+		/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
+		///
+		public ExceptionBlock(ExceptionBlockType blockType) : this(blockType, typeof(object)) { }
+
 		/// <summary>Creates a new ExceptionBlock</summary>
 		/// <param name="blockType">The <see cref="ExceptionBlockType"/></param>
-		/// <param name="catchType">The catch type</param>
+		/// <param name="catchType">The catch type, or null to begin a filter handler. Outside a filter, null catches all exceptions</param>
 		///
 		public ExceptionBlock(ExceptionBlockType blockType, Type catchType = null)
 		{
 			this.blockType = blockType;
-			this.catchType = catchType ?? typeof(object);
+			this.catchType = catchType;
 		}
 	}
 }

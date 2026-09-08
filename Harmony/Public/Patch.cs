@@ -116,6 +116,11 @@ namespace HarmonyLib
 		}
 
 		internal string MethodIdentity => $"{moduleGUID}:0x{methodToken:X8}";
+		internal int MethodToken => methodToken;
+		internal string ModuleGUID => moduleGUID;
+
+		internal bool MatchesInfixMethod(MethodInfo method) => method is not null && method is not DynamicMethod
+			&& method.MetadataToken == methodToken && method.Module.ModuleVersionId.ToString() == moduleGUID;
 
 		internal MethodInfo GetValidatedInfixPatchMethod()
 		{

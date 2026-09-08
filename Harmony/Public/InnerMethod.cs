@@ -151,23 +151,24 @@ namespace HarmonyLib
 			&& positions.Distinct().OrderBy(p => p).SequenceEqual(other.positions.Distinct().OrderBy(p => p));
 
 		/// <summary>Compares call selectors, independently of their occurrence positions</summary>
+		/// <remarks>Compares stored identities without resolving loaded modules. Registration validates live targets separately.</remarks>
 		public override bool Equals(object obj)
 		{
 			if (obj is not InnerMethod other) return false;
-			Validate();
-			other.Validate();
-			return methodToken == other.methodToken && moduleGUID == other.moduleGUID && targetKind == other.targetKind
-				&& declaringTypeArguments.SequenceEqual(other.declaringTypeArguments) && methodArguments.SequenceEqual(other.methodArguments);
+			ValidateStoredIdentity();
+			other.ValidateStoredIdentity();
+			return methodToken == other.methodToken && moduleGUID == other.moduleGUID && targetKind.GetValueOrDefault() == other.targetKind.GetValueOrDefault()
+				&& (declaringTypeArguments ?? []).SequenceEqual(other.declaringTypeArguments ?? []) && (methodArguments ?? []).SequenceEqual(other.methodArguments ?? []);
 		}
 
 		/// <summary>Returns the hash of the call selector, independently of its occurrence positions</summary>
 		public override int GetHashCode()
 		{
-			Validate();
+			ValidateStoredIdentity();
 			unchecked
 			{
-				var hash = (moduleGUID.GetHashCode() * 397) ^ methodToken ^ targetKind.Value;
-				foreach (var argument in declaringTypeArguments.Concat(methodArguments)) hash = (hash * 397) ^ argument.GetHashCode();
+				var hash = (moduleGUID.GetHashCode() * 397) ^ methodToken ^ targetKind.GetValueOrDefault();
+				foreach (var argument in (declaringTypeArguments ?? []).Concat(methodArguments ?? [])) hash = (hash * 397) ^ argument.GetHashCode();
 				return hash;
 			}
 		}

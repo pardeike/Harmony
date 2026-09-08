@@ -78,7 +78,7 @@ namespace HarmonyLib
 				var declaringType = fix.DeclaringType;
 				if (declaringType is null)
 					return;
-				var varName = declaringType.AssemblyQualifiedName;
+				var varName = declaringType;
 				var hasLocal = config.localVariables.TryGetValue(varName, out var maybeLocal);
 				foreach (var injection in config.OuterInjectionsFor(fix, InjectionType.State))
 				{

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UseAppHost>false</UseAppHost>
+    <PlatformTarget>x64</PlatformTarget>
+    <RollForward>LatestPatch</RollForward>
+    <HarmonyPath Condition="'$(HarmonyPath)' == ''">../../Lib.Harmony/bin/Debug/net9.0/0Harmony.dll</HarmonyPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Plugin/**" />
+    <Reference Include="0Harmony" HintPath="$(HarmonyPath)" />
+  </ItemGroup>
+</Project>

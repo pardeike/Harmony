@@ -47,8 +47,8 @@ namespace HarmonyLib
 			writer.WriteBoolean("debug", patchValue.debug);
 			writer.WriteString("owner", patchValue.owner);
 			writer.WriteNumber("priority", patchValue.priority);
-			writer.WriteNumber("methodToken", patchValue.PatchMethod.MetadataToken);
-			writer.WriteString("moduleGUID", patchValue.PatchMethod.Module.ModuleVersionId.ToString());
+			writer.WriteNumber("methodToken", patchValue.MethodToken);
+			writer.WriteString("moduleGUID", patchValue.ModuleGUID);
 			WriteStringArray(writer, "after", patchValue.after);
 			WriteStringArray(writer, "before", patchValue.before);
 			if (patchValue.innerMethod is not null)

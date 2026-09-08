@@ -1,0 +1,7 @@
+<Project>
+	<Target Name="UseNet9ReviewReferencePack" BeforeTargets="ProcessFrameworkReferences">
+		<ItemGroup>
+			<KnownFrameworkReference Update="Microsoft.NETCore.App" Condition="'%(TargetFramework)' == 'net9.0'" TargetingPackVersion="9.0.19" />
+		</ItemGroup>
+	</Target>
+</Project>

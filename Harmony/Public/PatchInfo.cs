@@ -189,9 +189,9 @@ namespace HarmonyLib
 			postfixes = [.. postfixes.Where(p => p.PatchMethod != patch)];
 			transpilers = [.. transpilers.Where(p => p.PatchMethod != patch)];
 			finalizers = [.. finalizers.Where(p => p.PatchMethod != patch)];
-			innerprefixes = [.. innerprefixes.Where(p => p.PatchMethod != patch)];
-			innerpostfixes = [.. innerpostfixes.Where(p => p.PatchMethod != patch)];
-			innerfinalizers = [.. innerfinalizers.Where(p => p.PatchMethod != patch)];
+			innerprefixes = [.. innerprefixes.Where(p => !p.MatchesInfixMethod(patch))];
+			innerpostfixes = [.. innerpostfixes.Where(p => !p.MatchesInfixMethod(patch))];
+			innerfinalizers = [.. innerfinalizers.Where(p => !p.MatchesInfixMethod(patch))];
 		}
 
 		internal void NormalizeLegacyArrays()

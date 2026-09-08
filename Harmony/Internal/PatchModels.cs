@@ -146,7 +146,7 @@ namespace HarmonyLib
 			if (info is null) return;
 			var attributes = info.method?.GetCustomAttributes(true) ?? [];
 			if (info.innerMethod is not null || info.innerTarget is not null || GetInfixDeclaration(attributes) is not null
-				|| info.infixOuterBody.HasValue || info.method?.Name is "InnerPrefix" or "InnerPostfix" or "InnerFinalizer")
+				|| info.infixOuterBody.HasValue)
 				throw new ArgumentException($"Infix patch {info.method?.FullDescription()} requires AddInnerPrefix, AddInnerPostfix, or AddInnerFinalizer");
 			if (info.method is not null && info.method.GetParameters().Any(p => p.GetCustomAttributes(true).Any(a => a.GetType().FullName == typeof(HarmonyOuter).FullName)))
 				throw new ArgumentException($"HarmonyOuter is valid only on Infix parameters: {info.method.FullDescription()}");

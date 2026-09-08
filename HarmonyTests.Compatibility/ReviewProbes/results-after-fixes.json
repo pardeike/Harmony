@@ -1,0 +1,1064 @@
+{
+  "recorded": "2026-09-08",
+  "sourceBase": "bef9be62",
+  "sourceState": "working tree with all eight verified TODO fixes",
+  "normalSuites": {
+    "framework": "net9.0",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "Debug": {
+      "passed": 992,
+      "failed": 0
+    },
+    "Release": {
+      "passed": 992,
+      "failed": 0
+    }
+  },
+  "configurations": {
+    "Debug": {
+      "inputs": {
+        "current": {
+          "path": "/private/tmp/harmony-todo-fixes-zEJOS2/pinned-debug/bin/Lib.Harmony/debug_net9.0/0Harmony.dll",
+          "sha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7"
+        },
+        "baseline": {
+          "path": "/private/var/folders/s5/21qknfyd6hx49g8__bwbh4pr0000gn/T/harmony-review-verification-qm6a5yrn/base-source/Lib.Harmony/bin/Debug/net9.0/0Harmony.dll",
+          "sha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c"
+        }
+      },
+      "results": [
+        {
+          "case": "emitted-callback",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "Plain": {
+              "value": 99
+            },
+            "Handlers": {
+              "value": 99
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "emitted-callback",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "Plain": {
+              "value": 99
+            },
+            "Handlers": {
+              "value": 99
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "filter-constructor",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "result": {
+              "value": 7
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "filter-constructor",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "errors": [
+                "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+                "System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'."
+              ],
+              "stack": "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.\n ---> System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'.\n   at Program.AuthorFilter(IEnumerable`1 instructions, ILGenerator generator)\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   --- End of inner exception stack trace ---\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at HarmonyLib.CodeTranspiler.<>c__DisplayClass11_0.<GetResult>b__0(MethodInfo transpiler)\n   at System.Collections.Generic.List`1.ForEach(Action`1 action)\n   at HarmonyLib.CodeTranspiler.GetResult(ILGenerator generator, MethodBase method)\n   at HarmonyLib.MethodBodyReader.FinalizeILCodes(List`1 transpilers, Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCopier.Finalize(Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCreator.CreateReplacement()\n   at HarmonyLib.PatchFunctions.UpdateWrapper(MethodBase original, PatchInfo patchInfo)\n   at HarmonyLib.PatchProcessor.Patch()\n   at HarmonyLib.Harmony.Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler, HarmonyMethod finalizer)\n   at Program.<>c.<Filter>b__28_0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 202\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "filter-initializer",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "result": {
+              "value": 7
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "filter-initializer",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "errors": [
+                "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+                "System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'."
+              ],
+              "stack": "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.\n ---> System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'.\n   at Program.AuthorFilter(IEnumerable`1 instructions, ILGenerator generator)\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   --- End of inner exception stack trace ---\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at HarmonyLib.CodeTranspiler.<>c__DisplayClass11_0.<GetResult>b__0(MethodInfo transpiler)\n   at System.Collections.Generic.List`1.ForEach(Action`1 action)\n   at HarmonyLib.CodeTranspiler.GetResult(ILGenerator generator, MethodBase method)\n   at HarmonyLib.MethodBodyReader.FinalizeILCodes(List`1 transpilers, Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCopier.Finalize(Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCreator.CreateReplacement()\n   at HarmonyLib.PatchFunctions.UpdateWrapper(MethodBase original, PatchInfo patchInfo)\n   at HarmonyLib.PatchProcessor.Patch()\n   at HarmonyLib.Harmony.Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler, HarmonyMethod finalizer)\n   at Program.<>c.<Filter>b__28_0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 202\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "ordinary-names",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "ordinary-names",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "ordinary-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "ordinary-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "reverse-name",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "reverse-name",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "reverse-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "reverse-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "assembly-retention",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "after10Cycles": 1,
+            "after20Cycles": 1,
+            "collectible": 1,
+            "sampleNames": [
+              "DMDASM.1A426463.Cecil"
+            ]
+          },
+          "engine": "current"
+        },
+        {
+          "case": "assembly-retention",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "after10Cycles": 0,
+            "after20Cycles": 0,
+            "collectible": 0,
+            "sampleNames": []
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "exception-markers",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "beginMarkers": 1,
+            "result": {
+              "value": [
+                7,
+                11,
+                3
+              ]
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "exception-markers",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "beginMarkers": 2,
+            "result": {
+              "value": [
+                7,
+                11,
+                3
+              ]
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "json-unloaded",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "readableOwner": "review.json",
+            "callbackUnavailable": true,
+            "roundtripSame": true,
+            "reserialize": {
+              "value": "eyJwcmVmaXhlcyI6W3siaW5kZXgiOjAsImRlYnVnIjpmYWxzZSwib3duZXIiOiJyZXZpZXcuanNvbiIsInByaW9yaXR5Ijo0MDAsIm1ldGhvZFRva2VuIjoxMDA2NjMzMDQsIm1vZHVsZUdVSUQiOiI4OWM2MGE2ZS1kYTVkLTRmYjQtOGYzNi1lYTAzYzY3NzU4MWMiLCJhZnRlciI6W10sImJlZm9yZSI6W119XSwicG9zdGZpeGVzIjpbXSwidHJhbnNwaWxlcnMiOltdLCJmaW5hbGl6ZXJzIjpbXSwiaW5uZXJwcmVmaXhlcyI6W10sImlubmVycG9zdGZpeGVzIjpbXSwiVmVyc2lvbkNvdW50IjowfQ=="
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "json-unloaded",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "readableOwner": "review.json",
+            "callbackUnavailable": true,
+            "reserialize": {
+              "errors": [
+                "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+                "System.NullReferenceException: Object reference not set to an instance of an object."
+              ],
+              "stack": "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.\n ---> System.NullReferenceException: Object reference not set to an instance of an object.\n   at HarmonyLib.PatchJsonConverter.Write(Utf8JsonWriter writer, Patch patchValue, JsonSerializerOptions options)\n   at System.Text.Json.Serialization.Converters.ArrayConverter`2.OnWriteResume(Utf8JsonWriter writer, TElement[] array, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonCollectionConverter`2.OnTryWrite(Utf8JsonWriter writer, TCollection value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1.GetMemberAndWriteJson(Object obj, WriteStack& state, Utf8JsonWriter writer)\n   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryWrite(Utf8JsonWriter writer, T value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.WriteCore(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.Serialize(Utf8JsonWriter writer, T& rootValue, Object rootValueBoxed)\n   at System.Text.Json.JsonSerializer.WriteBytes[TValue](TValue& value, JsonTypeInfo`1 jsonTypeInfo)\n   at System.Text.Json.JsonSerializer.SerializeToUtf8Bytes[TValue](TValue value, JsonSerializerOptions options)\n   at HarmonyLib.PatchInfoSerialization.Serialize(PatchInfo patchInfo)\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   --- End of inner exception stack trace ---\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at Program.<>c__DisplayClass49_0.<JsonUnloaded>b__0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 438\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "method-selector-equality",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "lookup": {
+              "value": "present"
+            },
+            "equalsSelf": {
+              "value": true
+            },
+            "positionsUnchanged": true
+          },
+          "engine": "current"
+        },
+        {
+          "case": "method-selector-equality",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "lookup": {
+              "value": "present"
+            },
+            "equalsSelf": {
+              "value": true
+            },
+            "positionsUnchanged": true
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "inner-state",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "moduleIds": [
+              "89c60a6e-da5d-4fb4-8f36-ea03c677581c",
+              "e7360319-153d-44b6-98c4-47c0d61a8e9f"
+            ],
+            "expected": 3,
+            "actual": 3
+          },
+          "engine": "current"
+        },
+        {
+          "case": "named-state",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "moduleIds": [
+              "89c60a6e-da5d-4fb4-8f36-ea03c677581c",
+              "e7360319-153d-44b6-98c4-47c0d61a8e9f"
+            ],
+            "expected": 3,
+            "actual": 3
+          },
+          "engine": "current"
+        },
+        {
+          "case": "remove-prefix",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "beforeRemoval": 11,
+            "removeByMethod": {
+              "value": 10
+            },
+            "afterMethodRemoval": 10,
+            "removeByOwner": {
+              "value": 10
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "remove-postfix",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "beforeRemoval": 11,
+            "removeByMethod": {
+              "value": 10
+            },
+            "afterMethodRemoval": 10,
+            "removeByOwner": {
+              "value": 10
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "remove-finalizer",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "beforeRemoval": 11,
+            "removeByMethod": {
+              "value": 10
+            },
+            "afterMethodRemoval": 10,
+            "removeByOwner": {
+              "value": 10
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "selector-equality",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "innerMethodLookup": {
+              "value": "present"
+            },
+            "innerTargetLookup": {
+              "value": "present"
+            },
+            "innerMethodEqualsSelf": {
+              "value": true
+            },
+            "innerTargetEqualsSelf": {
+              "value": true
+            },
+            "fieldLookup": {
+              "value": "field"
+            },
+            "fieldEqualsSelf": {
+              "value": true
+            },
+            "registration": {
+              "errors": [
+                "System.Runtime.Serialization.SerializationException: Infix module 89c60a6e-da5d-4fb4-8f36-ea03c677581c has 2 loaded matches; exactly one is required"
+              ],
+              "stack": "System.Runtime.Serialization.SerializationException: Infix module 89c60a6e-da5d-4fb4-8f36-ea03c677581c has 2 loaded matches; exactly one is required\n   at HarmonyLib.InnerMethod.ResolveModule(String mvid) in /Users/ap/Projects/Harmony/Harmony/Public/InnerMethod.cs:line 218\n   at HarmonyLib.InnerTarget.ResolveMember() in /Users/ap/Projects/Harmony/Harmony/Public/InnerTarget.cs:line 215\n   at HarmonyLib.InnerTarget.Validate() in /Users/ap/Projects/Harmony/Harmony/Public/InnerTarget.cs:line 181\n   at HarmonyLib.InnerTarget.Snapshot() in /Users/ap/Projects/Harmony/Harmony/Public/InnerTarget.cs:line 242\n   at HarmonyLib.Patch..ctor(HarmonyMethod method, Int32 index, String owner) in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 115\n   at HarmonyLib.PatchInfo.<>c__DisplayClass35_0.<Add>b__3(HarmonyMethod method, Int32 i) in /Users/ap/Projects/Harmony/Harmony/Public/PatchInfo.cs:line 270\n   at System.Linq.Enumerable.SelectIterator[TSource,TResult](IEnumerable`1 source, Func`3 selector)+MoveNext()\n   at System.Collections.Generic.List`1.AddRange(IEnumerable`1 collection)\n   at HarmonyLib.PatchInfo.Add(String owner, HarmonyMethod[] add, Patch[] current, HarmonyPatchType role) in /Users/ap/Projects/Harmony/Harmony/Public/PatchInfo.cs:line 264\n   at HarmonyLib.PatchInfo.AddInnerPrefixes(String owner, HarmonyMethod[] methods) in /Users/ap/Projects/Harmony/Harmony/Public/PatchInfo.cs:line 158\n   at HarmonyLib.PatchProcessor.Patch() in /Users/ap/Projects/Harmony/Harmony/Public/PatchProcessor.cs:line 208\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            },
+            "positionsUnchanged": true
+          },
+          "engine": "current"
+        },
+        {
+          "case": "json-public-unloaded",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "readableOwner": "review.json",
+            "callbackUnavailable": true,
+            "roundtripSame": true,
+            "reserialize": {
+              "value": "{\"prefixes\":[{\"index\":0,\"debug\":false,\"owner\":\"review.json\",\"priority\":400,\"methodToken\":100663304,\"moduleGUID\":\"89c60a6e-da5d-4fb4-8f36-ea03c677581c\",\"after\":[],\"before\":[]}],\"postfixes\":[],\"transpilers\":[],\"finalizers\":[],\"innerprefixes\":[],\"innerpostfixes\":[],\"VersionCount\":0}"
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "proxy-retention",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "after10Cycles": 1,
+            "after20Cycles": 1,
+            "collectible": 1,
+            "sampleNames": [
+              "DMDASM.99B42B33.Cecil"
+            ]
+          },
+          "engine": "current"
+        },
+        {
+          "case": "wrapper-lifetime",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "retiredResult": 42,
+            "currentLookup": true,
+            "olderSharedLookup": true,
+            "unpatchedResult": 1,
+            "releasedCollected": true
+          },
+          "engine": "current"
+        },
+        {
+          "case": "inflight-wrapper",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "196e811758090fcd1af4f0b09d13006e4a001b657a978ab21fc31a8f10bda3d7",
+          "observations": {
+            "result": 1,
+            "originalMapped": true
+          },
+          "engine": "current"
+        }
+      ],
+      "verification": {
+        "passed": true,
+        "currentCases": 21,
+        "failures": []
+      }
+    },
+    "Release": {
+      "inputs": {
+        "current": {
+          "path": "/private/tmp/harmony-todo-fixes-zEJOS2/pinned-release/bin/Lib.Harmony/release_net9.0/0Harmony.dll",
+          "sha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099"
+        },
+        "baseline": {
+          "path": "/private/var/folders/s5/21qknfyd6hx49g8__bwbh4pr0000gn/T/harmony-review-verification-qm6a5yrn/base-source/Lib.Harmony/bin/Debug/net9.0/0Harmony.dll",
+          "sha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c"
+        }
+      },
+      "results": [
+        {
+          "case": "emitted-callback",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "Plain": {
+              "value": 99
+            },
+            "Handlers": {
+              "value": 99
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "emitted-callback",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "Plain": {
+              "value": 99
+            },
+            "Handlers": {
+              "value": 99
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "filter-constructor",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "result": {
+              "value": 7
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "filter-constructor",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "errors": [
+                "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+                "System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'."
+              ],
+              "stack": "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.\n ---> System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'.\n   at Program.AuthorFilter(IEnumerable`1 instructions, ILGenerator generator)\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   --- End of inner exception stack trace ---\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at HarmonyLib.CodeTranspiler.<>c__DisplayClass11_0.<GetResult>b__0(MethodInfo transpiler)\n   at System.Collections.Generic.List`1.ForEach(Action`1 action)\n   at HarmonyLib.CodeTranspiler.GetResult(ILGenerator generator, MethodBase method)\n   at HarmonyLib.MethodBodyReader.FinalizeILCodes(List`1 transpilers, Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCopier.Finalize(Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCreator.CreateReplacement()\n   at HarmonyLib.PatchFunctions.UpdateWrapper(MethodBase original, PatchInfo patchInfo)\n   at HarmonyLib.PatchProcessor.Patch()\n   at HarmonyLib.Harmony.Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler, HarmonyMethod finalizer)\n   at Program.<>c.<Filter>b__28_0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 202\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "filter-initializer",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "result": {
+              "value": 7
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "filter-initializer",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "errors": [
+                "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+                "System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'."
+              ],
+              "stack": "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.\n ---> System.MissingMethodException: Method not found: 'Void HarmonyLib.ExceptionBlock..ctor(HarmonyLib.ExceptionBlockType)'.\n   at Program.AuthorFilter(IEnumerable`1 instructions, ILGenerator generator)\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   --- End of inner exception stack trace ---\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at HarmonyLib.CodeTranspiler.<>c__DisplayClass11_0.<GetResult>b__0(MethodInfo transpiler)\n   at System.Collections.Generic.List`1.ForEach(Action`1 action)\n   at HarmonyLib.CodeTranspiler.GetResult(ILGenerator generator, MethodBase method)\n   at HarmonyLib.MethodBodyReader.FinalizeILCodes(List`1 transpilers, Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCopier.Finalize(Boolean stripLastReturn, Boolean& hasReturnCode, Boolean& methodEndsInDeadCode, List`1 endLabels)\n   at HarmonyLib.MethodCreator.CreateReplacement()\n   at HarmonyLib.PatchFunctions.UpdateWrapper(MethodBase original, PatchInfo patchInfo)\n   at HarmonyLib.PatchProcessor.Patch()\n   at HarmonyLib.Harmony.Patch(MethodBase original, HarmonyMethod prefix, HarmonyMethod postfix, HarmonyMethod transpiler, HarmonyMethod finalizer)\n   at Program.<>c.<Filter>b__28_0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 202\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "ordinary-names",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "ordinary-names",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "ordinary-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "ordinary-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "Prefix": {
+              "value": 42
+            },
+            "Postfix": {
+              "value": 3
+            },
+            "Finalizer": {
+              "value": 0
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "reverse-name",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "reverse-name",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "reverse-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "reverse-control",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "result": {
+              "value": 1
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "assembly-retention",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "after10Cycles": 1,
+            "after20Cycles": 1,
+            "collectible": 1,
+            "sampleNames": [
+              "DMDASM.8BDC18B1.Cecil"
+            ]
+          },
+          "engine": "current"
+        },
+        {
+          "case": "assembly-retention",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "after10Cycles": 0,
+            "after20Cycles": 0,
+            "collectible": 0,
+            "sampleNames": []
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "exception-markers",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "beginMarkers": 1,
+            "result": {
+              "value": [
+                7,
+                11,
+                3
+              ]
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "exception-markers",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "beginMarkers": 2,
+            "result": {
+              "value": [
+                7,
+                11,
+                3
+              ]
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "json-unloaded",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "readableOwner": "review.json",
+            "callbackUnavailable": true,
+            "roundtripSame": true,
+            "reserialize": {
+              "value": "eyJwcmVmaXhlcyI6W3siaW5kZXgiOjAsImRlYnVnIjpmYWxzZSwib3duZXIiOiJyZXZpZXcuanNvbiIsInByaW9yaXR5Ijo0MDAsIm1ldGhvZFRva2VuIjoxMDA2NjMzMDQsIm1vZHVsZUdVSUQiOiI5OGU4YmQ0NC1iYTEwLTQ3ZjQtYmE1ZS01Y2Y1NDNlNGU3OGYiLCJhZnRlciI6W10sImJlZm9yZSI6W119XSwicG9zdGZpeGVzIjpbXSwidHJhbnNwaWxlcnMiOltdLCJmaW5hbGl6ZXJzIjpbXSwiaW5uZXJwcmVmaXhlcyI6W10sImlubmVycG9zdGZpeGVzIjpbXSwiVmVyc2lvbkNvdW50IjowfQ=="
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "json-unloaded",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "readableOwner": "review.json",
+            "callbackUnavailable": true,
+            "reserialize": {
+              "errors": [
+                "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.",
+                "System.NullReferenceException: Object reference not set to an instance of an object."
+              ],
+              "stack": "System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.\n ---> System.NullReferenceException: Object reference not set to an instance of an object.\n   at HarmonyLib.PatchJsonConverter.Write(Utf8JsonWriter writer, Patch patchValue, JsonSerializerOptions options)\n   at System.Text.Json.Serialization.Converters.ArrayConverter`2.OnWriteResume(Utf8JsonWriter writer, TElement[] array, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonCollectionConverter`2.OnTryWrite(Utf8JsonWriter writer, TCollection value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1.GetMemberAndWriteJson(Object obj, WriteStack& state, Utf8JsonWriter writer)\n   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryWrite(Utf8JsonWriter writer, T value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.JsonConverter`1.WriteCore(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)\n   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.Serialize(Utf8JsonWriter writer, T& rootValue, Object rootValueBoxed)\n   at System.Text.Json.JsonSerializer.WriteBytes[TValue](TValue& value, JsonTypeInfo`1 jsonTypeInfo)\n   at System.Text.Json.JsonSerializer.SerializeToUtf8Bytes[TValue](TValue value, JsonSerializerOptions options)\n   at HarmonyLib.PatchInfoSerialization.Serialize(PatchInfo patchInfo)\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   --- End of inner exception stack trace ---\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\n   at Program.<>c__DisplayClass49_0.<JsonUnloaded>b__0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 438\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            }
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "method-selector-equality",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "lookup": {
+              "value": "present"
+            },
+            "equalsSelf": {
+              "value": true
+            },
+            "positionsUnchanged": true
+          },
+          "engine": "current"
+        },
+        {
+          "case": "method-selector-equality",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "9e4c4d6da373b39b891418eabe103ffe8546368ce2c62db850fa4522f7456c4c",
+          "observations": {
+            "lookup": {
+              "value": "present"
+            },
+            "equalsSelf": {
+              "value": true
+            },
+            "positionsUnchanged": true
+          },
+          "engine": "baseline"
+        },
+        {
+          "case": "inner-state",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "moduleIds": [
+              "98e8bd44-ba10-47f4-ba5e-5cf543e4e78f",
+              "08112acc-4e4d-43b7-bfd4-861d07e3a294"
+            ],
+            "expected": 3,
+            "actual": 3
+          },
+          "engine": "current"
+        },
+        {
+          "case": "named-state",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "moduleIds": [
+              "98e8bd44-ba10-47f4-ba5e-5cf543e4e78f",
+              "08112acc-4e4d-43b7-bfd4-861d07e3a294"
+            ],
+            "expected": 3,
+            "actual": 3
+          },
+          "engine": "current"
+        },
+        {
+          "case": "remove-prefix",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "beforeRemoval": 11,
+            "removeByMethod": {
+              "value": 10
+            },
+            "afterMethodRemoval": 10,
+            "removeByOwner": {
+              "value": 10
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "remove-postfix",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "beforeRemoval": 11,
+            "removeByMethod": {
+              "value": 10
+            },
+            "afterMethodRemoval": 10,
+            "removeByOwner": {
+              "value": 10
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "remove-finalizer",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "beforeRemoval": 11,
+            "removeByMethod": {
+              "value": 10
+            },
+            "afterMethodRemoval": 10,
+            "removeByOwner": {
+              "value": 10
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "selector-equality",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "innerMethodLookup": {
+              "value": "present"
+            },
+            "innerTargetLookup": {
+              "value": "present"
+            },
+            "innerMethodEqualsSelf": {
+              "value": true
+            },
+            "innerTargetEqualsSelf": {
+              "value": true
+            },
+            "fieldLookup": {
+              "value": "field"
+            },
+            "fieldEqualsSelf": {
+              "value": true
+            },
+            "registration": {
+              "errors": [
+                "System.Runtime.Serialization.SerializationException: Infix module 98e8bd44-ba10-47f4-ba5e-5cf543e4e78f has 2 loaded matches; exactly one is required"
+              ],
+              "stack": "System.Runtime.Serialization.SerializationException: Infix module 98e8bd44-ba10-47f4-ba5e-5cf543e4e78f has 2 loaded matches; exactly one is required\n   at HarmonyLib.InnerMethod.ResolveModule(String mvid) in /Users/ap/Projects/Harmony/Harmony/Public/InnerMethod.cs:line 218\n   at HarmonyLib.InnerTarget.ResolveMember() in /Users/ap/Projects/Harmony/Harmony/Public/InnerTarget.cs:line 215\n   at HarmonyLib.InnerTarget.Snapshot() in /Users/ap/Projects/Harmony/Harmony/Public/InnerTarget.cs:line 242\n   at HarmonyLib.Patch..ctor(HarmonyMethod method, Int32 index, String owner) in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 114\n   at HarmonyLib.PatchInfo.<>c__DisplayClass35_0.<Add>b__3(HarmonyMethod method, Int32 i) in /Users/ap/Projects/Harmony/Harmony/Public/PatchInfo.cs:line 270\n   at System.Linq.Enumerable.SelectIterator[TSource,TResult](IEnumerable`1 source, Func`3 selector)+MoveNext()\n   at System.Collections.Generic.List`1.AddRange(IEnumerable`1 collection)\n   at HarmonyLib.PatchInfo.Add(String owner, HarmonyMethod[] add, Patch[] current, HarmonyPatchType role) in /Users/ap/Projects/Harmony/Harmony/Public/PatchInfo.cs:line 264\n   at HarmonyLib.PatchProcessor.Patch() in /Users/ap/Projects/Harmony/Harmony/Public/PatchProcessor.cs:line 208\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+            },
+            "positionsUnchanged": true
+          },
+          "engine": "current"
+        },
+        {
+          "case": "json-public-unloaded",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "readableOwner": "review.json",
+            "callbackUnavailable": true,
+            "roundtripSame": true,
+            "reserialize": {
+              "value": "{\"prefixes\":[{\"index\":0,\"debug\":false,\"owner\":\"review.json\",\"priority\":400,\"methodToken\":100663304,\"moduleGUID\":\"98e8bd44-ba10-47f4-ba5e-5cf543e4e78f\",\"after\":[],\"before\":[]}],\"postfixes\":[],\"transpilers\":[],\"finalizers\":[],\"innerprefixes\":[],\"innerpostfixes\":[],\"VersionCount\":0}"
+            }
+          },
+          "engine": "current"
+        },
+        {
+          "case": "proxy-retention",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "after10Cycles": 1,
+            "after20Cycles": 1,
+            "collectible": 1,
+            "sampleNames": [
+              "DMDASM.AEC580EA.Cecil"
+            ]
+          },
+          "engine": "current"
+        },
+        {
+          "case": "wrapper-lifetime",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "retiredResult": 42,
+            "currentLookup": true,
+            "olderSharedLookup": true,
+            "unpatchedResult": 1,
+            "releasedCollected": true
+          },
+          "engine": "current"
+        },
+        {
+          "case": "inflight-wrapper",
+          "runtime": "9.0.19",
+          "architecture": "X64",
+          "harmonySha256": "4eb7563546b98b2a907728c82e1cd4da0c4445a8901cd411bbec74180e54f099",
+          "observations": {
+            "result": 1,
+            "originalMapped": true
+          },
+          "engine": "current"
+        }
+      ],
+      "verification": {
+        "passed": true,
+        "currentCases": 21,
+        "failures": []
+      }
+    }
+  }
+}

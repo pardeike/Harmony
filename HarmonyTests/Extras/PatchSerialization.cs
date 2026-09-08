@@ -49,6 +49,23 @@ namespace HarmonyTests.Extras
 
 #if NET5_0_OR_GREATER
 		[Test]
+		public void Ordinary_metadata_roundtrips_without_a_loaded_callback()
+		{
+#if !NET9_0_OR_GREATER
+			PatchInfoSerialization.useBinaryFormatter = false;
+#endif
+			var info = new PatchInfo
+			{
+				prefixes = [new Patch(0, "unloaded", Priority.High, ["before"], ["after"], true, 0x06000001, System.Guid.NewGuid().ToString("D"))]
+			};
+			var bytes = PatchInfoSerialization.Serialize(info);
+			var restored = PatchInfoSerialization.Deserialize(bytes);
+			Assert.That(restored.prefixes.Single().PatchMethod, Is.Null);
+			Assert.That(restored.prefixes.Single().owner, Is.EqualTo("unloaded"));
+			Assert.That(PatchInfoSerialization.Serialize(restored), Is.EqualTo(bytes));
+		}
+
+		[Test]
 		public void Serialize()
 		{
 			var method = SymbolExtensions.GetMethodInfo(() => ExpectedJSON(true));

@@ -259,7 +259,7 @@ namespace HarmonyLib
 			}
 			else if (injection.injectionType is InjectionType.Result or InjectionType.ResultRef or InjectionType.State)
 			{
-				key = injection.injectionType == InjectionType.State ? (object)(patch.DeclaringType?.AssemblyQualifiedName ?? "null") : injection.injectionType;
+				key = injection.injectionType == InjectionType.State ? (object)patch.DeclaringType ?? "null" : injection.injectionType;
 				sourceType = injection.injectionType == InjectionType.Result ? context.returnType : injection.parameterInfo.ParameterType.GetElementType();
 				isolated = injection.injectionType != InjectionType.Result || !sourceType.IsByRef;
 			}
@@ -390,7 +390,7 @@ namespace HarmonyLib
 			{
 				if (name.Length == 0) throw BindingError(patch, injection, context, "A synthetic local needs a name");
 				if (name.All(char.IsDigit)) throw BindingError(patch, injection, context, "The requested original local index is too large");
-				var key = $"{patch.DeclaringType?.AssemblyQualifiedName}:{injection.realName}";
+				var key = (patch.DeclaringType, injection.realName);
 				if (!context.variables.TryGetValue(key, out local))
 				{
 					local = new InjectionStorage(creator.config.DeclareLocal(ElementType(injection.parameterInfo.ParameterType)));
@@ -713,7 +713,7 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.State)
 				{
-					if (context.variables.TryGetValue(patch.DeclaringType?.AssemblyQualifiedName ?? "null", out var stateVar))
+					if (context.variables.TryGetValue((object)patch.DeclaringType ?? "null", out var stateVar))
 					{
 						if (outerContext != null) codes.AddRange(creator.EmitStorage(patch, injection, context, stateVar, true, tmpBoxVars));
 						else codes.Add(paramType.IsByRef ? stateVar.LoadAddress() : stateVar.Load());

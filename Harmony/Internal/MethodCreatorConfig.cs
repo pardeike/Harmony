@@ -78,7 +78,7 @@ namespace HarmonyLib
 		internal void AddCode(CodeInstruction code) => instructions.Add(code);
 		internal void AddCodes(IEnumerable<CodeInstruction> codes) => instructions.AddRange(codes);
 		internal void AddLocal(InjectionType type, LocalBuilder local) => localVariables.Add(type, local);
-		internal void AddLocal(string name, LocalBuilder local) => localVariables.Add(name, local);
+		internal void AddLocal(object name, LocalBuilder local) => localVariables.Add(name, local);
 		internal LocalBuilder GetLocal(InjectionType type) => localVariables[type];
 		internal InjectionStorage GetLocal(string name) => localVariables[name];
 		internal bool HasLocal(string name) => localVariables.TryGetValue(name, out _);
@@ -109,8 +109,17 @@ namespace HarmonyLib
 			var proxyAssemblies = new List<Assembly>();
 			foreach (var instruction in body.Instructions)
 			{
-				if (instruction.Operand is not DynamicMethodReference dynamicReference) continue;
-				var method = dynamicReference.DynamicMethod;
+				var method = instruction.Operand is DynamicMethodReference dynamicReference ? dynamicReference.DynamicMethod : null;
+				if (method is null && instruction.Operand is Mono.Cecil.MethodReference reference && !reference.HasThis
+					&& reference != patch.Definition && reference.ResolveReflection() is MethodInfo target)
+				{
+#if NET35
+					if (target.Module.Assembly is AssemblyBuilder) method = target;
+#else
+					if (target.Module.Assembly.IsDynamic) method = target;
+#endif
+				}
+				if (method is null) continue;
 				if (!proxies.TryGetValue(method, out var proxy))
 				{
 					var proxyMethod = DynamicMethodProxy.Create(method);
