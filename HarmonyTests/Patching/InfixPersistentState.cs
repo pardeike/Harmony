@@ -115,6 +115,7 @@ namespace HarmonyLibTests.Patching
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static void Collect() { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		static T OnFinishedThread<T>(Func<T> action)
 		{
 			// Mono can conservatively keep stale object/byref values in the caller's stack.
@@ -151,14 +152,24 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Old_wrapper_entering_after_unpatch_does_not_retain_new_state()
 		{
-			var processor = harmony.CreateProcessor(Method(nameof(Iterator))).AddInnerPrefix(Fix(nameof(Keep)));
-			var wrapper = processor.Patch();
-			using var iterator = Iterator(2).GetEnumerator();
-			processor.Unpatch(HarmonyPatchType.InnerPrefix, harmony.Id);
-			Assert.That(OnFinishedThread(() => wrapper.Invoke(null, [iterator])), Is.True);
+			var execution = OnFinishedThread(() =>
+			{
+				var processor = harmony.CreateProcessor(Method(nameof(Iterator)))
+					.AddInnerPrefix(Fix(nameof(Keep))).AddInnerPrefix(Fix(nameof(Count)));
+				var wrapper = processor.Patch();
+				var enumerator = Iterator(2).GetEnumerator();
+				processor.Unpatch(HarmonyPatchType.InnerPrefix, harmony.Id);
+				Assert.That(wrapper.Invoke(null, [enumerator]), Is.True);
+				Assert.That(enumerator.Current, Is.EqualTo(1));
+				Assert.That(wrapper.Invoke(null, [enumerator]), Is.True);
+				Assert.That(enumerator.Current, Is.EqualTo(1), "A saved wrapper must not create a new suspended lifetime after unpatching");
+				return Tuple.Create(enumerator, wrapper);
+			});
+			using var iterator = execution.Item1;
+			Assert.That(retained.Count, Is.EqualTo(2));
 			Collect();
-			Assert.That(retained.Single().IsAlive, Is.False);
-			GC.KeepAlive(iterator);
+			Assert.That(retained.All(item => !item.IsAlive), Is.True);
+			GC.KeepAlive(execution);
 		}
 		[Test]
 		public void Rejected_disposal_cleanup_preserves_the_installed_body()
