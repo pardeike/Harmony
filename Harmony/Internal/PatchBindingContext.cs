@@ -87,9 +87,6 @@ namespace HarmonyLib
 			receiverParameterType = receiver?.type;
 		}
 
-		internal PatchBindingContext(MethodBase method, Type receiverType, InjectionStorage? receiver, InjectionStorage[] arguments, VariableState variables)
-			: this(method, AccessTools.GetReturnedType(method), BindingParameter.From(method), receiverType, receiver, arguments, variables) { }
-
 		internal PatchBindingContext(MemberInfo member, Type returnType, BindingParameter[] parameters, Type receiverType,
 			InjectionStorage? receiver, InjectionStorage[] arguments, VariableState variables)
 		{

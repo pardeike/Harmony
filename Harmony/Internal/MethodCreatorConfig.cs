@@ -80,9 +80,6 @@ namespace HarmonyLib
 		internal void AddCodes(IEnumerable<CodeInstruction> codes) => instructions.AddRange(codes);
 		internal void AddLocal(InjectionType type, LocalBuilder local) => localVariables.Add(type, local);
 		internal void AddLocal(object name, LocalBuilder local) => localVariables.Add(name, local);
-		internal LocalBuilder GetLocal(InjectionType type) => localVariables[type];
-		internal InjectionStorage GetLocal(string name) => localVariables[name];
-		internal bool HasLocal(string name) => localVariables.TryGetValue(name, out _);
 
 		internal LocalBuilder DeclareLocal(Type type, bool isPinned = false) => il.DeclareLocal(type, isPinned);
 		internal Label DefineLabel() => il.DefineLabel();

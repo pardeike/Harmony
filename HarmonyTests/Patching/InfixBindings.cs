@@ -370,7 +370,7 @@ namespace HarmonyLibTests.Patching
 			var postfixes = new List<MethodInfo> { Method(nameof(ReadArray)) };
 			var config = new MethodCreatorConfig(Method(nameof(ValueOuter)), null, prefixes, postfixes, [], [], [], [], false);
 			var creator = new MethodCreator(config);
-			var inner = new PatchBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
+			var inner = TestTools.CreateBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
 				[new InjectionStorage(config.DeclareLocal(typeof(int)))], new VariableState());
 			var outer = new PatchBindingContext(Method(nameof(ValueOuter)), new VariableState());
 			_ = creator.SetupInfixBindings(inner, outer, prefixes, postfixes, []);
@@ -605,7 +605,7 @@ namespace HarmonyLibTests.Patching
 			var patch = Method(nameof(WriteValue));
 			var config = new MethodCreatorConfig(Method(nameof(ValueOuter)), null, [patch], [], [], [], [], [], false);
 			var creator = new MethodCreator(config);
-			var inner = new PatchBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
+			var inner = TestTools.CreateBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
 				[new InjectionStorage(config.DeclareLocal(typeof(int)))], new VariableState());
 			var outer = new PatchBindingContext(Method(nameof(ValueOuter)), new VariableState());
 			Assert.IsEmpty(creator.SetupInfixBindings(inner, outer, [patch], [], []));

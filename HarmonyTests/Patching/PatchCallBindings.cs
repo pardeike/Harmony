@@ -107,7 +107,7 @@ namespace HarmonyLibTests.Patching
 			var creator = new MethodCreator(config);
 			var arguments = called.GetParameters().Select(parameter => new InjectionStorage(config.DeclareLocal(parameter.ParameterType))).ToArray();
 			var variables = new VariableState();
-			var context = new PatchBindingContext(called, called.DeclaringType, null, arguments, variables);
+			var context = TestTools.CreateBindingContext(called, called.DeclaringType, null, arguments, variables);
 			for (var i = 0; i < arguments.Length; i++)
 				config.AddCodes([Ldarg[i], arguments[i].Store()]);
 			if (useArray)
@@ -144,7 +144,7 @@ namespace HarmonyLibTests.Patching
 			var config = new MethodCreatorConfig(outer, null, [patch], [], [], [], [], [], false);
 			var creator = new MethodCreator(config);
 			var receiver = new InjectionStorage(config.DeclareLocal(isStruct ? receiverType.MakeByRefType() : receiverType));
-			var context = new PatchBindingContext(called, receiverType, receiver, [], new VariableState());
+			var context = TestTools.CreateBindingContext(called, receiverType, receiver, [], new VariableState());
 			config.AddCodes([Ldarg_0, receiver.Store()]);
 			config.AddCodes(creator.EmitPatchCall(patch, context, false));
 			config.AddCodes([receiver.Load(), Call[called], Ret]);

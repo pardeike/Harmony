@@ -31,6 +31,8 @@ The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the sam
 
 - T16: immutable literal metadata caches its decoded value; matching compares values or exact floating-point bits without formatting candidates. The same warmed 10,000-double probe now allocates zero bytes (previously 880,000), and its control remains zero. All 72 operation and target tests pass on .NET 9 x64, including signed zero and distinct NaN payloads after serialization. Compact integer opcodes still use the existing boxed normalization path; no claim of zero allocation for every opcode.
 
+- T17: removed the unused local accessors, Infix member accessor, and obsolete position matcher. The constructor convenience now lives in TestTools; constructor zero-position rejection and the production position model remain covered. All 188 focused binding/position/execution tests pass on .NET 9 x64.
+
 ## Claims not added to TODO
 
 | Report item | Disposition |

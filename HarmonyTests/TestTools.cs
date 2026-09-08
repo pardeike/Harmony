@@ -24,6 +24,9 @@ namespace HarmonyLibTests
 
 	public static class TestTools
 	{
+		internal static PatchBindingContext CreateBindingContext(MethodBase method, Type receiverType, InjectionStorage? receiver, InjectionStorage[] arguments, VariableState variables)
+			=> new(method, AccessTools.GetReturnedType(method), BindingParameter.From(method), receiverType, receiver, arguments, variables);
+
 		// Note: This must be a property rather than a field, since the specific TestContext streams can change between tests.
 		static TextWriter LogWriterOut => TestContext.Out;
 		static TextWriter LogWriterError => TestContext.Error;
