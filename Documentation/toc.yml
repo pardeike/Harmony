@@ -1,6 +1,6 @@
 - name: Guides
   href: articles/
-  homepage: articles/intro.md
+  homepage: articles/index.md
 - name: API reference
   href: api/
   homepage: api/index.md

@@ -1,3 +1,5 @@
+- name: Guides
+  href: index.md
 - name: Start here
 - name: Introduction
   href: intro.md

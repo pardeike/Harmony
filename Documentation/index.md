@@ -9,13 +9,12 @@ _disableContribution: true
 
 <section class="intro-panel" aria-labelledby="harmony-3-preview">
   <div>
-    <div class="eyebrow">A .NET library for runtime patching</div>
-    <h1 id="harmony-3-preview">Change the code.<br><span>Keep the original.</span></h1>
+    <h1 id="harmony-3-preview">Runtime patching<br><span>for .NET</span></h1>
     <p class="intro-description">Run your code before, after, or inside existing methods. Combine patches from multiple authors without changing files on disk.</p>
-    <div class="intro-actions"><a class="harmony-button" href="articles/basics.md">Get started <span aria-hidden="true">↗</span></a><a href="api/index.md">Explore the API <span aria-hidden="true">→</span></a></div>
+    <div class="intro-actions"><a href="articles/basics.md">Get started <span aria-hidden="true">→</span></a><a href="api/index.md">Explore the API <span aria-hidden="true">→</span></a></div>
   </div>
   <div class="starter-panel">
-    <div class="starter-heading"><span class="icon-tile patch-postfix" aria-hidden="true">↳</span><span>Change a return value</span></div>
+    <div class="starter-heading">Change a return value</div>
     <pre><code class="lang-csharp">[HarmonyPatch(typeof(Player), "GetSpeed")]
 static class SpeedPatch
 {
