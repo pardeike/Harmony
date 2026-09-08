@@ -4,10 +4,6 @@ The eight confirmed findings from the first 2026-09-08 review are fixed. These f
 
 Keep reproduced defects, measured performance opportunities, and cleanup verified against the current code. Remove completed items; retain their evidence in the [first verification record](HarmonyTests.Compatibility/ReviewProbes/README.md) or [part-two verification record](HarmonyTests.Compatibility/ReviewProbes/PART2.md).
 
-## Verified defects
-
-- [ ] **T14 · P2 — Make Infix `Patch` equality and hashing independent of callback resolution.** After loading a second real copy of the callback module, a fresh record from `Harmony.GetPatchInfo` throws `SerializationException` in self-equality, `GetHashCode`, and `HashSet<Patch>`. A previously resolved record keeps working, and removal by the held callback now succeeds. Use stable stored identity for these operations while retaining strict ambiguity checks when rebuilding executable patches. See `Harmony/Public/Patch.cs`.
-
 ## Measured performance opportunities
 
 - [ ] **T15 · P3 — Reduce repeated metadata work within one rebuild.** Instrumenting one simple Infix registration counted two `ValidateSurvivingMetadata` passes, two checks each for V3/V4 capability, and 15 `ResolveModule` calls. Consolidate repeated work within a rebuild, preserving public serialization validation and checks for newly loaded duplicate modules. A global cache or unconditional `??=` shortcut must not hide changed loader state. Startup time savings have not been measured. See `PatchFunctions`, `PatchInfoSerialization`, `PatchInfoJsonConverter`, and `PatchInfo`.

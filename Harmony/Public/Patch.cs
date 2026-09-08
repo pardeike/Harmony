@@ -56,6 +56,7 @@ namespace HarmonyLib
 		public readonly InnerTarget innerTarget;
 
 		internal InnerTarget Target => innerTarget ?? (innerMethod is null ? null : new InnerTarget(innerMethod));
+		bool IsInfix => innerMethod is not null || innerTarget is not null;
 
 		/// <summary>The method of the static patch method</summary>
 		///
@@ -167,11 +168,16 @@ namespace HarmonyLib
 			return parameters.Length == 1 && parameters[0].ParameterType == typeof(MethodBase);
 		}
 
-		/// <summary>Determines whether patches are equal</summary>
+		/// <summary>Determines whether patches have the same callback. Infix records compare stored module and method identity,
+		/// without resolving the callback, and are distinct from ordinary patch records. Owners and selectors are not compared.</summary>
 		/// <param name="obj">The other patch</param>
 		/// <returns>true if equal</returns>
 		///
-		public override bool Equals(object obj) => ((obj is not null) && (obj is Patch) && (PatchMethod == ((Patch)obj).PatchMethod));
+		public override bool Equals(object obj)
+		{
+			if (obj is not Patch other || IsInfix != other.IsInfix) return false;
+			return IsInfix ? methodToken == other.methodToken && moduleGUID == other.moduleGUID : PatchMethod == other.PatchMethod;
+		}
 
 		/// <summary>Determines how patches sort</summary>
 		/// <param name="obj">The other patch</param>
@@ -182,6 +188,6 @@ namespace HarmonyLib
 		/// <summary>Hash function</summary>
 		/// <returns>A hash code</returns>
 		///
-		public override int GetHashCode() => PatchMethod.GetHashCode();
+		public override int GetHashCode() => IsInfix ? unchecked(methodToken * 397 ^ (moduleGUID?.GetHashCode() ?? 0)) : PatchMethod.GetHashCode();
 	}
 }

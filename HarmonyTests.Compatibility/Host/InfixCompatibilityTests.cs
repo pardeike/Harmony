@@ -184,6 +184,13 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 		}
 		else
 		{
+			SetStage("duplicate-patch-module-metadata-equality");
+			var fresh = a.ReadState(target);
+			object FirstPatch(object info) => ((Array)info.GetType().GetField("innerprefixes")!.GetValue(info)!).GetValue(0)!;
+			var warmPatch = FirstPatch(cached);
+			var coldPatch = FirstPatch(fresh);
+			Check.That(coldPatch.Equals(coldPatch) && coldPatch.Equals(warmPatch) && warmPatch.Equals(coldPatch), "Cold and cached patch equality must use the same durable identity.");
+			Check.That(new HashSet<object> { warmPatch }.Contains(coldPatch), "Cold patch hashing must agree with the cached record after a duplicate module load.");
 			SetStage("duplicate-patch-module-cached-candidate-rebuild");
 			Reject(() => a.StaticCall("PatchFunctions", "UpdateWrapper", target, cached));
 			SetStage("duplicate-patch-module-cold-public-rebuild");

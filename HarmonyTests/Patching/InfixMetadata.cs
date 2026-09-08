@@ -65,6 +65,28 @@ namespace HarmonyLibTests.Patching
 			Assert.Throws<ArgumentException>(state.ValidateSurvivingMetadata);
 		}
 
+		[Test]
+		public void Infix_patch_equality_uses_stored_identity_without_resolving_callbacks()
+		{
+			var callback = Method(nameof(Noop));
+			var target = new InnerMethod(Method(nameof(Call)));
+			var warm = new Patch(new HarmonyMethod(callback) { innerMethod = target }, 0, "first");
+			var cold = new Patch(1, "second", Priority.Low, [], [], false, callback.MetadataToken, callback.Module.ModuleVersionId.ToString(), target);
+			Assert.That(warm.Equals(cold) && cold.Equals(warm), Is.True);
+			Assert.That(new HashSet<Patch> { warm, cold }.Count, Is.EqualTo(1));
+			var missingModule = Guid.NewGuid().ToString();
+			var missing = new Patch(0, "missing", 0, [], [], false, callback.MetadataToken, missingModule, target);
+			var equivalent = new Patch(1, "other", 0, [], [], false, callback.MetadataToken, missingModule, innerTarget: InnerTarget.Constant(1));
+			Assert.That(missing.Equals(missing), Is.True);
+			Assert.That(new HashSet<Patch> { missing }.Contains(equivalent), Is.True);
+			Assert.That(missing.Equals(cold), Is.False);
+			Assert.Throws<SerializationException>(() => missing.GetValidatedInfixPatchMethod());
+			var ordinary = new Patch(new HarmonyMethod(callback), 0, "ordinary");
+			Assert.That(ordinary.Equals(new Patch(new HarmonyMethod(callback), 1, "other")), Is.True);
+			Assert.That(ordinary.GetHashCode(), Is.EqualTo(callback.GetHashCode()));
+			Assert.That(ordinary.Equals(warm) || warm.Equals(ordinary), Is.False, "Ordinary and durable Infix identity must not mix equality rules");
+		}
+
 		static IEnumerable<CodeInstruction> CountTranspiler(IEnumerable<CodeInstruction> instructions)
 		{
 			transpilerRuns++;

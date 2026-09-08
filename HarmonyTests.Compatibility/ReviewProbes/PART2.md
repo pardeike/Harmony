@@ -25,6 +25,8 @@ The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the sam
 
 - T13: the public annotation reader clears the marker on copied metadata. The raw attribute still carries it, and missing or ambiguous inner targets remain deferred until registration. Public list/merge/import paths retain the class target; all 29 metadata and target tests pass on .NET 9 x64.
 
+- T14: Infix equality and hashes now use stored callback module/token identity, independent of callback resolution. Ordinary records keep their existing behavior; ordinary and Infix records compare unequal so the two identity rules cannot violate equality consistency. Owners and selectors remain excluded. Nineteen metadata tests and both real duplicate-module compatibility cases pass on .NET 9 x64; executable rebuilds still reject ambiguity and normal removal recovers.
+
 ## Claims not added to TODO
 
 | Report item | Disposition |
