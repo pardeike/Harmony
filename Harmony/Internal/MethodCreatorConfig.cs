@@ -107,10 +107,12 @@ namespace HarmonyLib
 			if (body.ExceptionHandlers.Count == 0 && !returnsFromCalli) return patch.Generate();
 			var proxies = new Dictionary<MethodInfo, Mono.Cecil.MethodReference>();
 			var proxyAssemblies = new List<Assembly>();
+			// Legacy runtimes can bind emitted assemblies directly and must retain their competing-identity checks.
+			var proxyEmittedMethods = typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
 			foreach (var instruction in body.Instructions)
 			{
 				var method = instruction.Operand is DynamicMethodReference dynamicReference ? dynamicReference.DynamicMethod : null;
-				if (method is null && instruction.Operand is Mono.Cecil.MethodReference reference && !reference.HasThis
+				if (proxyEmittedMethods && method is null && instruction.Operand is Mono.Cecil.MethodReference reference && !reference.HasThis
 					&& reference != patch.Definition && reference.ResolveReflection() is MethodInfo target)
 				{
 #if NET35
