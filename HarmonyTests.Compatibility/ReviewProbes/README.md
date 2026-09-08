@@ -1,5 +1,7 @@
 # Review verification, 2026-09-08
 
+The separate [part-two record](PART2.md) covers the later Desktop report, its reproduced defects, measured opportunities, and discarded claims. Its open work is in [TODO.md](../../TODO.md).
+
 These probes verify the two supplied review findings and the nine candidate issues recovered from Claude session `57cd0364-3dfb-4990-84be-fe40bfbf1a16`. They use runtime calls, separately loaded plugin assemblies, and base/current comparisons. They do not change Harmony implementation code or run as part of the normal test suite.
 
 Eight defects were verified in the original review and have now been fixed and removed from [TODO.md](../../TODO.md). Three candidates remain excluded for the reasons below.

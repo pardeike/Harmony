@@ -7,7 +7,7 @@ using System.Runtime.Loader;
 using System.Security.Cryptography;
 using System.Text.Json;
 
-public static class Program
+public static partial class Program
 {
 	static readonly Dictionary<string, object?> observations = [];
 	static bool filterInitializer;
@@ -48,6 +48,13 @@ public static class Program
 			pluginPath = Path.GetFullPath(args[1]);
 			switch (args[0])
 			{
+				case "part2-shared-race": Part2SharedState(args[1], args[2], true); break;
+				case "part2-shared-sequential": Part2SharedState(args[1], args[2], false); break;
+				case "part2-annotations": Part2Annotations(); break;
+				case "part2-patch-equality": Part2PatchEquality(); break;
+				case "part2-passthrough": Part2Passthrough(); break;
+				case "part2-validation": Part2Validation(); break;
+				case "part2-constant-allocation": Part2ConstantAllocation(); break;
 				case "emitted-callback": EmittedCallback(); break;
 				case "inner-state": State(false, args[2]); break;
 				case "named-state": State(true, args[2]); break;

@@ -1,0 +1,277 @@
+{
+  "sourceRevision": "df8b5e0dd71e22c2259a1200a592ef8e079bb936",
+  "runtime": "9.0.19",
+  "architecture": "X64",
+  "assertions": "passed",
+  "engineSha256": {
+    "current": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+    "first": "52639db9f6ee26dd86761c7c189e4388e6fc02c6d88933e50f10d518c45445d4",
+    "second": "1de8986e165f2723998856a882905ad52eb08d6f6568fb7873df933d8ff8c47e"
+  },
+  "reports": {
+    "annotations": {
+      "case": "part2-annotations",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "rawMethodType": -2147483648,
+        "mergedMethodType": -2147483648,
+        "importedMethodType": 0,
+        "mergedResolvesOuter": false,
+        "importedResolvesOuter": true,
+        "classInstallationCount": 1
+      }
+    },
+    "patch-equality": {
+      "case": "part2-patch-equality",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "cachedHashStable": {
+          "value": true
+        },
+        "freshSelfEquality": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 09b2c411-1541-43e8-8b32-8a2d0b2d22cf has 2 loaded matches; exactly one is required"
+          ],
+          "stack": "System.Runtime.Serialization.SerializationException: Infix module 09b2c411-1541-43e8-8b32-8a2d0b2d22cf has 2 loaded matches; exactly one is required\n   at HarmonyLib.InnerMethod.ResolveModule(String mvid) in /Users/ap/Projects/Harmony/Harmony/Public/InnerMethod.cs:line 218\n   at HarmonyLib.Patch.GetValidatedInfixPatchMethod() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 128\n   at HarmonyLib.Patch.get_PatchMethod() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 69\n   at HarmonyLib.Patch.Equals(Object obj) in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 174\n   at Program.<>c__DisplayClass3_0.<Part2PatchEquality>b__1() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 79\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        },
+        "freshHashCode": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 09b2c411-1541-43e8-8b32-8a2d0b2d22cf has 2 loaded matches; exactly one is required"
+          ],
+          "stack": "System.Runtime.Serialization.SerializationException: Infix module 09b2c411-1541-43e8-8b32-8a2d0b2d22cf has 2 loaded matches; exactly one is required\n   at HarmonyLib.InnerMethod.ResolveModule(String mvid) in /Users/ap/Projects/Harmony/Harmony/Public/InnerMethod.cs:line 218\n   at HarmonyLib.Patch.GetValidatedInfixPatchMethod() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 128\n   at HarmonyLib.Patch.get_PatchMethod() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 69\n   at HarmonyLib.Patch.GetHashCode() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 185\n   at Program.<>c__DisplayClass3_0.<Part2PatchEquality>b__2() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 80\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        },
+        "freshHashSet": {
+          "errors": [
+            "System.Runtime.Serialization.SerializationException: Infix module 09b2c411-1541-43e8-8b32-8a2d0b2d22cf has 2 loaded matches; exactly one is required"
+          ],
+          "stack": "System.Runtime.Serialization.SerializationException: Infix module 09b2c411-1541-43e8-8b32-8a2d0b2d22cf has 2 loaded matches; exactly one is required\n   at HarmonyLib.InnerMethod.ResolveModule(String mvid) in /Users/ap/Projects/Harmony/Harmony/Public/InnerMethod.cs:line 218\n   at HarmonyLib.Patch.GetValidatedInfixPatchMethod() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 128\n   at HarmonyLib.Patch.get_PatchMethod() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 69\n   at HarmonyLib.Patch.GetHashCode() in /Users/ap/Projects/Harmony/Harmony/Public/Patch.cs:line 185\n   at System.Collections.Generic.HashSet`1.AddIfNotPresent(T value, Int32& location)\n   at Program.<>c__DisplayClass3_0.<Part2PatchEquality>b__3() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 81\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        },
+        "removeByHeldCallback": {
+          "value": 10
+        }
+      }
+    },
+    "passthrough": {
+      "case": "part2-passthrough",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "before": 12,
+        "invalidRegistration": {
+          "errors": [
+            "HarmonyLib.HarmonyException: Cannot wrap inner call Int32 Inner(Int32) at instruction 1 in Program::Outer(System.Int32) for review.part2.passthrough:Program::PlainPostfix(System.Int32&), review.part2.passthrough:Program::Part2InvalidPostfix(System.String): Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String.",
+            "System.ArgumentException: Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String."
+          ],
+          "stack": "HarmonyLib.HarmonyException: Cannot wrap inner call Int32 Inner(Int32) at instruction 1 in Program::Outer(System.Int32) for review.part2.passthrough:Program::PlainPostfix(System.Int32&), review.part2.passthrough:Program::Part2InvalidPostfix(System.String): Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String.\n ---> System.ArgumentException: Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String.\n   at HarmonyLib.MethodCreator.EmitPostfixes(IEnumerable`1 postfixes, PatchBindingContext context, Boolean passthroughPatches, PatchBindingContext outerContext) in /Users/ap/Projects/Harmony/Harmony/Internal/MethodCreator.cs:line 231\n   at HarmonyLib.Infix.EmitSite(MethodCreator creator, List`1 instructions, Int32 start, Int32 index, List`1 prefixes, List`1 postfixes, List`1 finalizers, PatchBindingContext context, PatchBindingContext outer) in /Users/ap/Projects/Harmony/Harmony/Internal/Infix.cs:line 234\n   at HarmonyLib.Infix.Rewrite(MethodCreator creator, IEnumerable`1 source) in /Users/ap/Projects/Harmony/Harmony/Internal/Infix.cs:line 77\n   --- End of inner exception stack trace ---\n   at HarmonyLib.Infix.Rewrite(MethodCreator creator, IEnumerable`1 source) in /Users/ap/Projects/Harmony/Harmony/Internal/Infix.cs:line 89\n   at HarmonyLib.MethodCreator.AddInfixes(IEnumerable`1 instructions) in /Users/ap/Projects/Harmony/Harmony/Internal/MethodCreator.cs:line 303\n   at HarmonyLib.MethodCreator.CreateReplacement() in /Users/ap/Projects/Harmony/Harmony/Internal/MethodCreator.cs:line 133\n   at HarmonyLib.PatchFunctions.UpdateWrapper(MethodBase original, PatchInfo patchInfo) in /Users/ap/Projects/Harmony/Harmony/Internal/PatchFunctions.cs:line 41\n   at HarmonyLib.PatchProcessor.Patch() in /Users/ap/Projects/Harmony/Harmony/Public/PatchProcessor.cs:line 211\n   at Program.<>c__DisplayClass5_0.<Part2Passthrough>b__0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 94\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        },
+        "after": 12,
+        "survivingPostfixes": 1
+      }
+    },
+    "validation": {
+      "case": "part2-validation",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "callsForOneInfixRegistration": {
+          "ResolveModule": 15,
+          "ValidateSurvivingMetadata": 2,
+          "RequiresInfixV3": 2,
+          "RequiresInfixV4": 2,
+          "RequiresInfixV2": 1
+        },
+        "result": 10
+      }
+    },
+    "constant-allocation": {
+      "case": "part2-constant-allocation",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "candidateCount": 10000,
+        "nonnumericControlBytes": 0,
+        "nonmatchingDoubleBytes": 880000
+      }
+    },
+    "shared-race": {
+      "case": "part2-shared-race",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "engines": [
+          "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+          "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "initializationErrors": [
+          null,
+          null
+        ],
+        "sharedStateAssemblyCount": 2,
+        "samePatchDictionary": false,
+        "thirdCurrentEngine": {
+          "errors": [
+            "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.",
+            "System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates"
+          ],
+          "stack": "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.\n ---> System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates\n   at HarmonyLib.HarmonySharedState.GetOrCreateSharedStateType() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 100\n   at HarmonyLib.HarmonySharedState..cctor() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 52\n   --- End of inner exception stack trace ---\n   at System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(RuntimeTypeHandle type)\n   at Program.<>c.<Part2SharedState>b__0_5() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 37\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        }
+      }
+    },
+    "shared-sequential": {
+      "case": "part2-shared-sequential",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "engines": [
+          "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+          "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "initializationErrors": [
+          null,
+          null
+        ],
+        "sharedStateAssemblyCount": 1,
+        "samePatchDictionary": true,
+        "thirdCurrentEngine": {
+          "value": true
+        }
+      }
+    }
+  },
+  "additionalConcurrentStartupTrials": [
+    {
+      "case": "part2-shared-race",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "engines": [
+          "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+          "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "initializationErrors": [
+          null,
+          null
+        ],
+        "sharedStateAssemblyCount": 2,
+        "samePatchDictionary": false,
+        "thirdCurrentEngine": {
+          "errors": [
+            "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.",
+            "System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates"
+          ],
+          "stack": "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.\n ---> System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates\n   at HarmonyLib.HarmonySharedState.GetOrCreateSharedStateType() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 100\n   at HarmonyLib.HarmonySharedState..cctor() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 52\n   --- End of inner exception stack trace ---\n   at System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(RuntimeTypeHandle type)\n   at Program.<>c.<Part2SharedState>b__0_5() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 38\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        }
+      }
+    },
+    {
+      "case": "part2-shared-race",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "engines": [
+          "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+          "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "initializationErrors": [
+          null,
+          null
+        ],
+        "sharedStateAssemblyCount": 2,
+        "samePatchDictionary": false,
+        "thirdCurrentEngine": {
+          "errors": [
+            "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.",
+            "System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates"
+          ],
+          "stack": "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.\n ---> System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates\n   at HarmonyLib.HarmonySharedState.GetOrCreateSharedStateType() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 100\n   at HarmonyLib.HarmonySharedState..cctor() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 52\n   --- End of inner exception stack trace ---\n   at System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(RuntimeTypeHandle type)\n   at Program.<>c.<Part2SharedState>b__0_5() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 38\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        }
+      }
+    },
+    {
+      "case": "part2-shared-race",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "engines": [
+          "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+          "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "initializationErrors": [
+          null,
+          null
+        ],
+        "sharedStateAssemblyCount": 2,
+        "samePatchDictionary": false,
+        "thirdCurrentEngine": {
+          "errors": [
+            "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.",
+            "System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates"
+          ],
+          "stack": "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.\n ---> System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates\n   at HarmonyLib.HarmonySharedState.GetOrCreateSharedStateType() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 100\n   at HarmonyLib.HarmonySharedState..cctor() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 52\n   --- End of inner exception stack trace ---\n   at System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(RuntimeTypeHandle type)\n   at Program.<>c.<Part2SharedState>b__0_5() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 38\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        }
+      }
+    },
+    {
+      "case": "part2-shared-race",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "engines": [
+          "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+          "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "initializationErrors": [
+          null,
+          null
+        ],
+        "sharedStateAssemblyCount": 2,
+        "samePatchDictionary": false,
+        "thirdCurrentEngine": {
+          "errors": [
+            "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.",
+            "System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates"
+          ],
+          "stack": "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.\n ---> System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates\n   at HarmonyLib.HarmonySharedState.GetOrCreateSharedStateType() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 100\n   at HarmonyLib.HarmonySharedState..cctor() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 52\n   --- End of inner exception stack trace ---\n   at System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(RuntimeTypeHandle type)\n   at Program.<>c.<Part2SharedState>b__0_5() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 38\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        }
+      }
+    },
+    {
+      "case": "part2-shared-race",
+      "runtime": "9.0.19",
+      "architecture": "X64",
+      "harmonySha256": "387aa53ccf6d9cd824fa8440b746446fc66684eecaee3003b441f0d106a0b076",
+      "observations": {
+        "engines": [
+          "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+          "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "initializationErrors": [
+          null,
+          null
+        ],
+        "sharedStateAssemblyCount": 2,
+        "samePatchDictionary": false,
+        "thirdCurrentEngine": {
+          "errors": [
+            "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.",
+            "System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates"
+          ],
+          "stack": "System.TypeInitializationException: The type initializer for 'HarmonyLib.HarmonySharedState' threw an exception.\n ---> System.InvalidOperationException: Multiple loaded HarmonySharedState types prevent safe shared patch updates\n   at HarmonyLib.HarmonySharedState.GetOrCreateSharedStateType() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 100\n   at HarmonyLib.HarmonySharedState..cctor() in /Users/ap/Projects/Harmony/Harmony/Internal/HarmonySharedState.cs:line 52\n   --- End of inner exception stack trace ---\n   at System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(RuntimeTypeHandle type)\n   at Program.<>c.<Part2SharedState>b__0_5() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 38\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+        }
+      }
+    }
+  ]
+}
