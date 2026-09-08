@@ -8,6 +8,8 @@ Adding a patch does not replace existing patches. Harmony combines them using it
 
 Use a **finalizer** for cleanup on success or failure, or to observe, replace, or suppress exceptions.
 
+[!include[Build and runtime phases](../includes/transpiler-phases.md)]
+
 The pseudocode below shows the replacement's structure.
 
 ### Anatomy of a patched method
@@ -23,6 +25,8 @@ An exception stops this sequence and reaches the caller unless a finalizer handl
 [!code-csharp[example](../examples/execution_without.cs?name=example)]
 
 ##### With Finalizer patches
+
+[!include[Patch execution](../includes/patch-flow.md)]
 
 Finalizers add try/catch handling around this sequence:
 

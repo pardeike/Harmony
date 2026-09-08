@@ -4,6 +4,8 @@ An Infix patches an operation **inside** a method: a call, property access, fiel
 
 The containing method is the **outer method**. For calls, the method being called is the **inner method**. For less common cases, see [Limits](patching-infix-limits.md) and [Recipes](patching-infix-authoring.md).
 
+[!include[Infix operation scope](../includes/infix-scope.md)]
+
 ## A working example
 
 This patch changes calls to `Helper.Decide` inside `Outer.Run`. `value` is the inner argument; `[HarmonyOuter] int mode` reads the outer argument.
@@ -200,6 +202,8 @@ For explicit targets, use `AccessTools.StateMachineMoveNext`, `AccessTools.Local
 ## Keep patch-owned values across await and yield
 
 Use `[HarmonyOuter, HarmonyArgument("name", ArgumentMode.Persistent)]` for a value that belongs to the whole async call or enumeration. It starts at `default`, survives suspensions, and is separate for concurrent calls and separate enumerators. The name is scoped to the actual patch declaring type. Prefixes, postfixes and finalizers in that type can share it; all bindings must agree on its type and lifetime.
+
+[!include[State across suspensions](../includes/persistent-state.md)]
 
 This patch makes `Sequence.Count(3)` yield `1, 2, 3`. Enumerating again starts at `1`:
 

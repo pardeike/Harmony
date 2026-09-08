@@ -1,6 +1,11 @@
 # Introduction
 
-_Harmony - a library for patching, replacing and decorating .NET methods during runtime._
+Harmony changes what .NET methods do while an application is running. Add code before or after a method, change its instructions, or patch a selected operation inside it. The original files stay unchanged.
+
+<div class="guide-links">
+  <a href="basics.md"><strong>Install and apply patches</strong><span>Set up the library and register your first patch class.</span></a>
+  <a href="patching.md"><strong>Choose a patch type</strong><span>Match the change you want to the API that fits.</span></a>
+</div>
 
 ## Prerequisites
 
@@ -58,7 +63,7 @@ Harmony lets you:
 - Modify its IL instructions
 - Combine patches from multiple authors on the same method
 
-![](https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/patch-logic.svg?sanitize=true)
+[!include[Patch execution](../includes/patch-flow.md)]
 
 ## Limits of runtime patching
 
@@ -88,4 +93,4 @@ Alternatively, manual patching with reflection:
 
 [!code-csharp[example](../examples/intro_manual.cs?name=example)]
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: ../images/note.png

@@ -1,6 +1,26 @@
-# What's New
+# What's new in v3
 
-Harmony 2 has come a long way since the last release 1.2.0.1. Here are all the changes:
+<div id="whats-new"></div>
+
+Harmony 3 is in preview development. These guides describe the new APIs on the `v3` branch; the [2.x documentation](https://harmony.pardeike.net/v2/) remains the reference for the current stable version.
+
+## Patch inside a method with Infix
+
+Use prefixes, postfixes, and finalizers around selected operations in an outer method. Select calls, property access, field reads and writes, construction, or literal loads. Other callers are unaffected by that Infix.
+
+[!include[Infix operation scope](../includes/infix-scope.md)]
+
+Start with the [working example](patching-infix.md#a-working-example), then explore [authoring recipes](patching-infix-authoring.md) and [limits](patching-infix-limits.md).
+
+## Work with generated bodies
+
+`InfixOuterBody.Auto` resolves supported iterator and async methods to their generated execution body. `ArgumentMode.Captured` accesses live captured variables; `ArgumentMode.Persistent` keeps patch-owned values across suspensions within one execution.
+
+Read about [generated bodies](patching-infix.md#generated-bodies-and-captured-variables) and [persistent state](patching-infix.md#keep-patch-owned-values-across-await-and-yield), including the supported compiler protocols and cleanup rules.
+
+## Earlier: Harmony 2
+
+The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.
 
 #### New
 

@@ -1,6 +1,6 @@
-# Patching
+# Auxiliary patch methods
 
-## Auxiliary patch methods
+<div id="patching"></div>
 
 Annotation patch classes can define helpers to prepare and clean up patching, or choose target methods in code.
 
@@ -14,7 +14,7 @@ Here is a simple example that patches a method inside a private type:
 
 [!code-csharp[example](../examples/basics.cs?name=target_method)]
 
-### Prepare
+## Prepare
 
 Harmony looks for a preparation method with one of these forms:
 
@@ -31,7 +31,7 @@ static bool MyInitializer(MethodBase original, ...)
 
 `Prepare` runs first with `original = null` for the whole class, then for each target method. Returning `false` skips the class or that target, respectively.
 
-### TargetMethod
+## TargetMethod
 
 To choose the target in code instead of annotations, define:
 
@@ -44,7 +44,7 @@ static MethodBase CalculateMethod(...)
 
 Return the target's `MethodBase`, never `null`. Use `Prepare()` to skip patching conditionally.
 
-### TargetMethods
+## TargetMethods
 
 To apply the same patches to several targets, return an enumeration of `MethodBase`:
 
@@ -61,7 +61,7 @@ A typical implementation would `yield` the results like this:
 
 Do not use an empty enumeration to skip patching; use `Prepare()` instead.
 
-### Cleanup
+## Cleanup
 
 For cleanup after patching, define:
 

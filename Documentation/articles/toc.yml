@@ -1,0 +1,48 @@
+- name: Start here
+- name: Introduction
+  href: intro.md
+- name: Install and apply patches
+  href: basics.md
+- name: Choose a patch type
+  href: patching.md
+- name: What's new in v3
+  href: new.md
+- name: Patch methods
+- name: Prefix
+  href: patching-prefix.md
+- name: Postfix
+  href: patching-postfix.md
+- name: Finalizer
+  href: patching-finalizer.md
+- name: Reverse patch
+  href: reverse-patching.md
+- name: Infix
+- name: Patch an operation
+  href: patching-infix.md
+- name: Recipes and instruction edits
+  href: patching-infix-authoring.md
+- name: Limits and unusual cases
+  href: patching-infix-limits.md
+- name: Transpilers
+- name: Rewrite instructions
+  href: patching-transpiler.md
+- name: CodeInstruction
+  href: patching-transpiler-codes.md
+- name: CodeMatcher
+  href: patching-transpiler-matcher.md
+- name: Coordinate your patches
+- name: Annotations and targets
+  href: annotations.md
+- name: Injected values
+  href: patching-injections.md
+- name: Ordering and priorities
+  href: priorities.md
+- name: Execution flow
+  href: execution.md
+- name: Prepare, target, and clean up
+  href: patching-auxiliary.md
+- name: Reference guides
+- name: Reflection and logging
+  href: utilities.md
+- name: Runtime edge cases
+  href: patching-edgecases.md

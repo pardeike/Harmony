@@ -1,4 +1,19 @@
-# Patching
+# Choose a patch type
+
+<div id="patching"></div>
+
+Start with the smallest change that expresses your intent. A postfix is often enough to adjust a return value; an Infix can target one operation without rewriting the surrounding instructions.
+
+| I want to… | Start with | Scope |
+| --- | --- | --- |
+| Change arguments or skip a method | [Prefix](patching-prefix.md) | One method invocation |
+| Read or change a result | [Postfix](patching-postfix.md) | After completion or a skip |
+| Clean up on failure or handle an exception | [Finalizer](patching-finalizer.md) | The patched method and its patches |
+| Change a selected call, field access, or other operation | [Infix](patching-infix.md) | Selected operations in an outer method |
+| Rewrite instructions directly | [Transpiler](patching-transpiler.md) | The replacement body, during generation |
+| Call a copy of an original implementation | [Reverse patch](reverse-patching.md) | A stub method you control |
+
+[!include[Patch execution](../includes/patch-flow.md)]
 
 ## Concept
 
@@ -122,4 +137,4 @@ A finalizer is a method that executes after all postfixes. It wraps the original
 - handle exceptions and suppress them
 - handle exceptions and alter them
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: ../images/note.png

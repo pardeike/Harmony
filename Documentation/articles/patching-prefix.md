@@ -1,6 +1,6 @@
-# Patching
+# Prefix
 
-## Prefix
+<div id="patching"></div>
 
 A prefix is a method that is executed before the original method. It is commonly used to:
 
@@ -11,11 +11,13 @@ A prefix is a method that is executed before the original method. It is commonly
 
 ![note] Returning `false` skips the original and later prefixes that Harmony considers able to affect it. A prefix returning `bool`, or taking writable or reference-type arguments, normally falls in that group. The injections `__instance`, `__originalMethod`, and `__state` are exceptions to the argument check. Other prefixes still run, as do postfixes and finalizers. This is a signature check, not an analysis of what your code does.
 
-### Reading and changing arguments
+[!include[Patch execution](../includes/patch-flow.md)]
+
+## Reading and changing arguments
 
 [!code-csharp[example](../examples/patching-prefix.cs?name=args)]
 
-### Changing the result and skipping the original
+## Changing the result and skipping the original
 
 Use `ref __result` to supply a result, then skip the original so it does not overwrite your value. Its type must match the original return type or be assignable from it.
 
@@ -29,7 +31,7 @@ The prefix's boolean return controls execution; it is not the original method's 
 
 [!code-csharp[example](../examples/patching-prefix.cs?name=skip_maybe)]
 
-### Passing state between prefix and postfix
+## Passing state between prefix and postfix
 
 Set `__state` using `ref` or `out` in a prefix, then read it in a postfix. Use your own type to group several values.
 
@@ -37,4 +39,4 @@ Set `__state` using `ref` or `out` in a prefix, then read it in a postfix. Use y
 
 [!code-csharp[example](../examples/patching-prefix.cs?name=state)]
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: ../images/note.png

@@ -1,6 +1,6 @@
-
-- name: Harmony
+- name: Guides
   href: articles/
-- name: API Documentation
+  homepage: articles/intro.md
+- name: API reference
   href: api/
   homepage: api/index.md

@@ -1,6 +1,6 @@
-# Patching
+# CodeInstruction
 
-## CodeInstruction
+<div id="patching"></div>
 
 The workhorse of a transpiler is the type [CodeInstruction](../api/HarmonyLib.CodeInstruction.yml).
 
@@ -28,7 +28,7 @@ Do **not** call `ILGenerator.Emit()`: return instructions and let Harmony emit t
 
 Prefer reusing existing operands for labels and locals. Find a distinctive instruction and take its operand instead of hard-coding an index.
 
-#### Indirect calls
+## Indirect calls
 
 For a `calli` instruction read from a method body, Harmony supplies an [InlineSignature](../api/HarmonyLib.InlineSignature.yml) operand. Transpilers can inspect its parameter types, return type, calling convention, and instance flags without accessing Harmony internals.
 
@@ -50,23 +50,23 @@ The existing calling-convention representation uses `CallingConvention.Winapi` f
 
 Making this model public does not expand the reader's existing signature support. Generic type/method parameter entries, varargs sentinels, and pointer/by-reference/array wrappers around a nested function-pointer signature are not currently supported by the reader.
 
-#### Local variables
+## Local variables
 
 Existing local operands can be numeric indices or `LocalBuilder` objects. Handle both. To add a local, call [ILGenerator.DeclareLocal](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.declarelocal); to reuse one, copy its existing operand.
 
-#### Labels
+## Labels
 
 Jumps use a [Label](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.definelabel) operand. The destination instruction holds that label in its `labels` list. To add a jump, call `ILGenerator.DefineLabel()`, attach the label to the destination, and use it as the jump's operand.
 
-#### Try/catch boundaries
+## Try/catch boundaries
 
 An instruction's `blocks` list marks exception boundaries, including filters. Harmony builds the exception metadata from these markers. When moving or inserting code, preserve boundary order and keep handler-entry labels on their handler instructions.
 
-#### Convenience methods
+## Convenience methods
 
 [CodeInstruction extension methods](../api/HarmonyLib.CodeInstructionExtensions.yml) help create, find, and compare instructions and their operands.
 
-#### Pitfalls
+## Pitfalls
 
 Removing an instruction can orphan its labels or exception boundaries. Copying one can duplicate them. Both can produce invalid IL.
 

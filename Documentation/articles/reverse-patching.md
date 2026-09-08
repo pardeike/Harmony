@@ -1,6 +1,6 @@
-# Patching
+# Reverse patch
 
-## Reverse Patch
+<div id="patching"></div>
 
 A reverse patch copies the original, or part of it, into your own callable stub. Typical uses are:
 
@@ -12,7 +12,7 @@ A reverse patch copies the original, or part of it, into your own callable stub.
 
 ![note] A reverse patch is a frozen copy. Use a delegate or reflection if you want calls to follow later patches instead.
 
-### Defining a reverse patch
+## Defining a reverse patch
 
 Mark your stub with `[HarmonyReversePatch]` and identify the original with patch annotations:
 
@@ -22,7 +22,7 @@ Match the original's signature. A static stub for an instance method takes that 
 
 [!code-csharp[example](../examples/reverse-patching.cs?name=example)]
 
-### Types of reverse patches
+## Types of reverse patches
 
 The HarmonyReversePatch attribute comes in two alternatives:
 ```cs
@@ -36,7 +36,7 @@ The default is `Original` so you can simply write `[HarmonyReversePatch]`.
 
 **Snapshot** includes the ordinary transpilers registered at that moment, but no prefixes, postfixes, finalizers, or Infixes. Later patches do not update your stub.
 
-### Changing the content of the original
+## Changing the content of the original
 
 A **reverse patch transpiler** edits the IL copied into your stub. You can use it to extract just the part you need.
 
@@ -49,4 +49,4 @@ To define a reverse patch transpiler, you simply put a transpiler **into** your 
 
 [!code-csharp[example](../examples/reverse-patching.cs?name=transpiler)]
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: ../images/note.png

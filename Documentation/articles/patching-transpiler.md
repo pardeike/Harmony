@@ -1,10 +1,12 @@
-# Patching
+# Transpiler
 
-## Transpiler
+<div id="patching"></div>
 
 A transpiler edits the original method's IL instructions when Harmony builds a replacement. It does not run each time the original is called.
 
 Use a transpiler when other patch types cannot express your change. You can insert calls, remove instructions, or change values and operands. Change as little as possible, and match distinctive instructions rather than fixed offsets so other mods and game updates have room to coexist.
+
+[!include[Build and runtime phases](../includes/transpiler-phases.md)]
 
 The basic API of a transpiler looks like this:
 

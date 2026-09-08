@@ -20,7 +20,7 @@
     ],
     "content": [
       { "files": [ "api/**.yml", "api/index.md" ] },
-      { "files": [ "articles/**.md", "toc.yml", "index.md" ] }
+      { "files": [ "articles/**.md", "articles/toc.yml", "toc.yml", "index.md" ] }
     ],
     "resource": [
       { "files": [ "images/**" ] }
@@ -28,12 +28,28 @@
     "dest": "../docs",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
-    "template": [ "default", "templates/harmony" ],
+    "template": [ "default", "modern", "templates/harmony" ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,
     "keepFileLink": false,
     "cleanupCacheHistory": false,
-    "disableGitFeatures": false
+    "disableGitFeatures": false,
+    "globalMetadata": {
+      "_appTitle": "Harmony 3",
+      "_appName": "Harmony",
+      "_appLogoPath": "images/harmony-logo.png",
+      "_appFaviconPath": "images/harmony-logo.png",
+      "_lang": "en",
+      "_enableSearch": true,
+      "_disableNewTab": true,
+      "_appFooter": "<span>By Andreas Pardeike \u00b7 <a href=\"https://github.com/pardeike/Harmony/blob/v3/LICENSE\">MIT license</a></span><nav aria-label=\"Footer\"><a href=\"https://harmony.pardeike.net/v2/\">2.x docs</a><a href=\"https://harmony.pardeike.net/v3/\">3.x docs</a><a href=\"https://discord.gg/xXgghXR\">Discord</a><a href=\"https://github.com/pardeike/Harmony/issues\">Report an issue</a></nav>"
+    },
+    "fileMetadata": {
+      "_disableTocFilter": {
+        "articles/**.md": true,
+        "index.md": true
+      }
+    }
   }
 }

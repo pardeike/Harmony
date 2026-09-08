@@ -1,10 +1,10 @@
-# Patching
+# CodeMatcher
 
-## CodeMatcher
+<div id="patching"></div>
 
 [CodeMatcher](../api/HarmonyLib.CodeMatcher.yml) is a cursor over IL instructions. Use [CodeMatch](../api/HarmonyLib.CodeMatch.yml) and [Code](../api/HarmonyLib.Code.yml) to find a sequence, then insert, remove, or replace instructions.
 
-### Use case
+## Use case
 
 Suppose `DamageHandler.Apply()` calls `Kill()` when a character dies. We want that call to invoke our `OnDeath` event, without changing calls to `Kill()` elsewhere.
 
@@ -26,4 +26,4 @@ For several matching calls, use `Repeat()`. It passes the current matcher to you
 
 ![note] `Repeat()` repeats `Match...()` searches, not `Search...()`. If your action needs another `Match...()`, use a clone so you do not replace the pattern being repeated.
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: ../images/note.png

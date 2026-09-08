@@ -1,8 +1,18 @@
 # Harmony API
 
-Use the navigation to the left to drill down into the Harmony API documentation.
+Types and members are generated from Harmony's public API. Use the navigation to find a type, the member index to jump within a class, or search across both guides and API reference.
 
-Here is a selected list of classes:
+| Task | API | Guide |
+| --- | --- | --- |
+| Apply or remove patches | [Harmony](xref:HarmonyLib.Harmony), [PatchProcessor](xref:HarmonyLib.PatchProcessor) | [Install and apply patches](../articles/basics.md) |
+| Declare a patch target | [HarmonyPatch](xref:HarmonyLib.HarmonyPatch), [HarmonyMethod](xref:HarmonyLib.HarmonyMethod) | [Annotations](../articles/annotations.md) |
+| Patch a selected operation | [HarmonyInfix](xref:HarmonyLib.HarmonyInfix), [InnerTarget](xref:HarmonyLib.InnerTarget) | [Infix](../articles/patching-infix.md) |
+| Find a member with reflection | [AccessTools](xref:HarmonyLib.AccessTools), [Traverse](xref:HarmonyLib.Traverse) | [Utilities](../articles/utilities.md) |
+| Match and edit instructions | [CodeMatcher](xref:HarmonyLib.CodeMatcher), [CodeInstruction](xref:HarmonyLib.CodeInstruction) | [Transpilers](../articles/patching-transpiler.md) |
+
+## Browse by purpose
+
+These entry points cover the most common tasks. The navigation includes the full generated reference.
 
 ### Basics
 
