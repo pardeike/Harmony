@@ -19,6 +19,10 @@ T12 differs from the first review's excluded T07. That earlier probe started wit
 
 The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the same current runtime implementation. The default-version copy is the third engine. Production code is unchanged between `aad5e346` and `df8b5e0d`; the intervening commits only strengthen GC probes.
 
+## Fix verification
+
+- T12: discovery, creation, and field initialization now share the AppDomain lock across Harmony copies. Fresh-process concurrent and sequential compatibility cases pass on .NET 9 x64, including ordinary patch/rebuild/removal and a later third copy sharing all three dictionaries. These cases also run in compatibility CI. Already split state remains rejected; older copies without this lock still need host coordination.
+
 ## Claims not added to TODO
 
 | Report item | Disposition |

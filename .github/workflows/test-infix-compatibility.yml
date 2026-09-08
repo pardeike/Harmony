@@ -78,6 +78,20 @@ jobs:
           dotnet build HarmonyTests.Compatibility/artifacts/completion-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-completion" --nologo -v:q
           dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
           dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.5.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
+      - name: Run concurrent and sequential shared-state startup
+        env:
+          FRAMEWORK: ${{ matrix.framework }}
+          BACKEND: ${{ matrix.backend }}
+          REQUIRE_COEXISTENCE: '1'
+          CASE_FILTER: shared-startup-
+        run: |
+          export RUNTIME_HOST="$(command -v dotnet)"
+          export PRIOR_INFIX_HARMONY="$RUNNER_TEMP/compat-completion/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          export PRIOR_INFIX_STATE_VERSION=3
+          export CURRENT_HARMONY="$RUNNER_TEMP/compat-first/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          export SECOND_CURRENT_HARMONY="$RUNNER_TEMP/compat-second/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          export REPORT_DIRECTORY="$GITHUB_WORKSPACE/HarmonyTests.Compatibility/reports/shared-startup-$FRAMEWORK-$BACKEND"
+          bash HarmonyTests.Compatibility/run.sh
       - name: Run cold extended identities and actual V3 rejection and recovery
         env:
           FRAMEWORK: ${{ matrix.framework }}

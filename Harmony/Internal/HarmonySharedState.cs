@@ -48,47 +48,52 @@ namespace HarmonyLib
 
 		static HarmonySharedState()
 		{
-			// create singleton type
-			var type = GetOrCreateSharedStateType();
-			AppDomain.CurrentDomain.TypeResolve += (_, args) => args.Name == name ? type.Assembly : null;
+			// The AppDomain instance is shared even when each plugin loads its own Harmony assembly.
+			// Discovery and field initialization must use the same cross-copy lock as type creation.
+			lock (AppDomain.CurrentDomain)
+			{
+				// create singleton type
+				var type = GetOrCreateSharedStateType();
+				AppDomain.CurrentDomain.TypeResolve += (_, args) => args.Name == name ? type.Assembly : null;
 
-			// this field is useed to find methods from stackframes in Mono
-			if (AccessTools.IsMonoRuntime && AccessTools.Field(typeof(StackFrame), "methodAddress") is FieldInfo field)
-				methodAddressRef = AccessTools.FieldRefAccess<StackFrame, long>(field);
+				// this field is useed to find methods from stackframes in Mono
+				if (AccessTools.IsMonoRuntime && AccessTools.Field(typeof(StackFrame), "methodAddress") is FieldInfo field)
+					methodAddressRef = AccessTools.FieldRefAccess<StackFrame, long>(field);
 
-			// copy 'actualVersion' over to our fields
-			var versionField = type.GetField("version");
-			if ((int)versionField.GetValue(null) == 0)
-				versionField.SetValue(null, internalVersion);
-			actualVersion = (int)versionField.GetValue(null);
+				// copy 'actualVersion' over to our fields
+				var versionField = type.GetField("version");
+				if ((int)versionField.GetValue(null) == 0)
+					versionField.SetValue(null, internalVersion);
+				actualVersion = (int)versionField.GetValue(null);
 
-			// get or initialize global 'state' field
-			var stateField = type.GetField("state");
-			if (stateField.GetValue(null) is null)
-				stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
+				// get or initialize global 'state' field
+				var stateField = type.GetField("state");
+				if (stateField.GetValue(null) is null)
+					stateField.SetValue(null, new Dictionary<MethodBase, byte[]>());
 
-			// get or initialize global 'originals' field
-			var originalsField = type.GetField("originals");
-			if (originalsField != null && originalsField.GetValue(null) is null)
-				originalsField.SetValue(null, new Dictionary<MethodInfo, MethodBase>());
+				// get or initialize global 'originals' field
+				var originalsField = type.GetField("originals");
+				if (originalsField != null && originalsField.GetValue(null) is null)
+					originalsField.SetValue(null, new Dictionary<MethodInfo, MethodBase>());
 
-			// get or initialize global 'originalsMono' field
-			var originalsMonoField = type.GetField("originalsMono");
-			if (originalsMonoField != null && originalsMonoField.GetValue(null) is null)
-				originalsMonoField.SetValue(null, new Dictionary<long, MethodBase[]>());
+				// get or initialize global 'originalsMono' field
+				var originalsMonoField = type.GetField("originalsMono");
+				if (originalsMonoField != null && originalsMonoField.GetValue(null) is null)
+					originalsMonoField.SetValue(null, new Dictionary<long, MethodBase[]>());
 
-			// copy 'state' over to our fields
-			state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
+				// copy 'state' over to our fields
+				state = (Dictionary<MethodBase, byte[]>)stateField.GetValue(null);
 
-			// copy 'originals' over to our fields
-			originals = [];
-			if (originalsField != null) // may not exist in older versions
-				originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
+				// copy 'originals' over to our fields
+				originals = [];
+				if (originalsField != null) // may not exist in older versions
+					originals = (Dictionary<MethodInfo, MethodBase>)originalsField.GetValue(null);
 
-			// copy 'originalsMono' over to our fields
-			originalsMono = [];
-			if (originalsMonoField != null) // may not exist in older versions
-				originalsMono = (Dictionary<long, MethodBase[]>)originalsMonoField.GetValue(null);
+				// copy 'originalsMono' over to our fields
+				originalsMono = [];
+				if (originalsMonoField != null) // may not exist in older versions
+					originalsMono = (Dictionary<long, MethodBase[]>)originalsMonoField.GetValue(null);
+			}
 		}
 
 		// creates a dynamic 'global' type if it does not exist

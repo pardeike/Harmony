@@ -36,7 +36,7 @@ internal sealed class Engine : AssemblyLoadContext
 
 	protected override Assembly? Load(AssemblyName name)
 	{
-		events.Add(new { Stage = "resolve", Context = Name, Request = name.FullName });
+		lock (events) events.Add(new { Stage = "resolve", Context = Name, Request = name.FullName });
 		if (name.Name == typeof(Targets).Assembly.GetName().Name) return typeof(Targets).Assembly;
 		if (name.Name == "0Harmony") return Harmony;
 		if (fixtures.TryGetValue(name.Name!, out var fixture)) return fixture;

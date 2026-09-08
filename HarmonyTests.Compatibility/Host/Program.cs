@@ -22,10 +22,10 @@ internal static class Program
 		var options = JsonSerializer.Deserialize<Options>(File.ReadAllText(args[1]))!;
 		AppContext.SetSwitch("System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization", options.Backend == "binary");
 		List<object> events = [];
-		AppDomain.CurrentDomain.AssemblyLoad += (_, e) => events.Add(new { Stage = "assembly-load", e.LoadedAssembly.FullName, Context = Platform.Context(e.LoadedAssembly) });
+		AppDomain.CurrentDomain.AssemblyLoad += (_, e) => { lock (events) events.Add(new { Stage = "assembly-load", e.LoadedAssembly.FullName, Context = Platform.Context(e.LoadedAssembly) }); };
 		AppDomain.CurrentDomain.TypeResolve += (_, e) =>
 		{
-			events.Add(new { Stage = "type-resolve-observed", e.Name, RequestingAssembly = e.RequestingAssembly?.FullName });
+			lock (events) events.Add(new { Stage = "type-resolve-observed", e.Name, RequestingAssembly = e.RequestingAssembly?.FullName });
 			return null;
 		};
 		var tests = new InfixCompatibilityTests(options, events);
@@ -108,6 +108,8 @@ internal static class Program
 		}
 		if (!string.IsNullOrEmpty(feature))
 		{
+			foreach (var variant in new[] { "concurrent", "sequential" })
+				cases.Add(("shared-startup-" + variant, new("shared-startup", current, newFixture, secondCurrent, secondFixture, backend, feature, framework, variant)));
 			if (framework != "net472") cases.Add(("concurrent-old-candidate", new("concurrent-old-candidate", old, oldFixture, current, newFixture, backend, feature, framework)));
 			cases.Add(("prepare-false-missing-target", new("prepare-false", current, newFixture, Backend: backend, Feature: feature, Framework: framework)));
 			foreach (var variant in new[] { "attribute", "member" })

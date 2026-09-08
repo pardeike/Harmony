@@ -6,8 +6,6 @@ Keep reproduced defects, measured performance opportunities, and cleanup verifie
 
 ## Verified defects
 
-- [ ] **T12 · P2 — Serialize shared-state startup across Harmony copies.** Two current copies starting together create two `HarmonySharedState` assemblies and separate patch dictionaries; a third current copy then fails initialization. Reproduced in six fresh processes; sequential startup creates one shared dictionary. Protect discovery, creation, and initialization of the shared fields as one cross-copy operation. Keep the rejection of already split state. See `Harmony/Internal/HarmonySharedState.cs`.
-
 - [ ] **T13 · P2 — Normalize the Infix marker in public annotation results.** `GetMergedFromMethod` and the equivalent `GetFromMethod`/`Merge` path expose `methodType = -2147483648`. Merging this over a class's `MethodType.Normal` loses the valid outer target; importing the same callback through `new HarmonyMethod(method)` works. Return usable metadata from the public annotation API while preserving the raw declaration marker needed to reject older readers. See `Harmony/Public/HarmonyMethod.cs` and `Harmony/Public/Attributes.cs`.
 
 - [ ] **T14 · P2 — Make Infix `Patch` equality and hashing independent of callback resolution.** After loading a second real copy of the callback module, a fresh record from `Harmony.GetPatchInfo` throws `SerializationException` in self-equality, `GetHashCode`, and `HashSet<Patch>`. A previously resolved record keeps working, and removal by the held callback now succeeds. Use stable stored identity for these operations while retaining strict ambiguity checks when rebuilding executable patches. See `Harmony/Public/Patch.cs`.

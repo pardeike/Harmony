@@ -1,5 +1,5 @@
-using System.Reflection;
 using System.Collections;
+using System.Reflection;
 using System.Text;
 
 namespace HarmonyCompatibility;
@@ -41,6 +41,11 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 		SetStage("load-b");
 		var b = new Engine("B", options.EngineB, options.FixtureB, events, options.Loader == "b-default", options.ContextualReflection, options.Loader == "reflection-routed");
 		Backend(b);
+		if (options.Case == "shared-startup")
+		{
+			SharedStartup(a, b);
+			return;
+		}
 		if (options.Case.StartsWith("persistent-", StringComparison.Ordinal))
 		{
 			OrdinaryControl(a, b);
@@ -85,6 +90,36 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 			return;
 		}
 		throw new ArgumentException("Unknown compatibility case: " + options.Case);
+	}
+
+	private void SharedStartup(Engine a, Engine b)
+	{
+		SetStage("shared-startup-" + options.Variant);
+		var types = new[] { a.Harmony, b.Harmony }.Select(assembly => assembly.GetType("HarmonyLib.HarmonySharedState", true)!).ToArray();
+		Check.That(!ReferenceEquals(types[0], types[1]), "Startup requires two independently loaded Harmony types.");
+		Check.That(!AppDomain.CurrentDomain.GetAssemblies().Any(assembly => assembly.GetName().Name == "HarmonySharedState"), "Shared state was initialized before the startup test.");
+		if (options.Variant == "concurrent")
+		{
+			using var gate = new Barrier(2);
+			var tasks = types.Select(type => Task.Factory.StartNew(() =>
+			{
+				Check.That(gate.SignalAndWait(TimeSpan.FromSeconds(10)), "Concurrent startup did not reach the gate.");
+				System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+			}, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default)).ToArray();
+			Check.That(Task.WaitAll(tasks, TimeSpan.FromSeconds(20)), "Concurrent startup did not finish.");
+		}
+		else
+			foreach (var type in types) System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+		Check.Equal(1, AppDomain.CurrentDomain.GetAssemblies().Count(assembly => assembly.GetName().Name == "HarmonySharedState"), "Startup created multiple shared assemblies.");
+		OrdinaryControl(a, b);
+		SetStage("shared-startup-later-copy");
+		var third = new Engine("C", options.EngineA, options.FixtureA, events);
+		foreach (var field in new[] { "state", "originals", "originalsMono" })
+		{
+			Check.That(ReferenceEquals(a.StateField(field), b.StateField(field)), field + " was not shared by the concurrent copies.");
+			Check.That(ReferenceEquals(a.StateField(field), third.StateField(field)), field + " was not shared with the later copy.");
+		}
+		SetStage("complete");
 	}
 
 	private void ConcurrentOldCandidate(Engine old, Engine current)
