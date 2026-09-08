@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-#if NET45_OR_GREATER || NETCOREAPP
 using System.Threading;
+#if NET45_OR_GREATER || NETCOREAPP
 using System.Threading.Tasks;
 #endif
 
@@ -115,6 +115,22 @@ namespace HarmonyLibTests.Patching
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static void Collect() { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }
+		static T OnFinishedThread<T>(Func<T> action)
+		{
+			// Mono can conservatively keep stale object/byref values in the caller's stack.
+			// End the allocating thread before collection so these probes measure heap roots.
+			T result = default;
+			Exception failure = null;
+			var thread = new Thread(() =>
+			{
+				try { result = action(); }
+				catch (Exception error) { failure = error; }
+			});
+			thread.Start();
+			Assert.That(thread.Join(TimeSpan.FromSeconds(15)), Is.True, "The allocation thread did not finish");
+			if (failure is not null) throw failure;
+			return result;
+		}
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static WeakReference AbandonIterator()
 		{
@@ -128,7 +144,7 @@ namespace HarmonyLibTests.Patching
 			if (typeof(object).Assembly.GetType("System.Runtime.CompilerServices.ConditionalWeakTable`2") is null)
 				Assert.Ignore("CLR 2.0 lacks dependent handles; abandoned cyclic iterator state requires explicit disposal on that runtime");
 			harmony.CreateProcessor(Method(nameof(Iterator))).AddInnerPrefix(Fix(nameof(KeepReceiver))).Patch();
-			var weak = AbandonIterator();
+			var weak = OnFinishedThread(AbandonIterator);
 			Collect();
 			Assert.That(weak.IsAlive, Is.False);
 		}
@@ -139,7 +155,7 @@ namespace HarmonyLibTests.Patching
 			var wrapper = processor.Patch();
 			using var iterator = Iterator(2).GetEnumerator();
 			processor.Unpatch(HarmonyPatchType.InnerPrefix, harmony.Id);
-			Assert.That(wrapper.Invoke(null, [iterator]), Is.True);
+			Assert.That(OnFinishedThread(() => wrapper.Invoke(null, [iterator])), Is.True);
 			Collect();
 			Assert.That(retained.Single().IsAlive, Is.False);
 			GC.KeepAlive(iterator);
@@ -407,7 +423,16 @@ namespace HarmonyLibTests.Patching
 		}
 #endif
 
-		static async IAsyncEnumerable<int> AsyncIterator(Task resume)
+		sealed class DisposalGate : INotifyCompletion
+		{
+			Action continuation;
+			public DisposalGate GetAwaiter() => this;
+			public bool IsCompleted => false;
+			public void GetResult() { }
+			public void OnCompleted(Action next) => continuation = next;
+			public bool Resume() { var next = continuation; continuation = null; next(); return true; }
+		}
+		static async IAsyncEnumerable<int> AsyncIterator(Task resume, DisposalGate disposal = null)
 		{
 			try
 			{
@@ -417,7 +442,8 @@ namespace HarmonyLibTests.Patching
 			}
 			finally
 			{
-				await Task.Yield();
+				if (disposal is null) await Task.Yield();
+				else await disposal;
 				Call(30);
 			}
 		}
@@ -447,12 +473,22 @@ namespace HarmonyLibTests.Patching
 			Assert.That(observations.Select(item => item[0]), Is.EqualTo(new[] { 1, 2, 3 }));
 		}
 		[Test]
-		public async Task Awaited_disposal_releases_async_iterator_state()
+		public void Awaited_disposal_releases_async_iterator_state()
 		{
 			harmony.CreateProcessor(Method(nameof(AsyncIterator))).AddInnerPrefix(Fix(nameof(Keep))).Patch();
-			var iterator = AsyncIterator(Task.CompletedTask).GetAsyncEnumerator();
-			Assert.That(await iterator.MoveNextAsync(), Is.True);
-			await iterator.DisposeAsync();
+			var iterator = OnFinishedThread(() =>
+			{
+				var gate = new DisposalGate();
+				var enumerator = AsyncIterator(Task.CompletedTask, gate).GetAsyncEnumerator();
+				Assert.That(enumerator.MoveNextAsync().GetAwaiter().GetResult(), Is.True);
+				var disposal = enumerator.DisposeAsync();
+				Assert.That(disposal.IsCompleted, Is.False);
+				// Completing DisposeAsync can run its consumer inside MoveNext. Wait for the whole
+				// resumption to return, including Harmony's finally, before testing released references.
+				Assert.That(gate.Resume(), Is.True);
+				disposal.GetAwaiter().GetResult();
+				return enumerator;
+			});
 			Collect();
 			Assert.That(retained.Single().IsAlive, Is.False);
 			GC.KeepAlive(iterator);
