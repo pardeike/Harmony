@@ -41,6 +41,19 @@ public static class Targets
 		yield return Called(value) + 7;
 	}
 
+	public static async Task<int[]> PersistentAsync(Task resume)
+	{
+		var first = Called(10);
+		await resume.ConfigureAwait(false);
+		return [first, Called(20)];
+	}
+
+	public static IEnumerable<int> PersistentIterator()
+	{
+		yield return Called(10);
+		yield return Called(20);
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
 	public static int ScopedRun(int value)
 	{

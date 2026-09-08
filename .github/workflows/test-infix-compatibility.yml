@@ -32,7 +32,7 @@ env:
 
 jobs:
   v3:
-    name: Extended targets and completion / source baselines / ${{ matrix.framework }} ${{ matrix.backend }}
+    name: Infix source baselines / ${{ matrix.framework }} ${{ matrix.backend }}
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     strategy:
@@ -61,14 +61,21 @@ jobs:
             10.0.x
             9.0.x
             8.0.x
+      - name: Check out exact pre-persistence version-3 source
+        uses: actions/checkout@v7
+        with:
+          ref: 31e14691e96265b05522cbe8d563186785b1bf4e
+          path: HarmonyTests.Compatibility/artifacts/completion-source
       - name: Build isolated prior and current test identities
         env:
           FRAMEWORK: ${{ matrix.framework }}
         run: |
           test "$(git -C HarmonyTests.Compatibility/artifacts/v3-source rev-parse HEAD)" = 573914745451f8278720257db37a4a4ebaae853d
           test "$(git -C HarmonyTests.Compatibility/artifacts/v2-source rev-parse HEAD)" = 22d4069bac2bf963d8238dd1fd0940cdf57ae084
+          test "$(git -C HarmonyTests.Compatibility/artifacts/completion-source rev-parse HEAD)" = 31e14691e96265b05522cbe8d563186785b1bf4e
           dotnet build HarmonyTests.Compatibility/artifacts/v3-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-v3" --nologo -v:q
           dotnet build HarmonyTests.Compatibility/artifacts/v2-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-v2" --nologo -v:q
+          dotnet build HarmonyTests.Compatibility/artifacts/completion-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-completion" --nologo -v:q
           dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
           dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.5.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
       - name: Run cold extended identities and actual V3 rejection and recovery
@@ -112,6 +119,27 @@ jobs:
           export SECOND_CURRENT_HARMONY="$RUNNER_TEMP/compat-second/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
           export REPORT_DIRECTORY="$GITHUB_WORKSPACE/HarmonyTests.Compatibility/reports/completion-v2-$FRAMEWORK-$BACKEND"
           bash HarmonyTests.Compatibility/run.sh
+      - name: Run persistence across current engines and all prior Infix readers
+        env:
+          FRAMEWORK: ${{ matrix.framework }}
+          BACKEND: ${{ matrix.backend }}
+          REQUIRE_COEXISTENCE: '1'
+          CASE_FILTER: persistent-
+        run: |
+          export RUNTIME_HOST="$(command -v dotnet)"
+          export CURRENT_HARMONY="$RUNNER_TEMP/compat-first/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          export SECOND_CURRENT_HARMONY="$RUNNER_TEMP/compat-second/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+          for prior_version in 1 2 3; do
+            case "$prior_version" in
+              1) baseline=compat-v3 ;;
+              2) baseline=compat-v2 ;;
+              3) baseline=compat-completion ;;
+            esac
+            export PRIOR_INFIX_STATE_VERSION="$prior_version"
+            export PRIOR_INFIX_HARMONY="$RUNNER_TEMP/$baseline/bin/Lib.Harmony/debug_$FRAMEWORK/0Harmony.dll"
+            export REPORT_DIRECTORY="$GITHUB_WORKSPACE/HarmonyTests.Compatibility/reports/persistent-v$prior_version-$FRAMEWORK-$BACKEND"
+            bash HarmonyTests.Compatibility/run.sh
+          done
       - name: Upload source-baseline compatibility evidence
         if: always()
         uses: actions/upload-artifact@v7

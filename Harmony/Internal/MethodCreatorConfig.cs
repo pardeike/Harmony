@@ -60,6 +60,7 @@ namespace HarmonyLib
 			instructions = [];
 			originalVariables = parent.originalVariables;
 			localVariables = new VariableState();
+			persistence = parent.persistence;
 		}
 
 		internal bool Prepare()
@@ -155,6 +156,7 @@ namespace HarmonyLib
 		internal LocalBuilder[] originalVariables;
 		internal VariableState localVariables;
 		internal PatchBindingContext bindingContext;
+		internal PersistentStatePlan persistence;
 		internal LocalBuilder resultVariable;
 		internal Label? skipOriginalLabel;
 		internal LocalBuilder runOriginalVariable;

@@ -191,11 +191,23 @@ Use `ArgumentMode.Captured` to access a live source variable stored in a compile
 
 [!code-csharp[generated](../examples/patching-infix.cs?name=generated)]
 
-`Sequence.Count(5)` now yields `5, 1`: the first call's argument was already evaluated, but changing the live `limit` affects the next iteration. Captured fields survive yields; Harmony's `__state` and named locals reset on each `MoveNext` invocation.
+`Sequence.Count(5)` now yields `5, 1`: the first call's argument was already evaluated, but changing the live `limit` affects the next iteration. Captured fields survive yields; Harmony's ordinary `__state` and `__var_name` locals reset on each `MoveNext` invocation.
 
 Captured lookup is Infix-only, explicit, and case-sensitive. It uses the inner generated receiver or closure arguments; add `[HarmonyOuter]` for variables in the outer generated body. Missing, ambiguous, or optimized-away variables cannot be recovered.
 
 For explicit targets, use `AccessTools.StateMachineMoveNext`, `AccessTools.LocalFunction`, or `AccessTools.Lambdas`. Lambda order is not a stable identity across builds. Direct inspection and unpatching use the resolved generated method; processor and owner-wide unpatching find it automatically.
+
+## Keep patch-owned values across await and yield
+
+Use `[HarmonyOuter, HarmonyArgument("name", ArgumentMode.Persistent)]` for a value that belongs to the whole async call or enumeration. It starts at `default`, survives suspensions, and is separate for concurrent calls and separate enumerators. The name is scoped to the actual patch declaring type. Prefixes, postfixes and finalizers in that type can share it; all bindings must agree on its type and lifetime.
+
+This patch makes `Sequence.Count(3)` yield `1, 2, 3`. Enumerating again starts at `1`:
+
+[!code-csharp[persistent](../examples/patching-infix.cs?name=persistent)]
+
+The same binding works in an async method selected with `OuterBody = InfixOuterBody.Auto`, including calls on either side of an `await`. Use `ref` or `out` to replace a slot's value and a value parameter to read it. Use several names for several values. Ordinary synchronous methods keep the value for one invocation.
+
+Harmony releases its stored references when the execution completes, faults, finishes cancellation, or the iterator is disposed. Removing the last persistent patch from a body also releases its saved state. This does not call `Dispose` on objects you store. See [persistent-state limits](patching-infix-limits.md#persistent-state-follows-one-generated-execution) for supported compiler protocols, cleanup and live-update behavior.
 
 ## Optional patch-body inlining and authoring recipes
 

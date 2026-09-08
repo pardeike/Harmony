@@ -140,6 +140,19 @@ namespace HarmonyLib
 			return PatchInfoSerialization.Deserialize(bytes);
 		}
 
+		// Additional protocols use BCL-only values so separately loaded Harmony builds share their runtime state.
+		internal static object GetOrCreateSharedData(string key, Func<object> create)
+		{
+			lock (state)
+			{
+				var value = AppDomain.CurrentDomain.GetData(key);
+				if (value is not null) return value;
+				value = create();
+				AppDomain.CurrentDomain.SetData(key, value);
+				return value;
+			}
+		}
+
 		[SuppressMessage("Style", "IDE0305")]
 		internal static IEnumerable<MethodBase> GetPatchedMethods()
 		{

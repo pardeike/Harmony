@@ -58,6 +58,7 @@ These unreleased baselines test rejection by earlier Infix engines, separately f
 | --- | --- | --- |
 | Version 1, method-only Infix | `573914745451f8278720257db37a4a4ebaae853d` | `extensions-` and `completion-` |
 | Version 2, operation targets | `22d4069bac2bf963d8238dd1fd0940cdf57ae084` | `completion-` |
+| Version 3, finalizers and captured binding | `31e14691e96265b05522cbe8d563186785b1bf4e` | `persistent-` |
 
 The workflow verifies those commits and builds them in isolated directories with test-only version 2.4.3.0. Its two current engines use 2.4.4.0 and 2.4.5.0. These numbers distinguish test identities; they are not releases. Both baseline lanes run on net9/JSON and net8/BinaryFormatter with `REQUIRE_COEXISTENCE=1`.
 
@@ -77,6 +78,8 @@ bash HarmonyTests.Compatibility/run.sh
 Repeat with the version-1 baseline and `PRIOR_INFIX_STATE_VERSION=1`. Run its `extensions-` filter separately. `V3_HARMONY` remains an alias for the version-1 input. Without an explicit filter, version 1 selects `extensions-` and version 2 selects `completion-`. This mode snapshots the supplied baseline; it does not build or download it.
 
 The extension cases cover constructor, field-read, constant, and method-only `__originalMember` capabilities. Completion cases cover inner finalizers, captured binding, automatic-body declarations, cold reconstruction by another current engine, and removal through state versions 3, 2, 1, then ordinary unframed state. Both prior/current initialization orders must first pass ordinary coexistence.
+
+Persistent cases cover declaration and version-4 state rejection by each prior reader, recovery after removal, and current/current rebuilding while two async calls are suspended or an iterator is between yields. The same slots must survive the engine change and remain isolated. Use `PRIOR_INFIX_STATE_VERSION=3 CASE_FILTER=persistent-` with the pinned version-3 DLL, or run that filter against the version-1/2 inputs. Version 3 selects this filter by default. CI executes all three prior versions with JSON and BinaryFormatter.
 
 ## Mono and Windows .NET Framework
 
@@ -104,7 +107,7 @@ To reproduce distinct current identities without editing version files, build tw
 | `missing-api-*`, `declaration-*`, `prepare-false-missing-target` | Distinct API and declaration rejection stages; accepted prepare-false jobs do not resolve missing targets. |
 | `active-state-*`, `legacy-recovery-*` | Rejection before transpilers, unchanged published state and behavior, survivor validation, removal, and corrected retry. |
 | `cold-identity`, `duplicate-module`, `duplicate-patch-module-*` | Exact recursive selectors, detached reader-owned objects, state isolation, malformed data, ambiguous identities, and owner-removal recovery. |
-| `extensions-*`, `completion-*` | Prior-format rejection, capability downgrade, exact callback dependencies, and current/current rebuilding. |
+| `extensions-*`, `completion-*`, `persistent-*` | Prior-format rejection, capability downgrade, exact callback dependencies, and current/current rebuilding, including suspended execution state. |
 | `foreign-*`, `reflection-ordinary-*`, `concurrent-old-candidate` | Explicitly classified loading and inherited update limits, independently of Infix rejection. |
 
 Standard output is the JSON summary; build/progress output goes to standard error. Reports retain each child request, result, and diagnostic log, including runtime, hashes, module IDs, providers, load events, state/version/mappings, counters, and execution traces. Downloads and engine snapshots remain under ignored `artifacts/` directories.

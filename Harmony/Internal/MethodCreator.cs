@@ -32,6 +32,7 @@ namespace HarmonyLib
 			config.localVariables = new VariableState();
 			config.bindingContext = new PatchBindingContext(config.original, config.localVariables);
 			config.bindingContext.originalLocals = [.. config.originalVariables.Select(local => new InjectionStorage(local))];
+			config.persistence = PersistentStatePlan.Create(config);
 
 			if (config.Fixes.Any() && config.returnType != typeof(void))
 			{
@@ -130,6 +131,7 @@ namespace HarmonyLib
 			var replacement = copier.Finalize(true, out var hasReturnCode, out var methodEndsInDeadCode, endLabels);
 
 			replacement = [.. AddInfixes(replacement)];
+			if (config.persistence is not null) replacement = config.persistence.RewriteOperations(replacement);
 
 			config.AddCode(Nop["start original"]);
 			config.AddCodes(this.CleanupCodes(replacement, endLabels));
@@ -163,6 +165,8 @@ namespace HarmonyLib
 
 			if (methodEndsInDeadCode == false || config.skipOriginalLabel is not null || config.finalizers.Count > 0 || config.postfixes.Count > 0)
 				config.AddCode(Ret);
+
+			config.persistence?.ProtectLifetime(this);
 
 			if (config.debug)
 			{

@@ -45,7 +45,7 @@ namespace HarmonyLib
 			outer = !method.IsDynamicMethod() && parameterInfo.GetCustomAttributes(true).Any(attribute => attribute.GetType().FullName == "HarmonyLib.HarmonyOuter");
 			var arg = parameterInfo.GetArgumentAttribute();
 			argumentMode = arg?.Mode ?? ArgumentMode.Default;
-			if (argumentMode is ArgumentMode.Original or ArgumentMode.Captured)
+			if (argumentMode is ArgumentMode.Original or ArgumentMode.Captured or ArgumentMode.Persistent)
 			{
 				realName = arg.NewName;
 				injectionType = InjectionType.Unknown;

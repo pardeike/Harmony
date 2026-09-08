@@ -118,6 +118,22 @@ An outer local such as `__var_builder` starts at its default each invocation. Ea
 
 Inner `__state` resets on each operation. Recursive and concurrent invocations have separate locals. In iterator/async `MoveNext`, outer locals last one invocation, not across suspension.
 
+## Persistent state follows one generated execution
+
+`[HarmonyOuter, HarmonyArgument("name", ArgumentMode.Persistent)]` explicitly extends a named slot across `await` and `yield`. It requires an Infix and a heap-storable value: ordinary objects and structs work; pointers, byref-like structs such as `Span<T>`, and open generic storage do not. `ref int` is supported because it refers to the stored `int`, rather than storing a managed reference.
+
+Persistence follows the recognized generated `MoveNext` body. It does not automatically follow calls into lambdas, local functions, or separate iterator cleanup helpers. For an ordinary method, its lifetime is one invocation. Installing a patch after an execution has started begins with default state at its next patched body entry; removing and reinstalling persistence starts fresh. A compatible rebuild preserves suspended state. If a replacement patch changes a slot's type, that slot starts at the new type's default on its next binding; an already executing wrapper can finish with its original typed storage.
+
+Async persistence adapts the public `AwaitOnCompleted` / `AwaitUnsafeOnCompleted` and awaiter completion interfaces. It preserves the original builder, state-machine type, task and awaiter's result handling. Standard Task, ValueTask, async void, pooled ValueTask builders, and notification-only awaiters have focused coverage. A custom builder must honor those public contracts without depending on a specific concrete awaiter type. Extra generic constraints are rejected during installation; arbitrary custom behavior or a future compiler using a different protocol is outside this guarantee. Infixes on the builder's suspension or completion bookkeeping cannot be combined with persistent state; select the work surrounding those operations instead.
+
+Iterators must be reference types. Synchronous iterator disposal gets an ordinary Harmony finalizer, visible under the internal owner `Harmony.Infix.PersistentState`; the finalizer is removed with the body's last persistent patch. Do not remove that cleanup owner independently. Async iterators must expose recognizable `AsyncIteratorMethodBuilder.Complete` calls, including their disposal path; an unrecognized completion layout is rejected.
+
+Completion releases Harmony's references; stored objects are not automatically disposed. A still-suspended execution keeps its values. Cancellation only releases them when the method actually observes it and completes. An abandoned enumerator can be collected, even if a slot refers back to it, but a retained, undisposed enumerator intentionally keeps its state. This feature adds allocations and continuation indirection, so keep ordinary `__var_name` locals for values that need only one body invocation.
+
+On the original CLR 2.0 used by .NET 3.5, the weak-table backport cannot collect a cycle from a saved value back to its enumerator. Complete or explicitly dispose those enumerators, or remove their persistent patch. A .NET 3.5 Harmony binary hosted by CLR 4 or modern Mono uses that runtime's native weak table and has the normal collection behavior. Use the corresponding CoreCLR asset on .NET Core / .NET 5 and later; this feature does not make the net35 DLL a substitute for it.
+
+Installed persistent state requires envelope version 4. Earlier Infix readers reject it before rebuilding; older engines also reject the declaration marker. This explicit binding mode avoids a new attribute property that an older reader could silently ignore. Existing loader and serialized cross-engine update boundaries still apply.
+
 ## Automatic body selection is opt-in
 
 `[HarmonyInfix(typeof(Helper), "Decide", OuterBody = InfixOuterBody.Auto)]` searches a supported iterator or async method's generated `MoveNext`; other methods keep their declared bodies. Manual registration uses `HarmonyMethod.infixOuterBody`. The default is `Declared`.

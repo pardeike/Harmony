@@ -202,6 +202,20 @@ namespace HarmonyLib
 		}
 
 		internal bool HasInfixes => innerprefixes.Length != 0 || innerpostfixes.Length != 0 || innerfinalizers.Length != 0;
+		internal bool RequiresInfixV4(bool allowUnresolvedCallbacks = false)
+		{
+			bool Requires(Patch patch, bool postfix)
+			{
+				MethodInfo method;
+				try { method = patch.GetValidatedInfixPatchMethod(); }
+				catch (Exception exception) when (allowUnresolvedCallbacks && exception is SerializationException or ArgumentException) { return false; }
+				return method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0)
+					.Any(parameter => new InjectedParameter(method, parameter).argumentMode == ArgumentMode.Persistent);
+			}
+			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true))
+				|| innerfinalizers.Any(patch => Requires(patch, false));
+		}
+
 		internal bool RequiresInfixV3(bool allowUnresolvedCallbacks = false)
 		{
 			if (innerfinalizers.Length != 0) return true;

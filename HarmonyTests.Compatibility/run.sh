@@ -43,8 +43,8 @@ prior_args=(--prior-infix-state-version 0)
 prior_input=${PRIOR_INFIX_HARMONY:-${V3_HARMONY:-}}
 if [[ -n "$prior_input" ]]; then
   prior_version=${PRIOR_INFIX_STATE_VERSION:-1}
-  if [[ "$prior_version" != 1 && "$prior_version" != 2 ]]; then
-    printf 'PRIOR_INFIX_STATE_VERSION must be 1 (method-only) or 2 (operation targets).\n' >&2
+  if [[ "$prior_version" != 1 && "$prior_version" != 2 && "$prior_version" != 3 ]]; then
+    printf 'PRIOR_INFIX_STATE_VERSION must be 1 (method-only), 2 (operation targets), or 3 (completion).\n' >&2
     exit 2
   fi
   prior_dir=$(cd "$(dirname "$prior_input")" && pwd)
@@ -55,7 +55,7 @@ if [[ -n "$prior_input" ]]; then
   prior_args=(--prior-infix-state-version "$prior_version")
   # Source baselines have their own focused cases, not the published-release assumptions.
   if [[ -z ${CASE_FILTER:-} ]]; then
-    if [[ "$prior_version" == 1 ]]; then CASE_FILTER=extensions-; else CASE_FILTER=completion-; fi
+    if [[ "$prior_version" == 1 ]]; then CASE_FILTER=extensions-; elif [[ "$prior_version" == 2 ]]; then CASE_FILTER=completion-; else CASE_FILTER=persistent-; fi
   fi
 else
   package_hash=$(jq -er --arg version "$old_version" '.versions[$version].packageSha256' "$manifest")

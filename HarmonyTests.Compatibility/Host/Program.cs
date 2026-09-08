@@ -123,7 +123,10 @@ internal static class Program
 			var priorInfixVersion = values.GetValueOrDefault("--prior-infix-state-version", values.GetValueOrDefault("--v3-baseline", "0"));
 			if (priorInfixVersion != "0")
 			{
-				Check.That(priorInfixVersion is "1" or "2", "The prior Infix baseline state version must be 1 or 2.");
+				Check.That(priorInfixVersion is "1" or "2" or "3", "The prior Infix baseline state version must be 1, 2 or 3.");
+				cases.Add(("persistent-cold", new("persistent-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
+				cases.Add(("persistent-prior-v" + priorInfixVersion + "-old-first", new("persistent-prior", old, oldFixture, current, newFixture, backend, feature, framework)));
+				cases.Add(("persistent-prior-v" + priorInfixVersion + "-new-first", new("persistent-prior", current, newFixture, old, oldFixture, backend, feature, framework, "new-first")));
 				cases.Add(("extensions-cold", new("extensions-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
 				if (priorInfixVersion == "1")
 				{
@@ -131,8 +134,11 @@ internal static class Program
 					cases.Add(("extensions-v3-new-first", new("extensions-v3", current, newFixture, old, oldFixture, backend, feature, framework, "new-first")));
 				}
 				cases.Add(("completion-cold", new("completion-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework, SecondFeature: secondFeature)));
-				cases.Add(("completion-prior-v" + priorInfixVersion + "-old-first", new("completion-prior", old, oldFixture, current, newFixture, backend, feature, framework, PriorInfixStateVersion: int.Parse(priorInfixVersion))));
-				cases.Add(("completion-prior-v" + priorInfixVersion + "-new-first", new("completion-prior", current, newFixture, old, oldFixture, backend, feature, framework, "new-first", PriorInfixStateVersion: int.Parse(priorInfixVersion))));
+				if (priorInfixVersion != "3")
+				{
+					cases.Add(("completion-prior-v" + priorInfixVersion + "-old-first", new("completion-prior", old, oldFixture, current, newFixture, backend, feature, framework, PriorInfixStateVersion: int.Parse(priorInfixVersion))));
+					cases.Add(("completion-prior-v" + priorInfixVersion + "-new-first", new("completion-prior", current, newFixture, old, oldFixture, backend, feature, framework, "new-first", PriorInfixStateVersion: int.Parse(priorInfixVersion))));
+				}
 			}
 			else if (framework == "net9.0" && backend == "json" && AssemblyName.GetAssemblyName(old).Version == new Version(2, 4, 2, 0))
 				cases.Add(("extensions-released", new("extensions-released", old, oldFixture, current, newFixture, backend, feature, framework)));

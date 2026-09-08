@@ -143,4 +143,15 @@ namespace Patching_Infix
 			=> remaining = Math.Min(remaining, 1);
 	}
 	// </generated>
+
+	// <persistent>
+	[HarmonyPatch(typeof(Sequence), nameof(Sequence.Count))]
+	public static class SequencePersistentPatch
+	{
+		[HarmonyPrefix, HarmonyInfix(typeof(Sequence), nameof(Sequence.Visit), typeof(int), OuterBody = InfixOuterBody.Auto)]
+		static void NumberVisit(ref int value,
+			[HarmonyOuter, HarmonyArgument("visits", ArgumentMode.Persistent)] ref int visits)
+			=> value = ++visits;
+	}
+	// </persistent>
 }

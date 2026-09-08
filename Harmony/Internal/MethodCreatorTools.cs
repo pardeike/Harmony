@@ -267,7 +267,8 @@ namespace HarmonyLib
 			{
 				var local = creator.InfixLocal(patch, injection, context);
 				key = local;
-				isolated = !int.TryParse(injection.realName.Substring(6), out var localIndex);
+				var localIndex = 0;
+				isolated = injection.argumentMode == ArgumentMode.Persistent || !int.TryParse(injection.realName.Substring(6), out localIndex);
 				sourceType = isolated ? ElementType(local.type) : creator.config.originalVariables[localIndex].LocalType;
 			}
 			else if (injection.argumentMode == ArgumentMode.Captured)
@@ -310,8 +311,8 @@ namespace HarmonyLib
 		{
 			if (injection.outer && !infix)
 				throw new ArgumentException($"[HarmonyOuter] on {patch.FullDescription()} parameter {injection.parameterInfo.Name} requires an Infix patch");
-			if (injection.argumentMode == ArgumentMode.Captured && !infix)
-				throw new ArgumentException($"Captured argument binding requires an Infix patch: {patch.FullDescription()}");
+			if (injection.argumentMode is ArgumentMode.Captured or ArgumentMode.Persistent && !infix)
+				throw new ArgumentException($"{injection.argumentMode} argument binding requires an Infix patch: {patch.FullDescription()}");
 			if (!infix) return;
 			if (injection.outer && injection.injectionType is InjectionType.Exception or InjectionType.Result or InjectionType.ResultRef or InjectionType.RunOriginal)
 				throw new ArgumentException($"{injection.realName} is not available in the requested Infix scope for {patch.FullDescription()}");
@@ -366,7 +367,8 @@ namespace HarmonyLib
 			=> new($"{reason}: {patch.FullDescription()} parameter {injection.parameterInfo.Name}, {(injection.outer ? "outer" : "inner")} operation {context.Description}, requested {injection.parameterInfo.ParameterType.FullDescription()}");
 
 		static bool IsFieldInjection(InjectedParameter injection) => injection.argumentMode == ArgumentMode.Default && injection.realName.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal);
-		static bool IsLocalInjection(InjectedParameter injection) => injection.argumentMode == ArgumentMode.Default && injection.realName.StartsWith("__var_", StringComparison.Ordinal);
+		static bool IsLocalInjection(InjectedParameter injection) => injection.argumentMode == ArgumentMode.Persistent
+			|| injection.argumentMode == ArgumentMode.Default && injection.realName.StartsWith("__var_", StringComparison.Ordinal);
 
 		internal static void PrepareInfixOuterLocals(this MethodCreator creator, IEnumerable<MethodInfo> fixes, PatchBindingContext outer, bool postfix = false)
 		{
@@ -378,6 +380,13 @@ namespace HarmonyLib
 
 		static InjectionStorage InfixLocal(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context)
 		{
+			if (injection.argumentMode == ArgumentMode.Persistent)
+			{
+				var persistentKey = (patch.DeclaringType, "__var_" + injection.realName);
+				if (!context.variables.TryGetValue(persistentKey, out var persistent))
+					context.variables[persistentKey] = persistent = creator.config.persistence.Storage(patch.DeclaringType, injection.realName, ElementType(injection.parameterInfo.ParameterType));
+				return persistent;
+			}
 			var name = injection.realName.Substring(6);
 			InjectionStorage local;
 			if (int.TryParse(name, out var index))
@@ -1122,7 +1131,7 @@ namespace HarmonyLib
 
 		static readonly MethodInfo m_GetMethodFromHandle1 = typeof(MethodBase).GetMethod("GetMethodFromHandle", [typeof(RuntimeMethodHandle)]);
 		static readonly MethodInfo m_GetMethodFromHandle2 = typeof(MethodBase).GetMethod("GetMethodFromHandle", [typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle)]);
-		static bool EmitOriginalBaseMethod(MethodBase original, List<CodeInstruction> codes)
+		internal static bool EmitOriginalBaseMethod(MethodBase original, List<CodeInstruction> codes)
 		{
 			if (original is MethodInfo method)
 				codes.Add(Ldtoken[method]);

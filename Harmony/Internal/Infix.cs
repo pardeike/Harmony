@@ -66,6 +66,7 @@ namespace HarmonyLib
 				while (start > 0 && instructions[start - 1].opcode.OpCodeType == OpCodeType.Prefix) start--;
 				try
 				{
+					config.persistence?.ValidateSite(instructions[index]);
 					if (start < index && (instructions.Skip(start + 1).Take(index - start).Any(instruction => instruction.labels.Any(branches.Contains))
 						|| instructions.Skip(start + 1).Take(index - start).Any(instruction => instruction.blocks.Any(block => block.blockType != ExceptionBlockType.EndExceptionBlock))
 						|| instructions[start].blocks.Any(block => block.blockType == ExceptionBlockType.EndExceptionBlock)))

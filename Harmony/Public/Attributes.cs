@@ -108,7 +108,12 @@ namespace HarmonyLib
 		/// <summary>Match an original method argument by its exact name</summary>
 		Original = 1,
 		/// <summary>Match a preserved compiler-generated captured variable in an Infix scope</summary>
-		Captured = 2
+		Captured = 2,
+		/// <summary>Bind a named, patch-owned outer value that survives awaits and iterator yields</summary>
+		/// <remarks>Requires HarmonyOuter on an Infix parameter. Slots are scoped to the actual patch declaring type and name,
+		/// start at default, and last one async execution or enumeration. Ordinary methods use one invocation.
+		/// Values must be storable on the managed heap. Completion releases references without disposing stored objects.</remarks>
+		Persistent = 3
 	}
 
 	/// <summary>Selects the containing method body searched by an Infix</summary>
@@ -820,7 +825,7 @@ namespace HarmonyLib
 		public HarmonyArgument(string originalName, ArgumentMode mode) : this(originalName)
 		{
 			Mode = mode;
-			if (mode is ArgumentMode.Original or ArgumentMode.Captured)
+			if (mode is ArgumentMode.Original or ArgumentMode.Captured or ArgumentMode.Persistent)
 			{
 				OriginalName = LEGACY_REJECTION_NAME;
 				Index = int.MinValue;

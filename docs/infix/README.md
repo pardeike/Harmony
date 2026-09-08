@@ -1,6 +1,6 @@
 # Infix
 
-Infix is implemented and unreleased. It supports selected method/property calls, field reads and writes, construction and literal loads; independent inner prefixes, postfixes and finalizers; automatic iterator/async body selection; captured-variable binding; and optional patch-body inlining.
+Infix is implemented and unreleased. It supports selected method/property calls, field reads and writes, construction and literal loads; independent inner prefixes, postfixes and finalizers; automatic iterator/async body selection; captured-variable binding; persistent patch-owned state across await/yield; and optional patch-body inlining.
 
 ## Documentation
 
@@ -10,9 +10,28 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
-## Current verification, 2026-09-07
+## Persistent-state verification, 2026-09-08
 
-These local results were recorded for the changes accompanying this document revision. Remote results are commit-specific: check the revision under test in [Platform Tests](https://github.com/pardeike/Harmony/actions/workflows/test.yml), [Infix compatibility](https://github.com/pardeike/Harmony/actions/workflows/test-infix-compatibility.yml), and [documentation CI](https://github.com/pardeike/Harmony/actions/workflows/docs.yml). A green run for an earlier revision does not validate later edits.
+`ArgumentMode.Persistent` adds explicit execution-scoped state while preserving ordinary named-local lifetimes. The candidate was built in Debug and Release across all configured target frameworks; the documentation project also builds across that matrix with zero compiler warnings or errors.
+
+| Local runtime / scope | Passed | Failed |
+| --- | ---: | ---: |
+| .NET 9.0.19 x64, full Debug suite | 1,021 | 0 |
+| .NET 9.0.19 x64, full Release suite | 1,021 | 0 |
+| .NET Core 3.1 x64, persistence fixture | 28 | 0 |
+| Mono 6.12 x64, net452 persistence fixture | 25 | 0 |
+| Mono 6.12 x64, net35 persistence fixture | 13 | 0 |
+| Mono 6.12 x64, net452 async fixture using the net35 Harmony DLL | 25 | 0 |
+
+Two existing explicit tests are excluded from the full default suites. Persistence coverage includes actual suspensions, concurrent and nested calls, Task/ValueTask/async void, pooled builders where available, notification-only awaiters, synchronous and async iterators, awaited disposal, faults, cancellation, live unpatch/rebuild, typed slot replacement, weak cycles, finalizer helpers and optional inlining. Ordinary `__var_name` locals still reset per body invocation.
+
+The version-3 source baseline (`31e14691e96265b05522cbe8d563186785b1bf4e`) passes all three persistence compatibility cases on .NET 9/JSON and .NET 8/BinaryFormatter: prior-reader rejection in both load orders and current/current rebuilding during suspension. These cases establish actual coexistence and have no classified loader limitations. The workflow additionally tests version-1/2 declaration and state rejection for persistence. Remote results remain revision-specific; use the workflow links below to inspect the exact candidate.
+
+The net35 test runs on Mono's CLR 4 implementation and verifies selection of its native weak table. The net35 DLL also passes the async fixture compiled for net452 there. Substituting it into .NET 9 fails in existing `AccessTools` remoting initialization on both the candidate and the pinned baseline, before any Infix registration; use the appropriate CoreCLR asset. It does not prove abandoned-cycle collection on the original CLR 2.0, which requires explicit disposal, completion or unpatching for values that point back to their enumerator. Custom/future async protocols, generated helper boundaries and allocation costs are described in the [persistent-state limits](../../Documentation/articles/patching-infix-limits.md#persistent-state-follows-one-generated-execution). Unity still requires its own runtime evidence.
+
+## Earlier verification, 2026-09-07
+
+The following local results predate the persistent-state addition. Remote results are commit-specific: check the revision under test in [Platform Tests](https://github.com/pardeike/Harmony/actions/workflows/test.yml), [Infix compatibility](https://github.com/pardeike/Harmony/actions/workflows/test-infix-compatibility.yml), and [documentation CI](https://github.com/pardeike/Harmony/actions/workflows/docs.yml). A green run for an earlier revision does not validate later edits.
 
 Complete local suites pass on actual x64 runtime hosts, without major-version roll-forward:
 

@@ -40,6 +40,7 @@ namespace HarmonyLib
 			));
 			var (replacement, finalInstructions) = patcher.CreateReplacement();
 			if (replacement is null) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
+			using var persistence = PersistentStateHooks.Prepare(original, patcher.config.persistence);
 
 			try
 			{
@@ -52,6 +53,7 @@ namespace HarmonyLib
 				throw enriched;
 			}
 			HarmonySharedState.UpdatePatchInfo(original, replacement, bytes);
+			persistence?.Commit();
 			return replacement;
 		}
 

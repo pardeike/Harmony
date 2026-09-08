@@ -41,6 +41,13 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 		SetStage("load-b");
 		var b = new Engine("B", options.EngineB, options.FixtureB, events, options.Loader == "b-default", options.ContextualReflection, options.Loader == "reflection-routed");
 		Backend(b);
+		if (options.Case.StartsWith("persistent-", StringComparison.Ordinal))
+		{
+			OrdinaryControl(a, b);
+			if (options.Case == "persistent-cold") PersistentCold(a, b);
+			else PersistentPrior(options.Variant == "new-first" ? b : a, options.Variant == "new-first" ? a : b);
+			return;
+		}
 		if (options.Case.StartsWith("completion-", StringComparison.Ordinal))
 		{
 			OrdinaryControl(a, b);

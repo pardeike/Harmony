@@ -42,7 +42,7 @@ namespace HarmonyLib
 			WritePatches("finalizers", value.finalizers);
 			WritePatches("innerprefixes", value.innerprefixes);
 			WritePatches("innerpostfixes", value.innerpostfixes);
-			if (value.RequiresInfixV3(allowUnresolvedCallbacks: true)) WritePatches("innerfinalizers", value.innerfinalizers);
+			if (value.RequiresInfixV3(allowUnresolvedCallbacks: true) || value.RequiresInfixV4(allowUnresolvedCallbacks: true)) WritePatches("innerfinalizers", value.innerfinalizers);
 			writer.WriteNumber("VersionCount", value.VersionCount);
 			writer.WriteEndObject();
 		}
