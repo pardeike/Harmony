@@ -6,9 +6,9 @@
 
 ## Use case
 
-Suppose `DamageHandler.Apply()` calls `Kill()` when a character dies. We want that call to invoke our `OnDeath` event, without changing calls to `Kill()` elsewhere.
+Suppose `DamageHandler.Apply()` calls `Kill()` when a character dies. To invoke your `OnDeath` event there without changing other calls to `Kill()`, find that call and replace it with `MyDeathHandler()`.
 
-Find the call to `Kill()` and replace it with `MyDeathHandler()`. `ThrowIfInvalid()` reports a missing match by throwing; `ReportFailure()` reports it through a callback and returns a boolean. These checks help detect broken patches after game updates.
+`ThrowIfInvalid()` reports a missing match by throwing; `ReportFailure()` reports it through a callback and returns a boolean. These checks help detect broken patches after game updates.
 
 [!code-csharp[example](../examples/patching-transpiler-codematcher.cs?name=replacement)]
 

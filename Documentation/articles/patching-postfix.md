@@ -9,7 +9,7 @@ A postfix runs after the original completes or is skipped. It is commonly used t
 - run even when a prefix skips the original
 - read custom state from the prefix
 
-[!include[Patch execution](../includes/patch-flow.md)]
+See the [runtime flow](patching.md#runtime-flow) for how prefixes, postfixes, and finalizers fit together.
 
 ## Reading or changing the result
 
@@ -17,9 +17,9 @@ Use `__result` to read the result, or `ref __result` to change it. Its type must
 
 [!code-csharp[example](../examples/patching-postfix.cs?name=result)]
 
-## Pass through postfixes
+## Pass-through postfixes
 
-A **pass through** postfix has a non-void return type matching its first parameter's type. Harmony passes the current result to that parameter and uses the returned value as the new result. Other parameters follow normal injection rules.
+A **pass-through** postfix has a non-void return type matching its first parameter's type. Harmony passes the current result to that parameter and uses the returned value as the new result. Other parameters follow normal injection rules.
 
 This is useful for transforming an `IEnumerable<T>` with `yield`, since C# iterator methods cannot have `ref` parameters.
 

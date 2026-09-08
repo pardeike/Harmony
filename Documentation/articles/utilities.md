@@ -1,11 +1,13 @@
-# Utilities
+# Reflection and logging
+
+<div id="utilities"></div>
 
 ### AccessTools
 
-`AccessTools` simplifies reflection. Common methods include:
+`AccessTools` simplifies reflection. Common members include:
 
 ```csharp
-public static BindingFlags all = ....
+public static readonly BindingFlags all
 public static Type TypeByName(string name)
 public static FieldInfo Field(Type type, string name)
 public static PropertyInfo Property(Type type, string name)
@@ -19,7 +21,7 @@ These lookups include public, private, static, and instance members.
 
 ### Traverse
 
-`Traverse` chains reflection lookups for fields, properties, and methods. Think of it as LINQ for classes:
+`Traverse` chains reflection lookups for fields, properties, and methods:
 
 ```csharp
 // starting from a type or instance
@@ -63,13 +65,13 @@ Example:
 
 ```csharp
 public static void Log(string str)
-// Creates a new log file called "harmony.log.txt" on the computers Desktop (if it not already exists) and appends *str* to it. 
+// Appends str to the log, creating it if needed. The default is harmony.log.txt on the desktop.
 
 public static void Reset()
 // Deletes the log file.
 
 public static unsafe void LogBytes(long ptr, int len)
-// Same as Log(string str) but logs a hex dump and md5 hash.
+// Same as Log(string str) but logs a hex dump and MD5 hash.
 ```
 
 #### Environment Variables

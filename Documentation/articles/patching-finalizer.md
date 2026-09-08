@@ -12,7 +12,7 @@ Finalizers are commonly used to:
 - remap exceptions
 - run cleanup on success or failure
 
-[!include[Patch execution](../includes/patch-flow.md)]
+See the [runtime flow](patching.md#runtime-flow) for how prefixes, postfixes, and finalizers fit together.
 
 ## Suppressing any exceptions
 
@@ -34,7 +34,7 @@ To remap exceptions, return a new exception from the finalizer. This replaces th
 
 ## Running cleanup code
 
-Finalizers are ideal for cleanup or resource management logic that must execute regardless of success or failure - similar to a `finally` block in standard C#.
+Use a finalizer for cleanup that must run on success or failure. A finalizer can run again if one of the finalizers throws, so account for that when releasing resources. See [finalizer execution](execution.md#with-finalizer-patches).
 
 [!code-csharp[example](../examples/patching-finalizer.cs?name=cleanup)]
 

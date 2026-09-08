@@ -1,4 +1,6 @@
-# Annotations
+# Annotations and targets
+
+<div id="annotations"></div>
 
 Annotations describe the original method, your patch methods, and settings such as priority. Usually, each original gets a "patch class" marked with `[HarmonyPatch]`.
 
@@ -64,7 +66,7 @@ Basic annotations need to be combined to define all aspects of your original met
 [HarmonyPatch(Type[] argumentTypes)]
 
 // Since annotations cannot contain code and you cannot use .MakeByRefType(), the second
-// form allows for a ArgumentType array defining the type of each argument type
+// form allows for an ArgumentType array defining the kind of each argument
 // Normal, Ref, Out or Pointer. Both arrays need to have the same number of elements:
 [HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)]
 ```
@@ -97,21 +99,21 @@ These overloads combine the basic annotations more compactly:
 
 #### Examples
 
-To patch method **String.ToUpper()** :
+To patch method **String.ToUpper()**:
 
 ```csharp
 [HarmonyPatch(typeof(String))]
 [HarmonyPatch("ToUpper")]
 ```
 
-To patch the setter for a property **Account** in class **MyClass** :
+To patch the setter for a property **Account** in class **MyClass**:
 
 ```csharp
 [HarmonyPatch(typeof(MyClass))]
 [HarmonyPatch("Account", MethodType.Setter)]
 ```
 
-To patch method **String.IndexOf(char, int)** :
+To patch method **String.IndexOf(char, int)**:
 
 ```csharp
 [HarmonyPatch(typeof(String))]
@@ -166,6 +168,6 @@ To simplify multiple patches while still using annotations, you can combine anno
 
 ### Combining annotations
 
-The combination of those annotations defines the target method. Annotations are **inherited** from class to method so you can use `[HarmonyPatch(Type)]` on the class and `[HarmonyPatch(String)]` on one of its methods to combine both.
+Harmony combines the class and method annotations to identify the target. For example, put `[HarmonyPatch(Type)]` on the class and `[HarmonyPatch(string)]` on a patch method to supply the declaring type and method name separately.
 
 [!code-csharp[example](../examples/annotations_combining.cs?name=example)]

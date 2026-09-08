@@ -1,4 +1,6 @@
-# Auxiliary patch methods
+# Prepare, target, and clean up
+
+<div id="auxiliary-patch-methods"></div>
 
 <div id="patching"></div>
 

@@ -11,7 +11,7 @@ A prefix is a method that is executed before the original method. It is commonly
 
 ![note] Returning `false` skips the original and later prefixes that Harmony considers able to affect it. A prefix returning `bool`, or taking writable or reference-type arguments, normally falls in that group. The injections `__instance`, `__originalMethod`, and `__state` are exceptions to the argument check. Other prefixes still run, as do postfixes and finalizers. This is a signature check, not an analysis of what your code does.
 
-[!include[Patch execution](../includes/patch-flow.md)]
+See the [runtime flow](patching.md#runtime-flow) for how prefixes, postfixes, and finalizers fit together.
 
 ## Reading and changing arguments
 

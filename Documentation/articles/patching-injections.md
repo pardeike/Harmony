@@ -56,8 +56,8 @@ static void Prefix([HarmonyArgument("__result", ArgumentMode.Original)] ref bool
 
 In transpilers, arguments are only matched by their type so you can choose any argument name you like.
 
-An argument of type **`IEnumerable<CodeInstruction>`** is required and will be used to pass the IL codes to the transpiler
-An argument of type **`ILGenerator`** will be set to the current IL code generator
-An argument of type **`MethodBase`** will be set to the current original method being patched
+- **`IEnumerable<CodeInstruction>`** is required and receives the instructions to edit.
+- **`ILGenerator`** is optional and receives the current IL generator.
+- **`MethodBase`** is optional and receives the original method being patched.
 
 [note]: ../images/note.png

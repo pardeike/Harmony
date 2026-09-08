@@ -4,11 +4,11 @@
 
 A reverse patch copies the original, or part of it, into your own callable stub. Typical uses are:
 
-- easily call private methods
-- no reflection, no delegate, native performance
-- you can cherry-pick part of the original method by using a transpiler
-- can give you the unmodified original
-- will freeze the implementation to the time you reverse patch
+- call a private method through a stub with a known signature
+- call the unmodified original implementation
+- extract part of a method using a transpiler
+
+Once installed, you call the stub directly.
 
 ![note] A reverse patch is a frozen copy. Use a delegate or reflection if you want calls to follow later patches instead.
 
@@ -24,13 +24,14 @@ Match the original's signature. A static stub for an instance method takes that 
 
 ## Types of reverse patches
 
-The HarmonyReversePatch attribute comes in two alternatives:
-```cs
+The `[HarmonyReversePatch]` attribute has two variants:
+
+```csharp
 [HarmonyReversePatch(HarmonyReversePatchType.Original)]
 [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
 ```
 
-The default is `Original` so you can simply write `[HarmonyReversePatch]`.
+The default is `Original` so you can write `[HarmonyReversePatch]`.
 
 **Original** gives you the unmodified original method as defined in the dll. No patches or transpilers have touched it.
 
@@ -45,7 +46,7 @@ Suppose a long method calculates a checksum. Copy it to a `Checksum(...)` stub a
 
 The remaining IL must match the stub's inputs and output. If it consumes a string and leaves an integer, the stub could be `static int Checksum(string txt)`.
 
-To define a reverse patch transpiler, you simply put a transpiler **into** your stub:
+To define a reverse patch transpiler, put a transpiler **into** your stub:
 
 [!code-csharp[example](../examples/reverse-patching.cs?name=transpiler)]
 

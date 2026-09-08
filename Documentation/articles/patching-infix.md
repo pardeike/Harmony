@@ -1,8 +1,10 @@
-# Infix
+# Patch an operation
+
+<div id="infix"></div>
 
 An Infix patches an operation **inside** a method: a call, property access, field read/write, constructor, or literal load. It uses the familiar prefixes, postfixes, and finalizers. Other calls to the same member are unchanged.
 
-The containing method is the **outer method**. For calls, the method being called is the **inner method**. For less common cases, see [Limits](patching-infix-limits.md) and [Recipes](patching-infix-authoring.md).
+The containing method is the **outer method**. For calls, the method being called is the **inner method**. For less common cases, see [Limits](patching-infix-limits.md) and [recipes and instruction edits](patching-infix-authoring.md).
 
 [!include[Infix operation scope](../includes/infix-scope.md)]
 
@@ -46,7 +48,7 @@ For calls, supply the declaring type, method name, and argument types needed to 
 - `Positions = new[] { -1 }`: the last match.
 - Repeated positions: that match once per registration.
 
-Zero, null, missing positions, and no matches are errors. All Infixes count from the **same instructions after ordinary transpilers, before any Infixes are inserted**. Another Infix cannot shift these positions. A game update or transpiler can. See [Be careful with indices](patching-infix-limits.md#be-careful-with-indices).
+Positions are one-based, so `0` is invalid. Explicitly setting `Positions = null` is also invalid. Installation fails if a requested position is outside the matches, or if the target has no matches at all. All Infixes count from the **same instructions after ordinary transpilers, before any Infixes are inserted**. Another Infix cannot shift these positions. A game update or transpiler can. See [Be careful with indices](patching-infix-limits.md#be-careful-with-indices).
 
 ### Exact targets and generic families
 
@@ -68,7 +70,7 @@ Every `AddInner...` call **adds** a registration, including repeated methods. It
 
 The `MethodInfo` overload reads `[HarmonyInfix]` from the callback. Alternatively, supply `HarmonyMethod.innerMethod` or `innerTarget`. If both forms are present, their targets and positions must agree. Registered inputs are copied; editing them later has no effect.
 
-Patch callbacks must be static, nongeneric methods on nongeneric types. Dynamic patch methods and patch factories are not supported.
+Patch callbacks must be static, non-generic methods on non-generic types. Dynamic patch methods and patch factories are not supported.
 
 ### Properties, fields, constructors, and literals
 
@@ -111,7 +113,7 @@ Ordinary patches cannot use these named slots. To share state with an ordinary p
 
 ## Ordering, skipping, and exceptions
 
-Infix follows ordinary Harmony ordering, including priority and before/after rules. Prefixes and postfixes are **not pairs**. Exact and generic-family patches join the same lists at each selected operation.
+Infix follows ordinary Harmony ordering, including priority and before/after rules. Prefixes and postfixes are ordered independently, so postfix order does not automatically reverse prefix order. Exact and generic-family patches join the same lists at each selected operation.
 
 Without dependency overrides, high- and low-priority prefixes and void postfixes run like this:
 
@@ -119,7 +121,7 @@ Without dependency overrides, high- and low-priority prefixes and void postfixes
 high prefix → low prefix → call → high postfix → low postfix
 ```
 
-Returning postfixes run after void postfixes. As with ordinary [passthrough postfixes](patching-postfix.md#pass-through-postfixes), their first parameter receives the previous result. For Infix, that parameter and the return type must exactly match the operation's result type. Method-valued results such as `MethodInfo` are valid too.
+Returning postfixes run after void postfixes. As with ordinary [pass-through postfixes](patching-postfix.md#pass-through-postfixes), their first parameter receives the previous result. For Infix, that parameter and the return type must exactly match the operation's result type. Method-valued results such as `MethodInfo` are valid too.
 
 A prefix returning false skips the operation and later prefixes that can affect it. Observation-only prefixes still run, following the [ordinary prefix rules](patching-prefix.md). Postfixes run after a completed or skipped operation, but an exception stops the remaining prefixes/postfixes.
 
@@ -161,7 +163,7 @@ Inner `__state` resets for each execution, including loop iterations. Prefixes, 
 
 For a real argument named `__result`, use `[HarmonyArgument("__result", ArgumentMode.Original)]`. This performs exact, case-sensitive argument lookup in the selected scope, bypassing all special names.
 
-`[HarmonyOuter]` is Infix-only. Harmony never falls back to the other scope, and there is no `o_` shorthand.
+`[HarmonyOuter]` is Infix-only. Harmony never falls back to the other scope.
 
 ## Mutable argument arrays
 
@@ -181,7 +183,7 @@ A failed installation leaves the previous wrapper intact, rather than installing
 
 An older Harmony that cannot read installed Infix state refuses to rebuild it. Removing the last Infix restores ordinary-patch state. This does not let a binary requiring new API types run against old-only Harmony. For duplicate assembly identities and recovery, see [loader limits](patching-infix-limits.md#assemblies-that-look-identical-to-the-loader).
 
-Serialize updates to the same method across Harmony assemblies. Do not update it from its own prepare or transpiler callbacks.
+When multiple Harmony assemblies update the same method, apply those updates one at a time. Do not update it from its own prepare or transpiler callbacks.
 
 ## Generated bodies and captured variables
 
@@ -201,7 +203,7 @@ For explicit targets, use `AccessTools.StateMachineMoveNext`, `AccessTools.Local
 
 ## Keep patch-owned values across await and yield
 
-Use `[HarmonyOuter, HarmonyArgument("name", ArgumentMode.Persistent)]` for a value that belongs to the whole async call or enumeration. It starts at `default`, survives suspensions, and is separate for concurrent calls and separate enumerators. The name is scoped to the actual patch declaring type. Prefixes, postfixes and finalizers in that type can share it; all bindings must agree on its type and lifetime.
+Use `[HarmonyOuter, HarmonyArgument("name", ArgumentMode.Persistent)]` for a value that belongs to the whole async call or enumeration. It starts at `default`, survives suspensions, and is separate for concurrent calls and separate enumerators. The name is scoped to the actual patch declaring type. Prefixes, postfixes, and finalizers in that type can share it; all bindings must agree on its type and lifetime.
 
 [!include[State across suspensions](../includes/persistent-state.md)]
 
@@ -211,7 +213,7 @@ This patch makes `Sequence.Count(3)` yield `1, 2, 3`. Enumerating again starts a
 
 The same binding works in an async method selected with `OuterBody = InfixOuterBody.Auto`, including calls on either side of an `await`. Use `ref` or `out` to replace a slot's value and a value parameter to read it. Use several names for several values. Ordinary synchronous methods keep the value for one invocation.
 
-Harmony releases its stored references when the execution completes, faults, finishes cancellation, or the iterator is disposed. Removing the last persistent patch from a body also releases its saved state. This does not call `Dispose` on objects you store. See [persistent-state limits](patching-infix-limits.md#persistent-state-follows-one-generated-execution) for supported compiler protocols, cleanup and live-update behavior.
+Harmony releases its stored references when the execution completes, faults, finishes cancellation, or the iterator is disposed. Removing the last persistent patch from a body also releases its saved state. This does not call `Dispose` on objects you store. See [persistent-state limits](patching-infix-limits.md#persistent-state-follows-one-generated-execution) for supported compiler protocols, cleanup, and live-update behavior.
 
 ## Optional patch-body inlining and authoring recipes
 
@@ -219,4 +221,4 @@ Harmony releases its stored references when the execution completes, faults, fin
 
 Inlining can change stack traces and is not a promise of faster code. Measure it. If you later change Harmony patches on the callback itself, rebuild the outer method to refresh it.
 
-See [Recipes](patching-infix-authoring.md) for owner groups and `CodeMatcher` examples. Public `InlineSignature` helps transpilers inspect `calli` signatures; it does not make function pointers Infix targets.
+See [recipes and instruction edits](patching-infix-authoring.md) for owner groups and `CodeMatcher` examples. Public `InlineSignature` helps transpilers inspect `calli` signatures; it does not make function pointers Infix targets.

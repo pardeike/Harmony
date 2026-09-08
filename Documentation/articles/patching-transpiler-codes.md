@@ -2,7 +2,7 @@
 
 <div id="patching"></div>
 
-The workhorse of a transpiler is the type [CodeInstruction](../api/HarmonyLib.CodeInstruction.yml).
+A [CodeInstruction](../api/HarmonyLib.CodeInstruction.yml) represents one IL instruction, including its opcode, operand, labels, and exception boundaries.
 
 `CodeInstruction` wraps the .NET [Emit API](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit) so transpilers can share and edit instructions. Some details differ: jumps use labels, for example, not numeric offsets such as "four instructions forward".
 
@@ -12,13 +12,13 @@ Most arguments from [Emit()](https://docs.microsoft.com/en-us/dotnet/api/system.
 
 - Emit takes an [OpCode](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcode) and so does CodeInstruction
 - Operands are mostly the same:
-  -  Type
-  -  FieldInfo,
-  -  MethodInfo, 
-  -  ConstructorInfo, 
-  -  Int64/Int32/Int16/Single/Double/String/Byte
+  - `Type`
+  - `FieldInfo`
+  - `MethodInfo`
+  - `ConstructorInfo`
+  - `Int64`, `Int32`, `Int16`, `Single`, `Double`, `String`, or `Byte`
 
-Some things though will be restricted:
+The main restrictions are:
 
 - Operands of jumps cannot be numeric, use `Label` instead
 - `SignatureHelper` support is experimental at best

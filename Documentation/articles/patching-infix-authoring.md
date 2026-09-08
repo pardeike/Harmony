@@ -1,10 +1,12 @@
-# Infix and instruction edits
+# Recipes and instruction edits
 
-Use an Infix for prefixes, postfixes or finalizers around a selected operation. To insert, replace or remove instruction patterns, use a [transpiler](patching-transpiler.md) with [CodeMatcher](patching-transpiler-matcher.md).
+<div id="infix-and-instruction-edits"></div>
+
+Use an Infix for prefixes, postfixes, or finalizers around a selected operation. To insert, replace, or remove instruction patterns, use a [transpiler](patching-transpiler.md) with [CodeMatcher](patching-transpiler-matcher.md).
 
 Transpilers run in their usual order. Infix selects from their finished output, before inserting its own code. Even `Priority.Last` transpilers run before Infix.
 
-These examples are compiled and tested. `Probe.Tick()`, `Before()`, `After()`, `Replacement()`, `Enter()` and `Exit()` are static, take no arguments and return void. Each records its name. `Recipes.Method(name)` finds a `Probe` method; `Recipes.Call(name)` creates its call instruction.
+These examples are compiled and tested. `Probe.Tick()`, `Before()`, `After()`, `Replacement()`, `Enter()`, and `Exit()` are static, take no arguments, and return void. Each records its name. `Recipes.Method(name)` finds a `Probe` method; `Recipes.Call(name)` creates its call instruction.
 
 ## Scope of these examples
 
@@ -12,7 +14,7 @@ These recipes reject exception regions and instruction prefixes such as `constra
 
 [!code-csharp[scope](../examples/patching-infix-authoring.cs?name=scope)]
 
-Handling those bodies requires preserving exception regions, branch destinations and prefixes. Moving every exception marker onto an inserted instruction is not enough. Use Infix for supported operations if you want Harmony to handle this.
+Handling those bodies requires preserving exception regions, branch destinations, and prefixes. Moving every exception marker onto an inserted instruction is not enough. Use Infix for supported operations if you want Harmony to handle this.
 
 ## Insert before and after a match
 

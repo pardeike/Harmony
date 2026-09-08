@@ -11,7 +11,7 @@ Harmony changes what .NET methods do while an application is running. Add code b
 
 Harmony patches [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), the intermediate language used by .NET and [Mono](<https://wikipedia.org/wiki/Mono_(software)>). Your source language does not have to be C#.
 
-The exception is probably [Unity .NET Standard profile](https://docs.unity3d.com/2019.1/Documentation/Manual/dotnetProfileSupport.html), which does not provide the functionality to fully create methods on the fly at runtime.
+The runtime must allow Harmony to generate and execute replacement methods. In Unity, check the scripting backend and target platform. IL2CPP uses ahead-of-time compilation and does not support `System.Reflection.Emit`; the runtime patching described here requires a compatible managed runtime. See [Unity's scripting restrictions](https://docs.unity3d.com/6000.0/Documentation/Manual/scripting-restrictions.html).
 
 ### Bootstrapping and Injection
 
@@ -35,24 +35,22 @@ The standard `Lib.Harmony` package merges its dependencies into one DLL. `Lib.Ha
 
 There are two common ways to change an application without its source code:
 
-1. Alter dll files on disk
+1. Alter DLL files on disk
 2. Re-point method implementations (hooking)
 
 Editing DLL files has drawbacks:
 
-- it has legal implications
 - it might be blocked by an anti-cheat system
-- it does not coordinate nicely with multiple concurrent changes
+- separate edits can overwrite each other
 - it has to be done before and outside the original application
 
 Harmony uses a variation of hooking and focuses only on runtime changes that don't affect files on disk:
 
-- less conflicts with multiple mods
+- patches from multiple mods can share a method
 - supports existing mod loaders
 - changes can be made dynamically/conditionally
 - the patch order can be flexible
 - other mods can be patched too
-- less legal issues
 
 ## How Harmony works
 
@@ -63,7 +61,7 @@ Harmony lets you:
 - Modify its IL instructions
 - Combine patches from multiple authors on the same method
 
-[!include[Patch execution](../includes/patch-flow.md)]
+See [how the patch types fit together](patching.md#runtime-flow) before choosing one.
 
 ## Limits of runtime patching
 

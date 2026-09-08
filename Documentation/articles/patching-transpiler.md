@@ -1,4 +1,6 @@
-# Transpiler
+# Rewrite instructions
+
+<div id="transpiler"></div>
 
 <div id="patching"></div>
 
@@ -30,7 +32,7 @@ Harmony reruns the transpiler chain whenever it rebuilds the replacement after p
 
 ## Basic Transpiler Tutorial
 
-_Note: this tutorial uses the game Rimworld as an example but applies equally to any other game too._
+This tutorial uses a method from an older version of RimWorld. The instruction-editing techniques apply to other .NET applications, but current game code and installation paths may differ.
 
 Writing a transpiler means writing rules for rewriting code. You need to understand C# and the IL stack well enough to keep the result valid.
 
@@ -38,27 +40,24 @@ This tutorial walks through reading a method's IL and removing one section. Sect
 
 **Tutorial**
 
-Rimworld has a method called `Dialog_FormCaravan.CheckForErrors()`. In this tutorial, the goal is to remove a few lines of code in it that we don't want.
+The example method is `Dialog_FormCaravan.CheckForErrors()`. The goal is to remove the block that rejects a caravan for exceeding its mass capacity.
 
-**1) Decompilers: ILSpy or dnSpy**
+**1) Choose a decompiler**
 
-Get yourself the ILSpy that Zhentar has modified so it generates better code:
-[https://github.com/Zhentar/ILSpy/releases](https://github.com/Zhentar/ILSpy/releases) (mad props to **Zhentar**!)
-
-The example can also be followed with [dnSpy](https://github.com/0xd4d/dnSpy).
+Use a .NET decompiler with C# and IL views, such as [ILSpy](https://github.com/icsharpcode/ILSpy) or [dnSpyEx](https://github.com/dnSpyEx/dnSpy). The original tutorial used [Zhentar's ILSpy build](https://github.com/Zhentar/ILSpy/releases).
 
 **2) Decompile**
 
-Start the decompiler and open the rimworld DLL. It is located in
+Open the game's `Assembly-CSharp.dll`. For the Windows installation used by this example, the path was:
 `C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\Assembly-CSharp.dll`
 
 **3) The original method**
 
-Now search for `CheckForErrors` and find the one from `RimWorld.Dialog_FormCaravan`, double click it. You should see the source in the window with yellow background.
+Find `RimWorld.Dialog_FormCaravan.CheckForErrors` and open its C# view.
 
 **4) Viewing IL Code**
 
-Choose `IL` instead of `C#` in the dropdown at the top:
+Switch the language view from `C#` to `IL`:
 
 ```
 .method private hidebysig
@@ -122,7 +121,7 @@ if (!this.reform && this.MassUsage > this.MassCapacity)
 }
 ```
 
-Let's analyze:
+The instructions evaluate the condition using the stack:
 
 - `ldarg.0` pushes `this`. `ldfld` consumes that instance and pushes its `reform` field value.
 
@@ -142,20 +141,15 @@ The body follows the same pattern: load values, then consume them with calls and
 Overview on Wikipedia:
 [Common Intermediate Language](https://en.wikipedia.org/wiki/Common_Intermediate_Language) and [List of CIL instructions](https://en.wikipedia.org/wiki/List_of_CIL_instructions)
 
-Microsoft page about the class `OpCodes` (part of Harmonys `CodeInstruction`). Has links to each code and the argument types that Harmony reuses since it has to emit them to create the replacement method:
-[OpCodes Class](<https://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes(v=vs.110).aspx>)
+Microsoft's [OpCodes reference](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes) describes each instruction and its stack behavior. Harmony's `CodeInstruction` uses these opcodes.
 
-Pretty good tutorial on CodeProject:
-[Introduction to IL Assembly Language](https://www.codeproject.com/Articles/3778/Introduction-to-IL-Assembly-Language)
-
-And for all the nitty gritty details in pdf format:
-[Common Language Infrastructure (CLI) - Partitions I to VI](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf)
+For the full specification, see [ECMA-335: Common Language Infrastructure](https://ecma-international.org/publications-and-standards/standards/ecma-335/), especially Partition III for instructions.
 
 **7) Method calling**
 
 Instance calls take an extra input: the object to call on. Push it before the method's arguments. Static calls need only their declared arguments.
 
-Back to the beginning of our code
+At the start of the example:
 
 ```
 IL_0078: ldarg.0
@@ -190,11 +184,11 @@ SomeStaticClass.theFoo.theBar.Cool()
 
 **Keep the stack balanced.** Each instruction needs the right number and types of inputs. Leaving extra values behind, consuming missing values, or joining branches with incompatible stacks produces invalid IL.
 
-Now we can write the transpiler: instructions in, edit them, instructions out.
+A transpiler receives these instructions and returns the edited sequence.
 
 **8) Harmony Transpiler**
 
-The basic patch looks like this. Let's take our example:
+The patch class for this example starts with:
 
 ```csharp
 [HarmonyPatch(typeof(Dialog_FormCaravan))]
@@ -214,7 +208,7 @@ You can [use `yield`](https://www.kenneth-truyers.net/2016/05/12/yield-return-in
 
 **9) The patch**
 
-We need to remove the unwanted block or jump over it. Here it is with the surrounding control flow:
+Remove the unwanted block or jump over it. Here it is with the surrounding control flow:
 
 ```
 IL_0077: ret
@@ -229,14 +223,14 @@ IL_00ab: ret
 IL_00ac: ...codes...
 ```
 
-`IL_0077` ends the previous block. Our block contains two jumps to `IL_00ac` and ends at `IL_00ab`.
+`IL_0077` ends the previous block. The selected block contains two jumps to `IL_00ac` and ends at `IL_00ab`.
 
-Do not hard-code these offsets: they are byte positions, not instruction indices, and game updates can change them. Instead, use the nearby `ret` instructions to divide the method into sections, then find our section by its distinctive message string.
+Do not hard-code these offsets: they are byte positions, not instruction indices, and game updates can change them. Instead, use the nearby `ret` instructions to divide the method into sections, then find the selected section by its distinctive message string.
 
-**11) The execution**
+**10) Apply the edit**
 
-Strategy: _Search for RET codes. For every code found, search until the next RET and look for the usage of the string "TooBigCaravanMassUsage". If found, continue to find the following RET and remove everything from right after the first RET to including the second RET_:
+Find a section between two `ret` instructions that contains `"TooBigCaravanMassUsage"`. Remove the instructions after the first `ret`, up to and including the second:
 
 [!code-csharp[example](../examples/patching-transpiler.cs?name=caravan)]
 
-There it is. Add this to your code and use the normal Harmony bootstrapping and you have just done your first Harmony Transpiler!
+Apply this patch class with your Harmony instance, as shown in [Install and apply patches](basics.md#patching-using-annotations).

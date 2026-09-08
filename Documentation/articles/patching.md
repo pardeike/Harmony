@@ -13,6 +13,8 @@ Start with the smallest change that expresses your intent. A postfix is often en
 | Rewrite instructions directly | [Transpiler](patching-transpiler.md) | The replacement body, during generation |
 | Call a copy of an original implementation | [Reverse patch](reverse-patching.md) | A stub method you control |
 
+## Runtime flow
+
 [!include[Patch execution](../includes/patch-flow.md)]
 
 ## Concept
@@ -29,13 +31,13 @@ To provide your own code to Harmony, define patch methods. The patch type determ
 
 An [Infix](patching-infix.md) applies ordinary prefixes, postfixes, or finalizers to selected operations inside an outer method. It can target method/property calls, field reads or writes, construction, and literal loads. Other callers and unselected operations remain unchanged.
 
-A **Reverse Patch** copies the original into a stub method you can call from your own code. You can also transpile that copy.
+A **reverse patch** copies the original into a stub method you can call from your own code. You can also transpile that copy.
 
 #### Patches need to be static
 
 Harmony stores references to static patch methods so it can reapply everyone's patches whenever registrations change. It does not create or store patch-class instances.
 
-Use `__state` for values that belong to one patched invocation and need to pass between patches in the same class. Static fields are appropriate for deliberately shared state, not independent per-call values. Transpilers run when Harmony generates the replacement method, not each time the original is called.
+Use `__state` for values that belong to one patched invocation and need to pass between patches in the same class. Static fields are appropriate for deliberately shared state, not independent per-call values.
 
 #### Commonly unsupported use cases
 
@@ -52,8 +54,8 @@ Manual patching lets you supply methods from any class. Annotation patching grou
 **Layout**
 The class can be public or private, static or not. Mark it with `[HarmonyPatch]` and describe the target using annotations. Its static patch methods use recognized names such as `Prefix`, or attributes such as `[HarmonyPrefix]`. Helper methods and fields are fine too.
 
-**Attribute Inheritance**
-The attributes of the methods in the class inherit the attributes of the class.
+**Combining attributes**
+Harmony combines the target annotations on the class with those on each patch method. For example, specify the declaring type on the class and the method name on a patch method. See [combining annotations](annotations.md#combining-annotations).
 
 ## Patch methods
 

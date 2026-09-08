@@ -1,4 +1,4 @@
-# Execution Flow
+# Execution flow
 
 Adding a patch does not replace existing patches. Harmony combines them using its [ordering rules](priorities.md) and rebuilds the replacement whenever patches are added or removed.
 
@@ -10,11 +10,11 @@ Use a **finalizer** for cleanup on success or failure, or to observe, replace, o
 
 [!include[Build and runtime phases](../includes/transpiler-phases.md)]
 
+## Anatomy of a patched method
+
 The pseudocode below shows the replacement's structure.
 
-### Anatomy of a patched method
-
-##### Without Finalizer patches
+### Without finalizer patches
 
 Harmony calls prefixes, the (possibly transpiled) original, then postfixes.
 
@@ -24,12 +24,10 @@ An exception stops this sequence and reaches the caller unless a finalizer handl
 
 [!code-csharp[example](../examples/execution_without.cs?name=example)]
 
-##### With Finalizer patches
+### With finalizer patches
 
 [!include[Patch execution](../includes/patch-flow.md)]
 
-Finalizers add try/catch handling around this sequence:
-
-For simplicity, Prefix and Postfix patches can be considered part of the Original and are not shown here:
+Finalizers add try/catch handling around the prefixes, original, and postfixes. In this simplified pseudocode, `Original` stands for that whole sequence:
 
 [!code-csharp[example](../examples/execution_with.cs?name=example)]

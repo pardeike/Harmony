@@ -17,7 +17,7 @@ If you control the host, disabling inlining may help. Otherwise, patch a caller 
 
 [!code-csharp[example](../examples/patching-edgecases.cs?name=example)]
 
-The reason for this is that the resolution of `base.SomeMethod()` happens in your compiler. It will create IL code that targets that specific method. At runtime however, you can't simply use reflections or delegates to call it. They all will be resolved to the overwriting method. The only solution that is known to solve this is to use a `Reverse Patch`, that copies the original to a stub of your own that you then can call. See this [gist](https://gist.github.com/pardeike/45196a8b8ef331f38b14e1a7e5ee1782) for an example and a comparison.
+The compiler resolves `base.SomeMethod()` to a specific base method. To call that implementation from a patch, use a [reverse patch](reverse-patching.md) to copy it into a stub you control. See this [example and comparison](https://gist.github.com/pardeike/45196a8b8ef331f38b14e1a7e5ee1782).
 
 ## Generics
 
@@ -53,7 +53,7 @@ A native method has no IL body for Harmony to copy, so ordinary prefixes and pos
 
 ## MarshalByRefObject
 
-Methods inheriting from `MarshalByRefObject` are kind of special and patching them and information about how the .NET runtime implements the glue code between managed methods and their jitted assembler code does not exist. Thus special methods like certain types of generics and methods inheriting from MarshalByRefObject are difficult or impossible to patch.
+Patching methods on classes derived from `MarshalByRefObject` is runtime-dependent and may fail. Verify the specific method on the runtime you intend to support.
 
 ## Special Classes
 

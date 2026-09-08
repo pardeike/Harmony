@@ -1,15 +1,17 @@
-# Priorities
+# Ordering and priorities
+
+<div id="priorities"></div>
 
 Load order is not execution order. A mod loaded last can add a patch that runs first. Use these annotations to control ordering:
 
 - **[HarmonyPriority(int)]**
-  Sets the priority of this Prefix/Postfix. Defaults to Priority.Normal (400)
+  Sets this patch's priority. Defaults to `Priority.Normal` (400).
 
 - **[HarmonyBefore(string[])]**
-  Indicates that this Prefix/Postfix should be executed before any of the ID's given
+  Runs this patch before patches owned by any of the given Harmony IDs.
 
 - **[HarmonyAfter(string[])]**
-  Indicates that this Prefix/Postfix should be executed after any of the ID's given
+  Runs this patch after patches owned by any of the given Harmony IDs.
 
 Example:
 

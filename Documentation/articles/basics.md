@@ -1,4 +1,6 @@
-# Basics
+# Install and apply patches
+
+<div id="basics"></div>
 
 To use Harmony:
 

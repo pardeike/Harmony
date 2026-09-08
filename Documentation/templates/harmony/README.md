@@ -6,7 +6,9 @@ This theme layers Harmony's design over DocFX's `modern` template. DocFX still g
 
 ## Articles and navigation
 
-Edit the guides in `Documentation/articles/` and their order in `articles/toc.yml`. Keep existing filenames and heading anchors when restructuring. If a heading changes, retain its previous identifier with an empty HTML anchor.
+Edit the guides in `Documentation/articles/` and their order in `articles/toc.yml`. Match each navigation label to the page title. Keep existing filenames and heading anchors when restructuring. If a heading changes, retain its previous identifier with an empty HTML anchor.
+
+Use sentence case for headings. Capitalize Infix as the feature name; use lowercase prefix, postfix, transpiler, finalizer, and reverse patch in prose. Preserve capitalization in API identifiers. Use the page title when a link names a guide, or describe the specific section it opens.
 
 The root landing page uses `_harmonyHome: true`. Article and API pages use the same reading layout. API navigation remains generated from the assembly metadata; `api/index.md` is a curated entry point, not a second source of API definitions.
 
