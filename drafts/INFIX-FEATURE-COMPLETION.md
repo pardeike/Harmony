@@ -257,6 +257,8 @@ Do not change DynamicMethod factory support for ordinary patches, exact-name bin
 
 Generated wrappers must retain exact runtime dependencies across plugin load contexts. Use DynamicMethod emission for synthetic helpers' structured finalization and retain Cecil for imported outer exception tables. Cecil wrappers and their DynamicMethod proxies share a narrowly scoped dependency resolver, verified against separately loaded callback assemblies and patch-owned state types. Never use a process-wide first-match name fallback. If one metadata scope requires distinct actual assemblies with the same full assembly identity, or the runtime cannot bind the exact selected dependency, reject before publication. On runtimes without isolated load contexts, conservatively reject competing loaded identities for demanded dependencies. This is an explicit loader limit, not permission to run a different callback.
 
+For metadata inspection, Infix `Patch.Equals` and `GetHashCode` use the stored callback module ID and method token without resolving the callback. Owners, target selectors and occurrence positions remain excluded from equality. Ordinary patch records retain their existing method-based equality and hashes; ordinary and Infix records compare unequal so their different identity rules remain consistent. This overrides the core specification's public `Patch` equality constraint for Infix metadata only. Execution and rebuilding still validate that each durable callback identity resolves uniquely.
+
 ## 8. Acceptance and regression coverage
 
 Keep executable documentation examples and focused tests aligned with these implemented contracts. A local passing fixture is not proof of every supported runtime arrangement.

@@ -1,0 +1,124 @@
+[
+  {
+    "case": "part2-shared-race",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "harmonySha256": "b0388d71ef86a35a3acdbc6667f541320bf34e5bcfb4be2907ce26edf62acc5b",
+    "observations": {
+      "engines": [
+        "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+        "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+      ],
+      "initializationErrors": [
+        null,
+        null
+      ],
+      "sharedStateAssemblyCount": 1,
+      "samePatchDictionary": true,
+      "thirdCurrentEngine": {
+        "value": true
+      }
+    }
+  },
+  {
+    "case": "part2-shared-sequential",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "harmonySha256": "b0388d71ef86a35a3acdbc6667f541320bf34e5bcfb4be2907ce26edf62acc5b",
+    "observations": {
+      "engines": [
+        "0Harmony, Version=2.4.4.0, Culture=neutral, PublicKeyToken=null",
+        "0Harmony, Version=2.4.5.0, Culture=neutral, PublicKeyToken=null"
+      ],
+      "initializationErrors": [
+        null,
+        null
+      ],
+      "sharedStateAssemblyCount": 1,
+      "samePatchDictionary": true,
+      "thirdCurrentEngine": {
+        "value": true
+      }
+    }
+  },
+  {
+    "case": "part2-annotations",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "harmonySha256": "b0388d71ef86a35a3acdbc6667f541320bf34e5bcfb4be2907ce26edf62acc5b",
+    "observations": {
+      "rawMethodType": null,
+      "mergedMethodType": 0,
+      "importedMethodType": 0,
+      "mergedResolvesOuter": true,
+      "importedResolvesOuter": true,
+      "classInstallationCount": 1
+    }
+  },
+  {
+    "case": "part2-patch-equality",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "harmonySha256": "b0388d71ef86a35a3acdbc6667f541320bf34e5bcfb4be2907ce26edf62acc5b",
+    "observations": {
+      "cachedHashStable": {
+        "value": true
+      },
+      "freshSelfEquality": {
+        "value": true
+      },
+      "freshHashCode": {
+        "value": 643904925
+      },
+      "freshHashSet": {
+        "value": 1
+      },
+      "removeByHeldCallback": {
+        "value": 10
+      }
+    }
+  },
+  {
+    "case": "part2-passthrough",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "harmonySha256": "b0388d71ef86a35a3acdbc6667f541320bf34e5bcfb4be2907ce26edf62acc5b",
+    "observations": {
+      "before": 12,
+      "invalidRegistration": {
+        "errors": [
+          "HarmonyLib.HarmonyException: Cannot wrap inner call Int32 Inner(Int32) at instruction 1 in Program::Outer(System.Int32) for review.part2.passthrough:Program::PlainPostfix(System.Int32&), review.part2.passthrough:Program::Part2InvalidPostfix(System.String): Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String.",
+          "System.ArgumentException: Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String."
+        ],
+        "stack": "HarmonyLib.HarmonyException: Cannot wrap inner call Int32 Inner(Int32) at instruction 1 in Program::Outer(System.Int32) for review.part2.passthrough:Program::PlainPostfix(System.Int32&), review.part2.passthrough:Program::Part2InvalidPostfix(System.String): Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String.\n ---> System.ArgumentException: Infix passthrough postfix static System.Int32 Program::Part2InvalidPostfix(System.String value) must return and take a first parameter of exactly System.Int32, the result type of static System.Int32 Program::Inner(System.Int32 value); actual return is System.Int32 and first parameter is System.String.\n   at HarmonyLib.MethodCreator.EmitPostfixes(IEnumerable`1 postfixes, PatchBindingContext context, Boolean passthroughPatches, PatchBindingContext outerContext) in /Users/ap/Projects/Harmony/Harmony/Internal/MethodCreator.cs:line 231\n   at HarmonyLib.Infix.EmitSite(MethodCreator creator, List`1 instructions, Int32 start, Int32 index, List`1 prefixes, List`1 postfixes, List`1 finalizers, PatchBindingContext context, PatchBindingContext outer) in /Users/ap/Projects/Harmony/Harmony/Internal/Infix.cs:line 221\n   at HarmonyLib.Infix.Rewrite(MethodCreator creator, IEnumerable`1 source) in /Users/ap/Projects/Harmony/Harmony/Internal/Infix.cs:line 64\n   --- End of inner exception stack trace ---\n   at HarmonyLib.Infix.Rewrite(MethodCreator creator, IEnumerable`1 source) in /Users/ap/Projects/Harmony/Harmony/Internal/Infix.cs:line 76\n   at HarmonyLib.MethodCreator.AddInfixes(IEnumerable`1 instructions) in /Users/ap/Projects/Harmony/Harmony/Internal/MethodCreator.cs:line 303\n   at HarmonyLib.MethodCreator.CreateReplacement() in /Users/ap/Projects/Harmony/Harmony/Internal/MethodCreator.cs:line 133\n   at HarmonyLib.PatchFunctions.UpdateWrapper(MethodBase original, PatchInfo patchInfo) in /Users/ap/Projects/Harmony/Harmony/Internal/PatchFunctions.cs:line 41\n   at HarmonyLib.PatchProcessor.Patch() in /Users/ap/Projects/Harmony/Harmony/Public/PatchProcessor.cs:line 211\n   at Program.<>c__DisplayClass5_0.<Part2Passthrough>b__0() in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Part2.cs:line 95\n   at Program.Observe(String name, Func`1 action) in /Users/ap/Projects/Harmony/HarmonyTests.Compatibility/ReviewProbes/Program.cs:line 30"
+      },
+      "after": 12,
+      "survivingPostfixes": 1
+    }
+  },
+  {
+    "case": "part2-validation",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "harmonySha256": "b0388d71ef86a35a3acdbc6667f541320bf34e5bcfb4be2907ce26edf62acc5b",
+    "observations": {
+      "callsForOneInfixRegistration": {
+        "ResolveModule": 9,
+        "ValidateSurvivingMetadata": 1,
+        "GetRequiredInfixVersion": 1
+      },
+      "result": 10
+    }
+  },
+  {
+    "case": "part2-constant-allocation",
+    "runtime": "9.0.19",
+    "architecture": "X64",
+    "harmonySha256": "b0388d71ef86a35a3acdbc6667f541320bf34e5bcfb4be2907ce26edf62acc5b",
+    "observations": {
+      "candidateCount": 10000,
+      "nonnumericControlBytes": 0,
+      "nonmatchingDoubleBytes": 0
+    }
+  }
+]

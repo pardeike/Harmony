@@ -110,11 +110,11 @@ namespace HarmonyLib
 			return mode == InfixOuterBody.Auto ? AccessTools.StateMachineMoveNext(original) ?? original : original;
 		}
 
-		internal static void ClearInfixMarker(HarmonyMethod info, object[] attributes)
+		internal static void ClearInfixMarker(HarmonyMethod info, object[] attributes, MethodBase method = null)
 		{
 			if (GetInfixDeclaration(attributes) is null) return;
 			if (attributes.Any(a => a.GetType().FullName == typeof(HarmonyPatch).FullName))
-				throw new ArgumentException($"Infix patch {info.method?.FullDescription()} cannot have a method-level HarmonyPatch; select the outer target on its class");
+				throw new ArgumentException($"Infix patch {(method ?? info.method)?.FullDescription()} cannot have a method-level HarmonyPatch; select the outer target on its class");
 			if (info.methodType == (MethodType)int.MinValue) info.methodType = null;
 		}
 

@@ -21,6 +21,8 @@ The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the sam
 
 ## Fix verification
 
+All six items are complete. [Post-fix observations](results-part2-after-fixes.json) retain the same seven fresh-process probes and their artifact hashes; each observation was checked against its required outcome. The original failing observations remain unchanged above and in `results-part2.json`.
+
 - T12: discovery, creation, and field initialization now share the AppDomain lock across Harmony copies. Fresh-process concurrent and sequential compatibility cases pass on .NET 9 x64, including ordinary patch/rebuild/removal and a later third copy sharing all three dictionaries. These cases also run in compatibility CI. Already split state remains rejected; older copies without this lock still need host coordination.
 
 - T13: the public annotation reader clears the marker on copied metadata. The raw attribute still carries it, and missing or ambiguous inner targets remain deferred until registration. Public list/merge/import paths retain the class target; all 29 metadata and target tests pass on .NET 9 x64.
@@ -32,6 +34,10 @@ The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the sam
 - T16: immutable literal metadata caches its decoded value; matching compares values or exact floating-point bits without formatting candidates. The same warmed 10,000-double probe now allocates zero bytes (previously 880,000), and its control remains zero. All 72 operation and target tests pass on .NET 9 x64, including signed zero and distinct NaN payloads after serialization. Compact integer opcodes still use the existing boxed normalization path; no claim of zero allocation for every opcode.
 
 - T17: removed the unused local accessors, Infix member accessor, and obsolete position matcher. The constructor convenience now lives in TestTools; constructor zero-position rejection and the production position model remain covered. All 188 focused binding/position/execution tests pass on .NET 9 x64.
+
+Final local checks: all 12 target frameworks build in Debug without warnings or errors; full .NET 9.0.19 x64 Debug and Release suites each pass 1,021 tests. Selected metadata, target and persistence fixtures pass on Mono 6.12 x64 with both net35 (36 tests) and net452 (48 tests) assets.
+
+Against published Harmony 2.4.2, all 47 .NET 9/JSON and 46 .NET 8/BinaryFormatter expected-outcome cases pass. Each run retains 11 classified existing loader/concurrent-update limitations. Concurrent and sequential current-copy startup succeed in both CoreCLR lanes. The Mono startup cases encounter existing assembly unification before the race can be exercised; they are not concurrency proof. Three persistence compatibility cases against the pinned version-3 source baseline also pass in each CoreCLR lane, including current/current rebuilding and prior-reader rejection in both load orders.
 
 ## Claims not added to TODO
 

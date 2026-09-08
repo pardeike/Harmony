@@ -339,7 +339,7 @@ namespace HarmonyLib
 			var infos = attributes
 						.Select(GetHarmonyMethodInfo)
 						.Where(info => info is not null).ToList();
-			foreach (var info in infos) AttributePatch.ClearInfixMarker(info, attributes);
+			foreach (var info in infos) AttributePatch.ClearInfixMarker(info, attributes, method);
 			return infos;
 		}
 

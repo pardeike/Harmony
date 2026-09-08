@@ -139,7 +139,7 @@ namespace HarmonyLibTests.Patching
 				Assert.That(merged.GetOriginalMethod(), Is.EqualTo(Method(nameof(Outer))));
 			}
 			Assert.That(patch.GetCustomAttributes(true).OfType<HarmonyInfix>().Single().info.methodType, Is.EqualTo((MethodType)int.MinValue), "Raw declarations must still reject old readers");
-			Assert.Throws<ArgumentException>(() => HarmonyMethodExtensions.GetFromMethod(Method(nameof(MethodOuterTarget))));
+			Assert.That(Assert.Throws<ArgumentException>(() => HarmonyMethodExtensions.GetFromMethod(Method(nameof(MethodOuterTarget)))).Message, Does.Contain(nameof(MethodOuterTarget)));
 			var imported = new HarmonyMethod(patch);
 			Assert.That(imported.methodType, Is.Null);
 			Assert.That(imported.declaringType, Is.Null);

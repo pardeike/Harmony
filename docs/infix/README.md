@@ -10,6 +10,12 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
+## Second-review fixes, 2026-09-08
+
+All six verified follow-ups are fixed: shared-state startup, public annotation merging, Infix metadata equality, repeated rebuild validation, literal matching allocations, and unused binding helpers. The [verification record](../../HarmonyTests.Compatibility/ReviewProbes/PART2.md) contains before/after observations, focused checks and runtime boundaries. [TODO.md](../../TODO.md) has no remaining verified items from these two reviews.
+
+The full .NET 9.0.19 x64 Debug and Release suites each pass 1,021 tests, and all 12 configured target frameworks build in Debug. Mono net35/net452 metadata, target and persistence checks pass. Published 2.4.2 compatibility checks pass in .NET 9/JSON and .NET 8/BinaryFormatter, with existing loader/concurrency limitations classified separately; current-copy startup succeeds in both CoreCLR lanes. The startup probe on Mono encounters assembly unification, so it does not prove concurrent initialization there. CI results remain revision-specific.
+
 ## Persistent-state verification, 2026-09-08
 
 `ArgumentMode.Persistent` adds explicit execution-scoped state while preserving ordinary named-local lifetimes. The candidate was built in Debug and Release across all configured target frameworks; the documentation project also builds across that matrix with zero compiler warnings or errors.
