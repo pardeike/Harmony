@@ -1,634 +1,697 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class Patch </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class Patch ">
-    
-    <meta name="description" content="A serializable patch">
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>Class Patch | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Patch | Harmony 3 ">
+      
+      <meta name="description" content="A serializable patch">
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="ManagedReference">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </nav>
+    </header>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-        </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.Patch">
-
-
-
-  <h1 id="HarmonyLib_Patch" data-uid="HarmonyLib.Patch" class="text-break">Class Patch</h1>
-  <div class="markdown level0 summary"><p>A serializable patch</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><span class="xref">Patch</span></div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
-  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_Patch_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class Patch</code></pre>
-  </div>
-  <h3 id="constructors">Constructors
-</h3>
-
-
-  <a id="HarmonyLib_Patch__ctor_" data-uid="HarmonyLib.Patch.#ctor*"></a>
-  <h4 id="HarmonyLib_Patch__ctor_HarmonyLib_HarmonyMethod_System_Int32_System_String_" data-uid="HarmonyLib.Patch.#ctor(HarmonyLib.HarmonyMethod,System.Int32,System.String)">Patch(HarmonyMethod, int, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a patch</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Patch(HarmonyMethod method, int index, string owner)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><span class="parametername">method</span></td>
-        <td><p>The method of the patch</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td><span class="parametername">index</span></td>
-        <td><p>Zero-based index</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">owner</span></td>
-        <td><p>An owner (Harmony ID)</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_Patch__ctor_" data-uid="HarmonyLib.Patch.#ctor*"></a>
-  <h4 id="HarmonyLib_Patch__ctor_System_Reflection_MethodInfo_System_Int32_System_String_System_Int32_System_String___System_String___System_Boolean_" data-uid="HarmonyLib.Patch.#ctor(System.Reflection.MethodInfo,System.Int32,System.String,System.Int32,System.String[],System.String[],System.Boolean)">Patch(MethodInfo, int, string, int, string[], string[], bool)</h4>
-  <div class="markdown level1 summary"><p>Creates a patch</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after, bool debug)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodInfo</span></td>
-        <td><span class="parametername">patch</span></td>
-        <td><p>The method of the patch</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td><span class="parametername">index</span></td>
-        <td><p>Zero-based index</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">owner</span></td>
-        <td><p>An owner (Harmony ID)</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td><span class="parametername">priority</span></td>
-        <td><p>The priority, see <a class="xref" href="HarmonyLib.Priority.html">Priority</a></p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span>[]</td>
-        <td><span class="parametername">before</span></td>
-        <td><p>A list of Harmony IDs for patches that should run after this patch</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span>[]</td>
-        <td><span class="parametername">after</span></td>
-        <td><p>A list of Harmony IDs for patches that should run before this patch</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td><span class="parametername">debug</span></td>
-        <td><p>A flag that will log the replacement method via <a class="xref" href="HarmonyLib.FileLog.html">FileLog</a> every time this patch is used to build the replacement, even in the future</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-
-
-  <h4 id="HarmonyLib_Patch_after" data-uid="HarmonyLib.Patch.after">after</h4>
-  <div class="markdown level1 summary"><p>Keep this patch after the patches indicated in the list of Harmony IDs</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly string[] after</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span>[]</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_Patch_before" data-uid="HarmonyLib.Patch.before">before</h4>
-  <div class="markdown level1 summary"><p>Keep this patch before the patches indicated in the list of Harmony IDs</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly string[] before</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span>[]</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_Patch_debug" data-uid="HarmonyLib.Patch.debug">debug</h4>
-  <div class="markdown level1 summary"><p>A flag that will log the replacement method via <a class="xref" href="HarmonyLib.FileLog.html">FileLog</a> every time this patch is used to build the replacement, even in the future</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly bool debug</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_Patch_index" data-uid="HarmonyLib.Patch.index">index</h4>
-  <div class="markdown level1 summary"><p>Zero-based index</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly int index</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_Patch_innerMethod" data-uid="HarmonyLib.Patch.innerMethod">innerMethod</h4>
-  <div class="markdown level1 summary"><p>For an infix patch, this defines the inner method that we will apply the patch to</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[OptionalField]
-public readonly InnerMethod innerMethod</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_Patch_innerTarget" data-uid="HarmonyLib.Patch.innerTarget">innerTarget</h4>
-  <div class="markdown level1 summary"><p>The selected extended operation; method-call patches retain their existing innerMethod representation</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[OptionalField]
-public readonly InnerTarget innerTarget</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.InnerTarget.html">InnerTarget</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_Patch_owner" data-uid="HarmonyLib.Patch.owner">owner</h4>
-  <div class="markdown level1 summary"><p>The owner (Harmony ID)</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly string owner</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_Patch_priority" data-uid="HarmonyLib.Patch.priority">priority</h4>
-  <div class="markdown level1 summary"><p>The priority, see <a class="xref" href="HarmonyLib.Priority.html">Priority</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly int priority</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-
-
-  <a id="HarmonyLib_Patch_PatchMethod_" data-uid="HarmonyLib.Patch.PatchMethod*"></a>
-  <h4 id="HarmonyLib_Patch_PatchMethod" data-uid="HarmonyLib.Patch.PatchMethod">PatchMethod</h4>
-  <div class="markdown level1 summary"><p>The method of the static patch method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public MethodInfo PatchMethod { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodInfo</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-
-
-  <a id="HarmonyLib_Patch_CompareTo_" data-uid="HarmonyLib.Patch.CompareTo*"></a>
-  <h4 id="HarmonyLib_Patch_CompareTo_System_Object_" data-uid="HarmonyLib.Patch.CompareTo(System.Object)">CompareTo(object)</h4>
-  <div class="markdown level1 summary"><p>Determines how patches sort</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int CompareTo(object obj)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">object</span></td>
-        <td><span class="parametername">obj</span></td>
-        <td><p>The other patch</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td><p>integer to define sort order (-1, 0, 1)</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_Patch_Equals_" data-uid="HarmonyLib.Patch.Equals*"></a>
-  <h4 id="HarmonyLib_Patch_Equals_System_Object_" data-uid="HarmonyLib.Patch.Equals(System.Object)">Equals(object)</h4>
-  <div class="markdown level1 summary"><p>Determines whether patches have the same callback. Infix records compare stored module and method identity,
-without resolving the callback, and are distinct from ordinary patch records. Owners and selectors are not compared.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">object</span></td>
-        <td><span class="parametername">obj</span></td>
-        <td><p>The other patch</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td><p>true if equal</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><span class="xref">object.Equals(object)</span></div>
-
-
-  <a id="HarmonyLib_Patch_GetHashCode_" data-uid="HarmonyLib.Patch.GetHashCode*"></a>
-  <h4 id="HarmonyLib_Patch_GetHashCode" data-uid="HarmonyLib.Patch.GetHashCode">GetHashCode()</h4>
-  <div class="markdown level1 summary"><p>Hash function</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td><p>A hash code</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><span class="xref">object.GetHashCode()</span></div>
-
-
-  <a id="HarmonyLib_Patch_GetMethod_" data-uid="HarmonyLib.Patch.GetMethod*"></a>
-  <h4 id="HarmonyLib_Patch_GetMethod_System_Reflection_MethodBase_" data-uid="HarmonyLib.Patch.GetMethod(System.Reflection.MethodBase)">GetMethod(MethodBase)</h4>
-  <div class="markdown level1 summary"><p>Get the patch method or a DynamicMethod if original patch method is a patch factory</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public MethodInfo GetMethod(MethodBase original)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodBase</span></td>
-        <td><span class="parametername">original</span></td>
-        <td><p>The original method/constructor</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodInfo</span></td>
-        <td><p>The method of the patch</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-</article>
-          </div>
-
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.Patch">
+          <span id="_content"></span>
+          <span id="HarmonyLib_Patch_syntax" data-section-alias=".codewrapper"></span>
+
+
+
+  <h1 id="HarmonyLib_Patch" data-uid="HarmonyLib.Patch" class="text-break">
+Class Patch  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="HarmonyLib.html">HarmonyLib</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A serializable patch</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Patch</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Patch</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="HarmonyLib_Patch__ctor_" data-uid="HarmonyLib.Patch.#ctor*"></a>
+
+  <h3 id="HarmonyLib_Patch__ctor_HarmonyLib_HarmonyMethod_System_Int32_System_String_" data-uid="HarmonyLib.Patch.#ctor(HarmonyLib.HarmonyMethod,System.Int32,System.String)">
+  Patch(HarmonyMethod, int, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Patch(HarmonyMethod method, int index, string owner)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>method</code> <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The method of the patch</p>
+</dd>
+    <dt><code>index</code> <span class="xref">int</span></dt>
+    <dd><p>Zero-based index</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>An owner (Harmony ID)</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_Patch__ctor_" data-uid="HarmonyLib.Patch.#ctor*"></a>
+
+  <h3 id="HarmonyLib_Patch__ctor_System_Reflection_MethodInfo_System_Int32_System_String_System_Int32_System_String___System_String___System_Boolean_" data-uid="HarmonyLib.Patch.#ctor(System.Reflection.MethodInfo,System.Int32,System.String,System.Int32,System.String[],System.String[],System.Boolean)">
+  Patch(MethodInfo, int, string, int, string[], string[], bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a patch</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Patch(MethodInfo patch, int index, string owner, int priority, string[] before, string[] after, bool debug)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>patch</code> <span class="xref">MethodInfo</span></dt>
+    <dd><p>The method of the patch</p>
+</dd>
+    <dt><code>index</code> <span class="xref">int</span></dt>
+    <dd><p>Zero-based index</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>An owner (Harmony ID)</p>
+</dd>
+    <dt><code>priority</code> <span class="xref">int</span></dt>
+    <dd><p>The priority, see <a class="xref" href="HarmonyLib.Priority.html">Priority</a></p>
+</dd>
+    <dt><code>before</code> <span class="xref">string</span>[]</dt>
+    <dd><p>A list of Harmony IDs for patches that should run after this patch</p>
+</dd>
+    <dt><code>after</code> <span class="xref">string</span>[]</dt>
+    <dd><p>A list of Harmony IDs for patches that should run before this patch</p>
+</dd>
+    <dt><code>debug</code> <span class="xref">bool</span></dt>
+    <dd><p>A flag that will log the replacement method via <a class="xref" href="HarmonyLib.FileLog.html">FileLog</a> every time this patch is used to build the replacement, even in the future</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="HarmonyLib_Patch_after" data-uid="HarmonyLib.Patch.after">
+  after
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Keep this patch after the patches indicated in the list of Harmony IDs</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly string[] after</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_Patch_before" data-uid="HarmonyLib.Patch.before">
+  before
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Keep this patch before the patches indicated in the list of Harmony IDs</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly string[] before</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_Patch_debug" data-uid="HarmonyLib.Patch.debug">
+  debug
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A flag that will log the replacement method via <a class="xref" href="HarmonyLib.FileLog.html">FileLog</a> every time this patch is used to build the replacement, even in the future</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly bool debug</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_Patch_index" data-uid="HarmonyLib.Patch.index">
+  index
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Zero-based index</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly int index</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_Patch_innerMethod" data-uid="HarmonyLib.Patch.innerMethod">
+  innerMethod
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>For an infix patch, this defines the inner method that we will apply the patch to</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[OptionalField]
+public readonly InnerMethod innerMethod</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_Patch_innerTarget" data-uid="HarmonyLib.Patch.innerTarget">
+  innerTarget
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The selected extended operation; method-call patches retain their existing innerMethod representation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[OptionalField]
+public readonly InnerTarget innerTarget</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.InnerTarget.html">InnerTarget</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_Patch_owner" data-uid="HarmonyLib.Patch.owner">
+  owner
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The owner (Harmony ID)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly string owner</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_Patch_priority" data-uid="HarmonyLib.Patch.priority">
+  priority
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The priority, see <a class="xref" href="HarmonyLib.Priority.html">Priority</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly int priority</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="HarmonyLib_Patch_PatchMethod_" data-uid="HarmonyLib.Patch.PatchMethod*"></a>
+
+  <h3 id="HarmonyLib_Patch_PatchMethod" data-uid="HarmonyLib.Patch.PatchMethod">
+  PatchMethod
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The method of the static patch method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MethodInfo PatchMethod { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">MethodInfo</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="HarmonyLib_Patch_CompareTo_" data-uid="HarmonyLib.Patch.CompareTo*"></a>
+
+  <h3 id="HarmonyLib_Patch_CompareTo_System_Object_" data-uid="HarmonyLib.Patch.CompareTo(System.Object)">
+  CompareTo(object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines how patches sort</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(object obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd><p>The other patch</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>integer to define sort order (-1, 0, 1)</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_Patch_Equals_" data-uid="HarmonyLib.Patch.Equals*"></a>
+
+  <h3 id="HarmonyLib_Patch_Equals_System_Object_" data-uid="HarmonyLib.Patch.Equals(System.Object)">
+  Equals(object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether patches have the same callback. Infix records compare stored module and method identity,
+without resolving the callback, and are distinct from ordinary patch records. Owners and selectors are not compared.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd><p>The other patch</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>true if equal</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_Patch_GetHashCode_" data-uid="HarmonyLib.Patch.GetHashCode*"></a>
+
+  <h3 id="HarmonyLib_Patch_GetHashCode" data-uid="HarmonyLib.Patch.GetHashCode">
+  GetHashCode()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Hash function</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>A hash code</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_Patch_GetMethod_" data-uid="HarmonyLib.Patch.GetMethod*"></a>
+
+  <h3 id="HarmonyLib_Patch_GetMethod_System_Reflection_MethodBase_" data-uid="HarmonyLib.Patch.GetMethod(System.Reflection.MethodBase)">
+  GetMethod(MethodBase)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Get the patch method or a DynamicMethod if original patch method is a patch factory</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MethodInfo GetMethod(MethodBase original)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>original</code> <span class="xref">MethodBase</span></dt>
+    <dd><p>The original method/constructor</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">MethodInfo</span></dt>
+    <dd><p>The method of the patch</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

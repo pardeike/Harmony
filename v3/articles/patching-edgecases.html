@@ -1,80 +1,105 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Patching </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Patching ">
-    
-    
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>Runtime edge cases | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Runtime edge cases | Harmony 3 ">
+      
+      
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      <meta name="docfx:disabletocfilter" content="true">
+      <meta name="docfx:docurl" content="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-edgecases.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </nav>
+    </header>
 
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </div>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
-<h1 id="patching">Patching</h1>
 
-<h2 id="edge-cases">Edge Cases</h2>
+        <article id="main-content" tabindex="-1" data-uid="">
+          <span id="_content"></span>
+          
+<h1 id="runtime-edge-cases">Runtime edge cases</h1>
+
+<div id="patching"></div>
+<div id="edge-cases"></div>
 <p>Some runtime behavior needs a workaround; some cannot be patched. Here are the common cases.</p>
-<h3 id="inlining">Inlining</h3>
+<h2 id="inlining">Inlining</h2>
 <p>When the runtime <a href="https://mattwarren.org/2016/03/09/adventures-in-benchmarking-method-inlining">inlines a method</a>, it copies its code into the caller. That call site no longer calls the method, so patching the method does not affect it.</p>
 <p>If you control the host, disabling inlining may help. Otherwise, patch a caller that has not been inlined. You may need <code>TargetMethods()</code> to cover several callers.</p>
-<h3 id="calling-base-methods">Calling Base Methods</h3>
+<h2 id="calling-base-methods">Calling Base Methods</h2>
 <p><code>base.SomeMethod()</code> in your patch refers to your patch class's base, not the patched class's base:</p>
 <pre><code class="lang-csharp" name="example">using HarmonyLib;
 using System;
@@ -107,7 +132,7 @@ public class SubClass : BaseClass
 }
 </code></pre>
 <p>The reason for this is that the resolution of <code>base.SomeMethod()</code> happens in your compiler. It will create IL code that targets that specific method. At runtime however, you can't simply use reflections or delegates to call it. They all will be resolved to the overwriting method. The only solution that is known to solve this is to use a <code>Reverse Patch</code>, that copies the original to a stub of your own that you then can call. See this <a href="https://gist.github.com/pardeike/45196a8b8ef331f38b14e1a7e5ee1782">gist</a> for an example and a comparison.</p>
-<h3 id="generics">Generics</h3>
+<h2 id="generics">Generics</h2>
 <p>Generics can be difficult to patch. In general, expect generic methods and methods of generic classes to be shared between different types of <code>T</code> during runtime. This means that by patching one method, the method will be patched for all types of <code>T</code>. Depending on the type of generic and your .NET runtime, this can be worked around in a few ways:</p>
 <ul>
 <li>If the generic includes a value type, such as <code>int</code>, in most (but not all) cases, the method will not be shared. Patching a method which uses a value type parameter will patch only that specific method. Conversely, patching a generic with an object type will <em>not</em> patch the value type method, so both may have to be patched.</li>
@@ -115,7 +140,7 @@ public class SubClass : BaseClass
 <li>If the method is a generic method of a non-generic class, you may be able to examine the method's arguments, if any argument contains <code>T</code>. Also, generic type data will be lost (if <code>Method&lt;T&gt;</code> is patched using <code>Method&lt;string&gt;</code>, <code>Method&lt;object&gt;</code> will become <code>Method&lt;string&gt;</code>)</li>
 <li>If the method is a static non-generic method of a generic class, generic type data will be lost (see above).</li>
 </ul>
-<h3 id="changing-the-type-returned-by-a-constructor">Changing the type returned by a constructor</h3>
+<h2 id="changing-the-type-returned-by-a-constructor">Changing the type returned by a constructor</h2>
 <p>Constructors initialize an object; they do not choose its type. A C# construction uses IL like:</p>
 <pre><code>newobj instance void Test::.ctor();
 </code></pre>
@@ -124,16 +149,16 @@ public class SubClass : BaseClass
 <p>The newobj instruction allocates a new instance of the class associated with ctor and initializes all the fields in the new instance to 0 (of the proper type) or null references as appropriate. It then calls the constructor ctor with the given arguments along with the newly created instance. After the constructor has been called, the now initialized object reference (type O) is pushed on the stack.</p>
 </blockquote>
 <p>By the time the constructor runs, the object already exists. To change what is created, patch the caller's <code>newobj</code> operation or replace the value it produces, not the constructor body.</p>
-<h3 id="static-constructors">Static Constructors</h3>
+<h2 id="static-constructors">Static Constructors</h2>
 <p>Static constructors of a class will run as soon as you touch or instantiate that class. That unfortunately means that when Harmony asks for some basic required information for that class, it will trigger the static constructor before the patch happens.</p>
 <p>As a result, you cannot patch static constructors unless you plan to run them again (which often defeats the purpose). It also has the side effect that your patches to other methods in such a class will run the constructor at the wrong moment - causing errors. In that case, you need to time the patching so it happens when it's ok to run the static constructor or when it already has been triggered.</p>
-<h3 id="native-external-methods">Native (External) Methods</h3>
+<h2 id="native-external-methods">Native (External) Methods</h2>
 <p>A native method has no IL body for Harmony to copy, so ordinary prefixes and postfixes do not work. A transpiler-only patch can supply a new body from the empty input. <strong>Beware:</strong> this replaces the native implementation; it does not give you a way to call it.</p>
-<h3 id="marshalbyrefobject">MarshalByRefObject</h3>
+<h2 id="marshalbyrefobject">MarshalByRefObject</h2>
 <p>Methods inheriting from <code>MarshalByRefObject</code> are kind of special and patching them and information about how the .NET runtime implements the glue code between managed methods and their jitted assembler code does not exist. Thus special methods like certain types of generics and methods inheriting from MarshalByRefObject are difficult or impossible to patch.</p>
-<h3 id="special-classes">Special Classes</h3>
+<h2 id="special-classes">Special Classes</h2>
 <p>Some framework classes, such as <a href="https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest">HttpRequest</a>, have runtime-dependent patching quirks. An identity patch (patching with no callbacks or transpilers) on one method has sometimes been needed before patching another in the same class. There is no general workaround; results depend on the runtime, architecture, and class.</p>
-<h3 id="methods-with-dead-code">Methods With Dead Code</h3>
+<h2 id="methods-with-dead-code">Methods With Dead Code</h2>
 <p>In some environments (like Mono) the runtime poses strict rules about creating methods that should not contain dead code. This becomes problematic, when patching methods like the following results in a <code>InvalidProgramException</code>:</p>
 <pre><code class="lang-csharp">public SomeType MyMethod()
 {
@@ -141,7 +166,7 @@ public class SubClass : BaseClass
 }
 </code></pre>
 <p>That method has no <code>RET</code> IL code in its body and if you try to patch it, Harmony will generate illegal IL. The only solution to this is to create a <code>Transpiler</code> that transpiles the method to a correct version by creating valid IL. This is also true for adding a Prefix or Postfix to that method. The way Harmony works, the replacement method needs to be valid to add calls to your patches to it.</p>
-<h3 id="patching-too-early-missingmethodexception-in-unity">Patching too early: MissingMethodException in Unity</h3>
+<h2 id="patching-too-early-missingmethodexception-in-unity">Patching too early: MissingMethodException in Unity</h2>
 <p>Patching during early Unity startup can throw <code>MissingMethodException: Attempted to access a missing method</code> when the target directly or indirectly calls an external UnityEngine method.</p>
 <p>In the following example code, patching either <code>SomeMethod()</code> or <code>SomeOtherMethod()</code> will cause the exception:</p>
 <pre><code class="lang-csharp" name="example">class SomeGameObject
@@ -183,42 +208,29 @@ public static extern void DontDestroyOnLoad(Object target);
 }
 </code></pre>
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                  <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-edgecases.md/#L1" class="contribution-link">Edit this page</a>
-                  </li>
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
+        <div class="contribution d-print-none">
+          <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-edgecases.md/#L1" class="edit-link">Edit this page</a>
         </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

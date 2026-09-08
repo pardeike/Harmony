@@ -1,615 +1,549 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class GeneralExtensions </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class GeneralExtensions ">
-    
-    <meta name="description" content="General extensions for common cases">
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>Class GeneralExtensions | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class GeneralExtensions | Harmony 3 ">
+      
+      <meta name="description" content="General extensions for common cases">
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="ManagedReference">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </nav>
+    </header>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-        </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.GeneralExtensions">
-
-
-
-  <h1 id="HarmonyLib_GeneralExtensions" data-uid="HarmonyLib.GeneralExtensions" class="text-break">Class GeneralExtensions</h1>
-  <div class="markdown level0 summary"><p>General extensions for common cases</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><span class="xref">GeneralExtensions</span></div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
-  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_GeneralExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class GeneralExtensions</code></pre>
-  </div>
-  <h3 id="methods">Methods
-</h3>
-
-
-  <a id="HarmonyLib_GeneralExtensions_Description_" data-uid="HarmonyLib.GeneralExtensions.Description*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_Description_System_Type___" data-uid="HarmonyLib.GeneralExtensions.Description(System.Type[])">Description(Type[])</h4>
-  <div class="markdown level1 summary"><p>Converts an array of types (for example methods arguments) into a human readable form</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string Description(this Type[] parameters)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span>[]</td>
-        <td><span class="parametername">parameters</span></td>
-        <td><p>The array of types</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><p>A human readable description including brackets</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_FullDescription_" data-uid="HarmonyLib.GeneralExtensions.FullDescription*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_FullDescription_System_Reflection_MethodBase_" data-uid="HarmonyLib.GeneralExtensions.FullDescription(System.Reflection.MethodBase)">FullDescription(MethodBase)</h4>
-  <div class="markdown level1 summary"><p>A a full description of a method or a constructor without assembly details but with generics</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string FullDescription(this MethodBase member)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodBase</span></td>
-        <td><span class="parametername">member</span></td>
-        <td><p>The method/constructor</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><p>A human readable description</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_FullDescription_" data-uid="HarmonyLib.GeneralExtensions.FullDescription*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_FullDescription_System_Type_" data-uid="HarmonyLib.GeneralExtensions.FullDescription(System.Type)">FullDescription(Type)</h4>
-  <div class="markdown level1 summary"><p>A full description of a type</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string FullDescription(this Type type)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span></td>
-        <td><span class="parametername">type</span></td>
-        <td><p>The type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><p>A human readable description</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_GetTypedValue_" data-uid="HarmonyLib.GeneralExtensions.GetTypedValue*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_GetTypedValue__1_System_Collections_Generic_Dictionary_System_String_System_Object__System_String_" data-uid="HarmonyLib.GeneralExtensions.GetTypedValue``1(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">GetTypedValue&lt;T&gt;(Dictionary&lt;string, object&gt;, string)</h4>
-  <div class="markdown level1 summary"><p>A helper to access a value via key from a dictionary with extra casting</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static T GetTypedValue&lt;T&gt;(this Dictionary&lt;string, object&gt; dictionary, string key)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</td>
-        <td><span class="parametername">dictionary</span></td>
-        <td><p>The dictionary</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">key</span></td>
-        <td><p>The key</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">T</span></td>
-        <td><p>The value for the key or the default value (of T) if that key does not exist or cannot be cast to T</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The value type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_GetValueSafe_" data-uid="HarmonyLib.GeneralExtensions.GetValueSafe*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_GetValueSafe__2_System_Collections_Generic_Dictionary___0___1____0_" data-uid="HarmonyLib.GeneralExtensions.GetValueSafe``2(System.Collections.Generic.Dictionary{``0,``1},``0)">GetValueSafe&lt;S, T&gt;(Dictionary&lt;S, T&gt;, S)</h4>
-  <div class="markdown level1 summary"><p>A helper to access a value via key from a dictionary</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static T GetValueSafe&lt;S, T&gt;(this Dictionary&lt;S, T&gt; dictionary, S key)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Dictionary</span>&lt;S, T&gt;</td>
-        <td><span class="parametername">dictionary</span></td>
-        <td><p>The dictionary</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">S</span></td>
-        <td><span class="parametername">key</span></td>
-        <td><p>The key</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">T</span></td>
-        <td><p>The value for the key or the default value (of T) if that key does not exist</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">S</span></td>
-        <td><p>The key type</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The value type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_HasHarmonyAttribute_" data-uid="HarmonyLib.GeneralExtensions.HasHarmonyAttribute*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_HasHarmonyAttribute_System_Type_" data-uid="HarmonyLib.GeneralExtensions.HasHarmonyAttribute(System.Type)">HasHarmonyAttribute(Type)</h4>
-  <div class="markdown level1 summary"><p>Tests if a type has the <a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool HasHarmonyAttribute(this Type type)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span></td>
-        <td><span class="parametername">type</span></td>
-        <td><p>The class/type to test</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td><p>True if the type has the <a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_Join_" data-uid="HarmonyLib.GeneralExtensions.Join*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_Join__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_String__System_String_" data-uid="HarmonyLib.GeneralExtensions.Join``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.String},System.String)">Join&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, string&gt;, string)</h4>
-  <div class="markdown level1 summary"><p>Joins an enumeration with a value converter and a delimiter to a string</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string Join&lt;T&gt;(this IEnumerable&lt;T&gt; enumeration, Func&lt;T, string&gt; converter = null, string delimiter = &quot;, &quot;)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">IEnumerable</span>&lt;T&gt;</td>
-        <td><span class="parametername">enumeration</span></td>
-        <td><p>The enumeration</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">Func</span>&lt;T, <span class="xref">string</span>&gt;</td>
-        <td><span class="parametername">converter</span></td>
-        <td><p>An optional value converter (from T to string)</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">delimiter</span></td>
-        <td><p>An optional delimiter</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><p>The values joined into a string</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The inner type of the enumeration</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_ToLiteral_" data-uid="HarmonyLib.GeneralExtensions.ToLiteral*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_ToLiteral_System_String_System_String_" data-uid="HarmonyLib.GeneralExtensions.ToLiteral(System.String,System.String)">ToLiteral(string, string)</h4>
-  <div class="markdown level1 summary"><p>Escapes Unicode and ASCII non printable characters</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string ToLiteral(this string input, string quoteChar = &quot;\&quot;&quot;)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">input</span></td>
-        <td><p>The string to convert</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">quoteChar</span></td>
-        <td><p>The string to convert</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><p>A string literal surrounded by <code class="paramref">quoteChar</code></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_GeneralExtensions_Types_" data-uid="HarmonyLib.GeneralExtensions.Types*"></a>
-  <h4 id="HarmonyLib_GeneralExtensions_Types_System_Reflection_ParameterInfo___" data-uid="HarmonyLib.GeneralExtensions.Types(System.Reflection.ParameterInfo[])">Types(ParameterInfo[])</h4>
-  <div class="markdown level1 summary"><p>A helper converting parameter infos to types</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Type[] Types(this ParameterInfo[] pinfo)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">ParameterInfo</span>[]</td>
-        <td><span class="parametername">pinfo</span></td>
-        <td><p>The array of parameter infos</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span>[]</td>
-        <td><p>An array of types</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-</article>
-          </div>
-
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.GeneralExtensions">
+          <span id="_content"></span>
+          <span id="HarmonyLib_GeneralExtensions_syntax" data-section-alias=".codewrapper"></span>
+
+
+
+  <h1 id="HarmonyLib_GeneralExtensions" data-uid="HarmonyLib.GeneralExtensions" class="text-break">
+Class GeneralExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="HarmonyLib.html">HarmonyLib</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>General extensions for common cases</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class GeneralExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">GeneralExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="HarmonyLib_GeneralExtensions_Description_" data-uid="HarmonyLib.GeneralExtensions.Description*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_Description_System_Type___" data-uid="HarmonyLib.GeneralExtensions.Description(System.Type[])">
+  Description(Type[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an array of types (for example methods arguments) into a human readable form</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Description(this Type[] parameters)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>parameters</code> <span class="xref">Type</span>[]</dt>
+    <dd><p>The array of types</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A human readable description including brackets</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_FullDescription_" data-uid="HarmonyLib.GeneralExtensions.FullDescription*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_FullDescription_System_Reflection_MethodBase_" data-uid="HarmonyLib.GeneralExtensions.FullDescription(System.Reflection.MethodBase)">
+  FullDescription(MethodBase)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A a full description of a method or a constructor without assembly details but with generics</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string FullDescription(this MethodBase member)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>member</code> <span class="xref">MethodBase</span></dt>
+    <dd><p>The method/constructor</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A human readable description</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_FullDescription_" data-uid="HarmonyLib.GeneralExtensions.FullDescription*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_FullDescription_System_Type_" data-uid="HarmonyLib.GeneralExtensions.FullDescription(System.Type)">
+  FullDescription(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A full description of a type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string FullDescription(this Type type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">Type</span></dt>
+    <dd><p>The type</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A human readable description</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_GetTypedValue_" data-uid="HarmonyLib.GeneralExtensions.GetTypedValue*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_GetTypedValue__1_System_Collections_Generic_Dictionary_System_String_System_Object__System_String_" data-uid="HarmonyLib.GeneralExtensions.GetTypedValue``1(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+  GetTypedValue&lt;T&gt;(Dictionary&lt;string, object&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A helper to access a value via key from a dictionary with extra casting</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T GetTypedValue&lt;T&gt;(this Dictionary&lt;string, object&gt; dictionary, string key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dictionary</code> <span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
+    <dd><p>The dictionary</p>
+</dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd><p>The key</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The value for the key or the default value (of T) if that key does not exist or cannot be cast to T</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_GetValueSafe_" data-uid="HarmonyLib.GeneralExtensions.GetValueSafe*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_GetValueSafe__2_System_Collections_Generic_Dictionary___0___1____0_" data-uid="HarmonyLib.GeneralExtensions.GetValueSafe``2(System.Collections.Generic.Dictionary{``0,``1},``0)">
+  GetValueSafe&lt;S, T&gt;(Dictionary&lt;S, T&gt;, S)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A helper to access a value via key from a dictionary</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T GetValueSafe&lt;S, T&gt;(this Dictionary&lt;S, T&gt; dictionary, S key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dictionary</code> <span class="xref">Dictionary</span>&lt;S, T&gt;</dt>
+    <dd><p>The dictionary</p>
+</dd>
+    <dt><code>key</code> <span class="xref">S</span></dt>
+    <dd><p>The key</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The value for the key or the default value (of T) if that key does not exist</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>S</code></dt>
+    <dd><p>The key type</p>
+</dd>
+    <dt><code>T</code></dt>
+    <dd><p>The value type</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_HasHarmonyAttribute_" data-uid="HarmonyLib.GeneralExtensions.HasHarmonyAttribute*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_HasHarmonyAttribute_System_Type_" data-uid="HarmonyLib.GeneralExtensions.HasHarmonyAttribute(System.Type)">
+  HasHarmonyAttribute(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if a type has the <a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool HasHarmonyAttribute(this Type type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">Type</span></dt>
+    <dd><p>The class/type to test</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if the type has the <a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_Join_" data-uid="HarmonyLib.GeneralExtensions.Join*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_Join__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_String__System_String_" data-uid="HarmonyLib.GeneralExtensions.Join``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.String},System.String)">
+  Join&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, string&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Joins an enumeration with a value converter and a delimiter to a string</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Join&lt;T&gt;(this IEnumerable&lt;T&gt; enumeration, Func&lt;T, string&gt; converter = null, string delimiter = &quot;, &quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>enumeration</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>The enumeration</p>
+</dd>
+    <dt><code>converter</code> <span class="xref">Func</span>&lt;T, <span class="xref">string</span>&gt;</dt>
+    <dd><p>An optional value converter (from T to string)</p>
+</dd>
+    <dt><code>delimiter</code> <span class="xref">string</span></dt>
+    <dd><p>An optional delimiter</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The values joined into a string</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The inner type of the enumeration</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_ToLiteral_" data-uid="HarmonyLib.GeneralExtensions.ToLiteral*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_ToLiteral_System_String_System_String_" data-uid="HarmonyLib.GeneralExtensions.ToLiteral(System.String,System.String)">
+  ToLiteral(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Escapes Unicode and ASCII non printable characters</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToLiteral(this string input, string quoteChar = &quot;\&quot;&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>input</code> <span class="xref">string</span></dt>
+    <dd><p>The string to convert</p>
+</dd>
+    <dt><code>quoteChar</code> <span class="xref">string</span></dt>
+    <dd><p>The string to convert</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A string literal surrounded by <code class="paramref">quoteChar</code></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_GeneralExtensions_Types_" data-uid="HarmonyLib.GeneralExtensions.Types*"></a>
+
+  <h3 id="HarmonyLib_GeneralExtensions_Types_System_Reflection_ParameterInfo___" data-uid="HarmonyLib.GeneralExtensions.Types(System.Reflection.ParameterInfo[])">
+  Types(ParameterInfo[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A helper converting parameter infos to types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Type[] Types(this ParameterInfo[] pinfo)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pinfo</code> <span class="xref">ParameterInfo</span>[]</dt>
+    <dd><p>The array of parameter infos</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Type</span>[]</dt>
+    <dd><p>An array of types</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

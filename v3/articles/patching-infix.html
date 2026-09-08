@@ -1,76 +1,118 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Infix </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Infix ">
-    
-    
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>Infix | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Infix | Harmony 3 ">
+      
+      
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      <meta name="docfx:disabletocfilter" content="true">
+      <meta name="docfx:docurl" content="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-infix.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </nav>
+    </header>
 
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </div>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
+
+        <article id="main-content" tabindex="-1" data-uid="">
+          <span id="_content"></span>
+          
 <h1 id="infix">Infix</h1>
 
 <p>An Infix patches an operation <strong>inside</strong> a method: a call, property access, field read/write, constructor, or literal load. It uses the familiar prefixes, postfixes, and finalizers. Other calls to the same member are unchanged.</p>
 <p>The containing method is the <strong>outer method</strong>. For calls, the method being called is the <strong>inner method</strong>. For less common cases, see <a href="patching-infix-limits.html">Limits</a> and <a href="patching-infix-authoring.html">Recipes</a>.</p>
+<figure class="patch-figure">
+  <figcaption>Infix · a patch around a selected operation</figcaption>
+  <div class="patch-scope">
+    <span class="scope-label">Outer method · Outer.Run()</span>
+    <div class="patch-context">Earlier instructions</div>
+    <div class="patch-selected">
+      <span class="scope-label">Selected operation · Helper.Decide(value)</span>
+      <ol class="patch-flow">
+        <li><div class="patch-step patch-prefix"><strong>Inner prefix</strong><small>Before this operation</small></div></li>
+        <li><div class="patch-step"><strong>Operation</strong><small>Call, read, write, create, or load</small></div></li>
+        <li><div class="patch-step patch-postfix"><strong>Inner postfix</strong><small>After this operation</small></div></li>
+      </ol>
+      <div class="patch-recovery"><div class="patch-step patch-finalizer"><strong>Inner finalizer</strong><small>Handles this selected operation's patch sequence.</small></div></div>
+    </div>
+    <div class="patch-context">Later instructions</div>
+  </div>
+  <p class="diagram-note">The orange border marks the selection. Calls from other methods are unaffected by this Infix. If an exception escapes the selection, normal exception handling in the outer method decides what happens next.</p>
+</figure>
 <h2 id="a-working-example">A working example</h2>
 <p>This patch changes calls to <code>Helper.Decide</code> inside <code>Outer.Run</code>. <code>value</code> is the inner argument; <code>[HarmonyOuter] int mode</code> reads the outer argument.</p>
 <pre><code class="lang-csharp" name="example">public static class Helper
@@ -383,6 +425,20 @@ public static class SequencePatch
 <p>For explicit targets, use <code>AccessTools.StateMachineMoveNext</code>, <code>AccessTools.LocalFunction</code>, or <code>AccessTools.Lambdas</code>. Lambda order is not a stable identity across builds. Direct inspection and unpatching use the resolved generated method; processor and owner-wide unpatching find it automatically.</p>
 <h2 id="keep-patch-owned-values-across-await-and-yield">Keep patch-owned values across await and yield</h2>
 <p>Use <code>[HarmonyOuter, HarmonyArgument(&quot;name&quot;, ArgumentMode.Persistent)]</code> for a value that belongs to the whole async call or enumeration. It starts at <code>default</code>, survives suspensions, and is separate for concurrent calls and separate enumerators. The name is scoped to the actual patch declaring type. Prefixes, postfixes and finalizers in that type can share it; all bindings must agree on its type and lifetime.</p>
+<figure class="patch-figure">
+  <figcaption>Persistent state · one async call or enumeration</figcaption>
+  <div class="patch-scope">
+    <span class="scope-label">One generated execution</span>
+    <ol class="patch-flow">
+      <li><div class="patch-step"><strong>Run</strong><small>A selected patch reads or updates its named value.</small></div></li>
+      <li><div class="patch-step"><strong>Suspend</strong><small>At a yield or an await that suspends execution.</small></div></li>
+      <li><div class="patch-step"><strong>Resume</strong><small>A later patch in the same type sees the saved value.</small></div></li>
+    </ol>
+    <div class="state-track"><code>ArgumentMode.Persistent</code> · the same named slot across suspensions</div>
+  </div>
+  <p class="diagram-note">Each separate call or enumerator gets its own value, starting at <code>default</code>. Ordinary outer <code>__state</code> and named locals start again on each <code>MoveNext</code> invocation. The persistent-state limits describe supported compiler protocols and cleanup.</p>
+</figure>
+
 <p>This patch makes <code>Sequence.Count(3)</code> yield <code>1, 2, 3</code>. Enumerating again starts at <code>1</code>:</p>
 <pre><code class="lang-csharp" name="persistent">[HarmonyPatch(typeof(Sequence), nameof(Sequence.Count))]
 public static class SequencePersistentPatch
@@ -401,42 +457,29 @@ public static class SequencePersistentPatch
 <p>See <a href="patching-infix-authoring.html">Recipes</a> for owner groups and <code>CodeMatcher</code> examples. Public <code>InlineSignature</code> helps transpilers inspect <code>calli</code> signatures; it does not make function pointers Infix targets.</p>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                  <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-infix.md/#L1" class="contribution-link">Edit this page</a>
-                  </li>
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
+        <div class="contribution d-print-none">
+          <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-infix.md/#L1" class="edit-link">Edit this page</a>
         </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

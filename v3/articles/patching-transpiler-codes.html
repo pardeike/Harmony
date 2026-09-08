@@ -1,75 +1,99 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Patching </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Patching ">
-    
-    
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>CodeInstruction | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CodeInstruction | Harmony 3 ">
+      
+      
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      <meta name="docfx:disabletocfilter" content="true">
+      <meta name="docfx:docurl" content="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-transpiler-codes.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </nav>
+    </header>
 
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </div>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
-<h1 id="patching">Patching</h1>
 
-<h2 id="codeinstruction">CodeInstruction</h2>
+        <article id="main-content" tabindex="-1" data-uid="">
+          <span id="_content"></span>
+          
+<h1 id="codeinstruction">CodeInstruction</h1>
+
+<div id="patching"></div>
 <p>The workhorse of a transpiler is the type <a href="../api/HarmonyLib.CodeInstruction.html">CodeInstruction</a>.</p>
 <p><code>CodeInstruction</code> wraps the .NET <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit">Emit API</a> so transpilers can share and edit instructions. Some details differ: jumps use labels, for example, not numeric offsets such as &quot;four instructions forward&quot;.</p>
 <p>A transpiler receives and returns <code>IEnumerable&lt;CodeInstruction&gt;</code>. An optional <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator">ILGenerator</a> lets you define labels and local variables.</p>
@@ -94,7 +118,7 @@
 </ul>
 <p>Do <strong>not</strong> call <code>ILGenerator.Emit()</code>: return instructions and let Harmony emit them. Use the generator to declare locals and labels; describe <a href="#trycatch-boundaries">exception boundaries</a> on the instructions themselves.</p>
 <p>Prefer reusing existing operands for labels and locals. Find a distinctive instruction and take its operand instead of hard-coding an index.</p>
-<h4 id="indirect-calls">Indirect calls</h4>
+<h2 id="indirect-calls">Indirect calls</h2>
 <p>For a <code>calli</code> instruction read from a method body, Harmony supplies an <a href="../api/HarmonyLib.InlineSignature.html">InlineSignature</a> operand. Transpilers can inspect its parameter types, return type, calling convention, and instance flags without accessing Harmony internals.</p>
 <p>Use its <code>PopCount</code> and <code>PushCount</code> properties when calculating evaluation-stack depth:</p>
 <pre><code class="lang-csharp">if (instruction.opcode == OpCodes.Calli &amp;&amp; instruction.operand is InlineSignature signature)
@@ -107,56 +131,43 @@
 <p>Parameter and return entries are <code>Type</code> objects, nested <code>InlineSignature</code> objects for function pointers, or <code>InlineSignature.ModifierType</code> objects for optional/required type modifiers. Modifiers do not change the stack count; returning a function pointer pushes one value even if that function itself returns <code>void</code>. The counts follow changes to the mutable signature.</p>
 <p>The existing calling-convention representation uses <code>CallingConvention.Winapi</code> for the default managed convention; its other named values denote their corresponding unmanaged conventions. Stack counting does not depend on this encoding. The computed counts describe a valid signature; they do not validate whether the runtime can emit an arbitrary signature assembled by a transpiler.</p>
 <p>Making this model public does not expand the reader's existing signature support. Generic type/method parameter entries, varargs sentinels, and pointer/by-reference/array wrappers around a nested function-pointer signature are not currently supported by the reader.</p>
-<h4 id="local-variables">Local variables</h4>
+<h2 id="local-variables">Local variables</h2>
 <p>Existing local operands can be numeric indices or <code>LocalBuilder</code> objects. Handle both. To add a local, call <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.declarelocal">ILGenerator.DeclareLocal</a>; to reuse one, copy its existing operand.</p>
-<h4 id="labels">Labels</h4>
+<h2 id="labels">Labels</h2>
 <p>Jumps use a <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.definelabel">Label</a> operand. The destination instruction holds that label in its <code>labels</code> list. To add a jump, call <code>ILGenerator.DefineLabel()</code>, attach the label to the destination, and use it as the jump's operand.</p>
-<h4 id="trycatch-boundaries">Try/catch boundaries</h4>
+<h2 id="trycatch-boundaries">Try/catch boundaries</h2>
 <p>An instruction's <code>blocks</code> list marks exception boundaries, including filters. Harmony builds the exception metadata from these markers. When moving or inserting code, preserve boundary order and keep handler-entry labels on their handler instructions.</p>
-<h4 id="convenience-methods">Convenience methods</h4>
+<h2 id="convenience-methods">Convenience methods</h2>
 <p><a href="../api/HarmonyLib.CodeInstructionExtensions.html">CodeInstruction extension methods</a> help create, find, and compare instructions and their operands.</p>
-<h4 id="pitfalls">Pitfalls</h4>
+<h2 id="pitfalls">Pitfalls</h2>
 <p>Removing an instruction can orphan its labels or exception boundaries. Copying one can duplicate them. Both can produce invalid IL.</p>
 <p>When inserting before an instruction, decide whether jumps should reach your new code or the old instruction. Move labels accordingly. Treat exception boundaries separately: moving one changes which code is inside the handler or protected region.</p>
 <p>Set <code>Harmony.DEBUG = true</code> or use <code>[HarmonyDebug]</code> to inspect generated instructions, labels, and exception boundaries in the log.</p>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                  <li>
-                    <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-transpiler-codes.md/#L1" class="contribution-link">Edit this page</a>
-                  </li>
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
+        <div class="contribution d-print-none">
+          <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/patching-transpiler-codes.md/#L1" class="edit-link">Edit this page</a>
         </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

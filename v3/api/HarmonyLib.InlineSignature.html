@@ -1,363 +1,464 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class InlineSignature </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class InlineSignature ">
-    
-    <meta name="description" content="A mutable signature used as the operand of a calli instruction. Parameter and return entries are , nested , or  objects.">
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>Class InlineSignature | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class InlineSignature | Harmony 3 ">
+      
+      <meta name="description" content="A mutable signature used as the operand of a calli instruction. Parameter and return entries are , nested , or  objects.">
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="ManagedReference">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </nav>
+    </header>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-        </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.InlineSignature">
-
-
-
-  <h1 id="HarmonyLib_InlineSignature" data-uid="HarmonyLib.InlineSignature" class="text-break">Class InlineSignature</h1>
-  <div class="markdown level0 summary"><p>A mutable signature used as the operand of a <code>calli</code> instruction.
-Parameter and return entries are <span class="xref">System.Type</span>, nested <a class="xref" href="HarmonyLib.InlineSignature.html">InlineSignature</a>, or <a class="xref" href="HarmonyLib.InlineSignature.ModifierType.html">InlineSignature.ModifierType</a> objects.</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><span class="xref">InlineSignature</span></div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
-  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_InlineSignature_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class InlineSignature</code></pre>
-  </div>
-  <h3 id="constructors">Constructors
-</h3>
-
-
-  <a id="HarmonyLib_InlineSignature__ctor_" data-uid="HarmonyLib.InlineSignature.#ctor*"></a>
-  <h4 id="HarmonyLib_InlineSignature__ctor" data-uid="HarmonyLib.InlineSignature.#ctor">InlineSignature()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public InlineSignature()</code></pre>
-  </div>
-  <h3 id="properties">Properties
-</h3>
-
-
-  <a id="HarmonyLib_InlineSignature_CallingConvention_" data-uid="HarmonyLib.InlineSignature.CallingConvention*"></a>
-  <h4 id="HarmonyLib_InlineSignature_CallingConvention" data-uid="HarmonyLib.InlineSignature.CallingConvention">CallingConvention</h4>
-  <div class="markdown level1 summary"><p>The calling convention. <span class="xref">System.Runtime.InteropServices.CallingConvention.Winapi</span> means default managed, not default unmanaged.
-Other named values mean their unmanaged conventions; other metadata conventions use their numeric value plus one.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CallingConvention CallingConvention { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">CallingConvention</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="HarmonyLib_InlineSignature_CallingConvention_remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>Preserve this historical encoding when re-emitting an operand. For new unmanaged calls, specify the actual convention, such as Cdecl or StdCall.</p>
-</div>
-
-
-  <a id="HarmonyLib_InlineSignature_ExplicitThis_" data-uid="HarmonyLib.InlineSignature.ExplicitThis*"></a>
-  <h4 id="HarmonyLib_InlineSignature_ExplicitThis" data-uid="HarmonyLib.InlineSignature.ExplicitThis">ExplicitThis</h4>
-  <div class="markdown level1 summary"><p>Whether the first entry in <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a> explicitly describes the instance. Requires <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_HasThis">HasThis</a>.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool ExplicitThis { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_InlineSignature_HasThis_" data-uid="HarmonyLib.InlineSignature.HasThis*"></a>
-  <h4 id="HarmonyLib_InlineSignature_HasThis" data-uid="HarmonyLib.InlineSignature.HasThis">HasThis</h4>
-  <div class="markdown level1 summary"><p>Whether the call receives an instance. Unless <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ExplicitThis">ExplicitThis</a> is set, the instance is not listed in <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a>.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool HasThis { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_InlineSignature_Parameters_" data-uid="HarmonyLib.InlineSignature.Parameters*"></a>
-  <h4 id="HarmonyLib_InlineSignature_Parameters" data-uid="HarmonyLib.InlineSignature.Parameters">Parameters</h4>
-  <div class="markdown level1 summary"><p>The parameter types or function-pointer signatures</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;object&gt; Parameters { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<span class="xref">object</span>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_InlineSignature_PopCount_" data-uid="HarmonyLib.InlineSignature.PopCount*"></a>
-  <h4 id="HarmonyLib_InlineSignature_PopCount" data-uid="HarmonyLib.InlineSignature.PopCount">PopCount</h4>
-  <div class="markdown level1 summary"><p>Stack values consumed by <code>calli</code>, including the function pointer and any implicit instance.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int PopCount { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="HarmonyLib_InlineSignature_PopCount_remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>An explicit instance is counted once, through <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a>.</p>
-</div>
-
-
-  <a id="HarmonyLib_InlineSignature_PushCount_" data-uid="HarmonyLib.InlineSignature.PushCount*"></a>
-  <h4 id="HarmonyLib_InlineSignature_PushCount" data-uid="HarmonyLib.InlineSignature.PushCount">PushCount</h4>
-  <div class="markdown level1 summary"><p>Stack values produced by <code>calli</code>: zero for <span class="xref">void</span>, otherwise one.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int PushCount { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="HarmonyLib_InlineSignature_PushCount_remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>Modifiers do not change the count. A function-pointer return counts as one pointer, regardless of its signature.</p>
-</div>
-
-
-  <a id="HarmonyLib_InlineSignature_ReturnType_" data-uid="HarmonyLib.InlineSignature.ReturnType*"></a>
-  <h4 id="HarmonyLib_InlineSignature_ReturnType" data-uid="HarmonyLib.InlineSignature.ReturnType">ReturnType</h4>
-  <div class="markdown level1 summary"><p>The return type or function-pointer signature</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public object ReturnType { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">object</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-
-
-  <a id="HarmonyLib_InlineSignature_ToString_" data-uid="HarmonyLib.InlineSignature.ToString*"></a>
-  <h4 id="HarmonyLib_InlineSignature_ToString" data-uid="HarmonyLib.InlineSignature.ToString">ToString()</h4>
-  <div class="markdown level1 summary"><p>Returns a string representation of the inline signature</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><p>A string representation of the inline signature</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><span class="xref">object.ToString()</span></div>
-
-</article>
-          </div>
-
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.InlineSignature">
+          <span id="_content"></span>
+          <span id="HarmonyLib_InlineSignature_syntax" data-section-alias=".codewrapper"></span>
+
+
+
+  <h1 id="HarmonyLib_InlineSignature" data-uid="HarmonyLib.InlineSignature" class="text-break">
+Class InlineSignature  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="HarmonyLib.html">HarmonyLib</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A mutable signature used as the operand of a <code>calli</code> instruction.
+Parameter and return entries are <span class="xref">System.Type</span>, nested <a class="xref" href="HarmonyLib.InlineSignature.html">InlineSignature</a>, or <a class="xref" href="HarmonyLib.InlineSignature.ModifierType.html">InlineSignature.ModifierType</a> objects.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class InlineSignature</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">InlineSignature</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="HarmonyLib_InlineSignature__ctor_" data-uid="HarmonyLib.InlineSignature.#ctor*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature__ctor" data-uid="HarmonyLib.InlineSignature.#ctor">
+  InlineSignature()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InlineSignature()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="HarmonyLib_InlineSignature_CallingConvention_" data-uid="HarmonyLib.InlineSignature.CallingConvention*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_CallingConvention" data-uid="HarmonyLib.InlineSignature.CallingConvention">
+  CallingConvention
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The calling convention. <span class="xref">System.Runtime.InteropServices.CallingConvention.Winapi</span> means default managed, not default unmanaged.
+Other named values mean their unmanaged conventions; other metadata conventions use their numeric value plus one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CallingConvention CallingConvention { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">CallingConvention</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="HarmonyLib_InlineSignature_CallingConvention_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Preserve this historical encoding when re-emitting an operand. For new unmanaged calls, specify the actual convention, such as Cdecl or StdCall.</p>
+</div>
+
+
+
+
+  <a id="HarmonyLib_InlineSignature_ExplicitThis_" data-uid="HarmonyLib.InlineSignature.ExplicitThis*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_ExplicitThis" data-uid="HarmonyLib.InlineSignature.ExplicitThis">
+  ExplicitThis
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the first entry in <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a> explicitly describes the instance. Requires <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_HasThis">HasThis</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ExplicitThis { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_InlineSignature_HasThis_" data-uid="HarmonyLib.InlineSignature.HasThis*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_HasThis" data-uid="HarmonyLib.InlineSignature.HasThis">
+  HasThis
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the call receives an instance. Unless <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ExplicitThis">ExplicitThis</a> is set, the instance is not listed in <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasThis { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_InlineSignature_Parameters_" data-uid="HarmonyLib.InlineSignature.Parameters*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_Parameters" data-uid="HarmonyLib.InlineSignature.Parameters">
+  Parameters
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The parameter types or function-pointer signatures</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;object&gt; Parameters { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<span class="xref">object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_InlineSignature_PopCount_" data-uid="HarmonyLib.InlineSignature.PopCount*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_PopCount" data-uid="HarmonyLib.InlineSignature.PopCount">
+  PopCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stack values consumed by <code>calli</code>, including the function pointer and any implicit instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int PopCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="HarmonyLib_InlineSignature_PopCount_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An explicit instance is counted once, through <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a>.</p>
+</div>
+
+
+
+
+  <a id="HarmonyLib_InlineSignature_PushCount_" data-uid="HarmonyLib.InlineSignature.PushCount*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_PushCount" data-uid="HarmonyLib.InlineSignature.PushCount">
+  PushCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stack values produced by <code>calli</code>: zero for <span class="xref">void</span>, otherwise one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int PushCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="HarmonyLib_InlineSignature_PushCount_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Modifiers do not change the count. A function-pointer return counts as one pointer, regardless of its signature.</p>
+</div>
+
+
+
+
+  <a id="HarmonyLib_InlineSignature_ReturnType_" data-uid="HarmonyLib.InlineSignature.ReturnType*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_ReturnType" data-uid="HarmonyLib.InlineSignature.ReturnType">
+  ReturnType
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The return type or function-pointer signature</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object ReturnType { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="HarmonyLib_InlineSignature_ToString_" data-uid="HarmonyLib.InlineSignature.ToString*"></a>
+
+  <h3 id="HarmonyLib_InlineSignature_ToString" data-uid="HarmonyLib.InlineSignature.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string representation of the inline signature</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A string representation of the inline signature</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

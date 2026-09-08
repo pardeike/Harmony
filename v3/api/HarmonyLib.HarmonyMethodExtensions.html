@@ -1,438 +1,435 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class HarmonyMethodExtensions </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class HarmonyMethodExtensions ">
-    
-    <meta name="description" content="Annotation extensions">
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>Class HarmonyMethodExtensions | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class HarmonyMethodExtensions | Harmony 3 ">
+      
+      <meta name="description" content="Annotation extensions">
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="ManagedReference">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </nav>
+    </header>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-        </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.HarmonyMethodExtensions">
-
-
-
-  <h1 id="HarmonyLib_HarmonyMethodExtensions" data-uid="HarmonyLib.HarmonyMethodExtensions" class="text-break">Class HarmonyMethodExtensions</h1>
-  <div class="markdown level0 summary"><p>Annotation extensions</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><span class="xref">HarmonyMethodExtensions</span></div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
-  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_HarmonyMethodExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class HarmonyMethodExtensions</code></pre>
-  </div>
-  <h3 id="methods">Methods
-</h3>
-
-
-  <a id="HarmonyLib_HarmonyMethodExtensions_Clone_" data-uid="HarmonyLib.HarmonyMethodExtensions.Clone*"></a>
-  <h4 id="HarmonyLib_HarmonyMethodExtensions_Clone_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.Clone(HarmonyLib.HarmonyMethod)">Clone(HarmonyMethod)</h4>
-  <div class="markdown level1 summary"><p>Clones an annotation</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static HarmonyMethod Clone(this HarmonyMethod original)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><span class="parametername">original</span></td>
-        <td><p>The <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a> to clone</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><p>A copied <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_HarmonyMethodExtensions_CopyTo_" data-uid="HarmonyLib.HarmonyMethodExtensions.CopyTo*"></a>
-  <h4 id="HarmonyLib_HarmonyMethodExtensions_CopyTo_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.CopyTo(HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)">CopyTo(HarmonyMethod, HarmonyMethod)</h4>
-  <div class="markdown level1 summary"><p>Copies annotation information</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void CopyTo(this HarmonyMethod from, HarmonyMethod to)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><span class="parametername">from</span></td>
-        <td><p>The source <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><span class="parametername">to</span></td>
-        <td><p>The destination <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_HarmonyMethodExtensions_GetFromMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromMethod*"></a>
-  <h4 id="HarmonyLib_HarmonyMethodExtensions_GetFromMethod_System_Reflection_MethodBase_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromMethod(System.Reflection.MethodBase)">GetFromMethod(MethodBase)</h4>
-  <div class="markdown level1 summary"><p>Gets all annotations on a method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static List&lt;HarmonyMethod&gt; GetFromMethod(MethodBase method)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodBase</span></td>
-        <td><span class="parametername">method</span></td>
-        <td><p>The method/constructor</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a>&gt;</td>
-        <td><p>A list of <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_HarmonyMethodExtensions_GetFromType_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromType*"></a>
-  <h4 id="HarmonyLib_HarmonyMethodExtensions_GetFromType_System_Type_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromType(System.Type)">GetFromType(Type)</h4>
-  <div class="markdown level1 summary"><p>Gets all annotations on a class/type</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static List&lt;HarmonyMethod&gt; GetFromType(Type type)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span></td>
-        <td><span class="parametername">type</span></td>
-        <td><p>The class/type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a>&gt;</td>
-        <td><p>A list of all <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromMethod*"></a>
-  <h4 id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromMethod_System_Reflection_MethodBase_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromMethod(System.Reflection.MethodBase)">GetMergedFromMethod(MethodBase)</h4>
-  <div class="markdown level1 summary"><p>Gets merged annotations on a method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static HarmonyMethod GetMergedFromMethod(MethodBase method)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodBase</span></td>
-        <td><span class="parametername">method</span></td>
-        <td><p>The method/constructor</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><p>The merged <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromType_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromType*"></a>
-  <h4 id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromType_System_Type_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromType(System.Type)">GetMergedFromType(Type)</h4>
-  <div class="markdown level1 summary"><p>Gets merged annotations on a class/type</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static HarmonyMethod GetMergedFromType(Type type)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span></td>
-        <td><span class="parametername">type</span></td>
-        <td><p>The class/type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><p>The merged <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_HarmonyMethodExtensions_Merge_" data-uid="HarmonyLib.HarmonyMethodExtensions.Merge*"></a>
-  <h4 id="HarmonyLib_HarmonyMethodExtensions_Merge_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.Merge(HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)">Merge(HarmonyMethod, HarmonyMethod)</h4>
-  <div class="markdown level1 summary"><p>Merges annotations</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static HarmonyMethod Merge(this HarmonyMethod master, HarmonyMethod detail)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><span class="parametername">master</span></td>
-        <td><p>The master <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><span class="parametername">detail</span></td>
-        <td><p>The detail <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></td>
-        <td><p>A new, merged <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-</article>
-          </div>
-
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.HarmonyMethodExtensions">
+          <span id="_content"></span>
+          <span id="HarmonyLib_HarmonyMethodExtensions_syntax" data-section-alias=".codewrapper"></span>
+
+
+
+  <h1 id="HarmonyLib_HarmonyMethodExtensions" data-uid="HarmonyLib.HarmonyMethodExtensions" class="text-break">
+Class HarmonyMethodExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="HarmonyLib.html">HarmonyLib</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Annotation extensions</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class HarmonyMethodExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">HarmonyMethodExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="HarmonyLib_HarmonyMethodExtensions_Clone_" data-uid="HarmonyLib.HarmonyMethodExtensions.Clone*"></a>
+
+  <h3 id="HarmonyLib_HarmonyMethodExtensions_Clone_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.Clone(HarmonyLib.HarmonyMethod)">
+  Clone(HarmonyMethod)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clones an annotation</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HarmonyMethod Clone(this HarmonyMethod original)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>original</code> <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a> to clone</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>A copied <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_HarmonyMethodExtensions_CopyTo_" data-uid="HarmonyLib.HarmonyMethodExtensions.CopyTo*"></a>
+
+  <h3 id="HarmonyLib_HarmonyMethodExtensions_CopyTo_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.CopyTo(HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)">
+  CopyTo(HarmonyMethod, HarmonyMethod)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies annotation information</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void CopyTo(this HarmonyMethod from, HarmonyMethod to)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>from</code> <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The source <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+    <dt><code>to</code> <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The destination <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_HarmonyMethodExtensions_GetFromMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromMethod*"></a>
+
+  <h3 id="HarmonyLib_HarmonyMethodExtensions_GetFromMethod_System_Reflection_MethodBase_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromMethod(System.Reflection.MethodBase)">
+  GetFromMethod(MethodBase)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets all annotations on a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;HarmonyMethod&gt; GetFromMethod(MethodBase method)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>method</code> <span class="xref">MethodBase</span></dt>
+    <dd><p>The method/constructor</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a>&gt;</dt>
+    <dd><p>A list of <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_HarmonyMethodExtensions_GetFromType_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromType*"></a>
+
+  <h3 id="HarmonyLib_HarmonyMethodExtensions_GetFromType_System_Type_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetFromType(System.Type)">
+  GetFromType(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets all annotations on a class/type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;HarmonyMethod&gt; GetFromType(Type type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">Type</span></dt>
+    <dd><p>The class/type</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a>&gt;</dt>
+    <dd><p>A list of all <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromMethod*"></a>
+
+  <h3 id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromMethod_System_Reflection_MethodBase_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromMethod(System.Reflection.MethodBase)">
+  GetMergedFromMethod(MethodBase)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets merged annotations on a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HarmonyMethod GetMergedFromMethod(MethodBase method)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>method</code> <span class="xref">MethodBase</span></dt>
+    <dd><p>The method/constructor</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The merged <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromType_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromType*"></a>
+
+  <h3 id="HarmonyLib_HarmonyMethodExtensions_GetMergedFromType_System_Type_" data-uid="HarmonyLib.HarmonyMethodExtensions.GetMergedFromType(System.Type)">
+  GetMergedFromType(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets merged annotations on a class/type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HarmonyMethod GetMergedFromType(Type type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">Type</span></dt>
+    <dd><p>The class/type</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The merged <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_HarmonyMethodExtensions_Merge_" data-uid="HarmonyLib.HarmonyMethodExtensions.Merge*"></a>
+
+  <h3 id="HarmonyLib_HarmonyMethodExtensions_Merge_HarmonyLib_HarmonyMethod_HarmonyLib_HarmonyMethod_" data-uid="HarmonyLib.HarmonyMethodExtensions.Merge(HarmonyLib.HarmonyMethod,HarmonyLib.HarmonyMethod)">
+  Merge(HarmonyMethod, HarmonyMethod)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges annotations</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HarmonyMethod Merge(this HarmonyMethod master, HarmonyMethod detail)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>master</code> <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The master <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+    <dt><code>detail</code> <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>The detail <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
+    <dd><p>A new, merged <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

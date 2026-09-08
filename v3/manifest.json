@@ -3,6 +3,14 @@
   "xrefmap": "xrefmap.yml",
   "files": [
     {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
       "type": "ManagedReference",
       "source_relative_path": "api/HarmonyLib.AccessTools.FieldRef-1.yml",
       "output": {
@@ -1263,7 +1271,7 @@
     },
     {
       "type": "Toc",
-      "source_relative_path": "articles/toc.md",
+      "source_relative_path": "articles/toc.yml",
       "output": {
         ".html": {
           "relative_path": "articles/toc.html"
@@ -1280,6 +1288,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/utilities.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/harmony-logo.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/harmony-logo.png"
         }
       },
       "version": ""

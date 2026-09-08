@@ -1,87 +1,133 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-
+<html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class CodeMatch </title>
-      <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class CodeMatch ">
-    
-    <meta name="description" content="A CodeInstruction match">
-      <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    
-    
+      <title>Class CodeMatch | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CodeMatch | Harmony 3 ">
+      
+      <meta name="description" content="A CodeInstruction match">
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            </div>
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="ManagedReference">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
           </div>
-        </nav>
+          <details class="version-picker">
+            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </nav>
+    </header>
 
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
           </div>
         </div>
-      </header>
-      <div role="main" class="container body-content hide-when-search">
+      </div>
 
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="HarmonyLib.CodeMatch">
+
+        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.CodeMatch">
+          <span id="_content"></span>
+          <span id="HarmonyLib_CodeMatch_syntax" data-section-alias=".codewrapper"></span><span id="extensionmethods" data-section-alias=".extensionMethods"></span>
 
 
 
-  <h1 id="HarmonyLib_CodeMatch" data-uid="HarmonyLib.CodeMatch" class="text-break">Class CodeMatch</h1>
-  <div class="markdown level0 summary"><p>A CodeInstruction match</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></div>
-    <div class="level2"><span class="xref">CodeMatch</span></div>
+  <h1 id="HarmonyLib_CodeMatch" data-uid="HarmonyLib.CodeMatch" class="text-break">
+Class CodeMatch  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="HarmonyLib.html">HarmonyLib</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="markdown summary"><p>A CodeInstruction match</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CodeMatch : CodeInstruction</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></div>
+      <div><span class="xref">CodeMatch</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_opcode">CodeInstruction.opcode</a>
     </div>
@@ -145,1509 +191,11 @@
     <div>
       <a class="xref" href="HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_HasBlock_HarmonyLib_ExceptionBlockType_">CodeInstruction.HasBlock(ExceptionBlockType)</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="HarmonyLib.html">HarmonyLib</a></h6>
-  <h6><strong>Assembly</strong>: 0Harmony.dll</h6>
-  <h5 id="HarmonyLib_CodeMatch_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class CodeMatch : CodeInstruction</code></pre>
-  </div>
-  <h3 id="constructors">Constructors
-</h3>
-
-
-  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
-  <h4 id="HarmonyLib_CodeMatch__ctor_HarmonyLib_CodeInstruction_System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(HarmonyLib.CodeInstruction,System.String)">CodeMatch(CodeInstruction, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeMatch(CodeInstruction instruction, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></td>
-        <td><span class="parametername">instruction</span></td>
-        <td><p>The CodeInstruction</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
-  <h4 id="HarmonyLib_CodeMatch__ctor_System_Func_HarmonyLib_CodeInstruction_System_Boolean__System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Func{HarmonyLib.CodeInstruction,System.Boolean},System.String)">CodeMatch(Func&lt;CodeInstruction, bool&gt;, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeMatch(Func&lt;CodeInstruction, bool&gt; predicate, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">bool</span>&gt;</td>
-        <td><span class="parametername">predicate</span></td>
-        <td><p>The predicate</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
-  <h4 id="HarmonyLib_CodeMatch__ctor_System_Linq_Expressions_Expression_System_Action__System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.Expression{System.Action},System.String)">CodeMatch(Expression&lt;Action&gt;, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeMatch(Expression&lt;Action&gt; expression, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Expression</span>&lt;<span class="xref">Action</span>&gt;</td>
-        <td><span class="parametername">expression</span></td>
-        <td><p>The lambda expression using the method</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>The optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
-  <h4 id="HarmonyLib_CodeMatch__ctor_System_Linq_Expressions_LambdaExpression_System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.LambdaExpression,System.String)">CodeMatch(LambdaExpression, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeMatch(LambdaExpression expression, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LambdaExpression</span></td>
-        <td><span class="parametername">expression</span></td>
-        <td><p>The lambda expression using the method</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>The optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
-  <h4 id="HarmonyLib_CodeMatch__ctor_System_Nullable_System_Reflection_Emit_OpCode__System_Object_System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Nullable{System.Reflection.Emit.OpCode},System.Object,System.String)">CodeMatch(OpCode?, object, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CodeMatch(OpCode? opcode = null, object operand = null, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">OpCode</span>?</td>
-        <td><span class="parametername">opcode</span></td>
-        <td><p>The optional opcode</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">object</span></td>
-        <td><span class="parametername">operand</span></td>
-        <td><p>The optional operand</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>The optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-
-
-  <h4 id="HarmonyLib_CodeMatch_jumpsFrom" data-uid="HarmonyLib.CodeMatch.jumpsFrom">jumpsFrom</h4>
-  <div class="markdown level1 summary"><p>The jumps from the match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;int&gt; jumpsFrom</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<span class="xref">int</span>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_CodeMatch_jumpsTo" data-uid="HarmonyLib.CodeMatch.jumpsTo">jumpsTo</h4>
-  <div class="markdown level1 summary"><p>The jumps to the match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;int&gt; jumpsTo</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<span class="xref">int</span>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_CodeMatch_name" data-uid="HarmonyLib.CodeMatch.name">name</h4>
-  <div class="markdown level1 summary"><p>The name of the match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string name</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_CodeMatch_opcodeSet" data-uid="HarmonyLib.CodeMatch.opcodeSet">opcodeSet</h4>
-  <div class="markdown level1 summary"><p>The matched opcodes</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public HashSet&lt;OpCode&gt; opcodeSet</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">HashSet</span>&lt;<span class="xref">OpCode</span>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_CodeMatch_operands" data-uid="HarmonyLib.CodeMatch.operands">operands</h4>
-  <div class="markdown level1 summary"><p>The matched operands</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;object&gt; operands</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<span class="xref">object</span>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <h4 id="HarmonyLib_CodeMatch_predicate" data-uid="HarmonyLib.CodeMatch.predicate">predicate</h4>
-  <div class="markdown level1 summary"><p>The match predicate</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Func&lt;CodeInstruction, bool&gt; predicate</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">bool</span>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-
-
-  <a id="HarmonyLib_CodeMatch_Branches_" data-uid="HarmonyLib.CodeMatch.Branches*"></a>
-  <h4 id="HarmonyLib_CodeMatch_Branches_System_String_" data-uid="HarmonyLib.CodeMatch.Branches(System.String)">Branches(string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match for branching</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch Branches(string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
-  <h4 id="HarmonyLib_CodeMatch_Calls_System_Linq_Expressions_Expression_System_Action__" data-uid="HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.Expression{System.Action})">Calls(Expression&lt;Action&gt;)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(Expression&lt;Action&gt; expression)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Expression</span>&lt;<span class="xref">Action</span>&gt;</td>
-        <td><span class="parametername">expression</span></td>
-        <td><p>The lambda expression using the method</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
-  <h4 id="HarmonyLib_CodeMatch_Calls_System_Linq_Expressions_LambdaExpression_" data-uid="HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.LambdaExpression)">Calls(LambdaExpression)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(LambdaExpression expression)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LambdaExpression</span></td>
-        <td><span class="parametername">expression</span></td>
-        <td><p>The lambda expression using the method</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
-  <h4 id="HarmonyLib_CodeMatch_Calls_System_Reflection_ConstructorInfo_" data-uid="HarmonyLib.CodeMatch.Calls(System.Reflection.ConstructorInfo)">Calls(ConstructorInfo)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction calls the constructor</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(ConstructorInfo constructor)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">ConstructorInfo</span></td>
-        <td><span class="parametername">constructor</span></td>
-        <td><p>The constructor</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
-  <h4 id="HarmonyLib_CodeMatch_Calls_System_Reflection_MethodInfo_" data-uid="HarmonyLib.CodeMatch.Calls(System.Reflection.MethodInfo)">Calls(MethodInfo)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction calls the method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(MethodInfo method)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">MethodInfo</span></td>
-        <td><span class="parametername">method</span></td>
-        <td><p>The method</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_IsLdarg_" data-uid="HarmonyLib.CodeMatch.IsLdarg*"></a>
-  <h4 id="HarmonyLib_CodeMatch_IsLdarg_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeMatch.IsLdarg(System.Nullable{System.Int32})">IsLdarg(int?)</h4>
-  <div class="markdown level1 summary"><p>Tests for any form of Ldarg*</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch IsLdarg(int? n = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span>?</td>
-        <td><span class="parametername">n</span></td>
-        <td><p>The (optional) index</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_IsLdarga_" data-uid="HarmonyLib.CodeMatch.IsLdarga*"></a>
-  <h4 id="HarmonyLib_CodeMatch_IsLdarga_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeMatch.IsLdarga(System.Nullable{System.Int32})">IsLdarga(int?)</h4>
-  <div class="markdown level1 summary"><p>Tests for Ldarga/Ldarga_S</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch IsLdarga(int? n = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span>?</td>
-        <td><span class="parametername">n</span></td>
-        <td><p>The (optional) index</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_IsLdloc_" data-uid="HarmonyLib.CodeMatch.IsLdloc*"></a>
-  <h4 id="HarmonyLib_CodeMatch_IsLdloc_System_Reflection_Emit_LocalBuilder_" data-uid="HarmonyLib.CodeMatch.IsLdloc(System.Reflection.Emit.LocalBuilder)">IsLdloc(LocalBuilder)</h4>
-  <div class="markdown level1 summary"><p>Tests for any form of Ldloc*</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch IsLdloc(LocalBuilder variable = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LocalBuilder</span></td>
-        <td><span class="parametername">variable</span></td>
-        <td><p>The optional local variable</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_IsStarg_" data-uid="HarmonyLib.CodeMatch.IsStarg*"></a>
-  <h4 id="HarmonyLib_CodeMatch_IsStarg_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeMatch.IsStarg(System.Nullable{System.Int32})">IsStarg(int?)</h4>
-  <div class="markdown level1 summary"><p>Tests for Starg/Starg_S</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch IsStarg(int? n = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">int</span>?</td>
-        <td><span class="parametername">n</span></td>
-        <td><p>The (optional) index</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_IsStloc_" data-uid="HarmonyLib.CodeMatch.IsStloc*"></a>
-  <h4 id="HarmonyLib_CodeMatch_IsStloc_System_Reflection_Emit_LocalBuilder_" data-uid="HarmonyLib.CodeMatch.IsStloc(System.Reflection.Emit.LocalBuilder)">IsStloc(LocalBuilder)</h4>
-  <div class="markdown level1 summary"><p>Tests for any form of Stloc*</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch IsStloc(LocalBuilder variable = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LocalBuilder</span></td>
-        <td><span class="parametername">variable</span></td>
-        <td><p>The optional local variable</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsArgument_" data-uid="HarmonyLib.CodeMatch.LoadsArgument*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsArgument_System_Boolean_System_String_" data-uid="HarmonyLib.CodeMatch.LoadsArgument(System.Boolean,System.String)">LoadsArgument(bool, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match for argument loads</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsArgument(bool useAddress = false, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td><span class="parametername">useAddress</span></td>
-        <td><p>Whether to match for address loads</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsConstant" data-uid="HarmonyLib.CodeMatch.LoadsConstant">LoadsConstant()</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction loads a constant</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsConstant_System_Double_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.Double)">LoadsConstant(double)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction loads a floating point constant</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(double number)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">double</span></td>
-        <td><span class="parametername">number</span></td>
-        <td><p>The floating point constant</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsConstant_System_Enum_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.Enum)">LoadsConstant(Enum)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction loads an enum constant</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(Enum e)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Enum</span></td>
-        <td><span class="parametername">e</span></td>
-        <td><p>The enum</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsConstant_System_Int64_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.Int64)">LoadsConstant(long)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction loads an integer constant</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(long number)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">long</span></td>
-        <td><span class="parametername">number</span></td>
-        <td><p>The integer constant</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsConstant_System_String_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.String)">LoadsConstant(string)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction loads a string constant</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(string str)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">str</span></td>
-        <td><p>The string</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsField_" data-uid="HarmonyLib.CodeMatch.LoadsField*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsField_System_Reflection_FieldInfo_System_Boolean_" data-uid="HarmonyLib.CodeMatch.LoadsField(System.Reflection.FieldInfo,System.Boolean)">LoadsField(FieldInfo, bool)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction loads a field</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsField(FieldInfo field, bool byAddress = false)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">FieldInfo</span></td>
-        <td><span class="parametername">field</span></td>
-        <td><p>The field</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td><span class="parametername">byAddress</span></td>
-        <td><p>Set to true if the address of the field is loaded</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsField_" data-uid="HarmonyLib.CodeMatch.LoadsField*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsField__1_System_Linq_Expressions_Expression_System_Func___0___System_Boolean_" data-uid="HarmonyLib.CodeMatch.LoadsField``1(System.Linq.Expressions.Expression{System.Func{``0}},System.Boolean)">LoadsField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt;, bool)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction loads a field</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; expression, bool byAddress = false)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T&gt;&gt;</td>
-        <td><span class="parametername">expression</span></td>
-        <td><p>The lambda expression using the field</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td><span class="parametername">byAddress</span></td>
-        <td><p>Set to true if the address of the field is loaded</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The field type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_LoadsLocal_" data-uid="HarmonyLib.CodeMatch.LoadsLocal*"></a>
-  <h4 id="HarmonyLib_CodeMatch_LoadsLocal_System_Boolean_System_String_" data-uid="HarmonyLib.CodeMatch.LoadsLocal(System.Boolean,System.String)">LoadsLocal(bool, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match for local loads</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsLocal(bool useAddress = false, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">bool</span></td>
-        <td><span class="parametername">useAddress</span></td>
-        <td><p>Whether to match for address loads</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_StoresArgument_" data-uid="HarmonyLib.CodeMatch.StoresArgument*"></a>
-  <h4 id="HarmonyLib_CodeMatch_StoresArgument_System_String_" data-uid="HarmonyLib.CodeMatch.StoresArgument(System.String)">StoresArgument(string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match for argument stores</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch StoresArgument(string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_StoresField_" data-uid="HarmonyLib.CodeMatch.StoresField*"></a>
-  <h4 id="HarmonyLib_CodeMatch_StoresField_System_Reflection_FieldInfo_" data-uid="HarmonyLib.CodeMatch.StoresField(System.Reflection.FieldInfo)">StoresField(FieldInfo)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction stores a field</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch StoresField(FieldInfo field)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">FieldInfo</span></td>
-        <td><span class="parametername">field</span></td>
-        <td><p>The field</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_StoresField_" data-uid="HarmonyLib.CodeMatch.StoresField*"></a>
-  <h4 id="HarmonyLib_CodeMatch_StoresField__1_System_Linq_Expressions_Expression_System_Func___0___" data-uid="HarmonyLib.CodeMatch.StoresField``1(System.Linq.Expressions.Expression{System.Func{``0}})">StoresField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt;)</h4>
-  <div class="markdown level1 summary"><p>Tests if the code instruction stores a field</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch StoresField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; expression)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T&gt;&gt;</td>
-        <td><span class="parametername">expression</span></td>
-        <td><p>The lambda expression using the field</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The field type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_StoresLocal_" data-uid="HarmonyLib.CodeMatch.StoresLocal*"></a>
-  <h4 id="HarmonyLib_CodeMatch_StoresLocal_System_String_" data-uid="HarmonyLib.CodeMatch.StoresLocal(System.String)">StoresLocal(string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match for local stores</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch StoresLocal(string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>An optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td><p>A new code match</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="HarmonyLib_CodeMatch_ToString_" data-uid="HarmonyLib.CodeMatch.ToString*"></a>
-  <h4 id="HarmonyLib_CodeMatch_ToString" data-uid="HarmonyLib.CodeMatch.ToString">ToString()</h4>
-  <div class="markdown level1 summary"><p>Returns a string that represents the match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><p>A string representation</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="HarmonyLib.CodeInstruction.html#HarmonyLib_CodeInstruction_ToString">CodeInstruction.ToString()</a></div>
-
-
-  <a id="HarmonyLib_CodeMatch_WithOpcodes_" data-uid="HarmonyLib.CodeMatch.WithOpcodes*"></a>
-  <h4 id="HarmonyLib_CodeMatch_WithOpcodes_System_Collections_Generic_HashSet_System_Reflection_Emit_OpCode__System_Object_System_String_" data-uid="HarmonyLib.CodeMatch.WithOpcodes(System.Collections.Generic.HashSet{System.Reflection.Emit.OpCode},System.Object,System.String)">WithOpcodes(HashSet&lt;OpCode&gt;, object, string)</h4>
-  <div class="markdown level1 summary"><p>Creates a code match</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static CodeMatch WithOpcodes(HashSet&lt;OpCode&gt; opcodes, object operand = null, string name = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">HashSet</span>&lt;<span class="xref">OpCode</span>&gt;</td>
-        <td><span class="parametername">opcodes</span></td>
-        <td><p>The opcodes</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">object</span></td>
-        <td><span class="parametername">operand</span></td>
-        <td><p>The optional operand</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">string</span></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>The optional name</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
   <div>
       <a class="xref" href="HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_ArgumentIndex_HarmonyLib_CodeInstruction_">CodeInstructionExtensions.ArgumentIndex(CodeInstruction)</a>
   </div>
@@ -1732,41 +280,1408 @@
   <div>
       <a class="xref" href="HarmonyLib.CodeInstructionExtensions.html#HarmonyLib_CodeInstructionExtensions_WithLabels_HarmonyLib_CodeInstruction_System_Reflection_Emit_Label___">CodeInstructionExtensions.WithLabels(CodeInstruction, params Label[])</a>
   </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch__ctor_HarmonyLib_CodeInstruction_System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(HarmonyLib.CodeInstruction,System.String)">
+  CodeMatch(CodeInstruction, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatch(CodeInstruction instruction, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instruction</code> <a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a></dt>
+    <dd><p>The CodeInstruction</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional name</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch__ctor_System_Func_HarmonyLib_CodeInstruction_System_Boolean__System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Func{HarmonyLib.CodeInstruction,System.Boolean},System.String)">
+  CodeMatch(Func&lt;CodeInstruction, bool&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatch(Func&lt;CodeInstruction, bool&gt; predicate, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>The predicate</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional name</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch__ctor_System_Linq_Expressions_Expression_System_Action__System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.Expression{System.Action},System.String)">
+  CodeMatch(Expression&lt;Action&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatch(Expression&lt;Action&gt; expression, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Action</span>&gt;</dt>
+    <dd><p>The lambda expression using the method</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The optional name</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch__ctor_System_Linq_Expressions_LambdaExpression_System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Linq.Expressions.LambdaExpression,System.String)">
+  CodeMatch(LambdaExpression, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatch(LambdaExpression expression, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">LambdaExpression</span></dt>
+    <dd><p>The lambda expression using the method</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The optional name</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch__ctor_" data-uid="HarmonyLib.CodeMatch.#ctor*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch__ctor_System_Nullable_System_Reflection_Emit_OpCode__System_Object_System_String_" data-uid="HarmonyLib.CodeMatch.#ctor(System.Nullable{System.Reflection.Emit.OpCode},System.Object,System.String)">
+  CodeMatch(OpCode?, object, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CodeMatch(OpCode? opcode = null, object operand = null, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>opcode</code> <span class="xref">OpCode</span>?</dt>
+    <dd><p>The optional opcode</p>
+</dd>
+    <dt><code>operand</code> <span class="xref">object</span></dt>
+    <dd><p>The optional operand</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The optional name</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="HarmonyLib_CodeMatch_jumpsFrom" data-uid="HarmonyLib.CodeMatch.jumpsFrom">
+  jumpsFrom
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The jumps from the match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;int&gt; jumpsFrom</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_CodeMatch_jumpsTo" data-uid="HarmonyLib.CodeMatch.jumpsTo">
+  jumpsTo
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The jumps to the match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;int&gt; jumpsTo</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_CodeMatch_name" data-uid="HarmonyLib.CodeMatch.name">
+  name
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The name of the match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string name</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_CodeMatch_opcodeSet" data-uid="HarmonyLib.CodeMatch.opcodeSet">
+  opcodeSet
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The matched opcodes</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HashSet&lt;OpCode&gt; opcodeSet</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">HashSet</span>&lt;<span class="xref">OpCode</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_CodeMatch_operands" data-uid="HarmonyLib.CodeMatch.operands">
+  operands
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The matched operands</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;object&gt; operands</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<span class="xref">object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="HarmonyLib_CodeMatch_predicate" data-uid="HarmonyLib.CodeMatch.predicate">
+  predicate
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The match predicate</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;CodeInstruction, bool&gt; predicate</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Func</span>&lt;<a class="xref" href="HarmonyLib.CodeInstruction.html">CodeInstruction</a>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="HarmonyLib_CodeMatch_Branches_" data-uid="HarmonyLib.CodeMatch.Branches*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_Branches_System_String_" data-uid="HarmonyLib.CodeMatch.Branches(System.String)">
+  Branches(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match for branching</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch Branches(string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional name</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_Calls_System_Linq_Expressions_Expression_System_Action__" data-uid="HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.Expression{System.Action})">
+  Calls(Expression&lt;Action&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(Expression&lt;Action&gt; expression)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Action</span>&gt;</dt>
+    <dd><p>The lambda expression using the method</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_Calls_System_Linq_Expressions_LambdaExpression_" data-uid="HarmonyLib.CodeMatch.Calls(System.Linq.Expressions.LambdaExpression)">
+  Calls(LambdaExpression)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match that calls a method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(LambdaExpression expression)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">LambdaExpression</span></dt>
+    <dd><p>The lambda expression using the method</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_Calls_System_Reflection_ConstructorInfo_" data-uid="HarmonyLib.CodeMatch.Calls(System.Reflection.ConstructorInfo)">
+  Calls(ConstructorInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction calls the constructor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(ConstructorInfo constructor)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>constructor</code> <span class="xref">ConstructorInfo</span></dt>
+    <dd><p>The constructor</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_Calls_" data-uid="HarmonyLib.CodeMatch.Calls*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_Calls_System_Reflection_MethodInfo_" data-uid="HarmonyLib.CodeMatch.Calls(System.Reflection.MethodInfo)">
+  Calls(MethodInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction calls the method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch Calls(MethodInfo method)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>method</code> <span class="xref">MethodInfo</span></dt>
+    <dd><p>The method</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_IsLdarg_" data-uid="HarmonyLib.CodeMatch.IsLdarg*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_IsLdarg_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeMatch.IsLdarg(System.Nullable{System.Int32})">
+  IsLdarg(int?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests for any form of Ldarg*</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch IsLdarg(int? n = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>n</code> <span class="xref">int</span>?</dt>
+    <dd><p>The (optional) index</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_IsLdarga_" data-uid="HarmonyLib.CodeMatch.IsLdarga*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_IsLdarga_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeMatch.IsLdarga(System.Nullable{System.Int32})">
+  IsLdarga(int?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests for Ldarga/Ldarga_S</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch IsLdarga(int? n = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>n</code> <span class="xref">int</span>?</dt>
+    <dd><p>The (optional) index</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_IsLdloc_" data-uid="HarmonyLib.CodeMatch.IsLdloc*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_IsLdloc_System_Reflection_Emit_LocalBuilder_" data-uid="HarmonyLib.CodeMatch.IsLdloc(System.Reflection.Emit.LocalBuilder)">
+  IsLdloc(LocalBuilder)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests for any form of Ldloc*</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch IsLdloc(LocalBuilder variable = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>variable</code> <span class="xref">LocalBuilder</span></dt>
+    <dd><p>The optional local variable</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_IsStarg_" data-uid="HarmonyLib.CodeMatch.IsStarg*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_IsStarg_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeMatch.IsStarg(System.Nullable{System.Int32})">
+  IsStarg(int?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests for Starg/Starg_S</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch IsStarg(int? n = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>n</code> <span class="xref">int</span>?</dt>
+    <dd><p>The (optional) index</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_IsStloc_" data-uid="HarmonyLib.CodeMatch.IsStloc*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_IsStloc_System_Reflection_Emit_LocalBuilder_" data-uid="HarmonyLib.CodeMatch.IsStloc(System.Reflection.Emit.LocalBuilder)">
+  IsStloc(LocalBuilder)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests for any form of Stloc*</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch IsStloc(LocalBuilder variable = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>variable</code> <span class="xref">LocalBuilder</span></dt>
+    <dd><p>The optional local variable</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsArgument_" data-uid="HarmonyLib.CodeMatch.LoadsArgument*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsArgument_System_Boolean_System_String_" data-uid="HarmonyLib.CodeMatch.LoadsArgument(System.Boolean,System.String)">
+  LoadsArgument(bool, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match for argument loads</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsArgument(bool useAddress = false, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>useAddress</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to match for address loads</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional name</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsConstant" data-uid="HarmonyLib.CodeMatch.LoadsConstant">
+  LoadsConstant()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsConstant_System_Double_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.Double)">
+  LoadsConstant(double)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a floating point constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(double number)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>number</code> <span class="xref">double</span></dt>
+    <dd><p>The floating point constant</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsConstant_System_Enum_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.Enum)">
+  LoadsConstant(Enum)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads an enum constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(Enum e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">Enum</span></dt>
+    <dd><p>The enum</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsConstant_System_Int64_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.Int64)">
+  LoadsConstant(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads an integer constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(long number)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>number</code> <span class="xref">long</span></dt>
+    <dd><p>The integer constant</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsConstant_" data-uid="HarmonyLib.CodeMatch.LoadsConstant*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsConstant_System_String_" data-uid="HarmonyLib.CodeMatch.LoadsConstant(System.String)">
+  LoadsConstant(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a string constant</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsConstant(string str)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>str</code> <span class="xref">string</span></dt>
+    <dd><p>The string</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsField_" data-uid="HarmonyLib.CodeMatch.LoadsField*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsField_System_Reflection_FieldInfo_System_Boolean_" data-uid="HarmonyLib.CodeMatch.LoadsField(System.Reflection.FieldInfo,System.Boolean)">
+  LoadsField(FieldInfo, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsField(FieldInfo field, bool byAddress = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>field</code> <span class="xref">FieldInfo</span></dt>
+    <dd><p>The field</p>
+</dd>
+    <dt><code>byAddress</code> <span class="xref">bool</span></dt>
+    <dd><p>Set to true if the address of the field is loaded</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsField_" data-uid="HarmonyLib.CodeMatch.LoadsField*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsField__1_System_Linq_Expressions_Expression_System_Func___0___System_Boolean_" data-uid="HarmonyLib.CodeMatch.LoadsField``1(System.Linq.Expressions.Expression{System.Func{``0}},System.Boolean)">
+  LoadsField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction loads a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; expression, bool byAddress = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The lambda expression using the field</p>
+</dd>
+    <dt><code>byAddress</code> <span class="xref">bool</span></dt>
+    <dd><p>Set to true if the address of the field is loaded</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The field type</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_LoadsLocal_" data-uid="HarmonyLib.CodeMatch.LoadsLocal*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_LoadsLocal_System_Boolean_System_String_" data-uid="HarmonyLib.CodeMatch.LoadsLocal(System.Boolean,System.String)">
+  LoadsLocal(bool, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match for local loads</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch LoadsLocal(bool useAddress = false, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>useAddress</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to match for address loads</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional name</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_StoresArgument_" data-uid="HarmonyLib.CodeMatch.StoresArgument*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_StoresArgument_System_String_" data-uid="HarmonyLib.CodeMatch.StoresArgument(System.String)">
+  StoresArgument(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match for argument stores</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch StoresArgument(string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional name</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_StoresField_" data-uid="HarmonyLib.CodeMatch.StoresField*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_StoresField_System_Reflection_FieldInfo_" data-uid="HarmonyLib.CodeMatch.StoresField(System.Reflection.FieldInfo)">
+  StoresField(FieldInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction stores a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch StoresField(FieldInfo field)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>field</code> <span class="xref">FieldInfo</span></dt>
+    <dd><p>The field</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_StoresField_" data-uid="HarmonyLib.CodeMatch.StoresField*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_StoresField__1_System_Linq_Expressions_Expression_System_Func___0___" data-uid="HarmonyLib.CodeMatch.StoresField``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+  StoresField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction stores a field</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch StoresField&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; expression)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The lambda expression using the field</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The field type</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_StoresLocal_" data-uid="HarmonyLib.CodeMatch.StoresLocal*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_StoresLocal_System_String_" data-uid="HarmonyLib.CodeMatch.StoresLocal(System.String)">
+  StoresLocal(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match for local stores</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch StoresLocal(string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional name</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_ToString_" data-uid="HarmonyLib.CodeMatch.ToString*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_ToString" data-uid="HarmonyLib.CodeMatch.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string that represents the match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A string representation</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="HarmonyLib_CodeMatch_WithOpcodes_" data-uid="HarmonyLib.CodeMatch.WithOpcodes*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_WithOpcodes_System_Collections_Generic_HashSet_System_Reflection_Emit_OpCode__System_Object_System_String_" data-uid="HarmonyLib.CodeMatch.WithOpcodes(System.Collections.Generic.HashSet{System.Reflection.Emit.OpCode},System.Object,System.String)">
+  WithOpcodes(HashSet&lt;OpCode&gt;, object, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a code match</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch WithOpcodes(HashSet&lt;OpCode&gt; opcodes, object operand = null, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>opcodes</code> <span class="xref">HashSet</span>&lt;<span class="xref">OpCode</span>&gt;</dt>
+    <dd><p>The opcodes</p>
+</dd>
+    <dt><code>operand</code> <span class="xref">object</span></dt>
+    <dd><p>The optional operand</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The optional name</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
+        <div class="contribution d-print-none">
         </div>
+
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      
-      <span>Generated by <strong>DocFX</strong></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

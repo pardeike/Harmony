@@ -1,7 +1,4 @@
-/**
- * Licensed to the .NET Foundation under one or more agreements.
- * The .NET Foundation licenses this file to you under the MIT license.
- */
+/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
 html,
 body {
   font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif;
@@ -45,11 +42,7 @@ h6 mark {
 .inheritance .level2:before,
 .inheritance .level3:before,
 .inheritance .level4:before,
-.inheritance .level5:before,
-.inheritance .level6:before,
-.inheritance .level7:before,
-.inheritance .level8:before,
-.inheritance .level9:before {
+.inheritance .level5:before {
     content: '↳';
     margin-right: 5px;
 }
@@ -78,30 +71,6 @@ h6 mark {
     margin-left: 5em;
 }
 
-.inheritance .level6 {
-    margin-left: 6em;
-}
-
-.inheritance .level7 {
-    margin-left: 7em;
-}
-
-.inheritance .level8 {
-    margin-left: 8em;
-}
-
-.inheritance .level9 {
-    margin-left: 9em;
-}
-
-.level0.summary {
-  margin: 2em 0 2em 0;
-}
-
-.level1.summary {
-  margin: 1em 0 1em 0;
-}
-
 span.parametername,
 span.paramref,
 span.typeparamref {
@@ -109,6 +78,10 @@ span.typeparamref {
 }
 span.languagekeyword{
     font-weight: bold;
+}
+
+svg:hover path {
+    fill: #ffffff;
 }
 
 .hljs {
@@ -221,9 +194,7 @@ article h1, article h2, article h3, article h4{
 }
 
 article h4{
-  border: 0;
-  font-weight: bold;
-  margin-top: 2em;
+  border-bottom: 1px solid #ccc;
 }
 
 article span.small.pull-right{
@@ -498,10 +469,6 @@ body .toc{
 .expand-stub {
   position: absolute;
   left: -10px;
-  font-weight: bold;
-}
-.expand-stub + a {
-  font-weight: bold;
 }
 .toc .nav > li > a.sidetoc-expand {
   position: absolute;
@@ -825,7 +792,7 @@ footer {
   .toc .level1 > li {
     display: block;
   }
-
+  
   .toc .level1 > li:after {
     display: none;
   }
@@ -874,33 +841,6 @@ footer {
   .toc .level2 > li:after {
     display: none;
   }
-}
-
-/* Code snippet */
-code {
-  color: #717374;
-  background-color: #f1f2f3;
-}
-
-a code {
-  color: #337ab7;
-  background-color: #f1f2f3;
-}
-
-a code:hover {
-  text-decoration: underline;
-}
-
-.hljs-keyword {
-  color: rgb(86,156,214);
-}
-
-.hljs-string {
-  color: rgb(214, 157, 133);
-}
-
-pre {
-  border: 0;
 }
 
 /* For code snippet line highlight */
@@ -1020,22 +960,3 @@ div.embeddedvideo iframe {
 
 .mainContainer[dir='rtl'] main ul[role="tablist"] {
   margin: 0; }
-
-/* Color theme */
-
-/* These are not important, tune down **/
-.declaration, .fieldValue, .parameters, .returns {
-  color: #a2a2a2;
-}
-
-/* Major sections, increase visibility **/
-#fields, #properties, #methods, #events {
-    font-weight: bold;
-    margin-top: 2em;
-}
-
-@media print {
-  @page {
-    margin: .4in;
-  }
-}
