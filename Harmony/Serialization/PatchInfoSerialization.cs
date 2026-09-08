@@ -79,12 +79,19 @@ namespace HarmonyLib
 		internal static byte[] Serialize(this PatchInfo patchInfo)
 		{
 			patchInfo.ValidateSurvivingMetadata();
+			return patchInfo.SerializeValidated();
+		}
+
+		// UpdateWrapper has already validated its candidate before incrementing VersionCount.
+		internal static byte[] SerializeValidated(this PatchInfo patchInfo)
+		{
 			var backend = CurrentBackend;
-			var payload = SerializePayload(patchInfo, backend);
+			var version = patchInfo.GetRequiredInfixVersion();
+			var payload = SerializePayload(patchInfo, backend, version);
 			if (!patchInfo.HasInfixes) return payload;
 			var bytes = new byte[infixHeader.Length + 2 + payload.Length];
 			Buffer.BlockCopy(infixHeader, 0, bytes, 0, infixHeader.Length);
-			bytes[infixHeader.Length] = patchInfo.RequiresInfixV4() ? (byte)4 : patchInfo.RequiresInfixV3() ? (byte)3 : patchInfo.RequiresInfixV2() ? (byte)2 : (byte)1;
+			bytes[infixHeader.Length] = version;
 			bytes[infixHeader.Length + 1] = backend;
 			Buffer.BlockCopy(payload, 0, bytes, infixHeader.Length + 2, payload.Length);
 			return bytes;
@@ -104,10 +111,15 @@ namespace HarmonyLib
 			}
 		}
 
-		static byte[] SerializePayload(PatchInfo patchInfo, byte backend)
+		static byte[] SerializePayload(PatchInfo patchInfo, byte backend, byte version)
 		{
 #if NET5_0_OR_GREATER
-			if (backend == 1) return JsonSerializer.SerializeToUtf8Bytes(patchInfo);
+			if (backend == 1)
+			{
+				using var stream = new MemoryStream();
+				using (var writer = new Utf8JsonWriter(stream)) PatchInfoJsonConverter.Write(writer, patchInfo, serializerOptions, version);
+				return stream.ToArray();
+			}
 #endif
 #if !NET9_0_OR_GREATER
 			using var streamMemory = new MemoryStream();
@@ -149,11 +161,12 @@ namespace HarmonyLib
 			if (enveloped && !result.HasInfixes) throw new SerializationException("Harmony Infix state must contain at least one inner patch");
 			var allPatches = result.prefixes.Concat(result.postfixes).Concat(result.transpilers).Concat(result.finalizers)
 				.Concat(result.innerprefixes).Concat(result.innerpostfixes).Concat(result.innerfinalizers).ToArray();
-			if (version < 4 && result.RequiresInfixV4(allowUnresolvedCallbacks: true))
+			var requiredVersion = version < 4 ? result.GetRequiredInfixVersion(allowUnresolvedCallbacks: true) : (byte)4;
+			if (version < 4 && requiredVersion >= 4)
 				throw new SerializationException("Persistent Infix state requires Harmony Infix state version 4");
-			if (version < 3 && result.RequiresInfixV3(allowUnresolvedCallbacks: true))
+			if (version < 3 && requiredVersion >= 3)
 				throw new SerializationException("Inner finalizers and captured-variable binding require Harmony Infix state version 3");
-			if (version < 2 && (allPatches.Any(patch => patch.innerTarget is not null) || result.RequiresInfixV2(allowUnresolvedCallbacks: true)))
+			if (version < 2 && (allPatches.Any(patch => patch.innerTarget is not null) || requiredVersion >= 2))
 				throw new SerializationException("Extended Infix targets and __originalMember binding require Harmony Infix state version 2");
 			// Reading must not require resolvable targets or callbacks: valid stored identities may no longer resolve uniquely.
 			// Normal unpatching removes the requested records before ValidateSurvivingMetadata checks the survivors.

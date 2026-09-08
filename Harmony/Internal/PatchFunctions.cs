@@ -15,7 +15,7 @@ namespace HarmonyLib
 		{
 			patchInfo.ValidateSurvivingMetadata();
 			patchInfo.VersionCount++;
-			var bytes = patchInfo.Serialize();
+			var bytes = patchInfo.SerializeValidated();
 			var debug = patchInfo.Debugging || Harmony.DEBUG;
 
 			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes, debug);

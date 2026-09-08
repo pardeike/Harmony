@@ -232,7 +232,7 @@ namespace HarmonyLibTests.Patching
 			bytes[14] = 3;
 			Assert.Throws<System.Runtime.Serialization.SerializationException>(() => PatchInfoSerialization.Deserialize(bytes));
 			state.RemoveInnerPrefix("persistent");
-			Assert.That(state.RequiresInfixV4(), Is.False);
+			Assert.That(state.GetRequiredInfixVersion(), Is.LessThan(4));
 			var parameter = Method(nameof(Count)).GetParameters()[1];
 			var attribute = (HarmonyArgument)parameter.GetCustomAttributes(typeof(HarmonyArgument), true).Single();
 			Assert.That(attribute.OriginalName, Is.Not.EqualTo("count"));

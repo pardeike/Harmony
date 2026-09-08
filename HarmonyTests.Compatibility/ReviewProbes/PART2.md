@@ -27,6 +27,8 @@ The startup copies use test assembly versions 2.4.4 and 2.4.5 built from the sam
 
 - T14: Infix equality and hashes now use stored callback module/token identity, independent of callback resolution. Ordinary records keep their existing behavior; ordinary and Infix records compare unequal so the two identity rules cannot violate equality consistency. Owners and selectors remain excluded. Nineteen metadata tests and both real duplicate-module compatibility cases pass on .NET 9 x64; executable rebuilds still reject ambiguity and normal removal recovers.
 
+- T15: one rebuild now validates surviving metadata once and determines the required format version once, reusing that version for the payload and envelope. The same instrumented registration dropped from 15 to 9 module resolutions, with one validation and one capability scan. No cross-rebuild cache was added. All 79 focused metadata, target, captured/persistent-state, and serialization tests pass on .NET 9 x64. This measures work removed, not elapsed-time savings.
+
 ## Claims not added to TODO
 
 | Report item | Disposition |

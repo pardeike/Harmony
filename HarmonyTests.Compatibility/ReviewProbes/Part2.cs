@@ -106,8 +106,9 @@ public static partial class Program
 	static void Part2Validation()
 	{
 		var harmony = new Harmony("review.part2.validation");
-		foreach (var name in new[] { "ValidateSurvivingMetadata", "RequiresInfixV2", "RequiresInfixV3", "RequiresInfixV4" })
-			harmony.Patch(typeof(PatchInfo).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic)!, prefix: new HarmonyMethod(Method(nameof(CountPart2Validation))));
+		foreach (var name in new[] { "ValidateSurvivingMetadata", "RequiresInfixV2", "RequiresInfixV3", "RequiresInfixV4", "GetRequiredInfixVersion" })
+			if (typeof(PatchInfo).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic) is MethodInfo method)
+				harmony.Patch(method, prefix: new HarmonyMethod(Method(nameof(CountPart2Validation))));
 		harmony.Patch(typeof(InnerMethod).GetMethod("ResolveModule", BindingFlags.Static | BindingFlags.NonPublic)!, prefix: new HarmonyMethod(Method(nameof(CountPart2Validation))));
 		validationCalls.Clear();
 		try

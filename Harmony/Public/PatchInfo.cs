@@ -202,47 +202,27 @@ namespace HarmonyLib
 		}
 
 		internal bool HasInfixes => innerprefixes.Length != 0 || innerpostfixes.Length != 0 || innerfinalizers.Length != 0;
-		internal bool RequiresInfixV4(bool allowUnresolvedCallbacks = false)
+		internal byte GetRequiredInfixVersion(bool allowUnresolvedCallbacks = false)
 		{
-			bool Requires(Patch patch, bool postfix)
+			var version = innerfinalizers.Length != 0 ? (byte)3 : (byte)1;
+			void Include(Patch patch, bool postfix)
 			{
+				if (patch.innerTarget is not null && version < 2) version = 2;
 				MethodInfo method;
 				try { method = patch.GetValidatedInfixPatchMethod(); }
-				catch (Exception exception) when (allowUnresolvedCallbacks && exception is SerializationException or ArgumentException) { return false; }
-				return method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0)
-					.Any(parameter => new InjectedParameter(method, parameter).argumentMode == ArgumentMode.Persistent);
+				catch (Exception exception) when (allowUnresolvedCallbacks && exception is SerializationException or ArgumentException) { return; }
+				foreach (var parameter in method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0))
+				{
+					var injected = new InjectedParameter(method, parameter);
+					if (injected.argumentMode == ArgumentMode.Persistent) { version = 4; return; }
+					if (injected.argumentMode == ArgumentMode.Captured && version < 3) version = 3;
+					if (injected.injectionType == InjectionType.OriginalMember && (patch.innerMethod is not null || patch.innerTarget is not null) && version < 2) version = 2;
+				}
 			}
-			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true))
-				|| innerfinalizers.Any(patch => Requires(patch, false));
-		}
-
-		internal bool RequiresInfixV3(bool allowUnresolvedCallbacks = false)
-		{
-			if (innerfinalizers.Length != 0) return true;
-			bool Requires(Patch patch, bool postfix)
-			{
-				MethodInfo method;
-				try { method = patch.GetValidatedInfixPatchMethod(); }
-				catch (Exception exception) when (allowUnresolvedCallbacks && exception is SerializationException or ArgumentException) { return false; }
-				return method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0)
-					.Any(parameter => new InjectedParameter(method, parameter).argumentMode == ArgumentMode.Captured);
-			}
-			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true));
-		}
-		internal bool RequiresInfixV2(bool allowUnresolvedCallbacks = false)
-		{
-			bool Requires(Patch patch, bool postfix)
-			{
-				if (patch.innerTarget is not null) return true;
-				if (patch.innerMethod is null) return false; // Incomplete legacy records remain removable without binding.
-				MethodInfo method;
-				try { method = patch.GetValidatedInfixPatchMethod(); }
-				catch (Exception exception) when (allowUnresolvedCallbacks && exception is SerializationException or ArgumentException) { return false; }
-				return method.GetParameters().Skip(postfix && method.ReturnType != typeof(void) ? 1 : 0)
-					.Any(parameter => new InjectedParameter(method, parameter).injectionType == InjectionType.OriginalMember);
-			}
-			return innerprefixes.Any(patch => Requires(patch, false)) || innerpostfixes.Any(patch => Requires(patch, true))
-				|| innerfinalizers.Any(patch => Requires(patch, false));
+			foreach (var patch in innerprefixes) { Include(patch, false); if (version == 4) return version; }
+			foreach (var patch in innerpostfixes) { Include(patch, true); if (version == 4) return version; }
+			foreach (var patch in innerfinalizers) { Include(patch, false); if (version == 4) return version; }
+			return version;
 		}
 
 		internal void ValidateSurvivingMetadata()
@@ -256,8 +236,9 @@ namespace HarmonyLib
 				{
 					patch.ValidateTargetRepresentation();
 					if (patch.Target is null) throw new ArgumentException("The stored inner patch has no target");
-					AttributePatch.ValidateInfixPatchMethod(patch.GetValidatedInfixPatchMethod());
-					if (innerfinalizers.Any(finalizer => ReferenceEquals(finalizer, patch))) AttributePatch.ValidateInnerFinalizer(patch.GetValidatedInfixPatchMethod());
+					var method = patch.GetValidatedInfixPatchMethod();
+					AttributePatch.ValidateInfixPatchMethod(method);
+					if (innerfinalizers.Any(finalizer => ReferenceEquals(finalizer, patch))) AttributePatch.ValidateInnerFinalizer(method);
 					patch.Target.Validate();
 				}
 				catch (Exception ex)

@@ -29,6 +29,9 @@ namespace HarmonyLib
 		}
 
 		public override void Write(Utf8JsonWriter writer, PatchInfo value, JsonSerializerOptions options)
+			=> Write(writer, value, options, value.GetRequiredInfixVersion(allowUnresolvedCallbacks: true));
+
+		internal static void Write(Utf8JsonWriter writer, PatchInfo value, JsonSerializerOptions options, byte version)
 		{
 			void WritePatches(string name, Patch[] patches)
 			{
@@ -42,7 +45,7 @@ namespace HarmonyLib
 			WritePatches("finalizers", value.finalizers);
 			WritePatches("innerprefixes", value.innerprefixes);
 			WritePatches("innerpostfixes", value.innerpostfixes);
-			if (value.RequiresInfixV3(allowUnresolvedCallbacks: true) || value.RequiresInfixV4(allowUnresolvedCallbacks: true)) WritePatches("innerfinalizers", value.innerfinalizers);
+			if (version >= 3) WritePatches("innerfinalizers", value.innerfinalizers);
 			writer.WriteNumber("VersionCount", value.VersionCount);
 			writer.WriteEndObject();
 		}

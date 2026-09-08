@@ -6,8 +6,6 @@ Keep reproduced defects, measured performance opportunities, and cleanup verifie
 
 ## Measured performance opportunities
 
-- [ ] **T15 · P3 — Reduce repeated metadata work within one rebuild.** Instrumenting one simple Infix registration counted two `ValidateSurvivingMetadata` passes, two checks each for V3/V4 capability, and 15 `ResolveModule` calls. Consolidate repeated work within a rebuild, preserving public serialization validation and checks for newly loaded duplicate modules. A global cache or unconditional `??=` shortcut must not hide changed loader state. Startup time savings have not been measured. See `PatchFunctions`, `PatchInfoSerialization`, `PatchInfoJsonConverter`, and `PatchInfo`.
-
 - [ ] **T16 · P3 — Avoid encoding every numeric literal during constant matching.** Checking 10,000 reused, nonmatching `ldc.r8` instructions allocated 880,000 bytes; the nonnumeric control allocated zero. Compare the already decoded value or bits without formatting each candidate. Preserve the selector's exact floating-point rules, including signed zero and NaN payloads. See `Harmony/Public/InnerTarget.cs`.
 
 ## Verified cleanup
