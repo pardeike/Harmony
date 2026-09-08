@@ -214,6 +214,7 @@ body.harmony.page-home article { padding: 0; background: transparent; font-size:
 .entry-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; margin: 21px 0 34px; }
 .entry-card { min-width: 0; display: flex; flex-direction: column; background: white; border: 1px solid var(--line); border-radius: var(--radius); padding: 24px 27px; }
 .page-home .entry-card { border-color: white; }
+.entry-card .icon-tile { background: var(--canvas); }
 .entry-card h2, .entry-card h3 { font-size: 1.65rem; margin: 23px 0 15px; line-height: 1.15; }
 .entry-card p { color: var(--muted); font-size: 1rem; line-height: 1.55; }
 .entry-card > a { display: block; margin-top: auto; font-size: .875rem; padding-top: 7px; }

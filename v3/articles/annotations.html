@@ -2,9 +2,9 @@
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Annotations | Harmony 3 </title>
+      <title>Annotations and targets | Harmony 3 </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Annotations | Harmony 3 ">
+      <meta name="title" content="Annotations and targets | Harmony 3 ">
       
       
       <link rel="icon" href="../images/harmony-logo.png">
@@ -91,8 +91,9 @@
         <article id="main-content" tabindex="-1" data-uid="">
           <span id="_content"></span>
           
-<h1 id="annotations">Annotations</h1>
+<h1 id="annotations-and-targets">Annotations and targets</h1>
 
+<div id="annotations"></div>
 <p>Annotations describe the original method, your patch methods, and settings such as priority. Usually, each original gets a &quot;patch class&quot; marked with <code>[HarmonyPatch]</code>.</p>
 <p><code>PatchAll()</code> finds and applies every annotated patch class in an assembly. To apply selected groups, mark classes with <code>[HarmonyPatchCategory]</code> and call <code>PatchCategory()</code>. <code>PatchAllUncategorized()</code> applies classes without a category. <code>PatchAll()</code> ignores categories.</p>
 <p>A typical patch consists of a class with annotations that looks like this:</p>
@@ -141,7 +142,7 @@ class MyPatches
 [HarmonyPatch(Type[] argumentTypes)]
 
 // Since annotations cannot contain code and you cannot use .MakeByRefType(), the second
-// form allows for a ArgumentType array defining the type of each argument type
+// form allows for an ArgumentType array defining the kind of each argument
 // Normal, Ref, Out or Pointer. Both arrays need to have the same number of elements:
 [HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)]
 </code></pre>
@@ -165,15 +166,15 @@ class MyPatches
 [HarmonyPatch(MethodType methodType, Type[] argumentTypes, ArgumentType[] argumentVariations)]
 </code></pre>
 <h4 id="examples">Examples</h4>
-<p>To patch method <strong>String.ToUpper()</strong> :</p>
+<p>To patch method <strong>String.ToUpper()</strong>:</p>
 <pre><code class="lang-csharp">[HarmonyPatch(typeof(String))]
 [HarmonyPatch(&quot;ToUpper&quot;)]
 </code></pre>
-<p>To patch the setter for a property <strong>Account</strong> in class <strong>MyClass</strong> :</p>
+<p>To patch the setter for a property <strong>Account</strong> in class <strong>MyClass</strong>:</p>
 <pre><code class="lang-csharp">[HarmonyPatch(typeof(MyClass))]
 [HarmonyPatch(&quot;Account&quot;, MethodType.Setter)]
 </code></pre>
-<p>To patch method <strong>String.IndexOf(char, int)</strong> :</p>
+<p>To patch method <strong>String.IndexOf(char, int)</strong>:</p>
 <pre><code class="lang-csharp">[HarmonyPatch(typeof(String))]
 [HarmonyPatch(&quot;IndexOf&quot;)]
 [HarmonyPatch(new Type[] { typeof(char), typeof(int) })]
@@ -229,7 +230,7 @@ class MyPatches
     }
 }
 </code></pre><h3 id="combining-annotations">Combining annotations</h3>
-<p>The combination of those annotations defines the target method. Annotations are <strong>inherited</strong> from class to method so you can use <code>[HarmonyPatch(Type)]</code> on the class and <code>[HarmonyPatch(String)]</code> on one of its methods to combine both.</p>
+<p>Harmony combines the class and method annotations to identify the target. For example, put <code>[HarmonyPatch(Type)]</code> on the class and <code>[HarmonyPatch(string)]</code> on a patch method to supply the declaring type and method name separately.</p>
 <pre><code class="lang-csharp" name="example">using HarmonyLib;
 
 [HarmonyPatch(typeof(SomeType))]

@@ -2,9 +2,9 @@
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Execution Flow | Harmony 3 </title>
+      <title>Execution flow | Harmony 3 </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Execution Flow | Harmony 3 ">
+      <meta name="title" content="Execution flow | Harmony 3 ">
       
       
       <link rel="icon" href="../images/harmony-logo.png">
@@ -91,7 +91,7 @@
         <article id="main-content" tabindex="-1" data-uid="">
           <span id="_content"></span>
           
-<h1 id="execution-flow">Execution Flow</h1>
+<h1 id="execution-flow">Execution flow</h1>
 
 <p>Adding a patch does not replace existing patches. Harmony combines them using its <a href="priorities.html">ordering rules</a> and rebuilds the replacement whenever patches are added or removed.</p>
 <p><strong>Prefixes</strong> run before the original. Returning <code>false</code> skips the original and later prefixes that Harmony considers able to affect it. <strong>Postfixes</strong> run after completion or a skip, but not after an exception.</p>
@@ -117,10 +117,9 @@
   </div>
   <p class="diagram-note">The transpiler itself runs during generation. Code it inserts runs when execution reaches it. The second row shows the ordinary path; finalizers can also be installed to handle success and exceptions.</p>
 </figure>
-
+<h2 id="anatomy-of-a-patched-method">Anatomy of a patched method</h2>
 <p>The pseudocode below shows the replacement's structure.</p>
-<h3 id="anatomy-of-a-patched-method">Anatomy of a patched method</h3>
-<h5 id="without-finalizer-patches">Without Finalizer patches</h5>
+<h3 id="without-finalizer-patches">Without finalizer patches</h3>
 <p>Harmony calls prefixes, the (possibly transpiled) original, then postfixes.</p>
 <p>After a prefix returns <code>false</code>, Harmony still runs prefixes whose signatures it classifies as observation-only. See the <a href="patching-prefix.html">prefix skip rules</a>. Postfixes still run after a skip.</p>
 <p>An exception stops this sequence and reaches the caller unless a finalizer handles it.</p>
@@ -161,7 +160,7 @@ static R ReplacementMethod(T optionalThisArgument, params object[] arguments)
 
     return result;
 }
-</code></pre><h5 id="with-finalizer-patches">With Finalizer patches</h5>
+</code></pre><h3 id="with-finalizer-patches">With finalizer patches</h3>
 <figure class="patch-figure">
   <figcaption>On each call · the ordinary execution path</figcaption>
   <ol class="patch-flow">
@@ -173,8 +172,7 @@ static R ReplacementMethod(T optionalThisArgument, params object[] arguments)
   <p class="diagram-note">A prefix can skip the original; postfixes still run. An exception interrupts the sequence and skips remaining postfixes. A finalizer can observe, change, or suppress that exception.</p>
 </figure>
 
-<p>Finalizers add try/catch handling around this sequence:</p>
-<p>For simplicity, Prefix and Postfix patches can be considered part of the Original and are not shown here:</p>
+<p>Finalizers add try/catch handling around the prefixes, original, and postfixes. In this simplified pseudocode, <code>Original</code> stands for that whole sequence:</p>
 <pre><code class="lang-csharp" name="example">static R ReplacementMethod(T optionalThisArgument /*, ... arguments ... */ )
 {
     R result = default;

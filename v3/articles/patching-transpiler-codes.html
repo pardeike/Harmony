@@ -94,7 +94,7 @@
 <h1 id="codeinstruction">CodeInstruction</h1>
 
 <div id="patching"></div>
-<p>The workhorse of a transpiler is the type <a href="../api/HarmonyLib.CodeInstruction.html">CodeInstruction</a>.</p>
+<p>A <a href="../api/HarmonyLib.CodeInstruction.html">CodeInstruction</a> represents one IL instruction, including its opcode, operand, labels, and exception boundaries.</p>
 <p><code>CodeInstruction</code> wraps the .NET <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit">Emit API</a> so transpilers can share and edit instructions. Some details differ: jumps use labels, for example, not numeric offsets such as &quot;four instructions forward&quot;.</p>
 <p>A transpiler receives and returns <code>IEnumerable&lt;CodeInstruction&gt;</code>. An optional <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator">ILGenerator</a> lets you define labels and local variables.</p>
 <p>Most arguments from <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.emit">Emit()</a> are used in the same way:</p>
@@ -102,15 +102,15 @@
 <li>Emit takes an <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcode">OpCode</a> and so does CodeInstruction</li>
 <li>Operands are mostly the same:
 <ul>
-<li>Type</li>
-<li>FieldInfo,</li>
-<li>MethodInfo,</li>
-<li>ConstructorInfo,</li>
-<li>Int64/Int32/Int16/Single/Double/String/Byte</li>
+<li><code>Type</code></li>
+<li><code>FieldInfo</code></li>
+<li><code>MethodInfo</code></li>
+<li><code>ConstructorInfo</code></li>
+<li><code>Int64</code>, <code>Int32</code>, <code>Int16</code>, <code>Single</code>, <code>Double</code>, <code>String</code>, or <code>Byte</code></li>
 </ul>
 </li>
 </ul>
-<p>Some things though will be restricted:</p>
+<p>The main restrictions are:</p>
 <ul>
 <li>Operands of jumps cannot be numeric, use <code>Label</code> instead</li>
 <li><code>SignatureHelper</code> support is experimental at best</li>

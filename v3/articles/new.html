@@ -116,49 +116,55 @@
   <p class="diagram-note">The orange border marks the selection. Calls from other methods are unaffected by this Infix. If an exception escapes the selection, normal exception handling in the outer method decides what happens next.</p>
 </figure>
 
-<p>Start with the <a href="patching-infix.html#a-working-example">working example</a>, then explore <a href="patching-infix-authoring.html">authoring recipes</a> and <a href="patching-infix-limits.html">limits</a>.</p>
+<p>Start with the <a href="patching-infix.html#a-working-example">working example</a>, then explore <a href="patching-infix-authoring.html">recipes and instruction edits</a> and <a href="patching-infix-limits.html">limits</a>.</p>
 <h2 id="work-with-generated-bodies">Work with generated bodies</h2>
 <p><code>InfixOuterBody.Auto</code> resolves supported iterator and async methods to their generated execution body. <code>ArgumentMode.Captured</code> accesses live captured variables; <code>ArgumentMode.Persistent</code> keeps patch-owned values across suspensions within one execution.</p>
 <p>Read about <a href="patching-infix.html#generated-bodies-and-captured-variables">generated bodies</a> and <a href="patching-infix.html#keep-patch-owned-values-across-await-and-yield">persistent state</a>, including the supported compiler protocols and cleanup rules.</p>
 <h2 id="earlier-harmony-2">Earlier: Harmony 2</h2>
 <p>The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.</p>
 <h4 id="new">New</h4>
-<p>CI/CD with GitHub Actions
-Switched to <code>MonoMod.Core</code> for shared low level patching with MonoMod project
-Works with more .NET versions
-Inline prevention for Mono
-4th patch type: <code>Finalizer</code> - for handling and manipulating exceptions
-Reverse Patching (original onto one of your stub methods)
-Convenience extension methods for <code>CodeInstruction</code>
-Selective debug log with <code>[HarmonyDebug]</code> annotation - works even with future changes of the method
-<code>Prepare</code>/<code>Cleanup</code> will be called even with exceptions during patching
-Cleanup can now receive and return the current Exception during patching
-Better exception reporting with <code>HarmonyException</code>
-Automatic documentation generated to <code>https://harmony.pardeike.net</code>
-AccessTools has methods for declared members
-<code>FastAccess</code> now deals with generics
-<code>Manipulator</code> transpiler helper
-Get IL code from a method
-Support for IL InlineSignature (patching methods with CALLI)</p>
+<ul>
+<li>CI/CD with GitHub Actions</li>
+<li>Switched to <code>MonoMod.Core</code> for shared low-level patching with the MonoMod project</li>
+<li>Works with more .NET versions</li>
+<li>Inline prevention for Mono</li>
+<li>4th patch type: <code>Finalizer</code> - for handling and manipulating exceptions</li>
+<li>Reverse Patching (original onto one of your stub methods)</li>
+<li>Convenience extension methods for <code>CodeInstruction</code></li>
+<li>Selective debug log with <code>[HarmonyDebug]</code> annotation - works even with future changes of the method</li>
+<li><code>Prepare</code>/<code>Cleanup</code> will be called even with exceptions during patching</li>
+<li>Cleanup can now receive and return the current Exception during patching</li>
+<li>Better exception reporting with <code>HarmonyException</code></li>
+<li>Automatic documentation generated to <code>https://harmony.pardeike.net</code></li>
+<li>AccessTools has methods for declared members</li>
+<li><code>FastAccess</code> now deals with generics</li>
+<li><code>Manipulator</code> transpiler helper</li>
+<li>Get IL code from a method</li>
+<li>Support for IL InlineSignature (patching methods with CALLI)</li>
+</ul>
 <h4 id="fixed">Fixed</h4>
-<p>Priority field spelling
-<code>Traverse</code> can handle static members
-Methods returning struct types are now patchable
-Main API is now properly divided into static/instance methods
-<code>HarmonyMethod</code> and other high level API throws on null input
-Patch sorting
-DeepCopy works with nullable types
-Patch annotations API cleaned up
-<code>FieldRef</code> covers more cases and is simplified
-<code>__result</code> assignability checks
-Handling <code>__state</code> without Prefix
-Debug log writes out full type names
-Documentation now uses compiled code snippets for correctness
-<code>Traverse</code> works with inherited fields, properties and methods</p>
+<ul>
+<li>Priority field spelling</li>
+<li><code>Traverse</code> can handle static members</li>
+<li>Methods returning struct types are now patchable</li>
+<li>Main API is now properly divided into static/instance methods</li>
+<li><code>HarmonyMethod</code> and other high-level APIs throw on null input</li>
+<li>Patch sorting</li>
+<li>DeepCopy works with nullable types</li>
+<li>Patch annotations API cleaned up</li>
+<li><code>FieldRef</code> covers more cases and is simplified</li>
+<li><code>__result</code> assignability checks</li>
+<li>Handling <code>__state</code> without Prefix</li>
+<li>Debug log writes out full type names</li>
+<li>Documentation now uses compiled code snippets for correctness</li>
+<li><code>Traverse</code> works with inherited fields, properties, and methods</li>
+</ul>
 <h4 id="changes">Changes</h4>
-<p>Removed Self-patching
-Renamed <code>Add()</code> extension on <code>IEnumerable&lt;T&gt;</code> and <code>T[]</code> to <code>AddItem()</code> to avoid conflicts
-<code>HarmonyInstance</code> is now called <code>Harmony</code> and <code>Harmony</code> namespace is now called <code>HarmonyLib</code></p>
+<ul>
+<li>Removed Self-patching</li>
+<li>Renamed <code>Add()</code> extension on <code>IEnumerable&lt;T&gt;</code> and <code>T[]</code> to <code>AddItem()</code> to avoid conflicts</li>
+<li><code>HarmonyInstance</code> is now called <code>Harmony</code> and <code>Harmony</code> namespace is now called <code>HarmonyLib</code></li>
+</ul>
 
 </article>
 

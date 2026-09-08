@@ -2,9 +2,9 @@
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Infix odd cases and limits | Harmony 3 </title>
+      <title>Limits and unusual cases | Harmony 3 </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Infix odd cases and limits | Harmony 3 ">
+      <meta name="title" content="Limits and unusual cases | Harmony 3 ">
       
       
       <link rel="icon" href="../images/harmony-logo.png">
@@ -91,9 +91,10 @@
         <article id="main-content" tabindex="-1" data-uid="">
           <span id="_content"></span>
           
-<h1 id="infix-odd-cases-and-limits">Infix odd cases and limits</h1>
+<h1 id="limits-and-unusual-cases">Limits and unusual cases</h1>
 
-<p>An Infix selects compiled operations, not C# expressions. See the <a href="patching-infix.html">Infix guide</a> for registration and signatures. These fragments need static, nongeneric patch classes, target attributes and imports.</p>
+<div id="infix-odd-cases-and-limits"></div>
+<p>An Infix selects compiled operations, not C# expressions. See the <a href="patching-infix.html">Infix guide</a> for registration and signatures. These fragments need static, non-generic patch classes, target attributes, and imports.</p>
 <h2 id="adding-another-patch">Adding another patch</h2>
 <p>Separate <code>Patch()</code> calls add registrations, even with the same owner. Both forms install targeted <code>HarmonyMethod</code> objects <code>a</code> and <code>b</code>:</p>
 <pre><code class="lang-csharp">harmony.CreateProcessor(outer).AddInnerPrefix(a).Patch();
@@ -143,7 +144,7 @@ Total(); // Match 3
 <pre><code class="lang-csharp">static void Observe(object __result) =&gt; Console.WriteLine(__result);
 static int Transform(int result) =&gt; result + 1;
 </code></pre>
-<p>The observer accepts integer and string results; the transformer requires integers. Returning <code>object</code> is not universal. A returning postfix's return type and first parameter must exactly match the result type. Unboxable values such as <code>Span&lt;int&gt;</code> need typed observations.</p>
+<p>The observer accepts integer and string results; the transformer requires integers. Returning <code>object</code> is not universal. A returning postfix's return type and first parameter must exactly match the result type. Values that cannot be boxed, such as <code>Span&lt;int&gt;</code>, need typed observations.</p>
 <h2 id="inner-arguments-are-already-evaluated">Inner arguments are already evaluated</h2>
 <p>For <code>Inner(value)</code>, an Infix's <code>ref int value</code> changes the captured argument, not the outer variable. If <code>Inner</code> itself takes <code>ref int value</code>, the patch and callee write the original storage.</p>
 <p><code>[HarmonyOuter]</code> selects the containing method's scope, with no fallback for missing names. To bind a real argument named <code>__result</code>:</p>
@@ -166,11 +167,11 @@ static void Observe(int value, bool __runOriginal)
 <h2 id="persistent-state-follows-one-generated-execution">Persistent state follows one generated execution</h2>
 <p><code>[HarmonyOuter, HarmonyArgument(&quot;name&quot;, ArgumentMode.Persistent)]</code> explicitly extends a named slot across <code>await</code> and <code>yield</code>. It requires an Infix and a heap-storable value: ordinary objects and structs work; pointers, byref-like structs such as <code>Span&lt;T&gt;</code>, and open generic storage do not. <code>ref int</code> is supported because it refers to the stored <code>int</code>, rather than storing a managed reference.</p>
 <p>Persistence follows the recognized generated <code>MoveNext</code> body. It does not automatically follow calls into lambdas, local functions, or separate iterator cleanup helpers. For an ordinary method, its lifetime is one invocation. Installing a patch after an execution has started begins with default state at its next patched body entry; removing and reinstalling persistence starts fresh. A compatible rebuild preserves suspended state. If a replacement patch changes a slot's type, that slot starts at the new type's default on its next binding; an already executing wrapper can finish with its original typed storage.</p>
-<p>Async persistence adapts the public <code>AwaitOnCompleted</code> / <code>AwaitUnsafeOnCompleted</code> and awaiter completion interfaces. It preserves the original builder, state-machine type, task and awaiter's result handling. Standard Task, ValueTask, async void, pooled ValueTask builders, and notification-only awaiters have focused coverage. A custom builder must honor those public contracts without depending on a specific concrete awaiter type. Extra generic constraints are rejected during installation; arbitrary custom behavior or a future compiler using a different protocol is outside this guarantee. Infixes on the builder's suspension or completion bookkeeping cannot be combined with persistent state; select the work surrounding those operations instead.</p>
+<p>Async persistence adapts the public <code>AwaitOnCompleted</code> / <code>AwaitUnsafeOnCompleted</code> and awaiter completion interfaces. It preserves the original builder, state-machine type, task, and awaiter's result handling. Standard Task, ValueTask, async void, pooled ValueTask builders, and notification-only awaiters have focused coverage. A custom builder must honor those public contracts without depending on a specific concrete awaiter type. Extra generic constraints are rejected during installation; arbitrary custom behavior or a future compiler using a different protocol is outside this guarantee. Infixes on the builder's suspension or completion bookkeeping cannot be combined with persistent state; select the work surrounding those operations instead.</p>
 <p>Iterators must be reference types. Synchronous iterator disposal gets an ordinary Harmony finalizer, visible under the internal owner <code>Harmony.Infix.PersistentState</code>; the finalizer is removed with the body's last persistent patch. Do not remove that cleanup owner independently. Async iterators must expose recognizable <code>AsyncIteratorMethodBuilder.Complete</code> calls, including their disposal path; an unrecognized completion layout is rejected.</p>
 <p>Completion releases Harmony's references; stored objects are not automatically disposed. A still-suspended execution keeps its values. Cancellation only releases them when the method actually observes it and completes. An abandoned enumerator can be collected, even if a slot refers back to it, but a retained, undisposed enumerator intentionally keeps its state. This feature adds allocations and continuation indirection, so keep ordinary <code>__var_name</code> locals for values that need only one body invocation.</p>
 <p>On the original CLR 2.0 used by .NET 3.5, the weak-table backport cannot collect a cycle from a saved value back to its enumerator. Complete or explicitly dispose those enumerators, or remove their persistent patch. A .NET 3.5 Harmony binary hosted by CLR 4 or modern Mono uses that runtime's native weak table and has the normal collection behavior. Use the corresponding CoreCLR asset on .NET Core / .NET 5 and later; this feature does not make the net35 DLL a substitute for it.</p>
-<p>Installed persistent state requires envelope version 4. Earlier Infix readers reject it before rebuilding; older engines also reject the declaration marker. This explicit binding mode avoids a new attribute property that an older reader could silently ignore. Existing loader and serialized cross-engine update boundaries still apply.</p>
+<p>Installed persistent state requires envelope version 4. Earlier Infix readers reject it before rebuilding; older engines also reject the declaration marker. This explicit binding mode avoids a new attribute property that an older reader could silently ignore. Existing loader restrictions still apply. Apply updates from different Harmony assemblies one at a time.</p>
 <h2 id="automatic-body-selection-is-opt-in">Automatic body selection is opt-in</h2>
 <p><code>[HarmonyInfix(typeof(Helper), &quot;Decide&quot;, OuterBody = InfixOuterBody.Auto)]</code> searches a supported iterator or async method's generated <code>MoveNext</code>; other methods keep their declared bodies. Manual registration uses <code>HarmonyMethod.infixOuterBody</code>. The default is <code>Declared</code>.</p>
 <p>Ordinary patches still target the supplied method. Use separate processors if the bodies differ. Resolve <code>MoveNext</code> with <code>AccessTools.StateMachineMoveNext(source)</code> for <code>GetPatchInfo</code> or direct unpatching. These calls do not redirect from the source factory. The installing processor remembers its target; <code>UnpatchAll(owner)</code> includes generated bodies.</p>
@@ -178,7 +179,7 @@ static void Observe(int value, bool __runOriginal)
 <p>In <code>new Widget(NextId())</code>, <code>NextId()</code> runs before the Infix. Skipping prevents allocation and constructor effects, not argument evaluation. The new object is <code>__result</code>; there is no incoming <code>__instance</code>. Supply a replacement if later code needs one. Base-constructor initialization through <code>call</code> is not a <code>newobj</code> target.</p>
 <h2 id="virtual-dispatch-and-exceptions-still-matter">Virtual dispatch and exceptions still matter</h2>
 <p>If the instruction names <code>Base.Draw</code>, select that method even when the receiver is a <code>Derived</code>. The call still dispatches to its runtime override and runs that method's Harmony patches.</p>
-<p>Postfixes run after normal or skipped operations. An exception stops remaining postfixes. Finalizers cover the prefix/operation/postfix pipeline and can preserve, replace or suppress <code>__exception</code>. They also run on success, with a null exception. Suppression does not resume postfixes; supply <code>__result</code> if the operation produced none.</p>
+<p>Postfixes run after normal or skipped operations. An exception stops remaining postfixes. Finalizers cover the prefix/operation/postfix pipeline and can preserve, replace, or suppress <code>__exception</code>. They also run on success, with a null exception. Suppression does not resume postfixes; supply <code>__result</code> if the operation produced none.</p>
 <p>Receiver and argument evaluation happen before this protection. Outer handlers and finalizers still apply, but do not receive exceptions already caught or suppressed.</p>
 <h3 id="finalizers-can-run-again-and-see-an-earlier-result">Finalizers can run again and see an earlier result</h3>
 <p>This throws on success, then runs again with the unsuppressed exception:</p>

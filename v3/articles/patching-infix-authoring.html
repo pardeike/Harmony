@@ -2,9 +2,9 @@
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Infix and instruction edits | Harmony 3 </title>
+      <title>Recipes and instruction edits | Harmony 3 </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Infix and instruction edits | Harmony 3 ">
+      <meta name="title" content="Recipes and instruction edits | Harmony 3 ">
       
       
       <link rel="icon" href="../images/harmony-logo.png">
@@ -91,11 +91,12 @@
         <article id="main-content" tabindex="-1" data-uid="">
           <span id="_content"></span>
           
-<h1 id="infix-and-instruction-edits">Infix and instruction edits</h1>
+<h1 id="recipes-and-instruction-edits">Recipes and instruction edits</h1>
 
-<p>Use an Infix for prefixes, postfixes or finalizers around a selected operation. To insert, replace or remove instruction patterns, use a <a href="patching-transpiler.html">transpiler</a> with <a href="patching-transpiler-matcher.html">CodeMatcher</a>.</p>
+<div id="infix-and-instruction-edits"></div>
+<p>Use an Infix for prefixes, postfixes, or finalizers around a selected operation. To insert, replace, or remove instruction patterns, use a <a href="patching-transpiler.html">transpiler</a> with <a href="patching-transpiler-matcher.html">CodeMatcher</a>.</p>
 <p>Transpilers run in their usual order. Infix selects from their finished output, before inserting its own code. Even <code>Priority.Last</code> transpilers run before Infix.</p>
-<p>These examples are compiled and tested. <code>Probe.Tick()</code>, <code>Before()</code>, <code>After()</code>, <code>Replacement()</code>, <code>Enter()</code> and <code>Exit()</code> are static, take no arguments and return void. Each records its name. <code>Recipes.Method(name)</code> finds a <code>Probe</code> method; <code>Recipes.Call(name)</code> creates its call instruction.</p>
+<p>These examples are compiled and tested. <code>Probe.Tick()</code>, <code>Before()</code>, <code>After()</code>, <code>Replacement()</code>, <code>Enter()</code>, and <code>Exit()</code> are static, take no arguments, and return void. Each records its name. <code>Recipes.Method(name)</code> finds a <code>Probe</code> method; <code>Recipes.Call(name)</code> creates its call instruction.</p>
 <h2 id="scope-of-these-examples">Scope of these examples</h2>
 <p>These recipes reject exception regions and instruction prefixes such as <code>constrained.</code> and <code>tail.</code>:</p>
 <pre><code class="lang-csharp" name="scope">static List&lt;CodeInstruction&gt; SimpleBody(IEnumerable&lt;CodeInstruction&gt; instructions)
@@ -106,7 +107,7 @@
     return codes;
 }
 </code></pre>
-<p>Handling those bodies requires preserving exception regions, branch destinations and prefixes. Moving every exception marker onto an inserted instruction is not enough. Use Infix for supported operations if you want Harmony to handle this.</p>
+<p>Handling those bodies requires preserving exception regions, branch destinations, and prefixes. Moving every exception marker onto an inserted instruction is not enough. Use Infix for supported operations if you want Harmony to handle this.</p>
 <h2 id="insert-before-and-after-a-match">Insert before and after a match</h2>
 <p>Surround the first <code>Tick</code> call:</p>
 <pre><code class="lang-csharp" name="around">public static IEnumerable&lt;CodeInstruction&gt; AroundFirst(IEnumerable&lt;CodeInstruction&gt; instructions)

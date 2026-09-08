@@ -136,6 +136,7 @@
 </tr>
 </tbody>
 </table>
+<h2 id="runtime-flow">Runtime flow</h2>
 <figure class="patch-figure">
   <figcaption>On each call · the ordinary execution path</figcaption>
   <ol class="patch-flow">
@@ -153,10 +154,10 @@
 <p><strong>Transpilers</strong> change the original's IL instructions when Harmony builds the replacement method, not on each call.</p>
 <p><strong>Finalizers</strong> handle exceptions from prefixes, the original, or postfixes. They can observe, replace, or suppress an exception. Without one, an exception skips the remaining patches and reaches the caller.</p>
 <p>An <a href="patching-infix.html">Infix</a> applies ordinary prefixes, postfixes, or finalizers to selected operations inside an outer method. It can target method/property calls, field reads or writes, construction, and literal loads. Other callers and unselected operations remain unchanged.</p>
-<p>A <strong>Reverse Patch</strong> copies the original into a stub method you can call from your own code. You can also transpile that copy.</p>
+<p>A <strong>reverse patch</strong> copies the original into a stub method you can call from your own code. You can also transpile that copy.</p>
 <h4 id="patches-need-to-be-static">Patches need to be static</h4>
 <p>Harmony stores references to static patch methods so it can reapply everyone's patches whenever registrations change. It does not create or store patch-class instances.</p>
-<p>Use <code>__state</code> for values that belong to one patched invocation and need to pass between patches in the same class. Static fields are appropriate for deliberately shared state, not independent per-call values. Transpilers run when Harmony generates the replacement method, not each time the original is called.</p>
+<p>Use <code>__state</code> for values that belong to one patched invocation and need to pass between patches in the same class. Static fields are appropriate for deliberately shared state, not independent per-call values.</p>
 <h4 id="commonly-unsupported-use-cases">Commonly unsupported use cases</h4>
 <p>Harmony patches only within the current AppDomain.</p>
 <p>Currently, support for generic types and methods is experimental and can give unexpected results. See <a href="patching-edgecases.html#generics">Edge Cases</a> for more information.</p>
@@ -165,8 +166,8 @@
 <p>Manual patching lets you supply methods from any class. Annotation patching groups them in a patch class.</p>
 <p><strong>Layout</strong>
 The class can be public or private, static or not. Mark it with <code>[HarmonyPatch]</code> and describe the target using annotations. Its static patch methods use recognized names such as <code>Prefix</code>, or attributes such as <code>[HarmonyPrefix]</code>. Helper methods and fields are fine too.</p>
-<p><strong>Attribute Inheritance</strong>
-The attributes of the methods in the class inherit the attributes of the class.</p>
+<p><strong>Combining attributes</strong>
+Harmony combines the target annotations on the class with those on each patch method. For example, specify the declaring type on the class and the method name on a patch method. See <a href="annotations.html#combining-annotations">combining annotations</a>.</p>
 <h2 id="patch-methods">Patch methods</h2>
 <p>Harmony recognizes patch and helper methods <strong>by name</strong>, or by their attributes:</p>
 <pre><code class="lang-csharp">[HarmonyPatch(...)]

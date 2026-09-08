@@ -102,16 +102,7 @@
 <li>set custom state that can be recalled in the postfix</li>
 </ul>
 <p><img src="../images/note.png" alt="note"> Returning <code>false</code> skips the original and later prefixes that Harmony considers able to affect it. A prefix returning <code>bool</code>, or taking writable or reference-type arguments, normally falls in that group. The injections <code>__instance</code>, <code>__originalMethod</code>, and <code>__state</code> are exceptions to the argument check. Other prefixes still run, as do postfixes and finalizers. This is a signature check, not an analysis of what your code does.</p>
-<figure class="patch-figure">
-  <figcaption>On each call · the ordinary execution path</figcaption>
-  <ol class="patch-flow">
-    <li><div class="patch-step patch-prefix"><strong>Prefix</strong><small>Read arguments, change them, or skip the original.</small></div></li>
-    <li><div class="patch-step"><strong>Original</strong><small>Run the method body, including any instruction edits.</small></div></li>
-    <li><div class="patch-step patch-postfix"><strong>Postfix</strong><small>Read or change the result after completion or a skip.</small></div></li>
-  </ol>
-  <div class="patch-recovery"><div class="patch-step patch-finalizer"><strong>Finalizer · success or exception</strong><small>When installed, handles the outcome of the sequence above.</small></div></div>
-  <p class="diagram-note">A prefix can skip the original; postfixes still run. An exception interrupts the sequence and skips remaining postfixes. A finalizer can observe, change, or suppress that exception.</p>
-</figure>
+<p>See the <a href="patching.html#runtime-flow">runtime flow</a> for how prefixes, postfixes, and finalizers fit together.</p>
 <h2 id="reading-and-changing-arguments">Reading and changing arguments</h2>
 <pre><code class="lang-csharp" name="example">public class OriginalCode
 {

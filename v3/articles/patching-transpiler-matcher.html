@@ -96,8 +96,8 @@
 <div id="patching"></div>
 <p><a href="../api/HarmonyLib.CodeMatcher.html">CodeMatcher</a> is a cursor over IL instructions. Use <a href="../api/HarmonyLib.CodeMatch.html">CodeMatch</a> and <a href="../api/HarmonyLib.Code.html">Code</a> to find a sequence, then insert, remove, or replace instructions.</p>
 <h2 id="use-case">Use case</h2>
-<p>Suppose <code>DamageHandler.Apply()</code> calls <code>Kill()</code> when a character dies. We want that call to invoke our <code>OnDeath</code> event, without changing calls to <code>Kill()</code> elsewhere.</p>
-<p>Find the call to <code>Kill()</code> and replace it with <code>MyDeathHandler()</code>. <code>ThrowIfInvalid()</code> reports a missing match by throwing; <code>ReportFailure()</code> reports it through a callback and returns a boolean. These checks help detect broken patches after game updates.</p>
+<p>Suppose <code>DamageHandler.Apply()</code> calls <code>Kill()</code> when a character dies. To invoke your <code>OnDeath</code> event there without changing other calls to <code>Kill()</code>, find that call and replace it with <code>MyDeathHandler()</code>.</p>
+<p><code>ThrowIfInvalid()</code> reports a missing match by throwing; <code>ReportFailure()</code> reports it through a callback and returns a boolean. These checks help detect broken patches after game updates.</p>
 <pre><code class="lang-csharp" name="example">[HarmonyPatch]
 public static class DamageHandler_Apply_Patch
 {

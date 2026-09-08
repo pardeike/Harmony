@@ -100,7 +100,7 @@
 </div>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>Harmony patches <a href="https://wikipedia.org/wiki/Common_Intermediate_Language">CIL</a>, the intermediate language used by .NET and <a href="https://wikipedia.org/wiki/Mono_(software)">Mono</a>. Your source language does not have to be C#.</p>
-<p>The exception is probably <a href="https://docs.unity3d.com/2019.1/Documentation/Manual/dotnetProfileSupport.html">Unity .NET Standard profile</a>, which does not provide the functionality to fully create methods on the fly at runtime.</p>
+<p>The runtime must allow Harmony to generate and execute replacement methods. In Unity, check the scripting backend and target platform. IL2CPP uses ahead-of-time compilation and does not support <code>System.Reflection.Emit</code>; the runtime patching described here requires a compatible managed runtime. See <a href="https://docs.unity3d.com/6000.0/Documentation/Manual/scripting-restrictions.html">Unity's scripting restrictions</a>.</p>
 <h3 id="bootstrapping-and-injection">Bootstrapping and Injection</h3>
 <p>Harmony does not load your code into an application. You need mod support or a loader to run the few lines that apply your patches. Some loaders include:</p>
 <ul>
@@ -118,24 +118,22 @@
 <h2 id="altering-functionality-patching">Altering functionality (Patching)</h2>
 <p>There are two common ways to change an application without its source code:</p>
 <ol>
-<li>Alter dll files on disk</li>
+<li>Alter DLL files on disk</li>
 <li>Re-point method implementations (hooking)</li>
 </ol>
 <p>Editing DLL files has drawbacks:</p>
 <ul>
-<li>it has legal implications</li>
 <li>it might be blocked by an anti-cheat system</li>
-<li>it does not coordinate nicely with multiple concurrent changes</li>
+<li>separate edits can overwrite each other</li>
 <li>it has to be done before and outside the original application</li>
 </ul>
 <p>Harmony uses a variation of hooking and focuses only on runtime changes that don't affect files on disk:</p>
 <ul>
-<li>less conflicts with multiple mods</li>
+<li>patches from multiple mods can share a method</li>
 <li>supports existing mod loaders</li>
 <li>changes can be made dynamically/conditionally</li>
 <li>the patch order can be flexible</li>
 <li>other mods can be patched too</li>
-<li>less legal issues</li>
 </ul>
 <h2 id="how-harmony-works">How Harmony works</h2>
 <p>Harmony lets you:</p>
@@ -145,16 +143,7 @@
 <li>Modify its IL instructions</li>
 <li>Combine patches from multiple authors on the same method</li>
 </ul>
-<figure class="patch-figure">
-  <figcaption>On each call · the ordinary execution path</figcaption>
-  <ol class="patch-flow">
-    <li><div class="patch-step patch-prefix"><strong>Prefix</strong><small>Read arguments, change them, or skip the original.</small></div></li>
-    <li><div class="patch-step"><strong>Original</strong><small>Run the method body, including any instruction edits.</small></div></li>
-    <li><div class="patch-step patch-postfix"><strong>Postfix</strong><small>Read or change the result after completion or a skip.</small></div></li>
-  </ol>
-  <div class="patch-recovery"><div class="patch-step patch-finalizer"><strong>Finalizer · success or exception</strong><small>When installed, handles the outcome of the sequence above.</small></div></div>
-  <p class="diagram-note">A prefix can skip the original; postfixes still run. An exception interrupts the sequence and skips remaining postfixes. A finalizer can observe, change, or suppress that exception.</p>
-</figure>
+<p>See <a href="patching.html#runtime-flow">how the patch types fit together</a> before choosing one.</p>
 <h2 id="limits-of-runtime-patching">Limits of runtime patching</h2>
 <p><img src="../images/note.png" alt="note"> Harmony can't do everything. Make sure you understand the following:</p>
 <ul>

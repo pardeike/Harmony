@@ -2,9 +2,9 @@
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Priorities | Harmony 3 </title>
+      <title>Ordering and priorities | Harmony 3 </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Priorities | Harmony 3 ">
+      <meta name="title" content="Ordering and priorities | Harmony 3 ">
       
       
       <link rel="icon" href="../images/harmony-logo.png">
@@ -91,18 +91,19 @@
         <article id="main-content" tabindex="-1" data-uid="">
           <span id="_content"></span>
           
-<h1 id="priorities">Priorities</h1>
+<h1 id="ordering-and-priorities">Ordering and priorities</h1>
 
+<div id="priorities"></div>
 <p>Load order is not execution order. A mod loaded last can add a patch that runs first. Use these annotations to control ordering:</p>
 <ul>
 <li><p><strong>[HarmonyPriority(int)]</strong>
-Sets the priority of this Prefix/Postfix. Defaults to Priority.Normal (400)</p>
+Sets this patch's priority. Defaults to <code>Priority.Normal</code> (400).</p>
 </li>
 <li><p><strong>[HarmonyBefore(string[])]</strong>
-Indicates that this Prefix/Postfix should be executed before any of the ID's given</p>
+Runs this patch before patches owned by any of the given Harmony IDs.</p>
 </li>
 <li><p><strong>[HarmonyAfter(string[])]</strong>
-Indicates that this Prefix/Postfix should be executed after any of the ID's given</p>
+Runs this patch after patches owned by any of the given Harmony IDs.</p>
 </li>
 </ul>
 <p>Example:</p>

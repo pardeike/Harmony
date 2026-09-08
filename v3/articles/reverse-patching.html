@@ -96,12 +96,11 @@
 <div id="patching"></div>
 <p>A reverse patch copies the original, or part of it, into your own callable stub. Typical uses are:</p>
 <ul>
-<li>easily call private methods</li>
-<li>no reflection, no delegate, native performance</li>
-<li>you can cherry-pick part of the original method by using a transpiler</li>
-<li>can give you the unmodified original</li>
-<li>will freeze the implementation to the time you reverse patch</li>
+<li>call a private method through a stub with a known signature</li>
+<li>call the unmodified original implementation</li>
+<li>extract part of a method using a transpiler</li>
 </ul>
+<p>Once installed, you call the stub directly.</p>
 <p><img src="../images/note.png" alt="note"> A reverse patch is a frozen copy. Use a delegate or reflection if you want calls to follow later patches instead.</p>
 <h2 id="defining-a-reverse-patch">Defining a reverse patch</h2>
 <p>Mark your stub with <code>[HarmonyReversePatch]</code> and identify the original with patch annotations:</p>
@@ -132,11 +131,11 @@ class Main
         Patch.MyTest(originalInstance, 100, &quot;hello&quot;);
 }
 </code></pre><h2 id="types-of-reverse-patches">Types of reverse patches</h2>
-<p>The HarmonyReversePatch attribute comes in two alternatives:</p>
-<pre><code class="lang-cs">[HarmonyReversePatch(HarmonyReversePatchType.Original)]
+<p>The <code>[HarmonyReversePatch]</code> attribute has two variants:</p>
+<pre><code class="lang-csharp">[HarmonyReversePatch(HarmonyReversePatchType.Original)]
 [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
 </code></pre>
-<p>The default is <code>Original</code> so you can simply write <code>[HarmonyReversePatch]</code>.</p>
+<p>The default is <code>Original</code> so you can write <code>[HarmonyReversePatch]</code>.</p>
 <p><strong>Original</strong> gives you the unmodified original method as defined in the dll. No patches or transpilers have touched it.</p>
 <p><strong>Snapshot</strong> includes the ordinary transpilers registered at that moment, but no prefixes, postfixes, finalizers, or Infixes. Later patches do not update your stub.</p>
 <h2 id="changing-the-content-of-the-original">Changing the content of the original</h2>
@@ -144,7 +143,7 @@ class Main
 <p><strong>Example</strong>
 Suppose a long method calculates a checksum. Copy it to a <code>Checksum(...)</code> stub and use a transpiler to remove the unrelated code.</p>
 <p>The remaining IL must match the stub's inputs and output. If it consumes a string and leaves an integer, the stub could be <code>static int Checksum(string txt)</code>.</p>
-<p>To define a reverse patch transpiler, you simply put a transpiler <strong>into</strong> your stub:</p>
+<p>To define a reverse patch transpiler, put a transpiler <strong>into</strong> your stub:</p>
 <pre><code class="lang-csharp" name="example">private class OriginalClass
 {
     private string SpecialCalculation(string original, int n)

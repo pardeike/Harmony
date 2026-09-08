@@ -124,9 +124,11 @@
 <p><strong><code>bool __runOriginal</code></strong> is read-only. In a prefix it tells you whether the original is still scheduled to run; a later prefix can still skip it. In a postfix it tells you whether the original ran.</p>
 <h2 id="transpilers">Transpilers</h2>
 <p>In transpilers, arguments are only matched by their type so you can choose any argument name you like.</p>
-<p>An argument of type <strong><code>IEnumerable&lt;CodeInstruction&gt;</code></strong> is required and will be used to pass the IL codes to the transpiler
-An argument of type <strong><code>ILGenerator</code></strong> will be set to the current IL code generator
-An argument of type <strong><code>MethodBase</code></strong> will be set to the current original method being patched</p>
+<ul>
+<li><strong><code>IEnumerable&lt;CodeInstruction&gt;</code></strong> is required and receives the instructions to edit.</li>
+<li><strong><code>ILGenerator</code></strong> is optional and receives the current IL generator.</li>
+<li><strong><code>MethodBase</code></strong> is optional and receives the original method being patched.</li>
+</ul>
 
 </article>
 
