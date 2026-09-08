@@ -60,7 +60,7 @@
               <a href="index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
             </div>
           </details>
-          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub <span aria-hidden="true">↗</span></a>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub</a>
         </div>
       </nav>
     </header>
@@ -94,13 +94,12 @@
 
 <section class="intro-panel" aria-labelledby="harmony-3-preview">
   <div>
-    <div class="eyebrow">A .NET library for runtime patching</div>
-    <h1 id="harmony-3-preview">Change the code.<br><span>Keep the original.</span></h1>
+    <h1 id="harmony-3-preview">Runtime patching<br><span>for .NET</span></h1>
     <p class="intro-description">Run your code before, after, or inside existing methods. Combine patches from multiple authors without changing files on disk.</p>
-    <div class="intro-actions"><a class="harmony-button" href="articles/basics.html">Get started <span aria-hidden="true">↗</span></a><a href="api/index.html">Explore the API <span aria-hidden="true">→</span></a></div>
+    <div class="intro-actions"><a href="articles/basics.html">Get started <span aria-hidden="true">→</span></a><a href="api/index.html">Explore the API <span aria-hidden="true">→</span></a></div>
   </div>
   <div class="starter-panel">
-    <div class="starter-heading"><span class="icon-tile patch-postfix" aria-hidden="true">↳</span><span>Change a return value</span></div>
+    <div class="starter-heading">Change a return value</div>
     <pre><code class="lang-csharp">[HarmonyPatch(typeof(Player), "GetSpeed")]
 static class SpeedPatch
 {

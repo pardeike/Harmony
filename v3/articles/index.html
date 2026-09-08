@@ -2,11 +2,11 @@
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Class FastAccess | Harmony 3 </title>
+      <title>Guides | Harmony 3 </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class FastAccess | Harmony 3 ">
+      <meta name="title" content="Guides | Harmony 3 ">
       
-      <meta name="description" content="A helper class for fast access to getters and setters">
+      
       <link rel="icon" href="../images/harmony-logo.png">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -16,8 +16,8 @@
       
       <meta name="docfx:rel" content="../">
       <meta name="docfx:disablenewtab" content="true">
-      
-      
+      <meta name="docfx:disabletocfilter" content="true">
+      <meta name="docfx:docurl" content="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/index.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -34,7 +34,7 @@
       <script type="module" src="./../public/docfx.min.js"></script>
   </head>
 
-  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="ManagedReference">
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header border-bottom">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
@@ -88,97 +88,60 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.FastAccess">
+        <article id="main-content" tabindex="-1" data-uid="">
           <span id="_content"></span>
-          <span id="HarmonyLib_FastAccess_syntax" data-section-alias=".codewrapper"></span>
+          
+<h1 id="guides">Guides</h1>
 
-
-
-  <h1 id="HarmonyLib_FastAccess" data-uid="HarmonyLib.FastAccess" class="text-break">
-Class FastAccess  
-  </h1>
-
-  <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="HarmonyLib.html">HarmonyLib</a></dd></dl>
-  <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
-  </div>
-
-  <div class="markdown summary"><p>A helper class for fast access to getters and setters</p>
-</div>
-  <div class="markdown conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class FastAccess</code></pre>
-  </div>
-
-
-
-
-  <dl class="typelist inheritance">
-    <dt>Inheritance</dt>
-    <dd>
-      <div><span class="xref">object</span></div>
-      <div><span class="xref">FastAccess</span></div>
-    </dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-  <h2 class="section" id="methods">Methods
-</h2>
-
-
-  <a id="HarmonyLib_FastAccess_CreateInstantiationHandler_" data-uid="HarmonyLib.FastAccess.CreateInstantiationHandler*"></a>
-
-  <h3 id="HarmonyLib_FastAccess_CreateInstantiationHandler__1" data-uid="HarmonyLib.FastAccess.CreateInstantiationHandler``1">
-  CreateInstantiationHandler&lt;T&gt;()
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Creates an instantiation delegate</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static InstantiationHandler&lt;T&gt; CreateInstantiationHandler&lt;T&gt;()</code></pre>
-  </div>
-
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="HarmonyLib.InstantiationHandler-1.html">InstantiationHandler</a>&lt;T&gt;</dt>
-    <dd><p>The new instantiation delegate</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>T</code></dt>
-    <dd><p>Type that constructor creates</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
+<p>Install Harmony and choose a patch type, or jump to the feature you need.</p>
+<h2 id="start-here">Start here</h2>
+<ul>
+<li><a href="intro.html">Introduction</a>: how Harmony works and what your runtime needs to support.</li>
+<li><a href="basics.html">Install and apply patches</a>: add the library, register patches, and remove them.</li>
+<li><a href="patching.html">Choose a patch type</a>: find the right API for the change you want to make.</li>
+<li><a href="new.html">What's new in v3</a>: Infix, generated bodies, and state across await and yield.</li>
+</ul>
+<h2 id="patch-methods">Patch methods</h2>
+<ul>
+<li><a href="patching-prefix.html">Prefix</a>: change arguments, supply a result, or skip the original.</li>
+<li><a href="patching-postfix.html">Postfix</a>: read or change the result after completion or a skip.</li>
+<li><a href="patching-finalizer.html">Finalizer</a>: run cleanup on success or failure and handle exceptions.</li>
+<li><a href="reverse-patching.html">Reverse patch</a>: call a frozen copy of an implementation from your own stub.</li>
+</ul>
+<h2 id="infix">Infix</h2>
+<ul>
+<li><a href="patching-infix.html">Patch an operation</a>: apply prefixes, postfixes, and finalizers inside a method.</li>
+<li><a href="patching-infix-authoring.html">Recipes and instruction edits</a>: insert, replace, or remove operations and manage groups of patches.</li>
+<li><a href="patching-infix-limits.html">Limits and unusual cases</a>: understand selection, argument scope, and state lifetime.</li>
+</ul>
+<h2 id="transpilers">Transpilers</h2>
+<ul>
+<li><a href="patching-transpiler.html">Rewrite instructions</a>: edit a method's compiled instructions.</li>
+<li><a href="patching-transpiler-codes.html">CodeInstruction</a>: work with operands, labels, and exception boundaries.</li>
+<li><a href="patching-transpiler-matcher.html">CodeMatcher</a>: find instruction patterns and edit them.</li>
+</ul>
+<h2 id="coordinate-your-patches">Coordinate your patches</h2>
+<ul>
+<li><a href="annotations.html">Annotations and targets</a>: declare target methods and organize patch classes.</li>
+<li><a href="patching-injections.html">Injected values</a>: access arguments, results, instances, and shared state.</li>
+<li><a href="priorities.html">Ordering and priorities</a>: control the order of patches from different authors.</li>
+<li><a href="execution.html">Execution flow</a>: see how Harmony combines the patches on a method.</li>
+<li><a href="patching-auxiliary.html">Prepare, target, and clean up</a>: control patch installation with helper methods.</li>
+</ul>
+<h2 id="reference-guides">Reference guides</h2>
+<ul>
+<li><a href="utilities.html">Reflection and logging</a>: find members, read private values, and write diagnostic logs.</li>
+<li><a href="patching-edgecases.html">Runtime edge cases</a>: account for inlining, generics, and native methods.</li>
+</ul>
+<p>For public types, signatures, and parameters, use the <a href="../api/index.html">API reference</a>.</p>
 
 </article>
 
         <div class="contribution d-print-none">
+          <a href="https://github.com/pardeike/Harmony/blob/v3/Documentation/articles/index.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
 
       </div>
 

@@ -60,7 +60,6 @@ body.harmony > .site-header { height: var(--header-height); background: var(--ca
 .version-menu a:hover { background: var(--canvas); }
 .version-menu span { color: var(--muted); }
 .github-button { padding: 9px 18px; background: var(--ink); color: white; border-radius: 5px; font-size: .875rem; text-decoration: none; white-space: nowrap; }
-.github-button span { margin-left: 18px; }
 .github-button:hover { background: #383834; color: white; }
 
 body.harmony[data-layout]:not([data-search]) > main { display: grid; grid-template-columns: 218px minmax(0, 1fr) 195px; gap: 24px; align-items: start; padding: 0 25px; }
@@ -165,9 +164,13 @@ body.harmony .member-index > summary { display: flex; justify-content: space-bet
 /* The diagram vocabulary uses labels as well as color. */
 .patch-figure { margin: 30px 0; padding: 25px; border: 1px solid var(--line); border-radius: 8px; background: #fafaf8; }
 .patch-figure figcaption { margin: 0 0 21px; font-size: .8125rem; font-weight: 500; color: var(--muted); }
-.patch-flow { display: flex; align-items: stretch; gap: 25px; list-style: none; padding: 0 !important; margin: 0 !important; }
+.patch-flow { --flow-gap: 36px; display: flex; align-items: stretch; gap: var(--flow-gap); list-style: none; padding: 0 !important; margin: 0 !important; }
 .patch-flow > li { position: relative; flex: 1; min-width: 0; margin: 0; padding: 0; }
-.patch-flow > li + li::before { content: "→"; position: absolute; left: -22px; top: 20px; font-size: 1rem; color: #88877f; }
+.patch-flow > li + li::before {
+  content: ""; position: absolute; left: calc(var(--flow-gap) / -2); top: 50%; width: 28px; height: 28px; transform: translate(-50%, -50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 12h18m-7-7 7 7-7 7' fill='none' stroke='%2373736b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  print-color-adjust: exact;
+}
 .patch-step { height: 100%; padding: 15px; border: 1px solid #deddd6; border-radius: 5px; background: white; text-align: left; }
 .patch-step strong { display: block; font-size: .875rem; font-weight: 500; margin-bottom: 4px; }
 .patch-step small { display: block; color: #555550; font-size: .8125rem; line-height: 1.5; }
@@ -196,17 +199,15 @@ body.harmony .member-index > summary { display: flex; justify-content: space-bet
 body.harmony.page-home[data-layout]:not([data-search]) > main { grid-template-columns: 218px minmax(0, 1fr); }
 body.harmony.page-home article { padding: 0; background: transparent; font-size: 1rem; }
 .intro-panel { background: white; border-radius: var(--radius); display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; gap: 36px; padding: 47px 39px; }
-.eyebrow { font-size: .75rem; font-weight: 500; letter-spacing: .065em; text-transform: uppercase; line-height: 1.5; color: var(--muted); }
-.intro-panel h1 { margin: 24px 0 20px; font-size: clamp(2.6rem, 4.4vw, 4.7rem); letter-spacing: -.055em; line-height: 1.02; }
+.intro-panel h1 { margin: 0 0 20px; font-size: clamp(2.6rem, 4.4vw, 4.7rem); letter-spacing: -.055em; line-height: 1.02; }
 .intro-panel h1 span { color: #d9671e; }
 .intro-description { max-width: 390px; color: var(--muted); line-height: 1.6; }
 .intro-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 23px; font-size: .875rem; margin-top: 27px; }
-.harmony-button { display: inline-flex; align-items: center; justify-content: center; gap: 22px; padding: 11px 17px; border-radius: 5px; font-size: .875rem; background: var(--ink); color: white; text-decoration: none; }
-.harmony-button:hover { background: #383834; color: white; }
 .starter-panel { min-width: 0; padding: 23px; background: var(--canvas); border-radius: 8px; }
-.starter-heading { display: flex; align-items: center; gap: 13px; font-size: .95rem; margin-bottom: 20px; }
+.starter-heading { font-size: .95rem; margin-bottom: 20px; }
 .icon-tile { display: inline-flex; align-items: center; justify-content: center; width: 41px; height: 41px; border-radius: 5px; font-size: 1.35rem; flex-shrink: 0; }
 .starter-panel .harmony-code { margin: 0; border: 0; }
+.starter-panel .code-toolbar { display: none; }
 .starter-panel pre { padding: 19px 17px; font-size: .8rem; background: white; }
 .starter-panel > a { display: block; margin-top: 18px; font-size: .875rem; color: #585852; }
 .version-notice { margin: 18px 2px 30px; font-size: .875rem; color: var(--muted); }
@@ -254,7 +255,6 @@ body.harmony[data-search] > .search-results { max-width: 1100px; width: 100%; pa
   .intro-panel { gap: 25px; padding: 32px; }
   .entry-card { padding: 23px; }
   .entry-card h2, .entry-card h3 { font-size: 1.45rem; }
-  .github-button span { display: none; }
 }
 @media (max-width: 1000px) {
   .github-button { display: none; }
@@ -264,8 +264,6 @@ body.harmony[data-search] > .search-results { max-width: 1100px; width: 100%; pa
   .intro-panel h1 { font-size: 3.65rem; }
   .entry-grid { grid-template-columns: 1fr 1fr; }
   .entry-grid .entry-card:first-child { grid-column: 1 / -1; }
-  .patch-flow { gap: 20px; }
-  .patch-flow > li + li::before { left: -18px; }
   .patch-step { padding: 12px; }
 }
 @media (max-width: 767.98px) {
@@ -313,8 +311,8 @@ body.harmony[data-search] > .search-results { max-width: 1100px; width: 100%; pa
   .entry-card h2, .entry-card h3 { font-size: 1.65rem; }
 }
 @container (max-width: 34rem) {
-  .patch-flow { flex-direction: column; gap: 24px; }
-  .patch-flow > li + li::before { content: "↓"; top: -24px; left: calc(50% - 5px); }
+  .patch-flow { flex-direction: column; }
+  .patch-flow > li + li::before { top: calc(var(--flow-gap) / -2); left: 50%; transform: translate(-50%, -50%) rotate(90deg); }
 }
 @media (max-width: 440px) {
   .navbar > .container-xxl { padding: 14px 15px; gap: 0 8px; }
