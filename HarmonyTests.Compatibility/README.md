@@ -60,7 +60,7 @@ These unreleased baselines test rejection by earlier Infix engines, separately f
 | Version 2, operation targets | `22d4069bac2bf963d8238dd1fd0940cdf57ae084` | `completion-` |
 | Version 3, finalizers and captured binding | `31e14691e96265b05522cbe8d563186785b1bf4e` | `persistent-` |
 
-The workflow verifies those commits and builds them in isolated directories with test-only version 2.4.3.0. Its two current engines use 2.4.4.0 and 2.4.5.0. These numbers distinguish test identities; they are not releases. Both baseline lanes run on net9/JSON and net8/BinaryFormatter with `REQUIRE_COEXISTENCE=1`.
+The workflow verifies those commits and builds them in isolated directories with test-only version 2.4.3.0. Its first current engine uses the actual Harmony 3 assembly version, 3.0.0.0. The second uses test-only version 3.0.1.0 to exercise distinct current engines. The test override is not a release. Both baseline lanes run on net9/JSON and net8/BinaryFormatter with `REQUIRE_COEXISTENCE=1`.
 
 For a local run, build the pinned source and current engines first, then supply their completed DLLs:
 
@@ -95,9 +95,9 @@ FRAMEWORK=net472 BACKEND=binary OLD_HARMONY_VERSION=2.4.2 \
 bash HarmonyTests.Compatibility/run.sh
 ```
 
-On Windows, run from Git Bash with `RUNTIME_HOST=native FRAMEWORK=net472 BACKEND=binary`. The runner executes the x64 host EXE directly. The Windows workflow uses published 2.4.2, current test identities 2.4.3.0 and 2.4.4.0, and `REQUIRE_COEXISTENCE=1`. Ordinary coexistence must succeed before any dependent Infix case counts.
+On Windows, run from Git Bash with `RUNTIME_HOST=native FRAMEWORK=net472 BACKEND=binary`. The runner executes the x64 host EXE directly. The Windows workflow uses published 2.4.2, the actual current identity 3.0.0.0 and test-only identity 3.0.1.0, and `REQUIRE_COEXISTENCE=1`. Ordinary coexistence must succeed before any dependent Infix case counts.
 
-To reproduce distinct current identities without editing version files, build twice with `-p:HarmonyVersion=2.4.3.0` and `-p:HarmonyVersion=2.4.4.0`, each using a separate `--artifacts-path`. Supply their `bin/Lib.Harmony/debug_net472/0Harmony.dll` outputs as `CURRENT_HARMONY` and `SECOND_CURRENT_HARMONY`. Published old assets remain unchanged.
+To reproduce distinct current identities without editing version files, build once with the default version and once with `-p:HarmonyVersion=3.0.1.0`, each using a separate `--artifacts-path`. Supply their `bin/Lib.Harmony/debug_net472/0Harmony.dll` outputs as `CURRENT_HARMONY` and `SECOND_CURRENT_HARMONY`. Published old assets remain unchanged.
 
 ## Coverage and reports
 

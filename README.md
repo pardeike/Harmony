@@ -1,9 +1,11 @@
 <p align="center">
 	<img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="180" /><br>
-	<b>Version 2.4</b><br>
+	<b>Version 3.0 Preview</b><br>
 	A library for patching, replacing and decorating<br>
 	.NET and Mono methods during runtime.
 </p>
+
+This branch develops Harmony 3, including Infix patching. Harmony 2.x is maintained on [master](https://github.com/pardeike/Harmony/tree/master).
 
 ### About
 
@@ -45,7 +47,7 @@ If you instead want to supply the dependencies yourself, you should use the [Lib
 
 ### Documentation
 
-Please check out the [documentation](https://harmony.pardeike.net) and join the official [discord server](https://discord.gg/xXgghXR).
+Browse the [v3 documentation](Documentation/index.md), including the [Infix guide](Documentation/articles/patching-infix.md). The published [documentation site](https://harmony.pardeike.net) covers Harmony 2.x. Join the official [discord server](https://discord.gg/xXgghXR) for discussion.
 
 ### Contribute
 
@@ -73,7 +75,7 @@ Harmony 1 is deprecated and not under active development anymore. The latest ver
 	<a href="https://www.nuget.org/packages/Lib.Harmony"><img src="https://img.shields.io/nuget/dt/Lib.Harmony?style=flat-squared&logo=nuget&label=Nuget%20Downloads&color=009900" /></a>
 </p>
 <p align="center">
-	<a href="https://github.com/pardeike/Harmony/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/pardeike/Harmony/test.yml?style=flat-squared&logo=github&label=CI%20Tests" /></a>
+	<a href="https://github.com/pardeike/Harmony/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/pardeike/Harmony/test.yml?branch=v3&style=flat-squared&logo=github&label=CI%20Tests" /></a>
 	<a href="https://discord.gg/xXgghXR"><img src="https://img.shields.io/discord/131466550938042369.svg?style=flat-squared&logo=discord&label=Official%20Discord" /></a>
 </p>
 <p align="center">

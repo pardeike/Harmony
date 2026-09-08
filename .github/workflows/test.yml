@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - v3
     paths-ignore:
       - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'

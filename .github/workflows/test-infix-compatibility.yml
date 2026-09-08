@@ -2,7 +2,7 @@ name: Infix Compatibility
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, v3]
     paths:
       - 'Harmony/**'
       - 'Lib.Harmony/**'
@@ -76,8 +76,8 @@ jobs:
           dotnet build HarmonyTests.Compatibility/artifacts/v3-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-v3" --nologo -v:q
           dotnet build HarmonyTests.Compatibility/artifacts/v2-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-v2" --nologo -v:q
           dotnet build HarmonyTests.Compatibility/artifacts/completion-source/Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-completion" --nologo -v:q
-          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
-          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.5.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks="$FRAMEWORK" -p:PlatformTarget=x64 -p:HarmonyVersion=3.0.1.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
       - name: Run concurrent and sequential shared-state startup
         env:
           FRAMEWORK: ${{ matrix.framework }}
@@ -226,8 +226,8 @@ jobs:
           sudo apt-get install -y mono-complete
       - name: Build isolated current assemblies with test-only versions
         run: |
-          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
-          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=3.0.1.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
       - name: Run Mono controls and explicit loading-boundary probes
         env:
           FRAMEWORK: net472
@@ -262,8 +262,8 @@ jobs:
       - name: Build isolated current assemblies with test-only versions
         shell: bash
         run: |
-          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.3.0 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
-          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=2.4.4.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 --artifacts-path "$RUNNER_TEMP/compat-first" --nologo -v:q
+          dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug -p:TargetFrameworks=net472 -p:PlatformTarget=x64 -p:HarmonyVersion=3.0.1.0 --artifacts-path "$RUNNER_TEMP/compat-second" --nologo -v:q
       - name: Run actual Framework old/new engines with mandatory coexistence
         shell: bash
         env:

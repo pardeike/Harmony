@@ -3,7 +3,7 @@ name: Build and Deploy Documentation
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, v3 ]
     paths:
       - 'Documentation/**'
       - 'Harmony/**'
@@ -37,6 +37,14 @@ jobs:
     - name: Generate LLM Pack
       run: python scripts/generate_llm_pack.py
       
+    - name: Upload v3 documentation preview
+      if: github.ref == 'refs/heads/v3'
+      uses: actions/upload-artifact@v7
+      with:
+        name: documentation-v3
+        path: ./docs
+        retention-days: 14
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       if: github.ref == 'refs/heads/master'
