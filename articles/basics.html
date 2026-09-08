@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Basics </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Basics ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="basics">Basics</h1>
+
+<p>To use Harmony:</p>
+<ol>
+<li>find a way to run code inside the application (a loader or mod support)</li>
+<li>get 0Harmony.dll</li>
+<li>reference it from your project</li>
+<li>write patches in your code</li>
+<li>create a Harmony instance early in your code</li>
+<li>apply your patches</li>
+<li>compile and make sure Harmony is available at runtime</li>
+</ol>
+<h2 id="runtime-dependency">Runtime dependency</h2>
+<p>Some loaders or games already supply Harmony. Compile against APIs available in the version they load. Harmony supports multiple versions in one process, but the runtime's assembly-loading rules determine which DLL your code uses; bundling one does not guarantee it will be loaded.</p>
+<h3 id="manual-dll-adding">Manual dll adding</h3>
+<p>In Visual Studio, right-click <code>References</code>, choose <code>Add Reference</code>, and browse to 0Harmony.dll.</p>
+<h3 id="adding-using-nuget">Adding using nuget</h3>
+<p>In Visual Studio, right-click <code>References</code>, choose <code>Manage NuGet Packages</code>, and install <code>Lib.Harmony</code>.</p>
+<h3 id="import">Import</h3>
+<p>Import the namespace to use Harmony's API:</p>
+<pre><code class="lang-csharp" name="example">using HarmonyLib;
+</code></pre><h2 id="creating-a-harmony-instance">Creating a Harmony instance</h2>
+<p>Most patch operations need a Harmony instance:</p>
+<pre><code class="lang-csharp" name="example">var harmony = new Harmony(&quot;com.company.project.product&quot;);
+</code></pre>
+<p>Use a unique ID, preferably in reverse-domain notation. It identifies your patches and lets other authors order theirs before or after yours.</p>
+<h3 id="debug-log">Debug Log</h3>
+<p>Set <code>Harmony.DEBUG = true</code> to log patching details and generated IL. <code>FileLog</code> writes to <code>harmony.log.txt</code> on your Desktop by default:</p>
+<pre><code class="lang-csharp" name="example">Harmony.DEBUG = true;
+</code></pre>
+<p>You can also use Harmony's file logger in your own code:</p>
+<pre><code class="lang-csharp" name="example">FileLog.Log(&quot;something&quot;);
+// or buffered:
+FileLog.LogBuffered(&quot;A&quot;);
+FileLog.LogBuffered(&quot;B&quot;);
+FileLog.FlushBuffer(); /* don't forget to flush */
+</code></pre><h4 id="controlling-filelog-with-environment-variables">Controlling FileLog with Environment Variables</h4>
+<p>Harmony reads these environment variables. Set them before starting the application:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HARMONY_DEBUG</code></td>
+<td>Set to <code>1</code> or <code>true</code> to enable <code>Harmony.DEBUG</code>, logging patching details and generated IL. Set to <code>false</code> to disable it. Harmony reads this whenever a Harmony instance is created.</td>
+</tr>
+<tr>
+<td><code>HARMONY_NO_LOG</code></td>
+<td>Any non-empty value disables the default file output, even when <code>HARMONY_DEBUG</code> is enabled. Unset it or leave it empty to allow file logging.</td>
+</tr>
+<tr>
+<td><code>HARMONY_LOG_FILE</code></td>
+<td>Sets the log file path. If unset or empty, the default is <code>harmony.log.txt</code> on your Desktop. This does not enable debug logging by itself.</td>
+</tr>
+</tbody>
+</table>
+<p><code>FileLog</code> reads its settings once, when its log path is first accessed. A custom <code>FileLog.LogWriter</code> bypasses these file settings.</p>
+<p>For example, enable debug logging and choose a log file in Bash or Zsh, then launch the application from the same shell:</p>
+<pre><code class="lang-bash">export HARMONY_DEBUG=1
+export HARMONY_LOG_FILE=/path/to/harmony.log.txt
+</code></pre>
+<p>Or enable debug logging when launching a game from Windows Command Prompt:</p>
+<pre><code class="lang-cmd">cmd /C &quot;set HARMONY_DEBUG=1 &amp;&amp; game.exe&quot;
+</code></pre>
+<p>To disable the default file output instead:</p>
+<pre><code class="lang-bash">export HARMONY_NO_LOG=1
+</code></pre>
+<h3 id="patching-using-annotations">Patching using annotations</h3>
+<p>Use <code>PatchAll()</code> to find and apply annotated patch classes in an assembly:</p>
+<pre><code class="lang-csharp" name="example">var assembly = Assembly.GetExecutingAssembly();
+harmony.PatchAll(assembly);
+
+// or implying current assembly:
+harmony.PatchAll();
+</code></pre>
+<p>For groups applied at different times, mark classes with <code>[HarmonyPatchCategory]</code>. Use <code>PatchCategory()</code> for a selected group and <code>PatchAllUncategorized()</code> for classes without a category. <code>PatchAll()</code> ignores categories and applies them all.</p>
+<h3 id="manual-patching">Manual patching</h3>
+<p>For manual control, <code>Patch()</code> takes the original and optional prefix, postfix, transpiler, and finalizer methods, each wrapped in a <code>HarmonyMethod</code>:</p>
+<pre><code class="lang-csharp" name="example">// add null checks to the following lines, they are omitted for clarity
+// when possible, don't use string and instead use nameof(...)
+var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
+var prefix = typeof(MyPatchClass1).GetMethod(&quot;SomeMethod&quot;);
+var postfix = typeof(MyPatchClass2).GetMethod(&quot;SomeMethod&quot;);
+
+harmony.Patch(original, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
+
+// You can use named arguments to specify certain patch types only:
+harmony.Patch(original, postfix: new HarmonyMethod(postfix));
+harmony.Patch(original, prefix: new HarmonyMethod(prefix), transpiler: new HarmonyMethod(transpiler));
+</code></pre>
+<p><code>HarmonyMethod</code> holds the patch method and settings such as priority. Manual and annotation patching share these settings.</p>
+<pre><code class="lang-csharp" name="example">var harmonyPostfix = new HarmonyMethod(postfix)
+{
+    priority = Priority.Low,
+    before = [&quot;that.other.harmony.user&quot;]
+};
+</code></pre>
+<p>Check that reflection found the original and patch methods: passing a missing (<code>null</code>) method causes an error. <a href="utilities.html#accesstools">AccessTools</a> can simplify these lookups.</p>
+<h3 id="checking-for-existing-patches">Checking for existing patches</h3>
+<p><code>GetAllPatchedMethods()</code> lists all patched methods in the current AppDomain:</p>
+<pre><code class="lang-csharp" name="example">var originalMethods = Harmony.GetAllPatchedMethods();
+foreach (var method in originalMethods) { }
+</code></pre>
+<p><code>GetPatchedMethods()</code> lists methods patched by your Harmony instance:</p>
+<pre><code class="lang-csharp" name="example">var myOriginalMethods = harmony.GetPatchedMethods();
+foreach (var method in myOriginalMethods) { }
+</code></pre>
+<p><code>GetPatchInfo()</code> describes everyone's patches on a method:</p>
+<pre><code class="lang-csharp" name="example">// get the MethodBase of the original
+var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
+
+// retrieve all patches
+var patches = Harmony.GetPatchInfo(original);
+if (patches is null) return; // not patched
+
+// get a summary of all different Harmony ids involved
+FileLog.Log(&quot;all owners: &quot; + patches.Owners);
+
+// get info about all Prefixes/Postfixes/Transpilers
+foreach (var patch in patches.Prefixes)
+{
+    FileLog.Log(&quot;index: &quot; + patch.index);
+    FileLog.Log(&quot;owner: &quot; + patch.owner);
+    FileLog.Log(&quot;patch method: &quot; + patch.PatchMethod);
+    FileLog.Log(&quot;priority: &quot; + patch.priority);
+    FileLog.Log(&quot;before: &quot; + patch.before);
+    FileLog.Log(&quot;after: &quot; + patch.after);
+}
+</code></pre>
+<p>To detect another mod, look up one of its types by name. To check whether a Harmony ID has registered patches, use <code>HasAnyPatches()</code>:</p>
+<pre><code class="lang-csharp" name="example">if (Harmony.HasAnyPatches(&quot;their.harmony.id&quot;)) { }
+</code></pre>
+<p>To see Harmony versions used by assemblies with active patches:</p>
+<pre><code class="lang-csharp" name="example">var dict = Harmony.VersionInfo(out var myVersion);
+FileLog.Log(&quot;My version: &quot; + myVersion);
+foreach (var entry in dict)
+{
+    var id = entry.Key;
+    var version = entry.Value;
+    FileLog.Log(&quot;Mod &quot; + id + &quot; uses Harmony version &quot; + version);
+}
+</code></pre><h3 id="unpatching">Unpatching</h3>
+<p>Unpatching removes selected registrations and rebuilds the method from its original IL and remaining patches. Removing every patch leaves a Harmony replacement with the original behavior.</p>
+<p>You can remove all patches belonging to one Harmony ID, or everyone's patches:</p>
+<pre><code class="lang-csharp" name="example">// every patch on every method ever patched (including others patches):
+var harmony = new Harmony(&quot;my.harmony.id&quot;);
+harmony.UnpatchAll();
+
+// only the patches that one specific Harmony instance did:
+harmony.UnpatchAll(&quot;their.harmony.id&quot;);
+</code></pre>
+<p>Or remove specific patches:</p>
+<pre><code class="lang-csharp" name="example">var original = typeof(TheClass).GetMethod(&quot;TheMethod&quot;);
+
+// all prefixes on the original method:
+harmony.Unpatch(original, HarmonyPatchType.Prefix);
+
+// all prefixes from that other Harmony user on the original method:
+harmony.Unpatch(original, HarmonyPatchType.Prefix, &quot;their.harmony.id&quot;);
+
+// all patches from that other Harmony user:
+harmony.Unpatch(original, HarmonyPatchType.All, &quot;their.harmony.id&quot;);
+
+// removing a specific patch:
+var patch = typeof(TheClass).GetMethod(&quot;SomePrefix&quot;);
+harmony.Unpatch(original, patch);
+</code></pre>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/basics.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

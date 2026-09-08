@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Patching </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Patching ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="patching">Patching</h1>
+
+<h2 id="transpiler">Transpiler</h2>
+<p>A transpiler edits the original method's IL instructions when Harmony builds a replacement. It does not run each time the original is called.</p>
+<p>Use a transpiler when other patch types cannot express your change. You can insert calls, remove instructions, or change values and operands. Change as little as possible, and match distinctive instructions rather than fixed offsets so other mods and game updates have room to coexist.</p>
+<p>The basic API of a transpiler looks like this:</p>
+<pre><code class="lang-csharp">static IEnumerable&lt;CodeInstruction&gt; Transpiler(&lt;arguments&gt;)
+// or
+[HarmonyTranspiler]
+static IEnumerable&lt;CodeInstruction&gt; MyTranspiler(&lt;arguments&gt;)
+
+// Arguments are identified by their type and can have any name:
+IEnumerable&lt;CodeInstruction&gt; instructions // [REQUIRED]
+ILGenerator generator // [OPTIONAL]
+MethodBase original // [OPTIONAL]
+</code></pre>
+<p>A typical transpiler looks like this:</p>
+<pre><code class="lang-csharp" name="example">static FieldInfo f_someField = AccessTools.Field(typeof(SomeType), nameof(SomeType.someField));
+static MethodInfo m_MyExtraMethod = SymbolExtensions.GetMethodInfo(() =&gt; Tools.MyExtraMethod());
+
+// looks for STDFLD someField and inserts CALL MyExtraMethod before it
+static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+{
+    var found = false;
+    foreach (var instruction in instructions)
+    {
+        if (instruction.StoresField(f_someField))
+        {
+            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+            found = true;
+        }
+        yield return instruction;
+    }
+    if (found is false)
+        ReportError(&quot;Cannot find &lt;Stdfld someField&gt; in OriginalType.OriginalMethod&quot;);
+}
+</code></pre>
+<p>Harmony reruns the transpiler chain whenever it rebuilds the replacement after patches change. A transpiler cannot access a particular call's arguments or locals; it can insert code that accesses them when the method runs.</p>
+<h2 id="basic-transpiler-tutorial">Basic Transpiler Tutorial</h2>
+<p><em>Note: this tutorial uses the game Rimworld as an example but applies equally to any other game too.</em></p>
+<p>Writing a transpiler means writing rules for rewriting code. You need to understand C# and the IL stack well enough to keep the result valid.</p>
+<p>This tutorial walks through reading a method's IL and removing one section. Section 6 links to references for the instructions used here.</p>
+<p><strong>Tutorial</strong></p>
+<p>Rimworld has a method called <code>Dialog_FormCaravan.CheckForErrors()</code>. In this tutorial, the goal is to remove a few lines of code in it that we don't want.</p>
+<p><strong>1) Decompilers: ILSpy or dnSpy</strong></p>
+<p>Get yourself the ILSpy that Zhentar has modified so it generates better code:
+<a href="https://github.com/Zhentar/ILSpy/releases">https://github.com/Zhentar/ILSpy/releases</a> (mad props to <strong>Zhentar</strong>!)</p>
+<p>The example can also be followed with <a href="https://github.com/0xd4d/dnSpy">dnSpy</a>.</p>
+<p><strong>2) Decompile</strong></p>
+<p>Start the decompiler and open the rimworld DLL. It is located in
+<code>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\Assembly-CSharp.dll</code></p>
+<p><strong>3) The original method</strong></p>
+<p>Now search for <code>CheckForErrors</code> and find the one from <code>RimWorld.Dialog_FormCaravan</code>, double click it. You should see the source in the window with yellow background.</p>
+<p><strong>4) Viewing IL Code</strong></p>
+<p>Choose <code>IL</code> instead of <code>C#</code> in the dropdown at the top:</p>
+<pre><code>.method private hidebysig
+	instance bool CheckForErrors (
+		class [mscorlib]System.Collections.Generic.List`1&lt;class Verse.Pawn&gt; pawns
+	) cil managed
+{
+	// Method begins at RVA 0xbb290
+	// Code size 617 (0x269)
+	.maxstack 64
+	.locals init (
+		[0] class Verse.Pawn,
+		[1] int32,
+		[2] int32,
+		[3] int32,
+		[4] int32,
+		[5] class RimWorld.Dialog_FormCaravan/'&lt;CheckForErrors&gt;c__AnonStorey3F6',
+		[6] class RimWorld.Dialog_FormCaravan/'&lt;CheckForErrors&gt;c__AnonStorey3F8'
+	)
+
+	IL_0000: newobj instance void RimWorld.Dialog_FormCaravan/'&lt;CheckForErrors&gt;c__AnonStorey3F6'::.ctor()
+	IL_0005: stloc.s 5
+	...
+</code></pre>
+<p>Switch between IL and C# to compare them. The compiler may rearrange branches or reverse conditions, so source order is not always instruction order.</p>
+<p><strong>5) IL Code Basics</strong></p>
+<p>Each <code>IL_</code> row contains an <strong>opcode</strong> (the operation) and sometimes an <strong>operand</strong> (the value it uses). Operands can be numbers, types, fields, methods, labels, and more.</p>
+<p>IL works with a stack: values go onto the top and operations take them off. Here is the section containing <code>reform</code>, <code>MassUsage</code>, and <code>Message</code>:</p>
+<pre><code>IL_0078: ldarg.0
+IL_0079: ldfld bool RimWorld.Dialog_FormCaravan::reform
+IL_007e: brtrue IL_00ac
+IL_0083: ldarg.0
+IL_0084: call instance float32 RimWorld.Dialog_FormCaravan::get_MassUsage()
+IL_0089: ldarg.0
+IL_008a: call instance float32 RimWorld.Dialog_FormCaravan::get_MassCapacity()
+IL_008f: ble.un IL_00ac
+IL_0094: ldarg.0
+IL_0095: call instance void RimWorld.Dialog_FormCaravan::FlashMass()
+IL_009a: ldstr &quot;TooBigCaravanMassUsage&quot;
+IL_009f: call string Verse.Translator::Translate(string)
+IL_00a4: ldc.i4.2
+IL_00a5: call void Verse.Messages::Message(string, valuetype Verse.MessageSound)
+IL_00aa: ldc.i4.0
+IL_00ab: ret
+</code></pre>
+<p>That corresponds to your C# code:</p>
+<pre><code class="lang-csharp">if (!this.reform &amp;&amp; this.MassUsage &gt; this.MassCapacity)
+{
+	this.FlashMass();
+	Messages.Message(&quot;TooBigCaravanMassUsage&quot;.Translate(), MessageSound.RejectInput);
+	return false;
+}
+</code></pre>
+<p>Let's analyze:</p>
+<ul>
+<li><p><code>ldarg.0</code> pushes <code>this</code>. <code>ldfld</code> consumes that instance and pushes its <code>reform</code> field value.</p>
+</li>
+<li><p><code>brtrue</code> consumes that value and jumps to <strong>IL_00ac</strong> if it is true, skipping the block. The stack is empty again.</p>
+</li>
+<li><p>For <code>this.MassUsage &gt; this.MassCapacity</code>:</p>
+<ul>
+<li><code>this</code> onto the stack</li>
+<li><code>MassUsage</code> call consumes one element and leaves result on stack</li>
+<li><code>this</code> onto the stack again</li>
+<li><code>MassCapacity</code> call consumes one element and leaves result on stack</li>
+<li><code>ble.un</code> consumes both results and jumps to <strong>IL_00ac</strong> when the condition does not hold.</li>
+</ul>
+</li>
+</ul>
+<p>The body follows the same pattern: load values, then consume them with calls and other operations.</p>
+<p><strong>6) IL Code reference</strong></p>
+<p>Overview on Wikipedia:
+<a href="https://en.wikipedia.org/wiki/Common_Intermediate_Language">Common Intermediate Language</a> and <a href="https://en.wikipedia.org/wiki/List_of_CIL_instructions">List of CIL instructions</a></p>
+<p>Microsoft page about the class <code>OpCodes</code> (part of Harmonys <code>CodeInstruction</code>). Has links to each code and the argument types that Harmony reuses since it has to emit them to create the replacement method:
+<a href="https://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes(v=vs.110).aspx">OpCodes Class</a></p>
+<p>Pretty good tutorial on CodeProject:
+<a href="https://www.codeproject.com/Articles/3778/Introduction-to-IL-Assembly-Language">Introduction to IL Assembly Language</a></p>
+<p>And for all the nitty gritty details in pdf format:
+<a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf">Common Language Infrastructure (CLI) - Partitions I to VI</a></p>
+<p><strong>7) Method calling</strong></p>
+<p>Instance calls take an extra input: the object to call on. Push it before the method's arguments. Static calls need only their declared arguments.</p>
+<p>Back to the beginning of our code</p>
+<pre><code>IL_0078: ldarg.0
+IL_0079: ldfld bool RimWorld.Dialog_FormCaravan::reform
+IL_007e: brtrue IL_00ac
+</code></pre>
+<p>In this instance method, <code>ldarg.0</code> loads <code>this</code>, a <code>Dialog_FormCaravan</code>.</p>
+<p>The <code>MassUsage</code> getter consumes that instance and pushes its result:</p>
+<pre><code>IL_0083: ldarg.0
+IL_0084: call instance float32 RimWorld.Dialog_FormCaravan::get_MassUsage()
+</code></pre>
+<p>Property accessors are methods named <code>get_...</code> or <code>set_...</code>. This getter takes no extra arguments. Other instructions can provide the instance too, allowing chains like:</p>
+<pre><code>ldsfld Foo SomeStaticClass::theFoo
+ldfld Bar Foo::theBar
+call instance void Bar::Cool()
+</code></pre>
+<p>which would be this line in C#:</p>
+<pre><code class="lang-csharp">SomeStaticClass.theFoo.theBar.Cool()
+</code></pre>
+<p><code>ldsfld</code> pushes the static field <code>theFoo</code>; <code>ldfld</code> consumes it and pushes <code>theBar</code>. The call consumes that instance and returns nothing.</p>
+<p><strong>Keep the stack balanced.</strong> Each instruction needs the right number and types of inputs. Leaving extra values behind, consuming missing values, or joining branches with incompatible stacks produces invalid IL.</p>
+<p>Now we can write the transpiler: instructions in, edit them, instructions out.</p>
+<p><strong>8) Harmony Transpiler</strong></p>
+<p>The basic patch looks like this. Let's take our example:</p>
+<pre><code class="lang-csharp">[HarmonyPatch(typeof(Dialog_FormCaravan))]
+[HarmonyPatch(&quot;CheckForErrors&quot;)]
+public static class Dialog_FormCaravan_CheckForErrors_Patch
+{
+	static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+	{
+		// do something
+	}
+}
+</code></pre>
+<p>The name <code>Transpiler</code> identifies the patch. It must accept and return <code>IEnumerable&lt;CodeInstruction&gt;</code>. Optional <code>ILGenerator</code> and <code>MethodBase</code> parameters provide the generator and original method.</p>
+<p>You can <a href="https://www.kenneth-truyers.net/2016/05/12/yield-return-in-c/">use <code>yield</code></a> to return instructions one at a time, or edit and return a list.</p>
+<p><strong>9) The patch</strong></p>
+<p>We need to remove the unwanted block or jump over it. Here it is with the surrounding control flow:</p>
+<pre><code>IL_0077: ret
+
+IL_0078: ...codes...
+IL_007e: brtrue IL_00ac
+IL_0083: ...codes...
+IL_008f: ble.un IL_00ac
+IL_0094: ...codes...
+IL_00ab: ret
+
+IL_00ac: ...codes...
+</code></pre>
+<p><code>IL_0077</code> ends the previous block. Our block contains two jumps to <code>IL_00ac</code> and ends at <code>IL_00ab</code>.</p>
+<p>Do not hard-code these offsets: they are byte positions, not instruction indices, and game updates can change them. Instead, use the nearby <code>ret</code> instructions to divide the method into sections, then find our section by its distinctive message string.</p>
+<p><strong>11) The execution</strong></p>
+<p>Strategy: <em>Search for RET codes. For every code found, search until the next RET and look for the usage of the string &quot;TooBigCaravanMassUsage&quot;. If found, continue to find the following RET and remove everything from right after the first RET to including the second RET</em>:</p>
+<pre><code class="lang-csharp" name="example">[HarmonyPatch(typeof(Dialog_FormCaravan))]
+[HarmonyPatch(nameof(Dialog_FormCaravan.CheckForErrors))]
+public static class Dialog_FormCaravan_CheckForErrors_Patch
+{
+    static IEnumerable&lt;CodeInstruction&gt; Transpiler(IEnumerable&lt;CodeInstruction&gt; instructions)
+    {
+        var foundMassUsageMethod = false;
+        var startIndex = -1;
+        var endIndex = -1;
+
+        var codes = new List&lt;CodeInstruction&gt;(instructions);
+        for (var i = 0; i &lt; codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Ret)
+            {
+                if (foundMassUsageMethod)
+                {
+                    Log.Error(&quot;END &quot; + i);
+
+                    endIndex = i; // include current 'ret'
+                    break;
+                }
+                else
+                {
+                    Log.Error(&quot;START &quot; + (i + 1));
+
+                    startIndex = i + 1; // exclude current 'ret'
+
+                    for (var j = startIndex; j &lt; codes.Count; j++)
+                    {
+                        if (codes[j].opcode == OpCodes.Ret)
+                            break;
+                        var strOperand = codes[j].operand as string;
+                        if (strOperand == &quot;TooBigCaravanMassUsage&quot;)
+                        {
+                            foundMassUsageMethod = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (startIndex &gt; -1 &amp;&amp; endIndex &gt; -1)
+        {
+            // we cannot remove the first code of our range since some jump actually jumps to
+            // it, so we replace it with a no-op instead of fixing that jump (easier).
+            codes[startIndex].opcode = OpCodes.Nop;
+            codes.RemoveRange(startIndex + 1, endIndex - startIndex - 1);
+        }
+
+        return codes.AsEnumerable();
+    }
+}
+</code></pre>
+<p>There it is. Add this to your code and use the normal Harmony bootstrapping and you have just done your first Harmony Transpiler!</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/pardeike/Harmony/blob/master/Documentation/articles/patching-transpiler.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
