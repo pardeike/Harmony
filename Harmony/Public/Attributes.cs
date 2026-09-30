@@ -735,7 +735,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Skip new reference-type compatibility checks for one patch callback, including existing boxing.</summary>
-	/// <remarks>This does not add conversions or disable storage, value/address, or existing role-specific requirements.</remarks>
+	/// <remarks>This does not add conversions or disable storage, value/address, or existing role-specific requirements. Transpilers reject it.</remarks>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 	public sealed class HarmonyUncheckedReferenceBinding : HarmonyAttribute
 	{

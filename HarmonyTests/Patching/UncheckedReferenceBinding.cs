@@ -73,6 +73,33 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[TestCase(false), TestCase(true)]
+		public void Transpiler_registrations_reject_the_option(bool attribute)
+		{
+			var original = Method(nameof(ReferenceFirst));
+			var transpiler = attribute ? new HarmonyMethod(Method(nameof(AnnotatedTranspiler))) : Unchecked(nameof(Transpiler));
+			var error = Assert.Catch<ArgumentException>(() => harmony.Patch(original, transpiler: transpiler));
+			StringAssert.Contains("transpiler", error.Message);
+			var patches = Harmony.GetPatchInfo(original);
+			Assert.IsTrue(patches is null || patches.Transpilers.Count == 0);
+			harmony.Patch(original, transpiler: new HarmonyMethod(Method(nameof(AnnotatedTranspiler))) { uncheckedReferenceBinding = false });
+			Assert.IsFalse(Harmony.GetPatchInfo(original).Transpilers.Single().uncheckedReferenceBinding);
+		}
+
+		[Test]
+		public void Transpiler_records_never_version_the_state()
+		{
+			var method = Method(nameof(Transpiler));
+			var info = new PatchInfo
+			{
+				transpilers = [new Patch(0, "legacy", Priority.Normal, [], [], false, method.MetadataToken, method.Module.ModuleVersionId.ToString(), uncheckedReferenceBinding: true)]
+			};
+			Assert.IsFalse(info.HasUncheckedReferenceBindings);
+			var bytes = info.Serialize();
+			Assert.AreNotEqual((byte)'H', bytes[0]);
+			Assert.IsFalse(PatchInfoSerialization.Deserialize(bytes).HasUncheckedReferenceBindings);
+		}
+
+		[TestCase(false), TestCase(true)]
 		public void A_checked_registration_of_the_same_callback_still_fails(bool factory)
 		{
 			var original = Method(nameof(ReferenceFirst));
@@ -286,6 +313,9 @@ namespace HarmonyLibTests.Patching
 			return callback;
 		}
 		static void Empty() { }
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => instructions;
+		[HarmonyUncheckedReferenceBinding]
+		static IEnumerable<CodeInstruction> AnnotatedTranspiler(IEnumerable<CodeInstruction> instructions) => instructions;
 		static ref OtherGene SiblingResult(ref OtherGene result) => ref replacementGene;
 		static void NullReader(Uri value) { Assert.IsNull(value); observed++; }
 		static Uri NullFinalizer(Uri __exception) { Assert.IsNull(__exception); observed++; return null; }

@@ -157,6 +157,8 @@ namespace HarmonyLib
 			if (!IsInner(role))
 			{
 				ValidateOrdinary(info);
+				if (role == HarmonyPatchType.Transpiler && info.uncheckedReferenceBinding == true)
+					throw new ArgumentException($"uncheckedReferenceBinding applies to prefixes, postfixes, finalizers and Infix callbacks, not to transpiler {info.method?.FullDescription()}");
 				return info;
 			}
 			ValidateInfixPatchMethod(info.method);
