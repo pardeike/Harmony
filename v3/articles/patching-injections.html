@@ -96,8 +96,44 @@
 <div id="patching"></div>
 <div id="common-injected-values"></div>
 <p>Prefixes, postfixes, and finalizers can receive the original's arguments, instance, and result. Declare only the parameters you need.</p>
+<h2 id="patch-time-checks-in-harmony-3">Patch-time checks in Harmony 3</h2>
+<p>Harmony rejects a binding during patch installation when it can establish that the declaration is incompatible with the supplied value or storage. Errors identify the original method, callback, parameter, resolved source, supplied and requested types, and the reason for rejection. Infix errors also identify the selected operation and scope.</p>
+<p>These checks catch definite mistakes. Acceptance does not prove that every runtime value will work. For example:</p>
+<table>
+<thead>
+<tr>
+<th>Binding</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A receiver requested as an unrelated class</td>
+<td>Rejected, even if the callback would ignore it</td>
+</tr>
+<tr>
+<td>A <code>string</code> argument read as <code>object</code></td>
+<td>Accepted</td>
+</tr>
+<tr>
+<td>An <code>object</code> argument read as <code>string</code></td>
+<td>Accepted; the actual value must be suitable</td>
+</tr>
+<tr>
+<td>A <code>string</code> state local accessed through <code>ref object __state</code></td>
+<td>Accepted under the existing state contract; writing an incompatible object is still the patch's responsibility</td>
+</tr>
+<tr>
+<td><code>ref MethodBase __originalMethod</code> or <code>ref object[] __args</code></td>
+<td>Rejected; these injections supply values, not addresses</td>
+</tr>
+</tbody>
+</table>
+<p>Checks follow the conversions the emitter actually performs. Arguments can be boxed, which wraps a value type as an object. Ordinary field and state injections do not add boxing. Wider reference bindings do not cause Harmony to insert runtime casts or checks.</p>
+<p>Uncertain interface, array, generic variance and proxy relationships remain accepted. This feature adds no numeric, enum, pointer, nullable or struct-layout conversion policy. Existing result, state, and Infix restrictions still apply. It also checks delegate receivers and invocation signatures, finalizer returns, and passthrough results for definite incompatibility.</p>
+<p>A rejected addition leaves that method's installed replacement and published patch registrations unchanged. Removing an invalid old registration remains possible because Harmony validates the surviving registrations. This is a per-method installation guarantee; prepare callbacks, factories, and transpilers may already have run. The checks add no work to patched invocations.</p>
 <h2 id="__instance">__instance</h2>
-<p><strong><code>__instance</code></strong> is the original method's <code>this</code>. It is available for instance methods, not static methods.</p>
+<p><strong><code>__instance</code></strong> is the original method's <code>this</code>. For a static method, a by-value reference parameter receives <code>null</code>; value-type and <code>ref</code> receiver requests fail.</p>
 <h2 id="__result">__result</h2>
 <p><strong><code>__result</code></strong> holds the returned value. Its type must match the original return type or be assignable from it. It starts with that type's default value before prefixes run. To change it, use <code>ref</code>, for example <code>ref string __result</code>.</p>
 <h2 id="__resultref">__resultRef</h2>
@@ -108,10 +144,11 @@
 <p><strong>Three</strong> underscores select a field: <code>___someField</code> reads <code>someField</code>, including private fields. Use <code>ref</code> to write it, for example <code>ref string ___name</code>.</p>
 <h2 id="__args">__args</h2>
 <p><strong><code>object[] __args</code></strong> contains all arguments in declaration order. Editing its elements updates the corresponding arguments; <code>ref</code> is not needed. It has more overhead than typed argument injection.</p>
+<p>The array excludes the receiver. <code>ref object[]</code> is invalid, as are arguments the emitter cannot represent in the array, such as pointers and byref-like values. Use typed argument injections for those methods. Broader by-value declarations such as <code>object __args</code> are accepted for ordinary patches.</p>
 <h2 id="method-arguments">method arguments</h2>
 <p>To read an original argument, declare a matching patch parameter; add <code>ref</code> to change it:</p>
 <ul>
-<li>The type of an injected argument must be assignable from the original argument (or just use <code>object</code>)</li>
+<li>Use the original argument type or a type assignable from it, such as <code>object</code>. Harmony 3 also accepts plausible runtime-dependent reference bindings as described above.</li>
 <li>Use its original name or <strong><code>__n</code></strong>, where <code>n</code> is its zero-based argument index. Argument annotations can map custom names.</li>
 </ul>
 <p>If an original argument name conflicts with a Harmony injection name or naming convention, use <code>ArgumentMode.Original</code> to match its exact, case-sensitive name without interpreting it:</p>

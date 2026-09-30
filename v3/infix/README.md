@@ -10,6 +10,29 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
+## Conservative injection validation, 2026-09-30
+
+The shared emitter now rejects proven binding incompatibilities before installing a replacement or publishing patch state. The [injection guide](../../Documentation/articles/patching-injections.md#patch-time-checks-in-harmony-3) describes the policy. Existing Infix restrictions remain in force.
+
+The new `InjectionValidation` fixture adds 67 cases. It covers diagnostic context, ordinary roles and Infix, actual storage and emitted boxing, permissive reference relationships, arrays and variance, exact names and aliases, factory callbacks, delegate signatures and constructor-based callback handles, passthrough chains, unchanged instruction sequences, failed-addition rollback and removal of invalid legacy registrations. The existing `Test_CompatibleStateTypes` and `DifferingStateTypesSuccessPatch` are unchanged and pass.
+
+| Local verification | Result |
+| --- | --- |
+| .NET 9.0.19 x64, complete Debug suite | 1,088 passed; two existing explicit tests excluded |
+| .NET 9.0.19 x64, complete Release suite | 1,088 passed; two existing explicit tests excluded |
+| Mono 6.12.0.206 x64, net472 focused bindings | 190 passed; one existing explicit test excluded |
+| All 12 configured target frameworks, Debug and Release | Build succeeded for Harmony, TestLibrary and HarmonyTests |
+| Published Harmony 2.4.2, .NET 9/JSON | All 47 compatibility-runner cases meet their expected outcomes |
+| Published Harmony 2.4.2, .NET 8/BinaryFormatter | All 46 compatibility-runner cases meet their expected outcomes |
+| Quiet workflow checks | Six tests pass, including failure/report handling, argument forwarding and cancellation of a descendant that ignores SIGTERM |
+| Formatting and whitespace | `dotnet format` on the three changed C# files; `git diff --check` passes |
+
+The Mono selection includes `InjectionValidation`, `PatchCallBindings`, `Arguments` and `InfixBindings`. It uses NUnitLite 3.14 because the installed SDK's VSTest distribution lacks `testhost.net472.exe`. The extracted Mono runtime needs its `lib` directory **and `/usr/lib`** in `DYLD_FALLBACK_LIBRARY_PATH`; replacing the system fallback caused native-loader failures before that setting was corrected. The successful run uses the same final net472 build as the framework matrix.
+
+Each published-version compatibility lane includes 16 successful execution cases, two expected missing-API boundaries, and 11 classified pre-existing loader/concurrency limitations. JSON also has 18 expected compatibility rejections; BinaryFormatter has 17. Passing the runner means those expectations held; it does not turn the limitation cases into working coexistence arrangements.
+
+The canonical local command and net9/x64 setup are in [AGENTS.md](../../AGENTS.md#local-verification). Full logs, TRX results, the focused Mono runner/results, and compatibility reports are retained locally under ignored `artifacts/tests/` and `artifacts/injection-validation/`. Framework builds report existing NuGet advisory warnings; they do not establish runtime behavior on those frameworks. Windows, Unity, the full older-runtime matrix and prior-Infix source-baseline lanes were not rerun for this change. Run the existing platform and compatibility release gates before publishing.
+
 ## Second-review fixes, 2026-09-08
 
 All six verified follow-ups are fixed: shared-state startup, public annotation merging, Infix metadata equality, repeated rebuild validation, literal matching allocations, and unused binding helpers. The [verification record](../../HarmonyTests.Compatibility/ReviewProbes/PART2.md) contains before/after observations, focused checks and runtime boundaries. [TODO.md](../../TODO.md) has no remaining verified items from these two reviews.
