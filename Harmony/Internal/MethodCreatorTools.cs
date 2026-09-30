@@ -688,7 +688,7 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.Instance)
 				{
 					creator.ValidateBinding(patch, injection, context, context.receiver?.type,
-						boxes: outerContext != null || originalType.IsValueType && ElementType(paramType) == typeof(object), uncheckedReferenceBinding: uncheckedReferenceBinding);
+						boxes: outerContext != null || originalType?.IsValueType == true && ElementType(paramType) == typeof(object), uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null)
 					{
 						if (context.receiver is null)

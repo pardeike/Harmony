@@ -9,8 +9,43 @@ namespace HarmonyLib
 	{
 		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
 			=> [.. new PatchSorter(patches, debug).Sort().Select(p => p.GetMethod(original))];
-		static List<PatchCall> GetSortedPatchCalls(MethodBase original, Patch[] patches, bool debug)
-			=> [.. new PatchSorter(patches, debug).Sort().Select(patch => new PatchCall(patch.GetMethod(original), patch.uncheckedReferenceBinding, patch.candidate))];
+		static List<PatchCall> GetSortedPatchCalls(MethodBase original, Patch[] patches, bool debug, Patch[] previousPostfixes = null)
+		{
+			var unchangedPairs = new HashSet<(MethodInfo, MethodInfo)>();
+			MethodInfo previous = null;
+			if (previousPostfixes is not null)
+				try
+				{
+					if (previousPostfixes.All(patch => patch.PatchMethod is not null))
+						foreach (var patch in new PatchSorter(previousPostfixes, false).Sort())
+						{
+							var method = patch.PatchMethod;
+							if (method.ReturnType == typeof(void)) continue;
+							// Keep factories as barriers without invoking them: their previous callback is not in shared state.
+							unchangedPairs.Add((previous, method));
+							previous = method;
+						}
+				}
+				catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or TypeLoadException)
+				{
+					// A removed callback may no longer resolve. Check the remaining bindings instead of blocking its removal.
+					unchangedPairs.Clear();
+				}
+			var calls = new List<PatchCall>();
+			previous = null;
+			var previousCandidate = false;
+			foreach (var patch in new PatchSorter(patches, debug).Sort())
+			{
+				var method = patch.GetMethod(original);
+				var candidate = patch.candidate || Patch.IsFactory(patch.PatchMethod);
+				var unchanged = !candidate && !previousCandidate && unchangedPairs.Contains((previous, method));
+				calls.Add(new PatchCall(method, patch.uncheckedReferenceBinding, candidate, unchanged));
+				if (method.ReturnType == typeof(void)) continue;
+				previous = method;
+				previousCandidate = candidate;
+			}
+			return calls;
+		}
 
 		private static List<Infix> GetInfixes(Patch[] patches) => [.. patches.Select(p => new Infix(p))];
 
@@ -22,7 +57,8 @@ namespace HarmonyLib
 			var debug = patchInfo.Debugging || Harmony.DEBUG;
 
 			var sortedPrefixes = GetSortedPatchCalls(original, patchInfo.prefixes, debug);
-			var sortedPostfixes = GetSortedPatchCalls(original, patchInfo.postfixes, debug);
+			var previousPostfixes = patchInfo.postfixes.Length == 0 ? null : HarmonySharedState.GetPatchInfo(original)?.postfixes;
+			var sortedPostfixes = GetSortedPatchCalls(original, patchInfo.postfixes, debug, previousPostfixes);
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers, debug);
 			var sortedFinalizers = GetSortedPatchCalls(original, patchInfo.finalizers, debug);
 			var sortedInnerPrefixes = GetInfixes(patchInfo.innerprefixes);

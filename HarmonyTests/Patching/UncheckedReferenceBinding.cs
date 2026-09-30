@@ -86,17 +86,54 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
-		public void Transpiler_records_never_version_the_state()
+		public void Legacy_flagged_transpilers_keep_the_version_gate_until_removed()
 		{
 			var method = Method(nameof(Transpiler));
 			var info = new PatchInfo
 			{
 				transpilers = [new Patch(0, "legacy", Priority.Normal, [], [], false, method.MetadataToken, method.Module.ModuleVersionId.ToString(), uncheckedReferenceBinding: true)]
 			};
-			Assert.IsFalse(info.HasUncheckedReferenceBindings);
+			Assert.IsTrue(info.HasUncheckedReferenceBindings);
 			var bytes = info.Serialize();
-			Assert.AreNotEqual((byte)'H', bytes[0]);
-			Assert.IsFalse(PatchInfoSerialization.Deserialize(bytes).HasUncheckedReferenceBindings);
+			Assert.AreEqual(5, bytes[14]);
+			var restored = PatchInfoSerialization.Deserialize(bytes);
+			Assert.IsTrue(restored.transpilers.Single().uncheckedReferenceBinding);
+			Assert.Throws<SerializationException>(() => PatchInfoSerialization.Deserialize(bytes.Skip(16).ToArray()));
+			restored.RemoveTranspiler("legacy");
+			Assert.AreNotEqual((byte)'H', restored.Serialize()[0]);
+		}
+
+		[Test]
+		public void Earlier_version_five_transpiler_state_can_be_rebuilt_and_removed()
+		{
+			var original = Method(nameof(ReferenceFirst));
+			harmony.Patch(original, prefix: new HarmonyMethod(Method(nameof(Empty))));
+			var state = (Dictionary<MethodBase, byte[]>)AccessTools.Field(typeof(HarmonySharedState), "state").GetValue(null);
+			var clean = state[original];
+			try
+			{
+				var method = Method(nameof(Transpiler));
+				var info = new PatchInfo
+				{
+					transpilers = [new Patch(0, harmony.Id, Priority.Normal, [], [], false, method.MetadataToken, method.Module.ModuleVersionId.ToString(), uncheckedReferenceBinding: true)]
+				};
+				// Reproduce 6328e299's version-5 writer independently of today's envelope-selection policy.
+				var backend = (byte)AccessTools.Property(typeof(PatchInfoSerialization), "CurrentBackend").GetValue(null, null);
+				var payload = (byte[])AccessTools.Method(typeof(PatchInfoSerialization), "SerializePayload").Invoke(null, [info, backend, (byte)5]);
+				var bytes = System.Text.Encoding.ASCII.GetBytes("HARMONY-INFIX\0").Concat(new byte[] { 5, backend }).Concat(payload).ToArray();
+				lock (state) state[original] = bytes;
+				Assert.IsTrue(Harmony.GetPatchInfo(original).Transpilers.Single().uncheckedReferenceBinding);
+				harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(Empty))));
+				Assert.AreEqual(5, state[original][14]);
+				ReferenceFirst(new(), new());
+				Assert.AreEqual(1, originalCalls);
+				harmony.Unpatch(original, HarmonyPatchType.Transpiler, harmony.Id);
+				Assert.IsEmpty(Harmony.GetPatchInfo(original).Transpilers);
+				Assert.AreNotEqual((byte)'H', state[original][0]);
+				ReferenceFirst(new(), new());
+				Assert.AreEqual(2, originalCalls);
+			}
+			finally { lock (state) state[original] = clean; }
 		}
 
 		[TestCase(false), TestCase(true)]

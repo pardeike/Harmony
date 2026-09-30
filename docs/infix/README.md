@@ -10,7 +10,37 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
-## Review fixes, 2026-09-30
+## Binding rebuild follow-up, 2026-09-30
+
+The review of `6328e299` through `f401808c` found four regressions. Regression tests were added first: the initial run reproduced ten failing cases and passed four opt-out controls. The fixes now:
+
+- Check each resolved factory output on every rebuild, resolving the factory only once. Shared state stores the factory registration, so an unchanged output cannot be assumed. Factories that deliberately emit incompatible reference bindings require the explicit opt-out.
+- Preserve unchanged concrete legacy bindings, but check newly connected passthrough callbacks after additions, removals or reordering. Only the consuming callback can opt out of its incoming binding. Rejected rebuilds preserve the installed wrapper and published registration bytes.
+- Allow global methods without a declaring type to inject a null `__instance`, while retaining primitive receiver handling.
+- Read, rebuild and remove flagged transpiler records written by earlier unreleased v3 builds. Such records keep the version-5 envelope until removed; new flagged transpiler registrations remain rejected.
+
+A further test-first check protects removal of an old postfix whose callback no longer resolves: the remaining connections are checked without requiring that removed callback. `BindingRebuilds` adds 13 cases, and the override fixture adds an earlier-writer state test and corrects the transpiler versioning expectation. Existing legacy-binding tests remain unchanged.
+
+| Local verification | Result |
+| --- | --- |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,172 passed in each; two existing explicit tests excluded |
+| .NET 8.0.30 x64, focused bindings and serialization | 154 passed |
+| .NET Core 3.1.32 x64, focused bindings and serialization | 152 passed |
+| Mono 6.12.0.206 x64/net472, focused bindings and serialization | 152 passed, including BinaryFormatter state recovery |
+| All 12 configured target frameworks, Debug | Harmony, TestLibrary and HarmonyTests build successfully |
+| Published Harmony 2.4.2 compatibility, .NET 10/JSON and .NET 8/BinaryFormatter | All 50 and 49 case outcomes respectively meet their expectations; each lane retains 11 classified existing limitations |
+| Independent review probes, .NET 10 x64 | Changed factories, bridge removal and producer opt-out leakage reject at patch time; global receiver and the actual `6328e299` transpiler-state removal succeed |
+| Formatting and whitespace | `dotnet format` on changed C# files; `git diff --check` passes |
+
+Mono represents a global method's declaring type as `<Module>` rather than CoreCLR's null. The fixture accepts both representations and still verifies the executed callback receives null. The full .NET 10 suites preceded this test-only adjustment; its final .NET 10 regression and the complete focused Mono selection pass afterward.
+
+The .NET 8 matrix parent stalled after 33 reported cases with no child process left. The same recovery case passed directly; the unchanged compatibility runner then passed the remaining four recovery and twelve loader cases in separate groups. All 49 case outcomes are verified, but the original aggregate runner did not complete. Its log and process sample are retained with the grouped reports.
+
+Logs, independent probe outcomes, build artifacts and compatibility reports are retained locally under `artifacts/review-fixes/`; TRX reports are under `artifacts/tests/`. These are local results; remote CI and Unity require their own runtime observations.
+
+## Earlier review fixes (through f401808c), 2026-09-30
+
+This historical checkpoint precedes the binding and transpiler-state corrections above.
 
 A review of the injection validation and opt-out work produced nine fixes, each developed test-first in its own commit:
 

@@ -227,7 +227,6 @@ namespace HarmonyLib
 		{
 			var codes = new List<CodeInstruction>();
 			var previousResultType = context.returnType;
-			PatchCall? previous = null;
 			foreach (var call in postfixes.Where(call => passthroughPatches == (call.method.ReturnType != typeof(void))))
 			{
 				var fix = call.method;
@@ -246,12 +245,11 @@ namespace HarmonyLib
 
 						throw new Exception($"Postfix patch {fix} must have a \"void\" return type");
 					}
-					// A pair of passthroughs is rechecked when either side is being registered, unless one of them opted out.
-					var pairUnchecked = call.uncheckedReferenceBinding || previous?.uncheckedReferenceBinding == true || !call.candidate && previous?.candidate != true;
+					// New connections are checked even between survivors. Only the consumer can opt out of its input binding.
+					var pairUnchecked = call.uncheckedReferenceBinding || call.unchangedPassthrough;
 					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value", pairUnchecked);
 					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType, uncheckedReferenceBinding: call.UncheckedReferences);
 					previousResultType = fix.ReturnType;
-					previous = call;
 				}
 				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext, call.UncheckedReferences));
 			}
