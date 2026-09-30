@@ -346,6 +346,10 @@ namespace HarmonyLibTests.Patching
 
 		[TestCase(nameof(Field), typeof(Target), nameof(Target.StaticEcho))]
 		[TestCase(nameof(GoodDelegate), typeof(Target), nameof(Target.StaticEcho))]
+		[TestCase(nameof(Field), typeof(Holder), nameof(Holder.NoArguments))]
+		[TestCase(nameof(FirstArgumentReaders), typeof(Holder), nameof(Holder.NoArguments))]
+		[TestCase(nameof(FirstArgumentReaders), typeof(Holder), nameof(Holder.UnrelatedFirst))]
+		[TestCase(nameof(CellField), typeof(Cell), nameof(Cell.OtherFirst))]
 		public void Instance_field_and_delegate_require_a_receiver(string name, Type target, string method)
 		{
 			var original = AccessTools.Method(target, method);
@@ -353,6 +357,34 @@ namespace HarmonyLibTests.Patching
 			var (creator, context) = Emitter(original, patch);
 			var error = Assert.Catch<ArgumentException>(() => creator.EmitPatchCall(patch, context, false));
 			StringAssert.Contains("receiver", error.Message);
+		}
+
+		[TestCase(nameof(Holder.ByValue))]
+		[TestCase(nameof(Holder.ByReference))]
+		[TestCase(nameof(Holder.ObjectFirst))]
+		public void Static_original_binds_instance_field_and_delegate_to_a_compatible_first_argument(string name)
+		{
+			harmony.Patch(AccessTools.Method(typeof(Holder), name), prefix: new HarmonyMethod(Patch(nameof(FirstArgumentReaders))));
+			var holder = new Holder();
+			var result = name switch
+			{
+				nameof(Holder.ByValue) => Holder.ByValue(holder),
+				nameof(Holder.ByReference) => Holder.ByReference(ref holder),
+				_ => Holder.ObjectFirst(holder)
+			};
+			Assert.AreEqual("read:held", observed);
+			Assert.AreEqual("changed", result);
+			Assert.AreEqual("changed", holder.field);
+		}
+
+		[TestCase(nameof(Cell.ByValue))]
+		[TestCase(nameof(Cell.ByReference))]
+		public void Static_original_binds_instance_field_to_an_exact_value_type_first_argument(string name)
+		{
+			harmony.Patch(AccessTools.Method(typeof(Cell), name), prefix: new HarmonyMethod(Patch(nameof(CellField))));
+			var cell = new Cell { field = "held" };
+			Assert.AreEqual("changed", name == nameof(Cell.ByValue) ? Cell.ByValue(cell) : Cell.ByReference(ref cell));
+			Assert.AreEqual(name == nameof(Cell.ByValue) ? "held" : "changed", cell.field);
 		}
 
 		[Test]
@@ -444,6 +476,10 @@ namespace HarmonyLibTests.Patching
 			___field = "new field";
 		}
 		static void BadInstance(Unrelated __instance) { }
+		[HarmonyDelegate(typeof(Holder), nameof(Holder.Read))]
+		delegate string HolderRead();
+		static void FirstArgumentReaders(ref string ___field, HolderRead read) { observed = read(); ___field = "changed"; }
+		static void CellField(ref string ___field) => ___field = "changed";
 		static void Append(ref string __result) => __result += "!";
 		static void ReplaceArgument(ref object value) => value = "replaced";
 		static object WidePassthrough(object result) => result + "!";
@@ -527,6 +563,31 @@ namespace HarmonyLibTests.Patching
 		{
 			[MethodImpl(MethodImplOptions.NoInlining)]
 			public static T Echo(T value) => value;
+		}
+		class Holder
+		{
+			public string field = "held";
+			public string Read() => "read:" + field;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string ByValue(Holder self) => self.field;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string ByReference(ref Holder self) => self.field;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string ObjectFirst(object self) => ((Holder)self).field;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string UnrelatedFirst(Unrelated self) => self.Read();
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string NoArguments() => "none";
+		}
+		struct Cell
+		{
+			public string field;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string ByValue(Cell self) => self.field;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string ByReference(ref Cell self) => self.field;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string OtherFirst(Guid self) => self.ToString();
 		}
 	}
 }

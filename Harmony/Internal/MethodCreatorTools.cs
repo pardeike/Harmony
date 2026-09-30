@@ -768,9 +768,10 @@ namespace HarmonyLib
 				if (IsFieldInjection(injection))
 				{
 					var fieldInfo = ResolveField(injection, context);
-					if (!fieldInfo.IsStatic && context.receiver is null)
+					var instance = fieldInfo.IsStatic ? null : context.receiver ?? SurrogateReceiver(context, outerContext, fieldInfo.DeclaringType, uncheckedReferenceBinding);
+					if (!fieldInfo.IsStatic && instance is null)
 						throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to field {fieldInfo.Name}",
-							fieldInfo.FieldType, paramType, "An instance field requires a receiver");
+							fieldInfo.FieldType, paramType, "An instance field requires a receiver or a compatible first argument");
 					creator.ValidateBinding(patch, injection, context, fieldInfo.FieldType,
 						boxes: outerContext != null && !paramType.IsByRef, sourceName: $"field {fieldInfo.DeclaringType.FullDescription()}.{fieldInfo.Name}", uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null)
@@ -782,9 +783,13 @@ namespace HarmonyLib
 						codes.Add(paramType.IsByRef ? Ldsflda[fieldInfo] : Ldsfld[fieldInfo]);
 					else
 					{
-						codes.Add(context.receiver?.Load() ?? Ldarg_0);
-						if (outerContext != null && context.receiver.Value.type.IsByRef && !originalType.IsValueType)
-							codes.Add(Ldobj[originalType]);
+						if (context.receiver is null) codes.AddRange(LoadSurrogate(instance.Value));
+						else
+						{
+							codes.Add(context.receiver.Value.Load());
+							if (outerContext != null && context.receiver.Value.type.IsByRef && !originalType.IsValueType)
+								codes.Add(Ldobj[originalType]);
+						}
 						codes.Add(paramType.IsByRef ? Ldflda[fieldInfo] : Ldfld[fieldInfo]);
 					}
 					if (outerContext != null && !paramType.IsByRef && fieldInfo.FieldType.IsValueType && !paramType.IsValueType)
@@ -885,14 +890,17 @@ namespace HarmonyLib
 						var delegateConstructor = paramType.GetConstructor([typeof(object), typeof(IntPtr)]);
 						if (delegateConstructor is not null)
 						{
-							creator.ValidateDelegate(patch, injection, context, methodInfo, uncheckedReferenceBinding: uncheckedReferenceBinding);
+							var instance = methodInfo.IsStatic ? null : context.receiver ?? SurrogateReceiver(context, outerContext, methodInfo.DeclaringType, uncheckedReferenceBinding);
+							creator.ValidateDelegate(patch, injection, context, methodInfo, instance, uncheckedReferenceBinding);
 							if (methodInfo.IsStatic)
 								codes.Add(Ldnull);
+							else if (context.receiver is null)
+								codes.AddRange(LoadSurrogate(instance.Value, boxed: true));
 							else
 							{
 								if (outerContext != null && !methodInfo.DeclaringType.IsAssignableFrom(originalType))
 									throw BindingError(patch, injection, context, "The requested delegate method is incompatible with the receiver");
-								codes.Add(context.receiver?.Load() ?? Ldarg_0);
+								codes.Add(context.receiver.Value.Load());
 								if (outerContext != null && context.receiver.Value.type.IsByRef && !originalType.IsValueType)
 									codes.Add(Ldobj[originalType]);
 								if (originalType != null && originalType.IsValueType)
@@ -1014,15 +1022,16 @@ namespace HarmonyLib
 			return codes;
 		}
 
-		static void ValidateDelegate(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context, MethodInfo method, bool uncheckedReferenceBinding)
+		static void ValidateDelegate(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context, MethodInfo method,
+			InjectionStorage? instance, bool uncheckedReferenceBinding)
 		{
 			var delegateType = injection.parameterInfo.ParameterType;
 			var binding = $"parameter {injection.parameterInfo.Name} bound to delegate {method.FullDescription()}";
 			if (!method.IsStatic)
 			{
-				var reason = context.receiver is null ? "An instance delegate requires a receiver"
-					: BindingIncompatibility(context.receiverType, method.DeclaringType, boxes: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
-				if (reason != null) throw creator.InvalidBinding(patch, context, binding, context.receiver?.type, method.DeclaringType, reason);
+				var reason = instance is null ? "An instance delegate requires a receiver or a compatible first argument"
+					: BindingIncompatibility(context.receiver is null ? ElementType(instance.Value.type) : context.receiverType, method.DeclaringType, boxes: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
+				if (reason != null) throw creator.InvalidBinding(patch, context, binding, instance?.type, method.DeclaringType, reason);
 			}
 			// The existing constructor fallback also admits custom handles with no delegate invocation contract.
 			if (!typeof(Delegate).IsAssignableFrom(delegateType)) return;
@@ -1042,6 +1051,26 @@ namespace HarmonyLib
 					: BindingIncompatibility(source, destination, uncheckedReferenceBinding: uncheckedReferenceBinding);
 				if (reason != null) throw creator.InvalidBinding(patch, context, $"{binding}, {part}", source, destination, reason);
 			}
+		}
+
+		// Ordinary patches keep Harmony 2's first-argument fallback for static originals, limited to an argument that can hold the instance.
+		static InjectionStorage? SurrogateReceiver(PatchBindingContext context, PatchBindingContext outerContext, Type declaringType, bool uncheckedReferenceBinding)
+		{
+			if (outerContext != null || context.arguments.Length == 0) return null;
+			var first = context.arguments[0];
+			var type = ElementType(first.type);
+			var compatible = type.IsValueType || declaringType.IsValueType ? type == declaringType
+				: BindingIncompatibility(type, declaringType, uncheckedReferenceBinding: uncheckedReferenceBinding) is null;
+			return compatible ? first : null;
+		}
+
+		// Loads the instance as a field receiver (object reference or managed pointer) or, boxed, as a delegate target.
+		static IEnumerable<CodeInstruction> LoadSurrogate(InjectionStorage storage, bool boxed = false)
+		{
+			var type = ElementType(storage.type);
+			if (!type.IsValueType) return storage.type.IsByRef ? [storage.Load(), Ldind_Ref] : [storage.Load()];
+			if (!boxed) return storage.type.IsByRef ? [storage.Load()] : [storage.LoadAddress()];
+			return storage.type.IsByRef ? [storage.Load(), Ldobj[type], Box[type]] : [storage.Load(), Box[type]];
 		}
 
 		static void ValidateStorageType(MethodInfo patch, InjectedParameter injection, PatchBindingContext context, Type source, bool allowBoxedRef)

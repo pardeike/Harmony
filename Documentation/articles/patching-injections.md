@@ -88,6 +88,8 @@ Generic policy is unchanged. The binder uses runtime type relationships for clos
 
 **Three** underscores select a field: `___someField` reads `someField`, including private fields. Use `ref` to write it, for example `ref string ___name`.
 
+For a static original, an instance field or an injected instance delegate binds to the first argument when that argument can hold the instance: a reference argument declared as the declaring type, a related type or `object`, or a value-type argument of exactly the declaring type, by value or by `ref`. Otherwise the registration is rejected. Harmony 2 used the first argument without checking it.
+
 ## __args
 
 **`object[] __args`** contains all arguments in declaration order. Editing its elements updates the corresponding arguments; `ref` is not needed. It has more overhead than typed argument injection.
