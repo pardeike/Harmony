@@ -31,7 +31,13 @@ The Mono selection includes `InjectionValidation`, `PatchCallBindings`, `Argumen
 
 Each published-version compatibility lane includes 16 successful execution cases, two expected missing-API boundaries, and 11 classified pre-existing loader/concurrency limitations. JSON also has 18 expected compatibility rejections; BinaryFormatter has 17. Passing the runner means those expectations held; it does not turn the limitation cases into working coexistence arrangements.
 
-The canonical local command and net9/x64 setup are in [AGENTS.md](../../AGENTS.md#local-verification). Full logs, TRX results, the focused Mono runner/results, and compatibility reports are retained locally under ignored `artifacts/tests/` and `artifacts/injection-validation/`. Framework builds report existing NuGet advisory warnings; they do not establish runtime behavior on those frameworks. Windows, Unity, the full older-runtime matrix and prior-Infix source-baseline lanes were not rerun for this change. Run the existing platform and compatibility release gates before publishing.
+The canonical local command and net9/x64 setup are in [AGENTS.md](../../AGENTS.md#local-verification). Full logs, TRX results, the focused Mono runner/results, and compatibility reports are retained locally under ignored `artifacts/tests/` and `artifacts/injection-validation/`. Framework builds report existing NuGet advisory warnings; they do not establish runtime behavior on those frameworks. These local results precede the CI follow-up below. Unity remains outside these checks. Run the existing platform and compatibility release gates before publishing.
+
+### CI fixture correction
+
+The [first platform run](https://github.com/pardeike/Harmony/actions/runs/36690793175) for `8392401` failed four new test cases across several runtimes. Their `GenericTarget<T>.Echo` targets encountered generic detour limitations: callbacks were bypassed on affected CoreCLR configurations, and Framework failed inside MonoMod's `GetMethodDescForSlot`. The same four failures reproduce locally on .NET Core 3.1.32 x64. The downcast and array/delegate runtime tests now use concrete targets with the same argument and return types; all assertions remain in place. All 67 fixture cases pass on .NET Core 3.1 x64 in Debug and Release and on .NET 9 x64 in Debug. Generic binding emission cases remain covered without installing generic detours.
+
+That run also had a separate net35/x86 Debug build crash in ILRepack's native PDB writer, before tests ran. Its recurrence requires a fresh Windows CI observation. The [Infix compatibility run](https://github.com/pardeike/Harmony/actions/runs/36690792916) and [documentation build](https://github.com/pardeike/Harmony/actions/runs/36690792840) passed for `8392401`. Remote results remain specific to the tested revision.
 
 ## Second-review fixes, 2026-09-08
 

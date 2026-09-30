@@ -232,12 +232,12 @@ namespace HarmonyLibTests.Patching
 		[TestCase(HarmonyPatchType.Finalizer)]
 		public void Plausible_downcast_observes_the_actual_value(HarmonyPatchType role)
 		{
-			var original = AccessTools.Method(typeof(GenericTarget<object>), nameof(GenericTarget<object>.Echo));
+			var original = AccessTools.Method(typeof(Target), nameof(Target.ObjectEcho));
 			var patch = new HarmonyMethod(Patch(nameof(Observe), typeof(string)));
 			harmony.Patch(original, prefix: role == HarmonyPatchType.Prefix ? patch : null,
 				postfix: role == HarmonyPatchType.Postfix ? patch : null, finalizer: role == HarmonyPatchType.Finalizer ? patch : null);
 			var value = new string('x', 3);
-			Assert.AreSame(value, GenericTarget<object>.Echo(value));
+			Assert.AreSame(value, Target.ObjectEcho(value));
 			Assert.AreSame(value, observed);
 		}
 
@@ -347,14 +347,14 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Reference_arrays_and_variant_delegates_keep_their_runtime_behavior()
 		{
-			harmony.Patch(AccessTools.Method(typeof(GenericTarget<string[]>), nameof(GenericTarget<string[]>.Echo)),
+			harmony.Patch(AccessTools.Method(typeof(Target), nameof(Target.ArrayEcho)),
 				prefix: new HarmonyMethod(Patch(nameof(ObserveArray))));
 			var array = new[] { "array" };
-			Assert.AreSame(array, GenericTarget<string[]>.Echo(array));
+			Assert.AreSame(array, Target.ArrayEcho(array));
 			Assert.AreEqual("array", observed);
-			harmony.Patch(AccessTools.Method(typeof(GenericTarget<Func<string>>), nameof(GenericTarget<Func<string>>.Echo)),
+			harmony.Patch(AccessTools.Method(typeof(Target), nameof(Target.DelegateEcho)),
 				prefix: new HarmonyMethod(Patch(nameof(ObserveVariant))));
-			GenericTarget<Func<string>>.Echo(() => "variant");
+			Target.DelegateEcho(() => "variant");
 			Assert.AreEqual("variant", observed);
 		}
 
@@ -479,6 +479,13 @@ namespace HarmonyLibTests.Patching
 			public string Outer(string value) => Echo(value);
 			[MethodImpl(MethodImplOptions.NoInlining)]
 			public static string StaticEcho(string value) => value;
+			// Binding runtime tests use concrete targets because generic detours vary across runtimes.
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static object ObjectEcho(object value) => value;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static string[] ArrayEcho(string[] value) => value;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static Func<string> DelegateEcho(Func<string> value) => value;
 			[MethodImpl(MethodImplOptions.NoInlining)]
 			public static void Throw() => throw new InvalidOperationException();
 			[MethodImpl(MethodImplOptions.NoInlining)]
