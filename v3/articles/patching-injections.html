@@ -109,7 +109,7 @@
 <tbody>
 <tr>
 <td>A receiver requested as an unrelated class</td>
-<td>Rejected, even if the callback would ignore it</td>
+<td>Rejected by default, even if the callback would ignore it</td>
 </tr>
 <tr>
 <td>A <code>string</code> argument read as <code>object</code></td>
@@ -130,10 +130,42 @@
 </tbody>
 </table>
 <p>Checks follow the conversions the emitter actually performs. Arguments can be boxed, which wraps a value type as an object. Ordinary field and state injections do not add boxing. Wider reference bindings do not cause Harmony to insert runtime casts or checks.</p>
-<p>Uncertain interface, array, generic variance and proxy relationships remain accepted. This feature adds no numeric, enum, pointer, nullable or struct-layout conversion policy. Existing result, state, and Infix restrictions still apply. It also checks delegate receivers and invocation signatures, finalizer returns, and passthrough results for definite incompatibility.</p>
-<p>A rejected addition leaves that method's installed replacement and published patch registrations unchanged. Removing an invalid old registration remains possible because Harmony validates the surviving registrations. This is a per-method installation guarantee; prepare callbacks, factories, and transpilers may already have run. The checks add no work to patched invocations.</p>
+<p>Uncertain interface, array, generic variance and proxy relationships remain accepted. This feature adds no numeric, enum, pointer or struct-layout conversion policy. A nullable value type boxes like any other value type: a boxed <code>int?</code> is a boxed <code>int</code> or <code>null</code>, so it can be read as <code>object</code> or <code>IComparable</code>, while a reference argument declared as <code>int?</code> is rejected because the emitter has no unboxing conversion. Existing result, state, and Infix restrictions still apply. It also checks delegate receivers and invocation signatures, finalizer returns, and passthrough results for definite incompatibility.</p>
+<p>The reference checks apply to new registrations and newly formed passthrough connections. Unchanged concrete callbacks keep the reference bindings accepted by this or an older engine; structural requirements such as missing storage still apply. Factory outputs are checked on every rebuild, because the factory can return a different callback and shared state does not retain its previous output. Each factory runs once per rebuild. A passthrough connection is rechecked when either callback is new, comes from a factory, or is connected to a different predecessor after removal or reordering. Connections whose previous callbacks can no longer be resolved are also checked. Only the consuming postfix's opt-out disables its incoming reference check. <code>__exception</code> is checked against <code>Exception</code> even before any finalizer exists, so a later finalizer cannot invalidate an installed prefix.</p>
+<p>A rejected addition or removal leaves that method's installed replacement and published patch registrations unchanged. Other owners can still add, remove and rebuild beside older registrations whose bindings remain unchanged. This is a per-method installation guarantee; prepare callbacks, factories, and transpilers may already have run. The checks add no work to patched invocations.</p>
+<h3 id="unchecked-reference-binding">Unchecked reference binding</h3>
+<p>Use <code>[HarmonyUncheckedReferenceBinding]</code> on an individual patch method when its reference bindings deliberately depend on knowledge outside the declared types. Here, <strong>reference</strong> means an object reference: the option applies to both ordinary parameters and <code>ref</code> parameters.</p>
+<p>For example, one callback can patch <code>First(A first, Other second)</code> and <code>Second(Other first, B second)</code> and use only the matching argument:</p>
+<pre><code class="lang-csharp">[HarmonyPrefix]
+[HarmonyUncheckedReferenceBinding]
+static void Prefix(A first, B second, MethodBase __originalMethod)
+{
+    if (__originalMethod.Name == nameof(Targets.First))
+        first.Use();
+    else
+        second.Use();
+}
+</code></pre>
+<p>For manual registration, set the equivalent nullable <code>HarmonyMethod</code> field:</p>
+<pre><code class="lang-csharp">harmony.Patch(original, prefix: new HarmonyMethod(patchMethod)
+{
+    uncheckedReferenceBinding = true
+});
+</code></pre>
+<p>The option skips the new compatibility checks between reference types. It also covers object references produced by boxing that the emitter already performs, such as an unused <code>int</code> argument supplied to an unrelated reference parameter. It applies to ordinary prefixes, postfixes and finalizers, including injected delegates and reference passthrough returns. A sibling-typed <code>ref</code> passthrough postfix can therefore opt in. Infix callbacks carry the same option, but retain their existing stricter contracts.</p>
+<p>The option does <strong>not</strong> add casts, boxing, unboxing or other conversions. It retains these requirements:</p>
+<ul>
+<li>Named arguments and fields must exist, and bindings that require storage or an address must have it. <code>__result</code> still requires a result, and <code>ref __instance</code> requires a receiver. Value-only injections such as <code>__originalMethod</code> and <code>__args</code> still cannot be requested by <code>ref</code>.</li>
+<li>Value/reference bindings must use a conversion the emitter already supports. An <code>object</code> argument requested as <code>Guid</code> still fails.</li>
+<li>Existing <code>__result</code>, exact <code>RefResult&lt;T&gt; __resultRef</code>, state, Infix storage/scope and passthrough contracts still apply. Delegate arity and value/address shape checks remain.</li>
+</ul>
+<p>This is permission to emit the existing binding, not a declaration that the CLR considers it safe. Harmony does not inspect whether a callback touches an incompatible argument. Its body, callers and the runtime must tolerate the emitted code; successful installation does not prove that later execution is safe.</p>
+<p>The default is checked. The method-only attribute affects that callback's registrations; the manual field affects the individual registration. An explicit <code>false</code> overrides an imported attribute. The stored flag is a snapshot: changing the input <code>HarmonyMethod</code> later does not change an installed patch. For a factory, put the option on the registered factory or its <code>HarmonyMethod</code>; it follows the resolved callback through each rebuild. Another registration remains checked even if it resolves to the same callback. A transpiler registration rejects the option, since transpiler instruction validation is outside it. Flagged transpiler records written by earlier unreleased v3 builds remain readable and removable, retaining the version-5 state envelope until removed.</p>
+<p>Generic policy is unchanged. The binder uses runtime type relationships for closed types and leaves open or uncertain relationships accepted, without recursively expanding generic constraints. Self-referential types such as <code>Node&lt;T&gt; where T : Node&lt;T&gt;</code> do not require special traversal. Acceptance here does not expand support for patching open generic methods.</p>
+<p><strong>Mixed Harmony versions:</strong> methods with an opted-out registration use shared patch-state version 5. A second capable engine preserves the flag when rebuilding. Older engines reject that method's state before reading or updating its registrations, so they cannot silently discard the option. Remove the opted-out registrations using a capable engine to restore the format required by the remaining patches. Unmarked methods retain their previous format. This protects published state; hosts must still serialize cross-engine updates, since an older engine could already hold an unpublished candidate created before the opted-out registration.</p>
 <h2 id="__instance">__instance</h2>
 <p><strong><code>__instance</code></strong> is the original method's <code>this</code>. For a static method, a by-value reference parameter receives <code>null</code>; value-type and <code>ref</code> receiver requests fail.</p>
+<p>For a value-type original, including primitives such as <code>int</code> or <code>double</code>, <code>T __instance</code> receives a copy, <code>ref T __instance</code> addresses the caller's storage, <code>object __instance</code> receives a boxed copy, and <code>ref object __instance</code> copies the boxed value back after the patch returns.</p>
 <h2 id="__result">__result</h2>
 <p><strong><code>__result</code></strong> holds the returned value. Its type must match the original return type or be assignable from it. It starts with that type's default value before prefixes run. To change it, use <code>ref</code>, for example <code>ref string __result</code>.</p>
 <h2 id="__resultref">__resultRef</h2>
@@ -142,6 +174,7 @@
 <p><strong><code>__state</code></strong> passes a per-call value from prefix to postfix or finalizer. Set it in the prefix using <code>ref</code> or <code>out</code>. It can be any type, but the patches sharing it must be in the same class.</p>
 <h2 id="___fields">___fields</h2>
 <p><strong>Three</strong> underscores select a field: <code>___someField</code> reads <code>someField</code>, including private fields. Use <code>ref</code> to write it, for example <code>ref string ___name</code>.</p>
+<p>For a static original, an instance field or an injected instance delegate binds to the first argument when that argument can hold the instance: a reference argument declared as the declaring type, a related type or <code>object</code>, or a value-type argument of exactly the declaring type, by value or by <code>ref</code>. Otherwise the registration is rejected. Harmony 2 used the first argument without checking it.</p>
 <h2 id="__args">__args</h2>
 <p><strong><code>object[] __args</code></strong> contains all arguments in declaration order. Editing its elements updates the corresponding arguments; <code>ref</code> is not needed. It has more overhead than typed argument injection.</p>
 <p>The array excludes the receiver. <code>ref object[]</code> is invalid, as are arguments the emitter cannot represent in the array, such as pointers and byref-like values. Use typed argument injections for those methods. Broader by-value declarations such as <code>object __args</code> are accepted for ordinary patches.</p>

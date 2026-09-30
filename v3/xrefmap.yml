@@ -9349,6 +9349,12 @@ references:
   commentId: F:HarmonyLib.HarmonyMethod.reversePatchType
   fullName: HarmonyLib.HarmonyMethod.reversePatchType
   nameWithType: HarmonyMethod.reversePatchType
+- uid: HarmonyLib.HarmonyMethod.uncheckedReferenceBinding
+  name: uncheckedReferenceBinding
+  href: api/HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_uncheckedReferenceBinding
+  commentId: F:HarmonyLib.HarmonyMethod.uncheckedReferenceBinding
+  fullName: HarmonyLib.HarmonyMethod.uncheckedReferenceBinding
+  nameWithType: HarmonyMethod.uncheckedReferenceBinding
 - uid: HarmonyLib.HarmonyMethodExtensions
   name: HarmonyMethodExtensions
   href: api/HarmonyLib.HarmonyMethodExtensions.html
@@ -9976,6 +9982,30 @@ references:
   fullName.vb: HarmonyLib.HarmonyTranspiler.New
   nameWithType: HarmonyTranspiler.HarmonyTranspiler
   nameWithType.vb: HarmonyTranspiler.New
+- uid: HarmonyLib.HarmonyUncheckedReferenceBinding
+  name: HarmonyUncheckedReferenceBinding
+  href: api/HarmonyLib.HarmonyUncheckedReferenceBinding.html
+  commentId: T:HarmonyLib.HarmonyUncheckedReferenceBinding
+  fullName: HarmonyLib.HarmonyUncheckedReferenceBinding
+  nameWithType: HarmonyUncheckedReferenceBinding
+- uid: HarmonyLib.HarmonyUncheckedReferenceBinding.#ctor(System.Boolean)
+  name: HarmonyUncheckedReferenceBinding(bool)
+  href: api/HarmonyLib.HarmonyUncheckedReferenceBinding.html#HarmonyLib_HarmonyUncheckedReferenceBinding__ctor_System_Boolean_
+  commentId: M:HarmonyLib.HarmonyUncheckedReferenceBinding.#ctor(System.Boolean)
+  name.vb: New(Boolean)
+  fullName: HarmonyLib.HarmonyUncheckedReferenceBinding.HarmonyUncheckedReferenceBinding(bool)
+  fullName.vb: HarmonyLib.HarmonyUncheckedReferenceBinding.New(Boolean)
+  nameWithType: HarmonyUncheckedReferenceBinding.HarmonyUncheckedReferenceBinding(bool)
+  nameWithType.vb: HarmonyUncheckedReferenceBinding.New(Boolean)
+- uid: HarmonyLib.HarmonyUncheckedReferenceBinding.#ctor*
+  name: HarmonyUncheckedReferenceBinding
+  href: api/HarmonyLib.HarmonyUncheckedReferenceBinding.html#HarmonyLib_HarmonyUncheckedReferenceBinding__ctor_
+  commentId: Overload:HarmonyLib.HarmonyUncheckedReferenceBinding.#ctor
+  name.vb: New
+  fullName: HarmonyLib.HarmonyUncheckedReferenceBinding.HarmonyUncheckedReferenceBinding
+  fullName.vb: HarmonyLib.HarmonyUncheckedReferenceBinding.New
+  nameWithType: HarmonyUncheckedReferenceBinding.HarmonyUncheckedReferenceBinding
+  nameWithType.vb: HarmonyUncheckedReferenceBinding.New
 - uid: HarmonyLib.InfixOuterBody
   name: InfixOuterBody
   href: api/HarmonyLib.InfixOuterBody.html
@@ -10922,6 +10952,12 @@ references:
   commentId: F:HarmonyLib.Patch.priority
   fullName: HarmonyLib.Patch.priority
   nameWithType: Patch.priority
+- uid: HarmonyLib.Patch.uncheckedReferenceBinding
+  name: uncheckedReferenceBinding
+  href: api/HarmonyLib.Patch.html#HarmonyLib_Patch_uncheckedReferenceBinding
+  commentId: F:HarmonyLib.Patch.uncheckedReferenceBinding
+  fullName: HarmonyLib.Patch.uncheckedReferenceBinding
+  nameWithType: Patch.uncheckedReferenceBinding
 - uid: HarmonyLib.PatchClassProcessor
   name: PatchClassProcessor
   href: api/HarmonyLib.PatchClassProcessor.html

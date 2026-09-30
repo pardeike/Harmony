@@ -2,11 +2,11 @@
 <html data-bs-theme="light" lang="en">
   <head>
     <meta charset="utf-8">
-      <title>Class HarmonyAttribute | Harmony 3 </title>
+      <title>Class HarmonyUncheckedReferenceBinding | Harmony 3 </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Class HarmonyAttribute | Harmony 3 ">
+      <meta name="title" content="Class HarmonyUncheckedReferenceBinding | Harmony 3 ">
       
-      <meta name="description" content="The base class for all Harmony annotations (not meant to be used directly)">
+      <meta name="description" content="Skip reference-type compatibility checks for one patch callback, including references produced by boxing.">
       <link rel="icon" href="../images/harmony-logo.png">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -88,14 +88,14 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.HarmonyAttribute">
+        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.HarmonyUncheckedReferenceBinding">
           <span id="_content"></span>
-          <span id="HarmonyLib_HarmonyAttribute_syntax" data-section-alias=".codewrapper"></span>
+          <span id="HarmonyLib_HarmonyUncheckedReferenceBinding_syntax" data-section-alias=".codewrapper"></span>
 
 
 
-  <h1 id="HarmonyLib_HarmonyAttribute" data-uid="HarmonyLib.HarmonyAttribute" class="text-break">
-Class HarmonyAttribute  
+  <h1 id="HarmonyLib_HarmonyUncheckedReferenceBinding" data-uid="HarmonyLib.HarmonyUncheckedReferenceBinding" class="text-break">
+Class HarmonyUncheckedReferenceBinding  
   </h1>
 
   <div class="facts text-secondary">
@@ -103,12 +103,13 @@ Class HarmonyAttribute
   <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>The base class for all Harmony annotations (not meant to be used directly)</p>
+  <div class="markdown summary"><p>Skip reference-type compatibility checks for one patch callback, including references produced by boxing.</p>
 </div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class HarmonyAttribute : Attribute</code></pre>
+    <pre><code class="lang-csharp hljs">[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class HarmonyUncheckedReferenceBinding : HarmonyAttribute</code></pre>
   </div>
 
 
@@ -119,89 +120,57 @@ Class HarmonyAttribute
     <dd>
       <div><span class="xref">object</span></div>
       <div><span class="xref">Attribute</span></div>
-      <div><span class="xref">HarmonyAttribute</span></div>
+      <div><a class="xref" href="HarmonyLib.HarmonyAttribute.html">HarmonyAttribute</a></div>
+      <div><span class="xref">HarmonyUncheckedReferenceBinding</span></div>
     </dd>
   </dl>
 
 
-  <dl class="typelist derived">
-    <dt>Derived</dt>
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
     <dd>
-      <div><a class="xref" href="HarmonyLib.HarmonyAfter.html">HarmonyAfter</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyBefore.html">HarmonyBefore</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyDebug.html">HarmonyDebug</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyInfix.html">HarmonyInfix</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyPatch.html">HarmonyPatch</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyPatchAll.html">HarmonyPatchAll</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyPatchCategory.html">HarmonyPatchCategory</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyPriority.html">HarmonyPriority</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyReversePatch.html">HarmonyReversePatch</a></div>
-      <div><a class="xref" href="HarmonyLib.HarmonyUncheckedReferenceBinding.html">HarmonyUncheckedReferenceBinding</a></div>
-    </dd>
-  </dl>
+    <div>
+      <a class="xref" href="HarmonyLib.HarmonyAttribute.html#HarmonyLib_HarmonyAttribute_info">HarmonyAttribute.info</a>
+    </div>
+  </dd></dl>
 
 
 
 
-
+  <h2 id="HarmonyLib_HarmonyUncheckedReferenceBinding_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>This does not add conversions or disable storage, value/address, or existing role-specific requirements. Transpilers reject it.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
 </h2>
 
 
-  <a id="HarmonyLib_HarmonyAttribute__ctor_" data-uid="HarmonyLib.HarmonyAttribute.#ctor*"></a>
+  <a id="HarmonyLib_HarmonyUncheckedReferenceBinding__ctor_" data-uid="HarmonyLib.HarmonyUncheckedReferenceBinding.#ctor*"></a>
 
-  <h3 id="HarmonyLib_HarmonyAttribute__ctor" data-uid="HarmonyLib.HarmonyAttribute.#ctor">
-  HarmonyAttribute()
+  <h3 id="HarmonyLib_HarmonyUncheckedReferenceBinding__ctor_System_Boolean_" data-uid="HarmonyLib.HarmonyUncheckedReferenceBinding.#ctor(System.Boolean)">
+  HarmonyUncheckedReferenceBinding(bool)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public HarmonyAttribute()</code></pre>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <h2 class="section" id="fields">Fields
-</h2>
-
-
-
-  <h3 id="HarmonyLib_HarmonyAttribute_info" data-uid="HarmonyLib.HarmonyAttribute.info">
-  info
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>The common information for all attributes</p>
+  <div class="markdown level1 summary"><p>Enable or disable unchecked reference binding for this callback or patch factory.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public HarmonyMethod info</code></pre>
+    <pre><code class="lang-csharp hljs">public HarmonyUncheckedReferenceBinding(bool enabled = true)</code></pre>
   </div>
 
-
-
-
-  <h4 class="section">Field Value</h4>
+  <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
-    <dd></dd>
+    <dt><code>enabled</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to skip reference-type compatibility checks.</p>
+</dd>
   </dl>
+
+
+
 
 
 

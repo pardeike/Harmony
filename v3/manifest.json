@@ -712,6 +712,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.HarmonyUncheckedReferenceBinding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.HarmonyUncheckedReferenceBinding.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "HarmonyLib.HarmonyUncheckedReferenceBinding",
+      "Summary": "<p sourcefile=\"api/HarmonyLib.HarmonyUncheckedReferenceBinding.yml\" sourcestartlinenumber=\"1\">Skip reference-type compatibility checks for one patch callback, including references produced by boxing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/HarmonyLib.InfixOuterBody.yml",
       "output": {
         ".html": {
