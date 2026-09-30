@@ -20,7 +20,9 @@ internal sealed partial class InfixCompatibilityTests
 		ExecuteUnchecked();
 		reader.Call("UnpatchOwner", method, "unchecked");
 		CheckEnvelope(reader.Bytes(method)!, false);
+		ExecuteRemoved();
 		writer.Call("UnpatchOwner", method, "unchecked-reader");
+		ExecuteRemoved();
 		SetStage("complete");
 	}
 
@@ -50,8 +52,9 @@ internal sealed partial class InfixCompatibilityTests
 		SetStage("unchecked-prior-recovery");
 		current.Call("UnpatchOwner", method, "unchecked");
 		CheckEnvelope(current.Bytes(method)!, false);
+		ExecuteRemoved();
 		prior.Call("Rebuild", method);
-		Check.Equal("null", Targets.UncheckedRun(null), "The original changed after override removal.");
+		ExecuteRemoved();
 		Outcome = "expected-compatibility-rejection";
 		SetStage("complete");
 	}
@@ -61,5 +64,13 @@ internal sealed partial class InfixCompatibilityTests
 		var before = Targets.PatchCalls;
 		Check.Equal("null", Targets.UncheckedRun(null), "Unchecked target result.");
 		Check.Equal(before + 1, Targets.PatchCalls, "The unchecked callback did not execute exactly once.");
+	}
+
+	// The null-only target returns the same value with or without the callback; only the counter proves removal.
+	private static void ExecuteRemoved()
+	{
+		var before = Targets.PatchCalls;
+		Check.Equal("null", Targets.UncheckedRun(null), "Original result after override removal.");
+		Check.Equal(before, Targets.PatchCalls, "The removed unchecked callback still executed.");
 	}
 }
