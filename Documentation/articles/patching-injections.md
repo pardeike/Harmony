@@ -21,7 +21,7 @@ These checks catch definite mistakes. Acceptance does not prove that every runti
 
 Checks follow the conversions the emitter actually performs. Arguments can be boxed, which wraps a value type as an object. Ordinary field and state injections do not add boxing. Wider reference bindings do not cause Harmony to insert runtime casts or checks.
 
-Uncertain interface, array, generic variance and proxy relationships remain accepted. This feature adds no numeric, enum, pointer, nullable or struct-layout conversion policy. Existing result, state, and Infix restrictions still apply. It also checks delegate receivers and invocation signatures, finalizer returns, and passthrough results for definite incompatibility.
+Uncertain interface, array, generic variance and proxy relationships remain accepted. This feature adds no numeric, enum, pointer or struct-layout conversion policy. A nullable value type boxes like any other value type: a boxed `int?` is a boxed `int` or `null`, so it can be read as `object` or `IComparable`, while a reference argument declared as `int?` is rejected because the emitter has no unboxing conversion. Existing result, state, and Infix restrictions still apply. It also checks delegate receivers and invocation signatures, finalizer returns, and passthrough results for definite incompatibility.
 
 A rejected addition leaves that method's installed replacement and published patch registrations unchanged. Removing an invalid old registration remains possible because Harmony validates the surviving registrations. This is a per-method installation guarantee; prepare callbacks, factories, and transpilers may already have run. The checks add no work to patched invocations.
 

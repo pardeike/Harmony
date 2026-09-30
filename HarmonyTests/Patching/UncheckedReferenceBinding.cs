@@ -138,6 +138,7 @@ namespace HarmonyLibTests.Patching
 		[TestCase(nameof(RefMetadata), "value, not an address")]
 		[TestCase(nameof(RefArgs), "value, not an address")]
 		[TestCase(nameof(ValueArgument), "no boxing or unboxing")]
+		[TestCase(nameof(NullableArgument), "no boxing or unboxing")]
 		[TestCase(nameof(MissingArgument), "Parameter \"missing\" not found")]
 		[TestCase(nameof(MissingResult), "void operation has no result")]
 		[TestCase(nameof(UnboxedRunFlag), "no boxing or unboxing")]
@@ -291,6 +292,7 @@ namespace HarmonyLibTests.Patching
 		static void RefMetadata(ref MethodBase __originalMethod) { }
 		static void RefArgs(ref object[] __args) { }
 		static void ValueArgument(Guid second) { }
+		static void NullableArgument(int? second) { }
 		static void MissingArgument(object missing) { }
 		static void MissingResult(object __result) { }
 		static void UnboxedRunFlag(object __runOriginal) { }

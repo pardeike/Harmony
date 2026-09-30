@@ -117,6 +117,35 @@ namespace HarmonyLibTests.Patching
 			Assert.Catch<ArgumentException>(() => creator.EmitPatchCall(patch, context, false));
 		}
 
+		[TestCase(typeof(int?), typeof(object), true)]
+		[TestCase(typeof(int?), typeof(IComparable), true)]
+		[TestCase(typeof(int?), typeof(int?), true)]
+		[TestCase(typeof(int?), typeof(string), false)]
+		[TestCase(typeof(object), typeof(int?), false)]
+		[TestCase(typeof(string), typeof(int?), false)]
+		public void Nullable_bindings_follow_the_emitted_boxing_conversion(Type source, Type requested, bool accepted)
+		{
+			var original = AccessTools.Method(typeof(GenericTarget<>).MakeGenericType(source), nameof(GenericTarget<object>.Echo));
+			var patch = Patch(nameof(Argument), requested);
+			var (creator, context) = Emitter(original, patch);
+			if (accepted) Assert.DoesNotThrow(() => creator.EmitPatchCall(patch, context, false));
+			else
+			{
+				var error = Assert.Catch<ArgumentException>(() => creator.EmitPatchCall(patch, context, false));
+				StringAssert.Contains(source.IsValueType ? "boxed value" : "no boxing or unboxing", error.Message);
+			}
+		}
+
+		[Test]
+		public void Nullable_argument_boxes_to_its_underlying_value()
+		{
+			harmony.Patch(AccessTools.Method(typeof(Target), nameof(Target.NullableEcho)), prefix: new HarmonyMethod(Patch(nameof(Observe), typeof(object))));
+			Assert.AreEqual(5, Target.NullableEcho(5));
+			Assert.AreEqual(5, observed);
+			Assert.IsNull(Target.NullableEcho(null));
+			Assert.IsNull(observed);
+		}
+
 		[TestCase(nameof(Instance), typeof(int))]
 		[TestCase(nameof(RefInstance), typeof(object))]
 		public void Static_receiver_has_no_value_or_address(string name, Type type)
@@ -486,6 +515,8 @@ namespace HarmonyLibTests.Patching
 			public static string[] ArrayEcho(string[] value) => value;
 			[MethodImpl(MethodImplOptions.NoInlining)]
 			public static Func<string> DelegateEcho(Func<string> value) => value;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public static int? NullableEcho(int? value) => value;
 			[MethodImpl(MethodImplOptions.NoInlining)]
 			public static void Throw() => throw new InvalidOperationException();
 			[MethodImpl(MethodImplOptions.NoInlining)]

@@ -374,12 +374,12 @@ namespace HarmonyLib
 			destination = ElementType(destination);
 			if (source == destination) return null;
 			if (source.ContainsGenericParameters || destination.ContainsGenericParameters
-				|| IsNativePointer(source) || IsNativePointer(destination)
-				|| Nullable.GetUnderlyingType(source) != null || Nullable.GetUnderlyingType(destination) != null) return null;
+				|| IsNativePointer(source) || IsNativePointer(destination)) return null;
 			if (source.IsValueType != destination.IsValueType)
 			{
+				// Boxing Nullable<T> yields a boxed T or null; a reference has no unboxing conversion to any value type.
 				if (source.IsValueType && boxes)
-					return uncheckedReferenceBinding || destination.IsAssignableFrom(source) ? null : "The boxed value cannot have the requested type";
+					return uncheckedReferenceBinding || destination.IsAssignableFrom(Nullable.GetUnderlyingType(source) ?? source) ? null : "The boxed value cannot have the requested type";
 				return "The emitted binding has no boxing or unboxing conversion between a value and a reference";
 			}
 			if (source.IsValueType || uncheckedReferenceBinding) return null;
