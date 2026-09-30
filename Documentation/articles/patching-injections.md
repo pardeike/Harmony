@@ -74,6 +74,8 @@ Generic policy is unchanged. The binder uses runtime type relationships for clos
 
 **`__instance`** is the original method's `this`. For a static method, a by-value reference parameter receives `null`; value-type and `ref` receiver requests fail.
 
+For a value-type original, including primitives such as `int` or `double`, `T __instance` receives a copy, `ref T __instance` addresses the caller's storage, `object __instance` receives a boxed copy, and `ref object __instance` copies the boxed value back after the patch returns.
+
 ## __result
 
 **`__result`** holds the returned value. Its type must match the original return type or be assignable from it. It starts with that type's default value before prefixes run. To change it, use `ref`, for example `ref string __result`.

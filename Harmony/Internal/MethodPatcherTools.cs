@@ -35,7 +35,8 @@ namespace HarmonyLib
 			parameterTypes.AddRange(parameters.Types());
 			if (original.IsStatic is false)
 			{
-				if (AccessTools.IsStruct(original.DeclaringType))
+				// Every value type, including primitives and enums, passes this as a managed pointer.
+				if (original.DeclaringType.IsValueType)
 					parameterTypes.Insert(0, original.DeclaringType.MakeByRefType());
 				else
 					parameterTypes.Insert(0, original.DeclaringType);

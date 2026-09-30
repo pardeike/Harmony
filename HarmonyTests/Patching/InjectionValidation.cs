@@ -511,12 +511,15 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
-		public void Primitive_receiver_is_not_boxed_by_the_ordinary_emitter()
+		public void Primitive_receiver_boxes_like_a_struct()
 		{
 			var original = AccessTools.Method(typeof(int), nameof(int.ToString), Type.EmptyTypes);
 			var patch = Patch(nameof(Instance), typeof(object));
 			var (creator, context) = Emitter(original, patch);
-			Assert.Catch<ArgumentException>(() => creator.EmitPatchCall(patch, context, false));
+			var codes = creator.EmitPatchCall(patch, context, false);
+			CollectionAssert.AreEqual(new[] { OpCodes.Ldarg, OpCodes.Ldobj, OpCodes.Box, OpCodes.Call }, codes.Select(code => code.opcode));
+			Assert.AreEqual(typeof(int), codes[1].operand);
+			Assert.AreEqual(typeof(int), codes[2].operand);
 		}
 
 		[Test]

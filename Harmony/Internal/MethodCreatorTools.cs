@@ -688,7 +688,7 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.Instance)
 				{
 					creator.ValidateBinding(patch, injection, context, context.receiver?.type,
-						boxes: outerContext != null || AccessTools.IsStruct(originalType) && ElementType(paramType) == typeof(object), uncheckedReferenceBinding: uncheckedReferenceBinding);
+						boxes: outerContext != null || originalType.IsValueType && ElementType(paramType) == typeof(object), uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null)
 					{
 						if (context.receiver is null)
@@ -708,7 +708,7 @@ namespace HarmonyLib
 						var parameterIsRef = paramType.IsByRef;
 						var parameterIsObject = paramType == typeof(object) || paramType == typeof(object).MakeByRefType();
 
-						if (AccessTools.IsStruct(originalType))
+						if (originalType.IsValueType)
 						{
 							if (parameterIsObject)
 							{
