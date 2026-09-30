@@ -10,7 +10,7 @@ namespace HarmonyLib
 		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
 			=> [.. new PatchSorter(patches, debug).Sort().Select(p => p.GetMethod(original))];
 		static List<PatchCall> GetSortedPatchCalls(MethodBase original, Patch[] patches, bool debug)
-			=> [.. new PatchSorter(patches, debug).Sort().Select(patch => new PatchCall(patch.GetMethod(original), patch.uncheckedReferenceBinding))];
+			=> [.. new PatchSorter(patches, debug).Sort().Select(patch => new PatchCall(patch.GetMethod(original), patch.uncheckedReferenceBinding, patch.candidate))];
 
 		private static List<Infix> GetInfixes(Patch[] patches) => [.. patches.Select(p => new Infix(p))];
 

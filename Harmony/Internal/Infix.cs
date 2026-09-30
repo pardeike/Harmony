@@ -88,7 +88,7 @@ namespace HarmonyLib
 			return result;
 
 			List<PatchCall> Sort(List<Patch> patches) => [.. new PatchSorter([.. patches], config.debug, true).Sort()
-				.Select(patch => new PatchCall(patch.PatchMethod, patch.uncheckedReferenceBinding))];
+				.Select(patch => new PatchCall(patch.PatchMethod, patch.uncheckedReferenceBinding, patch.candidate))];
 
 			void Collect(List<Infix> fixes, HarmonyPatchType role)
 			{

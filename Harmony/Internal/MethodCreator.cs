@@ -204,7 +204,7 @@ namespace HarmonyLib
 				if (skipLabel.HasValue)
 					codes.AddRange([Ldloc[context.variables[InjectionType.RunOriginal]], Brfalse[skipLabel.Value]]);
 
-				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.uncheckedReferenceBinding));
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.UncheckedReferences));
 
 				if (returnType != typeof(void))
 				{
@@ -227,6 +227,7 @@ namespace HarmonyLib
 		{
 			var codes = new List<CodeInstruction>();
 			var previousResultType = context.returnType;
+			PatchCall? previous = null;
 			foreach (var call in postfixes.Where(call => passthroughPatches == (call.method.ReturnType != typeof(void))))
 			{
 				var fix = call.method;
@@ -245,11 +246,14 @@ namespace HarmonyLib
 
 						throw new Exception($"Postfix patch {fix} must have a \"void\" return type");
 					}
-					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value", call.uncheckedReferenceBinding);
-					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType, uncheckedReferenceBinding: call.uncheckedReferenceBinding);
+					// A pair of passthroughs is rechecked when either side is being registered, unless one of them opted out.
+					var pairUnchecked = call.uncheckedReferenceBinding || previous?.uncheckedReferenceBinding == true || !call.candidate && previous?.candidate != true;
+					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value", pairUnchecked);
+					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType, uncheckedReferenceBinding: call.UncheckedReferences);
 					previousResultType = fix.ReturnType;
+					previous = call;
 				}
-				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext, call.uncheckedReferenceBinding));
+				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext, call.UncheckedReferences));
 			}
 			return codes;
 		}
@@ -284,11 +288,11 @@ namespace HarmonyLib
 				var fix = call.method;
 				if (outerContext != null && fix.ReturnType != typeof(void) && !typeof(Exception).IsAssignableFrom(fix.ReturnType))
 					throw new ArgumentException($"Infix finalizer {fix.FullDescription()} must return void or an Exception.");
-				if (fix.ReturnType != typeof(void)) this.ValidateReturnBinding(fix, context, fix.ReturnType, typeof(Exception), uncheckedReferenceBinding: call.uncheckedReferenceBinding);
+				if (fix.ReturnType != typeof(void)) this.ValidateReturnBinding(fix, context, fix.ReturnType, typeof(Exception), uncheckedReferenceBinding: call.UncheckedReferences);
 				if (catchExceptions)
 					codes.Add(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
 
-				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.uncheckedReferenceBinding));
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.UncheckedReferences));
 
 				if (fix.ReturnType != typeof(void))
 				{

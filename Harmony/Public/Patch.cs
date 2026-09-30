@@ -45,6 +45,10 @@ namespace HarmonyLib
 		[OptionalField]
 		public readonly bool uncheckedReferenceBinding;
 
+		// Registered by the current operation, as opposed to a survivor read back from shared state.
+		[NonSerialized]
+		internal bool candidate;
+
 		[NonSerialized]
 		private MethodInfo patchMethod;
 		private int methodToken;

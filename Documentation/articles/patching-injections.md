@@ -23,7 +23,9 @@ Checks follow the conversions the emitter actually performs. Arguments can be bo
 
 Uncertain interface, array, generic variance and proxy relationships remain accepted. This feature adds no numeric, enum, pointer or struct-layout conversion policy. A nullable value type boxes like any other value type: a boxed `int?` is a boxed `int` or `null`, so it can be read as `object` or `IComparable`, while a reference argument declared as `int?` is rejected because the emitter has no unboxing conversion. Existing result, state, and Infix restrictions still apply. It also checks delegate receivers and invocation signatures, finalizer returns, and passthrough results for definite incompatibility.
 
-A rejected addition leaves that method's installed replacement and published patch registrations unchanged. Removing an invalid old registration remains possible because Harmony validates the surviving registrations. This is a per-method installation guarantee; prepare callbacks, factories, and transpilers may already have run. The checks add no work to patched invocations.
+The reference checks apply to the registrations being added. Surviving registrations were accepted when they were added, by this or an older engine, and are rebuilt with their accepted bindings; only structural requirements such as missing storage still apply to them. A pair of passthrough postfixes is rechecked when either of them is being added. `__exception` is checked against `Exception` even before any finalizer exists, so a later finalizer cannot invalidate an installed prefix.
+
+A rejected addition leaves that method's installed replacement and published patch registrations unchanged, and other owners can still add, remove and rebuild beside an older registration that would fail today's checks. This is a per-method installation guarantee; prepare callbacks, factories, and transpilers may already have run. The checks add no work to patched invocations.
 
 ### Unchecked reference binding
 

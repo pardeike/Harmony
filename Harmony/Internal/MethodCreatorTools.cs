@@ -663,8 +663,8 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.Exception)
 				{
-					creator.ValidateBinding(patch, injection, context,
-						context.variables.TryGetValue(InjectionType.Exception, out var suppliedException) ? suppliedException.LocalType : null, valueOnly: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
+					// The contract type applies even while no finalizer supplies storage, so a later finalizer cannot invalidate this declaration.
+					creator.ValidateBinding(patch, injection, context, typeof(Exception), valueOnly: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null && (!context.variables.TryGetValue(InjectionType.Exception, out _)
 						|| paramType.IsByRef || !paramType.IsAssignableFrom(typeof(Exception))))
 						throw BindingError(patch, injection, context, "Inner __exception requires a compatible by-value finalizer parameter");

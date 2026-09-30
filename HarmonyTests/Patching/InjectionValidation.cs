@@ -256,6 +256,120 @@ namespace HarmonyLibTests.Patching
 			finally { lock (state) state[original] = clean; }
 		}
 
+		static Dictionary<MethodBase, byte[]> SharedState => (Dictionary<MethodBase, byte[]>)AccessTools.Field(typeof(HarmonySharedState), "state").GetValue(null);
+
+		static void PublishLegacy(MethodBase original, Action<PatchInfo> register)
+		{
+			var legacy = HarmonySharedState.GetPatchInfo(original);
+			register(legacy);
+			lock (SharedState) SharedState[original] = legacy.Serialize();
+		}
+
+		[Test]
+		public void Legacy_reference_binding_does_not_block_other_owners()
+		{
+			var original = AccessTools.Method(typeof(Target), nameof(Target.Echo));
+			harmony.Patch(original, postfix: new HarmonyMethod(Patch(nameof(Append))));
+			var clean = SharedState[original];
+			try
+			{
+				PublishLegacy(original, legacy => legacy.AddPrefixes("invalid.legacy.injection", new HarmonyMethod(Patch(nameof(BadInstance)))));
+				var other = new Harmony("other.owner");
+				other.Patch(original, postfix: new HarmonyMethod(Patch(nameof(Empty))));
+				Assert.AreEqual("value!", new Target().Echo("value"));
+				CollectionAssert.AreEquivalent(new[] { harmony.Id, "invalid.legacy.injection", "other.owner" }, Harmony.GetPatchInfo(original).Owners);
+				harmony.Unpatch(original, HarmonyPatchType.Postfix, harmony.Id);
+				Assert.AreEqual("value", new Target().Echo("value"));
+				other.UnpatchAll(other.Id);
+				CollectionAssert.AreEquivalent(new[] { "invalid.legacy.injection" }, Harmony.GetPatchInfo(original).Owners);
+				harmony.Unpatch(original, HarmonyPatchType.Prefix, "invalid.legacy.injection");
+				Assert.IsEmpty(Harmony.GetPatchInfo(original).Owners);
+			}
+			finally { lock (SharedState) SharedState[original] = clean; }
+		}
+
+		[Test]
+		public void Legacy_inner_reference_binding_does_not_block_a_rebuild()
+		{
+			// Infix storage contracts stay strict for survivors; only the shared reference checks, here the delegate signature, are skipped.
+			var outer = AccessTools.Method(typeof(Target), nameof(Target.Outer));
+			var selected = AccessTools.Method(typeof(Target), nameof(Target.Echo));
+			harmony.Patch(outer, postfix: new HarmonyMethod(Patch(nameof(Append))));
+			var clean = SharedState[outer];
+			try
+			{
+				PublishLegacy(outer, legacy => legacy.AddInnerPrefixes("invalid.legacy.injection",
+					new HarmonyMethod(Patch(nameof(BadDelegateReturn))) { innerMethod = new InnerMethod(selected) }));
+				new Harmony("other.owner").Patch(outer, postfix: new HarmonyMethod(Patch(nameof(Empty))));
+				Assert.AreEqual("value!", new Target().Outer("value"));
+			}
+			finally { lock (SharedState) SharedState[outer] = clean; }
+		}
+
+		[Test]
+		public void A_new_reference_binding_is_still_checked_beside_legacy_registrations()
+		{
+			var original = AccessTools.Method(typeof(Target), nameof(Target.Echo));
+			harmony.Patch(original, postfix: new HarmonyMethod(Patch(nameof(Append))));
+			var clean = SharedState[original];
+			try
+			{
+				PublishLegacy(original, legacy => legacy.AddPrefixes("invalid.legacy.injection", new HarmonyMethod(Patch(nameof(BadInstance)))));
+				var published = SharedState[original];
+				Assert.Catch(() => new Harmony("other.owner").Patch(original, prefix: new HarmonyMethod(Patch(nameof(Instance), typeof(Unrelated)))));
+				Assert.AreSame(published, SharedState[original]);
+			}
+			finally { lock (SharedState) SharedState[original] = clean; }
+		}
+
+		[TestCase(typeof(string), false)]
+		[TestCase(typeof(object), true)]
+		[TestCase(typeof(InvalidOperationException), true)]
+		public void Exception_injection_follows_the_exception_contract_without_a_finalizer(Type requested, bool accepted)
+		{
+			var original = AccessTools.Method(typeof(Target), nameof(Target.Echo));
+			var patch = new HarmonyMethod(Patch(nameof(ExceptionParameter), requested));
+			if (accepted)
+			{
+				harmony.Patch(original, prefix: patch);
+				Assert.AreEqual("value", new Target().Echo("value"));
+			}
+			else
+			{
+				var error = Assert.Catch(() => harmony.Patch(original, prefix: patch));
+				StringAssert.Contains("__exception", error.Message);
+			}
+		}
+
+		[Test]
+		public void Legacy_passthrough_chain_is_not_rechecked()
+		{
+			// Non-generic callbacks: a generic instantiation resolves to its open definition after a shared-state round trip.
+			var original = AccessTools.Method(typeof(Target), nameof(Target.ObjectEcho));
+			harmony.Patch(original, postfix: new HarmonyMethod(Patch(nameof(UriPassthrough))));
+			var clean = SharedState[original];
+			try
+			{
+				PublishLegacy(original, legacy => legacy.AddPostfixes("legacy.chain", new HarmonyMethod(Patch(nameof(BasePassthrough))) { priority = Priority.High }));
+				new Harmony("other.owner").Patch(original, postfix: new HarmonyMethod(Patch(nameof(Empty))));
+				Assert.IsInstanceOf<Base>(Target.ObjectEcho("value"));
+			}
+			finally { lock (SharedState) SharedState[original] = clean; }
+		}
+
+		[Test]
+		public void A_new_passthrough_postfix_is_checked_against_the_survivor_it_precedes()
+		{
+			var original = AccessTools.Method(typeof(Target), nameof(Target.ObjectEcho));
+			harmony.Patch(original, postfix: new HarmonyMethod(Patch(nameof(UriPassthrough))));
+			var published = SharedState[original];
+			var error = Assert.Catch(() => new Harmony("chain").Patch(original, postfix: new HarmonyMethod(Patch(nameof(BasePassthrough))) { priority = Priority.High }));
+			StringAssert.Contains("System.Uri", error.Message);
+			Assert.AreSame(published, SharedState[original]);
+			var value = new string('x', 3);
+			Assert.AreSame(value, Target.ObjectEcho(value));
+		}
+
 		[TestCase(HarmonyPatchType.Prefix)]
 		[TestCase(HarmonyPatchType.Postfix)]
 		[TestCase(HarmonyPatchType.Finalizer)]
@@ -481,6 +595,9 @@ namespace HarmonyLibTests.Patching
 		static void FirstArgumentReaders(ref string ___field, HolderRead read) { observed = read(); ___field = "changed"; }
 		static void CellField(ref string ___field) => ___field = "changed";
 		static void Append(ref string __result) => __result += "!";
+		static void Empty() { }
+		static Base BasePassthrough(Base result) => new();
+		static Uri UriPassthrough(Uri result) => result;
 		static void ReplaceArgument(ref object value) => value = "replaced";
 		static object WidePassthrough(object result) => result + "!";
 		static object WideFinalizer(Exception __exception) { observed = __exception; return null; }

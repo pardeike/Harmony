@@ -9,10 +9,13 @@ namespace HarmonyLib
 {
 
 	// Keep registration-specific options beside the resolved callback, including factory results.
-	internal readonly struct PatchCall(MethodInfo method, bool uncheckedReferenceBinding = false)
+	internal readonly struct PatchCall(MethodInfo method, bool uncheckedReferenceBinding = false, bool candidate = true)
 	{
 		internal readonly MethodInfo method = method;
 		internal readonly bool uncheckedReferenceBinding = uncheckedReferenceBinding;
+		internal readonly bool candidate = candidate;
+		// Survivors were accepted when they were registered, by this or an older engine; only structural checks still apply to them.
+		internal bool UncheckedReferences => uncheckedReferenceBinding || !candidate;
 	}
 
 	internal class MethodCreatorConfig

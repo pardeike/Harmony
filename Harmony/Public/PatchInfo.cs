@@ -267,7 +267,7 @@ namespace HarmonyLib
 ,
 				.. add
 					.Where(method => method != null)
-					.Select((method, i) => new Patch(AttributePatch.PrepareRegistration(method, role), checked(i + initialIndex), owner))
+					.Select((method, i) => new Patch(AttributePatch.PrepareRegistration(method, role), checked(i + initialIndex), owner) { candidate = true })
 ,
 			];
 		}
