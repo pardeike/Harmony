@@ -196,22 +196,22 @@ namespace HarmonyLibTests.Patching
 		public void Metadata_roundtrip_requires_version_five_and_preserves_the_flag()
 		{
 #if NET5_0_OR_GREATER && !NET9_0_OR_GREATER
-            var previous = PatchInfoSerialization.useBinaryFormatter;
-            const string formatterSwitch = "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization";
-            _ = AppContext.TryGetSwitch(formatterSwitch, out var previousSwitch);
-            try
-            {
-                AppContext.SetSwitch(formatterSwitch, true);
-                PatchInfoSerialization.useBinaryFormatter = false;
-                Check();
-                PatchInfoSerialization.useBinaryFormatter = true;
-                Check();
-            }
-            finally
-            {
-                PatchInfoSerialization.useBinaryFormatter = previous;
-                AppContext.SetSwitch(formatterSwitch, previousSwitch);
-            }
+			var previous = PatchInfoSerialization.useBinaryFormatter;
+			const string formatterSwitch = "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization";
+			_ = AppContext.TryGetSwitch(formatterSwitch, out var previousSwitch);
+			try
+			{
+				AppContext.SetSwitch(formatterSwitch, true);
+				PatchInfoSerialization.useBinaryFormatter = false;
+				Check();
+				PatchInfoSerialization.useBinaryFormatter = true;
+				Check();
+			}
+			finally
+			{
+				PatchInfoSerialization.useBinaryFormatter = previous;
+				AppContext.SetSwitch(formatterSwitch, previousSwitch);
+			}
 #else
 			Check();
 #endif

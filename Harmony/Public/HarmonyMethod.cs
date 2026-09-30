@@ -63,7 +63,7 @@ namespace HarmonyLib
 		/// 
 		public bool? debug;
 
-		/// <summary>Skip new reference-type compatibility checks for this patch, including existing boxing. Structural and existing role-specific checks still apply. Transpilers reject it.</summary>
+		/// <summary>Skip reference-type compatibility checks for this patch, including references produced by boxing. Structural and role-specific checks still apply. Transpilers reject it.</summary>
 		public bool? uncheckedReferenceBinding;
 
 		/// <summary>Whether to use <see cref="MethodDispatchType.Call"/> (<c>true</c>) or <see cref="MethodDispatchType.VirtualCall"/> (<c>false</c>) mechanics

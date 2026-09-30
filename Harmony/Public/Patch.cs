@@ -41,7 +41,7 @@ namespace HarmonyLib
 		///
 		public readonly bool debug;
 
-		/// <summary>Whether this registration skips new reference-type compatibility checks, including existing boxing.</summary>
+		/// <summary>Whether this registration skips reference-type compatibility checks, including references produced by boxing.</summary>
 		[OptionalField]
 		public readonly bool uncheckedReferenceBinding;
 
