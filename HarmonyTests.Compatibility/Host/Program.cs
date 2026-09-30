@@ -145,7 +145,7 @@ internal static class Program
 					cases.Add(("completion-prior-v" + priorInfixVersion + "-new-first", new("completion-prior", current, newFixture, old, oldFixture, backend, feature, framework, "new-first", PriorInfixStateVersion: int.Parse(priorInfixVersion))));
 				}
 			}
-			else if (framework == "net9.0" && backend == "json" && AssemblyName.GetAssemblyName(old).Version == new Version(2, 4, 2, 0))
+			else if (framework is "net9.0" or "net10.0" && backend == "json" && AssemblyName.GetAssemblyName(old).Version == new Version(2, 4, 2, 0))
 				cases.Add(("extensions-released", new("extensions-released", old, oldFixture, current, newFixture, backend, feature, framework)));
 			if (AssemblyName.GetAssemblyName(old).Version! >= new Version(2, 4, 0, 0))
 				foreach (var variant in new[] { "prefix-role", "postfix-role", "prefix-method", "postfix-method" })
