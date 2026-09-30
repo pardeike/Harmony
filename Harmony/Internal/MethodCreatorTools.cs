@@ -366,6 +366,63 @@ namespace HarmonyLib
 		static ArgumentException BindingError(MethodInfo patch, InjectedParameter injection, PatchBindingContext context, string reason)
 			=> new($"{reason}: {patch.FullDescription()} parameter {injection.parameterInfo.Name}, {(injection.outer ? "outer" : "inner")} operation {context.Description}, requested {injection.parameterInfo.ParameterType.FullDescription()}");
 
+		// A missing conversion is definite; a missing one-way assignment usually is not.
+		// This deliberately leaves numeric/layout conversions and unusual runtime types alone.
+		internal static string BindingIncompatibility(Type source, Type destination, bool boxes = false)
+		{
+			source = ElementType(source);
+			destination = ElementType(destination);
+			if (source == destination) return null;
+			if (source.ContainsGenericParameters || destination.ContainsGenericParameters
+				|| IsNativePointer(source) || IsNativePointer(destination)
+				|| Nullable.GetUnderlyingType(source) != null || Nullable.GetUnderlyingType(destination) != null) return null;
+			if (source.IsValueType != destination.IsValueType)
+			{
+				if (source.IsValueType && boxes)
+					return destination.IsAssignableFrom(source) ? null : "The boxed value cannot have the requested type";
+				return "The emitted binding has no boxing or unboxing conversion between a value and a reference";
+			}
+			if (source.IsValueType) return null;
+			if (source.IsAssignableFrom(destination) || destination.IsAssignableFrom(source)) return null;
+			if (source.IsCOMObject || destination.IsCOMObject || source.IsImport || destination.IsImport
+				|| typeof(MarshalByRefObject).IsAssignableFrom(source) || typeof(MarshalByRefObject).IsAssignableFrom(destination)) return null;
+			if (source.IsArray && (destination.IsArray || destination.IsInterface)
+				|| destination.IsArray && source.IsInterface) return null;
+			if (source.IsGenericType && destination.IsGenericType
+				&& typeof(Delegate).IsAssignableFrom(source) && typeof(Delegate).IsAssignableFrom(destination)) return null;
+			if (source.IsInterface && destination.IsInterface) return null;
+			if (source.IsInterface || destination.IsInterface)
+				return (source.IsInterface ? destination : source).IsSealed ? "The sealed class cannot implement the requested interface" : null;
+			return "Unrelated classes cannot describe the same non-null object";
+		}
+
+		internal static ArgumentException InvalidBinding(this MethodCreator creator, MethodInfo patch, PatchBindingContext context,
+			string binding, Type source, Type requested, string reason)
+			=> new($"{reason}: original {creator.config.original.FullDescription()}, patch {patch.FullDescription()}, {binding}, "
+				+ $"operation {context.Description}, supplied {source?.FullDescription() ?? "null (no storage)"}, requested {requested.FullDescription()}");
+
+		static void ValidateBinding(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context,
+			Type source, bool boxes = false, bool valueOnly = false, string sourceName = null)
+		{
+			var requested = injection.parameterInfo.ParameterType;
+			var reason = valueOnly && requested.IsByRef ? "This binding supplies a value, not an address"
+				: source is null ? requested.IsByRef || requested.IsValueType || IsNativePointer(requested)
+					? "No value or address exists for this parameter" : null
+				: BindingIncompatibility(source, requested, boxes);
+			if (reason != null)
+				throw creator.InvalidBinding(patch, context,
+					$"parameter {injection.parameterInfo.Name} bound to {(injection.outer ? "outer " : context != creator.config.bindingContext ? "inner " : "")}{sourceName ?? injection.realName}", source, requested, reason);
+		}
+
+		internal static void ValidateReturnBinding(this MethodCreator creator, MethodInfo patch, PatchBindingContext context,
+			Type source, Type destination, string binding = "return value")
+		{
+			var reason = source == typeof(void) || destination == typeof(void) ? "A void operation has no passthrough result"
+				: source.IsByRef != destination.IsByRef ? "The return value and destination require different value/address shapes"
+				: BindingIncompatibility(source, destination);
+			if (reason != null) throw creator.InvalidBinding(patch, context, binding, source, destination, reason);
+		}
+
 		static bool IsFieldInjection(InjectedParameter injection) => injection.argumentMode == ArgumentMode.Default && injection.realName.StartsWith(INSTANCE_FIELD_PREFIX, StringComparison.Ordinal);
 		static bool IsLocalInjection(InjectedParameter injection) => injection.argumentMode == ArgumentMode.Persistent
 			|| injection.argumentMode == ArgumentMode.Default && injection.realName.StartsWith("__var_", StringComparison.Ordinal);
@@ -582,6 +639,7 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.OriginalMethod)
 				{
 					if (original is null) throw BindingError(patch, injection, context, "This operation is not a method; use __originalMember for a field");
+					creator.ValidateBinding(patch, injection, context, original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo), valueOnly: true);
 					if (outerContext != null && (paramType.IsByRef || !paramType.IsAssignableFrom(original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo))))
 						throw BindingError(patch, injection, context, "__originalMethod requires a compatible by-value method type");
 					if (EmitOriginalBaseMethod(original, codes))
@@ -604,6 +662,8 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.Exception)
 				{
+					creator.ValidateBinding(patch, injection, context,
+						context.variables.TryGetValue(InjectionType.Exception, out var suppliedException) ? suppliedException.LocalType : null, valueOnly: true);
 					if (outerContext != null && (!context.variables.TryGetValue(InjectionType.Exception, out _)
 						|| paramType.IsByRef || !paramType.IsAssignableFrom(typeof(Exception))))
 						throw BindingError(patch, injection, context, "Inner __exception requires a compatible by-value finalizer parameter");
@@ -616,6 +676,7 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.RunOriginal)
 				{
+					creator.ValidateBinding(patch, injection, context, typeof(bool), valueOnly: true);
 					if (context.variables.TryGetValue(InjectionType.RunOriginal, out var runOriginal))
 						codes.Add(Ldloc[runOriginal]);
 					else
@@ -625,6 +686,8 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.Instance)
 				{
+					creator.ValidateBinding(patch, injection, context, context.receiver?.type,
+						boxes: outerContext != null || AccessTools.IsStruct(originalType) && ElementType(paramType) == typeof(object));
 					if (outerContext != null)
 					{
 						if (context.receiver is null)
@@ -689,6 +752,11 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.ArgsArray)
 				{
+					creator.ValidateBinding(patch, injection, context, typeof(object[]), valueOnly: true);
+					foreach (var parameter in context.parameters)
+						if (!CanStoreInObjectArray(ElementType(parameter.ParameterType)))
+							throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to __args, argument {parameter.Name}",
+								parameter.ParameterType, paramType, "The argument cannot be represented in object[]; use a typed parameter");
 					if (context.variables.TryGetValue(InjectionType.ArgsArray, out var argsArrayVar))
 						codes.Add(Ldloc[argsArrayVar]);
 					else
@@ -699,10 +767,13 @@ namespace HarmonyLib
 				if (IsFieldInjection(injection))
 				{
 					var fieldInfo = ResolveField(injection, context);
+					if (!fieldInfo.IsStatic && context.receiver is null)
+						throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to field {fieldInfo.Name}",
+							fieldInfo.FieldType, paramType, "An instance field requires a receiver");
+					creator.ValidateBinding(patch, injection, context, fieldInfo.FieldType,
+						boxes: outerContext != null && !paramType.IsByRef, sourceName: $"field {fieldInfo.DeclaringType.FullDescription()}.{fieldInfo.Name}");
 					if (outerContext != null)
 					{
-						if (!fieldInfo.IsStatic && context.receiver is null)
-							throw BindingError(patch, injection, context, "An instance field requires a receiver");
 						ValidateStorageType(patch, injection, context, fieldInfo.FieldType, false);
 					}
 
@@ -724,11 +795,15 @@ namespace HarmonyLib
 				{
 					if (context.variables.TryGetValue((object)patch.DeclaringType ?? "null", out var stateVar))
 					{
+						creator.ValidateBinding(patch, injection, context, stateVar.type, boxes: outerContext != null);
 						if (outerContext != null) codes.AddRange(creator.EmitStorage(patch, injection, context, stateVar, true, tmpBoxVars));
 						else codes.Add(paramType.IsByRef ? stateVar.LoadAddress() : stateVar.Load());
 					}
 					else
+					{
+						creator.ValidateBinding(patch, injection, context, null);
 						codes.Add(Ldnull);
+					}
 					continue;
 				}
 
@@ -742,12 +817,14 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.Result)
 				{
 					if (returnType == typeof(void))
-						throw new Exception($"Cannot get result from void operation {context.Description}");
+						throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to __result", returnType, paramType, "A void operation has no result");
+					creator.ValidateBinding(patch, injection, context, returnType,
+						boxes: outerContext != null || ElementType(paramType) == typeof(object));
 					var resultType = paramType;
 					if (resultType.IsByRef && returnType.IsByRef is false)
 						resultType = resultType.GetElementType();
 					if (resultType.IsAssignableFrom(returnType) is false)
-						throw new Exception($"Cannot assign return type {returnType.FullName} to {InjectedParameter.RESULT_VAR} type {resultType.FullName} for {context.Description}");
+						throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to __result", returnType, paramType, "The existing result contract requires an assignable type");
 					if (outerContext != null && !returnType.IsByRef)
 						ValidateStorageType(patch, injection, context, returnType, true);
 					var ldlocCode = paramType.IsByRef && returnType.IsByRef is false ? OpCodes.Ldloca : OpCodes.Ldloc;
@@ -791,6 +868,7 @@ namespace HarmonyLib
 
 				if (injection.argumentMode == ArgumentMode.Default && context.variables.TryGetValue(paramRealName, out var localBuilder))
 				{
+					creator.ValidateBinding(patch, injection, context, localBuilder.type);
 					codes.Add(paramType.IsByRef ? localBuilder.LoadAddress() : localBuilder.Load());
 					continue;
 				}
@@ -806,12 +884,11 @@ namespace HarmonyLib
 						var delegateConstructor = paramType.GetConstructor([typeof(object), typeof(IntPtr)]);
 						if (delegateConstructor is not null)
 						{
+							creator.ValidateDelegate(patch, injection, context, methodInfo);
 							if (methodInfo.IsStatic)
 								codes.Add(Ldnull);
 							else
 							{
-								if (outerContext != null && context.receiver is null)
-									throw BindingError(patch, injection, context, "An instance delegate requires a receiver");
 								if (outerContext != null && !methodInfo.DeclaringType.IsAssignableFrom(originalType))
 									throw BindingError(patch, injection, context, "The requested delegate method is incompatible with the receiver");
 								codes.Add(context.receiver?.Load() ?? Ldarg_0);
@@ -840,7 +917,8 @@ namespace HarmonyLib
 
 					throw new Exception($"Parameter \"{paramRealName}\" not found in {context.Description}");
 				}
-				codes.AddRange(creator.EmitStorage(patch, injection, context, context.arguments[argumentIdx], outerContext != null, tmpBoxVars));
+				codes.AddRange(creator.EmitStorage(patch, injection, context, context.arguments[argumentIdx], outerContext != null, tmpBoxVars,
+					$"argument {argumentIdx} ({context.parameterNames[argumentIdx]})"));
 			}
 			return codes;
 		}
@@ -868,8 +946,9 @@ namespace HarmonyLib
 		}
 
 		static List<CodeInstruction> EmitStorage(this MethodCreator creator, MethodInfo patch, InjectedParameter injection,
-			PatchBindingContext context, InjectionStorage argument, bool infix, List<(InjectionStorage storage, LocalBuilder variable)> tmpBoxVars)
+			PatchBindingContext context, InjectionStorage argument, bool infix, List<(InjectionStorage storage, LocalBuilder variable)> tmpBoxVars, string sourceName = null)
 		{
+			creator.ValidateBinding(patch, injection, context, argument.type, boxes: true, sourceName: sourceName);
 			var codes = new List<CodeInstruction>();
 			var config = creator.config;
 			var paramType = injection.parameterInfo.ParameterType;
@@ -932,6 +1011,36 @@ namespace HarmonyLib
 					codes.Add(LoadIndOpCodeFor(originalParamElementType));
 			}
 			return codes;
+		}
+
+		static void ValidateDelegate(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context, MethodInfo method)
+		{
+			var delegateType = injection.parameterInfo.ParameterType;
+			var binding = $"parameter {injection.parameterInfo.Name} bound to delegate {method.FullDescription()}";
+			if (!method.IsStatic)
+			{
+				var reason = context.receiver is null ? "An instance delegate requires a receiver"
+					: BindingIncompatibility(context.receiverType, method.DeclaringType, boxes: true);
+				if (reason != null) throw creator.InvalidBinding(patch, context, binding, context.receiver?.type, method.DeclaringType, reason);
+			}
+			// The existing constructor fallback also admits custom handles with no delegate invocation contract.
+			if (!typeof(Delegate).IsAssignableFrom(delegateType)) return;
+			var invoke = delegateType.GetMethod("Invoke");
+			var supplied = invoke.GetParameters();
+			var requested = method.GetParameters();
+			if (supplied.Length != requested.Length)
+				throw creator.InvalidBinding(patch, context, binding, delegateType, method.DeclaringType,
+					$"The delegate supplies {supplied.Length} arguments but the method takes {requested.Length}");
+			for (var i = 0; i < supplied.Length; i++) Check(supplied[i].ParameterType, requested[i].ParameterType, $"argument {i}");
+			Check(method.ReturnType, invoke.ReturnType, "return value");
+
+			void Check(Type source, Type destination, string part)
+			{
+				var reason = (source == typeof(void)) != (destination == typeof(void)) ? "The delegate and method disagree on whether there is a result"
+					: source.IsByRef != destination.IsByRef ? "The delegate and method require different value/address shapes"
+					: BindingIncompatibility(source, destination);
+				if (reason != null) throw creator.InvalidBinding(patch, context, $"{binding}, {part}", source, destination, reason);
+			}
 		}
 
 		static void ValidateStorageType(MethodInfo patch, InjectedParameter injection, PatchBindingContext context, Type source, bool allowBoxedRef)

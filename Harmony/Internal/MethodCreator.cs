@@ -90,7 +90,8 @@ namespace HarmonyLib
 						if (injection.outer ? type != maybeLocal.type : !type.IsAssignableFrom(maybeLocal.type))
 						{
 							var message = $"__state type mismatch in patch \"{fix.DeclaringType.FullName}.{fix.Name}\": " +
-								$"previous __state was declared as \"{maybeLocal.type.FullName}\" but this patch expects \"{type.FullName}\"";
+								$"previous __state was declared as \"{maybeLocal.type.FullName}\" but this patch expects \"{type.FullName}\"; " +
+								$"original {config.original.FullDescription()}, parameter {injection.parameterInfo.Name}, supplied {maybeLocal.type.FullDescription()}, requested {parameterType.FullDescription()}";
 							throw new HarmonyException(message);
 						}
 						else
@@ -195,17 +196,17 @@ namespace HarmonyLib
 			var codes = new List<CodeInstruction>();
 			foreach (var fix in prefixes)
 			{
+				var returnType = fix.ReturnType;
+				if (returnType != typeof(void) && returnType != typeof(bool))
+					throw this.InvalidBinding(fix, context, "prefix return value", returnType, typeof(bool), "Prefixes must return bool or void");
 				var skipLabel = this.AffectsOriginal(fix, outerContext != null) ? config.DefineLabel() : (Label?)null;
 				if (skipLabel.HasValue)
 					codes.AddRange([Ldloc[context.variables[InjectionType.RunOriginal]], Brfalse[skipLabel.Value]]);
 
 				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext));
 
-				var returnType = fix.ReturnType;
 				if (returnType != typeof(void))
 				{
-					if (returnType != typeof(bool))
-						throw new Exception($"Prefix patch {fix} has not \"bool\" or \"void\" return type: {fix.ReturnType}");
 					codes.Add(Stloc[context.variables[InjectionType.RunOriginal]]);
 				}
 
@@ -224,14 +225,13 @@ namespace HarmonyLib
 		internal List<CodeInstruction> EmitPostfixes(IEnumerable<MethodInfo> postfixes, PatchBindingContext context, bool passthroughPatches, PatchBindingContext outerContext = null)
 		{
 			var codes = new List<CodeInstruction>();
+			var previousResultType = context.returnType;
 			foreach (var fix in postfixes.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void))))
 			{
 				if (outerContext != null && passthroughPatches && (fix.ReturnType != context.returnType
 					|| fix.GetParameters().FirstOrDefault()?.ParameterType != context.returnType))
 					throw new ArgumentException($"Infix passthrough postfix {fix.FullDescription()} must return and take a first parameter of exactly {context.returnType.FullDescription()}, "
 						+ $"the result type of {context.Description}; actual return is {fix.ReturnType.FullDescription()} and first parameter is {fix.GetParameters().FirstOrDefault()?.ParameterType.FullDescription() ?? "missing"}.");
-				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext));
-
 				if (fix.ReturnType != typeof(void))
 				{
 					var firstFixParam = fix.GetParameters().FirstOrDefault();
@@ -243,7 +243,11 @@ namespace HarmonyLib
 
 						throw new Exception($"Postfix patch {fix} must have a \"void\" return type");
 					}
+					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value");
+					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType);
+					previousResultType = fix.ReturnType;
 				}
+				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext));
 			}
 			return codes;
 		}
@@ -277,6 +281,7 @@ namespace HarmonyLib
 			{
 				if (outerContext != null && fix.ReturnType != typeof(void) && !typeof(Exception).IsAssignableFrom(fix.ReturnType))
 					throw new ArgumentException($"Infix finalizer {fix.FullDescription()} must return void or an Exception.");
+				if (fix.ReturnType != typeof(void)) this.ValidateReturnBinding(fix, context, fix.ReturnType, typeof(Exception));
 				if (catchExceptions)
 					codes.Add(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
 

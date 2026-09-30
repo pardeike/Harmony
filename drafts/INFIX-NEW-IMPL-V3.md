@@ -4,6 +4,18 @@
 
 ## 1. The feature in one page
 
+### Shared patch-time incompatibility checks
+
+Harmony 3's shared binder rejects demonstrably incompatible injections before installing a replacement. The policy accepts uncertainty: related references in either direction, plausible interface relationships, wider writable references, and uncertain array, generic variance or proxy cases remain accepted for ordinary patches. In particular, existing `string` state storage with `ref object __state` remains supported. Unrelated ordinary classes and a sealed class that cannot implement the requested interface are incompatible. Boxing is judged against the conversion that the emission branch actually performs; no runtime cast or adapter is added.
+
+The checks cover receivers, resolved named/indexed/aliased arguments, fields, state, results, metadata, exceptions, run flags, argument arrays, delegates, and role return values. Value-only injections cannot supply an address. Argument arrays require representable elements. Delegate checks include receiver availability, parameter count, value/address shape and provably incompatible parameter or return types. Existing numeric, enum, pointer, nullable and struct-layout behavior is outside this new policy.
+
+Infix retains the stricter contracts below and in the linked addenda. This shared check does not relax exact passthrough types, writable-storage rules, scope rules or array restrictions. Diagnostics for new failures name the outer original, resolved callback, parameter/source, supplied/requested types and reason, with scope and selected-operation context for Infix.
+
+Validation uses resolved factory callbacks once per rebuild and concrete binding contexts, without a patch-only compatibility cache or serialized changes. It completes before installing the replacement or publishing shared state. Rejected candidates leave the previous wrapper and patch state intact; requested removals precede validation of survivors. User callbacks may already have executed, and the guarantee applies separately to each original method. See the [injection guide](../Documentation/articles/patching-injections.md#patch-time-checks-in-harmony-3) for examples.
+
+### Infix execution
+
 An **Infix** applies prefixes, postfixes or finalizers to a selected operation inside another method. The **outer method** contains the operation. For a method call, the **inner method** is the method being called. A **site** is one matching instruction in the outer method. Calls are the core example below; property accessors, field reads/writes, construction and literal loads use the same per-site rules within their documented boundaries.
 
 The rule is ordinary Harmony behavior at the selected call. For two prefixes and two void postfixes with high and low priorities, without additional ordering constraints or skipping:
