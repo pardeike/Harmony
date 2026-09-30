@@ -13,7 +13,7 @@ These checks catch definite mistakes. Acceptance does not prove that every runti
 
 | Binding | Outcome |
 | --- | --- |
-| A receiver requested as an unrelated class | Rejected, even if the callback would ignore it |
+| A receiver requested as an unrelated class | Rejected by default, even if the callback would ignore it |
 | A `string` argument read as `object` | Accepted |
 | An `object` argument read as `string` | Accepted; the actual value must be suitable |
 | A `string` state local accessed through `ref object __state` | Accepted under the existing state contract; writing an incompatible object is still the patch's responsibility |
@@ -24,6 +24,49 @@ Checks follow the conversions the emitter actually performs. Arguments can be bo
 Uncertain interface, array, generic variance and proxy relationships remain accepted. This feature adds no numeric, enum, pointer, nullable or struct-layout conversion policy. Existing result, state, and Infix restrictions still apply. It also checks delegate receivers and invocation signatures, finalizer returns, and passthrough results for definite incompatibility.
 
 A rejected addition leaves that method's installed replacement and published patch registrations unchanged. Removing an invalid old registration remains possible because Harmony validates the surviving registrations. This is a per-method installation guarantee; prepare callbacks, factories, and transpilers may already have run. The checks add no work to patched invocations.
+
+### Unchecked reference binding
+
+Use `[HarmonyUncheckedReferenceBinding]` on an individual patch method when its reference bindings deliberately depend on knowledge outside the declared types. Here, **reference** means an object reference: the option applies to both ordinary parameters and `ref` parameters.
+
+For example, one callback can patch `First(A first, Other second)` and `Second(Other first, B second)` and use only the matching argument:
+
+```csharp
+[HarmonyPrefix]
+[HarmonyUncheckedReferenceBinding]
+static void Prefix(A first, B second, MethodBase __originalMethod)
+{
+    if (__originalMethod.Name == nameof(Targets.First))
+        first.Use();
+    else
+        second.Use();
+}
+```
+
+For manual registration, set the equivalent nullable `HarmonyMethod` field:
+
+```csharp
+harmony.Patch(original, prefix: new HarmonyMethod(patchMethod)
+{
+    uncheckedReferenceBinding = true
+});
+```
+
+The option skips the new compatibility checks between reference types. It also covers object references produced by boxing that the emitter already performs, such as an unused `int` argument supplied to an unrelated reference parameter. It applies to ordinary prefixes, postfixes and finalizers, including injected delegates and reference passthrough returns. A sibling-typed `ref` passthrough postfix can therefore opt in. Infix callbacks carry the same option, but retain their existing stricter contracts.
+
+The option does **not** add casts, boxing, unboxing or other conversions. It retains these requirements:
+
+- Named arguments and fields must exist, and bindings that require storage or an address must have it. `__result` still requires a result, and `ref __instance` requires a receiver. Value-only injections such as `__originalMethod` and `__args` still cannot be requested by `ref`.
+- Value/reference bindings must use a conversion the emitter already supports. An `object` argument requested as `Guid` still fails.
+- Existing `__result`, exact `RefResult<T> __resultRef`, state, Infix storage/scope and passthrough contracts still apply. Delegate arity and value/address shape checks remain.
+
+This is permission to emit the existing binding, not a declaration that the CLR considers it safe. Harmony does not inspect whether a callback touches an incompatible argument. Its body, callers and the runtime must tolerate the emitted code; successful installation does not prove that later execution is safe.
+
+The default is checked. The method-only attribute affects that callback's registrations; the manual field affects the individual registration. An explicit `false` overrides an imported attribute. The stored flag is a snapshot: changing the input `HarmonyMethod` later does not change an installed patch. For a factory, put the option on the registered factory or its `HarmonyMethod`; it follows the resolved callback through each rebuild. Another registration remains checked even if it resolves to the same callback. Transpiler instruction validation is outside this option.
+
+Generic policy is unchanged. The binder uses runtime type relationships for closed types and leaves open or uncertain relationships accepted, without recursively expanding generic constraints. Self-referential types such as `Node<T> where T : Node<T>` do not require special traversal. Acceptance here does not expand support for patching open generic methods.
+
+**Mixed Harmony versions:** methods with an opted-out registration use shared patch-state version 5. A second capable engine preserves the flag when rebuilding. Older engines reject that method's state before reading or updating its registrations, so they cannot silently discard the option. Remove the opted-out registrations using a capable engine to restore the format required by the remaining patches. Unmarked methods retain their previous format. This protects published state; hosts must still serialize cross-engine updates, since an older engine could already hold an unpublished candidate created before the opted-out registration.
 
 ## __instance
 

@@ -46,6 +46,13 @@ internal sealed partial class InfixCompatibilityTests(Options options, List<obje
 			SharedStartup(a, b);
 			return;
 		}
+		if (options.Case.StartsWith("unchecked-", StringComparison.Ordinal))
+		{
+			OrdinaryControl(a, b);
+			if (options.Case == "unchecked-cold") UncheckedCold(a, b);
+			else UncheckedPrior(options.Variant == "new-first" ? b : a, options.Variant == "new-first" ? a : b);
+			return;
+		}
 		if (options.Case.StartsWith("persistent-", StringComparison.Ordinal))
 		{
 			OrdinaryControl(a, b);

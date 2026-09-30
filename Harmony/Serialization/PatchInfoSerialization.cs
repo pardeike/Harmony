@@ -88,7 +88,7 @@ namespace HarmonyLib
 			var backend = CurrentBackend;
 			var version = patchInfo.GetRequiredInfixVersion();
 			var payload = SerializePayload(patchInfo, backend, version);
-			if (!patchInfo.HasInfixes) return payload;
+			if (!patchInfo.HasInfixes && !patchInfo.HasUncheckedReferenceBindings) return payload;
 			var bytes = new byte[infixHeader.Length + 2 + payload.Length];
 			Buffer.BlockCopy(infixHeader, 0, bytes, 0, infixHeader.Length);
 			bytes[infixHeader.Length] = version;
@@ -145,7 +145,7 @@ namespace HarmonyLib
 				if (bytes.Length <= infixHeader.Length + 2 || !bytes.Take(infixHeader.Length).SequenceEqual(infixHeader))
 					throw new SerializationException("Malformed or truncated Harmony Infix state header");
 				version = bytes[infixHeader.Length];
-				if (version is < 1 or > 4) throw new SerializationException($"Unsupported Harmony Infix state version {version}");
+				if (version is < 1 or > 5) throw new SerializationException($"Unsupported Harmony Infix state version {version}");
 				backend = bytes[infixHeader.Length + 1];
 				if (backend != 1 && backend != 2) throw new SerializationException($"Unsupported Harmony Infix serializer {backend}");
 				var payload = new byte[bytes.Length - infixHeader.Length - 2];
@@ -158,7 +158,10 @@ namespace HarmonyLib
 			var result = DeserializePayload(bytes, backend);
 			if (result is null) throw new SerializationException("Patch state cannot be null");
 			result.NormalizeLegacyArrays();
-			if (enveloped && !result.HasInfixes) throw new SerializationException("Harmony Infix state must contain at least one inner patch");
+			if (result.HasUncheckedReferenceBindings && version < 5)
+				throw new SerializationException("Unchecked reference binding requires Harmony patch state version 5");
+			if (enveloped && !result.HasInfixes && !result.HasUncheckedReferenceBindings)
+				throw new SerializationException("Versioned Harmony patch state must contain an inner patch or unchecked reference binding");
 			var allPatches = result.prefixes.Concat(result.postfixes).Concat(result.transpilers).Concat(result.finalizers)
 				.Concat(result.innerprefixes).Concat(result.innerpostfixes).Concat(result.innerfinalizers).ToArray();
 			var requiredVersion = version < 4 ? result.GetRequiredInfixVersion(allowUnresolvedCallbacks: true) : (byte)4;

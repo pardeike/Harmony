@@ -9,12 +9,14 @@
       "mvids": {
         "net472": "024a0e6e-c8c2-437e-ad04-7b6279389c23",
         "net8.0": "84dabb8a-78b0-41a8-b317-6acc5db1d68c",
-        "net9.0": "c62e7196-1ad0-49f0-8f32-2ede6343e90b"
+        "net9.0": "c62e7196-1ad0-49f0-8f32-2ede6343e90b",
+        "net10.0": "dc2e7251-4b84-4883-90eb-eb05a041522c"
       },
       "assets": {
         "net472": "7b9e756306fa3d7620e02a857c8927a6ab04973f9bd8a77d3866700a6deac55c",
         "net8.0": "2b0496067bda368ff35c383d80421401c57a3acc091dcb3e5a8f15636104987f",
-        "net9.0": "a849b726e1f9248d71aabbed8114deaf79beb7acc25e8344ff92a27ad8ac87ab"
+        "net9.0": "a849b726e1f9248d71aabbed8114deaf79beb7acc25e8344ff92a27ad8ac87ab",
+        "net10.0": "fd77b88724f4104440df0cf979a851d35eec75ea3a7e86297d04abe47c71aff6"
       }
     },
     "2.4.1": {

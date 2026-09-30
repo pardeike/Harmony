@@ -8,15 +8,22 @@ using System.Reflection.Emit;
 namespace HarmonyLib
 {
 
+	// Keep registration-specific options beside the resolved callback, including factory results.
+	internal readonly struct PatchCall(MethodInfo method, bool uncheckedReferenceBinding = false)
+	{
+		internal readonly MethodInfo method = method;
+		internal readonly bool uncheckedReferenceBinding = uncheckedReferenceBinding;
+	}
+
 	internal class MethodCreatorConfig
 
 	{
 		internal readonly MethodBase original;
 		internal readonly MethodBase source; // for reverse patch
-		internal readonly List<MethodInfo> prefixes;
-		internal readonly List<MethodInfo> postfixes;
+		internal readonly List<PatchCall> prefixes;
+		internal readonly List<PatchCall> postfixes;
 		internal readonly List<MethodInfo> transpilers;
-		internal readonly List<MethodInfo> finalizers;
+		internal readonly List<PatchCall> finalizers;
 		internal readonly List<Infix> innerprefixes;
 		internal readonly List<Infix> innerpostfixes;
 		internal readonly List<Infix> innerfinalizers;
@@ -25,10 +32,10 @@ namespace HarmonyLib
 		internal MethodCreatorConfig(
 			MethodBase original,
 			MethodBase source,
-			List<MethodInfo> prefixes,
-			List<MethodInfo> postfixes,
+			List<PatchCall> prefixes,
+			List<PatchCall> postfixes,
 			List<MethodInfo> transpilers,
-			List<MethodInfo> finalizers,
+			List<PatchCall> finalizers,
 			List<Infix> innerprefixes,
 			List<Infix> innerpostfixes,
 			List<Infix> innerfinalizers,
@@ -46,8 +53,8 @@ namespace HarmonyLib
 			this.debug = debug;
 		}
 
-		internal MethodCreatorConfig(MethodBase original, MethodBase source, List<MethodInfo> prefixes, List<MethodInfo> postfixes,
-			List<MethodInfo> transpilers, List<MethodInfo> finalizers, List<Infix> innerprefixes, List<Infix> innerpostfixes, bool debug)
+		internal MethodCreatorConfig(MethodBase original, MethodBase source, List<PatchCall> prefixes, List<PatchCall> postfixes,
+			List<MethodInfo> transpilers, List<PatchCall> finalizers, List<Infix> innerprefixes, List<Infix> innerpostfixes, bool debug)
 			: this(original, source, prefixes, postfixes, transpilers, finalizers, innerprefixes, innerpostfixes, [], debug) { }
 
 		internal MethodCreatorConfig(MethodCreatorConfig parent, string name, Type returnType)
@@ -161,7 +168,7 @@ namespace HarmonyLib
 		internal LocalBuilder finalizedVariable;
 
 		internal MethodBase MethodBase => source ?? original;
-		internal IEnumerable<MethodInfo> Fixes => prefixes.Union(postfixes).Union(finalizers);
+		internal IEnumerable<MethodInfo> Fixes => prefixes.Concat(postfixes).Concat(finalizers).Select(call => call.method).Distinct();
 		internal IEnumerable<Infix> InnerFixes => innerprefixes.Union(innerpostfixes).Union(innerfinalizers);
 		internal IEnumerable<InjectedParameter> InjectionsFor(MethodInfo fix, InjectionType type = InjectionType.Unknown, bool skipFirst = false)
 		{

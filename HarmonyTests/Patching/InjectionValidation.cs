@@ -35,7 +35,7 @@ namespace HarmonyLibTests.Patching
 
 		static (MethodCreator creator, PatchBindingContext context) Emitter(MethodInfo original, params MethodInfo[] patches)
 		{
-			var config = new MethodCreatorConfig(original, null, [.. patches], [], [], [], [], [], false);
+			var config = new MethodCreatorConfig(original, null, [.. patches.Select(patch => new PatchCall(patch))], [], [], [], [], [], false);
 			var creator = new MethodCreator(config);
 			var variables = new VariableState();
 			variables.Add(InjectionType.Exception, config.DeclareLocal(typeof(Exception)));
@@ -147,7 +147,7 @@ namespace HarmonyLibTests.Patching
 			var original = AccessTools.Method(typeof(Target), nameof(Target.Echo));
 			var patch = Patch(nameof(Return), returned);
 			var (creator, context) = Emitter(original, patch);
-			var error = Assert.Catch<ArgumentException>(() => creator.EmitFinalizers([patch], context, false));
+			var error = Assert.Catch<ArgumentException>(() => creator.EmitFinalizers([new(patch)], context, false));
 			StringAssert.Contains("return", error.Message);
 			StringAssert.Contains(original.FullDescription(), error.Message);
 		}
@@ -158,7 +158,7 @@ namespace HarmonyLibTests.Patching
 			var original = AccessTools.Method(typeof(Target), nameof(Target.Echo));
 			var patch = Patch(nameof(Passthrough), typeof(Uri));
 			var (creator, context) = Emitter(original, patch);
-			var error = Assert.Catch<ArgumentException>(() => creator.EmitPostfixes([patch], context, true));
+			var error = Assert.Catch<ArgumentException>(() => creator.EmitPostfixes([new(patch)], context, true));
 			StringAssert.Contains("return", error.Message);
 		}
 
@@ -169,7 +169,7 @@ namespace HarmonyLibTests.Patching
 			var first = Patch(nameof(Passthrough), typeof(string));
 			var second = Patch(nameof(Passthrough), typeof(Uri));
 			var (creator, context) = Emitter(original, first, second);
-			var error = Assert.Catch<ArgumentException>(() => creator.EmitPostfixes([first, second], context, true));
+			var error = Assert.Catch<ArgumentException>(() => creator.EmitPostfixes([new(first), new(second)], context, true));
 			StringAssert.Contains(second.FullDescription(), error.Message);
 			StringAssert.Contains("System.String", error.Message);
 			StringAssert.Contains("System.Uri", error.Message);

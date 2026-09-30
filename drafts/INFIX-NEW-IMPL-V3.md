@@ -12,7 +12,11 @@ The checks cover receivers, resolved named/indexed/aliased arguments, fields, st
 
 Infix retains the stricter contracts below and in the linked addenda. This shared check does not relax exact passthrough types, writable-storage rules, scope rules or array restrictions. Diagnostics for new failures name the outer original, resolved callback, parameter/source, supplied/requested types and reason, with scope and selected-operation context for Infix.
 
-Validation uses resolved factory callbacks once per rebuild and concrete binding contexts, without a patch-only compatibility cache or serialized changes. It completes before installing the replacement or publishing shared state. Rejected candidates leave the previous wrapper and patch state intact; requested removals precede validation of survivors. User callbacks may already have executed, and the guarantee applies separately to each original method. See the [injection guide](../Documentation/articles/patching-injections.md#patch-time-checks-in-harmony-3) for examples.
+Validation uses resolved factory callbacks once per rebuild and concrete binding contexts, without a patch-only compatibility cache. It completes before installing the replacement or publishing shared state. Rejected candidates leave the previous wrapper and patch state intact; requested removals precede validation of survivors. User callbacks may already have executed, and the guarantee applies separately to each original method. See the [injection guide](../Documentation/articles/patching-injections.md#patch-time-checks-in-harmony-3) for examples.
+
+`[HarmonyUncheckedReferenceBinding]` is a method-only opt-out from the new reference compatibility checks. Manual registration uses `HarmonyMethod.uncheckedReferenceBinding`; explicit `false` overrides an imported attribute. It covers by-value and by-reference object bindings, reference returns and delegate signatures, including references produced by existing boxing. It adds no conversions and leaves missing-storage/address checks, value/reference representation checks, and existing result, state and Infix contracts intact. It does not assert runtime safety or inspect callback bodies. Open, nested and recursive generic types keep the default conservative policy.
+
+Snapshot the flag in each serialized `Patch` and carry it beside the resolved callback through sorting, factory resolution and emission. Never key the override solely by callback identity: two registrations resolving to the same method can have different policies. Methods with any opted-out registration require version 5 of the existing shared-state envelope, for both JSON and BinaryFormatter. Older engines must reject that state before updating it; current engines preserve the flag. Removing the last opted-out registration restores the format required by the surviving patches. Unmarked JSON retains its previous shape; legacy BinaryFormatter data defaults the optional field to `false`. This is a capability gate on published state, not a cross-engine transaction or a global switch.
 
 ### Infix execution
 
@@ -334,26 +338,26 @@ When assemblies are loaded side by side, old Harmony recognizes `[HarmonyPrefix]
 
 This protects supported attribute discovery. It cannot prevent an old caller deliberately extracting the method and manually forcing it into ordinary `AddPrefix`; that caller has explicitly chosen the wrong old API. New manual entry points reject that mistake. When only old Harmony is loadable for a binary using the new API, missing-type/member failures are the expected boundary; there is no compatible fallback that silently changes its role.
 
-### Active Infix state must stop old readers before user patch code runs
+### Versioned patch state must stop old readers before user patch code runs
 
-For a method with no inner records, preserve legacy serialization, including byte-for-byte no-Infix JSON output. For valid active Infix state, prefix the complete payload with:
+For a method with no inner records or unchecked-reference registrations, preserve legacy serialization, including byte-for-byte ordinary JSON output. For active Infixes or unchecked-reference registrations, prefix the complete payload with:
 
 ```text
 ASCII "HARMONY-INFIX\0"
-format version byte: minimum required version (1, 2 or 3)
+format version byte: minimum required version (1 through 5)
 serializer byte: 1 = JSON, 2 = BinaryFormatter
 payload for that serializer
 ```
 
-Version 1 covers method-only Infixes; version 2 adds extended targets and `__originalMember`; version 3 adds inner finalizers and captured-variable binding. Derive the minimum version from the surviving records and downgrade when demanding records are removed. The linked contracts define each extension's payload and declaration safeguards.
+Version 1 covers method-only Infixes; version 2 adds extended targets and `__originalMember`; version 3 adds inner finalizers and captured-variable binding; version 4 adds persistent state; version 5 adds unchecked reference binding, including on ordinary patches. Derive the minimum version from the surviving records and downgrade when demanding records are removed. The linked contracts define the Infix extensions' payloads and declaration safeguards; section 1 defines the reference-binding override.
 
 The leading byte is invalid for the old JSON and BinaryFormatter entry formats. An old engine fails while reading state, before it can run transpilers or rebuild without Infixes. New readers check the full header, version, and available backend before decoding. Unknown or truncated headers and unavailable backends fail explicitly; do not attempt a second backend or treat malformed versioned data as legacy data.
 
-Remove the envelope after the last Infix is removed. Keep using the existing shared-state dictionary and its current layout/version. No guard transpiler, reserved patch owner, parallel target arrays, or side dictionary is required. Old inspection of a method with active Infixes also fails: returning a partial view would let old code make decisions from missing patches.
+Remove the envelope after the last Infix and unchecked-reference registration are removed. Keep using the existing shared-state dictionary and its current layout/version. No guard transpiler, reserved patch owner, parallel target arrays, or side dictionary is required. Old inspection of versioned patch state also fails: returning a partial view would let old code make decisions from missing patches or policy.
 
-`Patch` JSON includes `innerMethod` only for Infix records. Read `Patch` and `InnerMethod` properties by name, tolerate property order, skip unknown noncritical properties, and reject duplicate or missing identity-defining properties. Do not reorder or add properties in ordinary patch JSON output.
+`Patch` JSON includes `innerMethod` only for Infix records and `uncheckedReferenceBinding` only when enabled. Read `Patch` and `InnerMethod` properties by name, tolerate property order, skip unknown noncritical properties, and reject duplicate or missing identity-defining properties. Unmarked ordinary patch JSON keeps its existing properties and order. Both backends reject an enabled override in an envelope below version 5 or in unframed data.
 
-For a version-1 JSON envelope, require all six role arrays and `VersionCount` exactly once with their expected value types. Do not let duplicate top-level fields replace active arrays or missing fields normalize a versioned payload to empty state. Any envelope, in either backend, must contain at least one inner record. Keep absent-field normalization for actual unenveloped legacy payloads.
+For a version-1 JSON envelope, require all six role arrays and `VersionCount` exactly once with their expected value types; versions 3 and later also require `innerfinalizers`. Do not let duplicate top-level fields replace active arrays or missing fields normalize a versioned payload to empty state. Any envelope, in either backend, must contain at least one inner record or an enabled reference-binding override. Keep absent-field normalization for actual unenveloped legacy payloads.
 
 BinaryFormatter's type binder remaps `InnerMethod` into the reading Harmony assembly. Retain formatter settings and mark new identity fields optional where version tolerance requires it; validate semantic completeness separately. Normalize absent legacy inner arrays to empty. Missing fields do not always throw: [.NET's formatter source](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Runtime.Serialization.Formatters/src/System/Runtime/Serialization/Formatters/Binary/BinaryObjectInfo.cs) conditions that check on assembly-format mode. Actual old-assembly tests, not a blanket claim about `OptionalField`, decide compatibility.
 

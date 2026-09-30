@@ -103,7 +103,7 @@ namespace HarmonyLibTests.Patching
 			var outer = AccessTools.Method(typeof(Target), byRef ? nameof(Target.OuterRefs) : nameof(Target.OuterValues));
 			var called = AccessTools.Method(typeof(Target), byRef ? nameof(Target.StaticRefs) : nameof(Target.StaticValues));
 			var patch = AccessTools.Method(typeof(PatchCallBindings), useArray ? nameof(ArgumentArray) : byRef ? nameof(BoxNamedLocal) : nameof(TypedNamedLocal));
-			var config = new MethodCreatorConfig(outer, null, [patch], [], [], [], [], [], false);
+			var config = new MethodCreatorConfig(outer, null, [new(patch)], [], [], [], [], [], false);
 			var creator = new MethodCreator(config);
 			var arguments = called.GetParameters().Select(parameter => new InjectionStorage(config.DeclareLocal(parameter.ParameterType))).ToArray();
 			var variables = new VariableState();
@@ -141,7 +141,7 @@ namespace HarmonyLibTests.Patching
 			var receiverType = isStruct ? typeof(StructTarget) : typeof(Target);
 			var called = AccessTools.Method(receiverType, nameof(Target.Read));
 			var patch = AccessTools.Method(typeof(PatchCallBindings), isStruct ? nameof(BoxInstance) : nameof(ReplaceInstance));
-			var config = new MethodCreatorConfig(outer, null, [patch], [], [], [], [], [], false);
+			var config = new MethodCreatorConfig(outer, null, [new(patch)], [], [], [], [], [], false);
 			var creator = new MethodCreator(config);
 			var receiver = new InjectionStorage(config.DeclareLocal(isStruct ? receiverType.MakeByRefType() : receiverType));
 			var context = TestTools.CreateBindingContext(called, receiverType, receiver, [], new VariableState());

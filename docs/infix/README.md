@@ -10,6 +10,53 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
+## Unchecked reference binding, 2026-09-30
+
+`[HarmonyUncheckedReferenceBinding]` and `HarmonyMethod.uncheckedReferenceBinding` now opt an individual patch registration out of the new reference-type compatibility checks. This covers by-value and by-reference object bindings, existing boxing, reference passthrough results and injected delegates. Structural requirements and existing result/state/Infix contracts remain enforced. The [injection guide](../../Documentation/articles/patching-injections.md#unchecked-reference-binding) explains the API and its limits; the [core specification](../../drafts/INFIX-NEW-IMPL-V3.md#shared-patch-time-incompatibility-checks) records the implementation contract.
+
+The flag is snapshotted in each `Patch` and travels with the resolved callback through sorting and emission. A checked registration remains checked even when another registration of the same callback opts out. Current engines retain the flag across serialization, factory resolution and rebuilds. Flagged methods require shared-state version 5, so older engines cannot silently discard the option. Removing the last opted-out registration restores the format required by surviving patches.
+
+The new `UncheckedReferenceBinding` fixture contains 37 cases covering attribute discovery and manual registration, explicit `false`, shared callbacks with unrelated or boxed unused arguments, sibling ref returns, null-only bindings, all ordinary callback roles, factory resolution, registration isolation, rollback, metadata round trips, retained checks and open/nested/recursive generic type relationships.
+
+| Local verification | Result |
+| --- | --- |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,125 passed in each; two existing explicit tests excluded |
+| Final override fixture, .NET 10 Debug/Release and Mono 6.12.0.206 x64/net472 | 37 passed in each |
+| .NET 8.0.30 x64, override and serialization fixtures | 40 passed, including JSON and BinaryFormatter round trips |
+| All 12 configured target frameworks, Debug | Harmony, TestLibrary and HarmonyTests build successfully |
+| Published Harmony 2.4.2, complete .NET 10/JSON and .NET 8/BinaryFormatter compatibility lanes | All 49 expected outcomes pass in each |
+| Published Harmony 2.3.6, 2.4.0 and 2.4.1, .NET 8/JSON and BinaryFormatter | All 18 focused override outcomes pass, with mandatory coexistence |
+| Pinned pre-override v3 reader `70593388a249879cff39372b9d6f62342a7d448d`, JSON and BinaryFormatter | Three override cases pass in each, with mandatory coexistence and no classified loader limitations |
+| Formatting and whitespace | `dotnet format` on changed C# files; `git diff --check` passes |
+
+Each complete published-version lane includes 17 successful execution cases, 19 expected state rejections, two expected missing-API boundaries, and 11 classified existing loader/concurrent-update limitations. The new cases prove current/current rebuilding, rejection by older readers in both initialization orders without changing published state or installed behavior, and older-reader recovery after removal. They do not remove the inherited concurrent-old-candidate boundary.
+
+Mono initially exposed an invalid test assumption: its legacy `__result` assignability check accepts the tested sibling by-reference types. The retained-contract regression now uses a by-value result, and the complete final override fixture passes on Mono and .NET 10. Production result rules were not changed. The full .NET 10 runs preceded this test-only correction; both final focused runs passed afterward.
+
+Full logs, framework artifacts, compatibility reports and Mono results are retained locally under `artifacts/unchecked-reference-binding/`; TRX reports are under `artifacts/tests/`. CI includes the new cases, a pinned version-4 reader and a net10/JSON published-version lane. These edits have not been tested by remote CI, and local Mono results do not establish Unity behavior.
+
+## .NET 10 local verification, 2026-09-30
+
+Routine local verification now uses .NET 10/x64; the canonical command is in [AGENTS.md](../../AGENTS.md#local-verification). The SDK was already on .NET 10. The local runtime host is now explicitly .NET 10.0.11 x64, with patch-only roll-forward. Earlier runtime results below retain their original versions.
+
+The complete net10.0 Debug suite passes 1,088 tests with zero failures, including all 67 `InjectionValidation` cases. Two existing explicit tests are excluded. The executed report is retained locally at `artifacts/tests/run-j98f0ph_/tests_net10.0_20260930133844.trx`.
+
+A separate six-case reference-return probe compares published Harmony 2.4.2 with current v3 using stand-in `Gene`, `SpecificGene : Gene` and `OtherGene : Gene` classes. The .NET 10.0.11 x64 results match the earlier .NET 9.0.19 x64 and Mono 6.12.0.206 x64 observations:
+
+- `ref Gene __result` can replace a `SpecificGene` result with an `OtherGene`, for both ordinary and by-reference original returns. A `ref Gene` passthrough postfix also executes in both Harmony versions.
+- `ref RefResult<Gene> __resultRef` for a `ref SpecificGene` original is rejected in both versions. An exactly typed `RefResult<SpecificGene>` callback that reinterprets a base slot using `Unsafe.As` still executes in both versions.
+- A sibling-typed `ref OtherGene` passthrough postfix executes in 2.4.2 but is rejected by v3's new declaration checks.
+
+Each executed case verifies the replacement object's identity and runtime type. Consumers use only the base `Gene` API; these observations do not establish safety for callers that rely on `SpecificGene` members. The validator does not inspect callback bodies or the objects written through a reference. Probe source, runtime identity, provider hashes and outcomes are retained locally under `artifacts/injection-validation/gene-ref-probe/`, including `results-net10.json`.
+
+### Unchecked reference-binding scope investigation
+
+On .NET 10.0.11 x64, one prefix shared by two concrete methods successfully reads only the matching argument under Harmony 2.4.2. Both arguments are passed by value; the unused argument has an unrelated reference type. Current v3 rejects that declaration. Replacing the unused argument with an `int` also executes under 2.4.2 because the existing emitter boxes it, and v3 rejects its boxed-type compatibility. A proposed reference-binding override therefore needs to cover object references supplied by existing boxing as well as reference-to-reference bindings.
+
+A contrasting object-to-`Guid` case is rejected by the runtime with `InvalidProgramException` under 2.4.2, before the callback executes. Current v3 rejects its missing value/reference conversion earlier. Ignoring an argument does not make every value representation usable.
+
+Fifteen direct checks of the current compatibility predicate cover open/nested generic parameters, self-referential and mutually constrained generic types, by-reference and array forms, nested covariance, and invariant closed classes/interfaces. All match the current policy; these are predicate checks, not proof that open generic methods can be patched. Concrete methods whose parameters use a self-referential generic base and nested covariant collections also execute their patches successfully in both Harmony versions. Source and recorded outcomes are retained under `artifacts/injection-validation/unchecked-scope-probe/`, including `results-net10.json`. This investigation preceded the override implementation above.
+
 ## Conservative injection validation, 2026-09-30
 
 The shared emitter now rejects proven binding incompatibilities before installing a replacement or publishing patch state. The [injection guide](../../Documentation/articles/patching-injections.md#patch-time-checks-in-harmony-3) describes the policy. Existing Infix restrictions remain in force.
@@ -31,7 +78,7 @@ The Mono selection includes `InjectionValidation`, `PatchCallBindings`, `Argumen
 
 Each published-version compatibility lane includes 16 successful execution cases, two expected missing-API boundaries, and 11 classified pre-existing loader/concurrency limitations. JSON also has 18 expected compatibility rejections; BinaryFormatter has 17. Passing the runner means those expectations held; it does not turn the limitation cases into working coexistence arrangements.
 
-The canonical local command and net9/x64 setup are in [AGENTS.md](../../AGENTS.md#local-verification). Full logs, TRX results, the focused Mono runner/results, and compatibility reports are retained locally under ignored `artifacts/tests/` and `artifacts/injection-validation/`. Framework builds report existing NuGet advisory warnings; they do not establish runtime behavior on those frameworks. These local results precede the CI follow-up below. Unity remains outside these checks. Run the existing platform and compatibility release gates before publishing.
+The canonical local command and .NET 10/x64 setup are in [AGENTS.md](../../AGENTS.md#local-verification). Full logs, TRX results, the focused Mono runner/results, and compatibility reports are retained locally under ignored `artifacts/tests/` and `artifacts/injection-validation/`. Framework builds report existing NuGet advisory warnings; they do not establish runtime behavior on those frameworks. These local results precede the CI follow-up below. Unity remains outside these checks. Run the existing platform and compatibility release gates before publishing.
 
 ### CI fixture correction
 

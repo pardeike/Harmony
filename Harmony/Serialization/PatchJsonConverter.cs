@@ -11,7 +11,7 @@ namespace HarmonyLib
 		public override Patch Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
 			using var document = JsonDocument.ParseValue(ref reader);
-			var values = ReadProperties(document.RootElement, ["index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before", "innerMethod", "innerTarget"]);
+			var values = ReadProperties(document.RootElement, ["index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before", "innerMethod", "innerTarget", "uncheckedReferenceBinding"]);
 			foreach (var name in new[] { "index", "debug", "owner", "priority", "methodToken", "moduleGUID", "after", "before" })
 				if (!values.ContainsKey(name)) throw new JsonException($"Missing Patch property {name}");
 			var innerMethod = values.TryGetValue("innerMethod", out var inner) && inner.ValueKind != JsonValueKind.Null
@@ -20,7 +20,8 @@ namespace HarmonyLib
 				? JsonSerializer.Deserialize<InnerTarget>(target.GetRawText(), options) : null;
 			var result = new Patch(values["index"].GetInt32(), values["owner"].GetString(), values["priority"].GetInt32(),
 				JsonSerializer.Deserialize<string[]>(values["before"].GetRawText(), options), JsonSerializer.Deserialize<string[]>(values["after"].GetRawText(), options),
-				values["debug"].GetBoolean(), values["methodToken"].GetInt32(), values["moduleGUID"].GetString(), innerMethod, innerTarget);
+				values["debug"].GetBoolean(), values["methodToken"].GetInt32(), values["moduleGUID"].GetString(), innerMethod, innerTarget,
+				values.TryGetValue("uncheckedReferenceBinding", out var uncheckedBinding) && uncheckedBinding.GetBoolean());
 			result.ValidateTargetRepresentation();
 			return result;
 		}
@@ -61,6 +62,7 @@ namespace HarmonyLib
 				writer.WritePropertyName("innerTarget");
 				JsonSerializer.Serialize(writer, patchValue.innerTarget, options);
 			}
+			if (patchValue.uncheckedReferenceBinding) writer.WriteBoolean("uncheckedReferenceBinding", true);
 			writer.WriteEndObject();
 		}
 

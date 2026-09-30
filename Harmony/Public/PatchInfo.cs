@@ -202,8 +202,12 @@ namespace HarmonyLib
 		}
 
 		internal bool HasInfixes => innerprefixes.Length != 0 || innerpostfixes.Length != 0 || innerfinalizers.Length != 0;
+		internal bool HasUncheckedReferenceBindings => prefixes.Concat(postfixes).Concat(transpilers).Concat(finalizers)
+			.Concat(innerprefixes).Concat(innerpostfixes).Concat(innerfinalizers).Any(patch => patch.uncheckedReferenceBinding);
+
 		internal byte GetRequiredInfixVersion(bool allowUnresolvedCallbacks = false)
 		{
+			if (HasUncheckedReferenceBindings) return 5;
 			var version = innerfinalizers.Length != 0 ? (byte)3 : (byte)1;
 			void Include(Patch patch, bool postfix)
 			{

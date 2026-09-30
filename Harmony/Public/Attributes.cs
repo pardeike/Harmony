@@ -734,6 +734,16 @@ namespace HarmonyLib
 		public HarmonyDebug() => info.debug = true;
 	}
 
+	/// <summary>Skip new reference-type compatibility checks for one patch callback, including existing boxing.</summary>
+	/// <remarks>This does not add conversions or disable storage, value/address, or existing role-specific requirements.</remarks>
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+	public sealed class HarmonyUncheckedReferenceBinding : HarmonyAttribute
+	{
+		/// <summary>Enable or disable unchecked reference binding for this callback or patch factory.</summary>
+		/// <param name="enabled">Whether to skip the new reference-type compatibility checks.</param>
+		public HarmonyUncheckedReferenceBinding(bool enabled = true) => info.uncheckedReferenceBinding = enabled;
+	}
+
 	/// <summary>Specifies the Prepare function in a patch class</summary>
 	///
 	[AttributeUsage(AttributeTargets.Method)]

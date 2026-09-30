@@ -41,6 +41,10 @@ namespace HarmonyLib
 		///
 		public readonly bool debug;
 
+		/// <summary>Whether this registration skips new reference-type compatibility checks, including existing boxing.</summary>
+		[OptionalField]
+		public readonly bool uncheckedReferenceBinding;
+
 		[NonSerialized]
 		private MethodInfo patchMethod;
 		private int methodToken;
@@ -111,6 +115,7 @@ namespace HarmonyLib
 		{
 			if (method.innerTarget is not null && method.innerMethod is not null && !method.innerTarget.EquivalentTo(new InnerTarget(method.innerMethod)))
 				throw new ArgumentException("Explicit innerMethod and innerTarget selectors disagree");
+			uncheckedReferenceBinding = method.uncheckedReferenceBinding ?? false;
 			var target = method.innerTarget ?? (method.innerMethod is null ? null : new InnerTarget(method.innerMethod));
 			if (target?.Kind == InnerTargetKind.Method) innerMethod = target.MethodSelector.Snapshot();
 			else innerTarget = target?.Snapshot();
@@ -131,7 +136,7 @@ namespace HarmonyLib
 				?? throw new SerializationException($"Infix patch {MethodIdentity} does not identify a method");
 		}
 
-		internal Patch(int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID, InnerMethod innerMethod = null, InnerTarget innerTarget = null)
+		internal Patch(int index, string owner, int priority, string[] before, string[] after, bool debug, int methodToken, string moduleGUID, InnerMethod innerMethod = null, InnerTarget innerTarget = null, bool uncheckedReferenceBinding = false)
 		{
 			this.index = index;
 			this.owner = owner;
@@ -143,6 +148,7 @@ namespace HarmonyLib
 			this.moduleGUID = moduleGUID;
 			this.innerMethod = innerMethod;
 			this.innerTarget = innerTarget;
+			this.uncheckedReferenceBinding = uncheckedReferenceBinding;
 		}
 
 		internal void ValidateTargetRepresentation()

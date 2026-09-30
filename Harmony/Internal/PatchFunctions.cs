@@ -9,6 +9,9 @@ namespace HarmonyLib
 	{
 		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
 			=> [.. new PatchSorter(patches, debug).Sort().Select(p => p.GetMethod(original))];
+		static List<PatchCall> GetSortedPatchCalls(MethodBase original, Patch[] patches, bool debug)
+			=> [.. new PatchSorter(patches, debug).Sort().Select(patch => new PatchCall(patch.GetMethod(original), patch.uncheckedReferenceBinding))];
+
 		private static List<Infix> GetInfixes(Patch[] patches) => [.. patches.Select(p => new Infix(p))];
 
 		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo)
@@ -18,10 +21,10 @@ namespace HarmonyLib
 			var bytes = patchInfo.SerializeValidated();
 			var debug = patchInfo.Debugging || Harmony.DEBUG;
 
-			var sortedPrefixes = GetSortedPatchMethods(original, patchInfo.prefixes, debug);
-			var sortedPostfixes = GetSortedPatchMethods(original, patchInfo.postfixes, debug);
+			var sortedPrefixes = GetSortedPatchCalls(original, patchInfo.prefixes, debug);
+			var sortedPostfixes = GetSortedPatchCalls(original, patchInfo.postfixes, debug);
 			var sortedTranspilers = GetSortedPatchMethods(original, patchInfo.transpilers, debug);
-			var sortedFinalizers = GetSortedPatchMethods(original, patchInfo.finalizers, debug);
+			var sortedFinalizers = GetSortedPatchCalls(original, patchInfo.finalizers, debug);
 			var sortedInnerPrefixes = GetInfixes(patchInfo.innerprefixes);
 			var sortedInnerPostfixes = GetInfixes(patchInfo.innerpostfixes);
 			var sortedInnerFinalizers = GetInfixes(patchInfo.innerfinalizers);
@@ -75,7 +78,7 @@ namespace HarmonyLib
 			}
 			if (postTranspiler is not null) transpilers.Add(postTranspiler);
 
-			var emptyFix = new List<MethodInfo>();
+			var emptyFix = new List<PatchCall>();
 			var emptyInner = new List<Infix>();
 			var patcher = new MethodCreator(new MethodCreatorConfig(
 				standin.method,

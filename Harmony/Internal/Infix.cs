@@ -87,7 +87,8 @@ namespace HarmonyLib
 				else result.Add(instructions[i]);
 			return result;
 
-			List<MethodInfo> Sort(List<Patch> patches) => [.. new PatchSorter([.. patches], config.debug, true).Sort().Select(patch => patch.PatchMethod)];
+			List<PatchCall> Sort(List<Patch> patches) => [.. new PatchSorter([.. patches], config.debug, true).Sort()
+				.Select(patch => new PatchCall(patch.PatchMethod, patch.uncheckedReferenceBinding))];
 
 			void Collect(List<Infix> fixes, HarmonyPatchType role)
 			{
@@ -125,11 +126,14 @@ namespace HarmonyLib
 		}
 
 		static List<CodeInstruction> EmitSite(MethodCreator creator, List<CodeInstruction> instructions, int start, int index,
-			List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> finalizers,
+			List<PatchCall> prefixes, List<PatchCall> postfixes, List<PatchCall> finalizers,
 			PatchBindingContext context = null, PatchBindingContext outer = null)
 		{
 			var config = creator.config;
-			var fixes = prefixes.Concat(postfixes).Concat(finalizers).Distinct().ToList();
+			var prefixMethods = prefixes.Select(call => call.method).ToList();
+			var postfixMethods = postfixes.Select(call => call.method).ToList();
+			var finalizerMethods = finalizers.Select(call => call.method).ToList();
+			var fixes = prefixMethods.Concat(postfixMethods).Concat(finalizerMethods).Distinct().ToList();
 			foreach (var fix in fixes) MethodCreatorTools.ValidateInfixSignature(fix, "patch");
 			var inputsOnStack = context is null;
 			context ??= CreateContext(config, instructions, start, index);
@@ -149,17 +153,17 @@ namespace HarmonyLib
 			}
 
 			IEnumerable<InjectedParameter> Injections(MethodInfo fix, InjectionType type)
-				=> config.InjectionsFor(fix, type, fix.ReturnType != typeof(void) && postfixes.Contains(fix)
-					&& !prefixes.Contains(fix) && !finalizers.Contains(fix));
+				=> config.InjectionsFor(fix, type, fix.ReturnType != typeof(void) && postfixMethods.Contains(fix)
+					&& !prefixMethods.Contains(fix) && !finalizerMethods.Contains(fix));
 			bool Has(InjectionType injectionType) => fixes.Any(fix => Injections(fix, injectionType).Any(injection => !injection.outer));
-			var canSkip = prefixes.Any(fix => fix.ReturnType == typeof(bool));
+			var canSkip = prefixMethods.Any(fix => fix.ReturnType == typeof(bool));
 			LocalBuilder result = null;
 			if (returnType != typeof(void))
 			{
 				result = config.DeclareLocal(returnType);
 				variables.Add(InjectionType.Result, result);
-				var needsDefault = canSkip || finalizers.Any(fix => fix.ReturnType != typeof(void))
-					|| prefixes.Concat(finalizers).Any(fix => config.InjectionsFor(fix).Any(injection => !injection.outer
+				var needsDefault = canSkip || finalizerMethods.Any(fix => fix.ReturnType != typeof(void))
+					|| prefixMethods.Concat(finalizerMethods).Any(fix => config.InjectionsFor(fix).Any(injection => !injection.outer
 					&& (injection.injectionType == InjectionType.Result || injection.injectionType == InjectionType.ResultRef)));
 				if (needsDefault)
 				{
@@ -176,7 +180,7 @@ namespace HarmonyLib
 				codes.AddRange([Ldnull, Stloc[resultRef]]);
 			}
 			LocalBuilder run = null;
-			if (prefixes.Any(fix => creator.AffectsOriginal(fix, true)) || Has(InjectionType.RunOriginal))
+			if (prefixMethods.Any(fix => creator.AffectsOriginal(fix, true)) || Has(InjectionType.RunOriginal))
 			{
 				run = config.DeclareLocal(typeof(bool));
 				variables.Add(InjectionType.RunOriginal, run);
@@ -205,7 +209,7 @@ namespace HarmonyLib
 				variables.Add(InjectionType.Exception, exception);
 				codes.AddRange([Ldc_I4_0, Stloc[finalized], Ldnull, Stloc[exception]]);
 			}
-			codes.AddRange(creator.SetupInfixBindings(context, outer, prefixes, postfixes, finalizers));
+			codes.AddRange(creator.SetupInfixBindings(context, outer, prefixMethods, postfixMethods, finalizerMethods));
 			if (finalized != null) codes.Add(creator.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
 			codes.AddRange(creator.EmitPrefixes(prefixes, context, outer));
 			var afterCall = config.DefineLabel();
@@ -217,7 +221,7 @@ namespace HarmonyLib
 			codes.Add(Nop.WithLabels(afterCall));
 			codes.AddRange(creator.EmitPostfixes(postfixes, context, false, outer));
 			if (result is not null) codes.Add(Ldloc[result]);
-			else if (postfixes.Any(fix => fix.ReturnType != typeof(void))) throw new ArgumentException("A void inner call cannot have a passthrough postfix.");
+			else if (postfixMethods.Any(fix => fix.ReturnType != typeof(void))) throw new ArgumentException("A void inner call cannot have a passthrough postfix.");
 			codes.AddRange(creator.EmitPostfixes(postfixes, context, true, outer));
 			if (finalized != null)
 			{
@@ -231,7 +235,7 @@ namespace HarmonyLib
 		}
 
 		static List<CodeInstruction> EmitHelperSite(MethodCreator creator, List<CodeInstruction> instructions, int start, int index,
-			List<MethodInfo> prefixes, List<MethodInfo> postfixes, List<MethodInfo> finalizers)
+			List<PatchCall> prefixes, List<PatchCall> postfixes, List<PatchCall> finalizers)
 		{
 			var parent = creator.config;
 			var inner = CreateContext(parent, instructions, start, index, true);
@@ -239,8 +243,8 @@ namespace HarmonyLib
 			{
 				originalLocals = parent.bindingContext.originalLocals
 			};
-			creator.PrepareInfixOuterLocals(prefixes.Concat(finalizers), outer);
-			creator.PrepareInfixOuterLocals(postfixes, outer, true);
+			creator.PrepareInfixOuterLocals(prefixes.Concat(finalizers).Select(call => call.method), outer);
+			creator.PrepareInfixOuterLocals(postfixes.Select(call => call.method), outer, true);
 			var helperConfig = new MethodCreatorConfig(parent, parent.patch.Definition.Name + "_Infix" + index, inner.returnType);
 			var helper = new MethodCreator(helperConfig, false);
 			var parameterTypes = new List<Type>();

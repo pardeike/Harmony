@@ -63,7 +63,7 @@ namespace HarmonyLib
 				config.AddCodes(this.InitializeOutArguments(config.bindingContext));
 
 			config.skipOriginalLabel = null;
-			var prefixAffectsOriginal = config.prefixes.Any(this.AffectsOriginal);
+			var prefixAffectsOriginal = config.prefixes.Any(call => this.AffectsOriginal(call.method));
 			var anyFixHasRunOriginal = config.AnyFixHas(InjectionType.RunOriginal);
 			if (prefixAffectsOriginal || anyFixHasRunOriginal)
 			{
@@ -191,11 +191,12 @@ namespace HarmonyLib
 
 		internal void AddPrefixes() => config.AddCodes(EmitPrefixes(config.prefixes, config.bindingContext));
 
-		internal List<CodeInstruction> EmitPrefixes(IEnumerable<MethodInfo> prefixes, PatchBindingContext context, PatchBindingContext outerContext = null)
+		internal List<CodeInstruction> EmitPrefixes(IEnumerable<PatchCall> prefixes, PatchBindingContext context, PatchBindingContext outerContext = null)
 		{
 			var codes = new List<CodeInstruction>();
-			foreach (var fix in prefixes)
+			foreach (var call in prefixes)
 			{
+				var fix = call.method;
 				var returnType = fix.ReturnType;
 				if (returnType != typeof(void) && returnType != typeof(bool))
 					throw this.InvalidBinding(fix, context, "prefix return value", returnType, typeof(bool), "Prefixes must return bool or void");
@@ -203,7 +204,7 @@ namespace HarmonyLib
 				if (skipLabel.HasValue)
 					codes.AddRange([Ldloc[context.variables[InjectionType.RunOriginal]], Brfalse[skipLabel.Value]]);
 
-				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext));
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.uncheckedReferenceBinding));
 
 				if (returnType != typeof(void))
 				{
@@ -219,15 +220,16 @@ namespace HarmonyLib
 		internal bool AddPostfixes(bool passthroughPatches)
 		{
 			config.AddCodes(EmitPostfixes(config.postfixes, config.bindingContext, passthroughPatches));
-			return passthroughPatches && config.postfixes.Any(fix => fix.ReturnType != typeof(void));
+			return passthroughPatches && config.postfixes.Any(call => call.method.ReturnType != typeof(void));
 		}
 
-		internal List<CodeInstruction> EmitPostfixes(IEnumerable<MethodInfo> postfixes, PatchBindingContext context, bool passthroughPatches, PatchBindingContext outerContext = null)
+		internal List<CodeInstruction> EmitPostfixes(IEnumerable<PatchCall> postfixes, PatchBindingContext context, bool passthroughPatches, PatchBindingContext outerContext = null)
 		{
 			var codes = new List<CodeInstruction>();
 			var previousResultType = context.returnType;
-			foreach (var fix in postfixes.Where(fix => passthroughPatches == (fix.ReturnType != typeof(void))))
+			foreach (var call in postfixes.Where(call => passthroughPatches == (call.method.ReturnType != typeof(void))))
 			{
+				var fix = call.method;
 				if (outerContext != null && passthroughPatches && (fix.ReturnType != context.returnType
 					|| fix.GetParameters().FirstOrDefault()?.ParameterType != context.returnType))
 					throw new ArgumentException($"Infix passthrough postfix {fix.FullDescription()} must return and take a first parameter of exactly {context.returnType.FullDescription()}, "
@@ -243,16 +245,16 @@ namespace HarmonyLib
 
 						throw new Exception($"Postfix patch {fix} must have a \"void\" return type");
 					}
-					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value");
-					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType);
+					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value", call.uncheckedReferenceBinding);
+					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType, uncheckedReferenceBinding: call.uncheckedReferenceBinding);
 					previousResultType = fix.ReturnType;
 				}
-				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext));
+				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext, call.uncheckedReferenceBinding));
 			}
 			return codes;
 		}
 
-		internal List<CodeInstruction> EmitFinalization(IList<MethodInfo> finalizers, PatchBindingContext context,
+		internal List<CodeInstruction> EmitFinalization(IList<PatchCall> finalizers, PatchBindingContext context,
 			LocalBuilder finalized, PatchBindingContext outerContext = null)
 		{
 			var exception = context.variables[InjectionType.Exception];
@@ -272,20 +274,21 @@ namespace HarmonyLib
 			return codes;
 		}
 
-		internal (List<CodeInstruction> codes, bool rethrowPossible) EmitFinalizers(IEnumerable<MethodInfo> finalizers,
+		internal (List<CodeInstruction> codes, bool rethrowPossible) EmitFinalizers(IEnumerable<PatchCall> finalizers,
 			PatchBindingContext context, bool catchExceptions, PatchBindingContext outerContext = null)
 		{
 			var codes = new List<CodeInstruction>();
 			var rethrowPossible = true;
-			foreach (var fix in finalizers)
+			foreach (var call in finalizers)
 			{
+				var fix = call.method;
 				if (outerContext != null && fix.ReturnType != typeof(void) && !typeof(Exception).IsAssignableFrom(fix.ReturnType))
 					throw new ArgumentException($"Infix finalizer {fix.FullDescription()} must return void or an Exception.");
-				if (fix.ReturnType != typeof(void)) this.ValidateReturnBinding(fix, context, fix.ReturnType, typeof(Exception));
+				if (fix.ReturnType != typeof(void)) this.ValidateReturnBinding(fix, context, fix.ReturnType, typeof(Exception), uncheckedReferenceBinding: call.uncheckedReferenceBinding);
 				if (catchExceptions)
 					codes.Add(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
 
-				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext));
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.uncheckedReferenceBinding));
 
 				if (fix.ReturnType != typeof(void))
 				{

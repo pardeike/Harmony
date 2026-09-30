@@ -111,6 +111,9 @@ internal static class Program
 			foreach (var variant in new[] { "concurrent", "sequential" })
 				cases.Add(("shared-startup-" + variant, new("shared-startup", current, newFixture, secondCurrent, secondFixture, backend, feature, framework, variant)));
 			if (framework != "net472") cases.Add(("concurrent-old-candidate", new("concurrent-old-candidate", old, oldFixture, current, newFixture, backend, feature, framework)));
+			cases.Add(("unchecked-cold", new("unchecked-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
+			cases.Add(("unchecked-old-first", new("unchecked-prior", old, oldFixture, current, newFixture, backend, feature, framework)));
+			cases.Add(("unchecked-new-first", new("unchecked-prior", current, newFixture, old, oldFixture, backend, feature, framework, "new-first")));
 			cases.Add(("prepare-false-missing-target", new("prepare-false", current, newFixture, Backend: backend, Feature: feature, Framework: framework)));
 			foreach (var variant in new[] { "attribute", "member" })
 				cases.Add(("missing-api-" + variant, new("missing-api", old, oldFixture, Backend: backend, Feature: feature, Framework: framework, Variant: variant)));
@@ -123,9 +126,9 @@ internal static class Program
 			foreach (var variant in new[] { "before-registration", "after-install" })
 				cases.Add(("duplicate-patch-module-" + variant, new("duplicate-patch-module", current, newFixture, secondCurrent, secondFixture, backend, feature, framework, variant)));
 			var priorInfixVersion = values.GetValueOrDefault("--prior-infix-state-version", values.GetValueOrDefault("--v3-baseline", "0"));
-			if (priorInfixVersion != "0")
+			Check.That(priorInfixVersion is "0" or "1" or "2" or "3" or "4", "The prior Infix baseline state version must be 0, 1, 2, 3 or 4.");
+			if (priorInfixVersion is "1" or "2" or "3")
 			{
-				Check.That(priorInfixVersion is "1" or "2" or "3", "The prior Infix baseline state version must be 1, 2 or 3.");
 				cases.Add(("persistent-cold", new("persistent-cold", current, newFixture, secondCurrent, secondFixture, backend, feature, framework)));
 				cases.Add(("persistent-prior-v" + priorInfixVersion + "-old-first", new("persistent-prior", old, oldFixture, current, newFixture, backend, feature, framework)));
 				cases.Add(("persistent-prior-v" + priorInfixVersion + "-new-first", new("persistent-prior", current, newFixture, old, oldFixture, backend, feature, framework, "new-first")));

@@ -10,15 +10,15 @@ Run commands from the repository root. Use the .NET 10 SDK to build, a completed
 
 ```bash
 dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug \
-  -p:TargetFrameworks=net9.0 -p:PlatformTarget=x64
+  -p:TargetFrameworks=net10.0 -p:PlatformTarget=x64
 
-CURRENT_HARMONY="$PWD/Lib.Harmony/bin/Debug/net9.0/0Harmony.dll" \
+CURRENT_HARMONY="$PWD/Lib.Harmony/bin/Debug/net10.0/0Harmony.dll" \
 RUNTIME_HOST=/path/to/x64/dotnet \
-FRAMEWORK=net9.0 BACKEND=json OLD_HARMONY_VERSION=2.4.2 \
+FRAMEWORK=net10.0 BACKEND=json OLD_HARMONY_VERSION=2.4.2 \
 bash HarmonyTests.Compatibility/run.sh
 ```
 
-The published CoreCLR matrix consists of net9/JSON against 2.4.2, plus net8 against 2.4.2, 2.4.1, 2.4.0, and 2.3.6 with both JSON and BinaryFormatter:
+The published CoreCLR matrix consists of net10/JSON and net9/JSON against 2.4.2, plus net8 against 2.4.2, 2.4.1, 2.4.0, and 2.3.6 with both JSON and BinaryFormatter:
 
 ```bash
 dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug \
@@ -59,6 +59,7 @@ These unreleased baselines test rejection by earlier Infix engines, separately f
 | Version 1, method-only Infix | `573914745451f8278720257db37a4a4ebaae853d` | `extensions-` and `completion-` |
 | Version 2, operation targets | `22d4069bac2bf963d8238dd1fd0940cdf57ae084` | `completion-` |
 | Version 3, finalizers and captured binding | `31e14691e96265b05522cbe8d563186785b1bf4e` | `persistent-` |
+| Version 4, persistent state and checked reference binding | `70593388a249879cff39372b9d6f62342a7d448d` | `unchecked-` |
 
 The workflow verifies those commits and builds them in isolated directories with test-only version 2.4.3.0. Its first current engine uses the actual Harmony 3 assembly version, 3.0.0.0. The second uses test-only version 3.0.1.0 to exercise distinct current engines. The test override is not a release. Both baseline lanes run on net9/JSON and net8/BinaryFormatter with `REQUIRE_COEXISTENCE=1`.
 
@@ -75,7 +76,9 @@ REQUIRE_COEXISTENCE=1 CASE_FILTER=completion- \
 bash HarmonyTests.Compatibility/run.sh
 ```
 
-Repeat with the version-1 baseline and `PRIOR_INFIX_STATE_VERSION=1`. Run its `extensions-` filter separately. `V3_HARMONY` remains an alias for the version-1 input. Without an explicit filter, version 1 selects `extensions-` and version 2 selects `completion-`. This mode snapshots the supplied baseline; it does not build or download it.
+Repeat with the version-1 baseline and `PRIOR_INFIX_STATE_VERSION=1`. Run its `extensions-` filter separately. `V3_HARMONY` remains an alias for the version-1 input. Without an explicit filter, versions 1, 2, 3 and 4 select `extensions-`, `completion-`, `persistent-` and `unchecked-`, respectively. This mode snapshots the supplied baseline; it does not build or download it.
+
+Unchecked-binding cases install a by-value reference mismatch with the explicit override, execute it, and require another current engine to preserve it through a cold rebuild and later updates. Older published and version-4 readers must reject version-5 state without changing registrations or installed behavior, in both initialization orders. Removing the flagged registration through the current engine restores unframed state and older-reader access. `CASE_FILTER=unchecked-` selects these three cases. They test published-state protection; the concurrent-old-candidate boundary below still applies.
 
 The extension cases cover constructor, field-read, constant, and method-only `__originalMember` capabilities. Completion cases cover inner finalizers, captured binding, automatic-body declarations, cold reconstruction by another current engine, and removal through state versions 3, 2, 1, then ordinary unframed state. Both prior/current initialization orders must first pass ordinary coexistence.
 
@@ -108,6 +111,7 @@ To reproduce distinct current identities without editing version files, build on
 | `active-state-*`, `legacy-recovery-*` | Rejection before transpilers, unchanged published state and behavior, survivor validation, removal, and corrected retry. |
 | `cold-identity`, `duplicate-module`, `duplicate-patch-module-*` | Exact recursive selectors, detached reader-owned objects, state isolation, malformed data, ambiguous identities, and owner-removal recovery. |
 | `extensions-*`, `completion-*`, `persistent-*` | Prior-format rejection, capability downgrade, exact callback dependencies, and current/current rebuilding, including suspended execution state. |
+| `unchecked-*` | Version-5 override preservation, older-reader rejection in both load orders, unchanged published state, execution and recovery after removing the override. |
 | `foreign-*`, `reflection-ordinary-*`, `concurrent-old-candidate` | Explicitly classified loading and inherited update limits, independently of Infix rejection. |
 
 Standard output is the JSON summary; build/progress output goes to standard error. Reports retain each child request, result, and diagnostic log, including runtime, hashes, module IDs, providers, load events, state/version/mappings, counters, and execution traces. Downloads and engine snapshots remain under ignored `artifacts/` directories.

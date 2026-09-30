@@ -28,6 +28,9 @@ public static class Targets
 		return Called(value) + box.Value + 7;
 	}
 
+	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+	public static string UncheckedRun(string? value) => value ?? "null";
+
 	public static Func<int> CapturedFactory(int value) => () => Called(value) + 7;
 
 	public static Func<int> CapturedHandlerFactory(int value) => () =>

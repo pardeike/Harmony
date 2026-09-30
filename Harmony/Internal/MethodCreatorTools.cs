@@ -368,7 +368,7 @@ namespace HarmonyLib
 
 		// A missing conversion is definite; a missing one-way assignment usually is not.
 		// This deliberately leaves numeric/layout conversions and unusual runtime types alone.
-		internal static string BindingIncompatibility(Type source, Type destination, bool boxes = false)
+		internal static string BindingIncompatibility(Type source, Type destination, bool boxes = false, bool uncheckedReferenceBinding = false)
 		{
 			source = ElementType(source);
 			destination = ElementType(destination);
@@ -379,10 +379,10 @@ namespace HarmonyLib
 			if (source.IsValueType != destination.IsValueType)
 			{
 				if (source.IsValueType && boxes)
-					return destination.IsAssignableFrom(source) ? null : "The boxed value cannot have the requested type";
+					return uncheckedReferenceBinding || destination.IsAssignableFrom(source) ? null : "The boxed value cannot have the requested type";
 				return "The emitted binding has no boxing or unboxing conversion between a value and a reference";
 			}
-			if (source.IsValueType) return null;
+			if (source.IsValueType || uncheckedReferenceBinding) return null;
 			if (source.IsAssignableFrom(destination) || destination.IsAssignableFrom(source)) return null;
 			if (source.IsCOMObject || destination.IsCOMObject || source.IsImport || destination.IsImport
 				|| typeof(MarshalByRefObject).IsAssignableFrom(source) || typeof(MarshalByRefObject).IsAssignableFrom(destination)) return null;
@@ -402,24 +402,24 @@ namespace HarmonyLib
 				+ $"operation {context.Description}, supplied {source?.FullDescription() ?? "null (no storage)"}, requested {requested.FullDescription()}");
 
 		static void ValidateBinding(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context,
-			Type source, bool boxes = false, bool valueOnly = false, string sourceName = null)
+			Type source, bool boxes = false, bool valueOnly = false, string sourceName = null, bool uncheckedReferenceBinding = false)
 		{
 			var requested = injection.parameterInfo.ParameterType;
 			var reason = valueOnly && requested.IsByRef ? "This binding supplies a value, not an address"
 				: source is null ? requested.IsByRef || requested.IsValueType || IsNativePointer(requested)
 					? "No value or address exists for this parameter" : null
-				: BindingIncompatibility(source, requested, boxes);
+				: BindingIncompatibility(source, requested, boxes, uncheckedReferenceBinding);
 			if (reason != null)
 				throw creator.InvalidBinding(patch, context,
 					$"parameter {injection.parameterInfo.Name} bound to {(injection.outer ? "outer " : context != creator.config.bindingContext ? "inner " : "")}{sourceName ?? injection.realName}", source, requested, reason);
 		}
 
 		internal static void ValidateReturnBinding(this MethodCreator creator, MethodInfo patch, PatchBindingContext context,
-			Type source, Type destination, string binding = "return value")
+			Type source, Type destination, string binding = "return value", bool uncheckedReferenceBinding = false)
 		{
 			var reason = source == typeof(void) || destination == typeof(void) ? "A void operation has no passthrough result"
 				: source.IsByRef != destination.IsByRef ? "The return value and destination require different value/address shapes"
-				: BindingIncompatibility(source, destination);
+				: BindingIncompatibility(source, destination, uncheckedReferenceBinding: uncheckedReferenceBinding);
 			if (reason != null) throw creator.InvalidBinding(patch, context, binding, source, destination, reason);
 		}
 
@@ -531,7 +531,7 @@ namespace HarmonyLib
 			=> Nop.WithBlocks(new ExceptionBlock(blockType));
 
 		internal static List<CodeInstruction> EmitPatchCall(this MethodCreator creator, MethodInfo patch, PatchBindingContext context,
-			bool allowFirstParamPassthrough, PatchBindingContext outerContext = null)
+			bool allowFirstParamPassthrough, PatchBindingContext outerContext = null, bool uncheckedReferenceBinding = false)
 		{
 			var boxedArguments = new List<(InjectionStorage storage, LocalBuilder variable)>();
 			var boxedInstances = new List<(InjectionStorage storage, LocalBuilder variable)>();
@@ -546,7 +546,7 @@ namespace HarmonyLib
 				if (outerArray) codes.AddRange(creator.LoadInfixArgumentArray(outerContext));
 			}
 			codes.AddRange(creator.EmitCallParameter(patch, context, outerContext, allowFirstParamPassthrough,
-				out var boxedResult, out var refResultUsed, boxedInstances, boxedArguments));
+				out var boxedResult, out var refResultUsed, boxedInstances, boxedArguments, uncheckedReferenceBinding));
 			if (outerContext != null && InfixInlining.TryInline(patch, creator.config.il, out var inlined, creator.config.debug)) codes.AddRange(inlined);
 			else codes.Add(Call[patch]);
 			if (innerArray)
@@ -600,7 +600,8 @@ namespace HarmonyLib
 			out LocalBuilder tmpObjectVar,
 			out bool refResultUsed,
 			List<(InjectionStorage storage, LocalBuilder variable)> tmpInstanceBoxes,
-			List<(InjectionStorage storage, LocalBuilder variable)> tmpBoxVars
+			List<(InjectionStorage storage, LocalBuilder variable)> tmpBoxVars,
+			bool uncheckedReferenceBinding
 		)
 		{
 			tmpObjectVar = null;
@@ -639,7 +640,7 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.OriginalMethod)
 				{
 					if (original is null) throw BindingError(patch, injection, context, "This operation is not a method; use __originalMember for a field");
-					creator.ValidateBinding(patch, injection, context, original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo), valueOnly: true);
+					creator.ValidateBinding(patch, injection, context, original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo), valueOnly: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null && (paramType.IsByRef || !paramType.IsAssignableFrom(original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo))))
 						throw BindingError(patch, injection, context, "__originalMethod requires a compatible by-value method type");
 					if (EmitOriginalBaseMethod(original, codes))
@@ -663,7 +664,7 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.Exception)
 				{
 					creator.ValidateBinding(patch, injection, context,
-						context.variables.TryGetValue(InjectionType.Exception, out var suppliedException) ? suppliedException.LocalType : null, valueOnly: true);
+						context.variables.TryGetValue(InjectionType.Exception, out var suppliedException) ? suppliedException.LocalType : null, valueOnly: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null && (!context.variables.TryGetValue(InjectionType.Exception, out _)
 						|| paramType.IsByRef || !paramType.IsAssignableFrom(typeof(Exception))))
 						throw BindingError(patch, injection, context, "Inner __exception requires a compatible by-value finalizer parameter");
@@ -676,7 +677,7 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.RunOriginal)
 				{
-					creator.ValidateBinding(patch, injection, context, typeof(bool), valueOnly: true);
+					creator.ValidateBinding(patch, injection, context, typeof(bool), valueOnly: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (context.variables.TryGetValue(InjectionType.RunOriginal, out var runOriginal))
 						codes.Add(Ldloc[runOriginal]);
 					else
@@ -687,7 +688,7 @@ namespace HarmonyLib
 				if (injectionType == InjectionType.Instance)
 				{
 					creator.ValidateBinding(patch, injection, context, context.receiver?.type,
-						boxes: outerContext != null || AccessTools.IsStruct(originalType) && ElementType(paramType) == typeof(object));
+						boxes: outerContext != null || AccessTools.IsStruct(originalType) && ElementType(paramType) == typeof(object), uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null)
 					{
 						if (context.receiver is null)
@@ -697,7 +698,7 @@ namespace HarmonyLib
 							codes.Add(Ldnull);
 						}
 						else
-							codes.AddRange(creator.EmitStorage(patch, injection, context, context.receiver.Value, true, tmpInstanceBoxes));
+							codes.AddRange(creator.EmitStorage(patch, injection, context, context.receiver.Value, true, tmpInstanceBoxes, uncheckedReferenceBinding: uncheckedReferenceBinding));
 						continue;
 					}
 					if (originalIsStatic)
@@ -752,7 +753,7 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.ArgsArray)
 				{
-					creator.ValidateBinding(patch, injection, context, typeof(object[]), valueOnly: true);
+					creator.ValidateBinding(patch, injection, context, typeof(object[]), valueOnly: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
 					foreach (var parameter in context.parameters)
 						if (!CanStoreInObjectArray(ElementType(parameter.ParameterType)))
 							throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to __args, argument {parameter.Name}",
@@ -771,7 +772,7 @@ namespace HarmonyLib
 						throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to field {fieldInfo.Name}",
 							fieldInfo.FieldType, paramType, "An instance field requires a receiver");
 					creator.ValidateBinding(patch, injection, context, fieldInfo.FieldType,
-						boxes: outerContext != null && !paramType.IsByRef, sourceName: $"field {fieldInfo.DeclaringType.FullDescription()}.{fieldInfo.Name}");
+						boxes: outerContext != null && !paramType.IsByRef, sourceName: $"field {fieldInfo.DeclaringType.FullDescription()}.{fieldInfo.Name}", uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null)
 					{
 						ValidateStorageType(patch, injection, context, fieldInfo.FieldType, false);
@@ -795,13 +796,13 @@ namespace HarmonyLib
 				{
 					if (context.variables.TryGetValue((object)patch.DeclaringType ?? "null", out var stateVar))
 					{
-						creator.ValidateBinding(patch, injection, context, stateVar.type, boxes: outerContext != null);
-						if (outerContext != null) codes.AddRange(creator.EmitStorage(patch, injection, context, stateVar, true, tmpBoxVars));
+						creator.ValidateBinding(patch, injection, context, stateVar.type, boxes: outerContext != null, uncheckedReferenceBinding: uncheckedReferenceBinding);
+						if (outerContext != null) codes.AddRange(creator.EmitStorage(patch, injection, context, stateVar, true, tmpBoxVars, uncheckedReferenceBinding: uncheckedReferenceBinding));
 						else codes.Add(paramType.IsByRef ? stateVar.LoadAddress() : stateVar.Load());
 					}
 					else
 					{
-						creator.ValidateBinding(patch, injection, context, null);
+						creator.ValidateBinding(patch, injection, context, null, uncheckedReferenceBinding: uncheckedReferenceBinding);
 						codes.Add(Ldnull);
 					}
 					continue;
@@ -810,7 +811,7 @@ namespace HarmonyLib
 				if (outerContext != null && IsLocalInjection(injection))
 				{
 					var local = creator.InfixLocal(patch, injection, context);
-					codes.AddRange(creator.EmitStorage(patch, injection, context, local, true, tmpBoxVars));
+					codes.AddRange(creator.EmitStorage(patch, injection, context, local, true, tmpBoxVars, uncheckedReferenceBinding: uncheckedReferenceBinding));
 					continue;
 				}
 
@@ -819,7 +820,7 @@ namespace HarmonyLib
 					if (returnType == typeof(void))
 						throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to __result", returnType, paramType, "A void operation has no result");
 					creator.ValidateBinding(patch, injection, context, returnType,
-						boxes: outerContext != null || ElementType(paramType) == typeof(object));
+						boxes: outerContext != null || ElementType(paramType) == typeof(object), uncheckedReferenceBinding: uncheckedReferenceBinding);
 					var resultType = paramType;
 					if (resultType.IsByRef && returnType.IsByRef is false)
 						resultType = resultType.GetElementType();
@@ -868,7 +869,7 @@ namespace HarmonyLib
 
 				if (injection.argumentMode == ArgumentMode.Default && context.variables.TryGetValue(paramRealName, out var localBuilder))
 				{
-					creator.ValidateBinding(patch, injection, context, localBuilder.type);
+					creator.ValidateBinding(patch, injection, context, localBuilder.type, uncheckedReferenceBinding: uncheckedReferenceBinding);
 					codes.Add(paramType.IsByRef ? localBuilder.LoadAddress() : localBuilder.Load());
 					continue;
 				}
@@ -884,7 +885,7 @@ namespace HarmonyLib
 						var delegateConstructor = paramType.GetConstructor([typeof(object), typeof(IntPtr)]);
 						if (delegateConstructor is not null)
 						{
-							creator.ValidateDelegate(patch, injection, context, methodInfo);
+							creator.ValidateDelegate(patch, injection, context, methodInfo, uncheckedReferenceBinding: uncheckedReferenceBinding);
 							if (methodInfo.IsStatic)
 								codes.Add(Ldnull);
 							else
@@ -918,7 +919,7 @@ namespace HarmonyLib
 					throw new Exception($"Parameter \"{paramRealName}\" not found in {context.Description}");
 				}
 				codes.AddRange(creator.EmitStorage(patch, injection, context, context.arguments[argumentIdx], outerContext != null, tmpBoxVars,
-					$"argument {argumentIdx} ({context.parameterNames[argumentIdx]})"));
+					$"argument {argumentIdx} ({context.parameterNames[argumentIdx]})", uncheckedReferenceBinding: uncheckedReferenceBinding));
 			}
 			return codes;
 		}
@@ -946,9 +947,9 @@ namespace HarmonyLib
 		}
 
 		static List<CodeInstruction> EmitStorage(this MethodCreator creator, MethodInfo patch, InjectedParameter injection,
-			PatchBindingContext context, InjectionStorage argument, bool infix, List<(InjectionStorage storage, LocalBuilder variable)> tmpBoxVars, string sourceName = null)
+			PatchBindingContext context, InjectionStorage argument, bool infix, List<(InjectionStorage storage, LocalBuilder variable)> tmpBoxVars, string sourceName = null, bool uncheckedReferenceBinding = false)
 		{
-			creator.ValidateBinding(patch, injection, context, argument.type, boxes: true, sourceName: sourceName);
+			creator.ValidateBinding(patch, injection, context, argument.type, boxes: true, sourceName: sourceName, uncheckedReferenceBinding: uncheckedReferenceBinding);
 			var codes = new List<CodeInstruction>();
 			var config = creator.config;
 			var paramType = injection.parameterInfo.ParameterType;
@@ -1013,14 +1014,14 @@ namespace HarmonyLib
 			return codes;
 		}
 
-		static void ValidateDelegate(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context, MethodInfo method)
+		static void ValidateDelegate(this MethodCreator creator, MethodInfo patch, InjectedParameter injection, PatchBindingContext context, MethodInfo method, bool uncheckedReferenceBinding)
 		{
 			var delegateType = injection.parameterInfo.ParameterType;
 			var binding = $"parameter {injection.parameterInfo.Name} bound to delegate {method.FullDescription()}";
 			if (!method.IsStatic)
 			{
 				var reason = context.receiver is null ? "An instance delegate requires a receiver"
-					: BindingIncompatibility(context.receiverType, method.DeclaringType, boxes: true);
+					: BindingIncompatibility(context.receiverType, method.DeclaringType, boxes: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
 				if (reason != null) throw creator.InvalidBinding(patch, context, binding, context.receiver?.type, method.DeclaringType, reason);
 			}
 			// The existing constructor fallback also admits custom handles with no delegate invocation contract.
@@ -1038,7 +1039,7 @@ namespace HarmonyLib
 			{
 				var reason = (source == typeof(void)) != (destination == typeof(void)) ? "The delegate and method disagree on whether there is a result"
 					: source.IsByRef != destination.IsByRef ? "The delegate and method require different value/address shapes"
-					: BindingIncompatibility(source, destination);
+					: BindingIncompatibility(source, destination, uncheckedReferenceBinding: uncheckedReferenceBinding);
 				if (reason != null) throw creator.InvalidBinding(patch, context, $"{binding}, {part}", source, destination, reason);
 			}
 		}

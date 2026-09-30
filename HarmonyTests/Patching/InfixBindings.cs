@@ -368,7 +368,7 @@ namespace HarmonyLibTests.Patching
 			var prefixes = new List<MethodInfo> { Method(nameof(ReadArray)) };
 			if (write) prefixes.Add(Method(nameof(WriteValue)));
 			var postfixes = new List<MethodInfo> { Method(nameof(ReadArray)) };
-			var config = new MethodCreatorConfig(Method(nameof(ValueOuter)), null, prefixes, postfixes, [], [], [], [], false);
+			var config = new MethodCreatorConfig(Method(nameof(ValueOuter)), null, [.. prefixes.Select(patch => new PatchCall(patch))], [.. postfixes.Select(patch => new PatchCall(patch))], [], [], [], [], false);
 			var creator = new MethodCreator(config);
 			var inner = TestTools.CreateBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
 				[new InjectionStorage(config.DeclareLocal(typeof(int)))], new VariableState());
@@ -603,7 +603,7 @@ namespace HarmonyLibTests.Patching
 		public void Unrequested_arrays_have_no_storage_or_allocation_instructions()
 		{
 			var patch = Method(nameof(WriteValue));
-			var config = new MethodCreatorConfig(Method(nameof(ValueOuter)), null, [patch], [], [], [], [], [], false);
+			var config = new MethodCreatorConfig(Method(nameof(ValueOuter)), null, [new(patch)], [], [], [], [], [], false);
 			var creator = new MethodCreator(config);
 			var inner = TestTools.CreateBindingContext(Method(nameof(ValueCall)), typeof(InfixBindings), null,
 				[new InjectionStorage(config.DeclareLocal(typeof(int)))], new VariableState());
