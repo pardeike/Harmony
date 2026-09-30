@@ -10,6 +10,29 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
+## Review fixes, 2026-09-30
+
+A review of the injection validation and opt-out work produced nine fixes, each developed test-first in its own commit:
+
+- **Survivors no longer block a method.** Reference checks apply only to registrations added by the current operation, marked by a transient `Patch.candidate` flag that serialization drops. Survivors keep their accepted bindings; only structural requirements still apply to them. A passthrough pair is rechecked when either side is being added, and `__exception` is checked against `Exception` even without a finalizer. Before, one older registration that fails today's checks blocked every other owner's addition and removal on that method and stopped `UnpatchAll`, while its wrapper kept running.
+- **Static originals keep Harmony 2's first-argument fallback** for instance `___field` and instance delegate injections, limited to a first argument that can hold the instance. A missing or unrelated first argument is rejected. Infix keeps its explicit-receiver contract.
+- **Transpilers reject `uncheckedReferenceBinding`**, and transpiler records never raise the state version.
+- **`Nullable<T>` follows the value/reference rule.** Boxing yields a boxed `T` or `null`; a reference argument declared as `int?` is rejected instead of failing at run time with `InvalidProgramException`.
+- **Primitive receivers pass as managed pointers.** The replacement signature and `__instance` emission used `AccessTools.IsStruct`, which excludes primitives and enums, so patching `double.ToString(string)` or `ushort.CompareTo(ushort)` crashed even with an empty prefix. Harmony 2 returned garbage for the same reason.
+- Compatibility cases prove override removal through the patch-call counter; `extensions-released` runs on the net10/JSON lane; the shipped XML documentation no longer says "new"; the pasted `TYPE-SAFE-INJECTIONS.md` plan is assimilated into the [core specification](../../drafts/INFIX-NEW-IMPL-V3.md#shared-patch-time-incompatibility-checks) and removed.
+
+The new `PrimitiveReceivers` fixture has five cases; `InjectionValidation` and `UncheckedReferenceBinding` gained 28 cases, and `Primitive_receiver_is_not_boxed_by_the_ordinary_emitter`, which had encoded the primitive defect, became `Primitive_receiver_boxes_like_a_struct`.
+
+| Local verification | Result |
+| --- | --- |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,158 passed in each; two existing explicit tests excluded |
+| Published Harmony 2.4.2, complete .NET 10/JSON lane | 50 cases with their expected outcomes: 17 successes, 20 rejections, 2 API boundaries, 11 classified pre-existing limitations |
+| Unchecked cases with distinct current engines, .NET 10/JSON | `unchecked-cold`, `unchecked-old-first` and `unchecked-new-first` pass with mandatory coexistence |
+| Quiet workflow checks | Six tests pass |
+| Formatting and whitespace | `dotnet format` on changed C# files; `git diff --check` passes |
+
+The net10/JSON lane now has 50 cases because it includes `extensions-released`; the net8/BinaryFormatter lane keeps 49. Mono, .NET Framework, older CoreCLR versions, BinaryFormatter lanes and remote CI were not run for these fixes. One pre-existing limitation surfaced while writing the survivor tests and remains open: a generic method instantiation used as a patch callback resolves to its open definition after a shared-state round trip, because `Patch` identity is the definition's metadata token.
+
 ## Unchecked reference binding, 2026-09-30
 
 `[HarmonyUncheckedReferenceBinding]` and `HarmonyMethod.uncheckedReferenceBinding` now opt an individual patch registration out of the new reference-type compatibility checks. This covers by-value and by-reference object bindings, existing boxing, reference passthrough results and injected delegates. Structural requirements and existing result/state/Infix contracts remain enforced. The [injection guide](../../Documentation/articles/patching-injections.md#unchecked-reference-binding) explains the API and its limits; the [core specification](../../drafts/INFIX-NEW-IMPL-V3.md#shared-patch-time-incompatibility-checks) records the implementation contract.
