@@ -27,7 +27,7 @@ static class SpeedPatch
   </div>
 </section>
 
-<p class="version-notice"><span class="preview-dot" aria-hidden="true"></span>You're reading the <strong>Harmony 3 preview</strong>. For the current stable version, use the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p>
+<p class="version-notice"><span class="preview-dot" aria-hidden="true"></span>You're reading the documentation for <strong>Harmony 3.0.0-rc.1</strong>. For the current stable version, use the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p>
 
 <h2 id="documentation">Guides and reference</h2>
 
@@ -65,7 +65,7 @@ static class SpeedPatch
 <section class="home-section" id="getting-started">
   <h2>Get Harmony into your project</h2>
   <p>Use <a href="https://www.nuget.org/packages/Lib.Harmony">Lib.Harmony</a> for one DLL with its dependencies merged in. Use <a href="https://www.nuget.org/packages/Lib.Harmony.Thin">Lib.Harmony.Thin</a> when you want to manage those dependencies yourself.</p>
-  <p>This site describes v3 preview development on the <a href="https://github.com/pardeike/Harmony/tree/v3">v3 branch</a>. Check the version your application loads before using new APIs. <a href="articles/basics.md">The installation guide</a> covers the steps.</p>
+  <p>This site describes Harmony 3.0.0-rc.1 on the <a href="https://github.com/pardeike/Harmony/tree/v3">v3 branch</a>. Check the version your application loads before using new APIs. <a href="articles/basics.md">The installation guide</a> covers the steps.</p>
 </section>
 
 <section class="home-section" id="community">

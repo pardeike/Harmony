@@ -1,6 +1,6 @@
 <p align="center">
 	<img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="180" /><br>
-	<b>Version 3.0 Preview</b><br>
+	<b>Version 3.0.0-rc.1</b><br>
 	A library for patching, replacing and decorating<br>
 	.NET and Mono methods during runtime.
 </p>
