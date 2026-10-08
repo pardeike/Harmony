@@ -1,6 +1,7 @@
 """Release checks that must fail before an irreversible publication."""
 
 import io
+import json
 import os
 from pathlib import Path
 import tempfile
@@ -151,6 +152,30 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn(file.read_bytes(), request.data)
             self.assertNotIn(b"dummy-unit-test-key", request.data)
             process.assert_not_called()
+
+    def test_new_draft_uses_creation_response_without_waiting_for_list_visibility(self):
+        manifest = self.manifest()
+        (self.folder / "release-notes.md").write_text("Approved release notes")
+        assets = [{"name": name, "digest": "sha256:" + checksum} for name, checksum in manifest["files"].items()
+                  if name.endswith(".zip")]
+        created = {"id": 99, "tag_name": manifest["tag"], "draft": True, "assets": []}
+        with patch.object(release, "github_state", return_value=(False, None)), \
+                patch.object(release, "api", side_effect=[{}, created, {**created, "assets": assets}]) as api, \
+                patch.object(release, "command") as command:
+            release.publish_github(self.folder, manifest, "pardeike/Harmony")
+            self.assertEqual(api.call_args_list[1].args, ("repos/pardeike/Harmony/releases",))
+            self.assertTrue(api.call_args_list[1].kwargs["draft"])
+            self.assertEqual(api.call_args_list[1].kwargs["target_commitish"], self.sha)
+            self.assertFalse(any("per_page" in call.args[0] for call in api.call_args_list))
+            self.assertEqual(sum(call.args[:3] == ("gh", "release", "upload") for call in command.call_args_list), 3)
+
+    def test_github_draft_flags_are_json_booleans(self):
+        with patch.object(release, "command", return_value=json.dumps({"id": 99})) as command:
+            self.assertEqual(release.api("repos/pardeike/Harmony/releases", draft=True, prerelease=False), {"id": 99})
+            args = command.call_args.args
+            self.assertIn("draft=true", args)
+            self.assertIn("prerelease=false", args)
+            self.assertEqual(args.count("-F"), 2)
 
 
 if __name__ == "__main__":
