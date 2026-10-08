@@ -35,7 +35,10 @@ def command(*args, capture=True):
 def api(path, **fields):
     args = ["gh", "api", path]
     for key, value in fields.items():
-        args.extend(["-f", f"{key}={value}"])
+        if isinstance(value, bool):
+            args.extend(["-F", f"{key}={str(value).lower()}"])
+        else:
+            args.extend(["-f", f"{key}={value}"])
     return json.loads(command(*args))
 
 
@@ -243,7 +246,7 @@ def push_package(file):
         if error.code != 409:
             raise ValueError(f"NuGet upload failed with HTTP {error.code} for {file.name}") from None
         # Another accepted upload may still be indexing. Verify its contents before continuing.
-    print(f"NuGet accepted {file.name}; waiting for public package validation")
+    print(f"NuGet accepted {file.name}; waiting for public package validation", flush=True)
 
 
 def publish(args):
@@ -299,12 +302,10 @@ def publish_github(directory, manifest, repo):
     if not has_tag:
         api(f"repos/{repo}/git/refs", ref="refs/tags/" + tag, sha=manifest["source_sha"])
     if release is None:
-        args = ["gh", "release", "create", tag, "--repo", repo, "--verify-tag", "--draft", "--title", manifest["title"],
-                "--notes-file", str(directory / "release-notes.md")]
-        if manifest["prerelease"]:
-            args.append("--prerelease")
-        command(*args, capture=False)
-        release = next(r for r in api(f"repos/{repo}/releases?per_page=100") if r["tag_name"] == tag)
+        # Use the creation response directly: the release list can lag behind a newly created draft.
+        release = api(f"repos/{repo}/releases", tag_name=tag, target_commitish=manifest["source_sha"],
+                      name=manifest["title"], body=(directory / "release-notes.md").read_text(),
+                      draft=True, prerelease=manifest["prerelease"])
     expected = {n for n in manifest["files"] if n.endswith(".zip")}
     assets = {a["name"]: a for a in release["assets"]}
     require(set(assets) <= expected, "Unexpected release assets")
