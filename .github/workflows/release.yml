@@ -31,7 +31,8 @@ jobs:
     timeout-minutes: 20
     environment: release
     permissions:
-      contents: read
+      # GitHub's generate-notes endpoint requires Contents write permission.
+      contents: write
       actions: read
       id-token: write
     steps:
