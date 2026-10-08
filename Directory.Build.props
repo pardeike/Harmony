@@ -62,7 +62,7 @@
 
 	<PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
 		<Optimize>false</Optimize>
-		<DebugType>full</DebugType>
+		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<DefineConstants>DEBUG</DefineConstants>
 	</PropertyGroup>
