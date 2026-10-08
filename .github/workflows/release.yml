@@ -1,0 +1,95 @@
+name: Release Harmony
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Prepare artifacts and notes, or publish a reviewed preparation
+        type: choice
+        options: [prepare, publish]
+        default: prepare
+        required: true
+      ci_run:
+        description: Platform Tests run ID (blank selects successful CI for this commit)
+        type: string
+      preparation_run:
+        description: Successful prepare run ID (required for publish)
+        type: string
+
+concurrency:
+  group: harmony-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prepare:
+    if: inputs.mode == 'prepare'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    environment: release
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Exercise release failure and recovery contracts
+        run: python3 scripts/release_test.py
+      - name: Verify NuGet trusted publishing access without uploading
+        uses: NuGet/login@v1
+        with:
+          user: pardeike
+      - name: Prepare tested packages and generated release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REPO: ${{ github.repository }}
+          CI_RUN: ${{ inputs.ci_run }}
+        run: python3 scripts/release.py prepare --repo "$RELEASE_REPO" --ci-run "$CI_RUN"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: prepared-release
+          path: artifacts/release/*
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    if: inputs.mode == 'publish'
+    runs-on: ubuntu-22.04
+    environment: release
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Download and verify reviewed preparation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REPO: ${{ github.repository }}
+          PREPARATION_RUN: ${{ inputs.preparation_run }}
+        run: |
+          test -n "$PREPARATION_RUN"
+          gh run download "$PREPARATION_RUN" --repo "$RELEASE_REPO" --name prepared-release --dir artifacts/release
+          python3 scripts/release.py verify
+      - name: Obtain a short-lived NuGet publishing credential
+        uses: NuGet/login@v1
+        id: nuget
+        with:
+          user: pardeike
+      - name: Publish Ref, Fat, Thin, then the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUGET_API_KEY: ${{ steps.nuget.outputs.NUGET_API_KEY }}
+          RELEASE_REPO: ${{ github.repository }}
+          PREPARATION_RUN: ${{ inputs.preparation_run }}
+        run: python3 scripts/release.py publish --repo "$RELEASE_REPO" --preparation-run "$PREPARATION_RUN"

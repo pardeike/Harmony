@@ -66,3 +66,16 @@ jobs:
           path: HarmonyTests/bin/**/*
 
 
+
+      - name: Stage current release packages
+        if: inputs.os == 'ubuntu' && inputs.build_configuration == 'Release'
+        run: python3 scripts/release.py stage
+
+      - name: Retain packages independently of transient test caches
+        if: inputs.os == 'ubuntu' && inputs.build_configuration == 'Release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-packages
+          path: artifacts/release/*
+          if-no-files-found: error
+          retention-days: 30
