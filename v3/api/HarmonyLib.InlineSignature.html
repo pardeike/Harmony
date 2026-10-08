@@ -54,10 +54,10 @@
             </form>
           </div>
           <details class="version-picker">
-            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <summary><span class="preview-dot" aria-hidden="true"></span> 3.0.0-rc.1 <span aria-hidden="true">⌄</span></summary>
             <div class="version-menu">
               <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
-              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+              <a href="../index.html" aria-current="true">Harmony <span>3.0.0-rc.1</span></a>
             </div>
           </details>
           <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub</a>
@@ -95,7 +95,7 @@
 
 
   <h1 id="HarmonyLib_InlineSignature" data-uid="HarmonyLib.InlineSignature" class="text-break">
-Class InlineSignature  
+Class InlineSignature  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -139,7 +139,7 @@ Parameter and return entries are <span class="xref">System.Type</span>, nested <
 
   <h3 id="HarmonyLib_InlineSignature__ctor" data-uid="HarmonyLib.InlineSignature.#ctor">
   InlineSignature()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -169,7 +169,7 @@ Parameter and return entries are <span class="xref">System.Type</span>, nested <
 
   <h3 id="HarmonyLib_InlineSignature_CallingConvention" data-uid="HarmonyLib.InlineSignature.CallingConvention">
   CallingConvention
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The calling convention. <span class="xref">System.Runtime.InteropServices.CallingConvention.Winapi</span> means default managed, not default unmanaged.
@@ -205,7 +205,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
   <h3 id="HarmonyLib_InlineSignature_ExplicitThis" data-uid="HarmonyLib.InlineSignature.ExplicitThis">
   ExplicitThis
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the first entry in <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a> explicitly describes the instance. Requires <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_HasThis">HasThis</a>.</p>
@@ -237,7 +237,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
   <h3 id="HarmonyLib_InlineSignature_HasThis" data-uid="HarmonyLib.InlineSignature.HasThis">
   HasThis
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the call receives an instance. Unless <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_ExplicitThis">ExplicitThis</a> is set, the instance is not listed in <a class="xref" href="HarmonyLib.InlineSignature.html#HarmonyLib_InlineSignature_Parameters">Parameters</a>.</p>
@@ -269,7 +269,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
   <h3 id="HarmonyLib_InlineSignature_Parameters" data-uid="HarmonyLib.InlineSignature.Parameters">
   Parameters
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The parameter types or function-pointer signatures</p>
@@ -301,7 +301,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
   <h3 id="HarmonyLib_InlineSignature_PopCount" data-uid="HarmonyLib.InlineSignature.PopCount">
   PopCount
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Stack values consumed by <code>calli</code>, including the function pointer and any implicit instance.</p>
@@ -336,7 +336,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
   <h3 id="HarmonyLib_InlineSignature_PushCount" data-uid="HarmonyLib.InlineSignature.PushCount">
   PushCount
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Stack values produced by <code>calli</code>: zero for <span class="xref">void</span>, otherwise one.</p>
@@ -371,7 +371,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
   <h3 id="HarmonyLib_InlineSignature_ReturnType" data-uid="HarmonyLib.InlineSignature.ReturnType">
   ReturnType
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The return type or function-pointer signature</p>
@@ -407,7 +407,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
   <h3 id="HarmonyLib_InlineSignature_ToString" data-uid="HarmonyLib.InlineSignature.ToString">
   ToString()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns a string representation of the inline signature</p>
@@ -440,6 +440,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 </article>
 
         <div class="contribution d-print-none">
+          <a href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Internal/InlineSignature.cs" class="edit-link">Edit this page</a>
         </div>
 
 
@@ -447,7 +448,7 @@ Other named values mean their unmanaged conventions; other metadata conventions 
 
       <div class="affix">
         <nav id="affix" aria-label="On this page"></nav>
-        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3.0.0-rc.1<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
       </div>
     </main>
 

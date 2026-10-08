@@ -54,10 +54,10 @@
             </form>
           </div>
           <details class="version-picker">
-            <summary><span class="preview-dot" aria-hidden="true"></span> v3 preview <span aria-hidden="true">⌄</span></summary>
+            <summary><span class="preview-dot" aria-hidden="true"></span> 3.0.0-rc.1 <span aria-hidden="true">⌄</span></summary>
             <div class="version-menu">
               <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
-              <a href="../index.html" aria-current="true">Harmony 3 <span>Preview</span></a>
+              <a href="../index.html" aria-current="true">Harmony <span>3.0.0-rc.1</span></a>
             </div>
           </details>
           <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub</a>
@@ -95,7 +95,7 @@
 
 
   <h1 id="HarmonyLib_InnerTarget" data-uid="HarmonyLib.InnerTarget" class="text-break">
-Class InnerTarget  
+Class InnerTarget  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -138,7 +138,7 @@ Class InnerTarget
 
   <h3 id="HarmonyLib_InnerTarget__ctor_System_Reflection_ConstructorInfo_System_Int32___" data-uid="HarmonyLib.InnerTarget.#ctor(System.Reflection.ConstructorInfo,System.Int32[])">
   InnerTarget(ConstructorInfo, params int[])
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Selects newobj instructions using the specified constructor</p>
@@ -174,7 +174,7 @@ Class InnerTarget
 
   <h3 id="HarmonyLib_InnerTarget__ctor_System_Reflection_FieldInfo_HarmonyLib_InnerTargetKind_System_Int32___" data-uid="HarmonyLib.InnerTarget.#ctor(System.Reflection.FieldInfo,HarmonyLib.InnerTargetKind,System.Int32[])">
   InnerTarget(FieldInfo, InnerTargetKind, params int[])
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Selects loads or stores of a field</p>
@@ -213,7 +213,7 @@ Class InnerTarget
 
   <h3 id="HarmonyLib_InnerTarget__ctor_System_Reflection_MethodInfo_System_Int32___" data-uid="HarmonyLib.InnerTarget.#ctor(System.Reflection.MethodInfo,System.Int32[])">
   InnerTarget(MethodInfo, params int[])
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Selects an exact method or explicit generic method family</p>
@@ -249,7 +249,7 @@ Class InnerTarget
 
   <h3 id="HarmonyLib_InnerTarget__ctor_System_Reflection_PropertyInfo_HarmonyLib_InnerTargetKind_System_Int32___" data-uid="HarmonyLib.InnerTarget.#ctor(System.Reflection.PropertyInfo,HarmonyLib.InnerTargetKind,System.Int32[])">
   InnerTarget(PropertyInfo, InnerTargetKind, params int[])
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Selects a property getter or setter as its actual accessor method</p>
@@ -291,7 +291,7 @@ Class InnerTarget
 
   <h3 id="HarmonyLib_InnerTarget_positions" data-uid="HarmonyLib.InnerTarget.positions">
   positions
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>One-based matches; negative positions count from the end, and empty selects all</p>
@@ -331,7 +331,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 
   <h3 id="HarmonyLib_InnerTarget_ConstantValue" data-uid="HarmonyLib.InnerTarget.ConstantValue">
   ConstantValue
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The selected literal value, or null for a member target</p>
@@ -363,7 +363,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 
   <h3 id="HarmonyLib_InnerTarget_Kind" data-uid="HarmonyLib.InnerTarget.Kind">
   Kind
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The normalized operation; property accessors are Method targets</p>
@@ -395,7 +395,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 
   <h3 id="HarmonyLib_InnerTarget_Member" data-uid="HarmonyLib.InnerTarget.Member">
   Member
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The exact selected member or explicit declaring-type family; null for a literal</p>
@@ -431,7 +431,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 
   <h3 id="HarmonyLib_InnerTarget_Constant_System_Object_System_Int32___" data-uid="HarmonyLib.InnerTarget.Constant(System.Object,System.Int32[])">
   Constant(object, params int[])
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Selects exact string, int, long, float, or double literal loads; floating-point identity preserves every bit</p>
@@ -473,7 +473,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 
   <h3 id="HarmonyLib_InnerTarget_Equals_System_Object_" data-uid="HarmonyLib.InnerTarget.Equals(System.Object)">
   Equals(object)
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Compares operation selectors independently of occurrence positions</p>
@@ -513,7 +513,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 
   <h3 id="HarmonyLib_InnerTarget_GetHashCode" data-uid="HarmonyLib.InnerTarget.GetHashCode">
   GetHashCode()
-  
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the operation selector hash independently of occurrence positions</p>
@@ -545,6 +545,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 </article>
 
         <div class="contribution d-print-none">
+          <a href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/InnerTarget.cs" class="edit-link">Edit this page</a>
         </div>
 
 
@@ -552,7 +553,7 @@ Installation copies the selector and positions, so later edits do not affect ins
 
       <div class="affix">
         <nav id="affix" aria-label="On this page"></nav>
-        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3 preview<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+        <div class="version-note"><span class="preview-dot" aria-hidden="true"></span> Harmony 3.0.0-rc.1<p>For the stable release, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
       </div>
     </main>
 
