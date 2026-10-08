@@ -203,3 +203,6 @@ ModelManifest.xml
 /Harmony/Documentation/api/*.yml
 /Harmony/Documentation/Documentation.dll
 .DS_Store
+
+# Python automation caches
+__pycache__/
