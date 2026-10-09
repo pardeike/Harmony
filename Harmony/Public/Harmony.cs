@@ -61,7 +61,7 @@ namespace HarmonyLib
 					if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
 #endif
 					FileLog.Log($"### Started from {callingMethod.FullDescription()}, location {location}");
-					FileLog.Log($"### At {DateTime.Now:yyyy-MM-dd hh.mm.ss}");
+					FileLog.Log($"### At {DateTime.Now:yyyy-MM-dd HH.mm.ss}");
 				}
 			}
 
