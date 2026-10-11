@@ -4,7 +4,7 @@
 
 You are reading the Harmony 2.x documentation, the current stable major version.
 
-[Harmony 2.x documentation](https://harmony.pardeike.net/v2/) · [Harmony 3 preview documentation](https://harmony.pardeike.net/v3/)
+[Harmony 2.x documentation](https://harmony.pardeike.net/v2/) · [Harmony 3 documentation](https://harmony.pardeike.net/v3/)
 
 ## Introduction
 
