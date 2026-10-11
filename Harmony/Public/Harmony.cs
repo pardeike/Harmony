@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -61,7 +62,7 @@ namespace HarmonyLib
 					if (string.IsNullOrEmpty(location)) location = new Uri(callingAssembly.CodeBase).LocalPath;
 #endif
 					FileLog.Log($"### Started from {callingMethod.FullDescription()}, location {location}");
-					FileLog.Log($"### At {DateTime.Now:yyyy-MM-dd HH.mm.ss}");
+					FileLog.Log($"### At {DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture)}");
 				}
 			}
 
