@@ -1,3 +1,4 @@
 - Use a 24-hour clock and an invariant Gregorian calendar for debug-log timestamps.
+- Fix generated-method dependency resolution for assembly names containing apostrophes, double quotes or commas.
 - Correct recovery in the release pipeline.
 - Update the documentation branding to Harmony 3.
