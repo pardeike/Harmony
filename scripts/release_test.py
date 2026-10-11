@@ -92,6 +92,29 @@ class ReleaseTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "trusted CI"):
                     release.successful_run("pardeike/Harmony", "test.yml", self.sha, 123)
 
+    def test_reviewed_notes_are_not_augmented_with_automatic_entries(self):
+        previous = Path.cwd()
+        os.chdir(self.folder)
+        try:
+            Path("docs").mkdir()
+            Path("docs/release-intro.md").write_text("- Approved fix.\n")
+            with patch.object(release, "api") as api:
+                self.assertEqual(release.release_notes("pardeike/Harmony", self.info["tag"], self.sha), "- Approved fix.\n")
+                api.assert_not_called()
+        finally:
+            os.chdir(previous)
+
+    def test_missing_reviewed_notes_fall_back_to_github_generation(self):
+        previous = Path.cwd()
+        os.chdir(self.folder)
+        try:
+            with patch.object(release, "api", return_value={"body": "Generated notes"}) as api:
+                self.assertEqual(release.release_notes("pardeike/Harmony", self.info["tag"], self.sha), "Generated notes\n")
+                api.assert_called_once_with("repos/pardeike/Harmony/releases/generate-notes",
+                                           tag_name=self.info["tag"], target_commitish=self.sha)
+        finally:
+            os.chdir(previous)
+
     def test_changed_notes_fail_before_publication(self):
         manifest = self.manifest()
         manifest["notes_sha256"] = "0" * 64
