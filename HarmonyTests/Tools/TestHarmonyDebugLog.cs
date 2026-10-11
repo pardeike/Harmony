@@ -34,7 +34,7 @@ namespace HarmonyLibTests.Tools
 				var before = DateTime.Now;
 				_ = new Harmony("test.debug.timestamp");
 				var after = DateTime.Now;
-				var line = Encoding.UTF8.GetString(output.ToArray()).Split((char)10).Select(value => value.Trim()).Single(value => value.StartsWith("### At "));
+				var line = Encoding.UTF8.GetString(output.ToArray()).Split((char)10).Select(value => value.Trim()).Single(value => value.StartsWith("### At ", StringComparison.Ordinal));
 				var timestamp = line.Substring("### At ".Length);
 				Assert.AreEqual(19, timestamp.Length);
 				Assert.True(DateTime.TryParseExact(timestamp, "yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var logged));
