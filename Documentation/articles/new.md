@@ -2,7 +2,7 @@
 
 <div id="whats-new"></div>
 
-These guides describe Harmony 3.0.0-rc.1 and its new APIs on the `v3` branch; the [2.x documentation](https://harmony.pardeike.net/v2/) remains the reference for the current stable version.
+These guides describe Harmony 3 and its new APIs on the `v3` branch; the [2.x documentation](https://harmony.pardeike.net/v2/) covers Harmony 2.
 
 ## Patch inside a method with Infix
 

@@ -81,7 +81,7 @@ def main():
                 target /= "index.html"
             if not target.is_relative_to(root) or not target.exists():
                 errors.append(f"{relative}: missing local target {link}")
-            elif url.fragment and target in pages and unquote(url.fragment) not in pages[target].anchors:
+            elif url.fragment and unquote(url.fragment).lower() != "top" and target in pages and unquote(url.fragment) not in pages[target].anchors:
                 errors.append(f"{relative}: missing anchor {link}")
         if args.before:
             previous_path = args.before / relative
