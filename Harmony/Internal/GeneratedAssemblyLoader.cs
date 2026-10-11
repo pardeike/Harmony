@@ -3,6 +3,7 @@ using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -25,17 +26,34 @@ namespace HarmonyLib
 			var loaded = AppDomain.CurrentDomain.GetAssemblies().Concat(additionalAssemblies ?? []).Distinct().ToArray();
 			foreach (var reference in module.AssemblyReferences)
 			{
-				var candidates = loaded.Where(assembly => assembly.FullName == reference.FullName && reference.HashIs(assembly)).ToArray();
+				var fullName = RuntimeFullName(reference);
+				var candidates = loaded.Where(assembly => assembly.GetName().FullName == fullName && reference.HashIs(assembly)).ToArray();
 				if (candidates.Length == 0)
 				{
 					if (reference.GetRuntimeHashedFullName() != reference.FullName)
 						throw new NotSupportedException($"The exact loaded assembly for generated Harmony reference '{reference.FullName}' is unavailable.");
 					continue; // Non-runtime references keep normal framework resolution.
 				}
-				if (candidates.Length != 1 || dependencies.TryGetValue(reference.FullName, out var previous) && previous != candidates[0])
+				if (candidates.Length != 1 || dependencies.TryGetValue(fullName, out var previous) && previous != candidates[0])
 					throw new NotSupportedException($"A Cecil-generated Harmony method cannot bind distinct loaded assemblies named '{reference.FullName}' in one metadata scope.");
-				dependencies[reference.FullName] = candidates[0];
+				dependencies[fullName] = candidates[0];
 			}
+		}
+
+		static string RuntimeFullName(AssemblyNameReference reference)
+		{
+			var name = new AssemblyName
+			{
+				Name = reference.Name,
+				Version = reference.Version,
+				CultureInfo = string.IsNullOrEmpty(reference.Culture) ? CultureInfo.InvariantCulture : CultureInfo.GetCultureInfo(reference.Culture),
+				Flags = reference.IsRetargetable ? AssemblyNameFlags.Retargetable : AssemblyNameFlags.None
+			};
+			name.SetPublicKeyToken(reference.PublicKeyToken);
+#if !NET35
+			if (reference.IsWindowsRuntime) name.ContentType = AssemblyContentType.WindowsRuntime;
+#endif
+			return name.FullName;
 		}
 
 		internal static Assembly Load(ModuleDefinition module)

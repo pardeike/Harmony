@@ -20,7 +20,7 @@ namespace HarmonyLibTests.Patching
 		static MethodInfo DefineIdentity(string name)
 		{
 #if NETFRAMEWORK
-			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(name), AssemblyBuilderAccess.Run);
+			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName { Name = name }, AssemblyBuilderAccess.Run);
 			var type = assembly.DefineDynamicModule(name).DefineType("Identity", TypeAttributes.Public);
 			var finalizer = type.DefineMethod("Finalizer", MethodAttributes.Public | MethodAttributes.Static, typeof(void), Type.EmptyTypes);
 			finalizer.GetILGenerator().Emit(OpCodes.Ret);
@@ -44,13 +44,13 @@ namespace HarmonyLibTests.Patching
 		static byte[] SaveIdentity(string name, out WeakReference source)
 		{
 			// ALC resolution cannot return a live Reflection.Emit assembly. Use a real plugin-shaped artifact.
-			var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(name), AssemblyBuilderAccess.RunAndCollect);
+			var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName { Name = name }, AssemblyBuilderAccess.RunAndCollect);
 			var type = assembly.DefineDynamicModule(name).DefineType("Identity", TypeAttributes.Public);
 			var finalizer = type.DefineMethod("Finalizer", MethodAttributes.Public | MethodAttributes.Static, typeof(void), Type.EmptyTypes);
 			finalizer.GetILGenerator().Emit(OpCodes.Ret);
 			source = new WeakReference(type.CreateType().Assembly);
 			var directory = TestTools.GetAssemblyTempDirectory();
-			var path = Path.Combine(directory, name + ".dll");
+			var path = Path.Combine(directory, "identity.dll");
 			try
 			{
 				new Lokad.ILPack.AssemblyGenerator().GenerateAssembly(assembly, [], path);
@@ -79,6 +79,25 @@ namespace HarmonyLibTests.Patching
 		{
 			Assert.AreEqual(0, Harmony.GetPatchInfo(original)?.Owners.Count ?? 0);
 			Assert.AreEqual(17, Original());
+		}
+
+		[TestCase("HarmonyLoader'Identity_")]
+		[TestCase("HarmonyLoader\"Identity_")]
+		[TestCase("HarmonyLoader,Identity_")]
+		public void Generated_methods_bind_assembly_names_that_require_display_name_quoting(string prefix)
+		{
+			var name = prefix + Guid.NewGuid().ToString("N");
+			var finalizer = DefineIdentity(name);
+			Assert.AreEqual(name, finalizer.DeclaringType.Assembly.GetName().Name);
+			var harmony = new Harmony("test.loader.quoted-name");
+			try
+			{
+				harmony.CreateProcessor(original).AddFinalizer(finalizer).Patch();
+				Assert.AreEqual(17, Original());
+				Assert.AreEqual(new[] { finalizer }, Harmony.GetPatchInfo(original).Finalizers.Select(patch => patch.PatchMethod));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+			AssertUnpatched();
 		}
 
 		[Test]
