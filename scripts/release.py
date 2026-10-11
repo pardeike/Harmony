@@ -183,6 +183,14 @@ def stage(args):
     save_manifest(destination, {**info, "source_sha": sha, "files": files})
 
 
+def release_notes(repo, tag, sha):
+    path = Path("docs/release-intro.md")
+    intro = path.read_text().strip() if path.exists() else ""
+    if intro:
+        return intro + "\n"
+    return api(f"repos/{repo}/releases/generate-notes", tag_name=tag, target_commitish=sha)["body"] + "\n"
+
+
 def prepare(args):
     sha = command("git", "rev-parse", "HEAD").strip()
     checked = gates(args.repo, sha, args.ci_run)
@@ -192,9 +200,7 @@ def prepare(args):
     manifest = verify(directory)
     require(manifest["source_sha"] == sha, "Artifact source commit mismatch")
     smoke(directory, manifest)
-    notes = api(f"repos/{args.repo}/releases/generate-notes", tag_name=manifest["tag"], target_commitish=sha)
-    intro = Path("docs/release-intro.md").read_text().strip() if Path("docs/release-intro.md").exists() else ""
-    body = (intro + "\n\n" if intro else "") + notes["body"] + "\n"
+    body = release_notes(args.repo, manifest["tag"], sha)
     (directory / "release-notes.md").write_text(body)
     manifest.update(checked)
     manifest["notes_sha256"] = hashlib.sha256(body.encode()).hexdigest()
