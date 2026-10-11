@@ -220,7 +220,7 @@ jobs:
     name: Cleanup Build Output
     needs: [test-results, build-binaries, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono]
     runs-on: ubuntu-22.04
-    if: always()
+    if: always() && github.event_name != 'pull_request'
     permissions:
       actions: write
       contents: read
