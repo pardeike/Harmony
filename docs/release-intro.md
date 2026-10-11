@@ -1,0 +1,7 @@
+- Use a 24-hour clock and an invariant Gregorian calendar for debug-log timestamps.
+- Improve shared-state initialization locking and discovery.
+- Fix patch-registration ordering and handling of foreign `CodeInstruction` objects.
+- Add exact argument-name binding.
+- Add expression-based field matchers and a constructor overload to `CodeMatch`.
+- Fix patch serialization compatibility and remove the unused BinaryFormatter dependency on .NET 9 and later.
+- Update MonoMod.Core to 1.3.6 and compatible build dependencies.
