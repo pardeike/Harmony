@@ -707,7 +707,8 @@
   </div>
   <h5 id="HarmonyLib_Harmony_PatchAll_remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>This method can fail to use the correct assembly when being inlined. It calls StackTrace.GetFrame(1) which can point to the wrong method/assembly. If you are unsure or run into problems, use</p>
-<pre><code class="lang-csharp">PatchAll(Assembly.GetExecutingAssembly())</code></pre>
+<pre><code>        &lt;pre&gt;&lt;code class=&quot;lang-csharp&quot;&gt;PatchAll(Assembly.GetExecutingAssembly())&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 <p>instead.</p>
 </div>
 
