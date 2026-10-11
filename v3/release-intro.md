@@ -1,0 +1,3 @@
+- Use a 24-hour clock and an invariant Gregorian calendar for debug-log timestamps.
+- Correct recovery in the release pipeline.
+- Update the documentation branding to Harmony 3.

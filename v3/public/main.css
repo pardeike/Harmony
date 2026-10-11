@@ -54,7 +54,6 @@ body.harmony > .site-header { height: var(--header-height); background: var(--ca
 .version-picker summary { display: flex; align-items: center; gap: 8px; padding: 9px 0; cursor: pointer; list-style: none; }
 .version-picker summary::-webkit-details-marker { display: none; }
 .version-picker summary > span:last-child { margin-left: 7px; }
-.preview-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
 .version-menu { position: absolute; right: 0; top: 46px; z-index: 1050; width: 242px; padding: 7px; border: 1px solid var(--line); background: white; border-radius: 8px; box-shadow: 0 8px 24px #1717100d; }
 .version-menu a { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 10px; border-radius: 5px; text-decoration: none; }
 .version-menu a:hover { background: var(--canvas); }
@@ -76,7 +75,6 @@ body.harmony[data-layout]:not([data-search]) > main > .affix { display: block; p
 .affix a { color: var(--muted) !important; text-decoration: none; }
 .affix a:hover { color: var(--ink) !important; }
 .version-note { margin-top: 32px; border-top: 1px solid #deddd8; padding-top: 21px; line-height: 1.5; }
-.version-note .preview-dot { margin: 0 4px 2px 0; }
 .version-note p { margin: 10px 0 0; color: var(--muted); }
 .version-note a { text-decoration: underline; }
 .offcanvas-body { flex-direction: column; min-height: 0; }
@@ -211,7 +209,6 @@ body.harmony.page-home article { padding: 0; background: transparent; font-size:
 .starter-panel pre { padding: 19px 17px; font-size: .8rem; background: white; }
 .starter-panel > a { display: block; margin-top: 18px; font-size: .875rem; color: #585852; }
 .version-notice { margin: 18px 2px 30px; font-size: .875rem; color: var(--muted); }
-.version-notice .preview-dot { margin-right: 7px; }
 .entry-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; margin: 21px 0 34px; }
 .entry-card { min-width: 0; display: flex; flex-direction: column; background: white; border: 1px solid var(--line); border-radius: var(--radius); padding: 24px 27px; }
 .page-home .entry-card { border-color: white; }
