@@ -149,6 +149,72 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+		public void Ordinary_exception_patches_and_dynamic_callbacks_do_not_load_generated_assemblies([Values] bool originalHandlers)
+		{
+			if (!MethodBodyGenerator.HasDynamicIL) Assert.Ignore("The direct body writer requires CoreCLR.");
+			var name = originalHandlers ? nameof(Catching) : nameof(WithoutHandlers);
+			Processor(name, false, false).AddFinalizer(Method(nameof(Finalizer))).Patch();
+			harmony.UnpatchAll(harmony.Id);
+			var before = AppDomain.CurrentDomain.GetAssemblies();
+			for (var i = 0; i < 12; i++)
+			{
+				var replacement = Processor(name, false, false).AddFinalizer(Method(nameof(Finalizer))).Patch();
+				Assert.That(replacement, Is.InstanceOf<DynamicMethod>());
+				if (i == 6) { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }
+				Assert.That(originalHandlers ? Catching(42, 0) : WithoutHandlers(42, false), Is.EqualTo(43));
+				harmony.UnpatchAll(harmony.Id);
+			}
+			Assert.That(AppDomain.CurrentDomain.GetAssemblies().Except(before), Is.Empty);
+		}
+
+		static WeakReference lifetimeCallback;
+		static DynamicMethod LifetimeFactory(MethodBase original)
+		{
+			var callback = PrefixFactory(original);
+			lifetimeCallback = new WeakReference(callback);
+			return callback;
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		WeakReference RetireReplacement()
+		{
+			var replacement = harmony.CreateProcessor(Method(nameof(Catching))).AddPrefix(Method(nameof(LifetimeFactory))).Patch();
+			GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+			Assert.That(lifetimeCallback.IsAlive, Is.True);
+			Assert.That(Catching(42, 0), Is.EqualTo(43));
+			harmony.UnpatchAll(harmony.Id);
+			return new WeakReference(replacement);
+		}
+
+		[Test]
+		public void Direct_replacements_retain_live_callbacks_and_release_retired_callbacks()
+		{
+			if (!MethodBodyGenerator.HasDynamicIL) Assert.Ignore("The direct body writer requires CoreCLR.");
+			var retired = RetireReplacement();
+			for (var attempt = 0; attempt < 10 && (retired.IsAlive || lifetimeCallback.IsAlive); attempt++)
+			{
+				GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+			}
+			Assert.That(retired.IsAlive, Is.False, "An unpatched replacement must not be held by generation state.");
+			Assert.That(lifetimeCallback.IsAlive, Is.False, "The retired replacement must release its dynamic callback.");
+		}
+
+		[Test]
+		public void Explicit_assembly_generation_keeps_dynamic_callback_support()
+		{
+			Harmony.TryGetSwitch("DMDType", out var previous);
+			Harmony.SetSwitch("DMDType", "cecil");
+			try
+			{
+				var replacement = Processor(nameof(Catching), false, false).AddFinalizer(Method(nameof(Finalizer))).Patch();
+				Assert.That(replacement, Is.Not.InstanceOf<DynamicMethod>());
+				Assert.That(Catching(42, 0), Is.EqualTo(43));
+				Assert.That(Catching(42, 1), Is.EqualTo(-43));
+			}
+			finally { Harmony.SetSwitch("DMDType", previous); }
+		}
+
+		[Test]
 		public void Dynamic_calls_preserve_original_catch_boundaries([Values] bool transpiler, [Values(0, 1, 2)] int failure, [Values] bool debug)
 		{
 			Processor(nameof(Catching), transpiler, debug).Patch();

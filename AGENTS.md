@@ -2,7 +2,7 @@
 
 * Relevant drafts and information are located in `./drafts/` and is named according to the topic.
 
-* The Infix design reference starts at `drafts/INFIX-NEW-IMPL-V3.md`. Its linked operation-target addendum and `drafts/INFIX-FEATURE-COMPLETION.md` define the implemented, unreleased extensions. Read them as one specification, with the completion document overriding earlier exclusions only where stated. Executed checks and remaining runtime boundaries are recorded in `docs/infix/README.md`.
+* The Infix design reference starts at `drafts/INFIX-NEW-IMPL-V3.md`. Its linked operation-target addendum and `drafts/INFIX-FEATURE-COMPLETION.md` define the implemented, unreleased extensions. Read them as one specification, with the completion document overriding earlier exclusions only where stated. Executable generation follows `drafts/ISSUE-783-METHOD-GENERATION.md`, which supersedes the earlier backend prescriptions. Executed checks and remaining runtime boundaries are recorded in `docs/infix/README.md`.
 
 * For simple edits, limit testing to net10 and x64.
 

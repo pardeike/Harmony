@@ -94,63 +94,7 @@ namespace HarmonyLib
 
 		internal LocalBuilder DeclareLocal(Type type, bool isPinned = false) => il.DeclareLocal(type, isPinned);
 		internal Label DefineLabel() => il.DefineLabel();
-		internal MethodInfo GenerateMethod(bool structuredHelper = false)
-		{
-			var body = patch.Definition.Body;
-			// Match DynamicMethod's default for transpiler-declared and Harmony-generated locals on either backend.
-			body.InitLocals = true;
-			// Synthetic helpers contain only Harmony's structured finalizer regions, not imported outer handlers.
-			// DynamicMethod tokens retain the exact runtime members, including callbacks in private load contexts.
-			if (structuredHelper)
-			{
-				var method = (DynamicMethod)DMDEmitDynamicMethodGenerator.Generate(patch);
-				// Helpers explicitly initialize every local that can be read before assignment.
-				// Older optimized JITs otherwise expose an uninitialized result after a caught operation fault.
-				method.InitLocals = false;
-				return method;
-			}
-			// MonoMod's DynamicMethod calli emitter subtracts the arguments but omits the returned stack value.
-			// Cecil calculates the complete stack depth, which older JITs require even when newer JITs accept the undercount.
-			var returnsFromCalli = body.Instructions.Any(instruction => instruction.OpCode == Mono.Cecil.Cil.OpCodes.Calli
-				&& instruction.Operand is Mono.Cecil.CallSite call && ReturnsValue(call));
-			if (body.ExceptionHandlers.Count == 0 && !returnsFromCalli) return patch.Generate();
-			var proxies = new Dictionary<MethodInfo, Mono.Cecil.MethodReference>();
-			var proxyAssemblies = new List<Assembly>();
-			// Legacy runtimes can bind emitted assemblies directly and must retain their competing-identity checks.
-			var proxyEmittedMethods = typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
-			foreach (var instruction in body.Instructions)
-			{
-				var method = instruction.Operand is DynamicMethodReference dynamicReference ? dynamicReference.DynamicMethod : null;
-				if (proxyEmittedMethods && method is null && instruction.Operand is Mono.Cecil.MethodReference reference && !reference.HasThis
-					&& reference != patch.Definition && reference.ResolveReflection() is MethodInfo target)
-				{
-#if NET35
-					if (target.Module.Assembly is AssemblyBuilder) method = target;
-#else
-					if (target.Module.Assembly.IsDynamic) method = target;
-#endif
-				}
-				if (method is null) continue;
-				if (!proxies.TryGetValue(method, out var proxy))
-				{
-					var proxyMethod = DynamicMethodProxy.Create(method);
-					proxy = patch.Definition.Module.ImportReference(proxyMethod);
-					proxyAssemblies.Add(proxyMethod.Module.Assembly);
-					proxies.Add(method, proxy);
-				}
-				instruction.Operand = proxy;
-			}
-			// Preserve the emitted exception table instead of reconstructing ranges and handler-entry labels through reflection emission.
-			return GeneratedAssemblyLoader.Generate(patch, proxyAssemblies);
-
-			static bool ReturnsValue(Mono.Cecil.CallSite call)
-			{
-				var type = call.ReturnType;
-				while (type is Mono.Cecil.RequiredModifierType or Mono.Cecil.OptionalModifierType)
-					type = ((Mono.Cecil.TypeSpecification)type).ElementType;
-				return type.MetadataType != Mono.Cecil.MetadataType.Void;
-			}
-		}
+		internal MethodInfo GenerateMethod(bool structuredHelper = false) => MethodBodyGenerator.Generate(patch, structuredHelper);
 
 		// prepared by Prepare()
 		internal int patchIndex;

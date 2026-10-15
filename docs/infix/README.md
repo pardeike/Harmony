@@ -6,9 +6,39 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 
 - [User guide](../../Documentation/articles/patching-infix.md): declarations, targets, scope, ordering and argument write-back.
 - [Odd cases and limits](../../Documentation/articles/patching-infix-limits.md) and [authoring recipes](../../Documentation/articles/patching-infix-authoring.md): supported workflows and executable examples.
-- [Implementation specification](../../drafts/INFIX-NEW-IMPL-V3.md), [operation-target contract](../../drafts/INFIX-OPERATIONS-ADDENDUM.md) and [feature-completion contract](../../drafts/INFIX-FEATURE-COMPLETION.md): the core contracts and their operation/lifecycle details. All three describe the current implementation.
+- [Implementation specification](../../drafts/INFIX-NEW-IMPL-V3.md), [operation-target contract](../../drafts/INFIX-OPERATIONS-ADDENDUM.md) and [feature-completion contract](../../drafts/INFIX-FEATURE-COMPLETION.md): the core contracts and their operation/lifecycle details. The [issue 783 generation design](../../drafts/ISSUE-783-METHOD-GENERATION.md) updates their executable-backend prescriptions.
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
+
+## Issue 783 method generation, 2026-10-15
+
+The rc.3 candidate separates patch construction, executable generation and assembly loading. Ordinary patches and Infixes share the same construction pipeline. CoreCLR normally receives a `DynamicMethod` containing the exact exception table and runtime references; ordinary exception handlers, finalizers and dynamic callbacks no longer require generated assemblies. The detour implementation and patch-state format are unchanged. [Design and acceptance plan](../../drafts/ISSUE-783-METHOD-GENERATION.md).
+
+Assembly output remains explicit for `DMDType=cecil` / `DMDDebug`, legacy runtime requirements, and custom-modified local/call-site signatures before .NET 10. Its resolver checks runtime hashes before allocating normalized assembly names, preserving quoted names and ambiguity rejection. Dynamic output can call two same-named assemblies exactly; metadata-only output retains its rejection boundary. The existing weak method lookup now also releases retired dynamic methods.
+
+| Executed local check | Result |
+| --- | --- |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,189 passed in each; two existing explicit tests excluded |
+| .NET 9.0.19 x64, Release generation, signatures and exception boundaries | 156 passed |
+| .NET Core 3.1.32 x64, same focused Release selection | 154 passed |
+| CoreCLR assembly creation regression | Zero replacement/proxy assemblies after warmup, including repeated ordinary finalizer patches with dynamic factories |
+| .NET 9 lifetime probes | Four current-engine cases pass: zero retained generated assemblies, retained wrappers remain callable, released wrappers collect, older shared-dictionary lookup succeeds, and an in-flight wrapper completes after removal/GC with its original-method mapping intact |
+| Explicit assembly fallback | Dynamic callbacks and quoted names execute; competing exact identities reject without replacing the installed patch |
+
+The historical lifetime runner's baseline host references Harmony 3 and cannot load published Harmony 2.4.2 as its provider. Current observations were verified separately; its cancelled in-flight case was run directly with the same compiled probe. This is not a passing aggregate baseline comparison. The older dictionary lookup inside the current wrapper-lifetime case did execute against actual published 2.4.2.
+
+The controlled installation probe used Release binaries on .NET 10.0.11/x64, the same generated target methods and warmup, 1,000 unrelated loaded assemblies, and disabled tiered compilation. Every patch's normal and catch results were checked. Times are observations, not unit-test thresholds or a whole-game speedup estimate.
+
+| 100 patches | Published 2.4.2 | rc.2 | rc.3 candidate | rc.2 → candidate assembly loads |
+| --- | ---: | ---: | ---: | ---: |
+| Original catch, static prefix | 28.2 ms | 232.2 ms | 30.4 ms | 100 → 0 |
+| Original catch, dynamic prefix | 26.3 ms | 375.5 ms | 28.1 ms | 200 → 0 |
+| Ordinary finalizer | 29.1 ms | 235.4 ms | 31.2 ms | 100 → 0 |
+| Original catch, repeated dynamic call | 23.0 ms | 384.0 ms | 26.4 ms | 200 → 0 |
+
+A 600-patch dynamic-callback run fell from 1,577 ms, 1,041.8 MB allocated and 1,200 assembly loads to 113 ms, 36.5 MB and zero loads. The increasing assembly-count feedback disappears. Plain bodies continue to use dynamic methods: the observed candidate times were 24.1 ms with a static prefix and 22.8 ms with a dynamic prefix, versus rc.2's 28.0 and 20.9 ms. These small timing differences do not establish a universal speedup for already-fast paths. The assembly-loader-only probe with seven references and 3,020 loaded assemblies fell from 10.82 to 1.99 ms per constructor and from 7.50 to 1.18 MB allocated.
+
+Local source, logs, TRX files and observations are retained under `artifacts/issue783/` and `artifacts/tests/`. The measured Release candidate DLL SHA-256 is `fa55d097190cffc910c18f2941b1091e475c846376905a093a8c10120a35a28f`. Publication additionally requires Platform Tests and Infix Compatibility on the exact release commit, followed by the existing package preparation, consumer execution and public read-back checks in [the release workflow](../releases.md). These local results do not replace those gates or constitute a RimWorld/Unity runtime observation.
 
 ## Binding rebuild follow-up, 2026-09-30
 

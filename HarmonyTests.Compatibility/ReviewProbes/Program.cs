@@ -270,7 +270,7 @@ public static partial class Program
 	static WeakReference ReleasedWrapper(Harmony harmony, MethodInfo original)
 	{
 		var replacement = harmony.Patch(original, prefix: new HarmonyMethod(Method(nameof(Noop))));
-		var reference = new WeakReference(replacement.Module.Assembly);
+		var reference = new WeakReference(replacement is DynamicMethod ? (object)replacement : replacement.Module.Assembly);
 		harmony.UnpatchAll(harmony.Id);
 		return reference;
 	}

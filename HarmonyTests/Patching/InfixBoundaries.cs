@@ -93,7 +93,7 @@ namespace HarmonyLibTests.Patching
 			var processor = harmony.CreateProcessor(Method(nameof(Boundary))).AddTranspiler(Method(nameof(CatchEntryLoop)));
 			if (infix) processor.AddInnerPrefix(Fix(nameof(Before), nameof(Ping))).AddInnerPostfix(Fix(nameof(After), nameof(Ping)));
 			var replacement = processor.Patch();
-			Assert.IsTrue(replacement.GetMethodBody().InitLocals);
+			Assert.IsTrue(replacement is DynamicMethod dynamicMethod ? dynamicMethod.InitLocals : replacement.GetMethodBody().InitLocals);
 			Boundary(false);
 			Assert.That(trace, Is.EqualTo(Enumerable.Range(0, 2).SelectMany(_ => infix ? new[] { "before", "call", "after" } : new[] { "call" })));
 		}

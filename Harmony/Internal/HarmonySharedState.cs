@@ -170,7 +170,8 @@ namespace HarmonyLib
 			lock (originals)
 			{
 				var identifiable = replacement.Identifiable();
-				originals[isCollectible?.GetValue(identifiable.Module.Assembly, null) is true ? new WeakMethodInfo(identifiable) : identifiable] = original;
+				originals[identifiable is System.Reflection.Emit.DynamicMethod || isCollectible?.GetValue(identifiable.Module.Assembly, null) is true
+					? new WeakMethodInfo(identifiable) : identifiable] = original;
 				if (++originalUpdates % 64 == 0)
 					foreach (var key in originals.Keys.Where(key => key is WeakMethodInfo weak && !weak.IsAlive).ToArray()) originals.Remove(key);
 			}

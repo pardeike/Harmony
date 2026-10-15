@@ -6,6 +6,8 @@ These probes verify the two supplied review findings and the nine candidate issu
 
 Eight defects were verified in the original review and have now been fixed and removed from [TODO.md](../../TODO.md). Three candidates remain excluded for the reasons below.
 
+The [rc.3 issue 783 validation](../../docs/infix/README.md#issue-783-method-generation-2026-10-15) updates the current retention expectation to zero generated assemblies. The earlier measurements below remain historical evidence. The lifetime probe now observes the dynamic method itself when no collectible assembly is involved.
+
 ## Fix verification
 
 The fixes were checked in the working tree based on `bef9be62` (the intervening commit after `7700fd56` changes documentation). The contract remains [Infix V3](../../drafts/INFIX-NEW-IMPL-V3.md), its [operation-target addendum](../../drafts/INFIX-OPERATIONS-ADDENDUM.md), and the [feature-completion contract](../../drafts/INFIX-FEATURE-COMPLETION.md).

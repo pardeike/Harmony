@@ -92,6 +92,28 @@ namespace HarmonyLibTests.Tools
 		static int ScalarCaller(IntPtr target, int value) => value;
 
 		[Test]
+		public void Modified_calli_signatures_execute_with_exact_runtime_types([Values] bool optional)
+		{
+			if (!MethodBodyGenerator.HasDynamicIL) Assert.Ignore("The raw signature writer requires CoreCLR.");
+			referenceCall = new CodeInstruction(OpCodes.Calli, new InlineSignature
+			{
+				ReturnType = new InlineSignature.ModifierType { Type = typeof(int), Modifier = typeof(IsConst), IsOptional = optional },
+				Parameters = [new InlineSignature.ModifierType { Type = typeof(int), Modifier = typeof(IsVolatile), IsOptional = optional }]
+			});
+			referenceReturn = false;
+			var target = AccessTools.Method(typeof(Test_InlineSignature), nameof(Scalar)).MethodHandle.GetFunctionPointer();
+			var harmony = new Harmony("test.inline.signature.modified." + Guid.NewGuid());
+			try
+			{
+				var replacement = harmony.Patch(AccessTools.Method(typeof(Test_InlineSignature), nameof(ScalarCaller)),
+					transpiler: new HarmonyMethod(AccessTools.Method(typeof(Test_InlineSignature), nameof(ReferenceCallBody))));
+				Assert.AreEqual(Environment.Version.Major >= 10, replacement is DynamicMethod);
+				Assert.AreEqual(7, ScalarCaller(target, 4));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
 		public void Parsed_managed_and_unmanaged_calli_operands_execute_after_reemission([Values] bool unmanaged, [Values] bool dynamicPrefix)
 		{
 			referenceCall = InlineSignatureConsumer.ReadCall(unmanaged); referenceReturn = false;

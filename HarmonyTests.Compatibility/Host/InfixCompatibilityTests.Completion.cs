@@ -83,19 +83,49 @@ internal sealed partial class InfixCompatibilityTests
 		writer.Call("UnpatchOwner", completionTarget, "completion-identity-first");
 		reader.Call("UnpatchOwner", completionTarget, "completion-identity-second");
 		ExecuteCompletion();
-		SetStage("completion-cold-ambiguous-cecil-identity");
 		var handlerTarget = Targets.CapturedHandlerFactory(1).Method;
+#if !NETFRAMEWORK
+		SetStage("completion-cold-exact-runtime-identities");
 		writer.FeatureCall(feature, "InstallOrdinaryIdentity", handlerTarget, "completion-ordinary-first");
-		var before = CaptureState(writer, handlerTarget);
-		var failure = Capture(() => reader.FeatureCall(secondFeature, "InstallOrdinaryIdentity", handlerTarget, "completion-ordinary-second"));
-		Check.That(failure is not null && Chain(failure).Any(item => item is NotSupportedException
-			&& item.Message.Contains("distinct loaded assemblies", StringComparison.Ordinal)),
-			"A Cecil wrapper must reject indistinguishable assembly references instead of silently binding the first identity: " + failure);
-		Unchanged(before, writer, handlerTarget);
-		Targets.Trace.Clear();
-		Check.Equal(19, Targets.CapturedHandlerFactory(1)(), "Rejected ambiguous binding must preserve the installed wrapper.");
-		Check.Sequence(new[] { "called:1", "outer-finally", "identity:first" }, Targets.Trace, "Preserved exact callback after rejection.");
+		reader.FeatureCall(secondFeature, "InstallOrdinaryIdentity", handlerTarget, "completion-ordinary-second");
+		ExecuteHandlerIdentities();
+		writer.Call("Rebuild", handlerTarget);
+		ExecuteHandlerIdentities();
+		reader.Call("Rebuild", handlerTarget);
+		ExecuteHandlerIdentities();
 		writer.Call("UnpatchOwner", handlerTarget, "completion-ordinary-first");
+		reader.Call("UnpatchOwner", handlerTarget, "completion-ordinary-second");
+
+		void ExecuteHandlerIdentities()
+		{
+			Targets.Trace.Clear();
+			Check.Equal(119, Targets.CapturedHandlerFactory(1)(), "An exception wrapper must call both exact runtime identities.");
+			Check.Sequence(new[] { "called:1", "outer-finally", "identity:first", "identity:second" }, Targets.Trace,
+				"Direct runtime tokens preserve both ordinary callback bodies.");
+		}
+#endif
+		writer.StaticCall("Harmony", "SetSwitch", "DMDType", "cecil");
+		reader.StaticCall("Harmony", "SetSwitch", "DMDType", "cecil");
+		try
+		{
+			SetStage("completion-cold-ambiguous-cecil-identity");
+			writer.FeatureCall(feature, "InstallOrdinaryIdentity", handlerTarget, "completion-ordinary-first");
+			var before = CaptureState(writer, handlerTarget);
+			var failure = Capture(() => reader.FeatureCall(secondFeature, "InstallOrdinaryIdentity", handlerTarget, "completion-ordinary-second"));
+			Check.That(failure is not null && Chain(failure).Any(item => item is NotSupportedException
+				&& item.Message.Contains("distinct loaded assemblies", StringComparison.Ordinal)),
+				"A Cecil wrapper must reject indistinguishable assembly references instead of silently binding the first identity: " + failure);
+			Unchanged(before, writer, handlerTarget);
+			Targets.Trace.Clear();
+			Check.Equal(19, Targets.CapturedHandlerFactory(1)(), "Rejected ambiguous binding must preserve the installed wrapper.");
+			Check.Sequence(new[] { "called:1", "outer-finally", "identity:first" }, Targets.Trace, "Preserved exact callback after rejection.");
+			writer.Call("UnpatchOwner", handlerTarget, "completion-ordinary-first");
+		}
+		finally
+		{
+			writer.StaticCall("Harmony", "ClearSwitch", "DMDType");
+			reader.StaticCall("Harmony", "ClearSwitch", "DMDType");
+		}
 
 		void ExecuteIdentities()
 		{

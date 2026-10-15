@@ -27,7 +27,8 @@ namespace HarmonyLib
 			foreach (var reference in module.AssemblyReferences)
 			{
 				var fullName = RuntimeFullName(reference);
-				var candidates = loaded.Where(assembly => assembly.GetName().FullName == fullName && reference.HashIs(assembly)).ToArray();
+				// Imported references carry a runtime hash. Eliminate unrelated assemblies before allocating normalized names.
+				var candidates = loaded.Where(assembly => reference.HashIs(assembly) && assembly.GetName().FullName == fullName).ToArray();
 				if (candidates.Length == 0)
 				{
 					if (reference.GetRuntimeHashedFullName() != reference.FullName)

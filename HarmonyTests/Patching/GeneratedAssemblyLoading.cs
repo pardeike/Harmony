@@ -17,14 +17,25 @@ namespace HarmonyLibTests.Patching
 		static int Original() => 17;
 		static readonly MethodInfo original = AccessTools.DeclaredMethod(typeof(GeneratedAssemblyLoading), nameof(Original));
 
+		static Type EmitIdentity(AssemblyBuilder assembly, string name)
+		{
+			var type = assembly.DefineDynamicModule(name).DefineType("Identity", TypeAttributes.Public);
+			var calls = type.DefineField("Calls", typeof(int), FieldAttributes.Public | FieldAttributes.Static);
+			var finalizer = type.DefineMethod("Finalizer", MethodAttributes.Public | MethodAttributes.Static, typeof(void), Type.EmptyTypes);
+			var il = finalizer.GetILGenerator();
+			il.Emit(OpCodes.Ldsfld, calls);
+			il.Emit(OpCodes.Ldc_I4_1);
+			il.Emit(OpCodes.Add);
+			il.Emit(OpCodes.Stsfld, calls);
+			il.Emit(OpCodes.Ret);
+			return type.CreateType();
+		}
+
 		static MethodInfo DefineIdentity(string name)
 		{
 #if NETFRAMEWORK
 			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName { Name = name }, AssemblyBuilderAccess.Run);
-			var type = assembly.DefineDynamicModule(name).DefineType("Identity", TypeAttributes.Public);
-			var finalizer = type.DefineMethod("Finalizer", MethodAttributes.Public | MethodAttributes.Static, typeof(void), Type.EmptyTypes);
-			finalizer.GetILGenerator().Emit(OpCodes.Ret);
-			return type.CreateType().GetMethod(finalizer.Name);
+			return EmitIdentity(assembly, name).GetMethod("Finalizer");
 #else
 			var bytes = SaveIdentity(name, out var source);
 			for (var attempt = 0; source.IsAlive && attempt < 10; attempt++)
@@ -45,10 +56,7 @@ namespace HarmonyLibTests.Patching
 		{
 			// ALC resolution cannot return a live Reflection.Emit assembly. Use a real plugin-shaped artifact.
 			var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName { Name = name }, AssemblyBuilderAccess.RunAndCollect);
-			var type = assembly.DefineDynamicModule(name).DefineType("Identity", TypeAttributes.Public);
-			var finalizer = type.DefineMethod("Finalizer", MethodAttributes.Public | MethodAttributes.Static, typeof(void), Type.EmptyTypes);
-			finalizer.GetILGenerator().Emit(OpCodes.Ret);
-			source = new WeakReference(type.CreateType().Assembly);
+			source = new WeakReference(EmitIdentity(assembly, name).Assembly);
 			var directory = TestTools.GetAssemblyTempDirectory();
 			var path = Path.Combine(directory, "identity.dll");
 			try
@@ -81,47 +89,61 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(17, Original());
 		}
 
-		[TestCase("HarmonyLoader'Identity_")]
-		[TestCase("HarmonyLoader\"Identity_")]
-		[TestCase("HarmonyLoader,Identity_")]
-		public void Generated_methods_bind_assembly_names_that_require_display_name_quoting(string prefix)
+		[TestCase("HarmonyLoader'Identity_", false), TestCase("HarmonyLoader'Identity_", true)]
+		[TestCase("HarmonyLoader\"Identity_", false), TestCase("HarmonyLoader\"Identity_", true)]
+		[TestCase("HarmonyLoader,Identity_", false), TestCase("HarmonyLoader,Identity_", true)]
+		public void Generated_methods_bind_assembly_names_that_require_display_name_quoting(string prefix, bool assemblyBackend)
 		{
 			var name = prefix + Guid.NewGuid().ToString("N");
 			var finalizer = DefineIdentity(name);
 			Assert.AreEqual(name, finalizer.DeclaringType.Assembly.GetName().Name);
 			var harmony = new Harmony("test.loader.quoted-name");
+			Harmony.TryGetSwitch("DMDType", out var previousGenerator);
+			if (assemblyBackend) Harmony.SetSwitch("DMDType", "cecil");
 			try
 			{
-				harmony.CreateProcessor(original).AddFinalizer(finalizer).Patch();
+				harmony.CreateProcessor(original).AddFinalizer(new HarmonyMethod(finalizer) { debug = false }).Patch();
 				Assert.AreEqual(17, Original());
 				Assert.AreEqual(new[] { finalizer }, Harmony.GetPatchInfo(original).Finalizers.Select(patch => patch.PatchMethod));
 			}
-			finally { harmony.UnpatchAll(harmony.Id); }
+			finally { Harmony.SetSwitch("DMDType", previousGenerator); harmony.UnpatchAll(harmony.Id); }
 			AssertUnpatched();
 		}
 
 		[Test]
-		public void One_metadata_scope_rejects_two_exact_assemblies_with_the_same_name()
+		public void Distinct_assemblies_with_the_same_name_require_runtime_tokens([Values] bool assemblyBackend)
 		{
 			var name = "HarmonyLoaderIdentity_" + Guid.NewGuid().ToString("N");
 			var first = DefineIdentity(name);
 			var harmony = new Harmony(name);
+			Harmony.TryGetSwitch("DMDType", out var previousGenerator);
+			if (assemblyBackend) Harmony.SetSwitch("DMDType", "cecil");
 			try
 			{
-				harmony.CreateProcessor(original).AddFinalizer(first).Patch();
+				harmony.CreateProcessor(original).AddFinalizer(new HarmonyMethod(first) { debug = false }).Patch();
 				Assert.AreEqual(17, Original());
 				var before = Harmony.GetPatchInfo(original);
 				Assert.AreEqual(new[] { first }, before.Finalizers.Select(patch => patch.PatchMethod));
 				var second = DefineIdentity(name);
 				Assert.AreNotSame(first.DeclaringType.Assembly, second.DeclaringType.Assembly);
 				Assert.AreEqual(first.DeclaringType.Assembly.FullName, second.DeclaringType.Assembly.FullName);
-				AssertRejected(() => harmony.CreateProcessor(original).AddFinalizer(second).Patch(), "distinct loaded assemblies");
-				var after = Harmony.GetPatchInfo(original);
-				Assert.AreEqual(before.Owners, after.Owners);
-				Assert.AreEqual(before.Finalizers.Select(patch => patch.PatchMethod), after.Finalizers.Select(patch => patch.PatchMethod));
+				if (MethodBodyGenerator.HasDynamicIL && !assemblyBackend)
+				{
+					harmony.CreateProcessor(original).AddFinalizer(second).Patch();
+					Assert.AreEqual(new[] { first, second }, Harmony.GetPatchInfo(original).Finalizers.Select(patch => patch.PatchMethod));
+				}
+				else
+				{
+					AssertRejected(() => harmony.CreateProcessor(original).AddFinalizer(second).Patch(), "distinct loaded assemblies");
+					var after = Harmony.GetPatchInfo(original);
+					Assert.AreEqual(before.Owners, after.Owners);
+					Assert.AreEqual(before.Finalizers.Select(patch => patch.PatchMethod), after.Finalizers.Select(patch => patch.PatchMethod));
+				}
 				Assert.AreEqual(17, Original());
+				Assert.AreEqual(2, first.DeclaringType.GetField("Calls").GetValue(null));
+				Assert.AreEqual(MethodBodyGenerator.HasDynamicIL && !assemblyBackend ? 1 : 0, second.DeclaringType.GetField("Calls").GetValue(null));
 			}
-			finally { harmony.UnpatchAll(harmony.Id); }
+			finally { Harmony.SetSwitch("DMDType", previousGenerator); harmony.UnpatchAll(harmony.Id); }
 			AssertUnpatched();
 		}
 
@@ -135,6 +157,8 @@ namespace HarmonyLibTests.Patching
 			Assert.AreNotSame(first.DeclaringType.Assembly, second.DeclaringType.Assembly);
 			Assert.AreEqual(first.DeclaringType.Assembly.FullName, second.DeclaringType.Assembly.FullName);
 			var harmony = new Harmony(name);
+			Harmony.TryGetSwitch("DMDType", out var previousGenerator);
+			if (assemblyBackend) Harmony.SetSwitch("DMDType", "cecil");
 			try
 			{
 				AssertRejected(() => harmony.CreateProcessor(original).AddFinalizer(first).Patch(), "no isolated load contexts");

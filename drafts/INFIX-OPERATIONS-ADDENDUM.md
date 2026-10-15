@@ -123,7 +123,7 @@ For fields and constructors, persist module ID, metadata-definition token, expli
 
 Verify correct `T&` rather than `T*` parsing with a real managed-ref `calli`, not only a constructed-object test. Prove external consumption without friend access and a read/re-emit round trip.
 
-Returning `calli` instructions also need a correct emitted maximum stack depth. The current MonoMod DynamicMethod emitter omits their returned value from its calculation; .NET 5 rejects a reproduced ref-return case that newer JITs accept. Route these wrappers through the existing Cecil backend and DynamicMethod-proxy handling, with tests both with and without a dynamic prefix factory. Do not add a guessed stack allowance. Keep the reader's existing unsupported generic entries, varargs sentinels, and wrappers around nested function-pointer types documented separately from public stack counting.
+Returning `calli` instructions also need a correct emitted maximum stack depth. The current MonoMod DynamicMethod emitter omits their returned value from its calculation; .NET 5 rejects a reproduced ref-return case that newer JITs accept. The [issue 783 generation design](ISSUE-783-METHOD-GENERATION.md) computes the complete stack depth for direct CoreCLR bodies; retain Cecil fallback where that runtime cannot encode the signature. Test both with and without a dynamic prefix factory. Do not add a guessed stack allowance. Keep the reader's existing unsupported generic entries, varargs sentinels, and wrappers around nested function-pointer types documented separately from public stack counting.
 
 ## 8. Implementation and acceptance
 

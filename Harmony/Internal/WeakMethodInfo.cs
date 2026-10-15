@@ -6,30 +6,35 @@ using System.Reflection.Emit;
 namespace HarmonyLib
 {
 	// Keep the shared Dictionary<MethodInfo, MethodBase> usable by older Harmony readers without
-	// making its keys retain collectible generated assemblies. Only dictionary keys use this wrapper.
+	// making its keys retain generated code. Only dictionary keys use this wrapper.
 	internal sealed class WeakMethodInfo : MethodInfo
 	{
-		readonly WeakReference assembly;
+		readonly WeakReference target;
 		readonly int token;
 		readonly int hash;
 
 		internal WeakMethodInfo(MethodInfo method)
 		{
-			assembly = new WeakReference(method.Module.Assembly);
-			token = method.MetadataToken;
+			target = new WeakReference(method is DynamicMethod ? (object)method : method.Module.Assembly);
+			token = method is DynamicMethod ? 0 : method.MetadataToken;
 			hash = method.GetHashCode();
 		}
 
-		internal bool IsAlive => assembly.IsAlive;
-		MethodInfo Method => assembly.Target is Assembly owner ? (MethodInfo)owner.ManifestModule.ResolveMethod(token)
-			: throw new InvalidOperationException("The generated method has been collected");
+		internal bool IsAlive => target.IsAlive;
+		MethodInfo Method => target.Target switch
+		{
+			MethodInfo method => method,
+			Assembly owner => (MethodInfo)owner.ManifestModule.ResolveMethod(token),
+			_ => throw new InvalidOperationException("The generated method has been collected")
+		};
 
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(this, obj)) return true;
-			var owner = assembly.Target;
+			var owner = target.Target;
 			if (owner is null) return false;
-			return obj is WeakMethodInfo weak ? token == weak.token && ReferenceEquals(owner, weak.assembly.Target)
+			if (obj is WeakMethodInfo weak) return token == weak.token && ReferenceEquals(owner, weak.target.Target);
+			return token == 0 ? ReferenceEquals(owner, obj)
 				: obj is MethodInfo method && method is not DynamicMethod && token == method.MetadataToken && ReferenceEquals(owner, method.Module.Assembly);
 		}
 
