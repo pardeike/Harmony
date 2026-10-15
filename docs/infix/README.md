@@ -38,7 +38,7 @@ The controlled installation probe used Release binaries on .NET 10.0.11/x64, the
 
 A 600-patch dynamic-callback run fell from 1,577 ms, 1,041.8 MB allocated and 1,200 assembly loads to 113 ms, 36.5 MB and zero loads. The increasing assembly-count feedback disappears. Plain bodies continue to use dynamic methods: the observed candidate times were 24.1 ms with a static prefix and 22.8 ms with a dynamic prefix, versus rc.2's 28.0 and 20.9 ms. These small timing differences do not establish a universal speedup for already-fast paths. The assembly-loader-only probe with seven references and 3,020 loaded assemblies fell from 10.82 to 1.99 ms per constructor and from 7.50 to 1.18 MB allocated.
 
-Local source, logs, TRX files and observations are retained under `artifacts/issue783/` and `artifacts/tests/`. The measured Release candidate DLL SHA-256 is `fa55d097190cffc910c18f2941b1091e475c846376905a093a8c10120a35a28f`. Publication additionally requires Platform Tests and Infix Compatibility on the exact release commit, followed by the existing package preparation, consumer execution and public read-back checks in [the release workflow](../releases.md). These local results do not replace those gates or constitute a RimWorld/Unity runtime observation.
+Local source, logs, TRX files and observations are retained under `artifacts/issue783/` and `artifacts/tests/`. The measured Release candidate DLL SHA-256 is `fa55d097190cffc910c18f2941b1091e475c846376905a093a8c10120a35a28f`. Publication additionally requires Platform Tests, including its compatibility jobs, on the exact release commit, followed by the existing package preparation, consumer execution and public read-back checks in [the release workflow](../releases.md). These local results do not replace those gates or constitute a RimWorld/Unity runtime observation.
 
 ## Binding rebuild follow-up, 2026-09-30
 
@@ -196,7 +196,7 @@ The net35 test runs on Mono's CLR 4 implementation and verifies selection of its
 
 ## Earlier verification, 2026-09-07
 
-The following local results predate the persistent-state addition. Remote results are commit-specific: check the revision under test in [Platform Tests](https://github.com/pardeike/Harmony/actions/workflows/test.yml), [Infix compatibility](https://github.com/pardeike/Harmony/actions/workflows/test-infix-compatibility.yml), and [documentation CI](https://github.com/pardeike/Harmony/actions/workflows/docs.yml). A green run for an earlier revision does not validate later edits.
+The following local results predate the persistent-state addition. Remote results are commit-specific: check the revision under test in [Platform Tests, including compatibility](https://github.com/pardeike/Harmony/actions/workflows/test.yml), and [documentation CI](https://github.com/pardeike/Harmony/actions/workflows/docs.yml). A green run for an earlier revision does not validate later edits.
 
 Complete local suites pass on actual x64 runtime hosts, without major-version roll-forward:
 

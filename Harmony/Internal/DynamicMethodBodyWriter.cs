@@ -1,3 +1,4 @@
+#if !NET35 && !NETSTANDARD2_0
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Utils;
@@ -345,3 +346,4 @@ namespace HarmonyLib
 		}
 	}
 }
+#endif

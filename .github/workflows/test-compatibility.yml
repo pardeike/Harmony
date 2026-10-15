@@ -1,29 +1,10 @@
-name: Infix Compatibility
+name: Template Testing Compatibility
 
 on:
-  push:
-    branches: [main, master, v3]
-    paths:
-      - 'Harmony/**'
-      - 'Lib.Harmony/**'
-      - 'HarmonyTests.Compatibility/**'
-      - 'Directory.Build.*'
-      - '.github/workflows/test-infix-compatibility.yml'
-  pull_request:
-    paths:
-      - 'Harmony/**'
-      - 'Lib.Harmony/**'
-      - 'HarmonyTests.Compatibility/**'
-      - 'Directory.Build.*'
-      - '.github/workflows/test-infix-compatibility.yml'
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
 
 env:
   DOTNET_NOLOGO: true
@@ -32,7 +13,7 @@ env:
 
 jobs:
   v3:
-    name: Infix source baselines / ${{ matrix.framework }} ${{ matrix.backend }}
+    name: Ubuntu .NET x64 / ${{ matrix.framework }} ${{ matrix.backend }} / source baselines
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     strategy:
@@ -179,13 +160,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: infix-compatibility-v3-${{ matrix.framework }}-${{ matrix.backend }}
+          name: compatibility-v3-${{ matrix.framework }}-${{ matrix.backend }}
           path: HarmonyTests.Compatibility/reports/
           if-no-files-found: error
           retention-days: 14
 
   coreclr:
-    name: ${{ matrix.framework }} ${{ matrix.backend }} / old ${{ matrix.old }}
+    name: Ubuntu .NET x64 / ${{ matrix.framework }} ${{ matrix.backend }} / ${{ matrix.old }}
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     strategy:
@@ -224,7 +205,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: infix-compatibility-${{ matrix.framework }}-${{ matrix.backend }}-${{ matrix.old }}
+          name: compatibility-${{ matrix.framework }}-${{ matrix.backend }}-${{ matrix.old }}
           path: |
             HarmonyTests.Compatibility/reports/
             HarmonyTests.Compatibility/published-artifacts.json
@@ -232,7 +213,7 @@ jobs:
           retention-days: 14
 
   mono:
-    name: Mono binding and loading boundaries / old ${{ matrix.old }}
+    name: Ubuntu Mono x64 / net472 / ${{ matrix.old }}
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     strategy:
@@ -267,7 +248,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: infix-compatibility-mono-net472-${{ matrix.old }}
+          name: compatibility-mono-net472-${{ matrix.old }}
           path: |
             HarmonyTests.Compatibility/reports/
             HarmonyTests.Compatibility/published-artifacts.json
@@ -275,7 +256,7 @@ jobs:
           retention-days: 14
 
   framework:
-    name: Windows .NET Framework x64 / old 2.4.2
+    name: Win Fwk x64 / net472 / 2.4.2
     runs-on: windows-2022
     timeout-minutes: 20
     steps:
@@ -305,7 +286,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: infix-compatibility-windows-net472-2.4.2
+          name: compatibility-windows-net472-2.4.2
           path: HarmonyTests.Compatibility/reports/
           if-no-files-found: error
           retention-days: 14

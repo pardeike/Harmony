@@ -110,10 +110,8 @@ def successful_run(repo, workflow, sha, run_id=None):
 
 def gates(repo, sha, ci_run=None):
     ci = successful_run(repo, "test.yml", sha, ci_run)
-    compatibility = None
-    if Path(".github/workflows/test-infix-compatibility.yml").exists():
-        compatibility = successful_run(repo, "test-infix-compatibility.yml", sha)
-    return {"ci_run": ci, "compatibility_run": compatibility}
+    # Compatibility is a required job in the same Platform Tests run.
+    return {"ci_run": ci}
 
 
 def smoke(directory, info):

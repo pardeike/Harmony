@@ -82,6 +82,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{71B8832A-3E69-4908-98FE-EE9680F5EF25}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\test-build.yml = .github\workflows\test-build.yml
+		.github\workflows\test-compatibility.yml = .github\workflows\test-compatibility.yml
 		.github\workflows\test-qemu-dotnet.yml = .github\workflows\test-qemu-dotnet.yml
 		.github\workflows\test-qemu-mono.yml = .github\workflows\test-qemu-mono.yml
 		.github\workflows\test-result-upload.yml = .github\workflows\test-result-upload.yml

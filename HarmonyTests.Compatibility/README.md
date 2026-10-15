@@ -2,7 +2,7 @@
 
 This suite runs released Harmony binaries and current Fat assemblies in fresh child processes. It tests both compile-time/runtime substitution and two engines updating shared patch state. The [compatibility strategy](../drafts/INFIX-COMPATIBILITY-TESTS.md) defines the required proof; [docs/infix/README.md](../docs/infix/README.md) is the current execution-status record.
 
-The [Infix Compatibility workflow](../.github/workflows/test-infix-compatibility.yml) runs published-version CoreCLR lanes, prior-Infix source baselines, Mono loading probes, and Windows .NET Framework coexistence. Native detours, loaded assemblies, and serializer switches stay confined to each child. Timeouts, crashes, unexpected exceptions, and failed assertions fail the runner.
+The Compatibility jobs in [Platform Tests](../.github/workflows/test.yml), implemented by the [shared compatibility workflow](../.github/workflows/test-compatibility.yml), run published-version CoreCLR lanes, prior-Infix source baselines, Mono loading probes, and Windows .NET Framework coexistence. Native detours, loaded assemblies, and serializer switches stay confined to each child. Timeouts, crashes, unexpected exceptions, and failed assertions fail the runner.
 
 ## Run published-version lanes
 

@@ -12,8 +12,12 @@ namespace HarmonyLib
 	// Owns executable representation, independently of the patch features that constructed the body.
 	internal static class MethodBodyGenerator
 	{
+#if NET35 || NETSTANDARD2_0
+		internal static readonly bool HasDynamicIL = false;
+#else
 		internal static readonly bool HasDynamicIL = !AccessTools.IsMonoRuntime
 			&& typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
+#endif
 
 		internal static MethodInfo Generate(DynamicMethodDefinition patch, bool structuredHelper = false)
 		{
@@ -22,10 +26,12 @@ namespace HarmonyLib
 			body.InitLocals = !structuredHelper;
 			MonoMod.Switches.TryGetSwitchValue(MonoMod.Switches.DMDType, out var selected);
 			var generator = selected as string;
+#if !NET35 && !NETSTANDARD2_0
 			var dynamicRequested = string.Equals(generator, "dynamicmethod", StringComparison.OrdinalIgnoreCase)
 				|| string.Equals(generator, "dm", StringComparison.OrdinalIgnoreCase);
 			if (HasDynamicIL && (structuredHelper || dynamicRequested || generator is null && !patch.Debug))
 				return DynamicMethodBodyWriter.CanGenerate(patch) ? DynamicMethodBodyWriter.Generate(patch) : GenerateAssembly(patch);
+#endif
 			if (structuredHelper)
 			{
 				var method = (DynamicMethod)DMDEmitDynamicMethodGenerator.Generate(patch);
@@ -52,10 +58,11 @@ namespace HarmonyLib
 		{
 			var proxies = new Dictionary<MethodInfo, MethodReference>();
 			var proxyAssemblies = new List<Assembly>();
+			var proxyEmittedMethods = typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
 			foreach (var instruction in patch.Definition.Body.Instructions)
 			{
 				var method = instruction.Operand is DynamicMethodReference dynamicReference ? dynamicReference.DynamicMethod : null;
-				if (HasDynamicIL && method is null && instruction.Operand is MethodReference reference && !reference.HasThis
+				if (proxyEmittedMethods && method is null && instruction.Operand is MethodReference reference && !reference.HasThis
 					&& reference != patch.Definition && reference.ResolveReflection() is MethodInfo target)
 				{
 #if NET35

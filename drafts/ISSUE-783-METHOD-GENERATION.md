@@ -30,6 +30,10 @@ The assembly path was introduced for correctness: v3 preserves the actual except
 
 This decision supersedes the backend prescriptions in `INFIX-FEATURE-COMPLETION.md` (outer exception-table assemblies and same-name assembly rejection) and `INFIX-OPERATIONS-ADDENDUM.md` (returning `calli` assemblies). Their correctness requirements remain. The assembly backend still rejects identities that one metadata scope cannot represent; direct runtime tokens may represent them exactly.
 
+## Test organization
+
+Infix unit tests remain in the existing HarmonyTests project. Mixed-version checks keep their isolated-process harness because they deliberately load multiple Harmony identities and serializer configurations. Their CI belongs to Platform Tests: use the existing reusable-workflow pattern, consistent platform names, one overall status and one release gate. Keep all published-version, prior-source, Mono and Framework cases; do not duplicate the runs or create a separate feature-specific test system.
+
 ## Acceptance and release sequence
 
 1. Add focused executable regressions for exact exception tables, returning `calli`, dynamic callback identity/lifetime, generic operands and signatures, and unchanged installation after rejected generation. Assert that ordinary CoreCLR catch/finalizer/dynamic-callback patches produce no replacement or proxy assemblies after warmup. Preserve explicit coverage of the assembly fallback and quoted names.

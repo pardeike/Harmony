@@ -92,6 +92,11 @@ class ReleaseTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "trusted CI"):
                     release.successful_run("pardeike/Harmony", "test.yml", self.sha, 123)
 
+    def test_platform_ci_is_the_complete_release_gate(self):
+        with patch.object(release, "successful_run", return_value=123) as check:
+            self.assertEqual(release.gates("pardeike/Harmony", self.sha, 123), {"ci_run": 123})
+            check.assert_called_once_with("pardeike/Harmony", "test.yml", self.sha, 123)
+
     def test_reviewed_notes_are_not_augmented_with_automatic_entries(self):
         previous = Path.cwd()
         os.chdir(self.folder)

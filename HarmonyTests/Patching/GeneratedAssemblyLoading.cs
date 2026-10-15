@@ -157,8 +157,6 @@ namespace HarmonyLibTests.Patching
 			Assert.AreNotSame(first.DeclaringType.Assembly, second.DeclaringType.Assembly);
 			Assert.AreEqual(first.DeclaringType.Assembly.FullName, second.DeclaringType.Assembly.FullName);
 			var harmony = new Harmony(name);
-			Harmony.TryGetSwitch("DMDType", out var previousGenerator);
-			if (assemblyBackend) Harmony.SetSwitch("DMDType", "cecil");
 			try
 			{
 				AssertRejected(() => harmony.CreateProcessor(original).AddFinalizer(first).Patch(), "no isolated load contexts");

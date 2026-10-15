@@ -209,9 +209,13 @@ jobs:
       manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
 
+  compatibility:
+    name: Compatibility
+    uses: ./.github/workflows/test-compatibility.yml
+
   test-results:
     name: Test Results
-    needs: [variables, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono]
+    needs: [variables, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono, compatibility]
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
     with:
@@ -219,7 +223,7 @@ jobs:
 
   cleanup-build-output:
     name: Cleanup Build Output
-    needs: [test-results, build-binaries, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono]
+    needs: [test-results, build-binaries, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono, compatibility]
     runs-on: ubuntu-22.04
     if: always() && github.event_name != 'pull_request'
     permissions:
