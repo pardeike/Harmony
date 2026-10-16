@@ -1,4 +1,4 @@
-- Use a 24-hour clock and an invariant Gregorian calendar for debug-log timestamps.
-- Fix generated-method dependency resolution for assembly names containing apostrophes, double quotes or commas.
-- Correct recovery in the release pipeline.
-- Update the documentation branding to Harmony 3.
+- Fix the patch-installation performance regression reported in [#783](https://github.com/pardeike/Harmony/issues/783). Ordinary CoreCLR patches, exception handlers, finalizers and dynamic callbacks use direct dynamic methods without loading replacement or callback-proxy assemblies.
+- Preserve the exact exception table and calculate the complete evaluation-stack depth, including returning `calli` instructions. Ordinary patches and Infixes continue to share the same patch-construction pipeline and detour mechanism.
+- Preserve exact runtime callback identities and release retired dynamic replacements without retaining their callbacks in Harmony's method lookup.
+- Keep assembly generation for explicit diagnostic output and runtime limitations, including custom-modified call-site signatures before .NET 10. Reduce dependency-name allocation on this path while preserving quoted assembly names and ambiguity checks.
