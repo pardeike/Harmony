@@ -56,7 +56,7 @@ jobs:
     name: ${{inputs.build_configuration}}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 45
+    timeout-minutes: ${{ inputs.image == 'macos-26-intel' && 90 || 45 }}
     steps:
       - uses: actions/checkout@v7
         with:
