@@ -81,11 +81,24 @@ export HARMONY_NO_LOG=1
 
 ### Patching using annotations
 
-Use `PatchAll()` to find and apply annotated patch classes in an assembly:
+Pass an assembly to `PatchAll(assembly)` to find and apply its annotated patch classes:
 
 [!code-csharp[example](../examples/basics.cs?name=patch_annotation)]
 
-For groups applied at different times, mark classes with `[HarmonyPatchCategory]`. Use `PatchCategory()` for a selected group and `PatchAllUncategorized()` for classes without a category. `PatchAll()` ignores categories and applies them all.
+Use `typeof(MyPatchClass).Assembly` to select the assembly containing a known patch type. `Assembly.GetExecutingAssembly()` also works when the initialization code and patches belong to the same assembly.
+
+For groups applied at different times, mark classes with `[HarmonyPatchCategory]`. Use `PatchCategory(assembly, category)` for a selected group. Use `PatchAllUncategorized(assembly)` for classes without a category. `PatchAll(assembly)` ignores categories and applies them all.
+
+The overloads that infer an assembly are deprecated. They remain callable, but compilation produces a warning with the explicit alternative:
+
+| Deprecated call | Explicit assembly |
+| --- | --- |
+| `harmony.PatchAll()` | `harmony.PatchAll(assembly)` |
+| `harmony.PatchAllUncategorized()` | `harmony.PatchAllUncategorized(assembly)` |
+| `harmony.PatchCategory(category)` | `harmony.PatchCategory(assembly, category)` |
+| `harmony.UnpatchCategory(category)` | `harmony.UnpatchCategory(assembly, category)` |
+
+Automatic assembly detection can fail after inlining or tail calls remove the intended caller from the stack. Harmony prevents these entry points from being inlined. It cannot preserve their callers' frames or recover them reliably afterward. A wrong assembly can cause patches to be missed. Pass the assembly explicitly instead of relying on stack inspection.
 
 ### Manual patching
 

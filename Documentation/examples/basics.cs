@@ -29,9 +29,6 @@ namespace Basics
 			// <patch_annotation>
 			var assembly = Assembly.GetExecutingAssembly();
 			harmony.PatchAll(assembly);
-
-			// or implying current assembly:
-			harmony.PatchAll();
 			// </patch_annotation>
 
 			void PatchManual()

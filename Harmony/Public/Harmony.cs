@@ -72,15 +72,12 @@ namespace HarmonyLib
 			// Switches.SetSwitchValue(Switches.DMDType, "cecil");
 		}
 
-		/// <summary>Searches the current assembly for Harmony annotations and uses them to create patches</summary>
-		/// <remarks>This method can fail to use the correct assembly when being inlined. It calls StackTrace.GetFrame(1) which can point to the wrong method/assembly. If you are unsure or run into problems, use <code>PatchAll(Assembly.GetExecutingAssembly())</code> instead.</remarks>
+		/// <summary>Infers the calling assembly and applies its annotated patches</summary>
+		/// <remarks>Caller inlining or tail calls can select the wrong assembly. Use <see cref="PatchAll(Assembly)"/> with an explicit assembly.</remarks>
 		///
-		public void PatchAll()
-		{
-			var method = new StackTrace().GetFrame(1).GetMethod();
-			var assembly = method.ReflectedType.Assembly;
-			PatchAll(assembly);
-		}
+		[Obsolete("Automatic assembly detection can fail after inlining or tail calls. Use PatchAll(Assembly) with an explicit assembly.")]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void PatchAll() => PatchAll(Assembly.GetCallingAssembly());
 
 		/// <summary>Creates a empty patch processor for an original method</summary>
 		/// <param name="original">The original method/constructor</param>
@@ -106,14 +103,12 @@ namespace HarmonyLib
 		///
 		public void PatchAll(Assembly assembly) => AccessTools.GetTypesFromAssembly(assembly).DoIf(type => type.HasHarmonyAttribute(), type => CreateClassProcessor(type).Patch());
 
-		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs without category annotations and uses them to create patches</summary>
+		/// <summary>Infers the calling assembly and applies its annotated patches without categories</summary>
+		/// <remarks>Caller inlining or tail calls can select the wrong assembly. Use <see cref="PatchAllUncategorized(Assembly)"/> with an explicit assembly.</remarks>
 		///
-		public void PatchAllUncategorized()
-		{
-			var method = new StackTrace().GetFrame(1).GetMethod();
-			var assembly = method.ReflectedType.Assembly;
-			PatchAllUncategorized(assembly);
-		}
+		[Obsolete("Automatic assembly detection can fail after inlining or tail calls. Use PatchAllUncategorized(Assembly) with an explicit assembly.")]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void PatchAllUncategorized() => PatchAllUncategorized(Assembly.GetCallingAssembly());
 
 		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs without category annotations and uses them to create patches</summary>
 		/// <param name="assembly">The assembly</param>
@@ -124,15 +119,13 @@ namespace HarmonyLib
 			patchClasses.DoIf(patchClass => string.IsNullOrEmpty(patchClass.Category), patchClass => patchClass.Patch());
 		}
 
-		/// <summary>Searches the current assembly for Harmony annotations with a specific category and uses them to create patches</summary>
+		/// <summary>Infers the calling assembly and applies its annotated patches in a category</summary>
 		/// <param name="category">Name of patch category</param>
+		/// <remarks>Caller inlining or tail calls can select the wrong assembly. Use <see cref="PatchCategory(Assembly, string)"/> with an explicit assembly.</remarks>
 		///
-		public void PatchCategory(string category)
-		{
-			var method = new StackTrace().GetFrame(1).GetMethod();
-			var assembly = method.ReflectedType.Assembly;
-			PatchCategory(assembly, category);
-		}
+		[Obsolete("Automatic assembly detection can fail after inlining or tail calls. Use PatchCategory(Assembly, string) with an explicit assembly.")]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void PatchCategory(string category) => PatchCategory(Assembly.GetCallingAssembly(), category);
 
 		private static readonly ConditionalWeakTable<Assembly, Dictionary<string, List<Type>>> AssemblyCachedCategories = new();
 
@@ -234,15 +227,13 @@ namespace HarmonyLib
 			_ = processor.Unpatch(patch);
 		}
 
-		/// <summary>Searches the current assembly for types with a specific category annotation and uses them to unpatch existing patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
+		/// <summary>Infers the calling assembly and unpatches its annotated types in a category. Fully unpatching is not supported. Be careful, unpatching is global</summary>
 		/// <param name="category">Name of patch category</param>
+		/// <remarks>Caller inlining or tail calls can select the wrong assembly. Use <see cref="UnpatchCategory(Assembly, string)"/> with an explicit assembly.</remarks>
 		///
-		public void UnpatchCategory(string category)
-		{
-			var method = new StackTrace().GetFrame(1).GetMethod();
-			var assembly = method.ReflectedType.Assembly;
-			UnpatchCategory(assembly, category);
-		}
+		[Obsolete("Automatic assembly detection can fail after inlining or tail calls. Use UnpatchCategory(Assembly, string) with an explicit assembly.")]
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public void UnpatchCategory(string category) => UnpatchCategory(Assembly.GetCallingAssembly(), category);
 
 		/// <summary>Searches an assembly for HarmonyPatch-annotated classes/structs with a specific category annotation and uses them to unpatch existing patches. Fully unpatching is not supported. Be careful, unpatching is global</summary>
 		/// <param name="assembly">The assembly</param>

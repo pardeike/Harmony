@@ -4,7 +4,9 @@
 
 Annotations describe the original method, your patch methods, and settings such as priority. Usually, each original gets a "patch class" marked with `[HarmonyPatch]`.
 
-`PatchAll()` finds and applies every annotated patch class in an assembly. To apply selected groups, mark classes with `[HarmonyPatchCategory]` and call `PatchCategory()`. `PatchAllUncategorized()` applies classes without a category. `PatchAll()` ignores categories.
+`PatchAll(assembly)` finds and applies every annotated patch class in that assembly. To apply selected groups, mark classes with `[HarmonyPatchCategory]` and call `PatchCategory(assembly, category)`. `PatchAllUncategorized(assembly)` applies classes without a category. `PatchAll(assembly)` ignores categories.
+
+Pass the assembly explicitly. The assembly-inference overloads are deprecated because inlining and tail calls can select the wrong assembly. See [assembly selection](basics.md#patching-using-annotations).
 
 A typical patch consists of a class with annotations that looks like this:
 
@@ -74,7 +76,7 @@ Basic annotations need to be combined to define all aspects of your original met
 **Category annotation**
 
 ```csharp
-// Use with Harmony.PatchCategory()
+// Use with Harmony.PatchCategory(assembly, category)
 [HarmonyPatchCategory(string category)]
 ```
 

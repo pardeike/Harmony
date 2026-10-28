@@ -5,6 +5,9 @@ apiRules:
 - exclude:
     uidRegex: ^HarmonyLib\.Code\.
     type: Type
+- include:
+    uidRegex: ^HarmonyLib\.Harmony\.(PatchAll|PatchAllUncategorized|PatchCategory|UnpatchCategory)(\(|$)
+    type: Method
 - exclude:
     hasAttribute:
       uid: System.ObsoleteAttribute

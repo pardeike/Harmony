@@ -16,7 +16,7 @@ namespace Intro_Annotations
 		public static void DoPatching()
 		{
 			var harmony = new Harmony("com.example.patch");
-			harmony.PatchAll();
+			harmony.PatchAll(typeof(MyPatcher).Assembly);
 		}
 	}
 

@@ -8,15 +8,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 
 #if NET5_0_OR_GREATER
 using System.Threading.Tasks;
-#endif
-
-#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
-using System.Runtime.CompilerServices;
 #endif
 
 namespace HarmonyLib
@@ -2004,16 +2001,19 @@ namespace HarmonyLib
 			return MethodDelegate<DelegateType>(method, instance, harmonyMethod.nonVirtualDelegate is false, null);
 		}
 
-		/// <summary>Returns who called the current method</summary>
-		/// <returns>The calling method/constructor (excluding the caller)</returns>
+		/// <summary>Returns the first visible calling method outside this Harmony assembly</summary>
+		/// <returns>The first visible external method/constructor</returns>
+		/// <remarks>This is a diagnostic lookup. Inlining and tail calls can remove the expected caller from the stack.</remarks>
 		///
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static MethodBase GetOutsideCaller()
 		{
-			var trace = new StackTrace(true);
-			foreach (var frame in trace.GetFrames())
+			var assembly = typeof(AccessTools).Assembly;
+			var trace = new StackTrace();
+			foreach (var frame in trace.GetFrames() ?? [])
 			{
 				var method = frame.GetMethod();
-				if (method.DeclaringType?.Namespace != typeof(Harmony).Namespace)
+				if (method is not null && method.Module.Assembly != assembly)
 					return method;
 			}
 			throw new Exception("Unexpected end of stack trace");

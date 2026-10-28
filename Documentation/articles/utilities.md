@@ -19,6 +19,10 @@ public static Type FirstInner(Type type, Func<Type, bool> predicate)
 
 These lookups include public, private, static, and instance members.
 
+`AccessTools.GetOutsideCaller()` returns the first visible calling method outside the current Harmony assembly. It filters by assembly identity, so a client can use the `HarmonyLib` namespace without being skipped. Methods without a declaring type, such as dynamic methods, can also be returned.
+
+Use this method for diagnostics. Inlining and tail calls can remove the expected caller from the stack. It cannot recover that caller or reliably identify the assembly containing your patches. Select that assembly explicitly, for example with `typeof(MyPatchClass).Assembly`.
+
 ### Traverse
 
 `Traverse` chains reflection lookups for fields, properties, and methods:

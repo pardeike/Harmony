@@ -80,7 +80,7 @@ namespace EdgeCases
 		private static void DoPatch()
 		{
 			var harmony = new Harmony("test");
-			harmony.PatchAll();
+			harmony.PatchAll(typeof(Patcher).Assembly);
 			patched = true;
 		}
 
