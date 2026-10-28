@@ -95,7 +95,8 @@
 
 <div id="annotations"></div>
 <p>Annotations describe the original method, your patch methods, and settings such as priority. Usually, each original gets a &quot;patch class&quot; marked with <code>[HarmonyPatch]</code>.</p>
-<p><code>PatchAll()</code> finds and applies every annotated patch class in an assembly. To apply selected groups, mark classes with <code>[HarmonyPatchCategory]</code> and call <code>PatchCategory()</code>. <code>PatchAllUncategorized()</code> applies classes without a category. <code>PatchAll()</code> ignores categories.</p>
+<p><code>PatchAll(assembly)</code> finds and applies every annotated patch class in that assembly. To apply selected groups, mark classes with <code>[HarmonyPatchCategory]</code> and call <code>PatchCategory(assembly, category)</code>. <code>PatchAllUncategorized(assembly)</code> applies classes without a category. <code>PatchAll(assembly)</code> ignores categories.</p>
+<p>Pass the assembly explicitly. The assembly-inference overloads are deprecated because inlining and tail calls can select the wrong assembly. See <a href="basics.html#patching-using-annotations">assembly selection</a>.</p>
 <p>A typical patch consists of a class with annotations that looks like this:</p>
 <pre><code class="lang-csharp" name="example">using HarmonyLib;
 
@@ -147,7 +148,7 @@ class MyPatches
 [HarmonyPatch(Type[] argumentTypes, ArgumentType[] argumentVariations)]
 </code></pre>
 <p><strong>Category annotation</strong></p>
-<pre><code class="lang-csharp">// Use with Harmony.PatchCategory()
+<pre><code class="lang-csharp">// Use with Harmony.PatchCategory(assembly, category)
 [HarmonyPatchCategory(string category)]
 </code></pre>
 <h4 id="combination-annotations">Combination annotations</h4>

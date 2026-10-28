@@ -2983,7 +2983,7 @@ The top-most type in the type hierarchy of all non-interface types (including va
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/AccessTools.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Returns who called the current method</p>
+  <div class="markdown level1 summary"><p>Returns the first visible calling method outside this Harmony assembly</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2995,7 +2995,7 @@ The top-most type in the type hierarchy of all non-interface types (including va
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">MethodBase</span></dt>
-    <dd><p>The calling method/constructor (excluding the caller)</p>
+    <dd><p>The first visible external method/constructor</p>
 </dd>
   </dl>
 
@@ -3005,6 +3005,9 @@ The top-most type in the type hierarchy of all non-interface types (including va
 
 
 
+  <h4 class="section" id="HarmonyLib_AccessTools_GetOutsideCaller_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a diagnostic lookup. Inlining and tail calls can remove the expected caller from the stack.</p>
+</div>
 
 
 

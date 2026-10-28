@@ -195,7 +195,7 @@ public static extern void DontDestroyOnLoad(Object target);
     private static void DoPatch()
     {
         var harmony = new Harmony(&quot;test&quot;);
-        harmony.PatchAll();
+        harmony.PatchAll(typeof(Patcher).Assembly);
         patched = true;
     }
 

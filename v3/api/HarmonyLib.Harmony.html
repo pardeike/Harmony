@@ -717,12 +717,13 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/Harmony.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Searches the current assembly for Harmony annotations and uses them to create patches</p>
+  <div class="markdown level1 summary"><p>Infers the calling assembly and applies its annotated patches</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void PatchAll()</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Automatic assembly detection can fail after inlining or tail calls. Use PatchAll(Assembly) with an explicit assembly.&quot;)]
+public void PatchAll()</code></pre>
   </div>
 
 
@@ -734,9 +735,7 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
 
 
   <h4 class="section" id="HarmonyLib_Harmony_PatchAll_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This method can fail to use the correct assembly when being inlined. It calls StackTrace.GetFrame(1) which can point to the wrong method/assembly. If you are unsure or run into problems, use</p>
-<pre><code class="lang-csharp">PatchAll(Assembly.GetExecutingAssembly())</code></pre>
-<p>instead.</p>
+  <div class="markdown level1 remarks"><p>Caller inlining or tail calls can select the wrong assembly. Use <a class="xref" href="HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchAll_System_Reflection_Assembly_">PatchAll(Assembly)</a> with an explicit assembly.</p>
 </div>
 
 
@@ -782,12 +781,13 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/Harmony.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Searches an assembly for HarmonyPatch-annotated classes/structs without category annotations and uses them to create patches</p>
+  <div class="markdown level1 summary"><p>Infers the calling assembly and applies its annotated patches without categories</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void PatchAllUncategorized()</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Automatic assembly detection can fail after inlining or tail calls. Use PatchAllUncategorized(Assembly) with an explicit assembly.&quot;)]
+public void PatchAllUncategorized()</code></pre>
   </div>
 
 
@@ -798,6 +798,9 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
 
 
 
+  <h4 class="section" id="HarmonyLib_Harmony_PatchAllUncategorized_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Caller inlining or tail calls can select the wrong assembly. Use <a class="xref" href="HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchAllUncategorized_System_Reflection_Assembly_">PatchAllUncategorized(Assembly)</a> with an explicit assembly.</p>
+</div>
 
 
 
@@ -878,12 +881,13 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/Harmony.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Searches the current assembly for Harmony annotations with a specific category and uses them to create patches</p>
+  <div class="markdown level1 summary"><p>Infers the calling assembly and applies its annotated patches in a category</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void PatchCategory(string category)</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Automatic assembly detection can fail after inlining or tail calls. Use PatchCategory(Assembly, string) with an explicit assembly.&quot;)]
+public void PatchCategory(string category)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -900,6 +904,9 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
 
 
 
+  <h4 class="section" id="HarmonyLib_Harmony_PatchCategory_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Caller inlining or tail calls can select the wrong assembly. Use <a class="xref" href="HarmonyLib.Harmony.html#HarmonyLib_Harmony_PatchCategory_System_Reflection_Assembly_System_String_">PatchCategory(Assembly, string)</a> with an explicit assembly.</p>
+</div>
 
 
 
@@ -1223,12 +1230,13 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/Harmony.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Searches the current assembly for types with a specific category annotation and uses them to unpatch existing patches. Fully unpatching is not supported. Be careful, unpatching is global</p>
+  <div class="markdown level1 summary"><p>Infers the calling assembly and unpatches its annotated types in a category. Fully unpatching is not supported. Be careful, unpatching is global</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void UnpatchCategory(string category)</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Automatic assembly detection can fail after inlining or tail calls. Use UnpatchCategory(Assembly, string) with an explicit assembly.&quot;)]
+public void UnpatchCategory(string category)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -1245,6 +1253,9 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
 
 
 
+  <h4 class="section" id="HarmonyLib_Harmony_UnpatchCategory_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Caller inlining or tail calls can select the wrong assembly. Use <a class="xref" href="HarmonyLib.Harmony.html#HarmonyLib_Harmony_UnpatchCategory_System_Reflection_Assembly_System_String_">UnpatchCategory(Assembly, string)</a> with an explicit assembly.</p>
+</div>
 
 
 

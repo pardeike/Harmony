@@ -164,14 +164,40 @@ export HARMONY_LOG_FILE=/path/to/harmony.log.txt
 <pre><code class="lang-bash">export HARMONY_NO_LOG=1
 </code></pre>
 <h3 id="patching-using-annotations">Patching using annotations</h3>
-<p>Use <code>PatchAll()</code> to find and apply annotated patch classes in an assembly:</p>
+<p>Pass an assembly to <code>PatchAll(assembly)</code> to find and apply its annotated patch classes:</p>
 <pre><code class="lang-csharp" name="example">var assembly = Assembly.GetExecutingAssembly();
 harmony.PatchAll(assembly);
-
-// or implying current assembly:
-harmony.PatchAll();
 </code></pre>
-<p>For groups applied at different times, mark classes with <code>[HarmonyPatchCategory]</code>. Use <code>PatchCategory()</code> for a selected group and <code>PatchAllUncategorized()</code> for classes without a category. <code>PatchAll()</code> ignores categories and applies them all.</p>
+<p>Use <code>typeof(MyPatchClass).Assembly</code> to select the assembly containing a known patch type. <code>Assembly.GetExecutingAssembly()</code> also works when the initialization code and patches belong to the same assembly.</p>
+<p>For groups applied at different times, mark classes with <code>[HarmonyPatchCategory]</code>. Use <code>PatchCategory(assembly, category)</code> for a selected group. Use <code>PatchAllUncategorized(assembly)</code> for classes without a category. <code>PatchAll(assembly)</code> ignores categories and applies them all.</p>
+<p>The overloads that infer an assembly are deprecated. They remain callable, but compilation produces a warning with the explicit alternative:</p>
+<table>
+<thead>
+<tr>
+<th>Deprecated call</th>
+<th>Explicit assembly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>harmony.PatchAll()</code></td>
+<td><code>harmony.PatchAll(assembly)</code></td>
+</tr>
+<tr>
+<td><code>harmony.PatchAllUncategorized()</code></td>
+<td><code>harmony.PatchAllUncategorized(assembly)</code></td>
+</tr>
+<tr>
+<td><code>harmony.PatchCategory(category)</code></td>
+<td><code>harmony.PatchCategory(assembly, category)</code></td>
+</tr>
+<tr>
+<td><code>harmony.UnpatchCategory(category)</code></td>
+<td><code>harmony.UnpatchCategory(assembly, category)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Automatic assembly detection can fail after inlining or tail calls remove the intended caller from the stack. Harmony prevents these entry points from being inlined. It cannot preserve their callers' frames or recover them reliably afterward. A wrong assembly can cause patches to be missed. Pass the assembly explicitly instead of relying on stack inspection.</p>
 <h3 id="manual-patching">Manual patching</h3>
 <p>For manual control, <code>Patch()</code> takes the original and optional prefix, postfix, transpiler, and finalizer methods, each wrapped in a <code>HarmonyMethod</code>:</p>
 <pre><code class="lang-csharp" name="example">// add null checks to the following lines, they are omitted for clarity

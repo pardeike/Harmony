@@ -189,7 +189,7 @@ public class MyPatcher
     public static void DoPatching()
     {
         var harmony = new Harmony(&quot;com.example.patch&quot;);
-        harmony.PatchAll();
+        harmony.PatchAll(typeof(MyPatcher).Assembly);
     }
 }
 
