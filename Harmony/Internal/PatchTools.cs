@@ -20,9 +20,30 @@ namespace HarmonyLib
 		{
 			lock (detours)
 			{
-				if (detours.TryGetValue(method, out var detour))
-					detour.Dispose();
-				detours[method] = DetourFactory.Current.CreateDetour(method, replacement);
+				var factory = DetourFactory.Current;
+				detours.TryGetValue(method, out var detour);
+				var previousTarget = detour?.Target;
+				detour?.Dispose();
+				try
+				{
+					detours[method] = factory.CreateDetour(method, replacement);
+				}
+				catch (Exception installError)
+				{
+					if (previousTarget is null) throw;
+					try
+					{
+						// Installation can JIT the replacement. Restore through the factory because disposed detours cannot be reused.
+						detours[method] = factory.CreateDetour(method, previousTarget);
+					}
+					catch (Exception restoreError)
+					{
+						detours.Remove(method);
+						throw new InvalidOperationException($"Failed to restore the previous patch for {method.FullDescription()} after replacement installation failed:\n{installError}",
+							restoreError);
+					}
+					throw;
+				}
 			}
 		}
 
