@@ -16,19 +16,10 @@ namespace HarmonyLibTests.Tools
 			Assert.That(OutsideCallerTestClient.Call(), Is.EqualTo(AccessTools.DeclaredMethod(typeof(OutsideCallerTestClient), nameof(OutsideCallerTestClient.Call))));
 		}
 
-		static Func<MethodBase> DynamicCaller(Module module)
-		{
-			var method = new DynamicMethod("OutsideCaller", typeof(MethodBase), [], module, true);
-			var il = method.GetILGenerator();
-			il.Emit(OpCodes.Call, AccessTools.DeclaredMethod(typeof(AccessTools), nameof(AccessTools.GetOutsideCaller)));
-			il.Emit(OpCodes.Ret);
-			return (Func<MethodBase>)method.CreateDelegate(typeof(Func<MethodBase>));
-		}
-
 		[Test, MethodImpl(MethodImplOptions.NoInlining)]
 		public void A_frame_owned_by_the_Harmony_assembly_is_skipped()
 		{
-			var actual = DynamicCaller(typeof(Harmony).Module)();
+			var actual = AccessTools.GetOutsideCaller();
 			Assert.That(actual, Is.EqualTo(AccessTools.DeclaredMethod(typeof(TestCallerDiscovery), nameof(A_frame_owned_by_the_Harmony_assembly_is_skipped))));
 		}
 
@@ -43,9 +34,9 @@ namespace HarmonyLibTests.Tools
 			il.Emit(OpCodes.Call, AccessTools.DeclaredMethod(typeof(AccessTools), nameof(AccessTools.GetOutsideCaller)));
 			il.Emit(OpCodes.Ret);
 			module.CreateGlobalFunctions();
-			var actual = (MethodBase)module.GetMethod("OutsideCaller").Invoke(null, []);
-			Assert.That(actual.Name, Is.EqualTo("OutsideCaller"));
-			Assert.That(actual.DeclaringType, Is.Null);
+			var expected = module.GetMethod("OutsideCaller");
+			var actual = (MethodBase)expected.Invoke(null, []);
+			Assert.That(actual, Is.EqualTo(expected));
 		}
 
 		[Test]
