@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using CecilCode = Mono.Cecil.Cil.Code;
+using ExceptionHandler = Mono.Cecil.Cil.ExceptionHandler;
 using FlowControl = Mono.Cecil.Cil.FlowControl;
 using OperandType = Mono.Cecil.Cil.OperandType;
 using StackBehaviour = Mono.Cecil.Cil.StackBehaviour;
