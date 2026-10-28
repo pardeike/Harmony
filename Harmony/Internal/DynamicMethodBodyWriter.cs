@@ -273,15 +273,23 @@ namespace HarmonyLib
 			var pending = new Queue<Instruction>();
 			var maximum = 0;
 			Enqueue(definition.Body.Instructions[0], 0);
+			var handlers = definition.Body.ExceptionHandlers.Count == 0 ? null : new Dictionary<Instruction, List<ExceptionHandler>>();
 			foreach (var handler in definition.Body.ExceptionHandlers)
 			{
-				Enqueue(handler.HandlerStart, handler.HandlerType is ExceptionHandlerType.Catch or ExceptionHandlerType.Filter ? 1 : 0);
-				if (handler.FilterStart is not null) Enqueue(handler.FilterStart, 1);
+				if (!handlers.TryGetValue(handler.TryStart, out var group)) handlers.Add(handler.TryStart, group = []);
+				group.Add(handler);
 			}
 			while (pending.Count != 0)
 			{
 				var instruction = pending.Dequeue();
 				var depth = depths[instruction];
+				// A handler is reachable only when its protected code is reachable. Do not validate unrelated dead code.
+				if (handlers is not null && handlers.TryGetValue(instruction, out var group))
+					foreach (var handler in group)
+					{
+						Enqueue(handler.HandlerStart, handler.HandlerType is ExceptionHandlerType.Catch or ExceptionHandlerType.Filter ? 1 : 0);
+						if (handler.FilterStart is not null) Enqueue(handler.FilterStart, 1);
+					}
 				var opcode = instruction.OpCode;
 				maximum = Math.Max(maximum, depth);
 				var pop = opcode.StackBehaviourPop == StackBehaviour.PopAll ? depth
