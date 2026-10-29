@@ -164,6 +164,11 @@ namespace HarmonyLib
 			lock (state) return state.Keys.ToArray();
 		}
 
+		internal static bool IsPatched(MethodBase method)
+		{
+			lock (state) return state.ContainsKey(method);
+		}
+
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, byte[] bytes)
 		{
 			lock (state) state[original] = bytes;

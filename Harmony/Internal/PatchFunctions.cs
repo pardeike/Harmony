@@ -99,6 +99,7 @@ namespace HarmonyLib
 				if (ReferenceEquals(enriched, ex)) throw;
 				throw enriched;
 			}
+			RuntimeAsyncCompileWatch.EnsureSubscribed();
 			HarmonySharedState.UpdatePatchInfo(original, replacement, bytes);
 			persistence?.Commit();
 			return replacement;
