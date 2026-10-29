@@ -132,6 +132,9 @@ public class SubClass : BaseClass
 }
 </code></pre>
 <p>The compiler resolves <code>base.SomeMethod()</code> to a specific base method. To call that implementation from a patch, use a <a href="reverse-patching.html">reverse patch</a> to copy it into a stub you control. See this <a href="https://gist.github.com/pardeike/45196a8b8ef331f38b14e1a7e5ee1782">example and comparison</a>.</p>
+<h2 id="runtime-async-in-net-11">Runtime async in .NET 11</h2>
+<p>Harmony does not currently support patching methods compiled with .NET 11 runtime async. Patching or reverse-patching these methods throws <code>NotSupportedException</code> before installing a replacement. Ordinary <code>Task</code>-returning methods and methods that use compiler-generated async state machines remain supported.</p>
+<p>Runtime async uses a different calling convention. Copying its method body into an ordinary replacement can fail at execution, and patching its reflected entry point does not cover all native async callers.</p>
 <h2 id="generics">Generics</h2>
 <p>Generics can be difficult to patch. In general, expect generic methods and methods of generic classes to be shared between different types of <code>T</code> during runtime. This means that by patching one method, the method will be patched for all types of <code>T</code>. Depending on the type of generic and your .NET runtime, this can be worked around in a few ways:</p>
 <ul>
