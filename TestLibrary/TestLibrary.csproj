@@ -4,6 +4,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <AssemblyName>TestLibrary</AssemblyName>
+    <Features Condition="'$(TargetFramework)' == 'net11.0'">$(Features);runtime-async=on</Features>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lib.Harmony\Lib.Harmony.csproj" />

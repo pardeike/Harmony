@@ -38,6 +38,7 @@ jobs:
           path: HarmonyTests.Compatibility/artifacts/v2-source
       - uses: actions/setup-dotnet@v6
         with:
+          global-json-file: global.json
           dotnet-version: |
             10.0.x
             9.0.x
@@ -186,6 +187,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
         with:
+          global-json-file: global.json
           dotnet-version: |
             10.0.x
             9.0.x
@@ -224,6 +226,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
         with:
+          global-json-file: global.json
           dotnet-version: 10.0.x
       - name: Install Mono runtime
         run: |
@@ -263,6 +266,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
         with:
+          global-json-file: global.json
           dotnet-version: 10.0.x
       - name: Build isolated current assemblies with test-only versions
         shell: bash

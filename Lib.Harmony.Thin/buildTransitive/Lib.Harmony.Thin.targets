@@ -1,0 +1,7 @@
+<Project>
+  <!-- MonoMod 1.4.0-prerelease.1 ships net11.0 binaries but retains its .NET 10 build guard.
+       Remove this workaround when the upstream package updates that guard. -->
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetFrameworkVersion)' == 'v11.0' And '$(MonoMod_ReallySkipCheckTargetRuntime)' == ''">
+    <MonoMod_ReallySkipCheckTargetRuntime>true</MonoMod_ReallySkipCheckTargetRuntime>
+  </PropertyGroup>
+</Project>

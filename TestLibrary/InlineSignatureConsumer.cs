@@ -39,7 +39,9 @@ public static class InlineSignatureConsumer
 		=> ReadCall(AccessTools.Method(typeof(InlineSignatureConsumer), unmanaged ? nameof(UnmanagedCall) : nameof(ManagedCall)));
 
 	public static CodeInstruction ReadCall(MethodInfo method)
-		// Only read the signature: do not import the compiler's function-pointer locals into Cecil.
-		=> PatchProcessor.GetOriginalInstructions(method, new DynamicMethod("ReadCall", typeof(void), Type.EmptyTypes).GetILGenerator())
-			.Single(instruction => instruction.opcode == OpCodes.Calli);
+	{
+		// Only read the signature. No emitter or declarations of the compiler's function-pointer locals are needed.
+		var instruction = PatchProcessor.ReadMethodBody(method, null).Single(instruction => instruction.Key == OpCodes.Calli);
+		return new CodeInstruction(instruction.Key, instruction.Value);
+	}
 }

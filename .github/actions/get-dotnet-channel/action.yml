@@ -1,6 +1,6 @@
 name: Convert Target Framework to Channel
 description: |
-  Convert Target Framework to Channel.
+  Convert Target Framework to an SDK channel or pinned prerelease SDK version.
   Use `target_framework` for a single conversion with `channel` as output.
   Use `target_framework_array` for a single conversion with `channels_multiline` as output.
 
@@ -26,9 +26,15 @@ runs:
     - name: Set Channels
       id: set_output
       run: |
+        function Get-DotnetChannel([string]$framework) {
+          if ($framework -eq 'net11.0') {
+            return (Get-Content global.json -Raw | ConvertFrom-Json).sdk.version
+          }
+          return $framework.Replace('coreapp', '').Replace('net', '')
+        }
         $target_framework = "${{inputs.target_framework}}";
         if ($target_framework -ne '') {
-            $channel = $target_framework.Replace('coreapp', '').Replace('net', '');
+            $channel = Get-DotnetChannel $target_framework;
             "channel=$channel" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         }
         $target_frameworks = "${{inputs.target_framework_array}}";
@@ -36,7 +42,7 @@ runs:
           $EOF = -join (1..15 | ForEach {[char]((48..57)+(65..90)+(97..122) | Get-Random)});
           "channels_multiline<<$EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
           foreach ($target_framework in ConvertFrom-Json "${{inputs.target_framework_array}}") {
-              $target_framework.Replace('coreapp', '').Replace('net', '') | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+              Get-DotnetChannel $target_framework | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
           }
           "$EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         }

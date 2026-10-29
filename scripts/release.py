@@ -151,7 +151,7 @@ public static class Program {
         for variant, package_id in IDS.items():
             project = folder / variant
             project.mkdir()
-            tfm = "netstandard2.0" if variant == "Ref" else "net10.0"
+            tfm = "netstandard2.0" if variant == "Ref" else info["frameworks"][-1]
             output = "Library" if variant == "Ref" else "Exe"
             (project / "Smoke.csproj").write_text(f'''<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>
 <TargetFramework>{tfm}</TargetFramework><OutputType>{output}</OutputType><PlatformTarget>x64</PlatformTarget>
@@ -162,7 +162,7 @@ public static class Program {
                     "--source", str(directory.resolve()), "--source", "https://api.nuget.org/v3/index.json", capture=False)
             command("dotnet", "build", str(project / "Smoke.csproj"), "-c", "Release", "--no-restore", capture=False)
             if variant != "Ref":
-                command("dotnet", str(project / "bin/Release/net10.0/Smoke.dll"), capture=False)
+                command("dotnet", str(project / f"bin/Release/{tfm}/Smoke.dll"), capture=False)
 
 
 def save_manifest(directory, manifest):

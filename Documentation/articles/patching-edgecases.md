@@ -19,6 +19,12 @@ If you control the host, disabling inlining may help. Otherwise, patch a caller 
 
 The compiler resolves `base.SomeMethod()` to a specific base method. To call that implementation from a patch, use a [reverse patch](reverse-patching.md) to copy it into a stub you control. See this [example and comparison](https://gist.github.com/pardeike/45196a8b8ef331f38b14e1a7e5ee1782).
 
+## Runtime async in .NET 11
+
+Harmony does not currently support patching methods compiled with .NET 11 runtime async. Patching or reverse-patching these methods throws `NotSupportedException` before installing a replacement. Ordinary `Task`-returning methods and methods that use compiler-generated async state machines remain supported.
+
+Runtime async uses a different calling convention. Copying its method body into an ordinary replacement can fail at execution, and patching its reflected entry point does not cover all native async callers.
+
 ## Generics
 
 Generics can be difficult to patch. In general, expect generic methods and methods of generic classes to be shared between different types of `T` during runtime. This means that by patching one method, the method will be patched for all types of `T`. Depending on the type of generic and your .NET runtime, this can be worked around in a few ways:

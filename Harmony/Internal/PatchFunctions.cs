@@ -7,6 +7,13 @@ namespace HarmonyLib
 {
 	internal static class PatchFunctions
 	{
+		static void ThrowIfRuntimeAsync(MethodBase method)
+		{
+			// MethodImplAttributes.Async was added in .NET 11. Keep this check available to older Harmony builds too.
+			if (Environment.Version.Major >= 11 && method is not null && (method.GetMethodImplementationFlags() & (MethodImplAttributes)0x2000) != 0)
+				throw new NotSupportedException($"Runtime-async methods are not supported: {method.FullDescription()}");
+		}
+
 		internal static List<MethodInfo> GetSortedPatchMethods(MethodBase original, Patch[] patches, bool debug)
 			=> [.. new PatchSorter(patches, debug).Sort().Select(p => p.GetMethod(original))];
 		static List<PatchCall> GetSortedPatchCalls(MethodBase original, Patch[] patches, bool debug, Patch[] previousPostfixes = null)
@@ -51,6 +58,7 @@ namespace HarmonyLib
 
 		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo)
 		{
+			ThrowIfRuntimeAsync(original);
 			patchInfo.ValidateSurvivingMetadata();
 			patchInfo.VersionCount++;
 			var bytes = patchInfo.SerializeValidated();
@@ -102,6 +110,8 @@ namespace HarmonyLib
 				throw new ArgumentNullException(nameof(standin));
 			if (standin.method is null)
 				throw new ArgumentNullException(nameof(standin), $"{nameof(standin)}.{nameof(standin.method)} is NULL");
+			ThrowIfRuntimeAsync(original);
+			ThrowIfRuntimeAsync(standin.method);
 			AttributePatch.ValidateOrdinary(standin);
 
 			var debug = (standin.debug ?? false) || Harmony.DEBUG;
