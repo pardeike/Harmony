@@ -199,7 +199,7 @@ namespace HarmonyLib
 			}
 
 			if (value > -129 && value < 128)
-				il.Emit(OpCodes.Ldc_I4_S, (sbyte)value);
+				il.Emit(OpCodes.Ldc_I4_S, value); // The Cecil proxy requires the virtual int overload, not the non-virtual sbyte overload.
 			else
 				il.Emit(OpCodes.Ldc_I4, value);
 		}
