@@ -44,10 +44,35 @@ if ($Framework) {
 . "$PSScriptRoot/../scripts/Test-Frameworks.ps1"
 $testScript = $PSCommandPath
 $pwsh = (Get-Process -Id $PID).Path
+[string[]]$pwshArguments = if ([System.IO.Path]::GetFileNameWithoutExtension($pwsh) -eq 'dotnet') { @(Join-Path $PSHOME 'pwsh.dll') } else { @() }
 $temporary = Join-Path ([System.IO.Path]::GetTempPath()) ('harmony-ci-' + [Guid]::NewGuid().ToString('N'))
 $null = New-Item -ItemType Directory -Path $temporary
 $checks = 0
 try {
+    $sdkRoot = Join-Path $temporary 'SDKs with spaces'
+    foreach ($version in @('10.0.203', '10.0.400')) {
+        $directory = New-Item -ItemType Directory -Path (Join-Path $sdkRoot $version) -Force
+        [System.IO.File]::WriteAllText((Join-Path $directory.FullName 'vstest.console.dll'), '')
+    }
+    function Test-SdkList {
+        "10.0.400 [$sdkRoot]"
+        "11.0.100-rc.3.26522.148 [$sdkRoot]"
+        "10.0.203 [$sdkRoot]"
+    }
+    $expectedRunner = Join-Path (Join-Path $sdkRoot '10.0.400') 'vstest.console.dll'
+    if ((Get-MonoVSTest Test-SdkList) -ne $expectedRunner) { throw 'Mono did not select the latest SDK 10 runner' }
+    $checks++
+    Remove-Item -LiteralPath $expectedRunner
+    $failed = $false
+    try { Get-MonoVSTest Test-SdkList } catch { $failed = $true }
+    if (-not $failed) { throw 'A missing Mono test runner passed' }
+    $checks++
+    function Test-NoMonoSdk { "11.0.100-rc.3.26522.148 [$sdkRoot]" }
+    $failed = $false
+    try { Get-MonoVSTest Test-NoMonoSdk } catch { $failed = $true }
+    if (-not $failed) { throw 'A missing SDK 10 passed' }
+    $checks++
+
     foreach ($kind in @('valid', 'with-skipped', 'with-inconclusive', 'missing', 'malformed', 'empty', 'zero-tests', 'no-results', 'unfinished', 'failed', 'bad-count', 'missing-count', 'pending', 'aborted-after-pass', 'disconnected', 'false-passed-count', 'hidden-failure', 'missing-executed-result', 'missing-skipped-result', 'unaccounted-result', 'overstated-executed')) {
         $report = Join-Path $temporary "$kind.trx"
         New-TestReport $report $kind
@@ -67,7 +92,7 @@ try {
             try {
                 Invoke-FrameworkChecks @parameters -Action {
                     param($currentFramework)
-                    & $pwsh -NoProfile -File $testScript -Framework $currentFramework -FailureAt $failureAt -ResultsDirectory $temporary
+                    & $pwsh @pwshArguments -NoProfile -File $testScript -Framework $currentFramework -FailureAt $failureAt -ResultsDirectory $temporary
                     if ($LASTEXITCODE -ne 0) { throw "Native exit $LASTEXITCODE" }
                 }
             } catch { $failed = $true }
@@ -83,7 +108,7 @@ try {
         try {
             Invoke-FrameworkChecks -Frameworks @('first') -ResultsDirectory $temporary -ResultPrefix 'check' -Action {
                 param($currentFramework)
-                & $pwsh -NoProfile -File $testScript -Framework $currentFramework -ReportKind $kind -ResultsDirectory $temporary
+                & $pwsh @pwshArguments -NoProfile -File $testScript -Framework $currentFramework -ReportKind $kind -ResultsDirectory $temporary
                 if ($LASTEXITCODE -ne 0) { throw "Native exit $LASTEXITCODE" }
             }
         } catch { $failed = $true }

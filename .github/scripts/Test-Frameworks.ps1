@@ -1,3 +1,15 @@
+function Get-MonoVSTest([string]$Dotnet = 'dotnet') {
+    # SDK 11's VSTest removed Mono support. Retain SDK 10's runner while compiling with SDK 11.
+    $sdk = & $Dotnet --list-sdks | Where-Object { $_ -match '^10\.\d+\.\d+ \[' } |
+        Sort-Object { [version]($_ -split ' ')[0] } | Select-Object -Last 1
+    if (-not $sdk -or $sdk -notmatch '^(10\.\d+\.\d+) \[(.+)\]$') {
+        throw 'Mono tests require an installed .NET 10 SDK test runner.'
+    }
+    $runner = Join-Path (Join-Path $Matches[2] $Matches[1]) 'vstest.console.dll'
+    if (-not (Test-Path $runner)) { throw "Mono test runner is missing: $runner" }
+    return $runner
+}
+
 function Test-TrxSucceeded([string]$Path) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $false }
     try {

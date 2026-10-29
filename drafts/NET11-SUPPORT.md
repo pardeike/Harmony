@@ -26,6 +26,8 @@ The prerelease contains a `net11.0` asset and a CoreCLR 11 implementation, but i
 
 The documentation compilation project used one output directory for all frameworks. Removing its overrides restores the SDK's separate framework directories and prevents concurrent builds from overwriting each other.
 
+SDK 11's VSTest 18.11 removed Mono execution support. CI still compiles with SDK 11, but Unix Mono lanes explicitly select the installed SDK 10 VSTest runner. The existing framework and completed-report checks remain mandatory.
+
 ## Executed checks
 
 | Check | Result |
@@ -36,5 +38,7 @@ The documentation compilation project used one output directory for all framewor
 | Complete solution build across the retained framework matrix | Passed |
 | Independent Fat and Thin NuGet consumers on .NET 11 x64 | Build, patch, execute and unpatch passed |
 | Local workflow tests, release tooling tests and YAML parsing | Passed |
+| SDK 11 and SDK 10 VSTest dispatch against the .NET 10 MethodInvoker tests | Both passed |
+| PowerShell CI completeness and runner-selection regressions | 39 passed |
 
 Cross-platform execution remains subject to GitHub CI. No release has been published.

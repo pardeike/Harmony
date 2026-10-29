@@ -165,11 +165,14 @@ runs:
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
       run: |
         . ./.github/scripts/Test-Frameworks.ps1
+        $isMono = '${{inputs.runtime-type}}' -eq 'mono'
+        [string[]]$runner = if ($isMono) { @(Get-MonoVSTest) } else { @('test') }
         Invoke-FrameworkChecks -Frameworks (ConvertFrom-Json '${{steps.test-args.outputs.target_frameworks}}') -ResultPrefix '${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}' -Action {
           param($target_framework)
           $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-          dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
-          if ($LASTEXITCODE -ne 0) { throw "dotnet test exited $LASTEXITCODE" }
+          [string[]]$framework = if ($isMono) { @("--framework:$target_framework") } else { @('-f', $target_framework) }
+          & dotnet @runner "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" @framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
+          if ($LASTEXITCODE -ne 0) { throw "Test runner exited $LASTEXITCODE" }
         }
       shell: pwsh
 
@@ -205,11 +208,14 @@ runs:
           if (-not $dotnet) {
             throw 'Unable to locate a dotnet executable.'
           }
+          $isMono = '${{inputs.runtime-type}}' -eq 'mono'
+          [string[]]$runner = if ($isMono) { @(Get-MonoVSTest $dotnet) } else { @('test') }
           Invoke-FrameworkChecks -Frameworks (ConvertFrom-Json '${{steps.test-args.outputs.target_frameworks}}') -ResultPrefix '${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}' -Action {
             param($target_framework)
             $trxFileName = "${{inputs.os}}-${{inputs.architecture}}-${{inputs.runtime-type}}-${{inputs.build_configuration}}-$target_framework.trx"
-            & $dotnet test "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" -f $target_framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
-            if ($LASTEXITCODE -ne 0) { throw "dotnet test exited $LASTEXITCODE" }
+            [string[]]$framework = if ($isMono) { @("--framework:$target_framework") } else { @('-f', $target_framework) }
+            & $dotnet @runner "HarmonyTests/bin/${{inputs.build_configuration}}/$target_framework/HarmonyTests.dll" @framework --logger:"trx;LogFileName=../TestResults/$trxFileName" --logger:"console;verbosity=normal" -- ${{steps.test-args.outputs.run_settings_args}}
+            if ($LASTEXITCODE -ne 0) { throw "Test runner exited $LASTEXITCODE" }
           }
         shell: pwsh
 
