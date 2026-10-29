@@ -1,6 +1,6 @@
 # .NET 11 support
 
-Implementation on `v3`, verified locally on 2026-10-29.
+Implementation on `v3`, verified locally and in GitHub CI on 2026-10-29.
 
 ## Scope
 
@@ -40,5 +40,6 @@ SDK 11's VSTest 18.11 removed Mono execution support. CI still compiles with SDK
 | Local workflow tests, release tooling tests and YAML parsing | Passed |
 | SDK 11 and SDK 10 VSTest dispatch against the .NET 10 MethodInvoker tests | Both passed |
 | PowerShell CI completeness and runner-selection regressions | 39 passed |
+| [Platform Tests at `5266eead`](https://github.com/pardeike/Harmony/actions/runs/40915741928) | All 48 jobs passed |
 
-Cross-platform execution remains subject to GitHub CI. No release has been published.
+CI covers .NET 11 on Windows x86/x64, Linux x64 and macOS x64 in Debug and Release. The retained .NET, .NET Framework, Mono and coexistence lanes also pass. No release has been published.

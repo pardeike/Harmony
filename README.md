@@ -1,11 +1,13 @@
 <p align="center">
 	<img src="https://raw.githubusercontent.com/pardeike/Harmony/master/HarmonyLogo.png" alt="Harmony" width="180" /><br>
-	<b>Version 3.0.0-rc.1</b><br>
+	<b>Version 3.0.0-rc.3</b><br>
 	A library for patching, replacing and decorating<br>
 	.NET and Mono methods during runtime.
 </p>
 
 This branch develops Harmony 3, including Infix patching. Harmony 2.x is maintained on [master](https://github.com/pardeike/Harmony/tree/master).
+
+This branch supports .NET 11 RC3 alongside .NET 10 and earlier supported runtimes. [.NET 11 runtime async](Documentation/articles/patching-edgecases.md#runtime-async-in-net-11) is not supported.
 
 ### About
 

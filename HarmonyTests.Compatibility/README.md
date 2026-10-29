@@ -6,7 +6,7 @@ The Compatibility jobs in [Platform Tests](../.github/workflows/test.yml), imple
 
 ## Run published-version lanes
 
-Run commands from the repository root. Use the .NET 10 SDK to build, a completed current Fat DLL, and an actual x64 runtime host for the requested framework. The launcher verifies unchanged old NuGet packages and DLLs against [published-artifacts.json](published-artifacts.json), snapshots the supplied engines and their dependencies, and builds fixtures against explicit file references.
+Run commands from the repository root. Build with the .NET 11 RC3 SDK pinned in [global.json](../global.json). See [local verification](../AGENTS.md#local-verification) for SDK selection on Mac Studio. Use a completed current Fat DLL and an actual x64 runtime host for the requested framework. The launcher verifies unchanged old NuGet packages and DLLs against [published-artifacts.json](published-artifacts.json), snapshots the supplied engines and their dependencies, and builds fixtures against explicit file references.
 
 ```bash
 dotnet build Lib.Harmony/Lib.Harmony.csproj -c Debug \

@@ -2,3 +2,4 @@
 - Preserve the exact exception table and calculate the complete evaluation-stack depth, including returning `calli` instructions. Ordinary patches and Infixes continue to share the same patch-construction pipeline and detour mechanism.
 - Preserve exact runtime callback identities and release retired dynamic replacements without retaining their callbacks in Harmony's method lookup.
 - Keep assembly generation for explicit diagnostic output and runtime limitations, including custom-modified call-site signatures before .NET 10. Reduce dependency-name allocation on this path while preserving quoted assembly names and ambiguity checks.
+- Add .NET 11 support, verified with RC3. Native async methods remain unsupported and throw `NotSupportedException` when patched or reverse-patched. Ordinary `Task`-returning methods and compiler-generated async state machines remain supported.

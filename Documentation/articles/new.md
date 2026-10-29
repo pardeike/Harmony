@@ -18,6 +18,10 @@ Start with the [working example](patching-infix.md#a-working-example), then expl
 
 Read about [generated bodies](patching-infix.md#generated-bodies-and-captured-variables) and [persistent state](patching-infix.md#keep-patch-owned-values-across-await-and-yield), including the supported compiler protocols and cleanup rules.
 
+## .NET 11 support
+
+Harmony 3 adds .NET 11 support, verified with RC3. [.NET 11 runtime async](patching-edgecases.md#runtime-async-in-net-11) remains unsupported and throws `NotSupportedException` when patched or reverse-patched. Ordinary `Task`-returning methods and compiler-generated async state machines remain supported.
+
 ## Earlier: Harmony 2
 
 The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.

@@ -11,6 +11,8 @@ Harmony changes what .NET methods do while an application is running. Add code b
 
 Harmony patches [CIL](https://wikipedia.org/wiki/Common_Intermediate_Language), the intermediate language used by .NET and [Mono](<https://wikipedia.org/wiki/Mono_(software)>). Your source language does not have to be C#.
 
+Harmony 3 supports .NET 11 RC3 alongside .NET 10 and earlier supported runtimes. [.NET 11 runtime async](patching-edgecases.md#runtime-async-in-net-11) is not supported. Ordinary `Task`-returning methods and compiler-generated async state machines remain supported.
+
 The runtime must allow Harmony to generate and execute replacement methods. In Unity, check the scripting backend and target platform. IL2CPP uses ahead-of-time compilation and does not support `System.Reflection.Emit`; the runtime patching described here requires a compatible managed runtime. See [Unity's scripting restrictions](https://docs.unity3d.com/6000.0/Documentation/Manual/scripting-restrictions.html).
 
 ### Bootstrapping and Injection
