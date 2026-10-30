@@ -25,6 +25,8 @@ Harmony does not currently support patching methods compiled with .NET 11 runtim
 
 Runtime async uses a different calling convention. Copying its method body into an ordinary replacement can fail at execution, and patching its reflected entry point does not cover all native async callers.
 
+Callers compiled with runtime-async, including the .NET 11 runtime libraries, call the runtime-generated async variant of an ordinary `Task`-returning method. A patch on that method does not reach them. With MonoMod.Core 1.4.0-prerelease.1, a variant compiled after the patch corrupts code and can crash the process, see [MonoMod#344](https://github.com/MonoMod/MonoMod/issues/344). When `Harmony.DEBUG` is on, Harmony writes a line to the log when it detects such a variant compilation.
+
 ## Generics
 
 Generics can be difficult to patch. In general, expect generic methods and methods of generic classes to be shared between different types of `T` during runtime. This means that by patching one method, the method will be patched for all types of `T`. Depending on the type of generic and your .NET runtime, this can be worked around in a few ways:
