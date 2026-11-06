@@ -296,7 +296,7 @@ namespace HarmonyLibTests.Patching
 			harmony.Unpatch(member, keepPrefix ? HarmonyPatchType.InnerPrefix : HarmonyPatchType.All, harmony.Id);
 			Assert.That(Harmony.GetPatchInfo(member).Prefixes, Has.Count.EqualTo(keepPrefix ? 1 : 0));
 			Assert.That(PersistentState.Registrations.ContainsKey(member), Is.False);
-			Assert.That(Harmony.GetPatchInfo(dispose)?.Finalizers ?? [], Is.Empty);
+			Assert.That(Harmony.GetPatchInfo(dispose)?.Finalizers, Is.Null.Or.Empty);
 			Assert.That(((Dictionary<Type, Dictionary<string, object>>)((object[])frame[0])[0]), Is.Empty);
 		}
 		static int SupersededByCopy() => 1;
