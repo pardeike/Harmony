@@ -51,7 +51,7 @@ From the repository root, with the .NET SDK and Python 3.9 or newer:
 
 ```shell
 dotnet tool install -g docfx --version 2.78.5
-dotnet build -c Debug -f net35 ./Lib.Harmony/Lib.Harmony.csproj
+dotnet build -c Debug -f net48 ./Lib.Harmony/Lib.Harmony.csproj
 docfx Documentation/docfx.json
 python3 Documentation/verify_site.py docs
 python3 -m http.server 8080 --directory docs

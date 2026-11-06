@@ -4,7 +4,7 @@
       "src": [
         {
           "src": "..",
-          "files": [ "Lib.Harmony/bin/Debug/net35/0Harmony.dll" ],
+          "files": [ "Lib.Harmony/bin/Debug/net48/0Harmony.dll" ],
           "exclude": [ "**/obj/**", "**/bin/Release/**" ]
         }
       ],

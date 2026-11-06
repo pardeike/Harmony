@@ -35,8 +35,10 @@ jobs:
           dotnet-version: 10.0.x
       - name: Install DocFX
         run: dotnet tool install -g docfx --version 2.78.5
+      # The API reference reads the net48 build. It has the full public API, while net35 lacks the async members
+      # and .NET 5 or later builds add serialization attributes to the syntax blocks.
       - name: Build Library
-        run: dotnet build -c Debug -f net35 ./Lib.Harmony/Lib.Harmony.csproj
+        run: dotnet build -c Debug -f net48 ./Lib.Harmony/Lib.Harmony.csproj
       - name: Build Documentation
         run: docfx Documentation/docfx.json
       - name: Check documentation links
