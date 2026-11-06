@@ -84,9 +84,11 @@ namespace HarmonyLib
 		sealed class GenericImporter(Mono.Cecil.ModuleDefinition module, Mono.Cecil.MethodReference source, MethodBase original) : Mono.Cecil.IReflectionImporter
 		{
 			readonly MMReflectionImporter importer = new(module) { UseDefault = false };
+			// Cecil's interface imports assemblies by name. MonoMod's name overload is obsolete and forwards to this default importer anyway.
+			readonly Mono.Cecil.DefaultReflectionImporter names = new(module);
 			readonly Type[] arguments = Arguments(original);
 			internal readonly Dictionary<Mono.Cecil.MemberReference, object> members = [];
-			public Mono.Cecil.AssemblyNameReference ImportReference(AssemblyName name) => importer.ImportReference(name);
+			public Mono.Cecil.AssemblyNameReference ImportReference(AssemblyName name) => names.ImportReference(name);
 			public Mono.Cecil.TypeReference ImportReference(Type type, Mono.Cecil.IGenericParameterProvider context)
 			{
 				Check(type);
