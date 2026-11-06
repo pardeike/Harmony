@@ -30,7 +30,14 @@ namespace HarmonyLib
 		}
 
 		// Converts the value on the stack between an open type of the definition and its closed form, in either direction.
-		internal static CodeInstruction Convert(Type from, Type to) => Call[asMethod.MakeGenericMethod(from, to)];
+		internal static CodeInstruction Convert(Type from, Type to)
+		{
+			if (MethodCreatorTools.ContainsFunctionPointer(from) || MethodCreatorTools.ContainsFunctionPointer(to))
+				throw new NotSupportedException("Generic family bridges cannot emit function-pointer signatures with the current runtime importer.");
+			// The guard already proves these types coincide. Pointers and byref-like values cannot be arguments of As<,>.
+			return MethodCreatorTools.CanStoreInObjectArray(from) && MethodCreatorTools.CanStoreInObjectArray(to)
+				? Call[asMethod.MakeGenericMethod(from, to)] : Nop;
+		}
 
 		// The type an open type of the definition takes in the instantiation.
 		internal static Type Close(Type open, MethodBase definition, MethodBase instantiation)

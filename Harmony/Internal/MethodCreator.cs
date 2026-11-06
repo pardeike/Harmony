@@ -245,7 +245,7 @@ namespace HarmonyLib
 		// A callback registered on a closed instantiation runs only when the definition's type parameters match it.
 		Label? BeginGuard(PatchCall call, List<CodeInstruction> codes)
 		{
-			if (call.instantiation is null) return null;
+			if (call.instantiation is null || !config.original.ContainsGenericParameters) return null;
 			var skip = config.DefineLabel();
 			codes.AddRange(GenericFamily.Guard(config.original, call.instantiation, skip));
 			return skip;
@@ -274,7 +274,8 @@ namespace HarmonyLib
 					throw new ArgumentException($"Infix passthrough postfix {fix.FullDescription()} must return and take a first parameter of exactly {context.returnType.FullDescription()}, "
 						+ $"the result type of {context.Description}; actual return is {fix.ReturnType.FullDescription()} and first parameter is {fix.GetParameters().FirstOrDefault()?.ParameterType.FullDescription() ?? "missing"}.");
 				var guard = BeginGuard(call, codes);
-				var bridged = call.instantiation is not null && !context.returnType.IsByRef;
+				var bridged = call.instantiation is not null && config.original.ContainsGenericParameters && !context.returnType.IsByRef;
+				Type Closed(Type type) => call.instantiation is null ? type : GenericFamily.Close(type, config.original, call.instantiation);
 				if (fix.ReturnType != typeof(void))
 				{
 					var firstFixParam = fix.GetParameters().FirstOrDefault();
@@ -288,8 +289,8 @@ namespace HarmonyLib
 					}
 					// New connections are checked even between survivors. Only the consumer can opt out of its input binding.
 					var pairUnchecked = call.uncheckedReferenceBinding || call.unchangedPassthrough;
-					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value", pairUnchecked);
-					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType, uncheckedReferenceBinding: call.UncheckedReferences);
+					this.ValidateReturnBinding(fix, context, Closed(previousResultType), firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value", pairUnchecked);
+					this.ValidateReturnBinding(fix, context, fix.ReturnType, Closed(context.returnType), uncheckedReferenceBinding: call.UncheckedReferences);
 					// A passthrough on an instantiation takes and returns its closed result type. The stack keeps the definition's open type.
 					if (bridged && firstFixParam.ParameterType != context.returnType)
 						codes.Add(GenericFamily.Convert(context.returnType, firstFixParam.ParameterType));
@@ -312,13 +313,22 @@ namespace HarmonyLib
 			var suppressed = config.DefineLabel();
 			var (codes, _) = EmitFinalizers(finalizers, context, false, outerContext);
 			codes.AddRange([Ldc_I4_1, Stloc[finalized], Ldloc[exception], Brfalse[noException], Ldloc[exception], Throw,
-				Nop.WithLabels(noException), this.MarkBlock(ExceptionBlockType.BeginCatchBlock), Stloc[exception],
-				Ldloc[finalized], Brtrue[endFinalizers]]);
+				Nop.WithLabels(noException), this.MarkBlock(ExceptionBlockType.BeginCatchBlock), Stloc[exception]]);
 			var (catchCodes, rethrowPossible) = EmitFinalizers(finalizers, context, true, outerContext);
+			var caught = !rethrowPossible && config.original.ContainsGenericParameters
+				&& finalizers.Any(call => call.instantiation is not null && call.method.ReturnType != typeof(void))
+				? config.DeclareLocal(typeof(Exception)) : null;
+			if (caught is not null) codes.AddRange([Ldloc[exception], Stloc[caught]]);
+			codes.AddRange([Ldloc[finalized], Brtrue[endFinalizers]]);
 			codes.AddRange(catchCodes);
 			codes.AddRange([Nop.WithLabels(endFinalizers), Ldloc[exception], Brfalse[suppressed]]);
 			if (rethrowPossible) codes.Add(Rethrow);
-			else codes.AddRange([Ldloc[exception], Throw]);
+			else if (caught is null) codes.AddRange([Ldloc[exception], Throw]);
+			else
+			{
+				var replaced = config.DefineLabel();
+				codes.AddRange([Ldloc[exception], Ldloc[caught], Bne_Un[replaced], Rethrow, Nop.WithLabels(replaced), Ldloc[exception], Throw]);
+			}
 			codes.AddRange([Nop.WithLabels(suppressed), this.MarkBlock(ExceptionBlockType.EndExceptionBlock)]);
 			return codes;
 		}

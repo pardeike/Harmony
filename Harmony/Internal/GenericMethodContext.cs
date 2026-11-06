@@ -62,7 +62,7 @@ namespace HarmonyLib
 
 		internal static void ValidateRegistration(MethodBase original, MethodInfo callback)
 		{
-			if (original is not null && MethodBodyPatching.IsDefinitionWide(original)
+			if (original is not null && (MethodBodyPatching.IsDefinitionWide(original) || MethodBodyPatching.FamilyOwner(original) is not null)
 				&& (callback.IsGenericMethod && !callback.IsGenericMethodDefinition
 					|| callback.DeclaringType?.IsGenericType == true && !callback.DeclaringType.IsGenericTypeDefinition))
 				throw new NotSupportedException($"Register the generic callback definition, or use a factory to preserve a fixed instantiation: {callback.FullDescription()}");
@@ -95,9 +95,15 @@ namespace HarmonyLib
 				return Remember(importer.ImportReference(type, context ?? source), type);
 			}
 			public Mono.Cecil.FieldReference ImportReference(FieldInfo field, Mono.Cecil.IGenericParameterProvider context)
-				=> Remember(importer.ImportReference(field, context ?? source), field);
+			{
+				Check(field.DeclaringType, true);
+				return Remember(importer.ImportReference(field, context ?? source), field);
+			}
 			public Mono.Cecil.MethodReference ImportReference(MethodBase method, Mono.Cecil.IGenericParameterProvider context)
 			{
+				Check(method.DeclaringType, true);
+				if (method.IsGenericMethod && !method.IsGenericMethodDefinition)
+					foreach (var argument in method.GetGenericArguments()) Check(argument);
 				var reference = importer.ImportReference(method, context ?? source);
 				if (method.DeclaringType?.IsGenericTypeDefinition is true)
 				{
@@ -112,11 +118,12 @@ namespace HarmonyLib
 					? new KeyValuePair<Type, bool>(type, true) : member;
 				return reference;
 			}
-			void Check(Type type)
+			void Check(Type type, bool memberDeclaringType = false)
 			{
+				if (type is null) return;
 				if (type.IsGenericParameter && !arguments.Contains(type)) throw new ArgumentException("The generic parameter belongs to another definition: " + type);
 				if (type.HasElementType) Check(type.GetElementType());
-				else if (type.IsGenericType && !type.IsGenericTypeDefinition)
+				else if (type.IsGenericType && (!type.IsGenericTypeDefinition || memberDeclaringType))
 					foreach (var argument in type.GetGenericArguments()) Check(argument);
 			}
 			internal Mono.Cecil.TypeReference TypeToken(Type type, bool instantiate)

@@ -118,7 +118,8 @@ namespace HarmonyLib
 		static (MethodBase instantiation, MethodInfo helper, PersistentStatePlan persistence) ClosedBody(MethodBase member, PatchInfo definitionInfo, PatchInfo memberInfo, bool debug)
 		{
 			Patch[] Union(Func<PatchInfo, Patch[]> select) => definitionInfo is null ? select(memberInfo) : [.. select(definitionInfo), .. select(memberInfo)];
-			List<PatchCall> Calls(Func<PatchInfo, Patch[]> select) => GetSortedFamilyCalls(member, [(null, Union(select))], debug);
+			List<PatchCall> Calls(Func<PatchInfo, Patch[]> select) => GetSortedFamilyCalls(member,
+				[(null, definitionInfo is null ? [] : select(definitionInfo)), (member, select(memberInfo))], debug);
 			var patcher = new MethodCreator(new MethodCreatorConfig(member, null, Calls(info => info.prefixes), Calls(info => info.postfixes),
 				GetSortedPatchMethods(member, Union(info => info.transpilers), debug), Calls(info => info.finalizers),
 				GetInfixes(Union(info => info.innerprefixes)), GetInfixes(Union(info => info.innerpostfixes)), GetInfixes(Union(info => info.innerfinalizers)), debug));

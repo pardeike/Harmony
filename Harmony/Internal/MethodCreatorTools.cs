@@ -381,13 +381,20 @@ namespace HarmonyLib
 
 		// A missing conversion is definite; a missing one-way assignment usually is not.
 		// This deliberately leaves numeric/layout conversions and unusual runtime types alone.
-		internal static string BindingIncompatibility(Type source, Type destination, bool boxes = false, bool uncheckedReferenceBinding = false)
+		internal static string BindingIncompatibility(Type source, Type destination, bool boxes = false, bool uncheckedReferenceBinding = false, bool definitionWide = false)
 		{
 			source = ElementType(source);
 			destination = ElementType(destination);
 			if (source == destination) return null;
-			if (source.ContainsGenericParameters || destination.ContainsGenericParameters
-				|| IsNativePointer(source) || IsNativePointer(destination)) return null;
+			if (source.ContainsGenericParameters || destination.ContainsGenericParameters)
+			{
+				if (!definitionWide) return null;
+				if (source.ContainsGenericParameters)
+					return destination.IsAssignableFrom(source) && (destination != typeof(object) || CanStoreInObjectArray(source))
+						? null : "The open source type does not guarantee the requested type";
+				return "The supplied type cannot be assigned to every instantiation of the open destination";
+			}
+			if (IsNativePointer(source) || IsNativePointer(destination)) return null;
 			if (source.IsValueType != destination.IsValueType)
 			{
 				// Boxing Nullable<T> yields a boxed T or null; a reference has no unboxing conversion to any value type.
@@ -421,7 +428,7 @@ namespace HarmonyLib
 			var reason = valueOnly && requested.IsByRef ? "This binding supplies a value, not an address"
 				: source is null ? requested.IsByRef || requested.IsValueType || IsNativePointer(requested)
 					? "No value or address exists for this parameter" : null
-				: BindingIncompatibility(creator.Closed(source), requested, boxes, uncheckedReferenceBinding);
+				: BindingIncompatibility(creator.Closed(source), requested, boxes, uncheckedReferenceBinding, MethodBodyPatching.IsDefinitionWide(creator.config.original));
 			if (reason != null)
 				throw creator.InvalidBinding(patch, context,
 					$"parameter {injection.parameterInfo.Name} bound to {(injection.outer ? "outer " : context != creator.config.bindingContext ? "inner " : "")}{sourceName ?? injection.realName}", source, requested, reason);
@@ -432,7 +439,7 @@ namespace HarmonyLib
 		{
 			var reason = source == typeof(void) || destination == typeof(void) ? "A void operation has no passthrough result"
 				: source.IsByRef != destination.IsByRef ? "The return value and destination require different value/address shapes"
-				: BindingIncompatibility(source, destination, uncheckedReferenceBinding: uncheckedReferenceBinding);
+				: BindingIncompatibility(source, destination, uncheckedReferenceBinding: uncheckedReferenceBinding, definitionWide: MethodBodyPatching.IsDefinitionWide(creator.config.original));
 			if (reason != null) throw creator.InvalidBinding(patch, context, binding, source, destination, reason);
 		}
 
@@ -892,7 +899,7 @@ namespace HarmonyLib
 							 $"Cannot use {InjectionType.ResultRef} with non-ref return type {returnType.FullName} of {context.Description}");
 
 					var resultType = paramType;
-					var expectedTypeRef = typeof(RefResult<>).MakeGenericType(returnType.GetElementType()).MakeByRefType();
+					var expectedTypeRef = typeof(RefResult<>).MakeGenericType(creator.Closed(returnType.GetElementType())).MakeByRefType();
 					if (resultType != expectedTypeRef)
 						throw new Exception(
 							 $"Wrong type of {InjectedParameter.RESULT_REF_VAR} for {context.Description}. Expected {expectedTypeRef.FullName}, got {resultType.FullName}");
@@ -999,7 +1006,9 @@ namespace HarmonyLib
 			var patchParamElementType = patchParamType.IsByRef ? patchParamType.GetElementType() : patchParamType;
 			var originalIsNormal = originalParamType.IsByRef is false;
 			var patchIsNormal = injection.parameterInfo.IsOut is false && patchParamType.IsByRef is false;
-			var needsBoxing = (originalParamElementType.IsValueType || originalParamElementType.IsGenericParameter)
+			var closedElementType = creator.Closed(originalParamElementType);
+			// By-value open loads still need box T so the body is valid for siblings that skip this callback.
+			var needsBoxing = (closedElementType.IsValueType || closedElementType.IsGenericParameter || patchIsNormal && originalParamElementType.IsGenericParameter)
 				&& !patchParamElementType.IsValueType && !patchParamElementType.IsGenericParameter;
 			var bridges = creator.Bridges(originalParamType, patchParamType);
 

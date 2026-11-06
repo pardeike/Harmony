@@ -15,7 +15,7 @@ namespace HarmonyLib
 		internal readonly bool uncheckedReferenceBinding = uncheckedReferenceBinding;
 		internal readonly bool candidate = candidate;
 		internal readonly bool unchangedPassthrough = unchangedPassthrough;
-		// The closed instantiation this callback was registered on when the body belongs to its generic definition.
+		// The registration target, retained in closed helpers for state ownership. Only definition bodies emit a guard.
 		internal readonly MethodBase instantiation = instantiation;
 		// Only unchanged callbacks inherit their accepted reference bindings; factory outputs are candidates on every rebuild.
 		internal bool UncheckedReferences => uncheckedReferenceBinding || !candidate;
@@ -151,7 +151,7 @@ namespace HarmonyLib
 			=> InjectionsFor(fix, type, fix.ReturnType != typeof(void) && innerpostfixes.Any(postfix => postfix.OuterMethod == fix)
 				&& !innerprefixes.Any(prefix => prefix.OuterMethod == fix) && !innerfinalizers.Any(finalizer => finalizer.OuterMethod == fix));
 		internal bool AnyInfixHasOuter(InjectionType type) => InnerFixes.Any(fix => InfixInjectionsFor(fix.OuterMethod, type).Any(injection => injection.outer));
-		// State belongs to a patch class and, in a family body, to the registration target: instantiations never run for the same call.
+		// State belongs to a patch class and its registration target, including inside closed helpers.
 		internal static object StateKey(MethodInfo fix, MethodBase instantiation) => instantiation is null ? (object)fix.DeclaringType ?? "null" : (fix.DeclaringType, instantiation);
 		internal IEnumerable<(MethodInfo fix, MethodBase instantiation)> StateOwners
 			=> prefixes.Concat(postfixes).Concat(finalizers).Select(call => (call.method, call.instantiation)).Distinct()
