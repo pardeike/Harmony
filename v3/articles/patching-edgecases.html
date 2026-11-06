@@ -159,6 +159,8 @@ public class SubClass : BaseClass
 <p>As a result, you cannot patch static constructors unless you plan to run them again (which often defeats the purpose). It also has the side effect that your patches to other methods in such a class will run the constructor at the wrong moment - causing errors. In that case, you need to time the patching so it happens when it's ok to run the static constructor or when it already has been triggered.</p>
 <h2 id="native-external-methods">Native (External) Methods</h2>
 <p>A native method has no IL body for Harmony to copy, so ordinary prefixes and postfixes do not work. A transpiler-only patch can supply a new body from the empty input. <strong>Beware:</strong> this replaces the native implementation; it does not give you a way to call it.</p>
+<h2 id="function-pointer-signatures">Function pointer signatures</h2>
+<p>A method whose signature contains a function pointer type, written as <code>delegate*</code> in C#, patches on CoreCLR. On Mono, reflection cannot describe such a type: it recurses without end while Harmony prepares the patch, and the process ends with a stack overflow. Do not patch such methods on Mono.</p>
 <h2 id="marshalbyrefobject">MarshalByRefObject</h2>
 <p>Patching methods on classes derived from <code>MarshalByRefObject</code> is runtime-dependent and may fail. Verify the specific method on the runtime you intend to support.</p>
 <h2 id="special-classes">Special Classes</h2>
