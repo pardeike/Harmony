@@ -52,6 +52,10 @@ namespace HarmonyLibTests.Patching
 	// A fresh module numbers its rows from one. A delta numbers them after every earlier generation and reuses its own module's definitions.
 	abstract class MetadataEmitter
 	{
+		// Type.IsFunctionPointer exists from .NET 8. Earlier runtimes describe function pointers as IntPtr.
+		static readonly PropertyInfo isFunctionPointer = typeof(Type).GetProperty("IsFunctionPointer");
+		static bool IsFunctionPointer(Type type) => isFunctionPointer?.GetValue(type) is true;
+
 		protected readonly MetadataBuilder metadata;
 		protected readonly Module own;
 		readonly Dictionary<string, EntityHandle> assemblies = [];
@@ -87,7 +91,7 @@ namespace HarmonyLibTests.Patching
 		bool CanBind(Type type)
 		{
 			if (type is null || type.IsGenericParameter) return true;
-			if (type.IsFunctionPointer) throw new NotSupportedException("Function pointer signatures are outside this host.");
+			if (IsFunctionPointer(type)) throw new NotSupportedException("Function pointer signatures are outside this host.");
 			return Binds(type.Assembly) && (!type.HasElementType || CanBind(type.GetElementType()))
 				&& (!type.IsGenericType || type.GetGenericArguments().All(CanBind));
 		}
@@ -155,7 +159,7 @@ namespace HarmonyLibTests.Patching
 		protected EntityHandle TypeHandle(Type type)
 		{
 			if (type.IsByRef) throw new NotSupportedException("By-reference type tokens are outside this host.");
-			if (type.IsFunctionPointer) throw new NotSupportedException("Function pointer signatures are outside this host.");
+			if (IsFunctionPointer(type)) throw new NotSupportedException("Function pointer signatures are outside this host.");
 			if (types.TryGetValue(type, out var handle)) return handle;
 			if (type.IsGenericType && !type.IsGenericTypeDefinition || type.HasElementType || type.IsGenericParameter)
 				handle = Added(metadata.AddTypeSpecification(metadata.GetOrAddBlob(Blob(encoder => Encode(encoder.TypeSpecificationSignature(), type)))));
@@ -254,7 +258,7 @@ namespace HarmonyLibTests.Patching
 
 		void Encode(SignatureTypeEncoder encoder, Type type)
 		{
-			if (type.IsFunctionPointer) throw new NotSupportedException("Function pointer signatures are outside this host.");
+			if (IsFunctionPointer(type)) throw new NotSupportedException("Function pointer signatures are outside this host.");
 			if (type.IsPointer)
 			{
 				if (type.GetElementType() == typeof(void)) encoder.VoidPointer();
@@ -802,8 +806,9 @@ namespace HarmonyLibTests.Patching
 			Assert.That(new MetadataProbe().ImportedCulture(type), Is.EqualTo("sv-SE"));
 		}
 
+		// The type token keeps a Type import in Release, where the compiler drops the List<int> local.
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		static int RefusalTarget(int value) { var values = new List<int> { value }; return values[0]; }
+		static int RefusalTarget(int value) => typeof(List<int>).IsGenericType ? new List<int> { value }[0] : -1;
 
 		[TestCase("type"), TestCase("signature"), TestCase("method")]
 		public void Refused_imports_publish_no_registration_or_installation(string kind)
@@ -821,7 +826,7 @@ namespace HarmonyLibTests.Patching
 				var error = Assert.Throws<NotSupportedException>(() => harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(AddOne)))));
 				Assert.That(error.Message, Does.StartWith(kind == "method" ? "The installer imports neither " : "The installer cannot import "));
 				Assert.That(host.installed, Is.Empty);
-				Assert.That(Harmony.GetPatchInfo(original)?.Postfixes ?? [], Is.Empty);
+				Assert.That(Harmony.GetPatchInfo(original)?.Postfixes, Is.Null.Or.Empty);
 				Assert.That(RefusalTarget(7), Is.EqualTo(7));
 				Assert.That(HarmonyLib.MethodBodyPatching.IsProviderTarget(original), Is.True, "Installation began, so the lifecycle contract retains its pin.");
 			}

@@ -256,6 +256,7 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Closed_body_function_pointer_is_rejected_before_installation()
 		{
+			if (typeof(Type).GetProperty("IsFunctionPointer") is null) Assert.Ignore("Runtimes before .NET 8 describe function pointer types as IntPtr.");
 			var definition = Method(nameof(FunctionPointer));
 			Host(definition);
 			var error = Assert.Throws<NotSupportedException>(() => harmony.Patch(definition.MakeGenericMethod(typeof(int)), transpiler: Callback(nameof(Identity))));
