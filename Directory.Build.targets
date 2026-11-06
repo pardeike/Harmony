@@ -1,4 +1,9 @@
 <Project>
+	<!-- MonoMod 1.4.0-prerelease.1 supports net11.0, but its build guard stops at .NET 10. Directory.Build.props skips that guard. -->
+	<!-- This replaces MonoMod's warning about the skip. The warning has no code, so NoWarn cannot address it. -->
+	<Target Name="MonoMod_SkippedCheckTargetRuntime" BeforeTargets="CoreCompile" Condition="'$(MonoMod_ReallySkipCheckTargetRuntime)' == 'true'">
+		<Message Importance="low" Text="MonoMod's target runtime check is skipped for $(TargetFramework) with MonoMod.Core $(MonoModCoreVersion)." />
+	</Target>
 	<ItemGroup Condition="!$(IsNET5OrGreater)">
 		<Compile Remove="**\*.net5.cs" />
 		<Compile Remove="**\*.net6.cs" />

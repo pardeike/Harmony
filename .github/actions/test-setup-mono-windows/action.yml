@@ -15,7 +15,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Mono
-      run: choco install mono --yes --no-progress --${{inputs.architecture}} --ignore-checksums
+      run: choco install mono --yes --no-progress --${{inputs.architecture}}
       shell: pwsh
 
     - name: Get Program Files path for ${{inputs.architecture}}

@@ -72,7 +72,7 @@
 	<ItemGroup>
 		<!-- Reference assemblies are needed for non-Windows .NET Framework targeting builds. -->
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<!-- The .NET SDK includes Source Link. The former Microsoft.SourceLink.GitHub 8.0.0 reference is affected by GHSA-23fw-v26w-5fgq. -->
 
 		<!-- Appropriate System.Text.Json reference for each framework -->
 		<PackageReference Condition="'$(TargetFramework)'=='net5.0'" Include="System.Text.Json" Version="5.0.2" />
@@ -81,8 +81,7 @@
 		<PackageReference Condition="'$(TargetFramework)'=='net7.0'" Include="System.Text.Json" Version="8.0.6" />
 		<PackageReference Condition="'$(TargetFramework)'=='net8.0'" Include="System.Text.Json" Version="8.0.6" />
 		<PackageReference Condition="'$(TargetFramework)'=='net9.0'" Include="System.Text.Json" Version="9.0.19" />
-		<PackageReference Condition="'$(TargetFramework)'=='net10.0'" Include="System.Text.Json" Version="10.0.11" />
-		<PackageReference Condition="'$(TargetFramework)'=='net11.0'" Include="System.Text.Json" Version="11.0.0-rc.3.26522.148" />
+		<!-- .NET 10 and later ship System.Text.Json in the shared framework. NuGet prunes a package reference there (NU1510). -->
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsLibHarmonyProject)">

@@ -45,6 +45,9 @@ jobs:
         run: pip install pyyaml
       - name: Generate LLM Pack
         run: python scripts/generate_llm_pack.py --base-url "https://harmony.pardeike.net/${{ env.DOCS_VERSION }}/"
+      # Git on the Windows runner warns that committed LF files would get CRLF on a later checkout. The deploy clone is never checked out again.
+      - name: Keep the deploy clone free of line-ending notices
+        run: git config --global core.safecrlf false
       - name: Deploy versioned documentation
         uses: peaceiris/actions-gh-pages@v4
         with:

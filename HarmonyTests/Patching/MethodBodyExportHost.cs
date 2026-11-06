@@ -617,7 +617,7 @@ namespace HarmonyLibTests.Patching
 		}
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int ReadRefField(ref RefField value) => value.Value;
-		class Carrier<T> { public T Value; }
+		class Carrier<T> { public T Value = default; }
 
 		// Inspect the emitter's actual metadata without loading a possibly invalid image.
 		sealed class MetadataProbe : MetadataEmitter

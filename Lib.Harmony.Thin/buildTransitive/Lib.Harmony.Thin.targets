@@ -3,5 +3,14 @@
        Remove this workaround when the upstream package updates that guard. -->
   <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetFrameworkVersion)' == 'v11.0' And '$(MonoMod_ReallySkipCheckTargetRuntime)' == ''">
     <MonoMod_ReallySkipCheckTargetRuntime>true</MonoMod_ReallySkipCheckTargetRuntime>
+    <_HarmonySkipsMonoModTargetRuntimeCheck>true</_HarmonySkipsMonoModTargetRuntimeCheck>
   </PropertyGroup>
+  <!-- NuGet imports MonoMod.Core's targets before these, so this target replaces MonoMod's warning about the skip.
+       The warning has no code that NoWarn could address. A project that sets the skip itself keeps MonoMod's warning. -->
+  <Target Name="MonoMod_SkippedCheckTargetRuntime" BeforeTargets="CoreCompile" Condition="'$(MonoMod_ReallySkipCheckTargetRuntime)' == 'true'">
+    <Warning Condition="'$(_HarmonySkipsMonoModTargetRuntimeCheck)' != 'true'" File="$(MSBuildProjectFullPath)"
+             Text="MonoMod_ReallySkipCheckTargetRuntime is set, the target runtime might be one which is not supported. Obscure runtime errors may occur." />
+    <Message Condition="'$(_HarmonySkipsMonoModTargetRuntimeCheck)' == 'true'" Importance="low"
+             Text="Lib.Harmony.Thin skips MonoMod's target runtime check for $(TargetFramework). MonoMod.Core 1.4.0-prerelease.1 ships net11.0 binaries." />
+  </Target>
 </Project>
