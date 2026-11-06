@@ -353,7 +353,7 @@ Permanent closed-helper stand-ins reuse a delegate field per original, helper si
 Successful installation updates the field, including calls from older bodies. Failed installation preserves the previous delegate.
 Ordinary reflection callbacks use module, metadata token, declaring type and method arguments as identity. Distinct dynamic callbacks retain separate permanent entries.
 A refused generated open generic helper is offered again in a permanent assembly with its generic context. These assemblies accumulate across rebuilds.
-A permanent generic helper cannot reference collectible dependencies. Generic helper generation requires collectible AssemblyLoadContext support.
+A permanent generic helper cannot reference collectible dependencies. Generic helper generation requires collectible AssemblyLoadContext support, so .NET Framework and Mono refuse Infix patches on a generic method definition with a NotSupportedException before installation.
 Other open generic callbacks must bind directly. Hosts must resolve HarmonyDynamicMethod_* stand-ins, HarmonyGenerated_* helpers and callback dependencies by exact loaded identity.
 Runtime access checks still apply to private callbacks and Harmony's internal generic guard helpers unless the target module ignores those checks.
 A refused ldtoken, ldftn or ldvirtftn method operand cannot use a stand-in because that would change its identity.
