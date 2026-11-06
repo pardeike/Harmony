@@ -73,12 +73,18 @@ namespace HarmonyLib
 		}
 #endif
 
+		// A one-dimensional zero-based array. Before .NET 8, an array of function pointers is a distinct type
+		// that compares unequal to its element's MakeArrayType(), so ask the runtime where it answers.
+		static readonly PropertyInfo isSZArray = typeof(Type).GetProperty("IsSZArray");
+		internal static bool IsVector(Type type)
+			=> isSZArray?.GetValue(type, null) is bool vector ? vector : type == type.GetElementType().MakeArrayType();
+
 		// Keep function pointer signatures exact so delegate binding agrees with the callback.
 		static TypeReference ImportType(ModuleDefinition module, Type type)
 		{
 			if (type.IsByRef) return new ByReferenceType(ImportType(module, type.GetElementType()));
 			if (type.IsPointer) return new PointerType(ImportType(module, type.GetElementType()));
-			if (type.IsArray) return type == type.GetElementType().MakeArrayType()
+			if (type.IsArray) return IsVector(type)
 				? new ArrayType(ImportType(module, type.GetElementType())) : new ArrayType(ImportType(module, type.GetElementType()), type.GetArrayRank());
 			if (typeof(Type).GetProperty("IsFunctionPointer")?.GetValue(type, null) is true)
 			{

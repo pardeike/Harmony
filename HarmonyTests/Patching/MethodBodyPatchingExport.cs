@@ -322,6 +322,7 @@ namespace HarmonyLibTests.Patching
 		[TestCase(nameof(ReturnPointer)), TestCase(nameof(UnmanagedPointer)), TestCase(nameof(PlatformPointer)), TestCase(nameof(SuppressedPointer)), TestCase(nameof(ProxyArray))]
 		public void Stand_ins_keep_exact_nested_function_pointer_signatures(string name)
 		{
+			if (typeof(Type).GetProperty("IsFunctionPointer") is null) Assert.Ignore("Runtimes before .NET 8 describe function pointer types as IntPtr.");
 			var target = Method(name);
 			var proxy = DynamicMethodProxy.Create(target);
 			Assert.That(proxy.ReturnType, Is.EqualTo(target.ReturnType));
@@ -352,6 +353,7 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public unsafe void Stand_ins_preserve_function_pointer_callback_signatures()
 		{
+			if (typeof(Type).GetProperty("IsFunctionPointer") is null) Assert.Ignore("Runtimes before .NET 8 describe function pointer types as IntPtr.");
 			var proxy = DynamicMethodProxy.Create(Method(nameof(Pointer)));
 			var callable = (delegate*<delegate*<int>, int>)proxy.MethodHandle.GetFunctionPointer();
 			Assert.That(callable(&Refused), Is.EqualTo(7));
@@ -385,7 +387,9 @@ namespace HarmonyLibTests.Patching
 			var processor = harmony.CreateProcessor(original).AddInnerFinalizer(new HarmonyLib.HarmonyMethod(
 				HarmonyLib.AccessTools.DeclaredMethod(typeof(MethodBodyPatchingExportLegacy), nameof(Finish)))
 			{ innerMethod = new HarmonyLib.InnerMethod(HarmonyLib.AccessTools.DeclaredMethod(typeof(MethodBodyPatchingExportLegacy), nameof(Work))) });
-			NUnit.Framework.Assert.That(() => processor.Patch(), NUnit.Framework.Throws.TypeOf<System.NotSupportedException>()
+			// Infix construction reports the helper's refusal with its call site.
+			var error = NUnit.Framework.Assert.Throws<HarmonyLib.HarmonyException>(() => processor.Patch());
+			NUnit.Framework.Assert.That(error.InnerException, NUnit.Framework.Is.TypeOf<System.NotSupportedException>()
 				.With.Message.EqualTo("Definition-wide generated generic helpers require a runtime with collectible AssemblyLoadContext support."));
 		}
 	}

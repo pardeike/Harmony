@@ -750,6 +750,7 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public unsafe void Module_function_pointer_signatures_are_explicitly_refused()
 		{
+			if (typeof(Type).GetProperty("IsFunctionPointer") is null) Assert.Ignore("Runtimes before .NET 8 describe function pointer types as IntPtr.");
 			var module = new ModuleEmitter("refused.pointer");
 			Assert.That(() => module.Import(typeof(delegate*<int, int>)), Throws.TypeOf<NotSupportedException>()
 				.With.Message.EqualTo("Function pointer signatures are outside this host."));

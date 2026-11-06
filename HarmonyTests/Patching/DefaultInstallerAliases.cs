@@ -43,20 +43,34 @@ namespace HarmonyLibTests.Patching
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		public static int ChangedSource() => 47;
 
+		// Each case owns its target. A patch record left on a shared target keeps it on the default path for every later test.
+		public class PatchedBase
+		{
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public int Slot() => -1;
+		}
+		public class PatchedDerived : PatchedBase { }
+		public class ReversedBase
+		{
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public int Slot() => -1;
+		}
+		public class ReversedDerived : ReversedBase { }
+
 		[TearDown]
 		public void ClearProvider() => HarmonyLib.MethodBodyPatching.ClearProvider();
 
 		[TestCase(false), TestCase(true)]
 		public void Rebuild_reads_a_changed_baseline_through_a_reflected_alias(bool reverse)
 		{
-			var alias = typeof(Derived).GetMethod(nameof(Base.Slot));
-			var declared = typeof(Base).GetMethod(nameof(Base.Slot));
+			var alias = (reverse ? typeof(ReversedDerived) : typeof(PatchedDerived)).GetMethod(nameof(Base.Slot));
+			var declared = (reverse ? typeof(ReversedBase) : typeof(PatchedBase)).GetMethod(nameof(Base.Slot));
 			var source = typeof(DefaultInstallerAliases).GetMethod(nameof(Source));
 			var baseline = source;
 			HarmonyLib.MethodBodyPatching.SetEligibility(method => method == declared || method == source);
 			HarmonyLib.MethodBodyPatching.SetBodySource(_ => baseline.GetMethodBody());
 			var harmony = new Harmony("test.default.alias.baseline." + reverse);
-			var instance = new Derived();
+			int Slot() => reverse ? new ReversedDerived().Slot() : new PatchedDerived().Slot();
 			try
 			{
 				if (reverse)
@@ -65,10 +79,10 @@ namespace HarmonyLibTests.Patching
 					harmony.CreateReversePatcher(source, new HarmonyMethod(alias)).Patch();
 				}
 				else harmony.Patch(declared, postfix: new HarmonyMethod(typeof(DefaultInstallerAliases).GetMethod(nameof(Postfix))));
-				Assert.That(instance.Slot(), Is.EqualTo(reverse ? 23 : 24));
+				Assert.That(Slot(), Is.EqualTo(reverse ? 23 : 24));
 				baseline = typeof(DefaultInstallerAliases).GetMethod(nameof(ChangedSource));
 				HarmonyLib.MethodBodyPatching.Rebuild(alias);
-				Assert.That(instance.Slot(), Is.EqualTo(reverse ? 47 : 48));
+				Assert.That(Slot(), Is.EqualTo(reverse ? 47 : 48));
 			}
 			finally
 			{

@@ -69,7 +69,7 @@ namespace HarmonyLib
 			if (isFunctionPointer is not null && (bool)isFunctionPointer.GetValue(type, null)) return typeof(IntPtr);
 			if (type.IsByRef) return Native(type.GetElementType()).MakeByRefType();
 			if (type.IsPointer) return Native(type.GetElementType()).MakePointerType();
-			if (type.IsArray) return type == type.GetElementType().MakeArrayType()
+			if (type.IsArray) return DynamicMethodProxy.IsVector(type)
 				? Native(type.GetElementType()).MakeArrayType() : Native(type.GetElementType()).MakeArrayType(type.GetArrayRank());
 			return type;
 		}
