@@ -16,17 +16,18 @@ namespace HarmonyLib
 		internal static readonly string harmonyAttributeFullName = typeof(HarmonyAttribute).FullName;
 		internal static readonly string harmonyPatchAllFullName = typeof(HarmonyPatchAll).FullName;
 
-		internal static void DetourMethod(MethodBase method, MethodBase replacement)
+		internal static void DetourMethodDefault(MethodBase method, MethodBase replacement)
 		{
+			var key = MethodBodyPatching.Declared(method);
 			lock (detours)
 			{
 				var factory = DetourFactory.Current;
-				detours.TryGetValue(method, out var detour);
+				detours.TryGetValue(key, out var detour);
 				var previousTarget = detour?.Target;
 				detour?.Dispose();
 				try
 				{
-					detours[method] = factory.CreateDetour(method, replacement);
+					detours[key] = factory.CreateDetour(method, replacement);
 				}
 				catch (Exception installError)
 				{
@@ -34,17 +35,19 @@ namespace HarmonyLib
 					try
 					{
 						// Installation can JIT the replacement. Restore through the factory because disposed detours cannot be reused.
-						detours[method] = factory.CreateDetour(method, previousTarget);
+						detours[key] = factory.CreateDetour(method, previousTarget);
 					}
 					catch (Exception restoreError)
 					{
-						detours.Remove(method);
+						detours.Remove(key);
 						throw new InvalidOperationException($"Failed to restore the previous patch for {method.FullDescription()} after replacement installation failed:\n{installError}",
 							restoreError);
 					}
 					throw;
 				}
 			}
+			// Outside the detour lock: the shared lock is taken before the detour lock elsewhere.
+			MethodBodyPatching.PinDefault(key);
 		}
 
 		internal static readonly MethodInfo m_GetExecutingAssemblyReplacementTranspiler = SymbolExtensions.GetMethodInfo(() => GetExecutingAssemblyTranspiler(null));

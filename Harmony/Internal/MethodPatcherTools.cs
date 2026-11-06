@@ -30,25 +30,15 @@ namespace HarmonyLib
 			patchName = patchName.Replace("<>", "");
 
 			var parameters = original.GetParameters();
-			var parameterTypes = new List<Type>();
-
-			parameterTypes.AddRange(parameters.Types());
-			if (original.IsStatic is false)
-			{
-				// Every value type, including primitives and enums, passes this as a managed pointer.
-				if (original.DeclaringType.IsValueType)
-					parameterTypes.Insert(0, original.DeclaringType.MakeByRefType());
-				else
-					parameterTypes.Insert(0, original.DeclaringType);
-			}
+			var parameterTypes = ReplacementParameterTypes(original);
 
 			var returnType = AccessTools.GetReturnedType(original);
 
-			var method = new DynamicMethodDefinition(
-				 patchName,
-				 returnType,
-				 [.. parameterTypes]
-			);
+			var method = MethodBodyPatching.IsDefinitionWide(original)
+				? GenericMethodContext.Create(original, patchName, returnType, [.. parameterTypes])
+				: new DynamicMethodDefinition(patchName, returnType, [.. parameterTypes]);
+			// A patched body initializes its locals. A definition-wide body is exported without the callable copy that would otherwise set this.
+			method.Definition.Body.InitLocals = true;
 
 			var offset = original.IsStatic ? 0 : 1;
 			if (!original.IsStatic)
@@ -72,6 +62,21 @@ namespace HarmonyLib
 			return method;
 		}
 
+		// The instance comes first, as a managed pointer for a value type, then the original parameters.
+		internal static List<Type> ReplacementParameterTypes(MethodBase original)
+		{
+			var parameterTypes = new List<Type>(original.GetParameters().Types());
+			if (original.IsStatic is false)
+			{
+				// Every value type, including primitives and enums, passes this as a managed pointer.
+				if (original.DeclaringType.IsValueType)
+					parameterTypes.Insert(0, original.DeclaringType.MakeByRefType());
+				else
+					parameterTypes.Insert(0, original.DeclaringType);
+			}
+			return parameterTypes;
+		}
+
 		internal static IEnumerable<(ParameterInfo info, string realName)> OriginalParameters(MethodInfo method)
 		{
 			var baseArgs = method.GetArgumentAttributes();
@@ -89,9 +94,9 @@ namespace HarmonyLib
 		internal static Dictionary<string, string> RealNames(MethodInfo method)
 			 => OriginalParameters(method).ToDictionary(pair => pair.info.Name, pair => pair.realName);
 
-		internal static LocalBuilder[] DeclareOriginalLocalVariables(ILGenerator il, MethodBase member)
+		internal static LocalBuilder[] DeclareOriginalLocalVariables(ILGenerator il, MethodBody body)
 		{
-			var vars = member.GetMethodBody()?.LocalVariables;
+			var vars = body?.LocalVariables;
 			if (vars is null)
 				return [];
 			return [.. vars.Select(lvi => il.DeclareLocal(lvi.LocalType, lvi.IsPinned))];

@@ -172,6 +172,13 @@ namespace HarmonyLib
 		internal static void UpdatePatchInfo(MethodBase original, MethodInfo replacement, byte[] bytes)
 		{
 			lock (state) state[original] = bytes;
+			// A definition-wide installation has no callable copy to map back to its original.
+			if (replacement is not null) RegisterReplacement(original, replacement);
+		}
+
+		// Maps a generated body back to the method it stands in for: the callable copy of a patched method, or the closed body of an instantiation.
+		internal static void RegisterReplacement(MethodBase original, MethodInfo replacement)
+		{
 			lock (originals)
 			{
 				var identifiable = replacement.Identifiable();

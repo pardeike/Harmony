@@ -28,11 +28,15 @@ namespace HarmonyLib
 
 		internal (MethodInfo, Dictionary<int, CodeInstruction>) CreateReplacement()
 		{
-			config.originalVariables = this.DeclareOriginalLocalVariables(config.MethodBase);
+			config.originalBody = MethodBodyPatching.GetMethodBody(config.MethodBase);
+			config.originalVariables = MethodPatcherTools.DeclareOriginalLocalVariables(config.il, config.originalBody);
 			config.localVariables = new VariableState();
 			config.bindingContext = new PatchBindingContext(config.original, config.localVariables);
 			config.bindingContext.originalLocals = [.. config.originalVariables.Select(local => new InjectionStorage(local))];
 			config.persistence = PersistentStatePlan.Create(config);
+
+			foreach (var (instantiation, helper, _) in config.closedBodies)
+				config.AddCodes(EmitClosedBody(instantiation, helper));
 
 			if (config.Fixes.Any() && config.returnType != typeof(void))
 			{
@@ -74,12 +78,12 @@ namespace HarmonyLib
 					config.skipOriginalLabel = config.DefineLabel();
 			}
 
-			config.WithFixes(fix =>
+			foreach (var (fix, instantiation) in config.StateOwners)
 			{
 				var declaringType = fix.DeclaringType;
 				if (declaringType is null)
-					return;
-				var varName = declaringType;
+					continue;
+				var varName = MethodCreatorConfig.StateKey(fix, instantiation);
 				var hasLocal = config.localVariables.TryGetValue(varName, out var maybeLocal);
 				foreach (var injection in config.OuterInjectionsFor(fix, InjectionType.State))
 				{
@@ -105,7 +109,7 @@ namespace HarmonyLib
 					maybeLocal = new InjectionStorage(privateStateVariable);
 					hasLocal = true;
 				}
-			});
+			}
 
 			config.finalizedVariable = null;
 			if (config.finalizers.Count > 0)
@@ -189,6 +193,25 @@ namespace HarmonyLib
 			return (replacementMethod, codeEmitter.GetInstructions());
 		}
 
+		// An instantiation with its own closed body leaves the family body at its start. Its arguments and result bridge the definition's open types.
+		List<CodeInstruction> EmitClosedBody(MethodBase instantiation, MethodInfo helper)
+		{
+			var skip = config.DefineLabel();
+			var codes = new List<CodeInstruction>(GenericFamily.Guard(config.original, instantiation, skip));
+			var open = MethodPatcherTools.ReplacementParameterTypes(config.original);
+			var closed = helper.GetParameters().Types();
+			for (var i = 0; i < open.Count; i++)
+			{
+				codes.Add(Ldarg[i]);
+				if (open[i] != closed[i] && !closed[i].IsByRef && !closed[i].IsPointer) codes.Add(GenericFamily.Convert(open[i], closed[i]));
+			}
+			codes.Add(Call[helper]);
+			if (helper.ReturnType != config.returnType && !config.returnType.IsByRef && !config.returnType.IsPointer)
+				codes.Add(GenericFamily.Convert(helper.ReturnType, config.returnType));
+			codes.AddRange([Ret, Nop.WithLabels(skip)]);
+			return codes;
+		}
+
 		internal void AddPrefixes() => config.AddCodes(EmitPrefixes(config.prefixes, config.bindingContext));
 
 		internal List<CodeInstruction> EmitPrefixes(IEnumerable<PatchCall> prefixes, PatchBindingContext context, PatchBindingContext outerContext = null)
@@ -200,11 +223,12 @@ namespace HarmonyLib
 				var returnType = fix.ReturnType;
 				if (returnType != typeof(void) && returnType != typeof(bool))
 					throw this.InvalidBinding(fix, context, "prefix return value", returnType, typeof(bool), "Prefixes must return bool or void");
+				var guard = BeginGuard(call, codes);
 				var skipLabel = this.AffectsOriginal(fix, outerContext != null) ? config.DefineLabel() : (Label?)null;
 				if (skipLabel.HasValue)
 					codes.AddRange([Ldloc[context.variables[InjectionType.RunOriginal]], Brfalse[skipLabel.Value]]);
 
-				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.UncheckedReferences));
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.UncheckedReferences, call.instantiation));
 
 				if (returnType != typeof(void))
 				{
@@ -213,8 +237,23 @@ namespace HarmonyLib
 
 				if (skipLabel.HasValue)
 					codes.Add(Nop.WithLabels(skipLabel.Value));
+				EndGuard(guard, codes);
 			}
 			return codes;
+		}
+
+		// A callback registered on a closed instantiation runs only when the definition's type parameters match it.
+		Label? BeginGuard(PatchCall call, List<CodeInstruction> codes)
+		{
+			if (call.instantiation is null) return null;
+			var skip = config.DefineLabel();
+			codes.AddRange(GenericFamily.Guard(config.original, call.instantiation, skip));
+			return skip;
+		}
+
+		static void EndGuard(Label? skip, List<CodeInstruction> codes)
+		{
+			if (skip.HasValue) codes.Add(Nop.WithLabels(skip.Value));
 		}
 
 		internal bool AddPostfixes(bool passthroughPatches)
@@ -234,6 +273,8 @@ namespace HarmonyLib
 					|| fix.GetParameters().FirstOrDefault()?.ParameterType != context.returnType))
 					throw new ArgumentException($"Infix passthrough postfix {fix.FullDescription()} must return and take a first parameter of exactly {context.returnType.FullDescription()}, "
 						+ $"the result type of {context.Description}; actual return is {fix.ReturnType.FullDescription()} and first parameter is {fix.GetParameters().FirstOrDefault()?.ParameterType.FullDescription() ?? "missing"}.");
+				var guard = BeginGuard(call, codes);
+				var bridged = call.instantiation is not null && !context.returnType.IsByRef;
 				if (fix.ReturnType != typeof(void))
 				{
 					var firstFixParam = fix.GetParameters().FirstOrDefault();
@@ -249,9 +290,15 @@ namespace HarmonyLib
 					var pairUnchecked = call.uncheckedReferenceBinding || call.unchangedPassthrough;
 					this.ValidateReturnBinding(fix, context, previousResultType, firstFixParam.ParameterType, $"passthrough parameter {firstFixParam.Name}, previous return value", pairUnchecked);
 					this.ValidateReturnBinding(fix, context, fix.ReturnType, context.returnType, uncheckedReferenceBinding: call.UncheckedReferences);
-					previousResultType = fix.ReturnType;
+					// A passthrough on an instantiation takes and returns its closed result type. The stack keeps the definition's open type.
+					if (bridged && firstFixParam.ParameterType != context.returnType)
+						codes.Add(GenericFamily.Convert(context.returnType, firstFixParam.ParameterType));
+					previousResultType = bridged ? context.returnType : fix.ReturnType;
 				}
-				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext, call.UncheckedReferences));
+				codes.AddRange(this.EmitPatchCall(fix, context, true, outerContext, call.UncheckedReferences, call.instantiation));
+				if (bridged && fix.ReturnType != typeof(void) && fix.ReturnType != context.returnType)
+					codes.Add(GenericFamily.Convert(fix.ReturnType, context.returnType));
+				EndGuard(guard, codes);
 			}
 			return codes;
 		}
@@ -287,10 +334,11 @@ namespace HarmonyLib
 				if (outerContext != null && fix.ReturnType != typeof(void) && !typeof(Exception).IsAssignableFrom(fix.ReturnType))
 					throw new ArgumentException($"Infix finalizer {fix.FullDescription()} must return void or an Exception.");
 				if (fix.ReturnType != typeof(void)) this.ValidateReturnBinding(fix, context, fix.ReturnType, typeof(Exception), uncheckedReferenceBinding: call.UncheckedReferences);
+				var guard = BeginGuard(call, codes);
 				if (catchExceptions)
 					codes.Add(this.MarkBlock(ExceptionBlockType.BeginExceptionBlock));
 
-				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.UncheckedReferences));
+				codes.AddRange(this.EmitPatchCall(fix, context, false, outerContext, call.UncheckedReferences, call.instantiation));
 
 				if (fix.ReturnType != typeof(void))
 				{
@@ -304,6 +352,7 @@ namespace HarmonyLib
 					codes.Add(Pop);
 					codes.Add(this.MarkBlock(ExceptionBlockType.EndExceptionBlock));
 				}
+				EndGuard(guard, codes);
 			}
 
 			return (codes, rethrowPossible);

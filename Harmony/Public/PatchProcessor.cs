@@ -23,7 +23,7 @@ namespace HarmonyLib
 		readonly List<HarmonyMethod> innerpostfixes = [];
 		readonly List<HarmonyMethod> innerfinalizers = [];
 
-		internal static readonly object locker = new();
+		internal static object locker => MethodBodyPatching.ProtocolLock;
 
 		/// <summary>Creates a new PatchProcessor</summary>
 		/// <param name="instance">The Harmony instance</param>
@@ -179,7 +179,7 @@ namespace HarmonyLib
 
 		/// <summary>Installs the pending configuration alongside existing patches and rebuilds the method</summary>
 		/// <remarks>Retains the configuration. Repeated calls add registrations; they do not replace earlier installations.</remarks>
-		/// <returns>The generated replacement method</returns>
+		/// <returns>The generated replacement method. An open generic definition installed by a registered <see cref="MethodBodyPatching"/> installer has no callable copy: the definition itself is returned, or null for a constructor.</returns>
 		///
 		public MethodInfo Patch()
 		{

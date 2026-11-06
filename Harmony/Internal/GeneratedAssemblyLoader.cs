@@ -57,10 +57,10 @@ namespace HarmonyLib
 			return name.FullName;
 		}
 
-		internal static Assembly Load(ModuleDefinition module)
+		internal static Assembly Load(ModuleDefinition module, bool collectible = true)
 		{
 			var loader = new GeneratedAssemblyLoader(module);
-			if (collectibleContext is not null) return loader.LoadCollectible(module);
+			if (collectible && collectibleContext is not null) return loader.LoadCollectible(module);
 			return loader.Generate(module.Assembly.Name.Name, () => ReflectionHelper.Load(module));
 		}
 
@@ -79,11 +79,19 @@ namespace HarmonyLib
 					| Mono.Cecil.TypeAttributes.Sealed, module.TypeSystem.Object);
 				module.Types.Add(holder);
 				var definition = method.Definition;
+				GenericMethodContext.CopyParameters(definition.DeclaringType, holder);
+				if (holder.HasGenericParameters) holder.Name += "`" + holder.GenericParameters.Count;
 				var clone = definition.Clone();
 				clone.DeclaringType = null;
 				holder.Methods.Add(clone);
 				clone.NoInlining = true;
 				Relinker relink = (reference, _) => ReferenceEquals(reference, definition) ? clone : module.ImportReference(reference);
+				foreach (var parameter in holder.GenericParameters.Concat(clone.GenericParameters))
+#if NET35
+					for (var i = 0; i < parameter.Constraints.Count; i++) parameter.Constraints[i] = parameter.Constraints[i].Relink(relink, clone);
+#else
+					foreach (var constraint in parameter.Constraints) constraint.ConstraintType = constraint.ConstraintType.Relink(relink, clone);
+#endif
 				clone.ReturnType = definition.ReturnType.Relink(relink, clone);
 				foreach (var parameter in clone.Parameters) parameter.ParameterType = parameter.ParameterType.Relink(relink, clone);
 				foreach (var local in clone.Body.Variables) local.VariableType = local.VariableType.Relink(relink, clone);
@@ -137,6 +145,7 @@ namespace HarmonyLib
 
 		T Generate<T>(string assemblyName, Func<T> generate)
 		{
+
 			var thread = Thread.CurrentThread.ManagedThreadId;
 			// MonoMod loads and reflects the method internally. Attach before that reflection resolves its signature.
 			AssemblyLoadEventHandler observer = (_, args) =>

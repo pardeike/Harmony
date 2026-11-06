@@ -51,7 +51,7 @@ namespace HarmonyLib
 
 			// Older iterator compilers omit the attribute. A matching generated type and IEnumerator
 			// implementation are required; one arbitrary newobj in an ordinary factory is not enough.
-			if (method is not MethodInfo info || !IsIteratorReturnType(info.ReturnType) || method.GetMethodBody() is null) return null;
+			if (method is not MethodInfo info || !IsIteratorReturnType(info.ReturnType) || MethodBodyPatching.GetMethodBody(method) is null) return null;
 			var stateTypes = PatchProcessor.ReadMethodBody(method)
 				.Where(instruction => instruction.Key == OpCodes.Newobj)
 				.Select(instruction => (instruction.Value as ConstructorInfo)?.DeclaringType)
@@ -95,7 +95,7 @@ namespace HarmonyLib
 		{
 			if (containingMethod is MethodInfo dynamicMethod && dynamicMethod.IsDynamicMethod()) return [];
 			var body = (MethodBase)StateMachineMoveNext(containingMethod) ?? containingMethod;
-			if (body.GetMethodBody() is null) return [];
+			if (MethodBodyPatching.GetMethodBody(body) is null) return [];
 			var sourceName = IsGeneratedStateMachineType(body.DeclaringType) ? GeneratedSourceName(body.DeclaringType.Name) : GeneratedSourceName(body.Name);
 			return PatchProcessor.ReadMethodBody(body)
 				.Where(instruction => instruction.Key == OpCodes.Call || instruction.Key == OpCodes.Callvirt
@@ -149,7 +149,7 @@ namespace HarmonyLib
 			var methods = Enumerable.Range(0, map.InterfaceMethods.Length)
 				.Where(index => map.InterfaceMethods[index].Name == "MoveNext" && map.InterfaceMethods[index].GetParameters().Length == 0)
 				.Select(index => map.TargetMethods[index]).Distinct().ToArray();
-			if (methods.Length != 1 || methods[0].IsAbstract || methods[0].IsStatic || methods[0].GetMethodBody() is null)
+			if (methods.Length != 1 || methods[0].IsAbstract || methods[0].IsStatic || MethodBodyPatching.GetMethodBody(methods[0]) is null)
 				throw GeneratedResolutionError(requested, $"State-machine type {type.FullDescription()} has no unique executable MoveNext implementation");
 			return methods[0];
 		}

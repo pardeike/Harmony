@@ -10,6 +10,7 @@ namespace HarmonyLib
 		internal OpCode opcode;
 		internal object operand;
 		internal object argument;
+		internal Type genericInstantiation;
 
 		internal List<Label> labels = [];
 		internal List<ExceptionBlock> blocks = [];
@@ -24,6 +25,7 @@ namespace HarmonyLib
 		internal CodeInstruction GetCodeInstruction()
 		{
 			var instr = new CodeInstruction(opcode, argument);
+			instr.genericInstantiation = genericInstantiation;
 			if (opcode.OperandType == OperandType.InlineNone)
 				instr.operand = null;
 			instr.labels = labels;

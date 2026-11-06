@@ -23,6 +23,8 @@ namespace HarmonyLib
 		/// <summary>The operand</summary>
 		///
 		public object operand;
+		// Reflection collapses C<T>'s typical instantiation to C<>. Preserve the original TypeSpec across copies.
+		internal Type genericInstantiation;
 
 		/// <summary>All labels defined on this instruction</summary>
 		///
@@ -60,6 +62,7 @@ namespace HarmonyLib
 		{
 			opcode = instruction.opcode;
 			operand = instruction.operand;
+			genericInstantiation = instruction.genericInstantiation;
 			labels = [.. instruction.labels];
 			blocks = [.. instruction.blocks];
 		}
@@ -97,6 +100,7 @@ namespace HarmonyLib
 		{
 			var instruction = Clone();
 			instruction.operand = operand;
+			instruction.genericInstantiation = null;
 			return instruction;
 		}
 

@@ -14,11 +14,11 @@ namespace HarmonyLib
 		readonly MethodBodyReader reader;
 		readonly List<MethodInfo> transpilers = [];
 
-		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables = null)
+		internal MethodCopier(MethodBase fromMethod, ILGenerator toILGenerator, LocalBuilder[] existingVariables, MethodBody body)
 		{
 			if (fromMethod is null)
 				throw new ArgumentNullException(nameof(fromMethod));
-			reader = new MethodBodyReader(fromMethod, toILGenerator);
+			reader = new MethodBodyReader(fromMethod, toILGenerator, body);
 			reader.DeclareVariables(existingVariables);
 			reader.GenerateInstructions();
 		}
@@ -27,7 +27,7 @@ namespace HarmonyLib
 		{
 			if (config.MethodBase is null)
 				throw new ArgumentNullException("config.methodbase");
-			reader = new MethodBodyReader(config.MethodBase, config.il);
+			reader = new MethodBodyReader(config.MethodBase, config.il, config.originalBody);
 			reader.DeclareVariables(config.originalVariables);
 			reader.GenerateInstructions();
 			reader.SetDebugging(config.debug);
@@ -45,10 +45,11 @@ namespace HarmonyLib
 			if (method is null)
 				throw new ArgumentNullException(nameof(method));
 
-			var originalVariables = MethodPatcherTools.DeclareOriginalLocalVariables(generator, method);
-			var copier = new MethodCopier(method, generator, originalVariables);
+			var body = MethodBodyPatching.GetMethodBody(method);
+			var originalVariables = MethodPatcherTools.DeclareOriginalLocalVariables(generator, body);
+			var copier = new MethodCopier(method, generator, originalVariables, body);
 
-			var info = Harmony.GetPatchInfo(method);
+			var info = MethodBodyPatching.GetPatchInfoForBody(method);
 			if (info is not null)
 			{
 				var sortedTranspilers = PatchFunctions.GetSortedPatchMethods(method, [.. info.Transpilers], false);
@@ -79,22 +80,24 @@ namespace HarmonyLib
 		LocalBuilder[] variables;
 
 		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method)
+			=> GetInstructions(generator, method, MethodBodyPatching.GetMethodBody(method));
+
+		internal static List<ILInstruction> GetInstructions(ILGenerator generator, MethodBase method, MethodBody body)
 		{
 			if (method is null)
 				throw new ArgumentNullException(nameof(method));
-			var reader = new MethodBodyReader(method, generator);
+			var reader = new MethodBodyReader(method, generator, body);
 			reader.DeclareVariables(null);
 			reader.GenerateInstructions();
 			return reader.ilInstructions;
 		}
 
-		internal MethodBodyReader(MethodBase method, ILGenerator generator)
+		internal MethodBodyReader(MethodBase method, ILGenerator generator, MethodBody body)
 		{
 			this.generator = generator;
 			this.method = method;
 			module = method.Module;
 
-			var body = method.GetMethodBody();
 			if ((body?.GetILAsByteArray()?.Length ?? 0) == 0)
 			{
 				ilBytes = new ByteBuffer([]);
@@ -518,6 +521,8 @@ namespace HarmonyLib
 				{
 					var val = ilBytes.ReadInt32();
 					instruction.operand = module.ResolveMember(val, typeArguments, methodArguments);
+					if ((val & 0xff000000) == 0x1b000000 && instruction.operand is Type { IsGenericTypeDefinition: true } instance)
+						instruction.genericInstantiation = instance;
 					((MemberInfo)instruction.operand).DeclaringType?.FixReflectionCacheAuto();
 					GetMemberInfoValue((MemberInfo)instruction.operand, out instruction.argument);
 					break;

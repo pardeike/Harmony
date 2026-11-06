@@ -170,7 +170,7 @@ namespace HarmonyLib
 		/// <param name="postfix">An optional postfix method wrapped in a <see cref="HarmonyMethod"/> object</param>
 		/// <param name="transpiler">An optional transpiler method wrapped in a <see cref="HarmonyMethod"/> object</param>
 		/// <param name="finalizer">An optional finalizer method wrapped in a <see cref="HarmonyMethod"/> object</param>
-		/// <returns>The replacement method that was created to patch the original method</returns>
+		/// <returns>The replacement method that was created to patch the original method. An open generic definition installed by a registered <see cref="MethodBodyPatching"/> installer has no callable copy: the definition itself is returned, or null for a constructor.</returns>
 		///
 		public MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null, HarmonyMethod finalizer = null/*, HarmonyMethod infix = null*/)
 		{

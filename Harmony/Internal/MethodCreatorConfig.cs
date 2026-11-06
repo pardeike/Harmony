@@ -9,12 +9,14 @@ namespace HarmonyLib
 {
 
 	// Keep registration-specific options beside the resolved callback, including factory results.
-	internal readonly struct PatchCall(MethodInfo method, bool uncheckedReferenceBinding = false, bool candidate = true, bool unchangedPassthrough = false)
+	internal readonly struct PatchCall(MethodInfo method, bool uncheckedReferenceBinding = false, bool candidate = true, bool unchangedPassthrough = false, MethodBase instantiation = null)
 	{
 		internal readonly MethodInfo method = method;
 		internal readonly bool uncheckedReferenceBinding = uncheckedReferenceBinding;
 		internal readonly bool candidate = candidate;
 		internal readonly bool unchangedPassthrough = unchangedPassthrough;
+		// The closed instantiation this callback was registered on when the body belongs to its generic definition.
+		internal readonly MethodBase instantiation = instantiation;
 		// Only unchanged callbacks inherit their accepted reference bindings; factory outputs are candidates on every rebuild.
 		internal bool UncheckedReferences => uncheckedReferenceBinding || !candidate;
 	}
@@ -64,7 +66,8 @@ namespace HarmonyLib
 		internal MethodCreatorConfig(MethodCreatorConfig parent, string name, Type returnType)
 			: this(parent.original, null, [], [], [], [], parent.innerprefixes, parent.innerpostfixes, parent.innerfinalizers, parent.debug)
 		{
-			patch = new DynamicMethodDefinition(name, returnType, []);
+			patch = MethodBodyPatching.IsDefinitionWide(original)
+				? GenericMethodContext.Create(original, name, returnType, []) : new DynamicMethodDefinition(name, returnType, []);
 			il = patch.GetILGenerator();
 			this.returnType = returnType;
 			injections = parent.injections;
@@ -94,7 +97,14 @@ namespace HarmonyLib
 
 		internal LocalBuilder DeclareLocal(Type type, bool isPinned = false) => il.DeclareLocal(type, isPinned);
 		internal Label DefineLabel() => il.DefineLabel();
-		internal MethodInfo GenerateMethod(bool structuredHelper = false) => MethodBodyGenerator.Generate(patch, structuredHelper);
+		internal MethodInfo GenerateMethod(bool structuredHelper = false)
+		{
+			// The installer writes a definition-wide body into the open definition itself. It has no callable copy.
+			if (!structuredHelper && MethodBodyPatching.IsDefinitionWide(original)) return null;
+			var generated = MethodBodyGenerator.Generate(patch, structuredHelper, original);
+			return structuredHelper && MethodBodyPatching.IsDefinitionWide(original)
+				? GenericMethodContext.Construct(generated, GenericMethodContext.Arguments(original)) : generated;
+		}
 
 		// prepared by Prepare()
 		internal int patchIndex;
@@ -106,6 +116,7 @@ namespace HarmonyLib
 
 		// added by MethodCreator
 		internal LocalBuilder[] originalVariables;
+		internal MethodBody originalBody; // Read once by CreateReplacement before declaring locals or constructing its copier.
 		internal VariableState localVariables;
 		internal PatchBindingContext bindingContext;
 		internal PersistentStatePlan persistence;
@@ -114,6 +125,10 @@ namespace HarmonyLib
 		internal LocalBuilder runOriginalVariable;
 		internal LocalBuilder exceptionVariable;
 		internal LocalBuilder finalizedVariable;
+		// The instantiation of the callback call being emitted, if that callback was registered on a closed instantiation.
+		internal MethodBase instantiation;
+		// Instantiations of a definition-wide target that own a closed body. The family body enters each helper under a type guard.
+		internal List<(MethodBase instantiation, MethodInfo helper, PersistentStatePlan persistence)> closedBodies = [];
 
 		internal MethodBase MethodBase => source ?? original;
 		internal IEnumerable<MethodInfo> Fixes => prefixes.Concat(postfixes).Concat(finalizers).Select(call => call.method).Distinct();
@@ -136,12 +151,10 @@ namespace HarmonyLib
 			=> InjectionsFor(fix, type, fix.ReturnType != typeof(void) && innerpostfixes.Any(postfix => postfix.OuterMethod == fix)
 				&& !innerprefixes.Any(prefix => prefix.OuterMethod == fix) && !innerfinalizers.Any(finalizer => finalizer.OuterMethod == fix));
 		internal bool AnyInfixHasOuter(InjectionType type) => InnerFixes.Any(fix => InfixInjectionsFor(fix.OuterMethod, type).Any(injection => injection.outer));
-		internal void WithFixes(Action<MethodInfo> action)
-		{
-			foreach (var fix in Fixes)
-				action(fix);
-			foreach (var fix in InnerFixes)
-				action(fix.OuterMethod);
-		}
+		// State belongs to a patch class and, in a family body, to the registration target: instantiations never run for the same call.
+		internal static object StateKey(MethodInfo fix, MethodBase instantiation) => instantiation is null ? (object)fix.DeclaringType ?? "null" : (fix.DeclaringType, instantiation);
+		internal IEnumerable<(MethodInfo fix, MethodBase instantiation)> StateOwners
+			=> prefixes.Concat(postfixes).Concat(finalizers).Select(call => (call.method, call.instantiation)).Distinct()
+				.Concat(InnerFixes.Select(fix => (fix.OuterMethod, (MethodBase)null)));
 	}
 }

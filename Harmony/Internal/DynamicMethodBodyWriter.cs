@@ -5,8 +5,10 @@ using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using ConditionalWeakTable = System.Runtime.CompilerServices.ConditionalWeakTable<System.Reflection.MethodInfo, System.Reflection.MethodInfo>;
 using CecilCode = Mono.Cecil.Cil.Code;
 using ExceptionHandler = Mono.Cecil.Cil.ExceptionHandler;
 using FlowControl = Mono.Cecil.Cil.FlowControl;
@@ -15,15 +17,18 @@ using StackBehaviour = Mono.Cecil.Cil.StackBehaviour;
 
 namespace HarmonyLib
 {
-	// Writes an already constructed body. No patch selection, IL rewriting or assembly discovery belongs here.
+	// Writes one constructed body into a dynamic scope or host metadata. Patch semantics stay in MethodCreator.
 	internal sealed class DynamicMethodBodyWriter
 	{
 		readonly MethodDefinition definition;
 		readonly DynamicMethod method;
 		readonly DynamicILInfo info;
+		readonly MethodBase metadataSelf;
+		readonly Func<object, int> import;
+		readonly Dictionary<MemberReference, object> genericMembers;
 		readonly Dictionary<object, int> tokens = [];
 
-		DynamicMethodBodyWriter(DynamicMethodDefinition patch)
+		DynamicMethodBodyWriter(DynamicMethodDefinition patch, MethodBase original)
 		{
 			definition = patch.Definition;
 			var offset = definition.HasThis ? 1 : 0;
@@ -33,8 +38,13 @@ namespace HarmonyLib
 				var owner = definition.DeclaringType.ResolveReflection();
 				parameters[0] = owner.IsValueType ? owner.MakeByRefType() : owner;
 			}
-			foreach (var parameter in definition.Parameters) parameters[parameter.Index + offset] = parameter.ParameterType.ResolveReflection();
-			method = new DynamicMethod(patch.Name ?? definition.Name, definition.ReturnType.ResolveReflection(), parameters,
+			// A copy of an original keeps the original's reflection signature. MonoMod imports a function pointer type as a nameless reference that reflection cannot resolve.
+			var originalParameters = SignatureParameters(original);
+			var fromOriginal = originalParameters is not null && offset == 0 && originalParameters.Length == definition.Parameters.Count;
+			if (fromOriginal) originalParameters.CopyTo(parameters, 0);
+			else
+				foreach (var parameter in definition.Parameters) parameters[parameter.Index + offset] = SignatureType(parameter.ParameterType);
+			method = new DynamicMethod(patch.Name ?? definition.Name, fromOriginal ? AccessTools.GetReturnedType(original) : SignatureType(definition.ReturnType), parameters,
 				patch.OriginalMethod?.Module ?? typeof(DynamicMethodBodyWriter).Module, true)
 			{ InitLocals = definition.Body.InitLocals };
 			foreach (var parameter in definition.Parameters)
@@ -42,11 +52,57 @@ namespace HarmonyLib
 			info = method.GetDynamicILInfo();
 		}
 
-		internal static MethodInfo Generate(DynamicMethodDefinition patch)
+		// The replacement's explicit parameters mirror MethodPatcherTools.CreateDynamicMethod: a receiver, by reference for a value type, then the parameters.
+		static Type[] SignatureParameters(MethodBase original)
 		{
-			var writer = new DynamicMethodBodyWriter(patch);
+			if (original is null) return null;
+			var types = original.GetParameters().Select(parameter => parameter.ParameterType).ToList();
+			if (!original.IsStatic) types.Insert(0, original.DeclaringType.IsValueType ? original.DeclaringType.MakeByRefType() : original.DeclaringType);
+			return [.. types];
+		}
+
+		// Reflection has no function pointer type to resolve to. A native int has the same calling convention and GC tracking.
+		static Type SignatureType(TypeReference type) => type switch
+		{
+			FunctionPointerType => typeof(IntPtr),
+			ByReferenceType reference => SignatureType(reference.ElementType).MakeByRefType(),
+			PointerType pointer => SignatureType(pointer.ElementType).MakePointerType(),
+			ArrayType array => array.IsVector ? SignatureType(array.ElementType).MakeArrayType() : SignatureType(array.ElementType).MakeArrayType(array.Rank),
+			_ => type.ResolveReflection(),
+		};
+
+		internal static MethodInfo Generate(DynamicMethodDefinition patch, MethodBase original = null)
+		{
+			var writer = new DynamicMethodBodyWriter(patch, original);
 			writer.Write();
 			return writer.method;
+		}
+
+		DynamicMethodBodyWriter(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import)
+		{
+			definition = patch.Definition;
+			metadataSelf = self;
+			genericMembers = GenericMethodContext.RuntimeMembers(patch);
+			this.import = import ?? throw new ArgumentNullException(nameof(import));
+		}
+
+		// Self references resolve to the callable copy, or to the original when its definition receives the body directly.
+		internal static byte[] GenerateBody(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import)
+		{
+			var writer = new DynamicMethodBodyWriter(patch, self, import);
+			var (code, locals, exceptions, maximum) = writer.Encode();
+			var localToken = writer.Import(locals);
+			return Bytes(output =>
+			{
+				output.Write((ushort)(0x3003 | (patch.Definition.Body.InitLocals ? 0x10 : 0) | (exceptions.Length == 0 ? 0 : 0x08)));
+				output.Write(checked((ushort)maximum));
+				output.Write(code.Length);
+				output.Write(localToken);
+				output.Write(code);
+				if (exceptions.Length == 0) return;
+				while (output.BaseStream.Position % 4 != 0) output.Write((byte)0);
+				output.Write(exceptions);
+			});
 		}
 
 		internal static bool CanGenerate(DynamicMethodDefinition patch)
@@ -78,6 +134,14 @@ namespace HarmonyLib
 		}
 
 		void Write()
+		{
+			var (code, locals, exceptions, maximum) = Encode();
+			info.SetLocalSignature(locals);
+			if (exceptions.Length != 0) info.SetExceptions(exceptions);
+			info.SetCode(code, maximum);
+		}
+
+		(byte[] code, byte[] locals, byte[] exceptions, int maximum) Encode()
 		{
 			var body = definition.Body;
 			// Layout once, using long branches so transpiler growth cannot overflow a short displacement.
@@ -120,14 +184,13 @@ namespace HarmonyLib
 					}
 				}
 			});
-			info.SetLocalSignature(Bytes(writer =>
+			var locals = Bytes(writer =>
 			{
 				writer.Write((byte)0x07); // LOCAL_SIG
 				Compressed(writer, body.Variables.Count);
 				foreach (var local in body.Variables) SignatureType(writer, local.VariableType);
-			}));
-			if (body.HasExceptionHandlers)
-				info.SetExceptions(Bytes(writer =>
+			});
+			var exceptions = body.HasExceptionHandlers ? Bytes(writer =>
 				{
 					// Fat EH section: exact Cecil ranges, including shared try regions and filter entry points.
 					var size = checked(4 + 24 * body.ExceptionHandlers.Count);
@@ -143,8 +206,8 @@ namespace HarmonyLib
 						writer.Write(handler.HandlerType == ExceptionHandlerType.Catch ? Token(handler.CatchType)
 							: handler.HandlerType == ExceptionHandlerType.Filter ? handler.FilterStart.Offset : 0);
 					}
-				}));
-			info.SetCode(code, MaximumStack());
+				}) : [];
+			return (code, locals, exceptions, MaximumStack());
 		}
 
 		int ArgumentIndex(object operand) => ((ParameterDefinition)operand).Index + (definition.HasThis ? 1 : 0);
@@ -152,7 +215,16 @@ namespace HarmonyLib
 		int Token(object operand)
 		{
 			if (tokens.TryGetValue(operand, out var token)) return token;
-			token = operand switch
+			token = import is not null ? Import(operand switch
+			{
+				TypeReference type => genericMembers?.TryGetValue(type, out var runtimeType) is true ? runtimeType : type.ResolveReflection(),
+				FieldReference field => genericMembers?.TryGetValue(field, out var runtimeField) is true ? (FieldInfo)runtimeField : field.ResolveReflection(),
+				MethodReference reference => reference == definition ? metadataSelf
+					: genericMembers?.TryGetValue(reference, out var runtimeMethod) is true ? (MethodBase)runtimeMethod : reference.ResolveReflection(),
+				CallSite signature => Bytes(writer => Signature(writer, signature)),
+				string text => text,
+				_ => throw new NotSupportedException($"Unsupported metadata token: {operand}.")
+			}) : operand switch
 			{
 				string text => info.GetTokenFor(text),
 				TypeReference type => info.GetTokenFor(type.ResolveReflection().TypeHandle),
@@ -163,6 +235,26 @@ namespace HarmonyLib
 			};
 			tokens.Add(operand, token);
 			return token;
+		}
+
+		// A host returns zero for a value it cannot import, such as a DynamicMethod in metadata that only binds by name.
+		// A static method then imports through a stand-in in a generated assembly, shared by every body that needs it.
+		// The stand-in is collectible. A module that cannot bind collectible assemblies refuses it and gets one that lives for the process.
+		static readonly ConditionalWeakTable standIns = new();
+		static readonly ConditionalWeakTable permanentStandIns = new();
+		int Import(object value)
+		{
+			var token = import(value);
+			if (token != 0) return token;
+			if (value is MethodInfo { IsStatic: true, ContainsGenericParameters: false } target)
+			{
+				token = import(standIns.GetValue(target, method => DynamicMethodProxy.Create(method)));
+				if (token != 0) return token;
+				token = import(permanentStandIns.GetValue(target, method => DynamicMethodProxy.Create(method, collectible: false)));
+				if (token != 0) return token;
+				throw new NotSupportedException($"The installer imports neither {target.FullDescription()} nor a stand-in for it.");
+			}
+			throw new NotSupportedException($"The installer cannot import {(value is byte[] ? "a signature" : value)}.");
 		}
 
 		int MethodToken(MethodBase target) => target is DynamicMethod dynamicMethod ? info.GetTokenFor(dynamicMethod)
@@ -181,10 +273,19 @@ namespace HarmonyLib
 
 		void SignatureType(BinaryWriter writer, TypeReference type)
 		{
+			// MonoMod imports a reflection function pointer type as a nameless reference. A native int has the same size and GC tracking.
+			if (type is not TypeSpecification && string.IsNullOrEmpty(type.Name)) type = definition.Module.TypeSystem.IntPtr;
 			// Dynamic signatures use runtime type handles; metadata tokens here would resolve against the owner module.
 			switch (type)
 			{
 				case IModifierType modifier:
+					if (import is not null)
+					{
+						writer.Write((byte)(type is RequiredModifierType ? 0x1f : 0x20));
+						MetadataTypeToken(writer, Token(modifier.ModifierType));
+						SignatureType(writer, modifier.ElementType);
+						return;
+					}
 					writer.Write((byte)0x22); // ELEMENT_TYPE_CMOD_INTERNAL
 					writer.Write((byte)(type is RequiredModifierType ? 1 : 0));
 					RuntimeTypeHandle(writer, modifier.ModifierType);
@@ -218,7 +319,13 @@ namespace HarmonyLib
 					writer.Write((byte)type.MetadataType);
 					SignatureType(writer, ((TypeSpecification)type).ElementType);
 					return;
-				case GenericParameter:
+				case GenericParameter parameter:
+					if (import is not null)
+					{
+						writer.Write((byte)(parameter.Type == GenericParameterType.Method ? 0x1e : 0x13));
+						Compressed(writer, parameter.Position);
+						return;
+					}
 					throw new NotSupportedException($"An executable patch cannot contain the open signature type '{type}'.");
 			}
 			var kind = type.MetadataType;
@@ -227,10 +334,25 @@ namespace HarmonyLib
 				writer.Write((byte)kind);
 			else
 			{
+				if (import is not null)
+				{
+					writer.Write((byte)(type.IsValueType ? 0x11 : 0x12));
+					MetadataTypeToken(writer, Token(type));
+					return;
+				}
 				writer.Write((byte)0x21); // ELEMENT_TYPE_INTERNAL, as used by SignatureHelper for DynamicMethod.
 				RuntimeTypeHandle(writer, type);
 			}
 		}
+
+		static void MetadataTypeToken(BinaryWriter writer, int token) => Compressed(writer,
+			checked(((token & 0xffffff) << 2) | ((token & unchecked((int)0xff000000)) switch
+			{
+				0x02000000 => 0,
+				0x01000000 => 1,
+				0x1b000000 => 2,
+				_ => throw new NotSupportedException($"Token 0x{token:x8} is not a type token.")
+			})));
 
 		void RuntimeTypeHandle(BinaryWriter writer, TypeReference type)
 		{

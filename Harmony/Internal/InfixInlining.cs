@@ -22,7 +22,7 @@ namespace HarmonyLib
 					return false;
 				var reason = CheckMethod(patch);
 				if (reason != null) return Fallback(reason);
-				body = patch.GetMethodBody();
+				body = MethodBodyPatching.GetMethodBody(patch);
 				if (body is null || body.GetILAsByteArray() is not { Length: > 0 } bytes) return Fallback("the patch has no managed body");
 				if (bytes.Length > MaxBodyBytes) return Fallback("the patch body exceeds the small-body limit");
 				if (body.ExceptionHandlingClauses.Count != 0) return Fallback("the patch contains exception regions");
@@ -36,7 +36,7 @@ namespace HarmonyLib
 				MethodCreatorTools.ValidateInfixSignature(patch, "inline patch");
 
 				// Refusing the hint must leave the actual wrapper untouched, including its locals and labels.
-				foreach (var instruction in MethodBodyReader.GetInstructions(null, patch))
+				foreach (var instruction in MethodBodyReader.GetInstructions(null, patch, body))
 				{
 					reason = CheckInstruction(patch, instruction.GetCodeInstruction());
 					if (reason != null) return Fallback(reason);
@@ -49,7 +49,7 @@ namespace HarmonyLib
 
 			// From here on the generator is being changed. Emission failures cannot safely become a normal-call fallback.
 			var locals = body.LocalVariables.Select(local => generator.DeclareLocal(local.LocalType)).ToArray();
-			var copier = new MethodCopier(patch, generator, locals);
+			var copier = new MethodCopier(patch, generator, locals, body);
 			var instructions = copier.Finalize(false, out _, out _, null);
 			var arguments = patch.GetParameters().Select(parameter => generator.DeclareLocal(parameter.ParameterType)).ToArray();
 			var result = patch.ReturnType == typeof(void) ? null : generator.DeclareLocal(patch.ReturnType);

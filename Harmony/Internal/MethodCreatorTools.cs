@@ -56,6 +56,11 @@ namespace HarmonyLib
 				codes.AddRange([Ldc_I4_0, Conv_U, Stloc[variable]]);
 				return codes;
 			}
+			if (type.IsGenericParameter)
+			{
+				codes.AddRange([Ldloca[variable], Initobj[type]]);
+				return codes;
+			}
 
 			if (AccessTools.IsClass(type))
 			{
@@ -119,12 +124,12 @@ namespace HarmonyLib
 				codes.Add(argument.Load());
 				if (paramByRef)
 				{
-					if (AccessTools.IsStruct(pType))
+					if (AccessTools.IsStruct(pType) || pType.IsGenericParameter)
 						codes.Add(Ldobj[pType]);
 					else
 						codes.Add(LoadIndOpCodeFor(pType));
 				}
-				if (pType.IsValueType)
+				if (pType.IsValueType || pType.IsGenericParameter)
 					codes.Add(Box[pType]);
 				codes.Add(Stelem_Ref);
 			}
@@ -323,6 +328,13 @@ namespace HarmonyLib
 		}
 
 		static Type ElementType(Type type) => type.IsByRef ? type.GetElementType() : type;
+		// Under a family build, a callback registered on an instantiation sees the definition's open types in their closed forms.
+		static Type Closed(this MethodCreator creator, Type type)
+			=> creator.config.instantiation is null || type is null ? type : GenericFamily.Close(type, creator.config.original, creator.config.instantiation);
+		// A by-value binding from an open type to a closed, non-object type converts through the instantiation instead of boxing.
+		static bool Bridges(this MethodCreator creator, Type open, Type requested)
+			=> creator.config.instantiation is not null && open is not null && !requested.IsByRef && requested != typeof(object)
+				&& !requested.IsGenericParameter && ElementType(open).ContainsGenericParameters;
 		static readonly PropertyInfo isFunctionPointer = typeof(Type).GetProperty("IsFunctionPointer");
 		static bool IsNativePointer(Type type) => type.IsPointer || isFunctionPointer?.GetValue(type, null) is true;
 		// Mono exposes a synthetic corelib type and cannot resolve method-definition signature tokens.
@@ -359,7 +371,8 @@ namespace HarmonyLib
 
 		internal static bool CanStoreInObjectArray(Type type)
 		{
-			if (IsNativePointer(type) || type.IsByRef || type.ContainsGenericParameters || type == typeof(TypedReference) || type == typeof(ArgIterator) || type == typeof(RuntimeArgumentHandle)) return false;
+			if (IsNativePointer(type) || type.IsByRef || type.IsGenericParameter && ((int)type.GenericParameterAttributes & 0x20) != 0
+				|| type == typeof(TypedReference) || type == typeof(ArgIterator) || type == typeof(RuntimeArgumentHandle)) return false;
 			return !type.GetCustomAttributes(false).Any(attribute => attribute.GetType().FullName == "System.Runtime.CompilerServices.IsByRefLikeAttribute");
 		}
 
@@ -408,7 +421,7 @@ namespace HarmonyLib
 			var reason = valueOnly && requested.IsByRef ? "This binding supplies a value, not an address"
 				: source is null ? requested.IsByRef || requested.IsValueType || IsNativePointer(requested)
 					? "No value or address exists for this parameter" : null
-				: BindingIncompatibility(source, requested, boxes, uncheckedReferenceBinding);
+				: BindingIncompatibility(creator.Closed(source), requested, boxes, uncheckedReferenceBinding);
 			if (reason != null)
 				throw creator.InvalidBinding(patch, context,
 					$"parameter {injection.parameterInfo.Name} bound to {(injection.outer ? "outer " : context != creator.config.bindingContext ? "inner " : "")}{sourceName ?? injection.realName}", source, requested, reason);
@@ -531,7 +544,17 @@ namespace HarmonyLib
 			=> Nop.WithBlocks(new ExceptionBlock(blockType));
 
 		internal static List<CodeInstruction> EmitPatchCall(this MethodCreator creator, MethodInfo patch, PatchBindingContext context,
-			bool allowFirstParamPassthrough, PatchBindingContext outerContext = null, bool uncheckedReferenceBinding = false)
+			bool allowFirstParamPassthrough, PatchBindingContext outerContext = null, bool uncheckedReferenceBinding = false, MethodBase instantiation = null)
+		{
+			// The bindings of a callback registered on a closed instantiation bridge the definition's open types during this call.
+			var previousInstantiation = creator.config.instantiation;
+			creator.config.instantiation = instantiation;
+			try { return creator.EmitPatchCallCore(patch, context, allowFirstParamPassthrough, outerContext, uncheckedReferenceBinding); }
+			finally { creator.config.instantiation = previousInstantiation; }
+		}
+
+		static List<CodeInstruction> EmitPatchCallCore(this MethodCreator creator, MethodInfo patch, PatchBindingContext context,
+			bool allowFirstParamPassthrough, PatchBindingContext outerContext, bool uncheckedReferenceBinding)
 		{
 			var boxedArguments = new List<(InjectionStorage storage, LocalBuilder variable)>();
 			var boxedInstances = new List<(InjectionStorage storage, LocalBuilder variable)>();
@@ -643,7 +666,7 @@ namespace HarmonyLib
 					creator.ValidateBinding(patch, injection, context, original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo), valueOnly: true, uncheckedReferenceBinding: uncheckedReferenceBinding);
 					if (outerContext != null && (paramType.IsByRef || !paramType.IsAssignableFrom(original is MethodInfo ? typeof(MethodInfo) : typeof(ConstructorInfo))))
 						throw BindingError(patch, injection, context, "__originalMethod requires a compatible by-value method type");
-					if (EmitOriginalBaseMethod(original, codes))
+					if (EmitOriginalBaseMethod(creator.config.instantiation ?? original, codes))
 						continue;
 
 					codes.Add(Ldnull);
@@ -747,6 +770,7 @@ namespace HarmonyLib
 							else
 								codes.Add(context.receiver.Value.Load());
 						}
+						if (creator.Bridges(originalType, paramType)) codes.Add(GenericFamily.Convert(originalType, paramType));
 					}
 					continue;
 				}
@@ -792,6 +816,7 @@ namespace HarmonyLib
 						}
 						codes.Add(paramType.IsByRef ? Ldflda[fieldInfo] : Ldfld[fieldInfo]);
 					}
+					if (creator.Bridges(fieldInfo.FieldType, paramType)) codes.Add(GenericFamily.Convert(fieldInfo.FieldType, paramType));
 					if (outerContext != null && !paramType.IsByRef && fieldInfo.FieldType.IsValueType && !paramType.IsValueType)
 						codes.Add(Box[fieldInfo.FieldType]);
 					continue;
@@ -799,7 +824,7 @@ namespace HarmonyLib
 
 				if (injectionType == InjectionType.State)
 				{
-					if (context.variables.TryGetValue((object)patch.DeclaringType ?? "null", out var stateVar))
+					if (context.variables.TryGetValue(MethodCreatorConfig.StateKey(patch, creator.config.instantiation), out var stateVar))
 					{
 						creator.ValidateBinding(patch, injection, context, stateVar.type, boxes: outerContext != null, uncheckedReferenceBinding: uncheckedReferenceBinding);
 						if (outerContext != null) codes.AddRange(creator.EmitStorage(patch, injection, context, stateVar, true, tmpBoxVars, uncheckedReferenceBinding: uncheckedReferenceBinding));
@@ -829,21 +854,27 @@ namespace HarmonyLib
 					var resultType = paramType;
 					if (resultType.IsByRef && returnType.IsByRef is false)
 						resultType = resultType.GetElementType();
-					if (resultType.IsAssignableFrom(returnType) is false)
+					if (resultType.IsAssignableFrom(creator.Closed(returnType)) is false)
 						throw creator.InvalidBinding(patch, context, $"parameter {injection.parameterInfo.Name} bound to __result", returnType, paramType, "The existing result contract requires an assignable type");
 					if (outerContext != null && !returnType.IsByRef)
 						ValidateStorageType(patch, injection, context, returnType, true);
 					var ldlocCode = paramType.IsByRef && returnType.IsByRef is false ? OpCodes.Ldloca : OpCodes.Ldloc;
-					if (returnType.IsValueType && (paramType == typeof(object).MakeByRefType() || outerContext != null && paramType.IsByRef && !ElementType(paramType).IsValueType))
+					if ((returnType.IsValueType || returnType.IsGenericParameter) && (paramType == typeof(object).MakeByRefType()
+						|| outerContext != null && paramType.IsByRef && !ElementType(paramType).IsValueType && !ElementType(paramType).IsGenericParameter))
 						ldlocCode = OpCodes.Ldloc;
 					codes.Add(new CodeInstruction(ldlocCode, context.variables[InjectionType.Result]));
-					if (returnType.IsValueType)
+					if (creator.Bridges(returnType, paramType))
 					{
-						if (outerContext != null && !ElementType(paramType).IsValueType && !CanStoreInObjectArray(returnType))
+						codes.Add(GenericFamily.Convert(returnType, paramType));
+						continue;
+					}
+					if (returnType.IsValueType || returnType.IsGenericParameter)
+					{
+						if (outerContext != null && !ElementType(paramType).IsValueType && !ElementType(paramType).IsGenericParameter && !CanStoreInObjectArray(returnType))
 							throw BindingError(patch, injection, context, "The return value cannot be boxed");
-						if (paramType == typeof(object) || outerContext != null && !paramType.IsByRef && !paramType.IsValueType)
+						if (paramType == typeof(object) || outerContext != null && !paramType.IsByRef && !paramType.IsValueType && !paramType.IsGenericParameter)
 							codes.Add(Box[returnType]);
-						else if (paramType == typeof(object).MakeByRefType() || outerContext != null && paramType.IsByRef && !ElementType(paramType).IsValueType)
+						else if (paramType == typeof(object).MakeByRefType() || outerContext != null && paramType.IsByRef && !ElementType(paramType).IsValueType && !ElementType(paramType).IsGenericParameter)
 						{
 							codes.Add(Box[returnType]);
 							tmpObjectVar = config.DeclareLocal(ElementType(paramType));
@@ -968,12 +999,16 @@ namespace HarmonyLib
 			var patchParamElementType = patchParamType.IsByRef ? patchParamType.GetElementType() : patchParamType;
 			var originalIsNormal = originalParamType.IsByRef is false;
 			var patchIsNormal = injection.parameterInfo.IsOut is false && patchParamType.IsByRef is false;
-			var needsBoxing = originalParamElementType.IsValueType && patchParamElementType.IsValueType is false;
+			var needsBoxing = (originalParamElementType.IsValueType || originalParamElementType.IsGenericParameter)
+				&& !patchParamElementType.IsValueType && !patchParamElementType.IsGenericParameter;
+			var bridges = creator.Bridges(originalParamType, patchParamType);
 
 			if (originalIsNormal == patchIsNormal)
 			{
 				codes.Add(argument.Load());
-				if (needsBoxing)
+				if (bridges)
+					codes.Add(GenericFamily.Convert(originalParamElementType, patchParamElementType));
+				else if (needsBoxing)
 				{
 					if (patchIsNormal)
 						codes.Add(Box[originalParamElementType]);
@@ -1007,14 +1042,19 @@ namespace HarmonyLib
 			}
 
 			codes.Add(argument.Load());
-			if (needsBoxing)
+			if (bridges)
+			{
+				codes.Add(Ldobj[originalParamElementType]);
+				codes.Add(GenericFamily.Convert(originalParamElementType, patchParamElementType));
+			}
+			else if (needsBoxing)
 			{
 				codes.Add(Ldobj[originalParamElementType]);
 				codes.Add(Box[originalParamElementType]);
 			}
 			else
 			{
-				if (originalParamElementType.IsValueType)
+				if (originalParamElementType.IsValueType || originalParamElementType.IsGenericParameter)
 					codes.Add(Ldobj[originalParamElementType]);
 				else
 					codes.Add(LoadIndOpCodeFor(originalParamElementType));
@@ -1085,14 +1125,6 @@ namespace HarmonyLib
 				throw BindingError(patch, injection, context, $"Storage type {source.FullDescription()} is incompatible");
 		}
 
-		internal static LocalBuilder[] DeclareOriginalLocalVariables(this MethodCreator creator, MethodBase member)
-		{
-			var vars = member.GetMethodBody()?.LocalVariables;
-			if (vars is null)
-				return [];
-			return [.. vars.Select(lvi => creator.config.il.DeclareLocal(lvi.LocalType, lvi.IsPinned))];
-		}
-
 		internal static List<CodeInstruction> RestoreArgumentArray(this MethodCreator _, PatchBindingContext context)
 		{
 			var codes = new List<CodeInstruction>();
@@ -1112,10 +1144,10 @@ namespace HarmonyLib
 					codes.Add(Ldc_I4[arrayIdx]);
 					codes.Add(Ldelem_Ref);
 
-					if (pType.IsValueType)
+					if (pType.IsValueType || pType.IsGenericParameter)
 					{
 						codes.Add(Unbox_Any[pType]);
-						if (AccessTools.IsStruct(pType))
+						if (AccessTools.IsStruct(pType) || pType.IsGenericParameter)
 							codes.Add(Stobj[pType]);
 						else
 							codes.Add(StoreIndOpCodeFor(pType));
@@ -1131,7 +1163,7 @@ namespace HarmonyLib
 					codes.Add(Ldloc[context.variables[InjectionType.ArgsArray]]);
 					codes.Add(Ldc_I4[arrayIdx]);
 					codes.Add(Ldelem_Ref);
-					if (pType.IsValueType)
+					if (pType.IsValueType || pType.IsGenericParameter)
 						codes.Add(Unbox_Any[pType]);
 					else
 						codes.Add(Castclass[pType]);
@@ -1236,7 +1268,8 @@ namespace HarmonyLib
 					default:
 						if (operand is null)
 							throw new Exception($"Wrong null argument: {codeInstruction}");
-						emitter.DynEmit(code, operand);
+						if (code != OpCodes.Ldtoken || operand is not Type { IsGenericTypeDefinition: true } type
+							|| !emitter.EmitGenericTypeToken(code, type, type == codeInstruction.genericInstantiation)) emitter.DynEmit(code, operand);
 						break;
 				}
 

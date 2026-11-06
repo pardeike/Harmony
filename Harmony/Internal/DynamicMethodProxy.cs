@@ -15,7 +15,8 @@ namespace HarmonyLib
 		// DynamicMethods and methods in emitted assemblies cannot be bound through assembly metadata.
 		// Forward through an exact-signature delegate:
 		// no boxing, copied ref arguments, native pointers, or reflection-wrapped exceptions.
-		internal static MethodInfo Create(MethodInfo target)
+		// A collectible stand-in can go away with its callback. A module that cannot bind collectible assemblies needs one that lives for the process.
+		internal static MethodInfo Create(MethodInfo target, bool collectible = true)
 		{
 			using var module = ModuleDefinition.CreateModule("HarmonyDynamicMethod_" + Guid.NewGuid().ToString("N"), new ModuleParameters
 			{
@@ -55,7 +56,7 @@ namespace HarmonyLib
 			il.Emit(OpCodes.Ret);
 			// Load through the same resolver as other Cecil-generated methods. A unique assembly identity prevents
 			// separate Harmony copies from binding each other's callbacks. The field retains the target's lifetime.
-			var assembly = GeneratedAssemblyLoader.Load(module);
+			var assembly = GeneratedAssemblyLoader.Load(module, collectible);
 			if (AccessTools.IsMonoRuntime) assembly.SetMonoCorlibInternal(true);
 			var typeProxy = assembly.GetType(holder.FullName);
 			typeProxy.GetField(field.Name, BindingFlags.NonPublic | BindingFlags.Static)

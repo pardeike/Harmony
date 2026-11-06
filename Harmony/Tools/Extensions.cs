@@ -868,6 +868,6 @@ namespace HarmonyLib
 		/// <summary>Tests a class member if it has an IL method body (external methods for example don't have a body)</summary>
 		/// <param name="member">The member to test</param>
 		/// <returns>Returns true if the member has an IL body or false if not</returns>
-		public static bool HasMethodBody(this MethodBase member) => (member.GetMethodBody()?.GetILAsByteArray()?.Length ?? 0) > 0;
+		public static bool HasMethodBody(this MethodBase member) => (MethodBodyPatching.GetMethodBody(member)?.GetILAsByteArray()?.Length ?? 0) > 0;
 	}
 }

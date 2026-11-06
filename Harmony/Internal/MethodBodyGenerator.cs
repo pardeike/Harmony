@@ -19,18 +19,19 @@ namespace HarmonyLib
 			&& typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
 #endif
 
-		internal static MethodInfo Generate(DynamicMethodDefinition patch, bool structuredHelper = false)
+		internal static MethodInfo Generate(DynamicMethodDefinition patch, bool structuredHelper = false, MethodBase original = null)
 		{
 			var body = patch.Definition.Body;
 			// Helpers initialize their own locals. Older optimized JITs require this existing helper convention.
 			body.InitLocals = !structuredHelper;
+			if (patch.Definition.HasGenericParameters || patch.Definition.DeclaringType.HasGenericParameters) return GenerateAssembly(patch);
 			MonoMod.Switches.TryGetSwitchValue(MonoMod.Switches.DMDType, out var selected);
 			var generator = selected as string;
 #if !NET35 && !NETSTANDARD2_0
 			var dynamicRequested = string.Equals(generator, "dynamicmethod", StringComparison.OrdinalIgnoreCase)
 				|| string.Equals(generator, "dm", StringComparison.OrdinalIgnoreCase);
 			if (HasDynamicIL && (structuredHelper || dynamicRequested || generator is null && !patch.Debug))
-				return DynamicMethodBodyWriter.CanGenerate(patch) ? DynamicMethodBodyWriter.Generate(patch) : GenerateAssembly(patch);
+				return DynamicMethodBodyWriter.CanGenerate(patch) ? DynamicMethodBodyWriter.Generate(patch, structuredHelper ? null : original) : GenerateAssembly(patch);
 #endif
 			if (structuredHelper)
 			{
@@ -54,16 +55,26 @@ namespace HarmonyLib
 			return type.MetadataType != MetadataType.Void;
 		}
 
+		internal static byte[] GenerateBody(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import)
+		{
+#if !NET35 && !NETSTANDARD2_0
+			return DynamicMethodBodyWriter.GenerateBody(patch, self, import);
+#else
+			throw new NotSupportedException("Exporting a method body requires a modern Harmony target framework.");
+#endif
+		}
+
 		static MethodInfo GenerateAssembly(DynamicMethodDefinition patch)
 		{
 			var proxies = new Dictionary<MethodInfo, MethodReference>();
 			var proxyAssemblies = new List<Assembly>();
 			var proxyEmittedMethods = typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
+			var genericMembers = GenericMethodContext.RuntimeMembers(patch);
 			foreach (var instruction in patch.Definition.Body.Instructions)
 			{
 				var method = instruction.Operand is DynamicMethodReference dynamicReference ? dynamicReference.DynamicMethod : null;
 				if (proxyEmittedMethods && method is null && instruction.Operand is MethodReference reference && !reference.HasThis
-					&& reference != patch.Definition && reference.ResolveReflection() is MethodInfo target)
+					&& reference != patch.Definition && (genericMembers?.TryGetValue(reference, out var member) is true ? member : reference.ResolveReflection()) is MethodInfo target)
 				{
 #if NET35
 					if (target.Module.Assembly is AssemblyBuilder) method = target;

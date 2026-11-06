@@ -447,6 +447,18 @@ namespace HarmonyLib
 			il.Emit(opcode, cls);
 		}
 
+		internal bool EmitGenericTypeToken(OpCode opcode, Type type, bool instantiate)
+		{
+			var method = il.IL.Body.Method;
+			if (!method.HasGenericParameters && !method.DeclaringType.HasGenericParameters) return false;
+			var reference = GenericMethodContext.TypeToken(method, type, instantiate);
+			if (reference is null) return false;
+			AddInstruction(opcode, type);
+			il.Emit(opcode, typeof(object));
+			il.IL.Body.Instructions.Last().Operand = reference;
+			return true;
+		}
+
 		internal void Emit(OpCode opcode, long arg)
 		{
 			AddInstruction(opcode, arg);
