@@ -61,6 +61,10 @@ As a result, you cannot patch static constructors unless you plan to run them ag
 
 A native method has no IL body for Harmony to copy, so ordinary prefixes and postfixes do not work. A transpiler-only patch can supply a new body from the empty input. **Beware:** this replaces the native implementation; it does not give you a way to call it.
 
+## Function pointer signatures
+
+A method whose signature contains a function pointer type, written as `delegate*` in C#, patches on CoreCLR. On Mono, reflection cannot describe such a type: it recurses without end while Harmony prepares the patch, and the process ends with a stack overflow. Do not patch such methods on Mono.
+
 ## MarshalByRefObject
 
 Patching methods on classes derived from `MarshalByRefObject` is runtime-dependent and may fail. Verify the specific method on the runtime you intend to support.

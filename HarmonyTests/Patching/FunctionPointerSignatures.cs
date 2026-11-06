@@ -19,6 +19,8 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Test_Function_pointer_parameter_and_return_targets()
 		{
+			// Mono's reflection recurses without end in IsValueType for a function pointer type, which overflows the stack of the test host.
+			if (AccessTools.IsMonoRuntime) Assert.Ignore("Mono cannot describe function pointer types through reflection.");
 			var harmony = new Harmony("function-pointer-signatures");
 			try
 			{
