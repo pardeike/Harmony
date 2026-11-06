@@ -108,7 +108,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Gets the current value</summary>
-		/// <value>The value</value>
+		/// <returns>The value</returns>
 		///
 		public object GetValue()
 		{
@@ -124,7 +124,7 @@ namespace HarmonyLib
 
 		/// <summary>Gets the current value</summary>
 		/// <typeparam name="T">The type of the value</typeparam>
-		/// <value>The value</value>
+		/// <returns>The value</returns>
 		///
 		public T GetValue<T>()
 		{
@@ -135,7 +135,7 @@ namespace HarmonyLib
 
 		/// <summary>Invokes the current method with arguments and returns the result</summary>
 		/// <param name="arguments">The method arguments</param>
-		/// <value>The value returned by the method</value>
+		/// <returns>The value returned by the method</returns>
 		///
 		public object GetValue(params object[] arguments)
 		{
@@ -147,7 +147,7 @@ namespace HarmonyLib
 		/// <summary>Invokes the current method with arguments and returns the result</summary>
 		/// <typeparam name="T">The type of the value</typeparam>
 		/// <param name="arguments">The method arguments</param>
-		/// <value>The value returned by the method</value>
+		/// <returns>The value returned by the method</returns>
 		///
 		public T GetValue<T>(params object[] arguments)
 		{

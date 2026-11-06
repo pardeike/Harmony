@@ -140,12 +140,15 @@ namespace HarmonyLib
 		public static CodeInstruction Call(Expression<Action> expression) => new(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
 
 		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
+		/// <typeparam name="T">The lambda parameter type</typeparam>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>A new Codeinstruction</returns>
 		///
 		public static CodeInstruction Call<T>(Expression<Action<T>> expression) => new(OpCodes.Call, SymbolExtensions.GetMethodInfo(expression));
 
 		/// <summary>Creates a CodeInstruction calling a method (CALL)</summary>
+		/// <typeparam name="T">The lambda parameter type</typeparam>
+		/// <typeparam name="TResult">The lambda result type</typeparam>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>A new Codeinstruction</returns>
 		///

@@ -770,6 +770,7 @@ namespace HarmonyLib
 		/// <summary>Gets the <see cref="IAsyncStateMachine.MoveNext"/> method of an async method's state machine</summary>
 		/// <param name="method">Async method that creates the state machine internally</param>
 		/// <returns>The internal <see cref="IAsyncStateMachine.MoveNext"/> method of the async state machine or <b>null</b> if no valid async method is detected</returns>
+		/// <remarks>Not available in the net35 build</remarks>
 		///
 		public static MethodInfo AsyncMoveNext(MethodBase method)
 		{
@@ -940,12 +941,14 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Test if a class member is actually an concrete implementation</summary>
+		/// <typeparam name="T">The member type</typeparam>
 		/// <param name="member">A member</param>
 		/// <returns>True if the member is a declared</returns>
 		///
 		public static bool IsDeclaredMember<T>(this T member) where T : MemberInfo => member.DeclaringType == member.ReflectedType;
 
 		/// <summary>Gets the real implementation of a class member</summary>
+		/// <typeparam name="T">The member type</typeparam>
 		/// <param name="member">A member</param>
 		/// <returns>The member itself if its declared. Otherwise the member that is actually implemented in some base type</returns>
 		///
@@ -1770,8 +1773,8 @@ namespace HarmonyLib
 		/// (usually <c>object</c>) instead of using said value type.
 		/// Use this if the generic arguments of <typeparamref name="DelegateType"/> doesn't represent the delegate's
 		/// arguments, and calling this function fails
-		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
 		/// </param>
+		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="method"/></returns>
 		/// <remarks>
 		/// <para>
 		/// Delegate invocation is more performant and more convenient to use than <see cref="MethodBase.Invoke(object, object[])"/>
@@ -1960,8 +1963,8 @@ namespace HarmonyLib
 		/// (usually <c>object</c>) instead of using said value type.
 		/// Use this if the generic arguments of <typeparamref name="DelegateType"/> doesn't represent the delegate's
 		/// arguments, and calling this function fails
-		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="typeColonName"/></returns>
 		/// </param>
+		/// <returns>A delegate of given <typeparamref name="DelegateType"/> to given <paramref name="typeColonName"/></returns>
 		/// <remarks>
 		/// <para>
 		/// Delegate invocation is more performant and more convenient to use than <see cref="MethodBase.Invoke(object, object[])"/>

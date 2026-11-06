@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 namespace HarmonyLib
 {
 	/// <summary>The operation selected by an Infix declaration</summary>
+	///
 	public enum InnerTargetKind
 	{
 		/// <summary>A method call</summary>
@@ -30,6 +31,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Selects occurrences of a member operation or literal load inside an outer method</summary>
+	///
 	[Serializable]
 #if NET5_0_OR_GREATER
 	[JsonConverter(typeof(InnerTargetJsonConverter))]
@@ -53,11 +55,13 @@ namespace HarmonyLib
 		/// <summary>One-based matches; negative positions count from the end, and empty selects all</summary>
 		/// <remarks>Counts operations after transpilers, before Infix insertion. Zero, null and missing positions are invalid; at least one match is required.
 		/// Installation copies the selector and positions, so later edits do not affect installed patches.</remarks>
+		///
 		public int[] positions;
 
 		/// <summary>Selects an exact method or explicit generic method family</summary>
 		/// <param name="method">The selected method</param>
 		/// <param name="positions">One-based occurrences, negative from the end, or empty for all</param>
+		///
 		public InnerTarget(MethodInfo method, params int[] positions) : this(new InnerMethod(method, positions)) { }
 
 		internal InnerTarget(InnerMethod method)
@@ -72,6 +76,7 @@ namespace HarmonyLib
 		/// <param name="property">The selected property</param>
 		/// <param name="kind">Getter or Setter</param>
 		/// <param name="positions">One-based occurrences, negative from the end, or empty for all</param>
+		///
 		public InnerTarget(PropertyInfo property, InnerTargetKind kind, params int[] positions)
 			: this(Accessor(property, kind), positions) { }
 
@@ -79,6 +84,8 @@ namespace HarmonyLib
 		/// <param name="field">The selected field, optionally on a generic type definition</param>
 		/// <param name="kind">FieldRead or FieldWrite</param>
 		/// <param name="positions">One-based occurrences, negative from the end, or empty for all</param>
+		/// <remarks>Throws ArgumentException for a literal field, a FieldWrite of a readonly field, or an instance field of a value type.</remarks>
+		///
 		public InnerTarget(FieldInfo field, InnerTargetKind kind, params int[] positions) : this((MemberInfo)field, kind, positions)
 		{
 			if (kind != InnerTargetKind.FieldRead && kind != InnerTargetKind.FieldWrite)
@@ -89,6 +96,8 @@ namespace HarmonyLib
 		/// <summary>Selects newobj instructions using the specified constructor</summary>
 		/// <param name="constructor">The selected instance constructor</param>
 		/// <param name="positions">One-based occurrences, negative from the end, or empty for all</param>
+		/// <remarks>Only newobj instructions match. Base-constructor initialization through call is not selected. A static constructor throws ArgumentException.</remarks>
+		///
 		public InnerTarget(ConstructorInfo constructor, params int[] positions) : this(constructor, InnerTargetKind.Constructor, positions) => Validate();
 
 		InnerTarget(MemberInfo member, InnerTargetKind kind, int[] positions)
@@ -122,6 +131,7 @@ namespace HarmonyLib
 		/// <param name="value">A non-null string, int, long, float, or double</param>
 		/// <param name="positions">One-based occurrences, negative from the end, or empty for all</param>
 		/// <returns>The literal selector</returns>
+		///
 		public static InnerTarget Constant(object value, params int[] positions) => new(value, positions);
 
 		internal InnerTarget(int identityVersion, InnerTargetKind kind, int[] positions, InnerMethod methodSelector = null,
@@ -141,12 +151,14 @@ namespace HarmonyLib
 		}
 
 		/// <summary>The normalized operation; property accessors are Method targets</summary>
+		///
 #if NET5_0_OR_GREATER
 		[JsonIgnore]
 #endif
 		public InnerTargetKind Kind => kind;
 
 		/// <summary>The exact selected member or explicit declaring-type family; null for a literal</summary>
+		///
 #if NET5_0_OR_GREATER
 		[JsonIgnore]
 #endif
@@ -160,6 +172,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>The selected literal value, or null for a member target</summary>
+		///
 #if NET5_0_OR_GREATER
 		[JsonIgnore]
 #endif
@@ -274,7 +287,10 @@ namespace HarmonyLib
 			&& positions.Distinct().OrderBy(position => position).SequenceEqual(other.positions.Distinct().OrderBy(position => position));
 
 		/// <summary>Compares operation selectors independently of occurrence positions</summary>
+		/// <param name="obj">The other selector</param>
+		/// <returns>True if both select the same operation</returns>
 		/// <remarks>Compares stored identities without resolving loaded modules. Registration validates live targets separately.</remarks>
+		///
 		public override bool Equals(object obj)
 		{
 			if (obj is not InnerTarget other) return false;
@@ -286,6 +302,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Returns the operation selector hash independently of occurrence positions</summary>
+		/// <returns>A hash code</returns>
+		///
 		public override int GetHashCode()
 		{
 			ValidateStoredIdentity();

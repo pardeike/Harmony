@@ -13,6 +13,7 @@ using System.Text.Json.Serialization;
 namespace HarmonyLib
 {
 	/// <summary>Selects call occurrences of an exact method or explicit generic family inside an outer method</summary>
+	///
 #if NET5_0_OR_GREATER
 	[JsonConverter(typeof(InnerMethodJsonConverter))]
 #endif
@@ -35,11 +36,14 @@ namespace HarmonyLib
 		/// <summary>One-based matches; negative positions count from the end, and empty selects all</summary>
 		/// <remarks>Counts calls after transpilers, before Infix insertion. Zero, null and missing positions are invalid; at least one match is required.
 		/// Installation copies the selector and positions, so later edits do not affect installed patches.</remarks>
+		///
 		public int[] positions;
 
 		/// <summary>Creates an inner call selector</summary>
 		/// <param name="method">The exact called method or an explicit generic definition</param>
 		/// <param name="positions">One-based occurrences, negative from the end, or empty for all</param>
+		/// <remarks>Throws ArgumentException for a dynamic method, a partially open declaring type, or a zero position.</remarks>
+		///
 		public InnerMethod(MethodInfo method, params int[] positions)
 		{
 			ValidatePositions(positions);
@@ -60,6 +64,7 @@ namespace HarmonyLib
 		}
 
 		/// <summary>The exact method or explicitly selected generic definition</summary>
+		///
 #if NET5_0_OR_GREATER
 		[JsonIgnore]
 #endif
@@ -151,7 +156,10 @@ namespace HarmonyLib
 			&& positions.Distinct().OrderBy(p => p).SequenceEqual(other.positions.Distinct().OrderBy(p => p));
 
 		/// <summary>Compares call selectors, independently of their occurrence positions</summary>
+		/// <param name="obj">The other selector</param>
+		/// <returns>True if both select the same method or generic family</returns>
 		/// <remarks>Compares stored identities without resolving loaded modules. Registration validates live targets separately.</remarks>
+		///
 		public override bool Equals(object obj)
 		{
 			if (obj is not InnerMethod other) return false;
@@ -162,6 +170,8 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Returns the hash of the call selector, independently of its occurrence positions</summary>
+		/// <returns>A hash code</returns>
+		///
 		public override int GetHashCode()
 		{
 			ValidateStoredIdentity();

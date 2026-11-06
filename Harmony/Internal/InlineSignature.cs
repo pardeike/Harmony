@@ -37,10 +37,12 @@ namespace HarmonyLib
 
 		/// <summary>Stack values consumed by <c>calli</c>, including the function pointer and any implicit instance.</summary>
 		/// <remarks>An explicit instance is counted once, through <see cref="Parameters"/>.</remarks>
+		///
 		public int PopCount => Parameters.Count + (HasThis && !ExplicitThis ? 1 : 0) + 1;
 
 		/// <summary>Stack values produced by <c>calli</c>: zero for <see cref="void"/>, otherwise one.</summary>
 		/// <remarks>Modifiers do not change the count. A function-pointer return counts as one pointer, regardless of its signature.</remarks>
+		///
 		public int PushCount
 		{
 			get

@@ -42,6 +42,7 @@ namespace HarmonyLib
 		public readonly bool debug;
 
 		/// <summary>Whether this registration skips reference-type compatibility checks, including references produced by boxing.</summary>
+		///
 		[OptionalField]
 		public readonly bool uncheckedReferenceBinding;
 
@@ -59,7 +60,9 @@ namespace HarmonyLib
 		[OptionalField]
 		public readonly InnerMethod innerMethod;
 
-		/// <summary>The selected extended operation; method-call patches retain their existing innerMethod representation</summary>
+		/// <summary>For an infix patch on a field access, object construction or literal, this defines the selected operation</summary>
+		/// <remarks>Method calls and property accessors use <see cref="innerMethod"/>, and this field is null.</remarks>
+		///
 		[OptionalField]
 		public readonly InnerTarget innerTarget;
 

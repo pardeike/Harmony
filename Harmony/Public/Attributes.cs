@@ -21,6 +21,7 @@ namespace HarmonyLib
 		Enumerator = 5,
 #if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP
 		/// <summary>This targets the MoveNext method of the async state machine, that actually contains the method's implementation</summary>
+		/// <remarks>Not available in the net35 build</remarks>
 		Async = 6,
 #endif
 		/// <summary>Finalize</summary>
@@ -108,15 +109,20 @@ namespace HarmonyLib
 		/// <summary>Match an original method argument by its exact name</summary>
 		Original = 1,
 		/// <summary>Match a preserved compiler-generated captured variable in an Infix scope</summary>
+		/// <remarks>Lookup is case-sensitive and reads the inner generated receiver or closure arguments.
+		/// Add <see cref="HarmonyOuter"/> for variables of the outer generated body. Optimized-away variables cannot be found.</remarks>
 		Captured = 2,
 		/// <summary>Bind a named, patch-owned outer value that survives awaits and iterator yields</summary>
-		/// <remarks>Requires HarmonyOuter on an Infix parameter. Slots are scoped to the actual patch declaring type and name,
+		/// <remarks>Requires <see cref="HarmonyOuter"/> on an Infix parameter. Slots are scoped to the actual patch declaring type and name,
 		/// start at default, and last one async execution or enumeration. Ordinary methods use one invocation.
-		/// Values must be storable on the managed heap. Completion releases references without disposing stored objects.</remarks>
+		/// Values must be storable on the managed heap. Completion releases references without disposing stored objects.
+		/// On the CLR 2.0 runtime of .NET 3.5, a stored value that refers back to its enumerator keeps both alive.
+		/// Complete or dispose that enumerator, or remove the persistent patch.</remarks>
 		Persistent = 3
 	}
 
 	/// <summary>Selects the containing method body searched by an Infix</summary>
+	///
 	public enum InfixOuterBody
 	{
 		/// <summary>Search the explicitly selected method</summary>
@@ -203,6 +209,7 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Selects operations inside the outer patched method for an inner prefix, postfix, or finalizer</summary>
+	///
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 	public sealed class HarmonyInfix : HarmonyAttribute
 	{
@@ -220,9 +227,13 @@ namespace HarmonyLib
 		/// <summary>One-based matches; negative positions count from the end, and empty selects all</summary>
 		/// <remarks>Counts after transpilers, before Infix insertion. Zero, null and missing positions are invalid; at least one match is required.
 		/// Installation copies the positions, so later edits do not affect installed patches.</remarks>
+		///
 		public int[] Positions { get; set; } = [];
 
 		/// <summary>Whether to search the selected method or its recognized state-machine body</summary>
+		/// <remarks><see cref="InfixOuterBody.Auto"/> leaves ordinary methods unchanged. It selects one body, not lambdas, local functions or other helper methods.
+		/// Use <see cref="AccessTools.StateMachineMoveNext"/> to find that body for <see cref="Harmony.GetPatchInfo"/> or unpatching.</remarks>
+		///
 		public InfixOuterBody OuterBody
 		{
 			get => info.infixOuterBody ?? InfixOuterBody.Declared;
@@ -239,12 +250,24 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Selects an unambiguous named method</summary>
+		/// <param name="declaringType">The method's declaring type</param>
+		/// <param name="methodName">The method name</param>
+		///
 		public HarmonyInfix(Type declaringType, string methodName) : this(declaringType, methodName, (Type[])null, null) { }
 
 		/// <summary>Selects a named method with the supplied argument types</summary>
+		/// <param name="declaringType">The method's declaring type</param>
+		/// <param name="methodName">The method name</param>
+		/// <param name="argumentTypes">The method parameter types</param>
+		///
 		public HarmonyInfix(Type declaringType, string methodName, params Type[] argumentTypes) : this(declaringType, methodName, argumentTypes, null) { }
 
 		/// <summary>Selects a named method with ref, out, or pointer argument variations</summary>
+		/// <param name="declaringType">The method's declaring type</param>
+		/// <param name="methodName">The method name</param>
+		/// <param name="argumentTypes">The method parameter types</param>
+		/// <param name="argumentVariations">One <see cref="ArgumentType"/> for each argument type</param>
+		///
 		public HarmonyInfix(Type declaringType, string methodName, Type[] argumentTypes, ArgumentType[] argumentVariations)
 		{
 			info.methodType = (MethodType)int.MinValue;
@@ -259,6 +282,7 @@ namespace HarmonyLib
 		/// <param name="memberName">The member name</param>
 		/// <param name="kind">Method, Getter, Setter, FieldRead, or FieldWrite</param>
 		/// <param name="argumentTypes">Method or property index parameters, excluding a setter's value; empty for fields</param>
+		///
 		public HarmonyInfix(Type declaringType, string memberName, InnerTargetKind kind, params Type[] argumentTypes)
 		{
 			info.methodType = (MethodType)int.MinValue;
@@ -273,11 +297,13 @@ namespace HarmonyLib
 		/// <param name="declaringType">The constructed type</param>
 		/// <param name="kind">Constructor</param>
 		/// <param name="argumentTypes">The constructor parameter types</param>
+		///
 		public HarmonyInfix(Type declaringType, InnerTargetKind kind, params Type[] argumentTypes)
 			: this(declaringType, null, kind, argumentTypes) { }
 
 		/// <summary>Selects a non-null string, int, long, float, or double literal load</summary>
 		/// <param name="constant">The exact literal value; its CLR type selects the corresponding IL literal category</param>
+		///
 		public HarmonyInfix(object constant)
 		{
 			info.methodType = (MethodType)int.MinValue;
@@ -287,18 +313,22 @@ namespace HarmonyLib
 	}
 
 	/// <summary>Binds an Infix parameter to the containing outer method</summary>
+	///
 	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
 	public sealed class HarmonyOuter : Attribute { }
 
 	/// <summary>Allows inlining an inner patch body; unsupported bodies keep a normal call</summary>
+	///
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 	public sealed class HarmonyInline : Attribute
 	{
 		/// <summary>Whether eligible inner patch bodies may be copied</summary>
+		///
 		public bool Enabled { get; }
 
 		/// <summary>Sets the optional inner patch inlining hint</summary>
 		/// <param name="enabled">True permits inlining; false keeps the normal call</param>
+		///
 		public HarmonyInline(bool enabled = true) => Enabled = enabled;
 	}
 
@@ -736,11 +766,13 @@ namespace HarmonyLib
 
 	/// <summary>Skip reference-type compatibility checks for one patch callback, including references produced by boxing.</summary>
 	/// <remarks>This does not add conversions or disable storage, value/address, or existing role-specific requirements. Transpilers reject it.</remarks>
+	///
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 	public sealed class HarmonyUncheckedReferenceBinding : HarmonyAttribute
 	{
 		/// <summary>Enable or disable unchecked reference binding for this callback or patch factory.</summary>
 		/// <param name="enabled">Whether to skip reference-type compatibility checks.</param>
+		///
 		public HarmonyUncheckedReferenceBinding(bool enabled = true) => info.uncheckedReferenceBinding = enabled;
 	}
 
@@ -823,6 +855,7 @@ namespace HarmonyLib
 		internal ArgumentMode Mode { get; private set; }
 
 		/// <summary>An annotation to declare injected arguments by name</summary>
+		/// <param name="originalName">Name of the original argument</param>
 		///
 		public HarmonyArgument(string originalName) : this(originalName, null)
 		{
@@ -831,6 +864,8 @@ namespace HarmonyLib
 		/// <summary>Binds an argument using the selected name handling</summary>
 		/// <param name="originalName">Name of the original argument</param>
 		/// <param name="mode">How Harmony resolves the argument name</param>
+		/// <remarks>For a mode other than <see cref="ArgumentMode.Default"/>, <see cref="NewName"/> holds the name.
+		/// <see cref="OriginalName"/> then holds a marker that older Harmony versions reject.</remarks>
 		///
 		public HarmonyArgument(string originalName, ArgumentMode mode) : this(originalName)
 		{

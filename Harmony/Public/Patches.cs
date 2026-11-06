@@ -33,6 +33,7 @@ namespace HarmonyLib
 		public readonly ReadOnlyCollection<Patch> InnerPostfixes;
 
 		/// <summary>A collection of inner finalizer patches</summary>
+		/// 
 		public readonly ReadOnlyCollection<Patch> InnerFinalizers;
 
 		/// <summary>Gets all owners (Harmony IDs) or all known patches</summary>
@@ -73,6 +74,7 @@ namespace HarmonyLib
 		/// <param name="innerprefixes">Inner prefixes</param>
 		/// <param name="innerpostfixes">Inner postfixes</param>
 		/// <param name="innerfinalizers">Inner finalizers</param>
+		/// 
 		public Patches(Patch[] prefixes, Patch[] postfixes, Patch[] transpilers, Patch[] finalizers, Patch[] innerprefixes, Patch[] innerpostfixes, Patch[] innerfinalizers)
 		{
 			prefixes ??= [];

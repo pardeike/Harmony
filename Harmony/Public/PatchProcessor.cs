@@ -154,7 +154,8 @@ namespace HarmonyLib
 
 		/// <summary>Appends a pending inner finalizer</summary>
 		/// <param name="innerFinalizer">The callback with an explicit target or <see cref="HarmonyInfix"/> declaration</param>
-		/// <returns>This processor for chaining calls</returns>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
+		///
 		public PatchProcessor AddInnerFinalizer(HarmonyMethod innerFinalizer)
 		{
 			if (innerFinalizer is not null) innerfinalizers.Add(innerFinalizer);
@@ -163,7 +164,8 @@ namespace HarmonyLib
 
 		/// <summary>Appends a pending inner finalizer</summary>
 		/// <param name="fixMethod">The callback with a <see cref="HarmonyInfix"/> target</param>
-		/// <returns>This processor for chaining calls</returns>
+		/// <returns>A <see cref="PatchProcessor"/> for chaining calls</returns>
+		///
 		public PatchProcessor AddInnerFinalizer(MethodInfo fixMethod) => AddInnerFinalizer(new HarmonyMethod(fixMethod));
 
 		/// <summary>Gets all patched original methods in the appdomain</summary>
@@ -178,7 +180,9 @@ namespace HarmonyLib
 		}
 
 		/// <summary>Installs the pending configuration alongside existing patches and rebuilds the method</summary>
-		/// <remarks>Retains the configuration. Repeated calls add registrations; they do not replace earlier installations.</remarks>
+		/// <remarks>Retains the configuration. Repeated calls add registrations; they do not replace earlier installations.
+		/// All pending patches must resolve to one method body, and later calls must keep that body. Otherwise this throws ArgumentException.
+		/// Use separate processors for different bodies, for example when an Infix uses <see cref="InfixOuterBody.Auto"/>.</remarks>
 		/// <returns>The generated replacement method. An open generic definition installed by a registered <see cref="MethodBodyPatching"/> installer has no callable copy: the definition itself is returned, or null for a constructor.</returns>
 		///
 		public MethodInfo Patch()

@@ -61,7 +61,8 @@ namespace HarmonyLib
 		[OptionalField]
 		public Patch[] innerpostfixes = [];
 
-		/// <summary>Inner finalizers as an array of patches</summary>
+		/// <summary>InnerFinalizers as an array of <see cref="Patch"/></summary>
+		///
 		[OptionalField]
 		public Patch[] innerfinalizers = [];
 
@@ -174,10 +175,14 @@ namespace HarmonyLib
 		public void RemoveInnerPostfix(string owner) => innerpostfixes = Remove(owner, innerpostfixes);
 
 		/// <summary>Adds inner finalizers</summary>
+		/// <param name="owner">An owner (Harmony ID)</param>
+		/// <param name="methods">The patch methods</param>
+		///
 		internal void AddInnerFinalizers(string owner, params HarmonyMethod[] methods) => innerfinalizers = Add(owner, methods, innerfinalizers, HarmonyPatchType.InnerFinalizer);
 
 		/// <summary>Removes inner finalizers</summary>
-		/// <param name="owner">The owner, or <c>*</c> for all owners</param>
+		/// <param name="owner">The owner of the inner finalizers, or <c>*</c> for all</param>
+		///
 		public void RemoveInnerFinalizer(string owner) => innerfinalizers = Remove(owner, innerfinalizers);
 
 		/// <summary>Removes a patch using its method</summary>

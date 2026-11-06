@@ -24,6 +24,7 @@ namespace HarmonyLib
 		/// <returns>The generated MoveNext method, the supplied method if it is already that body, or null for an ordinary method</returns>
 		/// <exception cref="ArgumentException">Recognized state-machine metadata is malformed or cannot be closed from the supplied method</exception>
 		/// <remarks>Async iterators resolve to IAsyncStateMachine.MoveNext, not MoveNextAsync. Open generic methods must be closed first.</remarks>
+		///
 		public static MethodInfo StateMachineMoveNext(MethodBase method)
 		{
 			if (method is null) throw new ArgumentNullException(nameof(method));
@@ -69,6 +70,7 @@ namespace HarmonyLib
 		/// <returns>The selected generated method</returns>
 		/// <exception cref="ArgumentException">The local function was not preserved as a referenced generated method</exception>
 		/// <exception cref="AmbiguousMatchException">Several referenced local functions match</exception>
+		///
 		public static MethodInfo LocalFunction(MethodBase containingMethod, string name, Type[] parameters = null)
 		{
 			if (containingMethod is null) throw new ArgumentNullException(nameof(containingMethod));
@@ -85,6 +87,7 @@ namespace HarmonyLib
 		/// <param name="containingMethod">The source method, or a resolved generated method</param>
 		/// <returns>Distinct lambda methods in deterministic metadata order</returns>
 		/// <remarks>The order can change after recompilation. Compiler-generated state-machine bodies are inspected for iterator and async methods.</remarks>
+		///
 		public static IEnumerable<MethodInfo> Lambdas(MethodBase containingMethod)
 		{
 			if (containingMethod is null) throw new ArgumentNullException(nameof(containingMethod));

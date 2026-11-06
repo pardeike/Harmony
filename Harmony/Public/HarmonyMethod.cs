@@ -14,13 +14,19 @@ namespace HarmonyLib
 		/// 
 		public MethodInfo method; // need to be called 'method'
 
-		/// <summary>The Infix call selector</summary>
+		/// <summary>The Infix call selector, see <see cref="InnerMethod"/></summary>
+		/// 
 		public InnerMethod innerMethod;
 
-		/// <summary>The Infix member-operation or literal selector</summary>
+		/// <summary>The Infix member-operation or literal selector, see <see cref="InnerTarget"/></summary>
+		/// <remarks>If <see cref="innerMethod"/> or a <see cref="HarmonyInfix"/> declaration also selects a target, all must select the same operation and positions.
+		/// Otherwise patching throws ArgumentException.</remarks>
+		/// 
 		public InnerTarget innerTarget;
 
 		/// <summary>The body searched by an Infix; null keeps the declared method</summary>
+		/// <remarks>See <see cref="HarmonyInfix.OuterBody"/>.</remarks>
+		/// 
 		public InfixOuterBody? infixOuterBody;
 
 		/// <summary>Patch Category</summary>
@@ -64,6 +70,7 @@ namespace HarmonyLib
 		public bool? debug;
 
 		/// <summary>Skip reference-type compatibility checks for this patch, including references produced by boxing. Structural and role-specific checks still apply. Transpilers reject it.</summary>
+		/// 
 		public bool? uncheckedReferenceBinding;
 
 		/// <summary>Whether to use <see cref="MethodDispatchType.Call"/> (<c>true</c>) or <see cref="MethodDispatchType.VirtualCall"/> (<c>false</c>) mechanics
@@ -211,11 +218,13 @@ namespace HarmonyLib
 
 		/// <summary>Creates a patch from a given method</summary>
 		/// <param name="method">The original method</param>
+		/// <returns>A <see cref="HarmonyMethod"/> wrapping the method</returns>
 		///
 		public static implicit operator HarmonyMethod(MethodInfo method) => new(method);
 
 		/// <summary>Creates a patch from a given method</summary>
 		/// <param name="delegate">The original method</param>
+		/// <returns>A <see cref="HarmonyMethod"/> wrapping the delegate's method</returns>
 		///
 		public static implicit operator HarmonyMethod(Delegate @delegate) => new(@delegate);
 	}

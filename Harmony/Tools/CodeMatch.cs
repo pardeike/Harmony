@@ -83,6 +83,7 @@ namespace HarmonyLib
 		/// <param name="opcodes">The opcodes</param>
 		/// <param name="operand">The optional operand</param>
 		/// <param name="name">The optional name</param>
+		/// <returns>A new code match</returns>
 		///
 		public static CodeMatch WithOpcodes(HashSet<OpCode> opcodes, object operand = null, string name = null) => new(null, operand, name) { opcodeSet = opcodes };
 

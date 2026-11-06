@@ -11,6 +11,7 @@ namespace HarmonyLib
 	/// <remarks>
 	/// A host registers each part once during initialization, before patching starts. An unregistered part keeps Harmony's default.
 	/// Null registers nothing. Non-null registration after any host-owned target is pinned throws InvalidOperationException.
+	/// A second non-null registration of the same part also throws InvalidOperationException.
 	/// Targets already pinned to the default detour do not prevent registration and keep that installer.
 	/// <see cref="SetEligibility"/> selects the methods the host owns. Without it the other parts have no effect.
 	/// The host owns discovery, installation and recovery. Harmony never retries a failed installation through another mechanism. Unpatching installs a rebuilt replacement.
@@ -18,6 +19,7 @@ namespace HarmonyLib
 	/// The contract addresses a runtime that replaces a method's IL body through tokens of the method's own module, with Harmony as one rewriter among others.
 	/// A host reads the baseline that excludes its own installed body, imports values into that module, and installs under Harmony's patch lock.
 	/// </remarks>
+	///
 	public static class MethodBodyPatching
 	{
 		// BCL-only v1 prefix: append optional slots, tolerate shorter records, and never resize or replace a shared record.
@@ -70,6 +72,7 @@ namespace HarmonyLib
 		/// With an installer, accepting a partially open target throws NotSupportedException before pinning.
 		/// Eligibility runs under Harmony's shared patch lock and must not wait for another thread that uses Harmony.
 		/// </remarks>
+		///
 		public static void SetEligibility(Func<MethodBase, bool> accepts) => Register(0, accepts);
 
 		/// <summary>Registers the reader of an owned method's baseline body.</summary>
@@ -80,6 +83,7 @@ namespace HarmonyLib
 		/// Construction calls the reader under Harmony's shared patch lock. Standalone body reads can call it outside that lock, concurrently with installation.
 		/// The reader must support those concurrent calls. When holding Harmony's lock, it must not wait for another Harmony thread.
 		/// </remarks>
+		///
 		public static void SetBodySource(Func<MethodBase, MethodBody> readBody) => Register(1, readBody);
 
 		/// <summary>Registers the installer of an owned method's replacement.</summary>
@@ -87,7 +91,7 @@ namespace HarmonyLib
 		/// <remarks>
 		/// Harmony holds its shared patch lock while install runs. The installer must not wait for another thread that uses Harmony.
 		/// The installer must not call patch, unpatch, reverse-patch or rebuild operations. Re-entry into the same target or generic family throws InvalidOperationException.
-		/// Instantiations remains available during installation. The synchronous writer and importer also run under the patch lock.
+		/// <see cref="Instantiations"/> remains available during installation. The synchronous writer and importer also run under the patch lock.
 		/// Once the registered installer starts, failure retains the target and family pins without publishing candidate patch records.
 		/// If a failed installation leaves an unknown state, the installer must refuse further updates to that target.
 		/// The replacement is a callable copy of the patched body. For a definition-wide target it is null: an open generic definition has no callable copy, so the installer writes the body.
@@ -100,7 +104,9 @@ namespace HarmonyLib
 		/// Successful installation updates the field, including calls from older bodies. Failed installation preserves the previous delegate.
 		/// Ordinary reflection callbacks use module, metadata token, declaring type and method arguments as identity. Distinct dynamic callbacks retain separate permanent entries.
 		/// A refused generated open generic helper is offered again in a permanent assembly with its generic context. These assemblies accumulate across rebuilds.
-		/// A permanent generic helper cannot reference collectible dependencies. Generic helper generation requires collectible AssemblyLoadContext support, so .NET Framework and Mono refuse Infix patches on a generic method definition with a NotSupportedException before installation.
+		/// A permanent generic helper cannot reference collectible dependencies. Generic helper generation requires collectible AssemblyLoadContext support.
+		/// On .NET Framework and Mono, an Infix patch on a host-owned generic method definition therefore fails before installation.
+		/// Patching throws a HarmonyException with an inner NotSupportedException and records no patch.
 		/// Other open generic callbacks must bind directly. Hosts must resolve HarmonyDynamicMethod_* stand-ins, HarmonyGenerated_* helpers and callback dependencies by exact loaded identity.
 		/// Runtime access checks still apply to private callbacks and Harmony's internal generic guard helpers unless the target module ignores those checks.
 		/// A refused ldtoken, ldftn or ldvirtftn method operand cannot use a stand-in because that would change its identity.
@@ -115,12 +121,14 @@ namespace HarmonyLib
 		/// Their writer throws NotSupportedException: Exporting a method body requires a modern Harmony target framework.
 		/// An installer can use a non-null callable replacement without invoking the writer.
 		/// </remarks>
+		///
 		public static void SetInstaller(Action<MethodBase, MethodInfo, Func<Func<object, int>, byte[]>> install) => Register(2, install);
 
 		/// <summary>Lists the closed instantiations that install through a generic definition, including one whose installation is in progress.</summary>
 		/// <param name="definition">A generic definition the host owns.</param>
 		/// <returns>The instantiations pinned to the definition's installer. Instantiations that Harmony's ordinary detour holds are not included.</returns>
 		/// <remarks>An installer can compile each of them after it writes the definition's body.</remarks>
+		///
 		public static IEnumerable<MethodBase> Instantiations(MethodBase definition)
 		{
 			if (definition is null) throw new ArgumentNullException(nameof(definition));
@@ -137,6 +145,7 @@ namespace HarmonyLib
 		/// A failed installation preserves the recipe. Another participating copy's newer reverse recipe is refused by this copy.
 		/// Reverse patches into host-owned generic stand-ins are unsupported, including closed instantiations.
 		/// </remarks>
+		///
 		public static void Rebuild(MethodBase method)
 		{
 			if (method is null) throw new ArgumentNullException(nameof(method));
