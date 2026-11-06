@@ -21,7 +21,7 @@ A patch operation holding the old lock and one taking the new lock could run at 
 | B. Keep the per-copy lock and take the shared lock only inside provider calls | Copies patch in parallel. | Two locks with ordering rules. The provider path still needs cross-copy exclusion, so the complexity stays. |
 
 Preferred: A. Status: implemented. `SyncRoot` and the per-copy lock object were removed.
-Note: reverse patching never took the patch lock. That is unchanged and predates this work.
+Historical note: reverse construction did not take the patch lock at this checkpoint. Decision 28 supersedes that limit.
 
 ### 2. A failed first patch left its installer pinned
 
@@ -47,7 +47,9 @@ Both had to agree, and the owner callback scanned all detours for every open gen
 | B. Keep the owner callbacks | No change. | Two sources of truth. One linear scan per definition patch per copy. |
 | C. One installer object with delegates per target, the default being one instance | Reads as a single abstraction. | The shared record must stay BCL-only, so the object cannot live in it. With one provider per process a boolean already identifies the installer. |
 
-Preferred: A. Status: implemented. Slot 2 of the protocol record stays reserved and unused so the distributed prototype still validates the record.
+Preferred: A. Status corrected on 2026-11-06. New records contain three slots.
+Slot 2 is an unused empty `List<Func<MethodBase, bool>>`, as required by the delivered 20261104 validator.
+Existing two-slot records remain accepted and unchanged. See decision 25.
 The silent-default behavior for definitions matches the existing behavior for all other late registrations. If the maintainer prefers the old exception, it is one condition in `Prepare`.
 
 ### 4. The definition-wide policy was spelled out at five sites
@@ -224,7 +226,7 @@ public static class MethodBodyPatching
 Rules:
 
 - Each call takes one delegate. A part accepts one delegate; a second non-null registration of the same part throws. Null keeps Harmony's default for that part and registers nothing.
-- Register during host initialization, before the first patch operation. This is a documented expectation, as before. Targets pinned earlier keep their installer, which the existing late-provider tests cover.
+- Register during host initialization before the first patch. Decision 27 enforces registration before any host-owned pin exists. Detour-held targets keep their installer.
 - `SetEligibility` decides which targets the host owns. Without it the other two calls have no effect.
 - Without `SetBodySource`, owned targets read their baseline by reflection. Without `SetInstaller`, owned targets install through the default detour.
 - Definition-wide generic installation needs an installer. Without one, generic targets keep the Harmony 2 detour behavior: no definition-wide replacement, no definition/constructed conflict rule, and constructed views do not read the definition's baseline.
@@ -381,7 +383,7 @@ Question: the types are neutral, but is the shape of the conversation between Ha
 ### 22. Exported bodies referenced DynamicMethods directly
 
 Finding: closed-body helpers, Infix structured helpers and transpiler-emitted callbacks are DynamicMethods. Only Waylith can mint a module token for one. The export path handed the raw DynamicMethod to the importer, while the assembly path already substituted `DynamicMethodProxy`.
-Decision: the importer returns zero for a value it cannot import. Harmony substitutes a stand-in for a static method without open generic parameters and imports again, with one stand-in per callback in a `ConditionalWeakTable`. Any other refusal throws `NotSupportedException` before installation, which releases the pin. Status: implemented in `DynamicMethodBodyWriter.Import`. The Waylith adapter keeps importing DynamicMethods directly and does not change.
+Decision: the importer returns zero for a value it cannot import. Harmony substitutes a stand-in for a static method without open generic parameters and imports again, with one stand-in per callback in a `ConditionalWeakTable`. Other unsupported refusals throw during export. Decision 26 supersedes the earlier pin-release rule because export runs inside the registered installer. Status: implemented in `DynamicMethodBodyWriter.Import`. The Waylith adapter keeps importing DynamicMethods directly and does not change.
 
 ### 23. One host was no evidence
 
@@ -394,3 +396,88 @@ The hot reload host applies an EnC delta into the original module. A spike under
 A definition-wide body installed through hot reload reached a warm instantiation and a cold one, a closed instantiation installed through its definition, and unpatching restored the baseline through another generation. No detour exists for a hot reloaded target. The contract held without changes beyond item 22.
 Harmony's stand-ins live in collectible assemblies. The hot reload host showed that a non-collectible module cannot bind one: the first call failed with `NotSupportedException: A non-collectible assembly may not reference a collectible assembly`, after a `Resolving` handler had found the assembly by name.
 Decision: the escalation stays inside the refusal protocol. The host refuses the collectible stand-in by checking `Assembly.IsCollectible`, and Harmony imports a second stand-in loaded without a collectible context, which lives for the process. `GeneratedAssemblyLoader.Load` and `DynamicMethodProxy.Create` take a `collectible` flag for that. Status: implemented and covered by the hot reload fixture.
+
+## Review-fix decisions, 2026-11-06
+
+The generics, lifecycle and export packages traced the two review rounds against code and added regressions.
+Reports: `artifacts/reviews/fix-generics.md`, `fix-lifecycle.md` and `fix-export.md`.
+These decisions supersede earlier descriptions where they conflict.
+
+### 25. Shared root has three slots, 2026-11-06
+
+Decision: create `[parts, targets, empty List<Func<MethodBase, bool>>]`.
+The delivered `.20261104` validator requires both the third slot and that list type. A null reserved slot would still fail.
+Existing two-slot records remain accepted without resizing or replacement. Separate shared BCL records hold reverse ownership and installation guards.
+The lifecycle package inspected delivered binaries and tested the earlier validator shape. This proves prefix compatibility, not full cooperation with old lifecycle implementations.
+
+### 26. Retain selection after installer failure, 2026-11-06
+
+Decision: keep target and family pins once the registered installer starts, including failures during export.
+A failed first installation publishes no patch metadata. Construction failures before installation and failed default-detour attempts release provisional pins.
+The host must quarantine unknown native state. A later eligibility change cannot move a retained target to the detour.
+This supersedes decisions 2 and 22 only for failures inside a registered installer.
+
+### 27. Reject late registration, 2026-11-06
+
+Decision: reject non-null registration after any host-owned target is pinned. Detour-held pins do not block registration.
+Null remains a no-op. Registering an already filled part still reports that duplicate first.
+The exception text is `Method-body patching parts cannot be registered after a host-owned target has been pinned.`
+This prevents a target from changing its effective installer after an eligibility-only installation.
+
+### 28. Serialize construction and forbid installer re-entry, 2026-11-06
+
+Decision: hold the shared patch lock across ordinary, reflective wrapper and reverse construction, installation and publication.
+Installers must not call patch, unpatch, reverse-patch or rebuild operations. A shared guard rejects the same target or family before nested construction.
+`Instantiations` remains available during installation. Eligibility and construction-time baseline reads run under the lock.
+Standalone body reads can invoke the reader outside it, concurrently with installation. Readers must support that concurrency.
+Callbacks holding the lock must not wait for another Harmony thread.
+
+### 29. Track active reverse recipes, 2026-11-06
+
+Decision: retain default-detour reverse recipes and share the identity of their active owner.
+Successful ordinary installation supersedes a reverse recipe. Failed installation preserves it.
+Another updated copy's successful reverse installation supersedes local ownership. The former copy refuses to rebuild the foreign recipe.
+Generic host-owned reverse stand-ins remain unsupported, including closed instantiations. Reject them before either target or family pin is published.
+A family definition without metadata rebuilds through member records. A pin without rebuild information gets a distinct `InvalidOperationException`.
+
+### 30. Mark self-instantiated members, 2026-11-06
+
+Decision: extend the importer contract with `KeyValuePair<MemberInfo, bool>(member, true)`.
+For a generic declaring definition, emit a MemberRef with a self-instantiated TypeSpec parent and the definition's signature.
+A generic method also needs a MethodSpec. Definitions use their own parameters. Constructed methods retain their arguments.
+Bare members retain their ordinary meaning. The existing type marker also preserves the declaring-type token for `__originalMethod`.
+Refused identity-bearing method operands cannot use forwarding stand-ins. Calls and identity operands have separate token-cache entries.
+
+### 31. Bound permanent closed-helper stand-ins, 2026-11-06
+
+Decision: reuse permanent stand-ins by original, helper site and signature. One mutable stand-in per signature alone would conflate live callbacks.
+Publish delegate changes only after successful installation. Older bodies calling that stand-in also see the latest successful delegate.
+Reflection callbacks use module, token, declaring type and generic method arguments as identity.
+Distinct DynamicMethods without Harmony generation ownership still create separate permanent entries. Permanent assemblies remain for the process lifetime.
+The collectible stand-in remains retained while its callback is live. Hosts own lifetime for directly imported callbacks.
+
+### 32. Load permanent generic helper images, 2026-11-06
+
+Decision: if a host refuses a generated open generic helper, offer a permanent image preserving its generic context.
+Those images can accumulate across rebuilds. A permanent image cannot reference a collectible dependency.
+Promoting an entire dependency graph is outside this fix. Reject that case and name the dependency.
+Generic helper generation requires collectible `AssemblyLoadContext` support. No legacy generator was ported.
+Hosts must resolve stand-ins, helper images and callback dependencies with exact loaded assembly identities.
+Runtime access checks still apply to callbacks and Harmony's internal generic helpers unless the target module ignores them.
+
+### 33. Validate bindings and preserve family identity, 2026-11-06
+
+Decision: definition-wide bindings require an assignment guaranteed by the open source and its constraints.
+Instantiation callbacks and passthroughs validate closed types. Reference arguments retain their address and aliasing.
+Reject fixed generic callback registrations on every target installed through a definition. Factories remain available for intentionally fixed callbacks.
+Validate foreign generic parameters in method, constructor and field operands. Preserve registration identity for `__state` inside closed helpers.
+Pointer and byref-like bridges pass storage unchanged. Function-pointer bridges receive an explicit rejection before installation.
+An unchanged exception keeps its stack when another instantiation has a finalizer.
+
+### 34. Keep limits explicit, 2026-11-06
+
+Decision: retain null from `Patch()` for both open and closed constructors installed through a family. The return type remains `MethodInfo`.
+Definition transpilers must handle closed IL inside an instantiation helper. That call adds one stack frame.
+The existing priority/dependency sorter merges records. Equal priority/index ties remain unspecified and unstable.
+Stable sorting alone cannot resolve rebuild-dependent input order. A tie-break rule requires separate work.
+Persistent-state removal clears closed-helper registrations and disposal hooks. Rollback attempts every completed preparation even when one disposal fails.

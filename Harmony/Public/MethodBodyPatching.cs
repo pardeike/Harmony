@@ -9,7 +9,9 @@ namespace HarmonyLib
 {
 	/// <summary>Connects Harmony's existing patch construction to an optional method-body source and installer.</summary>
 	/// <remarks>
-	/// A host registers each part once, during its initialization and before the first patch operation. A part that is not registered keeps Harmony's default.
+	/// A host registers each part once during initialization, before patching starts. An unregistered part keeps Harmony's default.
+	/// Null registers nothing. Non-null registration after any host-owned target is pinned throws InvalidOperationException.
+	/// Targets already pinned to the default detour do not prevent registration and keep that installer.
 	/// <see cref="SetEligibility"/> selects the methods the host owns. Without it the other parts have no effect.
 	/// The host owns discovery, installation and recovery. Harmony never retries a failed installation through another mechanism. Unpatching installs a rebuilt replacement.
 	/// Existing targets keep their selected installation mechanism. Only Harmony copies implementing this protocol can cooperate on host-owned targets.
@@ -64,33 +66,54 @@ namespace HarmonyLib
 		/// Its prefix, postfix and finalizer patches run under a type guard in the definition's body.
 		/// With a transpiler or an Infix patch, the instantiation gets a closed body of its own, built from the definition's patches and its own, which the definition's body enters under that guard.
 		/// A definition cannot join instantiations that Harmony's ordinary detour already holds.
-		/// Without an installer, generic targets keep Harmony's ordinary behavior.
+		/// Without an installer, generic targets keep Harmony's ordinary behavior and the check can receive a closed instantiation directly.
+		/// With an installer, accepting a partially open target throws NotSupportedException before pinning.
+		/// Eligibility runs under Harmony's shared patch lock and must not wait for another thread that uses Harmony.
 		/// </remarks>
 		public static void SetEligibility(Func<MethodBase, bool> accepts) => Register(0, accepts);
 
 		/// <summary>Registers the reader of an owned method's baseline body.</summary>
 		/// <param name="readBody">Reads the latest baseline body, excluding the installed replacement. Tokens use the target module. Null keeps reflection.</param>
-		/// <remarks>The reader can receive a constructed view of an owned definition, with that view's generic context.</remarks>
+		/// <remarks>
+		/// The reader can receive a constructed view of an owned definition, with that view's generic context.
+		/// Read a pipeline input or original image if reflection returns the installed body.
+		/// Construction calls the reader under Harmony's shared patch lock. Standalone body reads can call it outside that lock, concurrently with installation.
+		/// The reader must support those concurrent calls. When holding Harmony's lock, it must not wait for another Harmony thread.
+		/// </remarks>
 		public static void SetBodySource(Func<MethodBase, MethodBody> readBody) => Register(1, readBody);
 
 		/// <summary>Registers the installer of an owned method's replacement.</summary>
 		/// <param name="install">Installs the replacement or its complete CLI body. The third argument writes the body using a host token importer. Null keeps Harmony's ordinary detour.</param>
 		/// <remarks>
-		/// Harmony holds its patch lock while install runs. Code inside install must not wait for another thread that uses Harmony.
+		/// Harmony holds its shared patch lock while install runs. The installer must not wait for another thread that uses Harmony.
+		/// The installer must not call patch, unpatch, reverse-patch or rebuild operations. Re-entry into the same target or generic family throws InvalidOperationException.
+		/// Instantiations remains available during installation. The synchronous writer and importer also run under the patch lock.
+		/// Once the registered installer starts, failure retains the target and family pins without publishing candidate patch records.
 		/// If a failed installation leaves an unknown state, the installer must refuse further updates to that target.
 		/// The replacement is a callable copy of the patched body. For a definition-wide target it is null: an open generic definition has no callable copy, so the installer writes the body.
 		/// The body writer accepts an importer for Type, MethodBase, FieldInfo, string and standalone signature byte[] values.
 		/// MethodBase values can be DynamicMethod instances. The host owns their token import and lifetime.
 		/// The importer returns zero for a value it cannot import. For a call to a static method without open generic parameters, including a DynamicMethod, Harmony then imports a generated stand-in with the same signature.
-		/// The stand-in is collectible. A module that cannot bind collectible assemblies refuses it too and receives a stand-in that lives for the process.
-		/// Permanent stand-ins for generated closed helpers reuse a delegate field per original, helper site and signature. Successful installation updates the field, including calls from older bodies.
+		/// The collectible stand-in remains retained while its callback is live. A module that cannot bind collectible assemblies refuses it too.
+		/// Harmony then offers a permanent stand-in that lives for the process. Unpatching does not unload it.
+		/// Permanent closed-helper stand-ins reuse a delegate field per original, helper site and signature, bounding growth by distinct combinations.
+		/// Successful installation updates the field, including calls from older bodies. Failed installation preserves the previous delegate.
+		/// Ordinary reflection callbacks use module, metadata token, declaring type and method arguments as identity. Distinct dynamic callbacks retain separate permanent entries.
 		/// A refused generated open generic helper is offered again in a permanent assembly with its generic context. These assemblies accumulate across rebuilds.
+		/// A permanent generic helper cannot reference collectible dependencies. Generic helper generation requires collectible AssemblyLoadContext support.
+		/// Other open generic callbacks must bind directly. Hosts must resolve HarmonyDynamicMethod_* stand-ins, HarmonyGenerated_* helpers and callback dependencies by exact loaded identity.
+		/// Runtime access checks still apply to private callbacks and Harmony's internal generic guard helpers unless the target module ignores those checks.
 		/// A refused ldtoken, ldftn or ldvirtftn method operand cannot use a stand-in because that would change its identity.
-		/// Any other refusal fails the installation before anything is installed.
+		/// Other unsupported refusals fail body export. The installer must complete export before it mutates the runtime body.
 		/// A KeyValuePair&lt;Type, bool&gt; with true requests the generic definition instantiated over its own type parameters.
-		/// A KeyValuePair&lt;MemberInfo, bool&gt; with true requests a method, constructor or field on its self-instantiated generic declaring type.
+		/// A KeyValuePair&lt;MemberInfo, bool&gt; with true requests a self-instantiated generic member, including a generic method's own parameters.
+		/// If its declaring type is a generic definition, emit a MemberRef with a self-instantiated TypeSpec parent and the member definition's signature.
+		/// A generic method also requires a MethodSpec. Bare members retain their ordinary metadata meaning.
 		/// For that member marker, a generic method definition also instantiates its own method parameters. An already constructed method keeps its arguments.
-		/// It returns a complete CLI body with its header, code and exception sections. Use it synchronously during installation.
+		/// The writer returns a complete CLI body with its header, code and exception sections. Call it at most once, synchronously on the installation thread.
+		/// The net35 and netstandard2.0 Harmony builds cannot export bodies, regardless of the loading runtime.
+		/// Their writer throws NotSupportedException: Exporting a method body requires a modern Harmony target framework.
+		/// An installer can use a non-null callable replacement without invoking the writer.
 		/// </remarks>
 		public static void SetInstaller(Action<MethodBase, MethodInfo, Func<Func<object, int>, byte[]>> install) => Register(2, install);
 
@@ -108,8 +131,11 @@ namespace HarmonyLib
 		/// <summary>Rebuilds the installed body of a target from Harmony's current state and installs it again through the target's pinned installer.</summary>
 		/// <param name="method">A patched method, or the stand-in of a reverse patch.</param>
 		/// <remarks>
-		/// A host calls this after it changed the target's baseline body. Harmony holds its patch lock while the installer runs.
-		/// A reverse patch rebuilds from the recipe recorded by the Harmony copy that installed it. The stand-in of another copy's reverse patch is refused.
+		/// After changing a baseline, a host calls this outside installation. Construction and installation hold Harmony's shared patch lock.
+		/// A family definition without patch records rebuilds through a member's records. A pin without rebuild information throws InvalidOperationException.
+		/// A reverse patch uses its active recipe, including on the default detour. A successful ordinary installation supersedes that recipe.
+		/// A failed installation preserves the recipe. Another participating copy's newer reverse recipe is refused by this copy.
+		/// Reverse patches into host-owned generic stand-ins are unsupported, including closed instantiations.
 		/// </remarks>
 		public static void Rebuild(MethodBase method)
 		{

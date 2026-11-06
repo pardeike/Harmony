@@ -36,7 +36,15 @@ Generics can be difficult to patch. In general, expect generic methods and metho
 *  If the method is a generic method of a non-generic class, you may be able to examine the method's arguments, if any argument contains `T`. Also, generic type data will be lost (if `Method<T>` is patched using `Method<string>`, `Method<object>` will become `Method<string>`)
 *  If the method is a static non-generic method of a generic class, generic type data will be lost (see above).
 
-These limits belong to the detour. Under a [runtime host](hosting.md), patching an open definition patches every instantiation, and patching one instantiation patches only that one.
+These limits apply to the detour. If a [runtime host](hosting.md) registers an installer and accepts the fully open definition, Harmony installs one body for its family. A definition patch reaches every instantiation. A closed-instantiation patch runs only for that instantiation. Declined targets and hosts without an installer retain detour behavior.
+
+An instantiation with a transpiler or an Infix patch gets a closed helper body. The definition's patches also apply inside that helper. Definition transpilers must therefore handle closed IL with substituted types and operands. The helper call adds one stack frame, which affects stack inspection and caller-sensitive code.
+
+The priority and before/after sorter merges definition and instantiation patches within each patch category. Record indices can interleave. Definition patches do not always run first, and equal priority/index ties remain unspecified. `__state` stays separate per patch class and registration target.
+
+For a generic callback, register its definition with the required declaring-type-then-method parameter order and compatible constraints. Directly constructed callbacks are rejected for both definitions and instantiations installed through a family. Use a patch factory when you need a fixed callback instantiation. Definition-wide bindings must be valid for every permitted type. Instantiation bindings and passthrough results validate closed types. See the [callback rules](hosting.md#generic-callbacks).
+
+Generic family bridges reject function-pointer signatures before installation. Reverse patches into host-owned generic stand-ins are also unsupported. Partially open targets fail if a host with an installer accepts them.
 
 ## Changing the type returned by a constructor
 

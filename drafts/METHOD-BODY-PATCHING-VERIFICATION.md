@@ -1,6 +1,7 @@
 # Method-body patching: review corrections and local acceptance
 
-Status: focused review corrections implemented locally on `v3` against `46fdfcc369071a5a539200c6e8dd8fac7aa85221`.
+Status: historical runtime evidence followed by the 2026-11-06 review-fix checkpoint below.
+The final section records the fixes integrated after `61064108`. Earlier results do not validate those later changes.
 The corrected private mod passed the bounded all-mod fixture on 2026-11-03 and the updated engine on 2026-11-04.
 No commit, push, public release or public post was made.
 Andreas approved delivery after the warning comparison. The private ZIP was sent to Sam and downloaded back with the same hash.
@@ -404,3 +405,124 @@ The two earlier runs failed and were cancelled after their lanes had reported:
 - The generic importer forwarded assembly names to MonoMod's obsolete overload. It uses Cecil's default importer now. The category tests use the explicit-assembly overloads.
 
 Job logs of a running or cancelled run come from `GET /repos/pardeike/Harmony/actions/jobs/<id>/logs` with the `gh auth token`; `gh run view --log-failed` refuses them until the run completes. Copies are under `artifacts/tests/ci-42155186328/` and `artifacts/tests/ci-42156217487/`.
+
+## 2026-11-06 review rounds and integrated corrections
+
+Two read-only review rounds covered `46fdfcc3..61064108` on 2026-11-06.
+Each round reviewed protocol/lifecycle, generic construction, body export, and tests/documentation.
+The first round used Claude Opus. The second used Codex.
+The eight reports are `artifacts/reviews/opus-{protocol,generics,export,tests}.md` and `artifacts/reviews/rc4-{protocol,generics,export,tests}.md`.
+The reviews traced code without executing tests. The fix packages subsequently added and ran regressions.
+
+Integrated source commits are `381db566` for lifecycle, `bda80584` for generics, and `231322a2` for export.
+Package reports are `artifacts/reviews/fix-lifecycle.md`, `fix-generics.md`, and `fix-export.md`.
+The following results come from those reports and their committed fixtures. They are separate worktree results, not a combined runtime gate.
+
+### Generic construction fixes
+
+Tests below are in `HarmonyTests/Patching/MethodBodyPatchingGenerics.cs`.
+
+| Item | Correction | Regression tests |
+| --- | --- | --- |
+| A1 | Require guaranteed assignment from open source types. | `Definition_rejects_a_closed_argument_binding`, `Definition_rejects_a_closed_instance_binding`, `Definition_rejects_a_closed_pointer_binding` |
+| A2 | Validate passthrough results against closed types. | `Instantiation_rejects_an_incompatible_passthrough` |
+| A3 | Preserve reference writes and aliasing. | `Instantiation_reference_prefix_updates_the_original_argument`, `Instantiation_reference_arguments_keep_aliasing` |
+| A4 | Close `__resultRef` validation and retain its delegate-local address. | `Instantiation_result_ref_can_redirect_the_returned_address` |
+| A5 | Preserve registration identity for closed-helper `__state`. | `Closed_body_keeps_state_per_registration` |
+| A6 | Reject fixed generic callback registrations throughout a family. | `Instantiation_rejects_a_fixed_generic_callback`, `A_factory_keeps_its_fixed_callback_after_a_family_rebuild` |
+| A7 | Preserve pointer and byref-like storage, explicitly reject function-pointer bridges. | `Instantiation_pointer_binding_preserves_the_address`, `Instantiation_span_binding_and_return_keep_the_storage`, `Closed_body_function_pointer_is_rejected_before_installation` |
+| A8 | Reject foreign generic parameters in member operands. | `Definition_rejects_foreign_generic_parameters_in_member_operands` |
+| A9, exception stack | Rethrow an unchanged exception when sibling finalizers do not replace it. | `A_sibling_finalizer_preserves_the_original_exception_stack` |
+
+The complete net10/x64 Debug suite passed 1,327 cases, with five unexecuted TRX entries.
+Log: `artifacts/fix-worktrees/generics/artifacts/tests/run-fwk3b9dw/test.log`.
+With fixes temporarily removed, 22 cases failed and five positive controls passed in `run-bky460ui`.
+These tests export through a fake importer and execute generated snapshots. They do not establish original-method installation or Waylith behavior.
+
+### Lifecycle fixes
+
+Tests below are in `HarmonyTests/Patching/MethodBodyPatchingLifecycle.cs`.
+
+| Item | Correction | Regression tests |
+| --- | --- | --- |
+| B1 | Rebuild a definition through member records when it has no record. | `Rebuild_definition_uses_member_records` |
+| B2 | Remove closed-helper persistent state and dispose all completed preparations on rollback. | `Removing_closed_infix_clears_registration_slots_and_dispose_hook`, `Failed_closed_preparation_rolls_back_completed_preparations` |
+| B3 | Reject registration after an accepted pin and preserve family-owner eligibility. | `Registration_cannot_move_accepted_targets` |
+| B4 | Retain selection once a registered installer starts. | `Installer_failure_keeps_selection_without_publishing_metadata`, `Failed_family_installation_retains_both_pins_and_can_retry`, `Construction_failure_releases_member_and_definition` |
+| B5 | Lock wrapper and reverse construction through publication. | `Reflective_wrapper_construction_holds_protocol_lock`, `Reverse_construction_holds_protocol_lock` |
+| B6 | Reject host-owned generic reverse stand-ins before pinning. | `Generic_reverse_standins_are_rejected_before_pinning` |
+| B7 | Track active reverse ownership and default-detour recipes. | `Ordinary_patch_invalidates_reverse_recipe`, `Default_reverse_recipe_can_be_rebuilt`, `Rebuild_follows_the_installation_from_another_copy` |
+| B8 | Reject installer re-entry into a target or its family. | `Installer_cannot_rebuild_or_patch_its_target`, `Installer_cannot_patch_a_sibling_in_its_family` |
+| B9 | Restore the reserved third slot with its required empty BCL list. | `New_shared_record_satisfies_the_delivered_three_slot_validator` |
+| B10, documented behavior | Keep null returns for open and closed family constructors. | `Family_constructor_patch_returns_null` |
+
+The complete net10/x64 Debug suite passed 1,323 cases, with five skipped entries.
+Log: `artifacts/fix-worktrees/lifecycle/artifacts/tests/run-qtw0t5aa/test.log`.
+With fixes temporarily removed, 21 cases failed and two unchanged-behavior cases passed in `run-_uptwc_y`.
+Cross-copy tests use a renamed, noncollectible copy and a recording host. They do not establish cooperation with every delivered Harmony version.
+
+New protocol roots have three slots. Slot 2 contains an unused empty `List<Func<MethodBase, bool>>`.
+This supersedes the earlier slot-removal entry. Existing two-slot records remain accepted without replacement.
+The earlier claim that import refusal leaves no pin is also superseded. Once the registered installer starts, even export failure retains selection.
+A retained pin without metadata is not proof of a successful installation.
+
+### Export fixes
+
+Tests below are in `HarmonyTests/Patching/MethodBodyPatchingExport.cs`.
+
+| Item | Correction | Regression tests |
+| --- | --- | --- |
+| C1 | Export self-instantiated own members and `__originalMethod` tokens. | `Hot_reload_preserves_own_generic_members_and_original_method`, `Hot_reload_preserves_recursive_generic_method_and_original_method`, `Hot_reload_preserves_methods_with_type_and_method_parameters` |
+| C2 | Restore original callback operands after generating callable assemblies. | `Assembly_generation_preserves_exported_dynamic_method_identity` |
+| C3, partial | Reuse permanent closed-helper stand-ins and publish delegate changes after installation. | `Rebuilt_helpers_reuse_one_permanent_stand_in_per_signature`, `Failed_installation_preserves_the_previous_helper_and_other_originals` |
+| C4 | Offer permanent generic helper images and reject collectible dependencies. | `Hot_reload_accepts_permanent_generic_Infix_helpers`, `Permanent_generic_helpers_report_collectible_dependency_limits` |
+| C5 | Refuse stand-ins for identity-bearing method operands. | `A_call_stand_in_cannot_replace_a_method_identity` |
+| C6 | Name the missing collectible-load-context requirement. | `Generic_helpers_require_a_runtime_with_collectible_load_contexts`, conditional legacy case, not run by net10 gates |
+| C7 | Omit local-signature import when no locals exist. | `A_body_without_locals_does_not_import_a_local_signature` |
+| C8 | Preserve function-pointer signatures and normalize arrays and helper references. | `Dynamic_signatures_normalize_function_pointer_arrays`, `Helper_signatures_normalize_nameless_function_pointer_references`, `Stand_ins_preserve_function_pointer_callback_signatures`, `Stand_ins_keep_exact_nested_function_pointer_signatures` |
+
+With `DOTNET_MODIFIABLE_ASSEMBLIES=debug`, the complete net10/x64 Debug suite passed 1,325 cases, with two existing unexecuted entries.
+Log: `artifacts/fix-worktrees/export/artifacts/tests/run-dl1ujq9x/test.log`.
+Without that variable, 1,317 cases passed, eight hot reload cases skipped, and two existing cases remained unexecuted in `run-lajwd_yx`.
+With fixes temporarily removed, all 20 cases then present failed in `run-u373b816`.
+The later collectible-dependency diagnostic also failed before its guard and passed afterwards.
+
+### Deliberate limits and remaining review work
+
+- A9 ordering ties remain unspecified and unstable. Stable sorting alone cannot resolve rebuild-dependent input order without a separate tie-break rule.
+- A7 function-pointer bridges remain rejected. The pointer-signature exporter fixes do not remove that family-bridge restriction.
+- B10 constructors installed through a family still return null. The public return type remains `MethodInfo`.
+- C3 permanent open generic helper images can accumulate across rebuilds. Unrelated DynamicMethods also retain separate permanent stand-ins.
+- C4 permanent helpers cannot reference collectible dependencies. No dependency-graph promotion was implemented.
+- C6 has no legacy generic assembly generator. The conditional legacy regression was not executed by these gates.
+- Host access checks remain a runtime requirement. Private callbacks and internal guard helpers need appropriate access from the installed module.
+- The test-host emitter still has bounded signature and assembly-resolution coverage. It is not a complete host implementation.
+- Tests/host infrastructure findings outside these three fix packages and the documentation package remain separate work. This includes hot reload delta failure state and CI opt-in coverage.
+- Earlier game and CI results identify earlier commits. No Waylith run, release, or public documentation deployment of these review fixes is established here.
+
+### Documentation package
+
+E1, E3 and E4 update the hosting guide, generic edge cases, API remarks and v3 changes to match the integrated code.
+E5 records the new decisions, evidence boundaries and deliberate limits.
+E2 replaces fabricated metadata tokens with an abstract runtime contract and a separate baseline reader.
+The `HostingDocumentation` fixture compiles that example and executes exported bodies through the existing module emitter.
+Its tests cover the latest external baseline, rebuild and unpatch behavior, permanent stand-in selection, and direct collectible-member refusal.
+Those checks supersede the earlier header-only example test. They do not install bytes into the original method.
+Final documentation-package gates and exact logs are recorded in `artifacts/reviews/fix-docs.md`.
+
+Documentation regressions in `HarmonyTests/Patching/HostingDocumentation.cs`:
+
+- `The_documented_host_exports_the_latest_external_baseline`
+- `The_documented_host_uses_a_permanent_stand_in_for_a_dynamic_callback`
+- `The_documented_importer_refuses_collectible_members_and_markers`
+
+All three passed in `artifacts/fix-worktrees/docs/artifacts/tests/run-kyf_g24m/test.log`.
+Restoring the old reflection-baseline behavior caused two expected failures in `run-_lzud7kf`.
+Restoring collectible acceptance caused two expected failures in `run-45bej0vi`. Both mutations were reverted.
+The complete net10/x64 Debug suite then passed 1,369 cases in `run-mp_3evj3`, with eight hot reload cases and two existing cases unexecuted.
+
+DocFX 2.78.5 built from the documented net35 library input, with output isolated under `artifacts/fix-worktrees/docs/artifacts/docs-package/`.
+The link verifier passed 104 pages and 2,754 local links and assets. Generated hosting snippets and XML remarks were also checked.
+DocFX reported 357 `InvalidAssemblyReference` warnings and zero errors. This gate proves local generation and link integrity, not publication.
+The first staging attempt omitted the tracked API landing page. It failed link verification and passed after that page was included.
+Logs and the staging command are recorded in `artifacts/reviews/fix-docs.md`.

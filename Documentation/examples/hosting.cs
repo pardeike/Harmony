@@ -8,53 +8,56 @@ namespace Hosting
 	using System.Runtime.CompilerServices;
 
 	// <runtime>
-	// Stands in for a runtime that can replace a method's body. Yours has its own names.
-	public static class MyRuntime
+	// Implement these operations with your runtime's metadata and body-replacement APIs.
+	// This contract does not supply a metadata emitter or simulate installation.
+	public abstract class MyRuntime
 	{
-		public static readonly Dictionary<MethodBase, byte[]> Bodies = [];
+		public abstract bool CanReplaceBody(MethodBase method);
 
-		// A metadata token for a type, method, field, string or signature, valid in the module.
-		public static int TokenFor(Module module, object value)
-			=> value is byte[]? 0x11000001 : value is Type || value is KeyValuePair<Type, bool> ? 0x1b000001 : 0x0a000001;
+		// Create a real token in this module. Return zero if any dependency cannot bind.
+		// Handle generic markers and all referenced signature types, not only the outer assembly.
+		public abstract int TokenFor(Module module, object value);
 
-		// Replaces the body of the method. Every caller runs the new body from now on.
-		public static void ReplaceBody(MethodBase method, byte[] body) => Bodies[method] = body;
+		// Install synchronously. Throw on failure, and quarantine unknown runtime state.
+		public abstract void ReplaceBody(MethodBase method, byte[] body);
 	}
 	// </runtime>
 
 	// <host>
 	public static class MyHost
 	{
-		// Call once, before any mod patches.
-		public static void Register()
+		// Supply a reader of your pipeline input or original assembly image, separate from installed bodies.
+		// Register once, during startup, before any target is accepted.
+		public static void Register(MyRuntime runtime, Func<MethodBase, MethodBody> readBaseline)
 		{
-			MethodBodyPatching.SetEligibility(Accepts);
-			MethodBodyPatching.SetBodySource(ReadBaseline);
-			MethodBodyPatching.SetInstaller(Install);
+			if (runtime is null) throw new ArgumentNullException(nameof(runtime));
+			if (readBaseline is null) throw new ArgumentNullException(nameof(readBaseline));
+			MethodBodyPatching.SetEligibility(runtime.CanReplaceBody);
+			MethodBodyPatching.SetBodySource(readBaseline);
+			MethodBodyPatching.SetInstaller((original, replacement, writeBody) =>
+			{
+				var body = writeBody(value => Import(runtime, original.Module, value));
+				runtime.ReplaceBody(original, body);
+			});
 		}
 
-		// Methods the runtime can rewrite. Everything else keeps Harmony's default.
-		static bool Accepts(MethodBase method)
-			=> method.DeclaringType == typeof(Game) && method.GetMethodBody() is not null;
-
-		// The body without any installed patches. Reflection is enough while the runtime leaves it alone.
-		static MethodBody ReadBaseline(MethodBase method) => method.GetMethodBody();
-
-		// Harmony has built the patched body. Write it with the module's tokens and hand it to the runtime.
-		static void Install(MethodBase original, MethodInfo replacement, Func<Func<object, int>, byte[]> writeBody)
+		// This host targets non-collectible modules and cannot import DynamicMethods directly.
+		internal static int Import(MyRuntime runtime, Module module, object value)
 		{
-			var body = writeBody(value => Import(original.Module, value));
-			MyRuntime.ReplaceBody(original, body);
+			if (value is DynamicMethod) return 0;
+			var member = value switch
+			{
+				MemberInfo info => info,
+				KeyValuePair<Type, bool> { Value: true } type => type.Key,
+				KeyValuePair<MemberInfo, bool> { Value: true } item => item.Key,
+				_ => null
+			};
+			// Reflection keeps this example compilable on framework targets without Assembly.IsCollectible.
+			if (member is not null && typeof(Assembly).GetProperty("IsCollectible")?.GetValue(member.Module.Assembly, null) is true)
+				return 0;
+			return value is MemberInfo or string or byte[] or KeyValuePair<Type, bool> or KeyValuePair<MemberInfo, bool>
+				? runtime.TokenFor(module, value) : 0;
 		}
-
-		// Each value the body refers to becomes a token. Zero means "I cannot import this".
-		static int Import(Module module, object value) => value switch
-		{
-			DynamicMethod => 0,
-			MethodBase or FieldInfo or Type or string or byte[] => MyRuntime.TokenFor(module, value),
-			KeyValuePair<Type, bool> or KeyValuePair<MemberInfo, bool> => MyRuntime.TokenFor(module, value),
-			_ => 0
-		};
 	}
 	// </host>
 

@@ -24,7 +24,19 @@ Harmony 3 adds .NET 11 support, verified with RC3. [.NET 11 runtime async](patch
 
 ## Host Harmony in a runtime
 
-A runtime that can replace method bodies, such as the one in RimWorld 1.7, can install Harmony's patches itself. `MethodBodyPatching` registers an eligibility check, a body source, and an installer. The original method then runs the patched code without a detour, and a generic definition gets one body for all instantiations. Patch authors see no API change. Read [how to host Harmony](hosting.md).
+A runtime that can replace method bodies can install Harmony's patches itself. `MethodBodyPatching` registers an eligibility check, a baseline reader, and an installer. An accepted generic definition gets one body for all instantiations. Declined targets keep the detour. Read [how to host Harmony](hosting.md).
+
+The host contract includes these rules:
+
+- Register all parts before Harmony pins a host-owned target. Late non-null registration throws. A failed host installation retains its selection without publishing candidate patch records.
+- Installers must not call patch, unpatch, reverse-patch, or rebuild operations. Harmony rejects re-entry into the same target or generic family.
+- Definition-wide bindings require a guaranteed assignment from the open source. Closed bindings and passthrough results validate closed types. Foreign generic parameters in member operands fail before installation.
+- Directly constructed callbacks are rejected for targets installed through a definition. Register a generic callback definition, or use a factory to preserve fixed arguments.
+- Generic family bridges reject function-pointer signatures. Reverse patches into host-owned generic targets are unsupported. Constructors installed through a generic family return null from `Patch()`.
+- Rebuilding a definition uses its members' records when it has no record of its own. Successful ordinary installation supersedes an earlier reverse recipe.
+- The importer accepts `KeyValuePair<MemberInfo, bool>` with `true` for self-instantiated generic members. It must preserve MemberRef/TypeSpec and MethodSpec semantics. Refused identity operands such as `ldtoken` cannot use forwarding stand-ins.
+- Generated closed helpers reuse permanent stand-ins by original, helper site, and signature. Refused open generic helpers can use permanent images, but those images cannot reference collectible dependencies.
+- Body export is unavailable in Harmony's `net35` and `netstandard2.0` builds. Generic helper generation requires collectible `AssemblyLoadContext` support.
 
 ## Earlier: Harmony 2
 
