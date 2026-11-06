@@ -129,99 +129,137 @@ namespace HarmonyLib
 
 		internal static MethodInfo UpdateWrapper(MethodBase original, PatchInfo patchInfo)
 		{
-			ThrowIfRuntimeAsync(original);
-			patchInfo.ValidateSurvivingMetadata();
-			var pinned = MethodBodyPatching.Prepare(original);
-			var installed = false;
-			try
+			lock (MethodBodyPatching.ProtocolLock)
 			{
-				patchInfo.VersionCount++;
-				var bytes = patchInfo.SerializeValidated();
-				var debug = patchInfo.Debugging || Harmony.DEBUG;
-				// A closed instantiation installed through its definition rebuilds the whole family body.
-				var owner = MethodBodyPatching.FamilyOwner(original) ?? original;
-				var definitionWide = MethodBodyPatching.IsDefinitionWide(owner);
-				var patcher = new MethodCreator(definitionWide ? FamilyConfig(owner, original, patchInfo, debug) : SingleConfig(original, patchInfo, debug));
-				var (replacement, finalInstructions) = patcher.CreateReplacement();
-				if (replacement is null && !definitionWide) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
-				using var persistence = PersistentStateHooks.Prepare(owner, patcher.config.persistence);
-				// A closed body keeps its persistent Infix state under its own instantiation.
-				var closedPersistence = patcher.config.closedBodies.Select(body => PersistentStateHooks.Prepare(body.instantiation, body.persistence)).ToList();
-
+				MethodBodyPatching.ThrowIfInstalling(original);
+				ThrowIfRuntimeAsync(original);
+				patchInfo.ValidateSurvivingMetadata();
+				var pinned = MethodBodyPatching.Prepare(original);
+				var keepPin = false;
 				try
 				{
+					patchInfo.VersionCount++;
+					var bytes = patchInfo.SerializeValidated();
+					var debug = patchInfo.Debugging || Harmony.DEBUG;
+					// A closed instantiation installed through its definition rebuilds the whole family body.
+					var owner = MethodBodyPatching.FamilyOwner(original) ?? original;
+					var definitionWide = MethodBodyPatching.IsDefinitionWide(owner);
+					var patcher = new MethodCreator(definitionWide ? FamilyConfig(owner, original, patchInfo, debug) : SingleConfig(original, patchInfo, debug));
+					var (replacement, finalInstructions) = patcher.CreateReplacement();
+					if (replacement is null && !definitionWide) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
+					using var persistence = PersistentStateHooks.Prepare(owner, patcher.config.persistence);
+					// A closed body keeps its persistent Infix state under its own instantiation.
+					var closedPersistence = new List<PersistentStateHooks>();
+
 					try
 					{
-						MethodBodyPatching.Install(owner, replacement, patcher.config.patch);
+						foreach (var body in patcher.config.closedBodies)
+							closedPersistence.Add(PersistentStateHooks.Prepare(body.instantiation, body.persistence));
+						if (definitionWide)
+							foreach (var member in MethodBodyPatching.Instantiations(owner))
+								if (!patcher.config.closedBodies.Any(body => body.instantiation == member))
+									closedPersistence.Add(PersistentStateHooks.Prepare(member, null));
+						try
+						{
+							MethodBodyPatching.Install(owner, replacement, patcher.config.patch, ref keepPin);
+						}
+						catch (Exception ex)
+						{
+							var enriched = HarmonyException.Create(ex, finalInstructions);
+							if (ReferenceEquals(enriched, ex)) throw;
+							throw enriched;
+						}
+						ForgetReverse(owner);
+						RuntimeAsyncCompileWatch.EnsureSubscribed();
+						HarmonySharedState.UpdatePatchInfo(original, replacement, bytes);
+						// Stack frames inside a closed body resolve to its instantiation, like frames inside a callable copy.
+						foreach (var body in patcher.config.closedBodies) HarmonySharedState.RegisterReplacement(body.instantiation, body.helper);
+						persistence?.Commit();
+						closedPersistence.ForEach(hooks => hooks?.Commit());
+						// A definition-wide target has no callable copy. The open definition stands in; a constructor definition returns null.
+						// An instantiation installed through its definition stands in for itself.
+						return replacement ?? original as MethodInfo;
 					}
-					catch (Exception ex)
+					finally
 					{
-						var enriched = HarmonyException.Create(ex, finalInstructions);
-						if (ReferenceEquals(enriched, ex)) throw;
-						throw enriched;
+						Exception failure = null;
+						foreach (var hooks in closedPersistence)
+							try { hooks?.Dispose(); }
+							catch (Exception error) { failure ??= error; }
+						if (failure is not null) throw new InvalidOperationException("Failed to roll back persistent-state hooks.", failure);
 					}
-					installed = true;
-					RuntimeAsyncCompileWatch.EnsureSubscribed();
-					HarmonySharedState.UpdatePatchInfo(original, replacement, bytes);
-					// Stack frames inside a closed body resolve to its instantiation, like frames inside a callable copy.
-					foreach (var body in patcher.config.closedBodies) HarmonySharedState.RegisterReplacement(body.instantiation, body.helper);
-					persistence?.Commit();
-					closedPersistence.ForEach(hooks => hooks?.Commit());
-					// A definition-wide target has no callable copy. The open definition stands in; a constructor definition returns null.
-					// An instantiation installed through its definition stands in for itself.
-					return replacement ?? original as MethodInfo;
 				}
-				finally { closedPersistence.ForEach(hooks => hooks?.Dispose()); }
-			}
-			catch (Exception) when (pinned && !installed)
-			{
-				// A failed first attempt must not pin an installer that never installed anything.
-				MethodBodyPatching.Release(original);
-				throw;
+				catch (Exception) when (pinned && !keepPin)
+				{
+					// Construction failures and restored detour failures release a provisional selection.
+					MethodBodyPatching.Release(original);
+					throw;
+				}
 			}
 		}
 
-		// Reverse patches installed through a host keep their recipe, so the host can rebuild the stand-in after changing its baseline body.
-		static readonly Dictionary<MethodBase, (MethodBase original, List<MethodInfo> transpilers, bool debug)> reverseRecipes = [];
+		// Every reverse installation keeps a local recipe and a shared identity for its active owner.
+		static readonly Dictionary<MethodBase, (MethodBase original, List<MethodInfo> transpilers, bool debug, object identity)> reverseRecipes = [];
+		static Dictionary<MethodBase, object> ReverseOwners => (Dictionary<MethodBase, object>)HarmonySharedState.GetOrCreateSharedData(
+			"Harmony.MethodBodyPatching.ReverseOwners.v1", () => new Dictionary<MethodBase, object>());
+
+		static void ForgetReverse(MethodBase method)
+		{
+			method = MethodBodyPatching.Declared(method);
+			ReverseOwners.Remove(method);
+			reverseRecipes.Remove(method);
+		}
 
 		internal static MethodInfo ReversePatch(HarmonyMethod standin, MethodBase original, MethodInfo postTranspiler)
 		{
-			if (standin is null)
-				throw new ArgumentNullException(nameof(standin));
-			if (standin.method is null)
-				throw new ArgumentNullException(nameof(standin), $"{nameof(standin)}.{nameof(standin.method)} is NULL");
-			ThrowIfRuntimeAsync(original);
-			ThrowIfRuntimeAsync(standin.method);
-			AttributePatch.ValidateOrdinary(standin);
-
-			var debug = (standin.debug ?? false) || Harmony.DEBUG;
-
-			var transpilers = new List<MethodInfo>();
-			if (standin.reversePatchType == HarmonyReversePatchType.Snapshot)
+			lock (MethodBodyPatching.ProtocolLock)
 			{
-				var info = MethodBodyPatching.GetPatchInfoForBody(original);
-				transpilers.AddRange(GetSortedPatchMethods(original, [.. info.Transpilers], debug));
+				if (standin is null)
+					throw new ArgumentNullException(nameof(standin));
+				if (standin.method is null)
+					throw new ArgumentNullException(nameof(standin), $"{nameof(standin)}.{nameof(standin.method)} is NULL");
+				MethodBodyPatching.ThrowIfInstalling(standin.method);
+				ThrowIfRuntimeAsync(original);
+				ThrowIfRuntimeAsync(standin.method);
+				AttributePatch.ValidateOrdinary(standin);
+
+				var debug = (standin.debug ?? false) || Harmony.DEBUG;
+				var transpilers = new List<MethodInfo>();
+				if (standin.reversePatchType == HarmonyReversePatchType.Snapshot)
+				{
+					var info = MethodBodyPatching.GetPatchInfoForBody(original);
+					transpilers.AddRange(GetSortedPatchMethods(original, [.. info.Transpilers], debug));
+				}
+				if (postTranspiler is not null) transpilers.Add(postTranspiler);
+				return ReversePatch(standin.method, original, transpilers, debug);
 			}
-			if (postTranspiler is not null) transpilers.Add(postTranspiler);
-			return ReversePatch(standin.method, original, transpilers, debug);
 		}
 
 		// Rebuilds a stand-in from its recorded recipe. False when this Harmony copy installed no reverse patch into it.
 		internal static bool RebuildReverse(MethodBase standin)
 		{
-			(MethodBase original, List<MethodInfo> transpilers, bool debug) recipe;
-			lock (reverseRecipes) if (!reverseRecipes.TryGetValue(standin, out recipe)) return false;
-			_ = ReversePatch((MethodInfo)standin, recipe.original, recipe.transpilers, recipe.debug);
-			return true;
+			lock (MethodBodyPatching.ProtocolLock)
+			{
+				if (!ReverseOwners.TryGetValue(standin, out var identity))
+				{
+					reverseRecipes.Remove(standin);
+					return false;
+				}
+				if (!reverseRecipes.TryGetValue(standin, out var recipe) || !ReferenceEquals(recipe.identity, identity))
+					throw new NotSupportedException("Another Harmony copy installed the reverse patch of " + standin.FullDescription() + ". It cannot be rebuilt here.");
+				_ = ReversePatch((MethodInfo)standin, recipe.original, recipe.transpilers, recipe.debug);
+				return true;
+			}
 		}
 
 		static MethodInfo ReversePatch(MethodInfo standin, MethodBase original, List<MethodInfo> transpilers, bool debug)
 		{
+			MethodBodyPatching.ThrowIfInstalling(standin);
 			var emptyFix = new List<PatchCall>();
 			var emptyInner = new List<Infix>();
 			// The stand-in installs through the provider when the host owns it, like any patched method.
-			var pinned = MethodBodyPatching.Prepare(standin);
-			var installed = false;
+			var pinned = MethodBodyPatching.Prepare(standin, reverse: true);
+			var keepPin = false;
 			try
 			{
 				var patcher = new MethodCreator(new MethodCreatorConfig(standin, original, emptyFix, emptyFix, transpilers, emptyFix, emptyInner, emptyInner, emptyInner, debug));
@@ -230,7 +268,7 @@ namespace HarmonyLib
 
 				try
 				{
-					MethodBodyPatching.Install(standin, replacement, patcher.config.patch);
+					MethodBodyPatching.Install(standin, replacement, patcher.config.patch, ref keepPin);
 				}
 				catch (Exception ex)
 				{
@@ -238,12 +276,13 @@ namespace HarmonyLib
 					if (ReferenceEquals(enriched, ex)) throw;
 					throw enriched;
 				}
-				installed = true;
-				if (MethodBodyPatching.IsProviderTarget(standin))
-					lock (reverseRecipes) reverseRecipes[MethodBodyPatching.Declared(standin)] = (original, transpilers, debug);
+				var declared = MethodBodyPatching.Declared(standin);
+				var identity = new object();
+				ReverseOwners[declared] = identity;
+				reverseRecipes[declared] = (original, transpilers, debug, identity);
 				return replacement;
 			}
-			catch (Exception) when (pinned && !installed)
+			catch (Exception) when (pinned && !keepPin)
 			{
 				MethodBodyPatching.Release(standin);
 				throw;

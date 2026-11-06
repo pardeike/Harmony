@@ -33,7 +33,8 @@ namespace HarmonyLib
 						return data;
 					throw new NotSupportedException("An incompatible method-body patching protocol is already loaded.");
 				}
-				var value = new object[] { null, new Dictionary<MethodBase, bool>() };
+				// The delivered 20261104 prototype validates both the third slot and its BCL list type.
+				var value = new object[] { null, new Dictionary<MethodBase, bool>(), new List<Func<MethodBase, bool>>() };
 				AppDomain.CurrentDomain.SetData(key, value);
 				return value;
 			}
@@ -111,10 +112,17 @@ namespace HarmonyLib
 			lock (shared)
 			{
 				var declared = Declared(method);
+				ThrowIfInstalling(declared);
 				if (!Targets.ContainsKey(declared)) throw new InvalidOperationException("Harmony has not installed a body for " + method.FullDescription());
 				if (PatchFunctions.RebuildReverse(declared)) return;
-				var patchInfo = HarmonySharedState.GetPatchInfo(declared)
-					?? throw new NotSupportedException("Another Harmony copy installed the reverse patch of " + method.FullDescription() + ". It cannot be rebuilt here.");
+				var patchInfo = HarmonySharedState.GetPatchInfo(declared);
+				if (patchInfo is null && IsDefinitionWide(declared))
+				{
+					// A definition pinned by an instantiation need not have a patch record of its own.
+					var member = Instantiations(declared).FirstOrDefault(item => HarmonySharedState.GetPatchInfo(item) is not null);
+					if (member is not null) { declared = member; patchInfo = HarmonySharedState.GetPatchInfo(member); }
+				}
+				if (patchInfo is null) throw new InvalidOperationException("Harmony has no rebuild information for " + method.FullDescription());
 				PatchFunctions.UpdateWrapper(declared, patchInfo);
 			}
 		}
@@ -126,6 +134,8 @@ namespace HarmonyLib
 			{
 				var parts = Parts ?? new object[3];
 				if (parts[part] is not null) throw new InvalidOperationException($"A method-body patching {partNames[part]} is already registered.");
+				if (Targets.Values.Any(accepted => accepted))
+					throw new InvalidOperationException("Method-body patching parts cannot be registered after a host-owned target has been pinned.");
 				parts[part] = value;
 				shared[0] = parts;
 			}
@@ -184,24 +194,40 @@ namespace HarmonyLib
 		internal static MethodBase FamilyOwner(MethodBase method)
 		{
 			if (Installer is null || method.ContainsGenericParameters || !method.IsGenericMethod && method.DeclaringType?.IsGenericType != true) return null;
-			return IsProviderTarget(method) ? method.Module.ResolveMethod(method.MetadataToken) : null;
+			var owner = method.Module.ResolveMethod(method.MetadataToken);
+			return IsProviderTarget(method) && IsDefinitionWide(owner) ? owner : null;
 		}
 
 		/// <summary>Pins the installer for a target before its replacement is constructed.</summary>
-		/// <returns>True when this call pinned the target. A failed first attempt must release it.</returns>
-		internal static bool Prepare(MethodBase method)
+		/// <returns>True when this call pinned the target. A failure before the host installer runs must release it.</returns>
+		internal static bool Prepare(MethodBase method, bool reverse = false)
 		{
 			method = Declared(method);
 			lock (shared)
 			{
-				if (Targets.ContainsKey(method)) return false;
-				Targets.Add(method, Accepts is Func<MethodBase, bool> accepts && Accept(method, accepts));
+				if (Targets.TryGetValue(method, out var accepted))
+				{
+					RejectGenericReverse(method, reverse && accepted);
+					return false;
+				}
+				MethodBase owner = null;
+				accepted = Accepts is Func<MethodBase, bool> accepts && Accept(method, accepts, out owner);
+				RejectGenericReverse(method, reverse && accepted);
+				if (owner is not null) Targets.Add(owner, true);
+				Targets.Add(method, accepted);
 				return true;
 			}
 		}
 
-		static bool Accept(MethodBase method, Func<MethodBase, bool> accepts)
+		static void RejectGenericReverse(MethodBase method, bool reverse)
 		{
+			if (reverse && (method.IsGenericMethod || method.DeclaringType?.IsGenericType == true))
+				throw new NotSupportedException("Reverse patches into host-owned generic targets are not supported: " + method.FullDescription());
+		}
+
+		static bool Accept(MethodBase method, Func<MethodBase, bool> accepts, out MethodBase family)
+		{
+			family = null;
 			// Targets installed by Harmony copies without this protocol stay on the default path.
 			if (HarmonySharedState.GetPatchInfo(method) is not null) return false;
 			// Definition-wide installation needs an installer. Without one, generic targets keep Harmony's ordinary behavior.
@@ -216,7 +242,7 @@ namespace HarmonyLib
 				// A sibling that Harmony's detour already holds keeps the whole family on the detour.
 				if (Targets.Any(target => !target.Value && GenericMethodContext.SameDefinition(owner, target.Key))) return false;
 				if (HarmonySharedState.GetPatchInfo(owner) is not null || !accepts(owner)) return false;
-				Targets.Add(owner, true);
+				family = owner;
 				return true;
 			}
 			if (!accepts(method)) return false;
@@ -253,20 +279,37 @@ namespace HarmonyLib
 			lock (shared) if (!Targets.ContainsKey(declared)) Targets.Add(declared, false);
 		}
 
+		// Separate BCL state preserves the identity and length of an existing v1 record.
+		static HashSet<MethodBase> Installing => (HashSet<MethodBase>)HarmonySharedState.GetOrCreateSharedData(
+			"Harmony.MethodBodyPatching.Installing.v1", () => new HashSet<MethodBase>());
+
+		internal static void ThrowIfInstalling(MethodBase method)
+		{
+			method = Declared(method);
+			if (Installing.Contains(method)
+				|| (method.IsGenericMethod || method.DeclaringType?.IsGenericType == true)
+				&& Installing.Contains(method.Module.ResolveMethod(method.MetadataToken)))
+				throw new InvalidOperationException("Cannot re-enter Harmony while installing a body for the same target or generic family: " + method.FullDescription());
+		}
+
 		/// <summary>Installs a replacement through the target's pinned installer: the registered one for a host-owned target, Harmony's detour otherwise.</summary>
 		/// <remarks>The replacement is null for a definition-wide target. Its body is installed into the open definition itself.</remarks>
-		internal static void Install(MethodBase method, MethodInfo replacement, DynamicMethodDefinition body)
+		internal static void Install(MethodBase method, MethodInfo replacement, DynamicMethodDefinition body, ref bool keepPin)
 		{
 			lock (shared)
 			{
 				method = Declared(method);
+				ThrowIfInstalling(method);
 				var install = Targets.TryGetValue(method, out var accepted) && accepted ? Installer ?? defaultInstaller : defaultInstaller;
 				observeBody?.Invoke(method, () => MethodBodyGenerator.Generate(body));
 				var active = true;
 				var used = false;
 				var owner = Thread.CurrentThread.ManagedThreadId;
+				Installing.Add(method);
 				try
 				{
+					// The host may mutate before throwing. Keep its selection even when recovery fails.
+					keepPin = install != defaultInstaller;
 					install(method, replacement, import =>
 					{
 						if (!active || used || Thread.CurrentThread.ManagedThreadId != owner)
@@ -274,8 +317,9 @@ namespace HarmonyLib
 						used = true;
 						return MethodBodyGenerator.GenerateBody(body, replacement ?? method, import);
 					});
+					keepPin = true;
 				}
-				finally { active = false; }
+				finally { active = false; Installing.Remove(method); }
 			}
 		}
 
