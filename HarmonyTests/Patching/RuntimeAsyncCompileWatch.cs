@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -55,6 +56,10 @@ namespace HarmonyLibTests.Patching
 				Assert.False(Classify(target.MethodHandle, other));
 				Assert.False(Classify(other.MethodHandle, generic));
 				Assert.False(Classify(other.MethodHandle, generic.MakeGenericMethod(typeof(int))));
+
+				var dynamicMethod = new DynamicMethod("Dynamic", typeof(void), Type.EmptyTypes);
+				dynamicMethod.GetILGenerator().Emit(OpCodes.Ret);
+				Assert.False(Classify(other.MethodHandle, dynamicMethod));
 
 				Assert.That(Encoding.UTF8.GetString(output.ToArray()), Is.Empty);
 				_ = onCompiled.Invoke(null, [other.MethodHandle, target, IntPtr.Zero, IntPtr.Zero, 0UL]);

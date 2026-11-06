@@ -1,6 +1,7 @@
 using MonoMod.Core.Platforms;
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Threading;
 
 namespace HarmonyLib
@@ -40,7 +41,8 @@ namespace HarmonyLib
 
 		internal static bool IsUnpatchedVariantCompile(RuntimeMethodHandle methodHandle, MethodBase method, Func<MethodBase, bool> isPatched)
 		{
-			if (method is null || method.IsGenericMethod) return false;
+			// DynamicMethod.MethodHandle throws, and a dynamic method is never patched
+			if (method is null || method is DynamicMethod || method.IsGenericMethod) return false;
 			if (method.DeclaringType is { IsGenericType: true }) return false;
 			if (method.MethodHandle.Value == methodHandle.Value) return false;
 			return isPatched(method);
