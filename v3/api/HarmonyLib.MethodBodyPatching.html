@@ -131,6 +131,7 @@ Class MethodBodyPatching  <a class="header-action link-secondary" title="View so
   <h2 id="HarmonyLib_MethodBodyPatching_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>A host registers each part once during initialization, before patching starts. An unregistered part keeps Harmony's default.
 Null registers nothing. Non-null registration after any host-owned target is pinned throws InvalidOperationException.
+A second non-null registration of the same part also throws InvalidOperationException.
 Targets already pinned to the default detour do not prevent registration and keep that installer.
 <a class="xref" href="HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetEligibility_System_Func_System_Reflection_MethodBase_System_Boolean__">SetEligibility(Func&lt;MethodBase, bool&gt;)</a> selects the methods the host owns. Without it the other parts have no effect.
 The host owns discovery, installation and recovery. Harmony never retries a failed installation through another mechanism. Unpatching installs a rebuilt replacement.
@@ -340,7 +341,7 @@ Eligibility runs under Harmony's shared patch lock and must not wait for another
   <h4 class="section" id="HarmonyLib_MethodBodyPatching_SetInstaller_System_Action_System_Reflection_MethodBase_System_Reflection_MethodInfo_System_Func_System_Func_System_Object_System_Int32__System_Byte______remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Harmony holds its shared patch lock while install runs. The installer must not wait for another thread that uses Harmony.
 The installer must not call patch, unpatch, reverse-patch or rebuild operations. Re-entry into the same target or generic family throws InvalidOperationException.
-Instantiations remains available during installation. The synchronous writer and importer also run under the patch lock.
+<a class="xref" href="HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_Instantiations_System_Reflection_MethodBase_">Instantiations(MethodBase)</a> remains available during installation. The synchronous writer and importer also run under the patch lock.
 Once the registered installer starts, failure retains the target and family pins without publishing candidate patch records.
 If a failed installation leaves an unknown state, the installer must refuse further updates to that target.
 The replacement is a callable copy of the patched body. For a definition-wide target it is null: an open generic definition has no callable copy, so the installer writes the body.
@@ -353,7 +354,9 @@ Permanent closed-helper stand-ins reuse a delegate field per original, helper si
 Successful installation updates the field, including calls from older bodies. Failed installation preserves the previous delegate.
 Ordinary reflection callbacks use module, metadata token, declaring type and method arguments as identity. Distinct dynamic callbacks retain separate permanent entries.
 A refused generated open generic helper is offered again in a permanent assembly with its generic context. These assemblies accumulate across rebuilds.
-A permanent generic helper cannot reference collectible dependencies. Generic helper generation requires collectible AssemblyLoadContext support, so .NET Framework and Mono refuse Infix patches on a generic method definition with a NotSupportedException before installation.
+A permanent generic helper cannot reference collectible dependencies. Generic helper generation requires collectible AssemblyLoadContext support.
+On .NET Framework and Mono, an Infix patch on a host-owned generic method definition therefore fails before installation.
+Patching throws a HarmonyException with an inner NotSupportedException and records no patch.
 Other open generic callbacks must bind directly. Hosts must resolve HarmonyDynamicMethod_* stand-ins, HarmonyGenerated_* helpers and callback dependencies by exact loaded identity.
 Runtime access checks still apply to private callbacks and Harmony's internal generic guard helpers unless the target module ignores those checks.
 A refused ldtoken, ldftn or ldvirtftn method operand cannot use a stand-in because that would change its identity.

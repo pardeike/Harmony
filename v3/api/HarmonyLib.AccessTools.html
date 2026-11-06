@@ -408,6 +408,48 @@ Class AccessTools  <a class="header-action link-secondary" title="View source" h
 
 
 
+  <a id="HarmonyLib_AccessTools_AsyncMoveNext_" data-uid="HarmonyLib.AccessTools.AsyncMoveNext*"></a>
+
+  <h3 id="HarmonyLib_AccessTools_AsyncMoveNext_System_Reflection_MethodBase_" data-uid="HarmonyLib.AccessTools.AsyncMoveNext(System.Reflection.MethodBase)">
+  AsyncMoveNext(MethodBase)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/AccessTools.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the <span class="xref">System.Runtime.CompilerServices.IAsyncStateMachine.MoveNext()</span> method of an async method's state machine</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo AsyncMoveNext(MethodBase method)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>method</code> <span class="xref">MethodBase</span></dt>
+    <dd><p>Async method that creates the state machine internally</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">MethodInfo</span></dt>
+    <dd><p>The internal <span class="xref">System.Runtime.CompilerServices.IAsyncStateMachine.MoveNext()</span> method of the async state machine or <b>null</b> if no valid async method is detected</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_AccessTools_AsyncMoveNext_System_Reflection_MethodBase__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Not available in the net35 build</p>
+</div>
+
+
+
+
   <a id="HarmonyLib_AccessTools_ClearTypeSearchCache_" data-uid="HarmonyLib.AccessTools.ClearTypeSearchCache*"></a>
 
   <h3 id="HarmonyLib_AccessTools_ClearTypeSearchCache" data-uid="HarmonyLib.AccessTools.ClearTypeSearchCache">
@@ -2650,7 +2692,8 @@ The top-most type in the type hierarchy of all non-interface types (including va
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The member type</p>
+</dd>
   </dl>
 
 
@@ -3620,7 +3663,8 @@ and the given <code class="paramref">instance</code> (for closed instance delega
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The member type</p>
+</dd>
   </dl>
 
 
@@ -4317,15 +4361,15 @@ This argument only matters if the target <code class="paramref">method</code> si
 and your <code class="typeparamref">DelegateType</code> argument is replaced by a non-value type
 (usually <code>object</code>) instead of using said value type.
 Use this if the generic arguments of <code class="typeparamref">DelegateType</code> doesn't represent the delegate's
-arguments, and calling this function fails
-<returns>A delegate of given <code class="typeparamref">DelegateType</code> to given <code class="paramref">method</code></returns></p>
+arguments, and calling this function fails</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DelegateType</span></dt>
-    <dd></dd>
+    <dd><p>A delegate of given <code class="typeparamref">DelegateType</code> to given <code class="paramref">method</code></p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -4391,15 +4435,15 @@ This argument only matters if the target <code class="paramref">typeColonName</c
 and your <code class="typeparamref">DelegateType</code> argument is replaced by a non-value type
 (usually <code>object</code>) instead of using said value type.
 Use this if the generic arguments of <code class="typeparamref">DelegateType</code> doesn't represent the delegate's
-arguments, and calling this function fails
-<returns>A delegate of given <code class="typeparamref">DelegateType</code> to given <code class="paramref">typeColonName</code></returns></p>
+arguments, and calling this function fails</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DelegateType</span></dt>
-    <dd></dd>
+    <dd><p>A delegate of given <code class="typeparamref">DelegateType</code> to given <code class="paramref">typeColonName</code></p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>

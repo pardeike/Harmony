@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SymbolExtensions | Harmony 3 ">
       
-      <meta name="description" content="A helper class to retrieve reflection info for non-private methods and fields">
+      <meta name="description" content="A helper class to retrieve reflection info for non-private methods, fields and properties">
       <link rel="icon" href="../images/harmony-logo.png">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -103,7 +103,7 @@ Class SymbolExtensions  <a class="header-action link-secondary" title="View sour
   <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>A helper class to retrieve reflection info for non-private methods and fields</p>
+  <div class="markdown summary"><p>A helper class to retrieve reflection info for non-private methods, fields and properties</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -386,6 +386,108 @@ Class SymbolExtensions  <a class="header-action link-secondary" title="View sour
 
 
 
+
+
+
+  <a id="HarmonyLib_SymbolExtensions_GetPropertyInfo_" data-uid="HarmonyLib.SymbolExtensions.GetPropertyInfo*"></a>
+
+  <h3 id="HarmonyLib_SymbolExtensions_GetPropertyInfo_System_Linq_Expressions_LambdaExpression_" data-uid="HarmonyLib.SymbolExtensions.GetPropertyInfo(System.Linq.Expressions.LambdaExpression)">
+  GetPropertyInfo(LambdaExpression)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/SymbolExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Given a lambda expression that reads a property, returns the property info</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo GetPropertyInfo(LambdaExpression expression)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">LambdaExpression</span></dt>
+    <dd><p>The lambda expression reading the property</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">PropertyInfo</span></dt>
+    <dd><p>The property in the lambda expression</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>The expression is null</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The expression does not read a property. Indexers are not supported.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="HarmonyLib_SymbolExtensions_GetPropertyInfo_" data-uid="HarmonyLib.SymbolExtensions.GetPropertyInfo*"></a>
+
+  <h3 id="HarmonyLib_SymbolExtensions_GetPropertyInfo__1_System_Linq_Expressions_Expression_System_Func___0___" data-uid="HarmonyLib.SymbolExtensions.GetPropertyInfo``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+  GetPropertyInfo&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/SymbolExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Given a lambda expression that reads a property, returns the property info</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo GetPropertyInfo&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; expression)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The lambda expression reading the property, for example <code>() =&gt; default(MyClass).MyProperty</code></p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">PropertyInfo</span></dt>
+    <dd><p>The property in the lambda expression</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The generic property type</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>The expression is null</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The expression does not read a property. Indexers are not supported.</p>
+</dd>
+  </dl>
 
 
 

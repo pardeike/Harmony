@@ -216,6 +216,13 @@ public static class DamageHandler_Apply_Patch
 }
 </code></pre>
 <p><img src="../images/note.png" alt="note"> <code>Repeat()</code> repeats <code>Match...()</code> searches, not <code>Search...()</code>. If your action needs another <code>Match...()</code>, use a clone so you do not replace the pattern being repeated.</p>
+<h2 id="match-fields-and-properties">Match fields and properties</h2>
+<p><code>CodeMatch.LoadsField</code> and <code>CodeMatch.StoresField</code> match field access. <code>CodeMatch.GetsProperty</code> and <code>CodeMatch.SetsProperty</code> match calls to a property's getter or setter. Each accepts the member itself or a lambda that names it:</p>
+<pre><code class="lang-csharp">CodeMatch.LoadsField(() =&gt; default(Character).health)
+CodeMatch.GetsProperty(() =&gt; default(Character).Health)
+CodeMatch.SetsProperty(typeof(Character).Property(&quot;Health&quot;))
+</code></pre>
+<p>The lambda only names the member and never runs. C# compiles a call to an overridden property as a call to the base declaration's accessor. To match it, pass the base type's property or use a lambda.</p>
 
 </article>
 

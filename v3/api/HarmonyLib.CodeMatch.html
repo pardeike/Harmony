@@ -862,6 +862,113 @@ Class CodeMatch  <a class="header-action link-secondary" title="View source" hre
 
 
 
+  <a id="HarmonyLib_CodeMatch_GetsProperty_" data-uid="HarmonyLib.CodeMatch.GetsProperty*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_GetsProperty_System_Reflection_PropertyInfo_" data-uid="HarmonyLib.CodeMatch.GetsProperty(System.Reflection.PropertyInfo)">
+  GetsProperty(PropertyInfo)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/CodeMatch.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction calls the getter of a property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch GetsProperty(PropertyInfo property)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>property</code> <span class="xref">PropertyInfo</span></dt>
+    <dd><p>The property</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_CodeMatch_GetsProperty_System_Reflection_PropertyInfo__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The match compares the called method with the getter, like <a class="xref" href="HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Calls_System_Reflection_MethodInfo_">Calls(MethodInfo)</a>.
+C# code calls an overridden property through the getter of its base declaration.
+To match those calls, pass the base property or use the expression overload.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>The property is null</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The property has no getter</p>
+</dd>
+  </dl>
+
+
+
+  <a id="HarmonyLib_CodeMatch_GetsProperty_" data-uid="HarmonyLib.CodeMatch.GetsProperty*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_GetsProperty__1_System_Linq_Expressions_Expression_System_Func___0___" data-uid="HarmonyLib.CodeMatch.GetsProperty``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+  GetsProperty&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/CodeMatch.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction calls the getter of a property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch GetsProperty&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; expression)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The lambda expression reading the property, for example <code>() =&gt; default(MyClass).MyProperty</code></p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The property type</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>The expression is null</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The expression does not read a property, or the property has no getter</p>
+</dd>
+  </dl>
+
+
+
   <a id="HarmonyLib_CodeMatch_IsLdarg_" data-uid="HarmonyLib.CodeMatch.IsLdarg*"></a>
 
   <h3 id="HarmonyLib_CodeMatch_IsLdarg_System_Nullable_System_Int32__" data-uid="HarmonyLib.CodeMatch.IsLdarg(System.Nullable{System.Int32})">
@@ -1420,6 +1527,114 @@ Class CodeMatch  <a class="header-action link-secondary" title="View source" hre
 
 
 
+  <a id="HarmonyLib_CodeMatch_SetsProperty_" data-uid="HarmonyLib.CodeMatch.SetsProperty*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_SetsProperty_System_Reflection_PropertyInfo_" data-uid="HarmonyLib.CodeMatch.SetsProperty(System.Reflection.PropertyInfo)">
+  SetsProperty(PropertyInfo)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/CodeMatch.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction calls the setter of a property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch SetsProperty(PropertyInfo property)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>property</code> <span class="xref">PropertyInfo</span></dt>
+    <dd><p>The property</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_CodeMatch_SetsProperty_System_Reflection_PropertyInfo__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The match compares the called method with the setter, like <a class="xref" href="HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_Calls_System_Reflection_MethodInfo_">Calls(MethodInfo)</a>.
+C# code calls an overridden property through the setter of its base declaration.
+To match those calls, pass the base property or use the expression overload.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>The property is null</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The property has no setter</p>
+</dd>
+  </dl>
+
+
+
+  <a id="HarmonyLib_CodeMatch_SetsProperty_" data-uid="HarmonyLib.CodeMatch.SetsProperty*"></a>
+
+  <h3 id="HarmonyLib_CodeMatch_SetsProperty__1_System_Linq_Expressions_Expression_System_Func___0___" data-uid="HarmonyLib.CodeMatch.SetsProperty``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+  SetsProperty&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Tools/CodeMatch.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tests if the code instruction calls the setter of a property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CodeMatch SetsProperty&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; expression)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The lambda expression reading the property, for example <code>() =&gt; default(MyClass).MyProperty</code>.
+C# expression trees cannot contain assignments, so the expression only names the property.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
+    <dd><p>A new code match</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The property type</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>The expression is null</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The expression does not read a property, or the property has no setter</p>
+</dd>
+  </dl>
+
+
+
   <a id="HarmonyLib_CodeMatch_StoresArgument_" data-uid="HarmonyLib.CodeMatch.StoresArgument*"></a>
 
   <h3 id="HarmonyLib_CodeMatch_StoresArgument_System_String_" data-uid="HarmonyLib.CodeMatch.StoresArgument(System.String)">
@@ -1646,7 +1861,8 @@ Class CodeMatch  <a class="header-action link-secondary" title="View source" hre
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="HarmonyLib.CodeMatch.html">CodeMatch</a></dt>
-    <dd></dd>
+    <dd><p>A new code match</p>
+</dd>
   </dl>
 
 

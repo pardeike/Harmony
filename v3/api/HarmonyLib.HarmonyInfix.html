@@ -234,9 +234,11 @@ public sealed class HarmonyInfix : HarmonyAttribute</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>declaringType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The method's declaring type</p>
+</dd>
     <dt><code>methodName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The method name</p>
+</dd>
   </dl>
 
 
@@ -310,11 +312,14 @@ public sealed class HarmonyInfix : HarmonyAttribute</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>declaringType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The method's declaring type</p>
+</dd>
     <dt><code>methodName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The method name</p>
+</dd>
     <dt><code>argumentTypes</code> <span class="xref">Type</span>[]</dt>
-    <dd></dd>
+    <dd><p>The method parameter types</p>
+</dd>
   </dl>
 
 
@@ -346,13 +351,17 @@ public sealed class HarmonyInfix : HarmonyAttribute</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>declaringType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The method's declaring type</p>
+</dd>
     <dt><code>methodName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The method name</p>
+</dd>
     <dt><code>argumentTypes</code> <span class="xref">Type</span>[]</dt>
-    <dd></dd>
+    <dd><p>The method parameter types</p>
+</dd>
     <dt><code>argumentVariations</code> <a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a>[]</dt>
-    <dd></dd>
+    <dd><p>One <a class="xref" href="HarmonyLib.ArgumentType.html">ArgumentType</a> for each argument type</p>
+</dd>
   </dl>
 
 
@@ -398,6 +407,10 @@ public sealed class HarmonyInfix : HarmonyAttribute</code></pre>
 
 
 
+  <h4 class="section" id="HarmonyLib_HarmonyInfix_OuterBody_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><a class="xref" href="HarmonyLib.InfixOuterBody.html#HarmonyLib_InfixOuterBody_Auto">Auto</a> leaves ordinary methods unchanged. It selects one body, not lambdas, local functions or other helper methods.
+Use <a class="xref" href="HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_StateMachineMoveNext_System_Reflection_MethodBase_">StateMachineMoveNext(MethodBase)</a> to find that body for <a class="xref" href="HarmonyLib.Harmony.html#HarmonyLib_Harmony_GetPatchInfo_System_Reflection_MethodBase_">GetPatchInfo(MethodBase)</a> or unpatching.</p>
+</div>
 
 
 

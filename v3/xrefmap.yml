@@ -52,6 +52,18 @@ references:
   commentId: Overload:HarmonyLib.AccessTools.AllTypes
   fullName: HarmonyLib.AccessTools.AllTypes
   nameWithType: AccessTools.AllTypes
+- uid: HarmonyLib.AccessTools.AsyncMoveNext(System.Reflection.MethodBase)
+  name: AsyncMoveNext(MethodBase)
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_AsyncMoveNext_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.AccessTools.AsyncMoveNext(System.Reflection.MethodBase)
+  fullName: HarmonyLib.AccessTools.AsyncMoveNext(System.Reflection.MethodBase)
+  nameWithType: AccessTools.AsyncMoveNext(MethodBase)
+- uid: HarmonyLib.AccessTools.AsyncMoveNext*
+  name: AsyncMoveNext
+  href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_AsyncMoveNext_
+  commentId: Overload:HarmonyLib.AccessTools.AsyncMoveNext
+  fullName: HarmonyLib.AccessTools.AsyncMoveNext
+  nameWithType: AccessTools.AsyncMoveNext
 - uid: HarmonyLib.AccessTools.ClearTypeSearchCache
   name: ClearTypeSearchCache()
   href: api/HarmonyLib.AccessTools.html#HarmonyLib_AccessTools_ClearTypeSearchCache
@@ -6027,6 +6039,27 @@ references:
   commentId: Overload:HarmonyLib.CodeMatch.Calls
   fullName: HarmonyLib.CodeMatch.Calls
   nameWithType: CodeMatch.Calls
+- uid: HarmonyLib.CodeMatch.GetsProperty(System.Reflection.PropertyInfo)
+  name: GetsProperty(PropertyInfo)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_GetsProperty_System_Reflection_PropertyInfo_
+  commentId: M:HarmonyLib.CodeMatch.GetsProperty(System.Reflection.PropertyInfo)
+  fullName: HarmonyLib.CodeMatch.GetsProperty(System.Reflection.PropertyInfo)
+  nameWithType: CodeMatch.GetsProperty(PropertyInfo)
+- uid: HarmonyLib.CodeMatch.GetsProperty*
+  name: GetsProperty
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_GetsProperty_
+  commentId: Overload:HarmonyLib.CodeMatch.GetsProperty
+  fullName: HarmonyLib.CodeMatch.GetsProperty
+  nameWithType: CodeMatch.GetsProperty
+- uid: HarmonyLib.CodeMatch.GetsProperty``1(System.Linq.Expressions.Expression{System.Func{``0}})
+  name: GetsProperty<T>(Expression<Func<T>>)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_GetsProperty__1_System_Linq_Expressions_Expression_System_Func___0___
+  commentId: M:HarmonyLib.CodeMatch.GetsProperty``1(System.Linq.Expressions.Expression{System.Func{``0}})
+  name.vb: GetsProperty(Of T)(Expression(Of Func(Of T)))
+  fullName: HarmonyLib.CodeMatch.GetsProperty<T>(System.Linq.Expressions.Expression<System.Func<T>>)
+  fullName.vb: HarmonyLib.CodeMatch.GetsProperty(Of T)(System.Linq.Expressions.Expression(Of System.Func(Of T)))
+  nameWithType: CodeMatch.GetsProperty<T>(Expression<Func<T>>)
+  nameWithType.vb: CodeMatch.GetsProperty(Of T)(Expression(Of Func(Of T)))
 - uid: HarmonyLib.CodeMatch.IsLdarg(System.Nullable{System.Int32})
   name: IsLdarg(int?)
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_IsLdarg_System_Nullable_System_Int32__
@@ -6195,6 +6228,27 @@ references:
   commentId: Overload:HarmonyLib.CodeMatch.LoadsLocal
   fullName: HarmonyLib.CodeMatch.LoadsLocal
   nameWithType: CodeMatch.LoadsLocal
+- uid: HarmonyLib.CodeMatch.SetsProperty(System.Reflection.PropertyInfo)
+  name: SetsProperty(PropertyInfo)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_SetsProperty_System_Reflection_PropertyInfo_
+  commentId: M:HarmonyLib.CodeMatch.SetsProperty(System.Reflection.PropertyInfo)
+  fullName: HarmonyLib.CodeMatch.SetsProperty(System.Reflection.PropertyInfo)
+  nameWithType: CodeMatch.SetsProperty(PropertyInfo)
+- uid: HarmonyLib.CodeMatch.SetsProperty*
+  name: SetsProperty
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_SetsProperty_
+  commentId: Overload:HarmonyLib.CodeMatch.SetsProperty
+  fullName: HarmonyLib.CodeMatch.SetsProperty
+  nameWithType: CodeMatch.SetsProperty
+- uid: HarmonyLib.CodeMatch.SetsProperty``1(System.Linq.Expressions.Expression{System.Func{``0}})
+  name: SetsProperty<T>(Expression<Func<T>>)
+  href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_SetsProperty__1_System_Linq_Expressions_Expression_System_Func___0___
+  commentId: M:HarmonyLib.CodeMatch.SetsProperty``1(System.Linq.Expressions.Expression{System.Func{``0}})
+  name.vb: SetsProperty(Of T)(Expression(Of Func(Of T)))
+  fullName: HarmonyLib.CodeMatch.SetsProperty<T>(System.Linq.Expressions.Expression<System.Func<T>>)
+  fullName.vb: HarmonyLib.CodeMatch.SetsProperty(Of T)(System.Linq.Expressions.Expression(Of System.Func(Of T)))
+  nameWithType: CodeMatch.SetsProperty<T>(Expression<Func<T>>)
+  nameWithType.vb: CodeMatch.SetsProperty(Of T)(Expression(Of Func(Of T)))
 - uid: HarmonyLib.CodeMatch.StoresArgument(System.String)
   name: StoresArgument(string)
   href: api/HarmonyLib.CodeMatch.html#HarmonyLib_CodeMatch_StoresArgument_System_String_
@@ -10664,6 +10718,12 @@ references:
   commentId: T:HarmonyLib.MethodType
   fullName: HarmonyLib.MethodType
   nameWithType: MethodType
+- uid: HarmonyLib.MethodType.Async
+  name: Async
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_Async
+  commentId: F:HarmonyLib.MethodType.Async
+  fullName: HarmonyLib.MethodType.Async
+  nameWithType: MethodType.Async
 - uid: HarmonyLib.MethodType.Constructor
   name: Constructor
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_Constructor
@@ -11937,6 +11997,27 @@ references:
   fullName.vb: HarmonyLib.SymbolExtensions.GetMethodInfo(Of T, TResult)(System.Linq.Expressions.Expression(Of System.Func(Of T, TResult)))
   nameWithType: SymbolExtensions.GetMethodInfo<T, TResult>(Expression<Func<T, TResult>>)
   nameWithType.vb: SymbolExtensions.GetMethodInfo(Of T, TResult)(Expression(Of Func(Of T, TResult)))
+- uid: HarmonyLib.SymbolExtensions.GetPropertyInfo(System.Linq.Expressions.LambdaExpression)
+  name: GetPropertyInfo(LambdaExpression)
+  href: api/HarmonyLib.SymbolExtensions.html#HarmonyLib_SymbolExtensions_GetPropertyInfo_System_Linq_Expressions_LambdaExpression_
+  commentId: M:HarmonyLib.SymbolExtensions.GetPropertyInfo(System.Linq.Expressions.LambdaExpression)
+  fullName: HarmonyLib.SymbolExtensions.GetPropertyInfo(System.Linq.Expressions.LambdaExpression)
+  nameWithType: SymbolExtensions.GetPropertyInfo(LambdaExpression)
+- uid: HarmonyLib.SymbolExtensions.GetPropertyInfo*
+  name: GetPropertyInfo
+  href: api/HarmonyLib.SymbolExtensions.html#HarmonyLib_SymbolExtensions_GetPropertyInfo_
+  commentId: Overload:HarmonyLib.SymbolExtensions.GetPropertyInfo
+  fullName: HarmonyLib.SymbolExtensions.GetPropertyInfo
+  nameWithType: SymbolExtensions.GetPropertyInfo
+- uid: HarmonyLib.SymbolExtensions.GetPropertyInfo``1(System.Linq.Expressions.Expression{System.Func{``0}})
+  name: GetPropertyInfo<T>(Expression<Func<T>>)
+  href: api/HarmonyLib.SymbolExtensions.html#HarmonyLib_SymbolExtensions_GetPropertyInfo__1_System_Linq_Expressions_Expression_System_Func___0___
+  commentId: M:HarmonyLib.SymbolExtensions.GetPropertyInfo``1(System.Linq.Expressions.Expression{System.Func{``0}})
+  name.vb: GetPropertyInfo(Of T)(Expression(Of Func(Of T)))
+  fullName: HarmonyLib.SymbolExtensions.GetPropertyInfo<T>(System.Linq.Expressions.Expression<System.Func<T>>)
+  fullName.vb: HarmonyLib.SymbolExtensions.GetPropertyInfo(Of T)(System.Linq.Expressions.Expression(Of System.Func(Of T)))
+  nameWithType: SymbolExtensions.GetPropertyInfo<T>(Expression<Func<T>>)
+  nameWithType.vb: SymbolExtensions.GetPropertyInfo(Of T)(Expression(Of Func(Of T)))
 - uid: HarmonyLib.Transpilers
   name: Transpilers
   href: api/HarmonyLib.Transpilers.html

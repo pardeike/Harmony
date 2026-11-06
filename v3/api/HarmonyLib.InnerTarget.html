@@ -166,6 +166,9 @@ Class InnerTarget  <a class="header-action link-secondary" title="View source" h
 
 
 
+  <h4 class="section" id="HarmonyLib_InnerTarget__ctor_System_Reflection_ConstructorInfo_System_Int32____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Only newobj instructions match. Base-constructor initialization through call is not selected. A static constructor throws ArgumentException.</p>
+</div>
 
 
 
@@ -205,6 +208,9 @@ Class InnerTarget  <a class="header-action link-secondary" title="View source" h
 
 
 
+  <h4 class="section" id="HarmonyLib_InnerTarget__ctor_System_Reflection_FieldInfo_HarmonyLib_InnerTargetKind_System_Int32____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Throws ArgumentException for a literal field, a FieldWrite of a readonly field, or an instance field of a value type.</p>
+</div>
 
 
 
@@ -487,13 +493,15 @@ Installation copies the selector and positions, so later edits do not affect ins
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>obj</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The other selector</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>True if both select the same operation</p>
+</dd>
   </dl>
 
 
@@ -528,7 +536,8 @@ Installation copies the selector and positions, so later edits do not affect ins
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>A hash code</p>
+</dd>
   </dl>
 
 

@@ -1016,7 +1016,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "HarmonyLib.SymbolExtensions",
-      "Summary": "<p sourcefile=\"api/HarmonyLib.SymbolExtensions.yml\" sourcestartlinenumber=\"1\">A helper class to retrieve reflection info for non-private methods and fields</p>\n"
+      "Summary": "<p sourcefile=\"api/HarmonyLib.SymbolExtensions.yml\" sourcestartlinenumber=\"1\">A helper class to retrieve reflection info for non-private methods, fields and properties</p>\n"
     },
     {
       "type": "ManagedReference",

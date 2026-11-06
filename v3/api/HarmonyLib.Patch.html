@@ -390,7 +390,7 @@ public readonly InnerMethod innerMethod</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/Patch.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The selected extended operation; method-call patches retain their existing innerMethod representation</p>
+  <div class="markdown level1 summary"><p>For an infix patch on a field access, object construction or literal, this defines the selected operation</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -412,6 +412,9 @@ public readonly InnerTarget innerTarget</code></pre>
 
 
 
+  <h4 class="section" id="HarmonyLib_Patch_innerTarget_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Method calls and property accessors use <a class="xref" href="HarmonyLib.Patch.html#HarmonyLib_Patch_innerMethod">innerMethod</a>, and this field is null.</p>
+</div>
 
 
 

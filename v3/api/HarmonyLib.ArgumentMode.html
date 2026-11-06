@@ -124,9 +124,11 @@ Enum ArgumentMode
 </h2>
   <dl class="parameters">
     <dt id="HarmonyLib_ArgumentMode_Captured"><code>Captured = 2</code></dt>
-  
   <dd><p>Match a preserved compiler-generated captured variable in an Infix scope</p>
+<p>Lookup is case-sensitive and reads the inner generated receiver or closure arguments.
+Add <a class="xref" href="HarmonyLib.HarmonyOuter.html">HarmonyOuter</a> for variables of the outer generated body. Optimized-away variables cannot be found.</p>
 </dd>
+  
     <dt id="HarmonyLib_ArgumentMode_Default"><code>Default = 0</code></dt>
   
   <dd><p>Use Harmony's default argument name handling</p>
@@ -137,9 +139,11 @@ Enum ArgumentMode
 </dd>
     <dt id="HarmonyLib_ArgumentMode_Persistent"><code>Persistent = 3</code></dt>
   <dd><p>Bind a named, patch-owned outer value that survives awaits and iterator yields</p>
-<p>Requires HarmonyOuter on an Infix parameter. Slots are scoped to the actual patch declaring type and name,
+<p>Requires <a class="xref" href="HarmonyLib.HarmonyOuter.html">HarmonyOuter</a> on an Infix parameter. Slots are scoped to the actual patch declaring type and name,
 start at default, and last one async execution or enumeration. Ordinary methods use one invocation.
-Values must be storable on the managed heap. Completion releases references without disposing stored objects.</p>
+Values must be storable on the managed heap. Completion releases references without disposing stored objects.
+On the CLR 2.0 runtime of .NET 3.5, a stored value that refers back to its enumerator keeps both alive.
+Complete or dispose that enumerator, or remove the persistent patch.</p>
 </dd>
   
   </dl>

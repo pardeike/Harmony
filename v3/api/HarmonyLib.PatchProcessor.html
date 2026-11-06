@@ -277,7 +277,7 @@ Class PatchProcessor  <a class="header-action link-secondary" title="View source
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></dt>
-    <dd><p>This processor for chaining calls</p>
+    <dd><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
 </dd>
   </dl>
 
@@ -316,7 +316,7 @@ Class PatchProcessor  <a class="header-action link-secondary" title="View source
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a></dt>
-    <dd><p>This processor for chaining calls</p>
+    <dd><p>A <a class="xref" href="HarmonyLib.PatchProcessor.html">PatchProcessor</a> for chaining calls</p>
 </dd>
   </dl>
 
@@ -1110,7 +1110,9 @@ Class PatchProcessor  <a class="header-action link-secondary" title="View source
 
 
   <h4 class="section" id="HarmonyLib_PatchProcessor_Patch_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Retains the configuration. Repeated calls add registrations; they do not replace earlier installations.</p>
+  <div class="markdown level1 remarks"><p>Retains the configuration. Repeated calls add registrations; they do not replace earlier installations.
+All pending patches must resolve to one method body, and later calls must keep that body. Otherwise this throws ArgumentException.
+Use separate processors for different bodies, for example when an Infix uses <a class="xref" href="HarmonyLib.InfixOuterBody.html#HarmonyLib_InfixOuterBody_Auto">Auto</a>.</p>
 </div>
 
 

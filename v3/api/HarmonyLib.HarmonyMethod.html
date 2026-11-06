@@ -586,6 +586,9 @@ Class HarmonyMethod  <a class="header-action link-secondary" title="View source"
 
 
 
+  <h4 class="section" id="HarmonyLib_HarmonyMethod_infixOuterBody_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>See <a class="xref" href="HarmonyLib.HarmonyInfix.html#HarmonyLib_HarmonyInfix_OuterBody">OuterBody</a>.</p>
+</div>
 
 
 
@@ -596,7 +599,7 @@ Class HarmonyMethod  <a class="header-action link-secondary" title="View source"
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/HarmonyMethod.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The Infix call selector</p>
+  <div class="markdown level1 summary"><p>The Infix call selector, see <a class="xref" href="HarmonyLib.InnerMethod.html">InnerMethod</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -627,7 +630,7 @@ Class HarmonyMethod  <a class="header-action link-secondary" title="View source"
   <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/HarmonyMethod.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The Infix member-operation or literal selector</p>
+  <div class="markdown level1 summary"><p>The Infix member-operation or literal selector, see <a class="xref" href="HarmonyLib.InnerTarget.html">InnerTarget</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -648,6 +651,10 @@ Class HarmonyMethod  <a class="header-action link-secondary" title="View source"
 
 
 
+  <h4 class="section" id="HarmonyLib_HarmonyMethod_innerTarget_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <a class="xref" href="HarmonyLib.HarmonyMethod.html#HarmonyLib_HarmonyMethod_innerMethod">innerMethod</a> or a <a class="xref" href="HarmonyLib.HarmonyInfix.html">HarmonyInfix</a> declaration also selects a target, all must select the same operation and positions.
+Otherwise patching throws ArgumentException.</p>
+</div>
 
 
 
@@ -1008,7 +1015,8 @@ for <a class="xref" href="HarmonyLib.HarmonyDelegate.html">HarmonyDelegate</a>-a
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
-    <dd></dd>
+    <dd><p>A <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a> wrapping the delegate's method</p>
+</dd>
   </dl>
 
 
@@ -1046,7 +1054,8 @@ for <a class="xref" href="HarmonyLib.HarmonyDelegate.html">HarmonyDelegate</a>-a
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a></dt>
-    <dd></dd>
+    <dd><p>A <a class="xref" href="HarmonyLib.HarmonyMethod.html">HarmonyMethod</a> wrapping the method</p>
+</dd>
   </dl>
 
 
