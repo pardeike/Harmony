@@ -390,3 +390,17 @@ Formatting note: `dotnet format` with style fixers wrote merge markers into `Gen
 - Complete stock suite in Release on net10 x64: 1,300 passed, 0 failed, 5 ignored (`artifacts/tests/run-8efjau6u`, log `artifacts/tests/stock-20261106-release.out`).
 - Whole solution compiled in Release for every configured target framework (`artifacts/local-release-all/build-20261106.log` and `-2.log`). The first pass found one error: `A_definition_wide_export_keeps_local_initialization` used `AssemblyBuilder.DefineDynamicAssembly`, which net35 lacks. It now uses `PatchTools.DefineDynamicAssembly`. The second pass has 0 errors, and no warnings in the new or changed files.
 - Not run locally: the Platform Tests matrix (Mono, Windows .NET Framework, QEMU lanes) and the compatibility lanes against published Harmony 2.x. Both run in CI on the release commit and are release gates by the documented process.
+
+## 2026-11-06 first CI runs on v3
+
+Pushed as `46fdfcc3..b725dfaf` (seven commits). Platform Tests run 42157275636 on `b725dfaf`: 47 lanes, all successful, including the compatibility lanes. Documentation build 42157275606: successful, no annotations.
+
+The two earlier runs failed and were cancelled after their lanes had reported:
+
+- Every Mono lane aborted with a stack overflow: Mono's reflection recurses in `IsValueType` for a function pointer type while MonoMod imports the signature. The function pointer test now ignores itself on Mono, and `patching-edgecases.md` records the limit.
+- `FunctionPointerSignatures` failed on .NET 11 and on the netcoreapp3.x and x86 lanes, which run on a newer runtime than their target: `GetDynamicILInfo` rejects a function pointer type in a dynamic signature there. The callable copy now uses a native int in its place (`DynamicMethodBodyWriter.Native`). Verified locally on .NET 10, .NET Core 3.1 and .NET 11 x64.
+- `A_closed_sibling_keeps_a_detour_held_family` asserted the result of a detoured shared generic instantiation, which the detour does not reach on .NET Core 3.1, x86 and some .NET 11 runs, and MonoMod throws `NotImplementedException` for a generic method instantiation on .NET Framework (`Fx.V48.MethodTable.GetMethodDescForSlot`). The test checks the registration and ignores itself on .NET Framework.
+- `An_already_selected_reverse_standin_receives_a_complete_body_writer` ran on net35, where body export throws by design. It ignores itself there.
+- The generic importer forwarded assembly names to MonoMod's obsolete overload. It uses Cecil's default importer now. The category tests use the explicit-assembly overloads.
+
+Job logs of a running or cancelled run come from `GET /repos/pardeike/Harmony/actions/jobs/<id>/logs` with the `gh auth token`; `gh run view --log-failed` refuses them until the run completes. Copies are under `artifacts/tests/ci-42155186328/` and `artifacts/tests/ci-42156217487/`.
