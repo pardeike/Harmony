@@ -52,7 +52,7 @@ namespace Hosting
 		{
 			DynamicMethod => 0,
 			MethodBase or FieldInfo or Type or string or byte[] => MyRuntime.TokenFor(module, value),
-			KeyValuePair<Type, bool> => MyRuntime.TokenFor(module, value),
+			KeyValuePair<Type, bool> or KeyValuePair<MemberInfo, bool> => MyRuntime.TokenFor(module, value),
 			_ => 0
 		};
 	}

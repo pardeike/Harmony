@@ -81,10 +81,15 @@ namespace HarmonyLib
 		/// The replacement is a callable copy of the patched body. For a definition-wide target it is null: an open generic definition has no callable copy, so the installer writes the body.
 		/// The body writer accepts an importer for Type, MethodBase, FieldInfo, string and standalone signature byte[] values.
 		/// MethodBase values can be DynamicMethod instances. The host owns their token import and lifetime.
-		/// The importer returns zero for a value it cannot import. For a static method without open generic parameters, including a DynamicMethod, Harmony then imports a generated stand-in with the same signature.
+		/// The importer returns zero for a value it cannot import. For a call to a static method without open generic parameters, including a DynamicMethod, Harmony then imports a generated stand-in with the same signature.
 		/// The stand-in is collectible. A module that cannot bind collectible assemblies refuses it too and receives a stand-in that lives for the process.
+		/// Permanent stand-ins for generated closed helpers reuse a delegate field per original, helper site and signature. Successful installation updates the field, including calls from older bodies.
+		/// A refused generated open generic helper is offered again in a permanent assembly with its generic context. These assemblies accumulate across rebuilds.
+		/// A refused ldtoken, ldftn or ldvirtftn method operand cannot use a stand-in because that would change its identity.
 		/// Any other refusal fails the installation before anything is installed.
 		/// A KeyValuePair&lt;Type, bool&gt; with true requests the generic definition instantiated over its own type parameters.
+		/// A KeyValuePair&lt;MemberInfo, bool&gt; with true requests a method, constructor or field on its self-instantiated generic declaring type.
+		/// For that member marker, a generic method definition also instantiates its own method parameters. An already constructed method keeps its arguments.
 		/// It returns a complete CLI body with its header, code and exception sections. Use it synchronously during installation.
 		/// </remarks>
 		public static void SetInstaller(Action<MethodBase, MethodInfo, Func<Func<object, int>, byte[]>> install) => Register(2, install);
@@ -306,6 +311,7 @@ namespace HarmonyLib
 				var used = false;
 				var owner = Thread.CurrentThread.ManagedThreadId;
 				Installing.Add(method);
+				List<Action> publish = null;
 				try
 				{
 					// The host may mutate before throwing. Keep its selection even when recovery fails.
@@ -315,9 +321,10 @@ namespace HarmonyLib
 						if (!active || used || Thread.CurrentThread.ManagedThreadId != owner)
 							throw new InvalidOperationException("The body writer permits one synchronous call during installation.");
 						used = true;
-						return MethodBodyGenerator.GenerateBody(body, replacement ?? method, import);
+						return MethodBodyGenerator.GenerateBody(body, replacement ?? method, import, publish ??= []);
 					});
 					keepPin = true;
+					if (publish is not null) foreach (var update in publish) update();
 				}
 				finally { active = false; Installing.Remove(method); }
 			}

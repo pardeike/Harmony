@@ -55,7 +55,7 @@ namespace HarmonyLibTests.Patching
 		protected readonly Module own;
 		readonly Dictionary<string, EntityHandle> assemblies = [];
 		readonly Dictionary<Type, EntityHandle> types = [];
-		readonly Dictionary<MemberInfo, EntityHandle> members = [];
+		readonly Dictionary<(MemberInfo member, bool instantiate), EntityHandle> members = [];
 
 		protected MetadataEmitter(MetadataBuilder metadata, Module own = null)
 		{
@@ -75,6 +75,8 @@ namespace HarmonyLibTests.Patching
 			FieldInfo field => Binds(field.Module.Assembly) ? MetadataTokens.GetToken(Field(field)) : 0,
 			Type type => Binds(type.Module.Assembly) ? MetadataTokens.GetToken(TypeHandle(type)) : 0,
 			KeyValuePair<Type, bool> { Value: true } self => MetadataTokens.GetToken(SelfInstantiation(self.Key)),
+			KeyValuePair<MemberInfo, bool> { Value: true, Key: MethodBase method } => Binds(method.Module.Assembly) ? MetadataTokens.GetToken(Method(method, true)) : 0,
+			KeyValuePair<MemberInfo, bool> { Value: true, Key: FieldInfo field } => Binds(field.Module.Assembly) ? MetadataTokens.GetToken(Field(field, true)) : 0,
 			string text => MetadataTokens.GetToken(metadata.GetOrAddUserString(text)),
 			byte[] signature => MetadataTokens.GetToken(Added(metadata.AddStandaloneSignature(metadata.GetOrAddBlob(signature)))),
 			_ => 0
@@ -148,39 +150,52 @@ namespace HarmonyLibTests.Patching
 
 		static bool Constructed(Type type) => type is { IsGenericType: true, IsGenericTypeDefinition: false };
 
-		EntityHandle Method(MethodBase method)
+		EntityHandle Method(MethodBase method, bool instantiate = false)
 		{
-			if (members.TryGetValue(method, out var handle)) return handle;
-			if (method is MethodInfo { IsGenericMethod: true, IsGenericMethodDefinition: false } constructed)
-				handle = Added(metadata.AddMethodSpecification(Method(constructed.GetGenericMethodDefinition()), metadata.GetOrAddBlob(Blob(encoder =>
+			if (members.TryGetValue((method, instantiate), out var handle)) return handle;
+			if (instantiate && method.IsGenericMethodDefinition)
+			{
+				var parent = MethodDefinitionReference(method, instantiate);
+				handle = Added(metadata.AddMethodSpecification(parent, metadata.GetOrAddBlob(Blob(encoder =>
+				{
+					var arguments = encoder.MethodSpecificationSignature(method.GetGenericArguments().Length);
+					foreach (var argument in method.GetGenericArguments()) Encode(arguments.AddArgument(), argument);
+				}))));
+			}
+			else if (method is MethodInfo { IsGenericMethod: true, IsGenericMethodDefinition: false } constructed)
+				handle = Added(metadata.AddMethodSpecification(MethodDefinitionReference(constructed.GetGenericMethodDefinition(), instantiate), metadata.GetOrAddBlob(Blob(encoder =>
 				{
 					var arguments = encoder.MethodSpecificationSignature(constructed.GetGenericArguments().Length);
 					foreach (var argument in constructed.GetGenericArguments()) Encode(arguments.AddArgument(), argument);
 				}))));
-			else if (method.Module == own && !Constructed(method.DeclaringType)) handle = MetadataTokens.EntityHandle(method.MetadataToken);
-			else
-			{
-				// A member of a constructed type is referenced through its definition's signature, with the type's own generic parameters.
-				var declared = Constructed(method.DeclaringType) ? method.Module.ResolveMethod(method.MetadataToken) : method;
-				var generic = declared is MethodInfo { IsGenericMethodDefinition: true } ? declared.GetGenericArguments().Length : 0;
-				handle = Added(metadata.AddMemberReference(TypeHandle(method.DeclaringType), metadata.GetOrAddString(method.Name), metadata.GetOrAddBlob(Blob(encoder =>
-					MethodSignature(encoder, declared is MethodInfo info ? info.ReturnType : typeof(void), [.. declared.GetParameters().Select(parameter => parameter.ParameterType)], !declared.IsStatic, generic)))));
-			}
-			members.Add(method, handle);
+			else handle = MethodDefinitionReference(method, instantiate);
+			members.Add((method, instantiate), handle);
 			return handle;
 		}
 
-		EntityHandle Field(FieldInfo field)
+		EntityHandle MethodDefinitionReference(MethodBase method, bool instantiate)
 		{
-			if (members.TryGetValue(field, out var handle)) return handle;
-			if (field.Module == own && !Constructed(field.DeclaringType)) handle = MetadataTokens.EntityHandle(field.MetadataToken);
+			var self = instantiate && method.DeclaringType?.IsGenericTypeDefinition is true;
+			if (method.Module == own && !Constructed(method.DeclaringType) && !self) return MetadataTokens.EntityHandle(method.MetadataToken);
+			var declared = Constructed(method.DeclaringType) ? method.Module.ResolveMethod(method.MetadataToken) : method;
+			var generic = declared.IsGenericMethodDefinition ? declared.GetGenericArguments().Length : 0;
+			return Added(metadata.AddMemberReference(self ? SelfInstantiation(method.DeclaringType) : TypeHandle(method.DeclaringType),
+				metadata.GetOrAddString(method.Name), metadata.GetOrAddBlob(Blob(encoder =>
+					MethodSignature(encoder, declared is MethodInfo info ? info.ReturnType : typeof(void), [.. declared.GetParameters().Select(parameter => parameter.ParameterType)], !declared.IsStatic, generic)))));
+		}
+
+		EntityHandle Field(FieldInfo field, bool instantiate = false)
+		{
+			if (members.TryGetValue((field, instantiate), out var handle)) return handle;
+			var self = instantiate && field.DeclaringType?.IsGenericTypeDefinition is true;
+			if (field.Module == own && !Constructed(field.DeclaringType) && !self) handle = MetadataTokens.EntityHandle(field.MetadataToken);
 			else
 			{
 				var declared = Constructed(field.DeclaringType) ? field.Module.ResolveField(field.MetadataToken) : field;
-				handle = Added(metadata.AddMemberReference(TypeHandle(field.DeclaringType), metadata.GetOrAddString(field.Name),
+				handle = Added(metadata.AddMemberReference(self ? SelfInstantiation(field.DeclaringType) : TypeHandle(field.DeclaringType), metadata.GetOrAddString(field.Name),
 					metadata.GetOrAddBlob(Blob(encoder => Encode(encoder.FieldSignature(), declared.FieldType)))));
 			}
-			members.Add(field, handle);
+			members.Add((field, instantiate), handle);
 			return handle;
 		}
 

@@ -3,6 +3,9 @@ using Mono.Cecil.Cil;
 using MonoMod.Utils;
 using System;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
 using MethodImplAttributes = Mono.Cecil.MethodImplAttributes;
@@ -12,6 +15,96 @@ namespace HarmonyLib
 {
 	internal static class DynamicMethodProxy
 	{
+#if !NET35 && !NETSTANDARD2_0
+		sealed class Origin(MethodBase original, string role)
+		{
+			internal readonly MethodBase Original = original;
+			internal readonly string Role = role;
+		}
+
+		// Scope mutable helpers to their original and helper site. Equal signatures alone cannot distinguish two live callbacks.
+		sealed class StandInKey : IEquatable<StandInKey>
+		{
+			readonly object[] parts;
+			internal StandInKey(MethodInfo method)
+			{
+				var generated = origins.TryGetValue(method, out var origin);
+				var owner = generated ? origin.Original : method;
+				parts = owner is System.Reflection.Emit.DynamicMethod ? [owner] :
+					[owner.Module, owner.MetadataToken, owner.DeclaringType, .. owner.IsGenericMethod ? owner.GetGenericArguments() : Type.EmptyTypes];
+				if (generated) parts = [.. parts, origin.Role, method.ReturnType, .. method.GetParameters().Select(parameter => parameter.ParameterType)];
+			}
+			public bool Equals(StandInKey other) => other is not null && parts.SequenceEqual(other.parts);
+			public override bool Equals(object other) => other is StandInKey key && Equals(key);
+			public override int GetHashCode()
+			{
+				var hash = 17;
+				foreach (var part in parts) hash = unchecked(hash * 31 + (part?.GetHashCode() ?? 0));
+				return hash;
+			}
+		}
+
+		static readonly ConditionalWeakTable<MethodInfo, Origin> origins = new();
+		static readonly Dictionary<StandInKey, MethodInfo> permanent = [];
+
+		internal static void Remember(MethodInfo method, MethodBase original, string role)
+		{
+			if (original is not null) origins.Add(method, new Origin(original, role));
+		}
+
+		internal static MethodInfo Permanent(MethodInfo target, List<Action> publish)
+		{
+			var key = new StandInKey(target);
+			lock (permanent)
+			{
+				if (!permanent.TryGetValue(key, out var proxy))
+				{
+					proxy = Create(target, collectible: false);
+					permanent.Add(key, proxy);
+					return proxy;
+				}
+				var field = proxy.DeclaringType.GetField("Target", BindingFlags.NonPublic | BindingFlags.Static);
+				var callback = target.CreateDelegate(field.FieldType);
+				void Update() => field.SetValue(null, callback);
+				if (publish is null) Update();
+				else publish.Add(Update);
+				return proxy;
+			}
+		}
+#endif
+
+		// Keep function pointer signatures exact so delegate binding agrees with the callback.
+		static TypeReference ImportType(ModuleDefinition module, Type type)
+		{
+			if (type.IsByRef) return new ByReferenceType(ImportType(module, type.GetElementType()));
+			if (type.IsPointer) return new PointerType(ImportType(module, type.GetElementType()));
+			if (type.IsArray) return type == type.GetElementType().MakeArrayType()
+				? new ArrayType(ImportType(module, type.GetElementType())) : new ArrayType(ImportType(module, type.GetElementType()), type.GetArrayRank());
+			if (typeof(Type).GetProperty("IsFunctionPointer")?.GetValue(type, null) is true)
+			{
+				var pointer = new FunctionPointerType
+				{
+					ReturnType = ImportType(module, (Type)typeof(Type).GetMethod("GetFunctionPointerReturnType").Invoke(type, null))
+				};
+				foreach (var parameter in (Type[])typeof(Type).GetMethod("GetFunctionPointerParameterTypes").Invoke(type, null))
+					pointer.Parameters.Add(new ParameterDefinition(ImportType(module, parameter)));
+				foreach (var convention in (Type[])typeof(Type).GetMethod("GetFunctionPointerCallingConventions").Invoke(type, null))
+					pointer.CallingConvention = convention.Name switch
+					{
+						"CallConvCdecl" => MethodCallingConvention.C,
+						"CallConvStdcall" => MethodCallingConvention.StdCall,
+						"CallConvThiscall" => MethodCallingConvention.ThisCall,
+						"CallConvFastcall" => MethodCallingConvention.FastCall,
+						_ => throw new NotSupportedException("Unsupported function pointer calling convention: " + convention)
+					};
+				if (pointer.CallingConvention == MethodCallingConvention.Default
+					&& typeof(Type).GetProperty("IsUnmanagedFunctionPointer")?.GetValue(type, null) is true)
+					pointer.CallingConvention = (MethodCallingConvention)9; // IMAGE_CEE_CS_CALLCONV_UNMANAGED
+				return pointer;
+			}
+			return module.ImportReference(type);
+		}
+
 		// DynamicMethods and methods in emitted assemblies cannot be bound through assembly metadata.
 		// Forward through an exact-signature delegate:
 		// no boxing, copied ref arguments, native pointers, or reflection-wrapped exceptions.
@@ -32,7 +125,7 @@ namespace HarmonyLib
 			constructor.Parameters.Add(new ParameterDefinition(module.TypeSystem.Object));
 			constructor.Parameters.Add(new ParameterDefinition(module.TypeSystem.IntPtr));
 			callback.Methods.Add(constructor);
-			var invoke = new MethodDefinition("Invoke", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.NewSlot, module.ImportReference(target.ReturnType))
+			var invoke = new MethodDefinition("Invoke", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.NewSlot, ImportType(module, target.ReturnType))
 			{
 				ImplAttributes = MethodImplAttributes.Runtime
 			};
@@ -45,7 +138,7 @@ namespace HarmonyLib
 			holder.Methods.Add(proxy);
 			foreach (var parameter in target.GetParameters())
 			{
-				var type = module.ImportReference(parameter.ParameterType);
+				var type = ImportType(module, parameter.ParameterType);
 				invoke.Parameters.Add(new ParameterDefinition(type));
 				proxy.Parameters.Add(new ParameterDefinition(type));
 			}

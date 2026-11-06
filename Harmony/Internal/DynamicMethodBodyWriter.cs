@@ -25,8 +25,9 @@ namespace HarmonyLib
 		readonly DynamicILInfo info;
 		readonly MethodBase metadataSelf;
 		readonly Func<object, int> import;
+		readonly List<Action> publish;
 		readonly Dictionary<MemberReference, object> genericMembers;
-		readonly Dictionary<object, int> tokens = [];
+		readonly Dictionary<(object operand, bool forwarding), int> tokens = [];
 
 		DynamicMethodBodyWriter(DynamicMethodDefinition patch, MethodBase original)
 		{
@@ -68,6 +69,8 @@ namespace HarmonyLib
 			if (isFunctionPointer is not null && (bool)isFunctionPointer.GetValue(type, null)) return typeof(IntPtr);
 			if (type.IsByRef) return Native(type.GetElementType()).MakeByRefType();
 			if (type.IsPointer) return Native(type.GetElementType()).MakePointerType();
+			if (type.IsArray) return type == type.GetElementType().MakeArrayType()
+				? Native(type.GetElementType()).MakeArrayType() : Native(type.GetElementType()).MakeArrayType(type.GetArrayRank());
 			return type;
 		}
 
@@ -78,6 +81,7 @@ namespace HarmonyLib
 			ByReferenceType reference => SignatureType(reference.ElementType).MakeByRefType(),
 			PointerType pointer => SignatureType(pointer.ElementType).MakePointerType(),
 			ArrayType array => array.IsVector ? SignatureType(array.ElementType).MakeArrayType() : SignatureType(array.ElementType).MakeArrayType(array.Rank),
+			_ when type is not TypeSpecification && string.IsNullOrEmpty(type.Name) => typeof(IntPtr),
 			_ => type.ResolveReflection(),
 		};
 
@@ -88,20 +92,21 @@ namespace HarmonyLib
 			return writer.method;
 		}
 
-		DynamicMethodBodyWriter(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import)
+		DynamicMethodBodyWriter(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import, List<Action> publish)
 		{
 			definition = patch.Definition;
 			metadataSelf = self;
 			genericMembers = GenericMethodContext.RuntimeMembers(patch);
 			this.import = import ?? throw new ArgumentNullException(nameof(import));
+			this.publish = publish;
 		}
 
 		// Self references resolve to the callable copy, or to the original when its definition receives the body directly.
-		internal static byte[] GenerateBody(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import)
+		internal static byte[] GenerateBody(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import, List<Action> publish)
 		{
-			var writer = new DynamicMethodBodyWriter(patch, self, import);
+			var writer = new DynamicMethodBodyWriter(patch, self, import, publish);
 			var (code, locals, exceptions, maximum) = writer.Encode();
-			var localToken = writer.Import(locals);
+			var localToken = patch.Definition.Body.HasVariables ? writer.Import(locals) : 0;
 			return Bytes(output =>
 			{
 				output.Write((ushort)(0x3003 | (patch.Definition.Body.InitLocals ? 0x10 : 0) | (exceptions.Length == 0 ? 0 : 0x08)));
@@ -189,7 +194,7 @@ namespace HarmonyLib
 						case OperandType.InlineField:
 						case OperandType.InlineMethod:
 						case OperandType.InlineTok:
-						case OperandType.InlineSig: writer.Write(Token(operand)); break;
+						case OperandType.InlineSig: writer.Write(Token(operand, opcode.Code is CecilCode.Call or CecilCode.Callvirt)); break;
 						default: throw new NotSupportedException($"Unsupported operand for {instruction}.");
 					}
 				}
@@ -222,19 +227,19 @@ namespace HarmonyLib
 
 		int ArgumentIndex(object operand) => ((ParameterDefinition)operand).Index + (definition.HasThis ? 1 : 0);
 
-		int Token(object operand)
+		int Token(object operand, bool forwarding = false)
 		{
-			if (tokens.TryGetValue(operand, out var token)) return token;
+			if (tokens.TryGetValue((operand, forwarding), out var token)) return token;
 			token = import is not null ? Import(operand switch
 			{
 				TypeReference type => genericMembers?.TryGetValue(type, out var runtimeType) is true ? runtimeType : type.ResolveReflection(),
-				FieldReference field => genericMembers?.TryGetValue(field, out var runtimeField) is true ? (FieldInfo)runtimeField : field.ResolveReflection(),
+				FieldReference field => genericMembers?.TryGetValue(field, out var runtimeField) is true ? runtimeField : field.ResolveReflection(),
 				MethodReference reference => reference == definition ? metadataSelf
-					: genericMembers?.TryGetValue(reference, out var runtimeMethod) is true ? (MethodBase)runtimeMethod : reference.ResolveReflection(),
+					: genericMembers?.TryGetValue(reference, out var runtimeMethod) is true ? runtimeMethod : reference.ResolveReflection(),
 				CallSite signature => Bytes(writer => Signature(writer, signature)),
 				string text => text,
 				_ => throw new NotSupportedException($"Unsupported metadata token: {operand}.")
-			}) : operand switch
+			}, forwarding) : operand switch
 			{
 				string text => info.GetTokenFor(text),
 				TypeReference type => info.GetTokenFor(type.ResolveReflection().TypeHandle),
@@ -243,7 +248,7 @@ namespace HarmonyLib
 				CallSite signature => info.GetTokenFor(Bytes(writer => Signature(writer, signature))),
 				_ => throw new NotSupportedException($"Unsupported dynamic method token: {operand}.")
 			};
-			tokens.Add(operand, token);
+			tokens.Add((operand, forwarding), token);
 			return token;
 		}
 
@@ -251,16 +256,24 @@ namespace HarmonyLib
 		// A static method then imports through a stand-in in a generated assembly, shared by every body that needs it.
 		// The stand-in is collectible. A module that cannot bind collectible assemblies refuses it and gets one that lives for the process.
 		static readonly ConditionalWeakTable standIns = new();
-		static readonly ConditionalWeakTable permanentStandIns = new();
-		int Import(object value)
+		int Import(object value, bool forwarding = false)
 		{
 			var token = import(value);
 			if (token != 0) return token;
-			if (value is MethodInfo { IsStatic: true, ContainsGenericParameters: false } target)
+			if (!forwarding && value is MethodBase)
+				throw new NotSupportedException($"The installer cannot import the identity-bearing method reference {value}; a stand-in would change its identity.");
+			if (forwarding && value is MethodInfo { ContainsGenericParameters: true } helper
+				&& GeneratedAssemblyLoader.Permanent(helper) is { } permanent)
+			{
+				token = import(permanent);
+				if (token != 0) return token;
+				throw new NotSupportedException($"The installer cannot import generated generic helper {helper.FullDescription()} in either collectible or permanent form.");
+			}
+			if (forwarding && value is MethodInfo { IsStatic: true, ContainsGenericParameters: false } target)
 			{
 				token = import(standIns.GetValue(target, method => DynamicMethodProxy.Create(method)));
 				if (token != 0) return token;
-				token = import(permanentStandIns.GetValue(target, method => DynamicMethodProxy.Create(method, collectible: false)));
+				token = import(DynamicMethodProxy.Permanent(target, publish));
 				if (token != 0) return token;
 				throw new NotSupportedException($"The installer imports neither {target.FullDescription()} nor a stand-in for it.");
 			}

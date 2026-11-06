@@ -61,8 +61,19 @@ A method body refers to types, methods, fields, strings, and signatures. Harmony
 | `string` | A string literal. |
 | `byte[]` | A standalone signature, used for locals and `calli`. |
 | `KeyValuePair<Type, bool>` with `true` | A generic definition instantiated over its own type parameters. Only definition-wide bodies use it. |
+| `KeyValuePair<MemberInfo, bool>` with `true` | A method, constructor, or field on its self-instantiated generic declaring type. A generic method definition also instantiates its own method parameters. Only definition-wide bodies use it. |
 
-Return `0` for a value you cannot import. For a static method, including a `DynamicMethod`, Harmony then offers a stand-in: a generated static method with the same signature that forwards to the callback. The first stand-in lives in a collectible assembly. If your module cannot reference collectible assemblies, return `0` again, and Harmony offers a stand-in that lives for the process. Any other refusal fails the patch with nothing installed.
+For the member marker, emit a MemberRef whose parent is the declaring type's TypeSpec when that type is a generic definition. Keep the member definition's signature. If the method is generic, emit a MethodSpec with its generic arguments. A generic method definition uses its own method parameters. Keep an already constructed method's arguments. The marker distinguishes these references from a bare MethodDef or FieldDef.
+
+Return `0` for a value you cannot import. For a call to a static method without open generic parameters, including a `DynamicMethod`, Harmony then offers a stand-in. It forwards through a delegate with the callback's signature. The first stand-in lives in a collectible assembly. If your module cannot reference collectible assemblies, return `0` again. Harmony then offers a stand-in that lives for the process.
+
+Permanent stand-ins for generated closed helpers reuse one delegate field per original, helper site, and signature. A successful installation updates the field. A failed installation keeps its previous delegate. Calls through an older installed body also see the updated delegate. Ordinary reflection callbacks use their module, metadata token, declaring type, and method arguments as their identity. Separate dynamic callbacks retain separate stand-ins.
+
+Generated open generic helpers cannot use these delegates. If the importer refuses a collectible helper, Harmony offers a permanent assembly containing the helper with its generic context. These permanent helper assemblies accumulate across rebuilds. If a helper still references a collectible dependency, Harmony rejects the permanent form and names that assembly. Generating such helpers requires a runtime with collectible `AssemblyLoadContext` support.
+
+A refused `ldtoken`, `ldftn`, or `ldvirtftn` method operand fails installation. Harmony cannot substitute a stand-in without changing the referenced method's identity. Any other unsupported refusal also fails installation.
+
+A host that resolves assemblies by name must serve the offered `HarmonyDynamicMethod_*` stand-ins and `HarmonyGenerated_*` permanent generic helpers. It must also resolve the callback assemblies and the other assemblies referenced by the body. Keep the exact loaded assembly identities when names overlap.
 
 ## What patch authors notice
 

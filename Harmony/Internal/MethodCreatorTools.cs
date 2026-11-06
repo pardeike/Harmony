@@ -1323,7 +1323,7 @@ namespace HarmonyLib
 
 			var type = original.ReflectedType;
 			if (type.IsGenericType)
-				codes.Add(Ldtoken[type]);
+				codes.Add(new CodeInstruction(OpCodes.Ldtoken, type) { genericInstantiation = type });
 			codes.Add(Call[type.IsGenericType ? m_GetMethodFromHandle2 : m_GetMethodFromHandle1]);
 			return true;
 		}

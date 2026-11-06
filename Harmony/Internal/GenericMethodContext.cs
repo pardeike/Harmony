@@ -115,7 +115,10 @@ namespace HarmonyLib
 			T Remember<T>(T reference, MemberInfo member) where T : Mono.Cecil.MemberReference
 			{
 				members[reference] = reference is Mono.Cecil.GenericInstanceType && member is Type { IsGenericTypeDefinition: true } type
-					? new KeyValuePair<Type, bool>(type, true) : member;
+					? new KeyValuePair<Type, bool>(type, true)
+					: member is MethodBase or FieldInfo && (reference.DeclaringType is Mono.Cecil.GenericInstanceType
+						&& member.DeclaringType?.IsGenericTypeDefinition is true || reference is Mono.Cecil.GenericInstanceMethod && member is MethodInfo { IsGenericMethodDefinition: true })
+						? new KeyValuePair<MemberInfo, bool>(member, true) : member;
 				return reference;
 			}
 			void Check(Type type, bool memberDeclaringType = false)

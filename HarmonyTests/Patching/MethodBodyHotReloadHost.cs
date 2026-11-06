@@ -27,9 +27,9 @@ namespace HarmonyLibTests.Patching
 			&& typeof(HotReloadHost).Assembly.GetCustomAttribute<DebuggableAttribute>() is { } debuggable
 			&& (debuggable.DebuggingFlags & DebuggableAttribute.DebuggingModes.EnableEditAndContinue) != 0;
 
-		// Harmony's stand-ins live in collectible assemblies that the default context cannot find by name.
+		// Harmony's permanent stand-ins and generic helpers need resolution from the default context.
 		static readonly Func<System.Runtime.Loader.AssemblyLoadContext, AssemblyName, Assembly> resolveStandIns = (_, name)
-			=> name.Name.StartsWith("HarmonyDynamicMethod_") ? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.GetName().Name == name.Name) : null;
+			=> (name.Name.StartsWith("HarmonyDynamicMethod_") || name.Name.StartsWith("HarmonyGenerated_")) ? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => !assembly.IsCollectible && assembly.GetName().Name == name.Name) : null;
 		static bool resolving;
 
 		internal HotReloadHost(Func<MethodBase, bool> accepts)

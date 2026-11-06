@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace HarmonyLib
@@ -15,6 +16,38 @@ namespace HarmonyLib
 	{
 		static readonly Type contextType = typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext");
 		static readonly ConstructorInfo collectibleContext = contextType?.GetConstructor([typeof(string), typeof(bool)]);
+#if !NET35 && !NETSTANDARD2_0
+		static readonly ConditionalWeakTable<Assembly, PermanentImage> permanentImages = new();
+
+		sealed class PermanentImage(byte[] bytes, Dictionary<string, Assembly> dependencies)
+		{
+			Assembly loaded;
+			internal Assembly Load()
+			{
+				if (loaded is not null) return loaded;
+				foreach (var dependency in dependencies.Values)
+					if (typeof(Assembly).GetProperty("IsCollectible")?.GetValue(dependency, null) is true)
+						throw new NotSupportedException($"A permanent generated generic helper cannot reference collectible assembly '{dependency.FullName}'.");
+				using var module = ModuleDefinition.ReadModule(new MemoryStream(bytes));
+				module.Assembly.Name.Name = "HarmonyGenerated_" + Guid.NewGuid().ToString("N");
+				var loader = new GeneratedAssemblyLoader();
+				foreach (var pair in dependencies) loader.dependencies.Add(pair.Key, pair.Value);
+				return loaded = loader.Generate(module.Assembly.Name.Name, () => ReflectionHelper.Load(module));
+			}
+		}
+
+		GeneratedAssemblyLoader() { }
+
+		internal static MethodInfo Permanent(MethodInfo method)
+		{
+			if (!permanentImages.TryGetValue(method.Module.Assembly, out var image)) return null;
+			var assembly = image.Load();
+			var definition = (MethodInfo)assembly.ManifestModule.ResolveMethod(method.MetadataToken);
+			return GenericMethodContext.Construct(definition, GenericMethodContext.Arguments(method));
+		}
+
+#endif
+
 		readonly Dictionary<string, Assembly> dependencies = new(StringComparer.OrdinalIgnoreCase);
 		Assembly generated;
 		object context;
@@ -66,6 +99,8 @@ namespace HarmonyLib
 
 		internal static MethodInfo Generate(DynamicMethodDefinition method, IEnumerable<Assembly> additionalAssemblies)
 		{
+			if (collectibleContext is null && (method.Definition.HasGenericParameters || method.Definition.DeclaringType.HasGenericParameters))
+				throw new NotSupportedException("Definition-wide generated generic helpers require a runtime with collectible AssemblyLoadContext support.");
 			// Capture runtime hashes before Cecil clones references into the generated module.
 			var loader = new GeneratedAssemblyLoader(method.Definition.Module, additionalAssemblies);
 			if (collectibleContext is not null)
@@ -121,7 +156,16 @@ namespace HarmonyLib
 					Directory.CreateDirectory(directory);
 					module.Write(Path.Combine(directory, module.Name + ".dll"));
 				}
-				return loader.LoadCollectible(module).GetType(holder.FullName).GetMethod(clone.Name, AccessTools.allDeclared);
+				var assembly = loader.LoadCollectible(module);
+#if !NET35 && !NETSTANDARD2_0
+				if (holder.HasGenericParameters || clone.HasGenericParameters)
+				{
+					using var stream = new MemoryStream();
+					module.Write(stream);
+					permanentImages.Add(assembly, new PermanentImage(stream.ToArray(), new Dictionary<string, Assembly>(loader.dependencies)));
+				}
+#endif
+				return assembly.GetType(holder.FullName).GetMethod(clone.Name, AccessTools.allDeclared);
 			}
 			return loader.Generate(method.GetDumpName("Cecil"), () => DMDCecilGenerator.Generate(method));
 		}

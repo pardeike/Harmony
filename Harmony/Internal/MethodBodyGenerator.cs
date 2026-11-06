@@ -21,6 +21,23 @@ namespace HarmonyLib
 
 		internal static MethodInfo Generate(DynamicMethodDefinition patch, bool structuredHelper = false, MethodBase original = null)
 		{
+			var method = GenerateCore(patch, structuredHelper, original);
+#if !NET35 && !NETSTANDARD2_0
+			var role = "replacement";
+			if (structuredHelper)
+			{
+				var name = patch.Definition.Name;
+				var version = name.LastIndexOf("_Patch", StringComparison.Ordinal);
+				var site = version < 0 ? -1 : name.IndexOf('_', version + 6);
+				role = site < 0 ? name : name.Substring(site);
+			}
+			DynamicMethodProxy.Remember(method, original, role);
+#endif
+			return method;
+		}
+
+		static MethodInfo GenerateCore(DynamicMethodDefinition patch, bool structuredHelper, MethodBase original)
+		{
 			var body = patch.Definition.Body;
 			// Helpers initialize their own locals. Older optimized JITs require this existing helper convention.
 			body.InitLocals = !structuredHelper;
@@ -55,10 +72,10 @@ namespace HarmonyLib
 			return type.MetadataType != MetadataType.Void;
 		}
 
-		internal static byte[] GenerateBody(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import)
+		internal static byte[] GenerateBody(DynamicMethodDefinition patch, MethodBase self, Func<object, int> import, List<Action> publish = null)
 		{
 #if !NET35 && !NETSTANDARD2_0
-			return DynamicMethodBodyWriter.GenerateBody(patch, self, import);
+			return DynamicMethodBodyWriter.GenerateBody(patch, self, import, publish);
 #else
 			throw new NotSupportedException("Exporting a method body requires a modern Harmony target framework.");
 #endif
@@ -66,33 +83,42 @@ namespace HarmonyLib
 
 		static MethodInfo GenerateAssembly(DynamicMethodDefinition patch)
 		{
-			var proxies = new Dictionary<MethodInfo, MethodReference>();
-			var proxyAssemblies = new List<Assembly>();
-			var proxyEmittedMethods = typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
-			var genericMembers = GenericMethodContext.RuntimeMembers(patch);
-			foreach (var instruction in patch.Definition.Body.Instructions)
+			var originals = new Dictionary<Instruction, object>();
+			try
 			{
-				var method = instruction.Operand is DynamicMethodReference dynamicReference ? dynamicReference.DynamicMethod : null;
-				if (proxyEmittedMethods && method is null && instruction.Operand is MethodReference reference && !reference.HasThis
-					&& reference != patch.Definition && (genericMembers?.TryGetValue(reference, out var member) is true ? member : reference.ResolveReflection()) is MethodInfo target)
+				var proxies = new Dictionary<MethodInfo, MethodReference>();
+				var proxyAssemblies = new List<Assembly>();
+				var proxyEmittedMethods = typeof(object).Assembly.GetType("System.Runtime.Loader.AssemblyLoadContext") is not null;
+				var genericMembers = GenericMethodContext.RuntimeMembers(patch);
+				foreach (var instruction in patch.Definition.Body.Instructions)
 				{
+					var method = instruction.Operand is DynamicMethodReference dynamicReference ? dynamicReference.DynamicMethod : null;
+					if (proxyEmittedMethods && method is null && instruction.Operand is MethodReference reference && !reference.HasThis
+						&& reference != patch.Definition && (genericMembers?.TryGetValue(reference, out var member) is true ? member : reference.ResolveReflection()) is MethodInfo target)
+					{
 #if NET35
-					if (target.Module.Assembly is AssemblyBuilder) method = target;
+						if (target.Module.Assembly is AssemblyBuilder) method = target;
 #else
-					if (target.Module.Assembly.IsDynamic) method = target;
+						if (target.Module.Assembly.IsDynamic) method = target;
 #endif
+					}
+					if (method is null) continue;
+					if (!proxies.TryGetValue(method, out var proxy))
+					{
+						var proxyMethod = DynamicMethodProxy.Create(method);
+						proxy = patch.Definition.Module.ImportReference(proxyMethod);
+						proxyAssemblies.Add(proxyMethod.Module.Assembly);
+						proxies.Add(method, proxy);
+					}
+					originals.Add(instruction, instruction.Operand);
+					instruction.Operand = proxy;
 				}
-				if (method is null) continue;
-				if (!proxies.TryGetValue(method, out var proxy))
-				{
-					var proxyMethod = DynamicMethodProxy.Create(method);
-					proxy = patch.Definition.Module.ImportReference(proxyMethod);
-					proxyAssemblies.Add(proxyMethod.Module.Assembly);
-					proxies.Add(method, proxy);
-				}
-				instruction.Operand = proxy;
+				return GeneratedAssemblyLoader.Generate(patch, proxyAssemblies);
 			}
-			return GeneratedAssemblyLoader.Generate(patch, proxyAssemblies);
+			finally
+			{
+				foreach (var pair in originals) pair.Key.Operand = pair.Value;
+			}
 		}
 	}
 }
