@@ -21,6 +21,39 @@ namespace HarmonyLib
 		///
 		public static bool DEBUG;
 
+		static readonly bool? validateStackFromEnvironment = ParseSwitch(ReadEnvironment("HARMONY_VALIDATE_STACK"));
+		static bool validateStack = true;
+
+		/// <summary>Whether Harmony rejects a method body in which the paths that reach an instruction have different stack depths, or an instruction pops more than the stack holds</summary>
+		/// <value>True by default</value>
+		/// <remarks>
+		/// <para>ECMA-335 forbids both, but some runtimes accept such IL. Mono accepts a depth difference at a <c>leave</c>, and other runtimes accept more.
+		/// Set this to false to leave the decision to the runtime. Harmony then sizes the stack for the deepest path.</para>
+		/// <para>The environment variable HARMONY_VALIDATE_STACK overrides this property when it is set to 1, 0, true or false.</para>
+		/// <para>Only Harmony's own method body writer checks the stack. It runs on .NET Core and .NET 5 or later. On .NET Framework and Mono the runtime checks the IL.</para>
+		/// <para>A jump to a label that no instruction carries is always rejected, because that jump has no target.</para>
+		/// </remarks>
+		///
+		public static bool ValidateStack
+		{
+			get => validateStackFromEnvironment ?? validateStack;
+			set => validateStack = value;
+		}
+
+		internal static bool? ParseSwitch(string value)
+		{
+			value = value?.Trim();
+			if (value == "1") return true;
+			if (value == "0") return false;
+			return bool.TryParse(value, out var result) ? result : null;
+		}
+
+		static string ReadEnvironment(string name)
+		{
+			try { return Environment.GetEnvironmentVariable(name); }
+			catch { return null; }
+		}
+
 		/// <summary>Creates a new Harmony instance</summary>
 		/// <param name="id">A unique identifier (you choose your own)</param>
 		/// <returns>A Harmony instance</returns>

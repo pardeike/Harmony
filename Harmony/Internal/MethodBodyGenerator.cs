@@ -12,6 +12,10 @@ namespace HarmonyLib
 	// Owns executable representation, independently of the patch features that constructed the body.
 	internal static class MethodBodyGenerator
 	{
+		// Marks the stack errors that Harmony.ValidateStack controls, so the patch functions can name the transpilers
+		internal const string StackValidationError = "Harmony.ValidateStack";
+		internal const string StackValidationHint = "To leave this check to the runtime, set Harmony.ValidateStack to false or HARMONY_VALIDATE_STACK to 0.";
+
 #if NET35 || NETSTANDARD2_0
 		internal static readonly bool HasDynamicIL = false;
 #else

@@ -147,7 +147,10 @@ namespace HarmonyLib
 					var owner = MethodBodyPatching.FamilyOwner(original) ?? original;
 					var definitionWide = MethodBodyPatching.IsDefinitionWide(owner);
 					var patcher = new MethodCreator(definitionWide ? FamilyConfig(owner, original, patchInfo, debug) : SingleConfig(original, patchInfo, debug));
-					var (replacement, finalInstructions) = patcher.CreateReplacement();
+					MethodInfo replacement;
+					Dictionary<int, CodeInstruction> finalInstructions;
+					try { (replacement, finalInstructions) = patcher.CreateReplacement(); }
+					catch (InvalidProgramException ex) when (ex.Data.Contains(MethodBodyGenerator.StackValidationError) && patchInfo.transpilers.Length > 0) { throw NameTranspilers(ex, patchInfo); }
 					if (replacement is null && !definitionWide) throw new MissingMethodException($"Cannot create replacement for {original.FullDescription()}");
 					using var persistence = PersistentStateHooks.Prepare(owner, patcher.config.persistence);
 					// A closed body keeps its persistent Infix state under its own instantiation.
@@ -167,6 +170,8 @@ namespace HarmonyLib
 						}
 						catch (Exception ex)
 						{
+							// A definition-wide body is written during installation, so its stack check fails here
+							if (ex is InvalidProgramException && ex.Data.Contains(MethodBodyGenerator.StackValidationError) && patchInfo.transpilers.Length > 0) throw NameTranspilers(ex, patchInfo);
 							var enriched = HarmonyException.Create(ex, finalInstructions);
 							if (ReferenceEquals(enriched, ex)) throw;
 							throw enriched;
@@ -199,6 +204,10 @@ namespace HarmonyLib
 				}
 			}
 		}
+
+		static InvalidProgramException NameTranspilers(Exception error, PatchInfo patchInfo)
+			=> new($"{error.Data[MethodBodyGenerator.StackValidationError]} Transpilers: {MethodBodyReader.TranspilerNames(patchInfo.transpilers.Select(patch => patch.PatchMethod))}. "
+				+ MethodBodyGenerator.StackValidationHint, error);
 
 		// Every reverse installation keeps a local recipe and a shared identity for its active owner.
 		static readonly Dictionary<MethodBase, (MethodBase original, List<MethodInfo> transpilers, bool debug, object identity)> reverseRecipes = [];

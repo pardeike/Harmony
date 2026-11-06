@@ -391,11 +391,13 @@ namespace HarmonyLib
 				Label[] targets = code.operand switch { Label label => [label], Label[] labels => labels, _ => [] };
 				carried ??= [.. codes.SelectMany(c => c.labels)];
 				if (targets.All(carried.Contains)) continue;
-				var names = transpilers.Where(t => t.DeclaringType?.Assembly != typeof(MethodCopier).Assembly).Select(t => $"{t.DeclaringType?.FullName}.{t.Name}");
 				throw new InvalidProgramException($"{code.opcode} at index {i} branches to a label that no instruction carries. "
-					+ $"A transpiler defined the label but never added it to an instruction. Transpilers: {string.Join(", ", names.ToArray())}");
+					+ $"A transpiler defined the label but never added it to an instruction. Transpilers: {TranspilerNames(transpilers)}");
 			}
 		}
+
+		internal static string TranspilerNames(IEnumerable<MethodInfo> transpilers) => string.Join(", ", transpilers
+			.Where(t => t.DeclaringType?.Assembly != typeof(MethodCopier).Assembly).Select(t => $"{t.DeclaringType?.FullName}.{t.Name}").ToArray());
 
 		// interpret member info value
 		//

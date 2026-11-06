@@ -47,6 +47,10 @@ The host contract includes these rules:
 
 `CodeMatch.GetsProperty` and `CodeMatch.SetsProperty` match calls to a property's getter or setter. They accept a `PropertyInfo` or a lambda such as `() => default(MyClass).MyProperty`. `SymbolExtensions.GetPropertyInfo` returns the property from such a lambda. See [CodeMatcher](patching-transpiler-matcher.md#match-fields-and-properties).
 
+## Stack validation
+
+Harmony rejects a patched method if the paths that reach an instruction have different stack depths. For runtimes that accept such IL, `Harmony.ValidateStack` and the environment variable `HARMONY_VALIDATE_STACK` turn this check off. See [stack depth](patching-transpiler-codes.md#stack-depth).
+
 ## Earlier: Harmony 2
 
 The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.

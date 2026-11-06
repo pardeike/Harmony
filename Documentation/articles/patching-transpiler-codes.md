@@ -60,6 +60,12 @@ Jumps use a [Label](https://docs.microsoft.com/en-us/dotnet/api/system.reflectio
 
 If a jump uses a label that no returned instruction carries, patching throws `InvalidProgramException` and names the transpilers. This happens, for example, when the instruction meant to receive the label is never found because the game's IL changed.
 
+## Stack depth
+
+Every path that reaches an instruction must arrive with the same number of items on the evaluation stack. On .NET Core and .NET 5 or later, Harmony checks this when it writes the patched method. If the depths differ, or an instruction pops more than the stack holds, patching throws `InvalidProgramException`. The message names the instruction, the depths and the transpilers. A common cause is a jump after a `dup` that leaves the copy on the stack on one path only.
+
+Some runtimes accept such IL. Mono accepts a depth difference at a `leave`, because `leave` empties the stack. To leave the decision to the runtime, set `Harmony.ValidateStack = false` or the environment variable `HARMONY_VALIDATE_STACK=0`. When set, the environment variable overrides the property. Harmony then sizes the stack for the deepest path, and a runtime that rejects the IL throws its own `InvalidProgramException`.
+
 ## Try/catch boundaries
 
 An instruction's `blocks` list marks exception boundaries, including filters. Harmony builds the exception metadata from these markers. When moving or inserting code, preserve boundary order and keep handler-entry labels on their handler instructions.

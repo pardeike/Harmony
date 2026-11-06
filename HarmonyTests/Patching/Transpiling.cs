@@ -154,5 +154,83 @@ namespace HarmonyLibTests.Patching
 			}
 			finally { instance.UnpatchAll(instance.Id); }
 		}
+
+		public class Ticker
+		{
+			public static int ticks;
+			public bool simulating;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			public void DoTick() => ticks++;
+		}
+
+		public static bool IsSimulating(Ticker ticker) => ticker.simulating;
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static void TickAll(List<Ticker> tickers)
+		{
+			for (var i = 0; i < tickers.Count; i++)
+			{
+				var ticker = tickers[i];
+				try { ticker.DoTick(); }
+				catch (Exception) { }
+			}
+		}
+
+		// Like a RimWorld mod transpiler: its skip path keeps the ticker on the stack and reaches the try block's leave one item deeper.
+		// Mono accepts this because leave empties the stack. ECMA-335 forbids it.
+		public static IEnumerable<CodeInstruction> UnevenStackTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
+		{
+			var codes = instructions.ToList();
+			var call = codes.FindIndex(code => code.Calls(AccessTools.Method(typeof(Ticker), nameof(Ticker.DoTick))));
+			var skip = il.DefineLabel();
+			codes[codes.FindIndex(call, code => code.opcode == OpCodes.Leave || code.opcode == OpCodes.Leave_S)].labels.Add(skip);
+			codes.InsertRange(call, [new CodeInstruction(OpCodes.Dup), CodeInstruction.Call(typeof(Transpiling), nameof(IsSimulating)), new CodeInstruction(OpCodes.Brfalse_S, skip)]);
+			return codes;
+		}
+
+		[Test]
+		public void Test_UnevenStackDepthFollowsValidateStack()
+		{
+			if (!MethodBodyGenerator.HasDynamicIL) Assert.Ignore("Only Harmony's own method body writer checks the stack");
+			if (Environment.GetEnvironmentVariable("HARMONY_VALIDATE_STACK") is not null) Assert.Ignore("HARMONY_VALIDATE_STACK overrides the property");
+			var original = AccessTools.Method(typeof(Transpiling), nameof(TickAll));
+			var transpiler = new HarmonyMethod(typeof(Transpiling), nameof(UnevenStackTranspiler));
+			var instance = new Harmony("test-uneven-stack");
+			try
+			{
+				Assert.That(Harmony.ValidateStack, Is.True);
+				var error = Assert.Catch(() => instance.Patch(original, transpiler: transpiler));
+				while (error is not InvalidProgramException && error.InnerException is not null) error = error.InnerException;
+				Assert.That(error, Is.TypeOf<InvalidProgramException>());
+				Assert.That(error.Message, Does.Contain("Inconsistent stack depth").And.Contain("leave").And.Contain("Harmony.ValidateStack")
+					.And.Contain($"Transpilers: {typeof(Transpiling).FullName}.{nameof(UnevenStackTranspiler)}"));
+				Assert.That(Harmony.GetPatchInfo(original), Is.Null);
+
+				// Without Harmony's check the runtime decides. Stock CoreCLR rejects the body itself.
+				Harmony.ValidateStack = false;
+				var runtimeError = Innermost(Assert.Catch(() =>
+				{
+					_ = instance.Patch(original, transpiler: transpiler);
+					TickAll([new Ticker { simulating = true }, new Ticker()]);
+				}));
+				Assert.That(runtimeError, Is.TypeOf<InvalidProgramException>());
+				Assert.That(runtimeError.Message, Does.Not.Contain("Inconsistent stack depth"));
+			}
+			finally
+			{
+				Harmony.ValidateStack = true;
+				instance.UnpatchAll(instance.Id);
+			}
+
+			Ticker.ticks = 0;
+			TickAll([new Ticker()]);
+			Assert.That(Ticker.ticks, Is.EqualTo(1));
+
+			static Exception Innermost(Exception error)
+			{
+				while (error.InnerException is not null) error = error.InnerException;
+				return error;
+			}
+		}
 	}
 }

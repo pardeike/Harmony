@@ -418,6 +418,10 @@ namespace HarmonyLib
 			var depths = new Dictionary<Instruction, int>();
 			var pending = new Queue<Instruction>();
 			var maximum = 0;
+			// Without validation the runtime decides, and the deepest path sizes the stack.
+			// A path without a loop adds at most one item per instruction. The limit stops a loop that keeps growing the stack.
+			var validate = Harmony.ValidateStack;
+			var limit = definition.Body.Instructions.Count + 1;
 			Enqueue(definition.Body.Instructions[0], 0);
 			var handlers = definition.Body.ExceptionHandlers.Count == 0 ? null : new Dictionary<Instruction, List<ExceptionHandler>>();
 			foreach (var handler in definition.Body.ExceptionHandlers)
@@ -441,7 +445,11 @@ namespace HarmonyLib
 				var pop = opcode.StackBehaviourPop == StackBehaviour.PopAll ? depth
 					: opcode.StackBehaviourPop == StackBehaviour.Varpop ? VariablePop(instruction) : StackCount(opcode.StackBehaviourPop);
 				var push = opcode.StackBehaviourPush == StackBehaviour.Varpush ? VariablePush(instruction) : StackCount(opcode.StackBehaviourPush);
-				if (pop > depth) throw new InvalidProgramException($"Stack underflow at {instruction} in {definition.FullName}.");
+				if (pop > depth)
+				{
+					if (validate) throw StackError($"Stack underflow at {instruction} in {definition.FullName}. It pops {pop} items from a stack that holds {depth}.");
+					pop = depth;
+				}
 				depth = depth - pop + push;
 				maximum = Math.Max(maximum, depth);
 				if (instruction.Operand is Instruction target) Enqueue(target, depth);
@@ -456,12 +464,20 @@ namespace HarmonyLib
 				if (instruction is null) return;
 				if (depths.TryGetValue(instruction, out var previous))
 				{
-					if (previous != depth) throw new InvalidProgramException($"Inconsistent stack depth at {instruction} in {definition.FullName}.");
-					return;
+					if (previous == depth) return;
+					if (validate) throw StackError($"Inconsistent stack depth at {instruction} in {definition.FullName}. It is reached with stack depth {previous} and with stack depth {depth}.");
+					if (depth < previous || depth > limit) return;
 				}
-				depths.Add(instruction, depth);
+				depths[instruction] = depth;
 				pending.Enqueue(instruction);
 			}
+		}
+
+		static InvalidProgramException StackError(string message)
+		{
+			var error = new InvalidProgramException($"{message} {MethodBodyGenerator.StackValidationHint}");
+			error.Data[MethodBodyGenerator.StackValidationError] = message;
+			return error;
 		}
 
 		int VariablePop(Instruction instruction)

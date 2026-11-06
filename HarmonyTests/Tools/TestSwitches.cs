@@ -1,4 +1,5 @@
 using HarmonyLib;
+using System;
 using NUnit.Framework;
 
 namespace HarmonyLibTests.Tools
@@ -6,6 +7,22 @@ namespace HarmonyLibTests.Tools
 	[TestFixture, NonParallelizable]
 	public class Test_Switches : TestLogger
 	{
+		[TestCase("1", true), TestCase("0", false), TestCase(" true ", true), TestCase("False", false), TestCase("", null), TestCase("yes", null), TestCase(null, null)]
+		public void Test_ValidateStackEnvironmentValues(string value, bool? expected) => Assert.That(Harmony.ParseSwitch(value), Is.EqualTo(expected));
+
+		[Test]
+		public void Test_ValidateStackProperty()
+		{
+			if (Environment.GetEnvironmentVariable("HARMONY_VALIDATE_STACK") is not null) Assert.Ignore("HARMONY_VALIDATE_STACK overrides the property");
+			Assert.That(Harmony.ValidateStack, Is.True);
+			try
+			{
+				Harmony.ValidateStack = false;
+				Assert.That(Harmony.ValidateStack, Is.False);
+			}
+			finally { Harmony.ValidateStack = true; }
+		}
+
 		[Test]
 		public void Test_SetAndGetSwitch()
 		{
