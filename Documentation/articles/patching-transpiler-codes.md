@@ -58,6 +58,8 @@ Existing local operands can be numeric indices or `LocalBuilder` objects. Handle
 
 Jumps use a [Label](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.definelabel) operand. The destination instruction holds that label in its `labels` list. To add a jump, call `ILGenerator.DefineLabel()`, attach the label to the destination, and use it as the jump's operand.
 
+If a jump uses a label that no returned instruction carries, patching throws `InvalidProgramException` and names the transpilers. This happens, for example, when the instruction meant to receive the label is never found because the game's IL changed.
+
 ## Try/catch boundaries
 
 An instruction's `blocks` list marks exception boundaries, including filters. Harmony builds the exception metadata from these markers. When moving or inserting code, preserve boundary order and keep handler-entry labels on their handler instructions.

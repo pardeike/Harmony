@@ -356,6 +356,7 @@ namespace HarmonyLib
 			var codeTranspiler = new CodeTranspiler(ilInstructions);
 			transpilers.Do(codeTranspiler.Add);
 			var codeInstructions = codeTranspiler.GetResult(generator, method);
+			ValidateBranchTargets(codeInstructions, transpilers);
 
 			// pass3 - check for any RET
 			//
@@ -377,6 +378,23 @@ namespace HarmonyLib
 			}
 
 			return codeInstructions;
+		}
+
+		// A label that no instruction carries has no address. The body writers would turn a branch to it into a jump to the method start.
+		static void ValidateBranchTargets(List<CodeInstruction> codes, List<MethodInfo> transpilers)
+		{
+			HashSet<Label> carried = null;
+			for (var i = 0; i < codes.Count; i++)
+			{
+				var code = codes[i];
+				if (code.opcode.OperandType is not (OperandType.InlineBrTarget or OperandType.ShortInlineBrTarget or OperandType.InlineSwitch)) continue;
+				Label[] targets = code.operand switch { Label label => [label], Label[] labels => labels, _ => [] };
+				carried ??= [.. codes.SelectMany(c => c.labels)];
+				if (targets.All(carried.Contains)) continue;
+				var names = transpilers.Where(t => t.DeclaringType?.Assembly != typeof(MethodCopier).Assembly).Select(t => $"{t.DeclaringType?.FullName}.{t.Name}");
+				throw new InvalidProgramException($"{code.opcode} at index {i} branches to a label that no instruction carries. "
+					+ $"A transpiler defined the label but never added it to an instruction. Transpilers: {string.Join(", ", names.ToArray())}");
+			}
 		}
 
 		// interpret member info value
