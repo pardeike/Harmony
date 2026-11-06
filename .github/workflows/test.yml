@@ -177,7 +177,7 @@ jobs:
       image: ubuntu-22.04
       architecture: x64
       target_framework: net10.0
-      target_framework_array: '["net10.0"]'
+      target_framework_array: "['net10.0']"
       build_configuration: Debug
       hot_reload: true
       manual_build: true
