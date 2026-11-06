@@ -548,6 +548,9 @@ Tie order: `Equal_priority_ties_put_definition_patches_first` failed on the old 
 Runtime detection: a probe showed `IsNetCoreRuntime` false on .NET Core 3.1, .NET 8 and .NET 10. It showed `IsNetFrameworkRuntime` true on .NET Core 3.1.
 On .NET Core 3.x, `RuntimeInformation` is outside the core library, so the unqualified type lookup failed. .NET 5 and later describe themselves as ".NET", not ".NET Core".
 Both properties now use the core library name.
+The old detection had made `A_closed_sibling_keeps_a_detour_held_family` skip itself on netcoreapp3.0, 3.1, net5.0 and net6.0 as ".NET Framework".
+Run 42224853192 executed it there for the first time. On Ubuntu netcoreapp3.0, `Mixed<int>()` returned 1 instead of 2. Its runtime exception now covers .NET Core 3.x, not only 3.1.
+Platform Tests passes `HARMONY_EXPECTED_RUNTIME` to every lane. The Windows Mono lanes expect .NET Framework, because VSTest starts their net4x test host on the .NET Framework CLR.
 
 Local gates: net10 x64 Debug and Release passed 1,394 cases each. net11 passed 1,401. The focused .NET Core 3.1 run passed 112.
 The hot reload fixture passed 8 cases. `scripts/test_workflow_test.py` passed.
