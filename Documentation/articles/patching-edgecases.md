@@ -36,6 +36,8 @@ Generics can be difficult to patch. In general, expect generic methods and metho
 *  If the method is a generic method of a non-generic class, you may be able to examine the method's arguments, if any argument contains `T`. Also, generic type data will be lost (if `Method<T>` is patched using `Method<string>`, `Method<object>` will become `Method<string>`)
 *  If the method is a static non-generic method of a generic class, generic type data will be lost (see above).
 
+These limits belong to the detour. Under a [runtime host](hosting.md), patching an open definition patches every instantiation, and patching one instantiation patches only that one.
+
 ## Changing the type returned by a constructor
 
 Constructors initialize an object; they do not choose its type. A C# construction uses IL like:

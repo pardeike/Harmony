@@ -22,6 +22,10 @@ Read about [generated bodies](patching-infix.md#generated-bodies-and-captured-va
 
 Harmony 3 adds .NET 11 support, verified with RC3. [.NET 11 runtime async](patching-edgecases.md#runtime-async-in-net-11) remains unsupported and throws `NotSupportedException` when patched or reverse-patched. Ordinary `Task`-returning methods and compiler-generated async state machines remain supported, but patches on them do not reach callers compiled with runtime-async, see the [edge cases](patching-edgecases.md#runtime-async-in-net-11).
 
+## Host Harmony in a runtime
+
+A runtime that can replace method bodies, such as the one in RimWorld 1.7, can install Harmony's patches itself. `MethodBodyPatching` registers an eligibility check, a body source, and an installer. The original method then runs the patched code without a detour, and a generic definition gets one body for all instantiations. Patch authors see no API change. Read [how to host Harmony](hosting.md).
+
 ## Earlier: Harmony 2
 
 The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.

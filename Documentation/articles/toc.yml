@@ -43,6 +43,9 @@
   href: execution.md
 - name: Prepare, target, and clean up
   href: patching-auxiliary.md
+- name: Extend Harmony
+- name: Host Harmony in a runtime
+  href: hosting.md
 - name: Reference guides
 - name: Reflection and logging
   href: utilities.md

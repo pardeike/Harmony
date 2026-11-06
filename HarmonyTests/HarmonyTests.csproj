@@ -13,6 +13,7 @@
     <ProjectReference Include="..\TestLibrary\TestLibrary.csproj" />
     <Compile Include="..\Documentation\examples\patching-infix.cs" Link="Patching\Examples\Infix.cs" />
     <Compile Include="..\Documentation\examples\patching-infix-authoring.cs" Link="Patching\Examples\InfixAuthoring.cs" />
+    <Compile Include="..\Documentation\examples\hosting.cs" Link="Patching\Examples\Hosting.cs" />
   </ItemGroup>
 
   <ItemGroup>

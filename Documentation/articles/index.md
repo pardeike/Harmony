@@ -7,7 +7,7 @@ Install Harmony and choose a patch type, or jump to the feature you need.
 - [Introduction](intro.md): how Harmony works and what your runtime needs to support.
 - [Install and apply patches](basics.md): add the library, register patches, and remove them.
 - [Choose a patch type](patching.md): find the right API for the change you want to make.
-- [What's new in v3](new.md): Infix, generated bodies, and state across await and yield.
+- [What's new in v3](new.md): Infix, generated bodies, state across await and yield, and runtime hosts.
 
 ## Patch methods
 
@@ -35,6 +35,10 @@ Install Harmony and choose a patch type, or jump to the feature you need.
 - [Ordering and priorities](priorities.md): control the order of patches from different authors.
 - [Execution flow](execution.md): see how Harmony combines the patches on a method.
 - [Prepare, target, and clean up](patching-auxiliary.md): control patch installation with helper methods.
+
+## Extend Harmony
+
+- [Host Harmony in a runtime](hosting.md): let a runtime that replaces method bodies install patches instead of the detour.
 
 ## Reference guides
 
