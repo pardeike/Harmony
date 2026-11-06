@@ -554,3 +554,27 @@ Platform Tests passes `HARMONY_EXPECTED_RUNTIME` to every lane. The Windows Mono
 
 Local gates: net10 x64 Debug and Release passed 1,394 cases each. net11 passed 1,401. The focused .NET Core 3.1 run passed 112.
 The hot reload fixture passed 8 cases. `scripts/test_workflow_test.py` passed.
+
+## 2026-11-06 Harmony Mod 3.0.1.12 on v3 bf01e608
+
+Package `3.0.0-rc.4.runtime-il.20261106.10`, built from `bf01e608` (`artifacts/local-pack/build-20261106-10.log`, `pack-20261106-10.log`). Its `0Harmony.dll` SHA-256 is `76ba03ed28334705edc6c6252f94d0aeb72bcb09a213a0d709ee1c1105087d35`. The single-framework pack warns NU5128 twice; the full builds do not.
+
+Adapter importer: `KeyValuePair<MemberInfo, bool>` with `true` maps to `MethodBodyUpdater.GetTokenFor`, which instantiates the declaring type and adds a MethodSpec. A bare member on a generic type definition, or a bare generic method definition, maps to `GetTokenForDefinition`. A bare generic method definition on a constructed type returns 0, because the runtime has no token for it. With the old importer, the generics probe fails with `NotSupportedException: Unsupported body token: [Int32 Recursive[T](Int32), True]`.
+
+- All 13 probe modes on 1.7.5000 passed: `artifacts/runtime-patching-20261102/adapter-tests-20261106-10/`.
+- Mod 3.0.1.12, offline build, both smokes passed, 0 warnings. Archive `dist/HarmonyMod-3.0.1.12.zip`, SHA-256 `69d0717be874be8d4eef3bbb6db929902dd31da4535886272b6e0d3bcc1ea42a`. Deployed to the fixture's `Game/Mods`.
+- 27-entry fixture: load `Harmony_Merged_30110_20261105`, 600 ticks, save `Harmony_Merged_30112_20261106`, reload, 300 ticks, screenshot, clean stop. Launch log 4,347 lines, 0 error-level lines. Visual Exceptions 0. Provider `tracked=3, applied=3, detached=0, broken=0`. Evidence in `artifacts/runtime-patching-20261102/allmods-3.0.1.12/`.
+- 85-entry workshop list: startup, load `Harmony_WS17_3019_20261105`, 600 ticks, screenshot, clean stop. 17 error-level lines: the four NoPauseChallenge transpiler lines and the 13 CWF `PostLoadInit` errors, all also in the 3.0.1.9 run. No Harmony exception, and no transpiler rejected by the new label check. Evidence in `artifacts/runtime-patching-20261102/ws17-3.0.1.12/`.
+- Not delivered.
+
+## 2026-11-06 Stack validation on RimWorld 1.7
+
+Workshop mod 3526657761 (Pause other settlements simulation) inserts `dup; get_Map; IsMapSimulatingCached; brfalse.s` before `Thing.DoTick` in `TickList.Tick` and puts the target on the try block's `leave`. The skip path reaches the `leave` one item deeper.
+
+The same IL shape as a `DynamicMethod` (`artifacts/runtime-patching-20261102/posss-3526657761/ILShapes.cs`):
+
+- Stock CoreCLR 10.0.7: the depth difference at a `leave` and at a `ret` both throw `InvalidProgramException`.
+- Mono 6.12: the `leave` case runs correctly, the `ret` case throws.
+- RimWorld 1.7.5000 runtime (CoreCLR 10.0.15): both cases run correctly.
+
+Commit `64262a63` adds `Harmony.ValidateStack` and `HARMONY_VALIDATE_STACK`. Validation stays on by default. Harmony Mod sets it to false. With package `3.0.0-rc.4.runtime-il.20261106.11` and the mod built from it, the 27-entry list plus this mod logs 0 errors and 0 warnings over startup, a save load and 600 ticks. The mod's patching completes. Before, it failed at `TickList.Tick` with the stack depth error.
