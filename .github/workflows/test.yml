@@ -168,6 +168,20 @@ jobs:
       build_configuration: ${{matrix.build_configuration}}
       manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
+  ubuntu-hot-reload:
+    name: Ubuntu .NET x64 hot reload
+    needs: [variables, build-binaries]
+    uses: ./.github/workflows/test-unix-dotnet.yml
+    with:
+      os: ubuntu
+      image: ubuntu-22.04
+      architecture: x64
+      target_framework: net10.0
+      target_framework_array: '["net10.0"]'
+      build_configuration: Debug
+      hot_reload: true
+      manual_build: true
+
   ubuntu-macos-x64-mono:
     name: ${{ matrix.image.os == 'ubuntu' && 'Ubuntu' || 'macOS' }} Mono ${{ matrix.architecture }}${{ matrix.build_configuration && '' }}
     needs: [variables, build-binaries]
@@ -215,7 +229,7 @@ jobs:
 
   test-results:
     name: Test Results
-    needs: [variables, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono, compatibility]
+    needs: [variables, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono, ubuntu-hot-reload, compatibility]
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
     with:
@@ -223,7 +237,7 @@ jobs:
 
   cleanup-build-output:
     name: Cleanup Build Output
-    needs: [test-results, build-binaries, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono, compatibility]
+    needs: [test-results, build-binaries, windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-macos-arm64-mono, ubuntu-hot-reload, compatibility]
     runs-on: ubuntu-22.04
     if: always() && github.event_name != 'pull_request'
     permissions:

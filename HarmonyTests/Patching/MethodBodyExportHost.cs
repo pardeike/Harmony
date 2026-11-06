@@ -48,12 +48,14 @@ namespace HarmonyLibTests.Patching
 	}
 
 	// Writes metadata rows for imported values with System.Reflection.Metadata: real tokens, no Reflection.Emit, no Cecil.
+	// Function pointer signatures and standalone by-reference type tokens are refused. One imported assembly per simple name is supported.
 	// A fresh module numbers its rows from one. A delta numbers them after every earlier generation and reuses its own module's definitions.
 	abstract class MetadataEmitter
 	{
 		protected readonly MetadataBuilder metadata;
 		protected readonly Module own;
 		readonly Dictionary<string, EntityHandle> assemblies = [];
+		protected readonly Dictionary<string, Assembly> references = [];
 		readonly Dictionary<Type, EntityHandle> types = [];
 		readonly Dictionary<(MemberInfo member, bool instantiate), EntityHandle> members = [];
 
@@ -71,16 +73,32 @@ namespace HarmonyLibTests.Patching
 		internal int Import(object value) => value switch
 		{
 			DynamicMethod => 0,
-			MethodBase method => Binds(method.Module.Assembly) ? MetadataTokens.GetToken(Method(method)) : 0,
-			FieldInfo field => Binds(field.Module.Assembly) ? MetadataTokens.GetToken(Field(field)) : 0,
-			Type type => Binds(type.Module.Assembly) ? MetadataTokens.GetToken(TypeHandle(type)) : 0,
-			KeyValuePair<Type, bool> { Value: true } self => MetadataTokens.GetToken(SelfInstantiation(self.Key)),
-			KeyValuePair<MemberInfo, bool> { Value: true, Key: MethodBase method } => Binds(method.Module.Assembly) ? MetadataTokens.GetToken(Method(method, true)) : 0,
-			KeyValuePair<MemberInfo, bool> { Value: true, Key: FieldInfo field } => Binds(field.Module.Assembly) ? MetadataTokens.GetToken(Field(field, true)) : 0,
+			MethodBase method => CanBind(method) ? MetadataTokens.GetToken(Method(method)) : 0,
+			FieldInfo field => CanBind(field) ? MetadataTokens.GetToken(Field(field)) : 0,
+			Type type => CanBind(type) ? MetadataTokens.GetToken(TypeHandle(type)) : 0,
+			KeyValuePair<Type, bool> { Value: true } self => CanBind(self.Key) ? MetadataTokens.GetToken(SelfInstantiation(self.Key)) : 0,
+			KeyValuePair<MemberInfo, bool> { Value: true, Key: MethodBase method } => CanBind(method) ? MetadataTokens.GetToken(Method(method, true)) : 0,
+			KeyValuePair<MemberInfo, bool> { Value: true, Key: FieldInfo field } => CanBind(field) ? MetadataTokens.GetToken(Field(field, true)) : 0,
 			string text => MetadataTokens.GetToken(metadata.GetOrAddUserString(text)),
 			byte[] signature => MetadataTokens.GetToken(Added(metadata.AddStandaloneSignature(metadata.GetOrAddBlob(signature)))),
 			_ => 0
 		};
+
+		bool CanBind(Type type)
+		{
+			if (type is null || type.IsGenericParameter) return true;
+			if (type.IsFunctionPointer) throw new NotSupportedException("Function pointer signatures are outside this host.");
+			return Binds(type.Assembly) && (!type.HasElementType || CanBind(type.GetElementType()))
+				&& (!type.IsGenericType || type.GetGenericArguments().All(CanBind));
+		}
+
+		bool CanBind(ParameterInfo parameter) => CanBind(parameter.ParameterType)
+			&& parameter.GetRequiredCustomModifiers().All(CanBind) && parameter.GetOptionalCustomModifiers().All(CanBind);
+		bool CanBind(MethodBase method) => Binds(method.Module.Assembly) && CanBind(method.DeclaringType)
+			&& (method is not MethodInfo info || CanBind(info.ReturnParameter)) && method.GetParameters().All(CanBind)
+			&& (!method.IsGenericMethod || method.GetGenericArguments().All(CanBind));
+		bool CanBind(FieldInfo field) => Binds(field.Module.Assembly) && CanBind(field.DeclaringType) && CanBind(field.FieldType)
+			&& field.GetRequiredCustomModifiers().All(CanBind) && field.GetOptionalCustomModifiers().All(CanBind);
 
 		// A fat CLI header: flags and size, maximum stack, code size, local signature token, then the code and the exception sections.
 		protected int AddBody(MethodBodyStreamEncoder bodies, byte[] body)
@@ -118,11 +136,17 @@ namespace HarmonyLibTests.Patching
 		EntityHandle AssemblyRef(Assembly assembly)
 		{
 			var identity = assembly.GetName();
+			if (references.TryGetValue(identity.FullName, out var previous) && previous != assembly
+				|| references.Values.Any(reference => reference != assembly && reference.GetName().Name == identity.Name))
+				throw new NotSupportedException("The host cannot bind distinct assemblies with the same simple name: " + identity.Name);
 			if (assemblies.TryGetValue(identity.FullName, out var handle)) return handle;
+			if (!Binds(assembly)) throw new NotSupportedException("The host cannot bind assembly: " + identity.FullName);
 			var token = identity.GetPublicKeyToken();
-			handle = Added(metadata.AddAssemblyReference(metadata.GetOrAddString(identity.Name), identity.Version ?? new Version(0, 0, 0, 0), default,
+			handle = Added(metadata.AddAssemblyReference(metadata.GetOrAddString(identity.Name), identity.Version ?? new Version(0, 0, 0, 0),
+				string.IsNullOrEmpty(identity.CultureName) ? default : metadata.GetOrAddString(identity.CultureName),
 				token is { Length: > 0 } ? metadata.GetOrAddBlob(token) : default, default, default));
 			assemblies.Add(identity.FullName, handle);
+			references.Add(identity.FullName, assembly);
 			return handle;
 		}
 
@@ -130,6 +154,8 @@ namespace HarmonyLibTests.Patching
 
 		protected EntityHandle TypeHandle(Type type)
 		{
+			if (type.IsByRef) throw new NotSupportedException("By-reference type tokens are outside this host.");
+			if (type.IsFunctionPointer) throw new NotSupportedException("Function pointer signatures are outside this host.");
 			if (types.TryGetValue(type, out var handle)) return handle;
 			if (type.IsGenericType && !type.IsGenericTypeDefinition || type.HasElementType || type.IsGenericParameter)
 				handle = Added(metadata.AddTypeSpecification(metadata.GetOrAddBlob(Blob(encoder => Encode(encoder.TypeSpecificationSignature(), type)))));
@@ -181,7 +207,7 @@ namespace HarmonyLibTests.Patching
 			var generic = declared.IsGenericMethodDefinition ? declared.GetGenericArguments().Length : 0;
 			return Added(metadata.AddMemberReference(self ? SelfInstantiation(method.DeclaringType) : TypeHandle(method.DeclaringType),
 				metadata.GetOrAddString(method.Name), metadata.GetOrAddBlob(Blob(encoder =>
-					MethodSignature(encoder, declared is MethodInfo info ? info.ReturnType : typeof(void), [.. declared.GetParameters().Select(parameter => parameter.ParameterType)], !declared.IsStatic, generic)))));
+					MethodSignature(encoder, declared is MethodInfo info ? info.ReturnType : typeof(void), [.. declared.GetParameters().Select(parameter => parameter.ParameterType)], !declared.IsStatic, generic, (declared as MethodInfo)?.ReturnParameter, declared.GetParameters())))));
 		}
 
 		EntityHandle Field(FieldInfo field, bool instantiate = false)
@@ -193,22 +219,42 @@ namespace HarmonyLibTests.Patching
 			{
 				var declared = Constructed(field.DeclaringType) ? field.Module.ResolveField(field.MetadataToken) : field;
 				handle = Added(metadata.AddMemberReference(self ? SelfInstantiation(field.DeclaringType) : TypeHandle(field.DeclaringType), metadata.GetOrAddString(field.Name),
-					metadata.GetOrAddBlob(Blob(encoder => Encode(encoder.FieldSignature(), declared.FieldType)))));
+					metadata.GetOrAddBlob(Blob(encoder =>
+					{
+						var signature = encoder.Field();
+						Modifiers(signature.CustomModifiers(), declared.GetRequiredCustomModifiers(), declared.GetOptionalCustomModifiers());
+						Encode(signature.Type(declared.FieldType.IsByRef), declared.FieldType.IsByRef ? declared.FieldType.GetElementType() : declared.FieldType);
+					}))));
 			}
 			members.Add((field, instantiate), handle);
 			return handle;
 		}
 
-		protected void MethodSignature(BlobEncoder encoder, Type returnType, Type[] parameterTypes, bool instance, int genericParameters = 0)
+		void Modifiers(CustomModifiersEncoder encoder, Type[] required, Type[] optional)
+		{
+			foreach (var type in required) encoder.AddModifier(TypeHandle(type), isOptional: false);
+			foreach (var type in optional) encoder.AddModifier(TypeHandle(type), isOptional: true);
+		}
+
+		protected void MethodSignature(BlobEncoder encoder, Type returnType, Type[] parameterTypes, bool instance, int genericParameters = 0,
+			ParameterInfo returnParameter = null, ParameterInfo[] parametersInfo = null)
 		{
 			encoder.MethodSignature(SignatureCallingConvention.Default, genericParameters, instance).Parameters(parameterTypes.Length, out var returned, out var parameters);
+			if (returnParameter is not null) Modifiers(returned.CustomModifiers(), returnParameter.GetRequiredCustomModifiers(), returnParameter.GetOptionalCustomModifiers());
 			if (returnType == typeof(void)) returned.Void();
 			else Encode(returned.Type(returnType.IsByRef), returnType.IsByRef ? returnType.GetElementType() : returnType);
-			foreach (var type in parameterTypes) Encode(parameters.AddParameter().Type(type.IsByRef), type.IsByRef ? type.GetElementType() : type);
+			for (var index = 0; index < parameterTypes.Length; index++)
+			{
+				var type = parameterTypes[index];
+				var parameter = parameters.AddParameter();
+				if (parametersInfo?[index] is { } info) Modifiers(parameter.CustomModifiers(), info.GetRequiredCustomModifiers(), info.GetOptionalCustomModifiers());
+				Encode(parameter.Type(type.IsByRef), type.IsByRef ? type.GetElementType() : type);
+			}
 		}
 
 		void Encode(SignatureTypeEncoder encoder, Type type)
 		{
+			if (type.IsFunctionPointer) throw new NotSupportedException("Function pointer signatures are outside this host.");
 			if (type.IsPointer)
 			{
 				if (type.GetElementType() == typeof(void)) encoder.VoidPointer();
@@ -282,6 +328,8 @@ namespace HarmonyLibTests.Patching
 		// The holder gets a static method with the receiver first, by reference for a value type, then the original's parameters.
 		internal MethodInfo Load(MethodBase original, byte[] body)
 		{
+			var parameterInfo = original.GetParameters().ToList();
+			if (!original.IsStatic) parameterInfo.Insert(0, null);
 			var parameters = original.GetParameters().Select(parameter => parameter.ParameterType).ToList();
 			if (!original.IsStatic) parameters.Insert(0, original.DeclaringType.IsValueType ? original.DeclaringType.MakeByRefType() : original.DeclaringType);
 			var ilStream = new BlobBuilder();
@@ -295,7 +343,7 @@ namespace HarmonyLibTests.Patching
 				MethodImplAttributes.IL, metadata.GetOrAddString(".ctor"), metadata.GetOrAddBlob(Blob(encoder => MethodSignature(encoder, typeof(void), [typeof(string)], true))),
 				bodies.AddMethodBody(constructorCode), MetadataTokens.ParameterHandle(1));
 			var method = metadata.AddMethodDefinition(MethodAttributes.Public | MethodAttributes.Static, MethodImplAttributes.IL, metadata.GetOrAddString(original.Name),
-				metadata.GetOrAddBlob(Blob(encoder => MethodSignature(encoder, AccessTools.GetReturnedType(original), [.. parameters], false))), AddBody(bodies, body), MetadataTokens.ParameterHandle(1));
+				metadata.GetOrAddBlob(Blob(encoder => MethodSignature(encoder, AccessTools.GetReturnedType(original), [.. parameters], false, returnParameter: (original as MethodInfo)?.ReturnParameter, parametersInfo: [.. parameterInfo]))), AddBody(bodies, body), MetadataTokens.ParameterHandle(1));
 			metadata.AddTypeDefinition(default, default, metadata.GetOrAddString("<Module>"), default, MetadataTokens.FieldDefinitionHandle(1), constructor);
 			metadata.AddTypeDefinition(TypeAttributes.Public | TypeAttributes.Sealed, metadata.GetOrAddString("System.Runtime.CompilerServices"), metadata.GetOrAddString("IgnoresAccessChecksToAttribute"),
 				TypeHandle(typeof(Attribute)), MetadataTokens.FieldDefinitionHandle(1), constructor);
@@ -311,15 +359,15 @@ namespace HarmonyLibTests.Patching
 				})));
 			var image = new BlobBuilder();
 			new ManagedPEBuilder(PEHeaderBuilder.CreateLibraryHeader(), new MetadataRootBuilder(metadata), ilStream).Serialize(image);
-			var loaded = new HostContext().LoadFromStream(new MemoryStream(image.ToArray()));
+			var loaded = new HostContext(references).LoadFromStream(new MemoryStream(image.ToArray()));
 			return loaded.GetType("Holder").GetMethod(original.Name);
 		}
 
-		// Every reference binds to the assembly already loaded under that name, including Harmony's collectible stand-in assemblies.
-		sealed class HostContext() : AssemblyLoadContext(isCollectible: true)
+		// Bind each reference to the exact assembly that supplied its imported types and members.
+		sealed class HostContext(Dictionary<string, Assembly> references) : AssemblyLoadContext(isCollectible: true)
 		{
 			protected override Assembly Load(AssemblyName assemblyName)
-				=> AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.GetName().Name == assemblyName.Name);
+				=> references.TryGetValue(assemblyName.FullName, out var assembly) ? assembly : null;
 		}
 	}
 
@@ -526,6 +574,260 @@ namespace HarmonyLibTests.Patching
 			}
 			finally { harmony.UnpatchAll(harmony.Id); }
 		}
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int BaselineTarget() => 1;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int BaselineReverseSource() => 1;
+		static int FirstBaseline() => 23;
+		static int SecondBaseline() => 47;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int BaselineStandin() => -1;
+		sealed class Constructed
+		{
+			internal int Value;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			internal Constructed(int value) => Value = value;
+		}
+		static int readonlyValue = 7;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static ref readonly int ReadonlyValue() => ref readonlyValue;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ReadReadonly() => ReadonlyValue();
+		class InConsumer
+		{
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			internal virtual int Read(in int value) => value;
+		}
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ReadInParameter() { var value = 7; return new InConsumer().Read(in value); }
+		sealed class Initialized { internal int Value { get; init; } }
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ReadInitSetter() => new Initialized { Value = 7 }.Value;
+		sealed class VolatileValue { internal volatile int Value = 7; }
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ReadVolatile() => new VolatileValue().Value;
+		ref struct RefField
+		{
+			internal ref int Value;
+			internal RefField(ref int value) => Value = ref value;
+		}
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ReadRefField(ref RefField value) => value.Value;
+		class Carrier<T> { public T Value; }
+
+		// Inspect the emitter's actual metadata without loading a possibly invalid image.
+		sealed class MetadataProbe : MetadataEmitter
+		{
+			internal MetadataProbe() : base(new MetadataBuilder())
+			{
+				metadata.AddModule(0, metadata.GetOrAddString("probe"), metadata.GetOrAddGuid(Guid.NewGuid()), default, default);
+			}
+			internal byte[] MemberSignature(object value)
+			{
+				var token = Import(value);
+				var image = new BlobBuilder();
+				new MetadataRootBuilder(metadata).Serialize(image, 0, 0);
+				using var provider = MetadataReaderProvider.FromMetadataImage(image.ToImmutableArray());
+				var reader = provider.GetMetadataReader();
+				return reader.GetBlobBytes(reader.GetMemberReference((MemberReferenceHandle)MetadataTokens.EntityHandle(token)).Signature);
+			}
+			internal string ImportedCulture(Type type)
+			{
+				Import(type);
+				var image = new BlobBuilder();
+				new MetadataRootBuilder(metadata).Serialize(image, 0, 0);
+				using var provider = MetadataReaderProvider.FromMetadataImage(image.ToImmutableArray());
+				var reader = provider.GetMetadataReader();
+				return reader.GetString(reader.GetAssemblyReference(reader.AssemblyReferences.Single()).Culture);
+			}
+		}
+
+		[TestCase(false), TestCase(true)]
+		public void Rebuild_uses_a_changed_baseline_through_exported_bytes(bool reverse)
+		{
+			var target = Method(reverse ? nameof(BaselineReverseSource) : nameof(BaselineTarget));
+			var standin = Method(nameof(BaselineStandin));
+			var baseline = Method(nameof(FirstBaseline));
+			var host = new MetadataHost(method => method == target || method == standin);
+			HarmonyLib.MethodBodyPatching.SetBodySource(method => method == target ? baseline.GetMethodBody() : method.GetMethodBody());
+			var harmony = new Harmony("test.module.baseline." + reverse);
+			try
+			{
+				if (reverse)
+				{
+					Assert.That(HarmonyLib.MethodBodyPatching.Prepare(target), Is.True);
+					Assert.That(HarmonyLib.MethodBodyPatching.IsProviderTarget(target), Is.True);
+					harmony.CreateReversePatcher(target, new HarmonyMethod(standin)).Patch();
+				}
+				else harmony.Patch(target, postfix: new HarmonyMethod(Method(nameof(AddOne))));
+				Assert.That(reverse ? BaselineStandin() : BaselineTarget(), Is.EqualTo(reverse ? 23 : 24));
+				baseline = Method(nameof(SecondBaseline));
+				HarmonyLib.MethodBodyPatching.Rebuild(reverse ? standin : target);
+				Assert.That(reverse ? BaselineStandin() : BaselineTarget(), Is.EqualTo(reverse ? 47 : 48));
+				Assert.That(host.installed, Has.Count.EqualTo(2));
+			}
+			finally
+			{
+				harmony.UnpatchAll(harmony.Id);
+				ClearProvider();
+				harmony.CreateProcessor(reverse ? standin : target).Patch();
+			}
+		}
+
+		[Test]
+		public void A_constructor_target_runs_through_the_module_host()
+		{
+			var original = AccessTools.DeclaredConstructor(typeof(Constructed), [typeof(int)]);
+			var host = new MetadataHost(method => method == original);
+			var harmony = new Harmony("test.module.constructor");
+			try
+			{
+				harmony.Patch(original, prefix: new HarmonyMethod(Method(nameof(DoubleConstructorValue))));
+				Assert.That(new Constructed(7).Value, Is.EqualTo(14));
+				Assert.That(host.installed.Single().IsConstructor, Is.False);
+				harmony.UnpatchAll(harmony.Id);
+				Assert.That(new Constructed(7).Value, Is.EqualTo(7));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+		static void DoubleConstructorValue(ref int value) => value *= 2;
+
+		[TestCase(nameof(ReadReadonly)), TestCase(nameof(ReadInParameter)), TestCase(nameof(ReadInitSetter)), TestCase(nameof(ReadVolatile))]
+		public void Module_members_keep_required_modifiers(string target)
+		{
+			var original = Method(target);
+			_ = new MetadataHost(method => method == original);
+			var harmony = new Harmony("test.module.modifiers." + target);
+			try
+			{
+				harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(AddOne))));
+				Assert.That(original.Invoke(null, null), Is.EqualTo(8));
+				if (target == nameof(ReadVolatile))
+					Assert.That(new MetadataProbe().MemberSignature(AccessTools.Field(typeof(VolatileValue), "Value"))[1], Is.EqualTo(0x1f));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
+		public void Module_target_keeps_its_readonly_return_modifier()
+		{
+			var original = Method(nameof(ReadonlyValue));
+			var host = new MetadataHost(method => method == original);
+			var harmony = new Harmony("test.module.target.modifier");
+			try
+			{
+				harmony.CreateProcessor(original).Patch();
+				Assert.That(host.installed.Single().ReturnParameter.GetRequiredCustomModifiers(), Is.EqualTo(original.ReturnParameter.GetRequiredCustomModifiers()));
+				Assert.That(ReadonlyValue(), Is.EqualTo(7));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
+		public void Module_byref_fields_keep_the_reference()
+		{
+			var field = AccessTools.Field(typeof(RefField), "Value");
+			Assert.That(new MetadataProbe().MemberSignature(field), Is.EqualTo(new byte[] { 0x06, 0x10, 0x08 }));
+			var original = Method(nameof(ReadRefField));
+			_ = new MetadataHost(method => method == original);
+			var harmony = new Harmony("test.module.byref.field");
+			try
+			{
+				harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(AddOne))));
+				var value = 7;
+				var holder = new RefField(ref value);
+				Assert.That(ReadRefField(ref holder), Is.EqualTo(8));
+				value = 20;
+				Assert.That(ReadRefField(ref holder), Is.EqualTo(21));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
+		public unsafe void Module_function_pointer_signatures_are_explicitly_refused()
+		{
+			var module = new ModuleEmitter("refused.pointer");
+			Assert.That(() => module.Import(typeof(delegate*<int, int>)), Throws.TypeOf<NotSupportedException>()
+				.With.Message.EqualTo("Function pointer signatures are outside this host."));
+			Assert.That(() => module.Import(Method(nameof(FunctionPointerMember))), Throws.TypeOf<NotSupportedException>()
+				.With.Message.EqualTo("Function pointer signatures are outside this host."));
+		}
+		static unsafe int FunctionPointerMember(delegate*<int, int> callback) => callback(1);
+
+		[TestCase("type"), TestCase("method"), TestCase("field"), TestCase("generic method")]
+		public void Hot_reload_refuses_nested_collectible_dependencies(string kind)
+		{
+			var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("CollectibleDependency_" + Guid.NewGuid().ToString("N")), AssemblyBuilderAccess.RunAndCollect);
+			var type = assembly.DefineDynamicModule("module").DefineType("Item", TypeAttributes.Public).CreateType();
+			var list = typeof(List<>).MakeGenericType(type);
+			object value = kind switch
+			{
+				"type" => list,
+				"method" => list.GetMethod("Add"),
+				"field" => typeof(Carrier<>).MakeGenericType(type).GetField("Value"),
+				_ => Method(nameof(Identity)).MakeGenericMethod(type)
+			};
+			Assert.That(new DeltaEmitter(typeof(MethodBodyExportHost).Module).Import(value), Is.Zero);
+		}
+
+		[Test]
+		public void Module_resolution_keeps_the_imported_assembly_instance()
+		{
+			var context = new AssemblyLoadContext("module-identity", isCollectible: true);
+			var assembly = context.LoadFromAssemblyPath(typeof(TestLibrary.MethodBodyHostTargets).Assembly.Location);
+			var type = assembly.GetType(typeof(TestLibrary.MethodBodyHostTargets).FullName);
+			type.GetField("Value").SetValue(null, 92);
+			var original = type.GetMethod("Read");
+			var host = new MetadataHost(method => method == original);
+			var harmony = new Harmony("test.module.identity");
+			try
+			{
+				harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(AddOne))));
+				Assert.That(host.installed.Single().Invoke(null, null), Is.EqualTo(93));
+				Assert.That(TestLibrary.MethodBodyHostTargets.Read(), Is.EqualTo(17));
+				var module = new ModuleEmitter("conflicting.identities");
+				module.Import(typeof(TestLibrary.MethodBodyHostTargets));
+				Assert.That(() => module.Import(type), Throws.TypeOf<NotSupportedException>()
+					.With.Message.StartsWith("The host cannot bind distinct assemblies with the same simple name: "));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); context.Unload(); }
+		}
+
+		[Test]
+		public void Module_assembly_references_preserve_culture()
+		{
+			var name = new AssemblyName("Cultured_" + Guid.NewGuid().ToString("N")) { CultureInfo = new System.Globalization.CultureInfo("sv-SE") };
+			var assembly = AssemblyBuilder.DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndCollect);
+			var type = assembly.DefineDynamicModule("module").DefineType("Item", TypeAttributes.Public).CreateType();
+			Assert.That(new MetadataProbe().ImportedCulture(type), Is.EqualTo("sv-SE"));
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int RefusalTarget(int value) { var values = new List<int> { value }; return values[0]; }
+
+		[TestCase("type"), TestCase("signature"), TestCase("method")]
+		public void Refused_imports_publish_no_registration_or_installation(string kind)
+		{
+			var original = Method(nameof(RefusalTarget));
+			var host = new MetadataHost(method => method == original, value => kind switch
+			{
+				"type" => value is Type,
+				"signature" => value is byte[],
+				_ => value is MethodInfo method && (method.Name == nameof(AddOne) || method.DeclaringType?.Name == "Proxy")
+			});
+			var harmony = new Harmony("test.module.refusal." + kind);
+			try
+			{
+				var error = Assert.Throws<NotSupportedException>(() => harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(AddOne)))));
+				Assert.That(error.Message, Does.StartWith(kind == "method" ? "The installer imports neither " : "The installer cannot import "));
+				Assert.That(host.installed, Is.Empty);
+				Assert.That(Harmony.GetPatchInfo(original)?.Postfixes ?? [], Is.Empty);
+				Assert.That(RefusalTarget(7), Is.EqualTo(7));
+				Assert.That(HarmonyLib.MethodBodyPatching.IsProviderTarget(original), Is.True, "Installation began, so the lifecycle contract retains its pin.");
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
 	}
 }
 #endif

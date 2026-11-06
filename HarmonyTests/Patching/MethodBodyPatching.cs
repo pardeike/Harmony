@@ -23,6 +23,7 @@ namespace HarmonyLibTests.Patching
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int ClaimTarget() => 1;
 		static int Source() => 23;
+		static void RejectedPostfix(ref int __result) => __result += 100;
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int ExportTarget() => 1;
 		[MethodImpl(MethodImplOptions.NoInlining)]
@@ -166,15 +167,21 @@ namespace HarmonyLibTests.Patching
 			var definition = Method(nameof(PinnedFamily));
 			var closed = definition.MakeGenericMethod(typeof(int));
 			var installs = 0;
-			SetProvider(method => method == definition, method => method.GetMethodBody(), (_, _, _) => installs++);
+			var selections = 0;
+			SetProvider(method => { selections++; return method == definition; }, method => method.GetMethodBody(), (_, _, _) => installs++);
 			var harmony = new Harmony("test.method.body.failed.pin");
 			try
 			{
 				Assert.Catch(() => harmony.Patch(closed, transpiler: new HarmonyMethod(Method(nameof(FailingTranspiler)))));
 				Assert.That(Harmony.GetPatchInfo(closed), Is.Null);
+				Assert.That(HarmonyLib.MethodBodyPatching.IsProviderTarget(closed), Is.False);
+				Assert.That(HarmonyLib.MethodBodyPatching.IsProviderTarget(definition), Is.False);
+				Assert.That(HarmonyLib.MethodBodyPatching.Instantiations(definition), Is.Empty);
+				var previousSelections = selections;
 				Assert.DoesNotThrow(() => harmony.Patch(definition, postfix: new HarmonyMethod(Method(nameof(Postfix)))));
 				Assert.That(HarmonyLib.MethodBodyPatching.IsProviderTarget(definition), Is.True);
 				Assert.That(installs, Is.EqualTo(1));
+				Assert.That(selections, Is.GreaterThan(previousSelections), "A retry must reconsider eligibility.");
 			}
 			finally { harmony.UnpatchAll(harmony.Id); ClearProvider(); }
 		}
@@ -742,7 +749,8 @@ namespace HarmonyLibTests.Patching
 				Assert.That(Reverse(), Is.EqualTo(23));
 				var before = Harmony.GetPatchInfo(original).Postfixes.Count;
 				fail = true;
-				Assert.Throws<InvalidOperationException>(() => harmony.CreateProcessor(original).Patch());
+				Assert.Throws<InvalidOperationException>(() => harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(RejectedPostfix)))));
+				Assert.That(Harmony.GetPatchInfo(original).Postfixes.Any(patch => patch.PatchMethod == Method(nameof(RejectedPostfix))), Is.False);
 				Assert.That(call(), Is.EqualTo(24));
 				Assert.That(Harmony.GetPatchInfo(original).Postfixes.Count, Is.EqualTo(before));
 				fail = false;
@@ -779,6 +787,23 @@ namespace HarmonyLibTests.Patching
 				Assert.That(ReverseStandin(), Is.EqualTo(23));
 			}
 			finally { ClearProvider(); }
+		}
+
+		[TearDown]
+		public void ResetProvider()
+		{
+			ClearProvider();
+			observed = null;
+		}
+
+		[Test]
+		public void Teardown_clears_partial_registration_and_the_snapshot()
+		{
+			HarmonyLib.MethodBodyPatching.SetEligibility(_ => true);
+			observed = () => Method(nameof(Target));
+			ResetProvider();
+			Assert.That(observed, Is.Null);
+			Assert.DoesNotThrow(() => HarmonyLib.MethodBodyPatching.SetEligibility(_ => false));
 		}
 
 		static void ClearProvider() => HarmonyLib.MethodBodyPatching.ClearProvider();
@@ -1059,11 +1084,17 @@ namespace HarmonyLibTests.Patching
 				SetProvider(method => method == definition, method => method.GetMethodBody(), (_, _, write) => { installs++; write(FakeToken); });
 				harmony.Patch(definition.MakeGenericMethod(typeof(string)), postfix: postfix);
 				Assert.That(installs, Is.Zero, "A sibling joins the family's detour instead of pinning the definition.");
-				// Whether the detour reaches shared generic code differs by runtime. The registration is what this test is about.
+				Assert.That(HarmonyLib.MethodBodyPatching.IsProviderTarget(definition.MakeGenericMethod(typeof(string))), Is.False);
 				Assert.That(Harmony.GetPatchInfo(definition.MakeGenericMethod(typeof(string))).Postfixes, Has.Count.EqualTo(1));
 				Assert.Throws<NotSupportedException>(() => harmony.Patch(definition, postfix: postfix));
 				Assert.That(installs, Is.Zero);
 				Assert.That(HarmonyLib.MethodBodyPatching.Instantiations(definition), Is.Empty);
+				var first = Mixed<int>();
+				var sibling = Mixed<string>();
+				if ((first != 2 || sibling != 2) && (IntPtr.Size == 4 || Environment.Version.Major == 3 && Environment.Version.Minor == 1 || Environment.Version.Major == 11))
+					Assert.Ignore("Shared generic detours are not reliable on x86, .NET Core 3.1, or some .NET 11 runs.");
+				Assert.That(first, Is.EqualTo(2));
+				Assert.That(sibling, Is.EqualTo(2));
 			}
 			finally { harmony.UnpatchAll(harmony.Id); ClearProvider(); }
 		}

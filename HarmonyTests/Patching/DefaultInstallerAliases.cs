@@ -40,5 +40,43 @@ namespace HarmonyLibTests.Patching
 			}
 			finally { harmony.UnpatchAll(harmony.Id); }
 		}
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static int ChangedSource() => 47;
+
+		[TearDown]
+		public void ClearProvider() => HarmonyLib.MethodBodyPatching.ClearProvider();
+
+		[TestCase(false), TestCase(true)]
+		public void Rebuild_reads_a_changed_baseline_through_a_reflected_alias(bool reverse)
+		{
+			var alias = typeof(Derived).GetMethod(nameof(Base.Slot));
+			var declared = typeof(Base).GetMethod(nameof(Base.Slot));
+			var source = typeof(DefaultInstallerAliases).GetMethod(nameof(Source));
+			var baseline = source;
+			HarmonyLib.MethodBodyPatching.SetEligibility(method => method == declared || method == source);
+			HarmonyLib.MethodBodyPatching.SetBodySource(_ => baseline.GetMethodBody());
+			var harmony = new Harmony("test.default.alias.baseline." + reverse);
+			var instance = new Derived();
+			try
+			{
+				if (reverse)
+				{
+					Assert.That(HarmonyLib.MethodBodyPatching.Prepare(source), Is.True);
+					harmony.CreateReversePatcher(source, new HarmonyMethod(alias)).Patch();
+				}
+				else harmony.Patch(declared, postfix: new HarmonyMethod(typeof(DefaultInstallerAliases).GetMethod(nameof(Postfix))));
+				Assert.That(instance.Slot(), Is.EqualTo(reverse ? 23 : 24));
+				baseline = typeof(DefaultInstallerAliases).GetMethod(nameof(ChangedSource));
+				HarmonyLib.MethodBodyPatching.Rebuild(alias);
+				Assert.That(instance.Slot(), Is.EqualTo(reverse ? 47 : 48));
+			}
+			finally
+			{
+				harmony.UnpatchAll(harmony.Id);
+				ClearProvider();
+				harmony.CreateProcessor(declared).Patch();
+			}
+		}
+
 	}
 }

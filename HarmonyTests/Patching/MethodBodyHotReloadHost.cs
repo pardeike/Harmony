@@ -22,6 +22,7 @@ namespace HarmonyLibTests.Patching
 	{
 		internal readonly List<object> imported = [];
 		internal int generations;
+		readonly Func<object, bool> refuses;
 
 		internal static bool Supported => MetadataUpdater.IsSupported
 			&& typeof(HotReloadHost).Assembly.GetCustomAttribute<DebuggableAttribute>() is { } debuggable
@@ -32,13 +33,14 @@ namespace HarmonyLibTests.Patching
 			=> (name.Name.StartsWith("HarmonyDynamicMethod_") || name.Name.StartsWith("HarmonyGenerated_")) ? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => !assembly.IsCollectible && assembly.GetName().Name == name.Name) : null;
 		static bool resolving;
 
-		internal HotReloadHost(Func<MethodBase, bool> accepts)
+		internal HotReloadHost(Func<MethodBase, bool> accepts, Func<object, bool> refuses = null)
 		{
 			if (!resolving)
 			{
 				System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += resolveStandIns;
 				resolving = true;
 			}
+			this.refuses = refuses;
 			HarmonyLib.MethodBodyPatching.SetEligibility(accepts);
 			HarmonyLib.MethodBodyPatching.SetBodySource(ImageBody.Read);
 			HarmonyLib.MethodBodyPatching.SetInstaller(Install);
@@ -50,7 +52,7 @@ namespace HarmonyLibTests.Patching
 			var body = writeBody(value =>
 			{
 				imported.Add(value);
-				return delta.Import(value);
+				return refuses?.Invoke(value) is true ? 0 : delta.Import(value);
 			});
 			delta.UpdateBody(original, body);
 			delta.Apply();
@@ -174,6 +176,7 @@ namespace HarmonyLibTests.Patching
 		}
 		static readonly Dictionary<Module, Generation> generations = [];
 		readonly Generation previous;
+		readonly Guid encId = Guid.NewGuid();
 		readonly PEReader image;
 		readonly MetadataReader baseline;
 		readonly BlobBuilder ilStream = new();
@@ -210,10 +213,8 @@ namespace HarmonyLibTests.Patching
 			// Offset zero means no body. Roslyn pads the IL delta the same way.
 			ilStream.WriteInt32(0);
 			var definition = baseline.GetModuleDefinition();
-			var encId = Guid.NewGuid();
 			metadata.AddModule(previous.Ordinal + 1, metadata.GetOrAddString(baseline.GetString(definition.Name)), metadata.GetOrAddGuid(baseline.GetGuid(definition.Mvid)),
 				metadata.GetOrAddGuid(encId), previous.EncId == Guid.Empty ? default : metadata.GetOrAddGuid(previous.EncId));
-			previous.EncId = encId;
 		}
 
 		// The original module is not collectible, so it may not reference a collectible assembly.
@@ -262,6 +263,8 @@ namespace HarmonyLibTests.Patching
 			var root = new MetadataRootBuilder(metadata, suppressValidation: true);
 			var blob = new BlobBuilder();
 			root.Serialize(blob, 0, 0);
+			MetadataUpdater.ApplyUpdate(own.Assembly, blob.ToArray(), ilStream.ToArray(), ReadOnlySpan<byte>.Empty);
+			previous.EncId = encId;
 			// Roslyn's accounting: strings concatenate unaligned, blobs and user strings aligned, the guid heap carries its prefix.
 			var sizes = root.Sizes;
 			previous.Ordinal++;
@@ -271,7 +274,6 @@ namespace HarmonyLibTests.Patching
 			previous.Guids = sizes.HeapSizes[(int)HeapIndex.Guid];
 			foreach (var table in Enum.GetValues<TableIndex>())
 				if (table is not (TableIndex.Module or TableIndex.EncLog or TableIndex.EncMap or TableIndex.MethodDef)) previous.Rows[table] += sizes.RowCounts[(int)table];
-			MetadataUpdater.ApplyUpdate(own.Assembly, blob.ToArray(), ilStream.ToArray(), ReadOnlySpan<byte>.Empty);
 		}
 	}
 
@@ -334,7 +336,9 @@ namespace HarmonyLibTests.Patching
 		public void RequireHotReload()
 		{
 			if (!MethodBodyGenerator.HasDynamicIL) Assert.Ignore("Body export requires a modern Harmony target.");
-			if (!HotReloadHost.Supported) Assert.Ignore("Hot reload needs DOTNET_MODIFIABLE_ASSEMBLIES=debug and a Debug build of HarmonyTests.");
+			if (Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES") == "debug")
+				Assert.That(HotReloadHost.Supported, Is.True, "Hot reload was requested but the runtime or test assembly does not support updates.");
+			else if (!HotReloadHost.Supported) Assert.Ignore("Hot reload needs DOTNET_MODIFIABLE_ASSEMBLIES=debug and a Debug build of HarmonyTests.");
 		}
 
 		[TearDown]
@@ -431,6 +435,117 @@ namespace HarmonyLibTests.Patching
 			}
 			finally { harmony.UnpatchAll(harmony.Id); }
 		}
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static string RefusedTarget() => "baseline";
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static string ClosedTranspiler<T>() => "plain";
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static T SkipTarget<T>(T value) { calls++; return value; }
+		static bool SkipInt(ref int __result) { __result = 42; return false; }
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int OutsideCallbackTarget() => 1;
+
+		static object[] GenerationState(Module module = null)
+		{
+			var records = (System.Collections.IDictionary)AccessTools.Field(typeof(DeltaEmitter), "generations").GetValue(null);
+			var record = records[module ?? typeof(MethodBodyHotReloadHost).Module];
+			return [.. record.GetType().GetFields(AccessTools.allDeclared).Select(field => field.GetValue(record) is System.Collections.IDictionary rows
+				? string.Join(",", rows.Keys.Cast<object>().Select(key => key + "=" + rows[key])) : field.GetValue(record))];
+		}
+
+		[Test]
+		public void A_refused_import_does_not_advance_the_shared_generation()
+		{
+			var original = Method(nameof(RefusedTarget));
+			var refuse = false;
+			var host = new HotReloadHost(method => method == original, value => refuse && value is string);
+			var harmony = new Harmony("test.hotreload.refusal.state");
+			try
+			{
+				harmony.Patch(original, postfix: new HarmonyMethod(Method(nameof(Exclaim))));
+				Assert.That(RefusedTarget(), Is.EqualTo("baseline!"));
+				var generation = GenerationState();
+				refuse = true;
+				Assert.Throws<NotSupportedException>(() => HarmonyLib.MethodBodyPatching.Rebuild(original));
+				Assert.That(GenerationState(), Is.EqualTo(generation), "Rejected exports must not change EncId, offsets, rows or ordinal.");
+				Assert.That(host.generations, Is.EqualTo(1));
+				Assert.That(RefusedTarget(), Is.EqualTo("baseline!"));
+				refuse = false;
+				HarmonyLib.MethodBodyPatching.Rebuild(original);
+				Assert.That(host.generations, Is.EqualTo(2));
+				Assert.That(RefusedTarget(), Is.EqualTo("baseline!"));
+				harmony.UnpatchAll(harmony.Id);
+				Assert.That(RefusedTarget(), Is.EqualTo("baseline"));
+			}
+			finally { refuse = false; harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
+		public void A_rejected_update_does_not_advance_heap_offsets_or_rows()
+		{
+			// Corelib is not editable, even when the test assembly supports hot reload.
+			var original = typeof(string).GetMethod(nameof(ToString), Type.EmptyTypes);
+			var delta = new DeltaEmitter(original.Module);
+			var generation = GenerationState(original.Module);
+			// Fat body, max stack 1, two instructions: ldarg.0; ret.
+			delta.UpdateBody(original, [0x03, 0x30, 0x01, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0x02, 0x2a]);
+			Assert.Throws<InvalidOperationException>(() => delta.Apply());
+			Assert.That(GenerationState(original.Module), Is.EqualTo(generation));
+		}
+
+		[Test]
+		public void A_closed_transpiler_body_runs_through_hot_reload()
+		{
+			var definition = Method(nameof(ClosedTranspiler));
+			var host = new HotReloadHost(method => method == definition);
+			var harmony = new Harmony("test.hotreload.closed.transpiler");
+			try
+			{
+				harmony.Patch(definition.MakeGenericMethod(typeof(int)), transpiler: new HarmonyMethod(Method(nameof(RelabelPlain))));
+				Assert.That(ClosedTranspiler<int>(), Is.EqualTo("patched"));
+				Assert.That(ClosedTranspiler<string>(), Is.EqualTo("plain"));
+				Assert.That(host.generations, Is.EqualTo(1));
+				harmony.UnpatchAll(harmony.Id);
+				Assert.That(ClosedTranspiler<int>(), Is.EqualTo("plain"));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
+		public void A_closed_prefix_can_skip_the_hot_reloaded_body()
+		{
+			var definition = Method(nameof(SkipTarget));
+			_ = new HotReloadHost(method => method == definition);
+			var harmony = new Harmony("test.hotreload.prefix.skip");
+			calls = 0;
+			try
+			{
+				harmony.Patch(definition.MakeGenericMethod(typeof(int)), prefix: new HarmonyMethod(Method(nameof(SkipInt))));
+				Assert.That(SkipTarget(7), Is.EqualTo(42));
+				Assert.That(calls, Is.Zero);
+				Assert.That(SkipTarget("kept"), Is.EqualTo("kept"));
+				Assert.That(calls, Is.EqualTo(1));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
+		[Test]
+		public void A_private_callback_in_another_assembly_obeys_runtime_access_checks()
+		{
+			var original = Method(nameof(OutsideCallbackTarget));
+			var host = new HotReloadHost(method => method == original);
+			var harmony = new Harmony("test.hotreload.access");
+			try
+			{
+				harmony.Patch(original, postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(TestLibrary.MethodBodyHostTargets), "AddTen")));
+				Assert.That(host.generations, Is.EqualTo(1), "The runtime accepts the metadata update before JIT access checks.");
+				Assert.Throws<MethodAccessException>(() => OutsideCallbackTarget());
+				harmony.UnpatchAll(harmony.Id);
+				Assert.That(OutsideCallbackTarget(), Is.EqualTo(1));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
 	}
 }
 #endif

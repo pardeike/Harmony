@@ -37,6 +37,11 @@ on:
         type: boolean
         default: true
         description: 'Whether to upload the test results'
+      hot_reload:
+        required: false
+        type: boolean
+        default: false
+        description: 'Require hot reload support in the test process'
       experimental:
         required: false
         type: boolean
@@ -97,6 +102,8 @@ jobs:
 
       - name: Test .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-execute-test
+        env:
+          DOTNET_MODIFIABLE_ASSEMBLIES: ${{ inputs.hot_reload && 'debug' || '' }}
         with:
           os: ${{inputs.os}}
           architecture: ${{inputs.architecture}}
@@ -105,5 +112,22 @@ jobs:
           target_framework_array: ${{inputs.target_framework_array}}
           build_configuration: ${{inputs.build_configuration}}
           manual_build: ${{inputs.manual_build}}
-          upload_tests: ${{inputs.upload_tests}}
+          upload_tests: ${{inputs.upload_tests && !inputs.hot_reload}}
           experimental: ${{inputs.experimental}}
+
+      - name: Separate hot reload reports
+        if: ${{always() && inputs.hot_reload && inputs.upload_tests}}
+        run: |
+          mkdir -p TestResults/hot-reload
+          mv TestResults/*.trx TestResults/hot-reload/
+        shell: bash
+
+      - name: Upload hot reload reports
+        if: ${{always() && inputs.hot_reload && inputs.upload_tests}}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-hot-reload-${{inputs.os}}-${{inputs.architecture}}-${{inputs.build_configuration}}
+          path: TestResults
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
