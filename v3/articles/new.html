@@ -123,7 +123,19 @@
 <h2 id="net-11-support">.NET 11 support</h2>
 <p>Harmony 3 adds .NET 11 support, verified with RC3. <a href="patching-edgecases.html#runtime-async-in-net-11">.NET 11 runtime async</a> remains unsupported and throws <code>NotSupportedException</code> when patched or reverse-patched. Ordinary <code>Task</code>-returning methods and compiler-generated async state machines remain supported, but patches on them do not reach callers compiled with runtime-async, see the <a href="patching-edgecases.html#runtime-async-in-net-11">edge cases</a>.</p>
 <h2 id="host-harmony-in-a-runtime">Host Harmony in a runtime</h2>
-<p>A runtime that can replace method bodies, such as the one in RimWorld 1.7, can install Harmony's patches itself. <code>MethodBodyPatching</code> registers an eligibility check, a body source, and an installer. The original method then runs the patched code without a detour, and a generic definition gets one body for all instantiations. Patch authors see no API change. Read <a href="hosting.html">how to host Harmony</a>.</p>
+<p>A runtime that can replace method bodies can install Harmony's patches itself. <code>MethodBodyPatching</code> registers an eligibility check, a baseline reader, and an installer. An accepted generic definition gets one body for all instantiations. Declined targets keep the detour. Read <a href="hosting.html">how to host Harmony</a>.</p>
+<p>The host contract includes these rules:</p>
+<ul>
+<li>Register all parts before Harmony pins a host-owned target. Late non-null registration throws. A failed host installation retains its selection without publishing candidate patch records.</li>
+<li>Installers must not call patch, unpatch, reverse-patch, or rebuild operations. Harmony rejects re-entry into the same target or generic family.</li>
+<li>Definition-wide bindings require a guaranteed assignment from the open source. Closed bindings and passthrough results validate closed types. Foreign generic parameters in member operands fail before installation.</li>
+<li>Directly constructed callbacks are rejected for targets installed through a definition. Register a generic callback definition, or use a factory to preserve fixed arguments.</li>
+<li>Generic family bridges reject function-pointer signatures. Reverse patches into host-owned generic targets are unsupported. Constructors installed through a generic family return null from <code>Patch()</code>.</li>
+<li>Rebuilding a definition uses its members' records when it has no record of its own. Successful ordinary installation supersedes an earlier reverse recipe.</li>
+<li>The importer accepts <code>KeyValuePair&lt;MemberInfo, bool&gt;</code> with <code>true</code> for self-instantiated generic members. It must preserve MemberRef/TypeSpec and MethodSpec semantics. Refused identity operands such as <code>ldtoken</code> cannot use forwarding stand-ins.</li>
+<li>Generated closed helpers reuse permanent stand-ins by original, helper site, and signature. Refused open generic helpers can use permanent images, but those images cannot reference collectible dependencies.</li>
+<li>Body export is unavailable in Harmony's <code>net35</code> and <code>netstandard2.0</code> builds. Generic helper generation requires collectible <code>AssemblyLoadContext</code> support.</li>
+</ul>
 <h2 id="earlier-harmony-2">Earlier: Harmony 2</h2>
 <p>The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.</p>
 <h4 id="new">New</h4>
