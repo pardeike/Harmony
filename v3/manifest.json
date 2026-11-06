@@ -838,6 +838,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/HarmonyLib.MethodBodyPatching.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HarmonyLib.MethodBodyPatching.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "HarmonyLib.MethodBodyPatching",
+      "Summary": "<p sourcefile=\"api/HarmonyLib.MethodBodyPatching.yml\" sourcestartlinenumber=\"1\">Connects Harmony's existing patch construction to an optional method-body source and installer.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/HarmonyLib.MethodDispatchType.yml",
       "output": {
         ".html": {
@@ -1109,6 +1123,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/execution.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/hosting.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/hosting.html"
         }
       },
       "version": ""

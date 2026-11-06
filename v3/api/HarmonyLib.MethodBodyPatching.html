@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Class MethodBodyPatching | Harmony 3 </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class MethodBodyPatching | Harmony 3 ">
+      
+      <meta name="description" content="Connects Harmony&#39;s existing patch construction to an optional method-body source and installer.">
+      <link rel="icon" href="../images/harmony-logo.png">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      <meta name="docfx:disablenewtab" content="true">
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+  </head>
+
+  <body class="tex2jax_ignore harmony" data-bs-theme="light" data-layout="" data-yaml-mime="ManagedReference">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/harmony-logo.png" alt="Harmony">
+            Harmony
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar"></div>
+            <form class="search" role="search" id="search">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input class="form-control" id="search-query" type="search" disabled placeholder="Search documentation" autocomplete="off" aria-label="Search documentation">
+            </form>
+          </div>
+          <details class="version-picker">
+            <summary>Harmony 3 <span aria-hidden="true">⌄</span></summary>
+            <div class="version-menu">
+              <a href="https://harmony.pardeike.net/v2/">Harmony 2.x <span>Stable</span></a>
+              <a href="../index.html" aria-current="true">Harmony <span>3</span></a>
+            </div>
+          </details>
+          <a class="github-button" href="https://github.com/pardeike/Harmony/tree/v3">GitHub</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Browse documentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <a class="toc-overview" href="../index.html">Overview</a>
+            <nav class="toc" id="toc" aria-label="Documentation"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list" aria-hidden="true"></i><span>Browse</span>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article id="main-content" tabindex="-1" data-uid="HarmonyLib.MethodBodyPatching">
+          <span id="_content"></span>
+          <span id="HarmonyLib_MethodBodyPatching_syntax" data-section-alias=".codewrapper"></span>
+
+
+
+  <h1 id="HarmonyLib_MethodBodyPatching" data-uid="HarmonyLib.MethodBodyPatching" class="text-break">
+Class MethodBodyPatching  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/MethodBodyPatching.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="HarmonyLib.html">HarmonyLib</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>0Harmony.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Connects Harmony's existing patch construction to an optional method-body source and installer.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class MethodBodyPatching</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">MethodBodyPatching</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+  <h2 id="HarmonyLib_MethodBodyPatching_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>A host registers each part once, during its initialization and before the first patch operation. A part that is not registered keeps Harmony's default.
+<a class="xref" href="HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetEligibility_System_Func_System_Reflection_MethodBase_System_Boolean__">SetEligibility(Func&lt;MethodBase, bool&gt;)</a> selects the methods the host owns. Without it the other parts have no effect.
+The host owns discovery, installation and recovery. Harmony never retries a failed installation through another mechanism. Unpatching installs a rebuilt replacement.
+Existing targets keep their selected installation mechanism. Only Harmony copies implementing this protocol can cooperate on host-owned targets.
+The contract addresses a runtime that replaces a method's IL body through tokens of the method's own module, with Harmony as one rewriter among others.
+A host reads the baseline that excludes its own installed body, imports values into that module, and installs under Harmony's patch lock.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="HarmonyLib_MethodBodyPatching_Instantiations_" data-uid="HarmonyLib.MethodBodyPatching.Instantiations*"></a>
+
+  <h3 id="HarmonyLib_MethodBodyPatching_Instantiations_System_Reflection_MethodBase_" data-uid="HarmonyLib.MethodBodyPatching.Instantiations(System.Reflection.MethodBase)">
+  Instantiations(MethodBase)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/MethodBodyPatching.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists the closed instantiations that install through a generic definition, including one whose installation is in progress.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;MethodBase&gt; Instantiations(MethodBase definition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>definition</code> <span class="xref">MethodBase</span></dt>
+    <dd><p>A generic definition the host owns.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">MethodBase</span>&gt;</dt>
+    <dd><p>The instantiations pinned to the definition's installer. Instantiations that Harmony's ordinary detour holds are not included.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_MethodBodyPatching_Instantiations_System_Reflection_MethodBase__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>An installer can compile each of them after it writes the definition's body.</p>
+</div>
+
+
+
+
+  <a id="HarmonyLib_MethodBodyPatching_Rebuild_" data-uid="HarmonyLib.MethodBodyPatching.Rebuild*"></a>
+
+  <h3 id="HarmonyLib_MethodBodyPatching_Rebuild_System_Reflection_MethodBase_" data-uid="HarmonyLib.MethodBodyPatching.Rebuild(System.Reflection.MethodBase)">
+  Rebuild(MethodBase)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/MethodBodyPatching.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rebuilds the installed body of a target from Harmony's current state and installs it again through the target's pinned installer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Rebuild(MethodBase method)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>method</code> <span class="xref">MethodBase</span></dt>
+    <dd><p>A patched method, or the stand-in of a reverse patch.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_MethodBodyPatching_Rebuild_System_Reflection_MethodBase__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A host calls this after it changed the target's baseline body. Harmony holds its patch lock while the installer runs.
+A reverse patch rebuilds from the recipe recorded by the Harmony copy that installed it. The stand-in of another copy's reverse patch is refused.</p>
+</div>
+
+
+
+
+  <a id="HarmonyLib_MethodBodyPatching_SetBodySource_" data-uid="HarmonyLib.MethodBodyPatching.SetBodySource*"></a>
+
+  <h3 id="HarmonyLib_MethodBodyPatching_SetBodySource_System_Func_System_Reflection_MethodBase_System_Reflection_MethodBody__" data-uid="HarmonyLib.MethodBodyPatching.SetBodySource(System.Func{System.Reflection.MethodBase,System.Reflection.MethodBody})">
+  SetBodySource(Func&lt;MethodBase, MethodBody&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/MethodBodyPatching.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers the reader of an owned method's baseline body.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetBodySource(Func&lt;MethodBase, MethodBody&gt; readBody)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>readBody</code> <span class="xref">Func</span>&lt;<span class="xref">MethodBase</span>, <span class="xref">MethodBody</span>&gt;</dt>
+    <dd><p>Reads the latest baseline body, excluding the installed replacement. Tokens use the target module. Null keeps reflection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_MethodBodyPatching_SetBodySource_System_Func_System_Reflection_MethodBase_System_Reflection_MethodBody___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The reader can receive a constructed view of an owned definition, with that view's generic context.</p>
+</div>
+
+
+
+
+  <a id="HarmonyLib_MethodBodyPatching_SetEligibility_" data-uid="HarmonyLib.MethodBodyPatching.SetEligibility*"></a>
+
+  <h3 id="HarmonyLib_MethodBodyPatching_SetEligibility_System_Func_System_Reflection_MethodBase_System_Boolean__" data-uid="HarmonyLib.MethodBodyPatching.SetEligibility(System.Func{System.Reflection.MethodBase,System.Boolean})">
+  SetEligibility(Func&lt;MethodBase, bool&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/MethodBodyPatching.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers the check that selects the methods the host owns.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetEligibility(Func&lt;MethodBase, bool&gt; accepts)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accepts</code> <span class="xref">Func</span>&lt;<span class="xref">MethodBase</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>A side-effect-free eligibility check. False retains Harmony's ordinary mechanisms. Null keeps the default: the host owns no method.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_MethodBodyPatching_SetEligibility_System_Func_System_Reflection_MethodBase_System_Boolean___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>With an installer, a fully open generic definition selects definition-wide installation.
+A closed instantiation of a definition the host accepts installs through that definition. The check is asked about the definition, not the instantiation.
+Its prefix, postfix and finalizer patches run under a type guard in the definition's body.
+With a transpiler or an Infix patch, the instantiation gets a closed body of its own, built from the definition's patches and its own, which the definition's body enters under that guard.
+A definition cannot join instantiations that Harmony's ordinary detour already holds.
+Without an installer, generic targets keep Harmony's ordinary behavior.</p>
+</div>
+
+
+
+
+  <a id="HarmonyLib_MethodBodyPatching_SetInstaller_" data-uid="HarmonyLib.MethodBodyPatching.SetInstaller*"></a>
+
+  <h3 id="HarmonyLib_MethodBodyPatching_SetInstaller_System_Action_System_Reflection_MethodBase_System_Reflection_MethodInfo_System_Func_System_Func_System_Object_System_Int32__System_Byte_____" data-uid="HarmonyLib.MethodBodyPatching.SetInstaller(System.Action{System.Reflection.MethodBase,System.Reflection.MethodInfo,System.Func{System.Func{System.Object,System.Int32},System.Byte[]}})">
+  SetInstaller(Action&lt;MethodBase, MethodInfo, Func&lt;Func&lt;object, int&gt;, byte[]&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/MethodBodyPatching.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers the installer of an owned method's replacement.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetInstaller(Action&lt;MethodBase, MethodInfo, Func&lt;Func&lt;object, int&gt;, byte[]&gt;&gt; install)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>install</code> <span class="xref">Action</span>&lt;<span class="xref">MethodBase</span>, <span class="xref">MethodInfo</span>, <span class="xref">Func</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">object</span>, <span class="xref">int</span>&gt;, <span class="xref">byte</span>[]&gt;&gt;</dt>
+    <dd><p>Installs the replacement or its complete CLI body. The third argument writes the body using a host token importer. Null keeps Harmony's ordinary detour.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="HarmonyLib_MethodBodyPatching_SetInstaller_System_Action_System_Reflection_MethodBase_System_Reflection_MethodInfo_System_Func_System_Func_System_Object_System_Int32__System_Byte______remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Harmony holds its patch lock while install runs. Code inside install must not wait for another thread that uses Harmony.
+If a failed installation leaves an unknown state, the installer must refuse further updates to that target.
+The replacement is a callable copy of the patched body. For a definition-wide target it is null: an open generic definition has no callable copy, so the installer writes the body.
+The body writer accepts an importer for Type, MethodBase, FieldInfo, string and standalone signature byte[] values.
+MethodBase values can be DynamicMethod instances. The host owns their token import and lifetime.
+The importer returns zero for a value it cannot import. For a static method without open generic parameters, including a DynamicMethod, Harmony then imports a generated stand-in with the same signature.
+The stand-in is collectible. A module that cannot bind collectible assemblies refuses it too and receives a stand-in that lives for the process.
+Any other refusal fails the installation before anything is installed.
+A KeyValuePair&lt;Type, bool&gt; with true requests the generic definition instantiated over its own type parameters.
+It returns a complete CLI body with its header, code and exception sections. Use it synchronously during installation.</p>
+</div>
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/MethodBodyPatching.cs" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix" aria-label="On this page"></nav>
+        <div class="version-note">Harmony 3<p>For Harmony 2, read the <a href="https://harmony.pardeike.net/v2/">2.x documentation</a>.</p></div>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>By Andreas Pardeike · <a href="https://github.com/pardeike/Harmony/blob/v3/LICENSE">MIT license</a></span><nav aria-label="Footer"><a href="https://harmony.pardeike.net/v2/">2.x docs</a><a href="https://harmony.pardeike.net/v3/">3.x docs</a><a href="https://discord.gg/xXgghXR">Discord</a><a href="https://github.com/pardeike/Harmony/issues">Report an issue</a></nav>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

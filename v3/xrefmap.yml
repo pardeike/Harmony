@@ -10544,6 +10544,81 @@ references:
   commentId: Overload:HarmonyLib.MethodBaseExtensions.HasMethodBody
   fullName: HarmonyLib.MethodBaseExtensions.HasMethodBody
   nameWithType: MethodBaseExtensions.HasMethodBody
+- uid: HarmonyLib.MethodBodyPatching
+  name: MethodBodyPatching
+  href: api/HarmonyLib.MethodBodyPatching.html
+  commentId: T:HarmonyLib.MethodBodyPatching
+  fullName: HarmonyLib.MethodBodyPatching
+  nameWithType: MethodBodyPatching
+- uid: HarmonyLib.MethodBodyPatching.Instantiations(System.Reflection.MethodBase)
+  name: Instantiations(MethodBase)
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_Instantiations_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.MethodBodyPatching.Instantiations(System.Reflection.MethodBase)
+  fullName: HarmonyLib.MethodBodyPatching.Instantiations(System.Reflection.MethodBase)
+  nameWithType: MethodBodyPatching.Instantiations(MethodBase)
+- uid: HarmonyLib.MethodBodyPatching.Instantiations*
+  name: Instantiations
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_Instantiations_
+  commentId: Overload:HarmonyLib.MethodBodyPatching.Instantiations
+  fullName: HarmonyLib.MethodBodyPatching.Instantiations
+  nameWithType: MethodBodyPatching.Instantiations
+- uid: HarmonyLib.MethodBodyPatching.Rebuild(System.Reflection.MethodBase)
+  name: Rebuild(MethodBase)
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_Rebuild_System_Reflection_MethodBase_
+  commentId: M:HarmonyLib.MethodBodyPatching.Rebuild(System.Reflection.MethodBase)
+  fullName: HarmonyLib.MethodBodyPatching.Rebuild(System.Reflection.MethodBase)
+  nameWithType: MethodBodyPatching.Rebuild(MethodBase)
+- uid: HarmonyLib.MethodBodyPatching.Rebuild*
+  name: Rebuild
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_Rebuild_
+  commentId: Overload:HarmonyLib.MethodBodyPatching.Rebuild
+  fullName: HarmonyLib.MethodBodyPatching.Rebuild
+  nameWithType: MethodBodyPatching.Rebuild
+- uid: HarmonyLib.MethodBodyPatching.SetBodySource(System.Func{System.Reflection.MethodBase,System.Reflection.MethodBody})
+  name: SetBodySource(Func<MethodBase, MethodBody>)
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetBodySource_System_Func_System_Reflection_MethodBase_System_Reflection_MethodBody__
+  commentId: M:HarmonyLib.MethodBodyPatching.SetBodySource(System.Func{System.Reflection.MethodBase,System.Reflection.MethodBody})
+  name.vb: SetBodySource(Func(Of MethodBase, MethodBody))
+  fullName: HarmonyLib.MethodBodyPatching.SetBodySource(System.Func<System.Reflection.MethodBase, System.Reflection.MethodBody>)
+  fullName.vb: HarmonyLib.MethodBodyPatching.SetBodySource(System.Func(Of System.Reflection.MethodBase, System.Reflection.MethodBody))
+  nameWithType: MethodBodyPatching.SetBodySource(Func<MethodBase, MethodBody>)
+  nameWithType.vb: MethodBodyPatching.SetBodySource(Func(Of MethodBase, MethodBody))
+- uid: HarmonyLib.MethodBodyPatching.SetBodySource*
+  name: SetBodySource
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetBodySource_
+  commentId: Overload:HarmonyLib.MethodBodyPatching.SetBodySource
+  fullName: HarmonyLib.MethodBodyPatching.SetBodySource
+  nameWithType: MethodBodyPatching.SetBodySource
+- uid: HarmonyLib.MethodBodyPatching.SetEligibility(System.Func{System.Reflection.MethodBase,System.Boolean})
+  name: SetEligibility(Func<MethodBase, bool>)
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetEligibility_System_Func_System_Reflection_MethodBase_System_Boolean__
+  commentId: M:HarmonyLib.MethodBodyPatching.SetEligibility(System.Func{System.Reflection.MethodBase,System.Boolean})
+  name.vb: SetEligibility(Func(Of MethodBase, Boolean))
+  fullName: HarmonyLib.MethodBodyPatching.SetEligibility(System.Func<System.Reflection.MethodBase, bool>)
+  fullName.vb: HarmonyLib.MethodBodyPatching.SetEligibility(System.Func(Of System.Reflection.MethodBase, Boolean))
+  nameWithType: MethodBodyPatching.SetEligibility(Func<MethodBase, bool>)
+  nameWithType.vb: MethodBodyPatching.SetEligibility(Func(Of MethodBase, Boolean))
+- uid: HarmonyLib.MethodBodyPatching.SetEligibility*
+  name: SetEligibility
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetEligibility_
+  commentId: Overload:HarmonyLib.MethodBodyPatching.SetEligibility
+  fullName: HarmonyLib.MethodBodyPatching.SetEligibility
+  nameWithType: MethodBodyPatching.SetEligibility
+- uid: HarmonyLib.MethodBodyPatching.SetInstaller(System.Action{System.Reflection.MethodBase,System.Reflection.MethodInfo,System.Func{System.Func{System.Object,System.Int32},System.Byte[]}})
+  name: SetInstaller(Action<MethodBase, MethodInfo, Func<Func<object, int>, byte[]>>)
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetInstaller_System_Action_System_Reflection_MethodBase_System_Reflection_MethodInfo_System_Func_System_Func_System_Object_System_Int32__System_Byte_____
+  commentId: M:HarmonyLib.MethodBodyPatching.SetInstaller(System.Action{System.Reflection.MethodBase,System.Reflection.MethodInfo,System.Func{System.Func{System.Object,System.Int32},System.Byte[]}})
+  name.vb: SetInstaller(Action(Of MethodBase, MethodInfo, Func(Of Func(Of Object, Integer), Byte())))
+  fullName: HarmonyLib.MethodBodyPatching.SetInstaller(System.Action<System.Reflection.MethodBase, System.Reflection.MethodInfo, System.Func<System.Func<object, int>, byte[]>>)
+  fullName.vb: HarmonyLib.MethodBodyPatching.SetInstaller(System.Action(Of System.Reflection.MethodBase, System.Reflection.MethodInfo, System.Func(Of System.Func(Of Object, Integer), Byte())))
+  nameWithType: MethodBodyPatching.SetInstaller(Action<MethodBase, MethodInfo, Func<Func<object, int>, byte[]>>)
+  nameWithType.vb: MethodBodyPatching.SetInstaller(Action(Of MethodBase, MethodInfo, Func(Of Func(Of Object, Integer), Byte())))
+- uid: HarmonyLib.MethodBodyPatching.SetInstaller*
+  name: SetInstaller
+  href: api/HarmonyLib.MethodBodyPatching.html#HarmonyLib_MethodBodyPatching_SetInstaller_
+  commentId: Overload:HarmonyLib.MethodBodyPatching.SetInstaller
+  fullName: HarmonyLib.MethodBodyPatching.SetInstaller
+  nameWithType: MethodBodyPatching.SetInstaller
 - uid: HarmonyLib.MethodDispatchType
   name: MethodDispatchType
   href: api/HarmonyLib.MethodDispatchType.html

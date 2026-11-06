@@ -1099,7 +1099,7 @@ Class PatchProcessor  <a class="header-action link-secondary" title="View source
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">MethodInfo</span></dt>
-    <dd><p>The generated replacement method</p>
+    <dd><p>The generated replacement method. An open generic definition installed by a registered <a class="xref" href="HarmonyLib.MethodBodyPatching.html">MethodBodyPatching</a> installer has no callable copy: the definition itself is returned, or null for a constructor.</p>
 </dd>
   </dl>
 

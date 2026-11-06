@@ -122,6 +122,8 @@
 <p>Read about <a href="patching-infix.html#generated-bodies-and-captured-variables">generated bodies</a> and <a href="patching-infix.html#keep-patch-owned-values-across-await-and-yield">persistent state</a>, including the supported compiler protocols and cleanup rules.</p>
 <h2 id="net-11-support">.NET 11 support</h2>
 <p>Harmony 3 adds .NET 11 support, verified with RC3. <a href="patching-edgecases.html#runtime-async-in-net-11">.NET 11 runtime async</a> remains unsupported and throws <code>NotSupportedException</code> when patched or reverse-patched. Ordinary <code>Task</code>-returning methods and compiler-generated async state machines remain supported, but patches on them do not reach callers compiled with runtime-async, see the <a href="patching-edgecases.html#runtime-async-in-net-11">edge cases</a>.</p>
+<h2 id="host-harmony-in-a-runtime">Host Harmony in a runtime</h2>
+<p>A runtime that can replace method bodies, such as the one in RimWorld 1.7, can install Harmony's patches itself. <code>MethodBodyPatching</code> registers an eligibility check, a body source, and an installer. The original method then runs the patched code without a detour, and a generic definition gets one body for all instantiations. Patch authors see no API change. Read <a href="hosting.html">how to host Harmony</a>.</p>
 <h2 id="earlier-harmony-2">Earlier: Harmony 2</h2>
 <p>The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.</p>
 <h4 id="new">New</h4>
