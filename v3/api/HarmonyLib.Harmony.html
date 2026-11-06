@@ -241,6 +241,46 @@ Class Harmony  <a class="header-action link-secondary" title="View source" href=
 
 
 
+  <a id="HarmonyLib_Harmony_ValidateStack_" data-uid="HarmonyLib.Harmony.ValidateStack*"></a>
+
+  <h3 id="HarmonyLib_Harmony_ValidateStack" data-uid="HarmonyLib.Harmony.ValidateStack">
+  ValidateStack
+  <a class="header-action link-secondary" title="View source" href="https://github.com/pardeike/Harmony/blob/v3/Harmony/Public/Harmony.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether Harmony rejects a method body in which the paths that reach an instruction have different stack depths, or an instruction pops more than the stack holds</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool ValidateStack { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True by default</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="HarmonyLib_Harmony_ValidateStack_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>ECMA-335 forbids both, but some runtimes accept such IL. Mono accepts a depth difference at a <code>leave</code>, and other runtimes accept more.
+Set this to false to leave the decision to the runtime. Harmony then sizes the stack for the deepest path.</p>
+   <p>The environment variable HARMONY_VALIDATE_STACK overrides this property when it is set to 1, 0, true or false.</p>
+   <p>Only Harmony's own method body writer checks the stack. It runs on .NET Core and .NET 5 or later. On .NET Framework and Mono the runtime checks the IL.</p>
+   <p>A jump to a label that no instruction carries is always rejected, because that jump has no target.</p>
+</div>
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 

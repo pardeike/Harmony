@@ -141,6 +141,8 @@
 <p><code>AccessTools.IsNetCoreRuntime</code> is now true on .NET Core 3.x and on .NET 5 or later. It was false on all of them. <code>AccessTools.IsNetFrameworkRuntime</code> is no longer true on .NET Core 3.x.</p>
 <h2 id="match-property-access">Match property access</h2>
 <p><code>CodeMatch.GetsProperty</code> and <code>CodeMatch.SetsProperty</code> match calls to a property's getter or setter. They accept a <code>PropertyInfo</code> or a lambda such as <code>() =&gt; default(MyClass).MyProperty</code>. <code>SymbolExtensions.GetPropertyInfo</code> returns the property from such a lambda. See <a href="patching-transpiler-matcher.html#match-fields-and-properties">CodeMatcher</a>.</p>
+<h2 id="stack-validation">Stack validation</h2>
+<p>Harmony rejects a patched method if the paths that reach an instruction have different stack depths. For runtimes that accept such IL, <code>Harmony.ValidateStack</code> and the environment variable <code>HARMONY_VALIDATE_STACK</code> turn this check off. See <a href="patching-transpiler-codes.html#stack-depth">stack depth</a>.</p>
 <h2 id="earlier-harmony-2">Earlier: Harmony 2</h2>
 <p>The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.</p>
 <h4 id="new">New</h4>

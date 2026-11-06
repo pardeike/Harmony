@@ -8556,6 +8556,18 @@ references:
   commentId: Overload:HarmonyLib.Harmony.UnpatchCategory
   fullName: HarmonyLib.Harmony.UnpatchCategory
   nameWithType: Harmony.UnpatchCategory
+- uid: HarmonyLib.Harmony.ValidateStack
+  name: ValidateStack
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ValidateStack
+  commentId: P:HarmonyLib.Harmony.ValidateStack
+  fullName: HarmonyLib.Harmony.ValidateStack
+  nameWithType: Harmony.ValidateStack
+- uid: HarmonyLib.Harmony.ValidateStack*
+  name: ValidateStack
+  href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_ValidateStack_
+  commentId: Overload:HarmonyLib.Harmony.ValidateStack
+  fullName: HarmonyLib.Harmony.ValidateStack
+  nameWithType: Harmony.ValidateStack
 - uid: HarmonyLib.Harmony.VersionInfo(System.Version@)
   name: VersionInfo(out Version)
   href: api/HarmonyLib.Harmony.html#HarmonyLib_Harmony_VersionInfo_System_Version__
