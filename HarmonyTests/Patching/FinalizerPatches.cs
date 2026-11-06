@@ -17,7 +17,7 @@ namespace HarmonyLibTests.Patching
 		public void Test_FinalizerPatchOrder()
 		{
 			var harmony = new Harmony("test");
-			harmony.PatchCategory("finalizer-test");
+			harmony.PatchCategory(typeof(FinalizerPatches1).Assembly, "finalizer-test");
 			try
 			{
 				progress = new();

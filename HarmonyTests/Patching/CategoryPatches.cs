@@ -11,7 +11,7 @@ namespace HarmonyLibTests.Patching
 		public void Test_HarmonyPatchAll()
 		{
 			var harmony = new Harmony("test");
-			harmony.PatchCategory("CategoryA");
+			harmony.PatchCategory(typeof(CategoryPatches).Assembly, "CategoryA");
 
 			Assert.AreEqual(2, Get1());
 			Assert.AreEqual(false, GetTrue());
@@ -19,21 +19,21 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(18, Multiply(3, 6));
 
 
-			harmony.PatchCategory("CategoryB");
+			harmony.PatchCategory(typeof(CategoryPatches).Assembly, "CategoryB");
 
 			Assert.AreEqual(2, Get1());
 			Assert.AreEqual(false, GetTrue());
 			Assert.AreEqual("Hello World!", GetHelloWorld());
 			Assert.AreEqual(36, Multiply(3, 6));
 
-			harmony.UnpatchCategory("CategoryA");
+			harmony.UnpatchCategory(typeof(CategoryPatches).Assembly, "CategoryA");
 
 			Assert.AreEqual(1, Get1());
 			Assert.AreEqual(true, GetTrue());
 			Assert.AreEqual("Hello World!", GetHelloWorld());
 			Assert.AreEqual(36, Multiply(3, 6));
 
-			harmony.UnpatchCategory("CategoryB");
+			harmony.UnpatchCategory(typeof(CategoryPatches).Assembly, "CategoryB");
 
 			Assert.AreEqual(1, Get1());
 			Assert.AreEqual(true, GetTrue());
