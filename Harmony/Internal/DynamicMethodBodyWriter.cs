@@ -44,7 +44,7 @@ namespace HarmonyLib
 			if (fromOriginal) originalParameters.CopyTo(parameters, 0);
 			else
 				foreach (var parameter in definition.Parameters) parameters[parameter.Index + offset] = SignatureType(parameter.ParameterType);
-			method = new DynamicMethod(patch.Name ?? definition.Name, fromOriginal ? AccessTools.GetReturnedType(original) : SignatureType(definition.ReturnType), parameters,
+			method = new DynamicMethod(patch.Name ?? definition.Name, fromOriginal ? Native(AccessTools.GetReturnedType(original)) : SignatureType(definition.ReturnType), parameters,
 				patch.OriginalMethod?.Module ?? typeof(DynamicMethodBodyWriter).Module, true)
 			{ InitLocals = definition.Body.InitLocals };
 			foreach (var parameter in definition.Parameters)
@@ -56,9 +56,19 @@ namespace HarmonyLib
 		static Type[] SignatureParameters(MethodBase original)
 		{
 			if (original is null) return null;
-			var types = original.GetParameters().Select(parameter => parameter.ParameterType).ToList();
+			var types = original.GetParameters().Select(parameter => Native(parameter.ParameterType)).ToList();
 			if (!original.IsStatic) types.Insert(0, original.DeclaringType.IsValueType ? original.DeclaringType.MakeByRefType() : original.DeclaringType);
 			return [.. types];
+		}
+
+		// A dynamic signature cannot hold a function pointer type on every runtime. A native int has the same size and GC tracking.
+		static readonly PropertyInfo isFunctionPointer = typeof(Type).GetProperty("IsFunctionPointer");
+		static Type Native(Type type)
+		{
+			if (isFunctionPointer is not null && (bool)isFunctionPointer.GetValue(type, null)) return typeof(IntPtr);
+			if (type.IsByRef) return Native(type.GetElementType()).MakeByRefType();
+			if (type.IsPointer) return Native(type.GetElementType()).MakePointerType();
+			return type;
 		}
 
 		// Reflection has no function pointer type to resolve to. A native int has the same calling convention and GC tracking.
