@@ -42,6 +42,8 @@ if ($Framework) {
 }
 
 . "$PSScriptRoot/../scripts/Test-Frameworks.ps1"
+# These regressions fail frameworks on purpose. Their per-framework warnings are expected and would only add noise to the CI log.
+$WarningPreference = 'SilentlyContinue'
 $testScript = $PSCommandPath
 $pwsh = (Get-Process -Id $PID).Path
 [string[]]$pwshArguments = if ([System.IO.Path]::GetFileNameWithoutExtension($pwsh) -eq 'dotnet') { @(Join-Path $PSHOME 'pwsh.dll') } else { @() }
