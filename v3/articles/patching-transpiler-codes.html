@@ -135,6 +135,7 @@
 <p>Existing local operands can be numeric indices or <code>LocalBuilder</code> objects. Handle both. To add a local, call <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.declarelocal">ILGenerator.DeclareLocal</a>; to reuse one, copy its existing operand.</p>
 <h2 id="labels">Labels</h2>
 <p>Jumps use a <a href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator.definelabel">Label</a> operand. The destination instruction holds that label in its <code>labels</code> list. To add a jump, call <code>ILGenerator.DefineLabel()</code>, attach the label to the destination, and use it as the jump's operand.</p>
+<p>If a jump uses a label that no returned instruction carries, patching throws <code>InvalidProgramException</code> and names the transpilers. This happens, for example, when the instruction meant to receive the label is never found because the game's IL changed.</p>
 <h2 id="trycatch-boundaries">Try/catch boundaries</h2>
 <p>An instruction's <code>blocks</code> list marks exception boundaries, including filters. Harmony builds the exception metadata from these markers. When moving or inserting code, preserve boundary order and keep handler-entry labels on their handler instructions.</p>
 <h2 id="convenience-methods">Convenience methods</h2>
