@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace HarmonyLib
 {
-	/// <summary>A helper class to retrieve reflection info for non-private methods and fields</summary>
+	/// <summary>A helper class to retrieve reflection info for non-private methods, fields and properties</summary>
 	/// 
 	public static class SymbolExtensions
 	{
@@ -64,16 +64,42 @@ namespace HarmonyLib
 		///
 		public static FieldInfo GetFieldInfo(LambdaExpression expression)
 		{
+			if (AccessedMember(expression) is FieldInfo field)
+				return field;
+			throw new ArgumentException("Invalid Expression. Expression should consist of a field access only.", nameof(expression));
+		}
+
+		/// <summary>Given a lambda expression that reads a property, returns the property info</summary>
+		/// <typeparam name="T">The generic property type</typeparam>
+		/// <param name="expression">The lambda expression reading the property, for example <c>() => default(MyClass).MyProperty</c></param>
+		/// <returns>The property in the lambda expression</returns>
+		/// <exception cref="ArgumentNullException">The expression is null</exception>
+		/// <exception cref="ArgumentException">The expression does not read a property. Indexers are not supported.</exception>
+		///
+		public static PropertyInfo GetPropertyInfo<T>(Expression<Func<T>> expression) => GetPropertyInfo((LambdaExpression)expression);
+
+		/// <summary>Given a lambda expression that reads a property, returns the property info</summary>
+		/// <param name="expression">The lambda expression reading the property</param>
+		/// <returns>The property in the lambda expression</returns>
+		/// <exception cref="ArgumentNullException">The expression is null</exception>
+		/// <exception cref="ArgumentException">The expression does not read a property. Indexers are not supported.</exception>
+		///
+		public static PropertyInfo GetPropertyInfo(LambdaExpression expression)
+		{
+			if (AccessedMember(expression) is PropertyInfo property)
+				return property;
+			throw new ArgumentException("Invalid Expression. Expression should consist of a property access only.", nameof(expression));
+		}
+
+		static MemberInfo AccessedMember(LambdaExpression expression)
+		{
 			if (expression is null)
 				throw new ArgumentNullException(nameof(expression));
 
 			var body = expression.Body;
 			while (body is UnaryExpression { NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked } unaryExpression)
 				body = unaryExpression.Operand;
-
-			if (body is MemberExpression memberExpression && memberExpression.Member is FieldInfo field)
-				return field;
-			throw new ArgumentException("Invalid Expression. Expression should consist of a field access only.", nameof(expression));
+			return (body as MemberExpression)?.Member;
 		}
 	}
 }

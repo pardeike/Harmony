@@ -264,6 +264,58 @@ namespace HarmonyLib
 		///
 		public static CodeMatch StoresField<T>(Expression<Func<T>> expression) => StoresField(SymbolExtensions.GetFieldInfo(expression));
 
+		/// <summary>Tests if the code instruction calls the getter of a property</summary>
+		/// <param name="property">The property</param>
+		/// <returns>A new code match</returns>
+		/// <exception cref="ArgumentNullException">The property is null</exception>
+		/// <exception cref="ArgumentException">The property has no getter</exception>
+		/// <remarks>The match compares the called method with the getter, like <see cref="Calls(MethodInfo)"/>.
+		/// C# code calls an overridden property through the getter of its base declaration.
+		/// To match those calls, pass the base property or use the expression overload.</remarks>
+		///
+		public static CodeMatch GetsProperty(PropertyInfo property) => Calls(PropertyAccessor(property, getter: true));
+
+		/// <summary>Tests if the code instruction calls the getter of a property</summary>
+		/// <typeparam name="T">The property type</typeparam>
+		/// <param name="expression">The lambda expression reading the property, for example <c>() => default(MyClass).MyProperty</c></param>
+		/// <returns>A new code match</returns>
+		/// <exception cref="ArgumentNullException">The expression is null</exception>
+		/// <exception cref="ArgumentException">The expression does not read a property, or the property has no getter</exception>
+		///
+		public static CodeMatch GetsProperty<T>(Expression<Func<T>> expression) => GetsProperty(SymbolExtensions.GetPropertyInfo(expression));
+
+		/// <summary>Tests if the code instruction calls the setter of a property</summary>
+		/// <param name="property">The property</param>
+		/// <returns>A new code match</returns>
+		/// <exception cref="ArgumentNullException">The property is null</exception>
+		/// <exception cref="ArgumentException">The property has no setter</exception>
+		/// <remarks>The match compares the called method with the setter, like <see cref="Calls(MethodInfo)"/>.
+		/// C# code calls an overridden property through the setter of its base declaration.
+		/// To match those calls, pass the base property or use the expression overload.</remarks>
+		///
+		public static CodeMatch SetsProperty(PropertyInfo property) => Calls(PropertyAccessor(property, getter: false));
+
+		/// <summary>Tests if the code instruction calls the setter of a property</summary>
+		/// <typeparam name="T">The property type</typeparam>
+		/// <param name="expression">The lambda expression reading the property, for example <c>() => default(MyClass).MyProperty</c>.
+		/// C# expression trees cannot contain assignments, so the expression only names the property.</param>
+		/// <returns>A new code match</returns>
+		/// <exception cref="ArgumentNullException">The expression is null</exception>
+		/// <exception cref="ArgumentException">The expression does not read a property, or the property has no setter</exception>
+		///
+		public static CodeMatch SetsProperty<T>(Expression<Func<T>> expression) => SetsProperty(SymbolExtensions.GetPropertyInfo(expression));
+
+		static MethodInfo PropertyAccessor(PropertyInfo property, bool getter)
+		{
+			if (property is null)
+				throw new ArgumentNullException(nameof(property));
+			var accessor = getter ? property.GetGetMethod(true) : property.GetSetMethod(true);
+			if (accessor is null)
+				throw new ArgumentException($"Property {property.DeclaringType?.FullName}.{property.Name} has no {(getter ? "getter" : "setter")}", nameof(property));
+			// Instruction operands come from the declaring type. An accessor found through a derived type would not compare equal.
+			return accessor.GetDeclaredMember();
+		}
+
 		/// <summary>Creates a code match that calls a method</summary>
 		/// <param name="expression">The lambda expression using the method</param>
 		/// <returns>A new code match</returns>

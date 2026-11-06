@@ -43,6 +43,10 @@ The host contract includes these rules:
 
 `AccessTools.IsNetCoreRuntime` is now true on .NET Core 3.x and on .NET 5 or later. It was false on all of them. `AccessTools.IsNetFrameworkRuntime` is no longer true on .NET Core 3.x.
 
+## Match property access
+
+`CodeMatch.GetsProperty` and `CodeMatch.SetsProperty` match calls to a property's getter or setter. They accept a `PropertyInfo` or a lambda such as `() => default(MyClass).MyProperty`. `SymbolExtensions.GetPropertyInfo` returns the property from such a lambda. See [CodeMatcher](patching-transpiler-matcher.md#match-fields-and-properties).
+
 ## Earlier: Harmony 2
 
 The following is the original overview of changes from 1.2.0.1 to Harmony 2, retained for reference.

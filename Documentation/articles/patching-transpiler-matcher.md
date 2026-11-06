@@ -26,4 +26,16 @@ For several matching calls, use `Repeat()`. It passes the current matcher to you
 
 ![note] `Repeat()` repeats `Match...()` searches, not `Search...()`. If your action needs another `Match...()`, use a clone so you do not replace the pattern being repeated.
 
+## Match fields and properties
+
+`CodeMatch.LoadsField` and `CodeMatch.StoresField` match field access. `CodeMatch.GetsProperty` and `CodeMatch.SetsProperty` match calls to a property's getter or setter. Each accepts the member itself or a lambda that names it:
+
+```csharp
+CodeMatch.LoadsField(() => default(Character).health)
+CodeMatch.GetsProperty(() => default(Character).Health)
+CodeMatch.SetsProperty(typeof(Character).Property("Health"))
+```
+
+The lambda only names the member and never runs. C# compiles a call to an overridden property as a call to the base declaration's accessor. To match it, pass the base type's property or use a lambda.
+
 [note]: ../images/note.png

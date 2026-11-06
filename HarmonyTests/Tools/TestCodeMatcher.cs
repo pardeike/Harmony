@@ -24,6 +24,8 @@ namespace HarmonyLibTests.Tools
 		static FieldInfo fStatic = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.StaticField));
 		static FieldInfo fOtherStatic = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.OtherStaticField));
 		static FieldInfo fInstance = typeof(CodeMatcherClass).GetField(nameof(CodeMatcherClass.InstanceField));
+		static PropertyInfo pStatic = typeof(CodeMatcherClass).GetProperty(nameof(CodeMatcherClass.StaticProperty));
+		static PropertyInfo pInstance = typeof(CodeMatcherClass).GetProperty(nameof(CodeMatcherClass.InstanceProperty));
 
 		static Test_CodeMatcher()
 		{
@@ -186,6 +188,95 @@ namespace HarmonyLibTests.Tools
 			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.LoadsField(null).Matches([], new CodeInstruction(OpCodes.Ldsfld, fStatic)));
 			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.LoadsField(null, true).Matches([], new CodeInstruction(OpCodes.Ldsflda, fStatic)));
 			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.StoresField(null).Matches([], new CodeInstruction(OpCodes.Stsfld, fStatic)));
+		}
+
+		[Test]
+		public void Test_SymbolExtensions_GetPropertyInfo()
+		{
+			var instance = new CodeMatcherClass();
+			Expression<Func<object>> boxedStaticProperty = () => CodeMatcherClass.StaticProperty;
+
+			Assert.AreEqual(pStatic, SymbolExtensions.GetPropertyInfo(() => CodeMatcherClass.StaticProperty));
+			Assert.AreEqual(pInstance, SymbolExtensions.GetPropertyInfo(() => default(CodeMatcherClass).InstanceProperty));
+			Assert.AreEqual(pInstance, SymbolExtensions.GetPropertyInfo(() => instance.InstanceProperty));
+			Assert.AreEqual(pStatic, SymbolExtensions.GetPropertyInfo(boxedStaticProperty));
+		}
+
+		[Test]
+		public void Test_SymbolExtensions_GetPropertyInfo_Invalid()
+		{
+			Expression<Action> methodCall = () => CodeMatcherClass.Foo();
+			var list = new List<int> { 1 };
+
+			_ = Assert.Throws<ArgumentNullException>(() => SymbolExtensions.GetPropertyInfo((LambdaExpression)null));
+			_ = Assert.Throws<ArgumentException>(() => SymbolExtensions.GetPropertyInfo(() => 123));
+			_ = Assert.Throws<ArgumentException>(() => SymbolExtensions.GetPropertyInfo(methodCall));
+			_ = Assert.Throws<ArgumentException>(() => SymbolExtensions.GetPropertyInfo(() => CodeMatcherClass.StaticField));
+			_ = Assert.Throws<ArgumentException>(() => SymbolExtensions.GetPropertyInfo(() => list[0]));
+		}
+
+		[Test]
+		public void Test_CodeMatch_GetsProperty()
+		{
+			var getStatic = pStatic.GetGetMethod();
+			var getInstance = pInstance.GetGetMethod();
+			foreach (var match in new[] { CodeMatch.GetsProperty(pStatic), CodeMatch.GetsProperty(() => CodeMatcherClass.StaticProperty) })
+			{
+				Assert.True(Matches(new CodeInstruction(OpCodes.Call, getStatic), match));
+				Assert.False(Matches(new CodeInstruction(OpCodes.Call, pStatic.GetSetMethod()), match));
+				Assert.False(Matches(new CodeInstruction(OpCodes.Call, getInstance), match));
+				Assert.False(Matches(new CodeInstruction(OpCodes.Ldftn, getStatic), match));
+			}
+
+			var instanceMatch = CodeMatch.GetsProperty(() => default(CodeMatcherClass).InstanceProperty);
+			Assert.True(Matches(new CodeInstruction(OpCodes.Callvirt, getInstance), instanceMatch));
+			Assert.True(Matches(new CodeInstruction(OpCodes.Call, getInstance), instanceMatch));
+		}
+
+		[Test]
+		public void Test_CodeMatch_SetsProperty()
+		{
+			var setStatic = pStatic.GetSetMethod();
+			var setInstance = pInstance.GetSetMethod();
+			foreach (var match in new[] { CodeMatch.SetsProperty(pStatic), CodeMatch.SetsProperty(() => CodeMatcherClass.StaticProperty) })
+			{
+				Assert.True(Matches(new CodeInstruction(OpCodes.Call, setStatic), match));
+				Assert.False(Matches(new CodeInstruction(OpCodes.Call, pStatic.GetGetMethod()), match));
+				Assert.False(Matches(new CodeInstruction(OpCodes.Call, setInstance), match));
+			}
+
+			var instanceMatch = CodeMatch.SetsProperty(() => default(CodeMatcherClass).InstanceProperty);
+			Assert.True(Matches(new CodeInstruction(OpCodes.Callvirt, setInstance), instanceMatch));
+		}
+
+		[Test]
+		public void Test_CodeMatch_Property_matchers_find_accessor_calls_in_compiled_code()
+		{
+			var method = SymbolExtensions.GetMethodInfo(() => default(CodeMatcherDerivedClass).UseProperties());
+			var instructions = PatchProcessor.GetOriginalInstructions(method);
+			bool Finds(CodeMatch match) => new CodeMatcher(instructions).MatchStartForward(match).IsValid;
+			var derived = typeof(CodeMatcherDerivedClass);
+
+			// An inherited property found through the derived type
+			Assert.True(Finds(CodeMatch.GetsProperty(derived.Property(nameof(CodeMatcherClass.InstanceProperty)))));
+			Assert.True(Finds(CodeMatch.SetsProperty(derived.GetProperty(nameof(CodeMatcherClass.InstanceProperty)))));
+			Assert.True(Finds(CodeMatch.GetsProperty(() => default(CodeMatcherDerivedClass).InstanceProperty)));
+
+			// C# calls an overridden property through its base declaration
+			Assert.True(Finds(CodeMatch.GetsProperty(() => default(CodeMatcherDerivedClass).VirtualProperty)));
+			Assert.True(Finds(CodeMatch.SetsProperty(typeof(CodeMatcherClass).Property(nameof(CodeMatcherClass.VirtualProperty)))));
+			Assert.False(Finds(CodeMatch.GetsProperty(derived.Property(nameof(CodeMatcherClass.VirtualProperty)))));
+
+			Assert.False(Finds(CodeMatch.GetsProperty(pStatic)));
+		}
+
+		[Test]
+		public void Test_CodeMatch_Property_matchers_reject_missing_accessors()
+		{
+			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.GetsProperty(null));
+			_ = Assert.Throws<ArgumentNullException>(() => CodeMatch.SetsProperty(null));
+			_ = Assert.Throws<ArgumentException>(() => CodeMatch.SetsProperty(() => default(CodeMatcherClass).GetOnlyProperty));
+			_ = Assert.Throws<ArgumentException>(() => CodeMatch.GetsProperty(typeof(CodeMatcherClass).Property(nameof(CodeMatcherClass.SetOnlyProperty))));
 		}
 
 		[Test]
