@@ -28,7 +28,8 @@ namespace HarmonyLib
 			}
 
 			// Sort list based on priority/index. This order will be maintain throughout the rest of the sorting process.
-			this.patches.Sort();
+			// The sort is stable: merged generic family records can tie on priority and index, and such ties keep their input order.
+			this.patches = [.. this.patches.OrderBy(patch => patch)];
 		}
 
 		internal Patch[] Sort()

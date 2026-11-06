@@ -40,7 +40,7 @@ These limits apply to the detour. If a [runtime host](hosting.md) registers an i
 
 An instantiation with a transpiler or an Infix patch gets a closed helper body. The definition's patches also apply inside that helper. Definition transpilers must therefore handle closed IL with substituted types and operands. The helper call adds one stack frame, which affects stack inspection and caller-sensitive code.
 
-The priority and before/after sorter merges definition and instantiation patches within each patch category. Record indices can interleave. Definition patches do not always run first, and equal priority/index ties remain unspecified. `__state` stays separate per patch class and registration target.
+The priority and before/after sorter merges definition and instantiation patches within each patch category. Record indices can interleave, so definition patches do not always run first. When priority and index are equal, the definition's patch runs first. `__state` stays separate per patch class and registration target.
 
 For a generic callback, register its definition with the required declaring-type-then-method parameter order and compatible constraints. Directly constructed callbacks are rejected for both definitions and instantiations installed through a family. Use a patch factory when you need a fixed callback instantiation. Definition-wide bindings must be valid for every permitted type. Instantiation bindings and passthrough results validate closed types. See the [callback rules](hosting.md#generic-callbacks).
 

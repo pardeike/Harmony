@@ -44,6 +44,10 @@ namespace HarmonyLibTests.Patching
 		static void MemberStringState(out string __state) => __state = "2";
 		static void StringState(string __state, ref int __result) => __result += int.Parse(__state);
 		static void Observe<T>() => observed = typeof(T);
+		static readonly List<char> order = [];
+		static int OrderTarget<T>() => 0;
+		static void DefinitionMark() => order.Add('D');
+		static void MemberMark() => order.Add('I');
 		static MethodInfo ObserveFactory(MethodBase original) => Method(nameof(Observe)).MakeGenericMethod(typeof(long));
 		static IEnumerable<CodeInstruction> Identity(IEnumerable<CodeInstruction> instructions) => instructions;
 		delegate string AliasCall(ref string first, ref string second);
@@ -182,6 +186,29 @@ namespace HarmonyLibTests.Patching
 			harmony.Patch(member, transpiler: Callback(nameof(Identity)));
 			Assert.That(snapshot().MakeGenericMethod(typeof(int)).Invoke(null, null), Is.EqualTo(3));
 			Assert.That(snapshot().MakeGenericMethod(typeof(string)).Invoke(null, null), Is.EqualTo(1));
+		}
+
+		[TestCase(false), TestCase(true)]
+		public void Equal_priority_ties_put_definition_patches_first(bool memberLast)
+		{
+			var definition = Method(nameof(OrderTarget));
+			var member = definition.MakeGenericMethod(typeof(int));
+			Host(definition);
+			// Ten owners give both records indices 0 to 9. An unstable sort reorders these 20 ties.
+			var owners = Enumerable.Range(0, 10).Select(n => new Harmony(harmony.Id + "." + n)).ToList();
+			try
+			{
+				foreach (var owner in owners)
+				{
+					if (memberLast) owner.Patch(definition, postfix: Callback(nameof(DefinitionMark)));
+					owner.Patch(member, postfix: Callback(nameof(MemberMark)));
+					if (!memberLast) owner.Patch(definition, postfix: Callback(nameof(DefinitionMark)));
+				}
+				order.Clear();
+				_ = snapshot().MakeGenericMethod(typeof(int)).Invoke(null, null);
+				Assert.That(string.Concat(order), Is.EqualTo(string.Concat(Enumerable.Repeat("DI", 10))));
+			}
+			finally { foreach (var owner in owners) owner.UnpatchAll(owner.Id); }
 		}
 
 		[TestCase(false), TestCase(true)]

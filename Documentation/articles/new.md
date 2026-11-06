@@ -32,11 +32,16 @@ The host contract includes these rules:
 - Installers must not call patch, unpatch, reverse-patch, or rebuild operations. Harmony rejects re-entry into the same target or generic family.
 - Definition-wide bindings require a guaranteed assignment from the open source. Closed bindings and passthrough results validate closed types. Foreign generic parameters in member operands fail before installation.
 - Directly constructed callbacks are rejected for targets installed through a definition. Register a generic callback definition, or use a factory to preserve fixed arguments.
+- Within a generic family, equal priority and index put the definition's patch first, whichever member started the rebuild.
 - Generic family bridges reject function-pointer signatures. Reverse patches into host-owned generic targets are unsupported. Constructors installed through a generic family return null from `Patch()`.
 - Rebuilding a definition uses its members' records when it has no record of its own. Successful ordinary installation supersedes an earlier reverse recipe.
 - The importer accepts `KeyValuePair<MemberInfo, bool>` with `true` for self-instantiated generic members. It must preserve MemberRef/TypeSpec and MethodSpec semantics. Refused identity operands such as `ldtoken` cannot use forwarding stand-ins.
 - Generated closed helpers reuse permanent stand-ins by original, helper site, and signature. Refused open generic helpers can use permanent images, but those images cannot reference collectible dependencies.
-- Body export is unavailable in Harmony's `net35` and `netstandard2.0` builds. Generic helper generation requires collectible `AssemblyLoadContext` support.
+- Body export is unavailable in Harmony's `net35` and `netstandard2.0` builds. Generic helper generation requires collectible `AssemblyLoadContext` support, so .NET Framework and Mono refuse Infix patches on a generic method definition before installation.
+
+## Runtime detection
+
+`AccessTools.IsNetCoreRuntime` is now true on .NET Core 3.x and on .NET 5 or later. It was false on all of them. `AccessTools.IsNetFrameworkRuntime` is no longer true on .NET Core 3.x.
 
 ## Earlier: Harmony 2
 

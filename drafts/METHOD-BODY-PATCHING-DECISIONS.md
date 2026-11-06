@@ -478,6 +478,11 @@ An unchanged exception keeps its stack when another instantiation has a finalize
 
 Decision: retain null from `Patch()` for both open and closed constructors installed through a family. The return type remains `MethodInfo`.
 Definition transpilers must handle closed IL inside an instantiation helper. That call adds one stack frame.
-The existing priority/dependency sorter merges records. Equal priority/index ties remain unspecified and unstable.
-Stable sorting alone cannot resolve rebuild-dependent input order. A tie-break rule requires separate work.
 Persistent-state removal clears closed-helper registrations and disposal hooks. Rollback attempts every completed preparation even when one disposal fails.
+
+### 35. Definition patches win equal ties, 2026-11-06
+
+Decision: `PatchSorter` sorts stably. A generic family lists the definition record first.
+Its members follow their registration order in the shared state, whichever member started the rebuild.
+Equal priority and index therefore run the definition's patch first. This supersedes the tie limit in decision 34.
+The order among members does not change execution. Each call passes the guard of at most one member.

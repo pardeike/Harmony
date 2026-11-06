@@ -100,7 +100,7 @@ namespace HarmonyLib
 		internal static MethodInfo Generate(DynamicMethodDefinition method, IEnumerable<Assembly> additionalAssemblies)
 		{
 			if (collectibleContext is null && (method.Definition.HasGenericParameters || method.Definition.DeclaringType.HasGenericParameters))
-				throw new NotSupportedException("Definition-wide generated generic helpers require a runtime with collectible AssemblyLoadContext support.");
+				throw new NotSupportedException("Infix helpers on a generic method definition require a runtime with collectible AssemblyLoadContext support, such as .NET Core 3.0 or later.");
 			// Capture runtime hashes before Cecil clones references into the generated module.
 			var loader = new GeneratedAssemblyLoader(method.Definition.Module, additionalAssemblies);
 			if (collectibleContext is not null)

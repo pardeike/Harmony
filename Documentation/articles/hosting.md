@@ -98,7 +98,7 @@ Permanent stand-ins for generated closed helpers reuse one delegate field per or
 
 Ordinary reflection callbacks use their module, metadata token, declaring type, and method arguments as their identity. Unrelated DynamicMethods retain separate permanent stand-ins. Thus closed-helper growth is bounded by distinct original/site/signature combinations, not by rebuild count. New dynamic callbacks still add permanent entries. Unpatching does not unload permanent assemblies.
 
-Generated open generic helpers cannot use these delegates. If the importer refuses such a helper, Harmony offers a permanent assembly containing its generic context. These assemblies can accumulate across rebuilds. A permanent helper cannot reference a collectible dependency. Harmony rejects that case and names the dependency. Generating generic helpers requires a runtime with collectible `AssemblyLoadContext` support.
+Generated open generic helpers cannot use these delegates. If the importer refuses such a helper, Harmony offers a permanent assembly containing its generic context. These assemblies can accumulate across rebuilds. A permanent helper cannot reference a collectible dependency. Harmony rejects that case and names the dependency. Generating generic helpers requires a runtime with collectible `AssemblyLoadContext` support. On .NET Framework and Mono, `Patch()` refuses an Infix patch on a generic method definition: it throws a `HarmonyException` whose inner `NotSupportedException` names this requirement, before installation and without recording the patch.
 
 Other open generic callbacks must bind directly. Harmony cannot make a delegate stand-in for them. A refused `ldtoken`, `ldftn`, or `ldvirtftn` method operand also fails export. Substituting a forwarding method would change its identity. Other unsupported refusals fail export as well.
 
@@ -129,7 +129,7 @@ An instantiation with a transpiler or an Infix patch gets a closed helper body. 
 
 The helper call adds one stack frame: caller, definition body, helper. Stack inspection and caller-sensitive code can observe it. Harmony maps the helper back to the instantiation for its stack-frame helpers. `__originalMethod` in instantiation callbacks identifies that instantiation. `__state` stays separate per patch class and registration target, including inside a closed helper.
 
-Within each patch category, the existing priority and before/after sorter merges both records. Record indices can interleave, so definition patches do not always precede instantiation patches. Equal priority/index ties remain unspecified and can change across rebuilds.
+Within each patch category, the existing priority and before/after sorter merges both records. Record indices can interleave, so definition patches do not always precede instantiation patches. When priority and index are equal, the definition's patch runs first, whichever member started the rebuild.
 
 Removing an instantiation's last transpiler or Infix patch returns it to the guarded family body. Removing persistent Infix state also removes its retained slots and disposal hook.
 

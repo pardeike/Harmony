@@ -633,5 +633,19 @@ namespace HarmonyLibTests.Tools
 			var foo = new AccessToolsHarmonyDelegate.Foo();
 			Assert.AreEqual("[test]", someMethod(foo, "test"));
 		}
+
+		[Test]
+		public void Test_AccessTools_runtime_detection_names_exactly_one_runtime_family()
+		{
+			bool[] families = [AccessTools.IsMonoRuntime, AccessTools.IsNetFrameworkRuntime, AccessTools.IsNetCoreRuntime];
+			Assert.That(Array.FindAll(families, family => family), Has.Length.EqualTo(1));
+			Assert.That(AccessTools.IsMonoRuntime, Is.EqualTo(Type.GetType("Mono.Runtime") is not null));
+#if NETCOREAPP
+			// .NET Core 3.x keeps RuntimeInformation outside the core library, and .NET 5 and later no longer describe themselves as ".NET Core".
+			Assert.That(AccessTools.IsNetCoreRuntime, Is.True);
+#else
+			Assert.That(AccessTools.IsNetFrameworkRuntime, Is.EqualTo(!AccessTools.IsMonoRuntime));
+#endif
+		}
 	}
 }

@@ -382,7 +382,8 @@ namespace HarmonyLibTests.Patching
 				NUnit.Framework.Assert.Ignore("This runtime supports the generic assembly generator.");
 			var original = HarmonyLib.AccessTools.DeclaredMethod(typeof(MethodBodyPatchingExportLegacy), nameof(Target));
 			HarmonyLib.MethodBodyPatching.SetEligibility(method => method == original);
-			HarmonyLib.MethodBodyPatching.SetInstaller((_, _, _) => { });
+			var installs = 0;
+			HarmonyLib.MethodBodyPatching.SetInstaller((_, _, _) => installs++);
 			var harmony = new HarmonyLib.Harmony("test.export.legacy.helper");
 			var processor = harmony.CreateProcessor(original).AddInnerFinalizer(new HarmonyLib.HarmonyMethod(
 				HarmonyLib.AccessTools.DeclaredMethod(typeof(MethodBodyPatchingExportLegacy), nameof(Finish)))
@@ -390,7 +391,10 @@ namespace HarmonyLibTests.Patching
 			// Infix construction reports the helper's refusal with its call site.
 			var error = NUnit.Framework.Assert.Throws<HarmonyLib.HarmonyException>(() => processor.Patch());
 			NUnit.Framework.Assert.That(error.InnerException, NUnit.Framework.Is.TypeOf<System.NotSupportedException>()
-				.With.Message.EqualTo("Definition-wide generated generic helpers require a runtime with collectible AssemblyLoadContext support."));
+				.With.Message.EqualTo("Infix helpers on a generic method definition require a runtime with collectible AssemblyLoadContext support, such as .NET Core 3.0 or later."));
+			// The refusal happens before installation and leaves no patch record.
+			NUnit.Framework.Assert.That(installs, NUnit.Framework.Is.Zero);
+			NUnit.Framework.Assert.That(HarmonyLib.Harmony.GetPatchInfo(original), NUnit.Framework.Is.Null);
 		}
 	}
 }

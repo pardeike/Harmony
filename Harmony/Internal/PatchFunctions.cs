@@ -97,10 +97,11 @@ namespace HarmonyLib
 			var sources = new List<(MethodBase member, PatchInfo info)>();
 			var definitionInfo = current == definition ? currentInfo : HarmonySharedState.GetPatchInfo(definition);
 			if (definitionInfo is not null) sources.Add((null, definitionInfo));
-			if (current != definition) sources.Add((current, currentInfo));
-			foreach (var member in HarmonySharedState.GetPatchedMethods())
-				if (member != current && member != definition && MethodBodyPatching.FamilyOwner(member) == definition
-					&& HarmonySharedState.GetPatchInfo(member) is PatchInfo info)
+			// Members keep their registration order, whichever member started the rebuild. Equal priority/index ties put definition patches first.
+			var members = HarmonySharedState.GetPatchedMethods().Where(member => member != definition && MethodBodyPatching.FamilyOwner(member) == definition).ToList();
+			if (current != definition && !members.Contains(current)) members.Add(current);
+			foreach (var member in members)
+				if ((member == current ? currentInfo : HarmonySharedState.GetPatchInfo(member)) is PatchInfo info)
 					sources.Add((member, info));
 			var closed = sources.Where(source => source.member is not null
 				&& (source.info.transpilers.Length != 0 || source.info.innerprefixes.Length != 0 || source.info.innerpostfixes.Length != 0 || source.info.innerfinalizers.Length != 0)).ToList();

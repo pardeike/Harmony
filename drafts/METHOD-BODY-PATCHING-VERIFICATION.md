@@ -489,16 +489,15 @@ The later collectible-dependency diagnostic also failed before its guard and pas
 
 ### Deliberate limits and remaining review work
 
-- A9 ordering ties remain unspecified and unstable. Stable sorting alone cannot resolve rebuild-dependent input order without a separate tie-break rule.
 - A7 function-pointer bridges remain rejected. The pointer-signature exporter fixes do not remove that family-bridge restriction.
 - B10 constructors installed through a family still return null. The public return type remains `MethodInfo`.
 - C3 permanent open generic helper images can accumulate across rebuilds. Unrelated DynamicMethods also retain separate permanent stand-ins.
 - C4 permanent helpers cannot reference collectible dependencies. No dependency-graph promotion was implemented.
-- C6 has no legacy generic assembly generator. The conditional legacy regression was not executed by these gates.
+- C6 has no legacy generic assembly generator. .NET Framework and Mono refuse Infix patches on a generic method definition before installation.
 - Host access checks remain a runtime requirement. Private callbacks and internal guard helpers need appropriate access from the installed module.
 - The test-host emitter still has bounded signature and assembly-resolution coverage. It is not a complete host implementation.
-- Tests/host infrastructure findings outside these three fix packages and the documentation package remain separate work. This includes hot reload delta failure state and CI opt-in coverage.
-- Earlier game and CI results identify earlier commits. No Waylith run, release, or public documentation deployment of these review fixes is established here.
+- Tests/host infrastructure findings outside these three fix packages and the documentation package remain separate work. This includes hot reload delta failure state.
+- No Waylith run or release of these review fixes is established. The game results identify earlier commits.
 
 ### Documentation package
 
@@ -526,3 +525,29 @@ The link verifier passed 104 pages and 2,754 local links and assets. Generated h
 DocFX reported 357 `InvalidAssemblyReference` warnings and zero errors. This gate proves local generation and link integrity, not publication.
 The first staging attempt omitted the tracked API landing page. It failed link verification and passed after that page was included.
 Logs and the staging command are recorded in `artifacts/reviews/fix-docs.md`.
+
+## 2026-11-06 warnings, tie order and runtime detection
+
+Platform Tests run 42195753010 reported these warnings:
+
+- CS0649 for `MethodBodyExportHost.Carrier<T>.Value`, 102 annotations.
+- NU1902 for `Microsoft.Build.Tasks.Git` 8.0.0 (GHSA-23fw-v26w-5fgq) in every restore. The package came from `Microsoft.SourceLink.GitHub` 8.0.0.
+- NU1510 for `System.Text.Json` in single-framework net10.0 builds of the compatibility lanes.
+- MonoMod's skip warning in every net11.0 build. It has no code, so `NoWarn` cannot address it.
+- Chocolatey's ignored-checksum warning on the Windows Mono lanes, and Git line-ending notices in the documentation deployment.
+
+Fixes: the SDK's Source Link replaces the package reference. net10.0 and net11.0 use the shared-framework `System.Text.Json`.
+`Directory.Build.targets` and the Thin package targets replace MonoMod's skip target with a low-importance message.
+The test field is initialized. Chocolatey verifies checksums. The deploy clone sets `core.safecrlf false`.
+Whole-solution builds for every framework then reported 0 warnings and 0 errors in Release and Debug.
+A net11.0 consumer of the published rc.4 Thin package shows MonoMod's warning. A consumer of a locally packed Thin package shows none.
+The `actions/checkout` hint about the default branch name and GitHub's macOS arm64 capacity notice are outside the repository.
+
+Tie order: `Equal_priority_ties_put_definition_patches_first` failed on the old sorter with `DIDIDIDIDIDIDIIDIDDI`. It passes with the stable sort.
+
+Runtime detection: a probe showed `IsNetCoreRuntime` false on .NET Core 3.1, .NET 8 and .NET 10. It showed `IsNetFrameworkRuntime` true on .NET Core 3.1.
+On .NET Core 3.x, `RuntimeInformation` is outside the core library, so the unqualified type lookup failed. .NET 5 and later describe themselves as ".NET", not ".NET Core".
+Both properties now use the core library name.
+
+Local gates: net10 x64 Debug and Release passed 1,394 cases each. net11 passed 1,401. The focused .NET Core 3.1 run passed 112.
+The hot reload fixture passed 8 cases. `scripts/test_workflow_test.py` passed.

@@ -2043,17 +2043,16 @@ namespace HarmonyLib
 		///
 		public static bool IsMonoRuntime { get; } = Type.GetType("Mono.Runtime") is not null;
 
-		/// <summary>True if the current runtime is .NET Framework, false otherwise (.NET Core or Mono, although latter isn't guaranteed)</summary>
-		///
-		public static bool IsNetFrameworkRuntime { get; } =
-			Type.GetType("System.Runtime.InteropServices.RuntimeInformation", false)?.GetProperty("FrameworkDescription")
-			.GetValue(null, null).ToString().StartsWith(".NET Framework") ?? IsMonoRuntime is false;
+		// The core library names the runtime family: mscorlib on .NET Framework and Mono, System.Private.CoreLib on .NET Core and .NET 5 or later.
+		static readonly string coreLibrary = typeof(object).Assembly.GetName().Name;
 
-		/// <summary>True if the current runtime is .NET Core, false otherwise (Mono or .NET Framework)</summary>
+		/// <summary>True if the current runtime is .NET Framework, false otherwise (.NET Core, .NET 5 or later, or Mono)</summary>
 		///
-		public static bool IsNetCoreRuntime { get; } =
-			Type.GetType("System.Runtime.InteropServices.RuntimeInformation", false)?.GetProperty("FrameworkDescription")
-			.GetValue(null, null).ToString().StartsWith(".NET Core") ?? false;
+		public static bool IsNetFrameworkRuntime { get; } = IsMonoRuntime is false && coreLibrary == "mscorlib";
+
+		/// <summary>True if the current runtime is .NET Core or .NET 5 or later, false otherwise (Mono or .NET Framework)</summary>
+		///
+		public static bool IsNetCoreRuntime { get; } = IsMonoRuntime is false && coreLibrary == "System.Private.CoreLib";
 
 		/// <summary>Throws a missing member runtime exception</summary>
 		/// <param name="type">The type that is involved</param>
