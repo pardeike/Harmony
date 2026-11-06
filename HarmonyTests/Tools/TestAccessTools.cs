@@ -634,18 +634,27 @@ namespace HarmonyLibTests.Tools
 			Assert.AreEqual("[test]", someMethod(foo, "test"));
 		}
 
+		// Platform Tests sets HARMONY_EXPECTED_RUNTIME for each lane from the runtime that lane starts.
+		// The earlier detection reported .NET Framework on .NET Core 3.x, .NET 5 and .NET 6, and never reported .NET Core.
 		[Test]
-		public void Test_AccessTools_runtime_detection_names_exactly_one_runtime_family()
+		public void Test_AccessTools_runtime_detection_matches_the_platform()
 		{
-			bool[] families = [AccessTools.IsMonoRuntime, AccessTools.IsNetFrameworkRuntime, AccessTools.IsNetCoreRuntime];
-			Assert.That(Array.FindAll(families, family => family), Has.Length.EqualTo(1));
-			Assert.That(AccessTools.IsMonoRuntime, Is.EqualTo(Type.GetType("Mono.Runtime") is not null));
+			var expected = Environment.GetEnvironmentVariable("HARMONY_EXPECTED_RUNTIME");
+			if (string.IsNullOrEmpty(expected))
+			{
+				if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
+					Assert.Fail("This CI lane must set HARMONY_EXPECTED_RUNTIME to netcore, netframework or mono.");
 #if NETCOREAPP
-			// .NET Core 3.x keeps RuntimeInformation outside the core library, and .NET 5 and later no longer describe themselves as ".NET Core".
-			Assert.That(AccessTools.IsNetCoreRuntime, Is.True);
+				expected = "netcore";
 #else
-			Assert.That(AccessTools.IsNetFrameworkRuntime, Is.EqualTo(!AccessTools.IsMonoRuntime));
+				expected = Type.GetType("Mono.Runtime") is null ? "netframework" : "mono";
 #endif
+			}
+			Assert.That(expected, Is.AnyOf("netcore", "netframework", "mono"));
+			var platform = $"{expected} expected, running {Environment.Version} with {typeof(object).Assembly.GetName().Name}";
+			Assert.That(AccessTools.IsMonoRuntime, Is.EqualTo(expected == "mono"), platform);
+			Assert.That(AccessTools.IsNetFrameworkRuntime, Is.EqualTo(expected == "netframework"), platform);
+			Assert.That(AccessTools.IsNetCoreRuntime, Is.EqualTo(expected == "netcore"), platform);
 		}
 	}
 }

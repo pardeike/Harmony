@@ -88,6 +88,10 @@ runs:
 
     - name: Perform Tests Windows FX/Mono
       if: ${{inputs.os == 'windows' && (inputs.runtime-type == 'fx' || inputs.runtime-type == 'mono')}}
+      env:
+        # Runtime detection tests compare against this. VSTest starts the net4x test host on the .NET Framework CLR,
+        # also when vstest.console itself runs on Mono, so the Windows Mono lanes test on .NET Framework.
+        HARMONY_EXPECTED_RUNTIME: netframework
       run: |
         . ./.github/scripts/Test-Frameworks.ps1
         $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe"
@@ -163,6 +167,8 @@ runs:
       
     - name: Perform Tests Windows .NET | Ubuntu .NET/Mono
       if: ${{(inputs.os == 'windows' && inputs.runtime-type == 'dotnet') || inputs.os == 'ubuntu'}}
+      env:
+        HARMONY_EXPECTED_RUNTIME: ${{inputs.runtime-type == 'mono' && 'mono' || 'netcore'}}
       run: |
         . ./.github/scripts/Test-Frameworks.ps1
         $isMono = '${{inputs.runtime-type}}' -eq 'mono'
@@ -179,6 +185,8 @@ runs:
     - name: Perform Tests MacOS/MacOS-arm64 .NET/Mono
       uses: nick-fields/retry@v4
       if: ${{inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
+      env:
+        HARMONY_EXPECTED_RUNTIME: ${{inputs.runtime-type == 'mono' && 'mono' || 'netcore'}}
       with:
         timeout_minutes: 45
         max_attempts: 3
