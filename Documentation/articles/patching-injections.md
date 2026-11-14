@@ -98,6 +98,8 @@ For a static original, an instance field or an injected instance delegate binds 
 
 **`object[] __args`** contains all arguments in declaration order. Editing its elements updates the corresponding arguments; `ref` is not needed. It has more overhead than typed argument injection.
 
+Each receiving patch sees current argument values, including writes from earlier patches and the original. The same array instance is reused during one ordinary invocation.
+
 The array excludes the receiver. `ref object[]` is invalid, as are arguments the emitter cannot represent in the array, such as pointers and byref-like values. Use typed argument injections for those methods. Broader by-value declarations such as `object __args` are accepted for ordinary patches.
 
 ## method arguments

@@ -136,6 +136,14 @@ namespace HarmonyLib
 			return codes;
 		}
 
+		static List<CodeInstruction> RefreshArgumentArray(PatchBindingContext context)
+		{
+			var codes = new List<CodeInstruction> { Ldloc[context.variables[InjectionType.ArgsArray]] };
+			codes.AddRange(FillArgumentArray(context));
+			codes.Add(Pop);
+			return codes;
+		}
+
 		internal static List<CodeInstruction> SetupInfixBindings(this MethodCreator creator, PatchBindingContext inner,
 			PatchBindingContext outer, IList<MethodInfo> prefixes, IList<MethodInfo> postfixes, IList<MethodInfo> finalizers)
 		{
@@ -305,9 +313,7 @@ namespace HarmonyLib
 			var ready = creator.config.DefineLabel();
 			var codes = new List<CodeInstruction> { Ldloc[array], Brtrue[ready], Ldc_I4[context.arguments.Length], Newarr[typeof(object)], Stloc[array] };
 			if (context.refreshArgumentArray) codes.Add(Nop.WithLabels(ready));
-			codes.Add(Ldloc[array]);
-			codes.AddRange(FillArgumentArray(context));
-			codes.Add(Pop);
+			codes.AddRange(RefreshArgumentArray(context));
 			if (!context.refreshArgumentArray) codes.Add(Nop.WithLabels(ready));
 			return codes;
 		}
@@ -570,11 +576,10 @@ namespace HarmonyLib
 			var arrayInjections = creator.config.InjectionsFor(patch).Skip(skipResult ? 1 : 0).Where(injection => injection.injectionType == InjectionType.ArgsArray).ToList();
 			var innerArray = arrayInjections.Any(injection => !injection.outer);
 			var outerArray = arrayInjections.Any(injection => injection.outer);
-			if (outerContext != null)
-			{
-				if (innerArray) codes.AddRange(creator.LoadInfixArgumentArray(context));
-				if (outerArray) codes.AddRange(creator.LoadInfixArgumentArray(outerContext));
-			}
+			if (innerArray)
+				codes.AddRange(outerContext is null ? RefreshArgumentArray(context) : creator.LoadInfixArgumentArray(context));
+			if (outerArray && outerContext != null)
+				codes.AddRange(creator.LoadInfixArgumentArray(outerContext));
 			codes.AddRange(creator.EmitCallParameter(patch, context, outerContext, allowFirstParamPassthrough,
 				out var boxedResult, out var refResultUsed, boxedInstances, boxedArguments, uncheckedReferenceBinding));
 			if (outerContext != null && InfixInlining.TryInline(patch, creator.config.il, out var inlined, creator.config.debug)) codes.AddRange(inlined);
