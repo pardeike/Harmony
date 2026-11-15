@@ -157,6 +157,20 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void Closed_generic_value_argument_is_copied_back()
 		{
+			var original = Method(nameof(GenericTarget)).MakeGenericMethod(typeof(int));
+			Assert.AreEqual(1, original.Invoke(null, [1]));
+			var config = new MethodCreatorConfig(original, null, [new(Method(nameof(WriteBox)))], [], [], [], [], [], false);
+			var (replacement, _) = new MethodCreator(config).CreateReplacement();
+			Assert.AreEqual(17, replacement.Invoke(null, [1]));
+			Assert.AreEqual(1, original.Invoke(null, [1]));
+		}
+
+		[Test]
+#if !NETCOREAPP
+		[Platform(Exclude = "Win", Reason = "MonoMod's Windows CLR GetMethodDescForSlot is not implemented for this generic detour.")]
+#endif
+		public void Closed_generic_value_argument_is_copied_back_through_a_native_detour()
+		{
 			Add(Method(nameof(GenericTarget)).MakeGenericMethod(typeof(int)), nameof(WriteBox), HarmonyPatchType.Prefix);
 			Assert.AreEqual(17, GenericTarget(1));
 		}

@@ -16,11 +16,14 @@ Ordinary patches and Infix share argument-array value refresh and boxed argument
 
 Writable boxed bindings now copy back to original by-value argument slots as well as referenced storage. Ordinary patches copy boxes back in callback parameter order after array restoration and direct typed writes. An unchanged box can overwrite either competing write. If several boxes address one argument, the last boxed parameter wins. Delayed cleanup runs only after normal callback return, and an invalid box can fail after array restoration. The [injection guide](../../Documentation/articles/patching-injections.md#method-arguments) states these rules.
 
-The argument synchronization coverage includes 80 cases: ten from PR 792, 13 ordinary array edge cases, 12 Infix scope/helper cases, 43 boxed binding cases and two generic-family rebuild cases. The family cases execute generated bodies and verify installer invocation, not third-party host installation. The existing Infix comparison asserts the corrected ordinary copy-back behavior.
+The argument synchronization coverage includes 81 cases on CoreCLR: ten from PR 792, 13 ordinary array edge cases, 12 Infix scope/helper cases, 44 boxed binding cases and two generic-family rebuild cases. The family cases execute generated bodies and verify installer invocation, not third-party host installation. The existing Infix comparison asserts the corrected ordinary copy-back behavior.
+
+Closed-generic copy-back executes a generated replacement on every target. A separate native-detour case runs on CoreCLR and Unix Mono. Windows Framework builds exclude only that integration case because MonoMod's `GetMethodDescForSlot` is unimplemented for this generic target shape. The Windows "Mono" CI lanes use the Framework test host and share that exclusion. The native-detour limitation remains unresolved.
 
 | Local verification | Result |
 | --- | --- |
-| .NET 10.0.11 x64, complete Debug and Release suites | 1,490 passed and 15 skipped in each |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,491 passed and 15 skipped in each |
+| .NET Framework 3.5 target, x64 Debug compilation | HarmonyTests and its project dependencies build successfully |
 | Single `int` argument with one ordinary array receiver | One emitted box; approximately 56 allocated bytes per invocation in the warmed net10/x64 probe |
 | Same allocation probe before removing the redundant initial fill | Two emitted boxes; approximately 80 allocated bytes per invocation |
 
