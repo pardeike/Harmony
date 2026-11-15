@@ -269,7 +269,9 @@ Inside a single array, preserve normal Harmony's argument-index restoration orde
 
 Keep one binder. Separate `EmitCallParameter()`'s conversion rules from its assumption that sources are outer argument slots. A small storage descriptor supplies load-value, load-address, and store operations for an argument slot or local. A method context supplies the selected method, receiver, arguments, and special/state storage. Normal patches use the outer context; all matching Infixes at a site share its inner context, captured locals, and managed-pointer operands.
 
-Scope demand checks too: an inner `__args` or `__state` must not accidentally allocate the same-named outer storage through global `AnyFixHas()`/`WithFixes()` checks. Preserve reverse-patch source/original distinctions. Reuse normal prefix scheduling, both postfix phases and finalizer control flow against the selected context, as well as shared parameter emission and cleanup. Inner finalizers use the typed helper boundary in the completion contract. Do not silently change ordinary boxing/copy-back behavior.
+Scope demand checks too: an inner `__args` or `__state` must not accidentally allocate the same-named outer storage through global `AnyFixHas()`/`WithFixes()` checks. Preserve reverse-patch source/original distinctions. Reuse normal prefix scheduling, both postfix phases and finalizer control flow against the selected context, as well as shared parameter emission and cleanup. Inner finalizers use the typed helper boundary in the completion contract.
+
+Ordinary patches and Infix share value-type argument boxing and copy-back to the selected storage after normal callback return. This includes boxed writable bindings to original by-value arguments. Ordinary patches restore `__args` before boxed argument copy-back, even when the callback leaves a box unchanged. Cleanup is not atomic: array restoration can complete before an invalid box fails unboxing. Keep Infix's existing overlap rejection and normal-return-only delayed cleanup.
 
 Construct and validate every selected site before installation:
 

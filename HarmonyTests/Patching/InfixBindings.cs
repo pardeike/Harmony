@@ -232,10 +232,10 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
-		public void Boxed_captured_value_writes_back_without_changing_ordinary_boxing()
+		public void Ordinary_and_infix_boxed_arguments_write_back_to_their_own_storage()
 		{
 			harmony.Patch(Method(nameof(ValueCall)), prefix: new HarmonyMethod(Method(nameof(BoxValue))));
-			Assert.AreEqual(10, ValueCall(1), "Ordinary by-value boxed argument keeps its established behavior");
+			Assert.AreEqual(110, ValueCall(1), "Ordinary boxing writes back to the argument passed to the original");
 			harmony.UnpatchAll(harmony.Id);
 			Apply(nameof(ValueOuter), nameof(ValueCall), nameof(BoxValue));
 			Assert.AreEqual(111, ValueOuter(1), "Infix writes its captured slot, while the containing argument remains 1");

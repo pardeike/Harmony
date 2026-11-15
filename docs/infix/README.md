@@ -10,6 +10,22 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
+## Argument arrays and boxed argument copy-back
+
+Ordinary patches and Infix share argument-array value refresh and boxed argument copy-back. Ordinary `__args` receivers now see earlier patch and original-method writes, as covered by [PR 792](https://github.com/pardeike/Harmony/pull/792). Infix retains lazy allocation, selective refresh and overlap rejection. Output initialization still runs once.
+
+Writable boxed bindings now copy back to original by-value argument slots as well as referenced storage. Array restoration precedes boxed argument copy-back in ordinary patches. An unchanged box can overwrite a competing array edit. Delayed cleanup runs only after normal callback return, and an invalid box can fail after array restoration. The [injection guide](../../Documentation/articles/patching-injections.md#method-arguments) states these rules.
+
+The added fixtures cover 56 cases: ten from PR 792, nine ordinary array edge cases, eight Infix scope/helper cases and 29 boxed binding cases. The existing Infix comparison now asserts the corrected ordinary copy-back behavior.
+
+| Local verification | Result |
+| --- | --- |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,466 passed and 15 skipped in each |
+| Boxed copy-back before the fix | 20 failed and nine passed |
+| Shared refresh, before the boxed change | All 132 selected array and Infix cases passed |
+
+The skipped cases retain their existing opt-in or runtime requirements. These checks do not establish v3 behavior on other runtimes, architectures or mixed-engine combinations.
+
 ## Issue 783 method generation, 2026-10-15
 
 The rc.3 candidate separates patch construction, executable generation and assembly loading. Ordinary patches and Infixes share the same construction pipeline. CoreCLR normally receives a `DynamicMethod` containing the exact exception table and runtime references; ordinary exception handlers, finalizers and dynamic callbacks no longer require generated assemblies. The detour implementation and patch-state format are unchanged. [Design and acceptance plan](../../drafts/ISSUE-783-METHOD-GENERATION.md).

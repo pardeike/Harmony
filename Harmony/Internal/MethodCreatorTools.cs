@@ -1048,7 +1048,7 @@ namespace HarmonyLib
 					var tmpBoxVar = config.DeclareLocal(patchParamElementType);
 					codes.Add(Stloc[tmpBoxVar]);
 					codes.Add(Ldloca_S[tmpBoxVar]);
-					if (infix) tmpBoxVars.Add((argument, tmpBoxVar));
+					tmpBoxVars.Add((argument, tmpBoxVar));
 				}
 				else
 					codes.Add(argument.LoadAddress());

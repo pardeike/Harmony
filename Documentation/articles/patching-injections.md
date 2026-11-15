@@ -109,6 +109,10 @@ To read an original argument, declare a matching patch parameter; add `ref` to c
 - Use the original argument type or a type assignable from it, such as `object`. Harmony 3 also accepts plausible runtime-dependent reference bindings as described above.
 - Use its original name or **`__n`**, where `n` is its zero-based argument index. Argument annotations can map custom names.
 
+For a value-type argument requested as `ref object`, Harmony supplies a temporary box. It copies the box back after the callback returns normally. This applies to original arguments passed by value or by reference. A throwing callback bypasses delayed copy-back.
+
+Ordinary patches restore `__args` before copying boxed arguments back. If both bindings address the same argument, the boxed value wins even when the callback leaves it unchanged. A null or incompatible box can fail during unboxing after array writes have already been restored. Use one writable binding per argument to avoid competing writes. Infix retains its stricter overlap checks.
+
 If an original argument name conflicts with a Harmony injection name or naming convention, use `ArgumentMode.Original` to match its exact, case-sensitive name without interpreting it:
 
 ```csharp
