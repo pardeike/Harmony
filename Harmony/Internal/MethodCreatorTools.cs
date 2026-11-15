@@ -104,7 +104,7 @@ namespace HarmonyLib
 			var codes = creator.InitializeOutArguments(context);
 			codes.Add(Ldc_I4[context.parameters.Length]);
 			codes.Add(Newarr[typeof(object)]);
-			codes.AddRange(FillArgumentArray(context));
+			// Fill at the receiver, after any earlier argument writes.
 			return codes;
 		}
 

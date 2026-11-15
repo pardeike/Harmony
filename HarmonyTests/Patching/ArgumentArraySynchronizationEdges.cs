@@ -2,6 +2,8 @@ using HarmonyLib;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
 namespace HarmonyLibTests.Patching
@@ -111,6 +113,31 @@ namespace HarmonyLibTests.Patching
 			Assert.AreSame(arrays[0], arrays[1]);
 		}
 
+		[TestCase(false)]
+		[TestCase(true)]
+		public void Ordinary_arrays_box_each_argument_once_for_one_receiver(bool array)
+		{
+			var patch = AccessTools.DeclaredMethod(typeof(ArgumentArraySynchronizationEdges), array ? nameof(ReadArray) : nameof(WriteTyped));
+			var original = AccessTools.DeclaredMethod(typeof(ArgumentArraySynchronizationEdges), nameof(ValueTarget));
+			var config = new MethodCreatorConfig(original, null, [new(patch)], [], [], [], [], [], false);
+			_ = new MethodCreator(config).CreateReplacement();
+			Assert.AreEqual(array ? 1 : 0, config.instructions.Count(code => code.opcode == OpCodes.Box));
+			Assert.AreEqual(array ? 1 : 0, config.instructions.Count(code => code.opcode == OpCodes.Newarr));
+		}
+
+		[TestCase(false)]
+		[TestCase(true)]
+		public void Aliased_outputs_initialize_once_and_refresh_after_execution_or_skip(bool skip)
+		{
+			Add(nameof(AliasedOutputs), skip ? nameof(EditPairAndSkip) : nameof(EditPair), HarmonyPatchType.Prefix);
+			Add(nameof(AliasedOutputs), nameof(CapturePair), HarmonyPatchType.Postfix);
+			var value = 7;
+			var result = AliasedOutputs(out value, ref value);
+			Assert.AreEqual(skip ? 7 : 11, result);
+			Assert.AreEqual(skip ? 3 : 11, value);
+			Assert.AreEqual(skip ? new object[] { 3, 3 } : [11, 11], arrays.Single());
+		}
+
 		static void ReadArray(object[] __args) { arrays.Add(__args); values.Add(__args[0]); }
 		static void EditArray(object[] __args) { ReadArray(__args); __args[0] = 7; }
 		static void WriteTyped(ref int value) => value += 10;
@@ -118,6 +145,14 @@ namespace HarmonyLibTests.Patching
 		static void ReadAliasedArray([HarmonyArgument("__args")] object[] renamed) => ReadArray(renamed);
 		static void ReadBroadArray(object __args) => ReadArray((object[])__args);
 		static void ReadEmptyArray(object[] __args) => arrays.Add(__args);
+		static void CapturePair(object[] __args) => arrays.Add((object[])__args.Clone());
+		static void EditPair(object[] __args)
+		{
+			Assert.AreEqual(new object[] { 0, 0 }, __args);
+			__args[0] = 2;
+			__args[1] = 3;
+		}
+		static bool EditPairAndSkip(object[] __args, ref int __result) { EditPair(__args); __result = 7; return false; }
 		static void WriteThenThrow(ref int value) { value = 17; throw new InvalidOperationException("patch failure"); }
 		static void EditThenThrowFinalizer(Exception __exception, object[] __args)
 		{
@@ -132,5 +167,7 @@ namespace HarmonyLibTests.Patching
 		static int RefValueTarget(ref int value) => value;
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int EmptyTarget() => 42;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int AliasedOutputs(out int first, ref int second) { first = 10; second++; return first; }
 	}
 }

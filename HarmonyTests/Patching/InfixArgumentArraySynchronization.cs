@@ -19,9 +19,11 @@ namespace HarmonyLibTests.Patching
 		public void TearDown() => harmony.UnpatchAll(harmony.Id);
 		static MethodInfo Method(string name) => AccessTools.DeclaredMethod(typeof(InfixArgumentArraySynchronization), name);
 		void Add(string name, HarmonyPatchType role, int priority = Priority.Normal)
+			=> Add(Method(nameof(Outer)), Method(nameof(Inner)), name, role, priority);
+		void Add(MethodInfo outer, MethodInfo inner, string name, HarmonyPatchType role, int priority = Priority.Normal)
 		{
-			var fix = new HarmonyMethod(Method(name)) { innerMethod = new InnerMethod(Method(nameof(Inner))), priority = priority };
-			var processor = harmony.CreateProcessor(Method(nameof(Outer)));
+			var fix = new HarmonyMethod(Method(name)) { innerMethod = new InnerMethod(inner), priority = priority };
+			var processor = harmony.CreateProcessor(outer);
 			if (role == HarmonyPatchType.Prefix) processor.AddInnerPrefix(fix);
 			else if (role == HarmonyPatchType.Postfix) processor.AddInnerPostfix(fix);
 			else processor.AddInnerFinalizer(fix);
@@ -43,6 +45,25 @@ namespace HarmonyLibTests.Patching
 			Assert.AreEqual(111, Outer(ref value));
 			Assert.AreEqual(111, value);
 			Assert.AreEqual(new[] { 1, 11, 111 }, values);
+			Assert.AreSame(arrays[0], arrays[1]);
+			Assert.AreSame(arrays[1], arrays[2]);
+		}
+
+		[TestCase(false, false)]
+		[TestCase(false, true)]
+		[TestCase(true, false)]
+		[TestCase(true, true)]
+		public void By_value_argument_arrays_refresh_in_inline_and_helper_paths(bool outer, bool helper)
+		{
+			var original = Method(nameof(ValueOuter));
+			var inner = Method(nameof(ValueInner));
+			Add(original, inner, outer ? nameof(ReadOuter) : nameof(Read), HarmonyPatchType.Prefix, Priority.First);
+			Add(original, inner, outer ? nameof(WriteOuter) : nameof(Write), HarmonyPatchType.Prefix, Priority.High);
+			Add(original, inner, outer ? nameof(ReadOuter) : nameof(Read), HarmonyPatchType.Prefix, Priority.Low);
+			Add(original, inner, outer ? nameof(ReadOuter) : nameof(Read), HarmonyPatchType.Postfix);
+			if (helper) Add(original, inner, nameof(Finalizer), HarmonyPatchType.Finalizer);
+			Assert.AreEqual(outer ? 21 : 111, ValueOuter(1));
+			Assert.AreEqual(new[] { 1, 11, 11 }, values);
 			Assert.AreSame(arrays[0], arrays[1]);
 			Assert.AreSame(arrays[1], arrays[2]);
 		}
@@ -78,5 +99,9 @@ namespace HarmonyLibTests.Patching
 		static int Inner(ref int value) { value += 100; return value; }
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static int Outer(ref int value) => Inner(ref value);
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ValueInner(int value) => value * 10;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		static int ValueOuter(int value) => ValueInner(value) + value;
 	}
 }

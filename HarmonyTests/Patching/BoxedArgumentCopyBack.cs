@@ -73,6 +73,38 @@ namespace HarmonyLibTests.Patching
 		[TestCase(false, true)]
 		[TestCase(true, false)]
 		[TestCase(true, true)]
+		public void An_unchanged_boxed_alias_copies_back_after_a_typed_write(bool originalRef, bool boxFirst)
+		{
+			Add(Method(originalRef ? nameof(RefTarget) : nameof(ValueTarget)), boxFirst ? nameof(BoxBeforeTyped) : nameof(TypedBeforeBox), HarmonyPatchType.Prefix);
+			var value = 1;
+			var result = originalRef ? RefTarget(2, ref value) : ValueTarget(2, value);
+			Assert.AreEqual(201, result);
+			if (originalRef) Assert.AreEqual(1, value);
+		}
+
+		[TestCase(false, false, false)]
+		[TestCase(false, false, true)]
+		[TestCase(false, true, false)]
+		[TestCase(false, true, true)]
+		[TestCase(true, false, false)]
+		[TestCase(true, false, true)]
+		[TestCase(true, true, false)]
+		[TestCase(true, true, true)]
+		public void Boxed_aliases_copy_back_in_callback_parameter_order(bool originalRef, bool writeBoth, bool reverse)
+		{
+			replaceBox = writeBoth;
+			Add(Method(originalRef ? nameof(RefTarget) : nameof(ValueTarget)), reverse ? nameof(SecondBoxBeforeFirst) : nameof(FirstBoxBeforeSecond), HarmonyPatchType.Prefix);
+			var value = 1;
+			var expected = reverse ? 17 : writeBoth ? 23 : 1;
+			var result = originalRef ? RefTarget(2, ref value) : ValueTarget(2, value);
+			Assert.AreEqual(200 + expected, result);
+			if (originalRef) Assert.AreEqual(expected, value);
+		}
+
+		[TestCase(false, false)]
+		[TestCase(false, true)]
+		[TestCase(true, false)]
+		[TestCase(true, true)]
 		public void Invalid_box_copy_back_throws_after_array_restore(bool originalRef, bool useNull)
 		{
 			nullBox = useNull;
@@ -146,6 +178,20 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
+		public void Initially_null_nullable_argument_can_keep_its_untouched_box()
+		{
+			Add(Method(nameof(NullableTarget)), nameof(KeepNull), HarmonyPatchType.Prefix);
+			Assert.IsNull(NullableTarget(null));
+		}
+
+		[Test]
+		public void Interface_boxed_binding_copies_back_to_the_argument()
+		{
+			Add(Method(nameof(ValueTarget)), nameof(WriteComparable), HarmonyPatchType.Prefix);
+			Assert.AreEqual(217, ValueTarget(2, 1));
+		}
+
+		[Test]
 		public void Enum_argument_keeps_its_exact_box_type()
 		{
 			Add(Method(nameof(EnumTarget)), nameof(WriteEnum), HarmonyPatchType.Prefix);
@@ -153,6 +199,15 @@ namespace HarmonyLibTests.Patching
 		}
 
 		static void WriteBox(ref object value) => value = 17;
+		static void TypedBeforeBox(ref int value, [HarmonyArgument("value")] ref object snapshot) => value = 17;
+		static void BoxBeforeTyped([HarmonyArgument("value")] ref object snapshot, ref int value) => value = 17;
+		static void FirstBoxBeforeSecond([HarmonyArgument("value")] ref object first, [HarmonyArgument("value")] ref object second)
+		{
+			first = 17;
+			if (replaceBox) second = 23;
+		}
+		static void SecondBoxBeforeFirst([HarmonyArgument("value")] ref object second, [HarmonyArgument("value")] ref object first)
+			=> FirstBoxBeforeSecond(ref first, ref second);
 		static void WriteBoth(ref object before, ref object value) { before = 3; value = 17; }
 		static void WriteIndexed([HarmonyArgument(1)] ref object renamed) => renamed = 17;
 		static void Observe(object[] __args) => observed = __args[1];
@@ -169,6 +224,8 @@ namespace HarmonyLibTests.Patching
 		static int PassThrough(int result, ref object value) { value = 17; return result + 1; }
 		static void WriteStruct(ref object value) => value = new Sample { value = 17 };
 		static void WriteNullable(ref object value) => value = nullBox ? null : (object)17;
+		static void KeepNull(ref object value) => Assert.IsNull(value);
+		static void WriteComparable(ref IComparable value) => value = 17;
 		static void WriteEnum(ref object value) => value = Choice.Other;
 
 		public struct Sample { public int value; }

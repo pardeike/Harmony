@@ -32,6 +32,8 @@ namespace HarmonyLibTests.Patching
 		static void IntPrefix(int value) { }
 		static void ClosedInstance(Box<int> __instance) { }
 		static void ObjectPrefix(object value) => observed = value;
+		static void BoxedPrefix(ref object value) => value = 17;
+		static void ArrayPrefix(object[] __args) => observed = (object[])__args.Clone();
 		static void OpenPrefix<T>(T value) => observed = value;
 		static void ConstraintPrefix(IDisposable value) => observed = value;
 		static string StringPostfix(string value) => value;
@@ -112,6 +114,33 @@ namespace HarmonyLibTests.Patching
 			Assert.That(observed, Is.EqualTo(7));
 			Assert.That(snapshot().MakeGenericMethod(typeof(string)).Invoke(null, ["kept"]), Is.EqualTo("kept"));
 			Assert.That(observed, Is.EqualTo("kept"));
+		}
+
+		[TestCase(false)]
+		[TestCase(true)]
+		public void Family_boxed_writer_and_array_observer_keep_siblings_isolated_after_rebuild(bool closedBody)
+		{
+			var definition = Method(nameof(Echo));
+			Host(definition);
+			var writer = Callback(nameof(BoxedPrefix));
+			writer.priority = Priority.High;
+			var observer = Callback(nameof(ArrayPrefix));
+			observer.priority = Priority.Low;
+			harmony.Patch(definition, prefix: observer);
+			harmony.Patch(definition.MakeGenericMethod(typeof(int)), prefix: writer, transpiler: closedBody ? Callback(nameof(Identity)) : null);
+			for (var rebuild = 0; rebuild < 2; rebuild++)
+			{
+				Assert.That(snapshot().MakeGenericMethod(typeof(int)).Invoke(null, [1]), Is.EqualTo(17));
+				Assert.That(((object[])observed)[0], Is.EqualTo(17));
+				Assert.That(snapshot().MakeGenericMethod(typeof(string)).Invoke(null, ["kept"]), Is.EqualTo("kept"));
+				Assert.That(((object[])observed)[0], Is.EqualTo("kept"));
+				if (rebuild == 0)
+				{
+					var previousInstalls = installs;
+					_ = harmony.CreateProcessor(definition).Patch();
+					Assert.That(installs, Is.EqualTo(previousInstalls + 1));
+				}
+			}
 		}
 
 		[Test]

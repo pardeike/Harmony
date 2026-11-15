@@ -271,7 +271,7 @@ Keep one binder. Separate `EmitCallParameter()`'s conversion rules from its assu
 
 Scope demand checks too: an inner `__args` or `__state` must not accidentally allocate the same-named outer storage through global `AnyFixHas()`/`WithFixes()` checks. Preserve reverse-patch source/original distinctions. Reuse normal prefix scheduling, both postfix phases and finalizer control flow against the selected context, as well as shared parameter emission and cleanup. Inner finalizers use the typed helper boundary in the completion contract.
 
-Ordinary patches and Infix share value-type argument boxing and copy-back to the selected storage after normal callback return. This includes boxed writable bindings to original by-value arguments. Ordinary patches restore `__args` before boxed argument copy-back, even when the callback leaves a box unchanged. Cleanup is not atomic: array restoration can complete before an invalid box fails unboxing. Keep Infix's existing overlap rejection and normal-return-only delayed cleanup.
+Ordinary patches and Infix share value-type argument boxing and copy-back to the selected storage after normal callback return. This includes boxed writable bindings to original by-value arguments. Ordinary patches restore `__args` before boxed argument copy-back in callback parameter order. An unchanged box can overwrite a competing array edit or direct typed write. If several boxed parameters address the same argument, the last boxed parameter wins. Cleanup is not atomic: array restoration can complete before an invalid box fails unboxing. Keep Infix's existing overlap rejection and normal-return-only delayed cleanup.
 
 Construct and validate every selected site before installation:
 

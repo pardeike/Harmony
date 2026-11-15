@@ -12,17 +12,17 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 
 ## Argument arrays and boxed argument copy-back
 
-Ordinary patches and Infix share argument-array value refresh and boxed argument copy-back. Ordinary `__args` receivers now see earlier patch and original-method writes, as covered by [PR 792](https://github.com/pardeike/Harmony/pull/792). Infix retains lazy allocation, selective refresh and overlap rejection. Output initialization still runs once.
+Ordinary patches and Infix share argument-array value refresh and boxed argument copy-back. Ordinary `__args` receivers now see earlier patch and original-method writes, as covered by [PR 792](https://github.com/pardeike/Harmony/pull/792). Harmony allocates ordinary argument arrays and initializes output storage once. It fills those arrays only before receiving callbacks. Infix retains lazy allocation, selective refresh and overlap rejection.
 
-Writable boxed bindings now copy back to original by-value argument slots as well as referenced storage. Array restoration precedes boxed argument copy-back in ordinary patches. An unchanged box can overwrite a competing array edit. Delayed cleanup runs only after normal callback return, and an invalid box can fail after array restoration. The [injection guide](../../Documentation/articles/patching-injections.md#method-arguments) states these rules.
+Writable boxed bindings now copy back to original by-value argument slots as well as referenced storage. Ordinary patches copy boxes back in callback parameter order after array restoration and direct typed writes. An unchanged box can overwrite either competing write. If several boxes address one argument, the last boxed parameter wins. Delayed cleanup runs only after normal callback return, and an invalid box can fail after array restoration. The [injection guide](../../Documentation/articles/patching-injections.md#method-arguments) states these rules.
 
-The added fixtures cover 56 cases: ten from PR 792, nine ordinary array edge cases, eight Infix scope/helper cases and 29 boxed binding cases. The existing Infix comparison now asserts the corrected ordinary copy-back behavior.
+The argument synchronization coverage includes 80 cases: ten from PR 792, 13 ordinary array edge cases, 12 Infix scope/helper cases, 43 boxed binding cases and two generic-family rebuild cases. The family cases execute generated bodies and verify installer invocation, not third-party host installation. The existing Infix comparison asserts the corrected ordinary copy-back behavior.
 
 | Local verification | Result |
 | --- | --- |
-| .NET 10.0.11 x64, complete Debug and Release suites | 1,466 passed and 15 skipped in each |
-| Boxed copy-back before the fix | 20 failed and nine passed |
-| Shared refresh, before the boxed change | All 132 selected array and Infix cases passed |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,490 passed and 15 skipped in each |
+| Single `int` argument with one ordinary array receiver | One emitted box; approximately 56 allocated bytes per invocation in the warmed net10/x64 probe |
+| Same allocation probe before removing the redundant initial fill | Two emitted boxes; approximately 80 allocated bytes per invocation |
 
 The skipped cases retain their existing opt-in or runtime requirements. These checks do not establish v3 behavior on other runtimes, architectures or mixed-engine combinations.
 
