@@ -80,21 +80,27 @@ namespace HarmonyLib
 			return codes;
 		}
 
-		internal static List<CodeInstruction> PrepareArgumentArray(this MethodCreator creator)
+		internal static List<CodeInstruction> PrepareArgumentArray(this MethodCreator creator, bool initialize = true)
 		{
 			var codes = new List<CodeInstruction>();
 			var original = creator.config.original;
 			var originalIsStatic = original.IsStatic;
 			var parameters = original.GetParameters();
 			var i = 0;
-			foreach (var pInfo in parameters)
+			if (initialize)
 			{
-				var argIndex = i++ + (originalIsStatic ? 0 : 1);
-				if (pInfo.IsOut || pInfo.IsRetval)
-					codes.AddRange(InitializeOutParameter(argIndex, pInfo.ParameterType));
+				foreach (var pInfo in parameters)
+				{
+					var argIndex = i++ + (originalIsStatic ? 0 : 1);
+					if (pInfo.IsOut || pInfo.IsRetval)
+						codes.AddRange(InitializeOutParameter(argIndex, pInfo.ParameterType));
+				}
+				codes.Add(Ldc_I4[parameters.Length]);
+				codes.Add(Newarr[typeof(object)]);
 			}
-			codes.Add(Ldc_I4[parameters.Length]);
-			codes.Add(Newarr[typeof(object)]);
+			else
+				codes.Add(Ldloc[creator.config.GetLocal(InjectionType.ArgsArray)]);
+
 			i = 0;
 			var arrayIdx = 0;
 			foreach (var pInfo in parameters)
@@ -118,6 +124,8 @@ namespace HarmonyLib
 					codes.Add(Box[pType]);
 				codes.Add(Stelem_Ref);
 			}
+			if (initialize is false)
+				codes.Add(Pop);
 			return codes;
 		}
 
@@ -174,6 +182,11 @@ namespace HarmonyLib
 			var originalIsStatic = original.IsStatic;
 			var returnType = config.returnType;
 			var injections = config.injections[patch].ToList();
+
+			// Earlier patches or the original may have changed arguments outside the shared array.
+			// Refresh it without allocating another array or reinitializing out parameters.
+			if (injections.Any(injection => injection.injectionType == InjectionType.ArgsArray))
+				codes.AddRange(creator.PrepareArgumentArray(initialize: false));
 
 			var isInstance = originalIsStatic is false;
 			var originalParameters = original.GetParameters();
