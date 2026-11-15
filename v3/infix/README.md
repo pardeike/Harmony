@@ -10,6 +10,22 @@ Infix is implemented and unreleased. It supports selected method/property calls,
 - [Testing strategy](TESTING-STRATEGY.md): required observations, regression lessons and runtime boundaries.
 - [Compatibility strategy](../../drafts/INFIX-COMPATIBILITY-TESTS.md) and [runner documentation](../../HarmonyTests.Compatibility/README.md): mixed-version cases, pinned providers, reproduction commands and per-case reports.
 
+## Argument arrays and boxed argument copy-back
+
+Ordinary patches and Infix share argument-array value refresh and boxed argument copy-back. Ordinary `__args` receivers now see earlier patch and original-method writes, as covered by [PR 792](https://github.com/pardeike/Harmony/pull/792). Harmony allocates ordinary argument arrays and initializes output storage once. It fills those arrays only before receiving callbacks. Infix retains lazy allocation, selective refresh and overlap rejection.
+
+Writable boxed bindings now copy back to original by-value argument slots as well as referenced storage. Ordinary patches copy boxes back in callback parameter order after array restoration and direct typed writes. An unchanged box can overwrite either competing write. If several boxes address one argument, the last boxed parameter wins. Delayed cleanup runs only after normal callback return, and an invalid box can fail after array restoration. The [injection guide](../../Documentation/articles/patching-injections.md#method-arguments) states these rules.
+
+The argument synchronization coverage includes 80 cases: ten from PR 792, 13 ordinary array edge cases, 12 Infix scope/helper cases, 43 boxed binding cases and two generic-family rebuild cases. The family cases execute generated bodies and verify installer invocation, not third-party host installation. The existing Infix comparison asserts the corrected ordinary copy-back behavior.
+
+| Local verification | Result |
+| --- | --- |
+| .NET 10.0.11 x64, complete Debug and Release suites | 1,490 passed and 15 skipped in each |
+| Single `int` argument with one ordinary array receiver | One emitted box; approximately 56 allocated bytes per invocation in the warmed net10/x64 probe |
+| Same allocation probe before removing the redundant initial fill | Two emitted boxes; approximately 80 allocated bytes per invocation |
+
+The skipped cases retain their existing opt-in or runtime requirements. These checks do not establish v3 behavior on other runtimes, architectures or mixed-engine combinations.
+
 ## Issue 783 method generation, 2026-10-15
 
 The rc.3 candidate separates patch construction, executable generation and assembly loading. Ordinary patches and Infixes share the same construction pipeline. CoreCLR normally receives a `DynamicMethod` containing the exact exception table and runtime references; ordinary exception handlers, finalizers and dynamic callbacks no longer require generated assemblies. The detour implementation and patch-state format are unchanged. [Design and acceptance plan](../../drafts/ISSUE-783-METHOD-GENERATION.md).

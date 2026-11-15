@@ -177,6 +177,7 @@ static void Prefix(A first, B second, MethodBase __originalMethod)
 <p>For a static original, an instance field or an injected instance delegate binds to the first argument when that argument can hold the instance: a reference argument declared as the declaring type, a related type or <code>object</code>, or a value-type argument of exactly the declaring type, by value or by <code>ref</code>. Otherwise the registration is rejected. Harmony 2 used the first argument without checking it.</p>
 <h2 id="__args">__args</h2>
 <p><strong><code>object[] __args</code></strong> contains all arguments in declaration order. Editing its elements updates the corresponding arguments; <code>ref</code> is not needed. It has more overhead than typed argument injection.</p>
+<p>Each receiving patch sees current argument values, including writes from earlier patches and the original. The same array instance is reused during one ordinary invocation.</p>
 <p>The array excludes the receiver. <code>ref object[]</code> is invalid, as are arguments the emitter cannot represent in the array, such as pointers and byref-like values. Use typed argument injections for those methods. Broader by-value declarations such as <code>object __args</code> are accepted for ordinary patches.</p>
 <h2 id="method-arguments">method arguments</h2>
 <p>To read an original argument, declare a matching patch parameter; add <code>ref</code> to change it:</p>
@@ -184,6 +185,9 @@ static void Prefix(A first, B second, MethodBase __originalMethod)
 <li>Use the original argument type or a type assignable from it, such as <code>object</code>. Harmony 3 also accepts plausible runtime-dependent reference bindings as described above.</li>
 <li>Use its original name or <strong><code>__n</code></strong>, where <code>n</code> is its zero-based argument index. Argument annotations can map custom names.</li>
 </ul>
+<p>For a value-type argument requested as <code>ref object</code>, Harmony supplies a temporary box. It copies the box back after the callback returns normally. This applies to original arguments passed by value or by reference. A throwing callback bypasses delayed copy-back.</p>
+<p>Ordinary patches restore <code>__args</code> before copying boxed arguments back in callback parameter order. Each copy-back writes its box even when the callback leaves it unchanged. A boxed binding can therefore overwrite a direct typed <code>ref</code> write or an array edit to the same argument. If several boxed parameters address that argument, the last boxed parameter wins. These rules apply to original arguments passed by value or by reference.</p>
+<p>A null or incompatible box can fail during unboxing after array writes have already been restored. Use one writable binding per argument to avoid competing writes. Infix retains its stricter overlap checks.</p>
 <p>If an original argument name conflicts with a Harmony injection name or naming convention, use <code>ArgumentMode.Original</code> to match its exact, case-sensitive name without interpreting it:</p>
 <pre><code class="lang-csharp">static void Prefix([HarmonyArgument(&quot;__result&quot;, ArgumentMode.Original)] ref bool result)
 </code></pre>
