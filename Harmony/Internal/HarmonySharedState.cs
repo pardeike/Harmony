@@ -216,9 +216,9 @@ namespace HarmonyLib
 
 		internal static MethodBase GetStackFrameMethod(StackFrame frame, bool useReplacement)
 		{
-			var method = frame.GetMethod() as MethodInfo;
-			if (method != null)
-				return GetRealMethod(method, useReplacement);
+			var method = frame.GetMethod();
+			if (method is MethodInfo ordinary)
+				return GetRealMethod(ordinary, useReplacement);
 
 			if (methodAddressRef != null)
 			{
@@ -228,7 +228,8 @@ namespace HarmonyLib
 						return useReplacement ? info[1] : info[0];
 			}
 
-			return null;
+			// A constructor frame is its own method. A host that replaces bodies in place keeps the patched constructor on the stack.
+			return method;
 		}
 	}
 }

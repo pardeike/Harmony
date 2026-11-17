@@ -75,6 +75,35 @@ namespace HarmonyLibTests.Patching
 			finally { harmony.UnpatchAll(harmony.Id); }
 		}
 
+		class Located
+		{
+			internal static Assembly constructed;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			internal Located() => constructed = Assembly.GetExecutingAssembly();
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			internal static Assembly Called() => Assembly.GetExecutingAssembly();
+		}
+		static void Nothing() { }
+
+		[Test]
+		public void Hot_reload_keeps_the_executing_assembly_of_a_patched_constructor_and_method()
+		{
+			if (!HotReloadHost.Supported) Assert.Ignore("Hot reload requires DOTNET_MODIFIABLE_ASSEMBLIES=debug.");
+			var constructor = AccessTools.DeclaredConstructor(typeof(Located), []);
+			var called = AccessTools.DeclaredMethod(typeof(Located), nameof(Located.Called));
+			_ = new HotReloadHost(method => method == constructor || method == called);
+			var harmony = new Harmony("test.export.executing.assembly");
+			try
+			{
+				harmony.Patch(constructor, postfix: new HarmonyMethod(Method(nameof(Nothing))));
+				harmony.Patch(called, postfix: new HarmonyMethod(Method(nameof(Nothing))));
+				_ = new Located();
+				Assert.That(Located.Called(), Is.EqualTo(typeof(Located).Assembly));
+				Assert.That(Located.constructed, Is.EqualTo(typeof(Located).Assembly));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+		}
+
 		[Test]
 		public void Hot_reload_preserves_recursive_generic_method_and_original_method()
 		{

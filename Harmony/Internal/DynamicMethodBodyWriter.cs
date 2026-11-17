@@ -229,6 +229,9 @@ namespace HarmonyLib
 			return (code, locals, exceptions, MaximumStack());
 		}
 
+		// An exported body runs as the target method itself. The runtime's own answer is correct there, and a host with access checks cannot call the private helper.
+		static MethodBase InPlace(MethodBase method) => method == PatchTools.m_GetExecutingAssemblyReplacement ? PatchTools.m_GetExecutingAssembly : method;
+
 		int ArgumentIndex(object operand) => ((ParameterDefinition)operand).Index + (definition.HasThis ? 1 : 0);
 
 		int Token(object operand, bool forwarding = false)
@@ -239,7 +242,7 @@ namespace HarmonyLib
 				TypeReference type => genericMembers?.TryGetValue(type, out var runtimeType) is true ? runtimeType : type.ResolveReflection(),
 				FieldReference field => genericMembers?.TryGetValue(field, out var runtimeField) is true ? runtimeField : field.ResolveReflection(),
 				MethodReference reference => reference == definition ? metadataSelf
-					: genericMembers?.TryGetValue(reference, out var runtimeMethod) is true ? runtimeMethod : reference.ResolveReflection(),
+					: genericMembers?.TryGetValue(reference, out var runtimeMethod) is true ? runtimeMethod : InPlace(reference.ResolveReflection()),
 				CallSite signature => Bytes(writer => Signature(writer, signature)),
 				string text => text,
 				_ => throw new NotSupportedException($"Unsupported metadata token: {operand}.")

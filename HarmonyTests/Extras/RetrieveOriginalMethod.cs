@@ -50,6 +50,17 @@ namespace HarmonyLibTests.Extras
 			_ = inst.index;
 		}
 
+		// Without a patch, a constructor frame is its own method.
+		[Test]
+		public void TestUnpatchedConstructor() => Assert.AreEqual(AccessTools.Constructor(typeof(Unpatched), []), new Unpatched().found);
+
+		class Unpatched
+		{
+			internal readonly MethodBase found;
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			internal Unpatched() => found = Harmony.GetMethodFromStackframe(new StackTrace(0, false).GetFrame(0));
+		}
+
 		internal static void PatchTarget()
 		{
 			try
