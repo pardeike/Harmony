@@ -614,6 +614,7 @@ namespace HarmonyLibTests.Patching
 		public void Definition_and_closed_targets_share_one_installer(bool closedFirst)
 		{
 			if (!MethodBodyGenerator.HasDynamicIL) Assert.Ignore("Body export requires a modern Harmony target.");
+			if (closedFirst && Environment.Version.Major >= 11) Assert.Ignore("MonoMod cannot detour a generic method instantiation on .NET 11.");
 			var definition = Method(closedFirst ? nameof(ClosedFirst) : nameof(DefinitionFirst));
 			var closed = definition.MakeGenericMethod(typeof(int));
 			var postfix = new HarmonyMethod(Method(nameof(Postfix)));
@@ -1073,7 +1074,7 @@ namespace HarmonyLibTests.Patching
 		[Test]
 		public void A_closed_sibling_keeps_a_detour_held_family()
 		{
-			if (AccessTools.IsNetFrameworkRuntime) Assert.Ignore("MonoMod cannot detour a generic method instantiation on .NET Framework.");
+			if (AccessTools.IsNetFrameworkRuntime || Environment.Version.Major >= 11) Assert.Ignore("MonoMod cannot detour a generic method instantiation on .NET Framework or .NET 11.");
 			var definition = Method(nameof(Mixed));
 			var postfix = new HarmonyMethod(Method(nameof(Postfix)));
 			var harmony = new Harmony("test.method.body.family.sibling");
@@ -1091,8 +1092,8 @@ namespace HarmonyLibTests.Patching
 				Assert.That(HarmonyLib.MethodBodyPatching.Instantiations(definition), Is.Empty);
 				var first = Mixed<int>();
 				var sibling = Mixed<string>();
-				if ((first != 2 || sibling != 2) && (IntPtr.Size == 4 || Environment.Version.Major == 3 || Environment.Version.Major == 11))
-					Assert.Ignore("Generic instantiation detours are not reliable on x86, .NET Core 3.x, or some .NET 11 runs.");
+				if ((first != 2 || sibling != 2) && (IntPtr.Size == 4 || Environment.Version.Major == 3))
+					Assert.Ignore("Generic instantiation detours are not reliable on x86 or .NET Core 3.x.");
 				Assert.That(first, Is.EqualTo(2));
 				Assert.That(sibling, Is.EqualTo(2));
 			}

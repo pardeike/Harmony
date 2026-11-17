@@ -62,16 +62,20 @@ namespace HarmonyLib
 			return [.. types];
 		}
 
-		// A dynamic signature cannot hold a function pointer type on every runtime. A native int has the same size and GC tracking.
+		// MonoMod compares the detour's argument types, so the signature keeps a function pointer type where a dynamic signature can hold it.
+		// .NET 11 rejects it there. A native int has the same size and GC tracking.
 		static readonly PropertyInfo isFunctionPointer = typeof(Type).GetProperty("IsFunctionPointer");
+		internal static bool HoldsFunctionPointers => Environment.Version.Major < 11;
 		static Type Native(Type type)
 		{
-			if (isFunctionPointer is not null && (bool)isFunctionPointer.GetValue(type, null)) return typeof(IntPtr);
-			if (type.IsByRef) return Native(type.GetElementType()).MakeByRefType();
-			if (type.IsPointer) return Native(type.GetElementType()).MakePointerType();
-			if (type.IsArray) return DynamicMethodProxy.IsVector(type)
-				? Native(type.GetElementType()).MakeArrayType() : Native(type.GetElementType()).MakeArrayType(type.GetArrayRank());
-			return type;
+			if (isFunctionPointer is not null && (bool)isFunctionPointer.GetValue(type, null)) return HoldsFunctionPointers ? type : typeof(IntPtr);
+			if (!type.HasElementType) return type;
+			// Before .NET 8, a reference to or an array of function pointers is a distinct type that only reports a native int element. Keep it.
+			var element = Native(type.GetElementType());
+			if (element == type.GetElementType()) return type;
+			if (type.IsByRef) return element.MakeByRefType();
+			if (type.IsPointer) return element.MakePointerType();
+			return DynamicMethodProxy.IsVector(type) ? element.MakeArrayType() : element.MakeArrayType(type.GetArrayRank());
 		}
 
 		// Reflection has no function pointer type to resolve to. A native int has the same calling convention and GC tracking.

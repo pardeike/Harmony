@@ -64,8 +64,7 @@ namespace HarmonyLibTests.Patching
 			Assert.That(RuntimeAsyncTarget.Call(5).GetAwaiter().GetResult(), Is.EqualTo(6));
 		}
 
-		// These tests assert the current bypass, see MonoMod issue 344 (https://github.com/MonoMod/MonoMod/issues/344).
-		// Every runtime-async caller runs once before patching, because JIT-compiling its async variant after the patch crashes the process.
+		// A runtime-async caller enters the async variant of an ordinary Task-returning method. MonoMod detours that variant too.
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		static async Task<int> CompilerCaller(int value) => await OrdinaryTaskTarget.Ordinary(value);
 
@@ -78,7 +77,7 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
-		public void Ordinary_task_method_patch_is_bypassed_by_runtime_async_callers()
+		public void Ordinary_task_method_patch_reaches_runtime_async_callers()
 		{
 			var original = AccessTools.DeclaredMethod(typeof(OrdinaryTaskTarget), nameof(OrdinaryTaskTarget.Ordinary));
 			var nativeCaller = AccessTools.DeclaredMethod(typeof(OrdinaryTaskTarget), nameof(OrdinaryTaskTarget.NativeCaller));
@@ -91,15 +90,31 @@ namespace HarmonyLibTests.Patching
 				harmony.Patch(original, postfix: new HarmonyMethod(typeof(RuntimeAsync), nameof(Postfix)));
 				Assert.That(OrdinaryTaskTarget.Ordinary(5).GetAwaiter().GetResult(), Is.EqualTo(42));
 				Assert.That(CompilerCaller(5).GetAwaiter().GetResult(), Is.EqualTo(42));
-				Assert.That(OrdinaryTaskTarget.NativeCaller(5).GetAwaiter().GetResult(), Is.EqualTo(6));
-				Assert.That(OrdinaryTaskTarget.NativeCallerConfigureAwait(5).GetAwaiter().GetResult(), Is.EqualTo(6));
+				Assert.That(OrdinaryTaskTarget.NativeCaller(5).GetAwaiter().GetResult(), Is.EqualTo(42));
+				Assert.That(OrdinaryTaskTarget.NativeCallerConfigureAwait(5).GetAwaiter().GetResult(), Is.EqualTo(42));
 			}
 			finally { harmony.UnpatchAll(harmony.Id); }
 			AssertUnpatched();
 		}
 
 		[Test]
-		public void Ordinary_virtual_override_patch_is_bypassed_by_runtime_async_callers()
+		public void Patch_installed_before_the_first_runtime_async_call_reaches_the_caller()
+		{
+			var original = AccessTools.DeclaredMethod(typeof(ColdTaskTarget), nameof(ColdTaskTarget.Ordinary));
+			var harmony = new Harmony("test.runtime.async.cold");
+			try
+			{
+				harmony.Patch(original, postfix: new HarmonyMethod(typeof(RuntimeAsync), nameof(Postfix)));
+				Assert.That(ColdTaskTarget.NativeCaller(5).GetAwaiter().GetResult(), Is.EqualTo(42));
+				Assert.That(ColdTaskTarget.Ordinary(5).GetAwaiter().GetResult(), Is.EqualTo(42));
+			}
+			finally { harmony.UnpatchAll(harmony.Id); }
+			Assert.That(ColdTaskTarget.NativeCaller(5).GetAwaiter().GetResult(), Is.EqualTo(6));
+			Assert.That(ColdTaskTarget.Ordinary(5).GetAwaiter().GetResult(), Is.EqualTo(6));
+		}
+
+		[Test]
+		public void Ordinary_virtual_override_patch_reaches_runtime_async_callers()
 		{
 			var original = AccessTools.DeclaredMethod(typeof(OrdinaryVirtualDerived), nameof(OrdinaryVirtualDerived.Compute));
 			var derived = new OrdinaryVirtualDerived();
@@ -110,7 +125,7 @@ namespace HarmonyLibTests.Patching
 			{
 				harmony.Patch(original, postfix: new HarmonyMethod(typeof(RuntimeAsync), nameof(Postfix)));
 				Assert.That(derived.Compute(5).GetAwaiter().GetResult(), Is.EqualTo(42));
-				Assert.That(OrdinaryVirtualCaller.NativeVirtualCaller(derived, 5).GetAwaiter().GetResult(), Is.EqualTo(7));
+				Assert.That(OrdinaryVirtualCaller.NativeVirtualCaller(derived, 5).GetAwaiter().GetResult(), Is.EqualTo(42));
 			}
 			finally { harmony.UnpatchAll(harmony.Id); }
 			Assert.That(derived.Compute(5).GetAwaiter().GetResult(), Is.EqualTo(7));

@@ -20,7 +20,7 @@ Read about [generated bodies](patching-infix.md#generated-bodies-and-captured-va
 
 ## .NET 11 support
 
-Harmony 3 adds .NET 11 support. [.NET 11 runtime async](patching-edgecases.md#runtime-async-in-net-11) remains unsupported and throws `NotSupportedException` when patched or reverse-patched. Ordinary `Task`-returning methods and compiler-generated async state machines remain supported, but patches on them do not reach callers compiled with runtime-async, see the [edge cases](patching-edgecases.md#runtime-async-in-net-11).
+Harmony 3 adds .NET 11 support. [.NET 11 runtime async](patching-edgecases.md#runtime-async-in-net-11) remains unsupported and throws `NotSupportedException` when patched or reverse-patched. Ordinary `Task`-returning methods and compiler-generated async state machines remain supported. Their patches also reach callers compiled with runtime-async.
 
 ## Host Harmony in a runtime
 

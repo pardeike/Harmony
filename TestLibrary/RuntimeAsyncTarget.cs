@@ -29,6 +29,16 @@ public static class OrdinaryTaskTarget
 	public static async Task<int> NativeCallerConfigureAwait(int value) => await Ordinary(value).ConfigureAwait(false);
 }
 
+// Nothing calls these before a patch is installed, so the runtime compiles the async variant after the detour.
+public static class ColdTaskTarget
+{
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	public static Task<int> Ordinary(int value) => Task.FromResult(value + 1);
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	public static async Task<int> NativeCaller(int value) => await Ordinary(value);
+}
+
 public class OrdinaryVirtualBase
 {
 	[MethodImpl(MethodImplOptions.NoInlining)]

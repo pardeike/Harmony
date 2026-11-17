@@ -29,11 +29,17 @@ namespace HarmonyLib
 			}
 		}
 
+		// The family body is written to an assembly. Its importer cannot name a function pointer type.
+		internal static void RejectFunctionPointers(IEnumerable<Type> types)
+		{
+			if (types.Any(MethodCreatorTools.ContainsFunctionPointer))
+				throw new NotSupportedException("Generic family bridges cannot emit function-pointer signatures with the current runtime importer.");
+		}
+
 		// Converts the value on the stack between an open type of the definition and its closed form, in either direction.
 		internal static CodeInstruction Convert(Type from, Type to)
 		{
-			if (MethodCreatorTools.ContainsFunctionPointer(from) || MethodCreatorTools.ContainsFunctionPointer(to))
-				throw new NotSupportedException("Generic family bridges cannot emit function-pointer signatures with the current runtime importer.");
+			RejectFunctionPointers([from, to]);
 			// The guard already proves these types coincide. Pointers and byref-like values cannot be arguments of As<,>.
 			return MethodCreatorTools.CanStoreInObjectArray(from) && MethodCreatorTools.CanStoreInObjectArray(to)
 				? Call[asMethod.MakeGenericMethod(from, to)] : Nop;

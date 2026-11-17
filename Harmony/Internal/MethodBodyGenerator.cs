@@ -46,6 +46,10 @@ namespace HarmonyLib
 			// Helpers initialize their own locals. Older optimized JITs require this existing helper convention.
 			body.InitLocals = !structuredHelper;
 			if (patch.Definition.HasGenericParameters || patch.Definition.DeclaringType.HasGenericParameters) return GenerateAssembly(patch);
+#if !NET35 && !NETSTANDARD2_0
+			// An assembly holds the function pointer signature that a dynamic method cannot.
+			if (!structuredHelper && original is not null && !DynamicMethodBodyWriter.HoldsFunctionPointers && ExactFunctionPointers(patch, original)) return GenerateAssembly(patch);
+#endif
 			MonoMod.Switches.TryGetSwitchValue(MonoMod.Switches.DMDType, out var selected);
 			var generator = selected as string;
 #if !NET35 && !NETSTANDARD2_0
@@ -69,6 +73,40 @@ namespace HarmonyLib
 				return patch.Generate();
 			return GenerateAssembly(patch);
 		}
+
+		// Gives the copy of an original its function pointer types back. MonoMod imports them as nameless references and compares the detour's argument types.
+		static bool ExactFunctionPointers(DynamicMethodDefinition patch, MethodBase original)
+		{
+			var definition = patch.Definition;
+			var types = MethodPatcherTools.ReplacementParameterTypes(original);
+			if (definition.HasThis || types.Count != definition.Parameters.Count) return false;
+			var found = false;
+			for (var i = 0; i < types.Count; i++)
+				if (MethodCreatorTools.ContainsFunctionPointer(types[i]))
+				{
+					definition.Parameters[i].ParameterType = DynamicMethodProxy.ImportType(definition.Module, types[i]);
+					found = true;
+				}
+			if (original is MethodInfo info && MethodCreatorTools.ContainsFunctionPointer(info.ReturnType))
+			{
+				definition.ReturnType = DynamicMethodProxy.ImportType(definition.Module, info.ReturnType);
+				found = true;
+			}
+			if (found)
+				foreach (var local in definition.Body.Variables)
+					local.VariableType = NativePointers(local.VariableType, definition.Module);
+			return found;
+		}
+
+		// A local keeps the native int that the dynamic method writer gives it.
+		static TypeReference NativePointers(TypeReference type, ModuleDefinition module) => type switch
+		{
+			ByReferenceType reference => new ByReferenceType(NativePointers(reference.ElementType, module)),
+			PointerType pointer => new PointerType(NativePointers(pointer.ElementType, module)),
+			ArrayType array => array.IsVector ? new ArrayType(NativePointers(array.ElementType, module)) : new ArrayType(NativePointers(array.ElementType, module), array.Rank),
+			_ when type is not TypeSpecification && string.IsNullOrEmpty(type.Name) => module.TypeSystem.IntPtr,
+			_ => type
+		};
 
 		internal static bool ReturnsValue(TypeReference type)
 		{

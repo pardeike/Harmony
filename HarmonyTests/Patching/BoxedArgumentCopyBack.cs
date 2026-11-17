@@ -171,7 +171,16 @@ namespace HarmonyLibTests.Patching
 #endif
 		public void Closed_generic_value_argument_is_copied_back_through_a_native_detour()
 		{
-			Add(Method(nameof(GenericTarget)).MakeGenericMethod(typeof(int)), nameof(WriteBox), HarmonyPatchType.Prefix);
+			var original = Method(nameof(GenericTarget)).MakeGenericMethod(typeof(int));
+			if (Environment.Version.Major >= 11)
+			{
+				// MonoMod refuses a generic method instantiation on .NET 11.
+				Assert.Throws<NotSupportedException>(() => Add(original, nameof(WriteBox), HarmonyPatchType.Prefix));
+				Assert.IsNull(Harmony.GetPatchInfo(original));
+				Assert.AreEqual(1, GenericTarget(1));
+				return;
+			}
+			Add(original, nameof(WriteBox), HarmonyPatchType.Prefix);
 			Assert.AreEqual(17, GenericTarget(1));
 		}
 

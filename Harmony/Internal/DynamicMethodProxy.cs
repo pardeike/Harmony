@@ -80,7 +80,7 @@ namespace HarmonyLib
 			=> isSZArray?.GetValue(type, null) is bool vector ? vector : type == type.GetElementType().MakeArrayType();
 
 		// Keep function pointer signatures exact so delegate binding agrees with the callback.
-		static TypeReference ImportType(ModuleDefinition module, Type type)
+		internal static TypeReference ImportType(ModuleDefinition module, Type type)
 		{
 			if (type.IsByRef) return new ByReferenceType(ImportType(module, type.GetElementType()));
 			if (type.IsPointer) return new PointerType(ImportType(module, type.GetElementType()));

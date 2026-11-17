@@ -177,7 +177,6 @@ namespace HarmonyLib
 							throw enriched;
 						}
 						ForgetReverse(owner);
-						RuntimeAsyncCompileWatch.EnsureSubscribed();
 						HarmonySharedState.UpdatePatchInfo(original, replacement, bytes);
 						// Stack frames inside a closed body resolve to its instantiation, like frames inside a callable copy.
 						foreach (var body in patcher.config.closedBodies) HarmonySharedState.RegisterReplacement(body.instantiation, body.helper);

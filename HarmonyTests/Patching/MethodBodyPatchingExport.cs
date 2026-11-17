@@ -329,13 +329,15 @@ namespace HarmonyLibTests.Patching
 			Assert.That(proxy.GetParameters()[0].ParameterType, Is.EqualTo(target.GetParameters()[0].ParameterType));
 		}
 		[Test]
-		public void Dynamic_signatures_normalize_function_pointer_arrays()
+		public void Dynamic_signatures_keep_function_pointer_arrays_where_the_runtime_holds_them()
 		{
 			var original = Method(nameof(PointerArray));
 			using var body = new Body(original);
 			var copy = body.GenerateDynamic(original);
-			Assert.That(copy.GetParameters()[0].ParameterType, Is.EqualTo(typeof(IntPtr[])));
-			Assert.That(copy.Invoke(null, new object[] { new IntPtr[3] }), Is.EqualTo(3));
+			// .NET 11 rejects a function pointer type in a dynamic signature. The copy then takes native ints.
+			var expected = Environment.Version.Major < 11 ? original.GetParameters()[0].ParameterType : typeof(IntPtr[]);
+			Assert.That(copy.GetParameters()[0].ParameterType, Is.EqualTo(expected));
+			Assert.That(copy.Invoke(null, new object[] { Array.CreateInstance(expected.GetElementType(), 3) }), Is.EqualTo(3));
 		}
 
 		[Test]

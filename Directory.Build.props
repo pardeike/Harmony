@@ -4,7 +4,7 @@
 		<HarmonyPrerelease>-rc.6</HarmonyPrerelease>
 
 		<!-- set empty to build from local LocalMonoMod submodule -->
-		<MonoModCoreVersion>1.4.0-prerelease.1</MonoModCoreVersion>
+		<MonoModCoreVersion>1.4.0-prerelease.2</MonoModCoreVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Lib.Harmony Properties" Condition="$(MSBuildProjectName.StartsWith('Lib.Harmony'))">
@@ -26,8 +26,6 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>preview</LangVersion>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
-		<!-- MonoMod 1.4.0-prerelease.1 includes net11.0 but its build guard still stops at .NET 10. -->
-		<MonoMod_ReallySkipCheckTargetRuntime Condition="'$(TargetFramework)' == 'net11.0' And '$(MonoModCoreVersion)' == '1.4.0-prerelease.1'">true</MonoMod_ReallySkipCheckTargetRuntime>
 		<IsLibHarmonyProject Condition="'$(IsLibHarmonyProject)' == ''">false</IsLibHarmonyProject>
 
 		<!-- Remove netstandard2.0 from /lib in NuGet -->

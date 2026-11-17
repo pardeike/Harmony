@@ -4,7 +4,7 @@ Implementation on `v3`. RC3 was verified locally and in GitHub CI on 2026-10-29.
 
 ## Scope
 
-- Use the published `MonoMod.Core 1.4.0-prerelease.1` package.
+- Use the published `MonoMod.Core 1.4.0-prerelease.2` package.
 - Extend the existing .NET 10 framework, reference, test and CI settings for `net11.0`.
 - Build with SDK `11.0.100`. CI installs the current 11.0 runtime, as it does for every other framework.
 - Preserve the legacy framework targets and conditional test dependencies.
@@ -20,7 +20,9 @@ For now, Harmony rejects the .NET 11 `MethodImplAttributes.Async` flag before re
 
 ## Packaging and runtime details
 
-The prerelease contains a `net11.0` asset and a CoreCLR 11 implementation, but its build guard still rejects framework versions above 10. The repository override is limited to `net11.0` with that exact prerelease. Thin includes a `buildTransitive` workaround limited to .NET 11, including OS-qualified targets such as `net11.0-windows`, so consumers need no manual override. Remove these workarounds when MonoMod updates its guard.
+MonoMod.Core 1.4.0-prerelease.2 accepts `net11.0`. The build-guard override and the Thin `buildTransitive` workaround for prerelease.1 are removed.
+
+prerelease.2 detours the runtime-async variant of an ordinary `Task`-returning method. Patches reach runtime-async callers, also when the patch is installed before the first call. The bypass diagnostic `RuntimeAsyncCompileWatch` is removed. prerelease.2 refuses to detour a generic method instantiation on .NET 11 with `NotSupportedException`. It also compares the argument types of a detour, see the function pointer entry in `METHOD-BODY-PATCHING-VERIFICATION.md`.
 
 .NET 11 RC3's native `DynamicILGenerator.DeclareLocal` rejects function-pointer local types. The signature-only consumer fixture now uses `ReadMethodBody(method, null)` without declaring unused locals. The tests still re-emit and execute the real managed and unmanaged `calli` signatures. This does not add support for declaring function-pointer locals through the runtime emitter.
 
@@ -32,7 +34,8 @@ SDK 11's VSTest 18.11 removed Mono execution support. CI still compiles with SDK
 
 | Check | Result |
 | --- | --- |
-| Full .NET 11.0.0 Debug suite, macOS x64 through Rosetta | 1,499 passed, 15 skipped |
+| Full .NET 11.0.0 Debug suite with prerelease.2, macOS x64 through Rosetta and macOS ARM64 | 1,497 passed, 17 skipped on each |
+| Full Debug suites with prerelease.2 on .NET Core 3.1, .NET 8, 9 and 10, macOS x64 | All passed |
 | Full .NET 11 RC3 Release suite, macOS x64 through Rosetta | 1,248 passed, 2 skipped |
 | Full .NET 11 RC3 Release suite, macOS ARM64 | 1,248 passed, 2 skipped |
 | Full .NET 10 Release suite, macOS x64 | 1,244 passed, 2 skipped |

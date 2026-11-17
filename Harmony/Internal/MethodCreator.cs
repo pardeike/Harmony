@@ -200,6 +200,7 @@ namespace HarmonyLib
 			var codes = new List<CodeInstruction>(GenericFamily.Guard(config.original, instantiation, skip));
 			var open = MethodPatcherTools.ReplacementParameterTypes(config.original);
 			var closed = helper.GetParameters().Types();
+			GenericFamily.RejectFunctionPointers(open.Concat([config.returnType]));
 			for (var i = 0; i < open.Count; i++)
 			{
 				codes.Add(Ldarg[i]);
