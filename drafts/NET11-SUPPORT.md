@@ -1,12 +1,12 @@
 # .NET 11 support
 
-Implementation on `v3`, verified locally and in GitHub CI on 2026-10-29.
+Implementation on `v3`. RC3 was verified locally and in GitHub CI on 2026-10-29. The 11.0.0 release was verified locally on 2026-11-17.
 
 ## Scope
 
 - Use the published `MonoMod.Core 1.4.0-prerelease.1` package.
 - Extend the existing .NET 10 framework, reference, test and CI settings for `net11.0`.
-- Build with SDK `11.0.100-rc.3.26522.148` and test runtime `11.0.0-rc.3.26522.148`.
+- Build with SDK `11.0.100`. CI installs the current 11.0 runtime, as it does for every other framework.
 - Preserve the legacy framework targets and conditional test dependencies.
 - Test release packages against the newest advertised framework.
 
@@ -32,8 +32,9 @@ SDK 11's VSTest 18.11 removed Mono execution support. CI still compiles with SDK
 
 | Check | Result |
 | --- | --- |
-| Full .NET 11 Release suite, macOS x64 through Rosetta | 1,248 passed, 2 skipped |
-| Full .NET 11 Release suite, macOS ARM64 | 1,248 passed, 2 skipped |
+| Full .NET 11.0.0 Debug suite, macOS x64 through Rosetta | 1,499 passed, 15 skipped |
+| Full .NET 11 RC3 Release suite, macOS x64 through Rosetta | 1,248 passed, 2 skipped |
+| Full .NET 11 RC3 Release suite, macOS ARM64 | 1,248 passed, 2 skipped |
 | Full .NET 10 Release suite, macOS x64 | 1,244 passed, 2 skipped |
 | Complete solution build across the retained framework matrix | Passed |
 | Independent Fat and Thin NuGet consumers on .NET 11 x64 | Build, patch, execute and unpatch passed |

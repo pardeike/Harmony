@@ -54,12 +54,7 @@ runs:
         }
 
         function Install-TargetRuntime([string]$channel) {
-          $runtime = @{ Runtime = 'dotnet'; SkipNonVersionedFiles = $true; NoPath = $true; Architecture = '${{inputs.architecture}}'; InstallDir = '${{steps.get-program-files.outputs.path}}/dotnet' }
-          if ($channel -match '^11\.') {
-            $runtime.Version = '11.0.0-rc.3.26522.148'
-          } else {
-            $runtime.Channel = $channel
-          }
+          $runtime = @{ Runtime = 'dotnet'; SkipNonVersionedFiles = $true; NoPath = $true; Architecture = '${{inputs.architecture}}'; InstallDir = '${{steps.get-program-files.outputs.path}}/dotnet'; Channel = $channel }
           .\dotnet-install.ps1 @runtime
         }
 

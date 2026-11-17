@@ -7,7 +7,7 @@
 
 This branch develops Harmony 3, including Infix patching. Harmony 2.x is maintained on [master](https://github.com/pardeike/Harmony/tree/master).
 
-This branch supports .NET 11 RC3 alongside .NET 10 and earlier supported runtimes. [.NET 11 runtime async](Documentation/articles/patching-edgecases.md#runtime-async-in-net-11) is not supported.
+This branch supports .NET 11 alongside .NET 10 and earlier supported runtimes. [.NET 11 runtime async](Documentation/articles/patching-edgecases.md#runtime-async-in-net-11) is not supported.
 
 ### About
 

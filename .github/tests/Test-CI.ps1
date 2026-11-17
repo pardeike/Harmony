@@ -58,7 +58,7 @@ try {
     }
     function Test-SdkList {
         "10.0.400 [$sdkRoot]"
-        "11.0.100-rc.3.26522.148 [$sdkRoot]"
+        "11.0.100 [$sdkRoot]"
         "10.0.203 [$sdkRoot]"
     }
     $expectedRunner = Join-Path (Join-Path $sdkRoot '10.0.400') 'vstest.console.dll'
@@ -69,7 +69,7 @@ try {
     try { Get-MonoVSTest Test-SdkList } catch { $failed = $true }
     if (-not $failed) { throw 'A missing Mono test runner passed' }
     $checks++
-    function Test-NoMonoSdk { "11.0.100-rc.3.26522.148 [$sdkRoot]" }
+    function Test-NoMonoSdk { "11.0.100 [$sdkRoot]" }
     $failed = $false
     try { Get-MonoVSTest Test-NoMonoSdk } catch { $failed = $true }
     if (-not $failed) { throw 'A missing SDK 10 passed' }

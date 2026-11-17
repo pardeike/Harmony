@@ -20,7 +20,7 @@
 
 ## Local verification
 
-Build with the .NET 11 RC3 SDK pinned in `global.json`. On Mac Studio, it is installed at `$HOME/.dotnet/dotnet` alongside .NET 10. Set `HARMONY_DOTNET="$HOME/.dotnet/dotnet"` for the local workflow when `dotnet` on PATH still selects the Homebrew installation.
+Build with the .NET 11 SDK pinned in `global.json`. On Mac Studio, it is installed at `$HOME/.dotnet/dotnet` alongside .NET 10. Set `HARMONY_DOTNET="$HOME/.dotnet/dotnet"` for the local workflow when `dotnet` on PATH still selects the Homebrew installation.
 
 Use `./scripts/test.sh` for local build/test work. It forwards `dotnet test` options and run settings, saves full logs and fresh TRX reports under ignored `artifacts/tests/run-*`, and prints only `ok` after a successful exit and nonempty completed reports. Failures report the log path and return nonzero. Cancellation stops the Unix test process group. Python 3 and the .NET SDK are required. Set `HARMONY_DOTNET` to override the SDK executable.
 

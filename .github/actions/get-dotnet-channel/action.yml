@@ -1,6 +1,6 @@
 name: Convert Target Framework to Channel
 description: |
-  Convert Target Framework to an SDK channel or pinned prerelease SDK version.
+  Convert Target Framework to Channel.
   Use `target_framework` for a single conversion with `channel` as output.
   Use `target_framework_array` for a single conversion with `channels_multiline` as output.
 
@@ -27,9 +27,6 @@ runs:
       id: set_output
       run: |
         function Get-DotnetChannel([string]$framework) {
-          if ($framework -eq 'net11.0') {
-            return (Get-Content global.json -Raw | ConvertFrom-Json).sdk.version
-          }
           return $framework.Replace('coreapp', '').Replace('net', '')
         }
         $target_framework = "${{inputs.target_framework}}";
