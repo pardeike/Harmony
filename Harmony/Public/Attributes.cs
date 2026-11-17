@@ -82,8 +82,64 @@ namespace HarmonyLib
 		OperatorGreaterThanOrEqual = 34,
 		/// <summary>This is a op_LessThanOrEqual</summary>
 		OperatorLessThanOrEqual = 35,
-		/// <summary>This is a op_Comma</summary>
-		OperatorComma = 36
+		/// <summary>This is a op_Comma, which C++/CLI emits and C# cannot declare</summary>
+		OperatorComma = 36,
+		/// <summary>This is a op_UnsignedRightShift</summary>
+		OperatorUnsignedRightShift = 37,
+		/// <summary>This is a op_CheckedExplicit</summary>
+		OperatorCheckedExplicit = 38,
+		/// <summary>This is a op_CheckedUnaryNegation</summary>
+		OperatorCheckedUnaryNegation = 39,
+		/// <summary>This is a op_CheckedIncrement</summary>
+		OperatorCheckedIncrement = 40,
+		/// <summary>This is a op_CheckedDecrement</summary>
+		OperatorCheckedDecrement = 41,
+		/// <summary>This is a op_CheckedAddition</summary>
+		OperatorCheckedAddition = 42,
+		/// <summary>This is a op_CheckedSubtraction</summary>
+		OperatorCheckedSubtraction = 43,
+		/// <summary>This is a op_CheckedMultiply</summary>
+		OperatorCheckedMultiply = 44,
+		/// <summary>This is a op_CheckedDivision</summary>
+		OperatorCheckedDivision = 45,
+		/// <summary>This is a op_AdditionAssignment</summary>
+		OperatorAdditionAssignment = 46,
+		/// <summary>This is a op_SubtractionAssignment</summary>
+		OperatorSubtractionAssignment = 47,
+		/// <summary>This is a op_MultiplicationAssignment</summary>
+		OperatorMultiplicationAssignment = 48,
+		/// <summary>This is a op_DivisionAssignment</summary>
+		OperatorDivisionAssignment = 49,
+		/// <summary>This is a op_ModulusAssignment</summary>
+		OperatorModulusAssignment = 50,
+		/// <summary>This is a op_BitwiseAndAssignment</summary>
+		OperatorBitwiseAndAssignment = 51,
+		/// <summary>This is a op_BitwiseOrAssignment</summary>
+		OperatorBitwiseOrAssignment = 52,
+		/// <summary>This is a op_ExclusiveOrAssignment</summary>
+		OperatorExclusiveOrAssignment = 53,
+		/// <summary>This is a op_LeftShiftAssignment</summary>
+		OperatorLeftShiftAssignment = 54,
+		/// <summary>This is a op_RightShiftAssignment</summary>
+		OperatorRightShiftAssignment = 55,
+		/// <summary>This is a op_UnsignedRightShiftAssignment</summary>
+		OperatorUnsignedRightShiftAssignment = 56,
+		/// <summary>This is a op_IncrementAssignment</summary>
+		OperatorIncrementAssignment = 57,
+		/// <summary>This is a op_DecrementAssignment</summary>
+		OperatorDecrementAssignment = 58,
+		/// <summary>This is a op_CheckedAdditionAssignment</summary>
+		OperatorCheckedAdditionAssignment = 59,
+		/// <summary>This is a op_CheckedSubtractionAssignment</summary>
+		OperatorCheckedSubtractionAssignment = 60,
+		/// <summary>This is a op_CheckedMultiplicationAssignment</summary>
+		OperatorCheckedMultiplicationAssignment = 61,
+		/// <summary>This is a op_CheckedDivisionAssignment</summary>
+		OperatorCheckedDivisionAssignment = 62,
+		/// <summary>This is a op_CheckedIncrementAssignment</summary>
+		OperatorCheckedIncrementAssignment = 63,
+		/// <summary>This is a op_CheckedDecrementAssignment</summary>
+		OperatorCheckedDecrementAssignment = 64
 	}
 
 	/// <summary>Specifies the type of argument</summary>

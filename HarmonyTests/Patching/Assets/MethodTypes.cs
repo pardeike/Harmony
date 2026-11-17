@@ -136,4 +136,79 @@ namespace HarmonyLibTests.Assets
 	{
 		public static void Prefix() { }
 	}
+
+	// Declares every operator that MethodType names. C# has no comma operator, so op_Comma is an ordinary method.
+	public class MethodTypesOperators
+	{
+		public static implicit operator MethodTypesOperators(int value) => new();
+		public static explicit operator int(MethodTypesOperators x) => 0;
+		public static explicit operator checked int(MethodTypesOperators x) => 0;
+		public static MethodTypesOperators operator +(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator -(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator checked -(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator !(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator ~(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator ++(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator checked ++(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator --(MethodTypesOperators x) => x;
+		public static MethodTypesOperators operator checked --(MethodTypesOperators x) => x;
+		public static bool operator true(MethodTypesOperators x) => true;
+		public static bool operator false(MethodTypesOperators x) => false;
+		public static MethodTypesOperators operator +(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator checked +(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator -(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator checked -(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator *(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator checked *(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator /(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator checked /(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator %(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator &(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator |(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator ^(MethodTypesOperators x, MethodTypesOperators y) => x;
+		public static MethodTypesOperators operator <<(MethodTypesOperators x, int count) => x;
+		public static MethodTypesOperators operator >>(MethodTypesOperators x, int count) => x;
+		public static MethodTypesOperators operator >>>(MethodTypesOperators x, int count) => x;
+		public static bool operator ==(MethodTypesOperators x, MethodTypesOperators y) => false;
+		public static bool operator !=(MethodTypesOperators x, MethodTypesOperators y) => false;
+		public static bool operator >(MethodTypesOperators x, MethodTypesOperators y) => false;
+		public static bool operator <(MethodTypesOperators x, MethodTypesOperators y) => false;
+		public static bool operator >=(MethodTypesOperators x, MethodTypesOperators y) => false;
+		public static bool operator <=(MethodTypesOperators x, MethodTypesOperators y) => false;
+		public static MethodTypesOperators op_Comma(MethodTypesOperators x, MethodTypesOperators y) => y;
+		public void operator +=(MethodTypesOperators y) { }
+		public void operator checked +=(MethodTypesOperators y) { }
+		public void operator -=(MethodTypesOperators y) { }
+		public void operator checked -=(MethodTypesOperators y) { }
+		public void operator *=(MethodTypesOperators y) { }
+		public void operator checked *=(MethodTypesOperators y) { }
+		public void operator /=(MethodTypesOperators y) { }
+		public void operator checked /=(MethodTypesOperators y) { }
+		public void operator %=(MethodTypesOperators y) { }
+		public void operator &=(MethodTypesOperators y) { }
+		public void operator |=(MethodTypesOperators y) { }
+		public void operator ^=(MethodTypesOperators y) { }
+		public void operator <<=(int count) { }
+		public void operator >>=(int count) { }
+		public void operator >>>=(int count) { }
+		public void operator ++() { }
+		public void operator checked ++() { }
+		public void operator --() { }
+		public void operator checked --() { }
+		public override bool Equals(object obj) => false;
+		public override int GetHashCode() => 0;
+	}
 }
+
+#if !NET7_0_OR_GREATER
+namespace System.Runtime.CompilerServices
+{
+	// The compiler marks compound assignment operators with this attribute. Frameworks before .NET 7 lack it.
+	[AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
+	internal sealed class CompilerFeatureRequiredAttribute(string featureName) : Attribute
+	{
+		public string FeatureName { get; } = featureName;
+		public bool IsOptional { get; set; }
+	}
+}
+#endif

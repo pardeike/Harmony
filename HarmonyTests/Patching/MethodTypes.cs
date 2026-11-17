@@ -29,5 +29,18 @@ namespace HarmonyLibTests.Patching
 		[Test] public void Test_MethodType_EventAdd() => Patch(typeof(MethodTypes_EventAdd_Patch));
 		[Test] public void Test_MethodType_EventRemove() => Patch(typeof(MethodTypes_EventRemove_Patch));
 		[Test] public void Test_MethodType_OperatorAddition() => Patch(typeof(MethodTypes_OperatorAddition_Patch));
+
+		[Test]
+		public void Test_MethodType_resolves_every_operator()
+		{
+			foreach (MethodType type in Enum.GetValues(typeof(MethodType)))
+			{
+				var name = type.ToString();
+				if (!name.StartsWith("Operator")) continue;
+				var method = new HarmonyMethod { declaringType = typeof(MethodTypesOperators), methodType = type }.GetOriginalMethod();
+				Assert.AreEqual("op_" + name.Substring(8), method?.Name, name);
+				Assert.AreEqual(type != MethodType.OperatorComma, method.IsSpecialName, $"{name} must be a compiler-emitted operator");
+			}
+		}
 	}
 }

@@ -191,43 +191,17 @@ namespace HarmonyLib
 							return null;
 						return AccessTools.DeclaredEventRemover(attr.declaringType, attr.methodName);
 
-					case MethodType.OperatorImplicit:
-					case MethodType.OperatorExplicit:
-					case MethodType.OperatorUnaryPlus:
-					case MethodType.OperatorUnaryNegation:
-					case MethodType.OperatorLogicalNot:
-					case MethodType.OperatorOnesComplement:
-					case MethodType.OperatorIncrement:
-					case MethodType.OperatorDecrement:
-					case MethodType.OperatorTrue:
-					case MethodType.OperatorFalse:
-					case MethodType.OperatorAddition:
-					case MethodType.OperatorSubtraction:
-					case MethodType.OperatorMultiply:
-					case MethodType.OperatorDivision:
-					case MethodType.OperatorModulus:
-					case MethodType.OperatorBitwiseAnd:
-					case MethodType.OperatorBitwiseOr:
-					case MethodType.OperatorExclusiveOr:
-					case MethodType.OperatorLeftShift:
-					case MethodType.OperatorRightShift:
-					case MethodType.OperatorEquality:
-					case MethodType.OperatorInequality:
-					case MethodType.OperatorGreaterThan:
-					case MethodType.OperatorLessThan:
-					case MethodType.OperatorGreaterThanOrEqual:
-					case MethodType.OperatorLessThanOrEqual:
-					case MethodType.OperatorComma:
-						var methodName = "op_" + attr.methodType.ToString().Replace("Operator", "");
-						return AccessTools.DeclaredMethod(attr.declaringType, methodName, attr.argumentTypes);
+					default:
+						// Every other member is named after its operator method: OperatorAddition is op_Addition.
+						var operatorName = attr.methodType.ToString();
+						if (!operatorName.StartsWith("Operator")) return null;
+						return AccessTools.DeclaredMethod(attr.declaringType, "op_" + operatorName.Substring(8), attr.argumentTypes);
 				}
 			}
 			catch (AmbiguousMatchException ex)
 			{
 				throw new HarmonyException($"Ambiguous match for HarmonyMethod[{attr.Description()}]", ex.InnerException ?? ex);
 			}
-
-			return null;
 		}
 	}
 }
