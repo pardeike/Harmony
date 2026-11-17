@@ -10784,18 +10784,120 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorAddition
   fullName: HarmonyLib.MethodType.OperatorAddition
   nameWithType: MethodType.OperatorAddition
+- uid: HarmonyLib.MethodType.OperatorAdditionAssignment
+  name: OperatorAdditionAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorAdditionAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorAdditionAssignment
+  fullName: HarmonyLib.MethodType.OperatorAdditionAssignment
+  nameWithType: MethodType.OperatorAdditionAssignment
 - uid: HarmonyLib.MethodType.OperatorBitwiseAnd
   name: OperatorBitwiseAnd
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorBitwiseAnd
   commentId: F:HarmonyLib.MethodType.OperatorBitwiseAnd
   fullName: HarmonyLib.MethodType.OperatorBitwiseAnd
   nameWithType: MethodType.OperatorBitwiseAnd
+- uid: HarmonyLib.MethodType.OperatorBitwiseAndAssignment
+  name: OperatorBitwiseAndAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorBitwiseAndAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorBitwiseAndAssignment
+  fullName: HarmonyLib.MethodType.OperatorBitwiseAndAssignment
+  nameWithType: MethodType.OperatorBitwiseAndAssignment
 - uid: HarmonyLib.MethodType.OperatorBitwiseOr
   name: OperatorBitwiseOr
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorBitwiseOr
   commentId: F:HarmonyLib.MethodType.OperatorBitwiseOr
   fullName: HarmonyLib.MethodType.OperatorBitwiseOr
   nameWithType: MethodType.OperatorBitwiseOr
+- uid: HarmonyLib.MethodType.OperatorBitwiseOrAssignment
+  name: OperatorBitwiseOrAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorBitwiseOrAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorBitwiseOrAssignment
+  fullName: HarmonyLib.MethodType.OperatorBitwiseOrAssignment
+  nameWithType: MethodType.OperatorBitwiseOrAssignment
+- uid: HarmonyLib.MethodType.OperatorCheckedAddition
+  name: OperatorCheckedAddition
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedAddition
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedAddition
+  fullName: HarmonyLib.MethodType.OperatorCheckedAddition
+  nameWithType: MethodType.OperatorCheckedAddition
+- uid: HarmonyLib.MethodType.OperatorCheckedAdditionAssignment
+  name: OperatorCheckedAdditionAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedAdditionAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedAdditionAssignment
+  fullName: HarmonyLib.MethodType.OperatorCheckedAdditionAssignment
+  nameWithType: MethodType.OperatorCheckedAdditionAssignment
+- uid: HarmonyLib.MethodType.OperatorCheckedDecrement
+  name: OperatorCheckedDecrement
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedDecrement
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedDecrement
+  fullName: HarmonyLib.MethodType.OperatorCheckedDecrement
+  nameWithType: MethodType.OperatorCheckedDecrement
+- uid: HarmonyLib.MethodType.OperatorCheckedDecrementAssignment
+  name: OperatorCheckedDecrementAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedDecrementAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedDecrementAssignment
+  fullName: HarmonyLib.MethodType.OperatorCheckedDecrementAssignment
+  nameWithType: MethodType.OperatorCheckedDecrementAssignment
+- uid: HarmonyLib.MethodType.OperatorCheckedDivision
+  name: OperatorCheckedDivision
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedDivision
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedDivision
+  fullName: HarmonyLib.MethodType.OperatorCheckedDivision
+  nameWithType: MethodType.OperatorCheckedDivision
+- uid: HarmonyLib.MethodType.OperatorCheckedDivisionAssignment
+  name: OperatorCheckedDivisionAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedDivisionAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedDivisionAssignment
+  fullName: HarmonyLib.MethodType.OperatorCheckedDivisionAssignment
+  nameWithType: MethodType.OperatorCheckedDivisionAssignment
+- uid: HarmonyLib.MethodType.OperatorCheckedExplicit
+  name: OperatorCheckedExplicit
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedExplicit
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedExplicit
+  fullName: HarmonyLib.MethodType.OperatorCheckedExplicit
+  nameWithType: MethodType.OperatorCheckedExplicit
+- uid: HarmonyLib.MethodType.OperatorCheckedIncrement
+  name: OperatorCheckedIncrement
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedIncrement
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedIncrement
+  fullName: HarmonyLib.MethodType.OperatorCheckedIncrement
+  nameWithType: MethodType.OperatorCheckedIncrement
+- uid: HarmonyLib.MethodType.OperatorCheckedIncrementAssignment
+  name: OperatorCheckedIncrementAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedIncrementAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedIncrementAssignment
+  fullName: HarmonyLib.MethodType.OperatorCheckedIncrementAssignment
+  nameWithType: MethodType.OperatorCheckedIncrementAssignment
+- uid: HarmonyLib.MethodType.OperatorCheckedMultiplicationAssignment
+  name: OperatorCheckedMultiplicationAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedMultiplicationAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedMultiplicationAssignment
+  fullName: HarmonyLib.MethodType.OperatorCheckedMultiplicationAssignment
+  nameWithType: MethodType.OperatorCheckedMultiplicationAssignment
+- uid: HarmonyLib.MethodType.OperatorCheckedMultiply
+  name: OperatorCheckedMultiply
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedMultiply
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedMultiply
+  fullName: HarmonyLib.MethodType.OperatorCheckedMultiply
+  nameWithType: MethodType.OperatorCheckedMultiply
+- uid: HarmonyLib.MethodType.OperatorCheckedSubtraction
+  name: OperatorCheckedSubtraction
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedSubtraction
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedSubtraction
+  fullName: HarmonyLib.MethodType.OperatorCheckedSubtraction
+  nameWithType: MethodType.OperatorCheckedSubtraction
+- uid: HarmonyLib.MethodType.OperatorCheckedSubtractionAssignment
+  name: OperatorCheckedSubtractionAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedSubtractionAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedSubtractionAssignment
+  fullName: HarmonyLib.MethodType.OperatorCheckedSubtractionAssignment
+  nameWithType: MethodType.OperatorCheckedSubtractionAssignment
+- uid: HarmonyLib.MethodType.OperatorCheckedUnaryNegation
+  name: OperatorCheckedUnaryNegation
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorCheckedUnaryNegation
+  commentId: F:HarmonyLib.MethodType.OperatorCheckedUnaryNegation
+  fullName: HarmonyLib.MethodType.OperatorCheckedUnaryNegation
+  nameWithType: MethodType.OperatorCheckedUnaryNegation
 - uid: HarmonyLib.MethodType.OperatorComma
   name: OperatorComma
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorComma
@@ -10808,12 +10910,24 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorDecrement
   fullName: HarmonyLib.MethodType.OperatorDecrement
   nameWithType: MethodType.OperatorDecrement
+- uid: HarmonyLib.MethodType.OperatorDecrementAssignment
+  name: OperatorDecrementAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorDecrementAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorDecrementAssignment
+  fullName: HarmonyLib.MethodType.OperatorDecrementAssignment
+  nameWithType: MethodType.OperatorDecrementAssignment
 - uid: HarmonyLib.MethodType.OperatorDivision
   name: OperatorDivision
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorDivision
   commentId: F:HarmonyLib.MethodType.OperatorDivision
   fullName: HarmonyLib.MethodType.OperatorDivision
   nameWithType: MethodType.OperatorDivision
+- uid: HarmonyLib.MethodType.OperatorDivisionAssignment
+  name: OperatorDivisionAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorDivisionAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorDivisionAssignment
+  fullName: HarmonyLib.MethodType.OperatorDivisionAssignment
+  nameWithType: MethodType.OperatorDivisionAssignment
 - uid: HarmonyLib.MethodType.OperatorEquality
   name: OperatorEquality
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorEquality
@@ -10826,6 +10940,12 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorExclusiveOr
   fullName: HarmonyLib.MethodType.OperatorExclusiveOr
   nameWithType: MethodType.OperatorExclusiveOr
+- uid: HarmonyLib.MethodType.OperatorExclusiveOrAssignment
+  name: OperatorExclusiveOrAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorExclusiveOrAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorExclusiveOrAssignment
+  fullName: HarmonyLib.MethodType.OperatorExclusiveOrAssignment
+  nameWithType: MethodType.OperatorExclusiveOrAssignment
 - uid: HarmonyLib.MethodType.OperatorExplicit
   name: OperatorExplicit
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorExplicit
@@ -10862,6 +10982,12 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorIncrement
   fullName: HarmonyLib.MethodType.OperatorIncrement
   nameWithType: MethodType.OperatorIncrement
+- uid: HarmonyLib.MethodType.OperatorIncrementAssignment
+  name: OperatorIncrementAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorIncrementAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorIncrementAssignment
+  fullName: HarmonyLib.MethodType.OperatorIncrementAssignment
+  nameWithType: MethodType.OperatorIncrementAssignment
 - uid: HarmonyLib.MethodType.OperatorInequality
   name: OperatorInequality
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorInequality
@@ -10874,6 +11000,12 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorLeftShift
   fullName: HarmonyLib.MethodType.OperatorLeftShift
   nameWithType: MethodType.OperatorLeftShift
+- uid: HarmonyLib.MethodType.OperatorLeftShiftAssignment
+  name: OperatorLeftShiftAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorLeftShiftAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorLeftShiftAssignment
+  fullName: HarmonyLib.MethodType.OperatorLeftShiftAssignment
+  nameWithType: MethodType.OperatorLeftShiftAssignment
 - uid: HarmonyLib.MethodType.OperatorLessThan
   name: OperatorLessThan
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorLessThan
@@ -10898,6 +11030,18 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorModulus
   fullName: HarmonyLib.MethodType.OperatorModulus
   nameWithType: MethodType.OperatorModulus
+- uid: HarmonyLib.MethodType.OperatorModulusAssignment
+  name: OperatorModulusAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorModulusAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorModulusAssignment
+  fullName: HarmonyLib.MethodType.OperatorModulusAssignment
+  nameWithType: MethodType.OperatorModulusAssignment
+- uid: HarmonyLib.MethodType.OperatorMultiplicationAssignment
+  name: OperatorMultiplicationAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorMultiplicationAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorMultiplicationAssignment
+  fullName: HarmonyLib.MethodType.OperatorMultiplicationAssignment
+  nameWithType: MethodType.OperatorMultiplicationAssignment
 - uid: HarmonyLib.MethodType.OperatorMultiply
   name: OperatorMultiply
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorMultiply
@@ -10916,12 +11060,24 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorRightShift
   fullName: HarmonyLib.MethodType.OperatorRightShift
   nameWithType: MethodType.OperatorRightShift
+- uid: HarmonyLib.MethodType.OperatorRightShiftAssignment
+  name: OperatorRightShiftAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorRightShiftAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorRightShiftAssignment
+  fullName: HarmonyLib.MethodType.OperatorRightShiftAssignment
+  nameWithType: MethodType.OperatorRightShiftAssignment
 - uid: HarmonyLib.MethodType.OperatorSubtraction
   name: OperatorSubtraction
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorSubtraction
   commentId: F:HarmonyLib.MethodType.OperatorSubtraction
   fullName: HarmonyLib.MethodType.OperatorSubtraction
   nameWithType: MethodType.OperatorSubtraction
+- uid: HarmonyLib.MethodType.OperatorSubtractionAssignment
+  name: OperatorSubtractionAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorSubtractionAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorSubtractionAssignment
+  fullName: HarmonyLib.MethodType.OperatorSubtractionAssignment
+  nameWithType: MethodType.OperatorSubtractionAssignment
 - uid: HarmonyLib.MethodType.OperatorTrue
   name: OperatorTrue
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorTrue
@@ -10940,6 +11096,18 @@ references:
   commentId: F:HarmonyLib.MethodType.OperatorUnaryPlus
   fullName: HarmonyLib.MethodType.OperatorUnaryPlus
   nameWithType: MethodType.OperatorUnaryPlus
+- uid: HarmonyLib.MethodType.OperatorUnsignedRightShift
+  name: OperatorUnsignedRightShift
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorUnsignedRightShift
+  commentId: F:HarmonyLib.MethodType.OperatorUnsignedRightShift
+  fullName: HarmonyLib.MethodType.OperatorUnsignedRightShift
+  nameWithType: MethodType.OperatorUnsignedRightShift
+- uid: HarmonyLib.MethodType.OperatorUnsignedRightShiftAssignment
+  name: OperatorUnsignedRightShiftAssignment
+  href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_OperatorUnsignedRightShiftAssignment
+  commentId: F:HarmonyLib.MethodType.OperatorUnsignedRightShiftAssignment
+  fullName: HarmonyLib.MethodType.OperatorUnsignedRightShiftAssignment
+  nameWithType: MethodType.OperatorUnsignedRightShiftAssignment
 - uid: HarmonyLib.MethodType.Setter
   name: Setter
   href: api/HarmonyLib.MethodType.html#HarmonyLib_MethodType_Setter
