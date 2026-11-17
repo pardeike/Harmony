@@ -75,6 +75,8 @@ A native method has no IL body for Harmony to copy, so ordinary prefixes and pos
 
 A method whose signature contains a function pointer type, written as `delegate*` in C#, patches on CoreCLR. On Mono, reflection cannot describe such a type: it recurses without end while Harmony prepares the patch, and the process ends with a stack overflow. Do not patch such methods on Mono.
 
+On .NET Framework, a method that takes a function pointer by reference cannot be patched. MonoMod refuses the detour with `InvalidOperationException`.
+
 ## MarshalByRefObject
 
 Patching methods on classes derived from `MarshalByRefObject` is runtime-dependent and may fail. Verify the specific method on the runtime you intend to support.

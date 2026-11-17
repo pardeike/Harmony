@@ -34,6 +34,12 @@ namespace HarmonyLibTests.Patching
 				Assert.AreEqual(1, providerCalls);
 				harmony.Patch(Method(nameof(Unmanaged)), postfix: new HarmonyMethod(Method(nameof(Postfix))));
 				Assert.AreEqual(106, Unmanaged(null, 5));
+				if (AccessTools.IsNetFrameworkRuntime)
+				{
+					// MonoMod's generator types this parameter as a reference to a native int. MonoMod then refuses the detour.
+					Assert.Throws<System.InvalidOperationException>(() => harmony.Patch(Method(nameof(Reference)), postfix: new HarmonyMethod(Method(nameof(Postfix)))));
+					return;
+				}
 				harmony.Patch(Method(nameof(Reference)), postfix: new HarmonyMethod(Method(nameof(Postfix))));
 				delegate*<int, int> pointer = &Identity;
 				Assert.AreEqual(106, Reference(ref pointer, 5));
