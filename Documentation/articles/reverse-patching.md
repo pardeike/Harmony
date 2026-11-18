@@ -49,4 +49,4 @@ To define a reverse patch transpiler, you simply put a transpiler **into** your 
 
 [!code-csharp[example](../examples/reverse-patching.cs?name=transpiler)]
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png

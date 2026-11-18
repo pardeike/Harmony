@@ -63,4 +63,4 @@ An argument of type **`IEnumerable<CodeInstruction>`** is required and will be u
 An argument of type **`ILGenerator`** will be set to the current IL code generator
 An argument of type **`MethodBase`** will be set to the current original method being patched
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png

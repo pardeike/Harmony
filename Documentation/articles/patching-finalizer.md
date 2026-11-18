@@ -38,4 +38,4 @@ Finalizers are ideal for cleanup or resource management logic that must execute 
 
 Beside their handling of exceptions they can receive the same arguments as Postfixes.
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png

@@ -58,7 +58,7 @@ Where other patch libraries simply allow you to replace the original method, Har
 - Modify the original with IL code processors
 - Multiple Harmony patches co-exist and don't conflict with each other
 
-![](https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/patch-logic.svg?sanitize=true)
+![](https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/patch-logic.svg?sanitize=true)
 
 ## Limits of runtime patching
 
@@ -88,4 +88,4 @@ Alternatively, manual patching with reflection:
 
 [!code-csharp[example](../examples/intro_manual.cs?name=example)]
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png

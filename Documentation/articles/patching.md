@@ -122,4 +122,4 @@ A finalizer is a method that executes after all postfixes. It wraps the original
 - handle exceptions and suppress them
 - handle exceptions and alter them
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png

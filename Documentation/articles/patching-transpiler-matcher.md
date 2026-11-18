@@ -28,4 +28,4 @@ The `Kill()` method might be called more than once. For this it is possible to u
 
 ![note] `Repeat` will not use a `CodeMatcher.Search...()`, only `Match...()` methods can be repeated. If you consider using another method `Match...()` in the "matchAction", clone your `CodeMatcher` into the match action via `CodeMatcher.Clone()`. This is to not replace the old match used by `Repeat`.
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png
