@@ -96,7 +96,7 @@
 </code></pre>
 <h3 id="__originalmethod">__originalMethod</h3>
 <p>To allow patches to identify on which method they are attached to, you can inject the original methods MethodBase by using an argument called <strong><code>__originalMethod</code></strong>.</p>
-<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> <strong>You cannot call the original method with that</strong>. The value is only for conditional code in your patch that can selectively run if the patch is applied to multiple methods. The original does not exist after patching and this will point to the patched version.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png" alt="note"> <strong>You cannot call the original method with that</strong>. The value is only for conditional code in your patch that can selectively run if the patch is applied to multiple methods. The original does not exist after patching and this will point to the patched version.</p>
 <h3 id="__runoriginal">__runOriginal</h3>
 <p>To learn if the original is/was skipped you can inject <strong><code>bool __runOriginal</code></strong>. This is a readonly injection to understand if the original will be run (in a Prefix) or was run (in a Postfix).</p>
 <h3 id="transpilers">Transpilers</h3>

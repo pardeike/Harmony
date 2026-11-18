@@ -107,7 +107,7 @@ class Patch
 }
 </code></pre>
 <p>If you prefer manual patching, you can use any method name or class structure you want. You are responsible to retrieve the MethodInfo for the different patch methods and supply them to the Patch() method by wrapping them into HarmonyMethod objects.</p>
-<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> Patch methods <em>must</em> be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png" alt="note"> Patch methods <em>must</em> be static but you can define them public or private. They cannot be dynamic methods but you can write static patch factory methods that return dynamic methods.</p>
 <pre><code class="lang-csharp">[HarmonyPatch(...)]
 class Patch
 {

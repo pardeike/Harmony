@@ -78,11 +78,11 @@
 <li>can give you the unmodified original</li>
 <li>will freeze the implementation to the time you reverse patch</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> Reverse patching does not replace delegates. If you want to use a foreign method and want it to be patched by later patches, you would simply create a delegate or call it via reflections. That way you always get the latest version. Reverse patches give you a more private version of a foreign original method.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png" alt="note"> Reverse patching does not replace delegates. If you want to use a foreign method and want it to be patched by later patches, you would simply create a delegate or call it via reflections. That way you always get the latest version. Reverse patches give you a more private version of a foreign original method.</p>
 <h3 id="defining-a-reverse-patch">Defining a reverse patch</h3>
 <p>Creating a reverse patch is easy. You add the <code>[HarmonyReversePatch]</code> attribute to a patch method. As you can see in the example below, you still need to point out the original method in futher annotations.</p>
 <p>The method signature must match the original. This includes static/non static but in the example, we use the fact that an instance method gets the instance in an extra argument at position 0.</p>
-<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png" alt="note"> While it is tempting to define a stub as an instance method, one has to be very careful with that. The IL code that is copied from the original expects <code>this</code> to be pointing to the original class type. This obviously won't work if your instance stub is in a class that is not the original.</p>
+<p><img src="https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png" alt="note"> While it is tempting to define a stub as an instance method, one has to be very careful with that. The IL code that is copied from the original expects <code>this</code> to be pointing to the original class type. This obviously won't work if your instance stub is in a class that is not the original.</p>
 <pre><code class="lang-csharp" name="example">private class OriginalCode
 {
     private void Test(int counter, string name)
