@@ -37,4 +37,4 @@ If you want to share state between your prefix and the corresponding postfix, yo
 
 [!code-csharp[example](../examples/patching-prefix.cs?name=state)]
 
-[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Harmony/Documentation/images/note.png
+[note]: https://raw.githubusercontent.com/pardeike/Harmony/master/Documentation/images/note.png
