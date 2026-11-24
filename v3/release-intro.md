@@ -1,3 +1,3 @@
-- Fix `Assembly.GetExecutingAssembly()` in a patched constructor when a host installs the patched body into the method itself ([HarmonyRimWorld#52](https://github.com/pardeike/HarmonyRimWorld/issues/52)). The call returned Harmony's assembly. Patched ordinary methods and the ordinary detour were not affected.
-- `Harmony.GetMethodFromStackframe` and `Harmony.GetOriginalMethodFromStackframe` now return the constructor for the frame of a constructor that runs as itself. Before, they returned `null`.
-- A body that Harmony exports to a host through `MethodBodyPatching` now keeps the real `Assembly.GetExecutingAssembly()` call. The exported body runs as the target method, so the runtime's own answer is correct there.
+- Embed MonoMod.Core 1.4.0-prerelease.3.
+- Fix patches on .NET 11 methods that the runtime recompiles after many calls ([#794](https://github.com/pardeike/Harmony/issues/794)). A patch on a method that had already been called often had no effect. On ARM64, a patch made earlier was lost at the recompile, and removing it then crashed the process.
+- Remove the .NET 11 limit from rc.6 and rc.7. A generic method instantiation such as `Method<int>()` can be patched again.
