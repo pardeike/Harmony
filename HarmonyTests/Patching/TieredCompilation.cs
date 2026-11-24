@@ -1,3 +1,4 @@
+#if NETCOREAPP
 using HarmonyLib;
 using NUnit.Framework;
 using System;
@@ -31,7 +32,6 @@ namespace HarmonyLibTests.Patching
 
 		static void RequireTiering()
 		{
-			if (AccessTools.IsMonoRuntime || AccessTools.IsNetFrameworkRuntime) Assert.Ignore("Tiered compilation is a CoreCLR feature.");
 			if (AppContext.TryGetSwitch("System.Runtime.TieredCompilation", out var enabled) && !enabled) Assert.Ignore("Tiered compilation is off.");
 			// A Debug build disables JIT optimization, so its methods never tier up.
 			if (typeof(TieredCompilation).Assembly.GetCustomAttribute<DebuggableAttribute>()?.IsJITOptimizerDisabled == true) Assert.Ignore("Methods of a Debug build do not tier up.");
@@ -69,3 +69,4 @@ namespace HarmonyLibTests.Patching
 		}
 	}
 }
+#endif
