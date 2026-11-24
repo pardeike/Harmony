@@ -18,7 +18,7 @@ Writable boxed bindings now copy back to original by-value argument slots as wel
 
 The argument synchronization coverage includes 81 cases on CoreCLR: ten from PR 792, 13 ordinary array edge cases, 12 Infix scope/helper cases, 44 boxed binding cases and two generic-family rebuild cases. The family cases execute generated bodies and verify installer invocation, not third-party host installation. The existing Infix comparison asserts the corrected ordinary copy-back behavior.
 
-Closed-generic copy-back executes a generated replacement on every target. A separate native-detour case runs on CoreCLR before .NET 11 and on Unix Mono. On .NET 11 it asserts that MonoMod refuses the generic instantiation. Windows Framework builds exclude only that integration case because MonoMod's `GetMethodDescForSlot` is unimplemented for this generic target shape. The Windows "Mono" CI lanes use the Framework test host and share that exclusion. The native-detour limitation remains unresolved.
+Closed-generic copy-back executes a generated replacement on every target. A separate native-detour case runs on CoreCLR and on Unix Mono. Windows Framework builds exclude only that integration case because MonoMod's `GetMethodDescForSlot` is unimplemented for this generic target shape. The Windows "Mono" CI lanes use the Framework test host and share that exclusion. The native-detour limitation remains unresolved.
 
 | Local verification | Result |
 | --- | --- |
