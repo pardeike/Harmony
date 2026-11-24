@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup Label="Harmony Defines">
 		<HarmonyVersion>3.0.0.0</HarmonyVersion>
-		<HarmonyPrerelease>-rc.7</HarmonyPrerelease>
+		<HarmonyPrerelease>-rc.8</HarmonyPrerelease>
 
 		<!-- set empty to build from local LocalMonoMod submodule -->
 		<MonoModCoreVersion>1.4.0-prerelease.3</MonoModCoreVersion>
