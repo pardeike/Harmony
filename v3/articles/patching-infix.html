@@ -210,8 +210,8 @@ postfix: False, False
 [HarmonyInfix(typeof(Thing), &quot;Value&quot;, InnerTargetKind.Setter)]
 [HarmonyInfix(typeof(Thing), &quot;count&quot;, InnerTargetKind.FieldRead)]
 [HarmonyInfix(typeof(Thing), &quot;count&quot;, InnerTargetKind.FieldWrite)]
-[HarmonyInfix(typeof(StringBuilder), InnerTargetKind.Constructor)]
-[HarmonyInfix(&quot;StatsReport_FinalValue&quot;, Positions = new[] { -1 })]
+[HarmonyInfix(typeof(Thing), InnerTargetKind.Constructor)]
+[HarmonyInfix(&quot;Missing value&quot;, Positions = new[] { -1 })]
 </code></pre>
 <p>For indexers, argument types describe the index parameters, not the setter's value. For constructors, omitted argument types mean the parameterless constructor.</p>
 <table>
@@ -254,19 +254,39 @@ postfix: False, False
 <p>For manual registration, create an <code>InnerTarget</code> from the method, property, field, or constructor. Use <code>InnerTarget.Constant(value)</code> for literals.</p>
 <p>Literal selectors accept non-null <code>string</code>, <code>int</code>, <code>long</code>, <code>float</code>, or <code>double</code>. Types must match; floating-point values match by their exact bits. Choose distinctive values: <code>0</code> may occur in many unrelated expressions, and compiler folding can remove a source constant entirely.</p>
 <h3 id="capture-at-one-operation-use-at-another">Capture at one operation, use at another</h3>
-<p>Use <code>[HarmonyOuter] __var_name</code> to save a value for another Infix in the same patch class:</p>
-<pre><code class="lang-csharp" name="capture">[HarmonyPatch(typeof(Report), nameof(Report.Build))]
-public static class ReportPatch
+<p>A value often appears early in a method and is needed later, where it is no longer on the stack. Use <code>[HarmonyOuter] __var_name</code> to save it for another Infix in the same patch class. You do not need to know the original's local variables.</p>
+<p>Here, <code>Format</code> receives only the total. The patch remembers the unit price when <code>Lookup</code> returns and adds it to the formatted line:</p>
+<pre><code class="lang-csharp" name="capture">public static class Prices
 {
-    [HarmonyPostfix, HarmonyInfix(typeof(StringBuilder), InnerTargetKind.Constructor)]
-    static void Capture(StringBuilder __result, [HarmonyOuter] out StringBuilder __var_builder)
-        =&gt; __var_builder = __result;
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static int Lookup(string item) =&gt; item == &quot;apple&quot; ? 2 : 5;
+}
 
-    [HarmonyPostfix, HarmonyInfix(&quot;StatsReport_FinalValue&quot;)]
-    static void AddName([HarmonyOuter] string name, [HarmonyOuter] StringBuilder __var_builder)
-        =&gt; __var_builder?.Append(name).Append(&quot;: &quot;);
+public static class Receipt
+{
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static string Line(string item, int quantity) =&gt; Format(item, Prices.Lookup(item) * quantity);
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static string Format(string item, int total) =&gt; item + &quot;: &quot; + total;
+}
+
+[HarmonyPatch(typeof(Receipt), nameof(Receipt.Line))]
+public static class UnitPricePatch
+{
+    [HarmonyPostfix, HarmonyInfix(typeof(Prices), nameof(Prices.Lookup), typeof(string))]
+    static void RememberPrice(int __result, [HarmonyOuter] out int __var_unitPrice)
+        =&gt; __var_unitPrice = __result;
+
+    [HarmonyPostfix, HarmonyInfix(typeof(Receipt), nameof(Receipt.Format), typeof(string), typeof(int))]
+    static void ShowUnitPrice(ref string __result, [HarmonyOuter] int quantity, [HarmonyOuter] int __var_unitPrice)
+    {
+        if (quantity &gt; 1)
+            __result += &quot; (&quot; + quantity + &quot; x &quot; + __var_unitPrice + &quot;)&quot;;
+    }
 }
 </code></pre>
+<p><code>Receipt.Line(&quot;apple&quot;, 3)</code> returns <code>apple: 6 (3 x 2)</code>. <code>Receipt.Line(&quot;pear&quot;, 1)</code> still returns <code>pear: 5</code>.</p>
 <p>Each outer invocation gets its own default-initialized slots. Handle the default if the reader can run without the writer. Use more names for more values. A later postfix can replace a result you captured; see <a href="patching-infix-limits.html#a-captured-result-can-later-be-replaced">captured results</a>.</p>
 <p>Ordinary patches cannot use these named slots. To share state with an ordinary patch, use its <code>__state</code> and request <code>[HarmonyOuter] __state</code> in the Infix.</p>
 <h2 id="ordering-skipping-and-exceptions">Ordering, skipping, and exceptions</h2>

@@ -105,14 +105,14 @@ harmony.CreateProcessor(outer).AddInnerPrefix(a).AddInnerPrefix(b).Patch();
 <p>All <code>AddInner...</code> methods append. Calling <code>Patch()</code> again installs the pending lists again. Ordinary <code>AddPrefix</code> has one slot, so adding twice before installation keeps only the second.</p>
 <h2 id="a-captured-result-can-later-be-replaced">A captured result can later be replaced</h2>
 <p>All void postfixes run before returning postfixes, which chain replacement results.</p>
-<pre><code class="lang-csharp">static void Capture(StringBuilder __result,
-    [HarmonyOuter] out StringBuilder __var_builder)
-    =&gt; __var_builder = __result;
+<pre><code class="lang-csharp">static void RememberPrice(int __result,
+    [HarmonyOuter] out int __var_unitPrice)
+    =&gt; __var_unitPrice = __result;
 
-static StringBuilder Replace(StringBuilder result)
-    =&gt; new StringBuilder(&quot;replacement&quot;);
+static int Discount(int price)
+    =&gt; price / 2;
 </code></pre>
-<p>For the same construction, the capture keeps the first builder while the outer code receives the replacement. It saves a reference, not a clone, so later object edits remain visible.</p>
+<p>At the same call, the capture keeps the original price while the outer code receives the discounted one. For an object result, the capture saves a reference, not a clone, so later edits to that object remain visible.</p>
 <p>Even <code>Priority.Last</code> cannot move this capture past returning postfixes. Capture at a later operation or coordinate with the other patch author.</p>
 <h2 id="a-field-expression-may-take-an-address">A field expression may take an address</h2>
 <pre><code class="lang-csharp">class Counter
@@ -162,7 +162,7 @@ static void Observe(int value, bool __runOriginal)
 <p><code>Edit</code> writes back the first argument. Use typed values to observe arguments, though passing a mutable object by value still allows mutation.</p>
 <p>After a prefix returns false, Harmony skips later prefixes according to their signatures. <code>Observe</code> is exempt. A void return alone is not enough; argument arrays and writable parameters affect that classification.</p>
 <h2 id="outer-captures-keep-the-last-value-in-that-invocation">Outer captures keep the last value in that invocation</h2>
-<p>An outer local such as <code>__var_builder</code> starts at its default each invocation. Each write replaces it. A loop iteration that skips the writer can leave the previous iteration's value, so reset or check captures as needed.</p>
+<p>An outer local such as <code>__var_unitPrice</code> starts at its default each invocation. Each write replaces it. A loop iteration that skips the writer can leave the previous iteration's value, so reset or check captures as needed.</p>
 <p>Inner <code>__state</code> resets on each operation. Recursive and concurrent invocations have separate locals. In iterator/async <code>MoveNext</code>, outer locals last one invocation, not across suspension.</p>
 <h2 id="persistent-state-follows-one-generated-execution">Persistent state follows one generated execution</h2>
 <p><code>[HarmonyOuter, HarmonyArgument(&quot;name&quot;, ArgumentMode.Persistent)]</code> explicitly extends a named slot across <code>await</code> and <code>yield</code>. It requires an Infix and a heap-storable value: ordinary objects and structs work; pointers, byref-like structs such as <code>Span&lt;T&gt;</code>, and open generic storage do not. <code>ref int</code> is supported because it refers to the stored <code>int</code>, rather than storing a managed reference.</p>
