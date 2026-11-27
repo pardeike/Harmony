@@ -81,8 +81,8 @@ Use one of these selectors on each callback, together with its prefix, postfix, 
 [HarmonyInfix(typeof(Thing), "Value", InnerTargetKind.Setter)]
 [HarmonyInfix(typeof(Thing), "count", InnerTargetKind.FieldRead)]
 [HarmonyInfix(typeof(Thing), "count", InnerTargetKind.FieldWrite)]
-[HarmonyInfix(typeof(StringBuilder), InnerTargetKind.Constructor)]
-[HarmonyInfix("StatsReport_FinalValue", Positions = new[] { -1 })]
+[HarmonyInfix(typeof(Thing), InnerTargetKind.Constructor)]
+[HarmonyInfix("Missing value", Positions = new[] { -1 })]
 ```
 
 For indexers, argument types describe the index parameters, not the setter's value. For constructors, omitted argument types mean the parameterless constructor.
@@ -103,9 +103,13 @@ Literal selectors accept non-null `string`, `int`, `long`, `float`, or `double`.
 
 ### Capture at one operation, use at another
 
-Use `[HarmonyOuter] __var_name` to save a value for another Infix in the same patch class:
+A value often appears early in a method and is needed later, where it is no longer on the stack. Use `[HarmonyOuter] __var_name` to save it for another Infix in the same patch class. You do not need to know the original's local variables.
+
+Here, `Format` receives only the total. The patch remembers the unit price when `Lookup` returns and adds it to the formatted line:
 
 [!code-csharp[capture](../examples/patching-infix.cs?name=capture)]
+
+`Receipt.Line("apple", 3)` returns `apple: 6 (3 x 2)`. `Receipt.Line("pear", 1)` still returns `pear: 5`.
 
 Each outer invocation gets its own default-initialized slots. Handle the default if the reader can run without the writer. Use more names for more values. A later postfix can replace a result you captured; see [captured results](patching-infix-limits.md#a-captured-result-can-later-be-replaced).
 

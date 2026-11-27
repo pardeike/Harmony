@@ -4,7 +4,6 @@ namespace Patching_Infix
 	using System;
 	using System.Collections.Generic;
 	using System.Runtime.CompilerServices;
-	using System.Text;
 
 	// <example>
 	public static class Helper
@@ -70,29 +69,35 @@ namespace Patching_Infix
 		// </manual>
 	}
 
-	public static class Report
+	// <capture>
+	public static class Prices
 	{
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		public static string Build(string name)
-		{
-			var builder = new StringBuilder();
-			builder.Append("summary: ");
-			builder.Append("StatsReport_FinalValue");
-			return builder.ToString();
-		}
+		public static int Lookup(string item) => item == "apple" ? 2 : 5;
 	}
 
-	// <capture>
-	[HarmonyPatch(typeof(Report), nameof(Report.Build))]
-	public static class ReportPatch
+	public static class Receipt
 	{
-		[HarmonyPostfix, HarmonyInfix(typeof(StringBuilder), InnerTargetKind.Constructor)]
-		static void Capture(StringBuilder __result, [HarmonyOuter] out StringBuilder __var_builder)
-			=> __var_builder = __result;
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static string Line(string item, int quantity) => Format(item, Prices.Lookup(item) * quantity);
 
-		[HarmonyPostfix, HarmonyInfix("StatsReport_FinalValue")]
-		static void AddName([HarmonyOuter] string name, [HarmonyOuter] StringBuilder __var_builder)
-			=> __var_builder?.Append(name).Append(": ");
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static string Format(string item, int total) => item + ": " + total;
+	}
+
+	[HarmonyPatch(typeof(Receipt), nameof(Receipt.Line))]
+	public static class UnitPricePatch
+	{
+		[HarmonyPostfix, HarmonyInfix(typeof(Prices), nameof(Prices.Lookup), typeof(string))]
+		static void RememberPrice(int __result, [HarmonyOuter] out int __var_unitPrice)
+			=> __var_unitPrice = __result;
+
+		[HarmonyPostfix, HarmonyInfix(typeof(Receipt), nameof(Receipt.Format), typeof(string), typeof(int))]
+		static void ShowUnitPrice(ref string __result, [HarmonyOuter] int quantity, [HarmonyOuter] int __var_unitPrice)
+		{
+			if (quantity > 1)
+				__result += " (" + quantity + " x " + __var_unitPrice + ")";
+		}
 	}
 	// </capture>
 

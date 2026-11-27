@@ -38,16 +38,17 @@ namespace HarmonyLibTests.Patching
 		}
 
 		[Test]
-		public void Compiled_capture_example_bridges_constructor_and_literal_sites()
+		public void Compiled_capture_example_shows_the_unit_price_at_a_later_call()
 		{
 			var harmony = new Harmony("test.infix.docs.capture." + Guid.NewGuid());
 			try
 			{
-				harmony.CreateClassProcessor(typeof(ReportPatch)).Patch();
-				Assert.AreEqual("summary: Alice: StatsReport_FinalValue", Report.Build("Alice"));
-				Assert.AreEqual("summary: Bob: StatsReport_FinalValue", Report.Build("Bob"));
+				harmony.CreateClassProcessor(typeof(UnitPricePatch)).Patch();
+				Assert.AreEqual("apple: 6 (3 x 2)", Receipt.Line("apple", 3));
+				Assert.AreEqual("pear: 5", Receipt.Line("pear", 1));
 			}
 			finally { harmony.UnpatchAll(harmony.Id); }
+			Assert.AreEqual("apple: 6", Receipt.Line("apple", 3));
 		}
 		[TestCase(0), TestCase(1)]
 		public void Compiled_attribute_example_has_documented_trace(int mode)

@@ -22,15 +22,15 @@ All `AddInner...` methods append. Calling `Patch()` again installs the pending l
 All void postfixes run before returning postfixes, which chain replacement results.
 
 ```csharp
-static void Capture(StringBuilder __result,
-    [HarmonyOuter] out StringBuilder __var_builder)
-    => __var_builder = __result;
+static void RememberPrice(int __result,
+    [HarmonyOuter] out int __var_unitPrice)
+    => __var_unitPrice = __result;
 
-static StringBuilder Replace(StringBuilder result)
-    => new StringBuilder("replacement");
+static int Discount(int price)
+    => price / 2;
 ```
 
-For the same construction, the capture keeps the first builder while the outer code receives the replacement. It saves a reference, not a clone, so later object edits remain visible.
+At the same call, the capture keeps the original price while the outer code receives the discounted one. For an object result, the capture saves a reference, not a clone, so later edits to that object remain visible.
 
 Even `Priority.Last` cannot move this capture past returning postfixes. Capture at a later operation or coordinate with the other patch author.
 
@@ -116,7 +116,7 @@ After a prefix returns false, Harmony skips later prefixes according to their si
 
 ## Outer captures keep the last value in that invocation
 
-An outer local such as `__var_builder` starts at its default each invocation. Each write replaces it. A loop iteration that skips the writer can leave the previous iteration's value, so reset or check captures as needed.
+An outer local such as `__var_unitPrice` starts at its default each invocation. Each write replaces it. A loop iteration that skips the writer can leave the previous iteration's value, so reset or check captures as needed.
 
 Inner `__state` resets on each operation. Recursive and concurrent invocations have separate locals. In iterator/async `MoveNext`, outer locals last one invocation, not across suspension.
 
